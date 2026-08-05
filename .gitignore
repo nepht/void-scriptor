@@ -1,0 +1,28 @@
+# Void Scriptor - Git Ignore
+
+.dart_tool/
+build/
+*.o
+*.so
+*.a
+*.framework
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Temp AI output
+void_ai_out/
+
+# Flutter
+flutter_*.png
+integration_test/

@@ -31,7 +31,7 @@ class PluginRegistry {
   }
 
   VoidPlugin? find(String name) {
-    return _plugins.firstWhereOrNull((p) => p.name == name);
+    return _plugins.where((p) => p.name == name).firstOrNull;
   }
 }
 

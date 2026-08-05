@@ -4,7 +4,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:path/path.dart' as p;
-import '../models/character/character.dart';
+import '../../models/character/character.dart';
 
 class CharacterRepository {
   final Directory _dataDir;

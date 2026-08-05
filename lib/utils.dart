@@ -21,10 +21,17 @@ double lerp(double a, double b, double t) {
   return a + (b - a) * t.clamp(0.0, 1.0);
 }
 
-List<T> chunkList<T>(List<T> list, int chunkSize) {
-  final chunks = <T>[];
+List<List<T>> chunkList<T>(List<T> list, int chunkSize) {
+  final chunks = <List<T>>[];
   for (var i = 0; i < list.length; i += chunkSize) {
     chunks.add(list.sublist(i, min(i + chunkSize, list.length)));
   }
   return chunks;
+}
+
+T? firstOrNull<T>(List<T> list, bool Function(T) test) {
+  for (final item in list) {
+    if (test(item)) return item;
+  }
+  return null;
 }

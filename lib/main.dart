@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:void_scriptor/core/router.dart';
 import 'package:void_scriptor/core/theme.dart';
-import 'package:void_scriptor/core/event_bus.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

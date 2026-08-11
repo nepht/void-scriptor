@@ -4,7 +4,7 @@ import 'package:void_scriptor/app/bootstrap/app_bootstrap.dart';
 import 'package:void_scriptor/app/void_scriptor_app.dart';
 
 void main() {
-  testWidgets('bootstrap memasang ProviderScope dan membuka shell adaptif', (
+  testWidgets('bootstrap memasang ProviderScope dan membuka splash', (
     tester,
   ) async {
     await tester.pumpWidget(const AppBootstrap());
@@ -12,6 +12,6 @@ void main() {
 
     expect(find.byType(ProviderScope), findsOneWidget);
     expect(find.byType(VoidScriptorApp), findsOneWidget);
-    expect(find.text('Void Scriptor'), findsWidgets);
+    expect(find.text('SPLASH'), findsOneWidget);
   });
 }

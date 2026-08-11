@@ -25,13 +25,27 @@ main
 → AdaptiveAppShell
 ```
 
-Breakpoints awal:
+Breakpoints resmi:
 
-- `< 600 px`: compact/mobile — app bar + bottom navigation.
-- `600–1199 px`: medium/tablet — navigation rail.
-- `≥ 1200 px`: expanded/desktop — top bar + explorer + workspace + inspector + status bar.
+- `< 600 px`: phone — navigation bawah, workspace satu panel, inspector sebagai bottom sheet.
+- `600–1023 px`: tablet — navigation rail, workspace, inspector overlay.
+- `1024–1439 px`: compact desktop — sidebar + workspace, inspector collapsible.
+- `≥ 1440 px`: desktop — sidebar + workspace + inspector permanen.
 
 Capability platform dimodelkan terpisah dari layout sehingga shared core tidak bergantung pada `dart:io` dan tetap dapat dikompilasi untuk Web.
+
+Dependency foundation dibatasi pada Riverpod, GoRouter, UUID, SharedPreferences, dan PathProvider. Database, cloud, authentication backend, pembayaran, dan AI ditambahkan saat modulnya mulai dibangun.
+
+## Foundation routes
+
+```text
+SPLASH → ONBOARDING / AUTHENTICATION → DASHBOARD
+                                      ├── PROJECTS → WORKSPACE
+                                      ├── AI STUDIO
+                                      └── DONATION
+```
+
+Sprint 01 mendaftarkan dan menguji seluruh route foundation. Keputusan first launch, guest/offline mode, session recovery, dan authentication redirect diimplementasikan bersama session engine pada sprint Authentication.
 
 ## Workspace canonical
 

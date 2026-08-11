@@ -11,9 +11,12 @@ class AdaptiveAppShell extends StatelessWidget {
     );
 
     return switch (windowClass) {
-      AdaptiveWindowClass.compact => const _CompactShell(),
-      AdaptiveWindowClass.medium => const _MediumShell(),
-      AdaptiveWindowClass.expanded => const _ExpandedShell(),
+      AdaptiveWindowClass.phone => const _PhoneShell(),
+      AdaptiveWindowClass.tablet => const _TabletShell(),
+      AdaptiveWindowClass.compactDesktop => const _DesktopShell(
+        showInspector: false,
+      ),
+      AdaptiveWindowClass.desktop => const _DesktopShell(showInspector: true),
     };
   }
 }
@@ -26,24 +29,48 @@ class _Workspace extends StatelessWidget {
     return const ColoredBox(
       key: Key('adaptive-workspace'),
       color: Color(0xFF121218),
-      child: Center(child: Text('Void Scriptor Workspace')),
+      child: Center(
+        child: Text(
+          'VOID SCRIPTOR',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 3,
+          ),
+        ),
+      ),
     );
   }
 }
 
-class _CompactShell extends StatelessWidget {
-  const _CompactShell();
+class _PhoneShell extends StatelessWidget {
+  const _PhoneShell();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        key: const Key('compact-app-bar'),
+        key: const Key('phone-app-bar'),
         title: const Text('Void Scriptor'),
+        actions: [
+          IconButton(
+            key: const Key('phone-open-inspector'),
+            tooltip: 'Inspector',
+            onPressed: () => showModalBottomSheet<void>(
+              context: context,
+              builder: (_) => const SizedBox(
+                key: Key('phone-inspector-bottom-sheet'),
+                height: 280,
+                child: Center(child: Text('Inspector')),
+              ),
+            ),
+            icon: const Icon(Icons.tune_outlined),
+          ),
+        ],
       ),
       body: const _Workspace(),
       bottomNavigationBar: NavigationBar(
-        key: const Key('compact-bottom-navigation'),
+        key: const Key('phone-bottom-navigation'),
         selectedIndex: 0,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home'),
@@ -61,17 +88,37 @@ class _CompactShell extends StatelessWidget {
   }
 }
 
-class _MediumShell extends StatelessWidget {
-  const _MediumShell();
+class _TabletShell extends StatelessWidget {
+  const _TabletShell();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Void Scriptor')),
+      appBar: AppBar(
+        title: const Text('Void Scriptor'),
+        actions: [
+          IconButton(
+            key: const Key('tablet-open-inspector'),
+            tooltip: 'Inspector',
+            onPressed: () => showDialog<void>(
+              context: context,
+              builder: (_) => const Dialog(
+                key: Key('tablet-inspector-overlay'),
+                child: SizedBox(
+                  width: 360,
+                  height: 520,
+                  child: Center(child: Text('Inspector')),
+                ),
+              ),
+            ),
+            icon: const Icon(Icons.tune_outlined),
+          ),
+        ],
+      ),
       body: Row(
         children: [
           NavigationRail(
-            key: const Key('medium-navigation-rail'),
+            key: const Key('tablet-navigation-rail'),
             selectedIndex: 0,
             destinations: const [
               NavigationRailDestination(
@@ -96,8 +143,25 @@ class _MediumShell extends StatelessWidget {
   }
 }
 
-class _ExpandedShell extends StatelessWidget {
-  const _ExpandedShell();
+class _DesktopShell extends StatefulWidget {
+  const _DesktopShell({required this.showInspector});
+
+  final bool showInspector;
+
+  @override
+  State<_DesktopShell> createState() => _DesktopShellState();
+}
+
+class _DesktopShellState extends State<_DesktopShell> {
+  late bool _inspectorVisible = widget.showInspector;
+
+  @override
+  void didUpdateWidget(covariant _DesktopShell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.showInspector != widget.showInspector) {
+      _inspectorVisible = widget.showInspector;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,25 +173,39 @@ class _ExpandedShell extends StatelessWidget {
             height: 56,
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: const Text('Void Scriptor'),
-          ),
-          const Divider(height: 1),
-          const Expanded(
             child: Row(
               children: [
-                SizedBox(
-                  key: Key('desktop-explorer'),
+                const Expanded(child: Text('Void Scriptor')),
+                if (!widget.showInspector)
+                  IconButton(
+                    key: const Key('desktop-toggle-inspector'),
+                    tooltip: 'Toggle Inspector',
+                    onPressed: () =>
+                        setState(() => _inspectorVisible = !_inspectorVisible),
+                    icon: const Icon(Icons.tune_outlined),
+                  ),
+              ],
+            ),
+          ),
+          const Divider(height: 1),
+          Expanded(
+            child: Row(
+              children: [
+                const SizedBox(
+                  key: Key('desktop-sidebar'),
                   width: 240,
                   child: Center(child: Text('Explorer')),
                 ),
-                VerticalDivider(width: 1),
-                Expanded(child: _Workspace()),
-                VerticalDivider(width: 1),
-                SizedBox(
-                  key: Key('desktop-inspector'),
-                  width: 280,
-                  child: Center(child: Text('Inspector')),
-                ),
+                const VerticalDivider(width: 1),
+                const Expanded(child: _Workspace()),
+                if (_inspectorVisible) ...[
+                  const VerticalDivider(width: 1),
+                  const SizedBox(
+                    key: Key('desktop-inspector'),
+                    width: 280,
+                    child: Center(child: Text('Inspector')),
+                  ),
+                ],
               ],
             ),
           ),

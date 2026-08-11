@@ -1,4 +1,4 @@
-package com.example.void_scriptor
+package com.voidscriptor.void_scriptor
 
 import io.flutter.embedding.android.FlutterActivity
 

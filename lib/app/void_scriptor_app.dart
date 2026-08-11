@@ -36,7 +36,9 @@ class _VoidScriptorAppState extends State<VoidScriptorApp> {
     return MaterialApp.router(
       title: 'Void Scriptor',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(useMaterial3: true),
+      themeMode: ThemeMode.dark,
+      theme: ThemeData.light(useMaterial3: true),
+      darkTheme: ThemeData.dark(useMaterial3: true),
       routerConfig: _router,
     );
   }

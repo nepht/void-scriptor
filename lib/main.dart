@@ -1,7 +1,10 @@
-import 'package:flutter/widgets.dart';
-import 'package:void_scriptor/app/bootstrap/app_bootstrap.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'app/void_app.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const AppBootstrap());
+
+  runApp(const ProviderScope(child: VoidScriptorApp()));
 }

@@ -1,17 +1,65 @@
-# void_scriptor
+# Void Scriptor
 
-A new Flutter project.
+Void Scriptor adalah creative studio multiplatform untuk membangun karakter, dunia, dan cerita dari satu shared core Flutter.
 
-## Getting Started
+## Target platform
 
-This project is a starting point for a Flutter application.
+| Platform | Experience |
+|---|---|
+| Windows | Full Studio |
+| macOS | Full Studio |
+| Linux | Full Studio |
+| Android | Adaptive Studio |
+| iOS/iPadOS | Adaptive Studio (fondasi tersedia) |
+| Web | Adaptive Studio dengan capability terbatas |
 
-A few resources to get you started if this is your first Flutter project:
+## Fondasi Sprint 01
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+Alur aplikasi saat ini:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```text
+main
+→ AppBootstrap (ProviderScope)
+→ VoidScriptorApp
+→ GoRouter
+→ AdaptiveAppShell
+```
+
+Breakpoints awal:
+
+- `< 600 px`: compact/mobile — app bar + bottom navigation.
+- `600–1199 px`: medium/tablet — navigation rail.
+- `≥ 1200 px`: expanded/desktop — top bar + explorer + workspace + inspector + status bar.
+
+Capability platform dimodelkan terpisah dari layout sehingga shared core tidak bergantung pada `dart:io` dan tetap dapat dikompilasi untuk Web.
+
+## Workspace canonical
+
+Pengembangan dilakukan dari filesystem ext4 WSL:
+
+```text
+~/Projects/void_scriptor_multiplatform
+```
+
+Drive Windows/D: hanya untuk backup dan artefak, bukan working copy aktif.
+
+## Quality gate
+
+```bash
+export PATH="$HOME/toolchain/flutter/bin:$PATH"
+flutter pub get
+dart format --output=none --set-exit-if-changed lib test
+flutter analyze
+flutter test
+flutter build linux --debug
+flutter build web --release
+flutter build apk --debug
+```
+
+Build Windows dijalankan melalui GitHub Actions `windows-latest` atau toolchain Flutter Windows.
+
+## Repository
+
+Private canonical remote: <https://github.com/nepht/void-scriptor>
+
+Legacy repositories bersifat read-only/archive dan bukan sumber implementasi baru.

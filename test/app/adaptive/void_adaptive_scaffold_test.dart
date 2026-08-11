@@ -49,7 +49,9 @@ void main() {
       expect(find.text('Inspector'), findsNothing);
     });
 
-    testWidgets('renders compact desktop layout for width 900 to 1199', (tester) async {
+    testWidgets('renders compact desktop layout for width 900 to 1199', (
+      tester,
+    ) async {
       tester.view.physicalSize = Size(VoidBreakpoints.compactDesktop - 1, 800);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);
@@ -71,7 +73,9 @@ void main() {
       expect(find.text('Inspector'), findsNothing);
     });
 
-    testWidgets('renders desktop layout for width 1200 to 1919', (tester) async {
+    testWidgets('renders desktop layout for width 1200 to 1919', (
+      tester,
+    ) async {
       tester.view.physicalSize = Size(VoidBreakpoints.largeDesktop - 1, 800);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);
@@ -94,7 +98,9 @@ void main() {
       expect(find.text('BottomNav'), findsNothing);
     });
 
-    testWidgets('renders large desktop layout for width >= 1920', (tester) async {
+    testWidgets('renders large desktop layout for width >= 1920', (
+      tester,
+    ) async {
       tester.view.physicalSize = Size(VoidBreakpoints.largeDesktop + 100, 800);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);

@@ -10,6 +10,8 @@ import '../../character/presentation/character_controller.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 import '../../wardrobe/data/wardrobe_repository_impl.dart';
 import '../../wardrobe/domain/wardrobe_model.dart';
+import '../../weapon/data/weapon_repository_impl.dart';
+import '../../weapon/domain/weapon_model.dart';
 
 final wardrobeExplorerProvider =
     FutureProvider.family<List<WardrobeModel>, String>((ref, projectId) async {
@@ -20,6 +22,17 @@ final wardrobeExplorerProvider =
         projectId: projectId,
       ).getWardrobes();
     });
+
+final weaponExplorerProvider = FutureProvider.family<List<WeaponModel>, String>(
+  (ref, projectId) async {
+    final session = ref.watch(projectSessionProvider).valueOrNull;
+    if (session == null || session.manifest.id != projectId) return const [];
+    return WeaponRepositoryImpl(
+      database: session.database,
+      projectId: projectId,
+    ).getWeapons();
+  },
+);
 
 class ExplorerPanel extends ConsumerWidget {
   const ExplorerPanel({super.key});
@@ -37,6 +50,9 @@ class ExplorerPanel extends ConsumerWidget {
     final wardrobes = projectId == null
         ? const AsyncValue<List<WardrobeModel>>.data([])
         : ref.watch(wardrobeExplorerProvider(projectId));
+    final weapons = projectId == null
+        ? const AsyncValue<List<WeaponModel>>.data([])
+        : ref.watch(weaponExplorerProvider(projectId));
 
     return Container(
       width: 245,
@@ -97,9 +113,18 @@ class ExplorerPanel extends ConsumerWidget {
                         ),
                       ),
                 ),
-                const _ExplorerItem(
-                  icon: Icons.auto_fix_high_outlined,
-                  label: 'Weapons',
+                _WeaponGroup(
+                  weapons: weapons,
+                  selectedId: ref.watch(selectionProvider)?.assetId,
+                  onSelected: (weapon) => ref
+                      .read(selectionProvider.notifier)
+                      .select(
+                        SelectionModel(
+                          assetId: weapon.assetId,
+                          assetType: AssetType.weapon,
+                          projectId: weapon.projectId,
+                        ),
+                      ),
                 ),
                 const _ExplorerItem(
                   icon: Icons.landscape_outlined,
@@ -188,6 +213,60 @@ class _CharacterGroup extends StatelessWidget {
                     minTileHeight: 30,
                     title: Text(
                       item.displayName,
+                      style: const TextStyle(
+                        color: VoidColors.textMuted,
+                        fontSize: 11,
+                      ),
+                    ),
+                    selected: selectedId == item.assetId,
+                    selectedTileColor: VoidColors.primary.withValues(
+                      alpha: 0.12,
+                    ),
+                    onTap: () => onSelected(item),
+                  ),
+                )
+                .toList(),
+    ),
+  );
+}
+
+class _WeaponGroup extends StatelessWidget {
+  const _WeaponGroup({
+    required this.weapons,
+    required this.selectedId,
+    required this.onSelected,
+  });
+
+  final AsyncValue<List<WeaponModel>> weapons;
+  final String? selectedId;
+  final ValueChanged<WeaponModel> onSelected;
+
+  @override
+  Widget build(BuildContext context) => ExpansionTile(
+    initiallyExpanded: true,
+    tilePadding: const EdgeInsets.symmetric(horizontal: 9),
+    childrenPadding: const EdgeInsets.only(left: 28),
+    leading: const Icon(
+      Icons.auto_fix_high_outlined,
+      size: 16,
+      color: VoidColors.textMuted,
+    ),
+    title: const Text(
+      'Weapons',
+      style: TextStyle(color: VoidColors.textSecondary, fontSize: 12),
+    ),
+    children: weapons.when(
+      loading: () => [const ListTile(dense: true, title: Text('Loading...'))],
+      error: (error, _) => [ListTile(dense: true, title: Text('$error'))],
+      data: (items) => items.isEmpty
+          ? [const ListTile(dense: true, title: Text('No weapons yet'))]
+          : items
+                .map(
+                  (item) => ListTile(
+                    dense: true,
+                    minTileHeight: 30,
+                    title: Text(
+                      item.name,
                       style: const TextStyle(
                         color: VoidColors.textMuted,
                         fontSize: 11,

@@ -1,124 +1,53 @@
 # Void Scriptor
 
-Void Scriptor adalah creative studio multiplatform untuk membangun karakter, dunia, dan cerita dari satu shared core Flutter.
+Void Scriptor is a Flutter creative-universe database studio.
 
-## Target platform
+## Project-level asset families
 
-| Platform | Experience |
-|---|---|
-| Windows | Full Studio |
-| macOS | Full Studio |
-| Linux | Full Studio |
-| Android | Adaptive Studio |
-| iOS/iPadOS | Adaptive Studio (fondasi tersedia) |
-| Web | Adaptive Studio dengan capability terbatas |
+Each project owns an independent SQLite database and filesystem workspace. The current asset vertical slices are:
 
-## Fondasi Sprint 01
+- Character: identity, references, tags, and relations.
+- Wardrobe: garment metadata, components, colors, variants, references, and `wears` relations.
+- Weapon: technical specifications, components, measurements, materials/colors, energy/core profiles, variants, references, preservation locks, and `uses` relations.
 
-Alur aplikasi saat ini:
+Asset selection is routed through the generic Selection Engine. Selected assets resolve to their dedicated workspace and Inspector:
 
 ```text
-main
-→ AppBootstrap (ProviderScope)
-→ VoidScriptorApp
-→ GoRouter
-→ AdaptiveAppShell
+AssetType.character -> Character Workspace / Character Inspector
+AssetType.wardrobe  -> Wardrobe Workspace / Wardrobe Inspector
+AssetType.weapon    -> Weapon Workspace / Weapon Inspector
 ```
 
-Breakpoints resmi:
+## Weapon vertical slice
 
-- `< 600 px`: phone — navigation bawah, workspace satu panel, inspector sebagai bottom sheet.
-- `600–1023 px`: tablet — navigation rail, workspace, inspector overlay.
-- `1024–1439 px`: compact desktop — sidebar + workspace, inspector collapsible.
-- `≥ 1440 px`: desktop — sidebar + workspace + inspector permanen.
+Weapon data lives in the active project's `project.db` with schema version 5. A Weapon creation transaction creates:
 
-Capability platform dimodelkan terpisah dari layout sehingga shared core tidak bergantung pada `dart:io` dan tetap dapat dikompilasi untuk Web.
+1. the universal `Assets` row;
+2. the technical `Weapons` row;
+3. a default `Normal` variant;
+4. a default preservation profile;
+5. the UUID-based `assets/weapons/<id>/` directory tree.
 
-Dependency foundation menggunakan Riverpod, GoRouter, UUID, SharedPreferences, PathProvider, Drift, dan SQLite native. Isi project disimpan pada database SQLite mandiri per project; cloud sync, authentication backend, pembayaran, dan AI tetap menjadi modul lanjutan.
-
-## Foundation routes
+Weapon relations use the existing project-level relation core. The primary scenario is:
 
 ```text
-SPLASH → ONBOARDING / AUTHENTICATION → DASHBOARD
-                                      ├── PROJECTS → WORKSPACE
-                                      ├── AI STUDIO
-                                      └── DONATION
+Qowner --uses--> Void Dual Dagger
 ```
 
-Sprint 01 mendaftarkan dan menguji seluruh route foundation. Keputusan first launch, guest/offline mode, session recovery, dan authentication redirect diimplementasikan bersama session engine pada sprint Authentication.
+The Weapon Workspace is responsive: wide layouts show technical view/specification side by side, while narrow layouts stack the detail cards vertically.
 
-## Workspace canonical
+## Development verification
 
-Pengembangan dilakukan dari filesystem ext4 WSL:
-
-```text
-~/Projects/void_scriptor_multiplatform
-```
-
-Drive Windows/D: hanya untuk backup dan artefak, bukan working copy aktif.
-
-## Quality gate
+Canonical commands run from the WSL source tree:
 
 ```bash
-export PATH="$HOME/toolchain/flutter/bin:$PATH"
-flutter pub get
-dart format --output=none --set-exit-if-changed lib test
+dart format --set-exit-if-changed lib test
+dart run build_runner build
 flutter analyze
 flutter test
 flutter build linux --debug
 flutter build web --release
-flutter build apk --debug
+git diff --check
 ```
 
-Build Windows dijalankan melalui GitHub Actions `windows-latest` atau toolchain Flutter Windows.
-
-## Project persistence
-
-Setiap project adalah paket mandiri berbasis UUID:
-
-```text
-Projects/<project-uuid>/
-├── project.json
-├── project.db
-└── assets/
-    └── characters/<character-uuid>/
-        ├── references/
-        ├── generated/
-        ├── thumbnails/
-        └── exports/
-```
-
-`projects.json` hanya menyimpan registry application-level untuk daftar project dan recent projects. Isi creative universe tidak disimpan di database global.
-
-Project database saat ini memakai Drift schema version 2 dengan tabel Asset Core dan Character:
-
-```text
-assets
-asset_tags
-characters
-character_identity_profiles
-character_references
-asset_relations
-```
-
-Pembuatan Character bersifat transactional: Asset, Character, dan Identity Profile dibuat bersama. Character repository juga mendukung identity lock, reference metadata, tags, asset relations, persistence setelah database reopen, serta pembersihan folder UUID ketika Character dihapus.
-
-## Sprint status
-
-```text
-01 Multiplatform Foundation    ✅
-02 Design System               ✅
-03 Adaptive App Shell          ✅
-04 Authentication              ✅
-05 Dashboard                   ✅
-06 Project System              ✅
-07 Persistence Engine          ✅
-08 Asset + Character Core      ✅
-09 Character Workspace UI      planned
-```
-
-## Repository
-
-Private canonical remote: <https://github.com/nepht/void-scriptor>
-
-Legacy repositories bersifat read-only/archive dan bukan sumber implementasi baru.
+The project uses per-project SQLite databases. Do not replace project contents with a global database.

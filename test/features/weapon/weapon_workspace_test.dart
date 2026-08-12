@@ -1,0 +1,66 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:void_scriptor/core/selection/selection_controller.dart';
+import 'package:void_scriptor/core/selection/selection_model.dart';
+import 'package:void_scriptor/features/assets/domain/asset_type.dart';
+import 'package:void_scriptor/features/weapon/presentation/weapon_workspace_screen.dart';
+import 'package:void_scriptor/features/workspace/presentation/workspace_resolver.dart';
+
+void main() {
+  testWidgets('weapon workspace renders technical detail sheet on desktop', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          selectionProvider.overrideWith(() => _WeaponSelectionController()),
+        ],
+        child: const MaterialApp(home: WorkspaceResolver()),
+      ),
+    );
+    final container = tester
+        .element(find.byType(WorkspaceResolver))
+        .dependOnInheritedWidgetOfExactType<UncontrolledProviderScope>()!
+        .container;
+    container
+        .read(selectionProvider.notifier)
+        .select(
+          const SelectionModel(
+            assetId: 'Void Dual Dagger',
+            assetType: AssetType.weapon,
+          ),
+        );
+    await tester.pump();
+
+    expect(find.byType(WeaponWorkspaceScreen), findsOneWidget);
+    expect(find.text('Technical View'), findsOneWidget);
+    expect(find.text('Energy / Core'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('weapon workspace remains vertical on narrow width', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(390, 844));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(
+          home: WeaponWorkspaceScreen(weaponId: 'Void Dual Dagger'),
+        ),
+      ),
+    );
+    expect(find.text('Specification'), findsOneWidget);
+    expect(find.text('Dimensions'), findsOneWidget);
+    expect(find.text('References'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+}
+
+class _WeaponSelectionController extends SelectionController {
+  @override
+  SelectionModel? build() => null;
+}

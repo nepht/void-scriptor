@@ -5198,6 +5198,3694 @@ class WardrobeReferencesCompanion extends UpdateCompanion<WardrobeReference> {
   }
 }
 
+class $WeaponsTable extends Weapons with TableInfo<$WeaponsTable, Weapon> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WeaponsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weaponTypeMeta = const VerificationMeta(
+    'weaponType',
+  );
+  @override
+  late final GeneratedColumn<String> weaponType = GeneratedColumn<String>(
+    'weapon_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _primaryMaterialMeta = const VerificationMeta(
+    'primaryMaterial',
+  );
+  @override
+  late final GeneratedColumn<String> primaryMaterial = GeneratedColumn<String>(
+    'primary_material',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _secondaryMaterialMeta = const VerificationMeta(
+    'secondaryMaterial',
+  );
+  @override
+  late final GeneratedColumn<String> secondaryMaterial =
+      GeneratedColumn<String>(
+        'secondary_material',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _energyTypeMeta = const VerificationMeta(
+    'energyType',
+  );
+  @override
+  late final GeneratedColumn<String> energyType = GeneratedColumn<String>(
+    'energy_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _coreTypeMeta = const VerificationMeta(
+    'coreType',
+  );
+  @override
+  late final GeneratedColumn<String> coreType = GeneratedColumn<String>(
+    'core_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _lengthMmMeta = const VerificationMeta(
+    'lengthMm',
+  );
+  @override
+  late final GeneratedColumn<double> lengthMm = GeneratedColumn<double>(
+    'length_mm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _weightKgMeta = const VerificationMeta(
+    'weightKg',
+  );
+  @override
+  late final GeneratedColumn<double> weightKg = GeneratedColumn<double>(
+    'weight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    assetId,
+    projectId,
+    name,
+    weaponType,
+    description,
+    primaryMaterial,
+    secondaryMaterial,
+    energyType,
+    coreType,
+    lengthMm,
+    weightKg,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'weapons';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Weapon> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('weapon_type')) {
+      context.handle(
+        _weaponTypeMeta,
+        weaponType.isAcceptableOrUnknown(data['weapon_type']!, _weaponTypeMeta),
+      );
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('primary_material')) {
+      context.handle(
+        _primaryMaterialMeta,
+        primaryMaterial.isAcceptableOrUnknown(
+          data['primary_material']!,
+          _primaryMaterialMeta,
+        ),
+      );
+    }
+    if (data.containsKey('secondary_material')) {
+      context.handle(
+        _secondaryMaterialMeta,
+        secondaryMaterial.isAcceptableOrUnknown(
+          data['secondary_material']!,
+          _secondaryMaterialMeta,
+        ),
+      );
+    }
+    if (data.containsKey('energy_type')) {
+      context.handle(
+        _energyTypeMeta,
+        energyType.isAcceptableOrUnknown(data['energy_type']!, _energyTypeMeta),
+      );
+    }
+    if (data.containsKey('core_type')) {
+      context.handle(
+        _coreTypeMeta,
+        coreType.isAcceptableOrUnknown(data['core_type']!, _coreTypeMeta),
+      );
+    }
+    if (data.containsKey('length_mm')) {
+      context.handle(
+        _lengthMmMeta,
+        lengthMm.isAcceptableOrUnknown(data['length_mm']!, _lengthMmMeta),
+      );
+    }
+    if (data.containsKey('weight_kg')) {
+      context.handle(
+        _weightKgMeta,
+        weightKg.isAcceptableOrUnknown(data['weight_kg']!, _weightKgMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {assetId};
+  @override
+  Weapon map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Weapon(
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      weaponType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weapon_type'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      primaryMaterial: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}primary_material'],
+      )!,
+      secondaryMaterial: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}secondary_material'],
+      )!,
+      energyType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}energy_type'],
+      )!,
+      coreType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}core_type'],
+      )!,
+      lengthMm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}length_mm'],
+      ),
+      weightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}weight_kg'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+    );
+  }
+
+  @override
+  $WeaponsTable createAlias(String alias) {
+    return $WeaponsTable(attachedDatabase, alias);
+  }
+}
+
+class Weapon extends DataClass implements Insertable<Weapon> {
+  final String assetId;
+  final String projectId;
+  final String name;
+  final String weaponType;
+  final String description;
+  final String primaryMaterial;
+  final String secondaryMaterial;
+  final String energyType;
+  final String coreType;
+  final double? lengthMm;
+  final double? weightKg;
+  final String notes;
+  const Weapon({
+    required this.assetId,
+    required this.projectId,
+    required this.name,
+    required this.weaponType,
+    required this.description,
+    required this.primaryMaterial,
+    required this.secondaryMaterial,
+    required this.energyType,
+    required this.coreType,
+    this.lengthMm,
+    this.weightKg,
+    required this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['asset_id'] = Variable<String>(assetId);
+    map['project_id'] = Variable<String>(projectId);
+    map['name'] = Variable<String>(name);
+    map['weapon_type'] = Variable<String>(weaponType);
+    map['description'] = Variable<String>(description);
+    map['primary_material'] = Variable<String>(primaryMaterial);
+    map['secondary_material'] = Variable<String>(secondaryMaterial);
+    map['energy_type'] = Variable<String>(energyType);
+    map['core_type'] = Variable<String>(coreType);
+    if (!nullToAbsent || lengthMm != null) {
+      map['length_mm'] = Variable<double>(lengthMm);
+    }
+    if (!nullToAbsent || weightKg != null) {
+      map['weight_kg'] = Variable<double>(weightKg);
+    }
+    map['notes'] = Variable<String>(notes);
+    return map;
+  }
+
+  WeaponsCompanion toCompanion(bool nullToAbsent) {
+    return WeaponsCompanion(
+      assetId: Value(assetId),
+      projectId: Value(projectId),
+      name: Value(name),
+      weaponType: Value(weaponType),
+      description: Value(description),
+      primaryMaterial: Value(primaryMaterial),
+      secondaryMaterial: Value(secondaryMaterial),
+      energyType: Value(energyType),
+      coreType: Value(coreType),
+      lengthMm: lengthMm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lengthMm),
+      weightKg: weightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weightKg),
+      notes: Value(notes),
+    );
+  }
+
+  factory Weapon.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Weapon(
+      assetId: serializer.fromJson<String>(json['assetId']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      name: serializer.fromJson<String>(json['name']),
+      weaponType: serializer.fromJson<String>(json['weaponType']),
+      description: serializer.fromJson<String>(json['description']),
+      primaryMaterial: serializer.fromJson<String>(json['primaryMaterial']),
+      secondaryMaterial: serializer.fromJson<String>(json['secondaryMaterial']),
+      energyType: serializer.fromJson<String>(json['energyType']),
+      coreType: serializer.fromJson<String>(json['coreType']),
+      lengthMm: serializer.fromJson<double?>(json['lengthMm']),
+      weightKg: serializer.fromJson<double?>(json['weightKg']),
+      notes: serializer.fromJson<String>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'assetId': serializer.toJson<String>(assetId),
+      'projectId': serializer.toJson<String>(projectId),
+      'name': serializer.toJson<String>(name),
+      'weaponType': serializer.toJson<String>(weaponType),
+      'description': serializer.toJson<String>(description),
+      'primaryMaterial': serializer.toJson<String>(primaryMaterial),
+      'secondaryMaterial': serializer.toJson<String>(secondaryMaterial),
+      'energyType': serializer.toJson<String>(energyType),
+      'coreType': serializer.toJson<String>(coreType),
+      'lengthMm': serializer.toJson<double?>(lengthMm),
+      'weightKg': serializer.toJson<double?>(weightKg),
+      'notes': serializer.toJson<String>(notes),
+    };
+  }
+
+  Weapon copyWith({
+    String? assetId,
+    String? projectId,
+    String? name,
+    String? weaponType,
+    String? description,
+    String? primaryMaterial,
+    String? secondaryMaterial,
+    String? energyType,
+    String? coreType,
+    Value<double?> lengthMm = const Value.absent(),
+    Value<double?> weightKg = const Value.absent(),
+    String? notes,
+  }) => Weapon(
+    assetId: assetId ?? this.assetId,
+    projectId: projectId ?? this.projectId,
+    name: name ?? this.name,
+    weaponType: weaponType ?? this.weaponType,
+    description: description ?? this.description,
+    primaryMaterial: primaryMaterial ?? this.primaryMaterial,
+    secondaryMaterial: secondaryMaterial ?? this.secondaryMaterial,
+    energyType: energyType ?? this.energyType,
+    coreType: coreType ?? this.coreType,
+    lengthMm: lengthMm.present ? lengthMm.value : this.lengthMm,
+    weightKg: weightKg.present ? weightKg.value : this.weightKg,
+    notes: notes ?? this.notes,
+  );
+  Weapon copyWithCompanion(WeaponsCompanion data) {
+    return Weapon(
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      name: data.name.present ? data.name.value : this.name,
+      weaponType: data.weaponType.present
+          ? data.weaponType.value
+          : this.weaponType,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      primaryMaterial: data.primaryMaterial.present
+          ? data.primaryMaterial.value
+          : this.primaryMaterial,
+      secondaryMaterial: data.secondaryMaterial.present
+          ? data.secondaryMaterial.value
+          : this.secondaryMaterial,
+      energyType: data.energyType.present
+          ? data.energyType.value
+          : this.energyType,
+      coreType: data.coreType.present ? data.coreType.value : this.coreType,
+      lengthMm: data.lengthMm.present ? data.lengthMm.value : this.lengthMm,
+      weightKg: data.weightKg.present ? data.weightKg.value : this.weightKg,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Weapon(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('weaponType: $weaponType, ')
+          ..write('description: $description, ')
+          ..write('primaryMaterial: $primaryMaterial, ')
+          ..write('secondaryMaterial: $secondaryMaterial, ')
+          ..write('energyType: $energyType, ')
+          ..write('coreType: $coreType, ')
+          ..write('lengthMm: $lengthMm, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    assetId,
+    projectId,
+    name,
+    weaponType,
+    description,
+    primaryMaterial,
+    secondaryMaterial,
+    energyType,
+    coreType,
+    lengthMm,
+    weightKg,
+    notes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Weapon &&
+          other.assetId == this.assetId &&
+          other.projectId == this.projectId &&
+          other.name == this.name &&
+          other.weaponType == this.weaponType &&
+          other.description == this.description &&
+          other.primaryMaterial == this.primaryMaterial &&
+          other.secondaryMaterial == this.secondaryMaterial &&
+          other.energyType == this.energyType &&
+          other.coreType == this.coreType &&
+          other.lengthMm == this.lengthMm &&
+          other.weightKg == this.weightKg &&
+          other.notes == this.notes);
+}
+
+class WeaponsCompanion extends UpdateCompanion<Weapon> {
+  final Value<String> assetId;
+  final Value<String> projectId;
+  final Value<String> name;
+  final Value<String> weaponType;
+  final Value<String> description;
+  final Value<String> primaryMaterial;
+  final Value<String> secondaryMaterial;
+  final Value<String> energyType;
+  final Value<String> coreType;
+  final Value<double?> lengthMm;
+  final Value<double?> weightKg;
+  final Value<String> notes;
+  final Value<int> rowid;
+  const WeaponsCompanion({
+    this.assetId = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.weaponType = const Value.absent(),
+    this.description = const Value.absent(),
+    this.primaryMaterial = const Value.absent(),
+    this.secondaryMaterial = const Value.absent(),
+    this.energyType = const Value.absent(),
+    this.coreType = const Value.absent(),
+    this.lengthMm = const Value.absent(),
+    this.weightKg = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WeaponsCompanion.insert({
+    required String assetId,
+    required String projectId,
+    required String name,
+    this.weaponType = const Value.absent(),
+    this.description = const Value.absent(),
+    this.primaryMaterial = const Value.absent(),
+    this.secondaryMaterial = const Value.absent(),
+    this.energyType = const Value.absent(),
+    this.coreType = const Value.absent(),
+    this.lengthMm = const Value.absent(),
+    this.weightKg = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : assetId = Value(assetId),
+       projectId = Value(projectId),
+       name = Value(name);
+  static Insertable<Weapon> custom({
+    Expression<String>? assetId,
+    Expression<String>? projectId,
+    Expression<String>? name,
+    Expression<String>? weaponType,
+    Expression<String>? description,
+    Expression<String>? primaryMaterial,
+    Expression<String>? secondaryMaterial,
+    Expression<String>? energyType,
+    Expression<String>? coreType,
+    Expression<double>? lengthMm,
+    Expression<double>? weightKg,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (assetId != null) 'asset_id': assetId,
+      if (projectId != null) 'project_id': projectId,
+      if (name != null) 'name': name,
+      if (weaponType != null) 'weapon_type': weaponType,
+      if (description != null) 'description': description,
+      if (primaryMaterial != null) 'primary_material': primaryMaterial,
+      if (secondaryMaterial != null) 'secondary_material': secondaryMaterial,
+      if (energyType != null) 'energy_type': energyType,
+      if (coreType != null) 'core_type': coreType,
+      if (lengthMm != null) 'length_mm': lengthMm,
+      if (weightKg != null) 'weight_kg': weightKg,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WeaponsCompanion copyWith({
+    Value<String>? assetId,
+    Value<String>? projectId,
+    Value<String>? name,
+    Value<String>? weaponType,
+    Value<String>? description,
+    Value<String>? primaryMaterial,
+    Value<String>? secondaryMaterial,
+    Value<String>? energyType,
+    Value<String>? coreType,
+    Value<double?>? lengthMm,
+    Value<double?>? weightKg,
+    Value<String>? notes,
+    Value<int>? rowid,
+  }) {
+    return WeaponsCompanion(
+      assetId: assetId ?? this.assetId,
+      projectId: projectId ?? this.projectId,
+      name: name ?? this.name,
+      weaponType: weaponType ?? this.weaponType,
+      description: description ?? this.description,
+      primaryMaterial: primaryMaterial ?? this.primaryMaterial,
+      secondaryMaterial: secondaryMaterial ?? this.secondaryMaterial,
+      energyType: energyType ?? this.energyType,
+      coreType: coreType ?? this.coreType,
+      lengthMm: lengthMm ?? this.lengthMm,
+      weightKg: weightKg ?? this.weightKg,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (weaponType.present) {
+      map['weapon_type'] = Variable<String>(weaponType.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (primaryMaterial.present) {
+      map['primary_material'] = Variable<String>(primaryMaterial.value);
+    }
+    if (secondaryMaterial.present) {
+      map['secondary_material'] = Variable<String>(secondaryMaterial.value);
+    }
+    if (energyType.present) {
+      map['energy_type'] = Variable<String>(energyType.value);
+    }
+    if (coreType.present) {
+      map['core_type'] = Variable<String>(coreType.value);
+    }
+    if (lengthMm.present) {
+      map['length_mm'] = Variable<double>(lengthMm.value);
+    }
+    if (weightKg.present) {
+      map['weight_kg'] = Variable<double>(weightKg.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponsCompanion(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('weaponType: $weaponType, ')
+          ..write('description: $description, ')
+          ..write('primaryMaterial: $primaryMaterial, ')
+          ..write('secondaryMaterial: $secondaryMaterial, ')
+          ..write('energyType: $energyType, ')
+          ..write('coreType: $coreType, ')
+          ..write('lengthMm: $lengthMm, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WeaponComponentsTable extends WeaponComponents
+    with TableInfo<$WeaponComponentsTable, WeaponComponent> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WeaponComponentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weaponIdMeta = const VerificationMeta(
+    'weaponId',
+  );
+  @override
+  late final GeneratedColumn<String> weaponId = GeneratedColumn<String>(
+    'weapon_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _componentTypeMeta = const VerificationMeta(
+    'componentType',
+  );
+  @override
+  late final GeneratedColumn<String> componentType = GeneratedColumn<String>(
+    'component_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _materialMeta = const VerificationMeta(
+    'material',
+  );
+  @override
+  late final GeneratedColumn<String> material = GeneratedColumn<String>(
+    'material',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    weaponId,
+    name,
+    componentType,
+    material,
+    description,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'weapon_components';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WeaponComponent> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('weapon_id')) {
+      context.handle(
+        _weaponIdMeta,
+        weaponId.isAcceptableOrUnknown(data['weapon_id']!, _weaponIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_weaponIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('component_type')) {
+      context.handle(
+        _componentTypeMeta,
+        componentType.isAcceptableOrUnknown(
+          data['component_type']!,
+          _componentTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_componentTypeMeta);
+    }
+    if (data.containsKey('material')) {
+      context.handle(
+        _materialMeta,
+        material.isAcceptableOrUnknown(data['material']!, _materialMeta),
+      );
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  WeaponComponent map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WeaponComponent(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      weaponId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weapon_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      componentType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}component_type'],
+      )!,
+      material: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}material'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $WeaponComponentsTable createAlias(String alias) {
+    return $WeaponComponentsTable(attachedDatabase, alias);
+  }
+}
+
+class WeaponComponent extends DataClass implements Insertable<WeaponComponent> {
+  final String id;
+  final String weaponId;
+  final String name;
+  final String componentType;
+  final String material;
+  final String description;
+  final int sortOrder;
+  const WeaponComponent({
+    required this.id,
+    required this.weaponId,
+    required this.name,
+    required this.componentType,
+    required this.material,
+    required this.description,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['weapon_id'] = Variable<String>(weaponId);
+    map['name'] = Variable<String>(name);
+    map['component_type'] = Variable<String>(componentType);
+    map['material'] = Variable<String>(material);
+    map['description'] = Variable<String>(description);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  WeaponComponentsCompanion toCompanion(bool nullToAbsent) {
+    return WeaponComponentsCompanion(
+      id: Value(id),
+      weaponId: Value(weaponId),
+      name: Value(name),
+      componentType: Value(componentType),
+      material: Value(material),
+      description: Value(description),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory WeaponComponent.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WeaponComponent(
+      id: serializer.fromJson<String>(json['id']),
+      weaponId: serializer.fromJson<String>(json['weaponId']),
+      name: serializer.fromJson<String>(json['name']),
+      componentType: serializer.fromJson<String>(json['componentType']),
+      material: serializer.fromJson<String>(json['material']),
+      description: serializer.fromJson<String>(json['description']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'weaponId': serializer.toJson<String>(weaponId),
+      'name': serializer.toJson<String>(name),
+      'componentType': serializer.toJson<String>(componentType),
+      'material': serializer.toJson<String>(material),
+      'description': serializer.toJson<String>(description),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  WeaponComponent copyWith({
+    String? id,
+    String? weaponId,
+    String? name,
+    String? componentType,
+    String? material,
+    String? description,
+    int? sortOrder,
+  }) => WeaponComponent(
+    id: id ?? this.id,
+    weaponId: weaponId ?? this.weaponId,
+    name: name ?? this.name,
+    componentType: componentType ?? this.componentType,
+    material: material ?? this.material,
+    description: description ?? this.description,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  WeaponComponent copyWithCompanion(WeaponComponentsCompanion data) {
+    return WeaponComponent(
+      id: data.id.present ? data.id.value : this.id,
+      weaponId: data.weaponId.present ? data.weaponId.value : this.weaponId,
+      name: data.name.present ? data.name.value : this.name,
+      componentType: data.componentType.present
+          ? data.componentType.value
+          : this.componentType,
+      material: data.material.present ? data.material.value : this.material,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponComponent(')
+          ..write('id: $id, ')
+          ..write('weaponId: $weaponId, ')
+          ..write('name: $name, ')
+          ..write('componentType: $componentType, ')
+          ..write('material: $material, ')
+          ..write('description: $description, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    weaponId,
+    name,
+    componentType,
+    material,
+    description,
+    sortOrder,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WeaponComponent &&
+          other.id == this.id &&
+          other.weaponId == this.weaponId &&
+          other.name == this.name &&
+          other.componentType == this.componentType &&
+          other.material == this.material &&
+          other.description == this.description &&
+          other.sortOrder == this.sortOrder);
+}
+
+class WeaponComponentsCompanion extends UpdateCompanion<WeaponComponent> {
+  final Value<String> id;
+  final Value<String> weaponId;
+  final Value<String> name;
+  final Value<String> componentType;
+  final Value<String> material;
+  final Value<String> description;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const WeaponComponentsCompanion({
+    this.id = const Value.absent(),
+    this.weaponId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.componentType = const Value.absent(),
+    this.material = const Value.absent(),
+    this.description = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WeaponComponentsCompanion.insert({
+    required String id,
+    required String weaponId,
+    required String name,
+    required String componentType,
+    this.material = const Value.absent(),
+    this.description = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       weaponId = Value(weaponId),
+       name = Value(name),
+       componentType = Value(componentType);
+  static Insertable<WeaponComponent> custom({
+    Expression<String>? id,
+    Expression<String>? weaponId,
+    Expression<String>? name,
+    Expression<String>? componentType,
+    Expression<String>? material,
+    Expression<String>? description,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (weaponId != null) 'weapon_id': weaponId,
+      if (name != null) 'name': name,
+      if (componentType != null) 'component_type': componentType,
+      if (material != null) 'material': material,
+      if (description != null) 'description': description,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WeaponComponentsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? weaponId,
+    Value<String>? name,
+    Value<String>? componentType,
+    Value<String>? material,
+    Value<String>? description,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return WeaponComponentsCompanion(
+      id: id ?? this.id,
+      weaponId: weaponId ?? this.weaponId,
+      name: name ?? this.name,
+      componentType: componentType ?? this.componentType,
+      material: material ?? this.material,
+      description: description ?? this.description,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (weaponId.present) {
+      map['weapon_id'] = Variable<String>(weaponId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (componentType.present) {
+      map['component_type'] = Variable<String>(componentType.value);
+    }
+    if (material.present) {
+      map['material'] = Variable<String>(material.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponComponentsCompanion(')
+          ..write('id: $id, ')
+          ..write('weaponId: $weaponId, ')
+          ..write('name: $name, ')
+          ..write('componentType: $componentType, ')
+          ..write('material: $material, ')
+          ..write('description: $description, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WeaponMeasurementsTable extends WeaponMeasurements
+    with TableInfo<$WeaponMeasurementsTable, WeaponMeasurement> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WeaponMeasurementsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weaponIdMeta = const VerificationMeta(
+    'weaponId',
+  );
+  @override
+  late final GeneratedColumn<String> weaponId = GeneratedColumn<String>(
+    'weapon_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unitMeta = const VerificationMeta('unit');
+  @override
+  late final GeneratedColumn<String> unit = GeneratedColumn<String>(
+    'unit',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    weaponId,
+    label,
+    value,
+    unit,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'weapon_measurements';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WeaponMeasurement> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('weapon_id')) {
+      context.handle(
+        _weaponIdMeta,
+        weaponId.isAcceptableOrUnknown(data['weapon_id']!, _weaponIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_weaponIdMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    if (data.containsKey('unit')) {
+      context.handle(
+        _unitMeta,
+        unit.isAcceptableOrUnknown(data['unit']!, _unitMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_unitMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  WeaponMeasurement map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WeaponMeasurement(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      weaponId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weapon_id'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}value'],
+      )!,
+      unit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}unit'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $WeaponMeasurementsTable createAlias(String alias) {
+    return $WeaponMeasurementsTable(attachedDatabase, alias);
+  }
+}
+
+class WeaponMeasurement extends DataClass
+    implements Insertable<WeaponMeasurement> {
+  final String id;
+  final String weaponId;
+  final String label;
+  final double value;
+  final String unit;
+  final int sortOrder;
+  const WeaponMeasurement({
+    required this.id,
+    required this.weaponId,
+    required this.label,
+    required this.value,
+    required this.unit,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['weapon_id'] = Variable<String>(weaponId);
+    map['label'] = Variable<String>(label);
+    map['value'] = Variable<double>(value);
+    map['unit'] = Variable<String>(unit);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  WeaponMeasurementsCompanion toCompanion(bool nullToAbsent) {
+    return WeaponMeasurementsCompanion(
+      id: Value(id),
+      weaponId: Value(weaponId),
+      label: Value(label),
+      value: Value(value),
+      unit: Value(unit),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory WeaponMeasurement.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WeaponMeasurement(
+      id: serializer.fromJson<String>(json['id']),
+      weaponId: serializer.fromJson<String>(json['weaponId']),
+      label: serializer.fromJson<String>(json['label']),
+      value: serializer.fromJson<double>(json['value']),
+      unit: serializer.fromJson<String>(json['unit']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'weaponId': serializer.toJson<String>(weaponId),
+      'label': serializer.toJson<String>(label),
+      'value': serializer.toJson<double>(value),
+      'unit': serializer.toJson<String>(unit),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  WeaponMeasurement copyWith({
+    String? id,
+    String? weaponId,
+    String? label,
+    double? value,
+    String? unit,
+    int? sortOrder,
+  }) => WeaponMeasurement(
+    id: id ?? this.id,
+    weaponId: weaponId ?? this.weaponId,
+    label: label ?? this.label,
+    value: value ?? this.value,
+    unit: unit ?? this.unit,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  WeaponMeasurement copyWithCompanion(WeaponMeasurementsCompanion data) {
+    return WeaponMeasurement(
+      id: data.id.present ? data.id.value : this.id,
+      weaponId: data.weaponId.present ? data.weaponId.value : this.weaponId,
+      label: data.label.present ? data.label.value : this.label,
+      value: data.value.present ? data.value.value : this.value,
+      unit: data.unit.present ? data.unit.value : this.unit,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponMeasurement(')
+          ..write('id: $id, ')
+          ..write('weaponId: $weaponId, ')
+          ..write('label: $label, ')
+          ..write('value: $value, ')
+          ..write('unit: $unit, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, weaponId, label, value, unit, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WeaponMeasurement &&
+          other.id == this.id &&
+          other.weaponId == this.weaponId &&
+          other.label == this.label &&
+          other.value == this.value &&
+          other.unit == this.unit &&
+          other.sortOrder == this.sortOrder);
+}
+
+class WeaponMeasurementsCompanion extends UpdateCompanion<WeaponMeasurement> {
+  final Value<String> id;
+  final Value<String> weaponId;
+  final Value<String> label;
+  final Value<double> value;
+  final Value<String> unit;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const WeaponMeasurementsCompanion({
+    this.id = const Value.absent(),
+    this.weaponId = const Value.absent(),
+    this.label = const Value.absent(),
+    this.value = const Value.absent(),
+    this.unit = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WeaponMeasurementsCompanion.insert({
+    required String id,
+    required String weaponId,
+    required String label,
+    required double value,
+    required String unit,
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       weaponId = Value(weaponId),
+       label = Value(label),
+       value = Value(value),
+       unit = Value(unit);
+  static Insertable<WeaponMeasurement> custom({
+    Expression<String>? id,
+    Expression<String>? weaponId,
+    Expression<String>? label,
+    Expression<double>? value,
+    Expression<String>? unit,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (weaponId != null) 'weapon_id': weaponId,
+      if (label != null) 'label': label,
+      if (value != null) 'value': value,
+      if (unit != null) 'unit': unit,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WeaponMeasurementsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? weaponId,
+    Value<String>? label,
+    Value<double>? value,
+    Value<String>? unit,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return WeaponMeasurementsCompanion(
+      id: id ?? this.id,
+      weaponId: weaponId ?? this.weaponId,
+      label: label ?? this.label,
+      value: value ?? this.value,
+      unit: unit ?? this.unit,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (weaponId.present) {
+      map['weapon_id'] = Variable<String>(weaponId.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
+    if (unit.present) {
+      map['unit'] = Variable<String>(unit.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponMeasurementsCompanion(')
+          ..write('id: $id, ')
+          ..write('weaponId: $weaponId, ')
+          ..write('label: $label, ')
+          ..write('value: $value, ')
+          ..write('unit: $unit, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WeaponColorsTable extends WeaponColors
+    with TableInfo<$WeaponColorsTable, WeaponColor> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WeaponColorsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weaponIdMeta = const VerificationMeta(
+    'weaponId',
+  );
+  @override
+  late final GeneratedColumn<String> weaponId = GeneratedColumn<String>(
+    'weapon_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hexValueMeta = const VerificationMeta(
+    'hexValue',
+  );
+  @override
+  late final GeneratedColumn<String> hexValue = GeneratedColumn<String>(
+    'hex_value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _usageMeta = const VerificationMeta('usage');
+  @override
+  late final GeneratedColumn<String> usage = GeneratedColumn<String>(
+    'usage',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    weaponId,
+    name,
+    hexValue,
+    usage,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'weapon_colors';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WeaponColor> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('weapon_id')) {
+      context.handle(
+        _weaponIdMeta,
+        weaponId.isAcceptableOrUnknown(data['weapon_id']!, _weaponIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_weaponIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('hex_value')) {
+      context.handle(
+        _hexValueMeta,
+        hexValue.isAcceptableOrUnknown(data['hex_value']!, _hexValueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hexValueMeta);
+    }
+    if (data.containsKey('usage')) {
+      context.handle(
+        _usageMeta,
+        usage.isAcceptableOrUnknown(data['usage']!, _usageMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  WeaponColor map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WeaponColor(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      weaponId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weapon_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      hexValue: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hex_value'],
+      )!,
+      usage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}usage'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $WeaponColorsTable createAlias(String alias) {
+    return $WeaponColorsTable(attachedDatabase, alias);
+  }
+}
+
+class WeaponColor extends DataClass implements Insertable<WeaponColor> {
+  final String id;
+  final String weaponId;
+  final String name;
+  final String hexValue;
+  final String usage;
+  final int sortOrder;
+  const WeaponColor({
+    required this.id,
+    required this.weaponId,
+    required this.name,
+    required this.hexValue,
+    required this.usage,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['weapon_id'] = Variable<String>(weaponId);
+    map['name'] = Variable<String>(name);
+    map['hex_value'] = Variable<String>(hexValue);
+    map['usage'] = Variable<String>(usage);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  WeaponColorsCompanion toCompanion(bool nullToAbsent) {
+    return WeaponColorsCompanion(
+      id: Value(id),
+      weaponId: Value(weaponId),
+      name: Value(name),
+      hexValue: Value(hexValue),
+      usage: Value(usage),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory WeaponColor.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WeaponColor(
+      id: serializer.fromJson<String>(json['id']),
+      weaponId: serializer.fromJson<String>(json['weaponId']),
+      name: serializer.fromJson<String>(json['name']),
+      hexValue: serializer.fromJson<String>(json['hexValue']),
+      usage: serializer.fromJson<String>(json['usage']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'weaponId': serializer.toJson<String>(weaponId),
+      'name': serializer.toJson<String>(name),
+      'hexValue': serializer.toJson<String>(hexValue),
+      'usage': serializer.toJson<String>(usage),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  WeaponColor copyWith({
+    String? id,
+    String? weaponId,
+    String? name,
+    String? hexValue,
+    String? usage,
+    int? sortOrder,
+  }) => WeaponColor(
+    id: id ?? this.id,
+    weaponId: weaponId ?? this.weaponId,
+    name: name ?? this.name,
+    hexValue: hexValue ?? this.hexValue,
+    usage: usage ?? this.usage,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  WeaponColor copyWithCompanion(WeaponColorsCompanion data) {
+    return WeaponColor(
+      id: data.id.present ? data.id.value : this.id,
+      weaponId: data.weaponId.present ? data.weaponId.value : this.weaponId,
+      name: data.name.present ? data.name.value : this.name,
+      hexValue: data.hexValue.present ? data.hexValue.value : this.hexValue,
+      usage: data.usage.present ? data.usage.value : this.usage,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponColor(')
+          ..write('id: $id, ')
+          ..write('weaponId: $weaponId, ')
+          ..write('name: $name, ')
+          ..write('hexValue: $hexValue, ')
+          ..write('usage: $usage, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, weaponId, name, hexValue, usage, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WeaponColor &&
+          other.id == this.id &&
+          other.weaponId == this.weaponId &&
+          other.name == this.name &&
+          other.hexValue == this.hexValue &&
+          other.usage == this.usage &&
+          other.sortOrder == this.sortOrder);
+}
+
+class WeaponColorsCompanion extends UpdateCompanion<WeaponColor> {
+  final Value<String> id;
+  final Value<String> weaponId;
+  final Value<String> name;
+  final Value<String> hexValue;
+  final Value<String> usage;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const WeaponColorsCompanion({
+    this.id = const Value.absent(),
+    this.weaponId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.hexValue = const Value.absent(),
+    this.usage = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WeaponColorsCompanion.insert({
+    required String id,
+    required String weaponId,
+    required String name,
+    required String hexValue,
+    this.usage = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       weaponId = Value(weaponId),
+       name = Value(name),
+       hexValue = Value(hexValue);
+  static Insertable<WeaponColor> custom({
+    Expression<String>? id,
+    Expression<String>? weaponId,
+    Expression<String>? name,
+    Expression<String>? hexValue,
+    Expression<String>? usage,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (weaponId != null) 'weapon_id': weaponId,
+      if (name != null) 'name': name,
+      if (hexValue != null) 'hex_value': hexValue,
+      if (usage != null) 'usage': usage,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WeaponColorsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? weaponId,
+    Value<String>? name,
+    Value<String>? hexValue,
+    Value<String>? usage,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return WeaponColorsCompanion(
+      id: id ?? this.id,
+      weaponId: weaponId ?? this.weaponId,
+      name: name ?? this.name,
+      hexValue: hexValue ?? this.hexValue,
+      usage: usage ?? this.usage,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (weaponId.present) {
+      map['weapon_id'] = Variable<String>(weaponId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (hexValue.present) {
+      map['hex_value'] = Variable<String>(hexValue.value);
+    }
+    if (usage.present) {
+      map['usage'] = Variable<String>(usage.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponColorsCompanion(')
+          ..write('id: $id, ')
+          ..write('weaponId: $weaponId, ')
+          ..write('name: $name, ')
+          ..write('hexValue: $hexValue, ')
+          ..write('usage: $usage, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WeaponEnergyProfilesTable extends WeaponEnergyProfiles
+    with TableInfo<$WeaponEnergyProfilesTable, WeaponEnergyProfile> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WeaponEnergyProfilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _weaponIdMeta = const VerificationMeta(
+    'weaponId',
+  );
+  @override
+  late final GeneratedColumn<String> weaponId = GeneratedColumn<String>(
+    'weapon_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _energyTypeMeta = const VerificationMeta(
+    'energyType',
+  );
+  @override
+  late final GeneratedColumn<String> energyType = GeneratedColumn<String>(
+    'energy_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _coreTypeMeta = const VerificationMeta(
+    'coreType',
+  );
+  @override
+  late final GeneratedColumn<String> coreType = GeneratedColumn<String>(
+    'core_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _activationMeta = const VerificationMeta(
+    'activation',
+  );
+  @override
+  late final GeneratedColumn<String> activation = GeneratedColumn<String>(
+    'activation',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _emissionColorMeta = const VerificationMeta(
+    'emissionColor',
+  );
+  @override
+  late final GeneratedColumn<String> emissionColor = GeneratedColumn<String>(
+    'emission_color',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _behaviorMeta = const VerificationMeta(
+    'behavior',
+  );
+  @override
+  late final GeneratedColumn<String> behavior = GeneratedColumn<String>(
+    'behavior',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    weaponId,
+    energyType,
+    coreType,
+    activation,
+    emissionColor,
+    behavior,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'weapon_energy_profiles';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WeaponEnergyProfile> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('weapon_id')) {
+      context.handle(
+        _weaponIdMeta,
+        weaponId.isAcceptableOrUnknown(data['weapon_id']!, _weaponIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_weaponIdMeta);
+    }
+    if (data.containsKey('energy_type')) {
+      context.handle(
+        _energyTypeMeta,
+        energyType.isAcceptableOrUnknown(data['energy_type']!, _energyTypeMeta),
+      );
+    }
+    if (data.containsKey('core_type')) {
+      context.handle(
+        _coreTypeMeta,
+        coreType.isAcceptableOrUnknown(data['core_type']!, _coreTypeMeta),
+      );
+    }
+    if (data.containsKey('activation')) {
+      context.handle(
+        _activationMeta,
+        activation.isAcceptableOrUnknown(data['activation']!, _activationMeta),
+      );
+    }
+    if (data.containsKey('emission_color')) {
+      context.handle(
+        _emissionColorMeta,
+        emissionColor.isAcceptableOrUnknown(
+          data['emission_color']!,
+          _emissionColorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('behavior')) {
+      context.handle(
+        _behaviorMeta,
+        behavior.isAcceptableOrUnknown(data['behavior']!, _behaviorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {weaponId};
+  @override
+  WeaponEnergyProfile map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WeaponEnergyProfile(
+      weaponId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weapon_id'],
+      )!,
+      energyType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}energy_type'],
+      )!,
+      coreType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}core_type'],
+      )!,
+      activation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}activation'],
+      )!,
+      emissionColor: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}emission_color'],
+      )!,
+      behavior: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}behavior'],
+      )!,
+    );
+  }
+
+  @override
+  $WeaponEnergyProfilesTable createAlias(String alias) {
+    return $WeaponEnergyProfilesTable(attachedDatabase, alias);
+  }
+}
+
+class WeaponEnergyProfile extends DataClass
+    implements Insertable<WeaponEnergyProfile> {
+  final String weaponId;
+  final String energyType;
+  final String coreType;
+  final String activation;
+  final String emissionColor;
+  final String behavior;
+  const WeaponEnergyProfile({
+    required this.weaponId,
+    required this.energyType,
+    required this.coreType,
+    required this.activation,
+    required this.emissionColor,
+    required this.behavior,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['weapon_id'] = Variable<String>(weaponId);
+    map['energy_type'] = Variable<String>(energyType);
+    map['core_type'] = Variable<String>(coreType);
+    map['activation'] = Variable<String>(activation);
+    map['emission_color'] = Variable<String>(emissionColor);
+    map['behavior'] = Variable<String>(behavior);
+    return map;
+  }
+
+  WeaponEnergyProfilesCompanion toCompanion(bool nullToAbsent) {
+    return WeaponEnergyProfilesCompanion(
+      weaponId: Value(weaponId),
+      energyType: Value(energyType),
+      coreType: Value(coreType),
+      activation: Value(activation),
+      emissionColor: Value(emissionColor),
+      behavior: Value(behavior),
+    );
+  }
+
+  factory WeaponEnergyProfile.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WeaponEnergyProfile(
+      weaponId: serializer.fromJson<String>(json['weaponId']),
+      energyType: serializer.fromJson<String>(json['energyType']),
+      coreType: serializer.fromJson<String>(json['coreType']),
+      activation: serializer.fromJson<String>(json['activation']),
+      emissionColor: serializer.fromJson<String>(json['emissionColor']),
+      behavior: serializer.fromJson<String>(json['behavior']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'weaponId': serializer.toJson<String>(weaponId),
+      'energyType': serializer.toJson<String>(energyType),
+      'coreType': serializer.toJson<String>(coreType),
+      'activation': serializer.toJson<String>(activation),
+      'emissionColor': serializer.toJson<String>(emissionColor),
+      'behavior': serializer.toJson<String>(behavior),
+    };
+  }
+
+  WeaponEnergyProfile copyWith({
+    String? weaponId,
+    String? energyType,
+    String? coreType,
+    String? activation,
+    String? emissionColor,
+    String? behavior,
+  }) => WeaponEnergyProfile(
+    weaponId: weaponId ?? this.weaponId,
+    energyType: energyType ?? this.energyType,
+    coreType: coreType ?? this.coreType,
+    activation: activation ?? this.activation,
+    emissionColor: emissionColor ?? this.emissionColor,
+    behavior: behavior ?? this.behavior,
+  );
+  WeaponEnergyProfile copyWithCompanion(WeaponEnergyProfilesCompanion data) {
+    return WeaponEnergyProfile(
+      weaponId: data.weaponId.present ? data.weaponId.value : this.weaponId,
+      energyType: data.energyType.present
+          ? data.energyType.value
+          : this.energyType,
+      coreType: data.coreType.present ? data.coreType.value : this.coreType,
+      activation: data.activation.present
+          ? data.activation.value
+          : this.activation,
+      emissionColor: data.emissionColor.present
+          ? data.emissionColor.value
+          : this.emissionColor,
+      behavior: data.behavior.present ? data.behavior.value : this.behavior,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponEnergyProfile(')
+          ..write('weaponId: $weaponId, ')
+          ..write('energyType: $energyType, ')
+          ..write('coreType: $coreType, ')
+          ..write('activation: $activation, ')
+          ..write('emissionColor: $emissionColor, ')
+          ..write('behavior: $behavior')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    weaponId,
+    energyType,
+    coreType,
+    activation,
+    emissionColor,
+    behavior,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WeaponEnergyProfile &&
+          other.weaponId == this.weaponId &&
+          other.energyType == this.energyType &&
+          other.coreType == this.coreType &&
+          other.activation == this.activation &&
+          other.emissionColor == this.emissionColor &&
+          other.behavior == this.behavior);
+}
+
+class WeaponEnergyProfilesCompanion
+    extends UpdateCompanion<WeaponEnergyProfile> {
+  final Value<String> weaponId;
+  final Value<String> energyType;
+  final Value<String> coreType;
+  final Value<String> activation;
+  final Value<String> emissionColor;
+  final Value<String> behavior;
+  final Value<int> rowid;
+  const WeaponEnergyProfilesCompanion({
+    this.weaponId = const Value.absent(),
+    this.energyType = const Value.absent(),
+    this.coreType = const Value.absent(),
+    this.activation = const Value.absent(),
+    this.emissionColor = const Value.absent(),
+    this.behavior = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WeaponEnergyProfilesCompanion.insert({
+    required String weaponId,
+    this.energyType = const Value.absent(),
+    this.coreType = const Value.absent(),
+    this.activation = const Value.absent(),
+    this.emissionColor = const Value.absent(),
+    this.behavior = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : weaponId = Value(weaponId);
+  static Insertable<WeaponEnergyProfile> custom({
+    Expression<String>? weaponId,
+    Expression<String>? energyType,
+    Expression<String>? coreType,
+    Expression<String>? activation,
+    Expression<String>? emissionColor,
+    Expression<String>? behavior,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (weaponId != null) 'weapon_id': weaponId,
+      if (energyType != null) 'energy_type': energyType,
+      if (coreType != null) 'core_type': coreType,
+      if (activation != null) 'activation': activation,
+      if (emissionColor != null) 'emission_color': emissionColor,
+      if (behavior != null) 'behavior': behavior,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WeaponEnergyProfilesCompanion copyWith({
+    Value<String>? weaponId,
+    Value<String>? energyType,
+    Value<String>? coreType,
+    Value<String>? activation,
+    Value<String>? emissionColor,
+    Value<String>? behavior,
+    Value<int>? rowid,
+  }) {
+    return WeaponEnergyProfilesCompanion(
+      weaponId: weaponId ?? this.weaponId,
+      energyType: energyType ?? this.energyType,
+      coreType: coreType ?? this.coreType,
+      activation: activation ?? this.activation,
+      emissionColor: emissionColor ?? this.emissionColor,
+      behavior: behavior ?? this.behavior,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (weaponId.present) {
+      map['weapon_id'] = Variable<String>(weaponId.value);
+    }
+    if (energyType.present) {
+      map['energy_type'] = Variable<String>(energyType.value);
+    }
+    if (coreType.present) {
+      map['core_type'] = Variable<String>(coreType.value);
+    }
+    if (activation.present) {
+      map['activation'] = Variable<String>(activation.value);
+    }
+    if (emissionColor.present) {
+      map['emission_color'] = Variable<String>(emissionColor.value);
+    }
+    if (behavior.present) {
+      map['behavior'] = Variable<String>(behavior.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponEnergyProfilesCompanion(')
+          ..write('weaponId: $weaponId, ')
+          ..write('energyType: $energyType, ')
+          ..write('coreType: $coreType, ')
+          ..write('activation: $activation, ')
+          ..write('emissionColor: $emissionColor, ')
+          ..write('behavior: $behavior, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WeaponVariantsTable extends WeaponVariants
+    with TableInfo<$WeaponVariantsTable, WeaponVariant> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WeaponVariantsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weaponIdMeta = const VerificationMeta(
+    'weaponId',
+  );
+  @override
+  late final GeneratedColumn<String> weaponId = GeneratedColumn<String>(
+    'weapon_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _isDefaultMeta = const VerificationMeta(
+    'isDefault',
+  );
+  @override
+  late final GeneratedColumn<bool> isDefault = GeneratedColumn<bool>(
+    'is_default',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_default" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    weaponId,
+    name,
+    description,
+    isDefault,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'weapon_variants';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WeaponVariant> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('weapon_id')) {
+      context.handle(
+        _weaponIdMeta,
+        weaponId.isAcceptableOrUnknown(data['weapon_id']!, _weaponIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_weaponIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_default')) {
+      context.handle(
+        _isDefaultMeta,
+        isDefault.isAcceptableOrUnknown(data['is_default']!, _isDefaultMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  WeaponVariant map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WeaponVariant(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      weaponId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weapon_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      isDefault: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_default'],
+      )!,
+    );
+  }
+
+  @override
+  $WeaponVariantsTable createAlias(String alias) {
+    return $WeaponVariantsTable(attachedDatabase, alias);
+  }
+}
+
+class WeaponVariant extends DataClass implements Insertable<WeaponVariant> {
+  final String id;
+  final String weaponId;
+  final String name;
+  final String description;
+  final bool isDefault;
+  const WeaponVariant({
+    required this.id,
+    required this.weaponId,
+    required this.name,
+    required this.description,
+    required this.isDefault,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['weapon_id'] = Variable<String>(weaponId);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['is_default'] = Variable<bool>(isDefault);
+    return map;
+  }
+
+  WeaponVariantsCompanion toCompanion(bool nullToAbsent) {
+    return WeaponVariantsCompanion(
+      id: Value(id),
+      weaponId: Value(weaponId),
+      name: Value(name),
+      description: Value(description),
+      isDefault: Value(isDefault),
+    );
+  }
+
+  factory WeaponVariant.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WeaponVariant(
+      id: serializer.fromJson<String>(json['id']),
+      weaponId: serializer.fromJson<String>(json['weaponId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      isDefault: serializer.fromJson<bool>(json['isDefault']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'weaponId': serializer.toJson<String>(weaponId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'isDefault': serializer.toJson<bool>(isDefault),
+    };
+  }
+
+  WeaponVariant copyWith({
+    String? id,
+    String? weaponId,
+    String? name,
+    String? description,
+    bool? isDefault,
+  }) => WeaponVariant(
+    id: id ?? this.id,
+    weaponId: weaponId ?? this.weaponId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    isDefault: isDefault ?? this.isDefault,
+  );
+  WeaponVariant copyWithCompanion(WeaponVariantsCompanion data) {
+    return WeaponVariant(
+      id: data.id.present ? data.id.value : this.id,
+      weaponId: data.weaponId.present ? data.weaponId.value : this.weaponId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      isDefault: data.isDefault.present ? data.isDefault.value : this.isDefault,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponVariant(')
+          ..write('id: $id, ')
+          ..write('weaponId: $weaponId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('isDefault: $isDefault')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, weaponId, name, description, isDefault);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WeaponVariant &&
+          other.id == this.id &&
+          other.weaponId == this.weaponId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.isDefault == this.isDefault);
+}
+
+class WeaponVariantsCompanion extends UpdateCompanion<WeaponVariant> {
+  final Value<String> id;
+  final Value<String> weaponId;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<bool> isDefault;
+  final Value<int> rowid;
+  const WeaponVariantsCompanion({
+    this.id = const Value.absent(),
+    this.weaponId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.isDefault = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WeaponVariantsCompanion.insert({
+    required String id,
+    required String weaponId,
+    required String name,
+    this.description = const Value.absent(),
+    this.isDefault = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       weaponId = Value(weaponId),
+       name = Value(name);
+  static Insertable<WeaponVariant> custom({
+    Expression<String>? id,
+    Expression<String>? weaponId,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<bool>? isDefault,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (weaponId != null) 'weapon_id': weaponId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (isDefault != null) 'is_default': isDefault,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WeaponVariantsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? weaponId,
+    Value<String>? name,
+    Value<String>? description,
+    Value<bool>? isDefault,
+    Value<int>? rowid,
+  }) {
+    return WeaponVariantsCompanion(
+      id: id ?? this.id,
+      weaponId: weaponId ?? this.weaponId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      isDefault: isDefault ?? this.isDefault,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (weaponId.present) {
+      map['weapon_id'] = Variable<String>(weaponId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (isDefault.present) {
+      map['is_default'] = Variable<bool>(isDefault.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponVariantsCompanion(')
+          ..write('id: $id, ')
+          ..write('weaponId: $weaponId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('isDefault: $isDefault, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WeaponReferencesTable extends WeaponReferences
+    with TableInfo<$WeaponReferencesTable, WeaponReference> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WeaponReferencesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weaponIdMeta = const VerificationMeta(
+    'weaponId',
+  );
+  @override
+  late final GeneratedColumn<String> weaponId = GeneratedColumn<String>(
+    'weapon_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _referenceTypeMeta = const VerificationMeta(
+    'referenceType',
+  );
+  @override
+  late final GeneratedColumn<String> referenceType = GeneratedColumn<String>(
+    'reference_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _filePathMeta = const VerificationMeta(
+    'filePath',
+  );
+  @override
+  late final GeneratedColumn<String> filePath = GeneratedColumn<String>(
+    'file_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _priorityMeta = const VerificationMeta(
+    'priority',
+  );
+  @override
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+    'priority',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _primaryReferenceMeta = const VerificationMeta(
+    'primaryReference',
+  );
+  @override
+  late final GeneratedColumn<bool> primaryReference = GeneratedColumn<bool>(
+    'primary_reference',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("primary_reference" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    weaponId,
+    referenceType,
+    filePath,
+    priority,
+    primaryReference,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'weapon_references';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WeaponReference> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('weapon_id')) {
+      context.handle(
+        _weaponIdMeta,
+        weaponId.isAcceptableOrUnknown(data['weapon_id']!, _weaponIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_weaponIdMeta);
+    }
+    if (data.containsKey('reference_type')) {
+      context.handle(
+        _referenceTypeMeta,
+        referenceType.isAcceptableOrUnknown(
+          data['reference_type']!,
+          _referenceTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_referenceTypeMeta);
+    }
+    if (data.containsKey('file_path')) {
+      context.handle(
+        _filePathMeta,
+        filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_filePathMeta);
+    }
+    if (data.containsKey('priority')) {
+      context.handle(
+        _priorityMeta,
+        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
+      );
+    }
+    if (data.containsKey('primary_reference')) {
+      context.handle(
+        _primaryReferenceMeta,
+        primaryReference.isAcceptableOrUnknown(
+          data['primary_reference']!,
+          _primaryReferenceMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  WeaponReference map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WeaponReference(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      weaponId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weapon_id'],
+      )!,
+      referenceType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reference_type'],
+      )!,
+      filePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_path'],
+      )!,
+      priority: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}priority'],
+      )!,
+      primaryReference: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}primary_reference'],
+      )!,
+    );
+  }
+
+  @override
+  $WeaponReferencesTable createAlias(String alias) {
+    return $WeaponReferencesTable(attachedDatabase, alias);
+  }
+}
+
+class WeaponReference extends DataClass implements Insertable<WeaponReference> {
+  final String id;
+  final String weaponId;
+  final String referenceType;
+  final String filePath;
+  final int priority;
+  final bool primaryReference;
+  const WeaponReference({
+    required this.id,
+    required this.weaponId,
+    required this.referenceType,
+    required this.filePath,
+    required this.priority,
+    required this.primaryReference,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['weapon_id'] = Variable<String>(weaponId);
+    map['reference_type'] = Variable<String>(referenceType);
+    map['file_path'] = Variable<String>(filePath);
+    map['priority'] = Variable<int>(priority);
+    map['primary_reference'] = Variable<bool>(primaryReference);
+    return map;
+  }
+
+  WeaponReferencesCompanion toCompanion(bool nullToAbsent) {
+    return WeaponReferencesCompanion(
+      id: Value(id),
+      weaponId: Value(weaponId),
+      referenceType: Value(referenceType),
+      filePath: Value(filePath),
+      priority: Value(priority),
+      primaryReference: Value(primaryReference),
+    );
+  }
+
+  factory WeaponReference.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WeaponReference(
+      id: serializer.fromJson<String>(json['id']),
+      weaponId: serializer.fromJson<String>(json['weaponId']),
+      referenceType: serializer.fromJson<String>(json['referenceType']),
+      filePath: serializer.fromJson<String>(json['filePath']),
+      priority: serializer.fromJson<int>(json['priority']),
+      primaryReference: serializer.fromJson<bool>(json['primaryReference']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'weaponId': serializer.toJson<String>(weaponId),
+      'referenceType': serializer.toJson<String>(referenceType),
+      'filePath': serializer.toJson<String>(filePath),
+      'priority': serializer.toJson<int>(priority),
+      'primaryReference': serializer.toJson<bool>(primaryReference),
+    };
+  }
+
+  WeaponReference copyWith({
+    String? id,
+    String? weaponId,
+    String? referenceType,
+    String? filePath,
+    int? priority,
+    bool? primaryReference,
+  }) => WeaponReference(
+    id: id ?? this.id,
+    weaponId: weaponId ?? this.weaponId,
+    referenceType: referenceType ?? this.referenceType,
+    filePath: filePath ?? this.filePath,
+    priority: priority ?? this.priority,
+    primaryReference: primaryReference ?? this.primaryReference,
+  );
+  WeaponReference copyWithCompanion(WeaponReferencesCompanion data) {
+    return WeaponReference(
+      id: data.id.present ? data.id.value : this.id,
+      weaponId: data.weaponId.present ? data.weaponId.value : this.weaponId,
+      referenceType: data.referenceType.present
+          ? data.referenceType.value
+          : this.referenceType,
+      filePath: data.filePath.present ? data.filePath.value : this.filePath,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      primaryReference: data.primaryReference.present
+          ? data.primaryReference.value
+          : this.primaryReference,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponReference(')
+          ..write('id: $id, ')
+          ..write('weaponId: $weaponId, ')
+          ..write('referenceType: $referenceType, ')
+          ..write('filePath: $filePath, ')
+          ..write('priority: $priority, ')
+          ..write('primaryReference: $primaryReference')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    weaponId,
+    referenceType,
+    filePath,
+    priority,
+    primaryReference,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WeaponReference &&
+          other.id == this.id &&
+          other.weaponId == this.weaponId &&
+          other.referenceType == this.referenceType &&
+          other.filePath == this.filePath &&
+          other.priority == this.priority &&
+          other.primaryReference == this.primaryReference);
+}
+
+class WeaponReferencesCompanion extends UpdateCompanion<WeaponReference> {
+  final Value<String> id;
+  final Value<String> weaponId;
+  final Value<String> referenceType;
+  final Value<String> filePath;
+  final Value<int> priority;
+  final Value<bool> primaryReference;
+  final Value<int> rowid;
+  const WeaponReferencesCompanion({
+    this.id = const Value.absent(),
+    this.weaponId = const Value.absent(),
+    this.referenceType = const Value.absent(),
+    this.filePath = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.primaryReference = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WeaponReferencesCompanion.insert({
+    required String id,
+    required String weaponId,
+    required String referenceType,
+    required String filePath,
+    this.priority = const Value.absent(),
+    this.primaryReference = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       weaponId = Value(weaponId),
+       referenceType = Value(referenceType),
+       filePath = Value(filePath);
+  static Insertable<WeaponReference> custom({
+    Expression<String>? id,
+    Expression<String>? weaponId,
+    Expression<String>? referenceType,
+    Expression<String>? filePath,
+    Expression<int>? priority,
+    Expression<bool>? primaryReference,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (weaponId != null) 'weapon_id': weaponId,
+      if (referenceType != null) 'reference_type': referenceType,
+      if (filePath != null) 'file_path': filePath,
+      if (priority != null) 'priority': priority,
+      if (primaryReference != null) 'primary_reference': primaryReference,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WeaponReferencesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? weaponId,
+    Value<String>? referenceType,
+    Value<String>? filePath,
+    Value<int>? priority,
+    Value<bool>? primaryReference,
+    Value<int>? rowid,
+  }) {
+    return WeaponReferencesCompanion(
+      id: id ?? this.id,
+      weaponId: weaponId ?? this.weaponId,
+      referenceType: referenceType ?? this.referenceType,
+      filePath: filePath ?? this.filePath,
+      priority: priority ?? this.priority,
+      primaryReference: primaryReference ?? this.primaryReference,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (weaponId.present) {
+      map['weapon_id'] = Variable<String>(weaponId.value);
+    }
+    if (referenceType.present) {
+      map['reference_type'] = Variable<String>(referenceType.value);
+    }
+    if (filePath.present) {
+      map['file_path'] = Variable<String>(filePath.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<int>(priority.value);
+    }
+    if (primaryReference.present) {
+      map['primary_reference'] = Variable<bool>(primaryReference.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponReferencesCompanion(')
+          ..write('id: $id, ')
+          ..write('weaponId: $weaponId, ')
+          ..write('referenceType: $referenceType, ')
+          ..write('filePath: $filePath, ')
+          ..write('priority: $priority, ')
+          ..write('primaryReference: $primaryReference, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WeaponPreservationProfilesTable extends WeaponPreservationProfiles
+    with
+        TableInfo<$WeaponPreservationProfilesTable, WeaponPreservationProfile> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WeaponPreservationProfilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _weaponIdMeta = const VerificationMeta(
+    'weaponId',
+  );
+  @override
+  late final GeneratedColumn<String> weaponId = GeneratedColumn<String>(
+    'weapon_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _geometryLockMeta = const VerificationMeta(
+    'geometryLock',
+  );
+  @override
+  late final GeneratedColumn<bool> geometryLock = GeneratedColumn<bool>(
+    'geometry_lock',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("geometry_lock" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _materialLockMeta = const VerificationMeta(
+    'materialLock',
+  );
+  @override
+  late final GeneratedColumn<bool> materialLock = GeneratedColumn<bool>(
+    'material_lock',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("material_lock" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _colorLockMeta = const VerificationMeta(
+    'colorLock',
+  );
+  @override
+  late final GeneratedColumn<bool> colorLock = GeneratedColumn<bool>(
+    'color_lock',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("color_lock" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _coreLockMeta = const VerificationMeta(
+    'coreLock',
+  );
+  @override
+  late final GeneratedColumn<bool> coreLock = GeneratedColumn<bool>(
+    'core_lock',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("core_lock" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _scaleLockMeta = const VerificationMeta(
+    'scaleLock',
+  );
+  @override
+  late final GeneratedColumn<bool> scaleLock = GeneratedColumn<bool>(
+    'scale_lock',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("scale_lock" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _effectLockMeta = const VerificationMeta(
+    'effectLock',
+  );
+  @override
+  late final GeneratedColumn<bool> effectLock = GeneratedColumn<bool>(
+    'effect_lock',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("effect_lock" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    weaponId,
+    geometryLock,
+    materialLock,
+    colorLock,
+    coreLock,
+    scaleLock,
+    effectLock,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'weapon_preservation_profiles';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WeaponPreservationProfile> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('weapon_id')) {
+      context.handle(
+        _weaponIdMeta,
+        weaponId.isAcceptableOrUnknown(data['weapon_id']!, _weaponIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_weaponIdMeta);
+    }
+    if (data.containsKey('geometry_lock')) {
+      context.handle(
+        _geometryLockMeta,
+        geometryLock.isAcceptableOrUnknown(
+          data['geometry_lock']!,
+          _geometryLockMeta,
+        ),
+      );
+    }
+    if (data.containsKey('material_lock')) {
+      context.handle(
+        _materialLockMeta,
+        materialLock.isAcceptableOrUnknown(
+          data['material_lock']!,
+          _materialLockMeta,
+        ),
+      );
+    }
+    if (data.containsKey('color_lock')) {
+      context.handle(
+        _colorLockMeta,
+        colorLock.isAcceptableOrUnknown(data['color_lock']!, _colorLockMeta),
+      );
+    }
+    if (data.containsKey('core_lock')) {
+      context.handle(
+        _coreLockMeta,
+        coreLock.isAcceptableOrUnknown(data['core_lock']!, _coreLockMeta),
+      );
+    }
+    if (data.containsKey('scale_lock')) {
+      context.handle(
+        _scaleLockMeta,
+        scaleLock.isAcceptableOrUnknown(data['scale_lock']!, _scaleLockMeta),
+      );
+    }
+    if (data.containsKey('effect_lock')) {
+      context.handle(
+        _effectLockMeta,
+        effectLock.isAcceptableOrUnknown(data['effect_lock']!, _effectLockMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {weaponId};
+  @override
+  WeaponPreservationProfile map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WeaponPreservationProfile(
+      weaponId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weapon_id'],
+      )!,
+      geometryLock: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}geometry_lock'],
+      )!,
+      materialLock: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}material_lock'],
+      )!,
+      colorLock: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}color_lock'],
+      )!,
+      coreLock: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}core_lock'],
+      )!,
+      scaleLock: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}scale_lock'],
+      )!,
+      effectLock: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}effect_lock'],
+      )!,
+    );
+  }
+
+  @override
+  $WeaponPreservationProfilesTable createAlias(String alias) {
+    return $WeaponPreservationProfilesTable(attachedDatabase, alias);
+  }
+}
+
+class WeaponPreservationProfile extends DataClass
+    implements Insertable<WeaponPreservationProfile> {
+  final String weaponId;
+  final bool geometryLock;
+  final bool materialLock;
+  final bool colorLock;
+  final bool coreLock;
+  final bool scaleLock;
+  final bool effectLock;
+  const WeaponPreservationProfile({
+    required this.weaponId,
+    required this.geometryLock,
+    required this.materialLock,
+    required this.colorLock,
+    required this.coreLock,
+    required this.scaleLock,
+    required this.effectLock,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['weapon_id'] = Variable<String>(weaponId);
+    map['geometry_lock'] = Variable<bool>(geometryLock);
+    map['material_lock'] = Variable<bool>(materialLock);
+    map['color_lock'] = Variable<bool>(colorLock);
+    map['core_lock'] = Variable<bool>(coreLock);
+    map['scale_lock'] = Variable<bool>(scaleLock);
+    map['effect_lock'] = Variable<bool>(effectLock);
+    return map;
+  }
+
+  WeaponPreservationProfilesCompanion toCompanion(bool nullToAbsent) {
+    return WeaponPreservationProfilesCompanion(
+      weaponId: Value(weaponId),
+      geometryLock: Value(geometryLock),
+      materialLock: Value(materialLock),
+      colorLock: Value(colorLock),
+      coreLock: Value(coreLock),
+      scaleLock: Value(scaleLock),
+      effectLock: Value(effectLock),
+    );
+  }
+
+  factory WeaponPreservationProfile.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WeaponPreservationProfile(
+      weaponId: serializer.fromJson<String>(json['weaponId']),
+      geometryLock: serializer.fromJson<bool>(json['geometryLock']),
+      materialLock: serializer.fromJson<bool>(json['materialLock']),
+      colorLock: serializer.fromJson<bool>(json['colorLock']),
+      coreLock: serializer.fromJson<bool>(json['coreLock']),
+      scaleLock: serializer.fromJson<bool>(json['scaleLock']),
+      effectLock: serializer.fromJson<bool>(json['effectLock']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'weaponId': serializer.toJson<String>(weaponId),
+      'geometryLock': serializer.toJson<bool>(geometryLock),
+      'materialLock': serializer.toJson<bool>(materialLock),
+      'colorLock': serializer.toJson<bool>(colorLock),
+      'coreLock': serializer.toJson<bool>(coreLock),
+      'scaleLock': serializer.toJson<bool>(scaleLock),
+      'effectLock': serializer.toJson<bool>(effectLock),
+    };
+  }
+
+  WeaponPreservationProfile copyWith({
+    String? weaponId,
+    bool? geometryLock,
+    bool? materialLock,
+    bool? colorLock,
+    bool? coreLock,
+    bool? scaleLock,
+    bool? effectLock,
+  }) => WeaponPreservationProfile(
+    weaponId: weaponId ?? this.weaponId,
+    geometryLock: geometryLock ?? this.geometryLock,
+    materialLock: materialLock ?? this.materialLock,
+    colorLock: colorLock ?? this.colorLock,
+    coreLock: coreLock ?? this.coreLock,
+    scaleLock: scaleLock ?? this.scaleLock,
+    effectLock: effectLock ?? this.effectLock,
+  );
+  WeaponPreservationProfile copyWithCompanion(
+    WeaponPreservationProfilesCompanion data,
+  ) {
+    return WeaponPreservationProfile(
+      weaponId: data.weaponId.present ? data.weaponId.value : this.weaponId,
+      geometryLock: data.geometryLock.present
+          ? data.geometryLock.value
+          : this.geometryLock,
+      materialLock: data.materialLock.present
+          ? data.materialLock.value
+          : this.materialLock,
+      colorLock: data.colorLock.present ? data.colorLock.value : this.colorLock,
+      coreLock: data.coreLock.present ? data.coreLock.value : this.coreLock,
+      scaleLock: data.scaleLock.present ? data.scaleLock.value : this.scaleLock,
+      effectLock: data.effectLock.present
+          ? data.effectLock.value
+          : this.effectLock,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponPreservationProfile(')
+          ..write('weaponId: $weaponId, ')
+          ..write('geometryLock: $geometryLock, ')
+          ..write('materialLock: $materialLock, ')
+          ..write('colorLock: $colorLock, ')
+          ..write('coreLock: $coreLock, ')
+          ..write('scaleLock: $scaleLock, ')
+          ..write('effectLock: $effectLock')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    weaponId,
+    geometryLock,
+    materialLock,
+    colorLock,
+    coreLock,
+    scaleLock,
+    effectLock,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WeaponPreservationProfile &&
+          other.weaponId == this.weaponId &&
+          other.geometryLock == this.geometryLock &&
+          other.materialLock == this.materialLock &&
+          other.colorLock == this.colorLock &&
+          other.coreLock == this.coreLock &&
+          other.scaleLock == this.scaleLock &&
+          other.effectLock == this.effectLock);
+}
+
+class WeaponPreservationProfilesCompanion
+    extends UpdateCompanion<WeaponPreservationProfile> {
+  final Value<String> weaponId;
+  final Value<bool> geometryLock;
+  final Value<bool> materialLock;
+  final Value<bool> colorLock;
+  final Value<bool> coreLock;
+  final Value<bool> scaleLock;
+  final Value<bool> effectLock;
+  final Value<int> rowid;
+  const WeaponPreservationProfilesCompanion({
+    this.weaponId = const Value.absent(),
+    this.geometryLock = const Value.absent(),
+    this.materialLock = const Value.absent(),
+    this.colorLock = const Value.absent(),
+    this.coreLock = const Value.absent(),
+    this.scaleLock = const Value.absent(),
+    this.effectLock = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WeaponPreservationProfilesCompanion.insert({
+    required String weaponId,
+    this.geometryLock = const Value.absent(),
+    this.materialLock = const Value.absent(),
+    this.colorLock = const Value.absent(),
+    this.coreLock = const Value.absent(),
+    this.scaleLock = const Value.absent(),
+    this.effectLock = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : weaponId = Value(weaponId);
+  static Insertable<WeaponPreservationProfile> custom({
+    Expression<String>? weaponId,
+    Expression<bool>? geometryLock,
+    Expression<bool>? materialLock,
+    Expression<bool>? colorLock,
+    Expression<bool>? coreLock,
+    Expression<bool>? scaleLock,
+    Expression<bool>? effectLock,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (weaponId != null) 'weapon_id': weaponId,
+      if (geometryLock != null) 'geometry_lock': geometryLock,
+      if (materialLock != null) 'material_lock': materialLock,
+      if (colorLock != null) 'color_lock': colorLock,
+      if (coreLock != null) 'core_lock': coreLock,
+      if (scaleLock != null) 'scale_lock': scaleLock,
+      if (effectLock != null) 'effect_lock': effectLock,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WeaponPreservationProfilesCompanion copyWith({
+    Value<String>? weaponId,
+    Value<bool>? geometryLock,
+    Value<bool>? materialLock,
+    Value<bool>? colorLock,
+    Value<bool>? coreLock,
+    Value<bool>? scaleLock,
+    Value<bool>? effectLock,
+    Value<int>? rowid,
+  }) {
+    return WeaponPreservationProfilesCompanion(
+      weaponId: weaponId ?? this.weaponId,
+      geometryLock: geometryLock ?? this.geometryLock,
+      materialLock: materialLock ?? this.materialLock,
+      colorLock: colorLock ?? this.colorLock,
+      coreLock: coreLock ?? this.coreLock,
+      scaleLock: scaleLock ?? this.scaleLock,
+      effectLock: effectLock ?? this.effectLock,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (weaponId.present) {
+      map['weapon_id'] = Variable<String>(weaponId.value);
+    }
+    if (geometryLock.present) {
+      map['geometry_lock'] = Variable<bool>(geometryLock.value);
+    }
+    if (materialLock.present) {
+      map['material_lock'] = Variable<bool>(materialLock.value);
+    }
+    if (colorLock.present) {
+      map['color_lock'] = Variable<bool>(colorLock.value);
+    }
+    if (coreLock.present) {
+      map['core_lock'] = Variable<bool>(coreLock.value);
+    }
+    if (scaleLock.present) {
+      map['scale_lock'] = Variable<bool>(scaleLock.value);
+    }
+    if (effectLock.present) {
+      map['effect_lock'] = Variable<bool>(effectLock.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeaponPreservationProfilesCompanion(')
+          ..write('weaponId: $weaponId, ')
+          ..write('geometryLock: $geometryLock, ')
+          ..write('materialLock: $materialLock, ')
+          ..write('colorLock: $colorLock, ')
+          ..write('coreLock: $coreLock, ')
+          ..write('scaleLock: $scaleLock, ')
+          ..write('effectLock: $effectLock, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -5221,10 +8909,26 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   );
   late final $WardrobeReferencesTable wardrobeReferences =
       $WardrobeReferencesTable(this);
+  late final $WeaponsTable weapons = $WeaponsTable(this);
+  late final $WeaponComponentsTable weaponComponents = $WeaponComponentsTable(
+    this,
+  );
+  late final $WeaponMeasurementsTable weaponMeasurements =
+      $WeaponMeasurementsTable(this);
+  late final $WeaponColorsTable weaponColors = $WeaponColorsTable(this);
+  late final $WeaponEnergyProfilesTable weaponEnergyProfiles =
+      $WeaponEnergyProfilesTable(this);
+  late final $WeaponVariantsTable weaponVariants = $WeaponVariantsTable(this);
+  late final $WeaponReferencesTable weaponReferences = $WeaponReferencesTable(
+    this,
+  );
+  late final $WeaponPreservationProfilesTable weaponPreservationProfiles =
+      $WeaponPreservationProfilesTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final RelationDao relationDao = RelationDao(this as ProjectDatabase);
   late final WardrobeDao wardrobeDao = WardrobeDao(this as ProjectDatabase);
+  late final WeaponDao weaponDao = WeaponDao(this as ProjectDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5242,6 +8946,14 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     wardrobeColors,
     wardrobeVariants,
     wardrobeReferences,
+    weapons,
+    weaponComponents,
+    weaponMeasurements,
+    weaponColors,
+    weaponEnergyProfiles,
+    weaponVariants,
+    weaponReferences,
+    weaponPreservationProfiles,
   ];
 }
 
@@ -8076,6 +11788,1993 @@ typedef $$WardrobeReferencesTableProcessedTableManager =
       WardrobeReference,
       PrefetchHooks Function()
     >;
+typedef $$WeaponsTableCreateCompanionBuilder =
+    WeaponsCompanion Function({
+      required String assetId,
+      required String projectId,
+      required String name,
+      Value<String> weaponType,
+      Value<String> description,
+      Value<String> primaryMaterial,
+      Value<String> secondaryMaterial,
+      Value<String> energyType,
+      Value<String> coreType,
+      Value<double?> lengthMm,
+      Value<double?> weightKg,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+typedef $$WeaponsTableUpdateCompanionBuilder =
+    WeaponsCompanion Function({
+      Value<String> assetId,
+      Value<String> projectId,
+      Value<String> name,
+      Value<String> weaponType,
+      Value<String> description,
+      Value<String> primaryMaterial,
+      Value<String> secondaryMaterial,
+      Value<String> energyType,
+      Value<String> coreType,
+      Value<double?> lengthMm,
+      Value<double?> weightKg,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+
+class $$WeaponsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $WeaponsTable> {
+  $$WeaponsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weaponType => $composableBuilder(
+    column: $table.weaponType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get primaryMaterial => $composableBuilder(
+    column: $table.primaryMaterial,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get secondaryMaterial => $composableBuilder(
+    column: $table.secondaryMaterial,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get energyType => $composableBuilder(
+    column: $table.energyType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get coreType => $composableBuilder(
+    column: $table.coreType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get lengthMm => $composableBuilder(
+    column: $table.lengthMm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WeaponsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $WeaponsTable> {
+  $$WeaponsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weaponType => $composableBuilder(
+    column: $table.weaponType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get primaryMaterial => $composableBuilder(
+    column: $table.primaryMaterial,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get secondaryMaterial => $composableBuilder(
+    column: $table.secondaryMaterial,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get energyType => $composableBuilder(
+    column: $table.energyType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get coreType => $composableBuilder(
+    column: $table.coreType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get lengthMm => $composableBuilder(
+    column: $table.lengthMm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WeaponsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $WeaponsTable> {
+  $$WeaponsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get weaponType => $composableBuilder(
+    column: $table.weaponType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get primaryMaterial => $composableBuilder(
+    column: $table.primaryMaterial,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get secondaryMaterial => $composableBuilder(
+    column: $table.secondaryMaterial,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get energyType => $composableBuilder(
+    column: $table.energyType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get coreType =>
+      $composableBuilder(column: $table.coreType, builder: (column) => column);
+
+  GeneratedColumn<double> get lengthMm =>
+      $composableBuilder(column: $table.lengthMm, builder: (column) => column);
+
+  GeneratedColumn<double> get weightKg =>
+      $composableBuilder(column: $table.weightKg, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$WeaponsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $WeaponsTable,
+          Weapon,
+          $$WeaponsTableFilterComposer,
+          $$WeaponsTableOrderingComposer,
+          $$WeaponsTableAnnotationComposer,
+          $$WeaponsTableCreateCompanionBuilder,
+          $$WeaponsTableUpdateCompanionBuilder,
+          (Weapon, BaseReferences<_$ProjectDatabase, $WeaponsTable, Weapon>),
+          Weapon,
+          PrefetchHooks Function()
+        > {
+  $$WeaponsTableTableManager(_$ProjectDatabase db, $WeaponsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WeaponsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WeaponsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WeaponsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> assetId = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> weaponType = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> primaryMaterial = const Value.absent(),
+                Value<String> secondaryMaterial = const Value.absent(),
+                Value<String> energyType = const Value.absent(),
+                Value<String> coreType = const Value.absent(),
+                Value<double?> lengthMm = const Value.absent(),
+                Value<double?> weightKg = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponsCompanion(
+                assetId: assetId,
+                projectId: projectId,
+                name: name,
+                weaponType: weaponType,
+                description: description,
+                primaryMaterial: primaryMaterial,
+                secondaryMaterial: secondaryMaterial,
+                energyType: energyType,
+                coreType: coreType,
+                lengthMm: lengthMm,
+                weightKg: weightKg,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String assetId,
+                required String projectId,
+                required String name,
+                Value<String> weaponType = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> primaryMaterial = const Value.absent(),
+                Value<String> secondaryMaterial = const Value.absent(),
+                Value<String> energyType = const Value.absent(),
+                Value<String> coreType = const Value.absent(),
+                Value<double?> lengthMm = const Value.absent(),
+                Value<double?> weightKg = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponsCompanion.insert(
+                assetId: assetId,
+                projectId: projectId,
+                name: name,
+                weaponType: weaponType,
+                description: description,
+                primaryMaterial: primaryMaterial,
+                secondaryMaterial: secondaryMaterial,
+                energyType: energyType,
+                coreType: coreType,
+                lengthMm: lengthMm,
+                weightKg: weightKg,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WeaponsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $WeaponsTable,
+      Weapon,
+      $$WeaponsTableFilterComposer,
+      $$WeaponsTableOrderingComposer,
+      $$WeaponsTableAnnotationComposer,
+      $$WeaponsTableCreateCompanionBuilder,
+      $$WeaponsTableUpdateCompanionBuilder,
+      (Weapon, BaseReferences<_$ProjectDatabase, $WeaponsTable, Weapon>),
+      Weapon,
+      PrefetchHooks Function()
+    >;
+typedef $$WeaponComponentsTableCreateCompanionBuilder =
+    WeaponComponentsCompanion Function({
+      required String id,
+      required String weaponId,
+      required String name,
+      required String componentType,
+      Value<String> material,
+      Value<String> description,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$WeaponComponentsTableUpdateCompanionBuilder =
+    WeaponComponentsCompanion Function({
+      Value<String> id,
+      Value<String> weaponId,
+      Value<String> name,
+      Value<String> componentType,
+      Value<String> material,
+      Value<String> description,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$WeaponComponentsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $WeaponComponentsTable> {
+  $$WeaponComponentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get componentType => $composableBuilder(
+    column: $table.componentType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get material => $composableBuilder(
+    column: $table.material,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WeaponComponentsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $WeaponComponentsTable> {
+  $$WeaponComponentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get componentType => $composableBuilder(
+    column: $table.componentType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get material => $composableBuilder(
+    column: $table.material,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WeaponComponentsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $WeaponComponentsTable> {
+  $$WeaponComponentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get weaponId =>
+      $composableBuilder(column: $table.weaponId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get componentType => $composableBuilder(
+    column: $table.componentType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get material =>
+      $composableBuilder(column: $table.material, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$WeaponComponentsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $WeaponComponentsTable,
+          WeaponComponent,
+          $$WeaponComponentsTableFilterComposer,
+          $$WeaponComponentsTableOrderingComposer,
+          $$WeaponComponentsTableAnnotationComposer,
+          $$WeaponComponentsTableCreateCompanionBuilder,
+          $$WeaponComponentsTableUpdateCompanionBuilder,
+          (
+            WeaponComponent,
+            BaseReferences<
+              _$ProjectDatabase,
+              $WeaponComponentsTable,
+              WeaponComponent
+            >,
+          ),
+          WeaponComponent,
+          PrefetchHooks Function()
+        > {
+  $$WeaponComponentsTableTableManager(
+    _$ProjectDatabase db,
+    $WeaponComponentsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WeaponComponentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WeaponComponentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WeaponComponentsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> weaponId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> componentType = const Value.absent(),
+                Value<String> material = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponComponentsCompanion(
+                id: id,
+                weaponId: weaponId,
+                name: name,
+                componentType: componentType,
+                material: material,
+                description: description,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String weaponId,
+                required String name,
+                required String componentType,
+                Value<String> material = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponComponentsCompanion.insert(
+                id: id,
+                weaponId: weaponId,
+                name: name,
+                componentType: componentType,
+                material: material,
+                description: description,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WeaponComponentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $WeaponComponentsTable,
+      WeaponComponent,
+      $$WeaponComponentsTableFilterComposer,
+      $$WeaponComponentsTableOrderingComposer,
+      $$WeaponComponentsTableAnnotationComposer,
+      $$WeaponComponentsTableCreateCompanionBuilder,
+      $$WeaponComponentsTableUpdateCompanionBuilder,
+      (
+        WeaponComponent,
+        BaseReferences<
+          _$ProjectDatabase,
+          $WeaponComponentsTable,
+          WeaponComponent
+        >,
+      ),
+      WeaponComponent,
+      PrefetchHooks Function()
+    >;
+typedef $$WeaponMeasurementsTableCreateCompanionBuilder =
+    WeaponMeasurementsCompanion Function({
+      required String id,
+      required String weaponId,
+      required String label,
+      required double value,
+      required String unit,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$WeaponMeasurementsTableUpdateCompanionBuilder =
+    WeaponMeasurementsCompanion Function({
+      Value<String> id,
+      Value<String> weaponId,
+      Value<String> label,
+      Value<double> value,
+      Value<String> unit,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$WeaponMeasurementsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $WeaponMeasurementsTable> {
+  $$WeaponMeasurementsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WeaponMeasurementsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $WeaponMeasurementsTable> {
+  $$WeaponMeasurementsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WeaponMeasurementsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $WeaponMeasurementsTable> {
+  $$WeaponMeasurementsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get weaponId =>
+      $composableBuilder(column: $table.weaponId, builder: (column) => column);
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<double> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  GeneratedColumn<String> get unit =>
+      $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$WeaponMeasurementsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $WeaponMeasurementsTable,
+          WeaponMeasurement,
+          $$WeaponMeasurementsTableFilterComposer,
+          $$WeaponMeasurementsTableOrderingComposer,
+          $$WeaponMeasurementsTableAnnotationComposer,
+          $$WeaponMeasurementsTableCreateCompanionBuilder,
+          $$WeaponMeasurementsTableUpdateCompanionBuilder,
+          (
+            WeaponMeasurement,
+            BaseReferences<
+              _$ProjectDatabase,
+              $WeaponMeasurementsTable,
+              WeaponMeasurement
+            >,
+          ),
+          WeaponMeasurement,
+          PrefetchHooks Function()
+        > {
+  $$WeaponMeasurementsTableTableManager(
+    _$ProjectDatabase db,
+    $WeaponMeasurementsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WeaponMeasurementsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WeaponMeasurementsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WeaponMeasurementsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> weaponId = const Value.absent(),
+                Value<String> label = const Value.absent(),
+                Value<double> value = const Value.absent(),
+                Value<String> unit = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponMeasurementsCompanion(
+                id: id,
+                weaponId: weaponId,
+                label: label,
+                value: value,
+                unit: unit,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String weaponId,
+                required String label,
+                required double value,
+                required String unit,
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponMeasurementsCompanion.insert(
+                id: id,
+                weaponId: weaponId,
+                label: label,
+                value: value,
+                unit: unit,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WeaponMeasurementsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $WeaponMeasurementsTable,
+      WeaponMeasurement,
+      $$WeaponMeasurementsTableFilterComposer,
+      $$WeaponMeasurementsTableOrderingComposer,
+      $$WeaponMeasurementsTableAnnotationComposer,
+      $$WeaponMeasurementsTableCreateCompanionBuilder,
+      $$WeaponMeasurementsTableUpdateCompanionBuilder,
+      (
+        WeaponMeasurement,
+        BaseReferences<
+          _$ProjectDatabase,
+          $WeaponMeasurementsTable,
+          WeaponMeasurement
+        >,
+      ),
+      WeaponMeasurement,
+      PrefetchHooks Function()
+    >;
+typedef $$WeaponColorsTableCreateCompanionBuilder =
+    WeaponColorsCompanion Function({
+      required String id,
+      required String weaponId,
+      required String name,
+      required String hexValue,
+      Value<String> usage,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$WeaponColorsTableUpdateCompanionBuilder =
+    WeaponColorsCompanion Function({
+      Value<String> id,
+      Value<String> weaponId,
+      Value<String> name,
+      Value<String> hexValue,
+      Value<String> usage,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$WeaponColorsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $WeaponColorsTable> {
+  $$WeaponColorsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hexValue => $composableBuilder(
+    column: $table.hexValue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get usage => $composableBuilder(
+    column: $table.usage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WeaponColorsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $WeaponColorsTable> {
+  $$WeaponColorsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hexValue => $composableBuilder(
+    column: $table.hexValue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get usage => $composableBuilder(
+    column: $table.usage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WeaponColorsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $WeaponColorsTable> {
+  $$WeaponColorsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get weaponId =>
+      $composableBuilder(column: $table.weaponId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get hexValue =>
+      $composableBuilder(column: $table.hexValue, builder: (column) => column);
+
+  GeneratedColumn<String> get usage =>
+      $composableBuilder(column: $table.usage, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$WeaponColorsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $WeaponColorsTable,
+          WeaponColor,
+          $$WeaponColorsTableFilterComposer,
+          $$WeaponColorsTableOrderingComposer,
+          $$WeaponColorsTableAnnotationComposer,
+          $$WeaponColorsTableCreateCompanionBuilder,
+          $$WeaponColorsTableUpdateCompanionBuilder,
+          (
+            WeaponColor,
+            BaseReferences<_$ProjectDatabase, $WeaponColorsTable, WeaponColor>,
+          ),
+          WeaponColor,
+          PrefetchHooks Function()
+        > {
+  $$WeaponColorsTableTableManager(
+    _$ProjectDatabase db,
+    $WeaponColorsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WeaponColorsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WeaponColorsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WeaponColorsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> weaponId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> hexValue = const Value.absent(),
+                Value<String> usage = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponColorsCompanion(
+                id: id,
+                weaponId: weaponId,
+                name: name,
+                hexValue: hexValue,
+                usage: usage,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String weaponId,
+                required String name,
+                required String hexValue,
+                Value<String> usage = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponColorsCompanion.insert(
+                id: id,
+                weaponId: weaponId,
+                name: name,
+                hexValue: hexValue,
+                usage: usage,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WeaponColorsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $WeaponColorsTable,
+      WeaponColor,
+      $$WeaponColorsTableFilterComposer,
+      $$WeaponColorsTableOrderingComposer,
+      $$WeaponColorsTableAnnotationComposer,
+      $$WeaponColorsTableCreateCompanionBuilder,
+      $$WeaponColorsTableUpdateCompanionBuilder,
+      (
+        WeaponColor,
+        BaseReferences<_$ProjectDatabase, $WeaponColorsTable, WeaponColor>,
+      ),
+      WeaponColor,
+      PrefetchHooks Function()
+    >;
+typedef $$WeaponEnergyProfilesTableCreateCompanionBuilder =
+    WeaponEnergyProfilesCompanion Function({
+      required String weaponId,
+      Value<String> energyType,
+      Value<String> coreType,
+      Value<String> activation,
+      Value<String> emissionColor,
+      Value<String> behavior,
+      Value<int> rowid,
+    });
+typedef $$WeaponEnergyProfilesTableUpdateCompanionBuilder =
+    WeaponEnergyProfilesCompanion Function({
+      Value<String> weaponId,
+      Value<String> energyType,
+      Value<String> coreType,
+      Value<String> activation,
+      Value<String> emissionColor,
+      Value<String> behavior,
+      Value<int> rowid,
+    });
+
+class $$WeaponEnergyProfilesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $WeaponEnergyProfilesTable> {
+  $$WeaponEnergyProfilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get energyType => $composableBuilder(
+    column: $table.energyType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get coreType => $composableBuilder(
+    column: $table.coreType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get activation => $composableBuilder(
+    column: $table.activation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get emissionColor => $composableBuilder(
+    column: $table.emissionColor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get behavior => $composableBuilder(
+    column: $table.behavior,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WeaponEnergyProfilesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $WeaponEnergyProfilesTable> {
+  $$WeaponEnergyProfilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get energyType => $composableBuilder(
+    column: $table.energyType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get coreType => $composableBuilder(
+    column: $table.coreType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get activation => $composableBuilder(
+    column: $table.activation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get emissionColor => $composableBuilder(
+    column: $table.emissionColor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get behavior => $composableBuilder(
+    column: $table.behavior,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WeaponEnergyProfilesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $WeaponEnergyProfilesTable> {
+  $$WeaponEnergyProfilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get weaponId =>
+      $composableBuilder(column: $table.weaponId, builder: (column) => column);
+
+  GeneratedColumn<String> get energyType => $composableBuilder(
+    column: $table.energyType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get coreType =>
+      $composableBuilder(column: $table.coreType, builder: (column) => column);
+
+  GeneratedColumn<String> get activation => $composableBuilder(
+    column: $table.activation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get emissionColor => $composableBuilder(
+    column: $table.emissionColor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get behavior =>
+      $composableBuilder(column: $table.behavior, builder: (column) => column);
+}
+
+class $$WeaponEnergyProfilesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $WeaponEnergyProfilesTable,
+          WeaponEnergyProfile,
+          $$WeaponEnergyProfilesTableFilterComposer,
+          $$WeaponEnergyProfilesTableOrderingComposer,
+          $$WeaponEnergyProfilesTableAnnotationComposer,
+          $$WeaponEnergyProfilesTableCreateCompanionBuilder,
+          $$WeaponEnergyProfilesTableUpdateCompanionBuilder,
+          (
+            WeaponEnergyProfile,
+            BaseReferences<
+              _$ProjectDatabase,
+              $WeaponEnergyProfilesTable,
+              WeaponEnergyProfile
+            >,
+          ),
+          WeaponEnergyProfile,
+          PrefetchHooks Function()
+        > {
+  $$WeaponEnergyProfilesTableTableManager(
+    _$ProjectDatabase db,
+    $WeaponEnergyProfilesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WeaponEnergyProfilesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WeaponEnergyProfilesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$WeaponEnergyProfilesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> weaponId = const Value.absent(),
+                Value<String> energyType = const Value.absent(),
+                Value<String> coreType = const Value.absent(),
+                Value<String> activation = const Value.absent(),
+                Value<String> emissionColor = const Value.absent(),
+                Value<String> behavior = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponEnergyProfilesCompanion(
+                weaponId: weaponId,
+                energyType: energyType,
+                coreType: coreType,
+                activation: activation,
+                emissionColor: emissionColor,
+                behavior: behavior,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String weaponId,
+                Value<String> energyType = const Value.absent(),
+                Value<String> coreType = const Value.absent(),
+                Value<String> activation = const Value.absent(),
+                Value<String> emissionColor = const Value.absent(),
+                Value<String> behavior = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponEnergyProfilesCompanion.insert(
+                weaponId: weaponId,
+                energyType: energyType,
+                coreType: coreType,
+                activation: activation,
+                emissionColor: emissionColor,
+                behavior: behavior,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WeaponEnergyProfilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $WeaponEnergyProfilesTable,
+      WeaponEnergyProfile,
+      $$WeaponEnergyProfilesTableFilterComposer,
+      $$WeaponEnergyProfilesTableOrderingComposer,
+      $$WeaponEnergyProfilesTableAnnotationComposer,
+      $$WeaponEnergyProfilesTableCreateCompanionBuilder,
+      $$WeaponEnergyProfilesTableUpdateCompanionBuilder,
+      (
+        WeaponEnergyProfile,
+        BaseReferences<
+          _$ProjectDatabase,
+          $WeaponEnergyProfilesTable,
+          WeaponEnergyProfile
+        >,
+      ),
+      WeaponEnergyProfile,
+      PrefetchHooks Function()
+    >;
+typedef $$WeaponVariantsTableCreateCompanionBuilder =
+    WeaponVariantsCompanion Function({
+      required String id,
+      required String weaponId,
+      required String name,
+      Value<String> description,
+      Value<bool> isDefault,
+      Value<int> rowid,
+    });
+typedef $$WeaponVariantsTableUpdateCompanionBuilder =
+    WeaponVariantsCompanion Function({
+      Value<String> id,
+      Value<String> weaponId,
+      Value<String> name,
+      Value<String> description,
+      Value<bool> isDefault,
+      Value<int> rowid,
+    });
+
+class $$WeaponVariantsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $WeaponVariantsTable> {
+  $$WeaponVariantsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDefault => $composableBuilder(
+    column: $table.isDefault,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WeaponVariantsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $WeaponVariantsTable> {
+  $$WeaponVariantsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDefault => $composableBuilder(
+    column: $table.isDefault,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WeaponVariantsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $WeaponVariantsTable> {
+  $$WeaponVariantsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get weaponId =>
+      $composableBuilder(column: $table.weaponId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isDefault =>
+      $composableBuilder(column: $table.isDefault, builder: (column) => column);
+}
+
+class $$WeaponVariantsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $WeaponVariantsTable,
+          WeaponVariant,
+          $$WeaponVariantsTableFilterComposer,
+          $$WeaponVariantsTableOrderingComposer,
+          $$WeaponVariantsTableAnnotationComposer,
+          $$WeaponVariantsTableCreateCompanionBuilder,
+          $$WeaponVariantsTableUpdateCompanionBuilder,
+          (
+            WeaponVariant,
+            BaseReferences<
+              _$ProjectDatabase,
+              $WeaponVariantsTable,
+              WeaponVariant
+            >,
+          ),
+          WeaponVariant,
+          PrefetchHooks Function()
+        > {
+  $$WeaponVariantsTableTableManager(
+    _$ProjectDatabase db,
+    $WeaponVariantsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WeaponVariantsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WeaponVariantsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WeaponVariantsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> weaponId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<bool> isDefault = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponVariantsCompanion(
+                id: id,
+                weaponId: weaponId,
+                name: name,
+                description: description,
+                isDefault: isDefault,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String weaponId,
+                required String name,
+                Value<String> description = const Value.absent(),
+                Value<bool> isDefault = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponVariantsCompanion.insert(
+                id: id,
+                weaponId: weaponId,
+                name: name,
+                description: description,
+                isDefault: isDefault,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WeaponVariantsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $WeaponVariantsTable,
+      WeaponVariant,
+      $$WeaponVariantsTableFilterComposer,
+      $$WeaponVariantsTableOrderingComposer,
+      $$WeaponVariantsTableAnnotationComposer,
+      $$WeaponVariantsTableCreateCompanionBuilder,
+      $$WeaponVariantsTableUpdateCompanionBuilder,
+      (
+        WeaponVariant,
+        BaseReferences<_$ProjectDatabase, $WeaponVariantsTable, WeaponVariant>,
+      ),
+      WeaponVariant,
+      PrefetchHooks Function()
+    >;
+typedef $$WeaponReferencesTableCreateCompanionBuilder =
+    WeaponReferencesCompanion Function({
+      required String id,
+      required String weaponId,
+      required String referenceType,
+      required String filePath,
+      Value<int> priority,
+      Value<bool> primaryReference,
+      Value<int> rowid,
+    });
+typedef $$WeaponReferencesTableUpdateCompanionBuilder =
+    WeaponReferencesCompanion Function({
+      Value<String> id,
+      Value<String> weaponId,
+      Value<String> referenceType,
+      Value<String> filePath,
+      Value<int> priority,
+      Value<bool> primaryReference,
+      Value<int> rowid,
+    });
+
+class $$WeaponReferencesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $WeaponReferencesTable> {
+  $$WeaponReferencesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referenceType => $composableBuilder(
+    column: $table.referenceType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get primaryReference => $composableBuilder(
+    column: $table.primaryReference,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WeaponReferencesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $WeaponReferencesTable> {
+  $$WeaponReferencesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referenceType => $composableBuilder(
+    column: $table.referenceType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get primaryReference => $composableBuilder(
+    column: $table.primaryReference,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WeaponReferencesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $WeaponReferencesTable> {
+  $$WeaponReferencesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get weaponId =>
+      $composableBuilder(column: $table.weaponId, builder: (column) => column);
+
+  GeneratedColumn<String> get referenceType => $composableBuilder(
+    column: $table.referenceType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get filePath =>
+      $composableBuilder(column: $table.filePath, builder: (column) => column);
+
+  GeneratedColumn<int> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  GeneratedColumn<bool> get primaryReference => $composableBuilder(
+    column: $table.primaryReference,
+    builder: (column) => column,
+  );
+}
+
+class $$WeaponReferencesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $WeaponReferencesTable,
+          WeaponReference,
+          $$WeaponReferencesTableFilterComposer,
+          $$WeaponReferencesTableOrderingComposer,
+          $$WeaponReferencesTableAnnotationComposer,
+          $$WeaponReferencesTableCreateCompanionBuilder,
+          $$WeaponReferencesTableUpdateCompanionBuilder,
+          (
+            WeaponReference,
+            BaseReferences<
+              _$ProjectDatabase,
+              $WeaponReferencesTable,
+              WeaponReference
+            >,
+          ),
+          WeaponReference,
+          PrefetchHooks Function()
+        > {
+  $$WeaponReferencesTableTableManager(
+    _$ProjectDatabase db,
+    $WeaponReferencesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WeaponReferencesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WeaponReferencesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WeaponReferencesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> weaponId = const Value.absent(),
+                Value<String> referenceType = const Value.absent(),
+                Value<String> filePath = const Value.absent(),
+                Value<int> priority = const Value.absent(),
+                Value<bool> primaryReference = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponReferencesCompanion(
+                id: id,
+                weaponId: weaponId,
+                referenceType: referenceType,
+                filePath: filePath,
+                priority: priority,
+                primaryReference: primaryReference,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String weaponId,
+                required String referenceType,
+                required String filePath,
+                Value<int> priority = const Value.absent(),
+                Value<bool> primaryReference = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponReferencesCompanion.insert(
+                id: id,
+                weaponId: weaponId,
+                referenceType: referenceType,
+                filePath: filePath,
+                priority: priority,
+                primaryReference: primaryReference,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WeaponReferencesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $WeaponReferencesTable,
+      WeaponReference,
+      $$WeaponReferencesTableFilterComposer,
+      $$WeaponReferencesTableOrderingComposer,
+      $$WeaponReferencesTableAnnotationComposer,
+      $$WeaponReferencesTableCreateCompanionBuilder,
+      $$WeaponReferencesTableUpdateCompanionBuilder,
+      (
+        WeaponReference,
+        BaseReferences<
+          _$ProjectDatabase,
+          $WeaponReferencesTable,
+          WeaponReference
+        >,
+      ),
+      WeaponReference,
+      PrefetchHooks Function()
+    >;
+typedef $$WeaponPreservationProfilesTableCreateCompanionBuilder =
+    WeaponPreservationProfilesCompanion Function({
+      required String weaponId,
+      Value<bool> geometryLock,
+      Value<bool> materialLock,
+      Value<bool> colorLock,
+      Value<bool> coreLock,
+      Value<bool> scaleLock,
+      Value<bool> effectLock,
+      Value<int> rowid,
+    });
+typedef $$WeaponPreservationProfilesTableUpdateCompanionBuilder =
+    WeaponPreservationProfilesCompanion Function({
+      Value<String> weaponId,
+      Value<bool> geometryLock,
+      Value<bool> materialLock,
+      Value<bool> colorLock,
+      Value<bool> coreLock,
+      Value<bool> scaleLock,
+      Value<bool> effectLock,
+      Value<int> rowid,
+    });
+
+class $$WeaponPreservationProfilesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $WeaponPreservationProfilesTable> {
+  $$WeaponPreservationProfilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get geometryLock => $composableBuilder(
+    column: $table.geometryLock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get materialLock => $composableBuilder(
+    column: $table.materialLock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get colorLock => $composableBuilder(
+    column: $table.colorLock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get coreLock => $composableBuilder(
+    column: $table.coreLock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get scaleLock => $composableBuilder(
+    column: $table.scaleLock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get effectLock => $composableBuilder(
+    column: $table.effectLock,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WeaponPreservationProfilesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $WeaponPreservationProfilesTable> {
+  $$WeaponPreservationProfilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get geometryLock => $composableBuilder(
+    column: $table.geometryLock,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get materialLock => $composableBuilder(
+    column: $table.materialLock,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get colorLock => $composableBuilder(
+    column: $table.colorLock,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get coreLock => $composableBuilder(
+    column: $table.coreLock,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get scaleLock => $composableBuilder(
+    column: $table.scaleLock,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get effectLock => $composableBuilder(
+    column: $table.effectLock,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WeaponPreservationProfilesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $WeaponPreservationProfilesTable> {
+  $$WeaponPreservationProfilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get weaponId =>
+      $composableBuilder(column: $table.weaponId, builder: (column) => column);
+
+  GeneratedColumn<bool> get geometryLock => $composableBuilder(
+    column: $table.geometryLock,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get materialLock => $composableBuilder(
+    column: $table.materialLock,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get colorLock =>
+      $composableBuilder(column: $table.colorLock, builder: (column) => column);
+
+  GeneratedColumn<bool> get coreLock =>
+      $composableBuilder(column: $table.coreLock, builder: (column) => column);
+
+  GeneratedColumn<bool> get scaleLock =>
+      $composableBuilder(column: $table.scaleLock, builder: (column) => column);
+
+  GeneratedColumn<bool> get effectLock => $composableBuilder(
+    column: $table.effectLock,
+    builder: (column) => column,
+  );
+}
+
+class $$WeaponPreservationProfilesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $WeaponPreservationProfilesTable,
+          WeaponPreservationProfile,
+          $$WeaponPreservationProfilesTableFilterComposer,
+          $$WeaponPreservationProfilesTableOrderingComposer,
+          $$WeaponPreservationProfilesTableAnnotationComposer,
+          $$WeaponPreservationProfilesTableCreateCompanionBuilder,
+          $$WeaponPreservationProfilesTableUpdateCompanionBuilder,
+          (
+            WeaponPreservationProfile,
+            BaseReferences<
+              _$ProjectDatabase,
+              $WeaponPreservationProfilesTable,
+              WeaponPreservationProfile
+            >,
+          ),
+          WeaponPreservationProfile,
+          PrefetchHooks Function()
+        > {
+  $$WeaponPreservationProfilesTableTableManager(
+    _$ProjectDatabase db,
+    $WeaponPreservationProfilesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WeaponPreservationProfilesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$WeaponPreservationProfilesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$WeaponPreservationProfilesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> weaponId = const Value.absent(),
+                Value<bool> geometryLock = const Value.absent(),
+                Value<bool> materialLock = const Value.absent(),
+                Value<bool> colorLock = const Value.absent(),
+                Value<bool> coreLock = const Value.absent(),
+                Value<bool> scaleLock = const Value.absent(),
+                Value<bool> effectLock = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponPreservationProfilesCompanion(
+                weaponId: weaponId,
+                geometryLock: geometryLock,
+                materialLock: materialLock,
+                colorLock: colorLock,
+                coreLock: coreLock,
+                scaleLock: scaleLock,
+                effectLock: effectLock,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String weaponId,
+                Value<bool> geometryLock = const Value.absent(),
+                Value<bool> materialLock = const Value.absent(),
+                Value<bool> colorLock = const Value.absent(),
+                Value<bool> coreLock = const Value.absent(),
+                Value<bool> scaleLock = const Value.absent(),
+                Value<bool> effectLock = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WeaponPreservationProfilesCompanion.insert(
+                weaponId: weaponId,
+                geometryLock: geometryLock,
+                materialLock: materialLock,
+                colorLock: colorLock,
+                coreLock: coreLock,
+                scaleLock: scaleLock,
+                effectLock: effectLock,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WeaponPreservationProfilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $WeaponPreservationProfilesTable,
+      WeaponPreservationProfile,
+      $$WeaponPreservationProfilesTableFilterComposer,
+      $$WeaponPreservationProfilesTableOrderingComposer,
+      $$WeaponPreservationProfilesTableAnnotationComposer,
+      $$WeaponPreservationProfilesTableCreateCompanionBuilder,
+      $$WeaponPreservationProfilesTableUpdateCompanionBuilder,
+      (
+        WeaponPreservationProfile,
+        BaseReferences<
+          _$ProjectDatabase,
+          $WeaponPreservationProfilesTable,
+          WeaponPreservationProfile
+        >,
+      ),
+      WeaponPreservationProfile,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -8107,4 +13806,24 @@ class $ProjectDatabaseManager {
       $$WardrobeVariantsTableTableManager(_db, _db.wardrobeVariants);
   $$WardrobeReferencesTableTableManager get wardrobeReferences =>
       $$WardrobeReferencesTableTableManager(_db, _db.wardrobeReferences);
+  $$WeaponsTableTableManager get weapons =>
+      $$WeaponsTableTableManager(_db, _db.weapons);
+  $$WeaponComponentsTableTableManager get weaponComponents =>
+      $$WeaponComponentsTableTableManager(_db, _db.weaponComponents);
+  $$WeaponMeasurementsTableTableManager get weaponMeasurements =>
+      $$WeaponMeasurementsTableTableManager(_db, _db.weaponMeasurements);
+  $$WeaponColorsTableTableManager get weaponColors =>
+      $$WeaponColorsTableTableManager(_db, _db.weaponColors);
+  $$WeaponEnergyProfilesTableTableManager get weaponEnergyProfiles =>
+      $$WeaponEnergyProfilesTableTableManager(_db, _db.weaponEnergyProfiles);
+  $$WeaponVariantsTableTableManager get weaponVariants =>
+      $$WeaponVariantsTableTableManager(_db, _db.weaponVariants);
+  $$WeaponReferencesTableTableManager get weaponReferences =>
+      $$WeaponReferencesTableTableManager(_db, _db.weaponReferences);
+  $$WeaponPreservationProfilesTableTableManager
+  get weaponPreservationProfiles =>
+      $$WeaponPreservationProfilesTableTableManager(
+        _db,
+        _db.weaponPreservationProfiles,
+      );
 }

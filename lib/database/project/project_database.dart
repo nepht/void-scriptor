@@ -10,10 +10,19 @@ import 'tables/wardrobe_components.dart';
 import 'tables/wardrobe_colors.dart';
 import 'tables/wardrobe_variants.dart';
 import 'tables/wardrobe_references.dart';
+import 'tables/weapons.dart';
+import 'tables/weapon_components.dart';
+import 'tables/weapon_measurements.dart';
+import 'tables/weapon_colors.dart';
+import 'tables/weapon_energy_profiles.dart';
+import 'tables/weapon_variants.dart';
+import 'tables/weapon_references.dart';
+import 'tables/weapon_preservation_profiles.dart';
 import 'daos/asset_dao.dart';
 import 'daos/character_dao.dart';
 import 'daos/relation_dao.dart';
 import 'daos/wardrobe_dao.dart';
+import 'daos/weapon_dao.dart';
 
 part 'project_database.g.dart';
 
@@ -39,14 +48,22 @@ class ProjectMetadata extends Table {
     WardrobeColors,
     WardrobeVariants,
     WardrobeReferences,
+    Weapons,
+    WeaponComponents,
+    WeaponMeasurements,
+    WeaponColors,
+    WeaponEnergyProfiles,
+    WeaponVariants,
+    WeaponReferences,
+    WeaponPreservationProfiles,
   ],
-  daos: [AssetDao, CharacterDao, RelationDao, WardrobeDao],
+  daos: [AssetDao, CharacterDao, RelationDao, WardrobeDao, WeaponDao],
 )
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -72,6 +89,16 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(wardrobeColors);
         await m.createTable(wardrobeVariants);
         await m.createTable(wardrobeReferences);
+      }
+      if (from < 5) {
+        await m.createTable(weapons);
+        await m.createTable(weaponComponents);
+        await m.createTable(weaponMeasurements);
+        await m.createTable(weaponColors);
+        await m.createTable(weaponEnergyProfiles);
+        await m.createTable(weaponVariants);
+        await m.createTable(weaponReferences);
+        await m.createTable(weaponPreservationProfiles);
       }
     },
   );

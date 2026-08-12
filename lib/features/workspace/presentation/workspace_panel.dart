@@ -137,7 +137,7 @@ class _EmptyWorkspace extends StatelessWidget {
           Text('Workspace', style: VoidTypography.headingMedium),
           SizedBox(height: 6),
           Text(
-            'Character Sheet akan dibangun pada sprint berikutnya.',
+            'Belum ada project aktif. Pilih atau buat project untuk membuka Character Workspace.',
             style: VoidTypography.caption,
           ),
         ],

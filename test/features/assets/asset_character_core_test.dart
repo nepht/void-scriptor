@@ -55,7 +55,7 @@ void main() {
     final database = await ProjectDatabaseService().open(databasePath);
     addTearDown(database.close);
 
-    expect(database.schemaVersion, 5);
+    expect(database.schemaVersion, 6);
     expect(await database.select(database.assets).get(), isEmpty);
     expect(await database.select(database.characters).get(), isEmpty);
   });
@@ -88,6 +88,14 @@ void main() {
             .single
             .characterId,
         id,
+      );
+      final modes = await database.characterModeDao.getModes(id);
+      expect(modes, hasLength(1));
+      expect(modes.single.name, 'Base Mode');
+      expect(modes.single.isDefault, isTrue);
+      expect(
+        await database.characterModeDao.getIdentityOverride(modes.single.id),
+        isNotNull,
       );
       expect(
         await Directory(

@@ -4,6 +4,10 @@ import 'tables/asset_relations.dart';
 import 'tables/assets.dart';
 import 'tables/character_identity_profiles.dart';
 import 'tables/character_references.dart';
+import 'tables/character_modes.dart';
+import 'tables/character_loadout_entries.dart';
+import 'tables/character_mode_identity_overrides.dart';
+import 'tables/character_mode_references.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -20,6 +24,7 @@ import 'tables/weapon_references.dart';
 import 'tables/weapon_preservation_profiles.dart';
 import 'daos/asset_dao.dart';
 import 'daos/character_dao.dart';
+import 'daos/character_mode_dao.dart';
 import 'daos/relation_dao.dart';
 import 'daos/wardrobe_dao.dart';
 import 'daos/weapon_dao.dart';
@@ -42,6 +47,10 @@ class ProjectMetadata extends Table {
     Characters,
     CharacterIdentityProfiles,
     CharacterReferences,
+    CharacterModes,
+    CharacterLoadoutEntries,
+    CharacterModeIdentityOverrides,
+    CharacterModeReferences,
     AssetRelations,
     Wardrobes,
     WardrobeComponents,
@@ -57,13 +66,20 @@ class ProjectMetadata extends Table {
     WeaponReferences,
     WeaponPreservationProfiles,
   ],
-  daos: [AssetDao, CharacterDao, RelationDao, WardrobeDao, WeaponDao],
+  daos: [
+    AssetDao,
+    CharacterDao,
+    CharacterModeDao,
+    RelationDao,
+    WardrobeDao,
+    WeaponDao,
+  ],
 )
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -99,6 +115,12 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(weaponVariants);
         await m.createTable(weaponReferences);
         await m.createTable(weaponPreservationProfiles);
+      }
+      if (from < 6) {
+        await m.createTable(characterModes);
+        await m.createTable(characterLoadoutEntries);
+        await m.createTable(characterModeIdentityOverrides);
+        await m.createTable(characterModeReferences);
       }
     },
   );

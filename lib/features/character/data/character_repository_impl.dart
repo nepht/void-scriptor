@@ -78,6 +78,7 @@ class CharacterRepositoryImpl implements CharacterRepository {
   Future<void> deleteCharacter(String id) async {
     await database.transaction(() async {
       await _dao.removeCharacterReferences(id);
+      await database.characterModeDao.removeCharacterModes(id);
       await database.assetDao.removeAssetData(id);
       await (database.delete(
         database.characterIdentityProfiles,

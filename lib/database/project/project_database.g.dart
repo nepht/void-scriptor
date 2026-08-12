@@ -2571,6 +2571,1924 @@ class CharacterReferencesCompanion extends UpdateCompanion<CharacterReference> {
   }
 }
 
+class $CharacterModesTable extends CharacterModes
+    with TableInfo<$CharacterModesTable, CharacterMode> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CharacterModesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _characterIdMeta = const VerificationMeta(
+    'characterId',
+  );
+  @override
+  late final GeneratedColumn<String> characterId = GeneratedColumn<String>(
+    'character_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _isDefaultMeta = const VerificationMeta(
+    'isDefault',
+  );
+  @override
+  late final GeneratedColumn<bool> isDefault = GeneratedColumn<bool>(
+    'is_default',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_default" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _thumbnailPathMeta = const VerificationMeta(
+    'thumbnailPath',
+  );
+  @override
+  late final GeneratedColumn<String> thumbnailPath = GeneratedColumn<String>(
+    'thumbnail_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    characterId,
+    name,
+    description,
+    isDefault,
+    thumbnailPath,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'character_modes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CharacterMode> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('character_id')) {
+      context.handle(
+        _characterIdMeta,
+        characterId.isAcceptableOrUnknown(
+          data['character_id']!,
+          _characterIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_characterIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_default')) {
+      context.handle(
+        _isDefaultMeta,
+        isDefault.isAcceptableOrUnknown(data['is_default']!, _isDefaultMeta),
+      );
+    }
+    if (data.containsKey('thumbnail_path')) {
+      context.handle(
+        _thumbnailPathMeta,
+        thumbnailPath.isAcceptableOrUnknown(
+          data['thumbnail_path']!,
+          _thumbnailPathMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CharacterMode map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CharacterMode(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      characterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}character_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      isDefault: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_default'],
+      )!,
+      thumbnailPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}thumbnail_path'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CharacterModesTable createAlias(String alias) {
+    return $CharacterModesTable(attachedDatabase, alias);
+  }
+}
+
+class CharacterMode extends DataClass implements Insertable<CharacterMode> {
+  final String id;
+  final String projectId;
+  final String characterId;
+  final String name;
+  final String description;
+  final bool isDefault;
+  final String? thumbnailPath;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const CharacterMode({
+    required this.id,
+    required this.projectId,
+    required this.characterId,
+    required this.name,
+    required this.description,
+    required this.isDefault,
+    this.thumbnailPath,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['character_id'] = Variable<String>(characterId);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['is_default'] = Variable<bool>(isDefault);
+    if (!nullToAbsent || thumbnailPath != null) {
+      map['thumbnail_path'] = Variable<String>(thumbnailPath);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  CharacterModesCompanion toCompanion(bool nullToAbsent) {
+    return CharacterModesCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      characterId: Value(characterId),
+      name: Value(name),
+      description: Value(description),
+      isDefault: Value(isDefault),
+      thumbnailPath: thumbnailPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(thumbnailPath),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory CharacterMode.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CharacterMode(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      characterId: serializer.fromJson<String>(json['characterId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      isDefault: serializer.fromJson<bool>(json['isDefault']),
+      thumbnailPath: serializer.fromJson<String?>(json['thumbnailPath']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'characterId': serializer.toJson<String>(characterId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'isDefault': serializer.toJson<bool>(isDefault),
+      'thumbnailPath': serializer.toJson<String?>(thumbnailPath),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  CharacterMode copyWith({
+    String? id,
+    String? projectId,
+    String? characterId,
+    String? name,
+    String? description,
+    bool? isDefault,
+    Value<String?> thumbnailPath = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => CharacterMode(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    characterId: characterId ?? this.characterId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    isDefault: isDefault ?? this.isDefault,
+    thumbnailPath: thumbnailPath.present
+        ? thumbnailPath.value
+        : this.thumbnailPath,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  CharacterMode copyWithCompanion(CharacterModesCompanion data) {
+    return CharacterMode(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      characterId: data.characterId.present
+          ? data.characterId.value
+          : this.characterId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      isDefault: data.isDefault.present ? data.isDefault.value : this.isDefault,
+      thumbnailPath: data.thumbnailPath.present
+          ? data.thumbnailPath.value
+          : this.thumbnailPath,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterMode(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('characterId: $characterId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('isDefault: $isDefault, ')
+          ..write('thumbnailPath: $thumbnailPath, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    characterId,
+    name,
+    description,
+    isDefault,
+    thumbnailPath,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CharacterMode &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.characterId == this.characterId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.isDefault == this.isDefault &&
+          other.thumbnailPath == this.thumbnailPath &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class CharacterModesCompanion extends UpdateCompanion<CharacterMode> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> characterId;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<bool> isDefault;
+  final Value<String?> thumbnailPath;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const CharacterModesCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.characterId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.isDefault = const Value.absent(),
+    this.thumbnailPath = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CharacterModesCompanion.insert({
+    required String id,
+    required String projectId,
+    required String characterId,
+    required String name,
+    this.description = const Value.absent(),
+    this.isDefault = const Value.absent(),
+    this.thumbnailPath = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       characterId = Value(characterId),
+       name = Value(name),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<CharacterMode> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? characterId,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<bool>? isDefault,
+    Expression<String>? thumbnailPath,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (characterId != null) 'character_id': characterId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (isDefault != null) 'is_default': isDefault,
+      if (thumbnailPath != null) 'thumbnail_path': thumbnailPath,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CharacterModesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? characterId,
+    Value<String>? name,
+    Value<String>? description,
+    Value<bool>? isDefault,
+    Value<String?>? thumbnailPath,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return CharacterModesCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      characterId: characterId ?? this.characterId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      isDefault: isDefault ?? this.isDefault,
+      thumbnailPath: thumbnailPath ?? this.thumbnailPath,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (characterId.present) {
+      map['character_id'] = Variable<String>(characterId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (isDefault.present) {
+      map['is_default'] = Variable<bool>(isDefault.value);
+    }
+    if (thumbnailPath.present) {
+      map['thumbnail_path'] = Variable<String>(thumbnailPath.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterModesCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('characterId: $characterId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('isDefault: $isDefault, ')
+          ..write('thumbnailPath: $thumbnailPath, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CharacterLoadoutEntriesTable extends CharacterLoadoutEntries
+    with TableInfo<$CharacterLoadoutEntriesTable, CharacterLoadoutEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CharacterLoadoutEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _modeIdMeta = const VerificationMeta('modeId');
+  @override
+  late final GeneratedColumn<String> modeId = GeneratedColumn<String>(
+    'mode_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _slotMeta = const VerificationMeta('slot');
+  @override
+  late final GeneratedColumn<String> slot = GeneratedColumn<String>(
+    'slot',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _enabledMeta = const VerificationMeta(
+    'enabled',
+  );
+  @override
+  late final GeneratedColumn<bool> enabled = GeneratedColumn<bool>(
+    'enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    modeId,
+    assetId,
+    slot,
+    sortOrder,
+    enabled,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'character_loadout_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CharacterLoadoutEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('mode_id')) {
+      context.handle(
+        _modeIdMeta,
+        modeId.isAcceptableOrUnknown(data['mode_id']!, _modeIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_modeIdMeta);
+    }
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('slot')) {
+      context.handle(
+        _slotMeta,
+        slot.isAcceptableOrUnknown(data['slot']!, _slotMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_slotMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('enabled')) {
+      context.handle(
+        _enabledMeta,
+        enabled.isAcceptableOrUnknown(data['enabled']!, _enabledMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CharacterLoadoutEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CharacterLoadoutEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      modeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mode_id'],
+      )!,
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      slot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}slot'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      enabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}enabled'],
+      )!,
+    );
+  }
+
+  @override
+  $CharacterLoadoutEntriesTable createAlias(String alias) {
+    return $CharacterLoadoutEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class CharacterLoadoutEntry extends DataClass
+    implements Insertable<CharacterLoadoutEntry> {
+  final String id;
+  final String modeId;
+  final String assetId;
+  final String slot;
+  final int sortOrder;
+  final bool enabled;
+  const CharacterLoadoutEntry({
+    required this.id,
+    required this.modeId,
+    required this.assetId,
+    required this.slot,
+    required this.sortOrder,
+    required this.enabled,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['mode_id'] = Variable<String>(modeId);
+    map['asset_id'] = Variable<String>(assetId);
+    map['slot'] = Variable<String>(slot);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['enabled'] = Variable<bool>(enabled);
+    return map;
+  }
+
+  CharacterLoadoutEntriesCompanion toCompanion(bool nullToAbsent) {
+    return CharacterLoadoutEntriesCompanion(
+      id: Value(id),
+      modeId: Value(modeId),
+      assetId: Value(assetId),
+      slot: Value(slot),
+      sortOrder: Value(sortOrder),
+      enabled: Value(enabled),
+    );
+  }
+
+  factory CharacterLoadoutEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CharacterLoadoutEntry(
+      id: serializer.fromJson<String>(json['id']),
+      modeId: serializer.fromJson<String>(json['modeId']),
+      assetId: serializer.fromJson<String>(json['assetId']),
+      slot: serializer.fromJson<String>(json['slot']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      enabled: serializer.fromJson<bool>(json['enabled']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'modeId': serializer.toJson<String>(modeId),
+      'assetId': serializer.toJson<String>(assetId),
+      'slot': serializer.toJson<String>(slot),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'enabled': serializer.toJson<bool>(enabled),
+    };
+  }
+
+  CharacterLoadoutEntry copyWith({
+    String? id,
+    String? modeId,
+    String? assetId,
+    String? slot,
+    int? sortOrder,
+    bool? enabled,
+  }) => CharacterLoadoutEntry(
+    id: id ?? this.id,
+    modeId: modeId ?? this.modeId,
+    assetId: assetId ?? this.assetId,
+    slot: slot ?? this.slot,
+    sortOrder: sortOrder ?? this.sortOrder,
+    enabled: enabled ?? this.enabled,
+  );
+  CharacterLoadoutEntry copyWithCompanion(
+    CharacterLoadoutEntriesCompanion data,
+  ) {
+    return CharacterLoadoutEntry(
+      id: data.id.present ? data.id.value : this.id,
+      modeId: data.modeId.present ? data.modeId.value : this.modeId,
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      slot: data.slot.present ? data.slot.value : this.slot,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      enabled: data.enabled.present ? data.enabled.value : this.enabled,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterLoadoutEntry(')
+          ..write('id: $id, ')
+          ..write('modeId: $modeId, ')
+          ..write('assetId: $assetId, ')
+          ..write('slot: $slot, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('enabled: $enabled')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, modeId, assetId, slot, sortOrder, enabled);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CharacterLoadoutEntry &&
+          other.id == this.id &&
+          other.modeId == this.modeId &&
+          other.assetId == this.assetId &&
+          other.slot == this.slot &&
+          other.sortOrder == this.sortOrder &&
+          other.enabled == this.enabled);
+}
+
+class CharacterLoadoutEntriesCompanion
+    extends UpdateCompanion<CharacterLoadoutEntry> {
+  final Value<String> id;
+  final Value<String> modeId;
+  final Value<String> assetId;
+  final Value<String> slot;
+  final Value<int> sortOrder;
+  final Value<bool> enabled;
+  final Value<int> rowid;
+  const CharacterLoadoutEntriesCompanion({
+    this.id = const Value.absent(),
+    this.modeId = const Value.absent(),
+    this.assetId = const Value.absent(),
+    this.slot = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.enabled = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CharacterLoadoutEntriesCompanion.insert({
+    required String id,
+    required String modeId,
+    required String assetId,
+    required String slot,
+    this.sortOrder = const Value.absent(),
+    this.enabled = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       modeId = Value(modeId),
+       assetId = Value(assetId),
+       slot = Value(slot);
+  static Insertable<CharacterLoadoutEntry> custom({
+    Expression<String>? id,
+    Expression<String>? modeId,
+    Expression<String>? assetId,
+    Expression<String>? slot,
+    Expression<int>? sortOrder,
+    Expression<bool>? enabled,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (modeId != null) 'mode_id': modeId,
+      if (assetId != null) 'asset_id': assetId,
+      if (slot != null) 'slot': slot,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (enabled != null) 'enabled': enabled,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CharacterLoadoutEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? modeId,
+    Value<String>? assetId,
+    Value<String>? slot,
+    Value<int>? sortOrder,
+    Value<bool>? enabled,
+    Value<int>? rowid,
+  }) {
+    return CharacterLoadoutEntriesCompanion(
+      id: id ?? this.id,
+      modeId: modeId ?? this.modeId,
+      assetId: assetId ?? this.assetId,
+      slot: slot ?? this.slot,
+      sortOrder: sortOrder ?? this.sortOrder,
+      enabled: enabled ?? this.enabled,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (modeId.present) {
+      map['mode_id'] = Variable<String>(modeId.value);
+    }
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (slot.present) {
+      map['slot'] = Variable<String>(slot.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (enabled.present) {
+      map['enabled'] = Variable<bool>(enabled.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterLoadoutEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('modeId: $modeId, ')
+          ..write('assetId: $assetId, ')
+          ..write('slot: $slot, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('enabled: $enabled, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CharacterModeIdentityOverridesTable
+    extends CharacterModeIdentityOverrides
+    with
+        TableInfo<
+          $CharacterModeIdentityOverridesTable,
+          CharacterModeIdentityOverride
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CharacterModeIdentityOverridesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _modeIdMeta = const VerificationMeta('modeId');
+  @override
+  late final GeneratedColumn<String> modeId = GeneratedColumn<String>(
+    'mode_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _faceLockMeta = const VerificationMeta(
+    'faceLock',
+  );
+  @override
+  late final GeneratedColumn<bool> faceLock = GeneratedColumn<bool>(
+    'face_lock',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("face_lock" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _hairLockMeta = const VerificationMeta(
+    'hairLock',
+  );
+  @override
+  late final GeneratedColumn<bool> hairLock = GeneratedColumn<bool>(
+    'hair_lock',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("hair_lock" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _bodyLockMeta = const VerificationMeta(
+    'bodyLock',
+  );
+  @override
+  late final GeneratedColumn<bool> bodyLock = GeneratedColumn<bool>(
+    'body_lock',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("body_lock" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _colorLockMeta = const VerificationMeta(
+    'colorLock',
+  );
+  @override
+  late final GeneratedColumn<bool> colorLock = GeneratedColumn<bool>(
+    'color_lock',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("color_lock" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _outfitLockMeta = const VerificationMeta(
+    'outfitLock',
+  );
+  @override
+  late final GeneratedColumn<bool> outfitLock = GeneratedColumn<bool>(
+    'outfit_lock',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("outfit_lock" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _weaponLockMeta = const VerificationMeta(
+    'weaponLock',
+  );
+  @override
+  late final GeneratedColumn<bool> weaponLock = GeneratedColumn<bool>(
+    'weapon_lock',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("weapon_lock" IN (0, 1))',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    modeId,
+    faceLock,
+    hairLock,
+    bodyLock,
+    colorLock,
+    outfitLock,
+    weaponLock,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'character_mode_identity_overrides';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CharacterModeIdentityOverride> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('mode_id')) {
+      context.handle(
+        _modeIdMeta,
+        modeId.isAcceptableOrUnknown(data['mode_id']!, _modeIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_modeIdMeta);
+    }
+    if (data.containsKey('face_lock')) {
+      context.handle(
+        _faceLockMeta,
+        faceLock.isAcceptableOrUnknown(data['face_lock']!, _faceLockMeta),
+      );
+    }
+    if (data.containsKey('hair_lock')) {
+      context.handle(
+        _hairLockMeta,
+        hairLock.isAcceptableOrUnknown(data['hair_lock']!, _hairLockMeta),
+      );
+    }
+    if (data.containsKey('body_lock')) {
+      context.handle(
+        _bodyLockMeta,
+        bodyLock.isAcceptableOrUnknown(data['body_lock']!, _bodyLockMeta),
+      );
+    }
+    if (data.containsKey('color_lock')) {
+      context.handle(
+        _colorLockMeta,
+        colorLock.isAcceptableOrUnknown(data['color_lock']!, _colorLockMeta),
+      );
+    }
+    if (data.containsKey('outfit_lock')) {
+      context.handle(
+        _outfitLockMeta,
+        outfitLock.isAcceptableOrUnknown(data['outfit_lock']!, _outfitLockMeta),
+      );
+    }
+    if (data.containsKey('weapon_lock')) {
+      context.handle(
+        _weaponLockMeta,
+        weaponLock.isAcceptableOrUnknown(data['weapon_lock']!, _weaponLockMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {modeId};
+  @override
+  CharacterModeIdentityOverride map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CharacterModeIdentityOverride(
+      modeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mode_id'],
+      )!,
+      faceLock: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}face_lock'],
+      ),
+      hairLock: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}hair_lock'],
+      ),
+      bodyLock: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}body_lock'],
+      ),
+      colorLock: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}color_lock'],
+      ),
+      outfitLock: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}outfit_lock'],
+      ),
+      weaponLock: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}weapon_lock'],
+      ),
+    );
+  }
+
+  @override
+  $CharacterModeIdentityOverridesTable createAlias(String alias) {
+    return $CharacterModeIdentityOverridesTable(attachedDatabase, alias);
+  }
+}
+
+class CharacterModeIdentityOverride extends DataClass
+    implements Insertable<CharacterModeIdentityOverride> {
+  final String modeId;
+  final bool? faceLock;
+  final bool? hairLock;
+  final bool? bodyLock;
+  final bool? colorLock;
+  final bool? outfitLock;
+  final bool? weaponLock;
+  const CharacterModeIdentityOverride({
+    required this.modeId,
+    this.faceLock,
+    this.hairLock,
+    this.bodyLock,
+    this.colorLock,
+    this.outfitLock,
+    this.weaponLock,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['mode_id'] = Variable<String>(modeId);
+    if (!nullToAbsent || faceLock != null) {
+      map['face_lock'] = Variable<bool>(faceLock);
+    }
+    if (!nullToAbsent || hairLock != null) {
+      map['hair_lock'] = Variable<bool>(hairLock);
+    }
+    if (!nullToAbsent || bodyLock != null) {
+      map['body_lock'] = Variable<bool>(bodyLock);
+    }
+    if (!nullToAbsent || colorLock != null) {
+      map['color_lock'] = Variable<bool>(colorLock);
+    }
+    if (!nullToAbsent || outfitLock != null) {
+      map['outfit_lock'] = Variable<bool>(outfitLock);
+    }
+    if (!nullToAbsent || weaponLock != null) {
+      map['weapon_lock'] = Variable<bool>(weaponLock);
+    }
+    return map;
+  }
+
+  CharacterModeIdentityOverridesCompanion toCompanion(bool nullToAbsent) {
+    return CharacterModeIdentityOverridesCompanion(
+      modeId: Value(modeId),
+      faceLock: faceLock == null && nullToAbsent
+          ? const Value.absent()
+          : Value(faceLock),
+      hairLock: hairLock == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hairLock),
+      bodyLock: bodyLock == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bodyLock),
+      colorLock: colorLock == null && nullToAbsent
+          ? const Value.absent()
+          : Value(colorLock),
+      outfitLock: outfitLock == null && nullToAbsent
+          ? const Value.absent()
+          : Value(outfitLock),
+      weaponLock: weaponLock == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weaponLock),
+    );
+  }
+
+  factory CharacterModeIdentityOverride.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CharacterModeIdentityOverride(
+      modeId: serializer.fromJson<String>(json['modeId']),
+      faceLock: serializer.fromJson<bool?>(json['faceLock']),
+      hairLock: serializer.fromJson<bool?>(json['hairLock']),
+      bodyLock: serializer.fromJson<bool?>(json['bodyLock']),
+      colorLock: serializer.fromJson<bool?>(json['colorLock']),
+      outfitLock: serializer.fromJson<bool?>(json['outfitLock']),
+      weaponLock: serializer.fromJson<bool?>(json['weaponLock']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'modeId': serializer.toJson<String>(modeId),
+      'faceLock': serializer.toJson<bool?>(faceLock),
+      'hairLock': serializer.toJson<bool?>(hairLock),
+      'bodyLock': serializer.toJson<bool?>(bodyLock),
+      'colorLock': serializer.toJson<bool?>(colorLock),
+      'outfitLock': serializer.toJson<bool?>(outfitLock),
+      'weaponLock': serializer.toJson<bool?>(weaponLock),
+    };
+  }
+
+  CharacterModeIdentityOverride copyWith({
+    String? modeId,
+    Value<bool?> faceLock = const Value.absent(),
+    Value<bool?> hairLock = const Value.absent(),
+    Value<bool?> bodyLock = const Value.absent(),
+    Value<bool?> colorLock = const Value.absent(),
+    Value<bool?> outfitLock = const Value.absent(),
+    Value<bool?> weaponLock = const Value.absent(),
+  }) => CharacterModeIdentityOverride(
+    modeId: modeId ?? this.modeId,
+    faceLock: faceLock.present ? faceLock.value : this.faceLock,
+    hairLock: hairLock.present ? hairLock.value : this.hairLock,
+    bodyLock: bodyLock.present ? bodyLock.value : this.bodyLock,
+    colorLock: colorLock.present ? colorLock.value : this.colorLock,
+    outfitLock: outfitLock.present ? outfitLock.value : this.outfitLock,
+    weaponLock: weaponLock.present ? weaponLock.value : this.weaponLock,
+  );
+  CharacterModeIdentityOverride copyWithCompanion(
+    CharacterModeIdentityOverridesCompanion data,
+  ) {
+    return CharacterModeIdentityOverride(
+      modeId: data.modeId.present ? data.modeId.value : this.modeId,
+      faceLock: data.faceLock.present ? data.faceLock.value : this.faceLock,
+      hairLock: data.hairLock.present ? data.hairLock.value : this.hairLock,
+      bodyLock: data.bodyLock.present ? data.bodyLock.value : this.bodyLock,
+      colorLock: data.colorLock.present ? data.colorLock.value : this.colorLock,
+      outfitLock: data.outfitLock.present
+          ? data.outfitLock.value
+          : this.outfitLock,
+      weaponLock: data.weaponLock.present
+          ? data.weaponLock.value
+          : this.weaponLock,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterModeIdentityOverride(')
+          ..write('modeId: $modeId, ')
+          ..write('faceLock: $faceLock, ')
+          ..write('hairLock: $hairLock, ')
+          ..write('bodyLock: $bodyLock, ')
+          ..write('colorLock: $colorLock, ')
+          ..write('outfitLock: $outfitLock, ')
+          ..write('weaponLock: $weaponLock')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    modeId,
+    faceLock,
+    hairLock,
+    bodyLock,
+    colorLock,
+    outfitLock,
+    weaponLock,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CharacterModeIdentityOverride &&
+          other.modeId == this.modeId &&
+          other.faceLock == this.faceLock &&
+          other.hairLock == this.hairLock &&
+          other.bodyLock == this.bodyLock &&
+          other.colorLock == this.colorLock &&
+          other.outfitLock == this.outfitLock &&
+          other.weaponLock == this.weaponLock);
+}
+
+class CharacterModeIdentityOverridesCompanion
+    extends UpdateCompanion<CharacterModeIdentityOverride> {
+  final Value<String> modeId;
+  final Value<bool?> faceLock;
+  final Value<bool?> hairLock;
+  final Value<bool?> bodyLock;
+  final Value<bool?> colorLock;
+  final Value<bool?> outfitLock;
+  final Value<bool?> weaponLock;
+  final Value<int> rowid;
+  const CharacterModeIdentityOverridesCompanion({
+    this.modeId = const Value.absent(),
+    this.faceLock = const Value.absent(),
+    this.hairLock = const Value.absent(),
+    this.bodyLock = const Value.absent(),
+    this.colorLock = const Value.absent(),
+    this.outfitLock = const Value.absent(),
+    this.weaponLock = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CharacterModeIdentityOverridesCompanion.insert({
+    required String modeId,
+    this.faceLock = const Value.absent(),
+    this.hairLock = const Value.absent(),
+    this.bodyLock = const Value.absent(),
+    this.colorLock = const Value.absent(),
+    this.outfitLock = const Value.absent(),
+    this.weaponLock = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : modeId = Value(modeId);
+  static Insertable<CharacterModeIdentityOverride> custom({
+    Expression<String>? modeId,
+    Expression<bool>? faceLock,
+    Expression<bool>? hairLock,
+    Expression<bool>? bodyLock,
+    Expression<bool>? colorLock,
+    Expression<bool>? outfitLock,
+    Expression<bool>? weaponLock,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (modeId != null) 'mode_id': modeId,
+      if (faceLock != null) 'face_lock': faceLock,
+      if (hairLock != null) 'hair_lock': hairLock,
+      if (bodyLock != null) 'body_lock': bodyLock,
+      if (colorLock != null) 'color_lock': colorLock,
+      if (outfitLock != null) 'outfit_lock': outfitLock,
+      if (weaponLock != null) 'weapon_lock': weaponLock,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CharacterModeIdentityOverridesCompanion copyWith({
+    Value<String>? modeId,
+    Value<bool?>? faceLock,
+    Value<bool?>? hairLock,
+    Value<bool?>? bodyLock,
+    Value<bool?>? colorLock,
+    Value<bool?>? outfitLock,
+    Value<bool?>? weaponLock,
+    Value<int>? rowid,
+  }) {
+    return CharacterModeIdentityOverridesCompanion(
+      modeId: modeId ?? this.modeId,
+      faceLock: faceLock ?? this.faceLock,
+      hairLock: hairLock ?? this.hairLock,
+      bodyLock: bodyLock ?? this.bodyLock,
+      colorLock: colorLock ?? this.colorLock,
+      outfitLock: outfitLock ?? this.outfitLock,
+      weaponLock: weaponLock ?? this.weaponLock,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (modeId.present) {
+      map['mode_id'] = Variable<String>(modeId.value);
+    }
+    if (faceLock.present) {
+      map['face_lock'] = Variable<bool>(faceLock.value);
+    }
+    if (hairLock.present) {
+      map['hair_lock'] = Variable<bool>(hairLock.value);
+    }
+    if (bodyLock.present) {
+      map['body_lock'] = Variable<bool>(bodyLock.value);
+    }
+    if (colorLock.present) {
+      map['color_lock'] = Variable<bool>(colorLock.value);
+    }
+    if (outfitLock.present) {
+      map['outfit_lock'] = Variable<bool>(outfitLock.value);
+    }
+    if (weaponLock.present) {
+      map['weapon_lock'] = Variable<bool>(weaponLock.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterModeIdentityOverridesCompanion(')
+          ..write('modeId: $modeId, ')
+          ..write('faceLock: $faceLock, ')
+          ..write('hairLock: $hairLock, ')
+          ..write('bodyLock: $bodyLock, ')
+          ..write('colorLock: $colorLock, ')
+          ..write('outfitLock: $outfitLock, ')
+          ..write('weaponLock: $weaponLock, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CharacterModeReferencesTable extends CharacterModeReferences
+    with TableInfo<$CharacterModeReferencesTable, CharacterModeReference> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CharacterModeReferencesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _modeIdMeta = const VerificationMeta('modeId');
+  @override
+  late final GeneratedColumn<String> modeId = GeneratedColumn<String>(
+    'mode_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _referenceTypeMeta = const VerificationMeta(
+    'referenceType',
+  );
+  @override
+  late final GeneratedColumn<String> referenceType = GeneratedColumn<String>(
+    'reference_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _filePathMeta = const VerificationMeta(
+    'filePath',
+  );
+  @override
+  late final GeneratedColumn<String> filePath = GeneratedColumn<String>(
+    'file_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _priorityMeta = const VerificationMeta(
+    'priority',
+  );
+  @override
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+    'priority',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _primaryReferenceMeta = const VerificationMeta(
+    'primaryReference',
+  );
+  @override
+  late final GeneratedColumn<bool> primaryReference = GeneratedColumn<bool>(
+    'primary_reference',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("primary_reference" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    modeId,
+    referenceType,
+    filePath,
+    priority,
+    primaryReference,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'character_mode_references';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CharacterModeReference> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('mode_id')) {
+      context.handle(
+        _modeIdMeta,
+        modeId.isAcceptableOrUnknown(data['mode_id']!, _modeIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_modeIdMeta);
+    }
+    if (data.containsKey('reference_type')) {
+      context.handle(
+        _referenceTypeMeta,
+        referenceType.isAcceptableOrUnknown(
+          data['reference_type']!,
+          _referenceTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_referenceTypeMeta);
+    }
+    if (data.containsKey('file_path')) {
+      context.handle(
+        _filePathMeta,
+        filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_filePathMeta);
+    }
+    if (data.containsKey('priority')) {
+      context.handle(
+        _priorityMeta,
+        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
+      );
+    }
+    if (data.containsKey('primary_reference')) {
+      context.handle(
+        _primaryReferenceMeta,
+        primaryReference.isAcceptableOrUnknown(
+          data['primary_reference']!,
+          _primaryReferenceMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CharacterModeReference map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CharacterModeReference(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      modeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mode_id'],
+      )!,
+      referenceType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reference_type'],
+      )!,
+      filePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_path'],
+      )!,
+      priority: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}priority'],
+      )!,
+      primaryReference: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}primary_reference'],
+      )!,
+    );
+  }
+
+  @override
+  $CharacterModeReferencesTable createAlias(String alias) {
+    return $CharacterModeReferencesTable(attachedDatabase, alias);
+  }
+}
+
+class CharacterModeReference extends DataClass
+    implements Insertable<CharacterModeReference> {
+  final String id;
+  final String modeId;
+  final String referenceType;
+  final String filePath;
+  final int priority;
+  final bool primaryReference;
+  const CharacterModeReference({
+    required this.id,
+    required this.modeId,
+    required this.referenceType,
+    required this.filePath,
+    required this.priority,
+    required this.primaryReference,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['mode_id'] = Variable<String>(modeId);
+    map['reference_type'] = Variable<String>(referenceType);
+    map['file_path'] = Variable<String>(filePath);
+    map['priority'] = Variable<int>(priority);
+    map['primary_reference'] = Variable<bool>(primaryReference);
+    return map;
+  }
+
+  CharacterModeReferencesCompanion toCompanion(bool nullToAbsent) {
+    return CharacterModeReferencesCompanion(
+      id: Value(id),
+      modeId: Value(modeId),
+      referenceType: Value(referenceType),
+      filePath: Value(filePath),
+      priority: Value(priority),
+      primaryReference: Value(primaryReference),
+    );
+  }
+
+  factory CharacterModeReference.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CharacterModeReference(
+      id: serializer.fromJson<String>(json['id']),
+      modeId: serializer.fromJson<String>(json['modeId']),
+      referenceType: serializer.fromJson<String>(json['referenceType']),
+      filePath: serializer.fromJson<String>(json['filePath']),
+      priority: serializer.fromJson<int>(json['priority']),
+      primaryReference: serializer.fromJson<bool>(json['primaryReference']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'modeId': serializer.toJson<String>(modeId),
+      'referenceType': serializer.toJson<String>(referenceType),
+      'filePath': serializer.toJson<String>(filePath),
+      'priority': serializer.toJson<int>(priority),
+      'primaryReference': serializer.toJson<bool>(primaryReference),
+    };
+  }
+
+  CharacterModeReference copyWith({
+    String? id,
+    String? modeId,
+    String? referenceType,
+    String? filePath,
+    int? priority,
+    bool? primaryReference,
+  }) => CharacterModeReference(
+    id: id ?? this.id,
+    modeId: modeId ?? this.modeId,
+    referenceType: referenceType ?? this.referenceType,
+    filePath: filePath ?? this.filePath,
+    priority: priority ?? this.priority,
+    primaryReference: primaryReference ?? this.primaryReference,
+  );
+  CharacterModeReference copyWithCompanion(
+    CharacterModeReferencesCompanion data,
+  ) {
+    return CharacterModeReference(
+      id: data.id.present ? data.id.value : this.id,
+      modeId: data.modeId.present ? data.modeId.value : this.modeId,
+      referenceType: data.referenceType.present
+          ? data.referenceType.value
+          : this.referenceType,
+      filePath: data.filePath.present ? data.filePath.value : this.filePath,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      primaryReference: data.primaryReference.present
+          ? data.primaryReference.value
+          : this.primaryReference,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterModeReference(')
+          ..write('id: $id, ')
+          ..write('modeId: $modeId, ')
+          ..write('referenceType: $referenceType, ')
+          ..write('filePath: $filePath, ')
+          ..write('priority: $priority, ')
+          ..write('primaryReference: $primaryReference')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    modeId,
+    referenceType,
+    filePath,
+    priority,
+    primaryReference,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CharacterModeReference &&
+          other.id == this.id &&
+          other.modeId == this.modeId &&
+          other.referenceType == this.referenceType &&
+          other.filePath == this.filePath &&
+          other.priority == this.priority &&
+          other.primaryReference == this.primaryReference);
+}
+
+class CharacterModeReferencesCompanion
+    extends UpdateCompanion<CharacterModeReference> {
+  final Value<String> id;
+  final Value<String> modeId;
+  final Value<String> referenceType;
+  final Value<String> filePath;
+  final Value<int> priority;
+  final Value<bool> primaryReference;
+  final Value<int> rowid;
+  const CharacterModeReferencesCompanion({
+    this.id = const Value.absent(),
+    this.modeId = const Value.absent(),
+    this.referenceType = const Value.absent(),
+    this.filePath = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.primaryReference = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CharacterModeReferencesCompanion.insert({
+    required String id,
+    required String modeId,
+    required String referenceType,
+    required String filePath,
+    this.priority = const Value.absent(),
+    this.primaryReference = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       modeId = Value(modeId),
+       referenceType = Value(referenceType),
+       filePath = Value(filePath);
+  static Insertable<CharacterModeReference> custom({
+    Expression<String>? id,
+    Expression<String>? modeId,
+    Expression<String>? referenceType,
+    Expression<String>? filePath,
+    Expression<int>? priority,
+    Expression<bool>? primaryReference,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (modeId != null) 'mode_id': modeId,
+      if (referenceType != null) 'reference_type': referenceType,
+      if (filePath != null) 'file_path': filePath,
+      if (priority != null) 'priority': priority,
+      if (primaryReference != null) 'primary_reference': primaryReference,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CharacterModeReferencesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? modeId,
+    Value<String>? referenceType,
+    Value<String>? filePath,
+    Value<int>? priority,
+    Value<bool>? primaryReference,
+    Value<int>? rowid,
+  }) {
+    return CharacterModeReferencesCompanion(
+      id: id ?? this.id,
+      modeId: modeId ?? this.modeId,
+      referenceType: referenceType ?? this.referenceType,
+      filePath: filePath ?? this.filePath,
+      priority: priority ?? this.priority,
+      primaryReference: primaryReference ?? this.primaryReference,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (modeId.present) {
+      map['mode_id'] = Variable<String>(modeId.value);
+    }
+    if (referenceType.present) {
+      map['reference_type'] = Variable<String>(referenceType.value);
+    }
+    if (filePath.present) {
+      map['file_path'] = Variable<String>(filePath.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<int>(priority.value);
+    }
+    if (primaryReference.present) {
+      map['primary_reference'] = Variable<bool>(primaryReference.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterModeReferencesCompanion(')
+          ..write('id: $id, ')
+          ..write('modeId: $modeId, ')
+          ..write('referenceType: $referenceType, ')
+          ..write('filePath: $filePath, ')
+          ..write('priority: $priority, ')
+          ..write('primaryReference: $primaryReference, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $AssetRelationsTable extends AssetRelations
     with TableInfo<$AssetRelationsTable, AssetRelation> {
   @override
@@ -8899,6 +10817,13 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
       $CharacterIdentityProfilesTable(this);
   late final $CharacterReferencesTable characterReferences =
       $CharacterReferencesTable(this);
+  late final $CharacterModesTable characterModes = $CharacterModesTable(this);
+  late final $CharacterLoadoutEntriesTable characterLoadoutEntries =
+      $CharacterLoadoutEntriesTable(this);
+  late final $CharacterModeIdentityOverridesTable
+  characterModeIdentityOverrides = $CharacterModeIdentityOverridesTable(this);
+  late final $CharacterModeReferencesTable characterModeReferences =
+      $CharacterModeReferencesTable(this);
   late final $AssetRelationsTable assetRelations = $AssetRelationsTable(this);
   late final $WardrobesTable wardrobes = $WardrobesTable(this);
   late final $WardrobeComponentsTable wardrobeComponents =
@@ -8926,6 +10851,9 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
       $WeaponPreservationProfilesTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
+  late final CharacterModeDao characterModeDao = CharacterModeDao(
+    this as ProjectDatabase,
+  );
   late final RelationDao relationDao = RelationDao(this as ProjectDatabase);
   late final WardrobeDao wardrobeDao = WardrobeDao(this as ProjectDatabase);
   late final WeaponDao weaponDao = WeaponDao(this as ProjectDatabase);
@@ -8940,6 +10868,10 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     characters,
     characterIdentityProfiles,
     characterReferences,
+    characterModes,
+    characterLoadoutEntries,
+    characterModeIdentityOverrides,
+    characterModeReferences,
     assetRelations,
     wardrobes,
     wardrobeComponents,
@@ -10346,6 +12278,1035 @@ typedef $$CharacterReferencesTableProcessedTableManager =
         >,
       ),
       CharacterReference,
+      PrefetchHooks Function()
+    >;
+typedef $$CharacterModesTableCreateCompanionBuilder =
+    CharacterModesCompanion Function({
+      required String id,
+      required String projectId,
+      required String characterId,
+      required String name,
+      Value<String> description,
+      Value<bool> isDefault,
+      Value<String?> thumbnailPath,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$CharacterModesTableUpdateCompanionBuilder =
+    CharacterModesCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> characterId,
+      Value<String> name,
+      Value<String> description,
+      Value<bool> isDefault,
+      Value<String?> thumbnailPath,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$CharacterModesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CharacterModesTable> {
+  $$CharacterModesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDefault => $composableBuilder(
+    column: $table.isDefault,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get thumbnailPath => $composableBuilder(
+    column: $table.thumbnailPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CharacterModesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CharacterModesTable> {
+  $$CharacterModesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDefault => $composableBuilder(
+    column: $table.isDefault,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get thumbnailPath => $composableBuilder(
+    column: $table.thumbnailPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CharacterModesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CharacterModesTable> {
+  $$CharacterModesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isDefault =>
+      $composableBuilder(column: $table.isDefault, builder: (column) => column);
+
+  GeneratedColumn<String> get thumbnailPath => $composableBuilder(
+    column: $table.thumbnailPath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$CharacterModesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CharacterModesTable,
+          CharacterMode,
+          $$CharacterModesTableFilterComposer,
+          $$CharacterModesTableOrderingComposer,
+          $$CharacterModesTableAnnotationComposer,
+          $$CharacterModesTableCreateCompanionBuilder,
+          $$CharacterModesTableUpdateCompanionBuilder,
+          (
+            CharacterMode,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CharacterModesTable,
+              CharacterMode
+            >,
+          ),
+          CharacterMode,
+          PrefetchHooks Function()
+        > {
+  $$CharacterModesTableTableManager(
+    _$ProjectDatabase db,
+    $CharacterModesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CharacterModesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CharacterModesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CharacterModesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> characterId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<bool> isDefault = const Value.absent(),
+                Value<String?> thumbnailPath = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterModesCompanion(
+                id: id,
+                projectId: projectId,
+                characterId: characterId,
+                name: name,
+                description: description,
+                isDefault: isDefault,
+                thumbnailPath: thumbnailPath,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String characterId,
+                required String name,
+                Value<String> description = const Value.absent(),
+                Value<bool> isDefault = const Value.absent(),
+                Value<String?> thumbnailPath = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterModesCompanion.insert(
+                id: id,
+                projectId: projectId,
+                characterId: characterId,
+                name: name,
+                description: description,
+                isDefault: isDefault,
+                thumbnailPath: thumbnailPath,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CharacterModesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CharacterModesTable,
+      CharacterMode,
+      $$CharacterModesTableFilterComposer,
+      $$CharacterModesTableOrderingComposer,
+      $$CharacterModesTableAnnotationComposer,
+      $$CharacterModesTableCreateCompanionBuilder,
+      $$CharacterModesTableUpdateCompanionBuilder,
+      (
+        CharacterMode,
+        BaseReferences<_$ProjectDatabase, $CharacterModesTable, CharacterMode>,
+      ),
+      CharacterMode,
+      PrefetchHooks Function()
+    >;
+typedef $$CharacterLoadoutEntriesTableCreateCompanionBuilder =
+    CharacterLoadoutEntriesCompanion Function({
+      required String id,
+      required String modeId,
+      required String assetId,
+      required String slot,
+      Value<int> sortOrder,
+      Value<bool> enabled,
+      Value<int> rowid,
+    });
+typedef $$CharacterLoadoutEntriesTableUpdateCompanionBuilder =
+    CharacterLoadoutEntriesCompanion Function({
+      Value<String> id,
+      Value<String> modeId,
+      Value<String> assetId,
+      Value<String> slot,
+      Value<int> sortOrder,
+      Value<bool> enabled,
+      Value<int> rowid,
+    });
+
+class $$CharacterLoadoutEntriesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CharacterLoadoutEntriesTable> {
+  $$CharacterLoadoutEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get modeId => $composableBuilder(
+    column: $table.modeId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get slot => $composableBuilder(
+    column: $table.slot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CharacterLoadoutEntriesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CharacterLoadoutEntriesTable> {
+  $$CharacterLoadoutEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get modeId => $composableBuilder(
+    column: $table.modeId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get slot => $composableBuilder(
+    column: $table.slot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CharacterLoadoutEntriesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CharacterLoadoutEntriesTable> {
+  $$CharacterLoadoutEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get modeId =>
+      $composableBuilder(column: $table.modeId, builder: (column) => column);
+
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get slot =>
+      $composableBuilder(column: $table.slot, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<bool> get enabled =>
+      $composableBuilder(column: $table.enabled, builder: (column) => column);
+}
+
+class $$CharacterLoadoutEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CharacterLoadoutEntriesTable,
+          CharacterLoadoutEntry,
+          $$CharacterLoadoutEntriesTableFilterComposer,
+          $$CharacterLoadoutEntriesTableOrderingComposer,
+          $$CharacterLoadoutEntriesTableAnnotationComposer,
+          $$CharacterLoadoutEntriesTableCreateCompanionBuilder,
+          $$CharacterLoadoutEntriesTableUpdateCompanionBuilder,
+          (
+            CharacterLoadoutEntry,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CharacterLoadoutEntriesTable,
+              CharacterLoadoutEntry
+            >,
+          ),
+          CharacterLoadoutEntry,
+          PrefetchHooks Function()
+        > {
+  $$CharacterLoadoutEntriesTableTableManager(
+    _$ProjectDatabase db,
+    $CharacterLoadoutEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CharacterLoadoutEntriesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CharacterLoadoutEntriesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CharacterLoadoutEntriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> modeId = const Value.absent(),
+                Value<String> assetId = const Value.absent(),
+                Value<String> slot = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<bool> enabled = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterLoadoutEntriesCompanion(
+                id: id,
+                modeId: modeId,
+                assetId: assetId,
+                slot: slot,
+                sortOrder: sortOrder,
+                enabled: enabled,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String modeId,
+                required String assetId,
+                required String slot,
+                Value<int> sortOrder = const Value.absent(),
+                Value<bool> enabled = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterLoadoutEntriesCompanion.insert(
+                id: id,
+                modeId: modeId,
+                assetId: assetId,
+                slot: slot,
+                sortOrder: sortOrder,
+                enabled: enabled,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CharacterLoadoutEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CharacterLoadoutEntriesTable,
+      CharacterLoadoutEntry,
+      $$CharacterLoadoutEntriesTableFilterComposer,
+      $$CharacterLoadoutEntriesTableOrderingComposer,
+      $$CharacterLoadoutEntriesTableAnnotationComposer,
+      $$CharacterLoadoutEntriesTableCreateCompanionBuilder,
+      $$CharacterLoadoutEntriesTableUpdateCompanionBuilder,
+      (
+        CharacterLoadoutEntry,
+        BaseReferences<
+          _$ProjectDatabase,
+          $CharacterLoadoutEntriesTable,
+          CharacterLoadoutEntry
+        >,
+      ),
+      CharacterLoadoutEntry,
+      PrefetchHooks Function()
+    >;
+typedef $$CharacterModeIdentityOverridesTableCreateCompanionBuilder =
+    CharacterModeIdentityOverridesCompanion Function({
+      required String modeId,
+      Value<bool?> faceLock,
+      Value<bool?> hairLock,
+      Value<bool?> bodyLock,
+      Value<bool?> colorLock,
+      Value<bool?> outfitLock,
+      Value<bool?> weaponLock,
+      Value<int> rowid,
+    });
+typedef $$CharacterModeIdentityOverridesTableUpdateCompanionBuilder =
+    CharacterModeIdentityOverridesCompanion Function({
+      Value<String> modeId,
+      Value<bool?> faceLock,
+      Value<bool?> hairLock,
+      Value<bool?> bodyLock,
+      Value<bool?> colorLock,
+      Value<bool?> outfitLock,
+      Value<bool?> weaponLock,
+      Value<int> rowid,
+    });
+
+class $$CharacterModeIdentityOverridesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CharacterModeIdentityOverridesTable> {
+  $$CharacterModeIdentityOverridesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get modeId => $composableBuilder(
+    column: $table.modeId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get faceLock => $composableBuilder(
+    column: $table.faceLock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get hairLock => $composableBuilder(
+    column: $table.hairLock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get bodyLock => $composableBuilder(
+    column: $table.bodyLock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get colorLock => $composableBuilder(
+    column: $table.colorLock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get outfitLock => $composableBuilder(
+    column: $table.outfitLock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get weaponLock => $composableBuilder(
+    column: $table.weaponLock,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CharacterModeIdentityOverridesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CharacterModeIdentityOverridesTable> {
+  $$CharacterModeIdentityOverridesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get modeId => $composableBuilder(
+    column: $table.modeId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get faceLock => $composableBuilder(
+    column: $table.faceLock,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get hairLock => $composableBuilder(
+    column: $table.hairLock,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get bodyLock => $composableBuilder(
+    column: $table.bodyLock,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get colorLock => $composableBuilder(
+    column: $table.colorLock,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get outfitLock => $composableBuilder(
+    column: $table.outfitLock,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get weaponLock => $composableBuilder(
+    column: $table.weaponLock,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CharacterModeIdentityOverridesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CharacterModeIdentityOverridesTable> {
+  $$CharacterModeIdentityOverridesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get modeId =>
+      $composableBuilder(column: $table.modeId, builder: (column) => column);
+
+  GeneratedColumn<bool> get faceLock =>
+      $composableBuilder(column: $table.faceLock, builder: (column) => column);
+
+  GeneratedColumn<bool> get hairLock =>
+      $composableBuilder(column: $table.hairLock, builder: (column) => column);
+
+  GeneratedColumn<bool> get bodyLock =>
+      $composableBuilder(column: $table.bodyLock, builder: (column) => column);
+
+  GeneratedColumn<bool> get colorLock =>
+      $composableBuilder(column: $table.colorLock, builder: (column) => column);
+
+  GeneratedColumn<bool> get outfitLock => $composableBuilder(
+    column: $table.outfitLock,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get weaponLock => $composableBuilder(
+    column: $table.weaponLock,
+    builder: (column) => column,
+  );
+}
+
+class $$CharacterModeIdentityOverridesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CharacterModeIdentityOverridesTable,
+          CharacterModeIdentityOverride,
+          $$CharacterModeIdentityOverridesTableFilterComposer,
+          $$CharacterModeIdentityOverridesTableOrderingComposer,
+          $$CharacterModeIdentityOverridesTableAnnotationComposer,
+          $$CharacterModeIdentityOverridesTableCreateCompanionBuilder,
+          $$CharacterModeIdentityOverridesTableUpdateCompanionBuilder,
+          (
+            CharacterModeIdentityOverride,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CharacterModeIdentityOverridesTable,
+              CharacterModeIdentityOverride
+            >,
+          ),
+          CharacterModeIdentityOverride,
+          PrefetchHooks Function()
+        > {
+  $$CharacterModeIdentityOverridesTableTableManager(
+    _$ProjectDatabase db,
+    $CharacterModeIdentityOverridesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CharacterModeIdentityOverridesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CharacterModeIdentityOverridesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CharacterModeIdentityOverridesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> modeId = const Value.absent(),
+                Value<bool?> faceLock = const Value.absent(),
+                Value<bool?> hairLock = const Value.absent(),
+                Value<bool?> bodyLock = const Value.absent(),
+                Value<bool?> colorLock = const Value.absent(),
+                Value<bool?> outfitLock = const Value.absent(),
+                Value<bool?> weaponLock = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterModeIdentityOverridesCompanion(
+                modeId: modeId,
+                faceLock: faceLock,
+                hairLock: hairLock,
+                bodyLock: bodyLock,
+                colorLock: colorLock,
+                outfitLock: outfitLock,
+                weaponLock: weaponLock,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String modeId,
+                Value<bool?> faceLock = const Value.absent(),
+                Value<bool?> hairLock = const Value.absent(),
+                Value<bool?> bodyLock = const Value.absent(),
+                Value<bool?> colorLock = const Value.absent(),
+                Value<bool?> outfitLock = const Value.absent(),
+                Value<bool?> weaponLock = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterModeIdentityOverridesCompanion.insert(
+                modeId: modeId,
+                faceLock: faceLock,
+                hairLock: hairLock,
+                bodyLock: bodyLock,
+                colorLock: colorLock,
+                outfitLock: outfitLock,
+                weaponLock: weaponLock,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CharacterModeIdentityOverridesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CharacterModeIdentityOverridesTable,
+      CharacterModeIdentityOverride,
+      $$CharacterModeIdentityOverridesTableFilterComposer,
+      $$CharacterModeIdentityOverridesTableOrderingComposer,
+      $$CharacterModeIdentityOverridesTableAnnotationComposer,
+      $$CharacterModeIdentityOverridesTableCreateCompanionBuilder,
+      $$CharacterModeIdentityOverridesTableUpdateCompanionBuilder,
+      (
+        CharacterModeIdentityOverride,
+        BaseReferences<
+          _$ProjectDatabase,
+          $CharacterModeIdentityOverridesTable,
+          CharacterModeIdentityOverride
+        >,
+      ),
+      CharacterModeIdentityOverride,
+      PrefetchHooks Function()
+    >;
+typedef $$CharacterModeReferencesTableCreateCompanionBuilder =
+    CharacterModeReferencesCompanion Function({
+      required String id,
+      required String modeId,
+      required String referenceType,
+      required String filePath,
+      Value<int> priority,
+      Value<bool> primaryReference,
+      Value<int> rowid,
+    });
+typedef $$CharacterModeReferencesTableUpdateCompanionBuilder =
+    CharacterModeReferencesCompanion Function({
+      Value<String> id,
+      Value<String> modeId,
+      Value<String> referenceType,
+      Value<String> filePath,
+      Value<int> priority,
+      Value<bool> primaryReference,
+      Value<int> rowid,
+    });
+
+class $$CharacterModeReferencesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CharacterModeReferencesTable> {
+  $$CharacterModeReferencesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get modeId => $composableBuilder(
+    column: $table.modeId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referenceType => $composableBuilder(
+    column: $table.referenceType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get primaryReference => $composableBuilder(
+    column: $table.primaryReference,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CharacterModeReferencesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CharacterModeReferencesTable> {
+  $$CharacterModeReferencesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get modeId => $composableBuilder(
+    column: $table.modeId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referenceType => $composableBuilder(
+    column: $table.referenceType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get primaryReference => $composableBuilder(
+    column: $table.primaryReference,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CharacterModeReferencesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CharacterModeReferencesTable> {
+  $$CharacterModeReferencesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get modeId =>
+      $composableBuilder(column: $table.modeId, builder: (column) => column);
+
+  GeneratedColumn<String> get referenceType => $composableBuilder(
+    column: $table.referenceType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get filePath =>
+      $composableBuilder(column: $table.filePath, builder: (column) => column);
+
+  GeneratedColumn<int> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  GeneratedColumn<bool> get primaryReference => $composableBuilder(
+    column: $table.primaryReference,
+    builder: (column) => column,
+  );
+}
+
+class $$CharacterModeReferencesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CharacterModeReferencesTable,
+          CharacterModeReference,
+          $$CharacterModeReferencesTableFilterComposer,
+          $$CharacterModeReferencesTableOrderingComposer,
+          $$CharacterModeReferencesTableAnnotationComposer,
+          $$CharacterModeReferencesTableCreateCompanionBuilder,
+          $$CharacterModeReferencesTableUpdateCompanionBuilder,
+          (
+            CharacterModeReference,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CharacterModeReferencesTable,
+              CharacterModeReference
+            >,
+          ),
+          CharacterModeReference,
+          PrefetchHooks Function()
+        > {
+  $$CharacterModeReferencesTableTableManager(
+    _$ProjectDatabase db,
+    $CharacterModeReferencesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CharacterModeReferencesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CharacterModeReferencesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CharacterModeReferencesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> modeId = const Value.absent(),
+                Value<String> referenceType = const Value.absent(),
+                Value<String> filePath = const Value.absent(),
+                Value<int> priority = const Value.absent(),
+                Value<bool> primaryReference = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterModeReferencesCompanion(
+                id: id,
+                modeId: modeId,
+                referenceType: referenceType,
+                filePath: filePath,
+                priority: priority,
+                primaryReference: primaryReference,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String modeId,
+                required String referenceType,
+                required String filePath,
+                Value<int> priority = const Value.absent(),
+                Value<bool> primaryReference = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterModeReferencesCompanion.insert(
+                id: id,
+                modeId: modeId,
+                referenceType: referenceType,
+                filePath: filePath,
+                priority: priority,
+                primaryReference: primaryReference,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CharacterModeReferencesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CharacterModeReferencesTable,
+      CharacterModeReference,
+      $$CharacterModeReferencesTableFilterComposer,
+      $$CharacterModeReferencesTableOrderingComposer,
+      $$CharacterModeReferencesTableAnnotationComposer,
+      $$CharacterModeReferencesTableCreateCompanionBuilder,
+      $$CharacterModeReferencesTableUpdateCompanionBuilder,
+      (
+        CharacterModeReference,
+        BaseReferences<
+          _$ProjectDatabase,
+          $CharacterModeReferencesTable,
+          CharacterModeReference
+        >,
+      ),
+      CharacterModeReference,
       PrefetchHooks Function()
     >;
 typedef $$AssetRelationsTableCreateCompanionBuilder =
@@ -13794,6 +16755,24 @@ class $ProjectDatabaseManager {
       );
   $$CharacterReferencesTableTableManager get characterReferences =>
       $$CharacterReferencesTableTableManager(_db, _db.characterReferences);
+  $$CharacterModesTableTableManager get characterModes =>
+      $$CharacterModesTableTableManager(_db, _db.characterModes);
+  $$CharacterLoadoutEntriesTableTableManager get characterLoadoutEntries =>
+      $$CharacterLoadoutEntriesTableTableManager(
+        _db,
+        _db.characterLoadoutEntries,
+      );
+  $$CharacterModeIdentityOverridesTableTableManager
+  get characterModeIdentityOverrides =>
+      $$CharacterModeIdentityOverridesTableTableManager(
+        _db,
+        _db.characterModeIdentityOverrides,
+      );
+  $$CharacterModeReferencesTableTableManager get characterModeReferences =>
+      $$CharacterModeReferencesTableTableManager(
+        _db,
+        _db.characterModeReferences,
+      );
   $$AssetRelationsTableTableManager get assetRelations =>
       $$AssetRelationsTableTableManager(_db, _db.assetRelations);
   $$WardrobesTableTableManager get wardrobes =>

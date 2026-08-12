@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/persistence/project_paths.dart';
@@ -51,6 +52,25 @@ class CreateCharacterService {
               CharacterIdentityProfilesCompanion.insert(
                 characterId: characterId,
               ),
+            );
+        final modeId = const Uuid().v4();
+        await database
+            .into(database.characterModes)
+            .insert(
+              CharacterModesCompanion.insert(
+                id: modeId,
+                projectId: projectId,
+                characterId: characterId,
+                name: 'Base Mode',
+                isDefault: const Value(true),
+                createdAt: now,
+                updatedAt: now,
+              ),
+            );
+        await database
+            .into(database.characterModeIdentityOverrides)
+            .insert(
+              CharacterModeIdentityOverridesCompanion.insert(modeId: modeId),
             );
       });
       await _createCharacterFolders(characterDirectory);

@@ -16,6 +16,7 @@ import 'widgets/identity_preservation_card.dart';
 import 'widgets/references_card.dart';
 import 'widgets/silhouette_card.dart';
 import 'widgets/turnaround_card.dart';
+import '../../character_mode/presentation/widgets/character_mode_section.dart';
 
 class CharacterWorkspaceScreen extends ConsumerStatefulWidget {
   const CharacterWorkspaceScreen({super.key, required this.characterId});
@@ -53,6 +54,10 @@ class _CharacterWorkspaceScreenState
   ) => Column(
     children: [
       CharacterHeader(name: character.displayName, alias: character.alias),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(18, 12, 18, 0),
+        child: CharacterModeSection(characterId: character.assetId),
+      ),
       Expanded(
         child: LayoutBuilder(
           builder: (context, constraints) {

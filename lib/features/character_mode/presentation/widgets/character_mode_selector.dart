@@ -1,0 +1,61 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../domain/character_mode.dart';
+import '../character_mode_controller.dart';
+
+class CharacterModeSelector extends ConsumerWidget {
+  const CharacterModeSelector({
+    super.key,
+    required this.characterId,
+    required this.modes,
+    required this.selectedModeId,
+    required this.onCreateMode,
+  });
+
+  final String characterId;
+  final List<CharacterMode> modes;
+  final String? selectedModeId;
+  final VoidCallback onCreateMode;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final effectiveId =
+        selectedModeId ??
+        (modes.where((mode) => mode.isDefault).firstOrNull?.id ??
+            modes.firstOrNull?.id);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text('MODE'),
+        const SizedBox(width: 8),
+        DropdownButton<String>(
+          value: effectiveId,
+          hint: const Text('No mode'),
+          items: [
+            ...modes.map(
+              (mode) =>
+                  DropdownMenuItem(value: mode.id, child: Text(mode.name)),
+            ),
+            const DropdownMenuItem(
+              value: '__create__',
+              child: Text('+ Create Mode'),
+            ),
+          ],
+          onChanged: (value) {
+            if (value == '__create__') {
+              onCreateMode();
+              return;
+            }
+            if (value != null) {
+              ref
+                      .read(selectedCharacterModeProvider(characterId).notifier)
+                      .state =
+                  value;
+            }
+          },
+        ),
+      ],
+    );
+  }
+}

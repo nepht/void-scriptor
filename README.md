@@ -65,6 +65,7 @@ The current repository has verified vertical slices for the following areas:
 | Wardrobe asset family | Complete for create/read/delete, variants, components, colors, references, and `wears` persistence | `test/features/wardrobe` |
 | Relation Core and Inspector relation management | Complete for create/read/delete, inverse labels, target selection, and selection navigation | `test/features/relations`, `RelationSection` |
 | Weapon asset family | Complete for create/read/delete, technical child tables, variants, preservation, Explorer, Workspace, Inspector, and `uses` restart persistence | `test/features/weapon` |
+| Character Mode + Loadout | Complete for schema v6, Base Mode creation, mode CRUD/clone, nullable identity overrides, type-validated wardrobe/weapon slots, searchable AssetPicker, mode selector, loadout editor, and global relation synchronization | `test/features/character_mode`, `test/features/assets` |
 
 The following are deliberately deferred because they require additional product subsystems rather than missing persistence plumbing:
 
@@ -75,5 +76,7 @@ The following are deliberately deferred because they require additional product 
 - export to PNG/PDF and release packaging/signing;
 - loadout/quantity semantics for dual weapons;
 - donation/payment integration.
+
+Sprint 13 deliberately leaves the generic data contract ready but does not yet add dedicated editors for accessory/companion/vehicle slots, mode reference file management, mode thumbnail generation, mode accent/tags, or derived-relation garbage collection. These are follow-up slices, not silent no-op persistence paths.
 
 Deferred items must not be represented as silent no-op actions; current UI shows explicit local-mode or not-configured feedback.

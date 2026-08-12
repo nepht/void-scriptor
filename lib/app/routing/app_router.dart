@@ -28,7 +28,7 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
   );
 }
 
-List<RouteBase> _routes() {
+List<RouteBase> _routes({VoidCallback? onLogout}) {
   return [
     GoRoute(path: AppRoutes.splash, builder: (_, __) => const SplashScreen()),
     GoRoute(
@@ -52,7 +52,10 @@ List<RouteBase> _routes() {
       path: AppRoutes.dashboard,
       builder: (_, __) => const DashboardScreen(),
     ),
-    GoRoute(path: AppRoutes.studio, builder: (_, __) => const VoidAppShell()),
+    GoRoute(
+      path: AppRoutes.studio,
+      builder: (_, __) => VoidAppShell(onLogout: onLogout),
+    ),
     for (final route in AppRoutes.foundationRoutes.entries)
       if (route.value != AppRoutes.splash &&
           route.value != AppRoutes.dashboard &&
@@ -63,7 +66,7 @@ List<RouteBase> _routes() {
         ),
     GoRoute(
       path: AppRoutes.workspace,
-      builder: (_, __) => const VoidAppShell(),
+      builder: (_, __) => VoidAppShell(onLogout: onLogout),
     ),
   ];
 }
@@ -133,7 +136,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       }
       return null;
     },
-    routes: _routes(),
+    routes: _routes(
+      onLogout: () {
+        ref.read(authControllerProvider.notifier).logout();
+      },
+    ),
   );
 });
 

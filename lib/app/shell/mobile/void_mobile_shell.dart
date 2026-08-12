@@ -5,7 +5,9 @@ import '../../../design_system/widgets/branding/void_logo.dart';
 import '../../../features/workspace/presentation/workspace_panel.dart';
 
 class VoidMobileShell extends StatefulWidget {
-  const VoidMobileShell({super.key});
+  const VoidMobileShell({super.key, this.onLogout});
+
+  final VoidCallback? onLogout;
 
   @override
   State<VoidMobileShell> createState() => _VoidMobileShellState();
@@ -26,6 +28,11 @@ class _VoidMobileShellState extends State<VoidMobileShell> {
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
           IconButton(onPressed: () {}, icon: const Icon(Icons.person_outline)),
+          IconButton(
+            tooltip: 'Logout',
+            onPressed: widget.onLogout,
+            icon: const Icon(Icons.logout_rounded),
+          ),
         ],
       ),
 

@@ -4,9 +4,10 @@ import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
 
 class VoidTopBar extends StatelessWidget {
-  const VoidTopBar({super.key, required this.onMenuSelected});
+  const VoidTopBar({super.key, required this.onMenuSelected, this.onLogout});
 
   final ValueChanged<String> onMenuSelected;
+  final VoidCallback? onLogout;
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +73,12 @@ class VoidTopBar extends StatelessWidget {
           const _TopIconButton(icon: Icons.notifications_none_rounded),
 
           const _TopIconButton(icon: Icons.cloud_outlined),
+
+          IconButton(
+            tooltip: 'Logout',
+            onPressed: onLogout,
+            icon: const Icon(Icons.logout_rounded, size: 18),
+          ),
 
           const SizedBox(width: 6),
 

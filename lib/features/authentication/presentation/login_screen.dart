@@ -129,7 +129,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                   const SizedBox(height: 10),
 
-                  Row(
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    runSpacing: 4,
                     children: [
                       Checkbox(
                         value: _rememberMe,
@@ -140,7 +143,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         },
                       ),
                       const Text('Remember me', style: VoidTypography.caption),
-                      const Spacer(),
                       TextButton(
                         onPressed: widget.onForgotPassword,
                         child: const Text('Forgot password?'),
@@ -202,8 +204,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                   const SizedBox(height: 24),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       const Text('No account?', style: VoidTypography.caption),
                       TextButton(

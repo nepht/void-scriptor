@@ -7,14 +7,16 @@ import 'void_status_bar.dart';
 import 'void_top_bar.dart';
 
 class VoidDesktopShell extends StatelessWidget {
-  const VoidDesktopShell({super.key});
+  const VoidDesktopShell({super.key, this.onLogout});
+
+  final VoidCallback? onLogout;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          VoidTopBar(onMenuSelected: (menu) {}),
+          VoidTopBar(onMenuSelected: (menu) {}, onLogout: onLogout),
 
           const Expanded(
             child: Row(

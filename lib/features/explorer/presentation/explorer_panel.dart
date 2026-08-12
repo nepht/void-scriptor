@@ -12,6 +12,9 @@ import '../../wardrobe/data/wardrobe_repository_impl.dart';
 import '../../wardrobe/domain/wardrobe_model.dart';
 import '../../weapon/data/weapon_repository_impl.dart';
 import '../../weapon/domain/weapon_model.dart';
+import 'explorer_environment_group.dart';
+import '../../environment/data/environment_repository_impl.dart';
+import '../../environment/domain/environment_model.dart';
 
 final wardrobeExplorerProvider =
     FutureProvider.family<List<WardrobeModel>, String>((ref, projectId) async {
@@ -34,6 +37,19 @@ final weaponExplorerProvider = FutureProvider.family<List<WeaponModel>, String>(
   },
 );
 
+final environmentExplorerProvider =
+    FutureProvider.family<List<EnvironmentModel>, String>((
+      ref,
+      projectId,
+    ) async {
+      final session = ref.watch(projectSessionProvider).valueOrNull;
+      if (session == null || session.manifest.id != projectId) return const [];
+      return EnvironmentRepositoryImpl(
+        database: session.database,
+        projectId: projectId,
+      ).getEnvironments();
+    });
+
 class ExplorerPanel extends ConsumerWidget {
   const ExplorerPanel({super.key});
 
@@ -53,6 +69,10 @@ class ExplorerPanel extends ConsumerWidget {
     final weapons = projectId == null
         ? const AsyncValue<List<WeaponModel>>.data([])
         : ref.watch(weaponExplorerProvider(projectId));
+
+    final environments = projectId == null
+        ? const AsyncValue<List<EnvironmentModel>>.data([])
+        : ref.watch(environmentExplorerProvider(projectId));
 
     return Container(
       width: 245,
@@ -126,9 +146,18 @@ class ExplorerPanel extends ConsumerWidget {
                         ),
                       ),
                 ),
-                const _ExplorerItem(
-                  icon: Icons.landscape_outlined,
-                  label: 'Environment',
+                EnvironmentGroup(
+                  environments: environments,
+                  selectedId: ref.watch(selectionProvider)?.assetId,
+                  onSelected: (environment) => ref
+                      .read(selectionProvider.notifier)
+                      .select(
+                        SelectionModel(
+                          assetId: environment.assetId,
+                          assetType: AssetType.environment,
+                          projectId: environment.projectId,
+                        ),
+                      ),
                 ),
                 const _ExplorerItem(
                   icon: Icons.menu_book_outlined,

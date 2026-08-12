@@ -8,6 +8,7 @@ import '../../assets/domain/asset_type.dart';
 import '../../character/presentation/character_workspace_screen.dart';
 import '../../wardrobe/presentation/wardrobe_workspace_screen.dart';
 import '../../weapon/presentation/weapon_workspace_screen.dart';
+import '../../environment/presentation/environment_workspace_screen.dart';
 
 class WorkspaceResolver extends ConsumerWidget {
   const WorkspaceResolver({super.key});
@@ -24,6 +25,9 @@ class WorkspaceResolver extends ConsumerWidget {
         wardrobeId: selection.assetId,
       ),
       AssetType.weapon => WeaponWorkspaceScreen(weaponId: selection.assetId),
+      AssetType.environment => EnvironmentWorkspaceScreen(
+        environmentId: selection.assetId,
+      ),
       _ => const ProjectOverview(),
     };
   }

@@ -11051,6 +11051,4735 @@ class WeaponPreservationProfilesCompanion
   }
 }
 
+class $EnvironmentsTable extends Environments
+    with TableInfo<$EnvironmentsTable, Environment> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EnvironmentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _environmentTypeMeta = const VerificationMeta(
+    'environmentType',
+  );
+  @override
+  late final GeneratedColumn<String> environmentType = GeneratedColumn<String>(
+    'environment_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _locationMeta = const VerificationMeta(
+    'location',
+  );
+  @override
+  late final GeneratedColumn<String> location = GeneratedColumn<String>(
+    'location',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _architectureMeta = const VerificationMeta(
+    'architecture',
+  );
+  @override
+  late final GeneratedColumn<String> architecture = GeneratedColumn<String>(
+    'architecture',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _terrainMeta = const VerificationMeta(
+    'terrain',
+  );
+  @override
+  late final GeneratedColumn<String> terrain = GeneratedColumn<String>(
+    'terrain',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    assetId,
+    projectId,
+    name,
+    environmentType,
+    description,
+    location,
+    architecture,
+    terrain,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'environments';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Environment> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('environment_type')) {
+      context.handle(
+        _environmentTypeMeta,
+        environmentType.isAcceptableOrUnknown(
+          data['environment_type']!,
+          _environmentTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('location')) {
+      context.handle(
+        _locationMeta,
+        location.isAcceptableOrUnknown(data['location']!, _locationMeta),
+      );
+    }
+    if (data.containsKey('architecture')) {
+      context.handle(
+        _architectureMeta,
+        architecture.isAcceptableOrUnknown(
+          data['architecture']!,
+          _architectureMeta,
+        ),
+      );
+    }
+    if (data.containsKey('terrain')) {
+      context.handle(
+        _terrainMeta,
+        terrain.isAcceptableOrUnknown(data['terrain']!, _terrainMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {assetId};
+  @override
+  Environment map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Environment(
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      environmentType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}environment_type'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      location: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}location'],
+      )!,
+      architecture: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}architecture'],
+      )!,
+      terrain: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}terrain'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+    );
+  }
+
+  @override
+  $EnvironmentsTable createAlias(String alias) {
+    return $EnvironmentsTable(attachedDatabase, alias);
+  }
+}
+
+class Environment extends DataClass implements Insertable<Environment> {
+  final String assetId;
+  final String projectId;
+  final String name;
+  final String environmentType;
+  final String description;
+  final String location;
+  final String architecture;
+  final String terrain;
+  final String notes;
+  const Environment({
+    required this.assetId,
+    required this.projectId,
+    required this.name,
+    required this.environmentType,
+    required this.description,
+    required this.location,
+    required this.architecture,
+    required this.terrain,
+    required this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['asset_id'] = Variable<String>(assetId);
+    map['project_id'] = Variable<String>(projectId);
+    map['name'] = Variable<String>(name);
+    map['environment_type'] = Variable<String>(environmentType);
+    map['description'] = Variable<String>(description);
+    map['location'] = Variable<String>(location);
+    map['architecture'] = Variable<String>(architecture);
+    map['terrain'] = Variable<String>(terrain);
+    map['notes'] = Variable<String>(notes);
+    return map;
+  }
+
+  EnvironmentsCompanion toCompanion(bool nullToAbsent) {
+    return EnvironmentsCompanion(
+      assetId: Value(assetId),
+      projectId: Value(projectId),
+      name: Value(name),
+      environmentType: Value(environmentType),
+      description: Value(description),
+      location: Value(location),
+      architecture: Value(architecture),
+      terrain: Value(terrain),
+      notes: Value(notes),
+    );
+  }
+
+  factory Environment.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Environment(
+      assetId: serializer.fromJson<String>(json['assetId']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      name: serializer.fromJson<String>(json['name']),
+      environmentType: serializer.fromJson<String>(json['environmentType']),
+      description: serializer.fromJson<String>(json['description']),
+      location: serializer.fromJson<String>(json['location']),
+      architecture: serializer.fromJson<String>(json['architecture']),
+      terrain: serializer.fromJson<String>(json['terrain']),
+      notes: serializer.fromJson<String>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'assetId': serializer.toJson<String>(assetId),
+      'projectId': serializer.toJson<String>(projectId),
+      'name': serializer.toJson<String>(name),
+      'environmentType': serializer.toJson<String>(environmentType),
+      'description': serializer.toJson<String>(description),
+      'location': serializer.toJson<String>(location),
+      'architecture': serializer.toJson<String>(architecture),
+      'terrain': serializer.toJson<String>(terrain),
+      'notes': serializer.toJson<String>(notes),
+    };
+  }
+
+  Environment copyWith({
+    String? assetId,
+    String? projectId,
+    String? name,
+    String? environmentType,
+    String? description,
+    String? location,
+    String? architecture,
+    String? terrain,
+    String? notes,
+  }) => Environment(
+    assetId: assetId ?? this.assetId,
+    projectId: projectId ?? this.projectId,
+    name: name ?? this.name,
+    environmentType: environmentType ?? this.environmentType,
+    description: description ?? this.description,
+    location: location ?? this.location,
+    architecture: architecture ?? this.architecture,
+    terrain: terrain ?? this.terrain,
+    notes: notes ?? this.notes,
+  );
+  Environment copyWithCompanion(EnvironmentsCompanion data) {
+    return Environment(
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      name: data.name.present ? data.name.value : this.name,
+      environmentType: data.environmentType.present
+          ? data.environmentType.value
+          : this.environmentType,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      location: data.location.present ? data.location.value : this.location,
+      architecture: data.architecture.present
+          ? data.architecture.value
+          : this.architecture,
+      terrain: data.terrain.present ? data.terrain.value : this.terrain,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Environment(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('environmentType: $environmentType, ')
+          ..write('description: $description, ')
+          ..write('location: $location, ')
+          ..write('architecture: $architecture, ')
+          ..write('terrain: $terrain, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    assetId,
+    projectId,
+    name,
+    environmentType,
+    description,
+    location,
+    architecture,
+    terrain,
+    notes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Environment &&
+          other.assetId == this.assetId &&
+          other.projectId == this.projectId &&
+          other.name == this.name &&
+          other.environmentType == this.environmentType &&
+          other.description == this.description &&
+          other.location == this.location &&
+          other.architecture == this.architecture &&
+          other.terrain == this.terrain &&
+          other.notes == this.notes);
+}
+
+class EnvironmentsCompanion extends UpdateCompanion<Environment> {
+  final Value<String> assetId;
+  final Value<String> projectId;
+  final Value<String> name;
+  final Value<String> environmentType;
+  final Value<String> description;
+  final Value<String> location;
+  final Value<String> architecture;
+  final Value<String> terrain;
+  final Value<String> notes;
+  final Value<int> rowid;
+  const EnvironmentsCompanion({
+    this.assetId = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.environmentType = const Value.absent(),
+    this.description = const Value.absent(),
+    this.location = const Value.absent(),
+    this.architecture = const Value.absent(),
+    this.terrain = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EnvironmentsCompanion.insert({
+    required String assetId,
+    required String projectId,
+    required String name,
+    this.environmentType = const Value.absent(),
+    this.description = const Value.absent(),
+    this.location = const Value.absent(),
+    this.architecture = const Value.absent(),
+    this.terrain = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : assetId = Value(assetId),
+       projectId = Value(projectId),
+       name = Value(name);
+  static Insertable<Environment> custom({
+    Expression<String>? assetId,
+    Expression<String>? projectId,
+    Expression<String>? name,
+    Expression<String>? environmentType,
+    Expression<String>? description,
+    Expression<String>? location,
+    Expression<String>? architecture,
+    Expression<String>? terrain,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (assetId != null) 'asset_id': assetId,
+      if (projectId != null) 'project_id': projectId,
+      if (name != null) 'name': name,
+      if (environmentType != null) 'environment_type': environmentType,
+      if (description != null) 'description': description,
+      if (location != null) 'location': location,
+      if (architecture != null) 'architecture': architecture,
+      if (terrain != null) 'terrain': terrain,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EnvironmentsCompanion copyWith({
+    Value<String>? assetId,
+    Value<String>? projectId,
+    Value<String>? name,
+    Value<String>? environmentType,
+    Value<String>? description,
+    Value<String>? location,
+    Value<String>? architecture,
+    Value<String>? terrain,
+    Value<String>? notes,
+    Value<int>? rowid,
+  }) {
+    return EnvironmentsCompanion(
+      assetId: assetId ?? this.assetId,
+      projectId: projectId ?? this.projectId,
+      name: name ?? this.name,
+      environmentType: environmentType ?? this.environmentType,
+      description: description ?? this.description,
+      location: location ?? this.location,
+      architecture: architecture ?? this.architecture,
+      terrain: terrain ?? this.terrain,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (environmentType.present) {
+      map['environment_type'] = Variable<String>(environmentType.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (location.present) {
+      map['location'] = Variable<String>(location.value);
+    }
+    if (architecture.present) {
+      map['architecture'] = Variable<String>(architecture.value);
+    }
+    if (terrain.present) {
+      map['terrain'] = Variable<String>(terrain.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentsCompanion(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('environmentType: $environmentType, ')
+          ..write('description: $description, ')
+          ..write('location: $location, ')
+          ..write('architecture: $architecture, ')
+          ..write('terrain: $terrain, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EnvironmentZonesTable extends EnvironmentZones
+    with TableInfo<$EnvironmentZonesTable, EnvironmentZone> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EnvironmentZonesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _environmentIdMeta = const VerificationMeta(
+    'environmentId',
+  );
+  @override
+  late final GeneratedColumn<String> environmentId = GeneratedColumn<String>(
+    'environment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _zoneTypeMeta = const VerificationMeta(
+    'zoneType',
+  );
+  @override
+  late final GeneratedColumn<String> zoneType = GeneratedColumn<String>(
+    'zone_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    environmentId,
+    name,
+    description,
+    zoneType,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'environment_zones';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EnvironmentZone> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('environment_id')) {
+      context.handle(
+        _environmentIdMeta,
+        environmentId.isAcceptableOrUnknown(
+          data['environment_id']!,
+          _environmentIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_environmentIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('zone_type')) {
+      context.handle(
+        _zoneTypeMeta,
+        zoneType.isAcceptableOrUnknown(data['zone_type']!, _zoneTypeMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EnvironmentZone map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EnvironmentZone(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      environmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}environment_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      zoneType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}zone_type'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $EnvironmentZonesTable createAlias(String alias) {
+    return $EnvironmentZonesTable(attachedDatabase, alias);
+  }
+}
+
+class EnvironmentZone extends DataClass implements Insertable<EnvironmentZone> {
+  final String id;
+  final String environmentId;
+  final String name;
+  final String description;
+  final String zoneType;
+  final int sortOrder;
+  const EnvironmentZone({
+    required this.id,
+    required this.environmentId,
+    required this.name,
+    required this.description,
+    required this.zoneType,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['environment_id'] = Variable<String>(environmentId);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['zone_type'] = Variable<String>(zoneType);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  EnvironmentZonesCompanion toCompanion(bool nullToAbsent) {
+    return EnvironmentZonesCompanion(
+      id: Value(id),
+      environmentId: Value(environmentId),
+      name: Value(name),
+      description: Value(description),
+      zoneType: Value(zoneType),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory EnvironmentZone.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EnvironmentZone(
+      id: serializer.fromJson<String>(json['id']),
+      environmentId: serializer.fromJson<String>(json['environmentId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      zoneType: serializer.fromJson<String>(json['zoneType']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'environmentId': serializer.toJson<String>(environmentId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'zoneType': serializer.toJson<String>(zoneType),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  EnvironmentZone copyWith({
+    String? id,
+    String? environmentId,
+    String? name,
+    String? description,
+    String? zoneType,
+    int? sortOrder,
+  }) => EnvironmentZone(
+    id: id ?? this.id,
+    environmentId: environmentId ?? this.environmentId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    zoneType: zoneType ?? this.zoneType,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  EnvironmentZone copyWithCompanion(EnvironmentZonesCompanion data) {
+    return EnvironmentZone(
+      id: data.id.present ? data.id.value : this.id,
+      environmentId: data.environmentId.present
+          ? data.environmentId.value
+          : this.environmentId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      zoneType: data.zoneType.present ? data.zoneType.value : this.zoneType,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentZone(')
+          ..write('id: $id, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('zoneType: $zoneType, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, environmentId, name, description, zoneType, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EnvironmentZone &&
+          other.id == this.id &&
+          other.environmentId == this.environmentId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.zoneType == this.zoneType &&
+          other.sortOrder == this.sortOrder);
+}
+
+class EnvironmentZonesCompanion extends UpdateCompanion<EnvironmentZone> {
+  final Value<String> id;
+  final Value<String> environmentId;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<String> zoneType;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const EnvironmentZonesCompanion({
+    this.id = const Value.absent(),
+    this.environmentId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.zoneType = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EnvironmentZonesCompanion.insert({
+    required String id,
+    required String environmentId,
+    required String name,
+    this.description = const Value.absent(),
+    this.zoneType = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       environmentId = Value(environmentId),
+       name = Value(name);
+  static Insertable<EnvironmentZone> custom({
+    Expression<String>? id,
+    Expression<String>? environmentId,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? zoneType,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (environmentId != null) 'environment_id': environmentId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (zoneType != null) 'zone_type': zoneType,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EnvironmentZonesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? environmentId,
+    Value<String>? name,
+    Value<String>? description,
+    Value<String>? zoneType,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return EnvironmentZonesCompanion(
+      id: id ?? this.id,
+      environmentId: environmentId ?? this.environmentId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      zoneType: zoneType ?? this.zoneType,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (environmentId.present) {
+      map['environment_id'] = Variable<String>(environmentId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (zoneType.present) {
+      map['zone_type'] = Variable<String>(zoneType.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentZonesCompanion(')
+          ..write('id: $id, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('zoneType: $zoneType, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EnvironmentArchitecturesTable extends EnvironmentArchitectures
+    with TableInfo<$EnvironmentArchitecturesTable, EnvironmentArchitecture> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EnvironmentArchitecturesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _environmentIdMeta = const VerificationMeta(
+    'environmentId',
+  );
+  @override
+  late final GeneratedColumn<String> environmentId = GeneratedColumn<String>(
+    'environment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _styleMeta = const VerificationMeta('style');
+  @override
+  late final GeneratedColumn<String> style = GeneratedColumn<String>(
+    'style',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _structureMeta = const VerificationMeta(
+    'structure',
+  );
+  @override
+  late final GeneratedColumn<String> structure = GeneratedColumn<String>(
+    'structure',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _materialsMeta = const VerificationMeta(
+    'materials',
+  );
+  @override
+  late final GeneratedColumn<String> materials = GeneratedColumn<String>(
+    'materials',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _scaleMeta = const VerificationMeta('scale');
+  @override
+  late final GeneratedColumn<String> scale = GeneratedColumn<String>(
+    'scale',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _conditionMeta = const VerificationMeta(
+    'condition',
+  );
+  @override
+  late final GeneratedColumn<String> condition = GeneratedColumn<String>(
+    'condition',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    environmentId,
+    style,
+    structure,
+    materials,
+    scale,
+    condition,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'environment_architectures';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EnvironmentArchitecture> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('environment_id')) {
+      context.handle(
+        _environmentIdMeta,
+        environmentId.isAcceptableOrUnknown(
+          data['environment_id']!,
+          _environmentIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_environmentIdMeta);
+    }
+    if (data.containsKey('style')) {
+      context.handle(
+        _styleMeta,
+        style.isAcceptableOrUnknown(data['style']!, _styleMeta),
+      );
+    }
+    if (data.containsKey('structure')) {
+      context.handle(
+        _structureMeta,
+        structure.isAcceptableOrUnknown(data['structure']!, _structureMeta),
+      );
+    }
+    if (data.containsKey('materials')) {
+      context.handle(
+        _materialsMeta,
+        materials.isAcceptableOrUnknown(data['materials']!, _materialsMeta),
+      );
+    }
+    if (data.containsKey('scale')) {
+      context.handle(
+        _scaleMeta,
+        scale.isAcceptableOrUnknown(data['scale']!, _scaleMeta),
+      );
+    }
+    if (data.containsKey('condition')) {
+      context.handle(
+        _conditionMeta,
+        condition.isAcceptableOrUnknown(data['condition']!, _conditionMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {environmentId};
+  @override
+  EnvironmentArchitecture map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EnvironmentArchitecture(
+      environmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}environment_id'],
+      )!,
+      style: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}style'],
+      )!,
+      structure: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}structure'],
+      )!,
+      materials: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}materials'],
+      )!,
+      scale: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scale'],
+      )!,
+      condition: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}condition'],
+      )!,
+    );
+  }
+
+  @override
+  $EnvironmentArchitecturesTable createAlias(String alias) {
+    return $EnvironmentArchitecturesTable(attachedDatabase, alias);
+  }
+}
+
+class EnvironmentArchitecture extends DataClass
+    implements Insertable<EnvironmentArchitecture> {
+  final String environmentId;
+  final String style;
+  final String structure;
+  final String materials;
+  final String scale;
+  final String condition;
+  const EnvironmentArchitecture({
+    required this.environmentId,
+    required this.style,
+    required this.structure,
+    required this.materials,
+    required this.scale,
+    required this.condition,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['environment_id'] = Variable<String>(environmentId);
+    map['style'] = Variable<String>(style);
+    map['structure'] = Variable<String>(structure);
+    map['materials'] = Variable<String>(materials);
+    map['scale'] = Variable<String>(scale);
+    map['condition'] = Variable<String>(condition);
+    return map;
+  }
+
+  EnvironmentArchitecturesCompanion toCompanion(bool nullToAbsent) {
+    return EnvironmentArchitecturesCompanion(
+      environmentId: Value(environmentId),
+      style: Value(style),
+      structure: Value(structure),
+      materials: Value(materials),
+      scale: Value(scale),
+      condition: Value(condition),
+    );
+  }
+
+  factory EnvironmentArchitecture.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EnvironmentArchitecture(
+      environmentId: serializer.fromJson<String>(json['environmentId']),
+      style: serializer.fromJson<String>(json['style']),
+      structure: serializer.fromJson<String>(json['structure']),
+      materials: serializer.fromJson<String>(json['materials']),
+      scale: serializer.fromJson<String>(json['scale']),
+      condition: serializer.fromJson<String>(json['condition']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'environmentId': serializer.toJson<String>(environmentId),
+      'style': serializer.toJson<String>(style),
+      'structure': serializer.toJson<String>(structure),
+      'materials': serializer.toJson<String>(materials),
+      'scale': serializer.toJson<String>(scale),
+      'condition': serializer.toJson<String>(condition),
+    };
+  }
+
+  EnvironmentArchitecture copyWith({
+    String? environmentId,
+    String? style,
+    String? structure,
+    String? materials,
+    String? scale,
+    String? condition,
+  }) => EnvironmentArchitecture(
+    environmentId: environmentId ?? this.environmentId,
+    style: style ?? this.style,
+    structure: structure ?? this.structure,
+    materials: materials ?? this.materials,
+    scale: scale ?? this.scale,
+    condition: condition ?? this.condition,
+  );
+  EnvironmentArchitecture copyWithCompanion(
+    EnvironmentArchitecturesCompanion data,
+  ) {
+    return EnvironmentArchitecture(
+      environmentId: data.environmentId.present
+          ? data.environmentId.value
+          : this.environmentId,
+      style: data.style.present ? data.style.value : this.style,
+      structure: data.structure.present ? data.structure.value : this.structure,
+      materials: data.materials.present ? data.materials.value : this.materials,
+      scale: data.scale.present ? data.scale.value : this.scale,
+      condition: data.condition.present ? data.condition.value : this.condition,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentArchitecture(')
+          ..write('environmentId: $environmentId, ')
+          ..write('style: $style, ')
+          ..write('structure: $structure, ')
+          ..write('materials: $materials, ')
+          ..write('scale: $scale, ')
+          ..write('condition: $condition')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(environmentId, style, structure, materials, scale, condition);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EnvironmentArchitecture &&
+          other.environmentId == this.environmentId &&
+          other.style == this.style &&
+          other.structure == this.structure &&
+          other.materials == this.materials &&
+          other.scale == this.scale &&
+          other.condition == this.condition);
+}
+
+class EnvironmentArchitecturesCompanion
+    extends UpdateCompanion<EnvironmentArchitecture> {
+  final Value<String> environmentId;
+  final Value<String> style;
+  final Value<String> structure;
+  final Value<String> materials;
+  final Value<String> scale;
+  final Value<String> condition;
+  final Value<int> rowid;
+  const EnvironmentArchitecturesCompanion({
+    this.environmentId = const Value.absent(),
+    this.style = const Value.absent(),
+    this.structure = const Value.absent(),
+    this.materials = const Value.absent(),
+    this.scale = const Value.absent(),
+    this.condition = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EnvironmentArchitecturesCompanion.insert({
+    required String environmentId,
+    this.style = const Value.absent(),
+    this.structure = const Value.absent(),
+    this.materials = const Value.absent(),
+    this.scale = const Value.absent(),
+    this.condition = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : environmentId = Value(environmentId);
+  static Insertable<EnvironmentArchitecture> custom({
+    Expression<String>? environmentId,
+    Expression<String>? style,
+    Expression<String>? structure,
+    Expression<String>? materials,
+    Expression<String>? scale,
+    Expression<String>? condition,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (environmentId != null) 'environment_id': environmentId,
+      if (style != null) 'style': style,
+      if (structure != null) 'structure': structure,
+      if (materials != null) 'materials': materials,
+      if (scale != null) 'scale': scale,
+      if (condition != null) 'condition': condition,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EnvironmentArchitecturesCompanion copyWith({
+    Value<String>? environmentId,
+    Value<String>? style,
+    Value<String>? structure,
+    Value<String>? materials,
+    Value<String>? scale,
+    Value<String>? condition,
+    Value<int>? rowid,
+  }) {
+    return EnvironmentArchitecturesCompanion(
+      environmentId: environmentId ?? this.environmentId,
+      style: style ?? this.style,
+      structure: structure ?? this.structure,
+      materials: materials ?? this.materials,
+      scale: scale ?? this.scale,
+      condition: condition ?? this.condition,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (environmentId.present) {
+      map['environment_id'] = Variable<String>(environmentId.value);
+    }
+    if (style.present) {
+      map['style'] = Variable<String>(style.value);
+    }
+    if (structure.present) {
+      map['structure'] = Variable<String>(structure.value);
+    }
+    if (materials.present) {
+      map['materials'] = Variable<String>(materials.value);
+    }
+    if (scale.present) {
+      map['scale'] = Variable<String>(scale.value);
+    }
+    if (condition.present) {
+      map['condition'] = Variable<String>(condition.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentArchitecturesCompanion(')
+          ..write('environmentId: $environmentId, ')
+          ..write('style: $style, ')
+          ..write('structure: $structure, ')
+          ..write('materials: $materials, ')
+          ..write('scale: $scale, ')
+          ..write('condition: $condition, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EnvironmentWeatherProfilesTable extends EnvironmentWeatherProfiles
+    with
+        TableInfo<$EnvironmentWeatherProfilesTable, EnvironmentWeatherProfile> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EnvironmentWeatherProfilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _environmentIdMeta = const VerificationMeta(
+    'environmentId',
+  );
+  @override
+  late final GeneratedColumn<String> environmentId = GeneratedColumn<String>(
+    'environment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weatherPresetMeta = const VerificationMeta(
+    'weatherPreset',
+  );
+  @override
+  late final GeneratedColumn<String> weatherPreset = GeneratedColumn<String>(
+    'weather_preset',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _intensityMeta = const VerificationMeta(
+    'intensity',
+  );
+  @override
+  late final GeneratedColumn<double> intensity = GeneratedColumn<double>(
+    'intensity',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1.0),
+  );
+  static const VerificationMeta _windStrengthMeta = const VerificationMeta(
+    'windStrength',
+  );
+  @override
+  late final GeneratedColumn<double> windStrength = GeneratedColumn<double>(
+    'wind_strength',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
+  static const VerificationMeta _visibilityMeta = const VerificationMeta(
+    'visibility',
+  );
+  @override
+  late final GeneratedColumn<double> visibility = GeneratedColumn<double>(
+    'visibility',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1.0),
+  );
+  static const VerificationMeta _isDefaultMeta = const VerificationMeta(
+    'isDefault',
+  );
+  @override
+  late final GeneratedColumn<bool> isDefault = GeneratedColumn<bool>(
+    'is_default',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_default" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    environmentId,
+    name,
+    weatherPreset,
+    intensity,
+    windStrength,
+    visibility,
+    isDefault,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'environment_weather_profiles';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EnvironmentWeatherProfile> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('environment_id')) {
+      context.handle(
+        _environmentIdMeta,
+        environmentId.isAcceptableOrUnknown(
+          data['environment_id']!,
+          _environmentIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_environmentIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('weather_preset')) {
+      context.handle(
+        _weatherPresetMeta,
+        weatherPreset.isAcceptableOrUnknown(
+          data['weather_preset']!,
+          _weatherPresetMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_weatherPresetMeta);
+    }
+    if (data.containsKey('intensity')) {
+      context.handle(
+        _intensityMeta,
+        intensity.isAcceptableOrUnknown(data['intensity']!, _intensityMeta),
+      );
+    }
+    if (data.containsKey('wind_strength')) {
+      context.handle(
+        _windStrengthMeta,
+        windStrength.isAcceptableOrUnknown(
+          data['wind_strength']!,
+          _windStrengthMeta,
+        ),
+      );
+    }
+    if (data.containsKey('visibility')) {
+      context.handle(
+        _visibilityMeta,
+        visibility.isAcceptableOrUnknown(data['visibility']!, _visibilityMeta),
+      );
+    }
+    if (data.containsKey('is_default')) {
+      context.handle(
+        _isDefaultMeta,
+        isDefault.isAcceptableOrUnknown(data['is_default']!, _isDefaultMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EnvironmentWeatherProfile map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EnvironmentWeatherProfile(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      environmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}environment_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      weatherPreset: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weather_preset'],
+      )!,
+      intensity: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}intensity'],
+      )!,
+      windStrength: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}wind_strength'],
+      )!,
+      visibility: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}visibility'],
+      )!,
+      isDefault: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_default'],
+      )!,
+    );
+  }
+
+  @override
+  $EnvironmentWeatherProfilesTable createAlias(String alias) {
+    return $EnvironmentWeatherProfilesTable(attachedDatabase, alias);
+  }
+}
+
+class EnvironmentWeatherProfile extends DataClass
+    implements Insertable<EnvironmentWeatherProfile> {
+  final String id;
+  final String environmentId;
+  final String name;
+  final String weatherPreset;
+  final double intensity;
+  final double windStrength;
+  final double visibility;
+  final bool isDefault;
+  const EnvironmentWeatherProfile({
+    required this.id,
+    required this.environmentId,
+    required this.name,
+    required this.weatherPreset,
+    required this.intensity,
+    required this.windStrength,
+    required this.visibility,
+    required this.isDefault,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['environment_id'] = Variable<String>(environmentId);
+    map['name'] = Variable<String>(name);
+    map['weather_preset'] = Variable<String>(weatherPreset);
+    map['intensity'] = Variable<double>(intensity);
+    map['wind_strength'] = Variable<double>(windStrength);
+    map['visibility'] = Variable<double>(visibility);
+    map['is_default'] = Variable<bool>(isDefault);
+    return map;
+  }
+
+  EnvironmentWeatherProfilesCompanion toCompanion(bool nullToAbsent) {
+    return EnvironmentWeatherProfilesCompanion(
+      id: Value(id),
+      environmentId: Value(environmentId),
+      name: Value(name),
+      weatherPreset: Value(weatherPreset),
+      intensity: Value(intensity),
+      windStrength: Value(windStrength),
+      visibility: Value(visibility),
+      isDefault: Value(isDefault),
+    );
+  }
+
+  factory EnvironmentWeatherProfile.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EnvironmentWeatherProfile(
+      id: serializer.fromJson<String>(json['id']),
+      environmentId: serializer.fromJson<String>(json['environmentId']),
+      name: serializer.fromJson<String>(json['name']),
+      weatherPreset: serializer.fromJson<String>(json['weatherPreset']),
+      intensity: serializer.fromJson<double>(json['intensity']),
+      windStrength: serializer.fromJson<double>(json['windStrength']),
+      visibility: serializer.fromJson<double>(json['visibility']),
+      isDefault: serializer.fromJson<bool>(json['isDefault']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'environmentId': serializer.toJson<String>(environmentId),
+      'name': serializer.toJson<String>(name),
+      'weatherPreset': serializer.toJson<String>(weatherPreset),
+      'intensity': serializer.toJson<double>(intensity),
+      'windStrength': serializer.toJson<double>(windStrength),
+      'visibility': serializer.toJson<double>(visibility),
+      'isDefault': serializer.toJson<bool>(isDefault),
+    };
+  }
+
+  EnvironmentWeatherProfile copyWith({
+    String? id,
+    String? environmentId,
+    String? name,
+    String? weatherPreset,
+    double? intensity,
+    double? windStrength,
+    double? visibility,
+    bool? isDefault,
+  }) => EnvironmentWeatherProfile(
+    id: id ?? this.id,
+    environmentId: environmentId ?? this.environmentId,
+    name: name ?? this.name,
+    weatherPreset: weatherPreset ?? this.weatherPreset,
+    intensity: intensity ?? this.intensity,
+    windStrength: windStrength ?? this.windStrength,
+    visibility: visibility ?? this.visibility,
+    isDefault: isDefault ?? this.isDefault,
+  );
+  EnvironmentWeatherProfile copyWithCompanion(
+    EnvironmentWeatherProfilesCompanion data,
+  ) {
+    return EnvironmentWeatherProfile(
+      id: data.id.present ? data.id.value : this.id,
+      environmentId: data.environmentId.present
+          ? data.environmentId.value
+          : this.environmentId,
+      name: data.name.present ? data.name.value : this.name,
+      weatherPreset: data.weatherPreset.present
+          ? data.weatherPreset.value
+          : this.weatherPreset,
+      intensity: data.intensity.present ? data.intensity.value : this.intensity,
+      windStrength: data.windStrength.present
+          ? data.windStrength.value
+          : this.windStrength,
+      visibility: data.visibility.present
+          ? data.visibility.value
+          : this.visibility,
+      isDefault: data.isDefault.present ? data.isDefault.value : this.isDefault,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentWeatherProfile(')
+          ..write('id: $id, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('name: $name, ')
+          ..write('weatherPreset: $weatherPreset, ')
+          ..write('intensity: $intensity, ')
+          ..write('windStrength: $windStrength, ')
+          ..write('visibility: $visibility, ')
+          ..write('isDefault: $isDefault')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    environmentId,
+    name,
+    weatherPreset,
+    intensity,
+    windStrength,
+    visibility,
+    isDefault,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EnvironmentWeatherProfile &&
+          other.id == this.id &&
+          other.environmentId == this.environmentId &&
+          other.name == this.name &&
+          other.weatherPreset == this.weatherPreset &&
+          other.intensity == this.intensity &&
+          other.windStrength == this.windStrength &&
+          other.visibility == this.visibility &&
+          other.isDefault == this.isDefault);
+}
+
+class EnvironmentWeatherProfilesCompanion
+    extends UpdateCompanion<EnvironmentWeatherProfile> {
+  final Value<String> id;
+  final Value<String> environmentId;
+  final Value<String> name;
+  final Value<String> weatherPreset;
+  final Value<double> intensity;
+  final Value<double> windStrength;
+  final Value<double> visibility;
+  final Value<bool> isDefault;
+  final Value<int> rowid;
+  const EnvironmentWeatherProfilesCompanion({
+    this.id = const Value.absent(),
+    this.environmentId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.weatherPreset = const Value.absent(),
+    this.intensity = const Value.absent(),
+    this.windStrength = const Value.absent(),
+    this.visibility = const Value.absent(),
+    this.isDefault = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EnvironmentWeatherProfilesCompanion.insert({
+    required String id,
+    required String environmentId,
+    required String name,
+    required String weatherPreset,
+    this.intensity = const Value.absent(),
+    this.windStrength = const Value.absent(),
+    this.visibility = const Value.absent(),
+    this.isDefault = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       environmentId = Value(environmentId),
+       name = Value(name),
+       weatherPreset = Value(weatherPreset);
+  static Insertable<EnvironmentWeatherProfile> custom({
+    Expression<String>? id,
+    Expression<String>? environmentId,
+    Expression<String>? name,
+    Expression<String>? weatherPreset,
+    Expression<double>? intensity,
+    Expression<double>? windStrength,
+    Expression<double>? visibility,
+    Expression<bool>? isDefault,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (environmentId != null) 'environment_id': environmentId,
+      if (name != null) 'name': name,
+      if (weatherPreset != null) 'weather_preset': weatherPreset,
+      if (intensity != null) 'intensity': intensity,
+      if (windStrength != null) 'wind_strength': windStrength,
+      if (visibility != null) 'visibility': visibility,
+      if (isDefault != null) 'is_default': isDefault,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EnvironmentWeatherProfilesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? environmentId,
+    Value<String>? name,
+    Value<String>? weatherPreset,
+    Value<double>? intensity,
+    Value<double>? windStrength,
+    Value<double>? visibility,
+    Value<bool>? isDefault,
+    Value<int>? rowid,
+  }) {
+    return EnvironmentWeatherProfilesCompanion(
+      id: id ?? this.id,
+      environmentId: environmentId ?? this.environmentId,
+      name: name ?? this.name,
+      weatherPreset: weatherPreset ?? this.weatherPreset,
+      intensity: intensity ?? this.intensity,
+      windStrength: windStrength ?? this.windStrength,
+      visibility: visibility ?? this.visibility,
+      isDefault: isDefault ?? this.isDefault,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (environmentId.present) {
+      map['environment_id'] = Variable<String>(environmentId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (weatherPreset.present) {
+      map['weather_preset'] = Variable<String>(weatherPreset.value);
+    }
+    if (intensity.present) {
+      map['intensity'] = Variable<double>(intensity.value);
+    }
+    if (windStrength.present) {
+      map['wind_strength'] = Variable<double>(windStrength.value);
+    }
+    if (visibility.present) {
+      map['visibility'] = Variable<double>(visibility.value);
+    }
+    if (isDefault.present) {
+      map['is_default'] = Variable<bool>(isDefault.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentWeatherProfilesCompanion(')
+          ..write('id: $id, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('name: $name, ')
+          ..write('weatherPreset: $weatherPreset, ')
+          ..write('intensity: $intensity, ')
+          ..write('windStrength: $windStrength, ')
+          ..write('visibility: $visibility, ')
+          ..write('isDefault: $isDefault, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EnvironmentLightingProfilesTable extends EnvironmentLightingProfiles
+    with
+        TableInfo<
+          $EnvironmentLightingProfilesTable,
+          EnvironmentLightingProfile
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EnvironmentLightingProfilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _environmentIdMeta = const VerificationMeta(
+    'environmentId',
+  );
+  @override
+  late final GeneratedColumn<String> environmentId = GeneratedColumn<String>(
+    'environment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timePresetMeta = const VerificationMeta(
+    'timePreset',
+  );
+  @override
+  late final GeneratedColumn<String> timePreset = GeneratedColumn<String>(
+    'time_preset',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _keyLightMeta = const VerificationMeta(
+    'keyLight',
+  );
+  @override
+  late final GeneratedColumn<String> keyLight = GeneratedColumn<String>(
+    'key_light',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _fillLightMeta = const VerificationMeta(
+    'fillLight',
+  );
+  @override
+  late final GeneratedColumn<String> fillLight = GeneratedColumn<String>(
+    'fill_light',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _rimLightMeta = const VerificationMeta(
+    'rimLight',
+  );
+  @override
+  late final GeneratedColumn<String> rimLight = GeneratedColumn<String>(
+    'rim_light',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _environmentLightMeta = const VerificationMeta(
+    'environmentLight',
+  );
+  @override
+  late final GeneratedColumn<String> environmentLight = GeneratedColumn<String>(
+    'environment_light',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _practicalLightsMeta = const VerificationMeta(
+    'practicalLights',
+  );
+  @override
+  late final GeneratedColumn<String> practicalLights = GeneratedColumn<String>(
+    'practical_lights',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _fogDensityMeta = const VerificationMeta(
+    'fogDensity',
+  );
+  @override
+  late final GeneratedColumn<double> fogDensity = GeneratedColumn<double>(
+    'fog_density',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
+  static const VerificationMeta _bloomIntensityMeta = const VerificationMeta(
+    'bloomIntensity',
+  );
+  @override
+  late final GeneratedColumn<double> bloomIntensity = GeneratedColumn<double>(
+    'bloom_intensity',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    environmentId,
+    name,
+    timePreset,
+    keyLight,
+    fillLight,
+    rimLight,
+    environmentLight,
+    practicalLights,
+    fogDensity,
+    bloomIntensity,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'environment_lighting_profiles';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EnvironmentLightingProfile> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('environment_id')) {
+      context.handle(
+        _environmentIdMeta,
+        environmentId.isAcceptableOrUnknown(
+          data['environment_id']!,
+          _environmentIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_environmentIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('time_preset')) {
+      context.handle(
+        _timePresetMeta,
+        timePreset.isAcceptableOrUnknown(data['time_preset']!, _timePresetMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timePresetMeta);
+    }
+    if (data.containsKey('key_light')) {
+      context.handle(
+        _keyLightMeta,
+        keyLight.isAcceptableOrUnknown(data['key_light']!, _keyLightMeta),
+      );
+    }
+    if (data.containsKey('fill_light')) {
+      context.handle(
+        _fillLightMeta,
+        fillLight.isAcceptableOrUnknown(data['fill_light']!, _fillLightMeta),
+      );
+    }
+    if (data.containsKey('rim_light')) {
+      context.handle(
+        _rimLightMeta,
+        rimLight.isAcceptableOrUnknown(data['rim_light']!, _rimLightMeta),
+      );
+    }
+    if (data.containsKey('environment_light')) {
+      context.handle(
+        _environmentLightMeta,
+        environmentLight.isAcceptableOrUnknown(
+          data['environment_light']!,
+          _environmentLightMeta,
+        ),
+      );
+    }
+    if (data.containsKey('practical_lights')) {
+      context.handle(
+        _practicalLightsMeta,
+        practicalLights.isAcceptableOrUnknown(
+          data['practical_lights']!,
+          _practicalLightsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fog_density')) {
+      context.handle(
+        _fogDensityMeta,
+        fogDensity.isAcceptableOrUnknown(data['fog_density']!, _fogDensityMeta),
+      );
+    }
+    if (data.containsKey('bloom_intensity')) {
+      context.handle(
+        _bloomIntensityMeta,
+        bloomIntensity.isAcceptableOrUnknown(
+          data['bloom_intensity']!,
+          _bloomIntensityMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EnvironmentLightingProfile map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EnvironmentLightingProfile(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      environmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}environment_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      timePreset: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}time_preset'],
+      )!,
+      keyLight: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}key_light'],
+      )!,
+      fillLight: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}fill_light'],
+      )!,
+      rimLight: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}rim_light'],
+      )!,
+      environmentLight: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}environment_light'],
+      )!,
+      practicalLights: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}practical_lights'],
+      )!,
+      fogDensity: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}fog_density'],
+      )!,
+      bloomIntensity: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}bloom_intensity'],
+      )!,
+    );
+  }
+
+  @override
+  $EnvironmentLightingProfilesTable createAlias(String alias) {
+    return $EnvironmentLightingProfilesTable(attachedDatabase, alias);
+  }
+}
+
+class EnvironmentLightingProfile extends DataClass
+    implements Insertable<EnvironmentLightingProfile> {
+  final String id;
+  final String environmentId;
+  final String name;
+  final String timePreset;
+  final String keyLight;
+  final String fillLight;
+  final String rimLight;
+  final String environmentLight;
+  final String practicalLights;
+  final double fogDensity;
+  final double bloomIntensity;
+  const EnvironmentLightingProfile({
+    required this.id,
+    required this.environmentId,
+    required this.name,
+    required this.timePreset,
+    required this.keyLight,
+    required this.fillLight,
+    required this.rimLight,
+    required this.environmentLight,
+    required this.practicalLights,
+    required this.fogDensity,
+    required this.bloomIntensity,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['environment_id'] = Variable<String>(environmentId);
+    map['name'] = Variable<String>(name);
+    map['time_preset'] = Variable<String>(timePreset);
+    map['key_light'] = Variable<String>(keyLight);
+    map['fill_light'] = Variable<String>(fillLight);
+    map['rim_light'] = Variable<String>(rimLight);
+    map['environment_light'] = Variable<String>(environmentLight);
+    map['practical_lights'] = Variable<String>(practicalLights);
+    map['fog_density'] = Variable<double>(fogDensity);
+    map['bloom_intensity'] = Variable<double>(bloomIntensity);
+    return map;
+  }
+
+  EnvironmentLightingProfilesCompanion toCompanion(bool nullToAbsent) {
+    return EnvironmentLightingProfilesCompanion(
+      id: Value(id),
+      environmentId: Value(environmentId),
+      name: Value(name),
+      timePreset: Value(timePreset),
+      keyLight: Value(keyLight),
+      fillLight: Value(fillLight),
+      rimLight: Value(rimLight),
+      environmentLight: Value(environmentLight),
+      practicalLights: Value(practicalLights),
+      fogDensity: Value(fogDensity),
+      bloomIntensity: Value(bloomIntensity),
+    );
+  }
+
+  factory EnvironmentLightingProfile.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EnvironmentLightingProfile(
+      id: serializer.fromJson<String>(json['id']),
+      environmentId: serializer.fromJson<String>(json['environmentId']),
+      name: serializer.fromJson<String>(json['name']),
+      timePreset: serializer.fromJson<String>(json['timePreset']),
+      keyLight: serializer.fromJson<String>(json['keyLight']),
+      fillLight: serializer.fromJson<String>(json['fillLight']),
+      rimLight: serializer.fromJson<String>(json['rimLight']),
+      environmentLight: serializer.fromJson<String>(json['environmentLight']),
+      practicalLights: serializer.fromJson<String>(json['practicalLights']),
+      fogDensity: serializer.fromJson<double>(json['fogDensity']),
+      bloomIntensity: serializer.fromJson<double>(json['bloomIntensity']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'environmentId': serializer.toJson<String>(environmentId),
+      'name': serializer.toJson<String>(name),
+      'timePreset': serializer.toJson<String>(timePreset),
+      'keyLight': serializer.toJson<String>(keyLight),
+      'fillLight': serializer.toJson<String>(fillLight),
+      'rimLight': serializer.toJson<String>(rimLight),
+      'environmentLight': serializer.toJson<String>(environmentLight),
+      'practicalLights': serializer.toJson<String>(practicalLights),
+      'fogDensity': serializer.toJson<double>(fogDensity),
+      'bloomIntensity': serializer.toJson<double>(bloomIntensity),
+    };
+  }
+
+  EnvironmentLightingProfile copyWith({
+    String? id,
+    String? environmentId,
+    String? name,
+    String? timePreset,
+    String? keyLight,
+    String? fillLight,
+    String? rimLight,
+    String? environmentLight,
+    String? practicalLights,
+    double? fogDensity,
+    double? bloomIntensity,
+  }) => EnvironmentLightingProfile(
+    id: id ?? this.id,
+    environmentId: environmentId ?? this.environmentId,
+    name: name ?? this.name,
+    timePreset: timePreset ?? this.timePreset,
+    keyLight: keyLight ?? this.keyLight,
+    fillLight: fillLight ?? this.fillLight,
+    rimLight: rimLight ?? this.rimLight,
+    environmentLight: environmentLight ?? this.environmentLight,
+    practicalLights: practicalLights ?? this.practicalLights,
+    fogDensity: fogDensity ?? this.fogDensity,
+    bloomIntensity: bloomIntensity ?? this.bloomIntensity,
+  );
+  EnvironmentLightingProfile copyWithCompanion(
+    EnvironmentLightingProfilesCompanion data,
+  ) {
+    return EnvironmentLightingProfile(
+      id: data.id.present ? data.id.value : this.id,
+      environmentId: data.environmentId.present
+          ? data.environmentId.value
+          : this.environmentId,
+      name: data.name.present ? data.name.value : this.name,
+      timePreset: data.timePreset.present
+          ? data.timePreset.value
+          : this.timePreset,
+      keyLight: data.keyLight.present ? data.keyLight.value : this.keyLight,
+      fillLight: data.fillLight.present ? data.fillLight.value : this.fillLight,
+      rimLight: data.rimLight.present ? data.rimLight.value : this.rimLight,
+      environmentLight: data.environmentLight.present
+          ? data.environmentLight.value
+          : this.environmentLight,
+      practicalLights: data.practicalLights.present
+          ? data.practicalLights.value
+          : this.practicalLights,
+      fogDensity: data.fogDensity.present
+          ? data.fogDensity.value
+          : this.fogDensity,
+      bloomIntensity: data.bloomIntensity.present
+          ? data.bloomIntensity.value
+          : this.bloomIntensity,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentLightingProfile(')
+          ..write('id: $id, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('name: $name, ')
+          ..write('timePreset: $timePreset, ')
+          ..write('keyLight: $keyLight, ')
+          ..write('fillLight: $fillLight, ')
+          ..write('rimLight: $rimLight, ')
+          ..write('environmentLight: $environmentLight, ')
+          ..write('practicalLights: $practicalLights, ')
+          ..write('fogDensity: $fogDensity, ')
+          ..write('bloomIntensity: $bloomIntensity')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    environmentId,
+    name,
+    timePreset,
+    keyLight,
+    fillLight,
+    rimLight,
+    environmentLight,
+    practicalLights,
+    fogDensity,
+    bloomIntensity,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EnvironmentLightingProfile &&
+          other.id == this.id &&
+          other.environmentId == this.environmentId &&
+          other.name == this.name &&
+          other.timePreset == this.timePreset &&
+          other.keyLight == this.keyLight &&
+          other.fillLight == this.fillLight &&
+          other.rimLight == this.rimLight &&
+          other.environmentLight == this.environmentLight &&
+          other.practicalLights == this.practicalLights &&
+          other.fogDensity == this.fogDensity &&
+          other.bloomIntensity == this.bloomIntensity);
+}
+
+class EnvironmentLightingProfilesCompanion
+    extends UpdateCompanion<EnvironmentLightingProfile> {
+  final Value<String> id;
+  final Value<String> environmentId;
+  final Value<String> name;
+  final Value<String> timePreset;
+  final Value<String> keyLight;
+  final Value<String> fillLight;
+  final Value<String> rimLight;
+  final Value<String> environmentLight;
+  final Value<String> practicalLights;
+  final Value<double> fogDensity;
+  final Value<double> bloomIntensity;
+  final Value<int> rowid;
+  const EnvironmentLightingProfilesCompanion({
+    this.id = const Value.absent(),
+    this.environmentId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.timePreset = const Value.absent(),
+    this.keyLight = const Value.absent(),
+    this.fillLight = const Value.absent(),
+    this.rimLight = const Value.absent(),
+    this.environmentLight = const Value.absent(),
+    this.practicalLights = const Value.absent(),
+    this.fogDensity = const Value.absent(),
+    this.bloomIntensity = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EnvironmentLightingProfilesCompanion.insert({
+    required String id,
+    required String environmentId,
+    required String name,
+    required String timePreset,
+    this.keyLight = const Value.absent(),
+    this.fillLight = const Value.absent(),
+    this.rimLight = const Value.absent(),
+    this.environmentLight = const Value.absent(),
+    this.practicalLights = const Value.absent(),
+    this.fogDensity = const Value.absent(),
+    this.bloomIntensity = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       environmentId = Value(environmentId),
+       name = Value(name),
+       timePreset = Value(timePreset);
+  static Insertable<EnvironmentLightingProfile> custom({
+    Expression<String>? id,
+    Expression<String>? environmentId,
+    Expression<String>? name,
+    Expression<String>? timePreset,
+    Expression<String>? keyLight,
+    Expression<String>? fillLight,
+    Expression<String>? rimLight,
+    Expression<String>? environmentLight,
+    Expression<String>? practicalLights,
+    Expression<double>? fogDensity,
+    Expression<double>? bloomIntensity,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (environmentId != null) 'environment_id': environmentId,
+      if (name != null) 'name': name,
+      if (timePreset != null) 'time_preset': timePreset,
+      if (keyLight != null) 'key_light': keyLight,
+      if (fillLight != null) 'fill_light': fillLight,
+      if (rimLight != null) 'rim_light': rimLight,
+      if (environmentLight != null) 'environment_light': environmentLight,
+      if (practicalLights != null) 'practical_lights': practicalLights,
+      if (fogDensity != null) 'fog_density': fogDensity,
+      if (bloomIntensity != null) 'bloom_intensity': bloomIntensity,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EnvironmentLightingProfilesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? environmentId,
+    Value<String>? name,
+    Value<String>? timePreset,
+    Value<String>? keyLight,
+    Value<String>? fillLight,
+    Value<String>? rimLight,
+    Value<String>? environmentLight,
+    Value<String>? practicalLights,
+    Value<double>? fogDensity,
+    Value<double>? bloomIntensity,
+    Value<int>? rowid,
+  }) {
+    return EnvironmentLightingProfilesCompanion(
+      id: id ?? this.id,
+      environmentId: environmentId ?? this.environmentId,
+      name: name ?? this.name,
+      timePreset: timePreset ?? this.timePreset,
+      keyLight: keyLight ?? this.keyLight,
+      fillLight: fillLight ?? this.fillLight,
+      rimLight: rimLight ?? this.rimLight,
+      environmentLight: environmentLight ?? this.environmentLight,
+      practicalLights: practicalLights ?? this.practicalLights,
+      fogDensity: fogDensity ?? this.fogDensity,
+      bloomIntensity: bloomIntensity ?? this.bloomIntensity,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (environmentId.present) {
+      map['environment_id'] = Variable<String>(environmentId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (timePreset.present) {
+      map['time_preset'] = Variable<String>(timePreset.value);
+    }
+    if (keyLight.present) {
+      map['key_light'] = Variable<String>(keyLight.value);
+    }
+    if (fillLight.present) {
+      map['fill_light'] = Variable<String>(fillLight.value);
+    }
+    if (rimLight.present) {
+      map['rim_light'] = Variable<String>(rimLight.value);
+    }
+    if (environmentLight.present) {
+      map['environment_light'] = Variable<String>(environmentLight.value);
+    }
+    if (practicalLights.present) {
+      map['practical_lights'] = Variable<String>(practicalLights.value);
+    }
+    if (fogDensity.present) {
+      map['fog_density'] = Variable<double>(fogDensity.value);
+    }
+    if (bloomIntensity.present) {
+      map['bloom_intensity'] = Variable<double>(bloomIntensity.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentLightingProfilesCompanion(')
+          ..write('id: $id, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('name: $name, ')
+          ..write('timePreset: $timePreset, ')
+          ..write('keyLight: $keyLight, ')
+          ..write('fillLight: $fillLight, ')
+          ..write('rimLight: $rimLight, ')
+          ..write('environmentLight: $environmentLight, ')
+          ..write('practicalLights: $practicalLights, ')
+          ..write('fogDensity: $fogDensity, ')
+          ..write('bloomIntensity: $bloomIntensity, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EnvironmentColorsTable extends EnvironmentColors
+    with TableInfo<$EnvironmentColorsTable, EnvironmentColor> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EnvironmentColorsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _environmentIdMeta = const VerificationMeta(
+    'environmentId',
+  );
+  @override
+  late final GeneratedColumn<String> environmentId = GeneratedColumn<String>(
+    'environment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hexValueMeta = const VerificationMeta(
+    'hexValue',
+  );
+  @override
+  late final GeneratedColumn<String> hexValue = GeneratedColumn<String>(
+    'hex_value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _usageMeta = const VerificationMeta('usage');
+  @override
+  late final GeneratedColumn<String> usage = GeneratedColumn<String>(
+    'usage',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    environmentId,
+    name,
+    hexValue,
+    usage,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'environment_colors';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EnvironmentColor> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('environment_id')) {
+      context.handle(
+        _environmentIdMeta,
+        environmentId.isAcceptableOrUnknown(
+          data['environment_id']!,
+          _environmentIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_environmentIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('hex_value')) {
+      context.handle(
+        _hexValueMeta,
+        hexValue.isAcceptableOrUnknown(data['hex_value']!, _hexValueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hexValueMeta);
+    }
+    if (data.containsKey('usage')) {
+      context.handle(
+        _usageMeta,
+        usage.isAcceptableOrUnknown(data['usage']!, _usageMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EnvironmentColor map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EnvironmentColor(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      environmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}environment_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      hexValue: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hex_value'],
+      )!,
+      usage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}usage'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $EnvironmentColorsTable createAlias(String alias) {
+    return $EnvironmentColorsTable(attachedDatabase, alias);
+  }
+}
+
+class EnvironmentColor extends DataClass
+    implements Insertable<EnvironmentColor> {
+  final String id;
+  final String environmentId;
+  final String name;
+  final String hexValue;
+  final String usage;
+  final int sortOrder;
+  const EnvironmentColor({
+    required this.id,
+    required this.environmentId,
+    required this.name,
+    required this.hexValue,
+    required this.usage,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['environment_id'] = Variable<String>(environmentId);
+    map['name'] = Variable<String>(name);
+    map['hex_value'] = Variable<String>(hexValue);
+    map['usage'] = Variable<String>(usage);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  EnvironmentColorsCompanion toCompanion(bool nullToAbsent) {
+    return EnvironmentColorsCompanion(
+      id: Value(id),
+      environmentId: Value(environmentId),
+      name: Value(name),
+      hexValue: Value(hexValue),
+      usage: Value(usage),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory EnvironmentColor.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EnvironmentColor(
+      id: serializer.fromJson<String>(json['id']),
+      environmentId: serializer.fromJson<String>(json['environmentId']),
+      name: serializer.fromJson<String>(json['name']),
+      hexValue: serializer.fromJson<String>(json['hexValue']),
+      usage: serializer.fromJson<String>(json['usage']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'environmentId': serializer.toJson<String>(environmentId),
+      'name': serializer.toJson<String>(name),
+      'hexValue': serializer.toJson<String>(hexValue),
+      'usage': serializer.toJson<String>(usage),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  EnvironmentColor copyWith({
+    String? id,
+    String? environmentId,
+    String? name,
+    String? hexValue,
+    String? usage,
+    int? sortOrder,
+  }) => EnvironmentColor(
+    id: id ?? this.id,
+    environmentId: environmentId ?? this.environmentId,
+    name: name ?? this.name,
+    hexValue: hexValue ?? this.hexValue,
+    usage: usage ?? this.usage,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  EnvironmentColor copyWithCompanion(EnvironmentColorsCompanion data) {
+    return EnvironmentColor(
+      id: data.id.present ? data.id.value : this.id,
+      environmentId: data.environmentId.present
+          ? data.environmentId.value
+          : this.environmentId,
+      name: data.name.present ? data.name.value : this.name,
+      hexValue: data.hexValue.present ? data.hexValue.value : this.hexValue,
+      usage: data.usage.present ? data.usage.value : this.usage,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentColor(')
+          ..write('id: $id, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('name: $name, ')
+          ..write('hexValue: $hexValue, ')
+          ..write('usage: $usage, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, environmentId, name, hexValue, usage, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EnvironmentColor &&
+          other.id == this.id &&
+          other.environmentId == this.environmentId &&
+          other.name == this.name &&
+          other.hexValue == this.hexValue &&
+          other.usage == this.usage &&
+          other.sortOrder == this.sortOrder);
+}
+
+class EnvironmentColorsCompanion extends UpdateCompanion<EnvironmentColor> {
+  final Value<String> id;
+  final Value<String> environmentId;
+  final Value<String> name;
+  final Value<String> hexValue;
+  final Value<String> usage;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const EnvironmentColorsCompanion({
+    this.id = const Value.absent(),
+    this.environmentId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.hexValue = const Value.absent(),
+    this.usage = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EnvironmentColorsCompanion.insert({
+    required String id,
+    required String environmentId,
+    required String name,
+    required String hexValue,
+    this.usage = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       environmentId = Value(environmentId),
+       name = Value(name),
+       hexValue = Value(hexValue);
+  static Insertable<EnvironmentColor> custom({
+    Expression<String>? id,
+    Expression<String>? environmentId,
+    Expression<String>? name,
+    Expression<String>? hexValue,
+    Expression<String>? usage,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (environmentId != null) 'environment_id': environmentId,
+      if (name != null) 'name': name,
+      if (hexValue != null) 'hex_value': hexValue,
+      if (usage != null) 'usage': usage,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EnvironmentColorsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? environmentId,
+    Value<String>? name,
+    Value<String>? hexValue,
+    Value<String>? usage,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return EnvironmentColorsCompanion(
+      id: id ?? this.id,
+      environmentId: environmentId ?? this.environmentId,
+      name: name ?? this.name,
+      hexValue: hexValue ?? this.hexValue,
+      usage: usage ?? this.usage,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (environmentId.present) {
+      map['environment_id'] = Variable<String>(environmentId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (hexValue.present) {
+      map['hex_value'] = Variable<String>(hexValue.value);
+    }
+    if (usage.present) {
+      map['usage'] = Variable<String>(usage.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentColorsCompanion(')
+          ..write('id: $id, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('name: $name, ')
+          ..write('hexValue: $hexValue, ')
+          ..write('usage: $usage, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EnvironmentPropsTable extends EnvironmentProps
+    with TableInfo<$EnvironmentPropsTable, EnvironmentProp> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EnvironmentPropsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _environmentIdMeta = const VerificationMeta(
+    'environmentId',
+  );
+  @override
+  late final GeneratedColumn<String> environmentId = GeneratedColumn<String>(
+    'environment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _zoneIdMeta = const VerificationMeta('zoneId');
+  @override
+  late final GeneratedColumn<String> zoneId = GeneratedColumn<String>(
+    'zone_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _propTypeMeta = const VerificationMeta(
+    'propType',
+  );
+  @override
+  late final GeneratedColumn<String> propType = GeneratedColumn<String>(
+    'prop_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _stateMeta = const VerificationMeta('state');
+  @override
+  late final GeneratedColumn<String> state = GeneratedColumn<String>(
+    'state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _positionNoteMeta = const VerificationMeta(
+    'positionNote',
+  );
+  @override
+  late final GeneratedColumn<String> positionNote = GeneratedColumn<String>(
+    'position_note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    environmentId,
+    zoneId,
+    name,
+    propType,
+    state,
+    positionNote,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'environment_props';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EnvironmentProp> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('environment_id')) {
+      context.handle(
+        _environmentIdMeta,
+        environmentId.isAcceptableOrUnknown(
+          data['environment_id']!,
+          _environmentIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_environmentIdMeta);
+    }
+    if (data.containsKey('zone_id')) {
+      context.handle(
+        _zoneIdMeta,
+        zoneId.isAcceptableOrUnknown(data['zone_id']!, _zoneIdMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('prop_type')) {
+      context.handle(
+        _propTypeMeta,
+        propType.isAcceptableOrUnknown(data['prop_type']!, _propTypeMeta),
+      );
+    }
+    if (data.containsKey('state')) {
+      context.handle(
+        _stateMeta,
+        state.isAcceptableOrUnknown(data['state']!, _stateMeta),
+      );
+    }
+    if (data.containsKey('position_note')) {
+      context.handle(
+        _positionNoteMeta,
+        positionNote.isAcceptableOrUnknown(
+          data['position_note']!,
+          _positionNoteMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EnvironmentProp map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EnvironmentProp(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      environmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}environment_id'],
+      )!,
+      zoneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}zone_id'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      propType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prop_type'],
+      )!,
+      state: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}state'],
+      )!,
+      positionNote: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}position_note'],
+      )!,
+    );
+  }
+
+  @override
+  $EnvironmentPropsTable createAlias(String alias) {
+    return $EnvironmentPropsTable(attachedDatabase, alias);
+  }
+}
+
+class EnvironmentProp extends DataClass implements Insertable<EnvironmentProp> {
+  final String id;
+  final String environmentId;
+  final String? zoneId;
+  final String name;
+  final String propType;
+  final String state;
+  final String positionNote;
+  const EnvironmentProp({
+    required this.id,
+    required this.environmentId,
+    this.zoneId,
+    required this.name,
+    required this.propType,
+    required this.state,
+    required this.positionNote,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['environment_id'] = Variable<String>(environmentId);
+    if (!nullToAbsent || zoneId != null) {
+      map['zone_id'] = Variable<String>(zoneId);
+    }
+    map['name'] = Variable<String>(name);
+    map['prop_type'] = Variable<String>(propType);
+    map['state'] = Variable<String>(state);
+    map['position_note'] = Variable<String>(positionNote);
+    return map;
+  }
+
+  EnvironmentPropsCompanion toCompanion(bool nullToAbsent) {
+    return EnvironmentPropsCompanion(
+      id: Value(id),
+      environmentId: Value(environmentId),
+      zoneId: zoneId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(zoneId),
+      name: Value(name),
+      propType: Value(propType),
+      state: Value(state),
+      positionNote: Value(positionNote),
+    );
+  }
+
+  factory EnvironmentProp.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EnvironmentProp(
+      id: serializer.fromJson<String>(json['id']),
+      environmentId: serializer.fromJson<String>(json['environmentId']),
+      zoneId: serializer.fromJson<String?>(json['zoneId']),
+      name: serializer.fromJson<String>(json['name']),
+      propType: serializer.fromJson<String>(json['propType']),
+      state: serializer.fromJson<String>(json['state']),
+      positionNote: serializer.fromJson<String>(json['positionNote']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'environmentId': serializer.toJson<String>(environmentId),
+      'zoneId': serializer.toJson<String?>(zoneId),
+      'name': serializer.toJson<String>(name),
+      'propType': serializer.toJson<String>(propType),
+      'state': serializer.toJson<String>(state),
+      'positionNote': serializer.toJson<String>(positionNote),
+    };
+  }
+
+  EnvironmentProp copyWith({
+    String? id,
+    String? environmentId,
+    Value<String?> zoneId = const Value.absent(),
+    String? name,
+    String? propType,
+    String? state,
+    String? positionNote,
+  }) => EnvironmentProp(
+    id: id ?? this.id,
+    environmentId: environmentId ?? this.environmentId,
+    zoneId: zoneId.present ? zoneId.value : this.zoneId,
+    name: name ?? this.name,
+    propType: propType ?? this.propType,
+    state: state ?? this.state,
+    positionNote: positionNote ?? this.positionNote,
+  );
+  EnvironmentProp copyWithCompanion(EnvironmentPropsCompanion data) {
+    return EnvironmentProp(
+      id: data.id.present ? data.id.value : this.id,
+      environmentId: data.environmentId.present
+          ? data.environmentId.value
+          : this.environmentId,
+      zoneId: data.zoneId.present ? data.zoneId.value : this.zoneId,
+      name: data.name.present ? data.name.value : this.name,
+      propType: data.propType.present ? data.propType.value : this.propType,
+      state: data.state.present ? data.state.value : this.state,
+      positionNote: data.positionNote.present
+          ? data.positionNote.value
+          : this.positionNote,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentProp(')
+          ..write('id: $id, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('zoneId: $zoneId, ')
+          ..write('name: $name, ')
+          ..write('propType: $propType, ')
+          ..write('state: $state, ')
+          ..write('positionNote: $positionNote')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    environmentId,
+    zoneId,
+    name,
+    propType,
+    state,
+    positionNote,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EnvironmentProp &&
+          other.id == this.id &&
+          other.environmentId == this.environmentId &&
+          other.zoneId == this.zoneId &&
+          other.name == this.name &&
+          other.propType == this.propType &&
+          other.state == this.state &&
+          other.positionNote == this.positionNote);
+}
+
+class EnvironmentPropsCompanion extends UpdateCompanion<EnvironmentProp> {
+  final Value<String> id;
+  final Value<String> environmentId;
+  final Value<String?> zoneId;
+  final Value<String> name;
+  final Value<String> propType;
+  final Value<String> state;
+  final Value<String> positionNote;
+  final Value<int> rowid;
+  const EnvironmentPropsCompanion({
+    this.id = const Value.absent(),
+    this.environmentId = const Value.absent(),
+    this.zoneId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.propType = const Value.absent(),
+    this.state = const Value.absent(),
+    this.positionNote = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EnvironmentPropsCompanion.insert({
+    required String id,
+    required String environmentId,
+    this.zoneId = const Value.absent(),
+    required String name,
+    this.propType = const Value.absent(),
+    this.state = const Value.absent(),
+    this.positionNote = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       environmentId = Value(environmentId),
+       name = Value(name);
+  static Insertable<EnvironmentProp> custom({
+    Expression<String>? id,
+    Expression<String>? environmentId,
+    Expression<String>? zoneId,
+    Expression<String>? name,
+    Expression<String>? propType,
+    Expression<String>? state,
+    Expression<String>? positionNote,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (environmentId != null) 'environment_id': environmentId,
+      if (zoneId != null) 'zone_id': zoneId,
+      if (name != null) 'name': name,
+      if (propType != null) 'prop_type': propType,
+      if (state != null) 'state': state,
+      if (positionNote != null) 'position_note': positionNote,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EnvironmentPropsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? environmentId,
+    Value<String?>? zoneId,
+    Value<String>? name,
+    Value<String>? propType,
+    Value<String>? state,
+    Value<String>? positionNote,
+    Value<int>? rowid,
+  }) {
+    return EnvironmentPropsCompanion(
+      id: id ?? this.id,
+      environmentId: environmentId ?? this.environmentId,
+      zoneId: zoneId ?? this.zoneId,
+      name: name ?? this.name,
+      propType: propType ?? this.propType,
+      state: state ?? this.state,
+      positionNote: positionNote ?? this.positionNote,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (environmentId.present) {
+      map['environment_id'] = Variable<String>(environmentId.value);
+    }
+    if (zoneId.present) {
+      map['zone_id'] = Variable<String>(zoneId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (propType.present) {
+      map['prop_type'] = Variable<String>(propType.value);
+    }
+    if (state.present) {
+      map['state'] = Variable<String>(state.value);
+    }
+    if (positionNote.present) {
+      map['position_note'] = Variable<String>(positionNote.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentPropsCompanion(')
+          ..write('id: $id, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('zoneId: $zoneId, ')
+          ..write('name: $name, ')
+          ..write('propType: $propType, ')
+          ..write('state: $state, ')
+          ..write('positionNote: $positionNote, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EnvironmentContinuityStatesTable extends EnvironmentContinuityStates
+    with
+        TableInfo<
+          $EnvironmentContinuityStatesTable,
+          EnvironmentContinuityState
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EnvironmentContinuityStatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _environmentIdMeta = const VerificationMeta(
+    'environmentId',
+  );
+  @override
+  late final GeneratedColumn<String> environmentId = GeneratedColumn<String>(
+    'environment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    environmentId,
+    name,
+    description,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'environment_continuity_states';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EnvironmentContinuityState> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('environment_id')) {
+      context.handle(
+        _environmentIdMeta,
+        environmentId.isAcceptableOrUnknown(
+          data['environment_id']!,
+          _environmentIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_environmentIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EnvironmentContinuityState map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EnvironmentContinuityState(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      environmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}environment_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $EnvironmentContinuityStatesTable createAlias(String alias) {
+    return $EnvironmentContinuityStatesTable(attachedDatabase, alias);
+  }
+}
+
+class EnvironmentContinuityState extends DataClass
+    implements Insertable<EnvironmentContinuityState> {
+  final String id;
+  final String environmentId;
+  final String name;
+  final String description;
+  final DateTime createdAt;
+  const EnvironmentContinuityState({
+    required this.id,
+    required this.environmentId,
+    required this.name,
+    required this.description,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['environment_id'] = Variable<String>(environmentId);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  EnvironmentContinuityStatesCompanion toCompanion(bool nullToAbsent) {
+    return EnvironmentContinuityStatesCompanion(
+      id: Value(id),
+      environmentId: Value(environmentId),
+      name: Value(name),
+      description: Value(description),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory EnvironmentContinuityState.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EnvironmentContinuityState(
+      id: serializer.fromJson<String>(json['id']),
+      environmentId: serializer.fromJson<String>(json['environmentId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'environmentId': serializer.toJson<String>(environmentId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  EnvironmentContinuityState copyWith({
+    String? id,
+    String? environmentId,
+    String? name,
+    String? description,
+    DateTime? createdAt,
+  }) => EnvironmentContinuityState(
+    id: id ?? this.id,
+    environmentId: environmentId ?? this.environmentId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  EnvironmentContinuityState copyWithCompanion(
+    EnvironmentContinuityStatesCompanion data,
+  ) {
+    return EnvironmentContinuityState(
+      id: data.id.present ? data.id.value : this.id,
+      environmentId: data.environmentId.present
+          ? data.environmentId.value
+          : this.environmentId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentContinuityState(')
+          ..write('id: $id, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, environmentId, name, description, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EnvironmentContinuityState &&
+          other.id == this.id &&
+          other.environmentId == this.environmentId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.createdAt == this.createdAt);
+}
+
+class EnvironmentContinuityStatesCompanion
+    extends UpdateCompanion<EnvironmentContinuityState> {
+  final Value<String> id;
+  final Value<String> environmentId;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const EnvironmentContinuityStatesCompanion({
+    this.id = const Value.absent(),
+    this.environmentId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EnvironmentContinuityStatesCompanion.insert({
+    required String id,
+    required String environmentId,
+    required String name,
+    this.description = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       environmentId = Value(environmentId),
+       name = Value(name),
+       createdAt = Value(createdAt);
+  static Insertable<EnvironmentContinuityState> custom({
+    Expression<String>? id,
+    Expression<String>? environmentId,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (environmentId != null) 'environment_id': environmentId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EnvironmentContinuityStatesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? environmentId,
+    Value<String>? name,
+    Value<String>? description,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return EnvironmentContinuityStatesCompanion(
+      id: id ?? this.id,
+      environmentId: environmentId ?? this.environmentId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (environmentId.present) {
+      map['environment_id'] = Variable<String>(environmentId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentContinuityStatesCompanion(')
+          ..write('id: $id, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EnvironmentPhysicsProfilesTable extends EnvironmentPhysicsProfiles
+    with
+        TableInfo<$EnvironmentPhysicsProfilesTable, EnvironmentPhysicsProfile> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EnvironmentPhysicsProfilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _environmentIdMeta = const VerificationMeta(
+    'environmentId',
+  );
+  @override
+  late final GeneratedColumn<String> environmentId = GeneratedColumn<String>(
+    'environment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _gravityMultiplierMeta = const VerificationMeta(
+    'gravityMultiplier',
+  );
+  @override
+  late final GeneratedColumn<double> gravityMultiplier =
+      GeneratedColumn<double>(
+        'gravity_multiplier',
+        aliasedName,
+        false,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(1.0),
+      );
+  static const VerificationMeta _floatingObjectsMeta = const VerificationMeta(
+    'floatingObjects',
+  );
+  @override
+  late final GeneratedColumn<bool> floatingObjects = GeneratedColumn<bool>(
+    'floating_objects',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("floating_objects" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _dimensionalDistortionMeta =
+      const VerificationMeta('dimensionalDistortion');
+  @override
+  late final GeneratedColumn<String> dimensionalDistortion =
+      GeneratedColumn<String>(
+        'dimensional_distortion',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('none'),
+      );
+  static const VerificationMeta _portalBehaviorMeta = const VerificationMeta(
+    'portalBehavior',
+  );
+  @override
+  late final GeneratedColumn<String> portalBehavior = GeneratedColumn<String>(
+    'portal_behavior',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('normal'),
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    environmentId,
+    gravityMultiplier,
+    floatingObjects,
+    dimensionalDistortion,
+    portalBehavior,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'environment_physics_profiles';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EnvironmentPhysicsProfile> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('environment_id')) {
+      context.handle(
+        _environmentIdMeta,
+        environmentId.isAcceptableOrUnknown(
+          data['environment_id']!,
+          _environmentIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_environmentIdMeta);
+    }
+    if (data.containsKey('gravity_multiplier')) {
+      context.handle(
+        _gravityMultiplierMeta,
+        gravityMultiplier.isAcceptableOrUnknown(
+          data['gravity_multiplier']!,
+          _gravityMultiplierMeta,
+        ),
+      );
+    }
+    if (data.containsKey('floating_objects')) {
+      context.handle(
+        _floatingObjectsMeta,
+        floatingObjects.isAcceptableOrUnknown(
+          data['floating_objects']!,
+          _floatingObjectsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dimensional_distortion')) {
+      context.handle(
+        _dimensionalDistortionMeta,
+        dimensionalDistortion.isAcceptableOrUnknown(
+          data['dimensional_distortion']!,
+          _dimensionalDistortionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('portal_behavior')) {
+      context.handle(
+        _portalBehaviorMeta,
+        portalBehavior.isAcceptableOrUnknown(
+          data['portal_behavior']!,
+          _portalBehaviorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {environmentId};
+  @override
+  EnvironmentPhysicsProfile map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EnvironmentPhysicsProfile(
+      environmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}environment_id'],
+      )!,
+      gravityMultiplier: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}gravity_multiplier'],
+      )!,
+      floatingObjects: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}floating_objects'],
+      )!,
+      dimensionalDistortion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dimensional_distortion'],
+      )!,
+      portalBehavior: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}portal_behavior'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+    );
+  }
+
+  @override
+  $EnvironmentPhysicsProfilesTable createAlias(String alias) {
+    return $EnvironmentPhysicsProfilesTable(attachedDatabase, alias);
+  }
+}
+
+class EnvironmentPhysicsProfile extends DataClass
+    implements Insertable<EnvironmentPhysicsProfile> {
+  final String environmentId;
+  final double gravityMultiplier;
+  final bool floatingObjects;
+  final String dimensionalDistortion;
+  final String portalBehavior;
+  final String notes;
+  const EnvironmentPhysicsProfile({
+    required this.environmentId,
+    required this.gravityMultiplier,
+    required this.floatingObjects,
+    required this.dimensionalDistortion,
+    required this.portalBehavior,
+    required this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['environment_id'] = Variable<String>(environmentId);
+    map['gravity_multiplier'] = Variable<double>(gravityMultiplier);
+    map['floating_objects'] = Variable<bool>(floatingObjects);
+    map['dimensional_distortion'] = Variable<String>(dimensionalDistortion);
+    map['portal_behavior'] = Variable<String>(portalBehavior);
+    map['notes'] = Variable<String>(notes);
+    return map;
+  }
+
+  EnvironmentPhysicsProfilesCompanion toCompanion(bool nullToAbsent) {
+    return EnvironmentPhysicsProfilesCompanion(
+      environmentId: Value(environmentId),
+      gravityMultiplier: Value(gravityMultiplier),
+      floatingObjects: Value(floatingObjects),
+      dimensionalDistortion: Value(dimensionalDistortion),
+      portalBehavior: Value(portalBehavior),
+      notes: Value(notes),
+    );
+  }
+
+  factory EnvironmentPhysicsProfile.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EnvironmentPhysicsProfile(
+      environmentId: serializer.fromJson<String>(json['environmentId']),
+      gravityMultiplier: serializer.fromJson<double>(json['gravityMultiplier']),
+      floatingObjects: serializer.fromJson<bool>(json['floatingObjects']),
+      dimensionalDistortion: serializer.fromJson<String>(
+        json['dimensionalDistortion'],
+      ),
+      portalBehavior: serializer.fromJson<String>(json['portalBehavior']),
+      notes: serializer.fromJson<String>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'environmentId': serializer.toJson<String>(environmentId),
+      'gravityMultiplier': serializer.toJson<double>(gravityMultiplier),
+      'floatingObjects': serializer.toJson<bool>(floatingObjects),
+      'dimensionalDistortion': serializer.toJson<String>(dimensionalDistortion),
+      'portalBehavior': serializer.toJson<String>(portalBehavior),
+      'notes': serializer.toJson<String>(notes),
+    };
+  }
+
+  EnvironmentPhysicsProfile copyWith({
+    String? environmentId,
+    double? gravityMultiplier,
+    bool? floatingObjects,
+    String? dimensionalDistortion,
+    String? portalBehavior,
+    String? notes,
+  }) => EnvironmentPhysicsProfile(
+    environmentId: environmentId ?? this.environmentId,
+    gravityMultiplier: gravityMultiplier ?? this.gravityMultiplier,
+    floatingObjects: floatingObjects ?? this.floatingObjects,
+    dimensionalDistortion: dimensionalDistortion ?? this.dimensionalDistortion,
+    portalBehavior: portalBehavior ?? this.portalBehavior,
+    notes: notes ?? this.notes,
+  );
+  EnvironmentPhysicsProfile copyWithCompanion(
+    EnvironmentPhysicsProfilesCompanion data,
+  ) {
+    return EnvironmentPhysicsProfile(
+      environmentId: data.environmentId.present
+          ? data.environmentId.value
+          : this.environmentId,
+      gravityMultiplier: data.gravityMultiplier.present
+          ? data.gravityMultiplier.value
+          : this.gravityMultiplier,
+      floatingObjects: data.floatingObjects.present
+          ? data.floatingObjects.value
+          : this.floatingObjects,
+      dimensionalDistortion: data.dimensionalDistortion.present
+          ? data.dimensionalDistortion.value
+          : this.dimensionalDistortion,
+      portalBehavior: data.portalBehavior.present
+          ? data.portalBehavior.value
+          : this.portalBehavior,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentPhysicsProfile(')
+          ..write('environmentId: $environmentId, ')
+          ..write('gravityMultiplier: $gravityMultiplier, ')
+          ..write('floatingObjects: $floatingObjects, ')
+          ..write('dimensionalDistortion: $dimensionalDistortion, ')
+          ..write('portalBehavior: $portalBehavior, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    environmentId,
+    gravityMultiplier,
+    floatingObjects,
+    dimensionalDistortion,
+    portalBehavior,
+    notes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EnvironmentPhysicsProfile &&
+          other.environmentId == this.environmentId &&
+          other.gravityMultiplier == this.gravityMultiplier &&
+          other.floatingObjects == this.floatingObjects &&
+          other.dimensionalDistortion == this.dimensionalDistortion &&
+          other.portalBehavior == this.portalBehavior &&
+          other.notes == this.notes);
+}
+
+class EnvironmentPhysicsProfilesCompanion
+    extends UpdateCompanion<EnvironmentPhysicsProfile> {
+  final Value<String> environmentId;
+  final Value<double> gravityMultiplier;
+  final Value<bool> floatingObjects;
+  final Value<String> dimensionalDistortion;
+  final Value<String> portalBehavior;
+  final Value<String> notes;
+  final Value<int> rowid;
+  const EnvironmentPhysicsProfilesCompanion({
+    this.environmentId = const Value.absent(),
+    this.gravityMultiplier = const Value.absent(),
+    this.floatingObjects = const Value.absent(),
+    this.dimensionalDistortion = const Value.absent(),
+    this.portalBehavior = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EnvironmentPhysicsProfilesCompanion.insert({
+    required String environmentId,
+    this.gravityMultiplier = const Value.absent(),
+    this.floatingObjects = const Value.absent(),
+    this.dimensionalDistortion = const Value.absent(),
+    this.portalBehavior = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : environmentId = Value(environmentId);
+  static Insertable<EnvironmentPhysicsProfile> custom({
+    Expression<String>? environmentId,
+    Expression<double>? gravityMultiplier,
+    Expression<bool>? floatingObjects,
+    Expression<String>? dimensionalDistortion,
+    Expression<String>? portalBehavior,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (environmentId != null) 'environment_id': environmentId,
+      if (gravityMultiplier != null) 'gravity_multiplier': gravityMultiplier,
+      if (floatingObjects != null) 'floating_objects': floatingObjects,
+      if (dimensionalDistortion != null)
+        'dimensional_distortion': dimensionalDistortion,
+      if (portalBehavior != null) 'portal_behavior': portalBehavior,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EnvironmentPhysicsProfilesCompanion copyWith({
+    Value<String>? environmentId,
+    Value<double>? gravityMultiplier,
+    Value<bool>? floatingObjects,
+    Value<String>? dimensionalDistortion,
+    Value<String>? portalBehavior,
+    Value<String>? notes,
+    Value<int>? rowid,
+  }) {
+    return EnvironmentPhysicsProfilesCompanion(
+      environmentId: environmentId ?? this.environmentId,
+      gravityMultiplier: gravityMultiplier ?? this.gravityMultiplier,
+      floatingObjects: floatingObjects ?? this.floatingObjects,
+      dimensionalDistortion:
+          dimensionalDistortion ?? this.dimensionalDistortion,
+      portalBehavior: portalBehavior ?? this.portalBehavior,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (environmentId.present) {
+      map['environment_id'] = Variable<String>(environmentId.value);
+    }
+    if (gravityMultiplier.present) {
+      map['gravity_multiplier'] = Variable<double>(gravityMultiplier.value);
+    }
+    if (floatingObjects.present) {
+      map['floating_objects'] = Variable<bool>(floatingObjects.value);
+    }
+    if (dimensionalDistortion.present) {
+      map['dimensional_distortion'] = Variable<String>(
+        dimensionalDistortion.value,
+      );
+    }
+    if (portalBehavior.present) {
+      map['portal_behavior'] = Variable<String>(portalBehavior.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentPhysicsProfilesCompanion(')
+          ..write('environmentId: $environmentId, ')
+          ..write('gravityMultiplier: $gravityMultiplier, ')
+          ..write('floatingObjects: $floatingObjects, ')
+          ..write('dimensionalDistortion: $dimensionalDistortion, ')
+          ..write('portalBehavior: $portalBehavior, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EnvironmentReferencesTable extends EnvironmentReferences
+    with TableInfo<$EnvironmentReferencesTable, EnvironmentReference> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EnvironmentReferencesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _environmentIdMeta = const VerificationMeta(
+    'environmentId',
+  );
+  @override
+  late final GeneratedColumn<String> environmentId = GeneratedColumn<String>(
+    'environment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _referenceTypeMeta = const VerificationMeta(
+    'referenceType',
+  );
+  @override
+  late final GeneratedColumn<String> referenceType = GeneratedColumn<String>(
+    'reference_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _filePathMeta = const VerificationMeta(
+    'filePath',
+  );
+  @override
+  late final GeneratedColumn<String> filePath = GeneratedColumn<String>(
+    'file_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _priorityMeta = const VerificationMeta(
+    'priority',
+  );
+  @override
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+    'priority',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _primaryReferenceMeta = const VerificationMeta(
+    'primaryReference',
+  );
+  @override
+  late final GeneratedColumn<bool> primaryReference = GeneratedColumn<bool>(
+    'primary_reference',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("primary_reference" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    environmentId,
+    referenceType,
+    filePath,
+    priority,
+    primaryReference,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'environment_references';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EnvironmentReference> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('environment_id')) {
+      context.handle(
+        _environmentIdMeta,
+        environmentId.isAcceptableOrUnknown(
+          data['environment_id']!,
+          _environmentIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_environmentIdMeta);
+    }
+    if (data.containsKey('reference_type')) {
+      context.handle(
+        _referenceTypeMeta,
+        referenceType.isAcceptableOrUnknown(
+          data['reference_type']!,
+          _referenceTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_referenceTypeMeta);
+    }
+    if (data.containsKey('file_path')) {
+      context.handle(
+        _filePathMeta,
+        filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_filePathMeta);
+    }
+    if (data.containsKey('priority')) {
+      context.handle(
+        _priorityMeta,
+        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
+      );
+    }
+    if (data.containsKey('primary_reference')) {
+      context.handle(
+        _primaryReferenceMeta,
+        primaryReference.isAcceptableOrUnknown(
+          data['primary_reference']!,
+          _primaryReferenceMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EnvironmentReference map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EnvironmentReference(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      environmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}environment_id'],
+      )!,
+      referenceType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reference_type'],
+      )!,
+      filePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_path'],
+      )!,
+      priority: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}priority'],
+      )!,
+      primaryReference: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}primary_reference'],
+      )!,
+    );
+  }
+
+  @override
+  $EnvironmentReferencesTable createAlias(String alias) {
+    return $EnvironmentReferencesTable(attachedDatabase, alias);
+  }
+}
+
+class EnvironmentReference extends DataClass
+    implements Insertable<EnvironmentReference> {
+  final String id;
+  final String environmentId;
+  final String referenceType;
+  final String filePath;
+  final int priority;
+  final bool primaryReference;
+  const EnvironmentReference({
+    required this.id,
+    required this.environmentId,
+    required this.referenceType,
+    required this.filePath,
+    required this.priority,
+    required this.primaryReference,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['environment_id'] = Variable<String>(environmentId);
+    map['reference_type'] = Variable<String>(referenceType);
+    map['file_path'] = Variable<String>(filePath);
+    map['priority'] = Variable<int>(priority);
+    map['primary_reference'] = Variable<bool>(primaryReference);
+    return map;
+  }
+
+  EnvironmentReferencesCompanion toCompanion(bool nullToAbsent) {
+    return EnvironmentReferencesCompanion(
+      id: Value(id),
+      environmentId: Value(environmentId),
+      referenceType: Value(referenceType),
+      filePath: Value(filePath),
+      priority: Value(priority),
+      primaryReference: Value(primaryReference),
+    );
+  }
+
+  factory EnvironmentReference.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EnvironmentReference(
+      id: serializer.fromJson<String>(json['id']),
+      environmentId: serializer.fromJson<String>(json['environmentId']),
+      referenceType: serializer.fromJson<String>(json['referenceType']),
+      filePath: serializer.fromJson<String>(json['filePath']),
+      priority: serializer.fromJson<int>(json['priority']),
+      primaryReference: serializer.fromJson<bool>(json['primaryReference']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'environmentId': serializer.toJson<String>(environmentId),
+      'referenceType': serializer.toJson<String>(referenceType),
+      'filePath': serializer.toJson<String>(filePath),
+      'priority': serializer.toJson<int>(priority),
+      'primaryReference': serializer.toJson<bool>(primaryReference),
+    };
+  }
+
+  EnvironmentReference copyWith({
+    String? id,
+    String? environmentId,
+    String? referenceType,
+    String? filePath,
+    int? priority,
+    bool? primaryReference,
+  }) => EnvironmentReference(
+    id: id ?? this.id,
+    environmentId: environmentId ?? this.environmentId,
+    referenceType: referenceType ?? this.referenceType,
+    filePath: filePath ?? this.filePath,
+    priority: priority ?? this.priority,
+    primaryReference: primaryReference ?? this.primaryReference,
+  );
+  EnvironmentReference copyWithCompanion(EnvironmentReferencesCompanion data) {
+    return EnvironmentReference(
+      id: data.id.present ? data.id.value : this.id,
+      environmentId: data.environmentId.present
+          ? data.environmentId.value
+          : this.environmentId,
+      referenceType: data.referenceType.present
+          ? data.referenceType.value
+          : this.referenceType,
+      filePath: data.filePath.present ? data.filePath.value : this.filePath,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      primaryReference: data.primaryReference.present
+          ? data.primaryReference.value
+          : this.primaryReference,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentReference(')
+          ..write('id: $id, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('referenceType: $referenceType, ')
+          ..write('filePath: $filePath, ')
+          ..write('priority: $priority, ')
+          ..write('primaryReference: $primaryReference')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    environmentId,
+    referenceType,
+    filePath,
+    priority,
+    primaryReference,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EnvironmentReference &&
+          other.id == this.id &&
+          other.environmentId == this.environmentId &&
+          other.referenceType == this.referenceType &&
+          other.filePath == this.filePath &&
+          other.priority == this.priority &&
+          other.primaryReference == this.primaryReference);
+}
+
+class EnvironmentReferencesCompanion
+    extends UpdateCompanion<EnvironmentReference> {
+  final Value<String> id;
+  final Value<String> environmentId;
+  final Value<String> referenceType;
+  final Value<String> filePath;
+  final Value<int> priority;
+  final Value<bool> primaryReference;
+  final Value<int> rowid;
+  const EnvironmentReferencesCompanion({
+    this.id = const Value.absent(),
+    this.environmentId = const Value.absent(),
+    this.referenceType = const Value.absent(),
+    this.filePath = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.primaryReference = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EnvironmentReferencesCompanion.insert({
+    required String id,
+    required String environmentId,
+    required String referenceType,
+    required String filePath,
+    this.priority = const Value.absent(),
+    this.primaryReference = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       environmentId = Value(environmentId),
+       referenceType = Value(referenceType),
+       filePath = Value(filePath);
+  static Insertable<EnvironmentReference> custom({
+    Expression<String>? id,
+    Expression<String>? environmentId,
+    Expression<String>? referenceType,
+    Expression<String>? filePath,
+    Expression<int>? priority,
+    Expression<bool>? primaryReference,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (environmentId != null) 'environment_id': environmentId,
+      if (referenceType != null) 'reference_type': referenceType,
+      if (filePath != null) 'file_path': filePath,
+      if (priority != null) 'priority': priority,
+      if (primaryReference != null) 'primary_reference': primaryReference,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EnvironmentReferencesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? environmentId,
+    Value<String>? referenceType,
+    Value<String>? filePath,
+    Value<int>? priority,
+    Value<bool>? primaryReference,
+    Value<int>? rowid,
+  }) {
+    return EnvironmentReferencesCompanion(
+      id: id ?? this.id,
+      environmentId: environmentId ?? this.environmentId,
+      referenceType: referenceType ?? this.referenceType,
+      filePath: filePath ?? this.filePath,
+      priority: priority ?? this.priority,
+      primaryReference: primaryReference ?? this.primaryReference,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (environmentId.present) {
+      map['environment_id'] = Variable<String>(environmentId.value);
+    }
+    if (referenceType.present) {
+      map['reference_type'] = Variable<String>(referenceType.value);
+    }
+    if (filePath.present) {
+      map['file_path'] = Variable<String>(filePath.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<int>(priority.value);
+    }
+    if (primaryReference.present) {
+      map['primary_reference'] = Variable<bool>(primaryReference.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EnvironmentReferencesCompanion(')
+          ..write('id: $id, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('referenceType: $referenceType, ')
+          ..write('filePath: $filePath, ')
+          ..write('priority: $priority, ')
+          ..write('primaryReference: $primaryReference, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -11096,6 +15825,27 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   );
   late final $WeaponPreservationProfilesTable weaponPreservationProfiles =
       $WeaponPreservationProfilesTable(this);
+  late final $EnvironmentsTable environments = $EnvironmentsTable(this);
+  late final $EnvironmentZonesTable environmentZones = $EnvironmentZonesTable(
+    this,
+  );
+  late final $EnvironmentArchitecturesTable environmentArchitectures =
+      $EnvironmentArchitecturesTable(this);
+  late final $EnvironmentWeatherProfilesTable environmentWeatherProfiles =
+      $EnvironmentWeatherProfilesTable(this);
+  late final $EnvironmentLightingProfilesTable environmentLightingProfiles =
+      $EnvironmentLightingProfilesTable(this);
+  late final $EnvironmentColorsTable environmentColors =
+      $EnvironmentColorsTable(this);
+  late final $EnvironmentPropsTable environmentProps = $EnvironmentPropsTable(
+    this,
+  );
+  late final $EnvironmentContinuityStatesTable environmentContinuityStates =
+      $EnvironmentContinuityStatesTable(this);
+  late final $EnvironmentPhysicsProfilesTable environmentPhysicsProfiles =
+      $EnvironmentPhysicsProfilesTable(this);
+  late final $EnvironmentReferencesTable environmentReferences =
+      $EnvironmentReferencesTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -11104,6 +15854,9 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final RelationDao relationDao = RelationDao(this as ProjectDatabase);
   late final WardrobeDao wardrobeDao = WardrobeDao(this as ProjectDatabase);
   late final WeaponDao weaponDao = WeaponDao(this as ProjectDatabase);
+  late final EnvironmentDao environmentDao = EnvironmentDao(
+    this as ProjectDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -11133,6 +15886,16 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     weaponVariants,
     weaponReferences,
     weaponPreservationProfiles,
+    environments,
+    environmentZones,
+    environmentArchitectures,
+    environmentWeatherProfiles,
+    environmentLightingProfiles,
+    environmentColors,
+    environmentProps,
+    environmentContinuityStates,
+    environmentPhysicsProfiles,
+    environmentReferences,
   ];
 }
 
@@ -17084,6 +21847,2593 @@ typedef $$WeaponPreservationProfilesTableProcessedTableManager =
       WeaponPreservationProfile,
       PrefetchHooks Function()
     >;
+typedef $$EnvironmentsTableCreateCompanionBuilder =
+    EnvironmentsCompanion Function({
+      required String assetId,
+      required String projectId,
+      required String name,
+      Value<String> environmentType,
+      Value<String> description,
+      Value<String> location,
+      Value<String> architecture,
+      Value<String> terrain,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+typedef $$EnvironmentsTableUpdateCompanionBuilder =
+    EnvironmentsCompanion Function({
+      Value<String> assetId,
+      Value<String> projectId,
+      Value<String> name,
+      Value<String> environmentType,
+      Value<String> description,
+      Value<String> location,
+      Value<String> architecture,
+      Value<String> terrain,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+
+class $$EnvironmentsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentsTable> {
+  $$EnvironmentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get environmentType => $composableBuilder(
+    column: $table.environmentType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get location => $composableBuilder(
+    column: $table.location,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get architecture => $composableBuilder(
+    column: $table.architecture,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get terrain => $composableBuilder(
+    column: $table.terrain,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EnvironmentsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentsTable> {
+  $$EnvironmentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get environmentType => $composableBuilder(
+    column: $table.environmentType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get location => $composableBuilder(
+    column: $table.location,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get architecture => $composableBuilder(
+    column: $table.architecture,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get terrain => $composableBuilder(
+    column: $table.terrain,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EnvironmentsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentsTable> {
+  $$EnvironmentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get environmentType => $composableBuilder(
+    column: $table.environmentType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get location =>
+      $composableBuilder(column: $table.location, builder: (column) => column);
+
+  GeneratedColumn<String> get architecture => $composableBuilder(
+    column: $table.architecture,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get terrain =>
+      $composableBuilder(column: $table.terrain, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$EnvironmentsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $EnvironmentsTable,
+          Environment,
+          $$EnvironmentsTableFilterComposer,
+          $$EnvironmentsTableOrderingComposer,
+          $$EnvironmentsTableAnnotationComposer,
+          $$EnvironmentsTableCreateCompanionBuilder,
+          $$EnvironmentsTableUpdateCompanionBuilder,
+          (
+            Environment,
+            BaseReferences<_$ProjectDatabase, $EnvironmentsTable, Environment>,
+          ),
+          Environment,
+          PrefetchHooks Function()
+        > {
+  $$EnvironmentsTableTableManager(
+    _$ProjectDatabase db,
+    $EnvironmentsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EnvironmentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EnvironmentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EnvironmentsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> assetId = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> environmentType = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> location = const Value.absent(),
+                Value<String> architecture = const Value.absent(),
+                Value<String> terrain = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentsCompanion(
+                assetId: assetId,
+                projectId: projectId,
+                name: name,
+                environmentType: environmentType,
+                description: description,
+                location: location,
+                architecture: architecture,
+                terrain: terrain,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String assetId,
+                required String projectId,
+                required String name,
+                Value<String> environmentType = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> location = const Value.absent(),
+                Value<String> architecture = const Value.absent(),
+                Value<String> terrain = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentsCompanion.insert(
+                assetId: assetId,
+                projectId: projectId,
+                name: name,
+                environmentType: environmentType,
+                description: description,
+                location: location,
+                architecture: architecture,
+                terrain: terrain,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EnvironmentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $EnvironmentsTable,
+      Environment,
+      $$EnvironmentsTableFilterComposer,
+      $$EnvironmentsTableOrderingComposer,
+      $$EnvironmentsTableAnnotationComposer,
+      $$EnvironmentsTableCreateCompanionBuilder,
+      $$EnvironmentsTableUpdateCompanionBuilder,
+      (
+        Environment,
+        BaseReferences<_$ProjectDatabase, $EnvironmentsTable, Environment>,
+      ),
+      Environment,
+      PrefetchHooks Function()
+    >;
+typedef $$EnvironmentZonesTableCreateCompanionBuilder =
+    EnvironmentZonesCompanion Function({
+      required String id,
+      required String environmentId,
+      required String name,
+      Value<String> description,
+      Value<String> zoneType,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$EnvironmentZonesTableUpdateCompanionBuilder =
+    EnvironmentZonesCompanion Function({
+      Value<String> id,
+      Value<String> environmentId,
+      Value<String> name,
+      Value<String> description,
+      Value<String> zoneType,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$EnvironmentZonesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentZonesTable> {
+  $$EnvironmentZonesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get zoneType => $composableBuilder(
+    column: $table.zoneType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EnvironmentZonesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentZonesTable> {
+  $$EnvironmentZonesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get zoneType => $composableBuilder(
+    column: $table.zoneType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EnvironmentZonesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentZonesTable> {
+  $$EnvironmentZonesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get zoneType =>
+      $composableBuilder(column: $table.zoneType, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$EnvironmentZonesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $EnvironmentZonesTable,
+          EnvironmentZone,
+          $$EnvironmentZonesTableFilterComposer,
+          $$EnvironmentZonesTableOrderingComposer,
+          $$EnvironmentZonesTableAnnotationComposer,
+          $$EnvironmentZonesTableCreateCompanionBuilder,
+          $$EnvironmentZonesTableUpdateCompanionBuilder,
+          (
+            EnvironmentZone,
+            BaseReferences<
+              _$ProjectDatabase,
+              $EnvironmentZonesTable,
+              EnvironmentZone
+            >,
+          ),
+          EnvironmentZone,
+          PrefetchHooks Function()
+        > {
+  $$EnvironmentZonesTableTableManager(
+    _$ProjectDatabase db,
+    $EnvironmentZonesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EnvironmentZonesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EnvironmentZonesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EnvironmentZonesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> environmentId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> zoneType = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentZonesCompanion(
+                id: id,
+                environmentId: environmentId,
+                name: name,
+                description: description,
+                zoneType: zoneType,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String environmentId,
+                required String name,
+                Value<String> description = const Value.absent(),
+                Value<String> zoneType = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentZonesCompanion.insert(
+                id: id,
+                environmentId: environmentId,
+                name: name,
+                description: description,
+                zoneType: zoneType,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EnvironmentZonesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $EnvironmentZonesTable,
+      EnvironmentZone,
+      $$EnvironmentZonesTableFilterComposer,
+      $$EnvironmentZonesTableOrderingComposer,
+      $$EnvironmentZonesTableAnnotationComposer,
+      $$EnvironmentZonesTableCreateCompanionBuilder,
+      $$EnvironmentZonesTableUpdateCompanionBuilder,
+      (
+        EnvironmentZone,
+        BaseReferences<
+          _$ProjectDatabase,
+          $EnvironmentZonesTable,
+          EnvironmentZone
+        >,
+      ),
+      EnvironmentZone,
+      PrefetchHooks Function()
+    >;
+typedef $$EnvironmentArchitecturesTableCreateCompanionBuilder =
+    EnvironmentArchitecturesCompanion Function({
+      required String environmentId,
+      Value<String> style,
+      Value<String> structure,
+      Value<String> materials,
+      Value<String> scale,
+      Value<String> condition,
+      Value<int> rowid,
+    });
+typedef $$EnvironmentArchitecturesTableUpdateCompanionBuilder =
+    EnvironmentArchitecturesCompanion Function({
+      Value<String> environmentId,
+      Value<String> style,
+      Value<String> structure,
+      Value<String> materials,
+      Value<String> scale,
+      Value<String> condition,
+      Value<int> rowid,
+    });
+
+class $$EnvironmentArchitecturesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentArchitecturesTable> {
+  $$EnvironmentArchitecturesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get style => $composableBuilder(
+    column: $table.style,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get structure => $composableBuilder(
+    column: $table.structure,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get materials => $composableBuilder(
+    column: $table.materials,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get scale => $composableBuilder(
+    column: $table.scale,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get condition => $composableBuilder(
+    column: $table.condition,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EnvironmentArchitecturesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentArchitecturesTable> {
+  $$EnvironmentArchitecturesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get style => $composableBuilder(
+    column: $table.style,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get structure => $composableBuilder(
+    column: $table.structure,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get materials => $composableBuilder(
+    column: $table.materials,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get scale => $composableBuilder(
+    column: $table.scale,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get condition => $composableBuilder(
+    column: $table.condition,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EnvironmentArchitecturesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentArchitecturesTable> {
+  $$EnvironmentArchitecturesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get style =>
+      $composableBuilder(column: $table.style, builder: (column) => column);
+
+  GeneratedColumn<String> get structure =>
+      $composableBuilder(column: $table.structure, builder: (column) => column);
+
+  GeneratedColumn<String> get materials =>
+      $composableBuilder(column: $table.materials, builder: (column) => column);
+
+  GeneratedColumn<String> get scale =>
+      $composableBuilder(column: $table.scale, builder: (column) => column);
+
+  GeneratedColumn<String> get condition =>
+      $composableBuilder(column: $table.condition, builder: (column) => column);
+}
+
+class $$EnvironmentArchitecturesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $EnvironmentArchitecturesTable,
+          EnvironmentArchitecture,
+          $$EnvironmentArchitecturesTableFilterComposer,
+          $$EnvironmentArchitecturesTableOrderingComposer,
+          $$EnvironmentArchitecturesTableAnnotationComposer,
+          $$EnvironmentArchitecturesTableCreateCompanionBuilder,
+          $$EnvironmentArchitecturesTableUpdateCompanionBuilder,
+          (
+            EnvironmentArchitecture,
+            BaseReferences<
+              _$ProjectDatabase,
+              $EnvironmentArchitecturesTable,
+              EnvironmentArchitecture
+            >,
+          ),
+          EnvironmentArchitecture,
+          PrefetchHooks Function()
+        > {
+  $$EnvironmentArchitecturesTableTableManager(
+    _$ProjectDatabase db,
+    $EnvironmentArchitecturesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EnvironmentArchitecturesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$EnvironmentArchitecturesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$EnvironmentArchitecturesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> environmentId = const Value.absent(),
+                Value<String> style = const Value.absent(),
+                Value<String> structure = const Value.absent(),
+                Value<String> materials = const Value.absent(),
+                Value<String> scale = const Value.absent(),
+                Value<String> condition = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentArchitecturesCompanion(
+                environmentId: environmentId,
+                style: style,
+                structure: structure,
+                materials: materials,
+                scale: scale,
+                condition: condition,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String environmentId,
+                Value<String> style = const Value.absent(),
+                Value<String> structure = const Value.absent(),
+                Value<String> materials = const Value.absent(),
+                Value<String> scale = const Value.absent(),
+                Value<String> condition = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentArchitecturesCompanion.insert(
+                environmentId: environmentId,
+                style: style,
+                structure: structure,
+                materials: materials,
+                scale: scale,
+                condition: condition,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EnvironmentArchitecturesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $EnvironmentArchitecturesTable,
+      EnvironmentArchitecture,
+      $$EnvironmentArchitecturesTableFilterComposer,
+      $$EnvironmentArchitecturesTableOrderingComposer,
+      $$EnvironmentArchitecturesTableAnnotationComposer,
+      $$EnvironmentArchitecturesTableCreateCompanionBuilder,
+      $$EnvironmentArchitecturesTableUpdateCompanionBuilder,
+      (
+        EnvironmentArchitecture,
+        BaseReferences<
+          _$ProjectDatabase,
+          $EnvironmentArchitecturesTable,
+          EnvironmentArchitecture
+        >,
+      ),
+      EnvironmentArchitecture,
+      PrefetchHooks Function()
+    >;
+typedef $$EnvironmentWeatherProfilesTableCreateCompanionBuilder =
+    EnvironmentWeatherProfilesCompanion Function({
+      required String id,
+      required String environmentId,
+      required String name,
+      required String weatherPreset,
+      Value<double> intensity,
+      Value<double> windStrength,
+      Value<double> visibility,
+      Value<bool> isDefault,
+      Value<int> rowid,
+    });
+typedef $$EnvironmentWeatherProfilesTableUpdateCompanionBuilder =
+    EnvironmentWeatherProfilesCompanion Function({
+      Value<String> id,
+      Value<String> environmentId,
+      Value<String> name,
+      Value<String> weatherPreset,
+      Value<double> intensity,
+      Value<double> windStrength,
+      Value<double> visibility,
+      Value<bool> isDefault,
+      Value<int> rowid,
+    });
+
+class $$EnvironmentWeatherProfilesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentWeatherProfilesTable> {
+  $$EnvironmentWeatherProfilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weatherPreset => $composableBuilder(
+    column: $table.weatherPreset,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get intensity => $composableBuilder(
+    column: $table.intensity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get windStrength => $composableBuilder(
+    column: $table.windStrength,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get visibility => $composableBuilder(
+    column: $table.visibility,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDefault => $composableBuilder(
+    column: $table.isDefault,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EnvironmentWeatherProfilesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentWeatherProfilesTable> {
+  $$EnvironmentWeatherProfilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weatherPreset => $composableBuilder(
+    column: $table.weatherPreset,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get intensity => $composableBuilder(
+    column: $table.intensity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get windStrength => $composableBuilder(
+    column: $table.windStrength,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get visibility => $composableBuilder(
+    column: $table.visibility,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDefault => $composableBuilder(
+    column: $table.isDefault,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EnvironmentWeatherProfilesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentWeatherProfilesTable> {
+  $$EnvironmentWeatherProfilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get weatherPreset => $composableBuilder(
+    column: $table.weatherPreset,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get intensity =>
+      $composableBuilder(column: $table.intensity, builder: (column) => column);
+
+  GeneratedColumn<double> get windStrength => $composableBuilder(
+    column: $table.windStrength,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get visibility => $composableBuilder(
+    column: $table.visibility,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isDefault =>
+      $composableBuilder(column: $table.isDefault, builder: (column) => column);
+}
+
+class $$EnvironmentWeatherProfilesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $EnvironmentWeatherProfilesTable,
+          EnvironmentWeatherProfile,
+          $$EnvironmentWeatherProfilesTableFilterComposer,
+          $$EnvironmentWeatherProfilesTableOrderingComposer,
+          $$EnvironmentWeatherProfilesTableAnnotationComposer,
+          $$EnvironmentWeatherProfilesTableCreateCompanionBuilder,
+          $$EnvironmentWeatherProfilesTableUpdateCompanionBuilder,
+          (
+            EnvironmentWeatherProfile,
+            BaseReferences<
+              _$ProjectDatabase,
+              $EnvironmentWeatherProfilesTable,
+              EnvironmentWeatherProfile
+            >,
+          ),
+          EnvironmentWeatherProfile,
+          PrefetchHooks Function()
+        > {
+  $$EnvironmentWeatherProfilesTableTableManager(
+    _$ProjectDatabase db,
+    $EnvironmentWeatherProfilesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EnvironmentWeatherProfilesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$EnvironmentWeatherProfilesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$EnvironmentWeatherProfilesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> environmentId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> weatherPreset = const Value.absent(),
+                Value<double> intensity = const Value.absent(),
+                Value<double> windStrength = const Value.absent(),
+                Value<double> visibility = const Value.absent(),
+                Value<bool> isDefault = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentWeatherProfilesCompanion(
+                id: id,
+                environmentId: environmentId,
+                name: name,
+                weatherPreset: weatherPreset,
+                intensity: intensity,
+                windStrength: windStrength,
+                visibility: visibility,
+                isDefault: isDefault,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String environmentId,
+                required String name,
+                required String weatherPreset,
+                Value<double> intensity = const Value.absent(),
+                Value<double> windStrength = const Value.absent(),
+                Value<double> visibility = const Value.absent(),
+                Value<bool> isDefault = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentWeatherProfilesCompanion.insert(
+                id: id,
+                environmentId: environmentId,
+                name: name,
+                weatherPreset: weatherPreset,
+                intensity: intensity,
+                windStrength: windStrength,
+                visibility: visibility,
+                isDefault: isDefault,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EnvironmentWeatherProfilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $EnvironmentWeatherProfilesTable,
+      EnvironmentWeatherProfile,
+      $$EnvironmentWeatherProfilesTableFilterComposer,
+      $$EnvironmentWeatherProfilesTableOrderingComposer,
+      $$EnvironmentWeatherProfilesTableAnnotationComposer,
+      $$EnvironmentWeatherProfilesTableCreateCompanionBuilder,
+      $$EnvironmentWeatherProfilesTableUpdateCompanionBuilder,
+      (
+        EnvironmentWeatherProfile,
+        BaseReferences<
+          _$ProjectDatabase,
+          $EnvironmentWeatherProfilesTable,
+          EnvironmentWeatherProfile
+        >,
+      ),
+      EnvironmentWeatherProfile,
+      PrefetchHooks Function()
+    >;
+typedef $$EnvironmentLightingProfilesTableCreateCompanionBuilder =
+    EnvironmentLightingProfilesCompanion Function({
+      required String id,
+      required String environmentId,
+      required String name,
+      required String timePreset,
+      Value<String> keyLight,
+      Value<String> fillLight,
+      Value<String> rimLight,
+      Value<String> environmentLight,
+      Value<String> practicalLights,
+      Value<double> fogDensity,
+      Value<double> bloomIntensity,
+      Value<int> rowid,
+    });
+typedef $$EnvironmentLightingProfilesTableUpdateCompanionBuilder =
+    EnvironmentLightingProfilesCompanion Function({
+      Value<String> id,
+      Value<String> environmentId,
+      Value<String> name,
+      Value<String> timePreset,
+      Value<String> keyLight,
+      Value<String> fillLight,
+      Value<String> rimLight,
+      Value<String> environmentLight,
+      Value<String> practicalLights,
+      Value<double> fogDensity,
+      Value<double> bloomIntensity,
+      Value<int> rowid,
+    });
+
+class $$EnvironmentLightingProfilesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentLightingProfilesTable> {
+  $$EnvironmentLightingProfilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get timePreset => $composableBuilder(
+    column: $table.timePreset,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get keyLight => $composableBuilder(
+    column: $table.keyLight,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fillLight => $composableBuilder(
+    column: $table.fillLight,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get rimLight => $composableBuilder(
+    column: $table.rimLight,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get environmentLight => $composableBuilder(
+    column: $table.environmentLight,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get practicalLights => $composableBuilder(
+    column: $table.practicalLights,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get fogDensity => $composableBuilder(
+    column: $table.fogDensity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bloomIntensity => $composableBuilder(
+    column: $table.bloomIntensity,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EnvironmentLightingProfilesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentLightingProfilesTable> {
+  $$EnvironmentLightingProfilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timePreset => $composableBuilder(
+    column: $table.timePreset,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get keyLight => $composableBuilder(
+    column: $table.keyLight,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fillLight => $composableBuilder(
+    column: $table.fillLight,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get rimLight => $composableBuilder(
+    column: $table.rimLight,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get environmentLight => $composableBuilder(
+    column: $table.environmentLight,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get practicalLights => $composableBuilder(
+    column: $table.practicalLights,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get fogDensity => $composableBuilder(
+    column: $table.fogDensity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bloomIntensity => $composableBuilder(
+    column: $table.bloomIntensity,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EnvironmentLightingProfilesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentLightingProfilesTable> {
+  $$EnvironmentLightingProfilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get timePreset => $composableBuilder(
+    column: $table.timePreset,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get keyLight =>
+      $composableBuilder(column: $table.keyLight, builder: (column) => column);
+
+  GeneratedColumn<String> get fillLight =>
+      $composableBuilder(column: $table.fillLight, builder: (column) => column);
+
+  GeneratedColumn<String> get rimLight =>
+      $composableBuilder(column: $table.rimLight, builder: (column) => column);
+
+  GeneratedColumn<String> get environmentLight => $composableBuilder(
+    column: $table.environmentLight,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get practicalLights => $composableBuilder(
+    column: $table.practicalLights,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get fogDensity => $composableBuilder(
+    column: $table.fogDensity,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get bloomIntensity => $composableBuilder(
+    column: $table.bloomIntensity,
+    builder: (column) => column,
+  );
+}
+
+class $$EnvironmentLightingProfilesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $EnvironmentLightingProfilesTable,
+          EnvironmentLightingProfile,
+          $$EnvironmentLightingProfilesTableFilterComposer,
+          $$EnvironmentLightingProfilesTableOrderingComposer,
+          $$EnvironmentLightingProfilesTableAnnotationComposer,
+          $$EnvironmentLightingProfilesTableCreateCompanionBuilder,
+          $$EnvironmentLightingProfilesTableUpdateCompanionBuilder,
+          (
+            EnvironmentLightingProfile,
+            BaseReferences<
+              _$ProjectDatabase,
+              $EnvironmentLightingProfilesTable,
+              EnvironmentLightingProfile
+            >,
+          ),
+          EnvironmentLightingProfile,
+          PrefetchHooks Function()
+        > {
+  $$EnvironmentLightingProfilesTableTableManager(
+    _$ProjectDatabase db,
+    $EnvironmentLightingProfilesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EnvironmentLightingProfilesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$EnvironmentLightingProfilesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$EnvironmentLightingProfilesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> environmentId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> timePreset = const Value.absent(),
+                Value<String> keyLight = const Value.absent(),
+                Value<String> fillLight = const Value.absent(),
+                Value<String> rimLight = const Value.absent(),
+                Value<String> environmentLight = const Value.absent(),
+                Value<String> practicalLights = const Value.absent(),
+                Value<double> fogDensity = const Value.absent(),
+                Value<double> bloomIntensity = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentLightingProfilesCompanion(
+                id: id,
+                environmentId: environmentId,
+                name: name,
+                timePreset: timePreset,
+                keyLight: keyLight,
+                fillLight: fillLight,
+                rimLight: rimLight,
+                environmentLight: environmentLight,
+                practicalLights: practicalLights,
+                fogDensity: fogDensity,
+                bloomIntensity: bloomIntensity,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String environmentId,
+                required String name,
+                required String timePreset,
+                Value<String> keyLight = const Value.absent(),
+                Value<String> fillLight = const Value.absent(),
+                Value<String> rimLight = const Value.absent(),
+                Value<String> environmentLight = const Value.absent(),
+                Value<String> practicalLights = const Value.absent(),
+                Value<double> fogDensity = const Value.absent(),
+                Value<double> bloomIntensity = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentLightingProfilesCompanion.insert(
+                id: id,
+                environmentId: environmentId,
+                name: name,
+                timePreset: timePreset,
+                keyLight: keyLight,
+                fillLight: fillLight,
+                rimLight: rimLight,
+                environmentLight: environmentLight,
+                practicalLights: practicalLights,
+                fogDensity: fogDensity,
+                bloomIntensity: bloomIntensity,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EnvironmentLightingProfilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $EnvironmentLightingProfilesTable,
+      EnvironmentLightingProfile,
+      $$EnvironmentLightingProfilesTableFilterComposer,
+      $$EnvironmentLightingProfilesTableOrderingComposer,
+      $$EnvironmentLightingProfilesTableAnnotationComposer,
+      $$EnvironmentLightingProfilesTableCreateCompanionBuilder,
+      $$EnvironmentLightingProfilesTableUpdateCompanionBuilder,
+      (
+        EnvironmentLightingProfile,
+        BaseReferences<
+          _$ProjectDatabase,
+          $EnvironmentLightingProfilesTable,
+          EnvironmentLightingProfile
+        >,
+      ),
+      EnvironmentLightingProfile,
+      PrefetchHooks Function()
+    >;
+typedef $$EnvironmentColorsTableCreateCompanionBuilder =
+    EnvironmentColorsCompanion Function({
+      required String id,
+      required String environmentId,
+      required String name,
+      required String hexValue,
+      Value<String> usage,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$EnvironmentColorsTableUpdateCompanionBuilder =
+    EnvironmentColorsCompanion Function({
+      Value<String> id,
+      Value<String> environmentId,
+      Value<String> name,
+      Value<String> hexValue,
+      Value<String> usage,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$EnvironmentColorsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentColorsTable> {
+  $$EnvironmentColorsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hexValue => $composableBuilder(
+    column: $table.hexValue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get usage => $composableBuilder(
+    column: $table.usage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EnvironmentColorsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentColorsTable> {
+  $$EnvironmentColorsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hexValue => $composableBuilder(
+    column: $table.hexValue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get usage => $composableBuilder(
+    column: $table.usage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EnvironmentColorsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentColorsTable> {
+  $$EnvironmentColorsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get hexValue =>
+      $composableBuilder(column: $table.hexValue, builder: (column) => column);
+
+  GeneratedColumn<String> get usage =>
+      $composableBuilder(column: $table.usage, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$EnvironmentColorsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $EnvironmentColorsTable,
+          EnvironmentColor,
+          $$EnvironmentColorsTableFilterComposer,
+          $$EnvironmentColorsTableOrderingComposer,
+          $$EnvironmentColorsTableAnnotationComposer,
+          $$EnvironmentColorsTableCreateCompanionBuilder,
+          $$EnvironmentColorsTableUpdateCompanionBuilder,
+          (
+            EnvironmentColor,
+            BaseReferences<
+              _$ProjectDatabase,
+              $EnvironmentColorsTable,
+              EnvironmentColor
+            >,
+          ),
+          EnvironmentColor,
+          PrefetchHooks Function()
+        > {
+  $$EnvironmentColorsTableTableManager(
+    _$ProjectDatabase db,
+    $EnvironmentColorsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EnvironmentColorsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EnvironmentColorsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EnvironmentColorsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> environmentId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> hexValue = const Value.absent(),
+                Value<String> usage = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentColorsCompanion(
+                id: id,
+                environmentId: environmentId,
+                name: name,
+                hexValue: hexValue,
+                usage: usage,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String environmentId,
+                required String name,
+                required String hexValue,
+                Value<String> usage = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentColorsCompanion.insert(
+                id: id,
+                environmentId: environmentId,
+                name: name,
+                hexValue: hexValue,
+                usage: usage,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EnvironmentColorsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $EnvironmentColorsTable,
+      EnvironmentColor,
+      $$EnvironmentColorsTableFilterComposer,
+      $$EnvironmentColorsTableOrderingComposer,
+      $$EnvironmentColorsTableAnnotationComposer,
+      $$EnvironmentColorsTableCreateCompanionBuilder,
+      $$EnvironmentColorsTableUpdateCompanionBuilder,
+      (
+        EnvironmentColor,
+        BaseReferences<
+          _$ProjectDatabase,
+          $EnvironmentColorsTable,
+          EnvironmentColor
+        >,
+      ),
+      EnvironmentColor,
+      PrefetchHooks Function()
+    >;
+typedef $$EnvironmentPropsTableCreateCompanionBuilder =
+    EnvironmentPropsCompanion Function({
+      required String id,
+      required String environmentId,
+      Value<String?> zoneId,
+      required String name,
+      Value<String> propType,
+      Value<String> state,
+      Value<String> positionNote,
+      Value<int> rowid,
+    });
+typedef $$EnvironmentPropsTableUpdateCompanionBuilder =
+    EnvironmentPropsCompanion Function({
+      Value<String> id,
+      Value<String> environmentId,
+      Value<String?> zoneId,
+      Value<String> name,
+      Value<String> propType,
+      Value<String> state,
+      Value<String> positionNote,
+      Value<int> rowid,
+    });
+
+class $$EnvironmentPropsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentPropsTable> {
+  $$EnvironmentPropsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get zoneId => $composableBuilder(
+    column: $table.zoneId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get propType => $composableBuilder(
+    column: $table.propType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get positionNote => $composableBuilder(
+    column: $table.positionNote,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EnvironmentPropsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentPropsTable> {
+  $$EnvironmentPropsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get zoneId => $composableBuilder(
+    column: $table.zoneId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get propType => $composableBuilder(
+    column: $table.propType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get positionNote => $composableBuilder(
+    column: $table.positionNote,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EnvironmentPropsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentPropsTable> {
+  $$EnvironmentPropsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get zoneId =>
+      $composableBuilder(column: $table.zoneId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get propType =>
+      $composableBuilder(column: $table.propType, builder: (column) => column);
+
+  GeneratedColumn<String> get state =>
+      $composableBuilder(column: $table.state, builder: (column) => column);
+
+  GeneratedColumn<String> get positionNote => $composableBuilder(
+    column: $table.positionNote,
+    builder: (column) => column,
+  );
+}
+
+class $$EnvironmentPropsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $EnvironmentPropsTable,
+          EnvironmentProp,
+          $$EnvironmentPropsTableFilterComposer,
+          $$EnvironmentPropsTableOrderingComposer,
+          $$EnvironmentPropsTableAnnotationComposer,
+          $$EnvironmentPropsTableCreateCompanionBuilder,
+          $$EnvironmentPropsTableUpdateCompanionBuilder,
+          (
+            EnvironmentProp,
+            BaseReferences<
+              _$ProjectDatabase,
+              $EnvironmentPropsTable,
+              EnvironmentProp
+            >,
+          ),
+          EnvironmentProp,
+          PrefetchHooks Function()
+        > {
+  $$EnvironmentPropsTableTableManager(
+    _$ProjectDatabase db,
+    $EnvironmentPropsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EnvironmentPropsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EnvironmentPropsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EnvironmentPropsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> environmentId = const Value.absent(),
+                Value<String?> zoneId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> propType = const Value.absent(),
+                Value<String> state = const Value.absent(),
+                Value<String> positionNote = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentPropsCompanion(
+                id: id,
+                environmentId: environmentId,
+                zoneId: zoneId,
+                name: name,
+                propType: propType,
+                state: state,
+                positionNote: positionNote,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String environmentId,
+                Value<String?> zoneId = const Value.absent(),
+                required String name,
+                Value<String> propType = const Value.absent(),
+                Value<String> state = const Value.absent(),
+                Value<String> positionNote = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentPropsCompanion.insert(
+                id: id,
+                environmentId: environmentId,
+                zoneId: zoneId,
+                name: name,
+                propType: propType,
+                state: state,
+                positionNote: positionNote,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EnvironmentPropsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $EnvironmentPropsTable,
+      EnvironmentProp,
+      $$EnvironmentPropsTableFilterComposer,
+      $$EnvironmentPropsTableOrderingComposer,
+      $$EnvironmentPropsTableAnnotationComposer,
+      $$EnvironmentPropsTableCreateCompanionBuilder,
+      $$EnvironmentPropsTableUpdateCompanionBuilder,
+      (
+        EnvironmentProp,
+        BaseReferences<
+          _$ProjectDatabase,
+          $EnvironmentPropsTable,
+          EnvironmentProp
+        >,
+      ),
+      EnvironmentProp,
+      PrefetchHooks Function()
+    >;
+typedef $$EnvironmentContinuityStatesTableCreateCompanionBuilder =
+    EnvironmentContinuityStatesCompanion Function({
+      required String id,
+      required String environmentId,
+      required String name,
+      Value<String> description,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$EnvironmentContinuityStatesTableUpdateCompanionBuilder =
+    EnvironmentContinuityStatesCompanion Function({
+      Value<String> id,
+      Value<String> environmentId,
+      Value<String> name,
+      Value<String> description,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$EnvironmentContinuityStatesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentContinuityStatesTable> {
+  $$EnvironmentContinuityStatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EnvironmentContinuityStatesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentContinuityStatesTable> {
+  $$EnvironmentContinuityStatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EnvironmentContinuityStatesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentContinuityStatesTable> {
+  $$EnvironmentContinuityStatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$EnvironmentContinuityStatesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $EnvironmentContinuityStatesTable,
+          EnvironmentContinuityState,
+          $$EnvironmentContinuityStatesTableFilterComposer,
+          $$EnvironmentContinuityStatesTableOrderingComposer,
+          $$EnvironmentContinuityStatesTableAnnotationComposer,
+          $$EnvironmentContinuityStatesTableCreateCompanionBuilder,
+          $$EnvironmentContinuityStatesTableUpdateCompanionBuilder,
+          (
+            EnvironmentContinuityState,
+            BaseReferences<
+              _$ProjectDatabase,
+              $EnvironmentContinuityStatesTable,
+              EnvironmentContinuityState
+            >,
+          ),
+          EnvironmentContinuityState,
+          PrefetchHooks Function()
+        > {
+  $$EnvironmentContinuityStatesTableTableManager(
+    _$ProjectDatabase db,
+    $EnvironmentContinuityStatesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EnvironmentContinuityStatesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$EnvironmentContinuityStatesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$EnvironmentContinuityStatesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> environmentId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentContinuityStatesCompanion(
+                id: id,
+                environmentId: environmentId,
+                name: name,
+                description: description,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String environmentId,
+                required String name,
+                Value<String> description = const Value.absent(),
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentContinuityStatesCompanion.insert(
+                id: id,
+                environmentId: environmentId,
+                name: name,
+                description: description,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EnvironmentContinuityStatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $EnvironmentContinuityStatesTable,
+      EnvironmentContinuityState,
+      $$EnvironmentContinuityStatesTableFilterComposer,
+      $$EnvironmentContinuityStatesTableOrderingComposer,
+      $$EnvironmentContinuityStatesTableAnnotationComposer,
+      $$EnvironmentContinuityStatesTableCreateCompanionBuilder,
+      $$EnvironmentContinuityStatesTableUpdateCompanionBuilder,
+      (
+        EnvironmentContinuityState,
+        BaseReferences<
+          _$ProjectDatabase,
+          $EnvironmentContinuityStatesTable,
+          EnvironmentContinuityState
+        >,
+      ),
+      EnvironmentContinuityState,
+      PrefetchHooks Function()
+    >;
+typedef $$EnvironmentPhysicsProfilesTableCreateCompanionBuilder =
+    EnvironmentPhysicsProfilesCompanion Function({
+      required String environmentId,
+      Value<double> gravityMultiplier,
+      Value<bool> floatingObjects,
+      Value<String> dimensionalDistortion,
+      Value<String> portalBehavior,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+typedef $$EnvironmentPhysicsProfilesTableUpdateCompanionBuilder =
+    EnvironmentPhysicsProfilesCompanion Function({
+      Value<String> environmentId,
+      Value<double> gravityMultiplier,
+      Value<bool> floatingObjects,
+      Value<String> dimensionalDistortion,
+      Value<String> portalBehavior,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+
+class $$EnvironmentPhysicsProfilesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentPhysicsProfilesTable> {
+  $$EnvironmentPhysicsProfilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get gravityMultiplier => $composableBuilder(
+    column: $table.gravityMultiplier,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get floatingObjects => $composableBuilder(
+    column: $table.floatingObjects,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dimensionalDistortion => $composableBuilder(
+    column: $table.dimensionalDistortion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get portalBehavior => $composableBuilder(
+    column: $table.portalBehavior,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EnvironmentPhysicsProfilesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentPhysicsProfilesTable> {
+  $$EnvironmentPhysicsProfilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get gravityMultiplier => $composableBuilder(
+    column: $table.gravityMultiplier,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get floatingObjects => $composableBuilder(
+    column: $table.floatingObjects,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dimensionalDistortion => $composableBuilder(
+    column: $table.dimensionalDistortion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get portalBehavior => $composableBuilder(
+    column: $table.portalBehavior,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EnvironmentPhysicsProfilesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentPhysicsProfilesTable> {
+  $$EnvironmentPhysicsProfilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get gravityMultiplier => $composableBuilder(
+    column: $table.gravityMultiplier,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get floatingObjects => $composableBuilder(
+    column: $table.floatingObjects,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dimensionalDistortion => $composableBuilder(
+    column: $table.dimensionalDistortion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get portalBehavior => $composableBuilder(
+    column: $table.portalBehavior,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$EnvironmentPhysicsProfilesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $EnvironmentPhysicsProfilesTable,
+          EnvironmentPhysicsProfile,
+          $$EnvironmentPhysicsProfilesTableFilterComposer,
+          $$EnvironmentPhysicsProfilesTableOrderingComposer,
+          $$EnvironmentPhysicsProfilesTableAnnotationComposer,
+          $$EnvironmentPhysicsProfilesTableCreateCompanionBuilder,
+          $$EnvironmentPhysicsProfilesTableUpdateCompanionBuilder,
+          (
+            EnvironmentPhysicsProfile,
+            BaseReferences<
+              _$ProjectDatabase,
+              $EnvironmentPhysicsProfilesTable,
+              EnvironmentPhysicsProfile
+            >,
+          ),
+          EnvironmentPhysicsProfile,
+          PrefetchHooks Function()
+        > {
+  $$EnvironmentPhysicsProfilesTableTableManager(
+    _$ProjectDatabase db,
+    $EnvironmentPhysicsProfilesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EnvironmentPhysicsProfilesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$EnvironmentPhysicsProfilesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$EnvironmentPhysicsProfilesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> environmentId = const Value.absent(),
+                Value<double> gravityMultiplier = const Value.absent(),
+                Value<bool> floatingObjects = const Value.absent(),
+                Value<String> dimensionalDistortion = const Value.absent(),
+                Value<String> portalBehavior = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentPhysicsProfilesCompanion(
+                environmentId: environmentId,
+                gravityMultiplier: gravityMultiplier,
+                floatingObjects: floatingObjects,
+                dimensionalDistortion: dimensionalDistortion,
+                portalBehavior: portalBehavior,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String environmentId,
+                Value<double> gravityMultiplier = const Value.absent(),
+                Value<bool> floatingObjects = const Value.absent(),
+                Value<String> dimensionalDistortion = const Value.absent(),
+                Value<String> portalBehavior = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentPhysicsProfilesCompanion.insert(
+                environmentId: environmentId,
+                gravityMultiplier: gravityMultiplier,
+                floatingObjects: floatingObjects,
+                dimensionalDistortion: dimensionalDistortion,
+                portalBehavior: portalBehavior,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EnvironmentPhysicsProfilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $EnvironmentPhysicsProfilesTable,
+      EnvironmentPhysicsProfile,
+      $$EnvironmentPhysicsProfilesTableFilterComposer,
+      $$EnvironmentPhysicsProfilesTableOrderingComposer,
+      $$EnvironmentPhysicsProfilesTableAnnotationComposer,
+      $$EnvironmentPhysicsProfilesTableCreateCompanionBuilder,
+      $$EnvironmentPhysicsProfilesTableUpdateCompanionBuilder,
+      (
+        EnvironmentPhysicsProfile,
+        BaseReferences<
+          _$ProjectDatabase,
+          $EnvironmentPhysicsProfilesTable,
+          EnvironmentPhysicsProfile
+        >,
+      ),
+      EnvironmentPhysicsProfile,
+      PrefetchHooks Function()
+    >;
+typedef $$EnvironmentReferencesTableCreateCompanionBuilder =
+    EnvironmentReferencesCompanion Function({
+      required String id,
+      required String environmentId,
+      required String referenceType,
+      required String filePath,
+      Value<int> priority,
+      Value<bool> primaryReference,
+      Value<int> rowid,
+    });
+typedef $$EnvironmentReferencesTableUpdateCompanionBuilder =
+    EnvironmentReferencesCompanion Function({
+      Value<String> id,
+      Value<String> environmentId,
+      Value<String> referenceType,
+      Value<String> filePath,
+      Value<int> priority,
+      Value<bool> primaryReference,
+      Value<int> rowid,
+    });
+
+class $$EnvironmentReferencesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentReferencesTable> {
+  $$EnvironmentReferencesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referenceType => $composableBuilder(
+    column: $table.referenceType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get primaryReference => $composableBuilder(
+    column: $table.primaryReference,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EnvironmentReferencesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentReferencesTable> {
+  $$EnvironmentReferencesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referenceType => $composableBuilder(
+    column: $table.referenceType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get primaryReference => $composableBuilder(
+    column: $table.primaryReference,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EnvironmentReferencesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $EnvironmentReferencesTable> {
+  $$EnvironmentReferencesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get referenceType => $composableBuilder(
+    column: $table.referenceType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get filePath =>
+      $composableBuilder(column: $table.filePath, builder: (column) => column);
+
+  GeneratedColumn<int> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  GeneratedColumn<bool> get primaryReference => $composableBuilder(
+    column: $table.primaryReference,
+    builder: (column) => column,
+  );
+}
+
+class $$EnvironmentReferencesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $EnvironmentReferencesTable,
+          EnvironmentReference,
+          $$EnvironmentReferencesTableFilterComposer,
+          $$EnvironmentReferencesTableOrderingComposer,
+          $$EnvironmentReferencesTableAnnotationComposer,
+          $$EnvironmentReferencesTableCreateCompanionBuilder,
+          $$EnvironmentReferencesTableUpdateCompanionBuilder,
+          (
+            EnvironmentReference,
+            BaseReferences<
+              _$ProjectDatabase,
+              $EnvironmentReferencesTable,
+              EnvironmentReference
+            >,
+          ),
+          EnvironmentReference,
+          PrefetchHooks Function()
+        > {
+  $$EnvironmentReferencesTableTableManager(
+    _$ProjectDatabase db,
+    $EnvironmentReferencesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EnvironmentReferencesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$EnvironmentReferencesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$EnvironmentReferencesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> environmentId = const Value.absent(),
+                Value<String> referenceType = const Value.absent(),
+                Value<String> filePath = const Value.absent(),
+                Value<int> priority = const Value.absent(),
+                Value<bool> primaryReference = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentReferencesCompanion(
+                id: id,
+                environmentId: environmentId,
+                referenceType: referenceType,
+                filePath: filePath,
+                priority: priority,
+                primaryReference: primaryReference,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String environmentId,
+                required String referenceType,
+                required String filePath,
+                Value<int> priority = const Value.absent(),
+                Value<bool> primaryReference = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EnvironmentReferencesCompanion.insert(
+                id: id,
+                environmentId: environmentId,
+                referenceType: referenceType,
+                filePath: filePath,
+                priority: priority,
+                primaryReference: primaryReference,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EnvironmentReferencesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $EnvironmentReferencesTable,
+      EnvironmentReference,
+      $$EnvironmentReferencesTableFilterComposer,
+      $$EnvironmentReferencesTableOrderingComposer,
+      $$EnvironmentReferencesTableAnnotationComposer,
+      $$EnvironmentReferencesTableCreateCompanionBuilder,
+      $$EnvironmentReferencesTableUpdateCompanionBuilder,
+      (
+        EnvironmentReference,
+        BaseReferences<
+          _$ProjectDatabase,
+          $EnvironmentReferencesTable,
+          EnvironmentReference
+        >,
+      ),
+      EnvironmentReference,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -17153,4 +24503,43 @@ class $ProjectDatabaseManager {
         _db,
         _db.weaponPreservationProfiles,
       );
+  $$EnvironmentsTableTableManager get environments =>
+      $$EnvironmentsTableTableManager(_db, _db.environments);
+  $$EnvironmentZonesTableTableManager get environmentZones =>
+      $$EnvironmentZonesTableTableManager(_db, _db.environmentZones);
+  $$EnvironmentArchitecturesTableTableManager get environmentArchitectures =>
+      $$EnvironmentArchitecturesTableTableManager(
+        _db,
+        _db.environmentArchitectures,
+      );
+  $$EnvironmentWeatherProfilesTableTableManager
+  get environmentWeatherProfiles =>
+      $$EnvironmentWeatherProfilesTableTableManager(
+        _db,
+        _db.environmentWeatherProfiles,
+      );
+  $$EnvironmentLightingProfilesTableTableManager
+  get environmentLightingProfiles =>
+      $$EnvironmentLightingProfilesTableTableManager(
+        _db,
+        _db.environmentLightingProfiles,
+      );
+  $$EnvironmentColorsTableTableManager get environmentColors =>
+      $$EnvironmentColorsTableTableManager(_db, _db.environmentColors);
+  $$EnvironmentPropsTableTableManager get environmentProps =>
+      $$EnvironmentPropsTableTableManager(_db, _db.environmentProps);
+  $$EnvironmentContinuityStatesTableTableManager
+  get environmentContinuityStates =>
+      $$EnvironmentContinuityStatesTableTableManager(
+        _db,
+        _db.environmentContinuityStates,
+      );
+  $$EnvironmentPhysicsProfilesTableTableManager
+  get environmentPhysicsProfiles =>
+      $$EnvironmentPhysicsProfilesTableTableManager(
+        _db,
+        _db.environmentPhysicsProfiles,
+      );
+  $$EnvironmentReferencesTableTableManager get environmentReferences =>
+      $$EnvironmentReferencesTableTableManager(_db, _db.environmentReferences);
 }

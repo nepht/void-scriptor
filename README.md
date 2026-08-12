@@ -65,7 +65,8 @@ The current repository has verified vertical slices for the following areas:
 | Wardrobe asset family | Complete for create/read/delete, variants, components, colors, references, and `wears` persistence | `test/features/wardrobe` |
 | Relation Core and Inspector relation management | Complete for create/read/delete, inverse labels, target selection, and selection navigation | `test/features/relations`, `RelationSection` |
 | Weapon asset family | Complete for create/read/delete, technical child tables, variants, preservation, Explorer, Workspace, Inspector, and `uses` restart persistence | `test/features/weapon` |
-| Character Mode + Loadout | Complete for schema v8, Base Mode creation, mode create/clone/update/delete safeguards, nullable identity overrides, all generic slot type validation, quantity semantics, searchable AssetPicker, mode selector, identity editor, mode references repository, and derived relation synchronization | `test/features/character_mode`, `test/features/assets` |
+| Character Mode + Loadout | Complete for schema v9, Base Mode creation, mode create/clone/update/delete safeguards, nullable identity overrides, all generic slot type validation, quantity semantics, searchable AssetPicker, mode selector, identity editor, mode references repository, and derived relation synchronization | `test/features/character_mode`, `test/features/assets` |
+| Environment + Location | Complete for schema v10: environment asset/model, zones, architecture, weather, lighting, colors, props, continuity, physics, references, creation defaults, filesystem package, Explorer selection, Workspace, Inspector, and restart persistence | `test/features/environment` |
 
 The following are deliberately deferred because they require additional product subsystems rather than missing persistence plumbing:
 

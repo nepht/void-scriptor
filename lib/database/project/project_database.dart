@@ -8,6 +8,16 @@ import 'tables/character_modes.dart';
 import 'tables/character_loadout_entries.dart';
 import 'tables/character_mode_identity_overrides.dart';
 import 'tables/character_mode_references.dart';
+import 'tables/environments.dart';
+import 'tables/environment_zones.dart';
+import 'tables/environment_architectures.dart';
+import 'tables/environment_weather_profiles.dart';
+import 'tables/environment_lighting_profiles.dart';
+import 'tables/environment_colors.dart';
+import 'tables/environment_props.dart';
+import 'tables/environment_continuity_states.dart';
+import 'tables/environment_physics_profiles.dart';
+import 'tables/environment_references.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -28,6 +38,7 @@ import 'daos/character_mode_dao.dart';
 import 'daos/relation_dao.dart';
 import 'daos/wardrobe_dao.dart';
 import 'daos/weapon_dao.dart';
+import 'daos/environment_dao.dart';
 
 part 'project_database.g.dart';
 
@@ -65,6 +76,16 @@ class ProjectMetadata extends Table {
     WeaponVariants,
     WeaponReferences,
     WeaponPreservationProfiles,
+    Environments,
+    EnvironmentZones,
+    EnvironmentArchitectures,
+    EnvironmentWeatherProfiles,
+    EnvironmentLightingProfiles,
+    EnvironmentColors,
+    EnvironmentProps,
+    EnvironmentContinuityStates,
+    EnvironmentPhysicsProfiles,
+    EnvironmentReferences,
   ],
   daos: [
     AssetDao,
@@ -73,13 +94,14 @@ class ProjectMetadata extends Table {
     RelationDao,
     WardrobeDao,
     WeaponDao,
+    EnvironmentDao,
   ],
 )
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -138,6 +160,18 @@ class ProjectDatabase extends _$ProjectDatabase {
       if (from >= 8 && from < 9) {
         await m.addColumn(characterModes, characterModes.accentColor);
         await m.addColumn(characterModes, characterModes.tagsJson);
+      }
+      if (from < 10) {
+        await m.createTable(environments);
+        await m.createTable(environmentZones);
+        await m.createTable(environmentArchitectures);
+        await m.createTable(environmentWeatherProfiles);
+        await m.createTable(environmentLightingProfiles);
+        await m.createTable(environmentColors);
+        await m.createTable(environmentProps);
+        await m.createTable(environmentContinuityStates);
+        await m.createTable(environmentPhysicsProfiles);
+        await m.createTable(environmentReferences);
       }
     },
   );

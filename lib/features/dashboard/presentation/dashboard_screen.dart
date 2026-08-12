@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/routing/app_routes.dart';
 import '../../../core/auth/auth_controller.dart';
 import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
-import '../../../design_system/widgets/void_button.dart';
-import '../../../design_system/widgets/void_card.dart';
-import '../../../app/routing/app_routes.dart';
+import 'widgets/ai_activity_card.dart';
+import 'widgets/donation_card.dart';
+import 'widgets/marketplace_card.dart';
+import 'widgets/notifications_card.dart';
+import 'widgets/quick_actions.dart';
+import 'widgets/recent_assets.dart';
+import 'widgets/recent_projects.dart';
+import 'widgets/statistics_panel.dart';
+import 'widgets/storage_card.dart';
+import 'widgets/welcome_card.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -19,146 +27,113 @@ class DashboardScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: VoidColors.background,
+      appBar: AppBar(
+        title: const Text('Dashboard'),
+        actions: [
+          IconButton(
+            tooltip: 'Logout',
+            onPressed: () => ref.read(authControllerProvider.notifier).logout(),
+            icon: const Icon(Icons.logout),
+          ),
+        ],
+      ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(VoidSpacing.xxl),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              session.when(
-                loading: () => const CircularProgressIndicator(),
-                error: (error, stack) => Text('$error'),
-                data: (session) => Column(
+        child: session.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(child: Text('$error')),
+          data: (authSession) => LayoutBuilder(
+            builder: (context, constraints) {
+              final desktop = constraints.maxWidth >= 1200;
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(VoidSpacing.xxl),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Welcome ${session.displayName ?? 'Creator'}',
+                    const Text(
+                      'Dashboard',
                       style: VoidTypography.displayMedium,
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Creative Universe Studio',
+                    const SizedBox(height: 6),
+                    Text(
+                      'Welcome ${authSession.displayName ?? 'Creator'}',
                       style: VoidTypography.body,
                     ),
-                    const SizedBox(height: 32),
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: [
-                        VoidButton(
-                          label: 'New Project',
-                          icon: Icons.add,
-                          onPressed: () {},
-                        ),
-                        VoidButton(
-                          label: 'Open Project',
-                          icon: Icons.folder_open_outlined,
-                          onPressed: () {},
-                        ),
-                        VoidButton(
-                          label: 'AI Studio',
-                          icon: Icons.auto_awesome_outlined,
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 6),
                     const Text(
-                      'Continue Working',
-                      style: VoidTypography.headingMedium,
+                      'Your creative universe at a glance.',
+                      style: VoidTypography.body,
                     ),
-                    const SizedBox(height: 16),
-                    VoidCard(
-                      child: Row(
+                    const SizedBox(height: 28),
+                    WelcomeCard(
+                      displayName: authSession.displayName ?? 'Creator',
+                    ),
+                    const SizedBox(height: 20),
+                    QuickActions(
+                      onOpenStudio: () => context.go(AppRoutes.studio),
+                    ),
+                    const SizedBox(height: 20),
+                    FilledButton.icon(
+                      onPressed: () => context.go(AppRoutes.studio),
+                      icon: const Icon(Icons.open_in_new),
+                      label: const Text('Open Studio'),
+                    ),
+                    const SizedBox(height: 20),
+                    if (desktop)
+                      const Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            width: 90,
-                            height: 70,
-                            decoration: BoxDecoration(
-                              color: VoidColors.surfaceElevated,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          const Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Void Universe',
-                                  style: VoidTypography.title,
-                                ),
-                                SizedBox(height: 6),
-                                Text(
-                                  'Last opened recently',
-                                  style: VoidTypography.caption,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Icon(
-                            Icons.chevron_right,
-                            color: VoidColors.textSecondary,
-                          ),
+                          Expanded(flex: 2, child: RecentProjects()),
+                          SizedBox(width: 16),
+                          Expanded(child: StatisticsPanel()),
                         ],
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    const Text('Overview', style: VoidTypography.headingMedium),
-                    const SizedBox(height: 16),
-                    GridView.count(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
-                      childAspectRatio: 2.4,
-                      children: const [
-                        _StatCard(title: 'Characters', value: '0'),
-                        _StatCard(title: 'Assets', value: '0'),
-                        _StatCard(title: 'Projects', value: '0'),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
-                    FilledButton(
-                      onPressed: () {
-                        context.go(AppRoutes.studio);
-                      },
-                      child: const Text('Open Studio'),
-                    ),
-                    const SizedBox(height: 16),
-                    TextButton(
-                      onPressed: () {
-                        ref.read(authControllerProvider.notifier).logout();
-                      },
-                      child: const Text('Logout'),
-                    ),
+                      )
+                    else ...[
+                      const RecentProjects(),
+                      const SizedBox(height: 16),
+                      const StatisticsPanel(),
+                    ],
+                    const SizedBox(height: 20),
+                    if (desktop)
+                      const Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(flex: 2, child: RecentAssets()),
+                          SizedBox(width: 16),
+                          Expanded(child: AiActivityCard()),
+                        ],
+                      )
+                    else ...[
+                      const RecentAssets(),
+                      const SizedBox(height: 16),
+                      const AiActivityCard(),
+                    ],
+                    const SizedBox(height: 20),
+                    if (desktop)
+                      const Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: StorageCard()),
+                          SizedBox(width: 16),
+                          Expanded(child: NotificationsCard()),
+                          SizedBox(width: 16),
+                          Expanded(child: MarketplaceCard()),
+                        ],
+                      )
+                    else ...[
+                      const StorageCard(),
+                      const SizedBox(height: 16),
+                      const NotificationsCard(),
+                      const SizedBox(height: 16),
+                      const MarketplaceCard(),
+                    ],
+                    const SizedBox(height: 20),
+                    const DonationCard(),
                   ],
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  const _StatCard({required this.title, required this.value});
-  final String title;
-  final String value;
-  @override
-  Widget build(BuildContext context) {
-    return VoidCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(value, style: VoidTypography.displayMedium),
-          const SizedBox(height: 4),
-          Text(title, style: VoidTypography.caption),
-        ],
       ),
     );
   }

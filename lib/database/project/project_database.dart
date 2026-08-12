@@ -1,11 +1,13 @@
 import 'package:drift/drift.dart';
 import 'tables/asset_tags.dart';
+import 'tables/asset_relations.dart';
 import 'tables/assets.dart';
 import 'tables/character_identity_profiles.dart';
 import 'tables/character_references.dart';
 import 'tables/characters.dart';
 import 'daos/asset_dao.dart';
 import 'daos/character_dao.dart';
+import 'daos/relation_dao.dart';
 
 part 'project_database.g.dart';
 
@@ -27,13 +29,13 @@ class ProjectMetadata extends Table {
     CharacterReferences,
     AssetRelations,
   ],
-  daos: [AssetDao, CharacterDao],
+  daos: [AssetDao, CharacterDao, RelationDao],
 )
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -48,6 +50,10 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(characterIdentityProfiles);
         await m.createTable(characterReferences);
         await m.createTable(assetRelations);
+      }
+      if (from >= 2 && from < 3) {
+        await m.addColumn(assetRelations, assetRelations.projectId);
+        await m.addColumn(assetRelations, assetRelations.createdAt);
       }
     },
   );

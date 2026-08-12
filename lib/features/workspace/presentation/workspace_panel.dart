@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../character/presentation/character_controller.dart';
-import '../../character/presentation/character_workspace_screen.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
+import 'workspace_resolver.dart';
 
 import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -18,7 +17,7 @@ class WorkspacePanel extends ConsumerWidget {
         .valueOrNull
         ?.manifest
         .id;
-    final selectedId = ref.watch(selectedCharacterIdProvider);
+
     return Container(
       color: VoidColors.backgroundSecondary,
       child: Column(
@@ -26,9 +25,9 @@ class WorkspacePanel extends ConsumerWidget {
           const _WorkspaceHeader(),
           const _WorkspaceTabs(),
           Expanded(
-            child: projectId == null || selectedId == null
+            child: projectId == null
                 ? const _EmptyWorkspace()
-                : CharacterWorkspaceScreen(characterId: selectedId),
+                : const WorkspaceResolver(),
           ),
         ],
       ),

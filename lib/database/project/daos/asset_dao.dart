@@ -2,8 +2,8 @@ import 'package:drift/drift.dart';
 
 import '../project_database.dart';
 import '../tables/asset_tags.dart';
+import '../tables/asset_relations.dart';
 import '../tables/assets.dart';
-import '../tables/character_references.dart';
 
 part 'asset_dao.g.dart';
 

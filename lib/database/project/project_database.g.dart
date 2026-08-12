@@ -2586,6 +2586,18 @@ class $AssetRelationsTable extends AssetRelations
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
   static const VerificationMeta _sourceAssetIdMeta = const VerificationMeta(
     'sourceAssetId',
   );
@@ -2619,12 +2631,26 @@ class $AssetRelationsTable extends AssetRelations
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: Constant(DateTime.fromMillisecondsSinceEpoch(0)),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    projectId,
     sourceAssetId,
     targetAssetId,
     relationType,
+    createdAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2642,6 +2668,12 @@ class $AssetRelationsTable extends AssetRelations
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
     }
     if (data.containsKey('source_asset_id')) {
       context.handle(
@@ -2676,6 +2708,12 @@ class $AssetRelationsTable extends AssetRelations
     } else if (isInserting) {
       context.missing(_relationTypeMeta);
     }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
     return context;
   }
 
@@ -2689,6 +2727,10 @@ class $AssetRelationsTable extends AssetRelations
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
       sourceAssetId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}source_asset_id'],
@@ -2701,6 +2743,10 @@ class $AssetRelationsTable extends AssetRelations
         DriftSqlType.string,
         data['${effectivePrefix}relation_type'],
       )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
     );
   }
 
@@ -2712,31 +2758,39 @@ class $AssetRelationsTable extends AssetRelations
 
 class AssetRelation extends DataClass implements Insertable<AssetRelation> {
   final String id;
+  final String projectId;
   final String sourceAssetId;
   final String targetAssetId;
   final String relationType;
+  final DateTime createdAt;
   const AssetRelation({
     required this.id,
+    required this.projectId,
     required this.sourceAssetId,
     required this.targetAssetId,
     required this.relationType,
+    required this.createdAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
     map['source_asset_id'] = Variable<String>(sourceAssetId);
     map['target_asset_id'] = Variable<String>(targetAssetId);
     map['relation_type'] = Variable<String>(relationType);
+    map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
 
   AssetRelationsCompanion toCompanion(bool nullToAbsent) {
     return AssetRelationsCompanion(
       id: Value(id),
+      projectId: Value(projectId),
       sourceAssetId: Value(sourceAssetId),
       targetAssetId: Value(targetAssetId),
       relationType: Value(relationType),
+      createdAt: Value(createdAt),
     );
   }
 
@@ -2747,9 +2801,11 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return AssetRelation(
       id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
       sourceAssetId: serializer.fromJson<String>(json['sourceAssetId']),
       targetAssetId: serializer.fromJson<String>(json['targetAssetId']),
       relationType: serializer.fromJson<String>(json['relationType']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
   @override
@@ -2757,26 +2813,33 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
       'sourceAssetId': serializer.toJson<String>(sourceAssetId),
       'targetAssetId': serializer.toJson<String>(targetAssetId),
       'relationType': serializer.toJson<String>(relationType),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
 
   AssetRelation copyWith({
     String? id,
+    String? projectId,
     String? sourceAssetId,
     String? targetAssetId,
     String? relationType,
+    DateTime? createdAt,
   }) => AssetRelation(
     id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
     sourceAssetId: sourceAssetId ?? this.sourceAssetId,
     targetAssetId: targetAssetId ?? this.targetAssetId,
     relationType: relationType ?? this.relationType,
+    createdAt: createdAt ?? this.createdAt,
   );
   AssetRelation copyWithCompanion(AssetRelationsCompanion data) {
     return AssetRelation(
       id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
       sourceAssetId: data.sourceAssetId.present
           ? data.sourceAssetId.value
           : this.sourceAssetId,
@@ -2786,6 +2849,7 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
       relationType: data.relationType.present
           ? data.relationType.value
           : this.relationType,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
 
@@ -2793,44 +2857,60 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
   String toString() {
     return (StringBuffer('AssetRelation(')
           ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
           ..write('sourceAssetId: $sourceAssetId, ')
           ..write('targetAssetId: $targetAssetId, ')
-          ..write('relationType: $relationType')
+          ..write('relationType: $relationType, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, sourceAssetId, targetAssetId, relationType);
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    sourceAssetId,
+    targetAssetId,
+    relationType,
+    createdAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is AssetRelation &&
           other.id == this.id &&
+          other.projectId == this.projectId &&
           other.sourceAssetId == this.sourceAssetId &&
           other.targetAssetId == this.targetAssetId &&
-          other.relationType == this.relationType);
+          other.relationType == this.relationType &&
+          other.createdAt == this.createdAt);
 }
 
 class AssetRelationsCompanion extends UpdateCompanion<AssetRelation> {
   final Value<String> id;
+  final Value<String> projectId;
   final Value<String> sourceAssetId;
   final Value<String> targetAssetId;
   final Value<String> relationType;
+  final Value<DateTime> createdAt;
   final Value<int> rowid;
   const AssetRelationsCompanion({
     this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
     this.sourceAssetId = const Value.absent(),
     this.targetAssetId = const Value.absent(),
     this.relationType = const Value.absent(),
+    this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AssetRelationsCompanion.insert({
     required String id,
+    this.projectId = const Value.absent(),
     required String sourceAssetId,
     required String targetAssetId,
     required String relationType,
+    this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        sourceAssetId = Value(sourceAssetId),
@@ -2838,32 +2918,40 @@ class AssetRelationsCompanion extends UpdateCompanion<AssetRelation> {
        relationType = Value(relationType);
   static Insertable<AssetRelation> custom({
     Expression<String>? id,
+    Expression<String>? projectId,
     Expression<String>? sourceAssetId,
     Expression<String>? targetAssetId,
     Expression<String>? relationType,
+    Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
       if (sourceAssetId != null) 'source_asset_id': sourceAssetId,
       if (targetAssetId != null) 'target_asset_id': targetAssetId,
       if (relationType != null) 'relation_type': relationType,
+      if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
   AssetRelationsCompanion copyWith({
     Value<String>? id,
+    Value<String>? projectId,
     Value<String>? sourceAssetId,
     Value<String>? targetAssetId,
     Value<String>? relationType,
+    Value<DateTime>? createdAt,
     Value<int>? rowid,
   }) {
     return AssetRelationsCompanion(
       id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
       sourceAssetId: sourceAssetId ?? this.sourceAssetId,
       targetAssetId: targetAssetId ?? this.targetAssetId,
       relationType: relationType ?? this.relationType,
+      createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2874,6 +2962,9 @@ class AssetRelationsCompanion extends UpdateCompanion<AssetRelation> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
     if (sourceAssetId.present) {
       map['source_asset_id'] = Variable<String>(sourceAssetId.value);
     }
@@ -2882,6 +2973,9 @@ class AssetRelationsCompanion extends UpdateCompanion<AssetRelation> {
     }
     if (relationType.present) {
       map['relation_type'] = Variable<String>(relationType.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -2893,9 +2987,11 @@ class AssetRelationsCompanion extends UpdateCompanion<AssetRelation> {
   String toString() {
     return (StringBuffer('AssetRelationsCompanion(')
           ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
           ..write('sourceAssetId: $sourceAssetId, ')
           ..write('targetAssetId: $targetAssetId, ')
           ..write('relationType: $relationType, ')
+          ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2918,6 +3014,7 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final $AssetRelationsTable assetRelations = $AssetRelationsTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
+  late final RelationDao relationDao = RelationDao(this as ProjectDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4327,17 +4424,21 @@ typedef $$CharacterReferencesTableProcessedTableManager =
 typedef $$AssetRelationsTableCreateCompanionBuilder =
     AssetRelationsCompanion Function({
       required String id,
+      Value<String> projectId,
       required String sourceAssetId,
       required String targetAssetId,
       required String relationType,
+      Value<DateTime> createdAt,
       Value<int> rowid,
     });
 typedef $$AssetRelationsTableUpdateCompanionBuilder =
     AssetRelationsCompanion Function({
       Value<String> id,
+      Value<String> projectId,
       Value<String> sourceAssetId,
       Value<String> targetAssetId,
       Value<String> relationType,
+      Value<DateTime> createdAt,
       Value<int> rowid,
     });
 
@@ -4355,6 +4456,11 @@ class $$AssetRelationsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get sourceAssetId => $composableBuilder(
     column: $table.sourceAssetId,
     builder: (column) => ColumnFilters(column),
@@ -4367,6 +4473,11 @@ class $$AssetRelationsTableFilterComposer
 
   ColumnFilters<String> get relationType => $composableBuilder(
     column: $table.relationType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -4385,6 +4496,11 @@ class $$AssetRelationsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get sourceAssetId => $composableBuilder(
     column: $table.sourceAssetId,
     builder: (column) => ColumnOrderings(column),
@@ -4397,6 +4513,11 @@ class $$AssetRelationsTableOrderingComposer
 
   ColumnOrderings<String> get relationType => $composableBuilder(
     column: $table.relationType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -4413,6 +4534,9 @@ class $$AssetRelationsTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
   GeneratedColumn<String> get sourceAssetId => $composableBuilder(
     column: $table.sourceAssetId,
     builder: (column) => column,
@@ -4427,6 +4551,9 @@ class $$AssetRelationsTableAnnotationComposer
     column: $table.relationType,
     builder: (column) => column,
   );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
 }
 
 class $$AssetRelationsTableTableManager
@@ -4467,29 +4594,37 @@ class $$AssetRelationsTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
                 Value<String> sourceAssetId = const Value.absent(),
                 Value<String> targetAssetId = const Value.absent(),
                 Value<String> relationType = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AssetRelationsCompanion(
                 id: id,
+                projectId: projectId,
                 sourceAssetId: sourceAssetId,
                 targetAssetId: targetAssetId,
                 relationType: relationType,
+                createdAt: createdAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required String id,
+                Value<String> projectId = const Value.absent(),
                 required String sourceAssetId,
                 required String targetAssetId,
                 required String relationType,
+                Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AssetRelationsCompanion.insert(
                 id: id,
+                projectId: projectId,
                 sourceAssetId: sourceAssetId,
                 targetAssetId: targetAssetId,
                 relationType: relationType,
+                createdAt: createdAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

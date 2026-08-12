@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/colors/void_colors.dart';
+import '../../../core/selection/selection_controller.dart';
+import '../../../core/selection/selection_model.dart';
+import '../../assets/domain/asset_type.dart';
 import '../../character/presentation/character_controller.dart';
 import '../../character/domain/character_model.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
@@ -55,8 +58,16 @@ class ExplorerPanel extends ConsumerWidget {
                 ),
                 _CharacterGroup(
                   characters: characters,
-                  onSelected: (id) =>
-                      ref.read(selectedAssetProvider.notifier).state = id,
+                  selectedId: ref.watch(selectionProvider)?.assetId,
+                  onSelected: (character) => ref
+                      .read(selectionProvider.notifier)
+                      .select(
+                        SelectionModel(
+                          assetId: character.assetId,
+                          assetType: AssetType.character,
+                          projectId: character.projectId,
+                        ),
+                      ),
                 ),
                 const _ExplorerItem(
                   icon: Icons.checkroom_outlined,
@@ -120,9 +131,14 @@ class _ExplorerItem extends StatelessWidget {
 }
 
 class _CharacterGroup extends StatelessWidget {
-  const _CharacterGroup({required this.characters, required this.onSelected});
+  const _CharacterGroup({
+    required this.characters,
+    required this.selectedId,
+    required this.onSelected,
+  });
   final AsyncValue<List<CharacterModel>> characters;
-  final ValueChanged<String> onSelected;
+  final String? selectedId;
+  final ValueChanged<CharacterModel> onSelected;
 
   @override
   Widget build(BuildContext context) => ExpansionTile(
@@ -155,7 +171,11 @@ class _CharacterGroup extends StatelessWidget {
                         fontSize: 11,
                       ),
                     ),
-                    onTap: () => onSelected(item.assetId),
+                    selected: selectedId == item.assetId,
+                    selectedTileColor: VoidColors.primary.withValues(
+                      alpha: 0.12,
+                    ),
+                    onTap: () => onSelected(item),
                   ),
                 )
                 .toList(),

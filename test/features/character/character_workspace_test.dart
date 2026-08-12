@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/character/domain/character_model.dart';
-import 'package:void_scriptor/features/character/presentation/character_controller.dart';
 import 'package:void_scriptor/features/character/presentation/character_workspace_controller.dart';
 import 'package:void_scriptor/features/character/presentation/character_workspace_screen.dart';
+import 'package:void_scriptor/core/selection/selection_controller.dart';
 
 void main() {
   test('selectedCharacterIdProvider starts without a selection', () {
     final container = ProviderContainer();
     addTearDown(container.dispose);
-    expect(container.read(selectedCharacterIdProvider), isNull);
+    expect(container.read(selectionProvider), isNull);
   });
 
   testWidgets('character workspace renders desktop identity sections', (

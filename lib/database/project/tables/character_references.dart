@@ -12,13 +12,3 @@ class CharacterReferences extends Table {
   @override
   Set<Column<Object>> get primaryKey => {id};
 }
-
-class AssetRelations extends Table {
-  TextColumn get id => text()();
-  TextColumn get sourceAssetId => text()();
-  TextColumn get targetAssetId => text()();
-  TextColumn get relationType => text()();
-
-  @override
-  Set<Column<Object>> get primaryKey => {id};
-}

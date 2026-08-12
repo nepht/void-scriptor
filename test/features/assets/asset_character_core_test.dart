@@ -55,7 +55,7 @@ void main() {
     final database = await ProjectDatabaseService().open(databasePath);
     addTearDown(database.close);
 
-    expect(database.schemaVersion, 2);
+    expect(database.schemaVersion, 3);
     expect(await database.select(database.assets).get(), isEmpty);
     expect(await database.select(database.characters).get(), isEmpty);
   });
@@ -95,7 +95,8 @@ void main() {
         ).exists(),
         isTrue,
       );
-      expect(AssetRelationType.uses.name, 'uses');
+      expect(AssetRelationType.uses.value, 'uses');
+      expect(AssetRelationType.appearsIn.value, 'appears_in');
     },
   );
 }

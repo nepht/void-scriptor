@@ -1,0 +1,30 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'character_dao.dart';
+
+// ignore_for_file: type=lint
+mixin _$CharacterDaoMixin on DatabaseAccessor<ProjectDatabase> {
+  $CharactersTable get characters => attachedDatabase.characters;
+  $CharacterIdentityProfilesTable get characterIdentityProfiles =>
+      attachedDatabase.characterIdentityProfiles;
+  $CharacterReferencesTable get characterReferences =>
+      attachedDatabase.characterReferences;
+  CharacterDaoManager get managers => CharacterDaoManager(this);
+}
+
+class CharacterDaoManager {
+  final _$CharacterDaoMixin _db;
+  CharacterDaoManager(this._db);
+  $$CharactersTableTableManager get characters =>
+      $$CharactersTableTableManager(_db.attachedDatabase, _db.characters);
+  $$CharacterIdentityProfilesTableTableManager get characterIdentityProfiles =>
+      $$CharacterIdentityProfilesTableTableManager(
+        _db.attachedDatabase,
+        _db.characterIdentityProfiles,
+      );
+  $$CharacterReferencesTableTableManager get characterReferences =>
+      $$CharacterReferencesTableTableManager(
+        _db.attachedDatabase,
+        _db.characterReferences,
+      );
+}

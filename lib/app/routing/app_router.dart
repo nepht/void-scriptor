@@ -23,7 +23,7 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
         GoRoute(
           path: route.value,
           builder: (_, __) => route.value == AppRoutes.workspace
-              ? const VoidAppShell()
+              ? const ProviderScope(child: VoidAppShell())
               : FoundationRouteScreen(label: route.key),
         ),
     ],

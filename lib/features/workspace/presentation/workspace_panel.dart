@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../character/presentation/character_workspace.dart';
+import '../../projects/presentation/project_persistence_providers.dart';
 
 import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/typography/void_typography.dart';
 
-class WorkspacePanel extends StatelessWidget {
+class WorkspacePanel extends ConsumerWidget {
   const WorkspacePanel({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final projectId = ref
+        .watch(projectSessionProvider)
+        .valueOrNull
+        ?.manifest
+        .id;
     return Container(
       color: VoidColors.backgroundSecondary,
       child: Column(
@@ -15,10 +24,9 @@ class WorkspacePanel extends StatelessWidget {
           const _WorkspaceHeader(),
           const _WorkspaceTabs(),
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(18),
-              child: const _EmptyWorkspace(),
-            ),
+            child: projectId == null
+                ? const _EmptyWorkspace()
+                : CharacterWorkspace(projectId: projectId),
           ),
         ],
       ),

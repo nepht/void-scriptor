@@ -8,6 +8,8 @@ abstract final class AppRoutes {
   static const authentication = '/authentication';
   static const dashboard = '/dashboard';
   static const projects = '/projects';
+  static const createProject = '/projects/create';
+  static const studioProject = '/studio/:projectId';
   static const aiStudio = '/ai-studio';
   static const donation = '/donation';
   static const workspace = '/workspace';

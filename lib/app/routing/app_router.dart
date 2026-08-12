@@ -8,6 +8,8 @@ import '../../features/authentication/presentation/forgot_password_screen.dart';
 import '../../features/authentication/presentation/login_screen.dart';
 import '../../features/authentication/presentation/register_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
+import '../../features/projects/presentation/create_project_screen.dart';
+import '../../features/projects/presentation/project_list_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
 import '../shell/void_app_shell.dart';
 import 'app_routes.dart';
@@ -53,12 +55,28 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
       builder: (_, __) => const DashboardScreen(),
     ),
     GoRoute(
+      path: AppRoutes.projects,
+      builder: (_, __) => const ProjectListScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.createProject,
+      builder: (_, __) => const CreateProjectScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.studioProject,
+      builder: (_, state) => VoidAppShell(
+        projectId: state.pathParameters['projectId'],
+        onLogout: onLogout,
+      ),
+    ),
+    GoRoute(
       path: AppRoutes.studio,
       builder: (_, __) => VoidAppShell(onLogout: onLogout),
     ),
     for (final route in AppRoutes.foundationRoutes.entries)
       if (route.value != AppRoutes.splash &&
           route.value != AppRoutes.dashboard &&
+          route.value != AppRoutes.projects &&
           route.value != AppRoutes.workspace)
         GoRoute(
           path: route.value,

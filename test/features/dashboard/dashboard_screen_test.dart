@@ -35,7 +35,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
 
     await tester.pumpWidget(_dashboardApp(size: const Size(1440, 1200)));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text('Dashboard'), findsNWidgets(2));
     expect(find.text('Welcome back, Guest'), findsOneWidget);
@@ -59,7 +59,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
 
     await tester.pumpWidget(_dashboardApp(size: const Size(390, 844)));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text('Welcome back, Guest'), findsOneWidget);
     expect(find.text('Recent Projects'), findsOneWidget);

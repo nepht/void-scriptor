@@ -7,9 +7,10 @@ import 'void_status_bar.dart';
 import 'void_top_bar.dart';
 
 class VoidDesktopShell extends StatelessWidget {
-  const VoidDesktopShell({super.key, this.onLogout});
+  const VoidDesktopShell({super.key, this.onLogout, this.projectId});
 
   final VoidCallback? onLogout;
+  final String? projectId;
 
   @override
   Widget build(BuildContext context) {

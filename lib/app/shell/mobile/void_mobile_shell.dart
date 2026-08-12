@@ -5,9 +5,10 @@ import '../../../design_system/widgets/branding/void_logo.dart';
 import '../../../features/workspace/presentation/workspace_panel.dart';
 
 class VoidMobileShell extends StatefulWidget {
-  const VoidMobileShell({super.key, this.onLogout});
+  const VoidMobileShell({super.key, this.onLogout, this.projectId});
 
   final VoidCallback? onLogout;
+  final String? projectId;
 
   @override
   State<VoidMobileShell> createState() => _VoidMobileShellState();

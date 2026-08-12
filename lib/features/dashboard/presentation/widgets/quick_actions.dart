@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../app/routing/app_routes.dart';
 import '../../../../design_system/widgets/void_button.dart';
 import '../../../../design_system/widgets/void_card.dart';
 
@@ -15,11 +17,15 @@ class QuickActions extends StatelessWidget {
         spacing: 10,
         runSpacing: 10,
         children: [
-          VoidButton(label: 'New Project', icon: Icons.add, onPressed: () {}),
+          VoidButton(
+            label: 'New Project',
+            icon: Icons.add,
+            onPressed: () => context.go(AppRoutes.createProject),
+          ),
           VoidButton(
             label: 'Open Project',
             icon: Icons.folder_open_outlined,
-            onPressed: onOpenStudio,
+            onPressed: () => context.go(AppRoutes.projects),
           ),
           VoidButton(
             label: 'Create Character',

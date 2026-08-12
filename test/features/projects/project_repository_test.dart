@@ -1,0 +1,52 @@
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:void_scriptor/features/projects/data/project_local_data_source.dart';
+import 'package:void_scriptor/features/projects/domain/project_model.dart';
+
+ProjectModel _project(String id) {
+  final now = DateTime(2026, 1, 1);
+  return ProjectModel(
+    id: id,
+    name: 'Void Universe',
+    description: 'Main universe',
+    createdAt: now,
+    updatedAt: now,
+    lastOpenedAt: now,
+    localPath: '/tmp/$id',
+    version: '0.1.0',
+  );
+}
+
+void main() {
+  test(
+    'ProjectModel copyWith preserves fields and replaces selected values',
+    () {
+      final project = _project('project-1');
+      final updated = project.copyWith(name: 'Neo Lyra', tags: ['story']);
+
+      expect(updated.id, 'project-1');
+      expect(updated.name, 'Neo Lyra');
+      expect(updated.description, project.description);
+      expect(updated.tags, ['story']);
+    },
+  );
+
+  test(
+    'ProjectLocalDataSource supports create, read, update, and delete',
+    () async {
+      final source = ProjectLocalDataSource();
+      final project = _project('project-1');
+
+      await source.createProject(project);
+      expect(await source.getProject(project.id), project);
+      expect((await source.getProjects()).length, 1);
+
+      await source.updateProject(project.copyWith(name: 'Updated'));
+      expect((await source.getProject(project.id))!.name, 'Updated');
+
+      await source.deleteProject(project.id);
+      expect(await source.getProject(project.id), isNull);
+      expect(await source.getProjects(), isEmpty);
+    },
+  );
+}

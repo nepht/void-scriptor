@@ -6,6 +6,7 @@ import '../../../core/selection/selection_model.dart';
 import '../../../design_system/colors/void_colors.dart';
 import '../../assets/domain/asset_type.dart';
 import '../../character/presentation/character_workspace_screen.dart';
+import '../../wardrobe/presentation/wardrobe_workspace_screen.dart';
 
 class WorkspaceResolver extends ConsumerWidget {
   const WorkspaceResolver({super.key});
@@ -18,10 +19,8 @@ class WorkspaceResolver extends ConsumerWidget {
       AssetType.character => CharacterWorkspaceScreen(
         characterId: selection.assetId,
       ),
-      AssetType.wardrobe => _AssetWorkspacePlaceholder(
-        assetId: selection.assetId,
-        type: 'Wardrobe',
-        icon: Icons.checkroom_outlined,
+      AssetType.wardrobe => WardrobeWorkspaceScreen(
+        wardrobeId: selection.assetId,
       ),
       AssetType.weapon => _AssetWorkspacePlaceholder(
         assetId: selection.assetId,

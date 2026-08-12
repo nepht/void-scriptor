@@ -1805,6 +1805,21 @@ class $CharacterIdentityProfilesTable extends CharacterIdentityProfiles
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _weaponLockMeta = const VerificationMeta(
+    'weaponLock',
+  );
+  @override
+  late final GeneratedColumn<bool> weaponLock = GeneratedColumn<bool>(
+    'weapon_lock',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("weapon_lock" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     characterId,
@@ -1813,6 +1828,7 @@ class $CharacterIdentityProfilesTable extends CharacterIdentityProfiles
     bodyLock,
     colorLock,
     outfitLock,
+    weaponLock,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1867,6 +1883,12 @@ class $CharacterIdentityProfilesTable extends CharacterIdentityProfiles
         outfitLock.isAcceptableOrUnknown(data['outfit_lock']!, _outfitLockMeta),
       );
     }
+    if (data.containsKey('weapon_lock')) {
+      context.handle(
+        _weaponLockMeta,
+        weaponLock.isAcceptableOrUnknown(data['weapon_lock']!, _weaponLockMeta),
+      );
+    }
     return context;
   }
 
@@ -1903,6 +1925,10 @@ class $CharacterIdentityProfilesTable extends CharacterIdentityProfiles
         DriftSqlType.bool,
         data['${effectivePrefix}outfit_lock'],
       )!,
+      weaponLock: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}weapon_lock'],
+      )!,
     );
   }
 
@@ -1920,6 +1946,7 @@ class CharacterIdentityProfile extends DataClass
   final bool bodyLock;
   final bool colorLock;
   final bool outfitLock;
+  final bool weaponLock;
   const CharacterIdentityProfile({
     required this.characterId,
     required this.faceLock,
@@ -1927,6 +1954,7 @@ class CharacterIdentityProfile extends DataClass
     required this.bodyLock,
     required this.colorLock,
     required this.outfitLock,
+    required this.weaponLock,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1937,6 +1965,7 @@ class CharacterIdentityProfile extends DataClass
     map['body_lock'] = Variable<bool>(bodyLock);
     map['color_lock'] = Variable<bool>(colorLock);
     map['outfit_lock'] = Variable<bool>(outfitLock);
+    map['weapon_lock'] = Variable<bool>(weaponLock);
     return map;
   }
 
@@ -1948,6 +1977,7 @@ class CharacterIdentityProfile extends DataClass
       bodyLock: Value(bodyLock),
       colorLock: Value(colorLock),
       outfitLock: Value(outfitLock),
+      weaponLock: Value(weaponLock),
     );
   }
 
@@ -1963,6 +1993,7 @@ class CharacterIdentityProfile extends DataClass
       bodyLock: serializer.fromJson<bool>(json['bodyLock']),
       colorLock: serializer.fromJson<bool>(json['colorLock']),
       outfitLock: serializer.fromJson<bool>(json['outfitLock']),
+      weaponLock: serializer.fromJson<bool>(json['weaponLock']),
     );
   }
   @override
@@ -1975,6 +2006,7 @@ class CharacterIdentityProfile extends DataClass
       'bodyLock': serializer.toJson<bool>(bodyLock),
       'colorLock': serializer.toJson<bool>(colorLock),
       'outfitLock': serializer.toJson<bool>(outfitLock),
+      'weaponLock': serializer.toJson<bool>(weaponLock),
     };
   }
 
@@ -1985,6 +2017,7 @@ class CharacterIdentityProfile extends DataClass
     bool? bodyLock,
     bool? colorLock,
     bool? outfitLock,
+    bool? weaponLock,
   }) => CharacterIdentityProfile(
     characterId: characterId ?? this.characterId,
     faceLock: faceLock ?? this.faceLock,
@@ -1992,6 +2025,7 @@ class CharacterIdentityProfile extends DataClass
     bodyLock: bodyLock ?? this.bodyLock,
     colorLock: colorLock ?? this.colorLock,
     outfitLock: outfitLock ?? this.outfitLock,
+    weaponLock: weaponLock ?? this.weaponLock,
   );
   CharacterIdentityProfile copyWithCompanion(
     CharacterIdentityProfilesCompanion data,
@@ -2007,6 +2041,9 @@ class CharacterIdentityProfile extends DataClass
       outfitLock: data.outfitLock.present
           ? data.outfitLock.value
           : this.outfitLock,
+      weaponLock: data.weaponLock.present
+          ? data.weaponLock.value
+          : this.weaponLock,
     );
   }
 
@@ -2018,7 +2055,8 @@ class CharacterIdentityProfile extends DataClass
           ..write('hairLock: $hairLock, ')
           ..write('bodyLock: $bodyLock, ')
           ..write('colorLock: $colorLock, ')
-          ..write('outfitLock: $outfitLock')
+          ..write('outfitLock: $outfitLock, ')
+          ..write('weaponLock: $weaponLock')
           ..write(')'))
         .toString();
   }
@@ -2031,6 +2069,7 @@ class CharacterIdentityProfile extends DataClass
     bodyLock,
     colorLock,
     outfitLock,
+    weaponLock,
   );
   @override
   bool operator ==(Object other) =>
@@ -2041,7 +2080,8 @@ class CharacterIdentityProfile extends DataClass
           other.hairLock == this.hairLock &&
           other.bodyLock == this.bodyLock &&
           other.colorLock == this.colorLock &&
-          other.outfitLock == this.outfitLock);
+          other.outfitLock == this.outfitLock &&
+          other.weaponLock == this.weaponLock);
 }
 
 class CharacterIdentityProfilesCompanion
@@ -2052,6 +2092,7 @@ class CharacterIdentityProfilesCompanion
   final Value<bool> bodyLock;
   final Value<bool> colorLock;
   final Value<bool> outfitLock;
+  final Value<bool> weaponLock;
   final Value<int> rowid;
   const CharacterIdentityProfilesCompanion({
     this.characterId = const Value.absent(),
@@ -2060,6 +2101,7 @@ class CharacterIdentityProfilesCompanion
     this.bodyLock = const Value.absent(),
     this.colorLock = const Value.absent(),
     this.outfitLock = const Value.absent(),
+    this.weaponLock = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   CharacterIdentityProfilesCompanion.insert({
@@ -2069,6 +2111,7 @@ class CharacterIdentityProfilesCompanion
     this.bodyLock = const Value.absent(),
     this.colorLock = const Value.absent(),
     this.outfitLock = const Value.absent(),
+    this.weaponLock = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : characterId = Value(characterId);
   static Insertable<CharacterIdentityProfile> custom({
@@ -2078,6 +2121,7 @@ class CharacterIdentityProfilesCompanion
     Expression<bool>? bodyLock,
     Expression<bool>? colorLock,
     Expression<bool>? outfitLock,
+    Expression<bool>? weaponLock,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2087,6 +2131,7 @@ class CharacterIdentityProfilesCompanion
       if (bodyLock != null) 'body_lock': bodyLock,
       if (colorLock != null) 'color_lock': colorLock,
       if (outfitLock != null) 'outfit_lock': outfitLock,
+      if (weaponLock != null) 'weapon_lock': weaponLock,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2098,6 +2143,7 @@ class CharacterIdentityProfilesCompanion
     Value<bool>? bodyLock,
     Value<bool>? colorLock,
     Value<bool>? outfitLock,
+    Value<bool>? weaponLock,
     Value<int>? rowid,
   }) {
     return CharacterIdentityProfilesCompanion(
@@ -2107,6 +2153,7 @@ class CharacterIdentityProfilesCompanion
       bodyLock: bodyLock ?? this.bodyLock,
       colorLock: colorLock ?? this.colorLock,
       outfitLock: outfitLock ?? this.outfitLock,
+      weaponLock: weaponLock ?? this.weaponLock,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2132,6 +2179,9 @@ class CharacterIdentityProfilesCompanion
     if (outfitLock.present) {
       map['outfit_lock'] = Variable<bool>(outfitLock.value);
     }
+    if (weaponLock.present) {
+      map['weapon_lock'] = Variable<bool>(weaponLock.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2147,6 +2197,7 @@ class CharacterIdentityProfilesCompanion
           ..write('bodyLock: $bodyLock, ')
           ..write('colorLock: $colorLock, ')
           ..write('outfitLock: $outfitLock, ')
+          ..write('weaponLock: $weaponLock, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2655,6 +2706,29 @@ class $CharacterModesTable extends CharacterModes
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _accentColorMeta = const VerificationMeta(
+    'accentColor',
+  );
+  @override
+  late final GeneratedColumn<String> accentColor = GeneratedColumn<String>(
+    'accent_color',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _tagsJsonMeta = const VerificationMeta(
+    'tagsJson',
+  );
+  @override
+  late final GeneratedColumn<String> tagsJson = GeneratedColumn<String>(
+    'tags_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -2686,6 +2760,8 @@ class $CharacterModesTable extends CharacterModes
     description,
     isDefault,
     thumbnailPath,
+    accentColor,
+    tagsJson,
     createdAt,
     updatedAt,
   ];
@@ -2757,6 +2833,21 @@ class $CharacterModesTable extends CharacterModes
         ),
       );
     }
+    if (data.containsKey('accent_color')) {
+      context.handle(
+        _accentColorMeta,
+        accentColor.isAcceptableOrUnknown(
+          data['accent_color']!,
+          _accentColorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('tags_json')) {
+      context.handle(
+        _tagsJsonMeta,
+        tagsJson.isAcceptableOrUnknown(data['tags_json']!, _tagsJsonMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -2810,6 +2901,14 @@ class $CharacterModesTable extends CharacterModes
         DriftSqlType.string,
         data['${effectivePrefix}thumbnail_path'],
       ),
+      accentColor: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}accent_color'],
+      ),
+      tagsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tags_json'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -2835,6 +2934,8 @@ class CharacterMode extends DataClass implements Insertable<CharacterMode> {
   final String description;
   final bool isDefault;
   final String? thumbnailPath;
+  final String? accentColor;
+  final String tagsJson;
   final DateTime createdAt;
   final DateTime updatedAt;
   const CharacterMode({
@@ -2845,6 +2946,8 @@ class CharacterMode extends DataClass implements Insertable<CharacterMode> {
     required this.description,
     required this.isDefault,
     this.thumbnailPath,
+    this.accentColor,
+    required this.tagsJson,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -2860,6 +2963,10 @@ class CharacterMode extends DataClass implements Insertable<CharacterMode> {
     if (!nullToAbsent || thumbnailPath != null) {
       map['thumbnail_path'] = Variable<String>(thumbnailPath);
     }
+    if (!nullToAbsent || accentColor != null) {
+      map['accent_color'] = Variable<String>(accentColor);
+    }
+    map['tags_json'] = Variable<String>(tagsJson);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -2876,6 +2983,10 @@ class CharacterMode extends DataClass implements Insertable<CharacterMode> {
       thumbnailPath: thumbnailPath == null && nullToAbsent
           ? const Value.absent()
           : Value(thumbnailPath),
+      accentColor: accentColor == null && nullToAbsent
+          ? const Value.absent()
+          : Value(accentColor),
+      tagsJson: Value(tagsJson),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -2894,6 +3005,8 @@ class CharacterMode extends DataClass implements Insertable<CharacterMode> {
       description: serializer.fromJson<String>(json['description']),
       isDefault: serializer.fromJson<bool>(json['isDefault']),
       thumbnailPath: serializer.fromJson<String?>(json['thumbnailPath']),
+      accentColor: serializer.fromJson<String?>(json['accentColor']),
+      tagsJson: serializer.fromJson<String>(json['tagsJson']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -2909,6 +3022,8 @@ class CharacterMode extends DataClass implements Insertable<CharacterMode> {
       'description': serializer.toJson<String>(description),
       'isDefault': serializer.toJson<bool>(isDefault),
       'thumbnailPath': serializer.toJson<String?>(thumbnailPath),
+      'accentColor': serializer.toJson<String?>(accentColor),
+      'tagsJson': serializer.toJson<String>(tagsJson),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -2922,6 +3037,8 @@ class CharacterMode extends DataClass implements Insertable<CharacterMode> {
     String? description,
     bool? isDefault,
     Value<String?> thumbnailPath = const Value.absent(),
+    Value<String?> accentColor = const Value.absent(),
+    String? tagsJson,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => CharacterMode(
@@ -2934,6 +3051,8 @@ class CharacterMode extends DataClass implements Insertable<CharacterMode> {
     thumbnailPath: thumbnailPath.present
         ? thumbnailPath.value
         : this.thumbnailPath,
+    accentColor: accentColor.present ? accentColor.value : this.accentColor,
+    tagsJson: tagsJson ?? this.tagsJson,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -2952,6 +3071,10 @@ class CharacterMode extends DataClass implements Insertable<CharacterMode> {
       thumbnailPath: data.thumbnailPath.present
           ? data.thumbnailPath.value
           : this.thumbnailPath,
+      accentColor: data.accentColor.present
+          ? data.accentColor.value
+          : this.accentColor,
+      tagsJson: data.tagsJson.present ? data.tagsJson.value : this.tagsJson,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -2967,6 +3090,8 @@ class CharacterMode extends DataClass implements Insertable<CharacterMode> {
           ..write('description: $description, ')
           ..write('isDefault: $isDefault, ')
           ..write('thumbnailPath: $thumbnailPath, ')
+          ..write('accentColor: $accentColor, ')
+          ..write('tagsJson: $tagsJson, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -2982,6 +3107,8 @@ class CharacterMode extends DataClass implements Insertable<CharacterMode> {
     description,
     isDefault,
     thumbnailPath,
+    accentColor,
+    tagsJson,
     createdAt,
     updatedAt,
   );
@@ -2996,6 +3123,8 @@ class CharacterMode extends DataClass implements Insertable<CharacterMode> {
           other.description == this.description &&
           other.isDefault == this.isDefault &&
           other.thumbnailPath == this.thumbnailPath &&
+          other.accentColor == this.accentColor &&
+          other.tagsJson == this.tagsJson &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -3008,6 +3137,8 @@ class CharacterModesCompanion extends UpdateCompanion<CharacterMode> {
   final Value<String> description;
   final Value<bool> isDefault;
   final Value<String?> thumbnailPath;
+  final Value<String?> accentColor;
+  final Value<String> tagsJson;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -3019,6 +3150,8 @@ class CharacterModesCompanion extends UpdateCompanion<CharacterMode> {
     this.description = const Value.absent(),
     this.isDefault = const Value.absent(),
     this.thumbnailPath = const Value.absent(),
+    this.accentColor = const Value.absent(),
+    this.tagsJson = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -3031,6 +3164,8 @@ class CharacterModesCompanion extends UpdateCompanion<CharacterMode> {
     this.description = const Value.absent(),
     this.isDefault = const Value.absent(),
     this.thumbnailPath = const Value.absent(),
+    this.accentColor = const Value.absent(),
+    this.tagsJson = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -3048,6 +3183,8 @@ class CharacterModesCompanion extends UpdateCompanion<CharacterMode> {
     Expression<String>? description,
     Expression<bool>? isDefault,
     Expression<String>? thumbnailPath,
+    Expression<String>? accentColor,
+    Expression<String>? tagsJson,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -3060,6 +3197,8 @@ class CharacterModesCompanion extends UpdateCompanion<CharacterMode> {
       if (description != null) 'description': description,
       if (isDefault != null) 'is_default': isDefault,
       if (thumbnailPath != null) 'thumbnail_path': thumbnailPath,
+      if (accentColor != null) 'accent_color': accentColor,
+      if (tagsJson != null) 'tags_json': tagsJson,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -3074,6 +3213,8 @@ class CharacterModesCompanion extends UpdateCompanion<CharacterMode> {
     Value<String>? description,
     Value<bool>? isDefault,
     Value<String?>? thumbnailPath,
+    Value<String?>? accentColor,
+    Value<String>? tagsJson,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
@@ -3086,6 +3227,8 @@ class CharacterModesCompanion extends UpdateCompanion<CharacterMode> {
       description: description ?? this.description,
       isDefault: isDefault ?? this.isDefault,
       thumbnailPath: thumbnailPath ?? this.thumbnailPath,
+      accentColor: accentColor ?? this.accentColor,
+      tagsJson: tagsJson ?? this.tagsJson,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -3116,6 +3259,12 @@ class CharacterModesCompanion extends UpdateCompanion<CharacterMode> {
     if (thumbnailPath.present) {
       map['thumbnail_path'] = Variable<String>(thumbnailPath.value);
     }
+    if (accentColor.present) {
+      map['accent_color'] = Variable<String>(accentColor.value);
+    }
+    if (tagsJson.present) {
+      map['tags_json'] = Variable<String>(tagsJson.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -3138,6 +3287,8 @@ class CharacterModesCompanion extends UpdateCompanion<CharacterMode> {
           ..write('description: $description, ')
           ..write('isDefault: $isDefault, ')
           ..write('thumbnailPath: $thumbnailPath, ')
+          ..write('accentColor: $accentColor, ')
+          ..write('tagsJson: $tagsJson, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -3190,6 +3341,18 @@ class $CharacterLoadoutEntriesTable extends CharacterLoadoutEntries
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _quantityMeta = const VerificationMeta(
+    'quantity',
+  );
+  @override
+  late final GeneratedColumn<int> quantity = GeneratedColumn<int>(
+    'quantity',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
   static const VerificationMeta _sortOrderMeta = const VerificationMeta(
     'sortOrder',
   );
@@ -3223,6 +3386,7 @@ class $CharacterLoadoutEntriesTable extends CharacterLoadoutEntries
     modeId,
     assetId,
     slot,
+    quantity,
     sortOrder,
     enabled,
   ];
@@ -3267,6 +3431,12 @@ class $CharacterLoadoutEntriesTable extends CharacterLoadoutEntries
     } else if (isInserting) {
       context.missing(_slotMeta);
     }
+    if (data.containsKey('quantity')) {
+      context.handle(
+        _quantityMeta,
+        quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta),
+      );
+    }
     if (data.containsKey('sort_order')) {
       context.handle(
         _sortOrderMeta,
@@ -3304,6 +3474,10 @@ class $CharacterLoadoutEntriesTable extends CharacterLoadoutEntries
         DriftSqlType.string,
         data['${effectivePrefix}slot'],
       )!,
+      quantity: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}quantity'],
+      )!,
       sortOrder: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}sort_order'],
@@ -3327,6 +3501,7 @@ class CharacterLoadoutEntry extends DataClass
   final String modeId;
   final String assetId;
   final String slot;
+  final int quantity;
   final int sortOrder;
   final bool enabled;
   const CharacterLoadoutEntry({
@@ -3334,6 +3509,7 @@ class CharacterLoadoutEntry extends DataClass
     required this.modeId,
     required this.assetId,
     required this.slot,
+    required this.quantity,
     required this.sortOrder,
     required this.enabled,
   });
@@ -3344,6 +3520,7 @@ class CharacterLoadoutEntry extends DataClass
     map['mode_id'] = Variable<String>(modeId);
     map['asset_id'] = Variable<String>(assetId);
     map['slot'] = Variable<String>(slot);
+    map['quantity'] = Variable<int>(quantity);
     map['sort_order'] = Variable<int>(sortOrder);
     map['enabled'] = Variable<bool>(enabled);
     return map;
@@ -3355,6 +3532,7 @@ class CharacterLoadoutEntry extends DataClass
       modeId: Value(modeId),
       assetId: Value(assetId),
       slot: Value(slot),
+      quantity: Value(quantity),
       sortOrder: Value(sortOrder),
       enabled: Value(enabled),
     );
@@ -3370,6 +3548,7 @@ class CharacterLoadoutEntry extends DataClass
       modeId: serializer.fromJson<String>(json['modeId']),
       assetId: serializer.fromJson<String>(json['assetId']),
       slot: serializer.fromJson<String>(json['slot']),
+      quantity: serializer.fromJson<int>(json['quantity']),
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
       enabled: serializer.fromJson<bool>(json['enabled']),
     );
@@ -3382,6 +3561,7 @@ class CharacterLoadoutEntry extends DataClass
       'modeId': serializer.toJson<String>(modeId),
       'assetId': serializer.toJson<String>(assetId),
       'slot': serializer.toJson<String>(slot),
+      'quantity': serializer.toJson<int>(quantity),
       'sortOrder': serializer.toJson<int>(sortOrder),
       'enabled': serializer.toJson<bool>(enabled),
     };
@@ -3392,6 +3572,7 @@ class CharacterLoadoutEntry extends DataClass
     String? modeId,
     String? assetId,
     String? slot,
+    int? quantity,
     int? sortOrder,
     bool? enabled,
   }) => CharacterLoadoutEntry(
@@ -3399,6 +3580,7 @@ class CharacterLoadoutEntry extends DataClass
     modeId: modeId ?? this.modeId,
     assetId: assetId ?? this.assetId,
     slot: slot ?? this.slot,
+    quantity: quantity ?? this.quantity,
     sortOrder: sortOrder ?? this.sortOrder,
     enabled: enabled ?? this.enabled,
   );
@@ -3410,6 +3592,7 @@ class CharacterLoadoutEntry extends DataClass
       modeId: data.modeId.present ? data.modeId.value : this.modeId,
       assetId: data.assetId.present ? data.assetId.value : this.assetId,
       slot: data.slot.present ? data.slot.value : this.slot,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
       sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
       enabled: data.enabled.present ? data.enabled.value : this.enabled,
     );
@@ -3422,6 +3605,7 @@ class CharacterLoadoutEntry extends DataClass
           ..write('modeId: $modeId, ')
           ..write('assetId: $assetId, ')
           ..write('slot: $slot, ')
+          ..write('quantity: $quantity, ')
           ..write('sortOrder: $sortOrder, ')
           ..write('enabled: $enabled')
           ..write(')'))
@@ -3430,7 +3614,7 @@ class CharacterLoadoutEntry extends DataClass
 
   @override
   int get hashCode =>
-      Object.hash(id, modeId, assetId, slot, sortOrder, enabled);
+      Object.hash(id, modeId, assetId, slot, quantity, sortOrder, enabled);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3439,6 +3623,7 @@ class CharacterLoadoutEntry extends DataClass
           other.modeId == this.modeId &&
           other.assetId == this.assetId &&
           other.slot == this.slot &&
+          other.quantity == this.quantity &&
           other.sortOrder == this.sortOrder &&
           other.enabled == this.enabled);
 }
@@ -3449,6 +3634,7 @@ class CharacterLoadoutEntriesCompanion
   final Value<String> modeId;
   final Value<String> assetId;
   final Value<String> slot;
+  final Value<int> quantity;
   final Value<int> sortOrder;
   final Value<bool> enabled;
   final Value<int> rowid;
@@ -3457,6 +3643,7 @@ class CharacterLoadoutEntriesCompanion
     this.modeId = const Value.absent(),
     this.assetId = const Value.absent(),
     this.slot = const Value.absent(),
+    this.quantity = const Value.absent(),
     this.sortOrder = const Value.absent(),
     this.enabled = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -3466,6 +3653,7 @@ class CharacterLoadoutEntriesCompanion
     required String modeId,
     required String assetId,
     required String slot,
+    this.quantity = const Value.absent(),
     this.sortOrder = const Value.absent(),
     this.enabled = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -3478,6 +3666,7 @@ class CharacterLoadoutEntriesCompanion
     Expression<String>? modeId,
     Expression<String>? assetId,
     Expression<String>? slot,
+    Expression<int>? quantity,
     Expression<int>? sortOrder,
     Expression<bool>? enabled,
     Expression<int>? rowid,
@@ -3487,6 +3676,7 @@ class CharacterLoadoutEntriesCompanion
       if (modeId != null) 'mode_id': modeId,
       if (assetId != null) 'asset_id': assetId,
       if (slot != null) 'slot': slot,
+      if (quantity != null) 'quantity': quantity,
       if (sortOrder != null) 'sort_order': sortOrder,
       if (enabled != null) 'enabled': enabled,
       if (rowid != null) 'rowid': rowid,
@@ -3498,6 +3688,7 @@ class CharacterLoadoutEntriesCompanion
     Value<String>? modeId,
     Value<String>? assetId,
     Value<String>? slot,
+    Value<int>? quantity,
     Value<int>? sortOrder,
     Value<bool>? enabled,
     Value<int>? rowid,
@@ -3507,6 +3698,7 @@ class CharacterLoadoutEntriesCompanion
       modeId: modeId ?? this.modeId,
       assetId: assetId ?? this.assetId,
       slot: slot ?? this.slot,
+      quantity: quantity ?? this.quantity,
       sortOrder: sortOrder ?? this.sortOrder,
       enabled: enabled ?? this.enabled,
       rowid: rowid ?? this.rowid,
@@ -3528,6 +3720,9 @@ class CharacterLoadoutEntriesCompanion
     if (slot.present) {
       map['slot'] = Variable<String>(slot.value);
     }
+    if (quantity.present) {
+      map['quantity'] = Variable<int>(quantity.value);
+    }
     if (sortOrder.present) {
       map['sort_order'] = Variable<int>(sortOrder.value);
     }
@@ -3547,6 +3742,7 @@ class CharacterLoadoutEntriesCompanion
           ..write('modeId: $modeId, ')
           ..write('assetId: $assetId, ')
           ..write('slot: $slot, ')
+          ..write('quantity: $quantity, ')
           ..write('sortOrder: $sortOrder, ')
           ..write('enabled: $enabled, ')
           ..write('rowid: $rowid')
@@ -4549,6 +4745,18 @@ class $AssetRelationsTable extends AssetRelations
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _relationOriginMeta = const VerificationMeta(
+    'relationOrigin',
+  );
+  @override
+  late final GeneratedColumn<String> relationOrigin = GeneratedColumn<String>(
+    'relation_origin',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('manual'),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -4568,6 +4776,7 @@ class $AssetRelationsTable extends AssetRelations
     sourceAssetId,
     targetAssetId,
     relationType,
+    relationOrigin,
     createdAt,
   ];
   @override
@@ -4626,6 +4835,15 @@ class $AssetRelationsTable extends AssetRelations
     } else if (isInserting) {
       context.missing(_relationTypeMeta);
     }
+    if (data.containsKey('relation_origin')) {
+      context.handle(
+        _relationOriginMeta,
+        relationOrigin.isAcceptableOrUnknown(
+          data['relation_origin']!,
+          _relationOriginMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -4661,6 +4879,10 @@ class $AssetRelationsTable extends AssetRelations
         DriftSqlType.string,
         data['${effectivePrefix}relation_type'],
       )!,
+      relationOrigin: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}relation_origin'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -4680,6 +4902,7 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
   final String sourceAssetId;
   final String targetAssetId;
   final String relationType;
+  final String relationOrigin;
   final DateTime createdAt;
   const AssetRelation({
     required this.id,
@@ -4687,6 +4910,7 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
     required this.sourceAssetId,
     required this.targetAssetId,
     required this.relationType,
+    required this.relationOrigin,
     required this.createdAt,
   });
   @override
@@ -4697,6 +4921,7 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
     map['source_asset_id'] = Variable<String>(sourceAssetId);
     map['target_asset_id'] = Variable<String>(targetAssetId);
     map['relation_type'] = Variable<String>(relationType);
+    map['relation_origin'] = Variable<String>(relationOrigin);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -4708,6 +4933,7 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
       sourceAssetId: Value(sourceAssetId),
       targetAssetId: Value(targetAssetId),
       relationType: Value(relationType),
+      relationOrigin: Value(relationOrigin),
       createdAt: Value(createdAt),
     );
   }
@@ -4723,6 +4949,7 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
       sourceAssetId: serializer.fromJson<String>(json['sourceAssetId']),
       targetAssetId: serializer.fromJson<String>(json['targetAssetId']),
       relationType: serializer.fromJson<String>(json['relationType']),
+      relationOrigin: serializer.fromJson<String>(json['relationOrigin']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -4735,6 +4962,7 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
       'sourceAssetId': serializer.toJson<String>(sourceAssetId),
       'targetAssetId': serializer.toJson<String>(targetAssetId),
       'relationType': serializer.toJson<String>(relationType),
+      'relationOrigin': serializer.toJson<String>(relationOrigin),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -4745,6 +4973,7 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
     String? sourceAssetId,
     String? targetAssetId,
     String? relationType,
+    String? relationOrigin,
     DateTime? createdAt,
   }) => AssetRelation(
     id: id ?? this.id,
@@ -4752,6 +4981,7 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
     sourceAssetId: sourceAssetId ?? this.sourceAssetId,
     targetAssetId: targetAssetId ?? this.targetAssetId,
     relationType: relationType ?? this.relationType,
+    relationOrigin: relationOrigin ?? this.relationOrigin,
     createdAt: createdAt ?? this.createdAt,
   );
   AssetRelation copyWithCompanion(AssetRelationsCompanion data) {
@@ -4767,6 +4997,9 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
       relationType: data.relationType.present
           ? data.relationType.value
           : this.relationType,
+      relationOrigin: data.relationOrigin.present
+          ? data.relationOrigin.value
+          : this.relationOrigin,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -4779,6 +5012,7 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
           ..write('sourceAssetId: $sourceAssetId, ')
           ..write('targetAssetId: $targetAssetId, ')
           ..write('relationType: $relationType, ')
+          ..write('relationOrigin: $relationOrigin, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -4791,6 +5025,7 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
     sourceAssetId,
     targetAssetId,
     relationType,
+    relationOrigin,
     createdAt,
   );
   @override
@@ -4802,6 +5037,7 @@ class AssetRelation extends DataClass implements Insertable<AssetRelation> {
           other.sourceAssetId == this.sourceAssetId &&
           other.targetAssetId == this.targetAssetId &&
           other.relationType == this.relationType &&
+          other.relationOrigin == this.relationOrigin &&
           other.createdAt == this.createdAt);
 }
 
@@ -4811,6 +5047,7 @@ class AssetRelationsCompanion extends UpdateCompanion<AssetRelation> {
   final Value<String> sourceAssetId;
   final Value<String> targetAssetId;
   final Value<String> relationType;
+  final Value<String> relationOrigin;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const AssetRelationsCompanion({
@@ -4819,6 +5056,7 @@ class AssetRelationsCompanion extends UpdateCompanion<AssetRelation> {
     this.sourceAssetId = const Value.absent(),
     this.targetAssetId = const Value.absent(),
     this.relationType = const Value.absent(),
+    this.relationOrigin = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -4828,6 +5066,7 @@ class AssetRelationsCompanion extends UpdateCompanion<AssetRelation> {
     required String sourceAssetId,
     required String targetAssetId,
     required String relationType,
+    this.relationOrigin = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -4840,6 +5079,7 @@ class AssetRelationsCompanion extends UpdateCompanion<AssetRelation> {
     Expression<String>? sourceAssetId,
     Expression<String>? targetAssetId,
     Expression<String>? relationType,
+    Expression<String>? relationOrigin,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
@@ -4849,6 +5089,7 @@ class AssetRelationsCompanion extends UpdateCompanion<AssetRelation> {
       if (sourceAssetId != null) 'source_asset_id': sourceAssetId,
       if (targetAssetId != null) 'target_asset_id': targetAssetId,
       if (relationType != null) 'relation_type': relationType,
+      if (relationOrigin != null) 'relation_origin': relationOrigin,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -4860,6 +5101,7 @@ class AssetRelationsCompanion extends UpdateCompanion<AssetRelation> {
     Value<String>? sourceAssetId,
     Value<String>? targetAssetId,
     Value<String>? relationType,
+    Value<String>? relationOrigin,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
   }) {
@@ -4869,6 +5111,7 @@ class AssetRelationsCompanion extends UpdateCompanion<AssetRelation> {
       sourceAssetId: sourceAssetId ?? this.sourceAssetId,
       targetAssetId: targetAssetId ?? this.targetAssetId,
       relationType: relationType ?? this.relationType,
+      relationOrigin: relationOrigin ?? this.relationOrigin,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -4892,6 +5135,9 @@ class AssetRelationsCompanion extends UpdateCompanion<AssetRelation> {
     if (relationType.present) {
       map['relation_type'] = Variable<String>(relationType.value);
     }
+    if (relationOrigin.present) {
+      map['relation_origin'] = Variable<String>(relationOrigin.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -4909,6 +5155,7 @@ class AssetRelationsCompanion extends UpdateCompanion<AssetRelation> {
           ..write('sourceAssetId: $sourceAssetId, ')
           ..write('targetAssetId: $targetAssetId, ')
           ..write('relationType: $relationType, ')
+          ..write('relationOrigin: $relationOrigin, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -11807,6 +12054,7 @@ typedef $$CharacterIdentityProfilesTableCreateCompanionBuilder =
       Value<bool> bodyLock,
       Value<bool> colorLock,
       Value<bool> outfitLock,
+      Value<bool> weaponLock,
       Value<int> rowid,
     });
 typedef $$CharacterIdentityProfilesTableUpdateCompanionBuilder =
@@ -11817,6 +12065,7 @@ typedef $$CharacterIdentityProfilesTableUpdateCompanionBuilder =
       Value<bool> bodyLock,
       Value<bool> colorLock,
       Value<bool> outfitLock,
+      Value<bool> weaponLock,
       Value<int> rowid,
     });
 
@@ -11856,6 +12105,11 @@ class $$CharacterIdentityProfilesTableFilterComposer
 
   ColumnFilters<bool> get outfitLock => $composableBuilder(
     column: $table.outfitLock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get weaponLock => $composableBuilder(
+    column: $table.weaponLock,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -11898,6 +12152,11 @@ class $$CharacterIdentityProfilesTableOrderingComposer
     column: $table.outfitLock,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get weaponLock => $composableBuilder(
+    column: $table.weaponLock,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CharacterIdentityProfilesTableAnnotationComposer
@@ -11928,6 +12187,11 @@ class $$CharacterIdentityProfilesTableAnnotationComposer
 
   GeneratedColumn<bool> get outfitLock => $composableBuilder(
     column: $table.outfitLock,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get weaponLock => $composableBuilder(
+    column: $table.weaponLock,
     builder: (column) => column,
   );
 }
@@ -11984,6 +12248,7 @@ class $$CharacterIdentityProfilesTableTableManager
                 Value<bool> bodyLock = const Value.absent(),
                 Value<bool> colorLock = const Value.absent(),
                 Value<bool> outfitLock = const Value.absent(),
+                Value<bool> weaponLock = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CharacterIdentityProfilesCompanion(
                 characterId: characterId,
@@ -11992,6 +12257,7 @@ class $$CharacterIdentityProfilesTableTableManager
                 bodyLock: bodyLock,
                 colorLock: colorLock,
                 outfitLock: outfitLock,
+                weaponLock: weaponLock,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -12002,6 +12268,7 @@ class $$CharacterIdentityProfilesTableTableManager
                 Value<bool> bodyLock = const Value.absent(),
                 Value<bool> colorLock = const Value.absent(),
                 Value<bool> outfitLock = const Value.absent(),
+                Value<bool> weaponLock = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CharacterIdentityProfilesCompanion.insert(
                 characterId: characterId,
@@ -12010,6 +12277,7 @@ class $$CharacterIdentityProfilesTableTableManager
                 bodyLock: bodyLock,
                 colorLock: colorLock,
                 outfitLock: outfitLock,
+                weaponLock: weaponLock,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -12289,6 +12557,8 @@ typedef $$CharacterModesTableCreateCompanionBuilder =
       Value<String> description,
       Value<bool> isDefault,
       Value<String?> thumbnailPath,
+      Value<String?> accentColor,
+      Value<String> tagsJson,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<int> rowid,
@@ -12302,6 +12572,8 @@ typedef $$CharacterModesTableUpdateCompanionBuilder =
       Value<String> description,
       Value<bool> isDefault,
       Value<String?> thumbnailPath,
+      Value<String?> accentColor,
+      Value<String> tagsJson,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -12348,6 +12620,16 @@ class $$CharacterModesTableFilterComposer
 
   ColumnFilters<String> get thumbnailPath => $composableBuilder(
     column: $table.thumbnailPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get accentColor => $composableBuilder(
+    column: $table.accentColor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tagsJson => $composableBuilder(
+    column: $table.tagsJson,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -12406,6 +12688,16 @@ class $$CharacterModesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get accentColor => $composableBuilder(
+    column: $table.accentColor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tagsJson => $composableBuilder(
+    column: $table.tagsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -12452,6 +12744,14 @@ class $$CharacterModesTableAnnotationComposer
     column: $table.thumbnailPath,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get accentColor => $composableBuilder(
+    column: $table.accentColor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get tagsJson =>
+      $composableBuilder(column: $table.tagsJson, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -12504,6 +12804,8 @@ class $$CharacterModesTableTableManager
                 Value<String> description = const Value.absent(),
                 Value<bool> isDefault = const Value.absent(),
                 Value<String?> thumbnailPath = const Value.absent(),
+                Value<String?> accentColor = const Value.absent(),
+                Value<String> tagsJson = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -12515,6 +12817,8 @@ class $$CharacterModesTableTableManager
                 description: description,
                 isDefault: isDefault,
                 thumbnailPath: thumbnailPath,
+                accentColor: accentColor,
+                tagsJson: tagsJson,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -12528,6 +12832,8 @@ class $$CharacterModesTableTableManager
                 Value<String> description = const Value.absent(),
                 Value<bool> isDefault = const Value.absent(),
                 Value<String?> thumbnailPath = const Value.absent(),
+                Value<String?> accentColor = const Value.absent(),
+                Value<String> tagsJson = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
@@ -12539,6 +12845,8 @@ class $$CharacterModesTableTableManager
                 description: description,
                 isDefault: isDefault,
                 thumbnailPath: thumbnailPath,
+                accentColor: accentColor,
+                tagsJson: tagsJson,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -12574,6 +12882,7 @@ typedef $$CharacterLoadoutEntriesTableCreateCompanionBuilder =
       required String modeId,
       required String assetId,
       required String slot,
+      Value<int> quantity,
       Value<int> sortOrder,
       Value<bool> enabled,
       Value<int> rowid,
@@ -12584,6 +12893,7 @@ typedef $$CharacterLoadoutEntriesTableUpdateCompanionBuilder =
       Value<String> modeId,
       Value<String> assetId,
       Value<String> slot,
+      Value<int> quantity,
       Value<int> sortOrder,
       Value<bool> enabled,
       Value<int> rowid,
@@ -12615,6 +12925,11 @@ class $$CharacterLoadoutEntriesTableFilterComposer
 
   ColumnFilters<String> get slot => $composableBuilder(
     column: $table.slot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get quantity => $composableBuilder(
+    column: $table.quantity,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -12658,6 +12973,11 @@ class $$CharacterLoadoutEntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get sortOrder => $composableBuilder(
     column: $table.sortOrder,
     builder: (column) => ColumnOrderings(column),
@@ -12689,6 +13009,9 @@ class $$CharacterLoadoutEntriesTableAnnotationComposer
 
   GeneratedColumn<String> get slot =>
       $composableBuilder(column: $table.slot, builder: (column) => column);
+
+  GeneratedColumn<int> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
 
   GeneratedColumn<int> get sortOrder =>
       $composableBuilder(column: $table.sortOrder, builder: (column) => column);
@@ -12747,6 +13070,7 @@ class $$CharacterLoadoutEntriesTableTableManager
                 Value<String> modeId = const Value.absent(),
                 Value<String> assetId = const Value.absent(),
                 Value<String> slot = const Value.absent(),
+                Value<int> quantity = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
                 Value<bool> enabled = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -12755,6 +13079,7 @@ class $$CharacterLoadoutEntriesTableTableManager
                 modeId: modeId,
                 assetId: assetId,
                 slot: slot,
+                quantity: quantity,
                 sortOrder: sortOrder,
                 enabled: enabled,
                 rowid: rowid,
@@ -12765,6 +13090,7 @@ class $$CharacterLoadoutEntriesTableTableManager
                 required String modeId,
                 required String assetId,
                 required String slot,
+                Value<int> quantity = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
                 Value<bool> enabled = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -12773,6 +13099,7 @@ class $$CharacterLoadoutEntriesTableTableManager
                 modeId: modeId,
                 assetId: assetId,
                 slot: slot,
+                quantity: quantity,
                 sortOrder: sortOrder,
                 enabled: enabled,
                 rowid: rowid,
@@ -13316,6 +13643,7 @@ typedef $$AssetRelationsTableCreateCompanionBuilder =
       required String sourceAssetId,
       required String targetAssetId,
       required String relationType,
+      Value<String> relationOrigin,
       Value<DateTime> createdAt,
       Value<int> rowid,
     });
@@ -13326,6 +13654,7 @@ typedef $$AssetRelationsTableUpdateCompanionBuilder =
       Value<String> sourceAssetId,
       Value<String> targetAssetId,
       Value<String> relationType,
+      Value<String> relationOrigin,
       Value<DateTime> createdAt,
       Value<int> rowid,
     });
@@ -13361,6 +13690,11 @@ class $$AssetRelationsTableFilterComposer
 
   ColumnFilters<String> get relationType => $composableBuilder(
     column: $table.relationType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get relationOrigin => $composableBuilder(
+    column: $table.relationOrigin,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -13404,6 +13738,11 @@ class $$AssetRelationsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get relationOrigin => $composableBuilder(
+    column: $table.relationOrigin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -13437,6 +13776,11 @@ class $$AssetRelationsTableAnnotationComposer
 
   GeneratedColumn<String> get relationType => $composableBuilder(
     column: $table.relationType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get relationOrigin => $composableBuilder(
+    column: $table.relationOrigin,
     builder: (column) => column,
   );
 
@@ -13486,6 +13830,7 @@ class $$AssetRelationsTableTableManager
                 Value<String> sourceAssetId = const Value.absent(),
                 Value<String> targetAssetId = const Value.absent(),
                 Value<String> relationType = const Value.absent(),
+                Value<String> relationOrigin = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AssetRelationsCompanion(
@@ -13494,6 +13839,7 @@ class $$AssetRelationsTableTableManager
                 sourceAssetId: sourceAssetId,
                 targetAssetId: targetAssetId,
                 relationType: relationType,
+                relationOrigin: relationOrigin,
                 createdAt: createdAt,
                 rowid: rowid,
               ),
@@ -13504,6 +13850,7 @@ class $$AssetRelationsTableTableManager
                 required String sourceAssetId,
                 required String targetAssetId,
                 required String relationType,
+                Value<String> relationOrigin = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AssetRelationsCompanion.insert(
@@ -13512,6 +13859,7 @@ class $$AssetRelationsTableTableManager
                 sourceAssetId: sourceAssetId,
                 targetAssetId: targetAssetId,
                 relationType: relationType,
+                relationOrigin: relationOrigin,
                 createdAt: createdAt,
                 rowid: rowid,
               ),

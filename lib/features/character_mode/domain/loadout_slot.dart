@@ -21,6 +21,15 @@ extension LoadoutSlotValue on LoadoutSlot {
     LoadoutSlot.vehicle => 'vehicle',
   };
 
+  String get assetType => switch (this) {
+    LoadoutSlot.wardrobe => 'wardrobe',
+    LoadoutSlot.primaryWeapon || LoadoutSlot.secondaryWeapon => 'weapon',
+    LoadoutSlot.accessory => 'accessory',
+    LoadoutSlot.hairVariant => 'hair_variant',
+    LoadoutSlot.companion => 'companion',
+    LoadoutSlot.vehicle => 'vehicle',
+  };
+
   LoadoutSlotMultiplicity get multiplicity => this == LoadoutSlot.accessory
       ? LoadoutSlotMultiplicity.multiple
       : LoadoutSlotMultiplicity.single;
@@ -37,4 +46,14 @@ extension LoadoutSlotParsing on String {
     'vehicle' => LoadoutSlot.vehicle,
     _ => null,
   };
+}
+
+String? validateLoadoutQuantity(LoadoutSlot slot, int quantity) {
+  if (quantity < 1) return 'Quantity must be at least 1';
+  if (slot != LoadoutSlot.primaryWeapon &&
+      slot != LoadoutSlot.secondaryWeapon &&
+      quantity != 1) {
+    return '${slot.value} supports quantity 1 only';
+  }
+  return null;
 }

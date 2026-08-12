@@ -65,7 +65,7 @@ The current repository has verified vertical slices for the following areas:
 | Wardrobe asset family | Complete for create/read/delete, variants, components, colors, references, and `wears` persistence | `test/features/wardrobe` |
 | Relation Core and Inspector relation management | Complete for create/read/delete, inverse labels, target selection, and selection navigation | `test/features/relations`, `RelationSection` |
 | Weapon asset family | Complete for create/read/delete, technical child tables, variants, preservation, Explorer, Workspace, Inspector, and `uses` restart persistence | `test/features/weapon` |
-| Character Mode + Loadout | Complete for schema v6, Base Mode creation, mode CRUD/clone, nullable identity overrides, type-validated wardrobe/weapon slots, searchable AssetPicker, mode selector, loadout editor, and global relation synchronization | `test/features/character_mode`, `test/features/assets` |
+| Character Mode + Loadout | Complete for schema v8, Base Mode creation, mode create/clone/update/delete safeguards, nullable identity overrides, all generic slot type validation, quantity semantics, searchable AssetPicker, mode selector, identity editor, mode references repository, and derived relation synchronization | `test/features/character_mode`, `test/features/assets` |
 
 The following are deliberately deferred because they require additional product subsystems rather than missing persistence plumbing:
 
@@ -74,9 +74,8 @@ The following are deliberately deferred because they require additional product 
 - history/version timeline UI and favorite metadata;
 - component/material/measurement editors for Wardrobe and Weapon;
 - export to PNG/PDF and release packaging/signing;
-- loadout/quantity semantics for dual weapons;
 - donation/payment integration.
 
-Sprint 13 deliberately leaves the generic data contract ready but does not yet add dedicated editors for accessory/companion/vehicle slots, mode reference file management, mode thumbnail generation, mode accent/tags, or derived-relation garbage collection. These are follow-up slices, not silent no-op persistence paths.
+Sprint 13 now supports the generic accessory/companion/vehicle/hair slot contract, quantity validation, mode identity editing, reference persistence, and derived relation origin tracking. Dedicated binary file picking/preview, thumbnail generation, accent/tags, and compare-mode visualization remain follow-up presentation slices.
 
 Deferred items must not be represented as silent no-op actions; current UI shows explicit local-mode or not-configured feedback.

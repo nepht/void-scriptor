@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
@@ -18,6 +20,17 @@ abstract interface class CharacterModeRepository {
     required String sourceModeId,
     required String name,
   });
+  Future<void> updateMode({
+    required String modeId,
+    String? name,
+    String? description,
+  });
+  Future<void> deleteMode(String modeId);
+  Future<void> rememberLastUsedMode({
+    required String characterId,
+    required String modeId,
+  });
+  Future<String?> getLastUsedMode(String characterId);
 }
 
 class CharacterModeRepositoryImpl implements CharacterModeRepository {
@@ -33,6 +46,8 @@ class CharacterModeRepositoryImpl implements CharacterModeRepository {
     description: row.description,
     isDefault: row.isDefault,
     thumbnailPath: row.thumbnailPath,
+    accentColor: row.accentColor,
+    tags: (jsonDecode(row.tagsJson) as List).cast<String>(),
   );
 
   @override
@@ -110,6 +125,7 @@ class CharacterModeRepositoryImpl implements CharacterModeRepository {
             modeId: newId,
             assetId: entry.assetId,
             slot: entry.slot,
+            quantity: Value(entry.quantity),
             sortOrder: Value(entry.sortOrder),
             enabled: Value(entry.enabled),
           ),
@@ -145,4 +161,82 @@ class CharacterModeRepositoryImpl implements CharacterModeRepository {
     });
     return newId;
   }
+
+  @override
+  Future<void> updateMode({
+    required String modeId,
+    String? name,
+    String? description,
+  }) async {
+    final current = await database.characterModeDao.getMode(modeId);
+    if (current == null) throw ArgumentError('Mode not found');
+    await database.characterModeDao.updateMode(
+      db.CharacterModesCompanion(
+        id: Value(modeId),
+        name: name == null ? const Value.absent() : Value(name),
+        description: description == null
+            ? const Value.absent()
+            : Value(description),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+  }
+
+  @override
+  Future<void> deleteMode(String modeId) async {
+    final current = await database.characterModeDao.getMode(modeId);
+    if (current == null) throw ArgumentError('Mode not found');
+    if (await database.characterModeDao.countCharacterModes(
+          current.characterId,
+        ) <=
+        1) {
+      throw StateError('Cannot delete the only Character Mode');
+    }
+    await database.transaction(() async {
+      await (database.delete(
+        database.characterLoadoutEntries,
+      )..where((row) => row.modeId.equals(modeId))).go();
+      await (database.delete(
+        database.characterModeIdentityOverrides,
+      )..where((row) => row.modeId.equals(modeId))).go();
+      await (database.delete(
+        database.characterModeReferences,
+      )..where((row) => row.modeId.equals(modeId))).go();
+      await database.characterModeDao.deleteMode(modeId);
+      if (current.isDefault) {
+        final modes = await database.characterModeDao.getModes(
+          current.characterId,
+        );
+        if (modes.isNotEmpty) {
+          await database.characterModeDao.updateMode(
+            db.CharacterModesCompanion(
+              id: Value(modes.first.id),
+              isDefault: const Value(true),
+              updatedAt: Value(DateTime.now()),
+            ),
+          );
+        }
+      }
+    });
+  }
+
+  @override
+  Future<void> rememberLastUsedMode({
+    required String characterId,
+    required String modeId,
+  }) => database
+      .into(database.projectMetadata)
+      .insertOnConflictUpdate(
+        db.ProjectMetadataCompanion.insert(
+          key: 'lastMode:$characterId',
+          value: modeId,
+        ),
+      );
+
+  @override
+  Future<String?> getLastUsedMode(String characterId) async =>
+      (await (database.select(database.projectMetadata)
+                ..where((row) => row.key.equals('lastMode:$characterId')))
+              .getSingleOrNull())
+          ?.value;
 }

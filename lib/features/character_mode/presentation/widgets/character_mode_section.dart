@@ -6,6 +6,8 @@ import '../../domain/loadout_slot.dart';
 import '../character_mode_controller.dart';
 import 'asset_picker.dart';
 import 'character_mode_selector.dart';
+import 'character_mode_identity_editor.dart';
+import 'character_mode_references_card.dart';
 
 class CharacterModeSection extends ConsumerWidget {
   const CharacterModeSection({super.key, required this.characterId});
@@ -22,7 +24,10 @@ class CharacterModeSection extends ConsumerWidget {
         final selectedId = ref.watch(
           selectedCharacterModeProvider(characterId),
         );
-        final mode = _resolveMode(items, selectedId);
+        final lastUsedId = ref
+            .watch(lastUsedCharacterModeProvider(characterId))
+            .valueOrNull;
+        final mode = _resolveMode(items, selectedId ?? lastUsedId);
         if (mode == null) {
           return _EmptyModeState(onCreate: () => _createMode(context, ref));
         }
@@ -37,6 +42,10 @@ class CharacterModeSection extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
             _ModeLoadoutCard(mode: mode),
+            const SizedBox(height: 10),
+            CharacterModeIdentityEditor(modeId: mode.id),
+            const SizedBox(height: 10),
+            CharacterModeReferencesCard(modeId: mode.id),
           ],
         );
       },
@@ -145,6 +154,10 @@ class _ModeLoadoutCard extends ConsumerWidget {
         LoadoutSlot.wardrobe,
         LoadoutSlot.primaryWeapon,
         LoadoutSlot.secondaryWeapon,
+        LoadoutSlot.accessory,
+        LoadoutSlot.hairVariant,
+        LoadoutSlot.companion,
+        LoadoutSlot.vehicle,
       ])
         slot: _entryAssetId(entries, slot),
     };
@@ -164,9 +177,7 @@ class _ModeLoadoutCard extends ConsumerWidget {
                     subtitle: Text(selected[slot] ?? 'None'),
                     trailing: TextButton(
                       onPressed: () async {
-                        final type = slot == LoadoutSlot.wardrobe
-                            ? 'wardrobe'
-                            : 'weapon';
+                        final type = slot.assetType;
                         final asset = await showDialog<dynamic>(
                           context: context,
                           builder: (context) => AlertDialog(

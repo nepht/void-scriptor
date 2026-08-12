@@ -6,6 +6,8 @@ class AssetRelations extends Table {
   TextColumn get sourceAssetId => text()();
   TextColumn get targetAssetId => text()();
   TextColumn get relationType => text()();
+  TextColumn get relationOrigin =>
+      text().withDefault(const Constant('manual'))();
   DateTimeColumn get createdAt => dateTime().withDefault(
     Constant(DateTime.fromMillisecondsSinceEpoch(0)),
   )();

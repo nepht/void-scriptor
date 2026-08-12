@@ -6,6 +6,7 @@ class CharacterIdentityProfile {
     this.bodyLock = true,
     this.colorLock = true,
     this.outfitLock = false,
+    this.weaponLock = false,
   });
 
   final String characterId;
@@ -14,4 +15,5 @@ class CharacterIdentityProfile {
   final bool bodyLock;
   final bool colorLock;
   final bool outfitLock;
+  final bool weaponLock;
 }

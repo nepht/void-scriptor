@@ -47,5 +47,5 @@ EffectiveIdentityProfile resolveEffectiveIdentity({
   bodyLock: override?.bodyLock ?? base.bodyLock,
   colorLock: override?.colorLock ?? base.colorLock,
   outfitLock: override?.outfitLock ?? base.outfitLock,
-  weaponLock: override?.weaponLock ?? false,
+  weaponLock: override?.weaponLock ?? base.weaponLock,
 );

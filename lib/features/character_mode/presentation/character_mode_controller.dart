@@ -6,6 +6,7 @@ import '../data/character_mode_repository_impl.dart';
 import '../domain/character_mode.dart';
 import '../../../database/project/project_database.dart' as db;
 import '../domain/loadout_slot.dart';
+import '../domain/character_mode_changed.dart';
 
 final characterModesProvider =
     FutureProvider.family<List<CharacterMode>, String>((
@@ -19,9 +20,25 @@ final characterModesProvider =
       ).getModes(characterId);
     });
 
+final lastUsedCharacterModeProvider = FutureProvider.family<String?, String>((
+  ref,
+  characterId,
+) async {
+  final session = ref.watch(projectSessionProvider).valueOrNull;
+  if (session == null) return null;
+  return CharacterModeRepositoryImpl(
+    session.database,
+  ).getLastUsedMode(characterId);
+});
+
 final selectedCharacterModeProvider = StateProvider.family<String?, String>(
   (ref, characterId) => null,
 );
+
+final characterModeChangedProvider =
+    StateProvider.family<CharacterModeChanged?, String>(
+      (ref, characterId) => null,
+    );
 
 final characterModeLoadoutProvider =
     FutureProvider.family<List<db.CharacterLoadoutEntry>, String>((

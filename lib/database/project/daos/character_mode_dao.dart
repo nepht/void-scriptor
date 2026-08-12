@@ -39,11 +39,19 @@ class CharacterModeDao extends DatabaseAccessor<ProjectDatabase>
   Future<void> insertMode(CharacterModesCompanion mode) =>
       into(characterModes).insert(mode);
 
-  Future<void> updateMode(CharacterModesCompanion mode) =>
-      into(characterModes).insertOnConflictUpdate(mode);
+  Future<void> updateMode(CharacterModesCompanion mode) => (update(
+    characterModes,
+  )..where((row) => row.id.equals(mode.id.value))).write(mode);
 
   Future<int> deleteMode(String modeId) =>
       (delete(characterModes)..where((row) => row.id.equals(modeId))).go();
+
+  Future<int> countCharacterModes(String characterId) async =>
+      (selectOnly(characterModes)
+            ..addColumns([characterModes.id.count()])
+            ..where(characterModes.characterId.equals(characterId)))
+          .map((row) => row.read(characterModes.id.count()) ?? 0)
+          .getSingle();
 
   Future<void> removeCharacterModes(String characterId) async {
     final modes = await (select(

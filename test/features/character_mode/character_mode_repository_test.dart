@@ -7,6 +7,7 @@ import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/character_mode/application/create_character_mode_service.dart';
 import 'package:void_scriptor/features/character_mode/data/character_loadout_repository_impl.dart';
 import 'package:void_scriptor/features/character_mode/data/character_mode_repository_impl.dart';
+import 'package:void_scriptor/features/character_mode/data/character_mode_reference_repository.dart';
 import 'package:void_scriptor/features/character_mode/domain/loadout_slot.dart';
 
 void main() {
@@ -155,4 +156,46 @@ void main() {
       );
     },
   );
+
+  test(
+    'mode lifecycle protects the only mode and persists last used mode',
+    () async {
+      final repository = CharacterModeRepositoryImpl(database);
+      final baseId = await repository.createMode(
+        projectId: 'project-1',
+        characterId: 'character-1',
+        name: 'Base Mode',
+        isDefault: true,
+      );
+      await expectLater(repository.deleteMode(baseId), throwsStateError);
+      final combatId = await repository.createMode(
+        projectId: 'project-1',
+        characterId: 'character-1',
+        name: 'Combat Mode',
+      );
+      await repository.rememberLastUsedMode(
+        characterId: 'character-1',
+        modeId: combatId,
+      );
+      expect(await repository.getLastUsedMode('character-1'), combatId);
+      await repository.deleteMode(combatId);
+      expect(await repository.getMode(baseId), isNotNull);
+    },
+  );
+
+  test('mode references persist and derived relations are removable', () async {
+    final modeRepository = CharacterModeRepositoryImpl(database);
+    final modeId = await modeRepository.createMode(
+      projectId: 'project-1',
+      characterId: 'character-1',
+      name: 'Combat Mode',
+    );
+    final referenceRepository = CharacterModeReferenceRepository(database);
+    await referenceRepository.add(
+      modeId: modeId,
+      referenceType: 'full_body',
+      filePath: 'references/full-body.png',
+    );
+    expect(await referenceRepository.getReferences(modeId), hasLength(1));
+  });
 }

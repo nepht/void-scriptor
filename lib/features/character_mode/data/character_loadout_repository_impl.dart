@@ -10,6 +10,7 @@ abstract interface class CharacterLoadoutRepository {
     required String modeId,
     required LoadoutSlot slot,
     required String assetId,
+    int quantity = 1,
   });
   Future<void> removeSlot({
     required String modeId,
@@ -32,21 +33,20 @@ class CharacterLoadoutRepositoryImpl implements CharacterLoadoutRepository {
     required String modeId,
     required LoadoutSlot slot,
     required String assetId,
+    int quantity = 1,
   }) async {
     final mode = await database.characterModeDao.getMode(modeId);
     if (mode == null) throw ArgumentError('Mode not found');
     final asset = await database.assetDao.getById(assetId);
     if (asset == null) throw ArgumentError('Asset not found');
-    final expectedType = switch (slot) {
-      LoadoutSlot.wardrobe => 'wardrobe',
-      LoadoutSlot.primaryWeapon || LoadoutSlot.secondaryWeapon => 'weapon',
-      _ => null,
-    };
-    if (expectedType != null && asset.type != expectedType) {
+    final quantityError = validateLoadoutQuantity(slot, quantity);
+    if (quantityError != null) throw ArgumentError(quantityError);
+    if (asset.type != slot.assetType) {
       throw ArgumentError(
         'Asset type ${asset.type} is invalid for ${slot.value}',
       );
     }
+
     await database.transaction(() async {
       if (slot.multiplicity == LoadoutSlotMultiplicity.single) {
         await (database.delete(database.characterLoadoutEntries)..where(
@@ -60,6 +60,7 @@ class CharacterLoadoutRepositoryImpl implements CharacterLoadoutRepository {
           modeId: modeId,
           assetId: assetId,
           slot: slot.value,
+          quantity: Value(quantity),
         ),
       );
       final relationType = switch (asset.type) {
@@ -67,28 +68,29 @@ class CharacterLoadoutRepositoryImpl implements CharacterLoadoutRepository {
         'wardrobe' => 'wears',
         _ => null,
       };
-      if (relationType != null && mode.characterId != assetId) {
-        final existing =
-            await (database.select(database.assetRelations)..where(
-                  (row) =>
-                      row.sourceAssetId.equals(mode.characterId) &
-                      row.targetAssetId.equals(assetId) &
-                      row.relationType.equals(relationType),
-                ))
-                .getSingleOrNull();
-        if (existing == null) {
-          await database
-              .into(database.assetRelations)
-              .insert(
-                db.AssetRelationsCompanion.insert(
-                  id: const Uuid().v4(),
-                  projectId: Value(mode.projectId),
-                  sourceAssetId: mode.characterId,
-                  targetAssetId: assetId,
-                  relationType: relationType,
-                ),
-              );
-        }
+      if (relationType == null) return;
+      final existing =
+          await (database.select(database.assetRelations)..where(
+                (row) =>
+                    row.sourceAssetId.equals(mode.characterId) &
+                    row.targetAssetId.equals(assetId) &
+                    row.relationType.equals(relationType) &
+                    row.relationOrigin.equals('derived'),
+              ))
+              .getSingleOrNull();
+      if (existing == null) {
+        await database
+            .into(database.assetRelations)
+            .insert(
+              db.AssetRelationsCompanion.insert(
+                id: const Uuid().v4(),
+                projectId: Value(mode.projectId),
+                sourceAssetId: mode.characterId,
+                targetAssetId: assetId,
+                relationType: relationType,
+                relationOrigin: const Value('derived'),
+              ),
+            );
       }
     });
   }
@@ -99,11 +101,31 @@ class CharacterLoadoutRepositoryImpl implements CharacterLoadoutRepository {
     required LoadoutSlot slot,
     required String assetId,
   }) async {
+    final mode = await database.characterModeDao.getMode(modeId);
+    if (mode == null) throw ArgumentError('Mode not found');
     await (database.delete(database.characterLoadoutEntries)..where(
           (row) =>
               row.modeId.equals(modeId) &
               row.assetId.equals(assetId) &
               row.slot.equals(slot.value),
+        ))
+        .go();
+    final stillUsed = await (database.select(
+      database.characterLoadoutEntries,
+    )..where((row) => row.assetId.equals(assetId))).get();
+    if (stillUsed.isNotEmpty) return;
+    final relationType = slot.assetType == 'weapon'
+        ? 'uses'
+        : slot.assetType == 'wardrobe'
+        ? 'wears'
+        : null;
+    if (relationType == null) return;
+    await (database.delete(database.assetRelations)..where(
+          (row) =>
+              row.sourceAssetId.equals(mode.characterId) &
+              row.targetAssetId.equals(assetId) &
+              row.relationType.equals(relationType) &
+              row.relationOrigin.equals('derived'),
         ))
         .go();
   }

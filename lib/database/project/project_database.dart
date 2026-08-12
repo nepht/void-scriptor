@@ -79,7 +79,7 @@ class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -121,6 +121,23 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(characterLoadoutEntries);
         await m.createTable(characterModeIdentityOverrides);
         await m.createTable(characterModeReferences);
+      }
+      if (from >= 6 && from < 7) {
+        await m.addColumn(
+          characterLoadoutEntries,
+          characterLoadoutEntries.quantity,
+        );
+        await m.addColumn(
+          characterIdentityProfiles,
+          characterIdentityProfiles.weaponLock,
+        );
+      }
+      if (from >= 7 && from < 8) {
+        await m.addColumn(assetRelations, assetRelations.relationOrigin);
+      }
+      if (from >= 8 && from < 9) {
+        await m.addColumn(characterModes, characterModes.accentColor);
+        await m.addColumn(characterModes, characterModes.tagsJson);
       }
     },
   );

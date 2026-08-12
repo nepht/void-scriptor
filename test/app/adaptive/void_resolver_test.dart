@@ -1,34 +1,38 @@
+// Test untuk VoidDeviceType resolver.
+// Kontrak breakpoint resmi: <600 phone, 600-1023 tablet, 1024-1439 compactDesktop, >=1440 desktop.
 import 'package:flutter_test/flutter_test.dart';
-import 'package:void_scriptor/app/adaptive/void_device_type.dart';
 import 'package:void_scriptor/app/adaptive/void_resolver.dart';
+import 'package:void_scriptor/app/adaptive/void_device_type.dart';
+import 'package:void_scriptor/app/adaptive/void_breakpoints.dart';
 
 void main() {
   group('resolveDeviceType', () {
-    test('resolves phone for width < 600', () {
-      expect(resolveDeviceType(320), VoidDeviceType.phone);
-      expect(resolveDeviceType(599), VoidDeviceType.phone);
+    test('returns phone for width < 600', () {
+      expect(resolveDeviceType(599.9), VoidDeviceType.phone);
     });
 
-    test('resolves tablet for width 600 to 899', () {
-      expect(resolveDeviceType(600), VoidDeviceType.tablet);
-      expect(resolveDeviceType(899), VoidDeviceType.tablet);
+    test('returns tablet for width 600', () {
+      expect(resolveDeviceType(VoidBreakpoints.phone), VoidDeviceType.tablet);
     });
 
-    test('resolves compact desktop for width 900 to 1199', () {
-      expect(resolveDeviceType(900), VoidDeviceType.compactDesktop);
-      expect(resolveDeviceType(1199), VoidDeviceType.compactDesktop);
+    test('returns tablet for width < 1024 (boundary 1023.9)', () {
+      expect(resolveDeviceType(1023.9), VoidDeviceType.tablet);
     });
 
-    test('resolves desktop for width 1200 to 1919', () {
-      // Perbarui rentang untuk desktop
-      expect(resolveDeviceType(1200), VoidDeviceType.desktop);
-      expect(resolveDeviceType(1919), VoidDeviceType.desktop);
+    test('returns compactDesktop for width 1024', () {
+      expect(resolveDeviceType(VoidBreakpoints.tablet), VoidDeviceType.compactDesktop);
     });
 
-    test('resolves large desktop for width >= 1920', () {
-      // Perbarui rentang untuk large desktop
-      expect(resolveDeviceType(1920), VoidDeviceType.largeDesktop);
-      expect(resolveDeviceType(3840), VoidDeviceType.largeDesktop);
+    test('returns compactDesktop for width < 1440 (boundary 1439.9)', () {
+      expect(resolveDeviceType(1439.9), VoidDeviceType.compactDesktop);
+    });
+
+    test('returns desktop for width 1440', () {
+      expect(resolveDeviceType(VoidBreakpoints.desktop), VoidDeviceType.desktop);
+    });
+
+    test('returns desktop for width > 1440 (e.g. 1920)', () {
+      expect(resolveDeviceType(1920), VoidDeviceType.desktop);
     });
   });
 }

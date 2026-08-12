@@ -23,7 +23,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final expectedLabel = route.value == AppRoutes.workspace
-          ? 'VOID SCRIPTOR'
+          ? 'Workspace' // Mengubah dari 'VOID SCRIPTOR' menjadi 'Workspace'
           : route.key;
       expect(find.text(expectedLabel), findsOneWidget);
       expect(tester.takeException(), isNull);

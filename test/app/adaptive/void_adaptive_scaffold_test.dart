@@ -1,135 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/app/adaptive/void_adaptive_scaffold.dart';
-import 'package:void_scriptor/app/adaptive/void_breakpoints.dart';
 
 void main() {
-  group('VoidAdaptiveScaffold', () {
-    testWidgets('renders phone layout for width < 600', (tester) async {
-      tester.view.physicalSize = const Size(VoidBreakpoints.phone - 1, 800);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.reset); // Reset view after test
+  const phoneSize = Size(500, 800);
+  const tabletSize = Size(800, 1000);
+  const compactDesktopSize = Size(1200, 900);
+  const desktopSize = Size(1600, 1000);
 
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: VoidAdaptiveScaffold(
-            body: Text('Body'),
-            desktopSidebar: Text('Sidebar'),
-            mobileNavigation: Text('BottomNav'),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle(); // Pump and settle after layout changes
+  Widget buildScaffold() {
+    return const MaterialApp(
+      home: VoidAdaptiveScaffold(
+        body: Center(child: Text('Body')),
+        desktopSidebar: SizedBox(width: 240, child: Center(child: Text('Sidebar'))),
+        mobileNavigation: SizedBox(height: 56, child: Center(child: Text('Nav'))),
+        inspector: SizedBox(width: 280, child: Center(child: Text('Inspector'))),
+      ),
+    );
+  }
 
-      expect(find.text('Body'), findsOneWidget);
-      expect(find.text('BottomNav'), findsOneWidget);
-      expect(find.text('Sidebar'), findsNothing);
-      expect(find.text('Inspector'), findsNothing);
-    });
+  testWidgets('displays phone layout', (tester) async {
+    tester.view.physicalSize = phoneSize;
+    tester.view.devicePixelRatio = 1.0;
+    
+    await tester.pumpWidget(buildScaffold());
 
-    testWidgets('renders tablet layout for width 600 to 899', (tester) async {
-      tester.view.physicalSize = const Size(VoidBreakpoints.tablet - 1, 800);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.reset);
+    expect(find.byKey(const Key('scaffold-phone')), findsOneWidget);
+    expect(find.text('Body'), findsOneWidget);
+    expect(find.text('Nav'), findsOneWidget);
+    expect(find.text('Sidebar'), findsNothing);
+    expect(find.text('Inspector'), findsNothing);
+  });
 
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: VoidAdaptiveScaffold(
-            body: Text('Body'),
-            desktopSidebar: Text('Sidebar'),
-            mobileNavigation: Text('BottomNav'),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
+  testWidgets('displays tablet/compact layout', (tester) async {
+    tester.view.physicalSize = tabletSize;
+    await tester.pumpWidget(buildScaffold());
+    expect(find.byKey(const Key('scaffold-tablet-or-compact')), findsOneWidget);
+    expect(find.text('Sidebar'), findsOneWidget);
+    expect(find.text('Body'), findsOneWidget);
+    expect(find.text('Nav'), findsNothing);
+    expect(find.text('Inspector'), findsNothing);
 
-      expect(find.text('Body'), findsOneWidget);
-      expect(find.text('Sidebar'), findsOneWidget);
-      expect(find.text('BottomNav'), findsNothing);
-      expect(find.text('Inspector'), findsNothing);
-    });
+    tester.view.physicalSize = compactDesktopSize;
+    await tester.pumpWidget(buildScaffold());
+    expect(find.byKey(const Key('scaffold-tablet-or-compact')), findsOneWidget);
+  });
 
-    testWidgets('renders compact desktop layout for width 900 to 1199', (
-      tester,
-    ) async {
-      tester.view.physicalSize = const Size(
-        VoidBreakpoints.compactDesktop - 1,
-        800,
-      );
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.reset);
+  testWidgets('displays desktop layout', (tester) async {
+    tester.view.physicalSize = desktopSize;
+    await tester.pumpWidget(buildScaffold());
 
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: VoidAdaptiveScaffold(
-            body: Text('Body'),
-            desktopSidebar: Text('Sidebar'),
-            mobileNavigation: Text('BottomNav'),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('Body'), findsOneWidget);
-      expect(find.text('Sidebar'), findsOneWidget);
-      expect(find.text('BottomNav'), findsNothing);
-      expect(find.text('Inspector'), findsNothing);
-    });
-
-    testWidgets('renders desktop layout for width 1200 to 1919', (
-      tester,
-    ) async {
-      tester.view.physicalSize = const Size(
-        VoidBreakpoints.largeDesktop - 1,
-        800,
-      );
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.reset);
-
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: VoidAdaptiveScaffold(
-            body: Text('Body'),
-            desktopSidebar: Text('Sidebar'),
-            mobileNavigation: Text('BottomNav'),
-            inspector: Text('Inspector'),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('Body'), findsOneWidget);
-      expect(find.text('Sidebar'), findsOneWidget);
-      expect(find.text('Inspector'), findsOneWidget);
-      expect(find.text('BottomNav'), findsNothing);
-    });
-
-    testWidgets('renders large desktop layout for width >= 1920', (
-      tester,
-    ) async {
-      tester.view.physicalSize = const Size(
-        VoidBreakpoints.largeDesktop + 100,
-        800,
-      );
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.reset);
-
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: VoidAdaptiveScaffold(
-            body: Text('Body'),
-            desktopSidebar: Text('Sidebar'),
-            mobileNavigation: Text('BottomNav'),
-            inspector: Text('Inspector'),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('Body'), findsOneWidget);
-      expect(find.text('Sidebar'), findsOneWidget);
-      expect(find.text('Inspector'), findsOneWidget);
-      expect(find.text('BottomNav'), findsNothing);
-    });
+    expect(find.byKey(const Key('scaffold-desktop')), findsOneWidget);
+    expect(find.text('Sidebar'), findsOneWidget);
+    expect(find.text('Body'), findsOneWidget);
+    expect(find.text('Inspector'), findsOneWidget);
+    expect(find.text('Nav'), findsNothing);
   });
 }

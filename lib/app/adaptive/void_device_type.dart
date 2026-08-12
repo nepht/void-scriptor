@@ -1,1 +1,1 @@
-enum VoidDeviceType { phone, tablet, compactDesktop, desktop, largeDesktop }
+enum VoidDeviceType { phone, tablet, compactDesktop, desktop }

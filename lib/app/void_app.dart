@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../design_system/theme/void_theme.dart';
-import '../features/dashboard/presentation/dashboard_screen.dart';
+import 'shell/void_app_shell.dart';
 
 class VoidScriptorApp extends StatelessWidget {
   const VoidScriptorApp({super.key});
@@ -13,7 +13,7 @@ class VoidScriptorApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
       darkTheme: VoidTheme.dark,
-      home: const DashboardScreen(),
+      home: const VoidAppShell(),
     );
   }
 }

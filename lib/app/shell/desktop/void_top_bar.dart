@@ -1,0 +1,128 @@
+import 'package:flutter/material.dart';
+
+import '../../../design_system/colors/void_colors.dart';
+import '../../../design_system/widgets/branding/void_logo.dart';
+
+class VoidTopBar extends StatelessWidget {
+  const VoidTopBar({super.key, required this.onMenuSelected});
+
+  final ValueChanged<String> onMenuSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 58,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: const BoxDecoration(
+        color: VoidColors.panel,
+        border: Border(bottom: BorderSide(color: VoidColors.borderSoft)),
+      ),
+      child: Row(
+        children: [
+          const SizedBox(width: 230, child: VoidLogo()),
+
+          const SizedBox(width: 12),
+
+          _TopMenuButton(
+            label: 'Workspace',
+            onTap: () => onMenuSelected('workspace'),
+          ),
+
+          _TopMenuButton(
+            label: 'Projects',
+            onTap: () => onMenuSelected('projects'),
+          ),
+
+          _TopMenuButton(label: 'AI Tools', onTap: () => onMenuSelected('ai')),
+
+          _TopMenuButton(
+            label: 'Assets',
+            onTap: () => onMenuSelected('assets'),
+          ),
+
+          _TopMenuButton(
+            label: 'Marketplace',
+            onTap: () => onMenuSelected('marketplace'),
+          ),
+
+          _TopMenuButton(
+            label: 'Donate',
+            onTap: () => onMenuSelected('donate'),
+          ),
+
+          const Spacer(),
+
+          SizedBox(
+            width: 240,
+            height: 34,
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Search',
+                prefixIcon: const Icon(Icons.search, size: 17),
+                contentPadding: EdgeInsets.zero,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(7),
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(width: 12),
+
+          const _TopIconButton(icon: Icons.notifications_none_rounded),
+
+          const _TopIconButton(icon: Icons.cloud_outlined),
+
+          const SizedBox(width: 6),
+
+          const CircleAvatar(
+            radius: 16,
+            backgroundColor: VoidColors.primary,
+            child: Icon(Icons.person_outline, size: 18, color: Colors.white),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TopMenuButton extends StatelessWidget {
+  const _TopMenuButton({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(6),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
+        child: Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: VoidColors.textSecondary,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TopIconButton extends StatelessWidget {
+  const _TopIconButton({required this.icon});
+
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      visualDensity: VisualDensity.compact,
+      onPressed: () {},
+      icon: Icon(icon, size: 18, color: VoidColors.textSecondary),
+    );
+  }
+}

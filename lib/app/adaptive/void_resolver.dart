@@ -11,8 +11,5 @@ VoidDeviceType resolveDeviceType(double width) {
   if (width < VoidBreakpoints.compactDesktop) {
     return VoidDeviceType.compactDesktop;
   }
-  if (width < VoidBreakpoints.largeDesktop) {
-    return VoidDeviceType.desktop;
-  }
-  return VoidDeviceType.largeDesktop;
+  return VoidDeviceType.desktop;
 }

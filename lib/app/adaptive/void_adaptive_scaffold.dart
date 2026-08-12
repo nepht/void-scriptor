@@ -27,6 +27,7 @@ class VoidAdaptiveScaffold extends StatelessWidget {
         switch (device) {
           case VoidDeviceType.phone:
             return Scaffold(
+              key: const Key('scaffold-phone'),
               backgroundColor: VoidColors.background,
               body: body,
               bottomNavigationBar: mobileNavigation,
@@ -34,6 +35,7 @@ class VoidAdaptiveScaffold extends StatelessWidget {
           case VoidDeviceType.tablet:
           case VoidDeviceType.compactDesktop:
             return Scaffold(
+              key: const Key('scaffold-tablet-or-compact'),
               backgroundColor: VoidColors.background,
               body: Row(
                 children: [
@@ -43,8 +45,8 @@ class VoidAdaptiveScaffold extends StatelessWidget {
               ),
             );
           case VoidDeviceType.desktop:
-          case VoidDeviceType.largeDesktop:
             return Scaffold(
+              key: const Key('scaffold-desktop'),
               backgroundColor: VoidColors.background,
               body: Row(
                 children: [

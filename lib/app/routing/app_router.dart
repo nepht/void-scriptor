@@ -1,5 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:void_scriptor/app/adaptive/adaptive_app_shell.dart';
+import 'package:void_scriptor/app/adaptive/void_adaptive_scaffold.dart';
 import 'package:void_scriptor/app/routing/app_routes.dart';
 import 'package:void_scriptor/app/routing/foundation_route_screen.dart';
 
@@ -11,7 +12,11 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
         GoRoute(
           path: route.value,
           builder: (context, state) => route.value == AppRoutes.workspace
-              ? const AdaptiveAppShell()
+              ? const VoidAdaptiveScaffold(
+                  body: Center(child: Text('Workspace')),
+                  desktopSidebar: SizedBox(width: 240, child: Text('Explorer')),
+                  mobileNavigation: SizedBox.shrink(),
+                )
               : FoundationRouteScreen(label: route.key),
         ),
     ],

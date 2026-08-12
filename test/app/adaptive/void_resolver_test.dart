@@ -20,7 +20,10 @@ void main() {
     });
 
     test('returns compactDesktop for width 1024', () {
-      expect(resolveDeviceType(VoidBreakpoints.tablet), VoidDeviceType.compactDesktop);
+      expect(
+        resolveDeviceType(VoidBreakpoints.tablet),
+        VoidDeviceType.compactDesktop,
+      );
     });
 
     test('returns compactDesktop for width < 1440 (boundary 1439.9)', () {
@@ -28,7 +31,10 @@ void main() {
     });
 
     test('returns desktop for width 1440', () {
-      expect(resolveDeviceType(VoidBreakpoints.desktop), VoidDeviceType.desktop);
+      expect(
+        resolveDeviceType(VoidBreakpoints.desktop),
+        VoidDeviceType.desktop,
+      );
     });
 
     test('returns desktop for width > 1440 (e.g. 1920)', () {

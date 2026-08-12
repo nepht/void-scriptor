@@ -14,26 +14,26 @@ class AuthSession {
   final String? email;
 
   const AuthSession.checking()
-      : status = AuthStatus.checking,
-        userId = null,
-        displayName = null,
-        email = null;
+    : status = AuthStatus.checking,
+      userId = null,
+      displayName = null,
+      email = null;
 
   const AuthSession.loggedOut()
-      : status = AuthStatus.unauthenticated,
-        userId = null,
-        displayName = null,
-        email = null;
+    : status = AuthStatus.unauthenticated,
+      userId = null,
+      displayName = null,
+      email = null;
 
   const AuthSession.guest()
-      : status = AuthStatus.guest,
-        userId = null,
-        displayName = 'Guest',
-        email = null;
+    : status = AuthStatus.guest,
+      userId = null,
+      displayName = 'Guest',
+      email = null;
 
   const AuthSession.offline()
-      : status = AuthStatus.offline,
-        userId = null,
-        displayName = 'Offline User',
-        email = null;
+    : status = AuthStatus.offline,
+      userId = null,
+      displayName = 'Offline User',
+      email = null;
 }

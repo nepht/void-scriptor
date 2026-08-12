@@ -4,9 +4,7 @@ import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({
-    super.key,
-  });
+  const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +27,7 @@ class SplashScreen extends StatelessWidget {
             SizedBox(height: 14),
             Text(
               'Initializing Void Scriptor...',
-              style: TextStyle(
-                color: VoidColors.textMuted,
-                fontSize: 11,
-              ),
+              style: TextStyle(color: VoidColors.textMuted, fontSize: 11),
             ),
           ],
         ),

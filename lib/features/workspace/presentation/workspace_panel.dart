@@ -66,16 +66,19 @@ class _WorkspaceTabs extends StatelessWidget {
         color: VoidColors.panel,
         border: Border(bottom: BorderSide(color: VoidColors.borderSoft)),
       ),
-      child: const Row(
-        children: [
-          _Tab(label: 'Overview', active: true),
-          _Tab(label: 'Character Sheet'),
-          _Tab(label: 'Wardrobe'),
-          _Tab(label: 'Weapons'),
-          _Tab(label: 'Story'),
-          _Tab(label: 'Timeline'),
-          _Tab(label: 'Notes'),
-        ],
+      child: const SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            _Tab(label: 'Overview', active: true),
+            _Tab(label: 'Character Sheet'),
+            _Tab(label: 'Wardrobe'),
+            _Tab(label: 'Weapons'),
+            _Tab(label: 'Story'),
+            _Tab(label: 'Timeline'),
+            _Tab(label: 'Notes'),
+          ],
+        ),
       ),
     );
   }
@@ -121,16 +124,9 @@ class _EmptyWorkspace extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.grid_view_rounded,
-            size: 38,
-            color: VoidColors.textMuted,
-          ),
+          Icon(Icons.grid_view_rounded, size: 38, color: VoidColors.textMuted),
           SizedBox(height: 14),
-          Text(
-            'Character Workspace',
-            style: VoidTypography.headingMedium,
-          ),
+          Text('Workspace', style: VoidTypography.headingMedium),
           SizedBox(height: 6),
           Text(
             'Character Sheet akan dibangun pada sprint berikutnya.',

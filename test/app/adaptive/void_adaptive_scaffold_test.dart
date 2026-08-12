@@ -12,9 +12,18 @@ void main() {
     return const MaterialApp(
       home: VoidAdaptiveScaffold(
         body: Center(child: Text('Body')),
-        desktopSidebar: SizedBox(width: 240, child: Center(child: Text('Sidebar'))),
-        mobileNavigation: SizedBox(height: 56, child: Center(child: Text('Nav'))),
-        inspector: SizedBox(width: 280, child: Center(child: Text('Inspector'))),
+        desktopSidebar: SizedBox(
+          width: 240,
+          child: Center(child: Text('Sidebar')),
+        ),
+        mobileNavigation: SizedBox(
+          height: 56,
+          child: Center(child: Text('Nav')),
+        ),
+        inspector: SizedBox(
+          width: 280,
+          child: Center(child: Text('Inspector')),
+        ),
       ),
     );
   }
@@ -22,7 +31,7 @@ void main() {
   testWidgets('displays phone layout', (tester) async {
     tester.view.physicalSize = phoneSize;
     tester.view.devicePixelRatio = 1.0;
-    
+
     await tester.pumpWidget(buildScaffold());
 
     expect(find.byKey(const Key('scaffold-phone')), findsOneWidget);

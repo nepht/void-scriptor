@@ -9,28 +9,33 @@ class VoidLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Image.asset(
-          'assets/logos/void_scriptor_logo.png',
-          width: 30,
-          height: 30,
-          fit: BoxFit.contain,
-        ),
-        if (!compact) ...[
-          const SizedBox(width: 10),
-          const Text(
-            'VOID SCRIPTOR',
-            style: TextStyle(
-              color: VoidColors.textPrimary,
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.4,
-            ),
-          ),
-        ],
-      ],
-    );
+    return compact
+        ? Image.asset(
+            'assets/logos/void_scriptor_logo.png',
+            width: 30,
+            height: 30,
+            fit: BoxFit.contain,
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/logos/void_scriptor_logo.png',
+                width: 30,
+                height: 30,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(width: 10),
+              const Text(
+                'VOID SCRIPTOR',
+                style: TextStyle(
+                  color: VoidColors.textPrimary,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.4,
+                ),
+              ),
+            ],
+          );
   }
 }

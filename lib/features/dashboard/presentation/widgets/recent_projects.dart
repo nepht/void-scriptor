@@ -17,7 +17,16 @@ class RecentProjects extends ConsumerWidget {
     final projects = ref.watch(projectControllerProvider);
     return VoidCard(
       child: projects.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _RecentProjectsHeader(
+              onViewAll: () => context.go(AppRoutes.projects),
+            ),
+            const SizedBox(height: 16),
+            const Text('Loading projects...'),
+          ],
+        ),
         error: (error, stack) => Text('$error', style: VoidTypography.body),
         data: (items) {
           final recent = [...items]
@@ -55,6 +64,24 @@ class RecentProjects extends ConsumerWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class _RecentProjectsHeader extends StatelessWidget {
+  const _RecentProjectsHeader({required this.onViewAll});
+
+  final VoidCallback onViewAll;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Expanded(
+          child: Text('Recent Projects', style: VoidTypography.headingMedium),
+        ),
+        TextButton(onPressed: onViewAll, child: const Text('View all')),
+      ],
     );
   }
 }

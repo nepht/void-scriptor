@@ -23,6 +23,32 @@ class ProjectModel {
   final String? thumbnailPath;
   final List<String> tags;
 
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'description': description,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+    'lastOpenedAt': lastOpenedAt.toIso8601String(),
+    'localPath': localPath,
+    'version': version,
+    'thumbnailPath': thumbnailPath,
+    'tags': tags,
+  };
+
+  factory ProjectModel.fromJson(Map<String, dynamic> json) => ProjectModel(
+    id: json['id'] as String,
+    name: json['name'] as String,
+    description: json['description'] as String? ?? '',
+    createdAt: DateTime.parse(json['createdAt'] as String),
+    updatedAt: DateTime.parse(json['updatedAt'] as String),
+    lastOpenedAt: DateTime.parse(json['lastOpenedAt'] as String),
+    localPath: json['localPath'] as String,
+    version: json['version'] as String? ?? '0.1.0',
+    thumbnailPath: json['thumbnailPath'] as String?,
+    tags: (json['tags'] as List<dynamic>? ?? const []).cast<String>(),
+  );
+
   ProjectModel copyWith({
     String? id,
     String? name,

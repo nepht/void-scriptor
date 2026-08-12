@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../character/presentation/character_workspace.dart';
+import '../../character/presentation/character_controller.dart';
+import '../../character/presentation/character_workspace_screen.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 
 import '../../../design_system/colors/void_colors.dart';
@@ -17,6 +18,7 @@ class WorkspacePanel extends ConsumerWidget {
         .valueOrNull
         ?.manifest
         .id;
+    final selectedId = ref.watch(selectedCharacterIdProvider);
     return Container(
       color: VoidColors.backgroundSecondary,
       child: Column(
@@ -24,9 +26,9 @@ class WorkspacePanel extends ConsumerWidget {
           const _WorkspaceHeader(),
           const _WorkspaceTabs(),
           Expanded(
-            child: projectId == null
+            child: projectId == null || selectedId == null
                 ? const _EmptyWorkspace()
-                : CharacterWorkspace(projectId: projectId),
+                : CharacterWorkspaceScreen(characterId: selectedId),
           ),
         ],
       ),
@@ -38,110 +40,99 @@ class _WorkspaceHeader extends StatelessWidget {
   const _WorkspaceHeader();
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 44,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: const BoxDecoration(
-        color: VoidColors.panelSecondary,
-        border: Border(bottom: BorderSide(color: VoidColors.borderSoft)),
-      ),
-      child: const Row(
-        children: [
-          Text('Void Universe', style: VoidTypography.title),
-          SizedBox(width: 10),
-          Text('/', style: VoidTypography.caption),
-          SizedBox(width: 10),
-          Text('Characters', style: VoidTypography.caption),
-          Spacer(),
-          Icon(Icons.star_border, size: 17, color: VoidColors.textMuted),
-          SizedBox(width: 12),
-          Icon(Icons.history, size: 17, color: VoidColors.textMuted),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Container(
+    height: 44,
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    decoration: const BoxDecoration(
+      color: VoidColors.panelSecondary,
+      border: Border(bottom: BorderSide(color: VoidColors.borderSoft)),
+    ),
+    child: const Row(
+      children: [
+        Text('Void Universe', style: VoidTypography.title),
+        SizedBox(width: 10),
+        Text('/', style: VoidTypography.caption),
+        SizedBox(width: 10),
+        Text('Characters', style: VoidTypography.caption),
+        Spacer(),
+        Icon(Icons.star_border, size: 17, color: VoidColors.textMuted),
+        SizedBox(width: 12),
+        Icon(Icons.history, size: 17, color: VoidColors.textMuted),
+      ],
+    ),
+  );
 }
 
 class _WorkspaceTabs extends StatelessWidget {
   const _WorkspaceTabs();
-
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 38,
-      decoration: const BoxDecoration(
-        color: VoidColors.panel,
-        border: Border(bottom: BorderSide(color: VoidColors.borderSoft)),
+  Widget build(BuildContext context) => Container(
+    height: 38,
+    decoration: const BoxDecoration(
+      color: VoidColors.panel,
+      border: Border(bottom: BorderSide(color: VoidColors.borderSoft)),
+    ),
+    child: const SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _Tab(label: 'Overview', active: true),
+          _Tab(label: 'Character Sheet'),
+          _Tab(label: 'Identity'),
+          _Tab(label: 'References'),
+          _Tab(label: 'Story'),
+          _Tab(label: 'Notes'),
+        ],
       ),
-      child: const SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            _Tab(label: 'Overview', active: true),
-            _Tab(label: 'Character Sheet'),
-            _Tab(label: 'Wardrobe'),
-            _Tab(label: 'Weapons'),
-            _Tab(label: 'Story'),
-            _Tab(label: 'Timeline'),
-            _Tab(label: 'Notes'),
-          ],
-        ),
-      ),
-    );
-  }
+    ),
+  );
 }
 
 class _Tab extends StatelessWidget {
   const _Tab({required this.label, this.active = false});
-
   final String label;
   final bool active;
-
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: active ? VoidColors.primary : Colors.transparent,
-            width: 2,
-          ),
+  Widget build(BuildContext context) => Container(
+    alignment: Alignment.center,
+    padding: const EdgeInsets.symmetric(horizontal: 14),
+    decoration: BoxDecoration(
+      border: Border(
+        bottom: BorderSide(
+          color: active ? VoidColors.primary : Colors.transparent,
+          width: 2,
         ),
       ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: active ? VoidColors.textPrimary : VoidColors.textMuted,
-          fontSize: 11,
-          fontWeight: active ? FontWeight.w600 : FontWeight.w400,
-        ),
+    ),
+    child: Text(
+      label,
+      style: TextStyle(
+        color: active ? VoidColors.textPrimary : VoidColors.textMuted,
+        fontSize: 11,
+        fontWeight: active ? FontWeight.w600 : FontWeight.w400,
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _EmptyWorkspace extends StatelessWidget {
   const _EmptyWorkspace();
-
   @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.grid_view_rounded, size: 38, color: VoidColors.textMuted),
-          SizedBox(height: 14),
-          Text('Workspace', style: VoidTypography.headingMedium),
-          SizedBox(height: 6),
-          Text(
-            'Belum ada project aktif. Pilih atau buat project untuk membuka Character Workspace.',
-            style: VoidTypography.caption,
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => const Center(
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.grid_view_rounded, size: 38, color: VoidColors.textMuted),
+        SizedBox(height: 14),
+        Text('Workspace', style: VoidTypography.headingMedium),
+        SizedBox(height: 6),
+        Text('Character Workspace', style: VoidTypography.caption),
+        SizedBox(height: 6),
+        Text(
+          'Pilih Character dari Explorer untuk membuka Character Sheet.',
+          style: VoidTypography.caption,
+        ),
+      ],
+    ),
+  );
 }

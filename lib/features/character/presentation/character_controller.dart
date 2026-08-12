@@ -6,7 +6,10 @@ import '../domain/character_model.dart';
 import '../application/create_character_service.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 
-final selectedAssetProvider = StateProvider<String?>((ref) => null);
+final selectedCharacterIdProvider = StateProvider<String?>((ref) => null);
+
+/// Compatibility alias used by the existing Explorer and Inspector.
+final selectedAssetProvider = selectedCharacterIdProvider;
 
 final characterControllerProvider =
     FutureProvider.family<List<CharacterModel>, String>((ref, projectId) async {

@@ -15,6 +15,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _emailController = TextEditingController();
+  String? _feedback;
 
   @override
   void dispose() {
@@ -63,7 +64,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                   const SizedBox(height: 20),
 
-                  VoidButton(label: 'Send Reset Link', onPressed: () {}),
+                  VoidButton(
+                    label: 'Send Reset Link',
+                    onPressed: _sendResetLink,
+                  ),
+
+                  if (_feedback != null) ...[
+                    const SizedBox(height: 12),
+                    Text(_feedback!, textAlign: TextAlign.center),
+                  ],
 
                   const SizedBox(height: 12),
 
@@ -78,5 +87,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
       ),
     );
+  }
+
+  void _sendResetLink() {
+    final email = _emailController.text.trim();
+    setState(() {
+      _feedback = email.isEmpty
+          ? 'Enter an email address.'
+          : 'Reset link request recorded in local mode.';
+    });
   }
 }

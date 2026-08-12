@@ -19,6 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmController = TextEditingController();
+  String? _feedback;
 
   @override
   void dispose() {
@@ -98,8 +99,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   VoidButton(
                     label: 'Create Account',
                     icon: Icons.person_add_outlined,
-                    onPressed: () {},
+                    onPressed: _createAccount,
                   ),
+
+                  if (_feedback != null) ...[
+                    const SizedBox(height: 12),
+                    Text(_feedback!, textAlign: TextAlign.center),
+                  ],
 
                   const SizedBox(height: 18),
 
@@ -114,5 +120,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
     );
+  }
+
+  void _createAccount() {
+    if (_nameController.text.trim().isEmpty ||
+        _emailController.text.trim().isEmpty ||
+        _passwordController.text.isEmpty) {
+      setState(() => _feedback = 'Complete the required fields.');
+      return;
+    }
+    if (_passwordController.text != _confirmController.text) {
+      setState(() => _feedback = 'Passwords do not match.');
+      return;
+    }
+    setState(() => _feedback = 'Account creation is available in local mode.');
   }
 }

@@ -11,8 +11,8 @@ class InspectorBody extends StatelessWidget {
   final String name, type;
   final List<String> sections;
   @override
-  Widget build(BuildContext context) => ListView(
-    padding: const EdgeInsets.all(16),
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(name, style: VoidTypography.title),
       const SizedBox(height: 4),

@@ -101,4 +101,42 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.text('Welcome back'), findsOneWidget);
   });
+
+  testWidgets('register submit gives local account feedback', (tester) async {
+    await tester.pumpWidget(_app());
+    await _settleAuth(tester);
+    await _tapVisible(tester, find.text('Create account'));
+
+    await tester.enterText(find.byType(TextField).at(0), 'Choirudin');
+    await tester.enterText(
+      find.byType(TextField).at(1),
+      'choirudin@example.com',
+    );
+    await tester.enterText(find.byType(TextField).at(2), 'password');
+    await tester.enterText(find.byType(TextField).at(3), 'password');
+    await tester.tap(find.text('Create Account'));
+    await tester.pump();
+
+    expect(
+      find.text('Account creation is available in local mode.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('forgot password submit gives local reset feedback', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    await _settleAuth(tester);
+    await _tapVisible(tester, find.text('Forgot password?'));
+
+    await tester.enterText(find.byType(TextField), 'choirudin@example.com');
+    await tester.tap(find.text('Send Reset Link'));
+    await tester.pump();
+
+    expect(
+      find.text('Reset link request recorded in local mode.'),
+      findsOneWidget,
+    );
+  });
 }

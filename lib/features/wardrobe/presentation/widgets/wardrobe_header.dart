@@ -47,12 +47,30 @@ class WardrobeHeader extends StatelessWidget {
               ),
             ),
             if (!compact) ...[
-              IconButton(onPressed: () {}, icon: const Icon(Icons.history)),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz)),
+              IconButton(
+                onPressed: () => _feedback(
+                  context,
+                  'Wardrobe history is not persisted yet.',
+                ),
+                icon: const Icon(Icons.history),
+              ),
+              IconButton(
+                onPressed: () => _feedback(
+                  context,
+                  'Wardrobe actions menu is not available yet.',
+                ),
+                icon: const Icon(Icons.more_horiz),
+              ),
             ],
           ],
         ),
       );
     },
   );
+
+  void _feedback(BuildContext context, String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
 }

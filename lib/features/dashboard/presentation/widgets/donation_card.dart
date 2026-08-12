@@ -34,16 +34,33 @@ class DonationCard extends StatelessWidget {
             spacing: 10,
             runSpacing: 10,
             children: [
-              OutlinedButton(onPressed: () {}, child: const Text('QRIS')),
-              OutlinedButton(onPressed: () {}, child: const Text('DANA')),
-              OutlinedButton(onPressed: () {}, child: const Text('ShopeePay')),
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () => _feedback(context),
+                child: const Text('QRIS'),
+              ),
+              OutlinedButton(
+                onPressed: () => _feedback(context),
+                child: const Text('DANA'),
+              ),
+              OutlinedButton(
+                onPressed: () => _feedback(context),
+                child: const Text('ShopeePay'),
+              ),
+              OutlinedButton(
+                onPressed: () => _feedback(context),
                 child: const Text('Bank Transfer'),
               ),
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  void _feedback(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Donation integration is not configured yet.'),
       ),
     );
   }

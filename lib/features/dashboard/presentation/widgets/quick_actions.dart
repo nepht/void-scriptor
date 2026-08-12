@@ -30,20 +30,29 @@ class QuickActions extends StatelessWidget {
           VoidButton(
             label: 'Create Character',
             icon: Icons.person_add_alt_1_outlined,
-            onPressed: () {},
+            onPressed: onOpenStudio,
           ),
           VoidButton(
             label: 'Import Asset',
             icon: Icons.upload_file_outlined,
-            onPressed: () {},
+            onPressed: () => _showLocalFeedback(
+              context,
+              'Asset import is available from the project workspace.',
+            ),
           ),
           VoidButton(
             label: 'AI Studio',
             icon: Icons.auto_awesome_outlined,
-            onPressed: () {},
+            onPressed: onOpenStudio,
           ),
         ],
       ),
     );
+  }
+
+  void _showLocalFeedback(BuildContext context, String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 }

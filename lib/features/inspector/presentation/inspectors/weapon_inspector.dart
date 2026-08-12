@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../design_system/colors/void_colors.dart';
 import '../../../projects/presentation/project_persistence_providers.dart';
 import '../../../weapon/data/weapon_repository_impl.dart';
+import '../widgets/relation_section.dart';
 
 final weaponInspectorProvider =
     FutureProvider.family<WeaponInspectorData?, String>((ref, weaponId) async {
@@ -91,12 +92,7 @@ class WeaponInspector extends ConsumerWidget {
                 ('Variant', data?.variant ?? '—'),
               ],
             ),
-            _Section(
-              title: 'Relations',
-              rows: [
-                ('Used by', '${data?.incomingRelationCount ?? 0} asset(s)'),
-              ],
-            ),
+            RelationSection(assetId: weaponId),
           ],
         ),
       ),

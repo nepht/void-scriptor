@@ -35,20 +35,33 @@ class CharacterHeader extends StatelessWidget {
         const Spacer(),
         IconButton(
           tooltip: 'Favorite',
-          onPressed: () {},
+          onPressed: () => _feedback(
+            context,
+            'Favorite is available in the next metadata slice.',
+          ),
           icon: const Icon(Icons.star_border),
         ),
         IconButton(
           tooltip: 'History',
-          onPressed: () {},
+          onPressed: () =>
+              _feedback(context, 'Character history is not persisted yet.'),
           icon: const Icon(Icons.history),
         ),
         IconButton(
           tooltip: 'More',
-          onPressed: () {},
+          onPressed: () => _feedback(
+            context,
+            'Character actions menu is not available yet.',
+          ),
           icon: const Icon(Icons.more_horiz),
         ),
       ],
     ),
   );
+
+  void _feedback(BuildContext context, String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
 }

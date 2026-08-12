@@ -46,7 +46,13 @@ class CharacterPortraitCard extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
-            onPressed: () {},
+            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Portrait upload is available from the project asset folder.',
+                ),
+              ),
+            ),
             icon: const Icon(Icons.add_photo_alternate_outlined),
             label: const Text('Add Portrait'),
           ),

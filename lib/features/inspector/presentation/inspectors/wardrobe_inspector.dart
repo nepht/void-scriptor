@@ -5,6 +5,7 @@ import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../wardrobe/data/wardrobe_repository_impl.dart';
 import '../../../projects/presentation/project_persistence_providers.dart';
+import '../widgets/relation_section.dart';
 
 final wardrobeInspectorProvider =
     FutureProvider.family<WardrobeInspectorData?, String>((
@@ -102,10 +103,7 @@ class WardrobeInspector extends ConsumerWidget {
               title: 'Variants',
               rows: [('Available', data.variants.join(', '))],
             ),
-            _Section(
-              title: 'Relations',
-              rows: [('Worn by', '${data.incomingRelationCount} asset(s)')],
-            ),
+            RelationSection(assetId: wardrobeId),
           ],
         ),
       ),

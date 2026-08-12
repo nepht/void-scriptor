@@ -51,3 +51,29 @@ git diff --check
 ```
 
 The project uses per-project SQLite databases. Do not replace project contents with a global database.
+
+## Sprint 1–12 completion audit
+
+The current repository has verified vertical slices for the following areas:
+
+| Area | Status | Evidence |
+|---|---|---|
+| Authentication and adaptive shell | Complete for local/guest/offline flows | `test/app/auth`, `test/app/adaptive`, `test/app/platform` |
+| Project registry and project-local database lifecycle | Complete | `test/core/persistence`, `test/features/projects` |
+| Universal Asset and Character | Complete for create/read/update/delete, identity, tags, references, and relations | `test/features/character`, `test/features/assets` |
+| Generic Selection Engine | Complete | `test/core/selection`, resolver tests |
+| Wardrobe asset family | Complete for create/read/delete, variants, components, colors, references, and `wears` persistence | `test/features/wardrobe` |
+| Relation Core and Inspector relation management | Complete for create/read/delete, inverse labels, target selection, and selection navigation | `test/features/relations`, `RelationSection` |
+| Weapon asset family | Complete for create/read/delete, technical child tables, variants, preservation, Explorer, Workspace, Inspector, and `uses` restart persistence | `test/features/weapon` |
+
+The following are deliberately deferred because they require additional product subsystems rather than missing persistence plumbing:
+
+- cloud authentication and real email/password reset delivery;
+- binary file picker/import pipeline and reference-image preview/editor;
+- history/version timeline UI and favorite metadata;
+- component/material/measurement editors for Wardrobe and Weapon;
+- export to PNG/PDF and release packaging/signing;
+- loadout/quantity semantics for dual weapons;
+- donation/payment integration.
+
+Deferred items must not be represented as silent no-op actions; current UI shows explicit local-mode or not-configured feedback.

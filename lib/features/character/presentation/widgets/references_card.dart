@@ -20,7 +20,13 @@ class ReferencesCard extends StatelessWidget {
             ),
             const Spacer(),
             IconButton(
-              onPressed: () {},
+              onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Reference upload is available from the project asset folder.',
+                  ),
+                ),
+              ),
               icon: const Icon(
                 Icons.add,
                 size: 18,

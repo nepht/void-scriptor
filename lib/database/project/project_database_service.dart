@@ -1,22 +1,12 @@
-import 'dart:io';
-
-import 'package:drift/native.dart';
-
 import 'project_database.dart';
+import 'project_database_platform.dart'
+    if (dart.library.io) 'project_database_platform_io.dart'
+    if (dart.library.js_interop) 'project_database_platform_web.dart';
 
 class ProjectDatabaseService {
-  Future<void> create(String databasePath) async {
-    final database = ProjectDatabase(NativeDatabase(File(databasePath)));
-    try {
-      await database.initialize();
-    } finally {
-      await database.close();
-    }
-  }
+  Future<void> create(String databasePath) =>
+      createProjectDatabase(databasePath);
 
-  Future<ProjectDatabase> open(String databasePath) async {
-    final database = ProjectDatabase(NativeDatabase(File(databasePath)));
-    await database.initialize();
-    return database;
-  }
+  Future<ProjectDatabase> open(String databasePath) =>
+      openProjectDatabase(databasePath);
 }

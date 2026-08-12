@@ -20,6 +20,8 @@ class ProjectFileService {
     'assets/environments',
     'assets/audio',
     'assets/references',
+    'story',
+    'environments',
     'thumbnails',
     'exports',
     'cache',

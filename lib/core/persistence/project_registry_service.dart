@@ -28,6 +28,12 @@ class ProjectRegistryService {
     if (!await file.exists()) return const [];
     final decoded =
         jsonDecode(await file.readAsString()) as Map<String, dynamic>;
+    final schemaVersion = decoded['schemaVersion'];
+    if (schemaVersion != 1) {
+      throw FormatException(
+        'Unsupported project registry schema version: $schemaVersion',
+      );
+    }
     final projects = decoded['projects'] as List<dynamic>? ?? const [];
     return projects
         .map((item) => ProjectModel.fromJson(item as Map<String, dynamic>))

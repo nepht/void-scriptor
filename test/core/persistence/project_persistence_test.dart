@@ -1,14 +1,19 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:void_scriptor/core/persistence/project_manifest.dart';
 
 import 'package:void_scriptor/core/persistence/project_file_service.dart';
+import 'package:void_scriptor/core/persistence/project_health_service.dart';
+import 'package:void_scriptor/core/persistence/project_manifest_service.dart';
+import 'package:void_scriptor/core/persistence/project_open_service.dart';
 import 'package:void_scriptor/core/persistence/project_registry_service.dart';
 import 'package:void_scriptor/core/persistence/project_paths.dart';
 import 'package:void_scriptor/core/persistence/project_recovery_service.dart';
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/projects/domain/project_model.dart';
+import 'package:void_scriptor/features/projects/presentation/project_persistence_providers.dart';
 
 void main() {
   test('ProjectManifest round-trips JSON with schema version', () {
@@ -21,12 +26,30 @@ void main() {
       createdAt: DateTime.utc(2026, 1, 1),
       updatedAt: DateTime.utc(2026, 1, 2),
       appVersion: '0.1.0',
+      tags: const ['fantasy', 'main'],
+      databaseFilename: 'project.db',
     );
 
     final restored = ProjectManifest.fromJson(manifest.toJson());
     expect(restored.id, manifest.id);
     expect(restored.schemaVersion, 1);
     expect(restored.updatedAt, manifest.updatedAt);
+    expect(restored.tags, manifest.tags);
+    expect(restored.databaseFilename, 'project.db');
+    expect(manifest.toJson()['database'], 'project.db');
+  });
+
+  test('ProjectManifest rejects unsupported schema version', () {
+    expect(
+      () => ProjectManifest.fromJson({
+        'schemaVersion': 99,
+        'id': 'project-1',
+        'name': 'Invalid',
+        'createdAt': '2026-01-01T00:00:00.000Z',
+        'updatedAt': '2026-01-01T00:00:00.000Z',
+      }),
+      throwsA(isA<FormatException>()),
+    );
   });
 
   test('ProjectFileService creates complete project structure', () async {
@@ -44,6 +67,16 @@ void main() {
         isTrue,
       );
     }
+    expect(
+      Directory('${project.path}${Platform.pathSeparator}story').existsSync(),
+      isTrue,
+    );
+    expect(
+      Directory(
+        '${project.path}${Platform.pathSeparator}environments',
+      ).existsSync(),
+      isTrue,
+    );
   });
 
   test('ProjectRegistryService persists and reloads projects', () async {
@@ -81,6 +114,117 @@ void main() {
       endsWith('abc${Platform.pathSeparator}project.db'),
     );
   });
+
+  test('ProjectRegistryService rejects unsupported registry schema', () async {
+    final root = await Directory.systemTemp.createTemp('s07-schema-');
+    addTearDown(() => root.delete(recursive: true));
+    final file = File('${root.path}${Platform.pathSeparator}projects.json');
+    await file.writeAsString('{"schemaVersion": 99, "projects": []}');
+
+    expect(
+      ProjectRegistryService(rootDirectory: root).load(),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
+  test('ProjectHealthService validates a complete project package', () async {
+    final root = await Directory.systemTemp.createTemp('s07-health-');
+    addTearDown(() => root.delete(recursive: true));
+    final paths = ProjectPaths(rootDirectory: root);
+    const id = 'project-health';
+    final directory = await ProjectFileService(
+      paths: paths,
+    ).createStructure(id);
+    final now = DateTime.utc(2026, 1, 1);
+    await ProjectManifestService(paths: paths).write(
+      ProjectManifest(
+        schemaVersion: 1,
+        id: id,
+        name: 'Health Project',
+        description: '',
+        projectVersion: '0.1.0',
+        createdAt: now,
+        updatedAt: now,
+        appVersion: '0.1.0',
+      ),
+    );
+    await ProjectDatabaseService().create((await paths.database(id)).path);
+
+    final report = await ProjectHealthService(paths: paths).check(id);
+    expect(report.isHealthy, isTrue);
+    expect(report.databaseReadable, isTrue);
+    expect(directory.existsSync(), isTrue);
+  });
+
+  test(
+    'ProjectOpenService opens manifest and project database together',
+    () async {
+      final root = await Directory.systemTemp.createTemp('s07-open-');
+      addTearDown(() => root.delete(recursive: true));
+      final paths = ProjectPaths(rootDirectory: root);
+      const id = 'project-open';
+      await ProjectFileService(paths: paths).createStructure(id);
+      final now = DateTime.utc(2026, 1, 1);
+      await ProjectManifestService(paths: paths).write(
+        ProjectManifest(
+          schemaVersion: 1,
+          id: id,
+          name: 'Open Project',
+          description: '',
+          projectVersion: '0.1.0',
+          createdAt: now,
+          updatedAt: now,
+          appVersion: '0.1.0',
+        ),
+      );
+      await ProjectDatabaseService().create((await paths.database(id)).path);
+
+      final opened = await ProjectOpenService(paths: paths).open(id);
+      expect(opened.manifest.id, id);
+      expect(
+        await opened.database.select(opened.database.projectMetadata).get(),
+        isNotEmpty,
+      );
+      await opened.close();
+    },
+  );
+
+  test(
+    'ProjectSessionController opens and closes the active project database',
+    () async {
+      final root = await Directory.systemTemp.createTemp('s07-session-');
+      addTearDown(() => root.delete(recursive: true));
+      final paths = ProjectPaths(rootDirectory: root);
+      const id = 'project-session';
+      await ProjectFileService(paths: paths).createStructure(id);
+      final now = DateTime.utc(2026, 1, 1);
+      await ProjectManifestService(paths: paths).write(
+        ProjectManifest(
+          schemaVersion: 1,
+          id: id,
+          name: 'Session Project',
+          description: '',
+          projectVersion: '0.1.0',
+          createdAt: now,
+          updatedAt: now,
+          appVersion: '0.1.0',
+        ),
+      );
+      await ProjectDatabaseService().create((await paths.database(id)).path);
+      final container = ProviderContainer(
+        overrides: [projectPathsProvider.overrideWithValue(paths)],
+      );
+      addTearDown(container.dispose);
+
+      final opened = await container
+          .read(projectSessionProvider.notifier)
+          .openProject(id);
+      expect(opened.manifest.id, id);
+      expect(container.read(projectSessionProvider).value?.manifest.id, id);
+      await container.read(projectSessionProvider.notifier).closeProject();
+      expect(container.read(projectSessionProvider).value, isNull);
+    },
+  );
 
   test(
     'ProjectDatabaseService creates a project database with metadata',

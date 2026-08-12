@@ -6,6 +6,7 @@ part of 'asset_dao.dart';
 mixin _$AssetDaoMixin on DatabaseAccessor<ProjectDatabase> {
   $AssetsTable get assets => attachedDatabase.assets;
   $AssetTagsTable get assetTags => attachedDatabase.assetTags;
+  $AssetRelationsTable get assetRelations => attachedDatabase.assetRelations;
   AssetDaoManager get managers => AssetDaoManager(this);
 }
 
@@ -16,4 +17,9 @@ class AssetDaoManager {
       $$AssetsTableTableManager(_db.attachedDatabase, _db.assets);
   $$AssetTagsTableTableManager get assetTags =>
       $$AssetTagsTableTableManager(_db.attachedDatabase, _db.assetTags);
+  $$AssetRelationsTableTableManager get assetRelations =>
+      $$AssetRelationsTableTableManager(
+        _db.attachedDatabase,
+        _db.assetRelations,
+      );
 }

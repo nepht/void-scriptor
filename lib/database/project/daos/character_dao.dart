@@ -22,9 +22,27 @@ class CharacterDao extends DatabaseAccessor<ProjectDatabase>
     characters,
   )..where((row) => row.assetId.equals(assetId))).getSingleOrNull();
 
+  Future<CharacterIdentityProfile?> getIdentity(String characterId) => (select(
+    characterIdentityProfiles,
+  )..where((row) => row.characterId.equals(characterId))).getSingleOrNull();
+
+  Future<void> updateIdentity(CharacterIdentityProfilesCompanion profile) =>
+      into(characterIdentityProfiles).insertOnConflictUpdate(profile);
+
   Future<List<CharacterReference>> getReferences(String characterId) =>
       (select(characterReferences)
             ..where((row) => row.characterId.equals(characterId))
             ..orderBy([(row) => OrderingTerm(expression: row.priority)]))
           .get();
+
+  Future<void> addReference(CharacterReferencesCompanion reference) =>
+      into(characterReferences).insert(reference);
+
+  Future<void> removeReference(String referenceId) => (delete(
+    characterReferences,
+  )..where((row) => row.id.equals(referenceId))).go();
+
+  Future<void> removeCharacterReferences(String characterId) => (delete(
+    characterReferences,
+  )..where((row) => row.characterId.equals(characterId))).go();
 }

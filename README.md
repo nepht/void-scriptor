@@ -34,7 +34,7 @@ Breakpoints resmi:
 
 Capability platform dimodelkan terpisah dari layout sehingga shared core tidak bergantung pada `dart:io` dan tetap dapat dikompilasi untuk Web.
 
-Dependency foundation dibatasi pada Riverpod, GoRouter, UUID, SharedPreferences, dan PathProvider. Database, cloud, authentication backend, pembayaran, dan AI ditambahkan saat modulnya mulai dibangun.
+Dependency foundation menggunakan Riverpod, GoRouter, UUID, SharedPreferences, PathProvider, Drift, dan SQLite native. Isi project disimpan pada database SQLite mandiri per project; cloud sync, authentication backend, pembayaran, dan AI tetap menjadi modul lanjutan.
 
 ## Foundation routes
 
@@ -71,6 +71,51 @@ flutter build apk --debug
 ```
 
 Build Windows dijalankan melalui GitHub Actions `windows-latest` atau toolchain Flutter Windows.
+
+## Project persistence
+
+Setiap project adalah paket mandiri berbasis UUID:
+
+```text
+Projects/<project-uuid>/
+├── project.json
+├── project.db
+└── assets/
+    └── characters/<character-uuid>/
+        ├── references/
+        ├── generated/
+        ├── thumbnails/
+        └── exports/
+```
+
+`projects.json` hanya menyimpan registry application-level untuk daftar project dan recent projects. Isi creative universe tidak disimpan di database global.
+
+Project database saat ini memakai Drift schema version 2 dengan tabel Asset Core dan Character:
+
+```text
+assets
+asset_tags
+characters
+character_identity_profiles
+character_references
+asset_relations
+```
+
+Pembuatan Character bersifat transactional: Asset, Character, dan Identity Profile dibuat bersama. Character repository juga mendukung identity lock, reference metadata, tags, asset relations, persistence setelah database reopen, serta pembersihan folder UUID ketika Character dihapus.
+
+## Sprint status
+
+```text
+01 Multiplatform Foundation    ✅
+02 Design System               ✅
+03 Adaptive App Shell          ✅
+04 Authentication              ✅
+05 Dashboard                   ✅
+06 Project System              ✅
+07 Persistence Engine          ✅
+08 Asset + Character Core      ✅
+09 Character Workspace UI      planned
+```
 
 ## Repository
 

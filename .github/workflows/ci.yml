@@ -47,7 +47,7 @@ jobs:
           cmdline-tools-version: '14742923'
 
       - name: Install Android API 37
-        run: sdkmanager "platforms;android-37"
+        run: sdkmanager --channel=3 "platforms;android-37"
 
       - name: Resolve dependencies
         run: flutter pub get

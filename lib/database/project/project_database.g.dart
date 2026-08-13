@@ -21538,6 +21538,2010 @@ class TimelineClipsCompanion extends UpdateCompanion<TimelineClip> {
   }
 }
 
+class $PromptTemplatesTable extends PromptTemplates
+    with TableInfo<$PromptTemplatesTable, PromptTemplate> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PromptTemplatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetMeta = const VerificationMeta('target');
+  @override
+  late final GeneratedColumn<String> target = GeneratedColumn<String>(
+    'target',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _builtInMeta = const VerificationMeta(
+    'builtIn',
+  );
+  @override
+  late final GeneratedColumn<bool> builtIn = GeneratedColumn<bool>(
+    'built_in',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("built_in" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    name,
+    target,
+    content,
+    builtIn,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'prompt_templates';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PromptTemplate> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('target')) {
+      context.handle(
+        _targetMeta,
+        target.isAcceptableOrUnknown(data['target']!, _targetMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_targetMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('built_in')) {
+      context.handle(
+        _builtInMeta,
+        builtIn.isAcceptableOrUnknown(data['built_in']!, _builtInMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PromptTemplate map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PromptTemplate(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      target: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      builtIn: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}built_in'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PromptTemplatesTable createAlias(String alias) {
+    return $PromptTemplatesTable(attachedDatabase, alias);
+  }
+}
+
+class PromptTemplate extends DataClass implements Insertable<PromptTemplate> {
+  final String id;
+  final String? projectId;
+  final String name;
+  final String target;
+  final String content;
+  final bool builtIn;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const PromptTemplate({
+    required this.id,
+    this.projectId,
+    required this.name,
+    required this.target,
+    required this.content,
+    required this.builtIn,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || projectId != null) {
+      map['project_id'] = Variable<String>(projectId);
+    }
+    map['name'] = Variable<String>(name);
+    map['target'] = Variable<String>(target);
+    map['content'] = Variable<String>(content);
+    map['built_in'] = Variable<bool>(builtIn);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  PromptTemplatesCompanion toCompanion(bool nullToAbsent) {
+    return PromptTemplatesCompanion(
+      id: Value(id),
+      projectId: projectId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(projectId),
+      name: Value(name),
+      target: Value(target),
+      content: Value(content),
+      builtIn: Value(builtIn),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory PromptTemplate.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PromptTemplate(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String?>(json['projectId']),
+      name: serializer.fromJson<String>(json['name']),
+      target: serializer.fromJson<String>(json['target']),
+      content: serializer.fromJson<String>(json['content']),
+      builtIn: serializer.fromJson<bool>(json['builtIn']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String?>(projectId),
+      'name': serializer.toJson<String>(name),
+      'target': serializer.toJson<String>(target),
+      'content': serializer.toJson<String>(content),
+      'builtIn': serializer.toJson<bool>(builtIn),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  PromptTemplate copyWith({
+    String? id,
+    Value<String?> projectId = const Value.absent(),
+    String? name,
+    String? target,
+    String? content,
+    bool? builtIn,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => PromptTemplate(
+    id: id ?? this.id,
+    projectId: projectId.present ? projectId.value : this.projectId,
+    name: name ?? this.name,
+    target: target ?? this.target,
+    content: content ?? this.content,
+    builtIn: builtIn ?? this.builtIn,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  PromptTemplate copyWithCompanion(PromptTemplatesCompanion data) {
+    return PromptTemplate(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      name: data.name.present ? data.name.value : this.name,
+      target: data.target.present ? data.target.value : this.target,
+      content: data.content.present ? data.content.value : this.content,
+      builtIn: data.builtIn.present ? data.builtIn.value : this.builtIn,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PromptTemplate(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('target: $target, ')
+          ..write('content: $content, ')
+          ..write('builtIn: $builtIn, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    name,
+    target,
+    content,
+    builtIn,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PromptTemplate &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.name == this.name &&
+          other.target == this.target &&
+          other.content == this.content &&
+          other.builtIn == this.builtIn &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class PromptTemplatesCompanion extends UpdateCompanion<PromptTemplate> {
+  final Value<String> id;
+  final Value<String?> projectId;
+  final Value<String> name;
+  final Value<String> target;
+  final Value<String> content;
+  final Value<bool> builtIn;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const PromptTemplatesCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.target = const Value.absent(),
+    this.content = const Value.absent(),
+    this.builtIn = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PromptTemplatesCompanion.insert({
+    required String id,
+    this.projectId = const Value.absent(),
+    required String name,
+    required String target,
+    required String content,
+    this.builtIn = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       target = Value(target),
+       content = Value(content),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<PromptTemplate> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? name,
+    Expression<String>? target,
+    Expression<String>? content,
+    Expression<bool>? builtIn,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (name != null) 'name': name,
+      if (target != null) 'target': target,
+      if (content != null) 'content': content,
+      if (builtIn != null) 'built_in': builtIn,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PromptTemplatesCompanion copyWith({
+    Value<String>? id,
+    Value<String?>? projectId,
+    Value<String>? name,
+    Value<String>? target,
+    Value<String>? content,
+    Value<bool>? builtIn,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return PromptTemplatesCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      name: name ?? this.name,
+      target: target ?? this.target,
+      content: content ?? this.content,
+      builtIn: builtIn ?? this.builtIn,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (target.present) {
+      map['target'] = Variable<String>(target.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (builtIn.present) {
+      map['built_in'] = Variable<bool>(builtIn.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PromptTemplatesCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('target: $target, ')
+          ..write('content: $content, ')
+          ..write('builtIn: $builtIn, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AiPromptHistoryTable extends AiPromptHistory
+    with TableInfo<$AiPromptHistoryTable, AiPromptHistoryData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AiPromptHistoryTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sceneIdMeta = const VerificationMeta(
+    'sceneId',
+  );
+  @override
+  late final GeneratedColumn<String> sceneId = GeneratedColumn<String>(
+    'scene_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _targetMeta = const VerificationMeta('target');
+  @override
+  late final GeneratedColumn<String> target = GeneratedColumn<String>(
+    'target',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _promptMeta = const VerificationMeta('prompt');
+  @override
+  late final GeneratedColumn<String> prompt = GeneratedColumn<String>(
+    'prompt',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _negativePromptMeta = const VerificationMeta(
+    'negativePrompt',
+  );
+  @override
+  late final GeneratedColumn<String> negativePrompt = GeneratedColumn<String>(
+    'negative_prompt',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _providerMeta = const VerificationMeta(
+    'provider',
+  );
+  @override
+  late final GeneratedColumn<String> provider = GeneratedColumn<String>(
+    'provider',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _modelMeta = const VerificationMeta('model');
+  @override
+  late final GeneratedColumn<String> model = GeneratedColumn<String>(
+    'model',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    sceneId,
+    assetId,
+    target,
+    prompt,
+    negativePrompt,
+    provider,
+    model,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ai_prompt_history';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AiPromptHistoryData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('scene_id')) {
+      context.handle(
+        _sceneIdMeta,
+        sceneId.isAcceptableOrUnknown(data['scene_id']!, _sceneIdMeta),
+      );
+    }
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    }
+    if (data.containsKey('target')) {
+      context.handle(
+        _targetMeta,
+        target.isAcceptableOrUnknown(data['target']!, _targetMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_targetMeta);
+    }
+    if (data.containsKey('prompt')) {
+      context.handle(
+        _promptMeta,
+        prompt.isAcceptableOrUnknown(data['prompt']!, _promptMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_promptMeta);
+    }
+    if (data.containsKey('negative_prompt')) {
+      context.handle(
+        _negativePromptMeta,
+        negativePrompt.isAcceptableOrUnknown(
+          data['negative_prompt']!,
+          _negativePromptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('provider')) {
+      context.handle(
+        _providerMeta,
+        provider.isAcceptableOrUnknown(data['provider']!, _providerMeta),
+      );
+    }
+    if (data.containsKey('model')) {
+      context.handle(
+        _modelMeta,
+        model.isAcceptableOrUnknown(data['model']!, _modelMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AiPromptHistoryData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AiPromptHistoryData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      sceneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scene_id'],
+      ),
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      ),
+      target: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target'],
+      )!,
+      prompt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prompt'],
+      )!,
+      negativePrompt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}negative_prompt'],
+      )!,
+      provider: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provider'],
+      ),
+      model: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}model'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AiPromptHistoryTable createAlias(String alias) {
+    return $AiPromptHistoryTable(attachedDatabase, alias);
+  }
+}
+
+class AiPromptHistoryData extends DataClass
+    implements Insertable<AiPromptHistoryData> {
+  final String id;
+  final String projectId;
+  final String? sceneId;
+  final String? assetId;
+  final String target;
+  final String prompt;
+  final String negativePrompt;
+  final String? provider;
+  final String? model;
+  final DateTime createdAt;
+  const AiPromptHistoryData({
+    required this.id,
+    required this.projectId,
+    this.sceneId,
+    this.assetId,
+    required this.target,
+    required this.prompt,
+    required this.negativePrompt,
+    this.provider,
+    this.model,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    if (!nullToAbsent || sceneId != null) {
+      map['scene_id'] = Variable<String>(sceneId);
+    }
+    if (!nullToAbsent || assetId != null) {
+      map['asset_id'] = Variable<String>(assetId);
+    }
+    map['target'] = Variable<String>(target);
+    map['prompt'] = Variable<String>(prompt);
+    map['negative_prompt'] = Variable<String>(negativePrompt);
+    if (!nullToAbsent || provider != null) {
+      map['provider'] = Variable<String>(provider);
+    }
+    if (!nullToAbsent || model != null) {
+      map['model'] = Variable<String>(model);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  AiPromptHistoryCompanion toCompanion(bool nullToAbsent) {
+    return AiPromptHistoryCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      sceneId: sceneId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sceneId),
+      assetId: assetId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(assetId),
+      target: Value(target),
+      prompt: Value(prompt),
+      negativePrompt: Value(negativePrompt),
+      provider: provider == null && nullToAbsent
+          ? const Value.absent()
+          : Value(provider),
+      model: model == null && nullToAbsent
+          ? const Value.absent()
+          : Value(model),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory AiPromptHistoryData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AiPromptHistoryData(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      sceneId: serializer.fromJson<String?>(json['sceneId']),
+      assetId: serializer.fromJson<String?>(json['assetId']),
+      target: serializer.fromJson<String>(json['target']),
+      prompt: serializer.fromJson<String>(json['prompt']),
+      negativePrompt: serializer.fromJson<String>(json['negativePrompt']),
+      provider: serializer.fromJson<String?>(json['provider']),
+      model: serializer.fromJson<String?>(json['model']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'sceneId': serializer.toJson<String?>(sceneId),
+      'assetId': serializer.toJson<String?>(assetId),
+      'target': serializer.toJson<String>(target),
+      'prompt': serializer.toJson<String>(prompt),
+      'negativePrompt': serializer.toJson<String>(negativePrompt),
+      'provider': serializer.toJson<String?>(provider),
+      'model': serializer.toJson<String?>(model),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  AiPromptHistoryData copyWith({
+    String? id,
+    String? projectId,
+    Value<String?> sceneId = const Value.absent(),
+    Value<String?> assetId = const Value.absent(),
+    String? target,
+    String? prompt,
+    String? negativePrompt,
+    Value<String?> provider = const Value.absent(),
+    Value<String?> model = const Value.absent(),
+    DateTime? createdAt,
+  }) => AiPromptHistoryData(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    sceneId: sceneId.present ? sceneId.value : this.sceneId,
+    assetId: assetId.present ? assetId.value : this.assetId,
+    target: target ?? this.target,
+    prompt: prompt ?? this.prompt,
+    negativePrompt: negativePrompt ?? this.negativePrompt,
+    provider: provider.present ? provider.value : this.provider,
+    model: model.present ? model.value : this.model,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  AiPromptHistoryData copyWithCompanion(AiPromptHistoryCompanion data) {
+    return AiPromptHistoryData(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      sceneId: data.sceneId.present ? data.sceneId.value : this.sceneId,
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      target: data.target.present ? data.target.value : this.target,
+      prompt: data.prompt.present ? data.prompt.value : this.prompt,
+      negativePrompt: data.negativePrompt.present
+          ? data.negativePrompt.value
+          : this.negativePrompt,
+      provider: data.provider.present ? data.provider.value : this.provider,
+      model: data.model.present ? data.model.value : this.model,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiPromptHistoryData(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('assetId: $assetId, ')
+          ..write('target: $target, ')
+          ..write('prompt: $prompt, ')
+          ..write('negativePrompt: $negativePrompt, ')
+          ..write('provider: $provider, ')
+          ..write('model: $model, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    sceneId,
+    assetId,
+    target,
+    prompt,
+    negativePrompt,
+    provider,
+    model,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AiPromptHistoryData &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.sceneId == this.sceneId &&
+          other.assetId == this.assetId &&
+          other.target == this.target &&
+          other.prompt == this.prompt &&
+          other.negativePrompt == this.negativePrompt &&
+          other.provider == this.provider &&
+          other.model == this.model &&
+          other.createdAt == this.createdAt);
+}
+
+class AiPromptHistoryCompanion extends UpdateCompanion<AiPromptHistoryData> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String?> sceneId;
+  final Value<String?> assetId;
+  final Value<String> target;
+  final Value<String> prompt;
+  final Value<String> negativePrompt;
+  final Value<String?> provider;
+  final Value<String?> model;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const AiPromptHistoryCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.sceneId = const Value.absent(),
+    this.assetId = const Value.absent(),
+    this.target = const Value.absent(),
+    this.prompt = const Value.absent(),
+    this.negativePrompt = const Value.absent(),
+    this.provider = const Value.absent(),
+    this.model = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AiPromptHistoryCompanion.insert({
+    required String id,
+    required String projectId,
+    this.sceneId = const Value.absent(),
+    this.assetId = const Value.absent(),
+    required String target,
+    required String prompt,
+    this.negativePrompt = const Value.absent(),
+    this.provider = const Value.absent(),
+    this.model = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       target = Value(target),
+       prompt = Value(prompt),
+       createdAt = Value(createdAt);
+  static Insertable<AiPromptHistoryData> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? sceneId,
+    Expression<String>? assetId,
+    Expression<String>? target,
+    Expression<String>? prompt,
+    Expression<String>? negativePrompt,
+    Expression<String>? provider,
+    Expression<String>? model,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (sceneId != null) 'scene_id': sceneId,
+      if (assetId != null) 'asset_id': assetId,
+      if (target != null) 'target': target,
+      if (prompt != null) 'prompt': prompt,
+      if (negativePrompt != null) 'negative_prompt': negativePrompt,
+      if (provider != null) 'provider': provider,
+      if (model != null) 'model': model,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AiPromptHistoryCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String?>? sceneId,
+    Value<String?>? assetId,
+    Value<String>? target,
+    Value<String>? prompt,
+    Value<String>? negativePrompt,
+    Value<String?>? provider,
+    Value<String?>? model,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return AiPromptHistoryCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      sceneId: sceneId ?? this.sceneId,
+      assetId: assetId ?? this.assetId,
+      target: target ?? this.target,
+      prompt: prompt ?? this.prompt,
+      negativePrompt: negativePrompt ?? this.negativePrompt,
+      provider: provider ?? this.provider,
+      model: model ?? this.model,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (sceneId.present) {
+      map['scene_id'] = Variable<String>(sceneId.value);
+    }
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (target.present) {
+      map['target'] = Variable<String>(target.value);
+    }
+    if (prompt.present) {
+      map['prompt'] = Variable<String>(prompt.value);
+    }
+    if (negativePrompt.present) {
+      map['negative_prompt'] = Variable<String>(negativePrompt.value);
+    }
+    if (provider.present) {
+      map['provider'] = Variable<String>(provider.value);
+    }
+    if (model.present) {
+      map['model'] = Variable<String>(model.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiPromptHistoryCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('assetId: $assetId, ')
+          ..write('target: $target, ')
+          ..write('prompt: $prompt, ')
+          ..write('negativePrompt: $negativePrompt, ')
+          ..write('provider: $provider, ')
+          ..write('model: $model, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PromptRevisionsTable extends PromptRevisions
+    with TableInfo<$PromptRevisionsTable, PromptRevision> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PromptRevisionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _promptHistoryIdMeta = const VerificationMeta(
+    'promptHistoryId',
+  );
+  @override
+  late final GeneratedColumn<String> promptHistoryId = GeneratedColumn<String>(
+    'prompt_history_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _revisionMeta = const VerificationMeta(
+    'revision',
+  );
+  @override
+  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
+    'revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    promptHistoryId,
+    revision,
+    content,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'prompt_revisions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PromptRevision> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('prompt_history_id')) {
+      context.handle(
+        _promptHistoryIdMeta,
+        promptHistoryId.isAcceptableOrUnknown(
+          data['prompt_history_id']!,
+          _promptHistoryIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_promptHistoryIdMeta);
+    }
+    if (data.containsKey('revision')) {
+      context.handle(
+        _revisionMeta,
+        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_revisionMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PromptRevision map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PromptRevision(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      promptHistoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prompt_history_id'],
+      )!,
+      revision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PromptRevisionsTable createAlias(String alias) {
+    return $PromptRevisionsTable(attachedDatabase, alias);
+  }
+}
+
+class PromptRevision extends DataClass implements Insertable<PromptRevision> {
+  final String id;
+  final String promptHistoryId;
+  final int revision;
+  final String content;
+  final DateTime createdAt;
+  const PromptRevision({
+    required this.id,
+    required this.promptHistoryId,
+    required this.revision,
+    required this.content,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['prompt_history_id'] = Variable<String>(promptHistoryId);
+    map['revision'] = Variable<int>(revision);
+    map['content'] = Variable<String>(content);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  PromptRevisionsCompanion toCompanion(bool nullToAbsent) {
+    return PromptRevisionsCompanion(
+      id: Value(id),
+      promptHistoryId: Value(promptHistoryId),
+      revision: Value(revision),
+      content: Value(content),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory PromptRevision.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PromptRevision(
+      id: serializer.fromJson<String>(json['id']),
+      promptHistoryId: serializer.fromJson<String>(json['promptHistoryId']),
+      revision: serializer.fromJson<int>(json['revision']),
+      content: serializer.fromJson<String>(json['content']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'promptHistoryId': serializer.toJson<String>(promptHistoryId),
+      'revision': serializer.toJson<int>(revision),
+      'content': serializer.toJson<String>(content),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  PromptRevision copyWith({
+    String? id,
+    String? promptHistoryId,
+    int? revision,
+    String? content,
+    DateTime? createdAt,
+  }) => PromptRevision(
+    id: id ?? this.id,
+    promptHistoryId: promptHistoryId ?? this.promptHistoryId,
+    revision: revision ?? this.revision,
+    content: content ?? this.content,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  PromptRevision copyWithCompanion(PromptRevisionsCompanion data) {
+    return PromptRevision(
+      id: data.id.present ? data.id.value : this.id,
+      promptHistoryId: data.promptHistoryId.present
+          ? data.promptHistoryId.value
+          : this.promptHistoryId,
+      revision: data.revision.present ? data.revision.value : this.revision,
+      content: data.content.present ? data.content.value : this.content,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PromptRevision(')
+          ..write('id: $id, ')
+          ..write('promptHistoryId: $promptHistoryId, ')
+          ..write('revision: $revision, ')
+          ..write('content: $content, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, promptHistoryId, revision, content, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PromptRevision &&
+          other.id == this.id &&
+          other.promptHistoryId == this.promptHistoryId &&
+          other.revision == this.revision &&
+          other.content == this.content &&
+          other.createdAt == this.createdAt);
+}
+
+class PromptRevisionsCompanion extends UpdateCompanion<PromptRevision> {
+  final Value<String> id;
+  final Value<String> promptHistoryId;
+  final Value<int> revision;
+  final Value<String> content;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const PromptRevisionsCompanion({
+    this.id = const Value.absent(),
+    this.promptHistoryId = const Value.absent(),
+    this.revision = const Value.absent(),
+    this.content = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PromptRevisionsCompanion.insert({
+    required String id,
+    required String promptHistoryId,
+    required int revision,
+    required String content,
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       promptHistoryId = Value(promptHistoryId),
+       revision = Value(revision),
+       content = Value(content),
+       createdAt = Value(createdAt);
+  static Insertable<PromptRevision> custom({
+    Expression<String>? id,
+    Expression<String>? promptHistoryId,
+    Expression<int>? revision,
+    Expression<String>? content,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (promptHistoryId != null) 'prompt_history_id': promptHistoryId,
+      if (revision != null) 'revision': revision,
+      if (content != null) 'content': content,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PromptRevisionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? promptHistoryId,
+    Value<int>? revision,
+    Value<String>? content,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return PromptRevisionsCompanion(
+      id: id ?? this.id,
+      promptHistoryId: promptHistoryId ?? this.promptHistoryId,
+      revision: revision ?? this.revision,
+      content: content ?? this.content,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (promptHistoryId.present) {
+      map['prompt_history_id'] = Variable<String>(promptHistoryId.value);
+    }
+    if (revision.present) {
+      map['revision'] = Variable<int>(revision.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PromptRevisionsCompanion(')
+          ..write('id: $id, ')
+          ..write('promptHistoryId: $promptHistoryId, ')
+          ..write('revision: $revision, ')
+          ..write('content: $content, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AiGenerationsTable extends AiGenerations
+    with TableInfo<$AiGenerationsTable, AiGeneration> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AiGenerationsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _promptHistoryIdMeta = const VerificationMeta(
+    'promptHistoryId',
+  );
+  @override
+  late final GeneratedColumn<String> promptHistoryId = GeneratedColumn<String>(
+    'prompt_history_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _providerMeta = const VerificationMeta(
+    'provider',
+  );
+  @override
+  late final GeneratedColumn<String> provider = GeneratedColumn<String>(
+    'provider',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _modelMeta = const VerificationMeta('model');
+  @override
+  late final GeneratedColumn<String> model = GeneratedColumn<String>(
+    'model',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _outputPathMeta = const VerificationMeta(
+    'outputPath',
+  );
+  @override
+  late final GeneratedColumn<String> outputPath = GeneratedColumn<String>(
+    'output_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    promptHistoryId,
+    provider,
+    model,
+    status,
+    outputPath,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ai_generations';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AiGeneration> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('prompt_history_id')) {
+      context.handle(
+        _promptHistoryIdMeta,
+        promptHistoryId.isAcceptableOrUnknown(
+          data['prompt_history_id']!,
+          _promptHistoryIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_promptHistoryIdMeta);
+    }
+    if (data.containsKey('provider')) {
+      context.handle(
+        _providerMeta,
+        provider.isAcceptableOrUnknown(data['provider']!, _providerMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_providerMeta);
+    }
+    if (data.containsKey('model')) {
+      context.handle(
+        _modelMeta,
+        model.isAcceptableOrUnknown(data['model']!, _modelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_modelMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('output_path')) {
+      context.handle(
+        _outputPathMeta,
+        outputPath.isAcceptableOrUnknown(data['output_path']!, _outputPathMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AiGeneration map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AiGeneration(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      promptHistoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prompt_history_id'],
+      )!,
+      provider: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provider'],
+      )!,
+      model: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}model'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      outputPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}output_path'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AiGenerationsTable createAlias(String alias) {
+    return $AiGenerationsTable(attachedDatabase, alias);
+  }
+}
+
+class AiGeneration extends DataClass implements Insertable<AiGeneration> {
+  final String id;
+  final String projectId;
+  final String promptHistoryId;
+  final String provider;
+  final String model;
+  final String status;
+  final String? outputPath;
+  final DateTime createdAt;
+  const AiGeneration({
+    required this.id,
+    required this.projectId,
+    required this.promptHistoryId,
+    required this.provider,
+    required this.model,
+    required this.status,
+    this.outputPath,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['prompt_history_id'] = Variable<String>(promptHistoryId);
+    map['provider'] = Variable<String>(provider);
+    map['model'] = Variable<String>(model);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || outputPath != null) {
+      map['output_path'] = Variable<String>(outputPath);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  AiGenerationsCompanion toCompanion(bool nullToAbsent) {
+    return AiGenerationsCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      promptHistoryId: Value(promptHistoryId),
+      provider: Value(provider),
+      model: Value(model),
+      status: Value(status),
+      outputPath: outputPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(outputPath),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory AiGeneration.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AiGeneration(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      promptHistoryId: serializer.fromJson<String>(json['promptHistoryId']),
+      provider: serializer.fromJson<String>(json['provider']),
+      model: serializer.fromJson<String>(json['model']),
+      status: serializer.fromJson<String>(json['status']),
+      outputPath: serializer.fromJson<String?>(json['outputPath']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'promptHistoryId': serializer.toJson<String>(promptHistoryId),
+      'provider': serializer.toJson<String>(provider),
+      'model': serializer.toJson<String>(model),
+      'status': serializer.toJson<String>(status),
+      'outputPath': serializer.toJson<String?>(outputPath),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  AiGeneration copyWith({
+    String? id,
+    String? projectId,
+    String? promptHistoryId,
+    String? provider,
+    String? model,
+    String? status,
+    Value<String?> outputPath = const Value.absent(),
+    DateTime? createdAt,
+  }) => AiGeneration(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    promptHistoryId: promptHistoryId ?? this.promptHistoryId,
+    provider: provider ?? this.provider,
+    model: model ?? this.model,
+    status: status ?? this.status,
+    outputPath: outputPath.present ? outputPath.value : this.outputPath,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  AiGeneration copyWithCompanion(AiGenerationsCompanion data) {
+    return AiGeneration(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      promptHistoryId: data.promptHistoryId.present
+          ? data.promptHistoryId.value
+          : this.promptHistoryId,
+      provider: data.provider.present ? data.provider.value : this.provider,
+      model: data.model.present ? data.model.value : this.model,
+      status: data.status.present ? data.status.value : this.status,
+      outputPath: data.outputPath.present
+          ? data.outputPath.value
+          : this.outputPath,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiGeneration(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('promptHistoryId: $promptHistoryId, ')
+          ..write('provider: $provider, ')
+          ..write('model: $model, ')
+          ..write('status: $status, ')
+          ..write('outputPath: $outputPath, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    promptHistoryId,
+    provider,
+    model,
+    status,
+    outputPath,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AiGeneration &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.promptHistoryId == this.promptHistoryId &&
+          other.provider == this.provider &&
+          other.model == this.model &&
+          other.status == this.status &&
+          other.outputPath == this.outputPath &&
+          other.createdAt == this.createdAt);
+}
+
+class AiGenerationsCompanion extends UpdateCompanion<AiGeneration> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> promptHistoryId;
+  final Value<String> provider;
+  final Value<String> model;
+  final Value<String> status;
+  final Value<String?> outputPath;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const AiGenerationsCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.promptHistoryId = const Value.absent(),
+    this.provider = const Value.absent(),
+    this.model = const Value.absent(),
+    this.status = const Value.absent(),
+    this.outputPath = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AiGenerationsCompanion.insert({
+    required String id,
+    required String projectId,
+    required String promptHistoryId,
+    required String provider,
+    required String model,
+    required String status,
+    this.outputPath = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       promptHistoryId = Value(promptHistoryId),
+       provider = Value(provider),
+       model = Value(model),
+       status = Value(status),
+       createdAt = Value(createdAt);
+  static Insertable<AiGeneration> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? promptHistoryId,
+    Expression<String>? provider,
+    Expression<String>? model,
+    Expression<String>? status,
+    Expression<String>? outputPath,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (promptHistoryId != null) 'prompt_history_id': promptHistoryId,
+      if (provider != null) 'provider': provider,
+      if (model != null) 'model': model,
+      if (status != null) 'status': status,
+      if (outputPath != null) 'output_path': outputPath,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AiGenerationsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? promptHistoryId,
+    Value<String>? provider,
+    Value<String>? model,
+    Value<String>? status,
+    Value<String?>? outputPath,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return AiGenerationsCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      promptHistoryId: promptHistoryId ?? this.promptHistoryId,
+      provider: provider ?? this.provider,
+      model: model ?? this.model,
+      status: status ?? this.status,
+      outputPath: outputPath ?? this.outputPath,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (promptHistoryId.present) {
+      map['prompt_history_id'] = Variable<String>(promptHistoryId.value);
+    }
+    if (provider.present) {
+      map['provider'] = Variable<String>(provider.value);
+    }
+    if (model.present) {
+      map['model'] = Variable<String>(model.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (outputPath.present) {
+      map['output_path'] = Variable<String>(outputPath.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiGenerationsCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('promptHistoryId: $promptHistoryId, ')
+          ..write('provider: $provider, ')
+          ..write('model: $model, ')
+          ..write('status: $status, ')
+          ..write('outputPath: $outputPath, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -21621,6 +23625,16 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final $TimelinesTable timelines = $TimelinesTable(this);
   late final $TimelineTracksTable timelineTracks = $TimelineTracksTable(this);
   late final $TimelineClipsTable timelineClips = $TimelineClipsTable(this);
+  late final $PromptTemplatesTable promptTemplates = $PromptTemplatesTable(
+    this,
+  );
+  late final $AiPromptHistoryTable aiPromptHistory = $AiPromptHistoryTable(
+    this,
+  );
+  late final $PromptRevisionsTable promptRevisions = $PromptRevisionsTable(
+    this,
+  );
+  late final $AiGenerationsTable aiGenerations = $AiGenerationsTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -21685,6 +23699,10 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     timelines,
     timelineTracks,
     timelineClips,
+    promptTemplates,
+    aiPromptHistory,
+    promptRevisions,
+    aiGenerations,
   ];
 }
 
@@ -33247,6 +35265,1059 @@ typedef $$TimelineClipsTableProcessedTableManager =
       TimelineClip,
       PrefetchHooks Function()
     >;
+typedef $$PromptTemplatesTableCreateCompanionBuilder =
+    PromptTemplatesCompanion Function({
+      required String id,
+      Value<String?> projectId,
+      required String name,
+      required String target,
+      required String content,
+      Value<bool> builtIn,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$PromptTemplatesTableUpdateCompanionBuilder =
+    PromptTemplatesCompanion Function({
+      Value<String> id,
+      Value<String?> projectId,
+      Value<String> name,
+      Value<String> target,
+      Value<String> content,
+      Value<bool> builtIn,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$PromptTemplatesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $PromptTemplatesTable> {
+  $$PromptTemplatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get target => $composableBuilder(
+    column: $table.target,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get builtIn => $composableBuilder(
+    column: $table.builtIn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PromptTemplatesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $PromptTemplatesTable> {
+  $$PromptTemplatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get target => $composableBuilder(
+    column: $table.target,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get builtIn => $composableBuilder(
+    column: $table.builtIn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PromptTemplatesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $PromptTemplatesTable> {
+  $$PromptTemplatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get target =>
+      $composableBuilder(column: $table.target, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<bool> get builtIn =>
+      $composableBuilder(column: $table.builtIn, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$PromptTemplatesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $PromptTemplatesTable,
+          PromptTemplate,
+          $$PromptTemplatesTableFilterComposer,
+          $$PromptTemplatesTableOrderingComposer,
+          $$PromptTemplatesTableAnnotationComposer,
+          $$PromptTemplatesTableCreateCompanionBuilder,
+          $$PromptTemplatesTableUpdateCompanionBuilder,
+          (
+            PromptTemplate,
+            BaseReferences<
+              _$ProjectDatabase,
+              $PromptTemplatesTable,
+              PromptTemplate
+            >,
+          ),
+          PromptTemplate,
+          PrefetchHooks Function()
+        > {
+  $$PromptTemplatesTableTableManager(
+    _$ProjectDatabase db,
+    $PromptTemplatesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PromptTemplatesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PromptTemplatesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PromptTemplatesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> projectId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> target = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<bool> builtIn = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PromptTemplatesCompanion(
+                id: id,
+                projectId: projectId,
+                name: name,
+                target: target,
+                content: content,
+                builtIn: builtIn,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<String?> projectId = const Value.absent(),
+                required String name,
+                required String target,
+                required String content,
+                Value<bool> builtIn = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => PromptTemplatesCompanion.insert(
+                id: id,
+                projectId: projectId,
+                name: name,
+                target: target,
+                content: content,
+                builtIn: builtIn,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PromptTemplatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $PromptTemplatesTable,
+      PromptTemplate,
+      $$PromptTemplatesTableFilterComposer,
+      $$PromptTemplatesTableOrderingComposer,
+      $$PromptTemplatesTableAnnotationComposer,
+      $$PromptTemplatesTableCreateCompanionBuilder,
+      $$PromptTemplatesTableUpdateCompanionBuilder,
+      (
+        PromptTemplate,
+        BaseReferences<
+          _$ProjectDatabase,
+          $PromptTemplatesTable,
+          PromptTemplate
+        >,
+      ),
+      PromptTemplate,
+      PrefetchHooks Function()
+    >;
+typedef $$AiPromptHistoryTableCreateCompanionBuilder =
+    AiPromptHistoryCompanion Function({
+      required String id,
+      required String projectId,
+      Value<String?> sceneId,
+      Value<String?> assetId,
+      required String target,
+      required String prompt,
+      Value<String> negativePrompt,
+      Value<String?> provider,
+      Value<String?> model,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$AiPromptHistoryTableUpdateCompanionBuilder =
+    AiPromptHistoryCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String?> sceneId,
+      Value<String?> assetId,
+      Value<String> target,
+      Value<String> prompt,
+      Value<String> negativePrompt,
+      Value<String?> provider,
+      Value<String?> model,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$AiPromptHistoryTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AiPromptHistoryTable> {
+  $$AiPromptHistoryTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get target => $composableBuilder(
+    column: $table.target,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get prompt => $composableBuilder(
+    column: $table.prompt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get negativePrompt => $composableBuilder(
+    column: $table.negativePrompt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get provider => $composableBuilder(
+    column: $table.provider,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get model => $composableBuilder(
+    column: $table.model,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AiPromptHistoryTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AiPromptHistoryTable> {
+  $$AiPromptHistoryTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get target => $composableBuilder(
+    column: $table.target,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get prompt => $composableBuilder(
+    column: $table.prompt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get negativePrompt => $composableBuilder(
+    column: $table.negativePrompt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get provider => $composableBuilder(
+    column: $table.provider,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get model => $composableBuilder(
+    column: $table.model,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AiPromptHistoryTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AiPromptHistoryTable> {
+  $$AiPromptHistoryTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get sceneId =>
+      $composableBuilder(column: $table.sceneId, builder: (column) => column);
+
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get target =>
+      $composableBuilder(column: $table.target, builder: (column) => column);
+
+  GeneratedColumn<String> get prompt =>
+      $composableBuilder(column: $table.prompt, builder: (column) => column);
+
+  GeneratedColumn<String> get negativePrompt => $composableBuilder(
+    column: $table.negativePrompt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get provider =>
+      $composableBuilder(column: $table.provider, builder: (column) => column);
+
+  GeneratedColumn<String> get model =>
+      $composableBuilder(column: $table.model, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$AiPromptHistoryTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AiPromptHistoryTable,
+          AiPromptHistoryData,
+          $$AiPromptHistoryTableFilterComposer,
+          $$AiPromptHistoryTableOrderingComposer,
+          $$AiPromptHistoryTableAnnotationComposer,
+          $$AiPromptHistoryTableCreateCompanionBuilder,
+          $$AiPromptHistoryTableUpdateCompanionBuilder,
+          (
+            AiPromptHistoryData,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AiPromptHistoryTable,
+              AiPromptHistoryData
+            >,
+          ),
+          AiPromptHistoryData,
+          PrefetchHooks Function()
+        > {
+  $$AiPromptHistoryTableTableManager(
+    _$ProjectDatabase db,
+    $AiPromptHistoryTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AiPromptHistoryTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AiPromptHistoryTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AiPromptHistoryTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String?> sceneId = const Value.absent(),
+                Value<String?> assetId = const Value.absent(),
+                Value<String> target = const Value.absent(),
+                Value<String> prompt = const Value.absent(),
+                Value<String> negativePrompt = const Value.absent(),
+                Value<String?> provider = const Value.absent(),
+                Value<String?> model = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiPromptHistoryCompanion(
+                id: id,
+                projectId: projectId,
+                sceneId: sceneId,
+                assetId: assetId,
+                target: target,
+                prompt: prompt,
+                negativePrompt: negativePrompt,
+                provider: provider,
+                model: model,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                Value<String?> sceneId = const Value.absent(),
+                Value<String?> assetId = const Value.absent(),
+                required String target,
+                required String prompt,
+                Value<String> negativePrompt = const Value.absent(),
+                Value<String?> provider = const Value.absent(),
+                Value<String?> model = const Value.absent(),
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AiPromptHistoryCompanion.insert(
+                id: id,
+                projectId: projectId,
+                sceneId: sceneId,
+                assetId: assetId,
+                target: target,
+                prompt: prompt,
+                negativePrompt: negativePrompt,
+                provider: provider,
+                model: model,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AiPromptHistoryTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AiPromptHistoryTable,
+      AiPromptHistoryData,
+      $$AiPromptHistoryTableFilterComposer,
+      $$AiPromptHistoryTableOrderingComposer,
+      $$AiPromptHistoryTableAnnotationComposer,
+      $$AiPromptHistoryTableCreateCompanionBuilder,
+      $$AiPromptHistoryTableUpdateCompanionBuilder,
+      (
+        AiPromptHistoryData,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AiPromptHistoryTable,
+          AiPromptHistoryData
+        >,
+      ),
+      AiPromptHistoryData,
+      PrefetchHooks Function()
+    >;
+typedef $$PromptRevisionsTableCreateCompanionBuilder =
+    PromptRevisionsCompanion Function({
+      required String id,
+      required String promptHistoryId,
+      required int revision,
+      required String content,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$PromptRevisionsTableUpdateCompanionBuilder =
+    PromptRevisionsCompanion Function({
+      Value<String> id,
+      Value<String> promptHistoryId,
+      Value<int> revision,
+      Value<String> content,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$PromptRevisionsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $PromptRevisionsTable> {
+  $$PromptRevisionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get promptHistoryId => $composableBuilder(
+    column: $table.promptHistoryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PromptRevisionsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $PromptRevisionsTable> {
+  $$PromptRevisionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get promptHistoryId => $composableBuilder(
+    column: $table.promptHistoryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PromptRevisionsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $PromptRevisionsTable> {
+  $$PromptRevisionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get promptHistoryId => $composableBuilder(
+    column: $table.promptHistoryId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get revision =>
+      $composableBuilder(column: $table.revision, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$PromptRevisionsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $PromptRevisionsTable,
+          PromptRevision,
+          $$PromptRevisionsTableFilterComposer,
+          $$PromptRevisionsTableOrderingComposer,
+          $$PromptRevisionsTableAnnotationComposer,
+          $$PromptRevisionsTableCreateCompanionBuilder,
+          $$PromptRevisionsTableUpdateCompanionBuilder,
+          (
+            PromptRevision,
+            BaseReferences<
+              _$ProjectDatabase,
+              $PromptRevisionsTable,
+              PromptRevision
+            >,
+          ),
+          PromptRevision,
+          PrefetchHooks Function()
+        > {
+  $$PromptRevisionsTableTableManager(
+    _$ProjectDatabase db,
+    $PromptRevisionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PromptRevisionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PromptRevisionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PromptRevisionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> promptHistoryId = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PromptRevisionsCompanion(
+                id: id,
+                promptHistoryId: promptHistoryId,
+                revision: revision,
+                content: content,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String promptHistoryId,
+                required int revision,
+                required String content,
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => PromptRevisionsCompanion.insert(
+                id: id,
+                promptHistoryId: promptHistoryId,
+                revision: revision,
+                content: content,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PromptRevisionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $PromptRevisionsTable,
+      PromptRevision,
+      $$PromptRevisionsTableFilterComposer,
+      $$PromptRevisionsTableOrderingComposer,
+      $$PromptRevisionsTableAnnotationComposer,
+      $$PromptRevisionsTableCreateCompanionBuilder,
+      $$PromptRevisionsTableUpdateCompanionBuilder,
+      (
+        PromptRevision,
+        BaseReferences<
+          _$ProjectDatabase,
+          $PromptRevisionsTable,
+          PromptRevision
+        >,
+      ),
+      PromptRevision,
+      PrefetchHooks Function()
+    >;
+typedef $$AiGenerationsTableCreateCompanionBuilder =
+    AiGenerationsCompanion Function({
+      required String id,
+      required String projectId,
+      required String promptHistoryId,
+      required String provider,
+      required String model,
+      required String status,
+      Value<String?> outputPath,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$AiGenerationsTableUpdateCompanionBuilder =
+    AiGenerationsCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> promptHistoryId,
+      Value<String> provider,
+      Value<String> model,
+      Value<String> status,
+      Value<String?> outputPath,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$AiGenerationsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AiGenerationsTable> {
+  $$AiGenerationsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get promptHistoryId => $composableBuilder(
+    column: $table.promptHistoryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get provider => $composableBuilder(
+    column: $table.provider,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get model => $composableBuilder(
+    column: $table.model,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get outputPath => $composableBuilder(
+    column: $table.outputPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AiGenerationsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AiGenerationsTable> {
+  $$AiGenerationsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get promptHistoryId => $composableBuilder(
+    column: $table.promptHistoryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get provider => $composableBuilder(
+    column: $table.provider,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get model => $composableBuilder(
+    column: $table.model,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get outputPath => $composableBuilder(
+    column: $table.outputPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AiGenerationsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AiGenerationsTable> {
+  $$AiGenerationsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get promptHistoryId => $composableBuilder(
+    column: $table.promptHistoryId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get provider =>
+      $composableBuilder(column: $table.provider, builder: (column) => column);
+
+  GeneratedColumn<String> get model =>
+      $composableBuilder(column: $table.model, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get outputPath => $composableBuilder(
+    column: $table.outputPath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$AiGenerationsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AiGenerationsTable,
+          AiGeneration,
+          $$AiGenerationsTableFilterComposer,
+          $$AiGenerationsTableOrderingComposer,
+          $$AiGenerationsTableAnnotationComposer,
+          $$AiGenerationsTableCreateCompanionBuilder,
+          $$AiGenerationsTableUpdateCompanionBuilder,
+          (
+            AiGeneration,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AiGenerationsTable,
+              AiGeneration
+            >,
+          ),
+          AiGeneration,
+          PrefetchHooks Function()
+        > {
+  $$AiGenerationsTableTableManager(
+    _$ProjectDatabase db,
+    $AiGenerationsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AiGenerationsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AiGenerationsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AiGenerationsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> promptHistoryId = const Value.absent(),
+                Value<String> provider = const Value.absent(),
+                Value<String> model = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> outputPath = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiGenerationsCompanion(
+                id: id,
+                projectId: projectId,
+                promptHistoryId: promptHistoryId,
+                provider: provider,
+                model: model,
+                status: status,
+                outputPath: outputPath,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String promptHistoryId,
+                required String provider,
+                required String model,
+                required String status,
+                Value<String?> outputPath = const Value.absent(),
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AiGenerationsCompanion.insert(
+                id: id,
+                projectId: projectId,
+                promptHistoryId: promptHistoryId,
+                provider: provider,
+                model: model,
+                status: status,
+                outputPath: outputPath,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AiGenerationsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AiGenerationsTable,
+      AiGeneration,
+      $$AiGenerationsTableFilterComposer,
+      $$AiGenerationsTableOrderingComposer,
+      $$AiGenerationsTableAnnotationComposer,
+      $$AiGenerationsTableCreateCompanionBuilder,
+      $$AiGenerationsTableUpdateCompanionBuilder,
+      (
+        AiGeneration,
+        BaseReferences<_$ProjectDatabase, $AiGenerationsTable, AiGeneration>,
+      ),
+      AiGeneration,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -33385,4 +36456,12 @@ class $ProjectDatabaseManager {
       $$TimelineTracksTableTableManager(_db, _db.timelineTracks);
   $$TimelineClipsTableTableManager get timelineClips =>
       $$TimelineClipsTableTableManager(_db, _db.timelineClips);
+  $$PromptTemplatesTableTableManager get promptTemplates =>
+      $$PromptTemplatesTableTableManager(_db, _db.promptTemplates);
+  $$AiPromptHistoryTableTableManager get aiPromptHistory =>
+      $$AiPromptHistoryTableTableManager(_db, _db.aiPromptHistory);
+  $$PromptRevisionsTableTableManager get promptRevisions =>
+      $$PromptRevisionsTableTableManager(_db, _db.promptRevisions);
+  $$AiGenerationsTableTableManager get aiGenerations =>
+      $$AiGenerationsTableTableManager(_db, _db.aiGenerations);
 }

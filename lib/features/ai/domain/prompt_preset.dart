@@ -1,0 +1,97 @@
+import 'prompt_target.dart';
+
+class PromptPreset {
+  const PromptPreset({
+    required this.id,
+    required this.name,
+    required this.target,
+    required this.baseInstructions,
+  });
+  final String id;
+  final String name;
+  final PromptTarget target;
+  final List<String> baseInstructions;
+}
+
+class BuiltInPromptPresets {
+  static const all = <PromptPreset>[
+    PromptPreset(
+      id: 'cinematic-live-action',
+      name: 'Cinematic Live Action',
+      target: PromptTarget.video,
+      baseInstructions: [
+        'cinematic composition',
+        'physically coherent motion',
+        'natural lighting',
+      ],
+    ),
+    PromptPreset(
+      id: 'anime-cinematic',
+      name: 'Anime Cinematic',
+      target: PromptTarget.video,
+      baseInstructions: [
+        'anime cinematic framing',
+        'expressive motion',
+        'stylized lighting',
+      ],
+    ),
+    PromptPreset(
+      id: 'character-detail-sheet',
+      name: 'Character Detail Sheet',
+      target: PromptTarget.characterConsistency,
+      baseInstructions: [
+        'front, side and back reference views',
+        'consistent facial identity',
+      ],
+    ),
+    PromptPreset(
+      id: 'wardrobe-detail-sheet',
+      name: 'Wardrobe Detail Sheet',
+      target: PromptTarget.wardrobe,
+      baseInstructions: [
+        'standalone product view',
+        'show construction and materials',
+      ],
+    ),
+    PromptPreset(
+      id: 'weapon-detail-sheet',
+      name: 'Weapon Detail Sheet',
+      target: PromptTarget.weapon,
+      baseInstructions: [
+        'standalone weapon reference',
+        'show geometry and proportions',
+      ],
+    ),
+    PromptPreset(
+      id: 'storyboard',
+      name: 'Storyboard',
+      target: PromptTarget.story,
+      baseInstructions: ['clear sequential storyboard beats'],
+    ),
+    PromptPreset(
+      id: 'concept-art',
+      name: 'Concept Art',
+      target: PromptTarget.image,
+      baseInstructions: ['high quality concept art'],
+    ),
+    PromptPreset(
+      id: 'photorealistic-portrait',
+      name: 'Photorealistic Portrait',
+      target: PromptTarget.image,
+      baseInstructions: ['photorealistic portrait lighting'],
+    ),
+  ];
+}
+
+enum AiContextPriority { critical, high, normal, optional }
+
+class AiReferenceImage {
+  const AiReferenceImage({
+    required this.path,
+    required this.role,
+    required this.priority,
+  });
+  final String path;
+  final String role;
+  final int priority;
+}

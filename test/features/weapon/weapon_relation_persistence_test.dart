@@ -48,7 +48,7 @@ void main() {
 
     final second = await service.open(databasePath);
     addTearDown(second.close);
-    expect(second.schemaVersion, 12);
+    expect(second.schemaVersion, 13);
     expect(
       (await second.weaponDao.getWeapon(weaponId))?.name,
       'Void Dual Dagger',

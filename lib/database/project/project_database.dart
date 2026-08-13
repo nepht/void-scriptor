@@ -31,6 +31,10 @@ import 'tables/timelines.dart';
 import 'tables/timeline_tracks.dart';
 import 'tables/timeline_clips.dart';
 import 'daos/timeline_dao.dart';
+import 'tables/prompt_templates.dart';
+import 'tables/ai_prompt_history.dart';
+import 'tables/prompt_revisions.dart';
+import 'tables/ai_generations.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -112,6 +116,10 @@ class ProjectMetadata extends Table {
     Timelines,
     TimelineTracks,
     TimelineClips,
+    PromptTemplates,
+    AiPromptHistory,
+    PromptRevisions,
+    AiGenerations,
   ],
   daos: [
     AssetDao,
@@ -129,7 +137,7 @@ class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -216,6 +224,12 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(timelines);
         await m.createTable(timelineTracks);
         await m.createTable(timelineClips);
+      }
+      if (from < 13) {
+        await m.createTable(promptTemplates);
+        await m.createTable(aiPromptHistory);
+        await m.createTable(promptRevisions);
+        await m.createTable(aiGenerations);
       }
     },
   );

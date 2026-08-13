@@ -11,6 +11,9 @@ abstract final class AppRoutes {
   static const createProject = '/projects/create';
   static const studioProject = '/studio/:projectId';
   static const aiStudio = '/ai-studio';
+  static const aiComposer = '/ai/composer';
+  static const aiHistory = '/ai/history';
+  static const aiProviders = '/ai/providers';
   static const donation = '/donation';
   static const workspace = '/workspace';
   static const studio = '/studio';

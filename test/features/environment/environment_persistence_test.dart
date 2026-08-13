@@ -79,7 +79,7 @@ void main() {
 
     final second = await ProjectDatabaseService().open(databasePath);
     addTearDown(second.close);
-    expect(second.schemaVersion, 17);
+    expect(second.schemaVersion, 24);
     expect(
       (await second.environmentDao.getEnvironment(id))?.name,
       'Rooftop District',

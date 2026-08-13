@@ -18,6 +18,7 @@ import '../../features/ai/presentation/project_ai_generation_gallery_screen.dart
 import '../../features/assets/presentation/asset_browser_screen.dart';
 import '../../features/references/presentation/project_reference_library_screen.dart';
 import '../../features/references/presentation/reference_comparison_screen.dart';
+import '../../features/bible/presentation/project_bible_workspace_screen.dart';
 import '../shell/void_app_shell.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
@@ -40,6 +41,10 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
       GoRoute(
         path: AppRoutes.references,
         builder: (_, __) => const ProjectReferenceLibraryScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.bible,
+        builder: (_, __) => const ProjectBibleWorkspaceScreen(),
       ),
       GoRoute(
         path: '${AppRoutes.references}/compare',
@@ -131,6 +136,10 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     GoRoute(
       path: AppRoutes.references,
       builder: (_, __) => const ProjectReferenceLibraryScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.bible,
+      builder: (_, __) => const ProjectBibleWorkspaceScreen(),
     ),
     GoRoute(
       path: '${AppRoutes.references}/compare',

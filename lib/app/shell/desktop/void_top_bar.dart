@@ -41,6 +41,8 @@ class VoidTopBar extends StatelessWidget {
             onTap: () => onMenuSelected('assets'),
           ),
 
+          _TopMenuButton(label: 'Bible', onTap: () => onMenuSelected('bible')),
+
           _TopMenuButton(
             label: 'Marketplace',
             onTap: () => onMenuSelected('marketplace'),

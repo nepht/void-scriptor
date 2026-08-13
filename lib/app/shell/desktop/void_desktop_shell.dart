@@ -23,6 +23,9 @@ class VoidDesktopShell extends StatelessWidget {
               if (menu == 'assets') {
                 context.go('/assets');
               }
+              if (menu == 'bible') {
+                context.go('/bible');
+              }
             },
             onLogout: onLogout,
           ),

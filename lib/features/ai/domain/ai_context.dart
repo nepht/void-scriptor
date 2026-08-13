@@ -5,12 +5,14 @@ class AiContext {
     required this.environmentContext,
     required this.sceneContext,
     required this.timelineContext,
+    this.canonContext = '[RELEVANT CANON CONTEXT]\n(none)',
   });
   final String projectId;
   final List<AiCharacterContext> characterContexts;
   final AiEnvironmentContext? environmentContext;
   final AiSceneContext? sceneContext;
   final AiTimelineContext? timelineContext;
+  final String canonContext;
 }
 
 class AiCharacterContext {

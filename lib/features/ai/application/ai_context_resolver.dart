@@ -2,6 +2,9 @@ import '../../../database/project/project_database.dart' as db;
 import '../domain/ai_context.dart';
 import 'preservation_prompt_resolver.dart';
 import 'reference_bundle_resolver.dart';
+import '../../bible/application/bible_repository.dart';
+import '../../bible/application/canon_prompt_context.dart';
+import '../../bible/application/relevant_canon_context_resolver.dart';
 
 class AiContextResolver {
   AiContextResolver(this.database);
@@ -10,6 +13,9 @@ class AiContextResolver {
   late final ReferenceBundleResolver referenceBundles = ReferenceBundleResolver(
     database,
   );
+  final RelevantCanonContextResolver canonResolver =
+      RelevantCanonContextResolver();
+  final CanonPromptContextComposer canonComposer = CanonPromptContextComposer();
 
   Future<AiContext> resolveScene({
     required String projectId,
@@ -17,6 +23,13 @@ class AiContextResolver {
   }) async {
     final scene = await database.storyDao.getScene(sceneId);
     if (scene == null) throw StateError('Scene not found: $sceneId');
+    final bibleEntries = await BibleRepository(database).listEntries(projectId);
+    final canonEntries = canonResolver.resolve(
+      bibleEntries,
+      projectId: projectId,
+      entityIds: {sceneId},
+      tags: {sceneId},
+    );
     final sceneCharacters = await database.storyDao.getSceneCharacters(sceneId);
     final characters = <AiCharacterContext>[];
     for (final sceneCharacter in sceneCharacters) {
@@ -133,6 +146,7 @@ class AiContextResolver {
       environmentContext: environmentContext,
       sceneContext: sceneContext,
       timelineContext: timelineContext,
+      canonContext: canonComposer.compose(canonEntries),
     );
   }
 

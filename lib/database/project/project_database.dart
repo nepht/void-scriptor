@@ -44,6 +44,13 @@ import 'tables/references.dart';
 import 'tables/reference_sets.dart';
 import 'tables/reference_identity.dart';
 import 'tables/consistency.dart';
+import 'tables/bible_entries.dart';
+import 'tables/canon_rules.dart';
+import 'tables/factions.dart';
+import 'tables/faction_units.dart';
+import 'tables/canon_conflicts.dart';
+import 'tables/worldbuilding_entities.dart';
+import 'tables/bible_timeline.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -67,6 +74,12 @@ import 'daos/weapon_dao.dart';
 import 'daos/environment_dao.dart';
 import 'daos/story_dao.dart';
 import '../../features/references/application/reference_repository.dart';
+import '../../features/bible/application/bible_repository.dart';
+import '../../features/bible/application/canon_rule_repository.dart';
+import '../../features/bible/application/faction_repository.dart';
+import '../../features/bible/application/worldbuilding_repository.dart';
+import '../../features/bible/application/bible_timeline_repository.dart';
+import '../../features/bible/application/canon_conflict_repository.dart';
 
 part 'project_database.g.dart';
 
@@ -145,6 +158,21 @@ class ProjectMetadata extends Table {
     ConsistencyRules,
     ConsistencyReviews,
     ConsistencyReviewItems,
+    BibleEntries,
+    CanonRules,
+    CanonRuleConditions,
+    Factions,
+    FactionUnits,
+    CanonConflicts,
+    CanonRuleExceptions,
+    Species,
+    Technologies,
+    PowerSystems,
+    PowerAbilities,
+    TerminologyEntries,
+    TimelineEras,
+    HistoricalEvents,
+    HistoricalEventParticipants,
   ],
   daos: [
     AssetDao,
@@ -157,13 +185,19 @@ class ProjectMetadata extends Table {
     StoryDao,
     TimelineDao,
     ReferenceDao,
+    BibleRepository,
+    CanonRuleRepository,
+    FactionRepository,
+    WorldbuildingRepository,
+    BibleTimelineRepository,
+    CanonConflictRepository,
   ],
 )
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 17;
+  int get schemaVersion => 24;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -308,6 +342,35 @@ class ProjectDatabase extends _$ProjectDatabase {
       }
       if (from < 17 && from >= 11) {
         await m.addColumn(storyScenes, storyScenes.referenceSetId);
+      }
+      if (from < 18) {
+        await m.createTable(bibleEntries);
+      }
+      if (from < 19) {
+        await m.createTable(canonRules);
+        await m.createTable(canonRuleConditions);
+      }
+      if (from < 20) {
+        await m.createTable(factions);
+      }
+      if (from < 21) {
+        await m.createTable(species);
+        await m.createTable(technologies);
+        await m.createTable(powerSystems);
+        await m.createTable(powerAbilities);
+      }
+      if (from < 22) {
+        await m.createTable(terminologyEntries);
+        await m.createTable(timelineEras);
+        await m.createTable(historicalEvents);
+        await m.createTable(historicalEventParticipants);
+      }
+      if (from < 23) {
+        await m.createTable(factionUnits);
+      }
+      if (from < 24) {
+        await m.createTable(canonConflicts);
+        await m.createTable(canonRuleExceptions);
       }
     },
   );

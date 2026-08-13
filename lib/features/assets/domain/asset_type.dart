@@ -11,4 +11,8 @@ enum AssetType {
   prompt,
   aiGeneration,
   reference,
+  faction,
+  species,
+  technology,
+  powerSystem,
 }

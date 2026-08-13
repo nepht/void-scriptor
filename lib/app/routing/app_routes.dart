@@ -20,6 +20,7 @@ abstract final class AppRoutes {
   static const studio = '/studio';
   static const assets = '/assets';
   static const references = '/references';
+  static const bible = '/bible';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

@@ -1,42 +1,103 @@
 import 'package:drift/drift.dart';
 
 import '../project_database.dart';
-import '../tables/asset_tags.dart';
+import '../tables/asset_collections.dart';
 import '../tables/asset_relations.dart';
+import '../tables/asset_tags.dart';
 import '../tables/assets.dart';
+import '../tables/tags.dart';
 
 part 'asset_dao.g.dart';
 
-@DriftAccessor(tables: [Assets, AssetTags, AssetRelations])
+@DriftAccessor(
+  tables: [
+    Assets,
+    AssetTags,
+    AssetRelations,
+    Tags,
+    AssetTagLinks,
+    AssetCollections,
+    AssetCollectionItems,
+  ],
+)
 class AssetDao extends DatabaseAccessor<ProjectDatabase> with _$AssetDaoMixin {
   AssetDao(super.db);
 
   Future<List<Asset>> getAllAssets() => select(assets).get();
-
   Future<Asset?> getById(String id) =>
       (select(assets)..where((row) => row.id.equals(id))).getSingleOrNull();
 
-  Future<List<String>> getTags(String assetId) async =>
-      (select(assetTags)..where((row) => row.assetId.equals(assetId)))
-          .get()
-          .then((rows) => rows.map((row) => row.tag).toList(growable: false));
+  Future<List<String>> getTags(String assetId) async {
+    final normalized = await (select(
+      assetTagLinks,
+    )..where((row) => row.assetId.equals(assetId))).get();
+    if (normalized.isNotEmpty) {
+      final ids = normalized.map((row) => row.tagId).toSet();
+      final rows = await (select(tags)..where((row) => row.id.isIn(ids))).get();
+      return rows.map((row) => row.name).toList(growable: false);
+    }
+    final legacy = await (select(
+      assetTags,
+    )..where((row) => row.assetId.equals(assetId))).get();
+    return legacy.map((row) => row.tag).toList(growable: false);
+  }
 
-  Future<void> replaceTags(String assetId, List<String> tags) async {
+  Future<void> replaceTags(String assetId, Iterable<String> values) async {
+    final normalized = values
+        .map((value) => value.trim().toLowerCase())
+        .where((value) => value.isNotEmpty)
+        .toSet();
     await transaction(() async {
       await (delete(
-        assetTags,
+        assetTagLinks,
       )..where((row) => row.assetId.equals(assetId))).go();
-      for (final tag
-          in tags
-              .map((value) => value.trim())
-              .where((value) => value.isNotEmpty)
-              .toSet()) {
+      for (final name in normalized) {
+        final id = '${assetId}_tag_$name';
+        await into(tags).insertOnConflictUpdate(
+          TagsCompanion.insert(
+            id: id,
+            projectId: (await getById(assetId))?.projectId ?? '',
+            name: name,
+          ),
+        );
         await into(
-          assetTags,
-        ).insert(AssetTagsCompanion.insert(assetId: assetId, tag: tag));
+          assetTagLinks,
+        ).insert(AssetTagLinksCompanion.insert(assetId: assetId, tagId: id));
       }
     });
   }
+
+  Future<void> setFavorite(String assetId, bool value) =>
+      (update(assets)..where((row) => row.id.equals(assetId))).write(
+        AssetsCompanion(favorite: Value(value)),
+      );
+  Future<void> markOpened(String assetId, DateTime at) =>
+      (update(assets)..where((row) => row.id.equals(assetId))).write(
+        AssetsCompanion(lastOpenedAt: Value(at)),
+      );
+
+  Future<void> addTagToAssets(Iterable<String> assetIds, String tag) async {
+    final normalized = tag.trim().toLowerCase();
+    if (normalized.isEmpty) return;
+    await transaction(() async {
+      for (final id in assetIds) {
+        final existing = await getTags(id);
+        await replaceTags(id, [...existing, normalized]);
+      }
+    });
+  }
+
+  Future<void> addToCollection(
+    String collectionId,
+    String assetId, {
+    int sortOrder = 0,
+  }) => into(assetCollectionItems).insertOnConflictUpdate(
+    AssetCollectionItemsCompanion.insert(
+      collectionId: collectionId,
+      assetId: assetId,
+      sortOrder: Value(sortOrder),
+    ),
+  );
 
   Future<void> addRelation({
     required String id,
@@ -54,6 +115,12 @@ class AssetDao extends DatabaseAccessor<ProjectDatabase> with _$AssetDaoMixin {
 
   Future<void> removeAssetData(String assetId) async {
     await (delete(assetTags)..where((row) => row.assetId.equals(assetId))).go();
+    await (delete(
+      assetTagLinks,
+    )..where((row) => row.assetId.equals(assetId))).go();
+    await (delete(
+      assetCollectionItems,
+    )..where((row) => row.assetId.equals(assetId))).go();
     await (delete(assetRelations)..where(
           (row) =>
               row.sourceAssetId.equals(assetId) |

@@ -290,6 +290,21 @@ class $AssetsTable extends Assets with TableInfo<$AssetsTable, Asset> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _favoriteMeta = const VerificationMeta(
+    'favorite',
+  );
+  @override
+  late final GeneratedColumn<bool> favorite = GeneratedColumn<bool>(
+    'favorite',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("favorite" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -312,6 +327,17 @@ class $AssetsTable extends Assets with TableInfo<$AssetsTable, Asset> {
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _lastOpenedAtMeta = const VerificationMeta(
+    'lastOpenedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastOpenedAt = GeneratedColumn<DateTime>(
+    'last_opened_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -321,8 +347,10 @@ class $AssetsTable extends Assets with TableInfo<$AssetsTable, Asset> {
     type,
     version,
     thumbnailPath,
+    favorite,
     createdAt,
     updatedAt,
+    lastOpenedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -389,6 +417,12 @@ class $AssetsTable extends Assets with TableInfo<$AssetsTable, Asset> {
         ),
       );
     }
+    if (data.containsKey('favorite')) {
+      context.handle(
+        _favoriteMeta,
+        favorite.isAcceptableOrUnknown(data['favorite']!, _favoriteMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -404,6 +438,15 @@ class $AssetsTable extends Assets with TableInfo<$AssetsTable, Asset> {
       );
     } else if (isInserting) {
       context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('last_opened_at')) {
+      context.handle(
+        _lastOpenedAtMeta,
+        lastOpenedAt.isAcceptableOrUnknown(
+          data['last_opened_at']!,
+          _lastOpenedAtMeta,
+        ),
+      );
     }
     return context;
   }
@@ -442,6 +485,10 @@ class $AssetsTable extends Assets with TableInfo<$AssetsTable, Asset> {
         DriftSqlType.string,
         data['${effectivePrefix}thumbnail_path'],
       ),
+      favorite: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}favorite'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -450,6 +497,10 @@ class $AssetsTable extends Assets with TableInfo<$AssetsTable, Asset> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
+      lastOpenedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_opened_at'],
+      ),
     );
   }
 
@@ -467,8 +518,10 @@ class Asset extends DataClass implements Insertable<Asset> {
   final String type;
   final String version;
   final String? thumbnailPath;
+  final bool favorite;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final DateTime? lastOpenedAt;
   const Asset({
     required this.id,
     required this.projectId,
@@ -477,8 +530,10 @@ class Asset extends DataClass implements Insertable<Asset> {
     required this.type,
     required this.version,
     this.thumbnailPath,
+    required this.favorite,
     required this.createdAt,
     required this.updatedAt,
+    this.lastOpenedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -492,8 +547,12 @@ class Asset extends DataClass implements Insertable<Asset> {
     if (!nullToAbsent || thumbnailPath != null) {
       map['thumbnail_path'] = Variable<String>(thumbnailPath);
     }
+    map['favorite'] = Variable<bool>(favorite);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || lastOpenedAt != null) {
+      map['last_opened_at'] = Variable<DateTime>(lastOpenedAt);
+    }
     return map;
   }
 
@@ -508,8 +567,12 @@ class Asset extends DataClass implements Insertable<Asset> {
       thumbnailPath: thumbnailPath == null && nullToAbsent
           ? const Value.absent()
           : Value(thumbnailPath),
+      favorite: Value(favorite),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
+      lastOpenedAt: lastOpenedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastOpenedAt),
     );
   }
 
@@ -526,8 +589,10 @@ class Asset extends DataClass implements Insertable<Asset> {
       type: serializer.fromJson<String>(json['type']),
       version: serializer.fromJson<String>(json['version']),
       thumbnailPath: serializer.fromJson<String?>(json['thumbnailPath']),
+      favorite: serializer.fromJson<bool>(json['favorite']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      lastOpenedAt: serializer.fromJson<DateTime?>(json['lastOpenedAt']),
     );
   }
   @override
@@ -541,8 +606,10 @@ class Asset extends DataClass implements Insertable<Asset> {
       'type': serializer.toJson<String>(type),
       'version': serializer.toJson<String>(version),
       'thumbnailPath': serializer.toJson<String?>(thumbnailPath),
+      'favorite': serializer.toJson<bool>(favorite),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'lastOpenedAt': serializer.toJson<DateTime?>(lastOpenedAt),
     };
   }
 
@@ -554,8 +621,10 @@ class Asset extends DataClass implements Insertable<Asset> {
     String? type,
     String? version,
     Value<String?> thumbnailPath = const Value.absent(),
+    bool? favorite,
     DateTime? createdAt,
     DateTime? updatedAt,
+    Value<DateTime?> lastOpenedAt = const Value.absent(),
   }) => Asset(
     id: id ?? this.id,
     projectId: projectId ?? this.projectId,
@@ -566,8 +635,10 @@ class Asset extends DataClass implements Insertable<Asset> {
     thumbnailPath: thumbnailPath.present
         ? thumbnailPath.value
         : this.thumbnailPath,
+    favorite: favorite ?? this.favorite,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    lastOpenedAt: lastOpenedAt.present ? lastOpenedAt.value : this.lastOpenedAt,
   );
   Asset copyWithCompanion(AssetsCompanion data) {
     return Asset(
@@ -582,8 +653,12 @@ class Asset extends DataClass implements Insertable<Asset> {
       thumbnailPath: data.thumbnailPath.present
           ? data.thumbnailPath.value
           : this.thumbnailPath,
+      favorite: data.favorite.present ? data.favorite.value : this.favorite,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      lastOpenedAt: data.lastOpenedAt.present
+          ? data.lastOpenedAt.value
+          : this.lastOpenedAt,
     );
   }
 
@@ -597,8 +672,10 @@ class Asset extends DataClass implements Insertable<Asset> {
           ..write('type: $type, ')
           ..write('version: $version, ')
           ..write('thumbnailPath: $thumbnailPath, ')
+          ..write('favorite: $favorite, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('lastOpenedAt: $lastOpenedAt')
           ..write(')'))
         .toString();
   }
@@ -612,8 +689,10 @@ class Asset extends DataClass implements Insertable<Asset> {
     type,
     version,
     thumbnailPath,
+    favorite,
     createdAt,
     updatedAt,
+    lastOpenedAt,
   );
   @override
   bool operator ==(Object other) =>
@@ -626,8 +705,10 @@ class Asset extends DataClass implements Insertable<Asset> {
           other.type == this.type &&
           other.version == this.version &&
           other.thumbnailPath == this.thumbnailPath &&
+          other.favorite == this.favorite &&
           other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
+          other.updatedAt == this.updatedAt &&
+          other.lastOpenedAt == this.lastOpenedAt);
 }
 
 class AssetsCompanion extends UpdateCompanion<Asset> {
@@ -638,8 +719,10 @@ class AssetsCompanion extends UpdateCompanion<Asset> {
   final Value<String> type;
   final Value<String> version;
   final Value<String?> thumbnailPath;
+  final Value<bool> favorite;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
+  final Value<DateTime?> lastOpenedAt;
   final Value<int> rowid;
   const AssetsCompanion({
     this.id = const Value.absent(),
@@ -649,8 +732,10 @@ class AssetsCompanion extends UpdateCompanion<Asset> {
     this.type = const Value.absent(),
     this.version = const Value.absent(),
     this.thumbnailPath = const Value.absent(),
+    this.favorite = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
+    this.lastOpenedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AssetsCompanion.insert({
@@ -661,8 +746,10 @@ class AssetsCompanion extends UpdateCompanion<Asset> {
     required String type,
     this.version = const Value.absent(),
     this.thumbnailPath = const Value.absent(),
+    this.favorite = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
+    this.lastOpenedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        projectId = Value(projectId),
@@ -678,8 +765,10 @@ class AssetsCompanion extends UpdateCompanion<Asset> {
     Expression<String>? type,
     Expression<String>? version,
     Expression<String>? thumbnailPath,
+    Expression<bool>? favorite,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
+    Expression<DateTime>? lastOpenedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -690,8 +779,10 @@ class AssetsCompanion extends UpdateCompanion<Asset> {
       if (type != null) 'type': type,
       if (version != null) 'version': version,
       if (thumbnailPath != null) 'thumbnail_path': thumbnailPath,
+      if (favorite != null) 'favorite': favorite,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
+      if (lastOpenedAt != null) 'last_opened_at': lastOpenedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -704,8 +795,10 @@ class AssetsCompanion extends UpdateCompanion<Asset> {
     Value<String>? type,
     Value<String>? version,
     Value<String?>? thumbnailPath,
+    Value<bool>? favorite,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
+    Value<DateTime?>? lastOpenedAt,
     Value<int>? rowid,
   }) {
     return AssetsCompanion(
@@ -716,8 +809,10 @@ class AssetsCompanion extends UpdateCompanion<Asset> {
       type: type ?? this.type,
       version: version ?? this.version,
       thumbnailPath: thumbnailPath ?? this.thumbnailPath,
+      favorite: favorite ?? this.favorite,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      lastOpenedAt: lastOpenedAt ?? this.lastOpenedAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -746,11 +841,17 @@ class AssetsCompanion extends UpdateCompanion<Asset> {
     if (thumbnailPath.present) {
       map['thumbnail_path'] = Variable<String>(thumbnailPath.value);
     }
+    if (favorite.present) {
+      map['favorite'] = Variable<bool>(favorite.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (lastOpenedAt.present) {
+      map['last_opened_at'] = Variable<DateTime>(lastOpenedAt.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -768,8 +869,10 @@ class AssetsCompanion extends UpdateCompanion<Asset> {
           ..write('type: $type, ')
           ..write('version: $version, ')
           ..write('thumbnailPath: $thumbnailPath, ')
+          ..write('favorite: $favorite, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
+          ..write('lastOpenedAt: $lastOpenedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -25189,6 +25292,1203 @@ class AiGenerationInputsCompanion extends UpdateCompanion<AiGenerationInput> {
   }
 }
 
+class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TagsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, projectId, name];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'tags';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Tag> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Tag map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Tag(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+    );
+  }
+
+  @override
+  $TagsTable createAlias(String alias) {
+    return $TagsTable(attachedDatabase, alias);
+  }
+}
+
+class Tag extends DataClass implements Insertable<Tag> {
+  final String id;
+  final String projectId;
+  final String name;
+  const Tag({required this.id, required this.projectId, required this.name});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['name'] = Variable<String>(name);
+    return map;
+  }
+
+  TagsCompanion toCompanion(bool nullToAbsent) {
+    return TagsCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      name: Value(name),
+    );
+  }
+
+  factory Tag.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Tag(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      name: serializer.fromJson<String>(json['name']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'name': serializer.toJson<String>(name),
+    };
+  }
+
+  Tag copyWith({String? id, String? projectId, String? name}) => Tag(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    name: name ?? this.name,
+  );
+  Tag copyWithCompanion(TagsCompanion data) {
+    return Tag(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      name: data.name.present ? data.name.value : this.name,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Tag(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, projectId, name);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Tag &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.name == this.name);
+}
+
+class TagsCompanion extends UpdateCompanion<Tag> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> name;
+  final Value<int> rowid;
+  const TagsCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TagsCompanion.insert({
+    required String id,
+    required String projectId,
+    required String name,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       name = Value(name);
+  static Insertable<Tag> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? name,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (name != null) 'name': name,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TagsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? name,
+    Value<int>? rowid,
+  }) {
+    return TagsCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      name: name ?? this.name,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TagsCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AssetTagLinksTable extends AssetTagLinks
+    with TableInfo<$AssetTagLinksTable, AssetTagLink> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AssetTagLinksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
+  @override
+  late final GeneratedColumn<String> tagId = GeneratedColumn<String>(
+    'tag_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [assetId, tagId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'asset_tag_links';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AssetTagLink> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('tag_id')) {
+      context.handle(
+        _tagIdMeta,
+        tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tagIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {assetId, tagId};
+  @override
+  AssetTagLink map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AssetTagLink(
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      tagId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tag_id'],
+      )!,
+    );
+  }
+
+  @override
+  $AssetTagLinksTable createAlias(String alias) {
+    return $AssetTagLinksTable(attachedDatabase, alias);
+  }
+}
+
+class AssetTagLink extends DataClass implements Insertable<AssetTagLink> {
+  final String assetId;
+  final String tagId;
+  const AssetTagLink({required this.assetId, required this.tagId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['asset_id'] = Variable<String>(assetId);
+    map['tag_id'] = Variable<String>(tagId);
+    return map;
+  }
+
+  AssetTagLinksCompanion toCompanion(bool nullToAbsent) {
+    return AssetTagLinksCompanion(assetId: Value(assetId), tagId: Value(tagId));
+  }
+
+  factory AssetTagLink.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AssetTagLink(
+      assetId: serializer.fromJson<String>(json['assetId']),
+      tagId: serializer.fromJson<String>(json['tagId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'assetId': serializer.toJson<String>(assetId),
+      'tagId': serializer.toJson<String>(tagId),
+    };
+  }
+
+  AssetTagLink copyWith({String? assetId, String? tagId}) => AssetTagLink(
+    assetId: assetId ?? this.assetId,
+    tagId: tagId ?? this.tagId,
+  );
+  AssetTagLink copyWithCompanion(AssetTagLinksCompanion data) {
+    return AssetTagLink(
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      tagId: data.tagId.present ? data.tagId.value : this.tagId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AssetTagLink(')
+          ..write('assetId: $assetId, ')
+          ..write('tagId: $tagId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(assetId, tagId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AssetTagLink &&
+          other.assetId == this.assetId &&
+          other.tagId == this.tagId);
+}
+
+class AssetTagLinksCompanion extends UpdateCompanion<AssetTagLink> {
+  final Value<String> assetId;
+  final Value<String> tagId;
+  final Value<int> rowid;
+  const AssetTagLinksCompanion({
+    this.assetId = const Value.absent(),
+    this.tagId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AssetTagLinksCompanion.insert({
+    required String assetId,
+    required String tagId,
+    this.rowid = const Value.absent(),
+  }) : assetId = Value(assetId),
+       tagId = Value(tagId);
+  static Insertable<AssetTagLink> custom({
+    Expression<String>? assetId,
+    Expression<String>? tagId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (assetId != null) 'asset_id': assetId,
+      if (tagId != null) 'tag_id': tagId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AssetTagLinksCompanion copyWith({
+    Value<String>? assetId,
+    Value<String>? tagId,
+    Value<int>? rowid,
+  }) {
+    return AssetTagLinksCompanion(
+      assetId: assetId ?? this.assetId,
+      tagId: tagId ?? this.tagId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (tagId.present) {
+      map['tag_id'] = Variable<String>(tagId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AssetTagLinksCompanion(')
+          ..write('assetId: $assetId, ')
+          ..write('tagId: $tagId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AssetCollectionsTable extends AssetCollections
+    with TableInfo<$AssetCollectionsTable, AssetCollection> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AssetCollectionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _queryMeta = const VerificationMeta('query');
+  @override
+  late final GeneratedColumn<String> query = GeneratedColumn<String>(
+    'query',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isSmartMeta = const VerificationMeta(
+    'isSmart',
+  );
+  @override
+  late final GeneratedColumn<bool> isSmart = GeneratedColumn<bool>(
+    'is_smart',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_smart" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    name,
+    description,
+    query,
+    isSmart,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'asset_collections';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AssetCollection> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('query')) {
+      context.handle(
+        _queryMeta,
+        query.isAcceptableOrUnknown(data['query']!, _queryMeta),
+      );
+    }
+    if (data.containsKey('is_smart')) {
+      context.handle(
+        _isSmartMeta,
+        isSmart.isAcceptableOrUnknown(data['is_smart']!, _isSmartMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AssetCollection map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AssetCollection(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      query: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}query'],
+      ),
+      isSmart: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_smart'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AssetCollectionsTable createAlias(String alias) {
+    return $AssetCollectionsTable(attachedDatabase, alias);
+  }
+}
+
+class AssetCollection extends DataClass implements Insertable<AssetCollection> {
+  final String id;
+  final String projectId;
+  final String name;
+  final String description;
+  final String? query;
+  final bool isSmart;
+  final DateTime createdAt;
+  const AssetCollection({
+    required this.id,
+    required this.projectId,
+    required this.name,
+    required this.description,
+    this.query,
+    required this.isSmart,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    if (!nullToAbsent || query != null) {
+      map['query'] = Variable<String>(query);
+    }
+    map['is_smart'] = Variable<bool>(isSmart);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  AssetCollectionsCompanion toCompanion(bool nullToAbsent) {
+    return AssetCollectionsCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      name: Value(name),
+      description: Value(description),
+      query: query == null && nullToAbsent
+          ? const Value.absent()
+          : Value(query),
+      isSmart: Value(isSmart),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory AssetCollection.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AssetCollection(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      query: serializer.fromJson<String?>(json['query']),
+      isSmart: serializer.fromJson<bool>(json['isSmart']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'query': serializer.toJson<String?>(query),
+      'isSmart': serializer.toJson<bool>(isSmart),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  AssetCollection copyWith({
+    String? id,
+    String? projectId,
+    String? name,
+    String? description,
+    Value<String?> query = const Value.absent(),
+    bool? isSmart,
+    DateTime? createdAt,
+  }) => AssetCollection(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    query: query.present ? query.value : this.query,
+    isSmart: isSmart ?? this.isSmart,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  AssetCollection copyWithCompanion(AssetCollectionsCompanion data) {
+    return AssetCollection(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      query: data.query.present ? data.query.value : this.query,
+      isSmart: data.isSmart.present ? data.isSmart.value : this.isSmart,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AssetCollection(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('query: $query, ')
+          ..write('isSmart: $isSmart, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, projectId, name, description, query, isSmart, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AssetCollection &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.query == this.query &&
+          other.isSmart == this.isSmart &&
+          other.createdAt == this.createdAt);
+}
+
+class AssetCollectionsCompanion extends UpdateCompanion<AssetCollection> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<String?> query;
+  final Value<bool> isSmart;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const AssetCollectionsCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.query = const Value.absent(),
+    this.isSmart = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AssetCollectionsCompanion.insert({
+    required String id,
+    required String projectId,
+    required String name,
+    this.description = const Value.absent(),
+    this.query = const Value.absent(),
+    this.isSmart = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       name = Value(name),
+       createdAt = Value(createdAt);
+  static Insertable<AssetCollection> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? query,
+    Expression<bool>? isSmart,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (query != null) 'query': query,
+      if (isSmart != null) 'is_smart': isSmart,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AssetCollectionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? name,
+    Value<String>? description,
+    Value<String?>? query,
+    Value<bool>? isSmart,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return AssetCollectionsCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      query: query ?? this.query,
+      isSmart: isSmart ?? this.isSmart,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (query.present) {
+      map['query'] = Variable<String>(query.value);
+    }
+    if (isSmart.present) {
+      map['is_smart'] = Variable<bool>(isSmart.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AssetCollectionsCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('query: $query, ')
+          ..write('isSmart: $isSmart, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AssetCollectionItemsTable extends AssetCollectionItems
+    with TableInfo<$AssetCollectionItemsTable, AssetCollectionItem> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AssetCollectionItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _collectionIdMeta = const VerificationMeta(
+    'collectionId',
+  );
+  @override
+  late final GeneratedColumn<String> collectionId = GeneratedColumn<String>(
+    'collection_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [collectionId, assetId, sortOrder];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'asset_collection_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AssetCollectionItem> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('collection_id')) {
+      context.handle(
+        _collectionIdMeta,
+        collectionId.isAcceptableOrUnknown(
+          data['collection_id']!,
+          _collectionIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_collectionIdMeta);
+    }
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {collectionId, assetId};
+  @override
+  AssetCollectionItem map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AssetCollectionItem(
+      collectionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}collection_id'],
+      )!,
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $AssetCollectionItemsTable createAlias(String alias) {
+    return $AssetCollectionItemsTable(attachedDatabase, alias);
+  }
+}
+
+class AssetCollectionItem extends DataClass
+    implements Insertable<AssetCollectionItem> {
+  final String collectionId;
+  final String assetId;
+  final int sortOrder;
+  const AssetCollectionItem({
+    required this.collectionId,
+    required this.assetId,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['collection_id'] = Variable<String>(collectionId);
+    map['asset_id'] = Variable<String>(assetId);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  AssetCollectionItemsCompanion toCompanion(bool nullToAbsent) {
+    return AssetCollectionItemsCompanion(
+      collectionId: Value(collectionId),
+      assetId: Value(assetId),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory AssetCollectionItem.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AssetCollectionItem(
+      collectionId: serializer.fromJson<String>(json['collectionId']),
+      assetId: serializer.fromJson<String>(json['assetId']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'collectionId': serializer.toJson<String>(collectionId),
+      'assetId': serializer.toJson<String>(assetId),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  AssetCollectionItem copyWith({
+    String? collectionId,
+    String? assetId,
+    int? sortOrder,
+  }) => AssetCollectionItem(
+    collectionId: collectionId ?? this.collectionId,
+    assetId: assetId ?? this.assetId,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  AssetCollectionItem copyWithCompanion(AssetCollectionItemsCompanion data) {
+    return AssetCollectionItem(
+      collectionId: data.collectionId.present
+          ? data.collectionId.value
+          : this.collectionId,
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AssetCollectionItem(')
+          ..write('collectionId: $collectionId, ')
+          ..write('assetId: $assetId, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(collectionId, assetId, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AssetCollectionItem &&
+          other.collectionId == this.collectionId &&
+          other.assetId == this.assetId &&
+          other.sortOrder == this.sortOrder);
+}
+
+class AssetCollectionItemsCompanion
+    extends UpdateCompanion<AssetCollectionItem> {
+  final Value<String> collectionId;
+  final Value<String> assetId;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const AssetCollectionItemsCompanion({
+    this.collectionId = const Value.absent(),
+    this.assetId = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AssetCollectionItemsCompanion.insert({
+    required String collectionId,
+    required String assetId,
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : collectionId = Value(collectionId),
+       assetId = Value(assetId);
+  static Insertable<AssetCollectionItem> custom({
+    Expression<String>? collectionId,
+    Expression<String>? assetId,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (collectionId != null) 'collection_id': collectionId,
+      if (assetId != null) 'asset_id': assetId,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AssetCollectionItemsCompanion copyWith({
+    Value<String>? collectionId,
+    Value<String>? assetId,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return AssetCollectionItemsCompanion(
+      collectionId: collectionId ?? this.collectionId,
+      assetId: assetId ?? this.assetId,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (collectionId.present) {
+      map['collection_id'] = Variable<String>(collectionId.value);
+    }
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AssetCollectionItemsCompanion(')
+          ..write('collectionId: $collectionId, ')
+          ..write('assetId: $assetId, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -25289,6 +26589,13 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
       $AiGenerationOutputsTable(this);
   late final $AiGenerationInputsTable aiGenerationInputs =
       $AiGenerationInputsTable(this);
+  late final $TagsTable tags = $TagsTable(this);
+  late final $AssetTagLinksTable assetTagLinks = $AssetTagLinksTable(this);
+  late final $AssetCollectionsTable assetCollections = $AssetCollectionsTable(
+    this,
+  );
+  late final $AssetCollectionItemsTable assetCollectionItems =
+      $AssetCollectionItemsTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -25360,6 +26667,10 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     aiGenerationJobs,
     aiGenerationOutputs,
     aiGenerationInputs,
+    tags,
+    assetTagLinks,
+    assetCollections,
+    assetCollectionItems,
   ];
 }
 
@@ -25525,8 +26836,10 @@ typedef $$AssetsTableCreateCompanionBuilder =
       required String type,
       Value<String> version,
       Value<String?> thumbnailPath,
+      Value<bool> favorite,
       required DateTime createdAt,
       required DateTime updatedAt,
+      Value<DateTime?> lastOpenedAt,
       Value<int> rowid,
     });
 typedef $$AssetsTableUpdateCompanionBuilder =
@@ -25538,8 +26851,10 @@ typedef $$AssetsTableUpdateCompanionBuilder =
       Value<String> type,
       Value<String> version,
       Value<String?> thumbnailPath,
+      Value<bool> favorite,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
+      Value<DateTime?> lastOpenedAt,
       Value<int> rowid,
     });
 
@@ -25587,6 +26902,11 @@ class $$AssetsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<bool> get favorite => $composableBuilder(
+    column: $table.favorite,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
@@ -25594,6 +26914,11 @@ class $$AssetsTableFilterComposer
 
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastOpenedAt => $composableBuilder(
+    column: $table.lastOpenedAt,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -25642,6 +26967,11 @@ class $$AssetsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get favorite => $composableBuilder(
+    column: $table.favorite,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -25649,6 +26979,11 @@ class $$AssetsTableOrderingComposer
 
   ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastOpenedAt => $composableBuilder(
+    column: $table.lastOpenedAt,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -25687,11 +27022,19 @@ class $$AssetsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<bool> get favorite =>
+      $composableBuilder(column: $table.favorite, builder: (column) => column);
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastOpenedAt => $composableBuilder(
+    column: $table.lastOpenedAt,
+    builder: (column) => column,
+  );
 }
 
 class $$AssetsTableTableManager
@@ -25729,8 +27072,10 @@ class $$AssetsTableTableManager
                 Value<String> type = const Value.absent(),
                 Value<String> version = const Value.absent(),
                 Value<String?> thumbnailPath = const Value.absent(),
+                Value<bool> favorite = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> lastOpenedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AssetsCompanion(
                 id: id,
@@ -25740,8 +27085,10 @@ class $$AssetsTableTableManager
                 type: type,
                 version: version,
                 thumbnailPath: thumbnailPath,
+                favorite: favorite,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                lastOpenedAt: lastOpenedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -25753,8 +27100,10 @@ class $$AssetsTableTableManager
                 required String type,
                 Value<String> version = const Value.absent(),
                 Value<String?> thumbnailPath = const Value.absent(),
+                Value<bool> favorite = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
+                Value<DateTime?> lastOpenedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AssetsCompanion.insert(
                 id: id,
@@ -25764,8 +27113,10 @@ class $$AssetsTableTableManager
                 type: type,
                 version: version,
                 thumbnailPath: thumbnailPath,
+                favorite: favorite,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                lastOpenedAt: lastOpenedAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -38833,6 +40184,741 @@ typedef $$AiGenerationInputsTableProcessedTableManager =
       AiGenerationInput,
       PrefetchHooks Function()
     >;
+typedef $$TagsTableCreateCompanionBuilder =
+    TagsCompanion Function({
+      required String id,
+      required String projectId,
+      required String name,
+      Value<int> rowid,
+    });
+typedef $$TagsTableUpdateCompanionBuilder =
+    TagsCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> name,
+      Value<int> rowid,
+    });
+
+class $$TagsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $TagsTable> {
+  $$TagsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TagsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $TagsTable> {
+  $$TagsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TagsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $TagsTable> {
+  $$TagsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+}
+
+class $$TagsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $TagsTable,
+          Tag,
+          $$TagsTableFilterComposer,
+          $$TagsTableOrderingComposer,
+          $$TagsTableAnnotationComposer,
+          $$TagsTableCreateCompanionBuilder,
+          $$TagsTableUpdateCompanionBuilder,
+          (Tag, BaseReferences<_$ProjectDatabase, $TagsTable, Tag>),
+          Tag,
+          PrefetchHooks Function()
+        > {
+  $$TagsTableTableManager(_$ProjectDatabase db, $TagsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TagsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TagsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TagsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TagsCompanion(
+                id: id,
+                projectId: projectId,
+                name: name,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String name,
+                Value<int> rowid = const Value.absent(),
+              }) => TagsCompanion.insert(
+                id: id,
+                projectId: projectId,
+                name: name,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TagsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $TagsTable,
+      Tag,
+      $$TagsTableFilterComposer,
+      $$TagsTableOrderingComposer,
+      $$TagsTableAnnotationComposer,
+      $$TagsTableCreateCompanionBuilder,
+      $$TagsTableUpdateCompanionBuilder,
+      (Tag, BaseReferences<_$ProjectDatabase, $TagsTable, Tag>),
+      Tag,
+      PrefetchHooks Function()
+    >;
+typedef $$AssetTagLinksTableCreateCompanionBuilder =
+    AssetTagLinksCompanion Function({
+      required String assetId,
+      required String tagId,
+      Value<int> rowid,
+    });
+typedef $$AssetTagLinksTableUpdateCompanionBuilder =
+    AssetTagLinksCompanion Function({
+      Value<String> assetId,
+      Value<String> tagId,
+      Value<int> rowid,
+    });
+
+class $$AssetTagLinksTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AssetTagLinksTable> {
+  $$AssetTagLinksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tagId => $composableBuilder(
+    column: $table.tagId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AssetTagLinksTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AssetTagLinksTable> {
+  $$AssetTagLinksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tagId => $composableBuilder(
+    column: $table.tagId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AssetTagLinksTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AssetTagLinksTable> {
+  $$AssetTagLinksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get tagId =>
+      $composableBuilder(column: $table.tagId, builder: (column) => column);
+}
+
+class $$AssetTagLinksTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AssetTagLinksTable,
+          AssetTagLink,
+          $$AssetTagLinksTableFilterComposer,
+          $$AssetTagLinksTableOrderingComposer,
+          $$AssetTagLinksTableAnnotationComposer,
+          $$AssetTagLinksTableCreateCompanionBuilder,
+          $$AssetTagLinksTableUpdateCompanionBuilder,
+          (
+            AssetTagLink,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AssetTagLinksTable,
+              AssetTagLink
+            >,
+          ),
+          AssetTagLink,
+          PrefetchHooks Function()
+        > {
+  $$AssetTagLinksTableTableManager(
+    _$ProjectDatabase db,
+    $AssetTagLinksTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AssetTagLinksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AssetTagLinksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AssetTagLinksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> assetId = const Value.absent(),
+                Value<String> tagId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AssetTagLinksCompanion(
+                assetId: assetId,
+                tagId: tagId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String assetId,
+                required String tagId,
+                Value<int> rowid = const Value.absent(),
+              }) => AssetTagLinksCompanion.insert(
+                assetId: assetId,
+                tagId: tagId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AssetTagLinksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AssetTagLinksTable,
+      AssetTagLink,
+      $$AssetTagLinksTableFilterComposer,
+      $$AssetTagLinksTableOrderingComposer,
+      $$AssetTagLinksTableAnnotationComposer,
+      $$AssetTagLinksTableCreateCompanionBuilder,
+      $$AssetTagLinksTableUpdateCompanionBuilder,
+      (
+        AssetTagLink,
+        BaseReferences<_$ProjectDatabase, $AssetTagLinksTable, AssetTagLink>,
+      ),
+      AssetTagLink,
+      PrefetchHooks Function()
+    >;
+typedef $$AssetCollectionsTableCreateCompanionBuilder =
+    AssetCollectionsCompanion Function({
+      required String id,
+      required String projectId,
+      required String name,
+      Value<String> description,
+      Value<String?> query,
+      Value<bool> isSmart,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$AssetCollectionsTableUpdateCompanionBuilder =
+    AssetCollectionsCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> name,
+      Value<String> description,
+      Value<String?> query,
+      Value<bool> isSmart,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$AssetCollectionsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AssetCollectionsTable> {
+  $$AssetCollectionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get query => $composableBuilder(
+    column: $table.query,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isSmart => $composableBuilder(
+    column: $table.isSmart,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AssetCollectionsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AssetCollectionsTable> {
+  $$AssetCollectionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get query => $composableBuilder(
+    column: $table.query,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isSmart => $composableBuilder(
+    column: $table.isSmart,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AssetCollectionsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AssetCollectionsTable> {
+  $$AssetCollectionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get query =>
+      $composableBuilder(column: $table.query, builder: (column) => column);
+
+  GeneratedColumn<bool> get isSmart =>
+      $composableBuilder(column: $table.isSmart, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$AssetCollectionsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AssetCollectionsTable,
+          AssetCollection,
+          $$AssetCollectionsTableFilterComposer,
+          $$AssetCollectionsTableOrderingComposer,
+          $$AssetCollectionsTableAnnotationComposer,
+          $$AssetCollectionsTableCreateCompanionBuilder,
+          $$AssetCollectionsTableUpdateCompanionBuilder,
+          (
+            AssetCollection,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AssetCollectionsTable,
+              AssetCollection
+            >,
+          ),
+          AssetCollection,
+          PrefetchHooks Function()
+        > {
+  $$AssetCollectionsTableTableManager(
+    _$ProjectDatabase db,
+    $AssetCollectionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AssetCollectionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AssetCollectionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AssetCollectionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String?> query = const Value.absent(),
+                Value<bool> isSmart = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AssetCollectionsCompanion(
+                id: id,
+                projectId: projectId,
+                name: name,
+                description: description,
+                query: query,
+                isSmart: isSmart,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String name,
+                Value<String> description = const Value.absent(),
+                Value<String?> query = const Value.absent(),
+                Value<bool> isSmart = const Value.absent(),
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AssetCollectionsCompanion.insert(
+                id: id,
+                projectId: projectId,
+                name: name,
+                description: description,
+                query: query,
+                isSmart: isSmart,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AssetCollectionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AssetCollectionsTable,
+      AssetCollection,
+      $$AssetCollectionsTableFilterComposer,
+      $$AssetCollectionsTableOrderingComposer,
+      $$AssetCollectionsTableAnnotationComposer,
+      $$AssetCollectionsTableCreateCompanionBuilder,
+      $$AssetCollectionsTableUpdateCompanionBuilder,
+      (
+        AssetCollection,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AssetCollectionsTable,
+          AssetCollection
+        >,
+      ),
+      AssetCollection,
+      PrefetchHooks Function()
+    >;
+typedef $$AssetCollectionItemsTableCreateCompanionBuilder =
+    AssetCollectionItemsCompanion Function({
+      required String collectionId,
+      required String assetId,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$AssetCollectionItemsTableUpdateCompanionBuilder =
+    AssetCollectionItemsCompanion Function({
+      Value<String> collectionId,
+      Value<String> assetId,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$AssetCollectionItemsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AssetCollectionItemsTable> {
+  $$AssetCollectionItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get collectionId => $composableBuilder(
+    column: $table.collectionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AssetCollectionItemsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AssetCollectionItemsTable> {
+  $$AssetCollectionItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get collectionId => $composableBuilder(
+    column: $table.collectionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AssetCollectionItemsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AssetCollectionItemsTable> {
+  $$AssetCollectionItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get collectionId => $composableBuilder(
+    column: $table.collectionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$AssetCollectionItemsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AssetCollectionItemsTable,
+          AssetCollectionItem,
+          $$AssetCollectionItemsTableFilterComposer,
+          $$AssetCollectionItemsTableOrderingComposer,
+          $$AssetCollectionItemsTableAnnotationComposer,
+          $$AssetCollectionItemsTableCreateCompanionBuilder,
+          $$AssetCollectionItemsTableUpdateCompanionBuilder,
+          (
+            AssetCollectionItem,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AssetCollectionItemsTable,
+              AssetCollectionItem
+            >,
+          ),
+          AssetCollectionItem,
+          PrefetchHooks Function()
+        > {
+  $$AssetCollectionItemsTableTableManager(
+    _$ProjectDatabase db,
+    $AssetCollectionItemsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AssetCollectionItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AssetCollectionItemsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$AssetCollectionItemsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> collectionId = const Value.absent(),
+                Value<String> assetId = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AssetCollectionItemsCompanion(
+                collectionId: collectionId,
+                assetId: assetId,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String collectionId,
+                required String assetId,
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AssetCollectionItemsCompanion.insert(
+                collectionId: collectionId,
+                assetId: assetId,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AssetCollectionItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AssetCollectionItemsTable,
+      AssetCollectionItem,
+      $$AssetCollectionItemsTableFilterComposer,
+      $$AssetCollectionItemsTableOrderingComposer,
+      $$AssetCollectionItemsTableAnnotationComposer,
+      $$AssetCollectionItemsTableCreateCompanionBuilder,
+      $$AssetCollectionItemsTableUpdateCompanionBuilder,
+      (
+        AssetCollectionItem,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AssetCollectionItemsTable,
+          AssetCollectionItem
+        >,
+      ),
+      AssetCollectionItem,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -38985,4 +41071,11 @@ class $ProjectDatabaseManager {
       $$AiGenerationOutputsTableTableManager(_db, _db.aiGenerationOutputs);
   $$AiGenerationInputsTableTableManager get aiGenerationInputs =>
       $$AiGenerationInputsTableTableManager(_db, _db.aiGenerationInputs);
+  $$TagsTableTableManager get tags => $$TagsTableTableManager(_db, _db.tags);
+  $$AssetTagLinksTableTableManager get assetTagLinks =>
+      $$AssetTagLinksTableTableManager(_db, _db.assetTagLinks);
+  $$AssetCollectionsTableTableManager get assetCollections =>
+      $$AssetCollectionsTableTableManager(_db, _db.assetCollections);
+  $$AssetCollectionItemsTableTableManager get assetCollectionItems =>
+      $$AssetCollectionItemsTableTableManager(_db, _db.assetCollectionItems);
 }

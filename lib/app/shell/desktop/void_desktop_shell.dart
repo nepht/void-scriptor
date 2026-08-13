@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../features/explorer/presentation/explorer_panel.dart';
 import '../../../features/inspector/presentation/inspector_panel.dart';
@@ -17,7 +18,14 @@ class VoidDesktopShell extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          VoidTopBar(onMenuSelected: (menu) {}, onLogout: onLogout),
+          VoidTopBar(
+            onMenuSelected: (menu) {
+              if (menu == 'assets') {
+                context.go('/assets');
+              }
+            },
+            onLogout: onLogout,
+          ),
 
           const Expanded(
             child: Row(

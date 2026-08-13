@@ -14,6 +14,7 @@ import '../../features/splash/presentation/splash_screen.dart';
 import '../../features/ai/presentation/ai_prompt_composer_screen.dart';
 import '../../features/ai/presentation/ai_provider_workspace_screen.dart';
 import '../../features/ai/presentation/ai_generation_queue_screen.dart';
+import '../../features/assets/presentation/asset_browser_screen.dart';
 import '../shell/void_app_shell.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
@@ -29,6 +30,10 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
               ? const ProviderScope(child: VoidAppShell())
               : FoundationRouteScreen(label: route.key),
         ),
+      GoRoute(
+        path: AppRoutes.assets,
+        builder: (_, __) => const AssetBrowserScreen(),
+      ),
     ],
   );
 }
@@ -100,6 +105,10 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     GoRoute(
       path: AppRoutes.aiProviders,
       builder: (_, __) => const AiProviderWorkspaceScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.assets,
+      builder: (_, __) => const AssetBrowserScreen(),
     ),
   ];
 }

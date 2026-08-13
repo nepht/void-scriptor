@@ -12,6 +12,8 @@ class AssetModel {
     this.description = '',
     this.thumbnailPath,
     this.tags = const [],
+    this.favorite = false,
+    this.lastOpenedAt,
   });
 
   final String id;
@@ -22,8 +24,10 @@ class AssetModel {
   final String version;
   final String? thumbnailPath;
   final List<String> tags;
+  final bool favorite;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final DateTime? lastOpenedAt;
 
   AssetModel copyWith({
     String? name,
@@ -31,7 +35,9 @@ class AssetModel {
     String? version,
     String? thumbnailPath,
     List<String>? tags,
+    bool? favorite,
     DateTime? updatedAt,
+    DateTime? lastOpenedAt,
   }) => AssetModel(
     id: id,
     projectId: projectId,
@@ -41,7 +47,9 @@ class AssetModel {
     version: version ?? this.version,
     thumbnailPath: thumbnailPath ?? this.thumbnailPath,
     tags: tags ?? this.tags,
+    favorite: favorite ?? this.favorite,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    lastOpenedAt: lastOpenedAt ?? this.lastOpenedAt,
   );
 }

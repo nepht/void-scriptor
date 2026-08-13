@@ -38,6 +38,8 @@ import 'tables/ai_generations.dart';
 import 'tables/ai_generation_jobs.dart';
 import 'tables/ai_generation_outputs.dart';
 import 'tables/ai_generation_inputs.dart';
+import 'tables/tags.dart';
+import 'tables/asset_collections.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -126,6 +128,10 @@ class ProjectMetadata extends Table {
     AiGenerationJobs,
     AiGenerationOutputs,
     AiGenerationInputs,
+    Tags,
+    AssetTagLinks,
+    AssetCollections,
+    AssetCollectionItems,
   ],
   daos: [
     AssetDao,
@@ -143,7 +149,7 @@ class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 14;
+  int get schemaVersion => 15;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -241,6 +247,27 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(aiGenerationJobs);
         await m.createTable(aiGenerationOutputs);
         await m.createTable(aiGenerationInputs);
+      }
+      if (from < 15) {
+        await m.addColumn(assets, assets.favorite);
+        await m.addColumn(assets, assets.lastOpenedAt);
+        await m.createTable(tags);
+        await m.createTable(assetTagLinks);
+        await m.createTable(assetCollections);
+        await m.createTable(assetCollectionItems);
+        await customStatement('''
+          INSERT OR IGNORE INTO tags (id, project_id, name)
+          SELECT 'legacy_' || asset_id || '_' || lower(trim(tag)), project_id, lower(trim(tag))
+          FROM asset_tags
+          JOIN assets ON assets.id = asset_tags.asset_id
+          WHERE trim(tag) <> ''
+        ''');
+        await customStatement('''
+          INSERT OR IGNORE INTO asset_tag_links (asset_id, tag_id)
+          SELECT asset_tags.asset_id, 'legacy_' || asset_tags.asset_id || '_' || lower(trim(asset_tags.tag))
+          FROM asset_tags
+          WHERE trim(asset_tags.tag) <> ''
+        ''');
       }
     },
   );

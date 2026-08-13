@@ -6,7 +6,9 @@ enum AssetType {
   vehicle,
   environment,
   story,
+  scene,
   timeline,
   prompt,
+  aiGeneration,
   reference,
 }

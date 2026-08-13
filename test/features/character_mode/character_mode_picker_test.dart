@@ -11,6 +11,7 @@ void main() {
     type: 'weapon',
     description: '',
     version: '1',
+    favorite: false,
     createdAt: DateTime(2026),
     updatedAt: DateTime(2026),
   );
@@ -21,6 +22,7 @@ void main() {
     type: 'wardrobe',
     description: '',
     version: '1',
+    favorite: false,
     createdAt: DateTime(2026),
     updatedAt: DateTime(2026),
   );

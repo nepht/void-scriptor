@@ -17,6 +17,7 @@ abstract final class AppRoutes {
   static const donation = '/donation';
   static const workspace = '/workspace';
   static const studio = '/studio';
+  static const assets = '/assets';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

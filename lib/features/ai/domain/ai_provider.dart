@@ -152,7 +152,10 @@ class MockAiProvider implements AiProvider {
       PromptTarget.characterConsistency ||
       PromptTarget.environment ||
       PromptTarget.wardrobe ||
-      PromptTarget.weapon => AiCapability.imageGeneration,
+      PromptTarget.weapon ||
+      PromptTarget.creature ||
+      PromptTarget.vehicle ||
+      PromptTarget.prop => AiCapability.imageGeneration,
       PromptTarget.story => AiCapability.textGeneration,
     };
     if (!capabilities.contains(required)) {

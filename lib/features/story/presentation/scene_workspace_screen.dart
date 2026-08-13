@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../design_system/colors/void_colors.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
@@ -9,6 +10,10 @@ import 'scene_beat_editor.dart';
 import '../../timeline/domain/timeline_model.dart';
 import '../../timeline/application/create_timeline_service.dart';
 import '../../timeline/presentation/timeline_workspace_screen.dart';
+import '../../scene_assets/application/scene_asset_instance_repository.dart';
+import '../../scene_assets/domain/scene_asset_instance.dart';
+import '../../scene_assets/presentation/scene_asset_panel.dart';
+import '../../../app/routing/app_routes.dart';
 
 final sceneWorkspaceProvider = FutureProvider.family<StorySceneNode?, String>((
   ref,
@@ -21,6 +26,18 @@ final sceneWorkspaceProvider = FutureProvider.family<StorySceneNode?, String>((
     projectId: session.manifest.id,
   ).getScene(sceneId);
 });
+
+final sceneAssetInstancesProvider =
+    FutureProvider.family<List<SceneAssetInstanceModel>, String>((
+      ref,
+      sceneId,
+    ) async {
+      final session = ref.watch(projectSessionProvider).valueOrNull;
+      if (session == null) return const [];
+      return SceneAssetInstanceRepository(
+        session.database,
+      ).instancesForScene(sceneId);
+    });
 
 class SceneWorkspaceScreen extends ConsumerStatefulWidget {
   const SceneWorkspaceScreen({
@@ -154,6 +171,9 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
             .toList() ??
         const <SceneBeatEditorItem>[];
     final environment = data?.environment;
+    final sceneAssets =
+        ref.watch(sceneAssetInstancesProvider(widget.sceneId)).valueOrNull ??
+        const <SceneAssetInstanceModel>[];
     final total = beats.fold<double>(
       0,
       (sum, beat) => sum + (beat.durationSeconds ?? 0),
@@ -208,6 +228,32 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
                     ),
                   ),
               ],
+            ),
+            const SizedBox(height: 12),
+            SceneAssetPanel(
+              groups: {
+                'Characters': sceneAssets
+                    .where((item) => item.assetType == SceneAssetType.character)
+                    .map((item) => item.assetId)
+                    .toList(),
+                'Creatures': sceneAssets
+                    .where((item) => item.assetType == SceneAssetType.creature)
+                    .map((item) => item.assetId)
+                    .toList(),
+                'Vehicles': sceneAssets
+                    .where((item) => item.assetType == SceneAssetType.vehicle)
+                    .map((item) => item.assetId)
+                    .toList(),
+                'Props': sceneAssets
+                    .where((item) => item.assetType == SceneAssetType.prop)
+                    .map((item) => item.assetId)
+                    .toList(),
+                'Environment': [
+                  if (environment?.environmentId != null)
+                    environment!.environmentId,
+                ],
+              },
+              onAddAsset: () => context.push(AppRoutes.assets),
             ),
             const SizedBox(height: 12),
             Card(

@@ -51,8 +51,8 @@ void main() {
     final second = await databaseService.open(dbPath);
     addTearDown(second.close);
     final restarted = CreateTimelineService(database: second);
-    expect((await restarted.getTracks(timelineId)).length, 8);
+    expect((await restarted.getTracks(timelineId)).length, 11);
     expect((await restarted.getClips(timelineId)).single.label, 'Descend');
-    expect(second.schemaVersion, 24);
+    expect(second.schemaVersion, 28);
   });
 }

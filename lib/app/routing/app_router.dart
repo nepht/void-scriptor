@@ -19,6 +19,7 @@ import '../../features/assets/presentation/asset_browser_screen.dart';
 import '../../features/references/presentation/project_reference_library_screen.dart';
 import '../../features/references/presentation/reference_comparison_screen.dart';
 import '../../features/bible/presentation/project_bible_workspace_screen.dart';
+import '../../features/production_assets/presentation/production_asset_workspace_screen.dart';
 import '../shell/void_app_shell.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
@@ -46,6 +47,7 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
         path: AppRoutes.bible,
         builder: (_, __) => const ProjectBibleWorkspaceScreen(),
       ),
+      ..._productionAssetRoutes(),
       GoRoute(
         path: '${AppRoutes.references}/compare',
         builder: (_, state) => ReferenceComparisonScreen(
@@ -141,6 +143,7 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
       path: AppRoutes.bible,
       builder: (_, __) => const ProjectBibleWorkspaceScreen(),
     ),
+    ..._productionAssetRoutes(),
     GoRoute(
       path: '${AppRoutes.references}/compare',
       builder: (_, state) => ReferenceComparisonScreen(
@@ -150,6 +153,26 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
   ];
 }
+
+List<RouteBase> _productionAssetRoutes() => [
+  for (final entry in {
+    AppRoutes.creatures: ProductionAssetKind.creature,
+    AppRoutes.vehicles: ProductionAssetKind.vehicle,
+    AppRoutes.props: ProductionAssetKind.prop,
+  }.entries) ...[
+    GoRoute(
+      path: entry.key,
+      builder: (_, __) => ProductionAssetWorkspaceScreen(kind: entry.value),
+    ),
+    GoRoute(
+      path: '${entry.key}/:id',
+      builder: (_, state) => ProductionAssetWorkspaceScreen(
+        kind: entry.value,
+        assetId: state.pathParameters['id'],
+      ),
+    ),
+  ],
+];
 
 class _FoundationRouteLabel extends ConsumerWidget {
   const _FoundationRouteLabel({required this.label});

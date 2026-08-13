@@ -15,9 +15,12 @@ class TimelineModel {
 
 enum TimelineTrackType {
   character,
+  creature,
+  vehicle,
   camera,
   action,
   dialogue,
+  prop,
   vfx,
   audio,
   environment,

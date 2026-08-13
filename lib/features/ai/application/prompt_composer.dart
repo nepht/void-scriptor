@@ -99,6 +99,22 @@ class PromptComposer {
         add('CHARACTER — ${character.name.toUpperCase()}', lines.join('\n'));
       }
     }
+    if (context.sceneAssetContexts.isNotEmpty) {
+      add(
+        'SCENE ASSETS',
+        context.sceneAssetContexts
+            .map(
+              (asset) => [
+                '${asset.type.toUpperCase()} — ${asset.name}',
+                if (asset.state != null) 'State: ${asset.state}',
+                'Priority: ${asset.priority}',
+                if (asset.references.isNotEmpty)
+                  'References: ${asset.references.join(', ')}',
+              ].join('\n'),
+            )
+            .join('\n\n'),
+      );
+    }
     if (options.includeEnvironment && context.environmentContext != null) {
       final environment = context.environmentContext!;
       add(

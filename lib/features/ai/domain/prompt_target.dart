@@ -6,4 +6,7 @@ enum PromptTarget {
   environment,
   wardrobe,
   weapon,
+  creature,
+  vehicle,
+  prop,
 }

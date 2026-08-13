@@ -8,9 +8,12 @@ class CreateTimelineService {
   final ProjectDatabase database;
   static const _defaultTracks = [
     TimelineTrackType.character,
+    TimelineTrackType.creature,
+    TimelineTrackType.vehicle,
     TimelineTrackType.camera,
     TimelineTrackType.action,
     TimelineTrackType.dialogue,
+    TimelineTrackType.prop,
     TimelineTrackType.vfx,
     TimelineTrackType.audio,
     TimelineTrackType.environment,
@@ -99,9 +102,12 @@ class CreateTimelineService {
   );
   static String _label(TimelineTrackType type) => switch (type) {
     TimelineTrackType.character => 'Character',
+    TimelineTrackType.creature => 'Creature',
+    TimelineTrackType.vehicle => 'Vehicle',
     TimelineTrackType.camera => 'Camera',
     TimelineTrackType.action => 'Action',
     TimelineTrackType.dialogue => 'Dialogue',
+    TimelineTrackType.prop => 'Prop',
     TimelineTrackType.vfx => 'VFX',
     TimelineTrackType.audio => 'Audio',
     TimelineTrackType.environment => 'Environment',

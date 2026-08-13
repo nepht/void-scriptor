@@ -63,6 +63,36 @@ class BuiltInPromptPresets {
       ],
     ),
     PromptPreset(
+      id: 'creature-detail-sheet',
+      name: 'Creature Detail Sheet',
+      target: PromptTarget.creature,
+      baseInstructions: [
+        'front, side, back and three-quarter views',
+        'head, eyes, body structure and scale comparison',
+        'show material, skin, color palette and modes',
+      ],
+    ),
+    PromptPreset(
+      id: 'vehicle-technical-sheet',
+      name: 'Vehicle Technical Detail Sheet',
+      target: PromptTarget.vehicle,
+      baseInstructions: [
+        'orthographic exterior and three-quarter views',
+        'interior, cockpit, propulsion and weapon mounts',
+        'dimensions, materials and scale comparison',
+      ],
+    ),
+    PromptPreset(
+      id: 'prop-detail-sheet',
+      name: 'Prop Detail Sheet',
+      target: PromptTarget.prop,
+      baseInstructions: [
+        'orthographic and exploded views',
+        'materials, dimensions, color palette and states',
+        'include scale comparison',
+      ],
+    ),
+    PromptPreset(
       id: 'storyboard',
       name: 'Storyboard',
       target: PromptTarget.story,

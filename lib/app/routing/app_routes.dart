@@ -21,6 +21,9 @@ abstract final class AppRoutes {
   static const assets = '/assets';
   static const references = '/references';
   static const bible = '/bible';
+  static const creatures = '/creatures';
+  static const vehicles = '/vehicles';
+  static const props = '/props';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

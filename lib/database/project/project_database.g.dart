@@ -37239,6 +37239,7198 @@ class HistoricalEventParticipantsCompanion
   }
 }
 
+class $CreaturesTable extends Creatures
+    with TableInfo<$CreaturesTable, Creature> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CreaturesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _speciesIdMeta = const VerificationMeta(
+    'speciesId',
+  );
+  @override
+  late final GeneratedColumn<String> speciesId = GeneratedColumn<String>(
+    'species_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _behaviorMeta = const VerificationMeta(
+    'behavior',
+  );
+  @override
+  late final GeneratedColumn<String> behavior = GeneratedColumn<String>(
+    'behavior',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _abilitiesMeta = const VerificationMeta(
+    'abilities',
+  );
+  @override
+  late final GeneratedColumn<String> abilities = GeneratedColumn<String>(
+    'abilities',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _originMeta = const VerificationMeta('origin');
+  @override
+  late final GeneratedColumn<String> origin = GeneratedColumn<String>(
+    'origin',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    assetId,
+    projectId,
+    name,
+    category,
+    speciesId,
+    description,
+    behavior,
+    abilities,
+    origin,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'creatures';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Creature> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('species_id')) {
+      context.handle(
+        _speciesIdMeta,
+        speciesId.isAcceptableOrUnknown(data['species_id']!, _speciesIdMeta),
+      );
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('behavior')) {
+      context.handle(
+        _behaviorMeta,
+        behavior.isAcceptableOrUnknown(data['behavior']!, _behaviorMeta),
+      );
+    }
+    if (data.containsKey('abilities')) {
+      context.handle(
+        _abilitiesMeta,
+        abilities.isAcceptableOrUnknown(data['abilities']!, _abilitiesMeta),
+      );
+    }
+    if (data.containsKey('origin')) {
+      context.handle(
+        _originMeta,
+        origin.isAcceptableOrUnknown(data['origin']!, _originMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {assetId};
+  @override
+  Creature map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Creature(
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      speciesId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}species_id'],
+      ),
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      behavior: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}behavior'],
+      )!,
+      abilities: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}abilities'],
+      )!,
+      origin: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}origin'],
+      )!,
+    );
+  }
+
+  @override
+  $CreaturesTable createAlias(String alias) {
+    return $CreaturesTable(attachedDatabase, alias);
+  }
+}
+
+class Creature extends DataClass implements Insertable<Creature> {
+  final String assetId;
+  final String projectId;
+  final String name;
+  final String category;
+  final String? speciesId;
+  final String description;
+  final String behavior;
+  final String abilities;
+  final String origin;
+  const Creature({
+    required this.assetId,
+    required this.projectId,
+    required this.name,
+    required this.category,
+    this.speciesId,
+    required this.description,
+    required this.behavior,
+    required this.abilities,
+    required this.origin,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['asset_id'] = Variable<String>(assetId);
+    map['project_id'] = Variable<String>(projectId);
+    map['name'] = Variable<String>(name);
+    map['category'] = Variable<String>(category);
+    if (!nullToAbsent || speciesId != null) {
+      map['species_id'] = Variable<String>(speciesId);
+    }
+    map['description'] = Variable<String>(description);
+    map['behavior'] = Variable<String>(behavior);
+    map['abilities'] = Variable<String>(abilities);
+    map['origin'] = Variable<String>(origin);
+    return map;
+  }
+
+  CreaturesCompanion toCompanion(bool nullToAbsent) {
+    return CreaturesCompanion(
+      assetId: Value(assetId),
+      projectId: Value(projectId),
+      name: Value(name),
+      category: Value(category),
+      speciesId: speciesId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(speciesId),
+      description: Value(description),
+      behavior: Value(behavior),
+      abilities: Value(abilities),
+      origin: Value(origin),
+    );
+  }
+
+  factory Creature.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Creature(
+      assetId: serializer.fromJson<String>(json['assetId']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      name: serializer.fromJson<String>(json['name']),
+      category: serializer.fromJson<String>(json['category']),
+      speciesId: serializer.fromJson<String?>(json['speciesId']),
+      description: serializer.fromJson<String>(json['description']),
+      behavior: serializer.fromJson<String>(json['behavior']),
+      abilities: serializer.fromJson<String>(json['abilities']),
+      origin: serializer.fromJson<String>(json['origin']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'assetId': serializer.toJson<String>(assetId),
+      'projectId': serializer.toJson<String>(projectId),
+      'name': serializer.toJson<String>(name),
+      'category': serializer.toJson<String>(category),
+      'speciesId': serializer.toJson<String?>(speciesId),
+      'description': serializer.toJson<String>(description),
+      'behavior': serializer.toJson<String>(behavior),
+      'abilities': serializer.toJson<String>(abilities),
+      'origin': serializer.toJson<String>(origin),
+    };
+  }
+
+  Creature copyWith({
+    String? assetId,
+    String? projectId,
+    String? name,
+    String? category,
+    Value<String?> speciesId = const Value.absent(),
+    String? description,
+    String? behavior,
+    String? abilities,
+    String? origin,
+  }) => Creature(
+    assetId: assetId ?? this.assetId,
+    projectId: projectId ?? this.projectId,
+    name: name ?? this.name,
+    category: category ?? this.category,
+    speciesId: speciesId.present ? speciesId.value : this.speciesId,
+    description: description ?? this.description,
+    behavior: behavior ?? this.behavior,
+    abilities: abilities ?? this.abilities,
+    origin: origin ?? this.origin,
+  );
+  Creature copyWithCompanion(CreaturesCompanion data) {
+    return Creature(
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      name: data.name.present ? data.name.value : this.name,
+      category: data.category.present ? data.category.value : this.category,
+      speciesId: data.speciesId.present ? data.speciesId.value : this.speciesId,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      behavior: data.behavior.present ? data.behavior.value : this.behavior,
+      abilities: data.abilities.present ? data.abilities.value : this.abilities,
+      origin: data.origin.present ? data.origin.value : this.origin,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Creature(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('category: $category, ')
+          ..write('speciesId: $speciesId, ')
+          ..write('description: $description, ')
+          ..write('behavior: $behavior, ')
+          ..write('abilities: $abilities, ')
+          ..write('origin: $origin')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    assetId,
+    projectId,
+    name,
+    category,
+    speciesId,
+    description,
+    behavior,
+    abilities,
+    origin,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Creature &&
+          other.assetId == this.assetId &&
+          other.projectId == this.projectId &&
+          other.name == this.name &&
+          other.category == this.category &&
+          other.speciesId == this.speciesId &&
+          other.description == this.description &&
+          other.behavior == this.behavior &&
+          other.abilities == this.abilities &&
+          other.origin == this.origin);
+}
+
+class CreaturesCompanion extends UpdateCompanion<Creature> {
+  final Value<String> assetId;
+  final Value<String> projectId;
+  final Value<String> name;
+  final Value<String> category;
+  final Value<String?> speciesId;
+  final Value<String> description;
+  final Value<String> behavior;
+  final Value<String> abilities;
+  final Value<String> origin;
+  final Value<int> rowid;
+  const CreaturesCompanion({
+    this.assetId = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.category = const Value.absent(),
+    this.speciesId = const Value.absent(),
+    this.description = const Value.absent(),
+    this.behavior = const Value.absent(),
+    this.abilities = const Value.absent(),
+    this.origin = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CreaturesCompanion.insert({
+    required String assetId,
+    required String projectId,
+    required String name,
+    required String category,
+    this.speciesId = const Value.absent(),
+    this.description = const Value.absent(),
+    this.behavior = const Value.absent(),
+    this.abilities = const Value.absent(),
+    this.origin = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : assetId = Value(assetId),
+       projectId = Value(projectId),
+       name = Value(name),
+       category = Value(category);
+  static Insertable<Creature> custom({
+    Expression<String>? assetId,
+    Expression<String>? projectId,
+    Expression<String>? name,
+    Expression<String>? category,
+    Expression<String>? speciesId,
+    Expression<String>? description,
+    Expression<String>? behavior,
+    Expression<String>? abilities,
+    Expression<String>? origin,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (assetId != null) 'asset_id': assetId,
+      if (projectId != null) 'project_id': projectId,
+      if (name != null) 'name': name,
+      if (category != null) 'category': category,
+      if (speciesId != null) 'species_id': speciesId,
+      if (description != null) 'description': description,
+      if (behavior != null) 'behavior': behavior,
+      if (abilities != null) 'abilities': abilities,
+      if (origin != null) 'origin': origin,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CreaturesCompanion copyWith({
+    Value<String>? assetId,
+    Value<String>? projectId,
+    Value<String>? name,
+    Value<String>? category,
+    Value<String?>? speciesId,
+    Value<String>? description,
+    Value<String>? behavior,
+    Value<String>? abilities,
+    Value<String>? origin,
+    Value<int>? rowid,
+  }) {
+    return CreaturesCompanion(
+      assetId: assetId ?? this.assetId,
+      projectId: projectId ?? this.projectId,
+      name: name ?? this.name,
+      category: category ?? this.category,
+      speciesId: speciesId ?? this.speciesId,
+      description: description ?? this.description,
+      behavior: behavior ?? this.behavior,
+      abilities: abilities ?? this.abilities,
+      origin: origin ?? this.origin,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (speciesId.present) {
+      map['species_id'] = Variable<String>(speciesId.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (behavior.present) {
+      map['behavior'] = Variable<String>(behavior.value);
+    }
+    if (abilities.present) {
+      map['abilities'] = Variable<String>(abilities.value);
+    }
+    if (origin.present) {
+      map['origin'] = Variable<String>(origin.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreaturesCompanion(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('category: $category, ')
+          ..write('speciesId: $speciesId, ')
+          ..write('description: $description, ')
+          ..write('behavior: $behavior, ')
+          ..write('abilities: $abilities, ')
+          ..write('origin: $origin, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CreaturePhysicalProfilesTable extends CreaturePhysicalProfiles
+    with TableInfo<$CreaturePhysicalProfilesTable, CreaturePhysicalProfile> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CreaturePhysicalProfilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _creatureIdMeta = const VerificationMeta(
+    'creatureId',
+  );
+  @override
+  late final GeneratedColumn<String> creatureId = GeneratedColumn<String>(
+    'creature_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _heightCmMeta = const VerificationMeta(
+    'heightCm',
+  );
+  @override
+  late final GeneratedColumn<double> heightCm = GeneratedColumn<double>(
+    'height_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lengthCmMeta = const VerificationMeta(
+    'lengthCm',
+  );
+  @override
+  late final GeneratedColumn<double> lengthCm = GeneratedColumn<double>(
+    'length_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _weightKgMeta = const VerificationMeta(
+    'weightKg',
+  );
+  @override
+  late final GeneratedColumn<double> weightKg = GeneratedColumn<double>(
+    'weight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bodyStructureMeta = const VerificationMeta(
+    'bodyStructure',
+  );
+  @override
+  late final GeneratedColumn<String> bodyStructure = GeneratedColumn<String>(
+    'body_structure',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _skinMaterialMeta = const VerificationMeta(
+    'skinMaterial',
+  );
+  @override
+  late final GeneratedColumn<String> skinMaterial = GeneratedColumn<String>(
+    'skin_material',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _eyeDescriptionMeta = const VerificationMeta(
+    'eyeDescription',
+  );
+  @override
+  late final GeneratedColumn<String> eyeDescription = GeneratedColumn<String>(
+    'eye_description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _distinguishingFeaturesMeta =
+      const VerificationMeta('distinguishingFeatures');
+  @override
+  late final GeneratedColumn<String> distinguishingFeatures =
+      GeneratedColumn<String>(
+        'distinguishing_features',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    creatureId,
+    heightCm,
+    lengthCm,
+    weightKg,
+    bodyStructure,
+    skinMaterial,
+    eyeDescription,
+    distinguishingFeatures,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'creature_physical_profiles';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CreaturePhysicalProfile> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('creature_id')) {
+      context.handle(
+        _creatureIdMeta,
+        creatureId.isAcceptableOrUnknown(data['creature_id']!, _creatureIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_creatureIdMeta);
+    }
+    if (data.containsKey('height_cm')) {
+      context.handle(
+        _heightCmMeta,
+        heightCm.isAcceptableOrUnknown(data['height_cm']!, _heightCmMeta),
+      );
+    }
+    if (data.containsKey('length_cm')) {
+      context.handle(
+        _lengthCmMeta,
+        lengthCm.isAcceptableOrUnknown(data['length_cm']!, _lengthCmMeta),
+      );
+    }
+    if (data.containsKey('weight_kg')) {
+      context.handle(
+        _weightKgMeta,
+        weightKg.isAcceptableOrUnknown(data['weight_kg']!, _weightKgMeta),
+      );
+    }
+    if (data.containsKey('body_structure')) {
+      context.handle(
+        _bodyStructureMeta,
+        bodyStructure.isAcceptableOrUnknown(
+          data['body_structure']!,
+          _bodyStructureMeta,
+        ),
+      );
+    }
+    if (data.containsKey('skin_material')) {
+      context.handle(
+        _skinMaterialMeta,
+        skinMaterial.isAcceptableOrUnknown(
+          data['skin_material']!,
+          _skinMaterialMeta,
+        ),
+      );
+    }
+    if (data.containsKey('eye_description')) {
+      context.handle(
+        _eyeDescriptionMeta,
+        eyeDescription.isAcceptableOrUnknown(
+          data['eye_description']!,
+          _eyeDescriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('distinguishing_features')) {
+      context.handle(
+        _distinguishingFeaturesMeta,
+        distinguishingFeatures.isAcceptableOrUnknown(
+          data['distinguishing_features']!,
+          _distinguishingFeaturesMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {creatureId};
+  @override
+  CreaturePhysicalProfile map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CreaturePhysicalProfile(
+      creatureId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}creature_id'],
+      )!,
+      heightCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}height_cm'],
+      ),
+      lengthCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}length_cm'],
+      ),
+      weightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}weight_kg'],
+      ),
+      bodyStructure: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}body_structure'],
+      )!,
+      skinMaterial: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}skin_material'],
+      )!,
+      eyeDescription: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}eye_description'],
+      )!,
+      distinguishingFeatures: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}distinguishing_features'],
+      )!,
+    );
+  }
+
+  @override
+  $CreaturePhysicalProfilesTable createAlias(String alias) {
+    return $CreaturePhysicalProfilesTable(attachedDatabase, alias);
+  }
+}
+
+class CreaturePhysicalProfile extends DataClass
+    implements Insertable<CreaturePhysicalProfile> {
+  final String creatureId;
+  final double? heightCm;
+  final double? lengthCm;
+  final double? weightKg;
+  final String bodyStructure;
+  final String skinMaterial;
+  final String eyeDescription;
+  final String distinguishingFeatures;
+  const CreaturePhysicalProfile({
+    required this.creatureId,
+    this.heightCm,
+    this.lengthCm,
+    this.weightKg,
+    required this.bodyStructure,
+    required this.skinMaterial,
+    required this.eyeDescription,
+    required this.distinguishingFeatures,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['creature_id'] = Variable<String>(creatureId);
+    if (!nullToAbsent || heightCm != null) {
+      map['height_cm'] = Variable<double>(heightCm);
+    }
+    if (!nullToAbsent || lengthCm != null) {
+      map['length_cm'] = Variable<double>(lengthCm);
+    }
+    if (!nullToAbsent || weightKg != null) {
+      map['weight_kg'] = Variable<double>(weightKg);
+    }
+    map['body_structure'] = Variable<String>(bodyStructure);
+    map['skin_material'] = Variable<String>(skinMaterial);
+    map['eye_description'] = Variable<String>(eyeDescription);
+    map['distinguishing_features'] = Variable<String>(distinguishingFeatures);
+    return map;
+  }
+
+  CreaturePhysicalProfilesCompanion toCompanion(bool nullToAbsent) {
+    return CreaturePhysicalProfilesCompanion(
+      creatureId: Value(creatureId),
+      heightCm: heightCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(heightCm),
+      lengthCm: lengthCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lengthCm),
+      weightKg: weightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weightKg),
+      bodyStructure: Value(bodyStructure),
+      skinMaterial: Value(skinMaterial),
+      eyeDescription: Value(eyeDescription),
+      distinguishingFeatures: Value(distinguishingFeatures),
+    );
+  }
+
+  factory CreaturePhysicalProfile.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CreaturePhysicalProfile(
+      creatureId: serializer.fromJson<String>(json['creatureId']),
+      heightCm: serializer.fromJson<double?>(json['heightCm']),
+      lengthCm: serializer.fromJson<double?>(json['lengthCm']),
+      weightKg: serializer.fromJson<double?>(json['weightKg']),
+      bodyStructure: serializer.fromJson<String>(json['bodyStructure']),
+      skinMaterial: serializer.fromJson<String>(json['skinMaterial']),
+      eyeDescription: serializer.fromJson<String>(json['eyeDescription']),
+      distinguishingFeatures: serializer.fromJson<String>(
+        json['distinguishingFeatures'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'creatureId': serializer.toJson<String>(creatureId),
+      'heightCm': serializer.toJson<double?>(heightCm),
+      'lengthCm': serializer.toJson<double?>(lengthCm),
+      'weightKg': serializer.toJson<double?>(weightKg),
+      'bodyStructure': serializer.toJson<String>(bodyStructure),
+      'skinMaterial': serializer.toJson<String>(skinMaterial),
+      'eyeDescription': serializer.toJson<String>(eyeDescription),
+      'distinguishingFeatures': serializer.toJson<String>(
+        distinguishingFeatures,
+      ),
+    };
+  }
+
+  CreaturePhysicalProfile copyWith({
+    String? creatureId,
+    Value<double?> heightCm = const Value.absent(),
+    Value<double?> lengthCm = const Value.absent(),
+    Value<double?> weightKg = const Value.absent(),
+    String? bodyStructure,
+    String? skinMaterial,
+    String? eyeDescription,
+    String? distinguishingFeatures,
+  }) => CreaturePhysicalProfile(
+    creatureId: creatureId ?? this.creatureId,
+    heightCm: heightCm.present ? heightCm.value : this.heightCm,
+    lengthCm: lengthCm.present ? lengthCm.value : this.lengthCm,
+    weightKg: weightKg.present ? weightKg.value : this.weightKg,
+    bodyStructure: bodyStructure ?? this.bodyStructure,
+    skinMaterial: skinMaterial ?? this.skinMaterial,
+    eyeDescription: eyeDescription ?? this.eyeDescription,
+    distinguishingFeatures:
+        distinguishingFeatures ?? this.distinguishingFeatures,
+  );
+  CreaturePhysicalProfile copyWithCompanion(
+    CreaturePhysicalProfilesCompanion data,
+  ) {
+    return CreaturePhysicalProfile(
+      creatureId: data.creatureId.present
+          ? data.creatureId.value
+          : this.creatureId,
+      heightCm: data.heightCm.present ? data.heightCm.value : this.heightCm,
+      lengthCm: data.lengthCm.present ? data.lengthCm.value : this.lengthCm,
+      weightKg: data.weightKg.present ? data.weightKg.value : this.weightKg,
+      bodyStructure: data.bodyStructure.present
+          ? data.bodyStructure.value
+          : this.bodyStructure,
+      skinMaterial: data.skinMaterial.present
+          ? data.skinMaterial.value
+          : this.skinMaterial,
+      eyeDescription: data.eyeDescription.present
+          ? data.eyeDescription.value
+          : this.eyeDescription,
+      distinguishingFeatures: data.distinguishingFeatures.present
+          ? data.distinguishingFeatures.value
+          : this.distinguishingFeatures,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreaturePhysicalProfile(')
+          ..write('creatureId: $creatureId, ')
+          ..write('heightCm: $heightCm, ')
+          ..write('lengthCm: $lengthCm, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('bodyStructure: $bodyStructure, ')
+          ..write('skinMaterial: $skinMaterial, ')
+          ..write('eyeDescription: $eyeDescription, ')
+          ..write('distinguishingFeatures: $distinguishingFeatures')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    creatureId,
+    heightCm,
+    lengthCm,
+    weightKg,
+    bodyStructure,
+    skinMaterial,
+    eyeDescription,
+    distinguishingFeatures,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CreaturePhysicalProfile &&
+          other.creatureId == this.creatureId &&
+          other.heightCm == this.heightCm &&
+          other.lengthCm == this.lengthCm &&
+          other.weightKg == this.weightKg &&
+          other.bodyStructure == this.bodyStructure &&
+          other.skinMaterial == this.skinMaterial &&
+          other.eyeDescription == this.eyeDescription &&
+          other.distinguishingFeatures == this.distinguishingFeatures);
+}
+
+class CreaturePhysicalProfilesCompanion
+    extends UpdateCompanion<CreaturePhysicalProfile> {
+  final Value<String> creatureId;
+  final Value<double?> heightCm;
+  final Value<double?> lengthCm;
+  final Value<double?> weightKg;
+  final Value<String> bodyStructure;
+  final Value<String> skinMaterial;
+  final Value<String> eyeDescription;
+  final Value<String> distinguishingFeatures;
+  final Value<int> rowid;
+  const CreaturePhysicalProfilesCompanion({
+    this.creatureId = const Value.absent(),
+    this.heightCm = const Value.absent(),
+    this.lengthCm = const Value.absent(),
+    this.weightKg = const Value.absent(),
+    this.bodyStructure = const Value.absent(),
+    this.skinMaterial = const Value.absent(),
+    this.eyeDescription = const Value.absent(),
+    this.distinguishingFeatures = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CreaturePhysicalProfilesCompanion.insert({
+    required String creatureId,
+    this.heightCm = const Value.absent(),
+    this.lengthCm = const Value.absent(),
+    this.weightKg = const Value.absent(),
+    this.bodyStructure = const Value.absent(),
+    this.skinMaterial = const Value.absent(),
+    this.eyeDescription = const Value.absent(),
+    this.distinguishingFeatures = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : creatureId = Value(creatureId);
+  static Insertable<CreaturePhysicalProfile> custom({
+    Expression<String>? creatureId,
+    Expression<double>? heightCm,
+    Expression<double>? lengthCm,
+    Expression<double>? weightKg,
+    Expression<String>? bodyStructure,
+    Expression<String>? skinMaterial,
+    Expression<String>? eyeDescription,
+    Expression<String>? distinguishingFeatures,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (creatureId != null) 'creature_id': creatureId,
+      if (heightCm != null) 'height_cm': heightCm,
+      if (lengthCm != null) 'length_cm': lengthCm,
+      if (weightKg != null) 'weight_kg': weightKg,
+      if (bodyStructure != null) 'body_structure': bodyStructure,
+      if (skinMaterial != null) 'skin_material': skinMaterial,
+      if (eyeDescription != null) 'eye_description': eyeDescription,
+      if (distinguishingFeatures != null)
+        'distinguishing_features': distinguishingFeatures,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CreaturePhysicalProfilesCompanion copyWith({
+    Value<String>? creatureId,
+    Value<double?>? heightCm,
+    Value<double?>? lengthCm,
+    Value<double?>? weightKg,
+    Value<String>? bodyStructure,
+    Value<String>? skinMaterial,
+    Value<String>? eyeDescription,
+    Value<String>? distinguishingFeatures,
+    Value<int>? rowid,
+  }) {
+    return CreaturePhysicalProfilesCompanion(
+      creatureId: creatureId ?? this.creatureId,
+      heightCm: heightCm ?? this.heightCm,
+      lengthCm: lengthCm ?? this.lengthCm,
+      weightKg: weightKg ?? this.weightKg,
+      bodyStructure: bodyStructure ?? this.bodyStructure,
+      skinMaterial: skinMaterial ?? this.skinMaterial,
+      eyeDescription: eyeDescription ?? this.eyeDescription,
+      distinguishingFeatures:
+          distinguishingFeatures ?? this.distinguishingFeatures,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (creatureId.present) {
+      map['creature_id'] = Variable<String>(creatureId.value);
+    }
+    if (heightCm.present) {
+      map['height_cm'] = Variable<double>(heightCm.value);
+    }
+    if (lengthCm.present) {
+      map['length_cm'] = Variable<double>(lengthCm.value);
+    }
+    if (weightKg.present) {
+      map['weight_kg'] = Variable<double>(weightKg.value);
+    }
+    if (bodyStructure.present) {
+      map['body_structure'] = Variable<String>(bodyStructure.value);
+    }
+    if (skinMaterial.present) {
+      map['skin_material'] = Variable<String>(skinMaterial.value);
+    }
+    if (eyeDescription.present) {
+      map['eye_description'] = Variable<String>(eyeDescription.value);
+    }
+    if (distinguishingFeatures.present) {
+      map['distinguishing_features'] = Variable<String>(
+        distinguishingFeatures.value,
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreaturePhysicalProfilesCompanion(')
+          ..write('creatureId: $creatureId, ')
+          ..write('heightCm: $heightCm, ')
+          ..write('lengthCm: $lengthCm, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('bodyStructure: $bodyStructure, ')
+          ..write('skinMaterial: $skinMaterial, ')
+          ..write('eyeDescription: $eyeDescription, ')
+          ..write('distinguishingFeatures: $distinguishingFeatures, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CreatureAbilitiesTable extends CreatureAbilities
+    with TableInfo<$CreatureAbilitiesTable, CreatureAbility> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CreatureAbilitiesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _creatureIdMeta = const VerificationMeta(
+    'creatureId',
+  );
+  @override
+  late final GeneratedColumn<String> creatureId = GeneratedColumn<String>(
+    'creature_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _powerSystemIdMeta = const VerificationMeta(
+    'powerSystemId',
+  );
+  @override
+  late final GeneratedColumn<String> powerSystemId = GeneratedColumn<String>(
+    'power_system_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    creatureId,
+    name,
+    description,
+    powerSystemId,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'creature_abilities';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CreatureAbility> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('creature_id')) {
+      context.handle(
+        _creatureIdMeta,
+        creatureId.isAcceptableOrUnknown(data['creature_id']!, _creatureIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_creatureIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('power_system_id')) {
+      context.handle(
+        _powerSystemIdMeta,
+        powerSystemId.isAcceptableOrUnknown(
+          data['power_system_id']!,
+          _powerSystemIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CreatureAbility map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CreatureAbility(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      creatureId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}creature_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      powerSystemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}power_system_id'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $CreatureAbilitiesTable createAlias(String alias) {
+    return $CreatureAbilitiesTable(attachedDatabase, alias);
+  }
+}
+
+class CreatureAbility extends DataClass implements Insertable<CreatureAbility> {
+  final String id;
+  final String creatureId;
+  final String name;
+  final String description;
+  final String? powerSystemId;
+  final int sortOrder;
+  const CreatureAbility({
+    required this.id,
+    required this.creatureId,
+    required this.name,
+    required this.description,
+    this.powerSystemId,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['creature_id'] = Variable<String>(creatureId);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    if (!nullToAbsent || powerSystemId != null) {
+      map['power_system_id'] = Variable<String>(powerSystemId);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  CreatureAbilitiesCompanion toCompanion(bool nullToAbsent) {
+    return CreatureAbilitiesCompanion(
+      id: Value(id),
+      creatureId: Value(creatureId),
+      name: Value(name),
+      description: Value(description),
+      powerSystemId: powerSystemId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(powerSystemId),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory CreatureAbility.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CreatureAbility(
+      id: serializer.fromJson<String>(json['id']),
+      creatureId: serializer.fromJson<String>(json['creatureId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      powerSystemId: serializer.fromJson<String?>(json['powerSystemId']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'creatureId': serializer.toJson<String>(creatureId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'powerSystemId': serializer.toJson<String?>(powerSystemId),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  CreatureAbility copyWith({
+    String? id,
+    String? creatureId,
+    String? name,
+    String? description,
+    Value<String?> powerSystemId = const Value.absent(),
+    int? sortOrder,
+  }) => CreatureAbility(
+    id: id ?? this.id,
+    creatureId: creatureId ?? this.creatureId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    powerSystemId: powerSystemId.present
+        ? powerSystemId.value
+        : this.powerSystemId,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  CreatureAbility copyWithCompanion(CreatureAbilitiesCompanion data) {
+    return CreatureAbility(
+      id: data.id.present ? data.id.value : this.id,
+      creatureId: data.creatureId.present
+          ? data.creatureId.value
+          : this.creatureId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      powerSystemId: data.powerSystemId.present
+          ? data.powerSystemId.value
+          : this.powerSystemId,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreatureAbility(')
+          ..write('id: $id, ')
+          ..write('creatureId: $creatureId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('powerSystemId: $powerSystemId, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, creatureId, name, description, powerSystemId, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CreatureAbility &&
+          other.id == this.id &&
+          other.creatureId == this.creatureId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.powerSystemId == this.powerSystemId &&
+          other.sortOrder == this.sortOrder);
+}
+
+class CreatureAbilitiesCompanion extends UpdateCompanion<CreatureAbility> {
+  final Value<String> id;
+  final Value<String> creatureId;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<String?> powerSystemId;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const CreatureAbilitiesCompanion({
+    this.id = const Value.absent(),
+    this.creatureId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.powerSystemId = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CreatureAbilitiesCompanion.insert({
+    required String id,
+    required String creatureId,
+    required String name,
+    this.description = const Value.absent(),
+    this.powerSystemId = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       creatureId = Value(creatureId),
+       name = Value(name);
+  static Insertable<CreatureAbility> custom({
+    Expression<String>? id,
+    Expression<String>? creatureId,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? powerSystemId,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (creatureId != null) 'creature_id': creatureId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (powerSystemId != null) 'power_system_id': powerSystemId,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CreatureAbilitiesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? creatureId,
+    Value<String>? name,
+    Value<String>? description,
+    Value<String?>? powerSystemId,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return CreatureAbilitiesCompanion(
+      id: id ?? this.id,
+      creatureId: creatureId ?? this.creatureId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      powerSystemId: powerSystemId ?? this.powerSystemId,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (creatureId.present) {
+      map['creature_id'] = Variable<String>(creatureId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (powerSystemId.present) {
+      map['power_system_id'] = Variable<String>(powerSystemId.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreatureAbilitiesCompanion(')
+          ..write('id: $id, ')
+          ..write('creatureId: $creatureId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('powerSystemId: $powerSystemId, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CreatureModesTable extends CreatureModes
+    with TableInfo<$CreatureModesTable, CreatureMode> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CreatureModesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _creatureIdMeta = const VerificationMeta(
+    'creatureId',
+  );
+  @override
+  late final GeneratedColumn<String> creatureId = GeneratedColumn<String>(
+    'creature_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _referenceSetIdMeta = const VerificationMeta(
+    'referenceSetId',
+  );
+  @override
+  late final GeneratedColumn<String> referenceSetId = GeneratedColumn<String>(
+    'reference_set_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _defaultModeMeta = const VerificationMeta(
+    'defaultMode',
+  );
+  @override
+  late final GeneratedColumn<bool> defaultMode = GeneratedColumn<bool>(
+    'default_mode',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("default_mode" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    creatureId,
+    name,
+    description,
+    referenceSetId,
+    defaultMode,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'creature_modes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CreatureMode> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('creature_id')) {
+      context.handle(
+        _creatureIdMeta,
+        creatureId.isAcceptableOrUnknown(data['creature_id']!, _creatureIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_creatureIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reference_set_id')) {
+      context.handle(
+        _referenceSetIdMeta,
+        referenceSetId.isAcceptableOrUnknown(
+          data['reference_set_id']!,
+          _referenceSetIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('default_mode')) {
+      context.handle(
+        _defaultModeMeta,
+        defaultMode.isAcceptableOrUnknown(
+          data['default_mode']!,
+          _defaultModeMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CreatureMode map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CreatureMode(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      creatureId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}creature_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      referenceSetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reference_set_id'],
+      ),
+      defaultMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}default_mode'],
+      )!,
+    );
+  }
+
+  @override
+  $CreatureModesTable createAlias(String alias) {
+    return $CreatureModesTable(attachedDatabase, alias);
+  }
+}
+
+class CreatureMode extends DataClass implements Insertable<CreatureMode> {
+  final String id;
+  final String creatureId;
+  final String name;
+  final String description;
+  final String? referenceSetId;
+  final bool defaultMode;
+  const CreatureMode({
+    required this.id,
+    required this.creatureId,
+    required this.name,
+    required this.description,
+    this.referenceSetId,
+    required this.defaultMode,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['creature_id'] = Variable<String>(creatureId);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    if (!nullToAbsent || referenceSetId != null) {
+      map['reference_set_id'] = Variable<String>(referenceSetId);
+    }
+    map['default_mode'] = Variable<bool>(defaultMode);
+    return map;
+  }
+
+  CreatureModesCompanion toCompanion(bool nullToAbsent) {
+    return CreatureModesCompanion(
+      id: Value(id),
+      creatureId: Value(creatureId),
+      name: Value(name),
+      description: Value(description),
+      referenceSetId: referenceSetId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referenceSetId),
+      defaultMode: Value(defaultMode),
+    );
+  }
+
+  factory CreatureMode.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CreatureMode(
+      id: serializer.fromJson<String>(json['id']),
+      creatureId: serializer.fromJson<String>(json['creatureId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      referenceSetId: serializer.fromJson<String?>(json['referenceSetId']),
+      defaultMode: serializer.fromJson<bool>(json['defaultMode']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'creatureId': serializer.toJson<String>(creatureId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'referenceSetId': serializer.toJson<String?>(referenceSetId),
+      'defaultMode': serializer.toJson<bool>(defaultMode),
+    };
+  }
+
+  CreatureMode copyWith({
+    String? id,
+    String? creatureId,
+    String? name,
+    String? description,
+    Value<String?> referenceSetId = const Value.absent(),
+    bool? defaultMode,
+  }) => CreatureMode(
+    id: id ?? this.id,
+    creatureId: creatureId ?? this.creatureId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    referenceSetId: referenceSetId.present
+        ? referenceSetId.value
+        : this.referenceSetId,
+    defaultMode: defaultMode ?? this.defaultMode,
+  );
+  CreatureMode copyWithCompanion(CreatureModesCompanion data) {
+    return CreatureMode(
+      id: data.id.present ? data.id.value : this.id,
+      creatureId: data.creatureId.present
+          ? data.creatureId.value
+          : this.creatureId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      referenceSetId: data.referenceSetId.present
+          ? data.referenceSetId.value
+          : this.referenceSetId,
+      defaultMode: data.defaultMode.present
+          ? data.defaultMode.value
+          : this.defaultMode,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreatureMode(')
+          ..write('id: $id, ')
+          ..write('creatureId: $creatureId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('referenceSetId: $referenceSetId, ')
+          ..write('defaultMode: $defaultMode')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    creatureId,
+    name,
+    description,
+    referenceSetId,
+    defaultMode,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CreatureMode &&
+          other.id == this.id &&
+          other.creatureId == this.creatureId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.referenceSetId == this.referenceSetId &&
+          other.defaultMode == this.defaultMode);
+}
+
+class CreatureModesCompanion extends UpdateCompanion<CreatureMode> {
+  final Value<String> id;
+  final Value<String> creatureId;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<String?> referenceSetId;
+  final Value<bool> defaultMode;
+  final Value<int> rowid;
+  const CreatureModesCompanion({
+    this.id = const Value.absent(),
+    this.creatureId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.referenceSetId = const Value.absent(),
+    this.defaultMode = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CreatureModesCompanion.insert({
+    required String id,
+    required String creatureId,
+    required String name,
+    this.description = const Value.absent(),
+    this.referenceSetId = const Value.absent(),
+    this.defaultMode = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       creatureId = Value(creatureId),
+       name = Value(name);
+  static Insertable<CreatureMode> custom({
+    Expression<String>? id,
+    Expression<String>? creatureId,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? referenceSetId,
+    Expression<bool>? defaultMode,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (creatureId != null) 'creature_id': creatureId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (referenceSetId != null) 'reference_set_id': referenceSetId,
+      if (defaultMode != null) 'default_mode': defaultMode,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CreatureModesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? creatureId,
+    Value<String>? name,
+    Value<String>? description,
+    Value<String?>? referenceSetId,
+    Value<bool>? defaultMode,
+    Value<int>? rowid,
+  }) {
+    return CreatureModesCompanion(
+      id: id ?? this.id,
+      creatureId: creatureId ?? this.creatureId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      referenceSetId: referenceSetId ?? this.referenceSetId,
+      defaultMode: defaultMode ?? this.defaultMode,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (creatureId.present) {
+      map['creature_id'] = Variable<String>(creatureId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (referenceSetId.present) {
+      map['reference_set_id'] = Variable<String>(referenceSetId.value);
+    }
+    if (defaultMode.present) {
+      map['default_mode'] = Variable<bool>(defaultMode.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreatureModesCompanion(')
+          ..write('id: $id, ')
+          ..write('creatureId: $creatureId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('referenceSetId: $referenceSetId, ')
+          ..write('defaultMode: $defaultMode, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VehiclesTable extends Vehicles with TableInfo<$VehiclesTable, Vehicle> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VehiclesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _manufacturerMeta = const VerificationMeta(
+    'manufacturer',
+  );
+  @override
+  late final GeneratedColumn<String> manufacturer = GeneratedColumn<String>(
+    'manufacturer',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
+  @override
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+    'role',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    assetId,
+    projectId,
+    name,
+    category,
+    description,
+    manufacturer,
+    role,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vehicles';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Vehicle> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('manufacturer')) {
+      context.handle(
+        _manufacturerMeta,
+        manufacturer.isAcceptableOrUnknown(
+          data['manufacturer']!,
+          _manufacturerMeta,
+        ),
+      );
+    }
+    if (data.containsKey('role')) {
+      context.handle(
+        _roleMeta,
+        role.isAcceptableOrUnknown(data['role']!, _roleMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {assetId};
+  @override
+  Vehicle map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Vehicle(
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      manufacturer: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}manufacturer'],
+      )!,
+      role: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}role'],
+      )!,
+    );
+  }
+
+  @override
+  $VehiclesTable createAlias(String alias) {
+    return $VehiclesTable(attachedDatabase, alias);
+  }
+}
+
+class Vehicle extends DataClass implements Insertable<Vehicle> {
+  final String assetId;
+  final String projectId;
+  final String name;
+  final String category;
+  final String description;
+  final String manufacturer;
+  final String role;
+  const Vehicle({
+    required this.assetId,
+    required this.projectId,
+    required this.name,
+    required this.category,
+    required this.description,
+    required this.manufacturer,
+    required this.role,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['asset_id'] = Variable<String>(assetId);
+    map['project_id'] = Variable<String>(projectId);
+    map['name'] = Variable<String>(name);
+    map['category'] = Variable<String>(category);
+    map['description'] = Variable<String>(description);
+    map['manufacturer'] = Variable<String>(manufacturer);
+    map['role'] = Variable<String>(role);
+    return map;
+  }
+
+  VehiclesCompanion toCompanion(bool nullToAbsent) {
+    return VehiclesCompanion(
+      assetId: Value(assetId),
+      projectId: Value(projectId),
+      name: Value(name),
+      category: Value(category),
+      description: Value(description),
+      manufacturer: Value(manufacturer),
+      role: Value(role),
+    );
+  }
+
+  factory Vehicle.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Vehicle(
+      assetId: serializer.fromJson<String>(json['assetId']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      name: serializer.fromJson<String>(json['name']),
+      category: serializer.fromJson<String>(json['category']),
+      description: serializer.fromJson<String>(json['description']),
+      manufacturer: serializer.fromJson<String>(json['manufacturer']),
+      role: serializer.fromJson<String>(json['role']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'assetId': serializer.toJson<String>(assetId),
+      'projectId': serializer.toJson<String>(projectId),
+      'name': serializer.toJson<String>(name),
+      'category': serializer.toJson<String>(category),
+      'description': serializer.toJson<String>(description),
+      'manufacturer': serializer.toJson<String>(manufacturer),
+      'role': serializer.toJson<String>(role),
+    };
+  }
+
+  Vehicle copyWith({
+    String? assetId,
+    String? projectId,
+    String? name,
+    String? category,
+    String? description,
+    String? manufacturer,
+    String? role,
+  }) => Vehicle(
+    assetId: assetId ?? this.assetId,
+    projectId: projectId ?? this.projectId,
+    name: name ?? this.name,
+    category: category ?? this.category,
+    description: description ?? this.description,
+    manufacturer: manufacturer ?? this.manufacturer,
+    role: role ?? this.role,
+  );
+  Vehicle copyWithCompanion(VehiclesCompanion data) {
+    return Vehicle(
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      name: data.name.present ? data.name.value : this.name,
+      category: data.category.present ? data.category.value : this.category,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      manufacturer: data.manufacturer.present
+          ? data.manufacturer.value
+          : this.manufacturer,
+      role: data.role.present ? data.role.value : this.role,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Vehicle(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('category: $category, ')
+          ..write('description: $description, ')
+          ..write('manufacturer: $manufacturer, ')
+          ..write('role: $role')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    assetId,
+    projectId,
+    name,
+    category,
+    description,
+    manufacturer,
+    role,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Vehicle &&
+          other.assetId == this.assetId &&
+          other.projectId == this.projectId &&
+          other.name == this.name &&
+          other.category == this.category &&
+          other.description == this.description &&
+          other.manufacturer == this.manufacturer &&
+          other.role == this.role);
+}
+
+class VehiclesCompanion extends UpdateCompanion<Vehicle> {
+  final Value<String> assetId;
+  final Value<String> projectId;
+  final Value<String> name;
+  final Value<String> category;
+  final Value<String> description;
+  final Value<String> manufacturer;
+  final Value<String> role;
+  final Value<int> rowid;
+  const VehiclesCompanion({
+    this.assetId = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.category = const Value.absent(),
+    this.description = const Value.absent(),
+    this.manufacturer = const Value.absent(),
+    this.role = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VehiclesCompanion.insert({
+    required String assetId,
+    required String projectId,
+    required String name,
+    required String category,
+    this.description = const Value.absent(),
+    this.manufacturer = const Value.absent(),
+    this.role = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : assetId = Value(assetId),
+       projectId = Value(projectId),
+       name = Value(name),
+       category = Value(category);
+  static Insertable<Vehicle> custom({
+    Expression<String>? assetId,
+    Expression<String>? projectId,
+    Expression<String>? name,
+    Expression<String>? category,
+    Expression<String>? description,
+    Expression<String>? manufacturer,
+    Expression<String>? role,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (assetId != null) 'asset_id': assetId,
+      if (projectId != null) 'project_id': projectId,
+      if (name != null) 'name': name,
+      if (category != null) 'category': category,
+      if (description != null) 'description': description,
+      if (manufacturer != null) 'manufacturer': manufacturer,
+      if (role != null) 'role': role,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VehiclesCompanion copyWith({
+    Value<String>? assetId,
+    Value<String>? projectId,
+    Value<String>? name,
+    Value<String>? category,
+    Value<String>? description,
+    Value<String>? manufacturer,
+    Value<String>? role,
+    Value<int>? rowid,
+  }) {
+    return VehiclesCompanion(
+      assetId: assetId ?? this.assetId,
+      projectId: projectId ?? this.projectId,
+      name: name ?? this.name,
+      category: category ?? this.category,
+      description: description ?? this.description,
+      manufacturer: manufacturer ?? this.manufacturer,
+      role: role ?? this.role,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (manufacturer.present) {
+      map['manufacturer'] = Variable<String>(manufacturer.value);
+    }
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VehiclesCompanion(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('category: $category, ')
+          ..write('description: $description, ')
+          ..write('manufacturer: $manufacturer, ')
+          ..write('role: $role, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VehicleSpecificationsTable extends VehicleSpecifications
+    with TableInfo<$VehicleSpecificationsTable, VehicleSpecification> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VehicleSpecificationsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _vehicleIdMeta = const VerificationMeta(
+    'vehicleId',
+  );
+  @override
+  late final GeneratedColumn<String> vehicleId = GeneratedColumn<String>(
+    'vehicle_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lengthMetersMeta = const VerificationMeta(
+    'lengthMeters',
+  );
+  @override
+  late final GeneratedColumn<double> lengthMeters = GeneratedColumn<double>(
+    'length_meters',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _widthMetersMeta = const VerificationMeta(
+    'widthMeters',
+  );
+  @override
+  late final GeneratedColumn<double> widthMeters = GeneratedColumn<double>(
+    'width_meters',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightMetersMeta = const VerificationMeta(
+    'heightMeters',
+  );
+  @override
+  late final GeneratedColumn<double> heightMeters = GeneratedColumn<double>(
+    'height_meters',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _crewMeta = const VerificationMeta('crew');
+  @override
+  late final GeneratedColumn<int> crew = GeneratedColumn<int>(
+    'crew',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _passengersMeta = const VerificationMeta(
+    'passengers',
+  );
+  @override
+  late final GeneratedColumn<int> passengers = GeneratedColumn<int>(
+    'passengers',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _propulsionMeta = const VerificationMeta(
+    'propulsion',
+  );
+  @override
+  late final GeneratedColumn<String> propulsion = GeneratedColumn<String>(
+    'propulsion',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _powerSourceMeta = const VerificationMeta(
+    'powerSource',
+  );
+  @override
+  late final GeneratedColumn<String> powerSource = GeneratedColumn<String>(
+    'power_source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _maximumSpeedMeta = const VerificationMeta(
+    'maximumSpeed',
+  );
+  @override
+  late final GeneratedColumn<String> maximumSpeed = GeneratedColumn<String>(
+    'maximum_speed',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    vehicleId,
+    lengthMeters,
+    widthMeters,
+    heightMeters,
+    crew,
+    passengers,
+    propulsion,
+    powerSource,
+    maximumSpeed,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vehicle_specifications';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VehicleSpecification> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('vehicle_id')) {
+      context.handle(
+        _vehicleIdMeta,
+        vehicleId.isAcceptableOrUnknown(data['vehicle_id']!, _vehicleIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_vehicleIdMeta);
+    }
+    if (data.containsKey('length_meters')) {
+      context.handle(
+        _lengthMetersMeta,
+        lengthMeters.isAcceptableOrUnknown(
+          data['length_meters']!,
+          _lengthMetersMeta,
+        ),
+      );
+    }
+    if (data.containsKey('width_meters')) {
+      context.handle(
+        _widthMetersMeta,
+        widthMeters.isAcceptableOrUnknown(
+          data['width_meters']!,
+          _widthMetersMeta,
+        ),
+      );
+    }
+    if (data.containsKey('height_meters')) {
+      context.handle(
+        _heightMetersMeta,
+        heightMeters.isAcceptableOrUnknown(
+          data['height_meters']!,
+          _heightMetersMeta,
+        ),
+      );
+    }
+    if (data.containsKey('crew')) {
+      context.handle(
+        _crewMeta,
+        crew.isAcceptableOrUnknown(data['crew']!, _crewMeta),
+      );
+    }
+    if (data.containsKey('passengers')) {
+      context.handle(
+        _passengersMeta,
+        passengers.isAcceptableOrUnknown(data['passengers']!, _passengersMeta),
+      );
+    }
+    if (data.containsKey('propulsion')) {
+      context.handle(
+        _propulsionMeta,
+        propulsion.isAcceptableOrUnknown(data['propulsion']!, _propulsionMeta),
+      );
+    }
+    if (data.containsKey('power_source')) {
+      context.handle(
+        _powerSourceMeta,
+        powerSource.isAcceptableOrUnknown(
+          data['power_source']!,
+          _powerSourceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('maximum_speed')) {
+      context.handle(
+        _maximumSpeedMeta,
+        maximumSpeed.isAcceptableOrUnknown(
+          data['maximum_speed']!,
+          _maximumSpeedMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {vehicleId};
+  @override
+  VehicleSpecification map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VehicleSpecification(
+      vehicleId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}vehicle_id'],
+      )!,
+      lengthMeters: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}length_meters'],
+      ),
+      widthMeters: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}width_meters'],
+      ),
+      heightMeters: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}height_meters'],
+      ),
+      crew: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}crew'],
+      ),
+      passengers: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}passengers'],
+      ),
+      propulsion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}propulsion'],
+      )!,
+      powerSource: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}power_source'],
+      )!,
+      maximumSpeed: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}maximum_speed'],
+      )!,
+    );
+  }
+
+  @override
+  $VehicleSpecificationsTable createAlias(String alias) {
+    return $VehicleSpecificationsTable(attachedDatabase, alias);
+  }
+}
+
+class VehicleSpecification extends DataClass
+    implements Insertable<VehicleSpecification> {
+  final String vehicleId;
+  final double? lengthMeters;
+  final double? widthMeters;
+  final double? heightMeters;
+  final int? crew;
+  final int? passengers;
+  final String propulsion;
+  final String powerSource;
+  final String maximumSpeed;
+  const VehicleSpecification({
+    required this.vehicleId,
+    this.lengthMeters,
+    this.widthMeters,
+    this.heightMeters,
+    this.crew,
+    this.passengers,
+    required this.propulsion,
+    required this.powerSource,
+    required this.maximumSpeed,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['vehicle_id'] = Variable<String>(vehicleId);
+    if (!nullToAbsent || lengthMeters != null) {
+      map['length_meters'] = Variable<double>(lengthMeters);
+    }
+    if (!nullToAbsent || widthMeters != null) {
+      map['width_meters'] = Variable<double>(widthMeters);
+    }
+    if (!nullToAbsent || heightMeters != null) {
+      map['height_meters'] = Variable<double>(heightMeters);
+    }
+    if (!nullToAbsent || crew != null) {
+      map['crew'] = Variable<int>(crew);
+    }
+    if (!nullToAbsent || passengers != null) {
+      map['passengers'] = Variable<int>(passengers);
+    }
+    map['propulsion'] = Variable<String>(propulsion);
+    map['power_source'] = Variable<String>(powerSource);
+    map['maximum_speed'] = Variable<String>(maximumSpeed);
+    return map;
+  }
+
+  VehicleSpecificationsCompanion toCompanion(bool nullToAbsent) {
+    return VehicleSpecificationsCompanion(
+      vehicleId: Value(vehicleId),
+      lengthMeters: lengthMeters == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lengthMeters),
+      widthMeters: widthMeters == null && nullToAbsent
+          ? const Value.absent()
+          : Value(widthMeters),
+      heightMeters: heightMeters == null && nullToAbsent
+          ? const Value.absent()
+          : Value(heightMeters),
+      crew: crew == null && nullToAbsent ? const Value.absent() : Value(crew),
+      passengers: passengers == null && nullToAbsent
+          ? const Value.absent()
+          : Value(passengers),
+      propulsion: Value(propulsion),
+      powerSource: Value(powerSource),
+      maximumSpeed: Value(maximumSpeed),
+    );
+  }
+
+  factory VehicleSpecification.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VehicleSpecification(
+      vehicleId: serializer.fromJson<String>(json['vehicleId']),
+      lengthMeters: serializer.fromJson<double?>(json['lengthMeters']),
+      widthMeters: serializer.fromJson<double?>(json['widthMeters']),
+      heightMeters: serializer.fromJson<double?>(json['heightMeters']),
+      crew: serializer.fromJson<int?>(json['crew']),
+      passengers: serializer.fromJson<int?>(json['passengers']),
+      propulsion: serializer.fromJson<String>(json['propulsion']),
+      powerSource: serializer.fromJson<String>(json['powerSource']),
+      maximumSpeed: serializer.fromJson<String>(json['maximumSpeed']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'vehicleId': serializer.toJson<String>(vehicleId),
+      'lengthMeters': serializer.toJson<double?>(lengthMeters),
+      'widthMeters': serializer.toJson<double?>(widthMeters),
+      'heightMeters': serializer.toJson<double?>(heightMeters),
+      'crew': serializer.toJson<int?>(crew),
+      'passengers': serializer.toJson<int?>(passengers),
+      'propulsion': serializer.toJson<String>(propulsion),
+      'powerSource': serializer.toJson<String>(powerSource),
+      'maximumSpeed': serializer.toJson<String>(maximumSpeed),
+    };
+  }
+
+  VehicleSpecification copyWith({
+    String? vehicleId,
+    Value<double?> lengthMeters = const Value.absent(),
+    Value<double?> widthMeters = const Value.absent(),
+    Value<double?> heightMeters = const Value.absent(),
+    Value<int?> crew = const Value.absent(),
+    Value<int?> passengers = const Value.absent(),
+    String? propulsion,
+    String? powerSource,
+    String? maximumSpeed,
+  }) => VehicleSpecification(
+    vehicleId: vehicleId ?? this.vehicleId,
+    lengthMeters: lengthMeters.present ? lengthMeters.value : this.lengthMeters,
+    widthMeters: widthMeters.present ? widthMeters.value : this.widthMeters,
+    heightMeters: heightMeters.present ? heightMeters.value : this.heightMeters,
+    crew: crew.present ? crew.value : this.crew,
+    passengers: passengers.present ? passengers.value : this.passengers,
+    propulsion: propulsion ?? this.propulsion,
+    powerSource: powerSource ?? this.powerSource,
+    maximumSpeed: maximumSpeed ?? this.maximumSpeed,
+  );
+  VehicleSpecification copyWithCompanion(VehicleSpecificationsCompanion data) {
+    return VehicleSpecification(
+      vehicleId: data.vehicleId.present ? data.vehicleId.value : this.vehicleId,
+      lengthMeters: data.lengthMeters.present
+          ? data.lengthMeters.value
+          : this.lengthMeters,
+      widthMeters: data.widthMeters.present
+          ? data.widthMeters.value
+          : this.widthMeters,
+      heightMeters: data.heightMeters.present
+          ? data.heightMeters.value
+          : this.heightMeters,
+      crew: data.crew.present ? data.crew.value : this.crew,
+      passengers: data.passengers.present
+          ? data.passengers.value
+          : this.passengers,
+      propulsion: data.propulsion.present
+          ? data.propulsion.value
+          : this.propulsion,
+      powerSource: data.powerSource.present
+          ? data.powerSource.value
+          : this.powerSource,
+      maximumSpeed: data.maximumSpeed.present
+          ? data.maximumSpeed.value
+          : this.maximumSpeed,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VehicleSpecification(')
+          ..write('vehicleId: $vehicleId, ')
+          ..write('lengthMeters: $lengthMeters, ')
+          ..write('widthMeters: $widthMeters, ')
+          ..write('heightMeters: $heightMeters, ')
+          ..write('crew: $crew, ')
+          ..write('passengers: $passengers, ')
+          ..write('propulsion: $propulsion, ')
+          ..write('powerSource: $powerSource, ')
+          ..write('maximumSpeed: $maximumSpeed')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    vehicleId,
+    lengthMeters,
+    widthMeters,
+    heightMeters,
+    crew,
+    passengers,
+    propulsion,
+    powerSource,
+    maximumSpeed,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VehicleSpecification &&
+          other.vehicleId == this.vehicleId &&
+          other.lengthMeters == this.lengthMeters &&
+          other.widthMeters == this.widthMeters &&
+          other.heightMeters == this.heightMeters &&
+          other.crew == this.crew &&
+          other.passengers == this.passengers &&
+          other.propulsion == this.propulsion &&
+          other.powerSource == this.powerSource &&
+          other.maximumSpeed == this.maximumSpeed);
+}
+
+class VehicleSpecificationsCompanion
+    extends UpdateCompanion<VehicleSpecification> {
+  final Value<String> vehicleId;
+  final Value<double?> lengthMeters;
+  final Value<double?> widthMeters;
+  final Value<double?> heightMeters;
+  final Value<int?> crew;
+  final Value<int?> passengers;
+  final Value<String> propulsion;
+  final Value<String> powerSource;
+  final Value<String> maximumSpeed;
+  final Value<int> rowid;
+  const VehicleSpecificationsCompanion({
+    this.vehicleId = const Value.absent(),
+    this.lengthMeters = const Value.absent(),
+    this.widthMeters = const Value.absent(),
+    this.heightMeters = const Value.absent(),
+    this.crew = const Value.absent(),
+    this.passengers = const Value.absent(),
+    this.propulsion = const Value.absent(),
+    this.powerSource = const Value.absent(),
+    this.maximumSpeed = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VehicleSpecificationsCompanion.insert({
+    required String vehicleId,
+    this.lengthMeters = const Value.absent(),
+    this.widthMeters = const Value.absent(),
+    this.heightMeters = const Value.absent(),
+    this.crew = const Value.absent(),
+    this.passengers = const Value.absent(),
+    this.propulsion = const Value.absent(),
+    this.powerSource = const Value.absent(),
+    this.maximumSpeed = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : vehicleId = Value(vehicleId);
+  static Insertable<VehicleSpecification> custom({
+    Expression<String>? vehicleId,
+    Expression<double>? lengthMeters,
+    Expression<double>? widthMeters,
+    Expression<double>? heightMeters,
+    Expression<int>? crew,
+    Expression<int>? passengers,
+    Expression<String>? propulsion,
+    Expression<String>? powerSource,
+    Expression<String>? maximumSpeed,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (vehicleId != null) 'vehicle_id': vehicleId,
+      if (lengthMeters != null) 'length_meters': lengthMeters,
+      if (widthMeters != null) 'width_meters': widthMeters,
+      if (heightMeters != null) 'height_meters': heightMeters,
+      if (crew != null) 'crew': crew,
+      if (passengers != null) 'passengers': passengers,
+      if (propulsion != null) 'propulsion': propulsion,
+      if (powerSource != null) 'power_source': powerSource,
+      if (maximumSpeed != null) 'maximum_speed': maximumSpeed,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VehicleSpecificationsCompanion copyWith({
+    Value<String>? vehicleId,
+    Value<double?>? lengthMeters,
+    Value<double?>? widthMeters,
+    Value<double?>? heightMeters,
+    Value<int?>? crew,
+    Value<int?>? passengers,
+    Value<String>? propulsion,
+    Value<String>? powerSource,
+    Value<String>? maximumSpeed,
+    Value<int>? rowid,
+  }) {
+    return VehicleSpecificationsCompanion(
+      vehicleId: vehicleId ?? this.vehicleId,
+      lengthMeters: lengthMeters ?? this.lengthMeters,
+      widthMeters: widthMeters ?? this.widthMeters,
+      heightMeters: heightMeters ?? this.heightMeters,
+      crew: crew ?? this.crew,
+      passengers: passengers ?? this.passengers,
+      propulsion: propulsion ?? this.propulsion,
+      powerSource: powerSource ?? this.powerSource,
+      maximumSpeed: maximumSpeed ?? this.maximumSpeed,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (vehicleId.present) {
+      map['vehicle_id'] = Variable<String>(vehicleId.value);
+    }
+    if (lengthMeters.present) {
+      map['length_meters'] = Variable<double>(lengthMeters.value);
+    }
+    if (widthMeters.present) {
+      map['width_meters'] = Variable<double>(widthMeters.value);
+    }
+    if (heightMeters.present) {
+      map['height_meters'] = Variable<double>(heightMeters.value);
+    }
+    if (crew.present) {
+      map['crew'] = Variable<int>(crew.value);
+    }
+    if (passengers.present) {
+      map['passengers'] = Variable<int>(passengers.value);
+    }
+    if (propulsion.present) {
+      map['propulsion'] = Variable<String>(propulsion.value);
+    }
+    if (powerSource.present) {
+      map['power_source'] = Variable<String>(powerSource.value);
+    }
+    if (maximumSpeed.present) {
+      map['maximum_speed'] = Variable<String>(maximumSpeed.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VehicleSpecificationsCompanion(')
+          ..write('vehicleId: $vehicleId, ')
+          ..write('lengthMeters: $lengthMeters, ')
+          ..write('widthMeters: $widthMeters, ')
+          ..write('heightMeters: $heightMeters, ')
+          ..write('crew: $crew, ')
+          ..write('passengers: $passengers, ')
+          ..write('propulsion: $propulsion, ')
+          ..write('powerSource: $powerSource, ')
+          ..write('maximumSpeed: $maximumSpeed, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VehicleComponentsTable extends VehicleComponents
+    with TableInfo<$VehicleComponentsTable, VehicleComponent> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VehicleComponentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _vehicleIdMeta = const VerificationMeta(
+    'vehicleId',
+  );
+  @override
+  late final GeneratedColumn<String> vehicleId = GeneratedColumn<String>(
+    'vehicle_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    vehicleId,
+    name,
+    category,
+    description,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vehicle_components';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VehicleComponent> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('vehicle_id')) {
+      context.handle(
+        _vehicleIdMeta,
+        vehicleId.isAcceptableOrUnknown(data['vehicle_id']!, _vehicleIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_vehicleIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VehicleComponent map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VehicleComponent(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      vehicleId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}vehicle_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $VehicleComponentsTable createAlias(String alias) {
+    return $VehicleComponentsTable(attachedDatabase, alias);
+  }
+}
+
+class VehicleComponent extends DataClass
+    implements Insertable<VehicleComponent> {
+  final String id;
+  final String vehicleId;
+  final String name;
+  final String category;
+  final String description;
+  final int sortOrder;
+  const VehicleComponent({
+    required this.id,
+    required this.vehicleId,
+    required this.name,
+    required this.category,
+    required this.description,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['vehicle_id'] = Variable<String>(vehicleId);
+    map['name'] = Variable<String>(name);
+    map['category'] = Variable<String>(category);
+    map['description'] = Variable<String>(description);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  VehicleComponentsCompanion toCompanion(bool nullToAbsent) {
+    return VehicleComponentsCompanion(
+      id: Value(id),
+      vehicleId: Value(vehicleId),
+      name: Value(name),
+      category: Value(category),
+      description: Value(description),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory VehicleComponent.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VehicleComponent(
+      id: serializer.fromJson<String>(json['id']),
+      vehicleId: serializer.fromJson<String>(json['vehicleId']),
+      name: serializer.fromJson<String>(json['name']),
+      category: serializer.fromJson<String>(json['category']),
+      description: serializer.fromJson<String>(json['description']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'vehicleId': serializer.toJson<String>(vehicleId),
+      'name': serializer.toJson<String>(name),
+      'category': serializer.toJson<String>(category),
+      'description': serializer.toJson<String>(description),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  VehicleComponent copyWith({
+    String? id,
+    String? vehicleId,
+    String? name,
+    String? category,
+    String? description,
+    int? sortOrder,
+  }) => VehicleComponent(
+    id: id ?? this.id,
+    vehicleId: vehicleId ?? this.vehicleId,
+    name: name ?? this.name,
+    category: category ?? this.category,
+    description: description ?? this.description,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  VehicleComponent copyWithCompanion(VehicleComponentsCompanion data) {
+    return VehicleComponent(
+      id: data.id.present ? data.id.value : this.id,
+      vehicleId: data.vehicleId.present ? data.vehicleId.value : this.vehicleId,
+      name: data.name.present ? data.name.value : this.name,
+      category: data.category.present ? data.category.value : this.category,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VehicleComponent(')
+          ..write('id: $id, ')
+          ..write('vehicleId: $vehicleId, ')
+          ..write('name: $name, ')
+          ..write('category: $category, ')
+          ..write('description: $description, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, vehicleId, name, category, description, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VehicleComponent &&
+          other.id == this.id &&
+          other.vehicleId == this.vehicleId &&
+          other.name == this.name &&
+          other.category == this.category &&
+          other.description == this.description &&
+          other.sortOrder == this.sortOrder);
+}
+
+class VehicleComponentsCompanion extends UpdateCompanion<VehicleComponent> {
+  final Value<String> id;
+  final Value<String> vehicleId;
+  final Value<String> name;
+  final Value<String> category;
+  final Value<String> description;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const VehicleComponentsCompanion({
+    this.id = const Value.absent(),
+    this.vehicleId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.category = const Value.absent(),
+    this.description = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VehicleComponentsCompanion.insert({
+    required String id,
+    required String vehicleId,
+    required String name,
+    this.category = const Value.absent(),
+    this.description = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       vehicleId = Value(vehicleId),
+       name = Value(name);
+  static Insertable<VehicleComponent> custom({
+    Expression<String>? id,
+    Expression<String>? vehicleId,
+    Expression<String>? name,
+    Expression<String>? category,
+    Expression<String>? description,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (vehicleId != null) 'vehicle_id': vehicleId,
+      if (name != null) 'name': name,
+      if (category != null) 'category': category,
+      if (description != null) 'description': description,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VehicleComponentsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? vehicleId,
+    Value<String>? name,
+    Value<String>? category,
+    Value<String>? description,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return VehicleComponentsCompanion(
+      id: id ?? this.id,
+      vehicleId: vehicleId ?? this.vehicleId,
+      name: name ?? this.name,
+      category: category ?? this.category,
+      description: description ?? this.description,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (vehicleId.present) {
+      map['vehicle_id'] = Variable<String>(vehicleId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VehicleComponentsCompanion(')
+          ..write('id: $id, ')
+          ..write('vehicleId: $vehicleId, ')
+          ..write('name: $name, ')
+          ..write('category: $category, ')
+          ..write('description: $description, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VehicleWeaponMountsTable extends VehicleWeaponMounts
+    with TableInfo<$VehicleWeaponMountsTable, VehicleWeaponMount> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VehicleWeaponMountsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _vehicleIdMeta = const VerificationMeta(
+    'vehicleId',
+  );
+  @override
+  late final GeneratedColumn<String> vehicleId = GeneratedColumn<String>(
+    'vehicle_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weaponIdMeta = const VerificationMeta(
+    'weaponId',
+  );
+  @override
+  late final GeneratedColumn<String> weaponId = GeneratedColumn<String>(
+    'weapon_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _mountNameMeta = const VerificationMeta(
+    'mountName',
+  );
+  @override
+  late final GeneratedColumn<String> mountName = GeneratedColumn<String>(
+    'mount_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _quantityMeta = const VerificationMeta(
+    'quantity',
+  );
+  @override
+  late final GeneratedColumn<int> quantity = GeneratedColumn<int>(
+    'quantity',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    vehicleId,
+    weaponId,
+    mountName,
+    quantity,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vehicle_weapon_mounts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VehicleWeaponMount> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('vehicle_id')) {
+      context.handle(
+        _vehicleIdMeta,
+        vehicleId.isAcceptableOrUnknown(data['vehicle_id']!, _vehicleIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_vehicleIdMeta);
+    }
+    if (data.containsKey('weapon_id')) {
+      context.handle(
+        _weaponIdMeta,
+        weaponId.isAcceptableOrUnknown(data['weapon_id']!, _weaponIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_weaponIdMeta);
+    }
+    if (data.containsKey('mount_name')) {
+      context.handle(
+        _mountNameMeta,
+        mountName.isAcceptableOrUnknown(data['mount_name']!, _mountNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_mountNameMeta);
+    }
+    if (data.containsKey('quantity')) {
+      context.handle(
+        _quantityMeta,
+        quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VehicleWeaponMount map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VehicleWeaponMount(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      vehicleId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}vehicle_id'],
+      )!,
+      weaponId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weapon_id'],
+      )!,
+      mountName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mount_name'],
+      )!,
+      quantity: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}quantity'],
+      )!,
+    );
+  }
+
+  @override
+  $VehicleWeaponMountsTable createAlias(String alias) {
+    return $VehicleWeaponMountsTable(attachedDatabase, alias);
+  }
+}
+
+class VehicleWeaponMount extends DataClass
+    implements Insertable<VehicleWeaponMount> {
+  final String id;
+  final String vehicleId;
+  final String weaponId;
+  final String mountName;
+  final int quantity;
+  const VehicleWeaponMount({
+    required this.id,
+    required this.vehicleId,
+    required this.weaponId,
+    required this.mountName,
+    required this.quantity,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['vehicle_id'] = Variable<String>(vehicleId);
+    map['weapon_id'] = Variable<String>(weaponId);
+    map['mount_name'] = Variable<String>(mountName);
+    map['quantity'] = Variable<int>(quantity);
+    return map;
+  }
+
+  VehicleWeaponMountsCompanion toCompanion(bool nullToAbsent) {
+    return VehicleWeaponMountsCompanion(
+      id: Value(id),
+      vehicleId: Value(vehicleId),
+      weaponId: Value(weaponId),
+      mountName: Value(mountName),
+      quantity: Value(quantity),
+    );
+  }
+
+  factory VehicleWeaponMount.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VehicleWeaponMount(
+      id: serializer.fromJson<String>(json['id']),
+      vehicleId: serializer.fromJson<String>(json['vehicleId']),
+      weaponId: serializer.fromJson<String>(json['weaponId']),
+      mountName: serializer.fromJson<String>(json['mountName']),
+      quantity: serializer.fromJson<int>(json['quantity']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'vehicleId': serializer.toJson<String>(vehicleId),
+      'weaponId': serializer.toJson<String>(weaponId),
+      'mountName': serializer.toJson<String>(mountName),
+      'quantity': serializer.toJson<int>(quantity),
+    };
+  }
+
+  VehicleWeaponMount copyWith({
+    String? id,
+    String? vehicleId,
+    String? weaponId,
+    String? mountName,
+    int? quantity,
+  }) => VehicleWeaponMount(
+    id: id ?? this.id,
+    vehicleId: vehicleId ?? this.vehicleId,
+    weaponId: weaponId ?? this.weaponId,
+    mountName: mountName ?? this.mountName,
+    quantity: quantity ?? this.quantity,
+  );
+  VehicleWeaponMount copyWithCompanion(VehicleWeaponMountsCompanion data) {
+    return VehicleWeaponMount(
+      id: data.id.present ? data.id.value : this.id,
+      vehicleId: data.vehicleId.present ? data.vehicleId.value : this.vehicleId,
+      weaponId: data.weaponId.present ? data.weaponId.value : this.weaponId,
+      mountName: data.mountName.present ? data.mountName.value : this.mountName,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VehicleWeaponMount(')
+          ..write('id: $id, ')
+          ..write('vehicleId: $vehicleId, ')
+          ..write('weaponId: $weaponId, ')
+          ..write('mountName: $mountName, ')
+          ..write('quantity: $quantity')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, vehicleId, weaponId, mountName, quantity);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VehicleWeaponMount &&
+          other.id == this.id &&
+          other.vehicleId == this.vehicleId &&
+          other.weaponId == this.weaponId &&
+          other.mountName == this.mountName &&
+          other.quantity == this.quantity);
+}
+
+class VehicleWeaponMountsCompanion extends UpdateCompanion<VehicleWeaponMount> {
+  final Value<String> id;
+  final Value<String> vehicleId;
+  final Value<String> weaponId;
+  final Value<String> mountName;
+  final Value<int> quantity;
+  final Value<int> rowid;
+  const VehicleWeaponMountsCompanion({
+    this.id = const Value.absent(),
+    this.vehicleId = const Value.absent(),
+    this.weaponId = const Value.absent(),
+    this.mountName = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VehicleWeaponMountsCompanion.insert({
+    required String id,
+    required String vehicleId,
+    required String weaponId,
+    required String mountName,
+    this.quantity = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       vehicleId = Value(vehicleId),
+       weaponId = Value(weaponId),
+       mountName = Value(mountName);
+  static Insertable<VehicleWeaponMount> custom({
+    Expression<String>? id,
+    Expression<String>? vehicleId,
+    Expression<String>? weaponId,
+    Expression<String>? mountName,
+    Expression<int>? quantity,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (vehicleId != null) 'vehicle_id': vehicleId,
+      if (weaponId != null) 'weapon_id': weaponId,
+      if (mountName != null) 'mount_name': mountName,
+      if (quantity != null) 'quantity': quantity,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VehicleWeaponMountsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? vehicleId,
+    Value<String>? weaponId,
+    Value<String>? mountName,
+    Value<int>? quantity,
+    Value<int>? rowid,
+  }) {
+    return VehicleWeaponMountsCompanion(
+      id: id ?? this.id,
+      vehicleId: vehicleId ?? this.vehicleId,
+      weaponId: weaponId ?? this.weaponId,
+      mountName: mountName ?? this.mountName,
+      quantity: quantity ?? this.quantity,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (vehicleId.present) {
+      map['vehicle_id'] = Variable<String>(vehicleId.value);
+    }
+    if (weaponId.present) {
+      map['weapon_id'] = Variable<String>(weaponId.value);
+    }
+    if (mountName.present) {
+      map['mount_name'] = Variable<String>(mountName.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<int>(quantity.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VehicleWeaponMountsCompanion(')
+          ..write('id: $id, ')
+          ..write('vehicleId: $vehicleId, ')
+          ..write('weaponId: $weaponId, ')
+          ..write('mountName: $mountName, ')
+          ..write('quantity: $quantity, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VehicleVariantsTable extends VehicleVariants
+    with TableInfo<$VehicleVariantsTable, VehicleVariant> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VehicleVariantsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _vehicleIdMeta = const VerificationMeta(
+    'vehicleId',
+  );
+  @override
+  late final GeneratedColumn<String> vehicleId = GeneratedColumn<String>(
+    'vehicle_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _referenceSetIdMeta = const VerificationMeta(
+    'referenceSetId',
+  );
+  @override
+  late final GeneratedColumn<String> referenceSetId = GeneratedColumn<String>(
+    'reference_set_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    vehicleId,
+    name,
+    description,
+    referenceSetId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vehicle_variants';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VehicleVariant> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('vehicle_id')) {
+      context.handle(
+        _vehicleIdMeta,
+        vehicleId.isAcceptableOrUnknown(data['vehicle_id']!, _vehicleIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_vehicleIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reference_set_id')) {
+      context.handle(
+        _referenceSetIdMeta,
+        referenceSetId.isAcceptableOrUnknown(
+          data['reference_set_id']!,
+          _referenceSetIdMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VehicleVariant map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VehicleVariant(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      vehicleId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}vehicle_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      referenceSetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reference_set_id'],
+      ),
+    );
+  }
+
+  @override
+  $VehicleVariantsTable createAlias(String alias) {
+    return $VehicleVariantsTable(attachedDatabase, alias);
+  }
+}
+
+class VehicleVariant extends DataClass implements Insertable<VehicleVariant> {
+  final String id;
+  final String vehicleId;
+  final String name;
+  final String description;
+  final String? referenceSetId;
+  const VehicleVariant({
+    required this.id,
+    required this.vehicleId,
+    required this.name,
+    required this.description,
+    this.referenceSetId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['vehicle_id'] = Variable<String>(vehicleId);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    if (!nullToAbsent || referenceSetId != null) {
+      map['reference_set_id'] = Variable<String>(referenceSetId);
+    }
+    return map;
+  }
+
+  VehicleVariantsCompanion toCompanion(bool nullToAbsent) {
+    return VehicleVariantsCompanion(
+      id: Value(id),
+      vehicleId: Value(vehicleId),
+      name: Value(name),
+      description: Value(description),
+      referenceSetId: referenceSetId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referenceSetId),
+    );
+  }
+
+  factory VehicleVariant.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VehicleVariant(
+      id: serializer.fromJson<String>(json['id']),
+      vehicleId: serializer.fromJson<String>(json['vehicleId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      referenceSetId: serializer.fromJson<String?>(json['referenceSetId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'vehicleId': serializer.toJson<String>(vehicleId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'referenceSetId': serializer.toJson<String?>(referenceSetId),
+    };
+  }
+
+  VehicleVariant copyWith({
+    String? id,
+    String? vehicleId,
+    String? name,
+    String? description,
+    Value<String?> referenceSetId = const Value.absent(),
+  }) => VehicleVariant(
+    id: id ?? this.id,
+    vehicleId: vehicleId ?? this.vehicleId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    referenceSetId: referenceSetId.present
+        ? referenceSetId.value
+        : this.referenceSetId,
+  );
+  VehicleVariant copyWithCompanion(VehicleVariantsCompanion data) {
+    return VehicleVariant(
+      id: data.id.present ? data.id.value : this.id,
+      vehicleId: data.vehicleId.present ? data.vehicleId.value : this.vehicleId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      referenceSetId: data.referenceSetId.present
+          ? data.referenceSetId.value
+          : this.referenceSetId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VehicleVariant(')
+          ..write('id: $id, ')
+          ..write('vehicleId: $vehicleId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('referenceSetId: $referenceSetId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, vehicleId, name, description, referenceSetId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VehicleVariant &&
+          other.id == this.id &&
+          other.vehicleId == this.vehicleId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.referenceSetId == this.referenceSetId);
+}
+
+class VehicleVariantsCompanion extends UpdateCompanion<VehicleVariant> {
+  final Value<String> id;
+  final Value<String> vehicleId;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<String?> referenceSetId;
+  final Value<int> rowid;
+  const VehicleVariantsCompanion({
+    this.id = const Value.absent(),
+    this.vehicleId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.referenceSetId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VehicleVariantsCompanion.insert({
+    required String id,
+    required String vehicleId,
+    required String name,
+    this.description = const Value.absent(),
+    this.referenceSetId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       vehicleId = Value(vehicleId),
+       name = Value(name);
+  static Insertable<VehicleVariant> custom({
+    Expression<String>? id,
+    Expression<String>? vehicleId,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? referenceSetId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (vehicleId != null) 'vehicle_id': vehicleId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (referenceSetId != null) 'reference_set_id': referenceSetId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VehicleVariantsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? vehicleId,
+    Value<String>? name,
+    Value<String>? description,
+    Value<String?>? referenceSetId,
+    Value<int>? rowid,
+  }) {
+    return VehicleVariantsCompanion(
+      id: id ?? this.id,
+      vehicleId: vehicleId ?? this.vehicleId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      referenceSetId: referenceSetId ?? this.referenceSetId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (vehicleId.present) {
+      map['vehicle_id'] = Variable<String>(vehicleId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (referenceSetId.present) {
+      map['reference_set_id'] = Variable<String>(referenceSetId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VehicleVariantsCompanion(')
+          ..write('id: $id, ')
+          ..write('vehicleId: $vehicleId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('referenceSetId: $referenceSetId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PropsTable extends Props with TableInfo<$PropsTable, Prop> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PropsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _functionMeta = const VerificationMeta(
+    'function',
+  );
+  @override
+  late final GeneratedColumn<String> function = GeneratedColumn<String>(
+    'function',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _storyCriticalMeta = const VerificationMeta(
+    'storyCritical',
+  );
+  @override
+  late final GeneratedColumn<bool> storyCritical = GeneratedColumn<bool>(
+    'story_critical',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("story_critical" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    assetId,
+    projectId,
+    name,
+    category,
+    description,
+    function,
+    storyCritical,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'props';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Prop> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('function')) {
+      context.handle(
+        _functionMeta,
+        function.isAcceptableOrUnknown(data['function']!, _functionMeta),
+      );
+    }
+    if (data.containsKey('story_critical')) {
+      context.handle(
+        _storyCriticalMeta,
+        storyCritical.isAcceptableOrUnknown(
+          data['story_critical']!,
+          _storyCriticalMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {assetId};
+  @override
+  Prop map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Prop(
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      function: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}function'],
+      )!,
+      storyCritical: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}story_critical'],
+      )!,
+    );
+  }
+
+  @override
+  $PropsTable createAlias(String alias) {
+    return $PropsTable(attachedDatabase, alias);
+  }
+}
+
+class Prop extends DataClass implements Insertable<Prop> {
+  final String assetId;
+  final String projectId;
+  final String name;
+  final String category;
+  final String description;
+  final String function;
+  final bool storyCritical;
+  const Prop({
+    required this.assetId,
+    required this.projectId,
+    required this.name,
+    required this.category,
+    required this.description,
+    required this.function,
+    required this.storyCritical,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['asset_id'] = Variable<String>(assetId);
+    map['project_id'] = Variable<String>(projectId);
+    map['name'] = Variable<String>(name);
+    map['category'] = Variable<String>(category);
+    map['description'] = Variable<String>(description);
+    map['function'] = Variable<String>(function);
+    map['story_critical'] = Variable<bool>(storyCritical);
+    return map;
+  }
+
+  PropsCompanion toCompanion(bool nullToAbsent) {
+    return PropsCompanion(
+      assetId: Value(assetId),
+      projectId: Value(projectId),
+      name: Value(name),
+      category: Value(category),
+      description: Value(description),
+      function: Value(function),
+      storyCritical: Value(storyCritical),
+    );
+  }
+
+  factory Prop.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Prop(
+      assetId: serializer.fromJson<String>(json['assetId']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      name: serializer.fromJson<String>(json['name']),
+      category: serializer.fromJson<String>(json['category']),
+      description: serializer.fromJson<String>(json['description']),
+      function: serializer.fromJson<String>(json['function']),
+      storyCritical: serializer.fromJson<bool>(json['storyCritical']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'assetId': serializer.toJson<String>(assetId),
+      'projectId': serializer.toJson<String>(projectId),
+      'name': serializer.toJson<String>(name),
+      'category': serializer.toJson<String>(category),
+      'description': serializer.toJson<String>(description),
+      'function': serializer.toJson<String>(function),
+      'storyCritical': serializer.toJson<bool>(storyCritical),
+    };
+  }
+
+  Prop copyWith({
+    String? assetId,
+    String? projectId,
+    String? name,
+    String? category,
+    String? description,
+    String? function,
+    bool? storyCritical,
+  }) => Prop(
+    assetId: assetId ?? this.assetId,
+    projectId: projectId ?? this.projectId,
+    name: name ?? this.name,
+    category: category ?? this.category,
+    description: description ?? this.description,
+    function: function ?? this.function,
+    storyCritical: storyCritical ?? this.storyCritical,
+  );
+  Prop copyWithCompanion(PropsCompanion data) {
+    return Prop(
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      name: data.name.present ? data.name.value : this.name,
+      category: data.category.present ? data.category.value : this.category,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      function: data.function.present ? data.function.value : this.function,
+      storyCritical: data.storyCritical.present
+          ? data.storyCritical.value
+          : this.storyCritical,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Prop(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('category: $category, ')
+          ..write('description: $description, ')
+          ..write('function: $function, ')
+          ..write('storyCritical: $storyCritical')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    assetId,
+    projectId,
+    name,
+    category,
+    description,
+    function,
+    storyCritical,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Prop &&
+          other.assetId == this.assetId &&
+          other.projectId == this.projectId &&
+          other.name == this.name &&
+          other.category == this.category &&
+          other.description == this.description &&
+          other.function == this.function &&
+          other.storyCritical == this.storyCritical);
+}
+
+class PropsCompanion extends UpdateCompanion<Prop> {
+  final Value<String> assetId;
+  final Value<String> projectId;
+  final Value<String> name;
+  final Value<String> category;
+  final Value<String> description;
+  final Value<String> function;
+  final Value<bool> storyCritical;
+  final Value<int> rowid;
+  const PropsCompanion({
+    this.assetId = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.category = const Value.absent(),
+    this.description = const Value.absent(),
+    this.function = const Value.absent(),
+    this.storyCritical = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PropsCompanion.insert({
+    required String assetId,
+    required String projectId,
+    required String name,
+    required String category,
+    this.description = const Value.absent(),
+    this.function = const Value.absent(),
+    this.storyCritical = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : assetId = Value(assetId),
+       projectId = Value(projectId),
+       name = Value(name),
+       category = Value(category);
+  static Insertable<Prop> custom({
+    Expression<String>? assetId,
+    Expression<String>? projectId,
+    Expression<String>? name,
+    Expression<String>? category,
+    Expression<String>? description,
+    Expression<String>? function,
+    Expression<bool>? storyCritical,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (assetId != null) 'asset_id': assetId,
+      if (projectId != null) 'project_id': projectId,
+      if (name != null) 'name': name,
+      if (category != null) 'category': category,
+      if (description != null) 'description': description,
+      if (function != null) 'function': function,
+      if (storyCritical != null) 'story_critical': storyCritical,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PropsCompanion copyWith({
+    Value<String>? assetId,
+    Value<String>? projectId,
+    Value<String>? name,
+    Value<String>? category,
+    Value<String>? description,
+    Value<String>? function,
+    Value<bool>? storyCritical,
+    Value<int>? rowid,
+  }) {
+    return PropsCompanion(
+      assetId: assetId ?? this.assetId,
+      projectId: projectId ?? this.projectId,
+      name: name ?? this.name,
+      category: category ?? this.category,
+      description: description ?? this.description,
+      function: function ?? this.function,
+      storyCritical: storyCritical ?? this.storyCritical,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (function.present) {
+      map['function'] = Variable<String>(function.value);
+    }
+    if (storyCritical.present) {
+      map['story_critical'] = Variable<bool>(storyCritical.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PropsCompanion(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('category: $category, ')
+          ..write('description: $description, ')
+          ..write('function: $function, ')
+          ..write('storyCritical: $storyCritical, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PropSpecificationsTable extends PropSpecifications
+    with TableInfo<$PropSpecificationsTable, PropSpecification> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PropSpecificationsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _propIdMeta = const VerificationMeta('propId');
+  @override
+  late final GeneratedColumn<String> propId = GeneratedColumn<String>(
+    'prop_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _widthCmMeta = const VerificationMeta(
+    'widthCm',
+  );
+  @override
+  late final GeneratedColumn<double> widthCm = GeneratedColumn<double>(
+    'width_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightCmMeta = const VerificationMeta(
+    'heightCm',
+  );
+  @override
+  late final GeneratedColumn<double> heightCm = GeneratedColumn<double>(
+    'height_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _depthCmMeta = const VerificationMeta(
+    'depthCm',
+  );
+  @override
+  late final GeneratedColumn<double> depthCm = GeneratedColumn<double>(
+    'depth_cm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _weightKgMeta = const VerificationMeta(
+    'weightKg',
+  );
+  @override
+  late final GeneratedColumn<double> weightKg = GeneratedColumn<double>(
+    'weight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _materialMeta = const VerificationMeta(
+    'material',
+  );
+  @override
+  late final GeneratedColumn<String> material = GeneratedColumn<String>(
+    'material',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<String> color = GeneratedColumn<String>(
+    'color',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    propId,
+    widthCm,
+    heightCm,
+    depthCm,
+    weightKg,
+    material,
+    color,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'prop_specifications';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PropSpecification> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('prop_id')) {
+      context.handle(
+        _propIdMeta,
+        propId.isAcceptableOrUnknown(data['prop_id']!, _propIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_propIdMeta);
+    }
+    if (data.containsKey('width_cm')) {
+      context.handle(
+        _widthCmMeta,
+        widthCm.isAcceptableOrUnknown(data['width_cm']!, _widthCmMeta),
+      );
+    }
+    if (data.containsKey('height_cm')) {
+      context.handle(
+        _heightCmMeta,
+        heightCm.isAcceptableOrUnknown(data['height_cm']!, _heightCmMeta),
+      );
+    }
+    if (data.containsKey('depth_cm')) {
+      context.handle(
+        _depthCmMeta,
+        depthCm.isAcceptableOrUnknown(data['depth_cm']!, _depthCmMeta),
+      );
+    }
+    if (data.containsKey('weight_kg')) {
+      context.handle(
+        _weightKgMeta,
+        weightKg.isAcceptableOrUnknown(data['weight_kg']!, _weightKgMeta),
+      );
+    }
+    if (data.containsKey('material')) {
+      context.handle(
+        _materialMeta,
+        material.isAcceptableOrUnknown(data['material']!, _materialMeta),
+      );
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+        _colorMeta,
+        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {propId};
+  @override
+  PropSpecification map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PropSpecification(
+      propId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prop_id'],
+      )!,
+      widthCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}width_cm'],
+      ),
+      heightCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}height_cm'],
+      ),
+      depthCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}depth_cm'],
+      ),
+      weightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}weight_kg'],
+      ),
+      material: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}material'],
+      )!,
+      color: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}color'],
+      )!,
+    );
+  }
+
+  @override
+  $PropSpecificationsTable createAlias(String alias) {
+    return $PropSpecificationsTable(attachedDatabase, alias);
+  }
+}
+
+class PropSpecification extends DataClass
+    implements Insertable<PropSpecification> {
+  final String propId;
+  final double? widthCm;
+  final double? heightCm;
+  final double? depthCm;
+  final double? weightKg;
+  final String material;
+  final String color;
+  const PropSpecification({
+    required this.propId,
+    this.widthCm,
+    this.heightCm,
+    this.depthCm,
+    this.weightKg,
+    required this.material,
+    required this.color,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['prop_id'] = Variable<String>(propId);
+    if (!nullToAbsent || widthCm != null) {
+      map['width_cm'] = Variable<double>(widthCm);
+    }
+    if (!nullToAbsent || heightCm != null) {
+      map['height_cm'] = Variable<double>(heightCm);
+    }
+    if (!nullToAbsent || depthCm != null) {
+      map['depth_cm'] = Variable<double>(depthCm);
+    }
+    if (!nullToAbsent || weightKg != null) {
+      map['weight_kg'] = Variable<double>(weightKg);
+    }
+    map['material'] = Variable<String>(material);
+    map['color'] = Variable<String>(color);
+    return map;
+  }
+
+  PropSpecificationsCompanion toCompanion(bool nullToAbsent) {
+    return PropSpecificationsCompanion(
+      propId: Value(propId),
+      widthCm: widthCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(widthCm),
+      heightCm: heightCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(heightCm),
+      depthCm: depthCm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(depthCm),
+      weightKg: weightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weightKg),
+      material: Value(material),
+      color: Value(color),
+    );
+  }
+
+  factory PropSpecification.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PropSpecification(
+      propId: serializer.fromJson<String>(json['propId']),
+      widthCm: serializer.fromJson<double?>(json['widthCm']),
+      heightCm: serializer.fromJson<double?>(json['heightCm']),
+      depthCm: serializer.fromJson<double?>(json['depthCm']),
+      weightKg: serializer.fromJson<double?>(json['weightKg']),
+      material: serializer.fromJson<String>(json['material']),
+      color: serializer.fromJson<String>(json['color']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'propId': serializer.toJson<String>(propId),
+      'widthCm': serializer.toJson<double?>(widthCm),
+      'heightCm': serializer.toJson<double?>(heightCm),
+      'depthCm': serializer.toJson<double?>(depthCm),
+      'weightKg': serializer.toJson<double?>(weightKg),
+      'material': serializer.toJson<String>(material),
+      'color': serializer.toJson<String>(color),
+    };
+  }
+
+  PropSpecification copyWith({
+    String? propId,
+    Value<double?> widthCm = const Value.absent(),
+    Value<double?> heightCm = const Value.absent(),
+    Value<double?> depthCm = const Value.absent(),
+    Value<double?> weightKg = const Value.absent(),
+    String? material,
+    String? color,
+  }) => PropSpecification(
+    propId: propId ?? this.propId,
+    widthCm: widthCm.present ? widthCm.value : this.widthCm,
+    heightCm: heightCm.present ? heightCm.value : this.heightCm,
+    depthCm: depthCm.present ? depthCm.value : this.depthCm,
+    weightKg: weightKg.present ? weightKg.value : this.weightKg,
+    material: material ?? this.material,
+    color: color ?? this.color,
+  );
+  PropSpecification copyWithCompanion(PropSpecificationsCompanion data) {
+    return PropSpecification(
+      propId: data.propId.present ? data.propId.value : this.propId,
+      widthCm: data.widthCm.present ? data.widthCm.value : this.widthCm,
+      heightCm: data.heightCm.present ? data.heightCm.value : this.heightCm,
+      depthCm: data.depthCm.present ? data.depthCm.value : this.depthCm,
+      weightKg: data.weightKg.present ? data.weightKg.value : this.weightKg,
+      material: data.material.present ? data.material.value : this.material,
+      color: data.color.present ? data.color.value : this.color,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PropSpecification(')
+          ..write('propId: $propId, ')
+          ..write('widthCm: $widthCm, ')
+          ..write('heightCm: $heightCm, ')
+          ..write('depthCm: $depthCm, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('material: $material, ')
+          ..write('color: $color')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    propId,
+    widthCm,
+    heightCm,
+    depthCm,
+    weightKg,
+    material,
+    color,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PropSpecification &&
+          other.propId == this.propId &&
+          other.widthCm == this.widthCm &&
+          other.heightCm == this.heightCm &&
+          other.depthCm == this.depthCm &&
+          other.weightKg == this.weightKg &&
+          other.material == this.material &&
+          other.color == this.color);
+}
+
+class PropSpecificationsCompanion extends UpdateCompanion<PropSpecification> {
+  final Value<String> propId;
+  final Value<double?> widthCm;
+  final Value<double?> heightCm;
+  final Value<double?> depthCm;
+  final Value<double?> weightKg;
+  final Value<String> material;
+  final Value<String> color;
+  final Value<int> rowid;
+  const PropSpecificationsCompanion({
+    this.propId = const Value.absent(),
+    this.widthCm = const Value.absent(),
+    this.heightCm = const Value.absent(),
+    this.depthCm = const Value.absent(),
+    this.weightKg = const Value.absent(),
+    this.material = const Value.absent(),
+    this.color = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PropSpecificationsCompanion.insert({
+    required String propId,
+    this.widthCm = const Value.absent(),
+    this.heightCm = const Value.absent(),
+    this.depthCm = const Value.absent(),
+    this.weightKg = const Value.absent(),
+    this.material = const Value.absent(),
+    this.color = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : propId = Value(propId);
+  static Insertable<PropSpecification> custom({
+    Expression<String>? propId,
+    Expression<double>? widthCm,
+    Expression<double>? heightCm,
+    Expression<double>? depthCm,
+    Expression<double>? weightKg,
+    Expression<String>? material,
+    Expression<String>? color,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (propId != null) 'prop_id': propId,
+      if (widthCm != null) 'width_cm': widthCm,
+      if (heightCm != null) 'height_cm': heightCm,
+      if (depthCm != null) 'depth_cm': depthCm,
+      if (weightKg != null) 'weight_kg': weightKg,
+      if (material != null) 'material': material,
+      if (color != null) 'color': color,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PropSpecificationsCompanion copyWith({
+    Value<String>? propId,
+    Value<double?>? widthCm,
+    Value<double?>? heightCm,
+    Value<double?>? depthCm,
+    Value<double?>? weightKg,
+    Value<String>? material,
+    Value<String>? color,
+    Value<int>? rowid,
+  }) {
+    return PropSpecificationsCompanion(
+      propId: propId ?? this.propId,
+      widthCm: widthCm ?? this.widthCm,
+      heightCm: heightCm ?? this.heightCm,
+      depthCm: depthCm ?? this.depthCm,
+      weightKg: weightKg ?? this.weightKg,
+      material: material ?? this.material,
+      color: color ?? this.color,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (propId.present) {
+      map['prop_id'] = Variable<String>(propId.value);
+    }
+    if (widthCm.present) {
+      map['width_cm'] = Variable<double>(widthCm.value);
+    }
+    if (heightCm.present) {
+      map['height_cm'] = Variable<double>(heightCm.value);
+    }
+    if (depthCm.present) {
+      map['depth_cm'] = Variable<double>(depthCm.value);
+    }
+    if (weightKg.present) {
+      map['weight_kg'] = Variable<double>(weightKg.value);
+    }
+    if (material.present) {
+      map['material'] = Variable<String>(material.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<String>(color.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PropSpecificationsCompanion(')
+          ..write('propId: $propId, ')
+          ..write('widthCm: $widthCm, ')
+          ..write('heightCm: $heightCm, ')
+          ..write('depthCm: $depthCm, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('material: $material, ')
+          ..write('color: $color, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PropStatesTable extends PropStates
+    with TableInfo<$PropStatesTable, PropState> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PropStatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _propIdMeta = const VerificationMeta('propId');
+  @override
+  late final GeneratedColumn<String> propId = GeneratedColumn<String>(
+    'prop_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _referenceSetIdMeta = const VerificationMeta(
+    'referenceSetId',
+  );
+  @override
+  late final GeneratedColumn<String> referenceSetId = GeneratedColumn<String>(
+    'reference_set_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    propId,
+    name,
+    description,
+    referenceSetId,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'prop_states';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PropState> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('prop_id')) {
+      context.handle(
+        _propIdMeta,
+        propId.isAcceptableOrUnknown(data['prop_id']!, _propIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_propIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reference_set_id')) {
+      context.handle(
+        _referenceSetIdMeta,
+        referenceSetId.isAcceptableOrUnknown(
+          data['reference_set_id']!,
+          _referenceSetIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PropState map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PropState(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      propId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prop_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      referenceSetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reference_set_id'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $PropStatesTable createAlias(String alias) {
+    return $PropStatesTable(attachedDatabase, alias);
+  }
+}
+
+class PropState extends DataClass implements Insertable<PropState> {
+  final String id;
+  final String propId;
+  final String name;
+  final String description;
+  final String? referenceSetId;
+  final int sortOrder;
+  const PropState({
+    required this.id,
+    required this.propId,
+    required this.name,
+    required this.description,
+    this.referenceSetId,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['prop_id'] = Variable<String>(propId);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    if (!nullToAbsent || referenceSetId != null) {
+      map['reference_set_id'] = Variable<String>(referenceSetId);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  PropStatesCompanion toCompanion(bool nullToAbsent) {
+    return PropStatesCompanion(
+      id: Value(id),
+      propId: Value(propId),
+      name: Value(name),
+      description: Value(description),
+      referenceSetId: referenceSetId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referenceSetId),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory PropState.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PropState(
+      id: serializer.fromJson<String>(json['id']),
+      propId: serializer.fromJson<String>(json['propId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      referenceSetId: serializer.fromJson<String?>(json['referenceSetId']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'propId': serializer.toJson<String>(propId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'referenceSetId': serializer.toJson<String?>(referenceSetId),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  PropState copyWith({
+    String? id,
+    String? propId,
+    String? name,
+    String? description,
+    Value<String?> referenceSetId = const Value.absent(),
+    int? sortOrder,
+  }) => PropState(
+    id: id ?? this.id,
+    propId: propId ?? this.propId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    referenceSetId: referenceSetId.present
+        ? referenceSetId.value
+        : this.referenceSetId,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  PropState copyWithCompanion(PropStatesCompanion data) {
+    return PropState(
+      id: data.id.present ? data.id.value : this.id,
+      propId: data.propId.present ? data.propId.value : this.propId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      referenceSetId: data.referenceSetId.present
+          ? data.referenceSetId.value
+          : this.referenceSetId,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PropState(')
+          ..write('id: $id, ')
+          ..write('propId: $propId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('referenceSetId: $referenceSetId, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, propId, name, description, referenceSetId, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PropState &&
+          other.id == this.id &&
+          other.propId == this.propId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.referenceSetId == this.referenceSetId &&
+          other.sortOrder == this.sortOrder);
+}
+
+class PropStatesCompanion extends UpdateCompanion<PropState> {
+  final Value<String> id;
+  final Value<String> propId;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<String?> referenceSetId;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const PropStatesCompanion({
+    this.id = const Value.absent(),
+    this.propId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.referenceSetId = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PropStatesCompanion.insert({
+    required String id,
+    required String propId,
+    required String name,
+    this.description = const Value.absent(),
+    this.referenceSetId = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       propId = Value(propId),
+       name = Value(name);
+  static Insertable<PropState> custom({
+    Expression<String>? id,
+    Expression<String>? propId,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? referenceSetId,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (propId != null) 'prop_id': propId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (referenceSetId != null) 'reference_set_id': referenceSetId,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PropStatesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? propId,
+    Value<String>? name,
+    Value<String>? description,
+    Value<String?>? referenceSetId,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return PropStatesCompanion(
+      id: id ?? this.id,
+      propId: propId ?? this.propId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      referenceSetId: referenceSetId ?? this.referenceSetId,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (propId.present) {
+      map['prop_id'] = Variable<String>(propId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (referenceSetId.present) {
+      map['reference_set_id'] = Variable<String>(referenceSetId.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PropStatesCompanion(')
+          ..write('id: $id, ')
+          ..write('propId: $propId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('referenceSetId: $referenceSetId, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SceneAssetInstancesTable extends SceneAssetInstances
+    with TableInfo<$SceneAssetInstancesTable, SceneAssetInstance> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SceneAssetInstancesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sceneIdMeta = const VerificationMeta(
+    'sceneId',
+  );
+  @override
+  late final GeneratedColumn<String> sceneId = GeneratedColumn<String>(
+    'scene_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _assetTypeMeta = const VerificationMeta(
+    'assetType',
+  );
+  @override
+  late final GeneratedColumn<String> assetType = GeneratedColumn<String>(
+    'asset_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stateIdMeta = const VerificationMeta(
+    'stateId',
+  );
+  @override
+  late final GeneratedColumn<String> stateId = GeneratedColumn<String>(
+    'state_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _parentInstanceIdMeta = const VerificationMeta(
+    'parentInstanceId',
+  );
+  @override
+  late final GeneratedColumn<String> parentInstanceId = GeneratedColumn<String>(
+    'parent_instance_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _contextPriorityMeta = const VerificationMeta(
+    'contextPriority',
+  );
+  @override
+  late final GeneratedColumn<String> contextPriority = GeneratedColumn<String>(
+    'context_priority',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('normal'),
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sceneId,
+    assetId,
+    assetType,
+    stateId,
+    parentInstanceId,
+    contextPriority,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'scene_asset_instances';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SceneAssetInstance> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('scene_id')) {
+      context.handle(
+        _sceneIdMeta,
+        sceneId.isAcceptableOrUnknown(data['scene_id']!, _sceneIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneIdMeta);
+    }
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('asset_type')) {
+      context.handle(
+        _assetTypeMeta,
+        assetType.isAcceptableOrUnknown(data['asset_type']!, _assetTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetTypeMeta);
+    }
+    if (data.containsKey('state_id')) {
+      context.handle(
+        _stateIdMeta,
+        stateId.isAcceptableOrUnknown(data['state_id']!, _stateIdMeta),
+      );
+    }
+    if (data.containsKey('parent_instance_id')) {
+      context.handle(
+        _parentInstanceIdMeta,
+        parentInstanceId.isAcceptableOrUnknown(
+          data['parent_instance_id']!,
+          _parentInstanceIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('context_priority')) {
+      context.handle(
+        _contextPriorityMeta,
+        contextPriority.isAcceptableOrUnknown(
+          data['context_priority']!,
+          _contextPriorityMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SceneAssetInstance map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SceneAssetInstance(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      sceneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scene_id'],
+      )!,
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      assetType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_type'],
+      )!,
+      stateId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}state_id'],
+      ),
+      parentInstanceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}parent_instance_id'],
+      ),
+      contextPriority: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}context_priority'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+    );
+  }
+
+  @override
+  $SceneAssetInstancesTable createAlias(String alias) {
+    return $SceneAssetInstancesTable(attachedDatabase, alias);
+  }
+}
+
+class SceneAssetInstance extends DataClass
+    implements Insertable<SceneAssetInstance> {
+  final String id;
+  final String sceneId;
+  final String assetId;
+  final String assetType;
+  final String? stateId;
+  final String? parentInstanceId;
+  final String contextPriority;
+  final String notes;
+  const SceneAssetInstance({
+    required this.id,
+    required this.sceneId,
+    required this.assetId,
+    required this.assetType,
+    this.stateId,
+    this.parentInstanceId,
+    required this.contextPriority,
+    required this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['scene_id'] = Variable<String>(sceneId);
+    map['asset_id'] = Variable<String>(assetId);
+    map['asset_type'] = Variable<String>(assetType);
+    if (!nullToAbsent || stateId != null) {
+      map['state_id'] = Variable<String>(stateId);
+    }
+    if (!nullToAbsent || parentInstanceId != null) {
+      map['parent_instance_id'] = Variable<String>(parentInstanceId);
+    }
+    map['context_priority'] = Variable<String>(contextPriority);
+    map['notes'] = Variable<String>(notes);
+    return map;
+  }
+
+  SceneAssetInstancesCompanion toCompanion(bool nullToAbsent) {
+    return SceneAssetInstancesCompanion(
+      id: Value(id),
+      sceneId: Value(sceneId),
+      assetId: Value(assetId),
+      assetType: Value(assetType),
+      stateId: stateId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(stateId),
+      parentInstanceId: parentInstanceId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(parentInstanceId),
+      contextPriority: Value(contextPriority),
+      notes: Value(notes),
+    );
+  }
+
+  factory SceneAssetInstance.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SceneAssetInstance(
+      id: serializer.fromJson<String>(json['id']),
+      sceneId: serializer.fromJson<String>(json['sceneId']),
+      assetId: serializer.fromJson<String>(json['assetId']),
+      assetType: serializer.fromJson<String>(json['assetType']),
+      stateId: serializer.fromJson<String?>(json['stateId']),
+      parentInstanceId: serializer.fromJson<String?>(json['parentInstanceId']),
+      contextPriority: serializer.fromJson<String>(json['contextPriority']),
+      notes: serializer.fromJson<String>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sceneId': serializer.toJson<String>(sceneId),
+      'assetId': serializer.toJson<String>(assetId),
+      'assetType': serializer.toJson<String>(assetType),
+      'stateId': serializer.toJson<String?>(stateId),
+      'parentInstanceId': serializer.toJson<String?>(parentInstanceId),
+      'contextPriority': serializer.toJson<String>(contextPriority),
+      'notes': serializer.toJson<String>(notes),
+    };
+  }
+
+  SceneAssetInstance copyWith({
+    String? id,
+    String? sceneId,
+    String? assetId,
+    String? assetType,
+    Value<String?> stateId = const Value.absent(),
+    Value<String?> parentInstanceId = const Value.absent(),
+    String? contextPriority,
+    String? notes,
+  }) => SceneAssetInstance(
+    id: id ?? this.id,
+    sceneId: sceneId ?? this.sceneId,
+    assetId: assetId ?? this.assetId,
+    assetType: assetType ?? this.assetType,
+    stateId: stateId.present ? stateId.value : this.stateId,
+    parentInstanceId: parentInstanceId.present
+        ? parentInstanceId.value
+        : this.parentInstanceId,
+    contextPriority: contextPriority ?? this.contextPriority,
+    notes: notes ?? this.notes,
+  );
+  SceneAssetInstance copyWithCompanion(SceneAssetInstancesCompanion data) {
+    return SceneAssetInstance(
+      id: data.id.present ? data.id.value : this.id,
+      sceneId: data.sceneId.present ? data.sceneId.value : this.sceneId,
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      assetType: data.assetType.present ? data.assetType.value : this.assetType,
+      stateId: data.stateId.present ? data.stateId.value : this.stateId,
+      parentInstanceId: data.parentInstanceId.present
+          ? data.parentInstanceId.value
+          : this.parentInstanceId,
+      contextPriority: data.contextPriority.present
+          ? data.contextPriority.value
+          : this.contextPriority,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneAssetInstance(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('assetId: $assetId, ')
+          ..write('assetType: $assetType, ')
+          ..write('stateId: $stateId, ')
+          ..write('parentInstanceId: $parentInstanceId, ')
+          ..write('contextPriority: $contextPriority, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    sceneId,
+    assetId,
+    assetType,
+    stateId,
+    parentInstanceId,
+    contextPriority,
+    notes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SceneAssetInstance &&
+          other.id == this.id &&
+          other.sceneId == this.sceneId &&
+          other.assetId == this.assetId &&
+          other.assetType == this.assetType &&
+          other.stateId == this.stateId &&
+          other.parentInstanceId == this.parentInstanceId &&
+          other.contextPriority == this.contextPriority &&
+          other.notes == this.notes);
+}
+
+class SceneAssetInstancesCompanion extends UpdateCompanion<SceneAssetInstance> {
+  final Value<String> id;
+  final Value<String> sceneId;
+  final Value<String> assetId;
+  final Value<String> assetType;
+  final Value<String?> stateId;
+  final Value<String?> parentInstanceId;
+  final Value<String> contextPriority;
+  final Value<String> notes;
+  final Value<int> rowid;
+  const SceneAssetInstancesCompanion({
+    this.id = const Value.absent(),
+    this.sceneId = const Value.absent(),
+    this.assetId = const Value.absent(),
+    this.assetType = const Value.absent(),
+    this.stateId = const Value.absent(),
+    this.parentInstanceId = const Value.absent(),
+    this.contextPriority = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SceneAssetInstancesCompanion.insert({
+    required String id,
+    required String sceneId,
+    required String assetId,
+    required String assetType,
+    this.stateId = const Value.absent(),
+    this.parentInstanceId = const Value.absent(),
+    this.contextPriority = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       sceneId = Value(sceneId),
+       assetId = Value(assetId),
+       assetType = Value(assetType);
+  static Insertable<SceneAssetInstance> custom({
+    Expression<String>? id,
+    Expression<String>? sceneId,
+    Expression<String>? assetId,
+    Expression<String>? assetType,
+    Expression<String>? stateId,
+    Expression<String>? parentInstanceId,
+    Expression<String>? contextPriority,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sceneId != null) 'scene_id': sceneId,
+      if (assetId != null) 'asset_id': assetId,
+      if (assetType != null) 'asset_type': assetType,
+      if (stateId != null) 'state_id': stateId,
+      if (parentInstanceId != null) 'parent_instance_id': parentInstanceId,
+      if (contextPriority != null) 'context_priority': contextPriority,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SceneAssetInstancesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? sceneId,
+    Value<String>? assetId,
+    Value<String>? assetType,
+    Value<String?>? stateId,
+    Value<String?>? parentInstanceId,
+    Value<String>? contextPriority,
+    Value<String>? notes,
+    Value<int>? rowid,
+  }) {
+    return SceneAssetInstancesCompanion(
+      id: id ?? this.id,
+      sceneId: sceneId ?? this.sceneId,
+      assetId: assetId ?? this.assetId,
+      assetType: assetType ?? this.assetType,
+      stateId: stateId ?? this.stateId,
+      parentInstanceId: parentInstanceId ?? this.parentInstanceId,
+      contextPriority: contextPriority ?? this.contextPriority,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sceneId.present) {
+      map['scene_id'] = Variable<String>(sceneId.value);
+    }
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (assetType.present) {
+      map['asset_type'] = Variable<String>(assetType.value);
+    }
+    if (stateId.present) {
+      map['state_id'] = Variable<String>(stateId.value);
+    }
+    if (parentInstanceId.present) {
+      map['parent_instance_id'] = Variable<String>(parentInstanceId.value);
+    }
+    if (contextPriority.present) {
+      map['context_priority'] = Variable<String>(contextPriority.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneAssetInstancesCompanion(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('assetId: $assetId, ')
+          ..write('assetType: $assetType, ')
+          ..write('stateId: $stateId, ')
+          ..write('parentInstanceId: $parentInstanceId, ')
+          ..write('contextPriority: $contextPriority, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SceneInstanceTransformsTable extends SceneInstanceTransforms
+    with TableInfo<$SceneInstanceTransformsTable, SceneInstanceTransform> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SceneInstanceTransformsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _instanceIdMeta = const VerificationMeta(
+    'instanceId',
+  );
+  @override
+  late final GeneratedColumn<String> instanceId = GeneratedColumn<String>(
+    'instance_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _positionXMeta = const VerificationMeta(
+    'positionX',
+  );
+  @override
+  late final GeneratedColumn<double> positionX = GeneratedColumn<double>(
+    'position_x',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _positionYMeta = const VerificationMeta(
+    'positionY',
+  );
+  @override
+  late final GeneratedColumn<double> positionY = GeneratedColumn<double>(
+    'position_y',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _positionZMeta = const VerificationMeta(
+    'positionZ',
+  );
+  @override
+  late final GeneratedColumn<double> positionZ = GeneratedColumn<double>(
+    'position_z',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _rotationXMeta = const VerificationMeta(
+    'rotationX',
+  );
+  @override
+  late final GeneratedColumn<double> rotationX = GeneratedColumn<double>(
+    'rotation_x',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _rotationYMeta = const VerificationMeta(
+    'rotationY',
+  );
+  @override
+  late final GeneratedColumn<double> rotationY = GeneratedColumn<double>(
+    'rotation_y',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _rotationZMeta = const VerificationMeta(
+    'rotationZ',
+  );
+  @override
+  late final GeneratedColumn<double> rotationZ = GeneratedColumn<double>(
+    'rotation_z',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    instanceId,
+    positionX,
+    positionY,
+    positionZ,
+    rotationX,
+    rotationY,
+    rotationZ,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'scene_instance_transforms';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SceneInstanceTransform> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('instance_id')) {
+      context.handle(
+        _instanceIdMeta,
+        instanceId.isAcceptableOrUnknown(data['instance_id']!, _instanceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_instanceIdMeta);
+    }
+    if (data.containsKey('position_x')) {
+      context.handle(
+        _positionXMeta,
+        positionX.isAcceptableOrUnknown(data['position_x']!, _positionXMeta),
+      );
+    }
+    if (data.containsKey('position_y')) {
+      context.handle(
+        _positionYMeta,
+        positionY.isAcceptableOrUnknown(data['position_y']!, _positionYMeta),
+      );
+    }
+    if (data.containsKey('position_z')) {
+      context.handle(
+        _positionZMeta,
+        positionZ.isAcceptableOrUnknown(data['position_z']!, _positionZMeta),
+      );
+    }
+    if (data.containsKey('rotation_x')) {
+      context.handle(
+        _rotationXMeta,
+        rotationX.isAcceptableOrUnknown(data['rotation_x']!, _rotationXMeta),
+      );
+    }
+    if (data.containsKey('rotation_y')) {
+      context.handle(
+        _rotationYMeta,
+        rotationY.isAcceptableOrUnknown(data['rotation_y']!, _rotationYMeta),
+      );
+    }
+    if (data.containsKey('rotation_z')) {
+      context.handle(
+        _rotationZMeta,
+        rotationZ.isAcceptableOrUnknown(data['rotation_z']!, _rotationZMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {instanceId};
+  @override
+  SceneInstanceTransform map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SceneInstanceTransform(
+      instanceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}instance_id'],
+      )!,
+      positionX: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}position_x'],
+      )!,
+      positionY: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}position_y'],
+      )!,
+      positionZ: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}position_z'],
+      )!,
+      rotationX: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rotation_x'],
+      )!,
+      rotationY: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rotation_y'],
+      )!,
+      rotationZ: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rotation_z'],
+      )!,
+    );
+  }
+
+  @override
+  $SceneInstanceTransformsTable createAlias(String alias) {
+    return $SceneInstanceTransformsTable(attachedDatabase, alias);
+  }
+}
+
+class SceneInstanceTransform extends DataClass
+    implements Insertable<SceneInstanceTransform> {
+  final String instanceId;
+  final double positionX;
+  final double positionY;
+  final double positionZ;
+  final double rotationX;
+  final double rotationY;
+  final double rotationZ;
+  const SceneInstanceTransform({
+    required this.instanceId,
+    required this.positionX,
+    required this.positionY,
+    required this.positionZ,
+    required this.rotationX,
+    required this.rotationY,
+    required this.rotationZ,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['instance_id'] = Variable<String>(instanceId);
+    map['position_x'] = Variable<double>(positionX);
+    map['position_y'] = Variable<double>(positionY);
+    map['position_z'] = Variable<double>(positionZ);
+    map['rotation_x'] = Variable<double>(rotationX);
+    map['rotation_y'] = Variable<double>(rotationY);
+    map['rotation_z'] = Variable<double>(rotationZ);
+    return map;
+  }
+
+  SceneInstanceTransformsCompanion toCompanion(bool nullToAbsent) {
+    return SceneInstanceTransformsCompanion(
+      instanceId: Value(instanceId),
+      positionX: Value(positionX),
+      positionY: Value(positionY),
+      positionZ: Value(positionZ),
+      rotationX: Value(rotationX),
+      rotationY: Value(rotationY),
+      rotationZ: Value(rotationZ),
+    );
+  }
+
+  factory SceneInstanceTransform.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SceneInstanceTransform(
+      instanceId: serializer.fromJson<String>(json['instanceId']),
+      positionX: serializer.fromJson<double>(json['positionX']),
+      positionY: serializer.fromJson<double>(json['positionY']),
+      positionZ: serializer.fromJson<double>(json['positionZ']),
+      rotationX: serializer.fromJson<double>(json['rotationX']),
+      rotationY: serializer.fromJson<double>(json['rotationY']),
+      rotationZ: serializer.fromJson<double>(json['rotationZ']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'instanceId': serializer.toJson<String>(instanceId),
+      'positionX': serializer.toJson<double>(positionX),
+      'positionY': serializer.toJson<double>(positionY),
+      'positionZ': serializer.toJson<double>(positionZ),
+      'rotationX': serializer.toJson<double>(rotationX),
+      'rotationY': serializer.toJson<double>(rotationY),
+      'rotationZ': serializer.toJson<double>(rotationZ),
+    };
+  }
+
+  SceneInstanceTransform copyWith({
+    String? instanceId,
+    double? positionX,
+    double? positionY,
+    double? positionZ,
+    double? rotationX,
+    double? rotationY,
+    double? rotationZ,
+  }) => SceneInstanceTransform(
+    instanceId: instanceId ?? this.instanceId,
+    positionX: positionX ?? this.positionX,
+    positionY: positionY ?? this.positionY,
+    positionZ: positionZ ?? this.positionZ,
+    rotationX: rotationX ?? this.rotationX,
+    rotationY: rotationY ?? this.rotationY,
+    rotationZ: rotationZ ?? this.rotationZ,
+  );
+  SceneInstanceTransform copyWithCompanion(
+    SceneInstanceTransformsCompanion data,
+  ) {
+    return SceneInstanceTransform(
+      instanceId: data.instanceId.present
+          ? data.instanceId.value
+          : this.instanceId,
+      positionX: data.positionX.present ? data.positionX.value : this.positionX,
+      positionY: data.positionY.present ? data.positionY.value : this.positionY,
+      positionZ: data.positionZ.present ? data.positionZ.value : this.positionZ,
+      rotationX: data.rotationX.present ? data.rotationX.value : this.rotationX,
+      rotationY: data.rotationY.present ? data.rotationY.value : this.rotationY,
+      rotationZ: data.rotationZ.present ? data.rotationZ.value : this.rotationZ,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneInstanceTransform(')
+          ..write('instanceId: $instanceId, ')
+          ..write('positionX: $positionX, ')
+          ..write('positionY: $positionY, ')
+          ..write('positionZ: $positionZ, ')
+          ..write('rotationX: $rotationX, ')
+          ..write('rotationY: $rotationY, ')
+          ..write('rotationZ: $rotationZ')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    instanceId,
+    positionX,
+    positionY,
+    positionZ,
+    rotationX,
+    rotationY,
+    rotationZ,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SceneInstanceTransform &&
+          other.instanceId == this.instanceId &&
+          other.positionX == this.positionX &&
+          other.positionY == this.positionY &&
+          other.positionZ == this.positionZ &&
+          other.rotationX == this.rotationX &&
+          other.rotationY == this.rotationY &&
+          other.rotationZ == this.rotationZ);
+}
+
+class SceneInstanceTransformsCompanion
+    extends UpdateCompanion<SceneInstanceTransform> {
+  final Value<String> instanceId;
+  final Value<double> positionX;
+  final Value<double> positionY;
+  final Value<double> positionZ;
+  final Value<double> rotationX;
+  final Value<double> rotationY;
+  final Value<double> rotationZ;
+  final Value<int> rowid;
+  const SceneInstanceTransformsCompanion({
+    this.instanceId = const Value.absent(),
+    this.positionX = const Value.absent(),
+    this.positionY = const Value.absent(),
+    this.positionZ = const Value.absent(),
+    this.rotationX = const Value.absent(),
+    this.rotationY = const Value.absent(),
+    this.rotationZ = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SceneInstanceTransformsCompanion.insert({
+    required String instanceId,
+    this.positionX = const Value.absent(),
+    this.positionY = const Value.absent(),
+    this.positionZ = const Value.absent(),
+    this.rotationX = const Value.absent(),
+    this.rotationY = const Value.absent(),
+    this.rotationZ = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : instanceId = Value(instanceId);
+  static Insertable<SceneInstanceTransform> custom({
+    Expression<String>? instanceId,
+    Expression<double>? positionX,
+    Expression<double>? positionY,
+    Expression<double>? positionZ,
+    Expression<double>? rotationX,
+    Expression<double>? rotationY,
+    Expression<double>? rotationZ,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (instanceId != null) 'instance_id': instanceId,
+      if (positionX != null) 'position_x': positionX,
+      if (positionY != null) 'position_y': positionY,
+      if (positionZ != null) 'position_z': positionZ,
+      if (rotationX != null) 'rotation_x': rotationX,
+      if (rotationY != null) 'rotation_y': rotationY,
+      if (rotationZ != null) 'rotation_z': rotationZ,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SceneInstanceTransformsCompanion copyWith({
+    Value<String>? instanceId,
+    Value<double>? positionX,
+    Value<double>? positionY,
+    Value<double>? positionZ,
+    Value<double>? rotationX,
+    Value<double>? rotationY,
+    Value<double>? rotationZ,
+    Value<int>? rowid,
+  }) {
+    return SceneInstanceTransformsCompanion(
+      instanceId: instanceId ?? this.instanceId,
+      positionX: positionX ?? this.positionX,
+      positionY: positionY ?? this.positionY,
+      positionZ: positionZ ?? this.positionZ,
+      rotationX: rotationX ?? this.rotationX,
+      rotationY: rotationY ?? this.rotationY,
+      rotationZ: rotationZ ?? this.rotationZ,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (instanceId.present) {
+      map['instance_id'] = Variable<String>(instanceId.value);
+    }
+    if (positionX.present) {
+      map['position_x'] = Variable<double>(positionX.value);
+    }
+    if (positionY.present) {
+      map['position_y'] = Variable<double>(positionY.value);
+    }
+    if (positionZ.present) {
+      map['position_z'] = Variable<double>(positionZ.value);
+    }
+    if (rotationX.present) {
+      map['rotation_x'] = Variable<double>(rotationX.value);
+    }
+    if (rotationY.present) {
+      map['rotation_y'] = Variable<double>(rotationY.value);
+    }
+    if (rotationZ.present) {
+      map['rotation_z'] = Variable<double>(rotationZ.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneInstanceTransformsCompanion(')
+          ..write('instanceId: $instanceId, ')
+          ..write('positionX: $positionX, ')
+          ..write('positionY: $positionY, ')
+          ..write('positionZ: $positionZ, ')
+          ..write('rotationX: $rotationX, ')
+          ..write('rotationY: $rotationY, ')
+          ..write('rotationZ: $rotationZ, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SceneInstancePropertiesTable extends SceneInstanceProperties
+    with TableInfo<$SceneInstancePropertiesTable, SceneInstanceProperty> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SceneInstancePropertiesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _instanceIdMeta = const VerificationMeta(
+    'instanceId',
+  );
+  @override
+  late final GeneratedColumn<String> instanceId = GeneratedColumn<String>(
+    'instance_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+    'key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<String> value = GeneratedColumn<String>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, instanceId, key, value];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'scene_instance_properties';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SceneInstanceProperty> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('instance_id')) {
+      context.handle(
+        _instanceIdMeta,
+        instanceId.isAcceptableOrUnknown(data['instance_id']!, _instanceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_instanceIdMeta);
+    }
+    if (data.containsKey('key')) {
+      context.handle(
+        _keyMeta,
+        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {instanceId, key},
+  ];
+  @override
+  SceneInstanceProperty map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SceneInstanceProperty(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      instanceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}instance_id'],
+      )!,
+      key: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}key'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}value'],
+      )!,
+    );
+  }
+
+  @override
+  $SceneInstancePropertiesTable createAlias(String alias) {
+    return $SceneInstancePropertiesTable(attachedDatabase, alias);
+  }
+}
+
+class SceneInstanceProperty extends DataClass
+    implements Insertable<SceneInstanceProperty> {
+  final String id;
+  final String instanceId;
+  final String key;
+  final String value;
+  const SceneInstanceProperty({
+    required this.id,
+    required this.instanceId,
+    required this.key,
+    required this.value,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['instance_id'] = Variable<String>(instanceId);
+    map['key'] = Variable<String>(key);
+    map['value'] = Variable<String>(value);
+    return map;
+  }
+
+  SceneInstancePropertiesCompanion toCompanion(bool nullToAbsent) {
+    return SceneInstancePropertiesCompanion(
+      id: Value(id),
+      instanceId: Value(instanceId),
+      key: Value(key),
+      value: Value(value),
+    );
+  }
+
+  factory SceneInstanceProperty.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SceneInstanceProperty(
+      id: serializer.fromJson<String>(json['id']),
+      instanceId: serializer.fromJson<String>(json['instanceId']),
+      key: serializer.fromJson<String>(json['key']),
+      value: serializer.fromJson<String>(json['value']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'instanceId': serializer.toJson<String>(instanceId),
+      'key': serializer.toJson<String>(key),
+      'value': serializer.toJson<String>(value),
+    };
+  }
+
+  SceneInstanceProperty copyWith({
+    String? id,
+    String? instanceId,
+    String? key,
+    String? value,
+  }) => SceneInstanceProperty(
+    id: id ?? this.id,
+    instanceId: instanceId ?? this.instanceId,
+    key: key ?? this.key,
+    value: value ?? this.value,
+  );
+  SceneInstanceProperty copyWithCompanion(
+    SceneInstancePropertiesCompanion data,
+  ) {
+    return SceneInstanceProperty(
+      id: data.id.present ? data.id.value : this.id,
+      instanceId: data.instanceId.present
+          ? data.instanceId.value
+          : this.instanceId,
+      key: data.key.present ? data.key.value : this.key,
+      value: data.value.present ? data.value.value : this.value,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneInstanceProperty(')
+          ..write('id: $id, ')
+          ..write('instanceId: $instanceId, ')
+          ..write('key: $key, ')
+          ..write('value: $value')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, instanceId, key, value);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SceneInstanceProperty &&
+          other.id == this.id &&
+          other.instanceId == this.instanceId &&
+          other.key == this.key &&
+          other.value == this.value);
+}
+
+class SceneInstancePropertiesCompanion
+    extends UpdateCompanion<SceneInstanceProperty> {
+  final Value<String> id;
+  final Value<String> instanceId;
+  final Value<String> key;
+  final Value<String> value;
+  final Value<int> rowid;
+  const SceneInstancePropertiesCompanion({
+    this.id = const Value.absent(),
+    this.instanceId = const Value.absent(),
+    this.key = const Value.absent(),
+    this.value = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SceneInstancePropertiesCompanion.insert({
+    required String id,
+    required String instanceId,
+    required String key,
+    required String value,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       instanceId = Value(instanceId),
+       key = Value(key),
+       value = Value(value);
+  static Insertable<SceneInstanceProperty> custom({
+    Expression<String>? id,
+    Expression<String>? instanceId,
+    Expression<String>? key,
+    Expression<String>? value,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (instanceId != null) 'instance_id': instanceId,
+      if (key != null) 'key': key,
+      if (value != null) 'value': value,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SceneInstancePropertiesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? instanceId,
+    Value<String>? key,
+    Value<String>? value,
+    Value<int>? rowid,
+  }) {
+    return SceneInstancePropertiesCompanion(
+      id: id ?? this.id,
+      instanceId: instanceId ?? this.instanceId,
+      key: key ?? this.key,
+      value: value ?? this.value,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (instanceId.present) {
+      map['instance_id'] = Variable<String>(instanceId.value);
+    }
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<String>(value.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneInstancePropertiesCompanion(')
+          ..write('id: $id, ')
+          ..write('instanceId: $instanceId, ')
+          ..write('key: $key, ')
+          ..write('value: $value, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SceneContinuitySnapshotsTable extends SceneContinuitySnapshots
+    with TableInfo<$SceneContinuitySnapshotsTable, SceneContinuitySnapshot> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SceneContinuitySnapshotsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sceneIdMeta = const VerificationMeta(
+    'sceneId',
+  );
+  @override
+  late final GeneratedColumn<String> sceneId = GeneratedColumn<String>(
+    'scene_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _instanceIdMeta = const VerificationMeta(
+    'instanceId',
+  );
+  @override
+  late final GeneratedColumn<String> instanceId = GeneratedColumn<String>(
+    'instance_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _snapshotDataMeta = const VerificationMeta(
+    'snapshotData',
+  );
+  @override
+  late final GeneratedColumn<String> snapshotData = GeneratedColumn<String>(
+    'snapshot_data',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sceneId,
+    instanceId,
+    snapshotData,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'scene_continuity_snapshots';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SceneContinuitySnapshot> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('scene_id')) {
+      context.handle(
+        _sceneIdMeta,
+        sceneId.isAcceptableOrUnknown(data['scene_id']!, _sceneIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneIdMeta);
+    }
+    if (data.containsKey('instance_id')) {
+      context.handle(
+        _instanceIdMeta,
+        instanceId.isAcceptableOrUnknown(data['instance_id']!, _instanceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_instanceIdMeta);
+    }
+    if (data.containsKey('snapshot_data')) {
+      context.handle(
+        _snapshotDataMeta,
+        snapshotData.isAcceptableOrUnknown(
+          data['snapshot_data']!,
+          _snapshotDataMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_snapshotDataMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SceneContinuitySnapshot map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SceneContinuitySnapshot(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      sceneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scene_id'],
+      )!,
+      instanceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}instance_id'],
+      )!,
+      snapshotData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}snapshot_data'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SceneContinuitySnapshotsTable createAlias(String alias) {
+    return $SceneContinuitySnapshotsTable(attachedDatabase, alias);
+  }
+}
+
+class SceneContinuitySnapshot extends DataClass
+    implements Insertable<SceneContinuitySnapshot> {
+  final String id;
+  final String sceneId;
+  final String instanceId;
+  final String snapshotData;
+  final DateTime createdAt;
+  const SceneContinuitySnapshot({
+    required this.id,
+    required this.sceneId,
+    required this.instanceId,
+    required this.snapshotData,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['scene_id'] = Variable<String>(sceneId);
+    map['instance_id'] = Variable<String>(instanceId);
+    map['snapshot_data'] = Variable<String>(snapshotData);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  SceneContinuitySnapshotsCompanion toCompanion(bool nullToAbsent) {
+    return SceneContinuitySnapshotsCompanion(
+      id: Value(id),
+      sceneId: Value(sceneId),
+      instanceId: Value(instanceId),
+      snapshotData: Value(snapshotData),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory SceneContinuitySnapshot.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SceneContinuitySnapshot(
+      id: serializer.fromJson<String>(json['id']),
+      sceneId: serializer.fromJson<String>(json['sceneId']),
+      instanceId: serializer.fromJson<String>(json['instanceId']),
+      snapshotData: serializer.fromJson<String>(json['snapshotData']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sceneId': serializer.toJson<String>(sceneId),
+      'instanceId': serializer.toJson<String>(instanceId),
+      'snapshotData': serializer.toJson<String>(snapshotData),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  SceneContinuitySnapshot copyWith({
+    String? id,
+    String? sceneId,
+    String? instanceId,
+    String? snapshotData,
+    DateTime? createdAt,
+  }) => SceneContinuitySnapshot(
+    id: id ?? this.id,
+    sceneId: sceneId ?? this.sceneId,
+    instanceId: instanceId ?? this.instanceId,
+    snapshotData: snapshotData ?? this.snapshotData,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  SceneContinuitySnapshot copyWithCompanion(
+    SceneContinuitySnapshotsCompanion data,
+  ) {
+    return SceneContinuitySnapshot(
+      id: data.id.present ? data.id.value : this.id,
+      sceneId: data.sceneId.present ? data.sceneId.value : this.sceneId,
+      instanceId: data.instanceId.present
+          ? data.instanceId.value
+          : this.instanceId,
+      snapshotData: data.snapshotData.present
+          ? data.snapshotData.value
+          : this.snapshotData,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneContinuitySnapshot(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('instanceId: $instanceId, ')
+          ..write('snapshotData: $snapshotData, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, sceneId, instanceId, snapshotData, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SceneContinuitySnapshot &&
+          other.id == this.id &&
+          other.sceneId == this.sceneId &&
+          other.instanceId == this.instanceId &&
+          other.snapshotData == this.snapshotData &&
+          other.createdAt == this.createdAt);
+}
+
+class SceneContinuitySnapshotsCompanion
+    extends UpdateCompanion<SceneContinuitySnapshot> {
+  final Value<String> id;
+  final Value<String> sceneId;
+  final Value<String> instanceId;
+  final Value<String> snapshotData;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const SceneContinuitySnapshotsCompanion({
+    this.id = const Value.absent(),
+    this.sceneId = const Value.absent(),
+    this.instanceId = const Value.absent(),
+    this.snapshotData = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SceneContinuitySnapshotsCompanion.insert({
+    required String id,
+    required String sceneId,
+    required String instanceId,
+    required String snapshotData,
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       sceneId = Value(sceneId),
+       instanceId = Value(instanceId),
+       snapshotData = Value(snapshotData),
+       createdAt = Value(createdAt);
+  static Insertable<SceneContinuitySnapshot> custom({
+    Expression<String>? id,
+    Expression<String>? sceneId,
+    Expression<String>? instanceId,
+    Expression<String>? snapshotData,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sceneId != null) 'scene_id': sceneId,
+      if (instanceId != null) 'instance_id': instanceId,
+      if (snapshotData != null) 'snapshot_data': snapshotData,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SceneContinuitySnapshotsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? sceneId,
+    Value<String>? instanceId,
+    Value<String>? snapshotData,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return SceneContinuitySnapshotsCompanion(
+      id: id ?? this.id,
+      sceneId: sceneId ?? this.sceneId,
+      instanceId: instanceId ?? this.instanceId,
+      snapshotData: snapshotData ?? this.snapshotData,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sceneId.present) {
+      map['scene_id'] = Variable<String>(sceneId.value);
+    }
+    if (instanceId.present) {
+      map['instance_id'] = Variable<String>(instanceId.value);
+    }
+    if (snapshotData.present) {
+      map['snapshot_data'] = Variable<String>(snapshotData.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneContinuitySnapshotsCompanion(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('instanceId: $instanceId, ')
+          ..write('snapshotData: $snapshotData, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -37382,6 +44574,34 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   );
   late final $HistoricalEventParticipantsTable historicalEventParticipants =
       $HistoricalEventParticipantsTable(this);
+  late final $CreaturesTable creatures = $CreaturesTable(this);
+  late final $CreaturePhysicalProfilesTable creaturePhysicalProfiles =
+      $CreaturePhysicalProfilesTable(this);
+  late final $CreatureAbilitiesTable creatureAbilities =
+      $CreatureAbilitiesTable(this);
+  late final $CreatureModesTable creatureModes = $CreatureModesTable(this);
+  late final $VehiclesTable vehicles = $VehiclesTable(this);
+  late final $VehicleSpecificationsTable vehicleSpecifications =
+      $VehicleSpecificationsTable(this);
+  late final $VehicleComponentsTable vehicleComponents =
+      $VehicleComponentsTable(this);
+  late final $VehicleWeaponMountsTable vehicleWeaponMounts =
+      $VehicleWeaponMountsTable(this);
+  late final $VehicleVariantsTable vehicleVariants = $VehicleVariantsTable(
+    this,
+  );
+  late final $PropsTable props = $PropsTable(this);
+  late final $PropSpecificationsTable propSpecifications =
+      $PropSpecificationsTable(this);
+  late final $PropStatesTable propStates = $PropStatesTable(this);
+  late final $SceneAssetInstancesTable sceneAssetInstances =
+      $SceneAssetInstancesTable(this);
+  late final $SceneInstanceTransformsTable sceneInstanceTransforms =
+      $SceneInstanceTransformsTable(this);
+  late final $SceneInstancePropertiesTable sceneInstanceProperties =
+      $SceneInstancePropertiesTable(this);
+  late final $SceneContinuitySnapshotsTable sceneContinuitySnapshots =
+      $SceneContinuitySnapshotsTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -37411,6 +44631,17 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
       BibleTimelineRepository(this as ProjectDatabase);
   late final CanonConflictRepository canonConflictRepository =
       CanonConflictRepository(this as ProjectDatabase);
+  late final CreatureRepository creatureRepository = CreatureRepository(
+    this as ProjectDatabase,
+  );
+  late final VehicleRepository vehicleRepository = VehicleRepository(
+    this as ProjectDatabase,
+  );
+  late final PropRepository propRepository = PropRepository(
+    this as ProjectDatabase,
+  );
+  late final SceneAssetInstanceRepository sceneAssetInstanceRepository =
+      SceneAssetInstanceRepository(this as ProjectDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -37496,6 +44727,22 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     timelineEras,
     historicalEvents,
     historicalEventParticipants,
+    creatures,
+    creaturePhysicalProfiles,
+    creatureAbilities,
+    creatureModes,
+    vehicles,
+    vehicleSpecifications,
+    vehicleComponents,
+    vehicleWeaponMounts,
+    vehicleVariants,
+    props,
+    propSpecifications,
+    propStates,
+    sceneAssetInstances,
+    sceneInstanceTransforms,
+    sceneInstanceProperties,
+    sceneContinuitySnapshots,
   ];
 }
 
@@ -57487,6 +64734,3918 @@ typedef $$HistoricalEventParticipantsTableProcessedTableManager =
       HistoricalEventParticipant,
       PrefetchHooks Function()
     >;
+typedef $$CreaturesTableCreateCompanionBuilder =
+    CreaturesCompanion Function({
+      required String assetId,
+      required String projectId,
+      required String name,
+      required String category,
+      Value<String?> speciesId,
+      Value<String> description,
+      Value<String> behavior,
+      Value<String> abilities,
+      Value<String> origin,
+      Value<int> rowid,
+    });
+typedef $$CreaturesTableUpdateCompanionBuilder =
+    CreaturesCompanion Function({
+      Value<String> assetId,
+      Value<String> projectId,
+      Value<String> name,
+      Value<String> category,
+      Value<String?> speciesId,
+      Value<String> description,
+      Value<String> behavior,
+      Value<String> abilities,
+      Value<String> origin,
+      Value<int> rowid,
+    });
+
+class $$CreaturesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CreaturesTable> {
+  $$CreaturesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get speciesId => $composableBuilder(
+    column: $table.speciesId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get behavior => $composableBuilder(
+    column: $table.behavior,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get abilities => $composableBuilder(
+    column: $table.abilities,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get origin => $composableBuilder(
+    column: $table.origin,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CreaturesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CreaturesTable> {
+  $$CreaturesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get speciesId => $composableBuilder(
+    column: $table.speciesId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get behavior => $composableBuilder(
+    column: $table.behavior,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get abilities => $composableBuilder(
+    column: $table.abilities,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get origin => $composableBuilder(
+    column: $table.origin,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CreaturesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CreaturesTable> {
+  $$CreaturesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get speciesId =>
+      $composableBuilder(column: $table.speciesId, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get behavior =>
+      $composableBuilder(column: $table.behavior, builder: (column) => column);
+
+  GeneratedColumn<String> get abilities =>
+      $composableBuilder(column: $table.abilities, builder: (column) => column);
+
+  GeneratedColumn<String> get origin =>
+      $composableBuilder(column: $table.origin, builder: (column) => column);
+}
+
+class $$CreaturesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CreaturesTable,
+          Creature,
+          $$CreaturesTableFilterComposer,
+          $$CreaturesTableOrderingComposer,
+          $$CreaturesTableAnnotationComposer,
+          $$CreaturesTableCreateCompanionBuilder,
+          $$CreaturesTableUpdateCompanionBuilder,
+          (
+            Creature,
+            BaseReferences<_$ProjectDatabase, $CreaturesTable, Creature>,
+          ),
+          Creature,
+          PrefetchHooks Function()
+        > {
+  $$CreaturesTableTableManager(_$ProjectDatabase db, $CreaturesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CreaturesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CreaturesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CreaturesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> assetId = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<String?> speciesId = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> behavior = const Value.absent(),
+                Value<String> abilities = const Value.absent(),
+                Value<String> origin = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreaturesCompanion(
+                assetId: assetId,
+                projectId: projectId,
+                name: name,
+                category: category,
+                speciesId: speciesId,
+                description: description,
+                behavior: behavior,
+                abilities: abilities,
+                origin: origin,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String assetId,
+                required String projectId,
+                required String name,
+                required String category,
+                Value<String?> speciesId = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> behavior = const Value.absent(),
+                Value<String> abilities = const Value.absent(),
+                Value<String> origin = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreaturesCompanion.insert(
+                assetId: assetId,
+                projectId: projectId,
+                name: name,
+                category: category,
+                speciesId: speciesId,
+                description: description,
+                behavior: behavior,
+                abilities: abilities,
+                origin: origin,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CreaturesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CreaturesTable,
+      Creature,
+      $$CreaturesTableFilterComposer,
+      $$CreaturesTableOrderingComposer,
+      $$CreaturesTableAnnotationComposer,
+      $$CreaturesTableCreateCompanionBuilder,
+      $$CreaturesTableUpdateCompanionBuilder,
+      (Creature, BaseReferences<_$ProjectDatabase, $CreaturesTable, Creature>),
+      Creature,
+      PrefetchHooks Function()
+    >;
+typedef $$CreaturePhysicalProfilesTableCreateCompanionBuilder =
+    CreaturePhysicalProfilesCompanion Function({
+      required String creatureId,
+      Value<double?> heightCm,
+      Value<double?> lengthCm,
+      Value<double?> weightKg,
+      Value<String> bodyStructure,
+      Value<String> skinMaterial,
+      Value<String> eyeDescription,
+      Value<String> distinguishingFeatures,
+      Value<int> rowid,
+    });
+typedef $$CreaturePhysicalProfilesTableUpdateCompanionBuilder =
+    CreaturePhysicalProfilesCompanion Function({
+      Value<String> creatureId,
+      Value<double?> heightCm,
+      Value<double?> lengthCm,
+      Value<double?> weightKg,
+      Value<String> bodyStructure,
+      Value<String> skinMaterial,
+      Value<String> eyeDescription,
+      Value<String> distinguishingFeatures,
+      Value<int> rowid,
+    });
+
+class $$CreaturePhysicalProfilesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CreaturePhysicalProfilesTable> {
+  $$CreaturePhysicalProfilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get creatureId => $composableBuilder(
+    column: $table.creatureId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get heightCm => $composableBuilder(
+    column: $table.heightCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get lengthCm => $composableBuilder(
+    column: $table.lengthCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bodyStructure => $composableBuilder(
+    column: $table.bodyStructure,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get skinMaterial => $composableBuilder(
+    column: $table.skinMaterial,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get eyeDescription => $composableBuilder(
+    column: $table.eyeDescription,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get distinguishingFeatures => $composableBuilder(
+    column: $table.distinguishingFeatures,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CreaturePhysicalProfilesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CreaturePhysicalProfilesTable> {
+  $$CreaturePhysicalProfilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get creatureId => $composableBuilder(
+    column: $table.creatureId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get heightCm => $composableBuilder(
+    column: $table.heightCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get lengthCm => $composableBuilder(
+    column: $table.lengthCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bodyStructure => $composableBuilder(
+    column: $table.bodyStructure,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get skinMaterial => $composableBuilder(
+    column: $table.skinMaterial,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get eyeDescription => $composableBuilder(
+    column: $table.eyeDescription,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get distinguishingFeatures => $composableBuilder(
+    column: $table.distinguishingFeatures,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CreaturePhysicalProfilesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CreaturePhysicalProfilesTable> {
+  $$CreaturePhysicalProfilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get creatureId => $composableBuilder(
+    column: $table.creatureId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get heightCm =>
+      $composableBuilder(column: $table.heightCm, builder: (column) => column);
+
+  GeneratedColumn<double> get lengthCm =>
+      $composableBuilder(column: $table.lengthCm, builder: (column) => column);
+
+  GeneratedColumn<double> get weightKg =>
+      $composableBuilder(column: $table.weightKg, builder: (column) => column);
+
+  GeneratedColumn<String> get bodyStructure => $composableBuilder(
+    column: $table.bodyStructure,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get skinMaterial => $composableBuilder(
+    column: $table.skinMaterial,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get eyeDescription => $composableBuilder(
+    column: $table.eyeDescription,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get distinguishingFeatures => $composableBuilder(
+    column: $table.distinguishingFeatures,
+    builder: (column) => column,
+  );
+}
+
+class $$CreaturePhysicalProfilesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CreaturePhysicalProfilesTable,
+          CreaturePhysicalProfile,
+          $$CreaturePhysicalProfilesTableFilterComposer,
+          $$CreaturePhysicalProfilesTableOrderingComposer,
+          $$CreaturePhysicalProfilesTableAnnotationComposer,
+          $$CreaturePhysicalProfilesTableCreateCompanionBuilder,
+          $$CreaturePhysicalProfilesTableUpdateCompanionBuilder,
+          (
+            CreaturePhysicalProfile,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CreaturePhysicalProfilesTable,
+              CreaturePhysicalProfile
+            >,
+          ),
+          CreaturePhysicalProfile,
+          PrefetchHooks Function()
+        > {
+  $$CreaturePhysicalProfilesTableTableManager(
+    _$ProjectDatabase db,
+    $CreaturePhysicalProfilesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CreaturePhysicalProfilesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CreaturePhysicalProfilesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CreaturePhysicalProfilesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> creatureId = const Value.absent(),
+                Value<double?> heightCm = const Value.absent(),
+                Value<double?> lengthCm = const Value.absent(),
+                Value<double?> weightKg = const Value.absent(),
+                Value<String> bodyStructure = const Value.absent(),
+                Value<String> skinMaterial = const Value.absent(),
+                Value<String> eyeDescription = const Value.absent(),
+                Value<String> distinguishingFeatures = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreaturePhysicalProfilesCompanion(
+                creatureId: creatureId,
+                heightCm: heightCm,
+                lengthCm: lengthCm,
+                weightKg: weightKg,
+                bodyStructure: bodyStructure,
+                skinMaterial: skinMaterial,
+                eyeDescription: eyeDescription,
+                distinguishingFeatures: distinguishingFeatures,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String creatureId,
+                Value<double?> heightCm = const Value.absent(),
+                Value<double?> lengthCm = const Value.absent(),
+                Value<double?> weightKg = const Value.absent(),
+                Value<String> bodyStructure = const Value.absent(),
+                Value<String> skinMaterial = const Value.absent(),
+                Value<String> eyeDescription = const Value.absent(),
+                Value<String> distinguishingFeatures = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreaturePhysicalProfilesCompanion.insert(
+                creatureId: creatureId,
+                heightCm: heightCm,
+                lengthCm: lengthCm,
+                weightKg: weightKg,
+                bodyStructure: bodyStructure,
+                skinMaterial: skinMaterial,
+                eyeDescription: eyeDescription,
+                distinguishingFeatures: distinguishingFeatures,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CreaturePhysicalProfilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CreaturePhysicalProfilesTable,
+      CreaturePhysicalProfile,
+      $$CreaturePhysicalProfilesTableFilterComposer,
+      $$CreaturePhysicalProfilesTableOrderingComposer,
+      $$CreaturePhysicalProfilesTableAnnotationComposer,
+      $$CreaturePhysicalProfilesTableCreateCompanionBuilder,
+      $$CreaturePhysicalProfilesTableUpdateCompanionBuilder,
+      (
+        CreaturePhysicalProfile,
+        BaseReferences<
+          _$ProjectDatabase,
+          $CreaturePhysicalProfilesTable,
+          CreaturePhysicalProfile
+        >,
+      ),
+      CreaturePhysicalProfile,
+      PrefetchHooks Function()
+    >;
+typedef $$CreatureAbilitiesTableCreateCompanionBuilder =
+    CreatureAbilitiesCompanion Function({
+      required String id,
+      required String creatureId,
+      required String name,
+      Value<String> description,
+      Value<String?> powerSystemId,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$CreatureAbilitiesTableUpdateCompanionBuilder =
+    CreatureAbilitiesCompanion Function({
+      Value<String> id,
+      Value<String> creatureId,
+      Value<String> name,
+      Value<String> description,
+      Value<String?> powerSystemId,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$CreatureAbilitiesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CreatureAbilitiesTable> {
+  $$CreatureAbilitiesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get creatureId => $composableBuilder(
+    column: $table.creatureId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get powerSystemId => $composableBuilder(
+    column: $table.powerSystemId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CreatureAbilitiesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CreatureAbilitiesTable> {
+  $$CreatureAbilitiesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get creatureId => $composableBuilder(
+    column: $table.creatureId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get powerSystemId => $composableBuilder(
+    column: $table.powerSystemId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CreatureAbilitiesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CreatureAbilitiesTable> {
+  $$CreatureAbilitiesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get creatureId => $composableBuilder(
+    column: $table.creatureId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get powerSystemId => $composableBuilder(
+    column: $table.powerSystemId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$CreatureAbilitiesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CreatureAbilitiesTable,
+          CreatureAbility,
+          $$CreatureAbilitiesTableFilterComposer,
+          $$CreatureAbilitiesTableOrderingComposer,
+          $$CreatureAbilitiesTableAnnotationComposer,
+          $$CreatureAbilitiesTableCreateCompanionBuilder,
+          $$CreatureAbilitiesTableUpdateCompanionBuilder,
+          (
+            CreatureAbility,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CreatureAbilitiesTable,
+              CreatureAbility
+            >,
+          ),
+          CreatureAbility,
+          PrefetchHooks Function()
+        > {
+  $$CreatureAbilitiesTableTableManager(
+    _$ProjectDatabase db,
+    $CreatureAbilitiesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CreatureAbilitiesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CreatureAbilitiesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CreatureAbilitiesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> creatureId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String?> powerSystemId = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreatureAbilitiesCompanion(
+                id: id,
+                creatureId: creatureId,
+                name: name,
+                description: description,
+                powerSystemId: powerSystemId,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String creatureId,
+                required String name,
+                Value<String> description = const Value.absent(),
+                Value<String?> powerSystemId = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreatureAbilitiesCompanion.insert(
+                id: id,
+                creatureId: creatureId,
+                name: name,
+                description: description,
+                powerSystemId: powerSystemId,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CreatureAbilitiesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CreatureAbilitiesTable,
+      CreatureAbility,
+      $$CreatureAbilitiesTableFilterComposer,
+      $$CreatureAbilitiesTableOrderingComposer,
+      $$CreatureAbilitiesTableAnnotationComposer,
+      $$CreatureAbilitiesTableCreateCompanionBuilder,
+      $$CreatureAbilitiesTableUpdateCompanionBuilder,
+      (
+        CreatureAbility,
+        BaseReferences<
+          _$ProjectDatabase,
+          $CreatureAbilitiesTable,
+          CreatureAbility
+        >,
+      ),
+      CreatureAbility,
+      PrefetchHooks Function()
+    >;
+typedef $$CreatureModesTableCreateCompanionBuilder =
+    CreatureModesCompanion Function({
+      required String id,
+      required String creatureId,
+      required String name,
+      Value<String> description,
+      Value<String?> referenceSetId,
+      Value<bool> defaultMode,
+      Value<int> rowid,
+    });
+typedef $$CreatureModesTableUpdateCompanionBuilder =
+    CreatureModesCompanion Function({
+      Value<String> id,
+      Value<String> creatureId,
+      Value<String> name,
+      Value<String> description,
+      Value<String?> referenceSetId,
+      Value<bool> defaultMode,
+      Value<int> rowid,
+    });
+
+class $$CreatureModesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CreatureModesTable> {
+  $$CreatureModesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get creatureId => $composableBuilder(
+    column: $table.creatureId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get defaultMode => $composableBuilder(
+    column: $table.defaultMode,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CreatureModesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CreatureModesTable> {
+  $$CreatureModesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get creatureId => $composableBuilder(
+    column: $table.creatureId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get defaultMode => $composableBuilder(
+    column: $table.defaultMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CreatureModesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CreatureModesTable> {
+  $$CreatureModesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get creatureId => $composableBuilder(
+    column: $table.creatureId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get defaultMode => $composableBuilder(
+    column: $table.defaultMode,
+    builder: (column) => column,
+  );
+}
+
+class $$CreatureModesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CreatureModesTable,
+          CreatureMode,
+          $$CreatureModesTableFilterComposer,
+          $$CreatureModesTableOrderingComposer,
+          $$CreatureModesTableAnnotationComposer,
+          $$CreatureModesTableCreateCompanionBuilder,
+          $$CreatureModesTableUpdateCompanionBuilder,
+          (
+            CreatureMode,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CreatureModesTable,
+              CreatureMode
+            >,
+          ),
+          CreatureMode,
+          PrefetchHooks Function()
+        > {
+  $$CreatureModesTableTableManager(
+    _$ProjectDatabase db,
+    $CreatureModesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CreatureModesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CreatureModesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CreatureModesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> creatureId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String?> referenceSetId = const Value.absent(),
+                Value<bool> defaultMode = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreatureModesCompanion(
+                id: id,
+                creatureId: creatureId,
+                name: name,
+                description: description,
+                referenceSetId: referenceSetId,
+                defaultMode: defaultMode,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String creatureId,
+                required String name,
+                Value<String> description = const Value.absent(),
+                Value<String?> referenceSetId = const Value.absent(),
+                Value<bool> defaultMode = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreatureModesCompanion.insert(
+                id: id,
+                creatureId: creatureId,
+                name: name,
+                description: description,
+                referenceSetId: referenceSetId,
+                defaultMode: defaultMode,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CreatureModesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CreatureModesTable,
+      CreatureMode,
+      $$CreatureModesTableFilterComposer,
+      $$CreatureModesTableOrderingComposer,
+      $$CreatureModesTableAnnotationComposer,
+      $$CreatureModesTableCreateCompanionBuilder,
+      $$CreatureModesTableUpdateCompanionBuilder,
+      (
+        CreatureMode,
+        BaseReferences<_$ProjectDatabase, $CreatureModesTable, CreatureMode>,
+      ),
+      CreatureMode,
+      PrefetchHooks Function()
+    >;
+typedef $$VehiclesTableCreateCompanionBuilder =
+    VehiclesCompanion Function({
+      required String assetId,
+      required String projectId,
+      required String name,
+      required String category,
+      Value<String> description,
+      Value<String> manufacturer,
+      Value<String> role,
+      Value<int> rowid,
+    });
+typedef $$VehiclesTableUpdateCompanionBuilder =
+    VehiclesCompanion Function({
+      Value<String> assetId,
+      Value<String> projectId,
+      Value<String> name,
+      Value<String> category,
+      Value<String> description,
+      Value<String> manufacturer,
+      Value<String> role,
+      Value<int> rowid,
+    });
+
+class $$VehiclesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $VehiclesTable> {
+  $$VehiclesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get manufacturer => $composableBuilder(
+    column: $table.manufacturer,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VehiclesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $VehiclesTable> {
+  $$VehiclesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get manufacturer => $composableBuilder(
+    column: $table.manufacturer,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VehiclesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $VehiclesTable> {
+  $$VehiclesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get manufacturer => $composableBuilder(
+    column: $table.manufacturer,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get role =>
+      $composableBuilder(column: $table.role, builder: (column) => column);
+}
+
+class $$VehiclesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $VehiclesTable,
+          Vehicle,
+          $$VehiclesTableFilterComposer,
+          $$VehiclesTableOrderingComposer,
+          $$VehiclesTableAnnotationComposer,
+          $$VehiclesTableCreateCompanionBuilder,
+          $$VehiclesTableUpdateCompanionBuilder,
+          (Vehicle, BaseReferences<_$ProjectDatabase, $VehiclesTable, Vehicle>),
+          Vehicle,
+          PrefetchHooks Function()
+        > {
+  $$VehiclesTableTableManager(_$ProjectDatabase db, $VehiclesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VehiclesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VehiclesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VehiclesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> assetId = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> manufacturer = const Value.absent(),
+                Value<String> role = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VehiclesCompanion(
+                assetId: assetId,
+                projectId: projectId,
+                name: name,
+                category: category,
+                description: description,
+                manufacturer: manufacturer,
+                role: role,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String assetId,
+                required String projectId,
+                required String name,
+                required String category,
+                Value<String> description = const Value.absent(),
+                Value<String> manufacturer = const Value.absent(),
+                Value<String> role = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VehiclesCompanion.insert(
+                assetId: assetId,
+                projectId: projectId,
+                name: name,
+                category: category,
+                description: description,
+                manufacturer: manufacturer,
+                role: role,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VehiclesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $VehiclesTable,
+      Vehicle,
+      $$VehiclesTableFilterComposer,
+      $$VehiclesTableOrderingComposer,
+      $$VehiclesTableAnnotationComposer,
+      $$VehiclesTableCreateCompanionBuilder,
+      $$VehiclesTableUpdateCompanionBuilder,
+      (Vehicle, BaseReferences<_$ProjectDatabase, $VehiclesTable, Vehicle>),
+      Vehicle,
+      PrefetchHooks Function()
+    >;
+typedef $$VehicleSpecificationsTableCreateCompanionBuilder =
+    VehicleSpecificationsCompanion Function({
+      required String vehicleId,
+      Value<double?> lengthMeters,
+      Value<double?> widthMeters,
+      Value<double?> heightMeters,
+      Value<int?> crew,
+      Value<int?> passengers,
+      Value<String> propulsion,
+      Value<String> powerSource,
+      Value<String> maximumSpeed,
+      Value<int> rowid,
+    });
+typedef $$VehicleSpecificationsTableUpdateCompanionBuilder =
+    VehicleSpecificationsCompanion Function({
+      Value<String> vehicleId,
+      Value<double?> lengthMeters,
+      Value<double?> widthMeters,
+      Value<double?> heightMeters,
+      Value<int?> crew,
+      Value<int?> passengers,
+      Value<String> propulsion,
+      Value<String> powerSource,
+      Value<String> maximumSpeed,
+      Value<int> rowid,
+    });
+
+class $$VehicleSpecificationsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $VehicleSpecificationsTable> {
+  $$VehicleSpecificationsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get vehicleId => $composableBuilder(
+    column: $table.vehicleId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get lengthMeters => $composableBuilder(
+    column: $table.lengthMeters,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get widthMeters => $composableBuilder(
+    column: $table.widthMeters,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get heightMeters => $composableBuilder(
+    column: $table.heightMeters,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get crew => $composableBuilder(
+    column: $table.crew,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get passengers => $composableBuilder(
+    column: $table.passengers,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get propulsion => $composableBuilder(
+    column: $table.propulsion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get powerSource => $composableBuilder(
+    column: $table.powerSource,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get maximumSpeed => $composableBuilder(
+    column: $table.maximumSpeed,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VehicleSpecificationsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $VehicleSpecificationsTable> {
+  $$VehicleSpecificationsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get vehicleId => $composableBuilder(
+    column: $table.vehicleId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get lengthMeters => $composableBuilder(
+    column: $table.lengthMeters,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get widthMeters => $composableBuilder(
+    column: $table.widthMeters,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get heightMeters => $composableBuilder(
+    column: $table.heightMeters,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get crew => $composableBuilder(
+    column: $table.crew,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get passengers => $composableBuilder(
+    column: $table.passengers,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get propulsion => $composableBuilder(
+    column: $table.propulsion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get powerSource => $composableBuilder(
+    column: $table.powerSource,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get maximumSpeed => $composableBuilder(
+    column: $table.maximumSpeed,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VehicleSpecificationsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $VehicleSpecificationsTable> {
+  $$VehicleSpecificationsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get vehicleId =>
+      $composableBuilder(column: $table.vehicleId, builder: (column) => column);
+
+  GeneratedColumn<double> get lengthMeters => $composableBuilder(
+    column: $table.lengthMeters,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get widthMeters => $composableBuilder(
+    column: $table.widthMeters,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get heightMeters => $composableBuilder(
+    column: $table.heightMeters,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get crew =>
+      $composableBuilder(column: $table.crew, builder: (column) => column);
+
+  GeneratedColumn<int> get passengers => $composableBuilder(
+    column: $table.passengers,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get propulsion => $composableBuilder(
+    column: $table.propulsion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get powerSource => $composableBuilder(
+    column: $table.powerSource,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get maximumSpeed => $composableBuilder(
+    column: $table.maximumSpeed,
+    builder: (column) => column,
+  );
+}
+
+class $$VehicleSpecificationsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $VehicleSpecificationsTable,
+          VehicleSpecification,
+          $$VehicleSpecificationsTableFilterComposer,
+          $$VehicleSpecificationsTableOrderingComposer,
+          $$VehicleSpecificationsTableAnnotationComposer,
+          $$VehicleSpecificationsTableCreateCompanionBuilder,
+          $$VehicleSpecificationsTableUpdateCompanionBuilder,
+          (
+            VehicleSpecification,
+            BaseReferences<
+              _$ProjectDatabase,
+              $VehicleSpecificationsTable,
+              VehicleSpecification
+            >,
+          ),
+          VehicleSpecification,
+          PrefetchHooks Function()
+        > {
+  $$VehicleSpecificationsTableTableManager(
+    _$ProjectDatabase db,
+    $VehicleSpecificationsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VehicleSpecificationsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$VehicleSpecificationsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$VehicleSpecificationsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> vehicleId = const Value.absent(),
+                Value<double?> lengthMeters = const Value.absent(),
+                Value<double?> widthMeters = const Value.absent(),
+                Value<double?> heightMeters = const Value.absent(),
+                Value<int?> crew = const Value.absent(),
+                Value<int?> passengers = const Value.absent(),
+                Value<String> propulsion = const Value.absent(),
+                Value<String> powerSource = const Value.absent(),
+                Value<String> maximumSpeed = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VehicleSpecificationsCompanion(
+                vehicleId: vehicleId,
+                lengthMeters: lengthMeters,
+                widthMeters: widthMeters,
+                heightMeters: heightMeters,
+                crew: crew,
+                passengers: passengers,
+                propulsion: propulsion,
+                powerSource: powerSource,
+                maximumSpeed: maximumSpeed,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String vehicleId,
+                Value<double?> lengthMeters = const Value.absent(),
+                Value<double?> widthMeters = const Value.absent(),
+                Value<double?> heightMeters = const Value.absent(),
+                Value<int?> crew = const Value.absent(),
+                Value<int?> passengers = const Value.absent(),
+                Value<String> propulsion = const Value.absent(),
+                Value<String> powerSource = const Value.absent(),
+                Value<String> maximumSpeed = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VehicleSpecificationsCompanion.insert(
+                vehicleId: vehicleId,
+                lengthMeters: lengthMeters,
+                widthMeters: widthMeters,
+                heightMeters: heightMeters,
+                crew: crew,
+                passengers: passengers,
+                propulsion: propulsion,
+                powerSource: powerSource,
+                maximumSpeed: maximumSpeed,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VehicleSpecificationsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $VehicleSpecificationsTable,
+      VehicleSpecification,
+      $$VehicleSpecificationsTableFilterComposer,
+      $$VehicleSpecificationsTableOrderingComposer,
+      $$VehicleSpecificationsTableAnnotationComposer,
+      $$VehicleSpecificationsTableCreateCompanionBuilder,
+      $$VehicleSpecificationsTableUpdateCompanionBuilder,
+      (
+        VehicleSpecification,
+        BaseReferences<
+          _$ProjectDatabase,
+          $VehicleSpecificationsTable,
+          VehicleSpecification
+        >,
+      ),
+      VehicleSpecification,
+      PrefetchHooks Function()
+    >;
+typedef $$VehicleComponentsTableCreateCompanionBuilder =
+    VehicleComponentsCompanion Function({
+      required String id,
+      required String vehicleId,
+      required String name,
+      Value<String> category,
+      Value<String> description,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$VehicleComponentsTableUpdateCompanionBuilder =
+    VehicleComponentsCompanion Function({
+      Value<String> id,
+      Value<String> vehicleId,
+      Value<String> name,
+      Value<String> category,
+      Value<String> description,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$VehicleComponentsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $VehicleComponentsTable> {
+  $$VehicleComponentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get vehicleId => $composableBuilder(
+    column: $table.vehicleId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VehicleComponentsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $VehicleComponentsTable> {
+  $$VehicleComponentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get vehicleId => $composableBuilder(
+    column: $table.vehicleId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VehicleComponentsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $VehicleComponentsTable> {
+  $$VehicleComponentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get vehicleId =>
+      $composableBuilder(column: $table.vehicleId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$VehicleComponentsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $VehicleComponentsTable,
+          VehicleComponent,
+          $$VehicleComponentsTableFilterComposer,
+          $$VehicleComponentsTableOrderingComposer,
+          $$VehicleComponentsTableAnnotationComposer,
+          $$VehicleComponentsTableCreateCompanionBuilder,
+          $$VehicleComponentsTableUpdateCompanionBuilder,
+          (
+            VehicleComponent,
+            BaseReferences<
+              _$ProjectDatabase,
+              $VehicleComponentsTable,
+              VehicleComponent
+            >,
+          ),
+          VehicleComponent,
+          PrefetchHooks Function()
+        > {
+  $$VehicleComponentsTableTableManager(
+    _$ProjectDatabase db,
+    $VehicleComponentsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VehicleComponentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VehicleComponentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VehicleComponentsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> vehicleId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VehicleComponentsCompanion(
+                id: id,
+                vehicleId: vehicleId,
+                name: name,
+                category: category,
+                description: description,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String vehicleId,
+                required String name,
+                Value<String> category = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VehicleComponentsCompanion.insert(
+                id: id,
+                vehicleId: vehicleId,
+                name: name,
+                category: category,
+                description: description,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VehicleComponentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $VehicleComponentsTable,
+      VehicleComponent,
+      $$VehicleComponentsTableFilterComposer,
+      $$VehicleComponentsTableOrderingComposer,
+      $$VehicleComponentsTableAnnotationComposer,
+      $$VehicleComponentsTableCreateCompanionBuilder,
+      $$VehicleComponentsTableUpdateCompanionBuilder,
+      (
+        VehicleComponent,
+        BaseReferences<
+          _$ProjectDatabase,
+          $VehicleComponentsTable,
+          VehicleComponent
+        >,
+      ),
+      VehicleComponent,
+      PrefetchHooks Function()
+    >;
+typedef $$VehicleWeaponMountsTableCreateCompanionBuilder =
+    VehicleWeaponMountsCompanion Function({
+      required String id,
+      required String vehicleId,
+      required String weaponId,
+      required String mountName,
+      Value<int> quantity,
+      Value<int> rowid,
+    });
+typedef $$VehicleWeaponMountsTableUpdateCompanionBuilder =
+    VehicleWeaponMountsCompanion Function({
+      Value<String> id,
+      Value<String> vehicleId,
+      Value<String> weaponId,
+      Value<String> mountName,
+      Value<int> quantity,
+      Value<int> rowid,
+    });
+
+class $$VehicleWeaponMountsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $VehicleWeaponMountsTable> {
+  $$VehicleWeaponMountsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get vehicleId => $composableBuilder(
+    column: $table.vehicleId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mountName => $composableBuilder(
+    column: $table.mountName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VehicleWeaponMountsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $VehicleWeaponMountsTable> {
+  $$VehicleWeaponMountsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get vehicleId => $composableBuilder(
+    column: $table.vehicleId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weaponId => $composableBuilder(
+    column: $table.weaponId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mountName => $composableBuilder(
+    column: $table.mountName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VehicleWeaponMountsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $VehicleWeaponMountsTable> {
+  $$VehicleWeaponMountsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get vehicleId =>
+      $composableBuilder(column: $table.vehicleId, builder: (column) => column);
+
+  GeneratedColumn<String> get weaponId =>
+      $composableBuilder(column: $table.weaponId, builder: (column) => column);
+
+  GeneratedColumn<String> get mountName =>
+      $composableBuilder(column: $table.mountName, builder: (column) => column);
+
+  GeneratedColumn<int> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
+}
+
+class $$VehicleWeaponMountsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $VehicleWeaponMountsTable,
+          VehicleWeaponMount,
+          $$VehicleWeaponMountsTableFilterComposer,
+          $$VehicleWeaponMountsTableOrderingComposer,
+          $$VehicleWeaponMountsTableAnnotationComposer,
+          $$VehicleWeaponMountsTableCreateCompanionBuilder,
+          $$VehicleWeaponMountsTableUpdateCompanionBuilder,
+          (
+            VehicleWeaponMount,
+            BaseReferences<
+              _$ProjectDatabase,
+              $VehicleWeaponMountsTable,
+              VehicleWeaponMount
+            >,
+          ),
+          VehicleWeaponMount,
+          PrefetchHooks Function()
+        > {
+  $$VehicleWeaponMountsTableTableManager(
+    _$ProjectDatabase db,
+    $VehicleWeaponMountsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VehicleWeaponMountsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VehicleWeaponMountsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$VehicleWeaponMountsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> vehicleId = const Value.absent(),
+                Value<String> weaponId = const Value.absent(),
+                Value<String> mountName = const Value.absent(),
+                Value<int> quantity = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VehicleWeaponMountsCompanion(
+                id: id,
+                vehicleId: vehicleId,
+                weaponId: weaponId,
+                mountName: mountName,
+                quantity: quantity,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String vehicleId,
+                required String weaponId,
+                required String mountName,
+                Value<int> quantity = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VehicleWeaponMountsCompanion.insert(
+                id: id,
+                vehicleId: vehicleId,
+                weaponId: weaponId,
+                mountName: mountName,
+                quantity: quantity,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VehicleWeaponMountsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $VehicleWeaponMountsTable,
+      VehicleWeaponMount,
+      $$VehicleWeaponMountsTableFilterComposer,
+      $$VehicleWeaponMountsTableOrderingComposer,
+      $$VehicleWeaponMountsTableAnnotationComposer,
+      $$VehicleWeaponMountsTableCreateCompanionBuilder,
+      $$VehicleWeaponMountsTableUpdateCompanionBuilder,
+      (
+        VehicleWeaponMount,
+        BaseReferences<
+          _$ProjectDatabase,
+          $VehicleWeaponMountsTable,
+          VehicleWeaponMount
+        >,
+      ),
+      VehicleWeaponMount,
+      PrefetchHooks Function()
+    >;
+typedef $$VehicleVariantsTableCreateCompanionBuilder =
+    VehicleVariantsCompanion Function({
+      required String id,
+      required String vehicleId,
+      required String name,
+      Value<String> description,
+      Value<String?> referenceSetId,
+      Value<int> rowid,
+    });
+typedef $$VehicleVariantsTableUpdateCompanionBuilder =
+    VehicleVariantsCompanion Function({
+      Value<String> id,
+      Value<String> vehicleId,
+      Value<String> name,
+      Value<String> description,
+      Value<String?> referenceSetId,
+      Value<int> rowid,
+    });
+
+class $$VehicleVariantsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $VehicleVariantsTable> {
+  $$VehicleVariantsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get vehicleId => $composableBuilder(
+    column: $table.vehicleId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VehicleVariantsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $VehicleVariantsTable> {
+  $$VehicleVariantsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get vehicleId => $composableBuilder(
+    column: $table.vehicleId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VehicleVariantsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $VehicleVariantsTable> {
+  $$VehicleVariantsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get vehicleId =>
+      $composableBuilder(column: $table.vehicleId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
+    builder: (column) => column,
+  );
+}
+
+class $$VehicleVariantsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $VehicleVariantsTable,
+          VehicleVariant,
+          $$VehicleVariantsTableFilterComposer,
+          $$VehicleVariantsTableOrderingComposer,
+          $$VehicleVariantsTableAnnotationComposer,
+          $$VehicleVariantsTableCreateCompanionBuilder,
+          $$VehicleVariantsTableUpdateCompanionBuilder,
+          (
+            VehicleVariant,
+            BaseReferences<
+              _$ProjectDatabase,
+              $VehicleVariantsTable,
+              VehicleVariant
+            >,
+          ),
+          VehicleVariant,
+          PrefetchHooks Function()
+        > {
+  $$VehicleVariantsTableTableManager(
+    _$ProjectDatabase db,
+    $VehicleVariantsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VehicleVariantsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VehicleVariantsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VehicleVariantsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> vehicleId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String?> referenceSetId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VehicleVariantsCompanion(
+                id: id,
+                vehicleId: vehicleId,
+                name: name,
+                description: description,
+                referenceSetId: referenceSetId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String vehicleId,
+                required String name,
+                Value<String> description = const Value.absent(),
+                Value<String?> referenceSetId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VehicleVariantsCompanion.insert(
+                id: id,
+                vehicleId: vehicleId,
+                name: name,
+                description: description,
+                referenceSetId: referenceSetId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VehicleVariantsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $VehicleVariantsTable,
+      VehicleVariant,
+      $$VehicleVariantsTableFilterComposer,
+      $$VehicleVariantsTableOrderingComposer,
+      $$VehicleVariantsTableAnnotationComposer,
+      $$VehicleVariantsTableCreateCompanionBuilder,
+      $$VehicleVariantsTableUpdateCompanionBuilder,
+      (
+        VehicleVariant,
+        BaseReferences<
+          _$ProjectDatabase,
+          $VehicleVariantsTable,
+          VehicleVariant
+        >,
+      ),
+      VehicleVariant,
+      PrefetchHooks Function()
+    >;
+typedef $$PropsTableCreateCompanionBuilder =
+    PropsCompanion Function({
+      required String assetId,
+      required String projectId,
+      required String name,
+      required String category,
+      Value<String> description,
+      Value<String> function,
+      Value<bool> storyCritical,
+      Value<int> rowid,
+    });
+typedef $$PropsTableUpdateCompanionBuilder =
+    PropsCompanion Function({
+      Value<String> assetId,
+      Value<String> projectId,
+      Value<String> name,
+      Value<String> category,
+      Value<String> description,
+      Value<String> function,
+      Value<bool> storyCritical,
+      Value<int> rowid,
+    });
+
+class $$PropsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $PropsTable> {
+  $$PropsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get function => $composableBuilder(
+    column: $table.function,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get storyCritical => $composableBuilder(
+    column: $table.storyCritical,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PropsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $PropsTable> {
+  $$PropsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get function => $composableBuilder(
+    column: $table.function,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get storyCritical => $composableBuilder(
+    column: $table.storyCritical,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PropsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $PropsTable> {
+  $$PropsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get function =>
+      $composableBuilder(column: $table.function, builder: (column) => column);
+
+  GeneratedColumn<bool> get storyCritical => $composableBuilder(
+    column: $table.storyCritical,
+    builder: (column) => column,
+  );
+}
+
+class $$PropsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $PropsTable,
+          Prop,
+          $$PropsTableFilterComposer,
+          $$PropsTableOrderingComposer,
+          $$PropsTableAnnotationComposer,
+          $$PropsTableCreateCompanionBuilder,
+          $$PropsTableUpdateCompanionBuilder,
+          (Prop, BaseReferences<_$ProjectDatabase, $PropsTable, Prop>),
+          Prop,
+          PrefetchHooks Function()
+        > {
+  $$PropsTableTableManager(_$ProjectDatabase db, $PropsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PropsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PropsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PropsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> assetId = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> function = const Value.absent(),
+                Value<bool> storyCritical = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PropsCompanion(
+                assetId: assetId,
+                projectId: projectId,
+                name: name,
+                category: category,
+                description: description,
+                function: function,
+                storyCritical: storyCritical,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String assetId,
+                required String projectId,
+                required String name,
+                required String category,
+                Value<String> description = const Value.absent(),
+                Value<String> function = const Value.absent(),
+                Value<bool> storyCritical = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PropsCompanion.insert(
+                assetId: assetId,
+                projectId: projectId,
+                name: name,
+                category: category,
+                description: description,
+                function: function,
+                storyCritical: storyCritical,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PropsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $PropsTable,
+      Prop,
+      $$PropsTableFilterComposer,
+      $$PropsTableOrderingComposer,
+      $$PropsTableAnnotationComposer,
+      $$PropsTableCreateCompanionBuilder,
+      $$PropsTableUpdateCompanionBuilder,
+      (Prop, BaseReferences<_$ProjectDatabase, $PropsTable, Prop>),
+      Prop,
+      PrefetchHooks Function()
+    >;
+typedef $$PropSpecificationsTableCreateCompanionBuilder =
+    PropSpecificationsCompanion Function({
+      required String propId,
+      Value<double?> widthCm,
+      Value<double?> heightCm,
+      Value<double?> depthCm,
+      Value<double?> weightKg,
+      Value<String> material,
+      Value<String> color,
+      Value<int> rowid,
+    });
+typedef $$PropSpecificationsTableUpdateCompanionBuilder =
+    PropSpecificationsCompanion Function({
+      Value<String> propId,
+      Value<double?> widthCm,
+      Value<double?> heightCm,
+      Value<double?> depthCm,
+      Value<double?> weightKg,
+      Value<String> material,
+      Value<String> color,
+      Value<int> rowid,
+    });
+
+class $$PropSpecificationsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $PropSpecificationsTable> {
+  $$PropSpecificationsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get propId => $composableBuilder(
+    column: $table.propId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get widthCm => $composableBuilder(
+    column: $table.widthCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get heightCm => $composableBuilder(
+    column: $table.heightCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get depthCm => $composableBuilder(
+    column: $table.depthCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get material => $composableBuilder(
+    column: $table.material,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PropSpecificationsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $PropSpecificationsTable> {
+  $$PropSpecificationsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get propId => $composableBuilder(
+    column: $table.propId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get widthCm => $composableBuilder(
+    column: $table.widthCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get heightCm => $composableBuilder(
+    column: $table.heightCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get depthCm => $composableBuilder(
+    column: $table.depthCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get material => $composableBuilder(
+    column: $table.material,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PropSpecificationsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $PropSpecificationsTable> {
+  $$PropSpecificationsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get propId =>
+      $composableBuilder(column: $table.propId, builder: (column) => column);
+
+  GeneratedColumn<double> get widthCm =>
+      $composableBuilder(column: $table.widthCm, builder: (column) => column);
+
+  GeneratedColumn<double> get heightCm =>
+      $composableBuilder(column: $table.heightCm, builder: (column) => column);
+
+  GeneratedColumn<double> get depthCm =>
+      $composableBuilder(column: $table.depthCm, builder: (column) => column);
+
+  GeneratedColumn<double> get weightKg =>
+      $composableBuilder(column: $table.weightKg, builder: (column) => column);
+
+  GeneratedColumn<String> get material =>
+      $composableBuilder(column: $table.material, builder: (column) => column);
+
+  GeneratedColumn<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+}
+
+class $$PropSpecificationsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $PropSpecificationsTable,
+          PropSpecification,
+          $$PropSpecificationsTableFilterComposer,
+          $$PropSpecificationsTableOrderingComposer,
+          $$PropSpecificationsTableAnnotationComposer,
+          $$PropSpecificationsTableCreateCompanionBuilder,
+          $$PropSpecificationsTableUpdateCompanionBuilder,
+          (
+            PropSpecification,
+            BaseReferences<
+              _$ProjectDatabase,
+              $PropSpecificationsTable,
+              PropSpecification
+            >,
+          ),
+          PropSpecification,
+          PrefetchHooks Function()
+        > {
+  $$PropSpecificationsTableTableManager(
+    _$ProjectDatabase db,
+    $PropSpecificationsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PropSpecificationsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PropSpecificationsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PropSpecificationsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> propId = const Value.absent(),
+                Value<double?> widthCm = const Value.absent(),
+                Value<double?> heightCm = const Value.absent(),
+                Value<double?> depthCm = const Value.absent(),
+                Value<double?> weightKg = const Value.absent(),
+                Value<String> material = const Value.absent(),
+                Value<String> color = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PropSpecificationsCompanion(
+                propId: propId,
+                widthCm: widthCm,
+                heightCm: heightCm,
+                depthCm: depthCm,
+                weightKg: weightKg,
+                material: material,
+                color: color,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String propId,
+                Value<double?> widthCm = const Value.absent(),
+                Value<double?> heightCm = const Value.absent(),
+                Value<double?> depthCm = const Value.absent(),
+                Value<double?> weightKg = const Value.absent(),
+                Value<String> material = const Value.absent(),
+                Value<String> color = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PropSpecificationsCompanion.insert(
+                propId: propId,
+                widthCm: widthCm,
+                heightCm: heightCm,
+                depthCm: depthCm,
+                weightKg: weightKg,
+                material: material,
+                color: color,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PropSpecificationsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $PropSpecificationsTable,
+      PropSpecification,
+      $$PropSpecificationsTableFilterComposer,
+      $$PropSpecificationsTableOrderingComposer,
+      $$PropSpecificationsTableAnnotationComposer,
+      $$PropSpecificationsTableCreateCompanionBuilder,
+      $$PropSpecificationsTableUpdateCompanionBuilder,
+      (
+        PropSpecification,
+        BaseReferences<
+          _$ProjectDatabase,
+          $PropSpecificationsTable,
+          PropSpecification
+        >,
+      ),
+      PropSpecification,
+      PrefetchHooks Function()
+    >;
+typedef $$PropStatesTableCreateCompanionBuilder =
+    PropStatesCompanion Function({
+      required String id,
+      required String propId,
+      required String name,
+      Value<String> description,
+      Value<String?> referenceSetId,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$PropStatesTableUpdateCompanionBuilder =
+    PropStatesCompanion Function({
+      Value<String> id,
+      Value<String> propId,
+      Value<String> name,
+      Value<String> description,
+      Value<String?> referenceSetId,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$PropStatesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $PropStatesTable> {
+  $$PropStatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get propId => $composableBuilder(
+    column: $table.propId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PropStatesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $PropStatesTable> {
+  $$PropStatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get propId => $composableBuilder(
+    column: $table.propId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PropStatesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $PropStatesTable> {
+  $$PropStatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get propId =>
+      $composableBuilder(column: $table.propId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$PropStatesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $PropStatesTable,
+          PropState,
+          $$PropStatesTableFilterComposer,
+          $$PropStatesTableOrderingComposer,
+          $$PropStatesTableAnnotationComposer,
+          $$PropStatesTableCreateCompanionBuilder,
+          $$PropStatesTableUpdateCompanionBuilder,
+          (
+            PropState,
+            BaseReferences<_$ProjectDatabase, $PropStatesTable, PropState>,
+          ),
+          PropState,
+          PrefetchHooks Function()
+        > {
+  $$PropStatesTableTableManager(_$ProjectDatabase db, $PropStatesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PropStatesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PropStatesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PropStatesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> propId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String?> referenceSetId = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PropStatesCompanion(
+                id: id,
+                propId: propId,
+                name: name,
+                description: description,
+                referenceSetId: referenceSetId,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String propId,
+                required String name,
+                Value<String> description = const Value.absent(),
+                Value<String?> referenceSetId = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PropStatesCompanion.insert(
+                id: id,
+                propId: propId,
+                name: name,
+                description: description,
+                referenceSetId: referenceSetId,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PropStatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $PropStatesTable,
+      PropState,
+      $$PropStatesTableFilterComposer,
+      $$PropStatesTableOrderingComposer,
+      $$PropStatesTableAnnotationComposer,
+      $$PropStatesTableCreateCompanionBuilder,
+      $$PropStatesTableUpdateCompanionBuilder,
+      (
+        PropState,
+        BaseReferences<_$ProjectDatabase, $PropStatesTable, PropState>,
+      ),
+      PropState,
+      PrefetchHooks Function()
+    >;
+typedef $$SceneAssetInstancesTableCreateCompanionBuilder =
+    SceneAssetInstancesCompanion Function({
+      required String id,
+      required String sceneId,
+      required String assetId,
+      required String assetType,
+      Value<String?> stateId,
+      Value<String?> parentInstanceId,
+      Value<String> contextPriority,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+typedef $$SceneAssetInstancesTableUpdateCompanionBuilder =
+    SceneAssetInstancesCompanion Function({
+      Value<String> id,
+      Value<String> sceneId,
+      Value<String> assetId,
+      Value<String> assetType,
+      Value<String?> stateId,
+      Value<String?> parentInstanceId,
+      Value<String> contextPriority,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+
+class $$SceneAssetInstancesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $SceneAssetInstancesTable> {
+  $$SceneAssetInstancesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get assetType => $composableBuilder(
+    column: $table.assetType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stateId => $composableBuilder(
+    column: $table.stateId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get parentInstanceId => $composableBuilder(
+    column: $table.parentInstanceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contextPriority => $composableBuilder(
+    column: $table.contextPriority,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SceneAssetInstancesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $SceneAssetInstancesTable> {
+  $$SceneAssetInstancesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get assetType => $composableBuilder(
+    column: $table.assetType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stateId => $composableBuilder(
+    column: $table.stateId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get parentInstanceId => $composableBuilder(
+    column: $table.parentInstanceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contextPriority => $composableBuilder(
+    column: $table.contextPriority,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SceneAssetInstancesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $SceneAssetInstancesTable> {
+  $$SceneAssetInstancesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get sceneId =>
+      $composableBuilder(column: $table.sceneId, builder: (column) => column);
+
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get assetType =>
+      $composableBuilder(column: $table.assetType, builder: (column) => column);
+
+  GeneratedColumn<String> get stateId =>
+      $composableBuilder(column: $table.stateId, builder: (column) => column);
+
+  GeneratedColumn<String> get parentInstanceId => $composableBuilder(
+    column: $table.parentInstanceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get contextPriority => $composableBuilder(
+    column: $table.contextPriority,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$SceneAssetInstancesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $SceneAssetInstancesTable,
+          SceneAssetInstance,
+          $$SceneAssetInstancesTableFilterComposer,
+          $$SceneAssetInstancesTableOrderingComposer,
+          $$SceneAssetInstancesTableAnnotationComposer,
+          $$SceneAssetInstancesTableCreateCompanionBuilder,
+          $$SceneAssetInstancesTableUpdateCompanionBuilder,
+          (
+            SceneAssetInstance,
+            BaseReferences<
+              _$ProjectDatabase,
+              $SceneAssetInstancesTable,
+              SceneAssetInstance
+            >,
+          ),
+          SceneAssetInstance,
+          PrefetchHooks Function()
+        > {
+  $$SceneAssetInstancesTableTableManager(
+    _$ProjectDatabase db,
+    $SceneAssetInstancesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SceneAssetInstancesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SceneAssetInstancesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SceneAssetInstancesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> sceneId = const Value.absent(),
+                Value<String> assetId = const Value.absent(),
+                Value<String> assetType = const Value.absent(),
+                Value<String?> stateId = const Value.absent(),
+                Value<String?> parentInstanceId = const Value.absent(),
+                Value<String> contextPriority = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneAssetInstancesCompanion(
+                id: id,
+                sceneId: sceneId,
+                assetId: assetId,
+                assetType: assetType,
+                stateId: stateId,
+                parentInstanceId: parentInstanceId,
+                contextPriority: contextPriority,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String sceneId,
+                required String assetId,
+                required String assetType,
+                Value<String?> stateId = const Value.absent(),
+                Value<String?> parentInstanceId = const Value.absent(),
+                Value<String> contextPriority = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneAssetInstancesCompanion.insert(
+                id: id,
+                sceneId: sceneId,
+                assetId: assetId,
+                assetType: assetType,
+                stateId: stateId,
+                parentInstanceId: parentInstanceId,
+                contextPriority: contextPriority,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SceneAssetInstancesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $SceneAssetInstancesTable,
+      SceneAssetInstance,
+      $$SceneAssetInstancesTableFilterComposer,
+      $$SceneAssetInstancesTableOrderingComposer,
+      $$SceneAssetInstancesTableAnnotationComposer,
+      $$SceneAssetInstancesTableCreateCompanionBuilder,
+      $$SceneAssetInstancesTableUpdateCompanionBuilder,
+      (
+        SceneAssetInstance,
+        BaseReferences<
+          _$ProjectDatabase,
+          $SceneAssetInstancesTable,
+          SceneAssetInstance
+        >,
+      ),
+      SceneAssetInstance,
+      PrefetchHooks Function()
+    >;
+typedef $$SceneInstanceTransformsTableCreateCompanionBuilder =
+    SceneInstanceTransformsCompanion Function({
+      required String instanceId,
+      Value<double> positionX,
+      Value<double> positionY,
+      Value<double> positionZ,
+      Value<double> rotationX,
+      Value<double> rotationY,
+      Value<double> rotationZ,
+      Value<int> rowid,
+    });
+typedef $$SceneInstanceTransformsTableUpdateCompanionBuilder =
+    SceneInstanceTransformsCompanion Function({
+      Value<String> instanceId,
+      Value<double> positionX,
+      Value<double> positionY,
+      Value<double> positionZ,
+      Value<double> rotationX,
+      Value<double> rotationY,
+      Value<double> rotationZ,
+      Value<int> rowid,
+    });
+
+class $$SceneInstanceTransformsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $SceneInstanceTransformsTable> {
+  $$SceneInstanceTransformsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get instanceId => $composableBuilder(
+    column: $table.instanceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get positionX => $composableBuilder(
+    column: $table.positionX,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get positionY => $composableBuilder(
+    column: $table.positionY,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get positionZ => $composableBuilder(
+    column: $table.positionZ,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rotationX => $composableBuilder(
+    column: $table.rotationX,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rotationY => $composableBuilder(
+    column: $table.rotationY,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rotationZ => $composableBuilder(
+    column: $table.rotationZ,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SceneInstanceTransformsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $SceneInstanceTransformsTable> {
+  $$SceneInstanceTransformsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get instanceId => $composableBuilder(
+    column: $table.instanceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get positionX => $composableBuilder(
+    column: $table.positionX,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get positionY => $composableBuilder(
+    column: $table.positionY,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get positionZ => $composableBuilder(
+    column: $table.positionZ,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rotationX => $composableBuilder(
+    column: $table.rotationX,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rotationY => $composableBuilder(
+    column: $table.rotationY,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rotationZ => $composableBuilder(
+    column: $table.rotationZ,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SceneInstanceTransformsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $SceneInstanceTransformsTable> {
+  $$SceneInstanceTransformsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get instanceId => $composableBuilder(
+    column: $table.instanceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get positionX =>
+      $composableBuilder(column: $table.positionX, builder: (column) => column);
+
+  GeneratedColumn<double> get positionY =>
+      $composableBuilder(column: $table.positionY, builder: (column) => column);
+
+  GeneratedColumn<double> get positionZ =>
+      $composableBuilder(column: $table.positionZ, builder: (column) => column);
+
+  GeneratedColumn<double> get rotationX =>
+      $composableBuilder(column: $table.rotationX, builder: (column) => column);
+
+  GeneratedColumn<double> get rotationY =>
+      $composableBuilder(column: $table.rotationY, builder: (column) => column);
+
+  GeneratedColumn<double> get rotationZ =>
+      $composableBuilder(column: $table.rotationZ, builder: (column) => column);
+}
+
+class $$SceneInstanceTransformsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $SceneInstanceTransformsTable,
+          SceneInstanceTransform,
+          $$SceneInstanceTransformsTableFilterComposer,
+          $$SceneInstanceTransformsTableOrderingComposer,
+          $$SceneInstanceTransformsTableAnnotationComposer,
+          $$SceneInstanceTransformsTableCreateCompanionBuilder,
+          $$SceneInstanceTransformsTableUpdateCompanionBuilder,
+          (
+            SceneInstanceTransform,
+            BaseReferences<
+              _$ProjectDatabase,
+              $SceneInstanceTransformsTable,
+              SceneInstanceTransform
+            >,
+          ),
+          SceneInstanceTransform,
+          PrefetchHooks Function()
+        > {
+  $$SceneInstanceTransformsTableTableManager(
+    _$ProjectDatabase db,
+    $SceneInstanceTransformsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SceneInstanceTransformsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$SceneInstanceTransformsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SceneInstanceTransformsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> instanceId = const Value.absent(),
+                Value<double> positionX = const Value.absent(),
+                Value<double> positionY = const Value.absent(),
+                Value<double> positionZ = const Value.absent(),
+                Value<double> rotationX = const Value.absent(),
+                Value<double> rotationY = const Value.absent(),
+                Value<double> rotationZ = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneInstanceTransformsCompanion(
+                instanceId: instanceId,
+                positionX: positionX,
+                positionY: positionY,
+                positionZ: positionZ,
+                rotationX: rotationX,
+                rotationY: rotationY,
+                rotationZ: rotationZ,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String instanceId,
+                Value<double> positionX = const Value.absent(),
+                Value<double> positionY = const Value.absent(),
+                Value<double> positionZ = const Value.absent(),
+                Value<double> rotationX = const Value.absent(),
+                Value<double> rotationY = const Value.absent(),
+                Value<double> rotationZ = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneInstanceTransformsCompanion.insert(
+                instanceId: instanceId,
+                positionX: positionX,
+                positionY: positionY,
+                positionZ: positionZ,
+                rotationX: rotationX,
+                rotationY: rotationY,
+                rotationZ: rotationZ,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SceneInstanceTransformsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $SceneInstanceTransformsTable,
+      SceneInstanceTransform,
+      $$SceneInstanceTransformsTableFilterComposer,
+      $$SceneInstanceTransformsTableOrderingComposer,
+      $$SceneInstanceTransformsTableAnnotationComposer,
+      $$SceneInstanceTransformsTableCreateCompanionBuilder,
+      $$SceneInstanceTransformsTableUpdateCompanionBuilder,
+      (
+        SceneInstanceTransform,
+        BaseReferences<
+          _$ProjectDatabase,
+          $SceneInstanceTransformsTable,
+          SceneInstanceTransform
+        >,
+      ),
+      SceneInstanceTransform,
+      PrefetchHooks Function()
+    >;
+typedef $$SceneInstancePropertiesTableCreateCompanionBuilder =
+    SceneInstancePropertiesCompanion Function({
+      required String id,
+      required String instanceId,
+      required String key,
+      required String value,
+      Value<int> rowid,
+    });
+typedef $$SceneInstancePropertiesTableUpdateCompanionBuilder =
+    SceneInstancePropertiesCompanion Function({
+      Value<String> id,
+      Value<String> instanceId,
+      Value<String> key,
+      Value<String> value,
+      Value<int> rowid,
+    });
+
+class $$SceneInstancePropertiesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $SceneInstancePropertiesTable> {
+  $$SceneInstancePropertiesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get instanceId => $composableBuilder(
+    column: $table.instanceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SceneInstancePropertiesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $SceneInstancePropertiesTable> {
+  $$SceneInstancePropertiesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get instanceId => $composableBuilder(
+    column: $table.instanceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SceneInstancePropertiesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $SceneInstancePropertiesTable> {
+  $$SceneInstancePropertiesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get instanceId => $composableBuilder(
+    column: $table.instanceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => column);
+
+  GeneratedColumn<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+}
+
+class $$SceneInstancePropertiesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $SceneInstancePropertiesTable,
+          SceneInstanceProperty,
+          $$SceneInstancePropertiesTableFilterComposer,
+          $$SceneInstancePropertiesTableOrderingComposer,
+          $$SceneInstancePropertiesTableAnnotationComposer,
+          $$SceneInstancePropertiesTableCreateCompanionBuilder,
+          $$SceneInstancePropertiesTableUpdateCompanionBuilder,
+          (
+            SceneInstanceProperty,
+            BaseReferences<
+              _$ProjectDatabase,
+              $SceneInstancePropertiesTable,
+              SceneInstanceProperty
+            >,
+          ),
+          SceneInstanceProperty,
+          PrefetchHooks Function()
+        > {
+  $$SceneInstancePropertiesTableTableManager(
+    _$ProjectDatabase db,
+    $SceneInstancePropertiesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SceneInstancePropertiesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$SceneInstancePropertiesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SceneInstancePropertiesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> instanceId = const Value.absent(),
+                Value<String> key = const Value.absent(),
+                Value<String> value = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneInstancePropertiesCompanion(
+                id: id,
+                instanceId: instanceId,
+                key: key,
+                value: value,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String instanceId,
+                required String key,
+                required String value,
+                Value<int> rowid = const Value.absent(),
+              }) => SceneInstancePropertiesCompanion.insert(
+                id: id,
+                instanceId: instanceId,
+                key: key,
+                value: value,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SceneInstancePropertiesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $SceneInstancePropertiesTable,
+      SceneInstanceProperty,
+      $$SceneInstancePropertiesTableFilterComposer,
+      $$SceneInstancePropertiesTableOrderingComposer,
+      $$SceneInstancePropertiesTableAnnotationComposer,
+      $$SceneInstancePropertiesTableCreateCompanionBuilder,
+      $$SceneInstancePropertiesTableUpdateCompanionBuilder,
+      (
+        SceneInstanceProperty,
+        BaseReferences<
+          _$ProjectDatabase,
+          $SceneInstancePropertiesTable,
+          SceneInstanceProperty
+        >,
+      ),
+      SceneInstanceProperty,
+      PrefetchHooks Function()
+    >;
+typedef $$SceneContinuitySnapshotsTableCreateCompanionBuilder =
+    SceneContinuitySnapshotsCompanion Function({
+      required String id,
+      required String sceneId,
+      required String instanceId,
+      required String snapshotData,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$SceneContinuitySnapshotsTableUpdateCompanionBuilder =
+    SceneContinuitySnapshotsCompanion Function({
+      Value<String> id,
+      Value<String> sceneId,
+      Value<String> instanceId,
+      Value<String> snapshotData,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$SceneContinuitySnapshotsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $SceneContinuitySnapshotsTable> {
+  $$SceneContinuitySnapshotsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get instanceId => $composableBuilder(
+    column: $table.instanceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get snapshotData => $composableBuilder(
+    column: $table.snapshotData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SceneContinuitySnapshotsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $SceneContinuitySnapshotsTable> {
+  $$SceneContinuitySnapshotsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get instanceId => $composableBuilder(
+    column: $table.instanceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get snapshotData => $composableBuilder(
+    column: $table.snapshotData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SceneContinuitySnapshotsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $SceneContinuitySnapshotsTable> {
+  $$SceneContinuitySnapshotsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get sceneId =>
+      $composableBuilder(column: $table.sceneId, builder: (column) => column);
+
+  GeneratedColumn<String> get instanceId => $composableBuilder(
+    column: $table.instanceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get snapshotData => $composableBuilder(
+    column: $table.snapshotData,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$SceneContinuitySnapshotsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $SceneContinuitySnapshotsTable,
+          SceneContinuitySnapshot,
+          $$SceneContinuitySnapshotsTableFilterComposer,
+          $$SceneContinuitySnapshotsTableOrderingComposer,
+          $$SceneContinuitySnapshotsTableAnnotationComposer,
+          $$SceneContinuitySnapshotsTableCreateCompanionBuilder,
+          $$SceneContinuitySnapshotsTableUpdateCompanionBuilder,
+          (
+            SceneContinuitySnapshot,
+            BaseReferences<
+              _$ProjectDatabase,
+              $SceneContinuitySnapshotsTable,
+              SceneContinuitySnapshot
+            >,
+          ),
+          SceneContinuitySnapshot,
+          PrefetchHooks Function()
+        > {
+  $$SceneContinuitySnapshotsTableTableManager(
+    _$ProjectDatabase db,
+    $SceneContinuitySnapshotsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SceneContinuitySnapshotsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$SceneContinuitySnapshotsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SceneContinuitySnapshotsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> sceneId = const Value.absent(),
+                Value<String> instanceId = const Value.absent(),
+                Value<String> snapshotData = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneContinuitySnapshotsCompanion(
+                id: id,
+                sceneId: sceneId,
+                instanceId: instanceId,
+                snapshotData: snapshotData,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String sceneId,
+                required String instanceId,
+                required String snapshotData,
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => SceneContinuitySnapshotsCompanion.insert(
+                id: id,
+                sceneId: sceneId,
+                instanceId: instanceId,
+                snapshotData: snapshotData,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SceneContinuitySnapshotsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $SceneContinuitySnapshotsTable,
+      SceneContinuitySnapshot,
+      $$SceneContinuitySnapshotsTableFilterComposer,
+      $$SceneContinuitySnapshotsTableOrderingComposer,
+      $$SceneContinuitySnapshotsTableAnnotationComposer,
+      $$SceneContinuitySnapshotsTableCreateCompanionBuilder,
+      $$SceneContinuitySnapshotsTableUpdateCompanionBuilder,
+      (
+        SceneContinuitySnapshot,
+        BaseReferences<
+          _$ProjectDatabase,
+          $SceneContinuitySnapshotsTable,
+          SceneContinuitySnapshot
+        >,
+      ),
+      SceneContinuitySnapshot,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -57698,5 +68857,49 @@ class $ProjectDatabaseManager {
       $$HistoricalEventParticipantsTableTableManager(
         _db,
         _db.historicalEventParticipants,
+      );
+  $$CreaturesTableTableManager get creatures =>
+      $$CreaturesTableTableManager(_db, _db.creatures);
+  $$CreaturePhysicalProfilesTableTableManager get creaturePhysicalProfiles =>
+      $$CreaturePhysicalProfilesTableTableManager(
+        _db,
+        _db.creaturePhysicalProfiles,
+      );
+  $$CreatureAbilitiesTableTableManager get creatureAbilities =>
+      $$CreatureAbilitiesTableTableManager(_db, _db.creatureAbilities);
+  $$CreatureModesTableTableManager get creatureModes =>
+      $$CreatureModesTableTableManager(_db, _db.creatureModes);
+  $$VehiclesTableTableManager get vehicles =>
+      $$VehiclesTableTableManager(_db, _db.vehicles);
+  $$VehicleSpecificationsTableTableManager get vehicleSpecifications =>
+      $$VehicleSpecificationsTableTableManager(_db, _db.vehicleSpecifications);
+  $$VehicleComponentsTableTableManager get vehicleComponents =>
+      $$VehicleComponentsTableTableManager(_db, _db.vehicleComponents);
+  $$VehicleWeaponMountsTableTableManager get vehicleWeaponMounts =>
+      $$VehicleWeaponMountsTableTableManager(_db, _db.vehicleWeaponMounts);
+  $$VehicleVariantsTableTableManager get vehicleVariants =>
+      $$VehicleVariantsTableTableManager(_db, _db.vehicleVariants);
+  $$PropsTableTableManager get props =>
+      $$PropsTableTableManager(_db, _db.props);
+  $$PropSpecificationsTableTableManager get propSpecifications =>
+      $$PropSpecificationsTableTableManager(_db, _db.propSpecifications);
+  $$PropStatesTableTableManager get propStates =>
+      $$PropStatesTableTableManager(_db, _db.propStates);
+  $$SceneAssetInstancesTableTableManager get sceneAssetInstances =>
+      $$SceneAssetInstancesTableTableManager(_db, _db.sceneAssetInstances);
+  $$SceneInstanceTransformsTableTableManager get sceneInstanceTransforms =>
+      $$SceneInstanceTransformsTableTableManager(
+        _db,
+        _db.sceneInstanceTransforms,
+      );
+  $$SceneInstancePropertiesTableTableManager get sceneInstanceProperties =>
+      $$SceneInstancePropertiesTableTableManager(
+        _db,
+        _db.sceneInstanceProperties,
+      );
+  $$SceneContinuitySnapshotsTableTableManager get sceneContinuitySnapshots =>
+      $$SceneContinuitySnapshotsTableTableManager(
+        _db,
+        _db.sceneContinuitySnapshots,
       );
 }

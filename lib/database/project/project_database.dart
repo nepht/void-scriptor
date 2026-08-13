@@ -51,6 +51,10 @@ import 'tables/faction_units.dart';
 import 'tables/canon_conflicts.dart';
 import 'tables/worldbuilding_entities.dart';
 import 'tables/bible_timeline.dart';
+import 'tables/creatures.dart';
+import 'tables/vehicles.dart';
+import 'tables/props.dart';
+import 'tables/scene_asset_instances.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -80,6 +84,10 @@ import '../../features/bible/application/faction_repository.dart';
 import '../../features/bible/application/worldbuilding_repository.dart';
 import '../../features/bible/application/bible_timeline_repository.dart';
 import '../../features/bible/application/canon_conflict_repository.dart';
+import '../../features/creatures/data/creature_repository.dart';
+import '../../features/vehicles/data/vehicle_repository.dart';
+import '../../features/props/data/prop_repository.dart';
+import '../../features/scene_assets/application/scene_asset_instance_repository.dart';
 
 part 'project_database.g.dart';
 
@@ -173,6 +181,22 @@ class ProjectMetadata extends Table {
     TimelineEras,
     HistoricalEvents,
     HistoricalEventParticipants,
+    Creatures,
+    CreaturePhysicalProfiles,
+    CreatureAbilities,
+    CreatureModes,
+    Vehicles,
+    VehicleSpecifications,
+    VehicleComponents,
+    VehicleWeaponMounts,
+    VehicleVariants,
+    Props,
+    PropSpecifications,
+    PropStates,
+    SceneAssetInstances,
+    SceneInstanceTransforms,
+    SceneInstanceProperties,
+    SceneContinuitySnapshots,
   ],
   daos: [
     AssetDao,
@@ -191,13 +215,17 @@ class ProjectMetadata extends Table {
     WorldbuildingRepository,
     BibleTimelineRepository,
     CanonConflictRepository,
+    CreatureRepository,
+    VehicleRepository,
+    PropRepository,
+    SceneAssetInstanceRepository,
   ],
 )
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 24;
+  int get schemaVersion => 28;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -371,6 +399,30 @@ class ProjectDatabase extends _$ProjectDatabase {
       if (from < 24) {
         await m.createTable(canonConflicts);
         await m.createTable(canonRuleExceptions);
+      }
+      if (from < 25) {
+        await m.createTable(creatures);
+        await m.createTable(creaturePhysicalProfiles);
+        await m.createTable(creatureAbilities);
+        await m.createTable(creatureModes);
+      }
+      if (from < 26) {
+        await m.createTable(vehicles);
+        await m.createTable(vehicleSpecifications);
+        await m.createTable(vehicleComponents);
+        await m.createTable(vehicleWeaponMounts);
+        await m.createTable(vehicleVariants);
+      }
+      if (from < 27) {
+        await m.createTable(props);
+        await m.createTable(propSpecifications);
+        await m.createTable(propStates);
+      }
+      if (from < 28) {
+        await m.createTable(sceneAssetInstances);
+        await m.createTable(sceneInstanceTransforms);
+        await m.createTable(sceneInstanceProperties);
+        await m.createTable(sceneContinuitySnapshots);
       }
     },
   );

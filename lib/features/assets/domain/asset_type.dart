@@ -4,6 +4,7 @@ enum AssetType {
   weapon,
   creature,
   vehicle,
+  prop,
   environment,
   story,
   scene,

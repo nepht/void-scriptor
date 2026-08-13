@@ -5,6 +5,7 @@ class AiContext {
     required this.environmentContext,
     required this.sceneContext,
     required this.timelineContext,
+    this.sceneAssetContexts = const [],
     this.canonContext = '[RELEVANT CANON CONTEXT]\n(none)',
   });
   final String projectId;
@@ -12,7 +13,25 @@ class AiContext {
   final AiEnvironmentContext? environmentContext;
   final AiSceneContext? sceneContext;
   final AiTimelineContext? timelineContext;
+  final List<AiSceneAssetContext> sceneAssetContexts;
   final String canonContext;
+}
+
+class AiSceneAssetContext {
+  const AiSceneAssetContext({
+    required this.assetId,
+    required this.name,
+    required this.type,
+    required this.priority,
+    this.state,
+    this.references = const [],
+  });
+  final String assetId;
+  final String name;
+  final String type;
+  final String priority;
+  final String? state;
+  final List<String> references;
 }
 
 class AiCharacterContext {

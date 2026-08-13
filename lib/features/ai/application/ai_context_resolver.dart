@@ -5,6 +5,9 @@ import 'reference_bundle_resolver.dart';
 import '../../bible/application/bible_repository.dart';
 import '../../bible/application/canon_prompt_context.dart';
 import '../../bible/application/relevant_canon_context_resolver.dart';
+import '../../assets/domain/asset_type.dart';
+import '../../scene_assets/application/scene_asset_instance_repository.dart';
+import 'ai_scene_asset_context_resolver.dart' as production;
 
 class AiContextResolver {
   AiContextResolver(this.database);
@@ -120,6 +123,7 @@ class AiContextResolver {
           .toList(),
     );
     final environmentContext = await _resolveEnvironment(sceneId);
+    final sceneAssetContexts = await _resolveSceneAssets(sceneId);
     final timeline = await database.timelineDao.getTimelineForScene(sceneId);
     AiTimelineContext? timelineContext;
     if (timeline != null) {
@@ -146,8 +150,57 @@ class AiContextResolver {
       environmentContext: environmentContext,
       sceneContext: sceneContext,
       timelineContext: timelineContext,
+      sceneAssetContexts: sceneAssetContexts,
       canonContext: canonComposer.compose(canonEntries),
     );
+  }
+
+  Future<List<AiSceneAssetContext>> _resolveSceneAssets(String sceneId) async {
+    final repository = SceneAssetInstanceRepository(database);
+    final instances = await repository.instancesForScene(sceneId);
+    final candidates = <production.AiSceneAssetCandidate>[];
+    for (final instance in instances) {
+      final asset = await database.assetDao.getById(instance.assetId);
+      if (asset == null) continue;
+      final matches = AssetType.values.where((item) => item.name == asset.type);
+      if (matches.isEmpty) continue;
+      final type = matches.first;
+      final properties = await repository.propertiesFor(instance.id);
+      final referenceBundle = await referenceBundles.resolve(
+        assetId: asset.id,
+        maxReferences: 6,
+      );
+      final storyCritical =
+          type == AssetType.prop &&
+          (await database.propRepository.getProp(asset.id))?.storyCritical ==
+              true;
+      candidates.add(
+        production.AiSceneAssetCandidate(
+          assetId: asset.id,
+          name: asset.name,
+          type: type,
+          priority: instance.contextPriority,
+          state: instance.stateId ?? properties.values.firstOrNull,
+          storyCritical: storyCritical,
+          references: referenceBundle.references
+              .map((reference) => reference.id)
+              .toList(growable: false),
+        ),
+      );
+    }
+    return production.AiSceneAssetContextResolver()
+        .resolve(candidates, maxAssets: 8, maxReferences: 12)
+        .map(
+          (item) => AiSceneAssetContext(
+            assetId: item.assetId,
+            name: item.name,
+            type: item.type.name,
+            priority: item.priority.name,
+            state: item.state,
+            references: item.references,
+          ),
+        )
+        .toList(growable: false);
   }
 
   String _identityDescription(dynamic character) => [

@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.voidscriptor.void_scriptor"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

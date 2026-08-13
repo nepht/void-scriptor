@@ -44,6 +44,9 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4.0.1
 
+      - name: Install Android API 37
+        run: sdkmanager "platforms;android-37"
+
       - name: Resolve dependencies
         run: flutter pub get
 

@@ -8,6 +8,9 @@ class CharacterIdentityProfiles extends Table {
   BoolColumn get colorLock => boolean().withDefault(const Constant(true))();
   BoolColumn get outfitLock => boolean().withDefault(const Constant(false))();
   BoolColumn get weaponLock => boolean().withDefault(const Constant(false))();
+  BoolColumn get accessoryLock =>
+      boolean().withDefault(const Constant(false))();
+  TextColumn get notes => text().withDefault(const Constant(''))();
 
   @override
   Set<Column<Object>> get primaryKey => {characterId};

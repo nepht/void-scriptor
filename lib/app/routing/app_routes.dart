@@ -18,6 +18,7 @@ abstract final class AppRoutes {
   static const workspace = '/workspace';
   static const studio = '/studio';
   static const assets = '/assets';
+  static const references = '/references';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

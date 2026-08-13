@@ -40,6 +40,10 @@ import 'tables/ai_generation_outputs.dart';
 import 'tables/ai_generation_inputs.dart';
 import 'tables/tags.dart';
 import 'tables/asset_collections.dart';
+import 'tables/references.dart';
+import 'tables/reference_sets.dart';
+import 'tables/reference_identity.dart';
+import 'tables/consistency.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -62,6 +66,7 @@ import 'daos/wardrobe_dao.dart';
 import 'daos/weapon_dao.dart';
 import 'daos/environment_dao.dart';
 import 'daos/story_dao.dart';
+import '../../features/references/application/reference_repository.dart';
 
 part 'project_database.g.dart';
 
@@ -132,6 +137,14 @@ class ProjectMetadata extends Table {
     AssetTagLinks,
     AssetCollections,
     AssetCollectionItems,
+    References,
+    ReferenceSets,
+    ReferenceSetItems,
+    ReferenceVersions,
+    PreservationLocks,
+    ConsistencyRules,
+    ConsistencyReviews,
+    ConsistencyReviewItems,
   ],
   daos: [
     AssetDao,
@@ -143,13 +156,14 @@ class ProjectMetadata extends Table {
     EnvironmentDao,
     StoryDao,
     TimelineDao,
+    ReferenceDao,
   ],
 )
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 15;
+  int get schemaVersion => 16;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -268,6 +282,29 @@ class ProjectDatabase extends _$ProjectDatabase {
           FROM asset_tags
           WHERE trim(asset_tags.tag) <> ''
         ''');
+      }
+      if (from < 16) {
+        if (from >= 2) {
+          await customStatement(
+            'ALTER TABLE character_identity_profiles ADD COLUMN accessory_lock BOOLEAN NOT NULL DEFAULT 0',
+          );
+          await customStatement(
+            "ALTER TABLE character_identity_profiles ADD COLUMN notes TEXT NOT NULL DEFAULT ''",
+          );
+        }
+        if (from >= 6) {
+          await customStatement(
+            'ALTER TABLE character_modes ADD COLUMN reference_set_id TEXT',
+          );
+        }
+        await m.createTable(references);
+        await m.createTable(referenceSets);
+        await m.createTable(referenceSetItems);
+        await m.createTable(referenceVersions);
+        await m.createTable(preservationLocks);
+        await m.createTable(consistencyRules);
+        await m.createTable(consistencyReviews);
+        await m.createTable(consistencyReviewItems);
       }
     },
   );

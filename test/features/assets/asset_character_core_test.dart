@@ -55,7 +55,7 @@ void main() {
     final database = await ProjectDatabaseService().open(databasePath);
     addTearDown(database.close);
 
-    expect(database.schemaVersion, 15);
+    expect(database.schemaVersion, 16);
     expect(await database.select(database.assets).get(), isEmpty);
     expect(await database.select(database.characters).get(), isEmpty);
   });

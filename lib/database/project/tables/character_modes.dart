@@ -10,6 +10,7 @@ class CharacterModes extends Table {
   TextColumn get thumbnailPath => text().nullable()();
   TextColumn get accentColor => text().nullable()();
   TextColumn get tagsJson => text().withDefault(const Constant('[]'))();
+  TextColumn get referenceSetId => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 

@@ -23,6 +23,7 @@ class AiCharacterContext {
     this.wardrobeDescription = '',
     this.weaponDescription = '',
     this.preservationRules = const [],
+    this.referenceBundle,
   });
   final String characterId;
   final String name;
@@ -32,6 +33,16 @@ class AiCharacterContext {
   final String wardrobeDescription;
   final String weaponDescription;
   final List<String> preservationRules;
+  final AiReferenceBundle? referenceBundle;
+}
+
+class AiReferenceBundle {
+  const AiReferenceBundle({
+    required this.referenceIds,
+    required this.lockInstructions,
+  });
+  final List<String> referenceIds;
+  final List<String> lockInstructions;
 }
 
 class AiEnvironmentContext {

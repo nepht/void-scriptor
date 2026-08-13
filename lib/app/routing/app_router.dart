@@ -15,6 +15,8 @@ import '../../features/ai/presentation/ai_prompt_composer_screen.dart';
 import '../../features/ai/presentation/ai_provider_workspace_screen.dart';
 import '../../features/ai/presentation/ai_generation_queue_screen.dart';
 import '../../features/assets/presentation/asset_browser_screen.dart';
+import '../../features/references/presentation/reference_library_screen.dart';
+import '../../features/references/presentation/reference_comparison_screen.dart';
 import '../shell/void_app_shell.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
@@ -33,6 +35,17 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
       GoRoute(
         path: AppRoutes.assets,
         builder: (_, __) => const AssetBrowserScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.references,
+        builder: (_, __) => const ReferenceLibraryScreen(),
+      ),
+      GoRoute(
+        path: '${AppRoutes.references}/compare',
+        builder: (_, state) => ReferenceComparisonScreen(
+          referencePath: state.uri.queryParameters['reference'] ?? '',
+          generatedPath: state.uri.queryParameters['generated'] ?? '',
+        ),
       ),
     ],
   );
@@ -109,6 +122,17 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     GoRoute(
       path: AppRoutes.assets,
       builder: (_, __) => const AssetBrowserScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.references,
+      builder: (_, __) => const ReferenceLibraryScreen(),
+    ),
+    GoRoute(
+      path: '${AppRoutes.references}/compare',
+      builder: (_, state) => ReferenceComparisonScreen(
+        referencePath: state.uri.queryParameters['reference'] ?? '',
+        generatedPath: state.uri.queryParameters['generated'] ?? '',
+      ),
     ),
   ];
 }

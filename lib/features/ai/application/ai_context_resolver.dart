@@ -1,11 +1,15 @@
 import '../../../database/project/project_database.dart' as db;
 import '../domain/ai_context.dart';
 import 'preservation_prompt_resolver.dart';
+import 'reference_bundle_resolver.dart';
 
 class AiContextResolver {
   AiContextResolver(this.database);
   final db.ProjectDatabase database;
   final PreservationPromptResolver preservation = PreservationPromptResolver();
+  late final ReferenceBundleResolver referenceBundles = ReferenceBundleResolver(
+    database,
+  );
 
   Future<AiContext> resolveScene({
     required String projectId,
@@ -44,6 +48,10 @@ class AiContextResolver {
                       .map((entry) => entry.assetId)
                       .toList(),
                 );
+      final referenceBundle = await referenceBundles.resolve(
+        assetId: character.assetId,
+        maxReferences: 6,
+      );
       final wardrobe = <String>[];
       final weapons = <String>[];
       for (final assetId in loadout) {
@@ -73,6 +81,12 @@ class AiContextResolver {
           wardrobeDescription: wardrobe.join('\n'),
           weaponDescription: weapons.join('\n'),
           preservationRules: preservation.resolve(locks),
+          referenceBundle: AiReferenceBundle(
+            referenceIds: referenceBundle.references
+                .map((reference) => reference.id)
+                .toList(growable: false),
+            lockInstructions: referenceBundle.promptInstructions,
+          ),
         ),
       );
     }

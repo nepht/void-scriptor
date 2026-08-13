@@ -1,0 +1,323 @@
+import 'dart:io';
+
+import 'package:crypto/crypto.dart';
+import 'package:drift/drift.dart';
+import 'package:path/path.dart' as p;
+
+import '../../../core/persistence/project_paths.dart';
+import '../../../database/project/project_database.dart';
+import '../../../database/project/tables/consistency.dart';
+import '../../../database/project/tables/reference_identity.dart';
+import '../../../database/project/tables/reference_sets.dart';
+import '../../../database/project/tables/references.dart';
+import '../domain/reference_models.dart';
+
+part 'reference_repository.g.dart';
+
+@DriftAccessor(
+  tables: [
+    References,
+    ReferenceSets,
+    ReferenceSetItems,
+    ReferenceVersions,
+    PreservationLocks,
+    ConsistencyRules,
+    ConsistencyReviews,
+  ],
+)
+class ReferenceDao extends DatabaseAccessor<ProjectDatabase>
+    with _$ReferenceDaoMixin {
+  ReferenceDao(super.db);
+
+  Future<List<Reference>> list({
+    String? projectId,
+    String? ownerAssetId,
+    ReferenceType? type,
+  }) {
+    final query = select(references);
+    if (projectId != null) {
+      query.where((row) => row.projectId.equals(projectId));
+    }
+    if (ownerAssetId != null) {
+      query.where((row) => row.ownerAssetId.equals(ownerAssetId));
+    }
+    if (type != null) query.where((row) => row.type.equals(type.name));
+    query.orderBy([
+      (row) => OrderingTerm(
+        expression: row.primaryReference,
+        mode: OrderingMode.desc,
+      ),
+      (row) => OrderingTerm(expression: row.priority, mode: OrderingMode.desc),
+    ]);
+    return query.get();
+  }
+
+  Future<Reference?> byId(String id) =>
+      (select(references)..where((row) => row.id.equals(id))).getSingleOrNull();
+
+  Future<Reference?> byContentHash(String projectId, String hash) =>
+      (select(references)..where(
+            (row) =>
+                row.projectId.equals(projectId) & row.contentHash.equals(hash),
+          ))
+          .getSingleOrNull();
+
+  Future<void> insertReference({required ReferenceModel reference}) =>
+      into(references).insertOnConflictUpdate(
+        ReferencesCompanion.insert(
+          id: reference.id,
+          projectId: reference.projectId,
+          ownerAssetId: Value(reference.ownerAssetId),
+          type: reference.type.name,
+          source: reference.source.name,
+          name: reference.name,
+          filePath: reference.filePath,
+          description: Value(reference.description),
+          priority: Value(reference.priority),
+          primaryReference: Value(reference.primary),
+          enabled: Value(reference.enabled),
+          contentHash: Value(reference.contentHash),
+          createdAt: reference.createdAt ?? DateTime.now().toUtc(),
+          updatedAt: reference.updatedAt ?? DateTime.now().toUtc(),
+        ),
+      );
+
+  Future<void> setPrimary({
+    required String projectId,
+    required String? ownerAssetId,
+    required ReferenceType type,
+    required String referenceId,
+  }) async {
+    await transaction(() async {
+      await (update(references)..where((row) {
+            final owner = ownerAssetId == null
+                ? row.ownerAssetId.isNull()
+                : row.ownerAssetId.equals(ownerAssetId);
+            return row.projectId.equals(projectId) &
+                row.type.equals(type.name) &
+                owner;
+          }))
+          .write(const ReferencesCompanion(primaryReference: Value(false)));
+      final target = await byId(referenceId);
+      if (target == null ||
+          target.projectId != projectId ||
+          target.type != type.name ||
+          target.ownerAssetId != ownerAssetId) {
+        throw StateError(
+          'Reference does not match primary scope: $referenceId',
+        );
+      }
+      await (update(
+        references,
+      )..where((row) => row.id.equals(referenceId))).write(
+        ReferencesCompanion(
+          primaryReference: const Value(true),
+          updatedAt: Value(DateTime.now().toUtc()),
+        ),
+      );
+    });
+  }
+
+  Future<void> addToSet({
+    required String setId,
+    required String referenceId,
+    int sortOrder = 0,
+  }) => into(referenceSetItems).insertOnConflictUpdate(
+    ReferenceSetItemsCompanion.insert(
+      referenceSetId: setId,
+      referenceId: referenceId,
+      sortOrder: Value(sortOrder),
+    ),
+  );
+
+  Future<List<ReferenceSetItem>> itemsForSet(String setId) =>
+      (select(referenceSetItems)
+            ..where((row) => row.referenceSetId.equals(setId))
+            ..orderBy([(row) => OrderingTerm(expression: row.sortOrder)]))
+          .get();
+
+  Future<void> saveLock(PreservationLockModel lock) =>
+      into(preservationLocks).insertOnConflictUpdate(
+        PreservationLocksCompanion.insert(
+          id: lock.id,
+          assetId: lock.assetId,
+          type: lock.type.name,
+          enabled: Value(lock.enabled),
+          instruction: Value(lock.instruction),
+          priority: Value(lock.priority),
+        ),
+      );
+
+  Future<void> saveRule(ConsistencyRuleModel rule) =>
+      into(consistencyRules).insertOnConflictUpdate(
+        ConsistencyRulesCompanion.insert(
+          id: rule.id,
+          assetId: rule.assetId,
+          type: rule.type.name,
+          description: rule.description,
+          severity: rule.severity.name,
+          enabled: Value(rule.enabled),
+        ),
+      );
+
+  Future<void> saveReview(ConsistencyReviewModel review) =>
+      into(consistencyReviews).insertOnConflictUpdate(
+        ConsistencyReviewsCompanion.insert(
+          id: review.id,
+          generationOutputId: review.generationOutputId,
+          assetId: review.assetId,
+          status: review.status.name,
+          notes: Value(review.notes),
+          reviewedAt: Value(review.reviewedAt),
+        ),
+      );
+
+  Future<void> saveVersion({
+    required String referenceId,
+    required String filePath,
+    required String? contentHash,
+    required String changeNote,
+  }) async {
+    final versions = await (select(
+      referenceVersions,
+    )..where((row) => row.referenceId.equals(referenceId))).get();
+    await into(referenceVersions).insert(
+      ReferenceVersionsCompanion.insert(
+        id: '$referenceId-v${versions.length + 1}',
+        referenceId: referenceId,
+        version: versions.length + 1,
+        filePath: filePath,
+        contentHash: Value(contentHash),
+        changeNote: Value(changeNote),
+        createdAt: DateTime.now().toUtc(),
+      ),
+    );
+  }
+}
+
+class ReferenceImportService {
+  ReferenceImportService({required this.database, required this.paths})
+    : dao = ReferenceDao(database);
+  final ProjectDatabase database;
+  final ProjectPaths paths;
+  final ReferenceDao dao;
+
+  Future<ReferenceModel> importFile({
+    required String projectId,
+    required String referenceId,
+    required String sourcePath,
+    required String name,
+    required ReferenceType type,
+    String? ownerAssetId,
+    ReferenceSource source = ReferenceSource.imported,
+    int priority = 0,
+    bool primary = false,
+    String description = '',
+    bool allowDuplicate = false,
+  }) async {
+    final sourceFile = File(sourcePath);
+    if (!await sourceFile.exists()) {
+      throw StateError('Reference source file not found: $sourcePath');
+    }
+    final projectDir = await paths.project(projectId);
+    final targetDir = Directory(
+      p.join(
+        projectDir.path,
+        'assets',
+        'references',
+        ownerAssetId ?? 'unowned',
+        type.name,
+      ),
+    );
+    await targetDir.create(recursive: true);
+    final target = File(
+      p.join(targetDir.path, '${referenceId}_${p.basename(sourcePath)}'),
+    );
+    await sourceFile.copy(target.path);
+    final hash = sha256.convert(await target.readAsBytes()).toString();
+    final duplicate = await dao.byContentHash(projectId, hash);
+    if (!allowDuplicate && duplicate != null && duplicate.id != referenceId) {
+      await target.delete();
+      throw StateError(
+        'Reference already exists: ${duplicate.name} (${duplicate.id})',
+      );
+    }
+    final now = DateTime.now().toUtc();
+    final model = ReferenceModel(
+      id: referenceId,
+      projectId: projectId,
+      ownerAssetId: ownerAssetId,
+      type: type,
+      source: source,
+      name: name,
+      filePath: p.relative(target.path, from: projectDir.path),
+      description: description,
+      priority: priority,
+      primary: primary,
+      enabled: true,
+      contentHash: hash,
+      createdAt: now,
+      updatedAt: now,
+    );
+    await dao.insertReference(reference: model);
+    if (primary) {
+      await dao.setPrimary(
+        projectId: projectId,
+        ownerAssetId: ownerAssetId,
+        type: type,
+        referenceId: referenceId,
+      );
+    }
+    return model;
+  }
+
+  Future<ReferenceModel> replaceFile({
+    required String projectId,
+    required String referenceId,
+    required String sourcePath,
+    String changeNote = '',
+  }) async {
+    final current = await dao.byId(referenceId);
+    if (current == null) throw StateError('Reference not found: $referenceId');
+    final source = File(sourcePath);
+    if (!await source.exists()) {
+      throw StateError('Replacement file not found: $sourcePath');
+    }
+    final projectDir = await paths.project(projectId);
+    final target = File(p.join(projectDir.path, current.filePath));
+    await target.parent.create(recursive: true);
+    await dao.saveVersion(
+      referenceId: referenceId,
+      filePath: current.filePath,
+      contentHash: current.contentHash,
+      changeNote: changeNote,
+    );
+    await source.copy(target.path);
+    final hash = sha256.convert(await target.readAsBytes()).toString();
+    await (database.update(
+      database.references,
+    )..where((row) => row.id.equals(referenceId))).write(
+      ReferencesCompanion(
+        contentHash: Value(hash),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
+    final updated = await dao.byId(referenceId);
+    return ReferenceModel(
+      id: updated!.id,
+      projectId: updated.projectId,
+      ownerAssetId: updated.ownerAssetId,
+      type: referenceTypeFromStorage(updated.type),
+      source: referenceSourceFromStorage(updated.source),
+      name: updated.name,
+      filePath: updated.filePath,
+      description: updated.description,
+      priority: updated.priority,
+      primary: updated.primaryReference,
+      enabled: updated.enabled,
+      contentHash: updated.contentHash,
+      createdAt: updated.createdAt,
+      updatedAt: updated.updatedAt,
+    );
+  }
+}

@@ -35,6 +35,9 @@ import 'tables/prompt_templates.dart';
 import 'tables/ai_prompt_history.dart';
 import 'tables/prompt_revisions.dart';
 import 'tables/ai_generations.dart';
+import 'tables/ai_generation_jobs.dart';
+import 'tables/ai_generation_outputs.dart';
+import 'tables/ai_generation_inputs.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -120,6 +123,9 @@ class ProjectMetadata extends Table {
     AiPromptHistory,
     PromptRevisions,
     AiGenerations,
+    AiGenerationJobs,
+    AiGenerationOutputs,
+    AiGenerationInputs,
   ],
   daos: [
     AssetDao,
@@ -137,7 +143,7 @@ class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 13;
+  int get schemaVersion => 14;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -230,6 +236,11 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(aiPromptHistory);
         await m.createTable(promptRevisions);
         await m.createTable(aiGenerations);
+      }
+      if (from < 14) {
+        await m.createTable(aiGenerationJobs);
+        await m.createTable(aiGenerationOutputs);
+        await m.createTable(aiGenerationInputs);
       }
     },
   );

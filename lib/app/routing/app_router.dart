@@ -12,6 +12,8 @@ import '../../features/projects/presentation/create_project_screen.dart';
 import '../../features/projects/presentation/project_list_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
 import '../../features/ai/presentation/ai_prompt_composer_screen.dart';
+import '../../features/ai/presentation/ai_provider_workspace_screen.dart';
+import '../../features/ai/presentation/ai_generation_queue_screen.dart';
 import '../shell/void_app_shell.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
@@ -93,11 +95,11 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
     GoRoute(
       path: AppRoutes.aiHistory,
-      builder: (_, __) => const _FoundationScreen(label: 'AI HISTORY'),
+      builder: (_, __) => const AiGenerationQueueScreen(),
     ),
     GoRoute(
       path: AppRoutes.aiProviders,
-      builder: (_, __) => const _FoundationScreen(label: 'AI PROVIDERS'),
+      builder: (_, __) => const AiProviderWorkspaceScreen(),
     ),
   ];
 }

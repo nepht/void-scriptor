@@ -23542,6 +23542,1653 @@ class AiGenerationsCompanion extends UpdateCompanion<AiGeneration> {
   }
 }
 
+class $AiGenerationJobsTable extends AiGenerationJobs
+    with TableInfo<$AiGenerationJobsTable, AiGenerationJob> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AiGenerationJobsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _providerIdMeta = const VerificationMeta(
+    'providerId',
+  );
+  @override
+  late final GeneratedColumn<String> providerId = GeneratedColumn<String>(
+    'provider_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _modelIdMeta = const VerificationMeta(
+    'modelId',
+  );
+  @override
+  late final GeneratedColumn<String> modelId = GeneratedColumn<String>(
+    'model_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _promptHistoryIdMeta = const VerificationMeta(
+    'promptHistoryId',
+  );
+  @override
+  late final GeneratedColumn<String> promptHistoryId = GeneratedColumn<String>(
+    'prompt_history_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _progressMeta = const VerificationMeta(
+    'progress',
+  );
+  @override
+  late final GeneratedColumn<double> progress = GeneratedColumn<double>(
+    'progress',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _errorMeta = const VerificationMeta('error');
+  @override
+  late final GeneratedColumn<String> error = GeneratedColumn<String>(
+    'error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _priorityMeta = const VerificationMeta(
+    'priority',
+  );
+  @override
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+    'priority',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startedAtMeta = const VerificationMeta(
+    'startedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startedAt = GeneratedColumn<DateTime>(
+    'started_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _completedAtMeta = const VerificationMeta(
+    'completedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>(
+    'completed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    providerId,
+    modelId,
+    promptHistoryId,
+    status,
+    progress,
+    error,
+    priority,
+    createdAt,
+    startedAt,
+    completedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ai_generation_jobs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AiGenerationJob> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('provider_id')) {
+      context.handle(
+        _providerIdMeta,
+        providerId.isAcceptableOrUnknown(data['provider_id']!, _providerIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_providerIdMeta);
+    }
+    if (data.containsKey('model_id')) {
+      context.handle(
+        _modelIdMeta,
+        modelId.isAcceptableOrUnknown(data['model_id']!, _modelIdMeta),
+      );
+    }
+    if (data.containsKey('prompt_history_id')) {
+      context.handle(
+        _promptHistoryIdMeta,
+        promptHistoryId.isAcceptableOrUnknown(
+          data['prompt_history_id']!,
+          _promptHistoryIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_promptHistoryIdMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('progress')) {
+      context.handle(
+        _progressMeta,
+        progress.isAcceptableOrUnknown(data['progress']!, _progressMeta),
+      );
+    }
+    if (data.containsKey('error')) {
+      context.handle(
+        _errorMeta,
+        error.isAcceptableOrUnknown(data['error']!, _errorMeta),
+      );
+    }
+    if (data.containsKey('priority')) {
+      context.handle(
+        _priorityMeta,
+        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('started_at')) {
+      context.handle(
+        _startedAtMeta,
+        startedAt.isAcceptableOrUnknown(data['started_at']!, _startedAtMeta),
+      );
+    }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+        _completedAtMeta,
+        completedAt.isAcceptableOrUnknown(
+          data['completed_at']!,
+          _completedAtMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AiGenerationJob map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AiGenerationJob(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      providerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provider_id'],
+      )!,
+      modelId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}model_id'],
+      ),
+      promptHistoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prompt_history_id'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      progress: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}progress'],
+      )!,
+      error: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}error'],
+      ),
+      priority: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}priority'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      startedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}started_at'],
+      ),
+      completedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}completed_at'],
+      ),
+    );
+  }
+
+  @override
+  $AiGenerationJobsTable createAlias(String alias) {
+    return $AiGenerationJobsTable(attachedDatabase, alias);
+  }
+}
+
+class AiGenerationJob extends DataClass implements Insertable<AiGenerationJob> {
+  final String id;
+  final String projectId;
+  final String providerId;
+  final String? modelId;
+  final String promptHistoryId;
+  final String status;
+  final double progress;
+  final String? error;
+  final int priority;
+  final DateTime createdAt;
+  final DateTime? startedAt;
+  final DateTime? completedAt;
+  const AiGenerationJob({
+    required this.id,
+    required this.projectId,
+    required this.providerId,
+    this.modelId,
+    required this.promptHistoryId,
+    required this.status,
+    required this.progress,
+    this.error,
+    required this.priority,
+    required this.createdAt,
+    this.startedAt,
+    this.completedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['provider_id'] = Variable<String>(providerId);
+    if (!nullToAbsent || modelId != null) {
+      map['model_id'] = Variable<String>(modelId);
+    }
+    map['prompt_history_id'] = Variable<String>(promptHistoryId);
+    map['status'] = Variable<String>(status);
+    map['progress'] = Variable<double>(progress);
+    if (!nullToAbsent || error != null) {
+      map['error'] = Variable<String>(error);
+    }
+    map['priority'] = Variable<int>(priority);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || startedAt != null) {
+      map['started_at'] = Variable<DateTime>(startedAt);
+    }
+    if (!nullToAbsent || completedAt != null) {
+      map['completed_at'] = Variable<DateTime>(completedAt);
+    }
+    return map;
+  }
+
+  AiGenerationJobsCompanion toCompanion(bool nullToAbsent) {
+    return AiGenerationJobsCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      providerId: Value(providerId),
+      modelId: modelId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(modelId),
+      promptHistoryId: Value(promptHistoryId),
+      status: Value(status),
+      progress: Value(progress),
+      error: error == null && nullToAbsent
+          ? const Value.absent()
+          : Value(error),
+      priority: Value(priority),
+      createdAt: Value(createdAt),
+      startedAt: startedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startedAt),
+      completedAt: completedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completedAt),
+    );
+  }
+
+  factory AiGenerationJob.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AiGenerationJob(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      providerId: serializer.fromJson<String>(json['providerId']),
+      modelId: serializer.fromJson<String?>(json['modelId']),
+      promptHistoryId: serializer.fromJson<String>(json['promptHistoryId']),
+      status: serializer.fromJson<String>(json['status']),
+      progress: serializer.fromJson<double>(json['progress']),
+      error: serializer.fromJson<String?>(json['error']),
+      priority: serializer.fromJson<int>(json['priority']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      startedAt: serializer.fromJson<DateTime?>(json['startedAt']),
+      completedAt: serializer.fromJson<DateTime?>(json['completedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'providerId': serializer.toJson<String>(providerId),
+      'modelId': serializer.toJson<String?>(modelId),
+      'promptHistoryId': serializer.toJson<String>(promptHistoryId),
+      'status': serializer.toJson<String>(status),
+      'progress': serializer.toJson<double>(progress),
+      'error': serializer.toJson<String?>(error),
+      'priority': serializer.toJson<int>(priority),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'startedAt': serializer.toJson<DateTime?>(startedAt),
+      'completedAt': serializer.toJson<DateTime?>(completedAt),
+    };
+  }
+
+  AiGenerationJob copyWith({
+    String? id,
+    String? projectId,
+    String? providerId,
+    Value<String?> modelId = const Value.absent(),
+    String? promptHistoryId,
+    String? status,
+    double? progress,
+    Value<String?> error = const Value.absent(),
+    int? priority,
+    DateTime? createdAt,
+    Value<DateTime?> startedAt = const Value.absent(),
+    Value<DateTime?> completedAt = const Value.absent(),
+  }) => AiGenerationJob(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    providerId: providerId ?? this.providerId,
+    modelId: modelId.present ? modelId.value : this.modelId,
+    promptHistoryId: promptHistoryId ?? this.promptHistoryId,
+    status: status ?? this.status,
+    progress: progress ?? this.progress,
+    error: error.present ? error.value : this.error,
+    priority: priority ?? this.priority,
+    createdAt: createdAt ?? this.createdAt,
+    startedAt: startedAt.present ? startedAt.value : this.startedAt,
+    completedAt: completedAt.present ? completedAt.value : this.completedAt,
+  );
+  AiGenerationJob copyWithCompanion(AiGenerationJobsCompanion data) {
+    return AiGenerationJob(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      providerId: data.providerId.present
+          ? data.providerId.value
+          : this.providerId,
+      modelId: data.modelId.present ? data.modelId.value : this.modelId,
+      promptHistoryId: data.promptHistoryId.present
+          ? data.promptHistoryId.value
+          : this.promptHistoryId,
+      status: data.status.present ? data.status.value : this.status,
+      progress: data.progress.present ? data.progress.value : this.progress,
+      error: data.error.present ? data.error.value : this.error,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      startedAt: data.startedAt.present ? data.startedAt.value : this.startedAt,
+      completedAt: data.completedAt.present
+          ? data.completedAt.value
+          : this.completedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiGenerationJob(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('providerId: $providerId, ')
+          ..write('modelId: $modelId, ')
+          ..write('promptHistoryId: $promptHistoryId, ')
+          ..write('status: $status, ')
+          ..write('progress: $progress, ')
+          ..write('error: $error, ')
+          ..write('priority: $priority, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('completedAt: $completedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    providerId,
+    modelId,
+    promptHistoryId,
+    status,
+    progress,
+    error,
+    priority,
+    createdAt,
+    startedAt,
+    completedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AiGenerationJob &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.providerId == this.providerId &&
+          other.modelId == this.modelId &&
+          other.promptHistoryId == this.promptHistoryId &&
+          other.status == this.status &&
+          other.progress == this.progress &&
+          other.error == this.error &&
+          other.priority == this.priority &&
+          other.createdAt == this.createdAt &&
+          other.startedAt == this.startedAt &&
+          other.completedAt == this.completedAt);
+}
+
+class AiGenerationJobsCompanion extends UpdateCompanion<AiGenerationJob> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> providerId;
+  final Value<String?> modelId;
+  final Value<String> promptHistoryId;
+  final Value<String> status;
+  final Value<double> progress;
+  final Value<String?> error;
+  final Value<int> priority;
+  final Value<DateTime> createdAt;
+  final Value<DateTime?> startedAt;
+  final Value<DateTime?> completedAt;
+  final Value<int> rowid;
+  const AiGenerationJobsCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.providerId = const Value.absent(),
+    this.modelId = const Value.absent(),
+    this.promptHistoryId = const Value.absent(),
+    this.status = const Value.absent(),
+    this.progress = const Value.absent(),
+    this.error = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.startedAt = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AiGenerationJobsCompanion.insert({
+    required String id,
+    required String projectId,
+    required String providerId,
+    this.modelId = const Value.absent(),
+    required String promptHistoryId,
+    required String status,
+    this.progress = const Value.absent(),
+    this.error = const Value.absent(),
+    this.priority = const Value.absent(),
+    required DateTime createdAt,
+    this.startedAt = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       providerId = Value(providerId),
+       promptHistoryId = Value(promptHistoryId),
+       status = Value(status),
+       createdAt = Value(createdAt);
+  static Insertable<AiGenerationJob> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? providerId,
+    Expression<String>? modelId,
+    Expression<String>? promptHistoryId,
+    Expression<String>? status,
+    Expression<double>? progress,
+    Expression<String>? error,
+    Expression<int>? priority,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? startedAt,
+    Expression<DateTime>? completedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (providerId != null) 'provider_id': providerId,
+      if (modelId != null) 'model_id': modelId,
+      if (promptHistoryId != null) 'prompt_history_id': promptHistoryId,
+      if (status != null) 'status': status,
+      if (progress != null) 'progress': progress,
+      if (error != null) 'error': error,
+      if (priority != null) 'priority': priority,
+      if (createdAt != null) 'created_at': createdAt,
+      if (startedAt != null) 'started_at': startedAt,
+      if (completedAt != null) 'completed_at': completedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AiGenerationJobsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? providerId,
+    Value<String?>? modelId,
+    Value<String>? promptHistoryId,
+    Value<String>? status,
+    Value<double>? progress,
+    Value<String?>? error,
+    Value<int>? priority,
+    Value<DateTime>? createdAt,
+    Value<DateTime?>? startedAt,
+    Value<DateTime?>? completedAt,
+    Value<int>? rowid,
+  }) {
+    return AiGenerationJobsCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      providerId: providerId ?? this.providerId,
+      modelId: modelId ?? this.modelId,
+      promptHistoryId: promptHistoryId ?? this.promptHistoryId,
+      status: status ?? this.status,
+      progress: progress ?? this.progress,
+      error: error ?? this.error,
+      priority: priority ?? this.priority,
+      createdAt: createdAt ?? this.createdAt,
+      startedAt: startedAt ?? this.startedAt,
+      completedAt: completedAt ?? this.completedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (providerId.present) {
+      map['provider_id'] = Variable<String>(providerId.value);
+    }
+    if (modelId.present) {
+      map['model_id'] = Variable<String>(modelId.value);
+    }
+    if (promptHistoryId.present) {
+      map['prompt_history_id'] = Variable<String>(promptHistoryId.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (progress.present) {
+      map['progress'] = Variable<double>(progress.value);
+    }
+    if (error.present) {
+      map['error'] = Variable<String>(error.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<int>(priority.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (startedAt.present) {
+      map['started_at'] = Variable<DateTime>(startedAt.value);
+    }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<DateTime>(completedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiGenerationJobsCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('providerId: $providerId, ')
+          ..write('modelId: $modelId, ')
+          ..write('promptHistoryId: $promptHistoryId, ')
+          ..write('status: $status, ')
+          ..write('progress: $progress, ')
+          ..write('error: $error, ')
+          ..write('priority: $priority, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AiGenerationOutputsTable extends AiGenerationOutputs
+    with TableInfo<$AiGenerationOutputsTable, AiGenerationOutput> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AiGenerationOutputsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _jobIdMeta = const VerificationMeta('jobId');
+  @override
+  late final GeneratedColumn<String> jobId = GeneratedColumn<String>(
+    'job_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _outputTypeMeta = const VerificationMeta(
+    'outputType',
+  );
+  @override
+  late final GeneratedColumn<String> outputType = GeneratedColumn<String>(
+    'output_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _localPathMeta = const VerificationMeta(
+    'localPath',
+  );
+  @override
+  late final GeneratedColumn<String> localPath = GeneratedColumn<String>(
+    'local_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _remoteUrlMeta = const VerificationMeta(
+    'remoteUrl',
+  );
+  @override
+  late final GeneratedColumn<String> remoteUrl = GeneratedColumn<String>(
+    'remote_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _mimeTypeMeta = const VerificationMeta(
+    'mimeType',
+  );
+  @override
+  late final GeneratedColumn<String> mimeType = GeneratedColumn<String>(
+    'mime_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    jobId,
+    outputType,
+    localPath,
+    remoteUrl,
+    mimeType,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ai_generation_outputs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AiGenerationOutput> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('job_id')) {
+      context.handle(
+        _jobIdMeta,
+        jobId.isAcceptableOrUnknown(data['job_id']!, _jobIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_jobIdMeta);
+    }
+    if (data.containsKey('output_type')) {
+      context.handle(
+        _outputTypeMeta,
+        outputType.isAcceptableOrUnknown(data['output_type']!, _outputTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_outputTypeMeta);
+    }
+    if (data.containsKey('local_path')) {
+      context.handle(
+        _localPathMeta,
+        localPath.isAcceptableOrUnknown(data['local_path']!, _localPathMeta),
+      );
+    }
+    if (data.containsKey('remote_url')) {
+      context.handle(
+        _remoteUrlMeta,
+        remoteUrl.isAcceptableOrUnknown(data['remote_url']!, _remoteUrlMeta),
+      );
+    }
+    if (data.containsKey('mime_type')) {
+      context.handle(
+        _mimeTypeMeta,
+        mimeType.isAcceptableOrUnknown(data['mime_type']!, _mimeTypeMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AiGenerationOutput map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AiGenerationOutput(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      jobId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}job_id'],
+      )!,
+      outputType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}output_type'],
+      )!,
+      localPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_path'],
+      ),
+      remoteUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}remote_url'],
+      ),
+      mimeType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mime_type'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $AiGenerationOutputsTable createAlias(String alias) {
+    return $AiGenerationOutputsTable(attachedDatabase, alias);
+  }
+}
+
+class AiGenerationOutput extends DataClass
+    implements Insertable<AiGenerationOutput> {
+  final String id;
+  final String jobId;
+  final String outputType;
+  final String? localPath;
+  final String? remoteUrl;
+  final String? mimeType;
+  final int sortOrder;
+  const AiGenerationOutput({
+    required this.id,
+    required this.jobId,
+    required this.outputType,
+    this.localPath,
+    this.remoteUrl,
+    this.mimeType,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['job_id'] = Variable<String>(jobId);
+    map['output_type'] = Variable<String>(outputType);
+    if (!nullToAbsent || localPath != null) {
+      map['local_path'] = Variable<String>(localPath);
+    }
+    if (!nullToAbsent || remoteUrl != null) {
+      map['remote_url'] = Variable<String>(remoteUrl);
+    }
+    if (!nullToAbsent || mimeType != null) {
+      map['mime_type'] = Variable<String>(mimeType);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  AiGenerationOutputsCompanion toCompanion(bool nullToAbsent) {
+    return AiGenerationOutputsCompanion(
+      id: Value(id),
+      jobId: Value(jobId),
+      outputType: Value(outputType),
+      localPath: localPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localPath),
+      remoteUrl: remoteUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(remoteUrl),
+      mimeType: mimeType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(mimeType),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory AiGenerationOutput.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AiGenerationOutput(
+      id: serializer.fromJson<String>(json['id']),
+      jobId: serializer.fromJson<String>(json['jobId']),
+      outputType: serializer.fromJson<String>(json['outputType']),
+      localPath: serializer.fromJson<String?>(json['localPath']),
+      remoteUrl: serializer.fromJson<String?>(json['remoteUrl']),
+      mimeType: serializer.fromJson<String?>(json['mimeType']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'jobId': serializer.toJson<String>(jobId),
+      'outputType': serializer.toJson<String>(outputType),
+      'localPath': serializer.toJson<String?>(localPath),
+      'remoteUrl': serializer.toJson<String?>(remoteUrl),
+      'mimeType': serializer.toJson<String?>(mimeType),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  AiGenerationOutput copyWith({
+    String? id,
+    String? jobId,
+    String? outputType,
+    Value<String?> localPath = const Value.absent(),
+    Value<String?> remoteUrl = const Value.absent(),
+    Value<String?> mimeType = const Value.absent(),
+    int? sortOrder,
+  }) => AiGenerationOutput(
+    id: id ?? this.id,
+    jobId: jobId ?? this.jobId,
+    outputType: outputType ?? this.outputType,
+    localPath: localPath.present ? localPath.value : this.localPath,
+    remoteUrl: remoteUrl.present ? remoteUrl.value : this.remoteUrl,
+    mimeType: mimeType.present ? mimeType.value : this.mimeType,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  AiGenerationOutput copyWithCompanion(AiGenerationOutputsCompanion data) {
+    return AiGenerationOutput(
+      id: data.id.present ? data.id.value : this.id,
+      jobId: data.jobId.present ? data.jobId.value : this.jobId,
+      outputType: data.outputType.present
+          ? data.outputType.value
+          : this.outputType,
+      localPath: data.localPath.present ? data.localPath.value : this.localPath,
+      remoteUrl: data.remoteUrl.present ? data.remoteUrl.value : this.remoteUrl,
+      mimeType: data.mimeType.present ? data.mimeType.value : this.mimeType,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiGenerationOutput(')
+          ..write('id: $id, ')
+          ..write('jobId: $jobId, ')
+          ..write('outputType: $outputType, ')
+          ..write('localPath: $localPath, ')
+          ..write('remoteUrl: $remoteUrl, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    jobId,
+    outputType,
+    localPath,
+    remoteUrl,
+    mimeType,
+    sortOrder,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AiGenerationOutput &&
+          other.id == this.id &&
+          other.jobId == this.jobId &&
+          other.outputType == this.outputType &&
+          other.localPath == this.localPath &&
+          other.remoteUrl == this.remoteUrl &&
+          other.mimeType == this.mimeType &&
+          other.sortOrder == this.sortOrder);
+}
+
+class AiGenerationOutputsCompanion extends UpdateCompanion<AiGenerationOutput> {
+  final Value<String> id;
+  final Value<String> jobId;
+  final Value<String> outputType;
+  final Value<String?> localPath;
+  final Value<String?> remoteUrl;
+  final Value<String?> mimeType;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const AiGenerationOutputsCompanion({
+    this.id = const Value.absent(),
+    this.jobId = const Value.absent(),
+    this.outputType = const Value.absent(),
+    this.localPath = const Value.absent(),
+    this.remoteUrl = const Value.absent(),
+    this.mimeType = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AiGenerationOutputsCompanion.insert({
+    required String id,
+    required String jobId,
+    required String outputType,
+    this.localPath = const Value.absent(),
+    this.remoteUrl = const Value.absent(),
+    this.mimeType = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       jobId = Value(jobId),
+       outputType = Value(outputType);
+  static Insertable<AiGenerationOutput> custom({
+    Expression<String>? id,
+    Expression<String>? jobId,
+    Expression<String>? outputType,
+    Expression<String>? localPath,
+    Expression<String>? remoteUrl,
+    Expression<String>? mimeType,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (jobId != null) 'job_id': jobId,
+      if (outputType != null) 'output_type': outputType,
+      if (localPath != null) 'local_path': localPath,
+      if (remoteUrl != null) 'remote_url': remoteUrl,
+      if (mimeType != null) 'mime_type': mimeType,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AiGenerationOutputsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? jobId,
+    Value<String>? outputType,
+    Value<String?>? localPath,
+    Value<String?>? remoteUrl,
+    Value<String?>? mimeType,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return AiGenerationOutputsCompanion(
+      id: id ?? this.id,
+      jobId: jobId ?? this.jobId,
+      outputType: outputType ?? this.outputType,
+      localPath: localPath ?? this.localPath,
+      remoteUrl: remoteUrl ?? this.remoteUrl,
+      mimeType: mimeType ?? this.mimeType,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (jobId.present) {
+      map['job_id'] = Variable<String>(jobId.value);
+    }
+    if (outputType.present) {
+      map['output_type'] = Variable<String>(outputType.value);
+    }
+    if (localPath.present) {
+      map['local_path'] = Variable<String>(localPath.value);
+    }
+    if (remoteUrl.present) {
+      map['remote_url'] = Variable<String>(remoteUrl.value);
+    }
+    if (mimeType.present) {
+      map['mime_type'] = Variable<String>(mimeType.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiGenerationOutputsCompanion(')
+          ..write('id: $id, ')
+          ..write('jobId: $jobId, ')
+          ..write('outputType: $outputType, ')
+          ..write('localPath: $localPath, ')
+          ..write('remoteUrl: $remoteUrl, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AiGenerationInputsTable extends AiGenerationInputs
+    with TableInfo<$AiGenerationInputsTable, AiGenerationInput> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AiGenerationInputsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _jobIdMeta = const VerificationMeta('jobId');
+  @override
+  late final GeneratedColumn<String> jobId = GeneratedColumn<String>(
+    'job_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _inputTypeMeta = const VerificationMeta(
+    'inputType',
+  );
+  @override
+  late final GeneratedColumn<String> inputType = GeneratedColumn<String>(
+    'input_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceIdMeta = const VerificationMeta(
+    'sourceId',
+  );
+  @override
+  late final GeneratedColumn<String> sourceId = GeneratedColumn<String>(
+    'source_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _filePathMeta = const VerificationMeta(
+    'filePath',
+  );
+  @override
+  late final GeneratedColumn<String> filePath = GeneratedColumn<String>(
+    'file_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _snapshotDataMeta = const VerificationMeta(
+    'snapshotData',
+  );
+  @override
+  late final GeneratedColumn<String> snapshotData = GeneratedColumn<String>(
+    'snapshot_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    jobId,
+    inputType,
+    sourceId,
+    filePath,
+    snapshotData,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ai_generation_inputs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AiGenerationInput> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('job_id')) {
+      context.handle(
+        _jobIdMeta,
+        jobId.isAcceptableOrUnknown(data['job_id']!, _jobIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_jobIdMeta);
+    }
+    if (data.containsKey('input_type')) {
+      context.handle(
+        _inputTypeMeta,
+        inputType.isAcceptableOrUnknown(data['input_type']!, _inputTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_inputTypeMeta);
+    }
+    if (data.containsKey('source_id')) {
+      context.handle(
+        _sourceIdMeta,
+        sourceId.isAcceptableOrUnknown(data['source_id']!, _sourceIdMeta),
+      );
+    }
+    if (data.containsKey('file_path')) {
+      context.handle(
+        _filePathMeta,
+        filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta),
+      );
+    }
+    if (data.containsKey('snapshot_data')) {
+      context.handle(
+        _snapshotDataMeta,
+        snapshotData.isAcceptableOrUnknown(
+          data['snapshot_data']!,
+          _snapshotDataMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AiGenerationInput map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AiGenerationInput(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      jobId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}job_id'],
+      )!,
+      inputType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}input_type'],
+      )!,
+      sourceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_id'],
+      ),
+      filePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_path'],
+      ),
+      snapshotData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}snapshot_data'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $AiGenerationInputsTable createAlias(String alias) {
+    return $AiGenerationInputsTable(attachedDatabase, alias);
+  }
+}
+
+class AiGenerationInput extends DataClass
+    implements Insertable<AiGenerationInput> {
+  final String id;
+  final String jobId;
+  final String inputType;
+  final String? sourceId;
+  final String? filePath;
+  final String? snapshotData;
+  final int sortOrder;
+  const AiGenerationInput({
+    required this.id,
+    required this.jobId,
+    required this.inputType,
+    this.sourceId,
+    this.filePath,
+    this.snapshotData,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['job_id'] = Variable<String>(jobId);
+    map['input_type'] = Variable<String>(inputType);
+    if (!nullToAbsent || sourceId != null) {
+      map['source_id'] = Variable<String>(sourceId);
+    }
+    if (!nullToAbsent || filePath != null) {
+      map['file_path'] = Variable<String>(filePath);
+    }
+    if (!nullToAbsent || snapshotData != null) {
+      map['snapshot_data'] = Variable<String>(snapshotData);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  AiGenerationInputsCompanion toCompanion(bool nullToAbsent) {
+    return AiGenerationInputsCompanion(
+      id: Value(id),
+      jobId: Value(jobId),
+      inputType: Value(inputType),
+      sourceId: sourceId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceId),
+      filePath: filePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(filePath),
+      snapshotData: snapshotData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(snapshotData),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory AiGenerationInput.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AiGenerationInput(
+      id: serializer.fromJson<String>(json['id']),
+      jobId: serializer.fromJson<String>(json['jobId']),
+      inputType: serializer.fromJson<String>(json['inputType']),
+      sourceId: serializer.fromJson<String?>(json['sourceId']),
+      filePath: serializer.fromJson<String?>(json['filePath']),
+      snapshotData: serializer.fromJson<String?>(json['snapshotData']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'jobId': serializer.toJson<String>(jobId),
+      'inputType': serializer.toJson<String>(inputType),
+      'sourceId': serializer.toJson<String?>(sourceId),
+      'filePath': serializer.toJson<String?>(filePath),
+      'snapshotData': serializer.toJson<String?>(snapshotData),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  AiGenerationInput copyWith({
+    String? id,
+    String? jobId,
+    String? inputType,
+    Value<String?> sourceId = const Value.absent(),
+    Value<String?> filePath = const Value.absent(),
+    Value<String?> snapshotData = const Value.absent(),
+    int? sortOrder,
+  }) => AiGenerationInput(
+    id: id ?? this.id,
+    jobId: jobId ?? this.jobId,
+    inputType: inputType ?? this.inputType,
+    sourceId: sourceId.present ? sourceId.value : this.sourceId,
+    filePath: filePath.present ? filePath.value : this.filePath,
+    snapshotData: snapshotData.present ? snapshotData.value : this.snapshotData,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  AiGenerationInput copyWithCompanion(AiGenerationInputsCompanion data) {
+    return AiGenerationInput(
+      id: data.id.present ? data.id.value : this.id,
+      jobId: data.jobId.present ? data.jobId.value : this.jobId,
+      inputType: data.inputType.present ? data.inputType.value : this.inputType,
+      sourceId: data.sourceId.present ? data.sourceId.value : this.sourceId,
+      filePath: data.filePath.present ? data.filePath.value : this.filePath,
+      snapshotData: data.snapshotData.present
+          ? data.snapshotData.value
+          : this.snapshotData,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiGenerationInput(')
+          ..write('id: $id, ')
+          ..write('jobId: $jobId, ')
+          ..write('inputType: $inputType, ')
+          ..write('sourceId: $sourceId, ')
+          ..write('filePath: $filePath, ')
+          ..write('snapshotData: $snapshotData, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    jobId,
+    inputType,
+    sourceId,
+    filePath,
+    snapshotData,
+    sortOrder,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AiGenerationInput &&
+          other.id == this.id &&
+          other.jobId == this.jobId &&
+          other.inputType == this.inputType &&
+          other.sourceId == this.sourceId &&
+          other.filePath == this.filePath &&
+          other.snapshotData == this.snapshotData &&
+          other.sortOrder == this.sortOrder);
+}
+
+class AiGenerationInputsCompanion extends UpdateCompanion<AiGenerationInput> {
+  final Value<String> id;
+  final Value<String> jobId;
+  final Value<String> inputType;
+  final Value<String?> sourceId;
+  final Value<String?> filePath;
+  final Value<String?> snapshotData;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const AiGenerationInputsCompanion({
+    this.id = const Value.absent(),
+    this.jobId = const Value.absent(),
+    this.inputType = const Value.absent(),
+    this.sourceId = const Value.absent(),
+    this.filePath = const Value.absent(),
+    this.snapshotData = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AiGenerationInputsCompanion.insert({
+    required String id,
+    required String jobId,
+    required String inputType,
+    this.sourceId = const Value.absent(),
+    this.filePath = const Value.absent(),
+    this.snapshotData = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       jobId = Value(jobId),
+       inputType = Value(inputType);
+  static Insertable<AiGenerationInput> custom({
+    Expression<String>? id,
+    Expression<String>? jobId,
+    Expression<String>? inputType,
+    Expression<String>? sourceId,
+    Expression<String>? filePath,
+    Expression<String>? snapshotData,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (jobId != null) 'job_id': jobId,
+      if (inputType != null) 'input_type': inputType,
+      if (sourceId != null) 'source_id': sourceId,
+      if (filePath != null) 'file_path': filePath,
+      if (snapshotData != null) 'snapshot_data': snapshotData,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AiGenerationInputsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? jobId,
+    Value<String>? inputType,
+    Value<String?>? sourceId,
+    Value<String?>? filePath,
+    Value<String?>? snapshotData,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return AiGenerationInputsCompanion(
+      id: id ?? this.id,
+      jobId: jobId ?? this.jobId,
+      inputType: inputType ?? this.inputType,
+      sourceId: sourceId ?? this.sourceId,
+      filePath: filePath ?? this.filePath,
+      snapshotData: snapshotData ?? this.snapshotData,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (jobId.present) {
+      map['job_id'] = Variable<String>(jobId.value);
+    }
+    if (inputType.present) {
+      map['input_type'] = Variable<String>(inputType.value);
+    }
+    if (sourceId.present) {
+      map['source_id'] = Variable<String>(sourceId.value);
+    }
+    if (filePath.present) {
+      map['file_path'] = Variable<String>(filePath.value);
+    }
+    if (snapshotData.present) {
+      map['snapshot_data'] = Variable<String>(snapshotData.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiGenerationInputsCompanion(')
+          ..write('id: $id, ')
+          ..write('jobId: $jobId, ')
+          ..write('inputType: $inputType, ')
+          ..write('sourceId: $sourceId, ')
+          ..write('filePath: $filePath, ')
+          ..write('snapshotData: $snapshotData, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -23635,6 +25282,13 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     this,
   );
   late final $AiGenerationsTable aiGenerations = $AiGenerationsTable(this);
+  late final $AiGenerationJobsTable aiGenerationJobs = $AiGenerationJobsTable(
+    this,
+  );
+  late final $AiGenerationOutputsTable aiGenerationOutputs =
+      $AiGenerationOutputsTable(this);
+  late final $AiGenerationInputsTable aiGenerationInputs =
+      $AiGenerationInputsTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -23703,6 +25357,9 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     aiPromptHistory,
     promptRevisions,
     aiGenerations,
+    aiGenerationJobs,
+    aiGenerationOutputs,
+    aiGenerationInputs,
   ];
 }
 
@@ -36318,6 +37975,864 @@ typedef $$AiGenerationsTableProcessedTableManager =
       AiGeneration,
       PrefetchHooks Function()
     >;
+typedef $$AiGenerationJobsTableCreateCompanionBuilder =
+    AiGenerationJobsCompanion Function({
+      required String id,
+      required String projectId,
+      required String providerId,
+      Value<String?> modelId,
+      required String promptHistoryId,
+      required String status,
+      Value<double> progress,
+      Value<String?> error,
+      Value<int> priority,
+      required DateTime createdAt,
+      Value<DateTime?> startedAt,
+      Value<DateTime?> completedAt,
+      Value<int> rowid,
+    });
+typedef $$AiGenerationJobsTableUpdateCompanionBuilder =
+    AiGenerationJobsCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> providerId,
+      Value<String?> modelId,
+      Value<String> promptHistoryId,
+      Value<String> status,
+      Value<double> progress,
+      Value<String?> error,
+      Value<int> priority,
+      Value<DateTime> createdAt,
+      Value<DateTime?> startedAt,
+      Value<DateTime?> completedAt,
+      Value<int> rowid,
+    });
+
+class $$AiGenerationJobsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AiGenerationJobsTable> {
+  $$AiGenerationJobsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get providerId => $composableBuilder(
+    column: $table.providerId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get modelId => $composableBuilder(
+    column: $table.modelId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get promptHistoryId => $composableBuilder(
+    column: $table.promptHistoryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get progress => $composableBuilder(
+    column: $table.progress,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get error => $composableBuilder(
+    column: $table.error,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AiGenerationJobsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AiGenerationJobsTable> {
+  $$AiGenerationJobsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get providerId => $composableBuilder(
+    column: $table.providerId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get modelId => $composableBuilder(
+    column: $table.modelId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get promptHistoryId => $composableBuilder(
+    column: $table.promptHistoryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get progress => $composableBuilder(
+    column: $table.progress,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get error => $composableBuilder(
+    column: $table.error,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AiGenerationJobsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AiGenerationJobsTable> {
+  $$AiGenerationJobsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get providerId => $composableBuilder(
+    column: $table.providerId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get modelId =>
+      $composableBuilder(column: $table.modelId, builder: (column) => column);
+
+  GeneratedColumn<String> get promptHistoryId => $composableBuilder(
+    column: $table.promptHistoryId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<double> get progress =>
+      $composableBuilder(column: $table.progress, builder: (column) => column);
+
+  GeneratedColumn<String> get error =>
+      $composableBuilder(column: $table.error, builder: (column) => column);
+
+  GeneratedColumn<int> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startedAt =>
+      $composableBuilder(column: $table.startedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$AiGenerationJobsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AiGenerationJobsTable,
+          AiGenerationJob,
+          $$AiGenerationJobsTableFilterComposer,
+          $$AiGenerationJobsTableOrderingComposer,
+          $$AiGenerationJobsTableAnnotationComposer,
+          $$AiGenerationJobsTableCreateCompanionBuilder,
+          $$AiGenerationJobsTableUpdateCompanionBuilder,
+          (
+            AiGenerationJob,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AiGenerationJobsTable,
+              AiGenerationJob
+            >,
+          ),
+          AiGenerationJob,
+          PrefetchHooks Function()
+        > {
+  $$AiGenerationJobsTableTableManager(
+    _$ProjectDatabase db,
+    $AiGenerationJobsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AiGenerationJobsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AiGenerationJobsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AiGenerationJobsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> providerId = const Value.absent(),
+                Value<String?> modelId = const Value.absent(),
+                Value<String> promptHistoryId = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<double> progress = const Value.absent(),
+                Value<String?> error = const Value.absent(),
+                Value<int> priority = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> startedAt = const Value.absent(),
+                Value<DateTime?> completedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiGenerationJobsCompanion(
+                id: id,
+                projectId: projectId,
+                providerId: providerId,
+                modelId: modelId,
+                promptHistoryId: promptHistoryId,
+                status: status,
+                progress: progress,
+                error: error,
+                priority: priority,
+                createdAt: createdAt,
+                startedAt: startedAt,
+                completedAt: completedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String providerId,
+                Value<String?> modelId = const Value.absent(),
+                required String promptHistoryId,
+                required String status,
+                Value<double> progress = const Value.absent(),
+                Value<String?> error = const Value.absent(),
+                Value<int> priority = const Value.absent(),
+                required DateTime createdAt,
+                Value<DateTime?> startedAt = const Value.absent(),
+                Value<DateTime?> completedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiGenerationJobsCompanion.insert(
+                id: id,
+                projectId: projectId,
+                providerId: providerId,
+                modelId: modelId,
+                promptHistoryId: promptHistoryId,
+                status: status,
+                progress: progress,
+                error: error,
+                priority: priority,
+                createdAt: createdAt,
+                startedAt: startedAt,
+                completedAt: completedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AiGenerationJobsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AiGenerationJobsTable,
+      AiGenerationJob,
+      $$AiGenerationJobsTableFilterComposer,
+      $$AiGenerationJobsTableOrderingComposer,
+      $$AiGenerationJobsTableAnnotationComposer,
+      $$AiGenerationJobsTableCreateCompanionBuilder,
+      $$AiGenerationJobsTableUpdateCompanionBuilder,
+      (
+        AiGenerationJob,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AiGenerationJobsTable,
+          AiGenerationJob
+        >,
+      ),
+      AiGenerationJob,
+      PrefetchHooks Function()
+    >;
+typedef $$AiGenerationOutputsTableCreateCompanionBuilder =
+    AiGenerationOutputsCompanion Function({
+      required String id,
+      required String jobId,
+      required String outputType,
+      Value<String?> localPath,
+      Value<String?> remoteUrl,
+      Value<String?> mimeType,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$AiGenerationOutputsTableUpdateCompanionBuilder =
+    AiGenerationOutputsCompanion Function({
+      Value<String> id,
+      Value<String> jobId,
+      Value<String> outputType,
+      Value<String?> localPath,
+      Value<String?> remoteUrl,
+      Value<String?> mimeType,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$AiGenerationOutputsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AiGenerationOutputsTable> {
+  $$AiGenerationOutputsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get jobId => $composableBuilder(
+    column: $table.jobId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get outputType => $composableBuilder(
+    column: $table.outputType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localPath => $composableBuilder(
+    column: $table.localPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get remoteUrl => $composableBuilder(
+    column: $table.remoteUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AiGenerationOutputsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AiGenerationOutputsTable> {
+  $$AiGenerationOutputsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get jobId => $composableBuilder(
+    column: $table.jobId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get outputType => $composableBuilder(
+    column: $table.outputType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localPath => $composableBuilder(
+    column: $table.localPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get remoteUrl => $composableBuilder(
+    column: $table.remoteUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AiGenerationOutputsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AiGenerationOutputsTable> {
+  $$AiGenerationOutputsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get jobId =>
+      $composableBuilder(column: $table.jobId, builder: (column) => column);
+
+  GeneratedColumn<String> get outputType => $composableBuilder(
+    column: $table.outputType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get localPath =>
+      $composableBuilder(column: $table.localPath, builder: (column) => column);
+
+  GeneratedColumn<String> get remoteUrl =>
+      $composableBuilder(column: $table.remoteUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get mimeType =>
+      $composableBuilder(column: $table.mimeType, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$AiGenerationOutputsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AiGenerationOutputsTable,
+          AiGenerationOutput,
+          $$AiGenerationOutputsTableFilterComposer,
+          $$AiGenerationOutputsTableOrderingComposer,
+          $$AiGenerationOutputsTableAnnotationComposer,
+          $$AiGenerationOutputsTableCreateCompanionBuilder,
+          $$AiGenerationOutputsTableUpdateCompanionBuilder,
+          (
+            AiGenerationOutput,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AiGenerationOutputsTable,
+              AiGenerationOutput
+            >,
+          ),
+          AiGenerationOutput,
+          PrefetchHooks Function()
+        > {
+  $$AiGenerationOutputsTableTableManager(
+    _$ProjectDatabase db,
+    $AiGenerationOutputsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AiGenerationOutputsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AiGenerationOutputsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$AiGenerationOutputsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> jobId = const Value.absent(),
+                Value<String> outputType = const Value.absent(),
+                Value<String?> localPath = const Value.absent(),
+                Value<String?> remoteUrl = const Value.absent(),
+                Value<String?> mimeType = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiGenerationOutputsCompanion(
+                id: id,
+                jobId: jobId,
+                outputType: outputType,
+                localPath: localPath,
+                remoteUrl: remoteUrl,
+                mimeType: mimeType,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String jobId,
+                required String outputType,
+                Value<String?> localPath = const Value.absent(),
+                Value<String?> remoteUrl = const Value.absent(),
+                Value<String?> mimeType = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiGenerationOutputsCompanion.insert(
+                id: id,
+                jobId: jobId,
+                outputType: outputType,
+                localPath: localPath,
+                remoteUrl: remoteUrl,
+                mimeType: mimeType,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AiGenerationOutputsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AiGenerationOutputsTable,
+      AiGenerationOutput,
+      $$AiGenerationOutputsTableFilterComposer,
+      $$AiGenerationOutputsTableOrderingComposer,
+      $$AiGenerationOutputsTableAnnotationComposer,
+      $$AiGenerationOutputsTableCreateCompanionBuilder,
+      $$AiGenerationOutputsTableUpdateCompanionBuilder,
+      (
+        AiGenerationOutput,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AiGenerationOutputsTable,
+          AiGenerationOutput
+        >,
+      ),
+      AiGenerationOutput,
+      PrefetchHooks Function()
+    >;
+typedef $$AiGenerationInputsTableCreateCompanionBuilder =
+    AiGenerationInputsCompanion Function({
+      required String id,
+      required String jobId,
+      required String inputType,
+      Value<String?> sourceId,
+      Value<String?> filePath,
+      Value<String?> snapshotData,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$AiGenerationInputsTableUpdateCompanionBuilder =
+    AiGenerationInputsCompanion Function({
+      Value<String> id,
+      Value<String> jobId,
+      Value<String> inputType,
+      Value<String?> sourceId,
+      Value<String?> filePath,
+      Value<String?> snapshotData,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$AiGenerationInputsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AiGenerationInputsTable> {
+  $$AiGenerationInputsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get jobId => $composableBuilder(
+    column: $table.jobId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get inputType => $composableBuilder(
+    column: $table.inputType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceId => $composableBuilder(
+    column: $table.sourceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get snapshotData => $composableBuilder(
+    column: $table.snapshotData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AiGenerationInputsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AiGenerationInputsTable> {
+  $$AiGenerationInputsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get jobId => $composableBuilder(
+    column: $table.jobId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get inputType => $composableBuilder(
+    column: $table.inputType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceId => $composableBuilder(
+    column: $table.sourceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get snapshotData => $composableBuilder(
+    column: $table.snapshotData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AiGenerationInputsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AiGenerationInputsTable> {
+  $$AiGenerationInputsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get jobId =>
+      $composableBuilder(column: $table.jobId, builder: (column) => column);
+
+  GeneratedColumn<String> get inputType =>
+      $composableBuilder(column: $table.inputType, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceId =>
+      $composableBuilder(column: $table.sourceId, builder: (column) => column);
+
+  GeneratedColumn<String> get filePath =>
+      $composableBuilder(column: $table.filePath, builder: (column) => column);
+
+  GeneratedColumn<String> get snapshotData => $composableBuilder(
+    column: $table.snapshotData,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$AiGenerationInputsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AiGenerationInputsTable,
+          AiGenerationInput,
+          $$AiGenerationInputsTableFilterComposer,
+          $$AiGenerationInputsTableOrderingComposer,
+          $$AiGenerationInputsTableAnnotationComposer,
+          $$AiGenerationInputsTableCreateCompanionBuilder,
+          $$AiGenerationInputsTableUpdateCompanionBuilder,
+          (
+            AiGenerationInput,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AiGenerationInputsTable,
+              AiGenerationInput
+            >,
+          ),
+          AiGenerationInput,
+          PrefetchHooks Function()
+        > {
+  $$AiGenerationInputsTableTableManager(
+    _$ProjectDatabase db,
+    $AiGenerationInputsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AiGenerationInputsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AiGenerationInputsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AiGenerationInputsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> jobId = const Value.absent(),
+                Value<String> inputType = const Value.absent(),
+                Value<String?> sourceId = const Value.absent(),
+                Value<String?> filePath = const Value.absent(),
+                Value<String?> snapshotData = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiGenerationInputsCompanion(
+                id: id,
+                jobId: jobId,
+                inputType: inputType,
+                sourceId: sourceId,
+                filePath: filePath,
+                snapshotData: snapshotData,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String jobId,
+                required String inputType,
+                Value<String?> sourceId = const Value.absent(),
+                Value<String?> filePath = const Value.absent(),
+                Value<String?> snapshotData = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiGenerationInputsCompanion.insert(
+                id: id,
+                jobId: jobId,
+                inputType: inputType,
+                sourceId: sourceId,
+                filePath: filePath,
+                snapshotData: snapshotData,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AiGenerationInputsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AiGenerationInputsTable,
+      AiGenerationInput,
+      $$AiGenerationInputsTableFilterComposer,
+      $$AiGenerationInputsTableOrderingComposer,
+      $$AiGenerationInputsTableAnnotationComposer,
+      $$AiGenerationInputsTableCreateCompanionBuilder,
+      $$AiGenerationInputsTableUpdateCompanionBuilder,
+      (
+        AiGenerationInput,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AiGenerationInputsTable,
+          AiGenerationInput
+        >,
+      ),
+      AiGenerationInput,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -36464,4 +38979,10 @@ class $ProjectDatabaseManager {
       $$PromptRevisionsTableTableManager(_db, _db.promptRevisions);
   $$AiGenerationsTableTableManager get aiGenerations =>
       $$AiGenerationsTableTableManager(_db, _db.aiGenerations);
+  $$AiGenerationJobsTableTableManager get aiGenerationJobs =>
+      $$AiGenerationJobsTableTableManager(_db, _db.aiGenerationJobs);
+  $$AiGenerationOutputsTableTableManager get aiGenerationOutputs =>
+      $$AiGenerationOutputsTableTableManager(_db, _db.aiGenerationOutputs);
+  $$AiGenerationInputsTableTableManager get aiGenerationInputs =>
+      $$AiGenerationInputsTableTableManager(_db, _db.aiGenerationInputs);
 }

@@ -9,6 +9,7 @@ import '../../character/presentation/character_workspace_screen.dart';
 import '../../wardrobe/presentation/wardrobe_workspace_screen.dart';
 import '../../weapon/presentation/weapon_workspace_screen.dart';
 import '../../environment/presentation/environment_workspace_screen.dart';
+import '../../story/presentation/story_workspace_screen.dart';
 
 class WorkspaceResolver extends ConsumerWidget {
   const WorkspaceResolver({super.key});
@@ -28,6 +29,7 @@ class WorkspaceResolver extends ConsumerWidget {
       AssetType.environment => EnvironmentWorkspaceScreen(
         environmentId: selection.assetId,
       ),
+      AssetType.story => StoryWorkspaceScreen(storyId: selection.assetId),
       _ => const ProjectOverview(),
     };
   }

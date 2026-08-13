@@ -15,6 +15,19 @@ import '../../weapon/domain/weapon_model.dart';
 import 'explorer_environment_group.dart';
 import '../../environment/data/environment_repository_impl.dart';
 import '../../environment/domain/environment_model.dart';
+import '../../../database/project/project_database.dart';
+import 'explorer_story_group.dart';
+
+final storyExplorerProvider = FutureProvider.family<List<Asset>, String>((
+  ref,
+  projectId,
+) async {
+  final session = ref.watch(projectSessionProvider).valueOrNull;
+  if (session == null || session.manifest.id != projectId) return const [];
+  return (await session.database.assetDao.getAllAssets())
+      .where((asset) => asset.projectId == projectId && asset.type == 'story')
+      .toList(growable: false);
+});
 
 final wardrobeExplorerProvider =
     FutureProvider.family<List<WardrobeModel>, String>((ref, projectId) async {
@@ -73,6 +86,9 @@ class ExplorerPanel extends ConsumerWidget {
     final environments = projectId == null
         ? const AsyncValue<List<EnvironmentModel>>.data([])
         : ref.watch(environmentExplorerProvider(projectId));
+    final stories = projectId == null
+        ? const AsyncValue<List<Asset>>.data([])
+        : ref.watch(storyExplorerProvider(projectId));
 
     return Container(
       width: 245,
@@ -159,9 +175,18 @@ class ExplorerPanel extends ConsumerWidget {
                         ),
                       ),
                 ),
-                const _ExplorerItem(
-                  icon: Icons.menu_book_outlined,
-                  label: 'Story',
+                StoryGroup(
+                  stories: stories,
+                  selectedId: ref.watch(selectionProvider)?.assetId,
+                  onSelected: (story) => ref
+                      .read(selectionProvider.notifier)
+                      .select(
+                        SelectionModel(
+                          assetId: story.id,
+                          assetType: AssetType.story,
+                          projectId: story.projectId,
+                        ),
+                      ),
                 ),
                 const _ExplorerItem(
                   icon: Icons.timeline_outlined,

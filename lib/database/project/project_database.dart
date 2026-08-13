@@ -18,6 +18,15 @@ import 'tables/environment_props.dart';
 import 'tables/environment_continuity_states.dart';
 import 'tables/environment_physics_profiles.dart';
 import 'tables/environment_references.dart';
+import 'tables/stories.dart';
+import 'tables/story_arcs.dart';
+import 'tables/story_chapters.dart';
+import 'tables/story_scenes.dart';
+import 'tables/scene_characters.dart';
+import 'tables/scene_environment_contexts.dart';
+import 'tables/scene_beats.dart';
+import 'tables/scene_continuity_changes.dart';
+import 'tables/story_bible_sections.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -39,6 +48,7 @@ import 'daos/relation_dao.dart';
 import 'daos/wardrobe_dao.dart';
 import 'daos/weapon_dao.dart';
 import 'daos/environment_dao.dart';
+import 'daos/story_dao.dart';
 
 part 'project_database.g.dart';
 
@@ -86,6 +96,15 @@ class ProjectMetadata extends Table {
     EnvironmentContinuityStates,
     EnvironmentPhysicsProfiles,
     EnvironmentReferences,
+    Stories,
+    StoryArcs,
+    StoryChapters,
+    StoryScenes,
+    SceneCharacters,
+    SceneEnvironmentContexts,
+    SceneBeats,
+    SceneContinuityChanges,
+    StoryBibleSections,
   ],
   daos: [
     AssetDao,
@@ -95,13 +114,14 @@ class ProjectMetadata extends Table {
     WardrobeDao,
     WeaponDao,
     EnvironmentDao,
+    StoryDao,
   ],
 )
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -172,6 +192,17 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(environmentContinuityStates);
         await m.createTable(environmentPhysicsProfiles);
         await m.createTable(environmentReferences);
+      }
+      if (from < 11) {
+        await m.createTable(stories);
+        await m.createTable(storyArcs);
+        await m.createTable(storyChapters);
+        await m.createTable(storyScenes);
+        await m.createTable(sceneCharacters);
+        await m.createTable(sceneEnvironmentContexts);
+        await m.createTable(sceneBeats);
+        await m.createTable(sceneContinuityChanges);
+        await m.createTable(storyBibleSections);
       }
     },
   );

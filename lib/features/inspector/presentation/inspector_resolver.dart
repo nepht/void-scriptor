@@ -8,6 +8,7 @@ import 'inspectors/empty_inspector.dart';
 import 'inspectors/weapon_inspector.dart';
 import 'inspectors/wardrobe_inspector.dart';
 import '../../environment/presentation/environment_inspector.dart';
+import '../../story/presentation/story_inspector.dart';
 
 class InspectorResolver extends ConsumerWidget {
   const InspectorResolver({super.key});
@@ -23,6 +24,7 @@ class InspectorResolver extends ConsumerWidget {
       AssetType.environment => EnvironmentInspector(
         environmentId: selection.assetId,
       ),
+      AssetType.story => StoryInspector(storyId: selection.assetId),
       _ => const EmptyInspector(),
     };
   }

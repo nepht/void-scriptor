@@ -15780,6 +15780,4173 @@ class EnvironmentReferencesCompanion
   }
 }
 
+class $StoriesTable extends Stories with TableInfo<$StoriesTable, Story> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StoriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _synopsisMeta = const VerificationMeta(
+    'synopsis',
+  );
+  @override
+  late final GeneratedColumn<String> synopsis = GeneratedColumn<String>(
+    'synopsis',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _genreMeta = const VerificationMeta('genre');
+  @override
+  late final GeneratedColumn<String> genre = GeneratedColumn<String>(
+    'genre',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('draft'),
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    assetId,
+    projectId,
+    title,
+    synopsis,
+    genre,
+    status,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'stories';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Story> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('synopsis')) {
+      context.handle(
+        _synopsisMeta,
+        synopsis.isAcceptableOrUnknown(data['synopsis']!, _synopsisMeta),
+      );
+    }
+    if (data.containsKey('genre')) {
+      context.handle(
+        _genreMeta,
+        genre.isAcceptableOrUnknown(data['genre']!, _genreMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {assetId};
+  @override
+  Story map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Story(
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      synopsis: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}synopsis'],
+      )!,
+      genre: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}genre'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+    );
+  }
+
+  @override
+  $StoriesTable createAlias(String alias) {
+    return $StoriesTable(attachedDatabase, alias);
+  }
+}
+
+class Story extends DataClass implements Insertable<Story> {
+  final String assetId;
+  final String projectId;
+  final String title;
+  final String synopsis;
+  final String genre;
+  final String status;
+  final String notes;
+  const Story({
+    required this.assetId,
+    required this.projectId,
+    required this.title,
+    required this.synopsis,
+    required this.genre,
+    required this.status,
+    required this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['asset_id'] = Variable<String>(assetId);
+    map['project_id'] = Variable<String>(projectId);
+    map['title'] = Variable<String>(title);
+    map['synopsis'] = Variable<String>(synopsis);
+    map['genre'] = Variable<String>(genre);
+    map['status'] = Variable<String>(status);
+    map['notes'] = Variable<String>(notes);
+    return map;
+  }
+
+  StoriesCompanion toCompanion(bool nullToAbsent) {
+    return StoriesCompanion(
+      assetId: Value(assetId),
+      projectId: Value(projectId),
+      title: Value(title),
+      synopsis: Value(synopsis),
+      genre: Value(genre),
+      status: Value(status),
+      notes: Value(notes),
+    );
+  }
+
+  factory Story.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Story(
+      assetId: serializer.fromJson<String>(json['assetId']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      title: serializer.fromJson<String>(json['title']),
+      synopsis: serializer.fromJson<String>(json['synopsis']),
+      genre: serializer.fromJson<String>(json['genre']),
+      status: serializer.fromJson<String>(json['status']),
+      notes: serializer.fromJson<String>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'assetId': serializer.toJson<String>(assetId),
+      'projectId': serializer.toJson<String>(projectId),
+      'title': serializer.toJson<String>(title),
+      'synopsis': serializer.toJson<String>(synopsis),
+      'genre': serializer.toJson<String>(genre),
+      'status': serializer.toJson<String>(status),
+      'notes': serializer.toJson<String>(notes),
+    };
+  }
+
+  Story copyWith({
+    String? assetId,
+    String? projectId,
+    String? title,
+    String? synopsis,
+    String? genre,
+    String? status,
+    String? notes,
+  }) => Story(
+    assetId: assetId ?? this.assetId,
+    projectId: projectId ?? this.projectId,
+    title: title ?? this.title,
+    synopsis: synopsis ?? this.synopsis,
+    genre: genre ?? this.genre,
+    status: status ?? this.status,
+    notes: notes ?? this.notes,
+  );
+  Story copyWithCompanion(StoriesCompanion data) {
+    return Story(
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      title: data.title.present ? data.title.value : this.title,
+      synopsis: data.synopsis.present ? data.synopsis.value : this.synopsis,
+      genre: data.genre.present ? data.genre.value : this.genre,
+      status: data.status.present ? data.status.value : this.status,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Story(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('title: $title, ')
+          ..write('synopsis: $synopsis, ')
+          ..write('genre: $genre, ')
+          ..write('status: $status, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(assetId, projectId, title, synopsis, genre, status, notes);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Story &&
+          other.assetId == this.assetId &&
+          other.projectId == this.projectId &&
+          other.title == this.title &&
+          other.synopsis == this.synopsis &&
+          other.genre == this.genre &&
+          other.status == this.status &&
+          other.notes == this.notes);
+}
+
+class StoriesCompanion extends UpdateCompanion<Story> {
+  final Value<String> assetId;
+  final Value<String> projectId;
+  final Value<String> title;
+  final Value<String> synopsis;
+  final Value<String> genre;
+  final Value<String> status;
+  final Value<String> notes;
+  final Value<int> rowid;
+  const StoriesCompanion({
+    this.assetId = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.synopsis = const Value.absent(),
+    this.genre = const Value.absent(),
+    this.status = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StoriesCompanion.insert({
+    required String assetId,
+    required String projectId,
+    required String title,
+    this.synopsis = const Value.absent(),
+    this.genre = const Value.absent(),
+    this.status = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : assetId = Value(assetId),
+       projectId = Value(projectId),
+       title = Value(title);
+  static Insertable<Story> custom({
+    Expression<String>? assetId,
+    Expression<String>? projectId,
+    Expression<String>? title,
+    Expression<String>? synopsis,
+    Expression<String>? genre,
+    Expression<String>? status,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (assetId != null) 'asset_id': assetId,
+      if (projectId != null) 'project_id': projectId,
+      if (title != null) 'title': title,
+      if (synopsis != null) 'synopsis': synopsis,
+      if (genre != null) 'genre': genre,
+      if (status != null) 'status': status,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StoriesCompanion copyWith({
+    Value<String>? assetId,
+    Value<String>? projectId,
+    Value<String>? title,
+    Value<String>? synopsis,
+    Value<String>? genre,
+    Value<String>? status,
+    Value<String>? notes,
+    Value<int>? rowid,
+  }) {
+    return StoriesCompanion(
+      assetId: assetId ?? this.assetId,
+      projectId: projectId ?? this.projectId,
+      title: title ?? this.title,
+      synopsis: synopsis ?? this.synopsis,
+      genre: genre ?? this.genre,
+      status: status ?? this.status,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (synopsis.present) {
+      map['synopsis'] = Variable<String>(synopsis.value);
+    }
+    if (genre.present) {
+      map['genre'] = Variable<String>(genre.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoriesCompanion(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('title: $title, ')
+          ..write('synopsis: $synopsis, ')
+          ..write('genre: $genre, ')
+          ..write('status: $status, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StoryArcsTable extends StoryArcs
+    with TableInfo<$StoryArcsTable, StoryArc> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StoryArcsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _storyIdMeta = const VerificationMeta(
+    'storyId',
+  );
+  @override
+  late final GeneratedColumn<String> storyId = GeneratedColumn<String>(
+    'story_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    storyId,
+    title,
+    description,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'story_arcs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StoryArc> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('story_id')) {
+      context.handle(
+        _storyIdMeta,
+        storyId.isAcceptableOrUnknown(data['story_id']!, _storyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_storyIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StoryArc map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StoryArc(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      storyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}story_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $StoryArcsTable createAlias(String alias) {
+    return $StoryArcsTable(attachedDatabase, alias);
+  }
+}
+
+class StoryArc extends DataClass implements Insertable<StoryArc> {
+  final String id;
+  final String storyId;
+  final String title;
+  final String description;
+  final int sortOrder;
+  const StoryArc({
+    required this.id,
+    required this.storyId,
+    required this.title,
+    required this.description,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['story_id'] = Variable<String>(storyId);
+    map['title'] = Variable<String>(title);
+    map['description'] = Variable<String>(description);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  StoryArcsCompanion toCompanion(bool nullToAbsent) {
+    return StoryArcsCompanion(
+      id: Value(id),
+      storyId: Value(storyId),
+      title: Value(title),
+      description: Value(description),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory StoryArc.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StoryArc(
+      id: serializer.fromJson<String>(json['id']),
+      storyId: serializer.fromJson<String>(json['storyId']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String>(json['description']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'storyId': serializer.toJson<String>(storyId),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String>(description),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  StoryArc copyWith({
+    String? id,
+    String? storyId,
+    String? title,
+    String? description,
+    int? sortOrder,
+  }) => StoryArc(
+    id: id ?? this.id,
+    storyId: storyId ?? this.storyId,
+    title: title ?? this.title,
+    description: description ?? this.description,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  StoryArc copyWithCompanion(StoryArcsCompanion data) {
+    return StoryArc(
+      id: data.id.present ? data.id.value : this.id,
+      storyId: data.storyId.present ? data.storyId.value : this.storyId,
+      title: data.title.present ? data.title.value : this.title,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoryArc(')
+          ..write('id: $id, ')
+          ..write('storyId: $storyId, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, storyId, title, description, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StoryArc &&
+          other.id == this.id &&
+          other.storyId == this.storyId &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.sortOrder == this.sortOrder);
+}
+
+class StoryArcsCompanion extends UpdateCompanion<StoryArc> {
+  final Value<String> id;
+  final Value<String> storyId;
+  final Value<String> title;
+  final Value<String> description;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const StoryArcsCompanion({
+    this.id = const Value.absent(),
+    this.storyId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StoryArcsCompanion.insert({
+    required String id,
+    required String storyId,
+    required String title,
+    this.description = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       storyId = Value(storyId),
+       title = Value(title);
+  static Insertable<StoryArc> custom({
+    Expression<String>? id,
+    Expression<String>? storyId,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (storyId != null) 'story_id': storyId,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StoryArcsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? storyId,
+    Value<String>? title,
+    Value<String>? description,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return StoryArcsCompanion(
+      id: id ?? this.id,
+      storyId: storyId ?? this.storyId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (storyId.present) {
+      map['story_id'] = Variable<String>(storyId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoryArcsCompanion(')
+          ..write('id: $id, ')
+          ..write('storyId: $storyId, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StoryChaptersTable extends StoryChapters
+    with TableInfo<$StoryChaptersTable, StoryChapter> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StoryChaptersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _storyIdMeta = const VerificationMeta(
+    'storyId',
+  );
+  @override
+  late final GeneratedColumn<String> storyId = GeneratedColumn<String>(
+    'story_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _arcIdMeta = const VerificationMeta('arcId');
+  @override
+  late final GeneratedColumn<String> arcId = GeneratedColumn<String>(
+    'arc_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _summaryMeta = const VerificationMeta(
+    'summary',
+  );
+  @override
+  late final GeneratedColumn<String> summary = GeneratedColumn<String>(
+    'summary',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _chapterNumberMeta = const VerificationMeta(
+    'chapterNumber',
+  );
+  @override
+  late final GeneratedColumn<int> chapterNumber = GeneratedColumn<int>(
+    'chapter_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    storyId,
+    arcId,
+    title,
+    summary,
+    chapterNumber,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'story_chapters';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StoryChapter> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('story_id')) {
+      context.handle(
+        _storyIdMeta,
+        storyId.isAcceptableOrUnknown(data['story_id']!, _storyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_storyIdMeta);
+    }
+    if (data.containsKey('arc_id')) {
+      context.handle(
+        _arcIdMeta,
+        arcId.isAcceptableOrUnknown(data['arc_id']!, _arcIdMeta),
+      );
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('summary')) {
+      context.handle(
+        _summaryMeta,
+        summary.isAcceptableOrUnknown(data['summary']!, _summaryMeta),
+      );
+    }
+    if (data.containsKey('chapter_number')) {
+      context.handle(
+        _chapterNumberMeta,
+        chapterNumber.isAcceptableOrUnknown(
+          data['chapter_number']!,
+          _chapterNumberMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_chapterNumberMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StoryChapter map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StoryChapter(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      storyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}story_id'],
+      )!,
+      arcId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}arc_id'],
+      ),
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      summary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary'],
+      )!,
+      chapterNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}chapter_number'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $StoryChaptersTable createAlias(String alias) {
+    return $StoryChaptersTable(attachedDatabase, alias);
+  }
+}
+
+class StoryChapter extends DataClass implements Insertable<StoryChapter> {
+  final String id;
+  final String storyId;
+  final String? arcId;
+  final String title;
+  final String summary;
+  final int chapterNumber;
+  final int sortOrder;
+  const StoryChapter({
+    required this.id,
+    required this.storyId,
+    this.arcId,
+    required this.title,
+    required this.summary,
+    required this.chapterNumber,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['story_id'] = Variable<String>(storyId);
+    if (!nullToAbsent || arcId != null) {
+      map['arc_id'] = Variable<String>(arcId);
+    }
+    map['title'] = Variable<String>(title);
+    map['summary'] = Variable<String>(summary);
+    map['chapter_number'] = Variable<int>(chapterNumber);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  StoryChaptersCompanion toCompanion(bool nullToAbsent) {
+    return StoryChaptersCompanion(
+      id: Value(id),
+      storyId: Value(storyId),
+      arcId: arcId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(arcId),
+      title: Value(title),
+      summary: Value(summary),
+      chapterNumber: Value(chapterNumber),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory StoryChapter.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StoryChapter(
+      id: serializer.fromJson<String>(json['id']),
+      storyId: serializer.fromJson<String>(json['storyId']),
+      arcId: serializer.fromJson<String?>(json['arcId']),
+      title: serializer.fromJson<String>(json['title']),
+      summary: serializer.fromJson<String>(json['summary']),
+      chapterNumber: serializer.fromJson<int>(json['chapterNumber']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'storyId': serializer.toJson<String>(storyId),
+      'arcId': serializer.toJson<String?>(arcId),
+      'title': serializer.toJson<String>(title),
+      'summary': serializer.toJson<String>(summary),
+      'chapterNumber': serializer.toJson<int>(chapterNumber),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  StoryChapter copyWith({
+    String? id,
+    String? storyId,
+    Value<String?> arcId = const Value.absent(),
+    String? title,
+    String? summary,
+    int? chapterNumber,
+    int? sortOrder,
+  }) => StoryChapter(
+    id: id ?? this.id,
+    storyId: storyId ?? this.storyId,
+    arcId: arcId.present ? arcId.value : this.arcId,
+    title: title ?? this.title,
+    summary: summary ?? this.summary,
+    chapterNumber: chapterNumber ?? this.chapterNumber,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  StoryChapter copyWithCompanion(StoryChaptersCompanion data) {
+    return StoryChapter(
+      id: data.id.present ? data.id.value : this.id,
+      storyId: data.storyId.present ? data.storyId.value : this.storyId,
+      arcId: data.arcId.present ? data.arcId.value : this.arcId,
+      title: data.title.present ? data.title.value : this.title,
+      summary: data.summary.present ? data.summary.value : this.summary,
+      chapterNumber: data.chapterNumber.present
+          ? data.chapterNumber.value
+          : this.chapterNumber,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoryChapter(')
+          ..write('id: $id, ')
+          ..write('storyId: $storyId, ')
+          ..write('arcId: $arcId, ')
+          ..write('title: $title, ')
+          ..write('summary: $summary, ')
+          ..write('chapterNumber: $chapterNumber, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, storyId, arcId, title, summary, chapterNumber, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StoryChapter &&
+          other.id == this.id &&
+          other.storyId == this.storyId &&
+          other.arcId == this.arcId &&
+          other.title == this.title &&
+          other.summary == this.summary &&
+          other.chapterNumber == this.chapterNumber &&
+          other.sortOrder == this.sortOrder);
+}
+
+class StoryChaptersCompanion extends UpdateCompanion<StoryChapter> {
+  final Value<String> id;
+  final Value<String> storyId;
+  final Value<String?> arcId;
+  final Value<String> title;
+  final Value<String> summary;
+  final Value<int> chapterNumber;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const StoryChaptersCompanion({
+    this.id = const Value.absent(),
+    this.storyId = const Value.absent(),
+    this.arcId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.summary = const Value.absent(),
+    this.chapterNumber = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StoryChaptersCompanion.insert({
+    required String id,
+    required String storyId,
+    this.arcId = const Value.absent(),
+    required String title,
+    this.summary = const Value.absent(),
+    required int chapterNumber,
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       storyId = Value(storyId),
+       title = Value(title),
+       chapterNumber = Value(chapterNumber);
+  static Insertable<StoryChapter> custom({
+    Expression<String>? id,
+    Expression<String>? storyId,
+    Expression<String>? arcId,
+    Expression<String>? title,
+    Expression<String>? summary,
+    Expression<int>? chapterNumber,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (storyId != null) 'story_id': storyId,
+      if (arcId != null) 'arc_id': arcId,
+      if (title != null) 'title': title,
+      if (summary != null) 'summary': summary,
+      if (chapterNumber != null) 'chapter_number': chapterNumber,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StoryChaptersCompanion copyWith({
+    Value<String>? id,
+    Value<String>? storyId,
+    Value<String?>? arcId,
+    Value<String>? title,
+    Value<String>? summary,
+    Value<int>? chapterNumber,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return StoryChaptersCompanion(
+      id: id ?? this.id,
+      storyId: storyId ?? this.storyId,
+      arcId: arcId ?? this.arcId,
+      title: title ?? this.title,
+      summary: summary ?? this.summary,
+      chapterNumber: chapterNumber ?? this.chapterNumber,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (storyId.present) {
+      map['story_id'] = Variable<String>(storyId.value);
+    }
+    if (arcId.present) {
+      map['arc_id'] = Variable<String>(arcId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (summary.present) {
+      map['summary'] = Variable<String>(summary.value);
+    }
+    if (chapterNumber.present) {
+      map['chapter_number'] = Variable<int>(chapterNumber.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoryChaptersCompanion(')
+          ..write('id: $id, ')
+          ..write('storyId: $storyId, ')
+          ..write('arcId: $arcId, ')
+          ..write('title: $title, ')
+          ..write('summary: $summary, ')
+          ..write('chapterNumber: $chapterNumber, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StoryScenesTable extends StoryScenes
+    with TableInfo<$StoryScenesTable, StoryScene> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StoryScenesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _storyIdMeta = const VerificationMeta(
+    'storyId',
+  );
+  @override
+  late final GeneratedColumn<String> storyId = GeneratedColumn<String>(
+    'story_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _chapterIdMeta = const VerificationMeta(
+    'chapterId',
+  );
+  @override
+  late final GeneratedColumn<String> chapterId = GeneratedColumn<String>(
+    'chapter_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _summaryMeta = const VerificationMeta(
+    'summary',
+  );
+  @override
+  late final GeneratedColumn<String> summary = GeneratedColumn<String>(
+    'summary',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sceneTypeMeta = const VerificationMeta(
+    'sceneType',
+  );
+  @override
+  late final GeneratedColumn<String> sceneType = GeneratedColumn<String>(
+    'scene_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('standard'),
+  );
+  static const VerificationMeta _sceneNumberMeta = const VerificationMeta(
+    'sceneNumber',
+  );
+  @override
+  late final GeneratedColumn<int> sceneNumber = GeneratedColumn<int>(
+    'scene_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _estimatedDurationSecondsMeta =
+      const VerificationMeta('estimatedDurationSeconds');
+  @override
+  late final GeneratedColumn<double> estimatedDurationSeconds =
+      GeneratedColumn<double>(
+        'estimated_duration_seconds',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    storyId,
+    chapterId,
+    title,
+    summary,
+    sceneType,
+    sceneNumber,
+    sortOrder,
+    estimatedDurationSeconds,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'story_scenes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StoryScene> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('story_id')) {
+      context.handle(
+        _storyIdMeta,
+        storyId.isAcceptableOrUnknown(data['story_id']!, _storyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_storyIdMeta);
+    }
+    if (data.containsKey('chapter_id')) {
+      context.handle(
+        _chapterIdMeta,
+        chapterId.isAcceptableOrUnknown(data['chapter_id']!, _chapterIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_chapterIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('summary')) {
+      context.handle(
+        _summaryMeta,
+        summary.isAcceptableOrUnknown(data['summary']!, _summaryMeta),
+      );
+    }
+    if (data.containsKey('scene_type')) {
+      context.handle(
+        _sceneTypeMeta,
+        sceneType.isAcceptableOrUnknown(data['scene_type']!, _sceneTypeMeta),
+      );
+    }
+    if (data.containsKey('scene_number')) {
+      context.handle(
+        _sceneNumberMeta,
+        sceneNumber.isAcceptableOrUnknown(
+          data['scene_number']!,
+          _sceneNumberMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneNumberMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('estimated_duration_seconds')) {
+      context.handle(
+        _estimatedDurationSecondsMeta,
+        estimatedDurationSeconds.isAcceptableOrUnknown(
+          data['estimated_duration_seconds']!,
+          _estimatedDurationSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StoryScene map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StoryScene(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      storyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}story_id'],
+      )!,
+      chapterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}chapter_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      summary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary'],
+      )!,
+      sceneType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scene_type'],
+      )!,
+      sceneNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}scene_number'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      estimatedDurationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}estimated_duration_seconds'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $StoryScenesTable createAlias(String alias) {
+    return $StoryScenesTable(attachedDatabase, alias);
+  }
+}
+
+class StoryScene extends DataClass implements Insertable<StoryScene> {
+  final String id;
+  final String storyId;
+  final String chapterId;
+  final String title;
+  final String summary;
+  final String sceneType;
+  final int sceneNumber;
+  final int sortOrder;
+  final double? estimatedDurationSeconds;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const StoryScene({
+    required this.id,
+    required this.storyId,
+    required this.chapterId,
+    required this.title,
+    required this.summary,
+    required this.sceneType,
+    required this.sceneNumber,
+    required this.sortOrder,
+    this.estimatedDurationSeconds,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['story_id'] = Variable<String>(storyId);
+    map['chapter_id'] = Variable<String>(chapterId);
+    map['title'] = Variable<String>(title);
+    map['summary'] = Variable<String>(summary);
+    map['scene_type'] = Variable<String>(sceneType);
+    map['scene_number'] = Variable<int>(sceneNumber);
+    map['sort_order'] = Variable<int>(sortOrder);
+    if (!nullToAbsent || estimatedDurationSeconds != null) {
+      map['estimated_duration_seconds'] = Variable<double>(
+        estimatedDurationSeconds,
+      );
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  StoryScenesCompanion toCompanion(bool nullToAbsent) {
+    return StoryScenesCompanion(
+      id: Value(id),
+      storyId: Value(storyId),
+      chapterId: Value(chapterId),
+      title: Value(title),
+      summary: Value(summary),
+      sceneType: Value(sceneType),
+      sceneNumber: Value(sceneNumber),
+      sortOrder: Value(sortOrder),
+      estimatedDurationSeconds: estimatedDurationSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(estimatedDurationSeconds),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory StoryScene.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StoryScene(
+      id: serializer.fromJson<String>(json['id']),
+      storyId: serializer.fromJson<String>(json['storyId']),
+      chapterId: serializer.fromJson<String>(json['chapterId']),
+      title: serializer.fromJson<String>(json['title']),
+      summary: serializer.fromJson<String>(json['summary']),
+      sceneType: serializer.fromJson<String>(json['sceneType']),
+      sceneNumber: serializer.fromJson<int>(json['sceneNumber']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      estimatedDurationSeconds: serializer.fromJson<double?>(
+        json['estimatedDurationSeconds'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'storyId': serializer.toJson<String>(storyId),
+      'chapterId': serializer.toJson<String>(chapterId),
+      'title': serializer.toJson<String>(title),
+      'summary': serializer.toJson<String>(summary),
+      'sceneType': serializer.toJson<String>(sceneType),
+      'sceneNumber': serializer.toJson<int>(sceneNumber),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'estimatedDurationSeconds': serializer.toJson<double?>(
+        estimatedDurationSeconds,
+      ),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  StoryScene copyWith({
+    String? id,
+    String? storyId,
+    String? chapterId,
+    String? title,
+    String? summary,
+    String? sceneType,
+    int? sceneNumber,
+    int? sortOrder,
+    Value<double?> estimatedDurationSeconds = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => StoryScene(
+    id: id ?? this.id,
+    storyId: storyId ?? this.storyId,
+    chapterId: chapterId ?? this.chapterId,
+    title: title ?? this.title,
+    summary: summary ?? this.summary,
+    sceneType: sceneType ?? this.sceneType,
+    sceneNumber: sceneNumber ?? this.sceneNumber,
+    sortOrder: sortOrder ?? this.sortOrder,
+    estimatedDurationSeconds: estimatedDurationSeconds.present
+        ? estimatedDurationSeconds.value
+        : this.estimatedDurationSeconds,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  StoryScene copyWithCompanion(StoryScenesCompanion data) {
+    return StoryScene(
+      id: data.id.present ? data.id.value : this.id,
+      storyId: data.storyId.present ? data.storyId.value : this.storyId,
+      chapterId: data.chapterId.present ? data.chapterId.value : this.chapterId,
+      title: data.title.present ? data.title.value : this.title,
+      summary: data.summary.present ? data.summary.value : this.summary,
+      sceneType: data.sceneType.present ? data.sceneType.value : this.sceneType,
+      sceneNumber: data.sceneNumber.present
+          ? data.sceneNumber.value
+          : this.sceneNumber,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      estimatedDurationSeconds: data.estimatedDurationSeconds.present
+          ? data.estimatedDurationSeconds.value
+          : this.estimatedDurationSeconds,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoryScene(')
+          ..write('id: $id, ')
+          ..write('storyId: $storyId, ')
+          ..write('chapterId: $chapterId, ')
+          ..write('title: $title, ')
+          ..write('summary: $summary, ')
+          ..write('sceneType: $sceneType, ')
+          ..write('sceneNumber: $sceneNumber, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('estimatedDurationSeconds: $estimatedDurationSeconds, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    storyId,
+    chapterId,
+    title,
+    summary,
+    sceneType,
+    sceneNumber,
+    sortOrder,
+    estimatedDurationSeconds,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StoryScene &&
+          other.id == this.id &&
+          other.storyId == this.storyId &&
+          other.chapterId == this.chapterId &&
+          other.title == this.title &&
+          other.summary == this.summary &&
+          other.sceneType == this.sceneType &&
+          other.sceneNumber == this.sceneNumber &&
+          other.sortOrder == this.sortOrder &&
+          other.estimatedDurationSeconds == this.estimatedDurationSeconds &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class StoryScenesCompanion extends UpdateCompanion<StoryScene> {
+  final Value<String> id;
+  final Value<String> storyId;
+  final Value<String> chapterId;
+  final Value<String> title;
+  final Value<String> summary;
+  final Value<String> sceneType;
+  final Value<int> sceneNumber;
+  final Value<int> sortOrder;
+  final Value<double?> estimatedDurationSeconds;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const StoryScenesCompanion({
+    this.id = const Value.absent(),
+    this.storyId = const Value.absent(),
+    this.chapterId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.summary = const Value.absent(),
+    this.sceneType = const Value.absent(),
+    this.sceneNumber = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.estimatedDurationSeconds = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StoryScenesCompanion.insert({
+    required String id,
+    required String storyId,
+    required String chapterId,
+    required String title,
+    this.summary = const Value.absent(),
+    this.sceneType = const Value.absent(),
+    required int sceneNumber,
+    this.sortOrder = const Value.absent(),
+    this.estimatedDurationSeconds = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       storyId = Value(storyId),
+       chapterId = Value(chapterId),
+       title = Value(title),
+       sceneNumber = Value(sceneNumber),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<StoryScene> custom({
+    Expression<String>? id,
+    Expression<String>? storyId,
+    Expression<String>? chapterId,
+    Expression<String>? title,
+    Expression<String>? summary,
+    Expression<String>? sceneType,
+    Expression<int>? sceneNumber,
+    Expression<int>? sortOrder,
+    Expression<double>? estimatedDurationSeconds,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (storyId != null) 'story_id': storyId,
+      if (chapterId != null) 'chapter_id': chapterId,
+      if (title != null) 'title': title,
+      if (summary != null) 'summary': summary,
+      if (sceneType != null) 'scene_type': sceneType,
+      if (sceneNumber != null) 'scene_number': sceneNumber,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (estimatedDurationSeconds != null)
+        'estimated_duration_seconds': estimatedDurationSeconds,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StoryScenesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? storyId,
+    Value<String>? chapterId,
+    Value<String>? title,
+    Value<String>? summary,
+    Value<String>? sceneType,
+    Value<int>? sceneNumber,
+    Value<int>? sortOrder,
+    Value<double?>? estimatedDurationSeconds,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return StoryScenesCompanion(
+      id: id ?? this.id,
+      storyId: storyId ?? this.storyId,
+      chapterId: chapterId ?? this.chapterId,
+      title: title ?? this.title,
+      summary: summary ?? this.summary,
+      sceneType: sceneType ?? this.sceneType,
+      sceneNumber: sceneNumber ?? this.sceneNumber,
+      sortOrder: sortOrder ?? this.sortOrder,
+      estimatedDurationSeconds:
+          estimatedDurationSeconds ?? this.estimatedDurationSeconds,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (storyId.present) {
+      map['story_id'] = Variable<String>(storyId.value);
+    }
+    if (chapterId.present) {
+      map['chapter_id'] = Variable<String>(chapterId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (summary.present) {
+      map['summary'] = Variable<String>(summary.value);
+    }
+    if (sceneType.present) {
+      map['scene_type'] = Variable<String>(sceneType.value);
+    }
+    if (sceneNumber.present) {
+      map['scene_number'] = Variable<int>(sceneNumber.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (estimatedDurationSeconds.present) {
+      map['estimated_duration_seconds'] = Variable<double>(
+        estimatedDurationSeconds.value,
+      );
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoryScenesCompanion(')
+          ..write('id: $id, ')
+          ..write('storyId: $storyId, ')
+          ..write('chapterId: $chapterId, ')
+          ..write('title: $title, ')
+          ..write('summary: $summary, ')
+          ..write('sceneType: $sceneType, ')
+          ..write('sceneNumber: $sceneNumber, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('estimatedDurationSeconds: $estimatedDurationSeconds, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SceneCharactersTable extends SceneCharacters
+    with TableInfo<$SceneCharactersTable, SceneCharacter> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SceneCharactersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sceneIdMeta = const VerificationMeta(
+    'sceneId',
+  );
+  @override
+  late final GeneratedColumn<String> sceneId = GeneratedColumn<String>(
+    'scene_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _characterIdMeta = const VerificationMeta(
+    'characterId',
+  );
+  @override
+  late final GeneratedColumn<String> characterId = GeneratedColumn<String>(
+    'character_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _modeIdMeta = const VerificationMeta('modeId');
+  @override
+  late final GeneratedColumn<String> modeId = GeneratedColumn<String>(
+    'mode_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
+  @override
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+    'role',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('participant'),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sceneId,
+    characterId,
+    modeId,
+    role,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'scene_characters';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SceneCharacter> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('scene_id')) {
+      context.handle(
+        _sceneIdMeta,
+        sceneId.isAcceptableOrUnknown(data['scene_id']!, _sceneIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneIdMeta);
+    }
+    if (data.containsKey('character_id')) {
+      context.handle(
+        _characterIdMeta,
+        characterId.isAcceptableOrUnknown(
+          data['character_id']!,
+          _characterIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_characterIdMeta);
+    }
+    if (data.containsKey('mode_id')) {
+      context.handle(
+        _modeIdMeta,
+        modeId.isAcceptableOrUnknown(data['mode_id']!, _modeIdMeta),
+      );
+    }
+    if (data.containsKey('role')) {
+      context.handle(
+        _roleMeta,
+        role.isAcceptableOrUnknown(data['role']!, _roleMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SceneCharacter map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SceneCharacter(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      sceneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scene_id'],
+      )!,
+      characterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}character_id'],
+      )!,
+      modeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mode_id'],
+      ),
+      role: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}role'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $SceneCharactersTable createAlias(String alias) {
+    return $SceneCharactersTable(attachedDatabase, alias);
+  }
+}
+
+class SceneCharacter extends DataClass implements Insertable<SceneCharacter> {
+  final String id;
+  final String sceneId;
+  final String characterId;
+  final String? modeId;
+  final String role;
+  final int sortOrder;
+  const SceneCharacter({
+    required this.id,
+    required this.sceneId,
+    required this.characterId,
+    this.modeId,
+    required this.role,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['scene_id'] = Variable<String>(sceneId);
+    map['character_id'] = Variable<String>(characterId);
+    if (!nullToAbsent || modeId != null) {
+      map['mode_id'] = Variable<String>(modeId);
+    }
+    map['role'] = Variable<String>(role);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  SceneCharactersCompanion toCompanion(bool nullToAbsent) {
+    return SceneCharactersCompanion(
+      id: Value(id),
+      sceneId: Value(sceneId),
+      characterId: Value(characterId),
+      modeId: modeId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(modeId),
+      role: Value(role),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory SceneCharacter.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SceneCharacter(
+      id: serializer.fromJson<String>(json['id']),
+      sceneId: serializer.fromJson<String>(json['sceneId']),
+      characterId: serializer.fromJson<String>(json['characterId']),
+      modeId: serializer.fromJson<String?>(json['modeId']),
+      role: serializer.fromJson<String>(json['role']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sceneId': serializer.toJson<String>(sceneId),
+      'characterId': serializer.toJson<String>(characterId),
+      'modeId': serializer.toJson<String?>(modeId),
+      'role': serializer.toJson<String>(role),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  SceneCharacter copyWith({
+    String? id,
+    String? sceneId,
+    String? characterId,
+    Value<String?> modeId = const Value.absent(),
+    String? role,
+    int? sortOrder,
+  }) => SceneCharacter(
+    id: id ?? this.id,
+    sceneId: sceneId ?? this.sceneId,
+    characterId: characterId ?? this.characterId,
+    modeId: modeId.present ? modeId.value : this.modeId,
+    role: role ?? this.role,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  SceneCharacter copyWithCompanion(SceneCharactersCompanion data) {
+    return SceneCharacter(
+      id: data.id.present ? data.id.value : this.id,
+      sceneId: data.sceneId.present ? data.sceneId.value : this.sceneId,
+      characterId: data.characterId.present
+          ? data.characterId.value
+          : this.characterId,
+      modeId: data.modeId.present ? data.modeId.value : this.modeId,
+      role: data.role.present ? data.role.value : this.role,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneCharacter(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('characterId: $characterId, ')
+          ..write('modeId: $modeId, ')
+          ..write('role: $role, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, sceneId, characterId, modeId, role, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SceneCharacter &&
+          other.id == this.id &&
+          other.sceneId == this.sceneId &&
+          other.characterId == this.characterId &&
+          other.modeId == this.modeId &&
+          other.role == this.role &&
+          other.sortOrder == this.sortOrder);
+}
+
+class SceneCharactersCompanion extends UpdateCompanion<SceneCharacter> {
+  final Value<String> id;
+  final Value<String> sceneId;
+  final Value<String> characterId;
+  final Value<String?> modeId;
+  final Value<String> role;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const SceneCharactersCompanion({
+    this.id = const Value.absent(),
+    this.sceneId = const Value.absent(),
+    this.characterId = const Value.absent(),
+    this.modeId = const Value.absent(),
+    this.role = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SceneCharactersCompanion.insert({
+    required String id,
+    required String sceneId,
+    required String characterId,
+    this.modeId = const Value.absent(),
+    this.role = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       sceneId = Value(sceneId),
+       characterId = Value(characterId);
+  static Insertable<SceneCharacter> custom({
+    Expression<String>? id,
+    Expression<String>? sceneId,
+    Expression<String>? characterId,
+    Expression<String>? modeId,
+    Expression<String>? role,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sceneId != null) 'scene_id': sceneId,
+      if (characterId != null) 'character_id': characterId,
+      if (modeId != null) 'mode_id': modeId,
+      if (role != null) 'role': role,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SceneCharactersCompanion copyWith({
+    Value<String>? id,
+    Value<String>? sceneId,
+    Value<String>? characterId,
+    Value<String?>? modeId,
+    Value<String>? role,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return SceneCharactersCompanion(
+      id: id ?? this.id,
+      sceneId: sceneId ?? this.sceneId,
+      characterId: characterId ?? this.characterId,
+      modeId: modeId ?? this.modeId,
+      role: role ?? this.role,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sceneId.present) {
+      map['scene_id'] = Variable<String>(sceneId.value);
+    }
+    if (characterId.present) {
+      map['character_id'] = Variable<String>(characterId.value);
+    }
+    if (modeId.present) {
+      map['mode_id'] = Variable<String>(modeId.value);
+    }
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneCharactersCompanion(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('characterId: $characterId, ')
+          ..write('modeId: $modeId, ')
+          ..write('role: $role, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SceneEnvironmentContextsTable extends SceneEnvironmentContexts
+    with TableInfo<$SceneEnvironmentContextsTable, SceneEnvironmentContext> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SceneEnvironmentContextsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _sceneIdMeta = const VerificationMeta(
+    'sceneId',
+  );
+  @override
+  late final GeneratedColumn<String> sceneId = GeneratedColumn<String>(
+    'scene_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _environmentIdMeta = const VerificationMeta(
+    'environmentId',
+  );
+  @override
+  late final GeneratedColumn<String> environmentId = GeneratedColumn<String>(
+    'environment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _zoneIdMeta = const VerificationMeta('zoneId');
+  @override
+  late final GeneratedColumn<String> zoneId = GeneratedColumn<String>(
+    'zone_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _weatherProfileIdMeta = const VerificationMeta(
+    'weatherProfileId',
+  );
+  @override
+  late final GeneratedColumn<String> weatherProfileId = GeneratedColumn<String>(
+    'weather_profile_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lightingProfileIdMeta = const VerificationMeta(
+    'lightingProfileId',
+  );
+  @override
+  late final GeneratedColumn<String> lightingProfileId =
+      GeneratedColumn<String>(
+        'lighting_profile_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _continuityStateIdMeta = const VerificationMeta(
+    'continuityStateId',
+  );
+  @override
+  late final GeneratedColumn<String> continuityStateId =
+      GeneratedColumn<String>(
+        'continuity_state_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _timePresetMeta = const VerificationMeta(
+    'timePreset',
+  );
+  @override
+  late final GeneratedColumn<String> timePreset = GeneratedColumn<String>(
+    'time_preset',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    sceneId,
+    environmentId,
+    zoneId,
+    weatherProfileId,
+    lightingProfileId,
+    continuityStateId,
+    timePreset,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'scene_environment_contexts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SceneEnvironmentContext> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('scene_id')) {
+      context.handle(
+        _sceneIdMeta,
+        sceneId.isAcceptableOrUnknown(data['scene_id']!, _sceneIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneIdMeta);
+    }
+    if (data.containsKey('environment_id')) {
+      context.handle(
+        _environmentIdMeta,
+        environmentId.isAcceptableOrUnknown(
+          data['environment_id']!,
+          _environmentIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_environmentIdMeta);
+    }
+    if (data.containsKey('zone_id')) {
+      context.handle(
+        _zoneIdMeta,
+        zoneId.isAcceptableOrUnknown(data['zone_id']!, _zoneIdMeta),
+      );
+    }
+    if (data.containsKey('weather_profile_id')) {
+      context.handle(
+        _weatherProfileIdMeta,
+        weatherProfileId.isAcceptableOrUnknown(
+          data['weather_profile_id']!,
+          _weatherProfileIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('lighting_profile_id')) {
+      context.handle(
+        _lightingProfileIdMeta,
+        lightingProfileId.isAcceptableOrUnknown(
+          data['lighting_profile_id']!,
+          _lightingProfileIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('continuity_state_id')) {
+      context.handle(
+        _continuityStateIdMeta,
+        continuityStateId.isAcceptableOrUnknown(
+          data['continuity_state_id']!,
+          _continuityStateIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('time_preset')) {
+      context.handle(
+        _timePresetMeta,
+        timePreset.isAcceptableOrUnknown(data['time_preset']!, _timePresetMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {sceneId};
+  @override
+  SceneEnvironmentContext map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SceneEnvironmentContext(
+      sceneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scene_id'],
+      )!,
+      environmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}environment_id'],
+      )!,
+      zoneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}zone_id'],
+      ),
+      weatherProfileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weather_profile_id'],
+      ),
+      lightingProfileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}lighting_profile_id'],
+      ),
+      continuityStateId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}continuity_state_id'],
+      ),
+      timePreset: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}time_preset'],
+      ),
+    );
+  }
+
+  @override
+  $SceneEnvironmentContextsTable createAlias(String alias) {
+    return $SceneEnvironmentContextsTable(attachedDatabase, alias);
+  }
+}
+
+class SceneEnvironmentContext extends DataClass
+    implements Insertable<SceneEnvironmentContext> {
+  final String sceneId;
+  final String environmentId;
+  final String? zoneId;
+  final String? weatherProfileId;
+  final String? lightingProfileId;
+  final String? continuityStateId;
+  final String? timePreset;
+  const SceneEnvironmentContext({
+    required this.sceneId,
+    required this.environmentId,
+    this.zoneId,
+    this.weatherProfileId,
+    this.lightingProfileId,
+    this.continuityStateId,
+    this.timePreset,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['scene_id'] = Variable<String>(sceneId);
+    map['environment_id'] = Variable<String>(environmentId);
+    if (!nullToAbsent || zoneId != null) {
+      map['zone_id'] = Variable<String>(zoneId);
+    }
+    if (!nullToAbsent || weatherProfileId != null) {
+      map['weather_profile_id'] = Variable<String>(weatherProfileId);
+    }
+    if (!nullToAbsent || lightingProfileId != null) {
+      map['lighting_profile_id'] = Variable<String>(lightingProfileId);
+    }
+    if (!nullToAbsent || continuityStateId != null) {
+      map['continuity_state_id'] = Variable<String>(continuityStateId);
+    }
+    if (!nullToAbsent || timePreset != null) {
+      map['time_preset'] = Variable<String>(timePreset);
+    }
+    return map;
+  }
+
+  SceneEnvironmentContextsCompanion toCompanion(bool nullToAbsent) {
+    return SceneEnvironmentContextsCompanion(
+      sceneId: Value(sceneId),
+      environmentId: Value(environmentId),
+      zoneId: zoneId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(zoneId),
+      weatherProfileId: weatherProfileId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weatherProfileId),
+      lightingProfileId: lightingProfileId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lightingProfileId),
+      continuityStateId: continuityStateId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(continuityStateId),
+      timePreset: timePreset == null && nullToAbsent
+          ? const Value.absent()
+          : Value(timePreset),
+    );
+  }
+
+  factory SceneEnvironmentContext.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SceneEnvironmentContext(
+      sceneId: serializer.fromJson<String>(json['sceneId']),
+      environmentId: serializer.fromJson<String>(json['environmentId']),
+      zoneId: serializer.fromJson<String?>(json['zoneId']),
+      weatherProfileId: serializer.fromJson<String?>(json['weatherProfileId']),
+      lightingProfileId: serializer.fromJson<String?>(
+        json['lightingProfileId'],
+      ),
+      continuityStateId: serializer.fromJson<String?>(
+        json['continuityStateId'],
+      ),
+      timePreset: serializer.fromJson<String?>(json['timePreset']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'sceneId': serializer.toJson<String>(sceneId),
+      'environmentId': serializer.toJson<String>(environmentId),
+      'zoneId': serializer.toJson<String?>(zoneId),
+      'weatherProfileId': serializer.toJson<String?>(weatherProfileId),
+      'lightingProfileId': serializer.toJson<String?>(lightingProfileId),
+      'continuityStateId': serializer.toJson<String?>(continuityStateId),
+      'timePreset': serializer.toJson<String?>(timePreset),
+    };
+  }
+
+  SceneEnvironmentContext copyWith({
+    String? sceneId,
+    String? environmentId,
+    Value<String?> zoneId = const Value.absent(),
+    Value<String?> weatherProfileId = const Value.absent(),
+    Value<String?> lightingProfileId = const Value.absent(),
+    Value<String?> continuityStateId = const Value.absent(),
+    Value<String?> timePreset = const Value.absent(),
+  }) => SceneEnvironmentContext(
+    sceneId: sceneId ?? this.sceneId,
+    environmentId: environmentId ?? this.environmentId,
+    zoneId: zoneId.present ? zoneId.value : this.zoneId,
+    weatherProfileId: weatherProfileId.present
+        ? weatherProfileId.value
+        : this.weatherProfileId,
+    lightingProfileId: lightingProfileId.present
+        ? lightingProfileId.value
+        : this.lightingProfileId,
+    continuityStateId: continuityStateId.present
+        ? continuityStateId.value
+        : this.continuityStateId,
+    timePreset: timePreset.present ? timePreset.value : this.timePreset,
+  );
+  SceneEnvironmentContext copyWithCompanion(
+    SceneEnvironmentContextsCompanion data,
+  ) {
+    return SceneEnvironmentContext(
+      sceneId: data.sceneId.present ? data.sceneId.value : this.sceneId,
+      environmentId: data.environmentId.present
+          ? data.environmentId.value
+          : this.environmentId,
+      zoneId: data.zoneId.present ? data.zoneId.value : this.zoneId,
+      weatherProfileId: data.weatherProfileId.present
+          ? data.weatherProfileId.value
+          : this.weatherProfileId,
+      lightingProfileId: data.lightingProfileId.present
+          ? data.lightingProfileId.value
+          : this.lightingProfileId,
+      continuityStateId: data.continuityStateId.present
+          ? data.continuityStateId.value
+          : this.continuityStateId,
+      timePreset: data.timePreset.present
+          ? data.timePreset.value
+          : this.timePreset,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneEnvironmentContext(')
+          ..write('sceneId: $sceneId, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('zoneId: $zoneId, ')
+          ..write('weatherProfileId: $weatherProfileId, ')
+          ..write('lightingProfileId: $lightingProfileId, ')
+          ..write('continuityStateId: $continuityStateId, ')
+          ..write('timePreset: $timePreset')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    sceneId,
+    environmentId,
+    zoneId,
+    weatherProfileId,
+    lightingProfileId,
+    continuityStateId,
+    timePreset,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SceneEnvironmentContext &&
+          other.sceneId == this.sceneId &&
+          other.environmentId == this.environmentId &&
+          other.zoneId == this.zoneId &&
+          other.weatherProfileId == this.weatherProfileId &&
+          other.lightingProfileId == this.lightingProfileId &&
+          other.continuityStateId == this.continuityStateId &&
+          other.timePreset == this.timePreset);
+}
+
+class SceneEnvironmentContextsCompanion
+    extends UpdateCompanion<SceneEnvironmentContext> {
+  final Value<String> sceneId;
+  final Value<String> environmentId;
+  final Value<String?> zoneId;
+  final Value<String?> weatherProfileId;
+  final Value<String?> lightingProfileId;
+  final Value<String?> continuityStateId;
+  final Value<String?> timePreset;
+  final Value<int> rowid;
+  const SceneEnvironmentContextsCompanion({
+    this.sceneId = const Value.absent(),
+    this.environmentId = const Value.absent(),
+    this.zoneId = const Value.absent(),
+    this.weatherProfileId = const Value.absent(),
+    this.lightingProfileId = const Value.absent(),
+    this.continuityStateId = const Value.absent(),
+    this.timePreset = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SceneEnvironmentContextsCompanion.insert({
+    required String sceneId,
+    required String environmentId,
+    this.zoneId = const Value.absent(),
+    this.weatherProfileId = const Value.absent(),
+    this.lightingProfileId = const Value.absent(),
+    this.continuityStateId = const Value.absent(),
+    this.timePreset = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : sceneId = Value(sceneId),
+       environmentId = Value(environmentId);
+  static Insertable<SceneEnvironmentContext> custom({
+    Expression<String>? sceneId,
+    Expression<String>? environmentId,
+    Expression<String>? zoneId,
+    Expression<String>? weatherProfileId,
+    Expression<String>? lightingProfileId,
+    Expression<String>? continuityStateId,
+    Expression<String>? timePreset,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (sceneId != null) 'scene_id': sceneId,
+      if (environmentId != null) 'environment_id': environmentId,
+      if (zoneId != null) 'zone_id': zoneId,
+      if (weatherProfileId != null) 'weather_profile_id': weatherProfileId,
+      if (lightingProfileId != null) 'lighting_profile_id': lightingProfileId,
+      if (continuityStateId != null) 'continuity_state_id': continuityStateId,
+      if (timePreset != null) 'time_preset': timePreset,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SceneEnvironmentContextsCompanion copyWith({
+    Value<String>? sceneId,
+    Value<String>? environmentId,
+    Value<String?>? zoneId,
+    Value<String?>? weatherProfileId,
+    Value<String?>? lightingProfileId,
+    Value<String?>? continuityStateId,
+    Value<String?>? timePreset,
+    Value<int>? rowid,
+  }) {
+    return SceneEnvironmentContextsCompanion(
+      sceneId: sceneId ?? this.sceneId,
+      environmentId: environmentId ?? this.environmentId,
+      zoneId: zoneId ?? this.zoneId,
+      weatherProfileId: weatherProfileId ?? this.weatherProfileId,
+      lightingProfileId: lightingProfileId ?? this.lightingProfileId,
+      continuityStateId: continuityStateId ?? this.continuityStateId,
+      timePreset: timePreset ?? this.timePreset,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (sceneId.present) {
+      map['scene_id'] = Variable<String>(sceneId.value);
+    }
+    if (environmentId.present) {
+      map['environment_id'] = Variable<String>(environmentId.value);
+    }
+    if (zoneId.present) {
+      map['zone_id'] = Variable<String>(zoneId.value);
+    }
+    if (weatherProfileId.present) {
+      map['weather_profile_id'] = Variable<String>(weatherProfileId.value);
+    }
+    if (lightingProfileId.present) {
+      map['lighting_profile_id'] = Variable<String>(lightingProfileId.value);
+    }
+    if (continuityStateId.present) {
+      map['continuity_state_id'] = Variable<String>(continuityStateId.value);
+    }
+    if (timePreset.present) {
+      map['time_preset'] = Variable<String>(timePreset.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneEnvironmentContextsCompanion(')
+          ..write('sceneId: $sceneId, ')
+          ..write('environmentId: $environmentId, ')
+          ..write('zoneId: $zoneId, ')
+          ..write('weatherProfileId: $weatherProfileId, ')
+          ..write('lightingProfileId: $lightingProfileId, ')
+          ..write('continuityStateId: $continuityStateId, ')
+          ..write('timePreset: $timePreset, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SceneBeatsTable extends SceneBeats
+    with TableInfo<$SceneBeatsTable, SceneBeat> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SceneBeatsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sceneIdMeta = const VerificationMeta(
+    'sceneId',
+  );
+  @override
+  late final GeneratedColumn<String> sceneId = GeneratedColumn<String>(
+    'scene_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _beatTypeMeta = const VerificationMeta(
+    'beatType',
+  );
+  @override
+  late final GeneratedColumn<String> beatType = GeneratedColumn<String>(
+    'beat_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('action'),
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startSecondMeta = const VerificationMeta(
+    'startSecond',
+  );
+  @override
+  late final GeneratedColumn<double> startSecond = GeneratedColumn<double>(
+    'start_second',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> durationSeconds = GeneratedColumn<double>(
+    'duration_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sceneId,
+    beatType,
+    content,
+    startSecond,
+    durationSeconds,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'scene_beats';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SceneBeat> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('scene_id')) {
+      context.handle(
+        _sceneIdMeta,
+        sceneId.isAcceptableOrUnknown(data['scene_id']!, _sceneIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneIdMeta);
+    }
+    if (data.containsKey('beat_type')) {
+      context.handle(
+        _beatTypeMeta,
+        beatType.isAcceptableOrUnknown(data['beat_type']!, _beatTypeMeta),
+      );
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('start_second')) {
+      context.handle(
+        _startSecondMeta,
+        startSecond.isAcceptableOrUnknown(
+          data['start_second']!,
+          _startSecondMeta,
+        ),
+      );
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SceneBeat map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SceneBeat(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      sceneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scene_id'],
+      )!,
+      beatType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}beat_type'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      startSecond: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}start_second'],
+      ),
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}duration_seconds'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $SceneBeatsTable createAlias(String alias) {
+    return $SceneBeatsTable(attachedDatabase, alias);
+  }
+}
+
+class SceneBeat extends DataClass implements Insertable<SceneBeat> {
+  final String id;
+  final String sceneId;
+  final String beatType;
+  final String content;
+  final double? startSecond;
+  final double? durationSeconds;
+  final int sortOrder;
+  const SceneBeat({
+    required this.id,
+    required this.sceneId,
+    required this.beatType,
+    required this.content,
+    this.startSecond,
+    this.durationSeconds,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['scene_id'] = Variable<String>(sceneId);
+    map['beat_type'] = Variable<String>(beatType);
+    map['content'] = Variable<String>(content);
+    if (!nullToAbsent || startSecond != null) {
+      map['start_second'] = Variable<double>(startSecond);
+    }
+    if (!nullToAbsent || durationSeconds != null) {
+      map['duration_seconds'] = Variable<double>(durationSeconds);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  SceneBeatsCompanion toCompanion(bool nullToAbsent) {
+    return SceneBeatsCompanion(
+      id: Value(id),
+      sceneId: Value(sceneId),
+      beatType: Value(beatType),
+      content: Value(content),
+      startSecond: startSecond == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startSecond),
+      durationSeconds: durationSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(durationSeconds),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory SceneBeat.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SceneBeat(
+      id: serializer.fromJson<String>(json['id']),
+      sceneId: serializer.fromJson<String>(json['sceneId']),
+      beatType: serializer.fromJson<String>(json['beatType']),
+      content: serializer.fromJson<String>(json['content']),
+      startSecond: serializer.fromJson<double?>(json['startSecond']),
+      durationSeconds: serializer.fromJson<double?>(json['durationSeconds']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sceneId': serializer.toJson<String>(sceneId),
+      'beatType': serializer.toJson<String>(beatType),
+      'content': serializer.toJson<String>(content),
+      'startSecond': serializer.toJson<double?>(startSecond),
+      'durationSeconds': serializer.toJson<double?>(durationSeconds),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  SceneBeat copyWith({
+    String? id,
+    String? sceneId,
+    String? beatType,
+    String? content,
+    Value<double?> startSecond = const Value.absent(),
+    Value<double?> durationSeconds = const Value.absent(),
+    int? sortOrder,
+  }) => SceneBeat(
+    id: id ?? this.id,
+    sceneId: sceneId ?? this.sceneId,
+    beatType: beatType ?? this.beatType,
+    content: content ?? this.content,
+    startSecond: startSecond.present ? startSecond.value : this.startSecond,
+    durationSeconds: durationSeconds.present
+        ? durationSeconds.value
+        : this.durationSeconds,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  SceneBeat copyWithCompanion(SceneBeatsCompanion data) {
+    return SceneBeat(
+      id: data.id.present ? data.id.value : this.id,
+      sceneId: data.sceneId.present ? data.sceneId.value : this.sceneId,
+      beatType: data.beatType.present ? data.beatType.value : this.beatType,
+      content: data.content.present ? data.content.value : this.content,
+      startSecond: data.startSecond.present
+          ? data.startSecond.value
+          : this.startSecond,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneBeat(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('beatType: $beatType, ')
+          ..write('content: $content, ')
+          ..write('startSecond: $startSecond, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    sceneId,
+    beatType,
+    content,
+    startSecond,
+    durationSeconds,
+    sortOrder,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SceneBeat &&
+          other.id == this.id &&
+          other.sceneId == this.sceneId &&
+          other.beatType == this.beatType &&
+          other.content == this.content &&
+          other.startSecond == this.startSecond &&
+          other.durationSeconds == this.durationSeconds &&
+          other.sortOrder == this.sortOrder);
+}
+
+class SceneBeatsCompanion extends UpdateCompanion<SceneBeat> {
+  final Value<String> id;
+  final Value<String> sceneId;
+  final Value<String> beatType;
+  final Value<String> content;
+  final Value<double?> startSecond;
+  final Value<double?> durationSeconds;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const SceneBeatsCompanion({
+    this.id = const Value.absent(),
+    this.sceneId = const Value.absent(),
+    this.beatType = const Value.absent(),
+    this.content = const Value.absent(),
+    this.startSecond = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SceneBeatsCompanion.insert({
+    required String id,
+    required String sceneId,
+    this.beatType = const Value.absent(),
+    required String content,
+    this.startSecond = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       sceneId = Value(sceneId),
+       content = Value(content);
+  static Insertable<SceneBeat> custom({
+    Expression<String>? id,
+    Expression<String>? sceneId,
+    Expression<String>? beatType,
+    Expression<String>? content,
+    Expression<double>? startSecond,
+    Expression<double>? durationSeconds,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sceneId != null) 'scene_id': sceneId,
+      if (beatType != null) 'beat_type': beatType,
+      if (content != null) 'content': content,
+      if (startSecond != null) 'start_second': startSecond,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SceneBeatsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? sceneId,
+    Value<String>? beatType,
+    Value<String>? content,
+    Value<double?>? startSecond,
+    Value<double?>? durationSeconds,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return SceneBeatsCompanion(
+      id: id ?? this.id,
+      sceneId: sceneId ?? this.sceneId,
+      beatType: beatType ?? this.beatType,
+      content: content ?? this.content,
+      startSecond: startSecond ?? this.startSecond,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sceneId.present) {
+      map['scene_id'] = Variable<String>(sceneId.value);
+    }
+    if (beatType.present) {
+      map['beat_type'] = Variable<String>(beatType.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (startSecond.present) {
+      map['start_second'] = Variable<double>(startSecond.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<double>(durationSeconds.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneBeatsCompanion(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('beatType: $beatType, ')
+          ..write('content: $content, ')
+          ..write('startSecond: $startSecond, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SceneContinuityChangesTable extends SceneContinuityChanges
+    with TableInfo<$SceneContinuityChangesTable, SceneContinuityChange> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SceneContinuityChangesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sceneIdMeta = const VerificationMeta(
+    'sceneId',
+  );
+  @override
+  late final GeneratedColumn<String> sceneId = GeneratedColumn<String>(
+    'scene_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetAssetIdMeta = const VerificationMeta(
+    'targetAssetId',
+  );
+  @override
+  late final GeneratedColumn<String> targetAssetId = GeneratedColumn<String>(
+    'target_asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _changeTypeMeta = const VerificationMeta(
+    'changeType',
+  );
+  @override
+  late final GeneratedColumn<String> changeType = GeneratedColumn<String>(
+    'change_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _beforeStateMeta = const VerificationMeta(
+    'beforeState',
+  );
+  @override
+  late final GeneratedColumn<String> beforeState = GeneratedColumn<String>(
+    'before_state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _afterStateMeta = const VerificationMeta(
+    'afterState',
+  );
+  @override
+  late final GeneratedColumn<String> afterState = GeneratedColumn<String>(
+    'after_state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sceneId,
+    targetAssetId,
+    changeType,
+    beforeState,
+    afterState,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'scene_continuity_changes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SceneContinuityChange> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('scene_id')) {
+      context.handle(
+        _sceneIdMeta,
+        sceneId.isAcceptableOrUnknown(data['scene_id']!, _sceneIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneIdMeta);
+    }
+    if (data.containsKey('target_asset_id')) {
+      context.handle(
+        _targetAssetIdMeta,
+        targetAssetId.isAcceptableOrUnknown(
+          data['target_asset_id']!,
+          _targetAssetIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_targetAssetIdMeta);
+    }
+    if (data.containsKey('change_type')) {
+      context.handle(
+        _changeTypeMeta,
+        changeType.isAcceptableOrUnknown(data['change_type']!, _changeTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_changeTypeMeta);
+    }
+    if (data.containsKey('before_state')) {
+      context.handle(
+        _beforeStateMeta,
+        beforeState.isAcceptableOrUnknown(
+          data['before_state']!,
+          _beforeStateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('after_state')) {
+      context.handle(
+        _afterStateMeta,
+        afterState.isAcceptableOrUnknown(data['after_state']!, _afterStateMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SceneContinuityChange map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SceneContinuityChange(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      sceneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scene_id'],
+      )!,
+      targetAssetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_asset_id'],
+      )!,
+      changeType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}change_type'],
+      )!,
+      beforeState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}before_state'],
+      )!,
+      afterState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}after_state'],
+      )!,
+    );
+  }
+
+  @override
+  $SceneContinuityChangesTable createAlias(String alias) {
+    return $SceneContinuityChangesTable(attachedDatabase, alias);
+  }
+}
+
+class SceneContinuityChange extends DataClass
+    implements Insertable<SceneContinuityChange> {
+  final String id;
+  final String sceneId;
+  final String targetAssetId;
+  final String changeType;
+  final String beforeState;
+  final String afterState;
+  const SceneContinuityChange({
+    required this.id,
+    required this.sceneId,
+    required this.targetAssetId,
+    required this.changeType,
+    required this.beforeState,
+    required this.afterState,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['scene_id'] = Variable<String>(sceneId);
+    map['target_asset_id'] = Variable<String>(targetAssetId);
+    map['change_type'] = Variable<String>(changeType);
+    map['before_state'] = Variable<String>(beforeState);
+    map['after_state'] = Variable<String>(afterState);
+    return map;
+  }
+
+  SceneContinuityChangesCompanion toCompanion(bool nullToAbsent) {
+    return SceneContinuityChangesCompanion(
+      id: Value(id),
+      sceneId: Value(sceneId),
+      targetAssetId: Value(targetAssetId),
+      changeType: Value(changeType),
+      beforeState: Value(beforeState),
+      afterState: Value(afterState),
+    );
+  }
+
+  factory SceneContinuityChange.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SceneContinuityChange(
+      id: serializer.fromJson<String>(json['id']),
+      sceneId: serializer.fromJson<String>(json['sceneId']),
+      targetAssetId: serializer.fromJson<String>(json['targetAssetId']),
+      changeType: serializer.fromJson<String>(json['changeType']),
+      beforeState: serializer.fromJson<String>(json['beforeState']),
+      afterState: serializer.fromJson<String>(json['afterState']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sceneId': serializer.toJson<String>(sceneId),
+      'targetAssetId': serializer.toJson<String>(targetAssetId),
+      'changeType': serializer.toJson<String>(changeType),
+      'beforeState': serializer.toJson<String>(beforeState),
+      'afterState': serializer.toJson<String>(afterState),
+    };
+  }
+
+  SceneContinuityChange copyWith({
+    String? id,
+    String? sceneId,
+    String? targetAssetId,
+    String? changeType,
+    String? beforeState,
+    String? afterState,
+  }) => SceneContinuityChange(
+    id: id ?? this.id,
+    sceneId: sceneId ?? this.sceneId,
+    targetAssetId: targetAssetId ?? this.targetAssetId,
+    changeType: changeType ?? this.changeType,
+    beforeState: beforeState ?? this.beforeState,
+    afterState: afterState ?? this.afterState,
+  );
+  SceneContinuityChange copyWithCompanion(
+    SceneContinuityChangesCompanion data,
+  ) {
+    return SceneContinuityChange(
+      id: data.id.present ? data.id.value : this.id,
+      sceneId: data.sceneId.present ? data.sceneId.value : this.sceneId,
+      targetAssetId: data.targetAssetId.present
+          ? data.targetAssetId.value
+          : this.targetAssetId,
+      changeType: data.changeType.present
+          ? data.changeType.value
+          : this.changeType,
+      beforeState: data.beforeState.present
+          ? data.beforeState.value
+          : this.beforeState,
+      afterState: data.afterState.present
+          ? data.afterState.value
+          : this.afterState,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneContinuityChange(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('targetAssetId: $targetAssetId, ')
+          ..write('changeType: $changeType, ')
+          ..write('beforeState: $beforeState, ')
+          ..write('afterState: $afterState')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    sceneId,
+    targetAssetId,
+    changeType,
+    beforeState,
+    afterState,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SceneContinuityChange &&
+          other.id == this.id &&
+          other.sceneId == this.sceneId &&
+          other.targetAssetId == this.targetAssetId &&
+          other.changeType == this.changeType &&
+          other.beforeState == this.beforeState &&
+          other.afterState == this.afterState);
+}
+
+class SceneContinuityChangesCompanion
+    extends UpdateCompanion<SceneContinuityChange> {
+  final Value<String> id;
+  final Value<String> sceneId;
+  final Value<String> targetAssetId;
+  final Value<String> changeType;
+  final Value<String> beforeState;
+  final Value<String> afterState;
+  final Value<int> rowid;
+  const SceneContinuityChangesCompanion({
+    this.id = const Value.absent(),
+    this.sceneId = const Value.absent(),
+    this.targetAssetId = const Value.absent(),
+    this.changeType = const Value.absent(),
+    this.beforeState = const Value.absent(),
+    this.afterState = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SceneContinuityChangesCompanion.insert({
+    required String id,
+    required String sceneId,
+    required String targetAssetId,
+    required String changeType,
+    this.beforeState = const Value.absent(),
+    this.afterState = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       sceneId = Value(sceneId),
+       targetAssetId = Value(targetAssetId),
+       changeType = Value(changeType);
+  static Insertable<SceneContinuityChange> custom({
+    Expression<String>? id,
+    Expression<String>? sceneId,
+    Expression<String>? targetAssetId,
+    Expression<String>? changeType,
+    Expression<String>? beforeState,
+    Expression<String>? afterState,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sceneId != null) 'scene_id': sceneId,
+      if (targetAssetId != null) 'target_asset_id': targetAssetId,
+      if (changeType != null) 'change_type': changeType,
+      if (beforeState != null) 'before_state': beforeState,
+      if (afterState != null) 'after_state': afterState,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SceneContinuityChangesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? sceneId,
+    Value<String>? targetAssetId,
+    Value<String>? changeType,
+    Value<String>? beforeState,
+    Value<String>? afterState,
+    Value<int>? rowid,
+  }) {
+    return SceneContinuityChangesCompanion(
+      id: id ?? this.id,
+      sceneId: sceneId ?? this.sceneId,
+      targetAssetId: targetAssetId ?? this.targetAssetId,
+      changeType: changeType ?? this.changeType,
+      beforeState: beforeState ?? this.beforeState,
+      afterState: afterState ?? this.afterState,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sceneId.present) {
+      map['scene_id'] = Variable<String>(sceneId.value);
+    }
+    if (targetAssetId.present) {
+      map['target_asset_id'] = Variable<String>(targetAssetId.value);
+    }
+    if (changeType.present) {
+      map['change_type'] = Variable<String>(changeType.value);
+    }
+    if (beforeState.present) {
+      map['before_state'] = Variable<String>(beforeState.value);
+    }
+    if (afterState.present) {
+      map['after_state'] = Variable<String>(afterState.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneContinuityChangesCompanion(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('targetAssetId: $targetAssetId, ')
+          ..write('changeType: $changeType, ')
+          ..write('beforeState: $beforeState, ')
+          ..write('afterState: $afterState, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StoryBibleSectionsTable extends StoryBibleSections
+    with TableInfo<$StoryBibleSectionsTable, StoryBibleSection> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StoryBibleSectionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _storyIdMeta = const VerificationMeta(
+    'storyId',
+  );
+  @override
+  late final GeneratedColumn<String> storyId = GeneratedColumn<String>(
+    'story_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sectionTypeMeta = const VerificationMeta(
+    'sectionType',
+  );
+  @override
+  late final GeneratedColumn<String> sectionType = GeneratedColumn<String>(
+    'section_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    storyId,
+    sectionType,
+    title,
+    content,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'story_bible_sections';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StoryBibleSection> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('story_id')) {
+      context.handle(
+        _storyIdMeta,
+        storyId.isAcceptableOrUnknown(data['story_id']!, _storyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_storyIdMeta);
+    }
+    if (data.containsKey('section_type')) {
+      context.handle(
+        _sectionTypeMeta,
+        sectionType.isAcceptableOrUnknown(
+          data['section_type']!,
+          _sectionTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_sectionTypeMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StoryBibleSection map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StoryBibleSection(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      storyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}story_id'],
+      )!,
+      sectionType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}section_type'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $StoryBibleSectionsTable createAlias(String alias) {
+    return $StoryBibleSectionsTable(attachedDatabase, alias);
+  }
+}
+
+class StoryBibleSection extends DataClass
+    implements Insertable<StoryBibleSection> {
+  final String id;
+  final String storyId;
+  final String sectionType;
+  final String title;
+  final String content;
+  final int sortOrder;
+  const StoryBibleSection({
+    required this.id,
+    required this.storyId,
+    required this.sectionType,
+    required this.title,
+    required this.content,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['story_id'] = Variable<String>(storyId);
+    map['section_type'] = Variable<String>(sectionType);
+    map['title'] = Variable<String>(title);
+    map['content'] = Variable<String>(content);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  StoryBibleSectionsCompanion toCompanion(bool nullToAbsent) {
+    return StoryBibleSectionsCompanion(
+      id: Value(id),
+      storyId: Value(storyId),
+      sectionType: Value(sectionType),
+      title: Value(title),
+      content: Value(content),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory StoryBibleSection.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StoryBibleSection(
+      id: serializer.fromJson<String>(json['id']),
+      storyId: serializer.fromJson<String>(json['storyId']),
+      sectionType: serializer.fromJson<String>(json['sectionType']),
+      title: serializer.fromJson<String>(json['title']),
+      content: serializer.fromJson<String>(json['content']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'storyId': serializer.toJson<String>(storyId),
+      'sectionType': serializer.toJson<String>(sectionType),
+      'title': serializer.toJson<String>(title),
+      'content': serializer.toJson<String>(content),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  StoryBibleSection copyWith({
+    String? id,
+    String? storyId,
+    String? sectionType,
+    String? title,
+    String? content,
+    int? sortOrder,
+  }) => StoryBibleSection(
+    id: id ?? this.id,
+    storyId: storyId ?? this.storyId,
+    sectionType: sectionType ?? this.sectionType,
+    title: title ?? this.title,
+    content: content ?? this.content,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  StoryBibleSection copyWithCompanion(StoryBibleSectionsCompanion data) {
+    return StoryBibleSection(
+      id: data.id.present ? data.id.value : this.id,
+      storyId: data.storyId.present ? data.storyId.value : this.storyId,
+      sectionType: data.sectionType.present
+          ? data.sectionType.value
+          : this.sectionType,
+      title: data.title.present ? data.title.value : this.title,
+      content: data.content.present ? data.content.value : this.content,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoryBibleSection(')
+          ..write('id: $id, ')
+          ..write('storyId: $storyId, ')
+          ..write('sectionType: $sectionType, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, storyId, sectionType, title, content, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StoryBibleSection &&
+          other.id == this.id &&
+          other.storyId == this.storyId &&
+          other.sectionType == this.sectionType &&
+          other.title == this.title &&
+          other.content == this.content &&
+          other.sortOrder == this.sortOrder);
+}
+
+class StoryBibleSectionsCompanion extends UpdateCompanion<StoryBibleSection> {
+  final Value<String> id;
+  final Value<String> storyId;
+  final Value<String> sectionType;
+  final Value<String> title;
+  final Value<String> content;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const StoryBibleSectionsCompanion({
+    this.id = const Value.absent(),
+    this.storyId = const Value.absent(),
+    this.sectionType = const Value.absent(),
+    this.title = const Value.absent(),
+    this.content = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StoryBibleSectionsCompanion.insert({
+    required String id,
+    required String storyId,
+    required String sectionType,
+    required String title,
+    this.content = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       storyId = Value(storyId),
+       sectionType = Value(sectionType),
+       title = Value(title);
+  static Insertable<StoryBibleSection> custom({
+    Expression<String>? id,
+    Expression<String>? storyId,
+    Expression<String>? sectionType,
+    Expression<String>? title,
+    Expression<String>? content,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (storyId != null) 'story_id': storyId,
+      if (sectionType != null) 'section_type': sectionType,
+      if (title != null) 'title': title,
+      if (content != null) 'content': content,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StoryBibleSectionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? storyId,
+    Value<String>? sectionType,
+    Value<String>? title,
+    Value<String>? content,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return StoryBibleSectionsCompanion(
+      id: id ?? this.id,
+      storyId: storyId ?? this.storyId,
+      sectionType: sectionType ?? this.sectionType,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (storyId.present) {
+      map['story_id'] = Variable<String>(storyId.value);
+    }
+    if (sectionType.present) {
+      map['section_type'] = Variable<String>(sectionType.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StoryBibleSectionsCompanion(')
+          ..write('id: $id, ')
+          ..write('storyId: $storyId, ')
+          ..write('sectionType: $sectionType, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -15846,6 +20013,20 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
       $EnvironmentPhysicsProfilesTable(this);
   late final $EnvironmentReferencesTable environmentReferences =
       $EnvironmentReferencesTable(this);
+  late final $StoriesTable stories = $StoriesTable(this);
+  late final $StoryArcsTable storyArcs = $StoryArcsTable(this);
+  late final $StoryChaptersTable storyChapters = $StoryChaptersTable(this);
+  late final $StoryScenesTable storyScenes = $StoryScenesTable(this);
+  late final $SceneCharactersTable sceneCharacters = $SceneCharactersTable(
+    this,
+  );
+  late final $SceneEnvironmentContextsTable sceneEnvironmentContexts =
+      $SceneEnvironmentContextsTable(this);
+  late final $SceneBeatsTable sceneBeats = $SceneBeatsTable(this);
+  late final $SceneContinuityChangesTable sceneContinuityChanges =
+      $SceneContinuityChangesTable(this);
+  late final $StoryBibleSectionsTable storyBibleSections =
+      $StoryBibleSectionsTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -15857,6 +20038,7 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final EnvironmentDao environmentDao = EnvironmentDao(
     this as ProjectDatabase,
   );
+  late final StoryDao storyDao = StoryDao(this as ProjectDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -15896,6 +20078,15 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     environmentContinuityStates,
     environmentPhysicsProfiles,
     environmentReferences,
+    stories,
+    storyArcs,
+    storyChapters,
+    storyScenes,
+    sceneCharacters,
+    sceneEnvironmentContexts,
+    sceneBeats,
+    sceneContinuityChanges,
+    storyBibleSections,
   ];
 }
 
@@ -24434,6 +28625,2221 @@ typedef $$EnvironmentReferencesTableProcessedTableManager =
       EnvironmentReference,
       PrefetchHooks Function()
     >;
+typedef $$StoriesTableCreateCompanionBuilder =
+    StoriesCompanion Function({
+      required String assetId,
+      required String projectId,
+      required String title,
+      Value<String> synopsis,
+      Value<String> genre,
+      Value<String> status,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+typedef $$StoriesTableUpdateCompanionBuilder =
+    StoriesCompanion Function({
+      Value<String> assetId,
+      Value<String> projectId,
+      Value<String> title,
+      Value<String> synopsis,
+      Value<String> genre,
+      Value<String> status,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+
+class $$StoriesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $StoriesTable> {
+  $$StoriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get synopsis => $composableBuilder(
+    column: $table.synopsis,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get genre => $composableBuilder(
+    column: $table.genre,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$StoriesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $StoriesTable> {
+  $$StoriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get synopsis => $composableBuilder(
+    column: $table.synopsis,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get genre => $composableBuilder(
+    column: $table.genre,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$StoriesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $StoriesTable> {
+  $$StoriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get synopsis =>
+      $composableBuilder(column: $table.synopsis, builder: (column) => column);
+
+  GeneratedColumn<String> get genre =>
+      $composableBuilder(column: $table.genre, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$StoriesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $StoriesTable,
+          Story,
+          $$StoriesTableFilterComposer,
+          $$StoriesTableOrderingComposer,
+          $$StoriesTableAnnotationComposer,
+          $$StoriesTableCreateCompanionBuilder,
+          $$StoriesTableUpdateCompanionBuilder,
+          (Story, BaseReferences<_$ProjectDatabase, $StoriesTable, Story>),
+          Story,
+          PrefetchHooks Function()
+        > {
+  $$StoriesTableTableManager(_$ProjectDatabase db, $StoriesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StoriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StoriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StoriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> assetId = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> synopsis = const Value.absent(),
+                Value<String> genre = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StoriesCompanion(
+                assetId: assetId,
+                projectId: projectId,
+                title: title,
+                synopsis: synopsis,
+                genre: genre,
+                status: status,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String assetId,
+                required String projectId,
+                required String title,
+                Value<String> synopsis = const Value.absent(),
+                Value<String> genre = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StoriesCompanion.insert(
+                assetId: assetId,
+                projectId: projectId,
+                title: title,
+                synopsis: synopsis,
+                genre: genre,
+                status: status,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$StoriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $StoriesTable,
+      Story,
+      $$StoriesTableFilterComposer,
+      $$StoriesTableOrderingComposer,
+      $$StoriesTableAnnotationComposer,
+      $$StoriesTableCreateCompanionBuilder,
+      $$StoriesTableUpdateCompanionBuilder,
+      (Story, BaseReferences<_$ProjectDatabase, $StoriesTable, Story>),
+      Story,
+      PrefetchHooks Function()
+    >;
+typedef $$StoryArcsTableCreateCompanionBuilder =
+    StoryArcsCompanion Function({
+      required String id,
+      required String storyId,
+      required String title,
+      Value<String> description,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$StoryArcsTableUpdateCompanionBuilder =
+    StoryArcsCompanion Function({
+      Value<String> id,
+      Value<String> storyId,
+      Value<String> title,
+      Value<String> description,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$StoryArcsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $StoryArcsTable> {
+  $$StoryArcsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get storyId => $composableBuilder(
+    column: $table.storyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$StoryArcsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $StoryArcsTable> {
+  $$StoryArcsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get storyId => $composableBuilder(
+    column: $table.storyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$StoryArcsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $StoryArcsTable> {
+  $$StoryArcsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get storyId =>
+      $composableBuilder(column: $table.storyId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$StoryArcsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $StoryArcsTable,
+          StoryArc,
+          $$StoryArcsTableFilterComposer,
+          $$StoryArcsTableOrderingComposer,
+          $$StoryArcsTableAnnotationComposer,
+          $$StoryArcsTableCreateCompanionBuilder,
+          $$StoryArcsTableUpdateCompanionBuilder,
+          (
+            StoryArc,
+            BaseReferences<_$ProjectDatabase, $StoryArcsTable, StoryArc>,
+          ),
+          StoryArc,
+          PrefetchHooks Function()
+        > {
+  $$StoryArcsTableTableManager(_$ProjectDatabase db, $StoryArcsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StoryArcsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StoryArcsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StoryArcsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> storyId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StoryArcsCompanion(
+                id: id,
+                storyId: storyId,
+                title: title,
+                description: description,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String storyId,
+                required String title,
+                Value<String> description = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StoryArcsCompanion.insert(
+                id: id,
+                storyId: storyId,
+                title: title,
+                description: description,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$StoryArcsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $StoryArcsTable,
+      StoryArc,
+      $$StoryArcsTableFilterComposer,
+      $$StoryArcsTableOrderingComposer,
+      $$StoryArcsTableAnnotationComposer,
+      $$StoryArcsTableCreateCompanionBuilder,
+      $$StoryArcsTableUpdateCompanionBuilder,
+      (StoryArc, BaseReferences<_$ProjectDatabase, $StoryArcsTable, StoryArc>),
+      StoryArc,
+      PrefetchHooks Function()
+    >;
+typedef $$StoryChaptersTableCreateCompanionBuilder =
+    StoryChaptersCompanion Function({
+      required String id,
+      required String storyId,
+      Value<String?> arcId,
+      required String title,
+      Value<String> summary,
+      required int chapterNumber,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$StoryChaptersTableUpdateCompanionBuilder =
+    StoryChaptersCompanion Function({
+      Value<String> id,
+      Value<String> storyId,
+      Value<String?> arcId,
+      Value<String> title,
+      Value<String> summary,
+      Value<int> chapterNumber,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$StoryChaptersTableFilterComposer
+    extends Composer<_$ProjectDatabase, $StoryChaptersTable> {
+  $$StoryChaptersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get storyId => $composableBuilder(
+    column: $table.storyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get arcId => $composableBuilder(
+    column: $table.arcId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get chapterNumber => $composableBuilder(
+    column: $table.chapterNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$StoryChaptersTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $StoryChaptersTable> {
+  $$StoryChaptersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get storyId => $composableBuilder(
+    column: $table.storyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get arcId => $composableBuilder(
+    column: $table.arcId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get chapterNumber => $composableBuilder(
+    column: $table.chapterNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$StoryChaptersTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $StoryChaptersTable> {
+  $$StoryChaptersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get storyId =>
+      $composableBuilder(column: $table.storyId, builder: (column) => column);
+
+  GeneratedColumn<String> get arcId =>
+      $composableBuilder(column: $table.arcId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get summary =>
+      $composableBuilder(column: $table.summary, builder: (column) => column);
+
+  GeneratedColumn<int> get chapterNumber => $composableBuilder(
+    column: $table.chapterNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$StoryChaptersTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $StoryChaptersTable,
+          StoryChapter,
+          $$StoryChaptersTableFilterComposer,
+          $$StoryChaptersTableOrderingComposer,
+          $$StoryChaptersTableAnnotationComposer,
+          $$StoryChaptersTableCreateCompanionBuilder,
+          $$StoryChaptersTableUpdateCompanionBuilder,
+          (
+            StoryChapter,
+            BaseReferences<
+              _$ProjectDatabase,
+              $StoryChaptersTable,
+              StoryChapter
+            >,
+          ),
+          StoryChapter,
+          PrefetchHooks Function()
+        > {
+  $$StoryChaptersTableTableManager(
+    _$ProjectDatabase db,
+    $StoryChaptersTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StoryChaptersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StoryChaptersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StoryChaptersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> storyId = const Value.absent(),
+                Value<String?> arcId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> summary = const Value.absent(),
+                Value<int> chapterNumber = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StoryChaptersCompanion(
+                id: id,
+                storyId: storyId,
+                arcId: arcId,
+                title: title,
+                summary: summary,
+                chapterNumber: chapterNumber,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String storyId,
+                Value<String?> arcId = const Value.absent(),
+                required String title,
+                Value<String> summary = const Value.absent(),
+                required int chapterNumber,
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StoryChaptersCompanion.insert(
+                id: id,
+                storyId: storyId,
+                arcId: arcId,
+                title: title,
+                summary: summary,
+                chapterNumber: chapterNumber,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$StoryChaptersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $StoryChaptersTable,
+      StoryChapter,
+      $$StoryChaptersTableFilterComposer,
+      $$StoryChaptersTableOrderingComposer,
+      $$StoryChaptersTableAnnotationComposer,
+      $$StoryChaptersTableCreateCompanionBuilder,
+      $$StoryChaptersTableUpdateCompanionBuilder,
+      (
+        StoryChapter,
+        BaseReferences<_$ProjectDatabase, $StoryChaptersTable, StoryChapter>,
+      ),
+      StoryChapter,
+      PrefetchHooks Function()
+    >;
+typedef $$StoryScenesTableCreateCompanionBuilder =
+    StoryScenesCompanion Function({
+      required String id,
+      required String storyId,
+      required String chapterId,
+      required String title,
+      Value<String> summary,
+      Value<String> sceneType,
+      required int sceneNumber,
+      Value<int> sortOrder,
+      Value<double?> estimatedDurationSeconds,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$StoryScenesTableUpdateCompanionBuilder =
+    StoryScenesCompanion Function({
+      Value<String> id,
+      Value<String> storyId,
+      Value<String> chapterId,
+      Value<String> title,
+      Value<String> summary,
+      Value<String> sceneType,
+      Value<int> sceneNumber,
+      Value<int> sortOrder,
+      Value<double?> estimatedDurationSeconds,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$StoryScenesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $StoryScenesTable> {
+  $$StoryScenesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get storyId => $composableBuilder(
+    column: $table.storyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get chapterId => $composableBuilder(
+    column: $table.chapterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sceneType => $composableBuilder(
+    column: $table.sceneType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sceneNumber => $composableBuilder(
+    column: $table.sceneNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get estimatedDurationSeconds => $composableBuilder(
+    column: $table.estimatedDurationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$StoryScenesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $StoryScenesTable> {
+  $$StoryScenesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get storyId => $composableBuilder(
+    column: $table.storyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get chapterId => $composableBuilder(
+    column: $table.chapterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sceneType => $composableBuilder(
+    column: $table.sceneType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sceneNumber => $composableBuilder(
+    column: $table.sceneNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get estimatedDurationSeconds => $composableBuilder(
+    column: $table.estimatedDurationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$StoryScenesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $StoryScenesTable> {
+  $$StoryScenesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get storyId =>
+      $composableBuilder(column: $table.storyId, builder: (column) => column);
+
+  GeneratedColumn<String> get chapterId =>
+      $composableBuilder(column: $table.chapterId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get summary =>
+      $composableBuilder(column: $table.summary, builder: (column) => column);
+
+  GeneratedColumn<String> get sceneType =>
+      $composableBuilder(column: $table.sceneType, builder: (column) => column);
+
+  GeneratedColumn<int> get sceneNumber => $composableBuilder(
+    column: $table.sceneNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<double> get estimatedDurationSeconds => $composableBuilder(
+    column: $table.estimatedDurationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$StoryScenesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $StoryScenesTable,
+          StoryScene,
+          $$StoryScenesTableFilterComposer,
+          $$StoryScenesTableOrderingComposer,
+          $$StoryScenesTableAnnotationComposer,
+          $$StoryScenesTableCreateCompanionBuilder,
+          $$StoryScenesTableUpdateCompanionBuilder,
+          (
+            StoryScene,
+            BaseReferences<_$ProjectDatabase, $StoryScenesTable, StoryScene>,
+          ),
+          StoryScene,
+          PrefetchHooks Function()
+        > {
+  $$StoryScenesTableTableManager(_$ProjectDatabase db, $StoryScenesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StoryScenesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StoryScenesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StoryScenesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> storyId = const Value.absent(),
+                Value<String> chapterId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> summary = const Value.absent(),
+                Value<String> sceneType = const Value.absent(),
+                Value<int> sceneNumber = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<double?> estimatedDurationSeconds = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StoryScenesCompanion(
+                id: id,
+                storyId: storyId,
+                chapterId: chapterId,
+                title: title,
+                summary: summary,
+                sceneType: sceneType,
+                sceneNumber: sceneNumber,
+                sortOrder: sortOrder,
+                estimatedDurationSeconds: estimatedDurationSeconds,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String storyId,
+                required String chapterId,
+                required String title,
+                Value<String> summary = const Value.absent(),
+                Value<String> sceneType = const Value.absent(),
+                required int sceneNumber,
+                Value<int> sortOrder = const Value.absent(),
+                Value<double?> estimatedDurationSeconds = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => StoryScenesCompanion.insert(
+                id: id,
+                storyId: storyId,
+                chapterId: chapterId,
+                title: title,
+                summary: summary,
+                sceneType: sceneType,
+                sceneNumber: sceneNumber,
+                sortOrder: sortOrder,
+                estimatedDurationSeconds: estimatedDurationSeconds,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$StoryScenesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $StoryScenesTable,
+      StoryScene,
+      $$StoryScenesTableFilterComposer,
+      $$StoryScenesTableOrderingComposer,
+      $$StoryScenesTableAnnotationComposer,
+      $$StoryScenesTableCreateCompanionBuilder,
+      $$StoryScenesTableUpdateCompanionBuilder,
+      (
+        StoryScene,
+        BaseReferences<_$ProjectDatabase, $StoryScenesTable, StoryScene>,
+      ),
+      StoryScene,
+      PrefetchHooks Function()
+    >;
+typedef $$SceneCharactersTableCreateCompanionBuilder =
+    SceneCharactersCompanion Function({
+      required String id,
+      required String sceneId,
+      required String characterId,
+      Value<String?> modeId,
+      Value<String> role,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$SceneCharactersTableUpdateCompanionBuilder =
+    SceneCharactersCompanion Function({
+      Value<String> id,
+      Value<String> sceneId,
+      Value<String> characterId,
+      Value<String?> modeId,
+      Value<String> role,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$SceneCharactersTableFilterComposer
+    extends Composer<_$ProjectDatabase, $SceneCharactersTable> {
+  $$SceneCharactersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get modeId => $composableBuilder(
+    column: $table.modeId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SceneCharactersTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $SceneCharactersTable> {
+  $$SceneCharactersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get modeId => $composableBuilder(
+    column: $table.modeId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SceneCharactersTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $SceneCharactersTable> {
+  $$SceneCharactersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get sceneId =>
+      $composableBuilder(column: $table.sceneId, builder: (column) => column);
+
+  GeneratedColumn<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get modeId =>
+      $composableBuilder(column: $table.modeId, builder: (column) => column);
+
+  GeneratedColumn<String> get role =>
+      $composableBuilder(column: $table.role, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$SceneCharactersTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $SceneCharactersTable,
+          SceneCharacter,
+          $$SceneCharactersTableFilterComposer,
+          $$SceneCharactersTableOrderingComposer,
+          $$SceneCharactersTableAnnotationComposer,
+          $$SceneCharactersTableCreateCompanionBuilder,
+          $$SceneCharactersTableUpdateCompanionBuilder,
+          (
+            SceneCharacter,
+            BaseReferences<
+              _$ProjectDatabase,
+              $SceneCharactersTable,
+              SceneCharacter
+            >,
+          ),
+          SceneCharacter,
+          PrefetchHooks Function()
+        > {
+  $$SceneCharactersTableTableManager(
+    _$ProjectDatabase db,
+    $SceneCharactersTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SceneCharactersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SceneCharactersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SceneCharactersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> sceneId = const Value.absent(),
+                Value<String> characterId = const Value.absent(),
+                Value<String?> modeId = const Value.absent(),
+                Value<String> role = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneCharactersCompanion(
+                id: id,
+                sceneId: sceneId,
+                characterId: characterId,
+                modeId: modeId,
+                role: role,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String sceneId,
+                required String characterId,
+                Value<String?> modeId = const Value.absent(),
+                Value<String> role = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneCharactersCompanion.insert(
+                id: id,
+                sceneId: sceneId,
+                characterId: characterId,
+                modeId: modeId,
+                role: role,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SceneCharactersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $SceneCharactersTable,
+      SceneCharacter,
+      $$SceneCharactersTableFilterComposer,
+      $$SceneCharactersTableOrderingComposer,
+      $$SceneCharactersTableAnnotationComposer,
+      $$SceneCharactersTableCreateCompanionBuilder,
+      $$SceneCharactersTableUpdateCompanionBuilder,
+      (
+        SceneCharacter,
+        BaseReferences<
+          _$ProjectDatabase,
+          $SceneCharactersTable,
+          SceneCharacter
+        >,
+      ),
+      SceneCharacter,
+      PrefetchHooks Function()
+    >;
+typedef $$SceneEnvironmentContextsTableCreateCompanionBuilder =
+    SceneEnvironmentContextsCompanion Function({
+      required String sceneId,
+      required String environmentId,
+      Value<String?> zoneId,
+      Value<String?> weatherProfileId,
+      Value<String?> lightingProfileId,
+      Value<String?> continuityStateId,
+      Value<String?> timePreset,
+      Value<int> rowid,
+    });
+typedef $$SceneEnvironmentContextsTableUpdateCompanionBuilder =
+    SceneEnvironmentContextsCompanion Function({
+      Value<String> sceneId,
+      Value<String> environmentId,
+      Value<String?> zoneId,
+      Value<String?> weatherProfileId,
+      Value<String?> lightingProfileId,
+      Value<String?> continuityStateId,
+      Value<String?> timePreset,
+      Value<int> rowid,
+    });
+
+class $$SceneEnvironmentContextsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $SceneEnvironmentContextsTable> {
+  $$SceneEnvironmentContextsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get zoneId => $composableBuilder(
+    column: $table.zoneId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weatherProfileId => $composableBuilder(
+    column: $table.weatherProfileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lightingProfileId => $composableBuilder(
+    column: $table.lightingProfileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get continuityStateId => $composableBuilder(
+    column: $table.continuityStateId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get timePreset => $composableBuilder(
+    column: $table.timePreset,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SceneEnvironmentContextsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $SceneEnvironmentContextsTable> {
+  $$SceneEnvironmentContextsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get zoneId => $composableBuilder(
+    column: $table.zoneId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weatherProfileId => $composableBuilder(
+    column: $table.weatherProfileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lightingProfileId => $composableBuilder(
+    column: $table.lightingProfileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get continuityStateId => $composableBuilder(
+    column: $table.continuityStateId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timePreset => $composableBuilder(
+    column: $table.timePreset,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SceneEnvironmentContextsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $SceneEnvironmentContextsTable> {
+  $$SceneEnvironmentContextsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get sceneId =>
+      $composableBuilder(column: $table.sceneId, builder: (column) => column);
+
+  GeneratedColumn<String> get environmentId => $composableBuilder(
+    column: $table.environmentId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get zoneId =>
+      $composableBuilder(column: $table.zoneId, builder: (column) => column);
+
+  GeneratedColumn<String> get weatherProfileId => $composableBuilder(
+    column: $table.weatherProfileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lightingProfileId => $composableBuilder(
+    column: $table.lightingProfileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get continuityStateId => $composableBuilder(
+    column: $table.continuityStateId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get timePreset => $composableBuilder(
+    column: $table.timePreset,
+    builder: (column) => column,
+  );
+}
+
+class $$SceneEnvironmentContextsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $SceneEnvironmentContextsTable,
+          SceneEnvironmentContext,
+          $$SceneEnvironmentContextsTableFilterComposer,
+          $$SceneEnvironmentContextsTableOrderingComposer,
+          $$SceneEnvironmentContextsTableAnnotationComposer,
+          $$SceneEnvironmentContextsTableCreateCompanionBuilder,
+          $$SceneEnvironmentContextsTableUpdateCompanionBuilder,
+          (
+            SceneEnvironmentContext,
+            BaseReferences<
+              _$ProjectDatabase,
+              $SceneEnvironmentContextsTable,
+              SceneEnvironmentContext
+            >,
+          ),
+          SceneEnvironmentContext,
+          PrefetchHooks Function()
+        > {
+  $$SceneEnvironmentContextsTableTableManager(
+    _$ProjectDatabase db,
+    $SceneEnvironmentContextsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SceneEnvironmentContextsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$SceneEnvironmentContextsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SceneEnvironmentContextsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> sceneId = const Value.absent(),
+                Value<String> environmentId = const Value.absent(),
+                Value<String?> zoneId = const Value.absent(),
+                Value<String?> weatherProfileId = const Value.absent(),
+                Value<String?> lightingProfileId = const Value.absent(),
+                Value<String?> continuityStateId = const Value.absent(),
+                Value<String?> timePreset = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneEnvironmentContextsCompanion(
+                sceneId: sceneId,
+                environmentId: environmentId,
+                zoneId: zoneId,
+                weatherProfileId: weatherProfileId,
+                lightingProfileId: lightingProfileId,
+                continuityStateId: continuityStateId,
+                timePreset: timePreset,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String sceneId,
+                required String environmentId,
+                Value<String?> zoneId = const Value.absent(),
+                Value<String?> weatherProfileId = const Value.absent(),
+                Value<String?> lightingProfileId = const Value.absent(),
+                Value<String?> continuityStateId = const Value.absent(),
+                Value<String?> timePreset = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneEnvironmentContextsCompanion.insert(
+                sceneId: sceneId,
+                environmentId: environmentId,
+                zoneId: zoneId,
+                weatherProfileId: weatherProfileId,
+                lightingProfileId: lightingProfileId,
+                continuityStateId: continuityStateId,
+                timePreset: timePreset,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SceneEnvironmentContextsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $SceneEnvironmentContextsTable,
+      SceneEnvironmentContext,
+      $$SceneEnvironmentContextsTableFilterComposer,
+      $$SceneEnvironmentContextsTableOrderingComposer,
+      $$SceneEnvironmentContextsTableAnnotationComposer,
+      $$SceneEnvironmentContextsTableCreateCompanionBuilder,
+      $$SceneEnvironmentContextsTableUpdateCompanionBuilder,
+      (
+        SceneEnvironmentContext,
+        BaseReferences<
+          _$ProjectDatabase,
+          $SceneEnvironmentContextsTable,
+          SceneEnvironmentContext
+        >,
+      ),
+      SceneEnvironmentContext,
+      PrefetchHooks Function()
+    >;
+typedef $$SceneBeatsTableCreateCompanionBuilder =
+    SceneBeatsCompanion Function({
+      required String id,
+      required String sceneId,
+      Value<String> beatType,
+      required String content,
+      Value<double?> startSecond,
+      Value<double?> durationSeconds,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$SceneBeatsTableUpdateCompanionBuilder =
+    SceneBeatsCompanion Function({
+      Value<String> id,
+      Value<String> sceneId,
+      Value<String> beatType,
+      Value<String> content,
+      Value<double?> startSecond,
+      Value<double?> durationSeconds,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$SceneBeatsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $SceneBeatsTable> {
+  $$SceneBeatsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get beatType => $composableBuilder(
+    column: $table.beatType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get startSecond => $composableBuilder(
+    column: $table.startSecond,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SceneBeatsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $SceneBeatsTable> {
+  $$SceneBeatsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get beatType => $composableBuilder(
+    column: $table.beatType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get startSecond => $composableBuilder(
+    column: $table.startSecond,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SceneBeatsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $SceneBeatsTable> {
+  $$SceneBeatsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get sceneId =>
+      $composableBuilder(column: $table.sceneId, builder: (column) => column);
+
+  GeneratedColumn<String> get beatType =>
+      $composableBuilder(column: $table.beatType, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<double> get startSecond => $composableBuilder(
+    column: $table.startSecond,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$SceneBeatsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $SceneBeatsTable,
+          SceneBeat,
+          $$SceneBeatsTableFilterComposer,
+          $$SceneBeatsTableOrderingComposer,
+          $$SceneBeatsTableAnnotationComposer,
+          $$SceneBeatsTableCreateCompanionBuilder,
+          $$SceneBeatsTableUpdateCompanionBuilder,
+          (
+            SceneBeat,
+            BaseReferences<_$ProjectDatabase, $SceneBeatsTable, SceneBeat>,
+          ),
+          SceneBeat,
+          PrefetchHooks Function()
+        > {
+  $$SceneBeatsTableTableManager(_$ProjectDatabase db, $SceneBeatsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SceneBeatsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SceneBeatsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SceneBeatsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> sceneId = const Value.absent(),
+                Value<String> beatType = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<double?> startSecond = const Value.absent(),
+                Value<double?> durationSeconds = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneBeatsCompanion(
+                id: id,
+                sceneId: sceneId,
+                beatType: beatType,
+                content: content,
+                startSecond: startSecond,
+                durationSeconds: durationSeconds,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String sceneId,
+                Value<String> beatType = const Value.absent(),
+                required String content,
+                Value<double?> startSecond = const Value.absent(),
+                Value<double?> durationSeconds = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneBeatsCompanion.insert(
+                id: id,
+                sceneId: sceneId,
+                beatType: beatType,
+                content: content,
+                startSecond: startSecond,
+                durationSeconds: durationSeconds,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SceneBeatsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $SceneBeatsTable,
+      SceneBeat,
+      $$SceneBeatsTableFilterComposer,
+      $$SceneBeatsTableOrderingComposer,
+      $$SceneBeatsTableAnnotationComposer,
+      $$SceneBeatsTableCreateCompanionBuilder,
+      $$SceneBeatsTableUpdateCompanionBuilder,
+      (
+        SceneBeat,
+        BaseReferences<_$ProjectDatabase, $SceneBeatsTable, SceneBeat>,
+      ),
+      SceneBeat,
+      PrefetchHooks Function()
+    >;
+typedef $$SceneContinuityChangesTableCreateCompanionBuilder =
+    SceneContinuityChangesCompanion Function({
+      required String id,
+      required String sceneId,
+      required String targetAssetId,
+      required String changeType,
+      Value<String> beforeState,
+      Value<String> afterState,
+      Value<int> rowid,
+    });
+typedef $$SceneContinuityChangesTableUpdateCompanionBuilder =
+    SceneContinuityChangesCompanion Function({
+      Value<String> id,
+      Value<String> sceneId,
+      Value<String> targetAssetId,
+      Value<String> changeType,
+      Value<String> beforeState,
+      Value<String> afterState,
+      Value<int> rowid,
+    });
+
+class $$SceneContinuityChangesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $SceneContinuityChangesTable> {
+  $$SceneContinuityChangesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get targetAssetId => $composableBuilder(
+    column: $table.targetAssetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get changeType => $composableBuilder(
+    column: $table.changeType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get beforeState => $composableBuilder(
+    column: $table.beforeState,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get afterState => $composableBuilder(
+    column: $table.afterState,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SceneContinuityChangesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $SceneContinuityChangesTable> {
+  $$SceneContinuityChangesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetAssetId => $composableBuilder(
+    column: $table.targetAssetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get changeType => $composableBuilder(
+    column: $table.changeType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get beforeState => $composableBuilder(
+    column: $table.beforeState,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get afterState => $composableBuilder(
+    column: $table.afterState,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SceneContinuityChangesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $SceneContinuityChangesTable> {
+  $$SceneContinuityChangesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get sceneId =>
+      $composableBuilder(column: $table.sceneId, builder: (column) => column);
+
+  GeneratedColumn<String> get targetAssetId => $composableBuilder(
+    column: $table.targetAssetId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get changeType => $composableBuilder(
+    column: $table.changeType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get beforeState => $composableBuilder(
+    column: $table.beforeState,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get afterState => $composableBuilder(
+    column: $table.afterState,
+    builder: (column) => column,
+  );
+}
+
+class $$SceneContinuityChangesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $SceneContinuityChangesTable,
+          SceneContinuityChange,
+          $$SceneContinuityChangesTableFilterComposer,
+          $$SceneContinuityChangesTableOrderingComposer,
+          $$SceneContinuityChangesTableAnnotationComposer,
+          $$SceneContinuityChangesTableCreateCompanionBuilder,
+          $$SceneContinuityChangesTableUpdateCompanionBuilder,
+          (
+            SceneContinuityChange,
+            BaseReferences<
+              _$ProjectDatabase,
+              $SceneContinuityChangesTable,
+              SceneContinuityChange
+            >,
+          ),
+          SceneContinuityChange,
+          PrefetchHooks Function()
+        > {
+  $$SceneContinuityChangesTableTableManager(
+    _$ProjectDatabase db,
+    $SceneContinuityChangesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SceneContinuityChangesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$SceneContinuityChangesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SceneContinuityChangesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> sceneId = const Value.absent(),
+                Value<String> targetAssetId = const Value.absent(),
+                Value<String> changeType = const Value.absent(),
+                Value<String> beforeState = const Value.absent(),
+                Value<String> afterState = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneContinuityChangesCompanion(
+                id: id,
+                sceneId: sceneId,
+                targetAssetId: targetAssetId,
+                changeType: changeType,
+                beforeState: beforeState,
+                afterState: afterState,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String sceneId,
+                required String targetAssetId,
+                required String changeType,
+                Value<String> beforeState = const Value.absent(),
+                Value<String> afterState = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneContinuityChangesCompanion.insert(
+                id: id,
+                sceneId: sceneId,
+                targetAssetId: targetAssetId,
+                changeType: changeType,
+                beforeState: beforeState,
+                afterState: afterState,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SceneContinuityChangesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $SceneContinuityChangesTable,
+      SceneContinuityChange,
+      $$SceneContinuityChangesTableFilterComposer,
+      $$SceneContinuityChangesTableOrderingComposer,
+      $$SceneContinuityChangesTableAnnotationComposer,
+      $$SceneContinuityChangesTableCreateCompanionBuilder,
+      $$SceneContinuityChangesTableUpdateCompanionBuilder,
+      (
+        SceneContinuityChange,
+        BaseReferences<
+          _$ProjectDatabase,
+          $SceneContinuityChangesTable,
+          SceneContinuityChange
+        >,
+      ),
+      SceneContinuityChange,
+      PrefetchHooks Function()
+    >;
+typedef $$StoryBibleSectionsTableCreateCompanionBuilder =
+    StoryBibleSectionsCompanion Function({
+      required String id,
+      required String storyId,
+      required String sectionType,
+      required String title,
+      Value<String> content,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$StoryBibleSectionsTableUpdateCompanionBuilder =
+    StoryBibleSectionsCompanion Function({
+      Value<String> id,
+      Value<String> storyId,
+      Value<String> sectionType,
+      Value<String> title,
+      Value<String> content,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$StoryBibleSectionsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $StoryBibleSectionsTable> {
+  $$StoryBibleSectionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get storyId => $composableBuilder(
+    column: $table.storyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sectionType => $composableBuilder(
+    column: $table.sectionType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$StoryBibleSectionsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $StoryBibleSectionsTable> {
+  $$StoryBibleSectionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get storyId => $composableBuilder(
+    column: $table.storyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sectionType => $composableBuilder(
+    column: $table.sectionType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$StoryBibleSectionsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $StoryBibleSectionsTable> {
+  $$StoryBibleSectionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get storyId =>
+      $composableBuilder(column: $table.storyId, builder: (column) => column);
+
+  GeneratedColumn<String> get sectionType => $composableBuilder(
+    column: $table.sectionType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$StoryBibleSectionsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $StoryBibleSectionsTable,
+          StoryBibleSection,
+          $$StoryBibleSectionsTableFilterComposer,
+          $$StoryBibleSectionsTableOrderingComposer,
+          $$StoryBibleSectionsTableAnnotationComposer,
+          $$StoryBibleSectionsTableCreateCompanionBuilder,
+          $$StoryBibleSectionsTableUpdateCompanionBuilder,
+          (
+            StoryBibleSection,
+            BaseReferences<
+              _$ProjectDatabase,
+              $StoryBibleSectionsTable,
+              StoryBibleSection
+            >,
+          ),
+          StoryBibleSection,
+          PrefetchHooks Function()
+        > {
+  $$StoryBibleSectionsTableTableManager(
+    _$ProjectDatabase db,
+    $StoryBibleSectionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StoryBibleSectionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StoryBibleSectionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StoryBibleSectionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> storyId = const Value.absent(),
+                Value<String> sectionType = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StoryBibleSectionsCompanion(
+                id: id,
+                storyId: storyId,
+                sectionType: sectionType,
+                title: title,
+                content: content,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String storyId,
+                required String sectionType,
+                required String title,
+                Value<String> content = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StoryBibleSectionsCompanion.insert(
+                id: id,
+                storyId: storyId,
+                sectionType: sectionType,
+                title: title,
+                content: content,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$StoryBibleSectionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $StoryBibleSectionsTable,
+      StoryBibleSection,
+      $$StoryBibleSectionsTableFilterComposer,
+      $$StoryBibleSectionsTableOrderingComposer,
+      $$StoryBibleSectionsTableAnnotationComposer,
+      $$StoryBibleSectionsTableCreateCompanionBuilder,
+      $$StoryBibleSectionsTableUpdateCompanionBuilder,
+      (
+        StoryBibleSection,
+        BaseReferences<
+          _$ProjectDatabase,
+          $StoryBibleSectionsTable,
+          StoryBibleSection
+        >,
+      ),
+      StoryBibleSection,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -24542,4 +30948,28 @@ class $ProjectDatabaseManager {
       );
   $$EnvironmentReferencesTableTableManager get environmentReferences =>
       $$EnvironmentReferencesTableTableManager(_db, _db.environmentReferences);
+  $$StoriesTableTableManager get stories =>
+      $$StoriesTableTableManager(_db, _db.stories);
+  $$StoryArcsTableTableManager get storyArcs =>
+      $$StoryArcsTableTableManager(_db, _db.storyArcs);
+  $$StoryChaptersTableTableManager get storyChapters =>
+      $$StoryChaptersTableTableManager(_db, _db.storyChapters);
+  $$StoryScenesTableTableManager get storyScenes =>
+      $$StoryScenesTableTableManager(_db, _db.storyScenes);
+  $$SceneCharactersTableTableManager get sceneCharacters =>
+      $$SceneCharactersTableTableManager(_db, _db.sceneCharacters);
+  $$SceneEnvironmentContextsTableTableManager get sceneEnvironmentContexts =>
+      $$SceneEnvironmentContextsTableTableManager(
+        _db,
+        _db.sceneEnvironmentContexts,
+      );
+  $$SceneBeatsTableTableManager get sceneBeats =>
+      $$SceneBeatsTableTableManager(_db, _db.sceneBeats);
+  $$SceneContinuityChangesTableTableManager get sceneContinuityChanges =>
+      $$SceneContinuityChangesTableTableManager(
+        _db,
+        _db.sceneContinuityChanges,
+      );
+  $$StoryBibleSectionsTableTableManager get storyBibleSections =>
+      $$StoryBibleSectionsTableTableManager(_db, _db.storyBibleSections);
 }

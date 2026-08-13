@@ -67,6 +67,7 @@ The current repository has verified vertical slices for the following areas:
 | Weapon asset family | Complete for create/read/delete, technical child tables, variants, preservation, Explorer, Workspace, Inspector, and `uses` restart persistence | `test/features/weapon` |
 | Character Mode + Loadout | Complete for schema v9, Base Mode creation, mode create/clone/update/delete safeguards, nullable identity overrides, all generic slot type validation, quantity semantics, searchable AssetPicker, mode selector, identity editor, mode references repository, and derived relation synchronization | `test/features/character_mode`, `test/features/assets` |
 | Environment + Location | Complete for schema v10: environment asset/model, zones, architecture, weather, lighting, colors, props, continuity, physics, references, creation defaults, filesystem package, Explorer selection, Workspace, Inspector, and restart persistence | `test/features/environment` |
+| Story Bible + Scene System | Complete for schema v11: Story asset, Story Bible sections, arcs, chapters, scenes, scene characters/modes, environment context, beats, continuity changes, Story/Scene workspace foundations, Explorer selection, Inspector, and restart persistence | `test/features/story` |
 
 The following are deliberately deferred because they require additional product subsystems rather than missing persistence plumbing:
 

@@ -159,24 +159,45 @@ class CreateStoryService {
         ),
       );
 
-  Future<void> addBeat({
+  Future<String> addBeat({
     required String sceneId,
     required String content,
     String beatType = 'action',
     double? startSecond,
     double? durationSeconds,
-  }) => database
-      .into(database.sceneBeats)
-      .insert(
-        SceneBeatsCompanion.insert(
-          id: const Uuid().v4(),
-          sceneId: sceneId,
-          beatType: Value(beatType),
-          content: content,
-          startSecond: Value(startSecond),
-          durationSeconds: Value(durationSeconds),
-        ),
-      );
+  }) async {
+    final id = const Uuid().v4();
+    await database
+        .into(database.sceneBeats)
+        .insert(
+          SceneBeatsCompanion.insert(
+            id: id,
+            sceneId: sceneId,
+            beatType: Value(beatType),
+            content: content,
+            startSecond: Value(startSecond),
+            durationSeconds: Value(durationSeconds),
+          ),
+        );
+    return id;
+  }
+
+  Future<void> reorderBeats({
+    required String sceneId,
+    required List<String> orderedIds,
+  }) async {
+    await database.transaction(() async {
+      for (var index = 0; index < orderedIds.length; index++) {
+        await (database.update(database.sceneBeats)
+              ..where((row) => row.id.equals(orderedIds[index])))
+            .write(SceneBeatsCompanion(sortOrder: Value(index)));
+      }
+    });
+  }
+
+  Future<void> deleteBeat(String id) => (database.delete(
+    database.sceneBeats,
+  )..where((row) => row.id.equals(id))).go();
 }
 
 class DirectoryPath {

@@ -67,7 +67,7 @@ The current repository has verified vertical slices for the following areas:
 | Weapon asset family | Complete for create/read/delete, technical child tables, variants, preservation, Explorer, Workspace, Inspector, and `uses` restart persistence | `test/features/weapon` |
 | Character Mode + Loadout | Complete for schema v9, Base Mode creation, mode create/clone/update/delete safeguards, nullable identity overrides, all generic slot type validation, quantity semantics, searchable AssetPicker, mode selector, identity editor, mode references repository, and derived relation synchronization | `test/features/character_mode`, `test/features/assets` |
 | Environment + Location | Complete for schema v10: environment asset/model, zones, architecture, weather, lighting, colors, props, continuity, physics, references, creation defaults, filesystem package, Explorer selection, Workspace, Inspector, and restart persistence | `test/features/environment` |
-| Story Bible + Scene System | Complete for schema v11: Story asset, Story Bible sections, arcs, chapters, scenes, scene characters/modes, environment context, beats, continuity changes, Story/Scene workspace foundations, Explorer selection, Inspector, and restart persistence | `test/features/story` |
+| Story Bible + Scene System | Complete for schema v11: Story asset, Story Bible sections, arcs, chapters, scenes, scene characters/modes, environment context, beats, continuity changes, Scene timeline validation, continuity validation, AI-ready context, beat CRUD/reorder, responsive Story/Scene workspace, Explorer selection, Inspector, and restart persistence | `test/features/story` |
 
 The following are deliberately deferred because they require additional product subsystems rather than missing persistence plumbing:
 
@@ -78,6 +78,6 @@ The following are deliberately deferred because they require additional product 
 - export to PNG/PDF and release packaging/signing;
 - donation/payment integration.
 
-Sprint 13 now supports the generic accessory/companion/vehicle/hair slot contract, quantity validation, mode identity editing, reference persistence, and derived relation origin tracking. Dedicated binary file picking/preview, thumbnail generation, accent/tags, and compare-mode visualization remain follow-up presentation slices.
+Sprint 15 now supports scene beat CRUD/reorder, duration validation, continuity warnings, AI-ready scene context formatting, debounced autosave infrastructure, and responsive scene presentation. External binary import, export, signing, payment, cloud auth, and release operations remain intentionally outside the local application slice.
 
 Deferred items must not be represented as silent no-op actions; current UI shows explicit local-mode or not-configured feedback.

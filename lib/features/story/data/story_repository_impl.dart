@@ -48,6 +48,18 @@ class StoryRepositoryImpl {
   final ProjectDatabase database;
   final String projectId;
 
+  Future<StorySceneNode?> getScene(String sceneId) async {
+    final scene = await database.storyDao.getScene(sceneId);
+    if (scene == null) return null;
+    return StorySceneNode(
+      scene.id,
+      scene.title,
+      await database.storyDao.getSceneCharacters(scene.id),
+      await database.storyDao.getSceneEnvironment(scene.id),
+      await database.storyDao.getSceneBeats(scene.id),
+    );
+  }
+
   Future<StoryHierarchy> getStoryHierarchy(String storyId) async {
     final story = await database.storyDao.getStory(storyId);
     if (story == null || story.projectId != projectId) {

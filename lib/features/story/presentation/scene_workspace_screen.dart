@@ -6,6 +6,9 @@ import '../../projects/presentation/project_persistence_providers.dart';
 import '../application/create_story_service.dart';
 import '../data/story_repository_impl.dart';
 import 'scene_beat_editor.dart';
+import '../../timeline/domain/timeline_model.dart';
+import '../../timeline/application/create_timeline_service.dart';
+import '../../timeline/presentation/timeline_workspace_screen.dart';
 
 final sceneWorkspaceProvider = FutureProvider.family<StorySceneNode?, String>((
   ref,
@@ -33,6 +36,49 @@ class SceneWorkspaceScreen extends ConsumerStatefulWidget {
 }
 
 class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
+  Future<void> _openTimeline() async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null || !mounted) return;
+    final service = CreateTimelineService(database: session.database);
+    final timelineId = await service.ensureTimelineForScene(
+      projectId: session.manifest.id,
+      sceneId: widget.sceneId,
+    );
+    final timeline = await session.database.timelineDao.getTimeline(timelineId);
+    final tracks = await service.getTracks(timelineId);
+    final trackTypes = {for (final track in tracks) track.id: track.trackType};
+    final clips = (await service.getClips(timelineId))
+        .map(
+          (clip) => TimelineClipModel(
+            id: clip.id,
+            trackId: trackTypes[clip.trackId] ?? 'action',
+            startSeconds: clip.startSeconds,
+            durationSeconds: clip.durationSeconds,
+            label: clip.label,
+            sourceId: clip.sourceId,
+            clipType: clip.clipType,
+            payload: clip.payload,
+          ),
+        )
+        .toList();
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TimelineWorkspaceScreen(
+          sceneId: widget.sceneId,
+          sceneTitle: widget.title,
+          durationSeconds: timeline?.durationSeconds ?? 10,
+          clips: clips,
+          onClipTimingChanged: (clip) => service.updateClipTiming(
+            clip.id,
+            startSeconds: clip.startSeconds,
+            durationSeconds: clip.durationSeconds,
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _addBeat() async {
     final content = await showDialog<String>(
       context: context,
@@ -132,6 +178,12 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
                   ? 'Duration not set'
                   : '${total.toStringAsFixed(1)} sec of beats',
               style: const TextStyle(color: VoidColors.textMuted),
+            ),
+            const SizedBox(height: 10),
+            FilledButton.icon(
+              onPressed: _openTimeline,
+              icon: const Icon(Icons.timeline_outlined),
+              label: const Text('Open Timeline'),
             ),
             const SizedBox(height: 18),
             _Section(

@@ -27,6 +27,10 @@ import 'tables/scene_environment_contexts.dart';
 import 'tables/scene_beats.dart';
 import 'tables/scene_continuity_changes.dart';
 import 'tables/story_bible_sections.dart';
+import 'tables/timelines.dart';
+import 'tables/timeline_tracks.dart';
+import 'tables/timeline_clips.dart';
+import 'daos/timeline_dao.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -105,6 +109,9 @@ class ProjectMetadata extends Table {
     SceneBeats,
     SceneContinuityChanges,
     StoryBibleSections,
+    Timelines,
+    TimelineTracks,
+    TimelineClips,
   ],
   daos: [
     AssetDao,
@@ -115,13 +122,14 @@ class ProjectMetadata extends Table {
     WeaponDao,
     EnvironmentDao,
     StoryDao,
+    TimelineDao,
   ],
 )
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -203,6 +211,11 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(sceneBeats);
         await m.createTable(sceneContinuityChanges);
         await m.createTable(storyBibleSections);
+      }
+      if (from < 12) {
+        await m.createTable(timelines);
+        await m.createTable(timelineTracks);
+        await m.createTable(timelineClips);
       }
     },
   );

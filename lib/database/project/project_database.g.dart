@@ -19947,6 +19947,1597 @@ class StoryBibleSectionsCompanion extends UpdateCompanion<StoryBibleSection> {
   }
 }
 
+class $TimelinesTable extends Timelines
+    with TableInfo<$TimelinesTable, Timeline> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TimelinesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sceneIdMeta = const VerificationMeta(
+    'sceneId',
+  );
+  @override
+  late final GeneratedColumn<String> sceneId = GeneratedColumn<String>(
+    'scene_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> durationSeconds = GeneratedColumn<double>(
+    'duration_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _frameRateMeta = const VerificationMeta(
+    'frameRate',
+  );
+  @override
+  late final GeneratedColumn<int> frameRate = GeneratedColumn<int>(
+    'frame_rate',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(30),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    sceneId,
+    durationSeconds,
+    frameRate,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'timelines';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Timeline> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('scene_id')) {
+      context.handle(
+        _sceneIdMeta,
+        sceneId.isAcceptableOrUnknown(data['scene_id']!, _sceneIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneIdMeta);
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_durationSecondsMeta);
+    }
+    if (data.containsKey('frame_rate')) {
+      context.handle(
+        _frameRateMeta,
+        frameRate.isAcceptableOrUnknown(data['frame_rate']!, _frameRateMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Timeline map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Timeline(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      sceneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scene_id'],
+      )!,
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}duration_seconds'],
+      )!,
+      frameRate: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}frame_rate'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $TimelinesTable createAlias(String alias) {
+    return $TimelinesTable(attachedDatabase, alias);
+  }
+}
+
+class Timeline extends DataClass implements Insertable<Timeline> {
+  final String id;
+  final String projectId;
+  final String sceneId;
+  final double durationSeconds;
+  final int frameRate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const Timeline({
+    required this.id,
+    required this.projectId,
+    required this.sceneId,
+    required this.durationSeconds,
+    required this.frameRate,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['scene_id'] = Variable<String>(sceneId);
+    map['duration_seconds'] = Variable<double>(durationSeconds);
+    map['frame_rate'] = Variable<int>(frameRate);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  TimelinesCompanion toCompanion(bool nullToAbsent) {
+    return TimelinesCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      sceneId: Value(sceneId),
+      durationSeconds: Value(durationSeconds),
+      frameRate: Value(frameRate),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory Timeline.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Timeline(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      sceneId: serializer.fromJson<String>(json['sceneId']),
+      durationSeconds: serializer.fromJson<double>(json['durationSeconds']),
+      frameRate: serializer.fromJson<int>(json['frameRate']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'sceneId': serializer.toJson<String>(sceneId),
+      'durationSeconds': serializer.toJson<double>(durationSeconds),
+      'frameRate': serializer.toJson<int>(frameRate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  Timeline copyWith({
+    String? id,
+    String? projectId,
+    String? sceneId,
+    double? durationSeconds,
+    int? frameRate,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => Timeline(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    sceneId: sceneId ?? this.sceneId,
+    durationSeconds: durationSeconds ?? this.durationSeconds,
+    frameRate: frameRate ?? this.frameRate,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  Timeline copyWithCompanion(TimelinesCompanion data) {
+    return Timeline(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      sceneId: data.sceneId.present ? data.sceneId.value : this.sceneId,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      frameRate: data.frameRate.present ? data.frameRate.value : this.frameRate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Timeline(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('frameRate: $frameRate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    sceneId,
+    durationSeconds,
+    frameRate,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Timeline &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.sceneId == this.sceneId &&
+          other.durationSeconds == this.durationSeconds &&
+          other.frameRate == this.frameRate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class TimelinesCompanion extends UpdateCompanion<Timeline> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> sceneId;
+  final Value<double> durationSeconds;
+  final Value<int> frameRate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const TimelinesCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.sceneId = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.frameRate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TimelinesCompanion.insert({
+    required String id,
+    required String projectId,
+    required String sceneId,
+    required double durationSeconds,
+    this.frameRate = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       sceneId = Value(sceneId),
+       durationSeconds = Value(durationSeconds),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<Timeline> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? sceneId,
+    Expression<double>? durationSeconds,
+    Expression<int>? frameRate,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (sceneId != null) 'scene_id': sceneId,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (frameRate != null) 'frame_rate': frameRate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TimelinesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? sceneId,
+    Value<double>? durationSeconds,
+    Value<int>? frameRate,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return TimelinesCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      sceneId: sceneId ?? this.sceneId,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      frameRate: frameRate ?? this.frameRate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (sceneId.present) {
+      map['scene_id'] = Variable<String>(sceneId.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<double>(durationSeconds.value);
+    }
+    if (frameRate.present) {
+      map['frame_rate'] = Variable<int>(frameRate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TimelinesCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('frameRate: $frameRate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TimelineTracksTable extends TimelineTracks
+    with TableInfo<$TimelineTracksTable, TimelineTrack> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TimelineTracksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timelineIdMeta = const VerificationMeta(
+    'timelineId',
+  );
+  @override
+  late final GeneratedColumn<String> timelineId = GeneratedColumn<String>(
+    'timeline_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _trackTypeMeta = const VerificationMeta(
+    'trackType',
+  );
+  @override
+  late final GeneratedColumn<String> trackType = GeneratedColumn<String>(
+    'track_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _mutedMeta = const VerificationMeta('muted');
+  @override
+  late final GeneratedColumn<bool> muted = GeneratedColumn<bool>(
+    'muted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("muted" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _lockedMeta = const VerificationMeta('locked');
+  @override
+  late final GeneratedColumn<bool> locked = GeneratedColumn<bool>(
+    'locked',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("locked" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _visibleMeta = const VerificationMeta(
+    'visible',
+  );
+  @override
+  late final GeneratedColumn<bool> visible = GeneratedColumn<bool>(
+    'visible',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("visible" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    timelineId,
+    trackType,
+    name,
+    sortOrder,
+    muted,
+    locked,
+    visible,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'timeline_tracks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TimelineTrack> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('timeline_id')) {
+      context.handle(
+        _timelineIdMeta,
+        timelineId.isAcceptableOrUnknown(data['timeline_id']!, _timelineIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timelineIdMeta);
+    }
+    if (data.containsKey('track_type')) {
+      context.handle(
+        _trackTypeMeta,
+        trackType.isAcceptableOrUnknown(data['track_type']!, _trackTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trackTypeMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('muted')) {
+      context.handle(
+        _mutedMeta,
+        muted.isAcceptableOrUnknown(data['muted']!, _mutedMeta),
+      );
+    }
+    if (data.containsKey('locked')) {
+      context.handle(
+        _lockedMeta,
+        locked.isAcceptableOrUnknown(data['locked']!, _lockedMeta),
+      );
+    }
+    if (data.containsKey('visible')) {
+      context.handle(
+        _visibleMeta,
+        visible.isAcceptableOrUnknown(data['visible']!, _visibleMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TimelineTrack map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TimelineTrack(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      timelineId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}timeline_id'],
+      )!,
+      trackType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}track_type'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      muted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}muted'],
+      )!,
+      locked: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}locked'],
+      )!,
+      visible: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}visible'],
+      )!,
+    );
+  }
+
+  @override
+  $TimelineTracksTable createAlias(String alias) {
+    return $TimelineTracksTable(attachedDatabase, alias);
+  }
+}
+
+class TimelineTrack extends DataClass implements Insertable<TimelineTrack> {
+  final String id;
+  final String timelineId;
+  final String trackType;
+  final String name;
+  final int sortOrder;
+  final bool muted;
+  final bool locked;
+  final bool visible;
+  const TimelineTrack({
+    required this.id,
+    required this.timelineId,
+    required this.trackType,
+    required this.name,
+    required this.sortOrder,
+    required this.muted,
+    required this.locked,
+    required this.visible,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['timeline_id'] = Variable<String>(timelineId);
+    map['track_type'] = Variable<String>(trackType);
+    map['name'] = Variable<String>(name);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['muted'] = Variable<bool>(muted);
+    map['locked'] = Variable<bool>(locked);
+    map['visible'] = Variable<bool>(visible);
+    return map;
+  }
+
+  TimelineTracksCompanion toCompanion(bool nullToAbsent) {
+    return TimelineTracksCompanion(
+      id: Value(id),
+      timelineId: Value(timelineId),
+      trackType: Value(trackType),
+      name: Value(name),
+      sortOrder: Value(sortOrder),
+      muted: Value(muted),
+      locked: Value(locked),
+      visible: Value(visible),
+    );
+  }
+
+  factory TimelineTrack.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TimelineTrack(
+      id: serializer.fromJson<String>(json['id']),
+      timelineId: serializer.fromJson<String>(json['timelineId']),
+      trackType: serializer.fromJson<String>(json['trackType']),
+      name: serializer.fromJson<String>(json['name']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      muted: serializer.fromJson<bool>(json['muted']),
+      locked: serializer.fromJson<bool>(json['locked']),
+      visible: serializer.fromJson<bool>(json['visible']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'timelineId': serializer.toJson<String>(timelineId),
+      'trackType': serializer.toJson<String>(trackType),
+      'name': serializer.toJson<String>(name),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'muted': serializer.toJson<bool>(muted),
+      'locked': serializer.toJson<bool>(locked),
+      'visible': serializer.toJson<bool>(visible),
+    };
+  }
+
+  TimelineTrack copyWith({
+    String? id,
+    String? timelineId,
+    String? trackType,
+    String? name,
+    int? sortOrder,
+    bool? muted,
+    bool? locked,
+    bool? visible,
+  }) => TimelineTrack(
+    id: id ?? this.id,
+    timelineId: timelineId ?? this.timelineId,
+    trackType: trackType ?? this.trackType,
+    name: name ?? this.name,
+    sortOrder: sortOrder ?? this.sortOrder,
+    muted: muted ?? this.muted,
+    locked: locked ?? this.locked,
+    visible: visible ?? this.visible,
+  );
+  TimelineTrack copyWithCompanion(TimelineTracksCompanion data) {
+    return TimelineTrack(
+      id: data.id.present ? data.id.value : this.id,
+      timelineId: data.timelineId.present
+          ? data.timelineId.value
+          : this.timelineId,
+      trackType: data.trackType.present ? data.trackType.value : this.trackType,
+      name: data.name.present ? data.name.value : this.name,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      muted: data.muted.present ? data.muted.value : this.muted,
+      locked: data.locked.present ? data.locked.value : this.locked,
+      visible: data.visible.present ? data.visible.value : this.visible,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TimelineTrack(')
+          ..write('id: $id, ')
+          ..write('timelineId: $timelineId, ')
+          ..write('trackType: $trackType, ')
+          ..write('name: $name, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('muted: $muted, ')
+          ..write('locked: $locked, ')
+          ..write('visible: $visible')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    timelineId,
+    trackType,
+    name,
+    sortOrder,
+    muted,
+    locked,
+    visible,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TimelineTrack &&
+          other.id == this.id &&
+          other.timelineId == this.timelineId &&
+          other.trackType == this.trackType &&
+          other.name == this.name &&
+          other.sortOrder == this.sortOrder &&
+          other.muted == this.muted &&
+          other.locked == this.locked &&
+          other.visible == this.visible);
+}
+
+class TimelineTracksCompanion extends UpdateCompanion<TimelineTrack> {
+  final Value<String> id;
+  final Value<String> timelineId;
+  final Value<String> trackType;
+  final Value<String> name;
+  final Value<int> sortOrder;
+  final Value<bool> muted;
+  final Value<bool> locked;
+  final Value<bool> visible;
+  final Value<int> rowid;
+  const TimelineTracksCompanion({
+    this.id = const Value.absent(),
+    this.timelineId = const Value.absent(),
+    this.trackType = const Value.absent(),
+    this.name = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.muted = const Value.absent(),
+    this.locked = const Value.absent(),
+    this.visible = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TimelineTracksCompanion.insert({
+    required String id,
+    required String timelineId,
+    required String trackType,
+    required String name,
+    this.sortOrder = const Value.absent(),
+    this.muted = const Value.absent(),
+    this.locked = const Value.absent(),
+    this.visible = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       timelineId = Value(timelineId),
+       trackType = Value(trackType),
+       name = Value(name);
+  static Insertable<TimelineTrack> custom({
+    Expression<String>? id,
+    Expression<String>? timelineId,
+    Expression<String>? trackType,
+    Expression<String>? name,
+    Expression<int>? sortOrder,
+    Expression<bool>? muted,
+    Expression<bool>? locked,
+    Expression<bool>? visible,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (timelineId != null) 'timeline_id': timelineId,
+      if (trackType != null) 'track_type': trackType,
+      if (name != null) 'name': name,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (muted != null) 'muted': muted,
+      if (locked != null) 'locked': locked,
+      if (visible != null) 'visible': visible,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TimelineTracksCompanion copyWith({
+    Value<String>? id,
+    Value<String>? timelineId,
+    Value<String>? trackType,
+    Value<String>? name,
+    Value<int>? sortOrder,
+    Value<bool>? muted,
+    Value<bool>? locked,
+    Value<bool>? visible,
+    Value<int>? rowid,
+  }) {
+    return TimelineTracksCompanion(
+      id: id ?? this.id,
+      timelineId: timelineId ?? this.timelineId,
+      trackType: trackType ?? this.trackType,
+      name: name ?? this.name,
+      sortOrder: sortOrder ?? this.sortOrder,
+      muted: muted ?? this.muted,
+      locked: locked ?? this.locked,
+      visible: visible ?? this.visible,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (timelineId.present) {
+      map['timeline_id'] = Variable<String>(timelineId.value);
+    }
+    if (trackType.present) {
+      map['track_type'] = Variable<String>(trackType.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (muted.present) {
+      map['muted'] = Variable<bool>(muted.value);
+    }
+    if (locked.present) {
+      map['locked'] = Variable<bool>(locked.value);
+    }
+    if (visible.present) {
+      map['visible'] = Variable<bool>(visible.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TimelineTracksCompanion(')
+          ..write('id: $id, ')
+          ..write('timelineId: $timelineId, ')
+          ..write('trackType: $trackType, ')
+          ..write('name: $name, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('muted: $muted, ')
+          ..write('locked: $locked, ')
+          ..write('visible: $visible, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TimelineClipsTable extends TimelineClips
+    with TableInfo<$TimelineClipsTable, TimelineClip> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TimelineClipsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timelineIdMeta = const VerificationMeta(
+    'timelineId',
+  );
+  @override
+  late final GeneratedColumn<String> timelineId = GeneratedColumn<String>(
+    'timeline_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _trackIdMeta = const VerificationMeta(
+    'trackId',
+  );
+  @override
+  late final GeneratedColumn<String> trackId = GeneratedColumn<String>(
+    'track_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _clipTypeMeta = const VerificationMeta(
+    'clipType',
+  );
+  @override
+  late final GeneratedColumn<String> clipType = GeneratedColumn<String>(
+    'clip_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startSecondsMeta = const VerificationMeta(
+    'startSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> startSeconds = GeneratedColumn<double>(
+    'start_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> durationSeconds = GeneratedColumn<double>(
+    'duration_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceIdMeta = const VerificationMeta(
+    'sourceId',
+  );
+  @override
+  late final GeneratedColumn<String> sourceId = GeneratedColumn<String>(
+    'source_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _payloadMeta = const VerificationMeta(
+    'payload',
+  );
+  @override
+  late final GeneratedColumn<String> payload = GeneratedColumn<String>(
+    'payload',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('{}'),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    timelineId,
+    trackId,
+    clipType,
+    label,
+    startSeconds,
+    durationSeconds,
+    sourceId,
+    payload,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'timeline_clips';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TimelineClip> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('timeline_id')) {
+      context.handle(
+        _timelineIdMeta,
+        timelineId.isAcceptableOrUnknown(data['timeline_id']!, _timelineIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timelineIdMeta);
+    }
+    if (data.containsKey('track_id')) {
+      context.handle(
+        _trackIdMeta,
+        trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trackIdMeta);
+    }
+    if (data.containsKey('clip_type')) {
+      context.handle(
+        _clipTypeMeta,
+        clipType.isAcceptableOrUnknown(data['clip_type']!, _clipTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_clipTypeMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('start_seconds')) {
+      context.handle(
+        _startSecondsMeta,
+        startSeconds.isAcceptableOrUnknown(
+          data['start_seconds']!,
+          _startSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_startSecondsMeta);
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_durationSecondsMeta);
+    }
+    if (data.containsKey('source_id')) {
+      context.handle(
+        _sourceIdMeta,
+        sourceId.isAcceptableOrUnknown(data['source_id']!, _sourceIdMeta),
+      );
+    }
+    if (data.containsKey('payload')) {
+      context.handle(
+        _payloadMeta,
+        payload.isAcceptableOrUnknown(data['payload']!, _payloadMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TimelineClip map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TimelineClip(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      timelineId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}timeline_id'],
+      )!,
+      trackId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}track_id'],
+      )!,
+      clipType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}clip_type'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      startSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}start_seconds'],
+      )!,
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}duration_seconds'],
+      )!,
+      sourceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_id'],
+      ),
+      payload: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $TimelineClipsTable createAlias(String alias) {
+    return $TimelineClipsTable(attachedDatabase, alias);
+  }
+}
+
+class TimelineClip extends DataClass implements Insertable<TimelineClip> {
+  final String id;
+  final String timelineId;
+  final String trackId;
+  final String clipType;
+  final String label;
+  final double startSeconds;
+  final double durationSeconds;
+  final String? sourceId;
+  final String payload;
+  final int sortOrder;
+  const TimelineClip({
+    required this.id,
+    required this.timelineId,
+    required this.trackId,
+    required this.clipType,
+    required this.label,
+    required this.startSeconds,
+    required this.durationSeconds,
+    this.sourceId,
+    required this.payload,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['timeline_id'] = Variable<String>(timelineId);
+    map['track_id'] = Variable<String>(trackId);
+    map['clip_type'] = Variable<String>(clipType);
+    map['label'] = Variable<String>(label);
+    map['start_seconds'] = Variable<double>(startSeconds);
+    map['duration_seconds'] = Variable<double>(durationSeconds);
+    if (!nullToAbsent || sourceId != null) {
+      map['source_id'] = Variable<String>(sourceId);
+    }
+    map['payload'] = Variable<String>(payload);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  TimelineClipsCompanion toCompanion(bool nullToAbsent) {
+    return TimelineClipsCompanion(
+      id: Value(id),
+      timelineId: Value(timelineId),
+      trackId: Value(trackId),
+      clipType: Value(clipType),
+      label: Value(label),
+      startSeconds: Value(startSeconds),
+      durationSeconds: Value(durationSeconds),
+      sourceId: sourceId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceId),
+      payload: Value(payload),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory TimelineClip.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TimelineClip(
+      id: serializer.fromJson<String>(json['id']),
+      timelineId: serializer.fromJson<String>(json['timelineId']),
+      trackId: serializer.fromJson<String>(json['trackId']),
+      clipType: serializer.fromJson<String>(json['clipType']),
+      label: serializer.fromJson<String>(json['label']),
+      startSeconds: serializer.fromJson<double>(json['startSeconds']),
+      durationSeconds: serializer.fromJson<double>(json['durationSeconds']),
+      sourceId: serializer.fromJson<String?>(json['sourceId']),
+      payload: serializer.fromJson<String>(json['payload']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'timelineId': serializer.toJson<String>(timelineId),
+      'trackId': serializer.toJson<String>(trackId),
+      'clipType': serializer.toJson<String>(clipType),
+      'label': serializer.toJson<String>(label),
+      'startSeconds': serializer.toJson<double>(startSeconds),
+      'durationSeconds': serializer.toJson<double>(durationSeconds),
+      'sourceId': serializer.toJson<String?>(sourceId),
+      'payload': serializer.toJson<String>(payload),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  TimelineClip copyWith({
+    String? id,
+    String? timelineId,
+    String? trackId,
+    String? clipType,
+    String? label,
+    double? startSeconds,
+    double? durationSeconds,
+    Value<String?> sourceId = const Value.absent(),
+    String? payload,
+    int? sortOrder,
+  }) => TimelineClip(
+    id: id ?? this.id,
+    timelineId: timelineId ?? this.timelineId,
+    trackId: trackId ?? this.trackId,
+    clipType: clipType ?? this.clipType,
+    label: label ?? this.label,
+    startSeconds: startSeconds ?? this.startSeconds,
+    durationSeconds: durationSeconds ?? this.durationSeconds,
+    sourceId: sourceId.present ? sourceId.value : this.sourceId,
+    payload: payload ?? this.payload,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  TimelineClip copyWithCompanion(TimelineClipsCompanion data) {
+    return TimelineClip(
+      id: data.id.present ? data.id.value : this.id,
+      timelineId: data.timelineId.present
+          ? data.timelineId.value
+          : this.timelineId,
+      trackId: data.trackId.present ? data.trackId.value : this.trackId,
+      clipType: data.clipType.present ? data.clipType.value : this.clipType,
+      label: data.label.present ? data.label.value : this.label,
+      startSeconds: data.startSeconds.present
+          ? data.startSeconds.value
+          : this.startSeconds,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      sourceId: data.sourceId.present ? data.sourceId.value : this.sourceId,
+      payload: data.payload.present ? data.payload.value : this.payload,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TimelineClip(')
+          ..write('id: $id, ')
+          ..write('timelineId: $timelineId, ')
+          ..write('trackId: $trackId, ')
+          ..write('clipType: $clipType, ')
+          ..write('label: $label, ')
+          ..write('startSeconds: $startSeconds, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('sourceId: $sourceId, ')
+          ..write('payload: $payload, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    timelineId,
+    trackId,
+    clipType,
+    label,
+    startSeconds,
+    durationSeconds,
+    sourceId,
+    payload,
+    sortOrder,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TimelineClip &&
+          other.id == this.id &&
+          other.timelineId == this.timelineId &&
+          other.trackId == this.trackId &&
+          other.clipType == this.clipType &&
+          other.label == this.label &&
+          other.startSeconds == this.startSeconds &&
+          other.durationSeconds == this.durationSeconds &&
+          other.sourceId == this.sourceId &&
+          other.payload == this.payload &&
+          other.sortOrder == this.sortOrder);
+}
+
+class TimelineClipsCompanion extends UpdateCompanion<TimelineClip> {
+  final Value<String> id;
+  final Value<String> timelineId;
+  final Value<String> trackId;
+  final Value<String> clipType;
+  final Value<String> label;
+  final Value<double> startSeconds;
+  final Value<double> durationSeconds;
+  final Value<String?> sourceId;
+  final Value<String> payload;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const TimelineClipsCompanion({
+    this.id = const Value.absent(),
+    this.timelineId = const Value.absent(),
+    this.trackId = const Value.absent(),
+    this.clipType = const Value.absent(),
+    this.label = const Value.absent(),
+    this.startSeconds = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.sourceId = const Value.absent(),
+    this.payload = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TimelineClipsCompanion.insert({
+    required String id,
+    required String timelineId,
+    required String trackId,
+    required String clipType,
+    required String label,
+    required double startSeconds,
+    required double durationSeconds,
+    this.sourceId = const Value.absent(),
+    this.payload = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       timelineId = Value(timelineId),
+       trackId = Value(trackId),
+       clipType = Value(clipType),
+       label = Value(label),
+       startSeconds = Value(startSeconds),
+       durationSeconds = Value(durationSeconds);
+  static Insertable<TimelineClip> custom({
+    Expression<String>? id,
+    Expression<String>? timelineId,
+    Expression<String>? trackId,
+    Expression<String>? clipType,
+    Expression<String>? label,
+    Expression<double>? startSeconds,
+    Expression<double>? durationSeconds,
+    Expression<String>? sourceId,
+    Expression<String>? payload,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (timelineId != null) 'timeline_id': timelineId,
+      if (trackId != null) 'track_id': trackId,
+      if (clipType != null) 'clip_type': clipType,
+      if (label != null) 'label': label,
+      if (startSeconds != null) 'start_seconds': startSeconds,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (sourceId != null) 'source_id': sourceId,
+      if (payload != null) 'payload': payload,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TimelineClipsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? timelineId,
+    Value<String>? trackId,
+    Value<String>? clipType,
+    Value<String>? label,
+    Value<double>? startSeconds,
+    Value<double>? durationSeconds,
+    Value<String?>? sourceId,
+    Value<String>? payload,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return TimelineClipsCompanion(
+      id: id ?? this.id,
+      timelineId: timelineId ?? this.timelineId,
+      trackId: trackId ?? this.trackId,
+      clipType: clipType ?? this.clipType,
+      label: label ?? this.label,
+      startSeconds: startSeconds ?? this.startSeconds,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      sourceId: sourceId ?? this.sourceId,
+      payload: payload ?? this.payload,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (timelineId.present) {
+      map['timeline_id'] = Variable<String>(timelineId.value);
+    }
+    if (trackId.present) {
+      map['track_id'] = Variable<String>(trackId.value);
+    }
+    if (clipType.present) {
+      map['clip_type'] = Variable<String>(clipType.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (startSeconds.present) {
+      map['start_seconds'] = Variable<double>(startSeconds.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<double>(durationSeconds.value);
+    }
+    if (sourceId.present) {
+      map['source_id'] = Variable<String>(sourceId.value);
+    }
+    if (payload.present) {
+      map['payload'] = Variable<String>(payload.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TimelineClipsCompanion(')
+          ..write('id: $id, ')
+          ..write('timelineId: $timelineId, ')
+          ..write('trackId: $trackId, ')
+          ..write('clipType: $clipType, ')
+          ..write('label: $label, ')
+          ..write('startSeconds: $startSeconds, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('sourceId: $sourceId, ')
+          ..write('payload: $payload, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -20027,6 +21618,9 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
       $SceneContinuityChangesTable(this);
   late final $StoryBibleSectionsTable storyBibleSections =
       $StoryBibleSectionsTable(this);
+  late final $TimelinesTable timelines = $TimelinesTable(this);
+  late final $TimelineTracksTable timelineTracks = $TimelineTracksTable(this);
+  late final $TimelineClipsTable timelineClips = $TimelineClipsTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -20039,6 +21633,7 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     this as ProjectDatabase,
   );
   late final StoryDao storyDao = StoryDao(this as ProjectDatabase);
+  late final TimelineDao timelineDao = TimelineDao(this as ProjectDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -20087,6 +21682,9 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     sceneBeats,
     sceneContinuityChanges,
     storyBibleSections,
+    timelines,
+    timelineTracks,
+    timelineClips,
   ];
 }
 
@@ -30840,6 +32438,815 @@ typedef $$StoryBibleSectionsTableProcessedTableManager =
       StoryBibleSection,
       PrefetchHooks Function()
     >;
+typedef $$TimelinesTableCreateCompanionBuilder =
+    TimelinesCompanion Function({
+      required String id,
+      required String projectId,
+      required String sceneId,
+      required double durationSeconds,
+      Value<int> frameRate,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$TimelinesTableUpdateCompanionBuilder =
+    TimelinesCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> sceneId,
+      Value<double> durationSeconds,
+      Value<int> frameRate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$TimelinesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $TimelinesTable> {
+  $$TimelinesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get frameRate => $composableBuilder(
+    column: $table.frameRate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TimelinesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $TimelinesTable> {
+  $$TimelinesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get frameRate => $composableBuilder(
+    column: $table.frameRate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TimelinesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $TimelinesTable> {
+  $$TimelinesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get sceneId =>
+      $composableBuilder(column: $table.sceneId, builder: (column) => column);
+
+  GeneratedColumn<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get frameRate =>
+      $composableBuilder(column: $table.frameRate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$TimelinesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $TimelinesTable,
+          Timeline,
+          $$TimelinesTableFilterComposer,
+          $$TimelinesTableOrderingComposer,
+          $$TimelinesTableAnnotationComposer,
+          $$TimelinesTableCreateCompanionBuilder,
+          $$TimelinesTableUpdateCompanionBuilder,
+          (
+            Timeline,
+            BaseReferences<_$ProjectDatabase, $TimelinesTable, Timeline>,
+          ),
+          Timeline,
+          PrefetchHooks Function()
+        > {
+  $$TimelinesTableTableManager(_$ProjectDatabase db, $TimelinesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TimelinesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TimelinesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TimelinesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> sceneId = const Value.absent(),
+                Value<double> durationSeconds = const Value.absent(),
+                Value<int> frameRate = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TimelinesCompanion(
+                id: id,
+                projectId: projectId,
+                sceneId: sceneId,
+                durationSeconds: durationSeconds,
+                frameRate: frameRate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String sceneId,
+                required double durationSeconds,
+                Value<int> frameRate = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => TimelinesCompanion.insert(
+                id: id,
+                projectId: projectId,
+                sceneId: sceneId,
+                durationSeconds: durationSeconds,
+                frameRate: frameRate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TimelinesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $TimelinesTable,
+      Timeline,
+      $$TimelinesTableFilterComposer,
+      $$TimelinesTableOrderingComposer,
+      $$TimelinesTableAnnotationComposer,
+      $$TimelinesTableCreateCompanionBuilder,
+      $$TimelinesTableUpdateCompanionBuilder,
+      (Timeline, BaseReferences<_$ProjectDatabase, $TimelinesTable, Timeline>),
+      Timeline,
+      PrefetchHooks Function()
+    >;
+typedef $$TimelineTracksTableCreateCompanionBuilder =
+    TimelineTracksCompanion Function({
+      required String id,
+      required String timelineId,
+      required String trackType,
+      required String name,
+      Value<int> sortOrder,
+      Value<bool> muted,
+      Value<bool> locked,
+      Value<bool> visible,
+      Value<int> rowid,
+    });
+typedef $$TimelineTracksTableUpdateCompanionBuilder =
+    TimelineTracksCompanion Function({
+      Value<String> id,
+      Value<String> timelineId,
+      Value<String> trackType,
+      Value<String> name,
+      Value<int> sortOrder,
+      Value<bool> muted,
+      Value<bool> locked,
+      Value<bool> visible,
+      Value<int> rowid,
+    });
+
+class $$TimelineTracksTableFilterComposer
+    extends Composer<_$ProjectDatabase, $TimelineTracksTable> {
+  $$TimelineTracksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get timelineId => $composableBuilder(
+    column: $table.timelineId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trackType => $composableBuilder(
+    column: $table.trackType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get muted => $composableBuilder(
+    column: $table.muted,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get locked => $composableBuilder(
+    column: $table.locked,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get visible => $composableBuilder(
+    column: $table.visible,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TimelineTracksTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $TimelineTracksTable> {
+  $$TimelineTracksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timelineId => $composableBuilder(
+    column: $table.timelineId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trackType => $composableBuilder(
+    column: $table.trackType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get muted => $composableBuilder(
+    column: $table.muted,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get locked => $composableBuilder(
+    column: $table.locked,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get visible => $composableBuilder(
+    column: $table.visible,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TimelineTracksTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $TimelineTracksTable> {
+  $$TimelineTracksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get timelineId => $composableBuilder(
+    column: $table.timelineId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get trackType =>
+      $composableBuilder(column: $table.trackType, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<bool> get muted =>
+      $composableBuilder(column: $table.muted, builder: (column) => column);
+
+  GeneratedColumn<bool> get locked =>
+      $composableBuilder(column: $table.locked, builder: (column) => column);
+
+  GeneratedColumn<bool> get visible =>
+      $composableBuilder(column: $table.visible, builder: (column) => column);
+}
+
+class $$TimelineTracksTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $TimelineTracksTable,
+          TimelineTrack,
+          $$TimelineTracksTableFilterComposer,
+          $$TimelineTracksTableOrderingComposer,
+          $$TimelineTracksTableAnnotationComposer,
+          $$TimelineTracksTableCreateCompanionBuilder,
+          $$TimelineTracksTableUpdateCompanionBuilder,
+          (
+            TimelineTrack,
+            BaseReferences<
+              _$ProjectDatabase,
+              $TimelineTracksTable,
+              TimelineTrack
+            >,
+          ),
+          TimelineTrack,
+          PrefetchHooks Function()
+        > {
+  $$TimelineTracksTableTableManager(
+    _$ProjectDatabase db,
+    $TimelineTracksTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TimelineTracksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TimelineTracksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TimelineTracksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> timelineId = const Value.absent(),
+                Value<String> trackType = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<bool> muted = const Value.absent(),
+                Value<bool> locked = const Value.absent(),
+                Value<bool> visible = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TimelineTracksCompanion(
+                id: id,
+                timelineId: timelineId,
+                trackType: trackType,
+                name: name,
+                sortOrder: sortOrder,
+                muted: muted,
+                locked: locked,
+                visible: visible,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String timelineId,
+                required String trackType,
+                required String name,
+                Value<int> sortOrder = const Value.absent(),
+                Value<bool> muted = const Value.absent(),
+                Value<bool> locked = const Value.absent(),
+                Value<bool> visible = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TimelineTracksCompanion.insert(
+                id: id,
+                timelineId: timelineId,
+                trackType: trackType,
+                name: name,
+                sortOrder: sortOrder,
+                muted: muted,
+                locked: locked,
+                visible: visible,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TimelineTracksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $TimelineTracksTable,
+      TimelineTrack,
+      $$TimelineTracksTableFilterComposer,
+      $$TimelineTracksTableOrderingComposer,
+      $$TimelineTracksTableAnnotationComposer,
+      $$TimelineTracksTableCreateCompanionBuilder,
+      $$TimelineTracksTableUpdateCompanionBuilder,
+      (
+        TimelineTrack,
+        BaseReferences<_$ProjectDatabase, $TimelineTracksTable, TimelineTrack>,
+      ),
+      TimelineTrack,
+      PrefetchHooks Function()
+    >;
+typedef $$TimelineClipsTableCreateCompanionBuilder =
+    TimelineClipsCompanion Function({
+      required String id,
+      required String timelineId,
+      required String trackId,
+      required String clipType,
+      required String label,
+      required double startSeconds,
+      required double durationSeconds,
+      Value<String?> sourceId,
+      Value<String> payload,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$TimelineClipsTableUpdateCompanionBuilder =
+    TimelineClipsCompanion Function({
+      Value<String> id,
+      Value<String> timelineId,
+      Value<String> trackId,
+      Value<String> clipType,
+      Value<String> label,
+      Value<double> startSeconds,
+      Value<double> durationSeconds,
+      Value<String?> sourceId,
+      Value<String> payload,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$TimelineClipsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $TimelineClipsTable> {
+  $$TimelineClipsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get timelineId => $composableBuilder(
+    column: $table.timelineId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trackId => $composableBuilder(
+    column: $table.trackId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clipType => $composableBuilder(
+    column: $table.clipType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceId => $composableBuilder(
+    column: $table.sourceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TimelineClipsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $TimelineClipsTable> {
+  $$TimelineClipsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timelineId => $composableBuilder(
+    column: $table.timelineId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trackId => $composableBuilder(
+    column: $table.trackId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clipType => $composableBuilder(
+    column: $table.clipType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceId => $composableBuilder(
+    column: $table.sourceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TimelineClipsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $TimelineClipsTable> {
+  $$TimelineClipsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get timelineId => $composableBuilder(
+    column: $table.timelineId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get trackId =>
+      $composableBuilder(column: $table.trackId, builder: (column) => column);
+
+  GeneratedColumn<String> get clipType =>
+      $composableBuilder(column: $table.clipType, builder: (column) => column);
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sourceId =>
+      $composableBuilder(column: $table.sourceId, builder: (column) => column);
+
+  GeneratedColumn<String> get payload =>
+      $composableBuilder(column: $table.payload, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$TimelineClipsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $TimelineClipsTable,
+          TimelineClip,
+          $$TimelineClipsTableFilterComposer,
+          $$TimelineClipsTableOrderingComposer,
+          $$TimelineClipsTableAnnotationComposer,
+          $$TimelineClipsTableCreateCompanionBuilder,
+          $$TimelineClipsTableUpdateCompanionBuilder,
+          (
+            TimelineClip,
+            BaseReferences<
+              _$ProjectDatabase,
+              $TimelineClipsTable,
+              TimelineClip
+            >,
+          ),
+          TimelineClip,
+          PrefetchHooks Function()
+        > {
+  $$TimelineClipsTableTableManager(
+    _$ProjectDatabase db,
+    $TimelineClipsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TimelineClipsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TimelineClipsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TimelineClipsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> timelineId = const Value.absent(),
+                Value<String> trackId = const Value.absent(),
+                Value<String> clipType = const Value.absent(),
+                Value<String> label = const Value.absent(),
+                Value<double> startSeconds = const Value.absent(),
+                Value<double> durationSeconds = const Value.absent(),
+                Value<String?> sourceId = const Value.absent(),
+                Value<String> payload = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TimelineClipsCompanion(
+                id: id,
+                timelineId: timelineId,
+                trackId: trackId,
+                clipType: clipType,
+                label: label,
+                startSeconds: startSeconds,
+                durationSeconds: durationSeconds,
+                sourceId: sourceId,
+                payload: payload,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String timelineId,
+                required String trackId,
+                required String clipType,
+                required String label,
+                required double startSeconds,
+                required double durationSeconds,
+                Value<String?> sourceId = const Value.absent(),
+                Value<String> payload = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TimelineClipsCompanion.insert(
+                id: id,
+                timelineId: timelineId,
+                trackId: trackId,
+                clipType: clipType,
+                label: label,
+                startSeconds: startSeconds,
+                durationSeconds: durationSeconds,
+                sourceId: sourceId,
+                payload: payload,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TimelineClipsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $TimelineClipsTable,
+      TimelineClip,
+      $$TimelineClipsTableFilterComposer,
+      $$TimelineClipsTableOrderingComposer,
+      $$TimelineClipsTableAnnotationComposer,
+      $$TimelineClipsTableCreateCompanionBuilder,
+      $$TimelineClipsTableUpdateCompanionBuilder,
+      (
+        TimelineClip,
+        BaseReferences<_$ProjectDatabase, $TimelineClipsTable, TimelineClip>,
+      ),
+      TimelineClip,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -30972,4 +33379,10 @@ class $ProjectDatabaseManager {
       );
   $$StoryBibleSectionsTableTableManager get storyBibleSections =>
       $$StoryBibleSectionsTableTableManager(_db, _db.storyBibleSections);
+  $$TimelinesTableTableManager get timelines =>
+      $$TimelinesTableTableManager(_db, _db.timelines);
+  $$TimelineTracksTableTableManager get timelineTracks =>
+      $$TimelineTracksTableTableManager(_db, _db.timelineTracks);
+  $$TimelineClipsTableTableManager get timelineClips =>
+      $$TimelineClipsTableTableManager(_db, _db.timelineClips);
 }

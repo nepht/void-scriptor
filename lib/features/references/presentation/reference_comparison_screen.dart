@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../domain/reference_models.dart';
@@ -136,8 +138,8 @@ class _ImagePane extends StatelessWidget {
         color: Colors.black12,
         child: path.startsWith('http')
             ? Image.network(path, fit: BoxFit.contain)
-            : Image.asset(
-                path,
+            : Image.file(
+                File(path),
                 fit: BoxFit.contain,
                 errorBuilder: (_, __, ___) =>
                     const Icon(Icons.broken_image_outlined, size: 64),

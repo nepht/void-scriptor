@@ -24,6 +24,8 @@ abstract interface class CharacterModeRepository {
     required String modeId,
     String? name,
     String? description,
+    String? referenceSetId,
+    bool clearReferenceSet = false,
   });
   Future<void> deleteMode(String modeId);
   Future<void> rememberLastUsedMode({
@@ -48,6 +50,7 @@ class CharacterModeRepositoryImpl implements CharacterModeRepository {
     thumbnailPath: row.thumbnailPath,
     accentColor: row.accentColor,
     tags: (jsonDecode(row.tagsJson) as List).cast<String>(),
+    referenceSetId: row.referenceSetId,
   );
 
   @override
@@ -167,6 +170,8 @@ class CharacterModeRepositoryImpl implements CharacterModeRepository {
     required String modeId,
     String? name,
     String? description,
+    String? referenceSetId,
+    bool clearReferenceSet = false,
   }) async {
     final current = await database.characterModeDao.getMode(modeId);
     if (current == null) throw ArgumentError('Mode not found');
@@ -177,6 +182,11 @@ class CharacterModeRepositoryImpl implements CharacterModeRepository {
         description: description == null
             ? const Value.absent()
             : Value(description),
+        referenceSetId: clearReferenceSet
+            ? const Value(null)
+            : referenceSetId == null
+            ? const Value.absent()
+            : Value(referenceSetId),
         updatedAt: Value(DateTime.now()),
       ),
     );

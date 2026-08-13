@@ -17402,6 +17402,17 @@ class $StoryScenesTable extends StoryScenes
         type: DriftSqlType.double,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _referenceSetIdMeta = const VerificationMeta(
+    'referenceSetId',
+  );
+  @override
+  late final GeneratedColumn<String> referenceSetId = GeneratedColumn<String>(
+    'reference_set_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -17435,6 +17446,7 @@ class $StoryScenesTable extends StoryScenes
     sceneNumber,
     sortOrder,
     estimatedDurationSeconds,
+    referenceSetId,
     createdAt,
     updatedAt,
   ];
@@ -17517,6 +17529,15 @@ class $StoryScenesTable extends StoryScenes
         ),
       );
     }
+    if (data.containsKey('reference_set_id')) {
+      context.handle(
+        _referenceSetIdMeta,
+        referenceSetId.isAcceptableOrUnknown(
+          data['reference_set_id']!,
+          _referenceSetIdMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -17578,6 +17599,10 @@ class $StoryScenesTable extends StoryScenes
         DriftSqlType.double,
         data['${effectivePrefix}estimated_duration_seconds'],
       ),
+      referenceSetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reference_set_id'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -17605,6 +17630,7 @@ class StoryScene extends DataClass implements Insertable<StoryScene> {
   final int sceneNumber;
   final int sortOrder;
   final double? estimatedDurationSeconds;
+  final String? referenceSetId;
   final DateTime createdAt;
   final DateTime updatedAt;
   const StoryScene({
@@ -17617,6 +17643,7 @@ class StoryScene extends DataClass implements Insertable<StoryScene> {
     required this.sceneNumber,
     required this.sortOrder,
     this.estimatedDurationSeconds,
+    this.referenceSetId,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -17636,6 +17663,9 @@ class StoryScene extends DataClass implements Insertable<StoryScene> {
         estimatedDurationSeconds,
       );
     }
+    if (!nullToAbsent || referenceSetId != null) {
+      map['reference_set_id'] = Variable<String>(referenceSetId);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -17654,6 +17684,9 @@ class StoryScene extends DataClass implements Insertable<StoryScene> {
       estimatedDurationSeconds: estimatedDurationSeconds == null && nullToAbsent
           ? const Value.absent()
           : Value(estimatedDurationSeconds),
+      referenceSetId: referenceSetId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referenceSetId),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -17676,6 +17709,7 @@ class StoryScene extends DataClass implements Insertable<StoryScene> {
       estimatedDurationSeconds: serializer.fromJson<double?>(
         json['estimatedDurationSeconds'],
       ),
+      referenceSetId: serializer.fromJson<String?>(json['referenceSetId']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -17695,6 +17729,7 @@ class StoryScene extends DataClass implements Insertable<StoryScene> {
       'estimatedDurationSeconds': serializer.toJson<double?>(
         estimatedDurationSeconds,
       ),
+      'referenceSetId': serializer.toJson<String?>(referenceSetId),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -17710,6 +17745,7 @@ class StoryScene extends DataClass implements Insertable<StoryScene> {
     int? sceneNumber,
     int? sortOrder,
     Value<double?> estimatedDurationSeconds = const Value.absent(),
+    Value<String?> referenceSetId = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => StoryScene(
@@ -17724,6 +17760,9 @@ class StoryScene extends DataClass implements Insertable<StoryScene> {
     estimatedDurationSeconds: estimatedDurationSeconds.present
         ? estimatedDurationSeconds.value
         : this.estimatedDurationSeconds,
+    referenceSetId: referenceSetId.present
+        ? referenceSetId.value
+        : this.referenceSetId,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -17742,6 +17781,9 @@ class StoryScene extends DataClass implements Insertable<StoryScene> {
       estimatedDurationSeconds: data.estimatedDurationSeconds.present
           ? data.estimatedDurationSeconds.value
           : this.estimatedDurationSeconds,
+      referenceSetId: data.referenceSetId.present
+          ? data.referenceSetId.value
+          : this.referenceSetId,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -17759,6 +17801,7 @@ class StoryScene extends DataClass implements Insertable<StoryScene> {
           ..write('sceneNumber: $sceneNumber, ')
           ..write('sortOrder: $sortOrder, ')
           ..write('estimatedDurationSeconds: $estimatedDurationSeconds, ')
+          ..write('referenceSetId: $referenceSetId, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -17776,6 +17819,7 @@ class StoryScene extends DataClass implements Insertable<StoryScene> {
     sceneNumber,
     sortOrder,
     estimatedDurationSeconds,
+    referenceSetId,
     createdAt,
     updatedAt,
   );
@@ -17792,6 +17836,7 @@ class StoryScene extends DataClass implements Insertable<StoryScene> {
           other.sceneNumber == this.sceneNumber &&
           other.sortOrder == this.sortOrder &&
           other.estimatedDurationSeconds == this.estimatedDurationSeconds &&
+          other.referenceSetId == this.referenceSetId &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -17806,6 +17851,7 @@ class StoryScenesCompanion extends UpdateCompanion<StoryScene> {
   final Value<int> sceneNumber;
   final Value<int> sortOrder;
   final Value<double?> estimatedDurationSeconds;
+  final Value<String?> referenceSetId;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -17819,6 +17865,7 @@ class StoryScenesCompanion extends UpdateCompanion<StoryScene> {
     this.sceneNumber = const Value.absent(),
     this.sortOrder = const Value.absent(),
     this.estimatedDurationSeconds = const Value.absent(),
+    this.referenceSetId = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -17833,6 +17880,7 @@ class StoryScenesCompanion extends UpdateCompanion<StoryScene> {
     required int sceneNumber,
     this.sortOrder = const Value.absent(),
     this.estimatedDurationSeconds = const Value.absent(),
+    this.referenceSetId = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -17853,6 +17901,7 @@ class StoryScenesCompanion extends UpdateCompanion<StoryScene> {
     Expression<int>? sceneNumber,
     Expression<int>? sortOrder,
     Expression<double>? estimatedDurationSeconds,
+    Expression<String>? referenceSetId,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -17868,6 +17917,7 @@ class StoryScenesCompanion extends UpdateCompanion<StoryScene> {
       if (sortOrder != null) 'sort_order': sortOrder,
       if (estimatedDurationSeconds != null)
         'estimated_duration_seconds': estimatedDurationSeconds,
+      if (referenceSetId != null) 'reference_set_id': referenceSetId,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -17884,6 +17934,7 @@ class StoryScenesCompanion extends UpdateCompanion<StoryScene> {
     Value<int>? sceneNumber,
     Value<int>? sortOrder,
     Value<double?>? estimatedDurationSeconds,
+    Value<String?>? referenceSetId,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
@@ -17899,6 +17950,7 @@ class StoryScenesCompanion extends UpdateCompanion<StoryScene> {
       sortOrder: sortOrder ?? this.sortOrder,
       estimatedDurationSeconds:
           estimatedDurationSeconds ?? this.estimatedDurationSeconds,
+      referenceSetId: referenceSetId ?? this.referenceSetId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -17937,6 +17989,9 @@ class StoryScenesCompanion extends UpdateCompanion<StoryScene> {
         estimatedDurationSeconds.value,
       );
     }
+    if (referenceSetId.present) {
+      map['reference_set_id'] = Variable<String>(referenceSetId.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -17961,6 +18016,7 @@ class StoryScenesCompanion extends UpdateCompanion<StoryScene> {
           ..write('sceneNumber: $sceneNumber, ')
           ..write('sortOrder: $sortOrder, ')
           ..write('estimatedDurationSeconds: $estimatedDurationSeconds, ')
+          ..write('referenceSetId: $referenceSetId, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -39815,6 +39871,7 @@ typedef $$StoryScenesTableCreateCompanionBuilder =
       required int sceneNumber,
       Value<int> sortOrder,
       Value<double?> estimatedDurationSeconds,
+      Value<String?> referenceSetId,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<int> rowid,
@@ -39830,6 +39887,7 @@ typedef $$StoryScenesTableUpdateCompanionBuilder =
       Value<int> sceneNumber,
       Value<int> sortOrder,
       Value<double?> estimatedDurationSeconds,
+      Value<String?> referenceSetId,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
@@ -39886,6 +39944,11 @@ class $$StoryScenesTableFilterComposer
 
   ColumnFilters<double> get estimatedDurationSeconds => $composableBuilder(
     column: $table.estimatedDurationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -39954,6 +40017,11 @@ class $$StoryScenesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -40005,6 +40073,11 @@ class $$StoryScenesTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -40052,6 +40125,7 @@ class $$StoryScenesTableTableManager
                 Value<int> sceneNumber = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
                 Value<double?> estimatedDurationSeconds = const Value.absent(),
+                Value<String?> referenceSetId = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -40065,6 +40139,7 @@ class $$StoryScenesTableTableManager
                 sceneNumber: sceneNumber,
                 sortOrder: sortOrder,
                 estimatedDurationSeconds: estimatedDurationSeconds,
+                referenceSetId: referenceSetId,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -40080,6 +40155,7 @@ class $$StoryScenesTableTableManager
                 required int sceneNumber,
                 Value<int> sortOrder = const Value.absent(),
                 Value<double?> estimatedDurationSeconds = const Value.absent(),
+                Value<String?> referenceSetId = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
@@ -40093,6 +40169,7 @@ class $$StoryScenesTableTableManager
                 sceneNumber: sceneNumber,
                 sortOrder: sortOrder,
                 estimatedDurationSeconds: estimatedDurationSeconds,
+                referenceSetId: referenceSetId,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,

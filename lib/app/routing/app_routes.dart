@@ -13,6 +13,7 @@ abstract final class AppRoutes {
   static const aiStudio = '/ai-studio';
   static const aiComposer = '/ai/composer';
   static const aiHistory = '/ai/history';
+  static const aiGallery = '/ai/gallery';
   static const aiProviders = '/ai/providers';
   static const donation = '/donation';
   static const workspace = '/workspace';

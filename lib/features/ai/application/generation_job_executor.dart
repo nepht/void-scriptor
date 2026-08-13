@@ -48,6 +48,8 @@ abstract interface class AiOutputService {
 }
 
 typedef PromptLoader = Future<LoadedPrompt> Function(String promptHistoryId);
+typedef PostGenerationHook =
+    Future<void> Function(GenerationJob job, SavedGenerationOutput output);
 
 class GenerationJobExecutor {
   GenerationJobExecutor({
@@ -55,11 +57,13 @@ class GenerationJobExecutor {
     required this.repository,
     required this.outputService,
     required this.promptLoader,
+    this.postGenerationHook,
   });
   final AiProviderRegistry registry;
   final GenerationJobRepository repository;
   final AiOutputService outputService;
   final PromptLoader promptLoader;
+  final PostGenerationHook? postGenerationHook;
 
   Future<void> execute(GenerationJob job) async {
     await repository.updateStatus(
@@ -87,6 +91,7 @@ class GenerationJobExecutor {
           index: index,
         );
         await repository.saveOutput(output);
+        await postGenerationHook?.call(job, output);
       }
       await repository.updateStatus(
         job.id,

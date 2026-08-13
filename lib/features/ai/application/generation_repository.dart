@@ -95,6 +95,21 @@ class GenerationRepository {
             ..orderBy([(t) => OrderingTerm(expression: t.sortOrder)]))
           .get();
 
+  Future<AiGenerationOutput?> getOutput(String outputId) => (database.select(
+    database.aiGenerationOutputs,
+  )..where((row) => row.id.equals(outputId))).getSingleOrNull();
+
+  Future<List<AiGenerationOutput>> getProjectOutputs(String projectId) async {
+    final jobs = await (database.select(
+      database.aiGenerationJobs,
+    )..where((row) => row.projectId.equals(projectId))).get();
+    final result = <AiGenerationOutput>[];
+    for (final job in jobs) {
+      result.addAll(await getOutputs(job.id));
+    }
+    return result;
+  }
+
   Future<void> saveInput({
     required String jobId,
     required String inputId,

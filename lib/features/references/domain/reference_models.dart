@@ -46,7 +46,7 @@ enum ConsistencySeverity { info, warning, critical }
 
 enum ConsistencyReviewStatus { notReviewed, passed, reviewRequired, failed }
 
-enum ReferenceHealth { healthy, incomplete, missing, broken }
+enum ReferenceHealth { healthy, incomplete, missing, moved, modified, broken }
 
 enum ImageComparisonMode { sideBySide, overlay, swipe }
 
@@ -178,6 +178,22 @@ class ConsistencyReviewModel {
   final ConsistencyReviewStatus status;
   final String notes;
   final DateTime? reviewedAt;
+}
+
+class ConsistencyReviewItemModel {
+  const ConsistencyReviewItemModel({
+    required this.id,
+    required this.reviewId,
+    required this.ruleId,
+    required this.status,
+    this.notes = '',
+  });
+
+  final String id;
+  final String reviewId;
+  final String ruleId;
+  final ConsistencyReviewStatus status;
+  final String notes;
 }
 
 class ComparisonViewport {

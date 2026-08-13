@@ -9,6 +9,7 @@ class CharacterMode {
     this.thumbnailPath,
     this.accentColor,
     this.tags = const [],
+    this.referenceSetId,
   });
 
   final String id;
@@ -20,6 +21,7 @@ class CharacterMode {
   final String? thumbnailPath;
   final String? accentColor;
   final List<String> tags;
+  final String? referenceSetId;
 
   CharacterMode copyWith({
     String? name,
@@ -28,6 +30,8 @@ class CharacterMode {
     String? thumbnailPath,
     String? accentColor,
     List<String>? tags,
+    String? referenceSetId,
+    bool clearReferenceSet = false,
   }) => CharacterMode(
     id: id,
     projectId: projectId,
@@ -38,5 +42,8 @@ class CharacterMode {
     thumbnailPath: thumbnailPath ?? this.thumbnailPath,
     accentColor: accentColor ?? this.accentColor,
     tags: tags ?? this.tags,
+    referenceSetId: clearReferenceSet
+        ? null
+        : referenceSetId ?? this.referenceSetId,
   );
 }

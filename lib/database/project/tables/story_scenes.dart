@@ -10,6 +10,7 @@ class StoryScenes extends Table {
   IntColumn get sceneNumber => integer()();
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
   RealColumn get estimatedDurationSeconds => real().nullable()();
+  TextColumn get referenceSetId => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
   @override

@@ -7,9 +7,11 @@ import 'package:path/path.dart' as p;
 import '../../../core/persistence/project_paths.dart';
 import '../../../database/project/project_database.dart';
 import '../../../database/project/tables/consistency.dart';
+import '../../../database/project/tables/character_modes.dart';
 import '../../../database/project/tables/reference_identity.dart';
 import '../../../database/project/tables/reference_sets.dart';
 import '../../../database/project/tables/references.dart';
+import '../../../database/project/tables/story_scenes.dart';
 import '../domain/reference_models.dart';
 
 part 'reference_repository.g.dart';
@@ -23,6 +25,9 @@ part 'reference_repository.g.dart';
     PreservationLocks,
     ConsistencyRules,
     ConsistencyReviews,
+    ConsistencyReviewItems,
+    CharacterModes,
+    StoryScenes,
   ],
 )
 class ReferenceDao extends DatabaseAccessor<ProjectDatabase>
@@ -136,6 +141,46 @@ class ReferenceDao extends DatabaseAccessor<ProjectDatabase>
             ..orderBy([(row) => OrderingTerm(expression: row.sortOrder)]))
           .get();
 
+  Future<void> saveSet(ReferenceSetModel set) =>
+      into(referenceSets).insertOnConflictUpdate(
+        ReferenceSetsCompanion.insert(
+          id: set.id,
+          projectId: set.projectId,
+          ownerAssetId: Value(set.ownerAssetId),
+          name: set.name,
+          description: Value(set.description),
+          defaultSet: Value(set.defaultSet),
+          createdAt: set.createdAt ?? DateTime.now().toUtc(),
+        ),
+      );
+
+  Future<List<ReferenceSet>> setsForOwner(String projectId, String? ownerId) =>
+      (select(referenceSets)..where((row) {
+            final owner = ownerId == null
+                ? row.ownerAssetId.isNull()
+                : row.ownerAssetId.equals(ownerId);
+            return row.projectId.equals(projectId) & owner;
+          }))
+          .get();
+
+  Future<void> removeFromSet(String setId, String referenceId) =>
+      (delete(referenceSetItems)..where(
+            (row) =>
+                row.referenceSetId.equals(setId) &
+                row.referenceId.equals(referenceId),
+          ))
+          .go();
+
+  Future<List<Reference>> referencesForSet(String setId) async {
+    final items = await itemsForSet(setId);
+    final result = <Reference>[];
+    for (final item in items) {
+      final reference = await byId(item.referenceId);
+      if (reference != null && reference.enabled) result.add(reference);
+    }
+    return result;
+  }
+
   Future<void> saveLock(PreservationLockModel lock) =>
       into(preservationLocks).insertOnConflictUpdate(
         PreservationLocksCompanion.insert(
@@ -147,6 +192,12 @@ class ReferenceDao extends DatabaseAccessor<ProjectDatabase>
           priority: Value(lock.priority),
         ),
       );
+
+  Future<List<PreservationLock>> locksForAsset(String assetId) =>
+      (select(preservationLocks)
+            ..where((row) => row.assetId.equals(assetId))
+            ..orderBy([(row) => OrderingTerm.desc(row.priority)]))
+          .get();
 
   Future<void> saveRule(ConsistencyRuleModel rule) =>
       into(consistencyRules).insertOnConflictUpdate(
@@ -160,6 +211,28 @@ class ReferenceDao extends DatabaseAccessor<ProjectDatabase>
         ),
       );
 
+  Future<List<ConsistencyRule>> rulesForAsset(String assetId) =>
+      (select(consistencyRules)..where(
+            (row) => row.assetId.equals(assetId) & row.enabled.equals(true),
+          ))
+          .get();
+
+  Future<List<ConsistencyReview>> reviewsForAsset(String assetId) =>
+      (select(consistencyReviews)
+            ..where((row) => row.assetId.equals(assetId))
+            ..orderBy([(row) => OrderingTerm.desc(row.reviewedAt)]))
+          .get();
+
+  Future<void> assignSetToMode(String modeId, String? setId) =>
+      (update(characterModes)..where((row) => row.id.equals(modeId))).write(
+        CharacterModesCompanion(referenceSetId: Value(setId)),
+      );
+
+  Future<void> assignSetToScene(String sceneId, String? setId) =>
+      (update(storyScenes)..where((row) => row.id.equals(sceneId))).write(
+        StoryScenesCompanion(referenceSetId: Value(setId)),
+      );
+
   Future<void> saveReview(ConsistencyReviewModel review) =>
       into(consistencyReviews).insertOnConflictUpdate(
         ConsistencyReviewsCompanion.insert(
@@ -171,6 +244,22 @@ class ReferenceDao extends DatabaseAccessor<ProjectDatabase>
           reviewedAt: Value(review.reviewedAt),
         ),
       );
+
+  Future<void> saveReviewItem(ConsistencyReviewItemModel item) =>
+      into(consistencyReviewItems).insertOnConflictUpdate(
+        ConsistencyReviewItemsCompanion.insert(
+          id: item.id,
+          reviewId: item.reviewId,
+          ruleId: item.ruleId,
+          status: item.status.name,
+          note: Value(item.notes),
+        ),
+      );
+
+  Future<List<ConsistencyReviewItem>> itemsForReview(String reviewId) =>
+      (select(
+        consistencyReviewItems,
+      )..where((row) => row.reviewId.equals(reviewId))).get();
 
   Future<void> saveVersion({
     required String referenceId,
@@ -193,6 +282,16 @@ class ReferenceDao extends DatabaseAccessor<ProjectDatabase>
       ),
     );
   }
+
+  Future<ReferenceVersion?> versionById(String id) => (select(
+    referenceVersions,
+  )..where((row) => row.id.equals(id))).getSingleOrNull();
+
+  Future<int> nextVersion(String referenceId) async =>
+      (await (select(
+        referenceVersions,
+      )..where((row) => row.referenceId.equals(referenceId))).get()).length +
+      1;
 }
 
 class ReferenceImportService {
@@ -286,9 +385,19 @@ class ReferenceImportService {
     final projectDir = await paths.project(projectId);
     final target = File(p.join(projectDir.path, current.filePath));
     await target.parent.create(recursive: true);
+    final versionNumber = await dao.nextVersion(referenceId);
+    final snapshot = File(
+      p.join(
+        target.parent.path,
+        'versions',
+        'v${versionNumber}_${p.basename(target.path)}',
+      ),
+    );
+    await snapshot.parent.create(recursive: true);
+    await target.copy(snapshot.path);
     await dao.saveVersion(
       referenceId: referenceId,
-      filePath: current.filePath,
+      filePath: p.relative(snapshot.path, from: projectDir.path),
       contentHash: current.contentHash,
       changeNote: changeNote,
     );
@@ -318,6 +427,57 @@ class ReferenceImportService {
       contentHash: updated.contentHash,
       createdAt: updated.createdAt,
       updatedAt: updated.updatedAt,
+    );
+  }
+
+  Future<ReferenceModel> restoreVersion({
+    required String projectId,
+    required String referenceId,
+    required String versionId,
+  }) async {
+    final current = await dao.byId(referenceId);
+    final version = await dao.versionById(versionId);
+    if (current == null || current.projectId != projectId) {
+      throw StateError('Reference not found: $referenceId');
+    }
+    if (version == null || version.referenceId != referenceId) {
+      throw StateError('Reference version not found: $versionId');
+    }
+    final projectDir = await paths.project(projectId);
+    final snapshot = File(p.join(projectDir.path, version.filePath));
+    if (!await snapshot.exists()) {
+      throw StateError(
+        'Reference version file is missing: ${version.filePath}',
+      );
+    }
+    final currentFile = File(p.join(projectDir.path, current.filePath));
+    await currentFile.parent.create(recursive: true);
+    await snapshot.copy(currentFile.path);
+    final hash = sha256.convert(await currentFile.readAsBytes()).toString();
+    await (database.update(
+      database.references,
+    )..where((row) => row.id.equals(referenceId))).write(
+      ReferencesCompanion(
+        contentHash: Value(hash),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
+    final restored = await dao.byId(referenceId);
+    return ReferenceModel(
+      id: restored!.id,
+      projectId: restored.projectId,
+      ownerAssetId: restored.ownerAssetId,
+      type: referenceTypeFromStorage(restored.type),
+      source: referenceSourceFromStorage(restored.source),
+      name: restored.name,
+      filePath: restored.filePath,
+      description: restored.description,
+      priority: restored.priority,
+      primary: restored.primaryReference,
+      enabled: restored.enabled,
+      contentHash: restored.contentHash,
+      createdAt: restored.createdAt,
+      updatedAt: restored.updatedAt,
     );
   }
 }

@@ -114,6 +114,22 @@ void main() {
             .changeNote,
         'Updated geometry',
       );
+      final version =
+          (await database.select(database.referenceVersions).get()).single;
+      final snapshot = File('${root.path}/p/${version.filePath}');
+      expect(await snapshot.readAsBytes(), [1, 2, 3]);
+      await importer.restoreVersion(
+        projectId: 'p',
+        referenceId: 'face-1',
+        versionId: version.id,
+      );
+      final current = await database.referenceDao.byId('face-1');
+      expect(await File('${root.path}/p/${current!.filePath}').readAsBytes(), [
+        1,
+        2,
+        3,
+      ]);
+      expect(current.contentHash, version.contentHash);
     },
   );
 }

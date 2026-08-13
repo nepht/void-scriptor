@@ -7,12 +7,14 @@ void main() {
   test('executor generates through registry and persists outputs', () async {
     final repository = FakeGenerationRepository();
     final outputService = FakeOutputService();
+    final checked = <String>[];
     final executor = GenerationJobExecutor(
       registry: AiProviderRegistry([FakeProvider()]),
       repository: repository,
       outputService: outputService,
       promptLoader: (_) async =>
           const LoadedPrompt(prompt: 'prompt', target: PromptTarget.image),
+      postGenerationHook: (job, output) async => checked.add(output.id),
     );
     await executor.execute(_job());
     expect(repository.statuses, [
@@ -21,6 +23,7 @@ void main() {
     ]);
     expect(outputService.saved, 1);
     expect(repository.outputs.single.outputType, 'image');
+    expect(checked, ['o0']);
   });
 
   test('executor marks provider failure without saving outputs', () async {

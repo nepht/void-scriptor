@@ -163,7 +163,7 @@ class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 16;
+  int get schemaVersion => 17;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -305,6 +305,9 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(consistencyRules);
         await m.createTable(consistencyReviews);
         await m.createTable(consistencyReviewItems);
+      }
+      if (from < 17 && from >= 11) {
+        await m.addColumn(storyScenes, storyScenes.referenceSetId);
       }
     },
   );

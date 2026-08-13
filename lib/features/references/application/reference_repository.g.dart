@@ -16,6 +16,10 @@ mixin _$ReferenceDaoMixin on DatabaseAccessor<ProjectDatabase> {
       attachedDatabase.consistencyRules;
   $ConsistencyReviewsTable get consistencyReviews =>
       attachedDatabase.consistencyReviews;
+  $ConsistencyReviewItemsTable get consistencyReviewItems =>
+      attachedDatabase.consistencyReviewItems;
+  $CharacterModesTable get characterModes => attachedDatabase.characterModes;
+  $StoryScenesTable get storyScenes => attachedDatabase.storyScenes;
   ReferenceDaoManager get managers => ReferenceDaoManager(this);
 }
 
@@ -51,4 +55,16 @@ class ReferenceDaoManager {
         _db.attachedDatabase,
         _db.consistencyReviews,
       );
+  $$ConsistencyReviewItemsTableTableManager get consistencyReviewItems =>
+      $$ConsistencyReviewItemsTableTableManager(
+        _db.attachedDatabase,
+        _db.consistencyReviewItems,
+      );
+  $$CharacterModesTableTableManager get characterModes =>
+      $$CharacterModesTableTableManager(
+        _db.attachedDatabase,
+        _db.characterModes,
+      );
+  $$StoryScenesTableTableManager get storyScenes =>
+      $$StoryScenesTableTableManager(_db.attachedDatabase, _db.storyScenes);
 }

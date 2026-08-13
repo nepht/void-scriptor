@@ -14,8 +14,9 @@ import '../../features/splash/presentation/splash_screen.dart';
 import '../../features/ai/presentation/ai_prompt_composer_screen.dart';
 import '../../features/ai/presentation/ai_provider_workspace_screen.dart';
 import '../../features/ai/presentation/ai_generation_queue_screen.dart';
+import '../../features/ai/presentation/project_ai_generation_gallery_screen.dart';
 import '../../features/assets/presentation/asset_browser_screen.dart';
-import '../../features/references/presentation/reference_library_screen.dart';
+import '../../features/references/presentation/project_reference_library_screen.dart';
 import '../../features/references/presentation/reference_comparison_screen.dart';
 import '../shell/void_app_shell.dart';
 import 'app_routes.dart';
@@ -38,7 +39,7 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
       ),
       GoRoute(
         path: AppRoutes.references,
-        builder: (_, __) => const ReferenceLibraryScreen(),
+        builder: (_, __) => const ProjectReferenceLibraryScreen(),
       ),
       GoRoute(
         path: '${AppRoutes.references}/compare',
@@ -116,6 +117,10 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
       builder: (_, __) => const AiGenerationQueueScreen(),
     ),
     GoRoute(
+      path: AppRoutes.aiGallery,
+      builder: (_, __) => const ProjectAiGenerationGalleryScreen(),
+    ),
+    GoRoute(
       path: AppRoutes.aiProviders,
       builder: (_, __) => const AiProviderWorkspaceScreen(),
     ),
@@ -125,7 +130,7 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
     GoRoute(
       path: AppRoutes.references,
-      builder: (_, __) => const ReferenceLibraryScreen(),
+      builder: (_, __) => const ProjectReferenceLibraryScreen(),
     ),
     GoRoute(
       path: '${AppRoutes.references}/compare',

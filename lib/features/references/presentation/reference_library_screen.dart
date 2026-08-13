@@ -3,11 +3,38 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../domain/reference_models.dart';
+import 'reference_import_dialog.dart';
+
+class ReferenceImportDraft {
+  const ReferenceImportDraft({
+    required this.sourcePath,
+    required this.name,
+    required this.type,
+    required this.priority,
+    required this.primary,
+    this.ownerAssetId,
+    this.description = '',
+  });
+  final String sourcePath;
+  final String name;
+  final String? ownerAssetId;
+  final ReferenceType type;
+  final int priority;
+  final bool primary;
+  final String description;
+}
 
 class ReferenceLibraryScreen extends StatefulWidget {
-  const ReferenceLibraryScreen({super.key, this.references = const []});
+  const ReferenceLibraryScreen({
+    super.key,
+    this.references = const [],
+    this.onImport,
+    this.onSetPrimary,
+  });
 
   final List<ReferenceModel> references;
+  final Future<void> Function(ReferenceImportDraft draft)? onImport;
+  final Future<void> Function(ReferenceModel reference)? onSetPrimary;
 
   @override
   State<ReferenceLibraryScreen> createState() => _ReferenceLibraryScreenState();
@@ -45,7 +72,7 @@ class _ReferenceLibraryScreenState extends State<ReferenceLibraryScreen> {
         actions: [
           IconButton(
             tooltip: 'Import reference',
-            onPressed: () {},
+            onPressed: widget.onImport == null ? null : _showImportDialog,
             icon: const Icon(Icons.add_photo_alternate_outlined),
           ),
         ],
@@ -106,8 +133,10 @@ class _ReferenceLibraryScreenState extends State<ReferenceLibraryScreen> {
                           mainAxisSpacing: 16,
                         ),
                         itemCount: references.length,
-                        itemBuilder: (_, index) =>
-                            ReferenceCard(reference: references[index]),
+                        itemBuilder: (_, index) => ReferenceCard(
+                          reference: references[index],
+                          onSetPrimary: widget.onSetPrimary,
+                        ),
                       ),
               ),
             ],
@@ -135,12 +164,35 @@ class _ReferenceLibraryScreenState extends State<ReferenceLibraryScreen> {
       ),
     );
   }
+
+  Future<void> _showImportDialog() async {
+    final draft = await showDialog<ReferenceImportDraft>(
+      context: context,
+      builder: (_) => const ReferenceImportDialog(),
+    );
+    if (draft == null || !mounted) return;
+    try {
+      await widget.onImport!(draft);
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Reference imported')));
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Import failed: $error')));
+      }
+    }
+  }
 }
 
 class ReferenceCard extends StatelessWidget {
-  const ReferenceCard({super.key, required this.reference});
+  const ReferenceCard({super.key, required this.reference, this.onSetPrimary});
 
   final ReferenceModel reference;
+  final Future<void> Function(ReferenceModel reference)? onSetPrimary;
 
   @override
   Widget build(BuildContext context) {
@@ -178,6 +230,12 @@ class ReferenceCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text('${reference.type.name} • Priority ${reference.priority}'),
+                if (!reference.primary && onSetPrimary != null)
+                  TextButton.icon(
+                    onPressed: () => onSetPrimary!(reference),
+                    icon: const Icon(Icons.star_outline, size: 18),
+                    label: const Text('Set Primary'),
+                  ),
                 if (!exists && !reference.filePath.startsWith('http'))
                   const Text(
                     'Reference file missing',

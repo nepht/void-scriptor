@@ -50,4 +50,37 @@ void main() {
       await tester.binding.setSurfaceSize(null);
     },
   );
+
+  testWidgets('import dialog returns validated draft on narrow layout', (
+    tester,
+  ) async {
+    ReferenceImportDraft? submitted;
+    tester.view.physicalSize = const Size(390, 760);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ReferenceLibraryScreen(
+          onImport: (draft) async => submitted = draft,
+        ),
+      ),
+    );
+    await tester.tap(find.byTooltip('Import reference'));
+    await tester.pumpAndSettle();
+    expect(find.text('Import Reference'), findsOneWidget);
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Source file path'),
+      '/tmp/face.png',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Name'),
+      'Master Face',
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Import'));
+    await tester.pumpAndSettle();
+    expect(submitted?.sourcePath, '/tmp/face.png');
+    expect(submitted?.name, 'Master Face');
+    expect(tester.takeException(), isNull);
+  });
 }

@@ -46,6 +46,8 @@ class ReferenceBundleResolver {
 
   Future<ReferenceBundle> resolve({
     required String assetId,
+    String? modeId,
+    String? sceneId,
     Iterable<ReferenceModel> modeReferences = const [],
     Iterable<ReferenceModel> sceneReferences = const [],
     int maxReferences = 4,
@@ -71,10 +73,32 @@ class ReferenceBundleResolver {
           ),
         )
         .toList(growable: false);
+    final persistedModeReferences = <ReferenceModel>[];
+    if (modeId != null) {
+      final mode = await database.characterModeDao.getMode(modeId);
+      final setId = mode?.referenceSetId;
+      if (mode == null || mode.characterId != assetId) {
+        throw StateError('Character Mode does not belong to asset: $modeId');
+      }
+      if (setId != null) {
+        final setRows = await database.referenceDao.referencesForSet(setId);
+        persistedModeReferences.addAll(setRows.map(_mapReference));
+      }
+    }
+    final persistedSceneReferences = <ReferenceModel>[];
+    if (sceneId != null) {
+      final scene = await database.storyDao.getScene(sceneId);
+      if (scene == null) throw StateError('Scene not found: $sceneId');
+      final setId = scene.referenceSetId;
+      if (setId != null) {
+        final setRows = await database.referenceDao.referencesForSet(setId);
+        persistedSceneReferences.addAll(setRows.map(_mapReference));
+      }
+    }
     final effective = _sets.resolve(
       characterReferences: references,
-      modeReferences: modeReferences,
-      sceneReferences: sceneReferences,
+      modeReferences: [...persistedModeReferences, ...modeReferences],
+      sceneReferences: [...persistedSceneReferences, ...sceneReferences],
     );
     final selected = _priority.select(
       references: effective.values,
@@ -113,4 +137,21 @@ class ReferenceBundleResolver {
           .toList(growable: false),
     );
   }
+
+  ReferenceModel _mapReference(db.Reference row) => ReferenceModel(
+    id: row.id,
+    projectId: row.projectId,
+    ownerAssetId: row.ownerAssetId,
+    type: referenceTypeFromStorage(row.type),
+    source: referenceSourceFromStorage(row.source),
+    name: row.name,
+    filePath: row.filePath,
+    description: row.description,
+    priority: row.priority,
+    primary: row.primaryReference,
+    enabled: row.enabled,
+    contentHash: row.contentHash,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+  );
 }

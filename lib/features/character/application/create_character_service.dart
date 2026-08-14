@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:drift/drift.dart';
+import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 
 import '../../../core/persistence/project_paths.dart';
@@ -20,7 +21,7 @@ class CreateCharacterService {
     final now = DateTime.now();
     final directory = await paths.project(projectId);
     final characterDirectory = Directory(
-      '${directory.path}${Platform.pathSeparator}assets${Platform.pathSeparator}characters${Platform.pathSeparator}$characterId',
+      p.join(directory.path, 'assets', 'characters', characterId),
     );
 
     try {
@@ -94,9 +95,7 @@ class CreateCharacterService {
       'thumbnails',
       'exports',
     ]) {
-      await Directory(
-        '${directory.path}${Platform.pathSeparator}$child',
-      ).create(recursive: true);
+      await Directory(p.join(directory.path, child)).create(recursive: true);
     }
   }
 }

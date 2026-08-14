@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../../core/commands/app_command.dart';
 import '../../../core/commands/command_bus.dart';
 import '../../../core/commands/command_history.dart';
+import '../../../core/commands/command_type_registry.dart';
 import '../../../core/commands/project_mutation_state.dart';
 import '../../../database/project/project_database.dart';
 import 'command_history_repository.dart';
@@ -30,6 +31,7 @@ class ProjectMutationRuntime {
     required ProjectDatabase database,
     required String projectId,
     bool readOnly = false,
+    CommandTypeRegistry? registry,
   }) async {
     final currentRow = await (database.select(
       database.projectMetadata,
@@ -57,6 +59,21 @@ class ProjectMutationRuntime {
       readOnly: readOnly,
     );
     runtime._replaceBus();
+    if (registry != null) {
+      final records = await runtime.historyRepository.list(projectId);
+      runtime.history.restoreApplied(
+        records
+            .where((record) => record.status == CommandHistoryStatus.applied)
+            .map(registry.create),
+      );
+      runtime.history.restoreUndone(
+        records
+            .where((record) => record.status == CommandHistoryStatus.undone)
+            .toList()
+            .reversed
+            .map(registry.create),
+      );
+    }
     return runtime;
   }
 
@@ -68,6 +85,9 @@ class ProjectMutationRuntime {
       throw StateError('Command project does not match active project');
     }
     final next = state.mutated();
+    for (final redoCommand in history.redoCommands) {
+      await historyRepository.markAbandoned(redoCommand.id);
+    }
     await database
         .into(database.projectMetadata)
         .insertOnConflictUpdate(

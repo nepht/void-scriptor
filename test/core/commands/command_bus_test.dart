@@ -33,6 +33,22 @@ void main() {
     },
   );
 
+  test('restores undo stack when persistence transition fails', () async {
+    final trace = <String>[];
+    final history = CommandHistory();
+    final bus = CommandBus(
+      history: history,
+      transactionCoordinator: TraceTransactionCoordinator(trace),
+      onUndoPersist: (_) async => throw StateError('persist failed'),
+    );
+    await bus.execute(TraceCommand(trace, id: 'undo-1', label: 'Undo'));
+
+    await expectLater(bus.undo(), throwsStateError);
+
+    expect(history.canUndo, isTrue);
+    expect(history.canRedo, isFalse);
+  });
+
   test('does not record or emit when command fails', () async {
     final trace = <String>[];
     final history = CommandHistory();

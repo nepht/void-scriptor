@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../projects/presentation/project_persistence_providers.dart';
+import '../application/update_character_identity_command.dart';
 import '../data/character_repository_impl.dart';
 import '../domain/character_identity_profile.dart';
 import '../domain/character_model.dart';
@@ -37,11 +39,24 @@ class CharacterIdentityActions {
   Future<void> update(CharacterIdentityProfile profile) async {
     final session = ref.read(projectSessionProvider).valueOrNull;
     if (session == null) return;
-    await CharacterRepositoryImpl(
+    final repository = CharacterRepositoryImpl(
       database: session.database,
       projectId: session.manifest.id,
       paths: ref.read(projectPathsProvider),
-    ).updateIdentity(profile);
+    );
+    final current = await repository.getIdentity(profile.characterId);
+    if (current == null) {
+      throw StateError('Character identity profile not found');
+    }
+    await session.mutationRuntime.bus.execute(
+      UpdateCharacterIdentityCommand(
+        id: const Uuid().v4(),
+        projectId: session.manifest.id,
+        repository: repository,
+        oldValue: current,
+        newValue: profile,
+      ),
+    );
     ref.invalidate(characterIdentityProvider(profile.characterId));
   }
 }

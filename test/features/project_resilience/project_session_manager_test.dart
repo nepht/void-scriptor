@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:void_scriptor/core/persistence/project_paths.dart';
 import 'package:void_scriptor/core/project_package/project_package_service.dart';
+import 'package:void_scriptor/features/character/application/rename_character_command.dart';
+import 'package:void_scriptor/features/character/data/character_repository_impl.dart';
 import 'package:void_scriptor/features/project_resilience/application/project_session_manager.dart';
 
 void main() {
@@ -20,6 +23,13 @@ void main() {
     final session = await manager.open(package);
     expect(session.mode, ProjectOpenMode.readWrite);
     expect(await package.lockFile.exists(), isTrue);
+    await session.versionControl.createSnapshot(
+      label: 'Session Revision',
+      assetType: 'project',
+      assetId: package.projectId,
+      data: const {'state': 'open'},
+    );
+    expect(await session.versionControl.listSnapshots(), hasLength(1));
 
     await manager.close(session);
     expect(await package.lockFile.exists(), isFalse);
@@ -51,6 +61,45 @@ void main() {
       );
     },
   );
+
+  test('reopens persistent character command history', () async {
+    final package = await ProjectPackageService(
+      rootDirectory: root,
+    ).create(name: 'History Project');
+    final manager = ProjectSessionManager();
+    final session = await manager.open(package);
+    final repository = CharacterRepositoryImpl(
+      database: session.database,
+      projectId: package.projectId,
+      paths: ProjectPaths(rootDirectory: root),
+    );
+    final character = await repository.createCharacter(name: 'Qowner');
+    await session.mutationRuntime.bus.execute(
+      RenameCharacterCommand(
+        id: 'session-rename-1',
+        projectId: package.projectId,
+        repository: repository,
+        characterId: character.assetId,
+        oldName: 'Qowner',
+        newName: 'Nephthys',
+      ),
+    );
+    await manager.close(session);
+
+    final reopened = await manager.open(package);
+    addTearDown(() => manager.close(reopened));
+    expect(reopened.mutationRuntime.bus.canUndo, isTrue);
+    await reopened.mutationRuntime.bus.undo();
+    final reopenedRepository = CharacterRepositoryImpl(
+      database: reopened.database,
+      projectId: package.projectId,
+      paths: ProjectPaths(rootDirectory: root),
+    );
+    expect(
+      (await reopenedRepository.getCharacter(character.assetId))!.displayName,
+      'Qowner',
+    );
+  });
 
   test('read-only session does not mutate lock or save', () async {
     final package = await ProjectPackageService(

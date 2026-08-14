@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:drift/drift.dart';
+import 'package:path/path.dart' as p;
 
 import '../../../database/project/daos/character_dao.dart';
 import '../../../database/project/project_database.dart'
@@ -94,7 +95,7 @@ class CharacterRepositoryImpl implements CharacterRepository {
     });
     final project = await paths.project(projectId);
     final directory = Directory(
-      '${project.path}${Platform.pathSeparator}assets${Platform.pathSeparator}characters${Platform.pathSeparator}$id',
+      p.join(project.path, 'assets', 'characters', id),
     );
     if (await directory.exists()) await directory.delete(recursive: true);
   }

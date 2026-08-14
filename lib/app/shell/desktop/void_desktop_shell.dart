@@ -5,10 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/commands/project_mutation_state.dart';
 import '../../../features/explorer/presentation/explorer_panel.dart';
 import '../../../features/inspector/presentation/inspector_panel.dart';
 import '../../../features/project_resilience/application/project_mutation_runtime.dart';
-import '../../../core/commands/project_mutation_state.dart';
 import '../../../features/projects/presentation/project_persistence_providers.dart';
 import '../../../features/workspace/presentation/workspace_panel.dart';
 import '../../routing/app_routes.dart';
@@ -25,32 +25,13 @@ class VoidDesktopShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(projectSessionProvider).valueOrNull;
     final runtime = session?.mutationRuntime;
-    final content = Scaffold(
-      body: Column(
-        children: [
-          VoidTopBar(
-            onMenuSelected: (menu) {
-              if (menu == 'assets') context.go('/assets');
-              if (menu == 'bible') context.go('/bible');
-              if (menu == 'resilience') {
-                context.go(AppRoutes.projectDiagnostics);
-              }
-            },
-            onLogout: onLogout,
-          ),
-          const Expanded(
-            child: Row(
-              children: [
-                ExplorerPanel(),
-                Expanded(child: WorkspacePanel()),
-                InspectorPanel(),
-              ],
-            ),
-          ),
-          _buildStatusBar(runtime),
-        ],
-      ),
-    );
+    final content = runtime == null
+        ? _buildContent(context, null, null)
+        : ValueListenableBuilder<ProjectMutationState>(
+            valueListenable: runtime.stateNotifier,
+            builder: (context, state, child) =>
+                _buildContent(context, runtime, state),
+          );
     return Shortcuts(
       shortcuts: {
         LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyZ):
@@ -100,14 +81,47 @@ class VoidDesktopShell extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatusBar(ProjectMutationRuntime? runtime) {
-    if (runtime == null) return const VoidStatusBar();
-    return ValueListenableBuilder<ProjectMutationState>(
-      valueListenable: runtime.stateNotifier,
-      builder: (context, state, child) => VoidStatusBar(
-        dirty: state.isDirty,
-        canUndo: runtime.history.canUndo,
-        canRedo: runtime.history.canRedo,
+  Widget _buildContent(
+    BuildContext context,
+    ProjectMutationRuntime? runtime,
+    ProjectMutationState? state,
+  ) {
+    return Scaffold(
+      body: Column(
+        children: [
+          VoidTopBar(
+            onMenuSelected: (menu) {
+              if (menu == 'assets') context.go('/assets');
+              if (menu == 'bible') context.go('/bible');
+              if (menu == 'resilience') {
+                context.go(AppRoutes.projectDiagnostics);
+              }
+            },
+            onLogout: onLogout,
+            canUndo: runtime?.bus.canUndo ?? false,
+            canRedo: runtime?.bus.canRedo ?? false,
+            onUndo: runtime == null
+                ? null
+                : () => unawaited(runtime.bus.undo()),
+            onRedo: runtime == null
+                ? null
+                : () => unawaited(runtime.bus.redo()),
+          ),
+          const Expanded(
+            child: Row(
+              children: [
+                ExplorerPanel(),
+                Expanded(child: WorkspacePanel()),
+                InspectorPanel(),
+              ],
+            ),
+          ),
+          VoidStatusBar(
+            dirty: state?.isDirty ?? false,
+            canUndo: runtime?.bus.canUndo ?? false,
+            canRedo: runtime?.bus.canRedo ?? false,
+          ),
+        ],
       ),
     );
   }

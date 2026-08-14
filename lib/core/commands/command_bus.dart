@@ -28,6 +28,11 @@ class CommandBus {
   final Future<void> Function(AppCommand command)? onRedoPersist;
   final void Function(CommandEvent event)? onEvent;
 
+  bool get canUndo => history.canUndo;
+  bool get canRedo => history.canRedo;
+  String? get undoLabel => history.undoLabel;
+  String? get redoLabel => history.redoLabel;
+
   Future<void> execute(AppCommand command) async {
     await transactionCoordinator.run(() async {
       await command.execute();
@@ -42,10 +47,9 @@ class CommandBus {
   Future<void> undo() async {
     final command = history.undoCommand;
     if (command == null) return;
-    await transactionCoordinator.run(() async {
-      await history.undo();
-      await onUndoPersist?.call(command);
-    });
+    await transactionCoordinator.run(
+      () => history.undo(persistTransition: onUndoPersist),
+    );
     onEvent?.call(
       CommandEvent(type: CommandEventType.commandUndone, command: command),
     );
@@ -54,10 +58,9 @@ class CommandBus {
   Future<void> redo() async {
     final command = history.redoCommand;
     if (command == null) return;
-    await transactionCoordinator.run(() async {
-      await history.redo();
-      await onRedoPersist?.call(command);
-    });
+    await transactionCoordinator.run(
+      () => history.redo(persistTransition: onRedoPersist),
+    );
     onEvent?.call(
       CommandEvent(type: CommandEventType.commandRedone, command: command),
     );

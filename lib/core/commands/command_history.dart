@@ -14,6 +14,21 @@ class CommandHistory {
   AppCommand? get undoCommand => canUndo ? _undoStack.last : null;
   AppCommand? get redoCommand => canRedo ? _redoStack.last : null;
 
+  List<AppCommand> get redoCommands => List.unmodifiable(_redoStack);
+
+  void restoreApplied(Iterable<AppCommand> commands) {
+    _undoStack
+      ..clear()
+      ..addAll(commands);
+    _trimUndoStack();
+  }
+
+  void restoreUndone(Iterable<AppCommand> commands) {
+    _redoStack
+      ..clear()
+      ..addAll(commands);
+  }
+
   Future<void> execute(AppCommand command) async {
     await command.execute();
     _undoStack.add(command);
@@ -27,11 +42,14 @@ class CommandHistory {
     _trimUndoStack();
   }
 
-  Future<void> undo() async {
+  Future<void> undo({
+    Future<void> Function(AppCommand command)? persistTransition,
+  }) async {
     if (!canUndo) return;
     final command = _undoStack.removeLast();
     try {
       await command.undo();
+      await persistTransition?.call(command);
       _redoStack.add(command);
     } catch (_) {
       _undoStack.add(command);
@@ -39,11 +57,14 @@ class CommandHistory {
     }
   }
 
-  Future<void> redo() async {
+  Future<void> redo({
+    Future<void> Function(AppCommand command)? persistTransition,
+  }) async {
     if (!canRedo) return;
     final command = _redoStack.removeLast();
     try {
       await command.redo();
+      await persistTransition?.call(command);
       _undoStack.add(command);
       _trimUndoStack();
     } catch (_) {

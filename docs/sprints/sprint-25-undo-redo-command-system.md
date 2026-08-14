@@ -1,6 +1,6 @@
 # Sprint 25 — Undo/Redo, Command System, History, and Versioning
 
-**Status:** Complete — local gates passed; hosted CI remains blocked by GitHub billing.
+**Status:** Closing verified gaps — local foundation passes; full multi-sprint acceptance audit remains active and hosted CI is blocked by GitHub billing.
 **Current checkpoint:** 25.1 Mutation architecture foundation
 
 ## Goal

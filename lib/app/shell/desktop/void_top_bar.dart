@@ -4,10 +4,22 @@ import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
 
 class VoidTopBar extends StatelessWidget {
-  const VoidTopBar({super.key, required this.onMenuSelected, this.onLogout});
+  const VoidTopBar({
+    super.key,
+    required this.onMenuSelected,
+    this.onLogout,
+    this.onUndo,
+    this.onRedo,
+    this.canUndo = false,
+    this.canRedo = false,
+  });
 
   final ValueChanged<String> onMenuSelected;
   final VoidCallback? onLogout;
+  final VoidCallback? onUndo;
+  final VoidCallback? onRedo;
+  final bool canUndo;
+  final bool canRedo;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +94,16 @@ class VoidTopBar extends StatelessWidget {
                 ),
               ],
               const SizedBox(width: 8),
+              _TopIconButton(
+                icon: Icons.undo_rounded,
+                tooltip: 'Undo',
+                onPressed: canUndo ? onUndo : null,
+              ),
+              _TopIconButton(
+                icon: Icons.redo_rounded,
+                tooltip: 'Redo',
+                onPressed: canRedo ? onRedo : null,
+              ),
               _TopIconButton(
                 icon: Icons.health_and_safety_outlined,
                 tooltip: 'Project resilience',

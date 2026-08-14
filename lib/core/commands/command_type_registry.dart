@@ -21,13 +21,17 @@ class CommandTypeRegistry {
     _factories[type] = factory;
   }
 
+  AppCommand? tryCreate(CommandHistoryRecord record) {
+    return _factories[record.commandType]?.call(record);
+  }
+
   AppCommand create(CommandHistoryRecord record) {
-    final factory = _factories[record.commandType];
-    if (factory == null) {
+    final command = tryCreate(record);
+    if (command == null) {
       throw UnsupportedError(
         'No command factory registered for ${record.commandType}',
       );
     }
-    return factory(record);
+    return command;
   }
 }

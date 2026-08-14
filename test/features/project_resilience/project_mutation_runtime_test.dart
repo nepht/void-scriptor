@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/character/application/rename_character_command.dart';
 import 'package:void_scriptor/features/character/data/character_repository_impl.dart';
+import 'package:void_scriptor/features/project_resilience/application/command_history_repository.dart';
 import 'package:void_scriptor/features/project_resilience/application/project_mutation_runtime.dart';
 import 'package:void_scriptor/core/commands/command_type_registry.dart';
 import 'package:void_scriptor/core/persistence/project_paths.dart';
@@ -66,6 +67,18 @@ void main() {
 
     await runtime.markSaved();
     expect(runtime.state.isDirty, isFalse);
+    await runtime.historyRepository.record(
+      const CommandHistoryRecordInput(
+        id: 'obsolete-command',
+        projectId: 'p1',
+        commandType: 'obsolete.removed',
+        label: 'Obsolete Command',
+        payload: {},
+        undoPayload: {},
+        sequence: 0,
+        source: 'system',
+      ),
+    );
 
     final registry = CommandTypeRegistry()
       ..register('character.rename', (record) {
@@ -102,8 +115,20 @@ void main() {
       ),
     );
     final records = await reopened.historyRepository.list('p1');
-    expect(records.first.status.name, 'abandoned');
-    expect(records.last.status.name, 'applied');
+    expect(
+      records
+          .singleWhere((record) => record.id == 'rename-runtime-1')
+          .status
+          .name,
+      'abandoned',
+    );
+    expect(
+      records
+          .singleWhere((record) => record.id == 'rename-runtime-2')
+          .status
+          .name,
+      'applied',
+    );
     expect(reopened.bus.canRedo, isFalse);
   });
 }

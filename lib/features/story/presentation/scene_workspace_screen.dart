@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../design_system/colors/void_colors.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
@@ -9,6 +10,7 @@ import '../data/story_repository_impl.dart';
 import 'scene_beat_editor.dart';
 import '../../timeline/domain/timeline_model.dart';
 import '../../timeline/application/create_timeline_service.dart';
+import '../../timeline/application/move_timeline_clip_command.dart';
 import '../../timeline/presentation/timeline_workspace_screen.dart';
 import '../../scene_assets/application/scene_asset_instance_repository.dart';
 import '../../scene_assets/domain/scene_asset_instance.dart';
@@ -86,11 +88,19 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
           sceneTitle: widget.title,
           durationSeconds: timeline?.durationSeconds ?? 10,
           clips: clips,
-          onClipTimingChanged: (clip) => service.updateClipTiming(
-            clip.id,
-            startSeconds: clip.startSeconds,
-            durationSeconds: clip.durationSeconds,
-          ),
+          onClipTimingChanged: (previous, clip) {
+            return session.mutationRuntime.bus.execute(
+              MoveTimelineClipCommand(
+                id: const Uuid().v4(),
+                projectId: session.manifest.id,
+                timelineService: service,
+                clipId: clip.id,
+                oldStartSeconds: previous.startSeconds,
+                newStartSeconds: clip.startSeconds,
+                durationSeconds: clip.durationSeconds,
+              ),
+            );
+          },
         ),
       ),
     );

@@ -15,7 +15,11 @@ class TimelineWorkspaceScreen extends StatefulWidget {
   final String sceneTitle;
   final double durationSeconds;
   final List<TimelineClipModel> clips;
-  final Future<void> Function(TimelineClipModel clip)? onClipTimingChanged;
+  final Future<void> Function(
+    TimelineClipModel previous,
+    TimelineClipModel updated,
+  )?
+  onClipTimingChanged;
   @override
   State<TimelineWorkspaceScreen> createState() =>
       _TimelineWorkspaceScreenState();
@@ -53,7 +57,7 @@ class _TimelineWorkspaceScreenState extends State<TimelineWorkspaceScreen> {
           .toList();
       _selectedClipId = clip.id;
     });
-    widget.onClipTimingChanged?.call(updated);
+    widget.onClipTimingChanged?.call(clip, updated);
   }
 
   @override
@@ -326,25 +330,34 @@ class _TrackRow extends StatelessWidget {
           height: 44,
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Stack(
-            children: clips
-                .map(
-                  (clip) => Positioned(
-                    left: scale.secondsToPixels(clip.startSeconds),
-                    child: GestureDetector(
-                      onHorizontalDragEnd: (details) => onClipMoved(
-                        clip,
-                        (details.primaryVelocity ?? 0) / 1000,
-                      ),
-                      child: TimelineClip(
-                        clip: clip,
-                        width: scale.secondsToPixels(clip.durationSeconds),
-                        selected: clip.id == selectedClipId,
-                        onTap: () => onClipSelected(clip),
-                      ),
-                    ),
+            children: clips.map((clip) {
+              var dragOriginPixels = 0.0;
+              var dragDeltaPixels = 0.0;
+              return Positioned(
+                left: scale.secondsToPixels(clip.startSeconds),
+                child: GestureDetector(
+                  onHorizontalDragDown: (details) {
+                    dragOriginPixels = details.globalPosition.dx;
+                    dragDeltaPixels = 0;
+                  },
+                  onHorizontalDragUpdate: (details) {
+                    dragDeltaPixels =
+                        details.globalPosition.dx - dragOriginPixels;
+                  },
+                  onHorizontalDragCancel: () => dragDeltaPixels = 0,
+                  onHorizontalDragEnd: (_) => onClipMoved(
+                    clip,
+                    dragDeltaPixels / scale.pixelsPerSecond,
                   ),
-                )
-                .toList(),
+                  child: TimelineClip(
+                    clip: clip,
+                    width: scale.secondsToPixels(clip.durationSeconds),
+                    selected: clip.id == selectedClipId,
+                    onTap: () => onClipSelected(clip),
+                  ),
+                ),
+              );
+            }).toList(),
           ),
         ),
       ],

@@ -12,6 +12,8 @@ import '../../character/application/rename_character_command.dart';
 import '../../character/application/update_character_command.dart';
 import '../../character/application/update_character_identity_command.dart';
 import '../../character/data/character_repository_impl.dart';
+import '../../timeline/application/create_timeline_service.dart';
+import '../../timeline/application/move_timeline_clip_command.dart';
 import 'project_integrity_service.dart';
 import 'project_mutation_runtime.dart';
 import 'project_version_control_service.dart';
@@ -47,7 +49,6 @@ class ProjectSession {
       throw StateError('Read-only project sessions cannot be saved');
     }
     await database.customStatement('PRAGMA wal_checkpoint(TRUNCATE)');
-    await mutationRuntime.markSaved();
     final updated = ProjectManifest(
       schemaVersion: manifest.schemaVersion,
       id: manifest.id,
@@ -61,9 +62,11 @@ class ProjectSession {
       databaseFilename: manifest.databaseFilename,
     );
     await ProjectManifestWriter(package).write(updated);
+    await mutationRuntime.markSaved();
   }
 
   Future<void> close() async {
+    await mutationRuntime.dispose();
     await database.close();
     await lock.release();
     if (await package.lockFile.exists()) {
@@ -132,6 +135,7 @@ class ProjectSessionManager {
         projectId: package.projectId,
         paths: ProjectPaths(rootDirectory: package.root.parent),
       );
+      final timelineService = CreateTimelineService(database: database);
       final commandRegistry = CommandTypeRegistry()
         ..register('character.rename', (record) {
           return RenameCharacterCommand(
@@ -169,6 +173,9 @@ class ProjectSessionManager {
               Map<String, Object?>.from(record.payload['new']! as Map),
             ),
           );
+        })
+        ..register('timeline.clip.move', (record) {
+          return MoveTimelineClipCommand.fromRecord(record, timelineService);
         });
       final mutationRuntime = await ProjectMutationRuntime.open(
         database: database,

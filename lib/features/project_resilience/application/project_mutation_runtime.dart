@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../core/commands/app_command.dart';
 import '../../../core/commands/command_bus.dart';
+import '../../../core/commands/command_event_bus.dart';
 import '../../../core/commands/command_history.dart';
 import '../../../core/commands/command_type_registry.dart';
 import '../../../core/commands/project_mutation_state.dart';
@@ -17,12 +18,14 @@ class ProjectMutationRuntime {
     required this.state,
     required this.stateNotifier,
     required this.readOnly,
-  }) : history = CommandHistory();
+  }) : history = CommandHistory(),
+       eventBus = CommandEventBus();
 
   final ProjectDatabase database;
   final String projectId;
   final CommandHistoryRepository historyRepository;
   final CommandHistory history;
+  final CommandEventBus eventBus;
   ProjectMutationState state;
   final ValueNotifier<ProjectMutationState> stateNotifier;
   final bool readOnly;
@@ -64,14 +67,16 @@ class ProjectMutationRuntime {
       runtime.history.restoreApplied(
         records
             .where((record) => record.status == CommandHistoryStatus.applied)
-            .map(registry.create),
+            .map(registry.tryCreate)
+            .whereType<AppCommand>(),
       );
       runtime.history.restoreUndone(
         records
             .where((record) => record.status == CommandHistoryStatus.undone)
             .toList()
             .reversed
-            .map(registry.create),
+            .map(registry.tryCreate)
+            .whereType<AppCommand>(),
       );
     }
     return runtime;
@@ -142,8 +147,21 @@ class ProjectMutationRuntime {
           _transition(command, CommandHistoryStatus.undone),
       onRedoPersist: (command) =>
           _transition(command, CommandHistoryStatus.applied),
-      onEvent: (_) => stateNotifier.value = state,
+      onEvent: _publishEvent,
     );
+  }
+
+  void _publishEvent(CommandEvent event) {
+    eventBus.publish(
+      ProjectMutationEvent(
+        projectId: event.command.projectId,
+        commandType: event.command.commandType,
+        sequence: state.currentSequence,
+        type: event.type,
+        source: event.command.source,
+      ),
+    );
+    stateNotifier.value = state;
   }
 
   late CommandBus _configuredBus;
@@ -153,6 +171,11 @@ class ProjectMutationRuntime {
   void _setState(ProjectMutationState next) {
     state = next;
     stateNotifier.value = next;
+  }
+
+  Future<void> dispose() async {
+    await eventBus.close();
+    stateNotifier.dispose();
   }
 
   Future<void> markSaved() async {

@@ -6,7 +6,8 @@ import '../../../features/assets/domain/asset_relation_type.dart';
 import '../domain/asset_relation.dart' as domain;
 import '../domain/relation_repository.dart';
 
-class RelationRepositoryImpl implements RelationRepository {
+class RelationRepositoryImpl
+    implements RelationRepository, RelationSnapshotRepository {
   RelationRepositoryImpl({required ProjectDatabase database})
     : _dao = RelationDao(database);
   final RelationDao _dao;
@@ -30,6 +31,12 @@ class RelationRepositoryImpl implements RelationRepository {
   @override
   Future<List<domain.AssetRelation>> incoming(String assetId) async =>
       (await _dao.getIncomingRelations(assetId)).map(_mapGenerated).toList();
+
+  @override
+  Future<domain.AssetRelation?> getById(String relationId) async {
+    final row = await _dao.getRelation(relationId);
+    return row == null ? null : _mapGenerated(row);
+  }
 
   @override
   Future<void> create(domain.AssetRelation relation) => _dao.createRelation(

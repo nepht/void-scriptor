@@ -8,7 +8,7 @@ import '../../../assets/domain/asset_type.dart';
 import '../../../../database/project/project_database.dart';
 import '../../../projects/presentation/project_persistence_providers.dart';
 import '../../../relations/application/relation_display_service.dart';
-import '../../../relations/application/create_relation_service.dart';
+import '../../../relations/application/relation_command.dart';
 import '../../../relations/data/relation_repository_impl.dart';
 import '../../../assets/domain/asset_relation_type.dart';
 
@@ -124,9 +124,22 @@ class RelationSection extends ConsumerWidget {
                                   .read(projectSessionProvider)
                                   .valueOrNull;
                               if (session == null) return;
-                              await RelationRepositoryImpl(
+                              final repository = RelationRepositoryImpl(
                                 database: session.database,
-                              ).delete(item.relationId);
+                              );
+                              final snapshotRepository = repository;
+                              final relation = await snapshotRepository.getById(
+                                item.relationId,
+                              );
+                              if (relation == null) return;
+                              await session.mutationRuntime.bus.execute(
+                                RelationCommand.delete(
+                                  id: 'relation.delete:${item.relationId}:${DateTime.now().microsecondsSinceEpoch}',
+                                  projectId: session.manifest.id,
+                                  repository: repository,
+                                  relation: relation,
+                                ),
+                              );
                               ref.invalidate(relationDisplayProvider(assetId));
                             },
                           ),
@@ -175,13 +188,16 @@ class RelationSection extends ConsumerWidget {
       builder: (dialogContext) => _AddRelationDialog(assets: assets),
     );
     if (result == null || !context.mounted) return;
-    await CreateRelationService(
-      RelationRepositoryImpl(database: session.database),
-    )(
-      projectId: session.manifest.id,
-      sourceId: assetId,
-      targetId: result.$1,
-      type: result.$2,
+    final repository = RelationRepositoryImpl(database: session.database);
+    await session.mutationRuntime.bus.execute(
+      RelationCommand.create(
+        id: 'relation.create:$assetId:${DateTime.now().microsecondsSinceEpoch}',
+        projectId: session.manifest.id,
+        repository: repository,
+        sourceAssetId: assetId,
+        targetAssetId: result.$1,
+        type: result.$2,
+      ),
     );
     ref.invalidate(relationDisplayProvider(assetId));
   }

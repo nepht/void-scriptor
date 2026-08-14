@@ -14,6 +14,8 @@ import '../../character/application/update_character_identity_command.dart';
 import '../../character/data/character_repository_impl.dart';
 import '../../timeline/application/create_timeline_service.dart';
 import '../../timeline/application/move_timeline_clip_command.dart';
+import '../../relations/application/relation_command.dart';
+import '../../relations/data/relation_repository_impl.dart';
 import 'project_integrity_service.dart';
 import 'project_mutation_runtime.dart';
 import 'project_version_control_service.dart';
@@ -136,6 +138,7 @@ class ProjectSessionManager {
         paths: ProjectPaths(rootDirectory: package.root.parent),
       );
       final timelineService = CreateTimelineService(database: database);
+      final relationRepository = RelationRepositoryImpl(database: database);
       final commandRegistry = CommandTypeRegistry()
         ..register('character.rename', (record) {
           return RenameCharacterCommand(
@@ -176,6 +179,12 @@ class ProjectSessionManager {
         })
         ..register('timeline.clip.move', (record) {
           return MoveTimelineClipCommand.fromRecord(record, timelineService);
+        })
+        ..register('relation.create', (record) {
+          return RelationCommand.fromRecord(record, relationRepository);
+        })
+        ..register('relation.delete', (record) {
+          return RelationCommand.fromRecord(record, relationRepository);
         });
       final mutationRuntime = await ProjectMutationRuntime.open(
         database: database,

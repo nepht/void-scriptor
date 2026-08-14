@@ -18,6 +18,10 @@ class RelationDao extends DatabaseAccessor<ProjectDatabase>
     assetRelations,
   )..where((row) => row.targetAssetId.equals(assetId))).get();
 
+  Future<AssetRelation?> getRelation(String relationId) => (select(
+    assetRelations,
+  )..where((row) => row.id.equals(relationId))).getSingleOrNull();
+
   Future<void> createRelation(AssetRelationsCompanion relation) =>
       into(assetRelations).insert(relation);
 

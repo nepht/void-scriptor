@@ -6,3 +6,7 @@ abstract interface class RelationRepository {
   Future<void> create(AssetRelation relation);
   Future<void> delete(String relationId);
 }
+
+abstract interface class RelationSnapshotRepository {
+  Future<AssetRelation?> getById(String relationId);
+}

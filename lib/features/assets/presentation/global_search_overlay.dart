@@ -11,7 +11,7 @@ class GlobalSearchOverlay extends StatefulWidget {
     this.commands = const [],
   });
   final List<SearchableAsset> assets;
-  final List<AppCommand> commands;
+  final List<PaletteCommand> commands;
 
   @override
   State<GlobalSearchOverlay> createState() => _GlobalSearchOverlayState();
@@ -105,10 +105,10 @@ class _GlobalSearchOverlayState extends State<GlobalSearchOverlay> {
                   if (results.isNotEmpty)
                     ...results.asMap().entries.map((entry) {
                       final item = entry.value;
-                      final label = item is AppCommand
+                      final label = item is PaletteCommand
                           ? item.label
                           : (item as SearchableAsset).name;
-                      final subtitle = item is AppCommand
+                      final subtitle = item is PaletteCommand
                           ? 'Command'
                           : (item as SearchableAsset).type.name;
                       return ListTile(

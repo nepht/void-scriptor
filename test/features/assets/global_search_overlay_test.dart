@@ -10,7 +10,7 @@ void main() {
   testWidgets(
     'global overlay searches commands with prefix and submits with enter',
     (tester) async {
-      final command = AppCommand(
+      final command = PaletteCommand(
         id: 'new-character',
         label: 'New Character',
         execute: () async {},

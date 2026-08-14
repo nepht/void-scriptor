@@ -1,7 +1,7 @@
 import '../../../core/commands/command_registry.dart';
 import '../presentation/production_asset_workspace_screen.dart';
 
-List<AppCommand> productionAssetCommands({
+List<PaletteCommand> productionAssetCommands({
   required Future<void> Function(String route) open,
   required Future<void> Function(ProductionAssetKind kind) create,
 }) => [
@@ -10,13 +10,13 @@ List<AppCommand> productionAssetCommands({
     ProductionAssetKind.vehicle: '/vehicles',
     ProductionAssetKind.prop: '/props',
   }.entries) ...[
-    AppCommand(
+    PaletteCommand(
       id: 'open-${entry.key.name}',
       label: 'Open ${_label(entry.key)}',
       keywords: ['open', entry.key.name, 'assets'],
       execute: () => open(entry.value),
     ),
-    AppCommand(
+    PaletteCommand(
       id: 'create-${entry.key.name}',
       label: 'Create ${_singular(entry.key)}',
       keywords: ['new', 'create', entry.key.name],

@@ -5,7 +5,7 @@ void main() {
   test('command registry ranks exact label and searches keywords', () async {
     final registry = CommandRegistry();
     registry.register(
-      AppCommand(
+      PaletteCommand(
         id: 'new-character',
         label: 'New Character',
         keywords: ['create'],
@@ -13,7 +13,7 @@ void main() {
       ),
     );
     registry.register(
-      AppCommand(
+      PaletteCommand(
         id: 'open-ai',
         label: 'Open AI Studio',
         keywords: ['generate'],

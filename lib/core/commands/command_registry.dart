@@ -1,10 +1,11 @@
-class AppCommand {
-  const AppCommand({
+class PaletteCommand {
+  const PaletteCommand({
     required this.id,
     required this.label,
     required this.execute,
     this.keywords = const [],
   });
+
   final String id;
   final String label;
   final List<String> keywords;
@@ -12,11 +13,11 @@ class AppCommand {
 }
 
 class CommandRegistry {
-  final Map<String, AppCommand> _commands = {};
+  final Map<String, PaletteCommand> _commands = {};
 
-  void register(AppCommand command) => _commands[command.id] = command;
+  void register(PaletteCommand command) => _commands[command.id] = command;
 
-  List<AppCommand> search(String query) {
+  List<PaletteCommand> search(String query) {
     final needle = query.trim().toLowerCase();
     final results = _commands.values.where((command) {
       if (needle.isEmpty) return true;

@@ -25,7 +25,7 @@ void main() {
         sampleRate: 48000,
         channels: 2,
       );
-      expect(db.schemaVersion, 35);
+      expect(db.schemaVersion, 36);
       expect(result.contentHash, isNotEmpty);
       expect(result.projectRelativePath, contains('assets'));
       expect(

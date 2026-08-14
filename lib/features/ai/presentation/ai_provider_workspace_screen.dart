@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../../core/security/credential_store.dart';
+import '../domain/ai_provider_settings.dart';
 import '../infrastructure/providers/gemini/gemini_provider.dart';
 import '../infrastructure/providers/openai/openai_provider.dart';
 
@@ -16,8 +17,6 @@ class AiProviderWorkspaceScreen extends StatefulWidget {
 }
 
 class _AiProviderWorkspaceScreenState extends State<AiProviderWorkspaceScreen> {
-  static const _ollamaEndpointKey = 'ai.ollama.endpoint';
-  static const _comfyUiEndpointKey = 'ai.comfyui.endpoint';
   static const _providers = [
     _ProviderDefinition.cloud(
       name: 'OpenAI',
@@ -29,13 +28,13 @@ class _AiProviderWorkspaceScreenState extends State<AiProviderWorkspaceScreen> {
     ),
     _ProviderDefinition.local(
       name: 'Ollama',
-      endpointKey: _ollamaEndpointKey,
-      defaultEndpoint: 'http://localhost:11434',
+      endpointKey: AiProviderSettingKeys.ollamaEndpoint,
+      defaultEndpoint: AiProviderSettingKeys.defaultOllamaEndpoint,
     ),
     _ProviderDefinition.local(
       name: 'ComfyUI',
-      endpointKey: _comfyUiEndpointKey,
-      defaultEndpoint: 'http://localhost:8188',
+      endpointKey: AiProviderSettingKeys.comfyUiEndpoint,
+      defaultEndpoint: AiProviderSettingKeys.defaultComfyUiEndpoint,
     ),
   ];
 

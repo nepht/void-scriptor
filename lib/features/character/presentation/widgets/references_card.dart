@@ -14,11 +14,14 @@ class ReferencesCard extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Text(
-              'Primary References',
-              style: VoidTypography.headingMedium,
+            const Expanded(
+              child: Text(
+                'Primary References',
+                style: VoidTypography.headingMedium,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            const Spacer(),
             IconButton(
               onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(

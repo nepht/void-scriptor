@@ -48,12 +48,31 @@ class _WorkspaceHeader extends StatelessWidget {
     ),
     child: const Row(
       children: [
-        Text('Void Universe', style: VoidTypography.title),
-        SizedBox(width: 10),
-        Text('/', style: VoidTypography.caption),
-        SizedBox(width: 10),
-        Text('Characters', style: VoidTypography.caption),
-        Spacer(),
+        Expanded(
+          child: Row(
+            children: [
+              Flexible(
+                child: Text(
+                  'Void Universe',
+                  style: VoidTypography.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              SizedBox(width: 10),
+              Text('/', style: VoidTypography.caption),
+              SizedBox(width: 10),
+              Flexible(
+                child: Text(
+                  'Characters',
+                  style: VoidTypography.caption,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
         Icon(Icons.star_border, size: 17, color: VoidColors.textMuted),
         SizedBox(width: 12),
         Icon(Icons.history, size: 17, color: VoidColors.textMuted),
@@ -92,23 +111,29 @@ class _Tab extends StatelessWidget {
   final String label;
   final bool active;
   @override
-  Widget build(BuildContext context) => Container(
-    alignment: Alignment.center,
-    padding: const EdgeInsets.symmetric(horizontal: 14),
-    decoration: BoxDecoration(
-      border: Border(
-        bottom: BorderSide(
-          color: active ? VoidColors.primary : Colors.transparent,
-          width: 2,
+  Widget build(BuildContext context) => Tooltip(
+    message: active ? 'Overview' : '$label (deferred)',
+    child: Opacity(
+      opacity: active ? 1 : 0.55,
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: active ? VoidColors.primary : Colors.transparent,
+              width: 2,
+            ),
+          ),
         ),
-      ),
-    ),
-    child: Text(
-      label,
-      style: TextStyle(
-        color: active ? VoidColors.textPrimary : VoidColors.textMuted,
-        fontSize: 11,
-        fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+        child: Text(
+          label,
+          style: TextStyle(
+            color: active ? VoidColors.textPrimary : VoidColors.textMuted,
+            fontSize: 11,
+            fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+          ),
+        ),
       ),
     ),
   );

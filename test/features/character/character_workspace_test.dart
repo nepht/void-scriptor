@@ -81,4 +81,43 @@ void main() {
     expect(find.text('Character Identity'), findsNothing);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'character workspace renders populated data without narrow overflow',
+    (tester) async {
+      const character = CharacterModel(
+        assetId: 'qowner-1',
+        projectId: 'project-1',
+        displayName: 'Qowner with an intentionally long display name',
+        alias: 'Void Scriptor with an intentionally long alias',
+        age: 24,
+        heightCm: 185,
+        hair: 'White and lavender with a very long descriptive value',
+        eyes: 'Violet',
+      );
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            characterWorkspaceProvider(
+              'qowner-1',
+            ).overrideWith((ref) async => character),
+          ],
+          child: const MaterialApp(
+            home: Scaffold(
+              body: CharacterWorkspaceScreen(characterId: 'qowner-1'),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text(character.displayName), findsWidgets);
+      expect(find.text('Character Identity'), findsOneWidget);
+      expect(find.text('Primary References'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

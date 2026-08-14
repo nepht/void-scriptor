@@ -26,7 +26,12 @@ class ProjectLocalDataSource {
     if (registry != null) {
       await registry.upsert(project);
     } else {
-      _memoryProjects.add(project);
+      final index = _memoryProjects.indexWhere((item) => item.id == project.id);
+      if (index == -1) {
+        _memoryProjects.add(project);
+      } else {
+        _memoryProjects[index] = project;
+      }
     }
   }
 

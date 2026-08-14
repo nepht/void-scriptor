@@ -30,11 +30,13 @@ class ReferenceLibraryScreen extends StatefulWidget {
     this.references = const [],
     this.onImport,
     this.onSetPrimary,
+    this.onRepair,
   });
 
   final List<ReferenceModel> references;
   final Future<void> Function(ReferenceImportDraft draft)? onImport;
   final Future<void> Function(ReferenceModel reference)? onSetPrimary;
+  final Future<void> Function(ReferenceModel reference)? onRepair;
 
   @override
   State<ReferenceLibraryScreen> createState() => _ReferenceLibraryScreenState();
@@ -136,6 +138,7 @@ class _ReferenceLibraryScreenState extends State<ReferenceLibraryScreen> {
                         itemBuilder: (_, index) => ReferenceCard(
                           reference: references[index],
                           onSetPrimary: widget.onSetPrimary,
+                          onRepair: widget.onRepair,
                         ),
                       ),
               ),
@@ -189,10 +192,16 @@ class _ReferenceLibraryScreenState extends State<ReferenceLibraryScreen> {
 }
 
 class ReferenceCard extends StatelessWidget {
-  const ReferenceCard({super.key, required this.reference, this.onSetPrimary});
+  const ReferenceCard({
+    super.key,
+    required this.reference,
+    this.onSetPrimary,
+    this.onRepair,
+  });
 
   final ReferenceModel reference;
   final Future<void> Function(ReferenceModel reference)? onSetPrimary;
+  final Future<void> Function(ReferenceModel reference)? onRepair;
 
   @override
   Widget build(BuildContext context) {
@@ -236,11 +245,18 @@ class ReferenceCard extends StatelessWidget {
                     icon: const Icon(Icons.star_outline, size: 18),
                     label: const Text('Set Primary'),
                   ),
-                if (!exists && !reference.filePath.startsWith('http'))
+                if (!exists && !reference.filePath.startsWith('http')) ...[
                   const Text(
                     'Reference file missing',
                     style: TextStyle(color: Colors.orange),
                   ),
+                  if (onRepair != null)
+                    TextButton.icon(
+                      onPressed: () => onRepair!(reference),
+                      icon: const Icon(Icons.build_outlined, size: 18),
+                      label: const Text('Repair'),
+                    ),
+                ],
               ],
             ),
           ),

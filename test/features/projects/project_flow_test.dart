@@ -8,9 +8,17 @@ import 'package:void_scriptor/core/persistence/project_paths.dart';
 import 'package:void_scriptor/core/persistence/project_registry_service.dart';
 import 'package:void_scriptor/features/projects/data/project_local_data_source.dart';
 import 'package:void_scriptor/features/projects/data/project_repository_impl.dart';
+import 'package:void_scriptor/features/projects/domain/project_model.dart';
 import 'package:void_scriptor/features/projects/presentation/project_controller.dart';
 import 'package:void_scriptor/features/projects/presentation/project_list_screen.dart';
 import 'package:void_scriptor/features/projects/presentation/project_persistence_providers.dart';
+
+class _FailingProjectLocalDataSource extends ProjectLocalDataSource {
+  @override
+  Future<void> createProject(ProjectModel project) async {
+    throw const FileSystemException('registry unavailable');
+  }
+}
 
 void main() {
   testWidgets('ProjectListScreen shows empty state and create action', (
@@ -69,4 +77,45 @@ void main() {
       contains('Void Universe'),
     );
   });
+
+  test(
+    'project controller removes package when registry create fails',
+    () async {
+      final tempDirectory = await Directory.systemTemp.createTemp(
+        'void-scriptor-project-rollback-',
+      );
+      addTearDown(() => tempDirectory.delete(recursive: true));
+      final paths = ProjectPaths(rootDirectory: tempDirectory);
+      final failingSource = _FailingProjectLocalDataSource();
+      final container = ProviderContainer(
+        overrides: [
+          projectPathsProvider.overrideWithValue(paths),
+          projectLocalDataSourceProvider.overrideWithValue(failingSource),
+          projectRepositoryProvider.overrideWithValue(
+            ProjectRepositoryImpl(failingSource),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await expectLater(
+        container
+            .read(projectControllerProvider.notifier)
+            .createProject(
+              name: 'Rollback Me',
+              description: '',
+              localPath: tempDirectory.path,
+            ),
+        throwsA(isA<FileSystemException>()),
+      );
+
+      expect(
+        await tempDirectory
+            .list()
+            .where((entry) => entry.path.endsWith('.voidproject'))
+            .toList(),
+        isEmpty,
+      );
+    },
+  );
 }

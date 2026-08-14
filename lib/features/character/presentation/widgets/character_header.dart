@@ -24,15 +24,27 @@ class CharacterHeader extends StatelessWidget {
           color: VoidColors.primaryBright,
         ),
         const SizedBox(width: 10),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(name, style: VoidTypography.title),
-            if (alias.isNotEmpty) Text(alias, style: VoidTypography.caption),
-          ],
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: VoidTypography.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              if (alias.isNotEmpty)
+                Text(
+                  alias,
+                  style: VoidTypography.caption,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+            ],
+          ),
         ),
-        const Spacer(),
         IconButton(
           tooltip: 'Favorite',
           onPressed: () => _feedback(

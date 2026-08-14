@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as p;
-import '../../../core/persistence/project_paths.dart';
+import '../../../core/project_package/project_package.dart';
 import '../domain/ai_provider.dart';
 import '../domain/generation_job.dart';
 import '../application/generation_job_executor.dart';
 
 class ProjectAiOutputService implements AiOutputService {
-  ProjectAiOutputService({required this.paths});
-  final ProjectPaths paths;
+  ProjectAiOutputService({required this.package});
+  final ProjectPackage package;
 
   @override
   Future<SavedGenerationOutput> persist({
@@ -16,15 +16,26 @@ class ProjectAiOutputService implements AiOutputService {
     required AiGeneratedOutput output,
     required int index,
   }) async {
-    final project = await paths.project(job.projectId);
-    final directory = Directory(
-      p.join(project.path, 'assets', 'ai', 'generations', job.id),
+    if (job.projectId != package.projectId) {
+      throw StateError(
+        'AI job ${job.id} belongs to ${job.projectId}, not ${package.projectId}.',
+      );
+    }
+    final relativeDirectory = p.posix.join(
+      'assets',
+      'ai',
+      'generations',
+      job.id,
     );
+    final directory = Directory(package.resolve(relativeDirectory));
     await directory.create(recursive: true);
     final extension = _extension(output.mimeType, output.type);
     final file = File(p.join(directory.path, 'output_${index + 1}.$extension'));
     if (output.localPath != null) {
-      await File(output.localPath!).copy(file.path);
+      final sourcePath = p.isAbsolute(output.localPath!)
+          ? output.localPath!
+          : package.resolve(output.localPath!);
+      await File(sourcePath).copy(file.path);
     } else if (output.remoteUrl != null) {
       throw StateError(
         'Remote output download requires an injected HTTP downloader.',
@@ -49,11 +60,15 @@ class ProjectAiOutputService implements AiOutputService {
         'createdAt': DateTime.now().toIso8601String(),
       }),
     );
+    final relativeOutputPath = p.posix.join(
+      relativeDirectory,
+      'output_${index + 1}.$extension',
+    );
     return SavedGenerationOutput(
       id: '${job.id}-$index',
       jobId: job.id,
       outputType: output.type.name,
-      localPath: file.path,
+      localPath: relativeOutputPath,
       mimeType: output.mimeType,
     );
   }

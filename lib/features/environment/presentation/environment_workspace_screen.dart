@@ -62,14 +62,23 @@ class EnvironmentWorkspaceScreen extends ConsumerWidget {
                     ],
                   ),
                 const SizedBox(height: 12),
-                const Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(child: _EnvironmentLightingCard()),
-                    SizedBox(width: 12),
-                    Expanded(child: _EnvironmentWeatherCard()),
-                  ],
-                ),
+                if (width < 760)
+                  const Column(
+                    children: [
+                      _EnvironmentLightingCard(),
+                      SizedBox(height: 12),
+                      _EnvironmentWeatherCard(),
+                    ],
+                  )
+                else
+                  const Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: _EnvironmentLightingCard()),
+                      SizedBox(width: 12),
+                      Expanded(child: _EnvironmentWeatherCard()),
+                    ],
+                  ),
                 const SizedBox(height: 12),
                 const _EnvironmentZonesCard(),
                 const SizedBox(height: 12),
@@ -109,7 +118,11 @@ class _EnvironmentHeader extends StatelessWidget {
           ],
         ),
       ),
-      IconButton(onPressed: () {}, icon: const Icon(Icons.more_horiz)),
+      const IconButton(
+        tooltip: 'More environment actions (deferred)',
+        onPressed: null,
+        icon: Icon(Icons.more_horiz),
+      ),
     ],
   );
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/ai/application/generation_job_executor.dart';
 import 'package:void_scriptor/features/ai/domain/ai_provider.dart';
@@ -54,6 +56,29 @@ void main() {
     expect(provider.cancelledRequestIds, ['job-1']);
     expect(repository.statuses.last, GenerationJobStatus.cancelled);
   });
+
+  test('late provider result cannot overwrite cancelled status', () async {
+    final repository = FakeGenerationRepository();
+    final provider = BlockingProvider();
+    final outputService = FakeOutputService();
+    final executor = GenerationJobExecutor(
+      registry: AiProviderRegistry([provider]),
+      repository: repository,
+      outputService: outputService,
+      promptLoader: (_) async =>
+          const LoadedPrompt(prompt: 'prompt', target: PromptTarget.image),
+    );
+    final execution = executor.execute(_job());
+    await provider.started.future;
+
+    await executor.cancel(_job());
+    provider.release.complete();
+
+    await expectLater(execution, throwsA(isA<GenerationCancelledException>()));
+    expect(outputService.saved, 0);
+    expect(repository.statuses, isNot(contains(GenerationJobStatus.completed)));
+    expect(repository.statuses.last, GenerationJobStatus.cancelled);
+  });
 }
 
 GenerationJob _job() => GenerationJob(
@@ -101,6 +126,18 @@ class FailingProvider extends FakeProvider {
   @override
   Future<AiGenerationResult> generate(AiGenerationRequest request) async =>
       throw Exception('provider failed');
+}
+
+class BlockingProvider extends FakeProvider {
+  final started = Completer<void>();
+  final release = Completer<void>();
+
+  @override
+  Future<AiGenerationResult> generate(AiGenerationRequest request) async {
+    started.complete();
+    await release.future;
+    return super.generate(request);
+  }
 }
 
 class FakeGenerationRepository implements GenerationJobRepository {

@@ -51,6 +51,22 @@ void main() {
     },
   );
 
+  testWidgets('missing reference exposes repair action', (tester) async {
+    ReferenceModel? repaired;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ReferenceLibraryScreen(
+          references: references,
+          onRepair: (reference) async => repaired = reference,
+        ),
+      ),
+    );
+
+    await tester.tap(find.widgetWithText(TextButton, 'Repair').first);
+    await tester.pump();
+    expect(repaired?.id, 'face');
+  });
+
   testWidgets('import dialog returns validated draft on narrow layout', (
     tester,
   ) async {

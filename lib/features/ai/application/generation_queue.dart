@@ -1,7 +1,7 @@
 import 'dart:async';
 import '../domain/generation_job.dart';
 
-typedef GenerationJobExecutor = Future<void> Function(GenerationJob job);
+typedef GenerationJobRunner = Future<void> Function(GenerationJob job);
 typedef GenerationJobCanceller = Future<void> Function(GenerationJob job);
 
 class GenerationQueue {
@@ -11,7 +11,7 @@ class GenerationQueue {
     this.canceller,
   }) : assert(maxConcurrentJobs > 0);
   final int maxConcurrentJobs;
-  final GenerationJobExecutor executor;
+  final GenerationJobRunner executor;
   final GenerationJobCanceller? canceller;
   final List<GenerationJob> _pending = [];
   final Map<String, GenerationJob> _jobs = {};
@@ -35,6 +35,7 @@ class GenerationQueue {
       status: GenerationJobStatus.queued,
       progress: 0,
       error: null,
+      clearError: true,
     );
     _jobs[jobId] = retryJob;
     _statuses[jobId] = GenerationJobStatus.queued;

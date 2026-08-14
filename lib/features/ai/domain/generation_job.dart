@@ -49,6 +49,7 @@ class GenerationJob {
     GenerationJobStatus? status,
     double? progress,
     String? error,
+    bool clearError = false,
   }) => GenerationJob(
     id: id,
     projectId: projectId,
@@ -58,7 +59,7 @@ class GenerationJob {
     createdAt: createdAt,
     modelId: modelId,
     progress: progress ?? this.progress,
-    error: error ?? this.error,
+    error: clearError ? null : error ?? this.error,
     priority: priority,
   );
 }

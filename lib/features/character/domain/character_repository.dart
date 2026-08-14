@@ -4,6 +4,7 @@ import 'character_reference.dart';
 
 abstract interface class CharacterRepository {
   Future<List<CharacterModel>> getCharacters();
+  Future<List<CharacterModel>> searchCharacters(String query);
   Future<CharacterModel?> getCharacter(String id);
   Future<CharacterModel> createCharacter({required String name});
   Future<void> updateCharacter(CharacterModel character);

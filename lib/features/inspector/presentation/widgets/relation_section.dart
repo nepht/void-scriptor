@@ -22,6 +22,31 @@ final relationDisplayProvider =
       return RelationDisplayService(session.database).forAsset(assetId);
     });
 
+Future<bool> confirmRelationDeletion(
+  BuildContext context, {
+  required String targetName,
+}) async =>
+    await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Delete relation?'),
+        content: Text(
+          'This removes only the relation. $targetName will not be deleted.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Delete relation'),
+          ),
+        ],
+      ),
+    ) ??
+    false;
+
 class RelationSection extends ConsumerWidget {
   const RelationSection({super.key, required this.assetId});
   final String assetId;
@@ -90,6 +115,11 @@ class RelationSection extends ConsumerWidget {
                             icon: const Icon(Icons.delete_outline, size: 16),
                             color: VoidColors.textMuted,
                             onPressed: () async {
+                              final confirmed = await confirmRelationDeletion(
+                                context,
+                                targetName: item.assetName,
+                              );
+                              if (!confirmed || !context.mounted) return;
                               final session = ref
                                   .read(projectSessionProvider)
                                   .valueOrNull;

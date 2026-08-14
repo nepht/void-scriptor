@@ -4,12 +4,21 @@ import 'package:flutter/services.dart';
 
 import '../../../core/selection/selection_controller.dart';
 import '../../../core/selection/selection_model.dart';
+import '../application/asset_repository.dart';
+import '../application/asset_view_preference_store.dart';
 import '../domain/asset_search_query.dart';
 import '../domain/asset_type.dart';
 
 class AssetBrowserScreen extends ConsumerStatefulWidget {
-  const AssetBrowserScreen({super.key, this.assets = const []});
+  const AssetBrowserScreen({
+    super.key,
+    this.assets = const [],
+    this.repository,
+    this.viewPreferenceStore,
+  });
   final List<SearchableAsset> assets;
+  final AssetRepository? repository;
+  final AssetViewPreferenceStore? viewPreferenceStore;
 
   @override
   ConsumerState<AssetBrowserScreen> createState() => _AssetBrowserScreenState();
@@ -21,6 +30,28 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
   AssetViewMode _viewMode = AssetViewMode.grid;
   AssetType? _type;
   bool _favoriteOnly = false;
+  final Set<String> _selectedAssetIds = {};
+  late final AssetViewPreferenceStore _viewPreferenceStore;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewPreferenceStore =
+        widget.viewPreferenceStore ??
+        SharedPreferencesAssetViewPreferenceStore();
+    _restoreViewMode();
+  }
+
+  Future<void> _restoreViewMode() async {
+    final mode = await _viewPreferenceStore.load();
+    if (!mounted || mode == null) return;
+    setState(() => _viewMode = mode);
+  }
+
+  Future<void> _setViewMode(AssetViewMode mode) async {
+    setState(() => _viewMode = mode);
+    await _viewPreferenceStore.save(mode);
+  }
 
   @override
   void dispose() {
@@ -73,22 +104,42 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Assets'),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.grid_view),
-                onPressed: () => setState(() => _viewMode = AssetViewMode.grid),
-              ),
-              IconButton(
-                icon: const Icon(Icons.view_list),
-                onPressed: () => setState(() => _viewMode = AssetViewMode.list),
-              ),
-              IconButton(
-                icon: const Icon(Icons.view_compact),
-                onPressed: () =>
-                    setState(() => _viewMode = AssetViewMode.compact),
-              ),
-            ],
+            title: Text(
+              _selectedAssetIds.isEmpty
+                  ? 'Assets'
+                  : '${_selectedAssetIds.length} selected',
+            ),
+            actions: _selectedAssetIds.isNotEmpty
+                ? [
+                    TextButton.icon(
+                      onPressed: widget.repository == null ? null : _addBulkTag,
+                      icon: const Icon(Icons.label_outline),
+                      label: const Text('Add tag'),
+                    ),
+                    IconButton(
+                      tooltip: 'Clear selection',
+                      icon: const Icon(Icons.close),
+                      onPressed: () =>
+                          setState(() => _selectedAssetIds.clear()),
+                    ),
+                  ]
+                : [
+                    IconButton(
+                      tooltip: 'Grid view',
+                      icon: const Icon(Icons.grid_view),
+                      onPressed: () => _setViewMode(AssetViewMode.grid),
+                    ),
+                    IconButton(
+                      tooltip: 'List view',
+                      icon: const Icon(Icons.view_list),
+                      onPressed: () => _setViewMode(AssetViewMode.list),
+                    ),
+                    IconButton(
+                      tooltip: 'Compact view',
+                      icon: const Icon(Icons.view_compact),
+                      onPressed: () => _setViewMode(AssetViewMode.compact),
+                    ),
+                  ],
           ),
           body: Column(
             children: [
@@ -174,7 +225,9 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
         itemBuilder: (_, index) => AssetListTile(
           asset: _filtered[index],
           compact: _viewMode == AssetViewMode.compact,
-          onPressed: () => _select(_filtered[index]),
+          selected: _selectedAssetIds.contains(_filtered[index].id),
+          onPressed: () => _handleAssetTap(_filtered[index]),
+          onLongPress: () => _toggleSelection(_filtered[index].id),
         ),
       );
     }
@@ -189,10 +242,59 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
       itemCount: _filtered.length,
       itemBuilder: (_, index) => AssetCard(
         asset: _filtered[index],
-        selected: ref.watch(selectionProvider)?.assetId == _filtered[index].id,
-        onPressed: () => _select(_filtered[index]),
+        selected:
+            _selectedAssetIds.contains(_filtered[index].id) ||
+            ref.watch(selectionProvider)?.assetId == _filtered[index].id,
+        onPressed: () => _handleAssetTap(_filtered[index]),
+        onLongPress: () => _toggleSelection(_filtered[index].id),
       ),
     );
+  }
+
+  void _handleAssetTap(SearchableAsset asset) {
+    if (_selectedAssetIds.isNotEmpty) {
+      _toggleSelection(asset.id);
+      return;
+    }
+    _select(asset);
+  }
+
+  void _toggleSelection(String assetId) {
+    setState(() {
+      if (!_selectedAssetIds.add(assetId)) {
+        _selectedAssetIds.remove(assetId);
+      }
+    });
+  }
+
+  Future<void> _addBulkTag() async {
+    var value = '';
+    final tag = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Tag ${_selectedAssetIds.length} assets'),
+        content: TextField(
+          key: const Key('bulk-tag-field'),
+          autofocus: true,
+          onChanged: (text) => value = text,
+          decoration: const InputDecoration(labelText: 'Tag'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, value),
+            child: const Text('Apply'),
+          ),
+        ],
+      ),
+    );
+    if (tag == null || tag.trim().isEmpty || !mounted) return;
+    await widget.repository!.addTagToAssets(_selectedAssetIds, tag);
+    if (!mounted) return;
+    setState(() => _selectedAssetIds.clear());
   }
 
   void _select(SearchableAsset asset) => ref
@@ -216,13 +318,16 @@ class AssetCard extends StatelessWidget {
     required this.asset,
     required this.selected,
     required this.onPressed,
+    required this.onLongPress,
   });
   final SearchableAsset asset;
   final bool selected;
   final VoidCallback onPressed;
+  final VoidCallback onLongPress;
   @override
   Widget build(BuildContext context) => InkWell(
     onTap: onPressed,
+    onLongPress: onLongPress,
     borderRadius: BorderRadius.circular(8),
     child: Card(
       shape: RoundedRectangleBorder(
@@ -263,14 +368,20 @@ class AssetListTile extends StatelessWidget {
     super.key,
     required this.asset,
     required this.onPressed,
+    required this.onLongPress,
     required this.compact,
+    required this.selected,
   });
   final SearchableAsset asset;
   final VoidCallback onPressed;
+  final VoidCallback onLongPress;
   final bool compact;
+  final bool selected;
   @override
   Widget build(BuildContext context) => ListTile(
     onTap: onPressed,
+    onLongPress: onLongPress,
+    selected: selected,
     dense: compact,
     leading: AssetThumbnail(asset: asset, size: compact ? 32 : 48),
     title: Text(asset.name),

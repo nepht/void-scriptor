@@ -103,6 +103,36 @@ void main() {
     expect(restored.single.name, project.name);
   });
 
+  test(
+    'ProjectRegistryService preserves multiple independent projects',
+    () async {
+      final root = await Directory.systemTemp.createTemp('s07-multi-registry-');
+      addTearDown(() => root.delete(recursive: true));
+      final service = ProjectRegistryService(rootDirectory: root);
+      final now = DateTime.utc(2026);
+      for (final id in ['project-1', 'project-2']) {
+        await service.upsert(
+          ProjectModel(
+            id: id,
+            name: 'Project $id',
+            description: '',
+            createdAt: now,
+            updatedAt: now,
+            lastOpenedAt: now,
+            localPath: '${root.path}/$id.voidproject',
+            version: '0.1.0',
+          ),
+        );
+      }
+
+      await service.remove('project-1');
+      final restored = await ProjectRegistryService(rootDirectory: root).load();
+
+      expect(restored.map((project) => project.id), ['project-2']);
+      expect(restored.single.localPath, endsWith('project-2.voidproject'));
+    },
+  );
+
   test('ProjectPaths resolves project-local manifest and database', () async {
     final root = await Directory.systemTemp.createTemp('s07-paths-');
     addTearDown(() => root.delete(recursive: true));
@@ -162,6 +192,64 @@ void main() {
     expect(report.databaseReadable, isTrue);
     expect(directory.existsSync(), isTrue);
   });
+
+  test(
+    'ProjectHealthService reports corrupt manifest without throwing',
+    () async {
+      final root = await Directory.systemTemp.createTemp(
+        's07-corrupt-manifest-',
+      );
+      addTearDown(() => root.delete(recursive: true));
+      final paths = ProjectPaths(rootDirectory: root);
+      const id = 'project-corrupt-manifest';
+      await ProjectFileService(paths: paths).createStructure(id);
+      final manifest = await paths.manifest(id);
+      await manifest.parent.create(recursive: true);
+      await manifest.writeAsString('{not-json');
+      await ProjectDatabaseService().create((await paths.database(id)).path);
+
+      final report = await ProjectHealthService(paths: paths).check(id);
+
+      expect(report.manifestExists, isTrue);
+      expect(report.manifestReadable, isFalse);
+      expect(report.isHealthy, isFalse);
+    },
+  );
+
+  test(
+    'ProjectHealthService reports corrupt database without throwing',
+    () async {
+      final root = await Directory.systemTemp.createTemp(
+        's07-corrupt-database-',
+      );
+      addTearDown(() => root.delete(recursive: true));
+      final paths = ProjectPaths(rootDirectory: root);
+      const id = 'project-corrupt-database';
+      await ProjectFileService(paths: paths).createStructure(id);
+      final now = DateTime.utc(2026, 1, 1);
+      await ProjectManifestService(paths: paths).write(
+        ProjectManifest(
+          schemaVersion: 1,
+          id: id,
+          name: 'Corrupt Database',
+          description: '',
+          projectVersion: '0.1.0',
+          createdAt: now,
+          updatedAt: now,
+          appVersion: '0.1.0',
+        ),
+      );
+      final database = await paths.database(id);
+      await database.parent.create(recursive: true);
+      await database.writeAsString('not a sqlite database');
+
+      final report = await ProjectHealthService(paths: paths).check(id);
+
+      expect(report.databaseExists, isTrue);
+      expect(report.databaseReadable, isFalse);
+      expect(report.isHealthy, isFalse);
+    },
+  );
 
   test(
     'ProjectOpenService opens manifest and project database together',

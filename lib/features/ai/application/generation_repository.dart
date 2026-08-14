@@ -48,24 +48,30 @@ class GenerationRepository {
         ),
       );
 
+  Future<List<GenerationJob>> listProjectJobs(String projectId) async {
+    final rows =
+        await (database.select(database.aiGenerationJobs)
+              ..where((row) => row.projectId.equals(projectId))
+              ..orderBy([(row) => OrderingTerm.desc(row.createdAt)]))
+            .get();
+    return rows.map(_mapJob).toList(growable: false);
+  }
+
+  Stream<List<GenerationJob>> watchProjectJobs(String projectId) {
+    final query = database.select(database.aiGenerationJobs)
+      ..where((row) => row.projectId.equals(projectId))
+      ..orderBy([(row) => OrderingTerm.desc(row.createdAt)]);
+    return query.watch().map(
+      (rows) => rows.map(_mapJob).toList(growable: false),
+    );
+  }
+
   Future<GenerationJob?> getJob(String id) async {
     final row = await (database.select(
       database.aiGenerationJobs,
     )..where((t) => t.id.equals(id))).getSingleOrNull();
     if (row == null) return null;
-    return GenerationJob(
-      id: row.id,
-      projectId: row.projectId,
-      providerId: row.providerId,
-      modelId: row.modelId,
-      promptHistoryId: row.promptHistoryId,
-      status: GenerationJobStatus.values.byName(row.status),
-      progress: row.progress,
-      error: row.error,
-      priority: GenerationPriority
-          .values[row.priority.clamp(0, GenerationPriority.values.length - 1)],
-      createdAt: row.createdAt,
-    );
+    return _mapJob(row);
   }
 
   Future<void> saveOutput({
@@ -136,4 +142,18 @@ class GenerationRepository {
             ..where((t) => t.jobId.equals(jobId))
             ..orderBy([(t) => OrderingTerm(expression: t.sortOrder)]))
           .get();
+
+  GenerationJob _mapJob(AiGenerationJob row) => GenerationJob(
+    id: row.id,
+    projectId: row.projectId,
+    providerId: row.providerId,
+    modelId: row.modelId,
+    promptHistoryId: row.promptHistoryId,
+    status: GenerationJobStatus.values.byName(row.status),
+    progress: row.progress,
+    error: row.error,
+    priority: GenerationPriority
+        .values[row.priority.clamp(0, GenerationPriority.values.length - 1)],
+    createdAt: row.createdAt,
+  );
 }

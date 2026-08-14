@@ -49,4 +49,16 @@ void main() {
       expect(await source.getProjects(), isEmpty);
     },
   );
+
+  test('ProjectLocalDataSource keeps project ids unique', () async {
+    final source = ProjectLocalDataSource();
+
+    await source.createProject(_project('project-1'));
+    await source.createProject(
+      _project('project-1').copyWith(name: 'Replacement'),
+    );
+
+    expect(await source.getProjects(), hasLength(1));
+    expect((await source.getProject('project-1'))?.name, 'Replacement');
+  });
 }

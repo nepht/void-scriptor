@@ -77,6 +77,24 @@ class CreateCharacterService {
       await _createCharacterFolders(characterDirectory);
       return characterId;
     } catch (_) {
+      try {
+        await database.transaction(() async {
+          await database.characterDao.removeCharacterReferences(characterId);
+          await database.characterModeDao.removeCharacterModes(characterId);
+          await database.assetDao.removeAssetData(characterId);
+          await (database.delete(
+            database.characterIdentityProfiles,
+          )..where((row) => row.characterId.equals(characterId))).go();
+          await (database.delete(
+            database.characters,
+          )..where((row) => row.assetId.equals(characterId))).go();
+          await (database.delete(
+            database.assets,
+          )..where((row) => row.id.equals(characterId))).go();
+        });
+      } on Object {
+        // Preserve the original creation failure if compensation is unavailable.
+      }
       if (await characterDirectory.exists()) {
         await characterDirectory.delete(recursive: true);
       }

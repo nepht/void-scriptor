@@ -31,6 +31,20 @@ class CharacterRepositoryImpl implements CharacterRepository {
       (await _dao.getAllCharacters(projectId)).map(_fromRow).toList();
 
   @override
+  Future<List<CharacterModel>> searchCharacters(String query) async {
+    final normalized = query.trim().toLowerCase();
+    final characters = await getCharacters();
+    if (normalized.isEmpty) return characters;
+    return characters
+        .where(
+          (character) =>
+              character.displayName.toLowerCase().contains(normalized) ||
+              character.alias.toLowerCase().contains(normalized),
+        )
+        .toList(growable: false);
+  }
+
+  @override
   Future<CharacterModel?> getCharacter(String id) async {
     final row = await _dao.getCharacter(id);
     return row == null ? null : _fromRow(row);

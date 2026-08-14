@@ -40,6 +40,23 @@ void main() {
       sourceId: 'char-1',
       snapshotData: '{"name":"Qowner"}',
     );
+    await repository.saveJob(
+      GenerationJob(
+        id: 'foreign-job',
+        projectId: 'p2',
+        providerId: 'mock',
+        promptHistoryId: 'history-2',
+        status: GenerationJobStatus.queued,
+        createdAt: DateTime.utc(2026, 1, 2),
+      ),
+    );
+    expect((await repository.listProjectJobs('p1')).map((item) => item.id), [
+      'job-1',
+    ]);
+    expect(
+      (await repository.watchProjectJobs('p1').first).map((item) => item.id),
+      ['job-1'],
+    );
     await first.close();
     final second = await service.open(dbPath);
     addTearDown(second.close);

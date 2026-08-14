@@ -21,6 +21,7 @@ import '../../features/references/presentation/reference_comparison_screen.dart'
 import '../../features/bible/presentation/project_bible_workspace_screen.dart';
 import '../../features/production_assets/presentation/production_asset_workspace_screen.dart';
 import '../../features/cinematic_production/presentation/cinematic_production_workspace_screen.dart';
+import '../../features/project_resilience/presentation/project_resilience_center_screen.dart';
 import '../shell/void_app_shell.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
@@ -51,6 +52,7 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
       ..._productionAssetRoutes(),
       _cinematicProductionRoute(),
       _productionValidationRoute(),
+      ..._resilienceRoutes(),
       GoRoute(
         path: '${AppRoutes.references}/compare',
         builder: (_, state) => ReferenceComparisonScreen(
@@ -149,6 +151,7 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ..._productionAssetRoutes(),
     _cinematicProductionRoute(),
     _productionValidationRoute(),
+    ..._resilienceRoutes(),
     GoRoute(
       path: '${AppRoutes.references}/compare',
       builder: (_, state) => ReferenceComparisonScreen(
@@ -175,6 +178,37 @@ GoRoute _productionValidationRoute() => GoRoute(
   builder: (_, __) =>
       ProductionValidationCenterScreen(issues: const [], onRefresh: () {}),
 );
+List<RouteBase> _resilienceRoutes() => [
+  GoRoute(
+    path: AppRoutes.projectDiagnostics,
+    builder: (_, __) => const ProjectResilienceCenterScreen(
+      title: 'Project Diagnostics',
+      items: ['Manifest', 'Database', 'Portable Status'],
+    ),
+  ),
+  GoRoute(
+    path: AppRoutes.projectRepair,
+    builder: (_, __) => const ProjectResilienceCenterScreen(
+      title: 'Project Repair',
+      items: ['Missing Files', 'Orphan Files', 'Broken References'],
+    ),
+  ),
+  GoRoute(
+    path: AppRoutes.projectBackups,
+    builder: (_, __) => const ProjectResilienceCenterScreen(
+      title: 'Project Backups',
+      items: ['Automatic', 'Manual', 'Pre-Migration'],
+    ),
+  ),
+  GoRoute(
+    path: AppRoutes.projectExport,
+    builder: (_, __) => const ProjectResilienceCenterScreen(
+      title: 'Project Export',
+      items: ['Portable Archive', 'Assets', 'Database'],
+    ),
+  ),
+];
+
 List<RouteBase> _productionAssetRoutes() => [
   for (final entry in {
     AppRoutes.creatures: ProductionAssetKind.creature,

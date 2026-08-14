@@ -1,3 +1,5 @@
+import '../project_package/void_project_format.dart';
+
 class ProjectManifest {
   const ProjectManifest({
     required this.schemaVersion,
@@ -9,7 +11,7 @@ class ProjectManifest {
     required this.updatedAt,
     required this.appVersion,
     this.tags = const [],
-    this.databaseFilename = 'project.db',
+    this.databaseFilename = 'database/project.db',
   });
 
   final int schemaVersion;
@@ -24,30 +26,36 @@ class ProjectManifest {
   final String databaseFilename;
 
   Map<String, dynamic> toJson() => {
+    'format': VoidProjectFormat.name,
     'schemaVersion': schemaVersion,
-    'id': id,
+    'projectId': id,
     'name': name,
     'description': description,
-    'projectVersion': projectVersion,
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
     'application': {'name': 'Void Scriptor', 'version': appVersion},
+    'database': {'file': databaseFilename},
+    'assets': {'root': 'assets'},
+    'projectVersion': projectVersion,
     'tags': tags,
-    'database': databaseFilename,
   };
 
   factory ProjectManifest.fromJson(Map<String, dynamic> json) {
     final schemaVersion = json['schemaVersion'] as int? ?? 1;
-    if (schemaVersion != 1) {
+    if (schemaVersion > VoidProjectFormat.currentSchema) {
       throw FormatException(
         'Unsupported project manifest schema version: $schemaVersion',
       );
     }
     final application =
-        json['application'] as Map<String, dynamic>? ?? const {};
+        (json['application'] as Map<String, dynamic>?) ?? const {};
+    final database = json['database'];
+    final databaseFilename = database is Map<String, dynamic>
+        ? database['file'] as String? ?? 'database/project.db'
+        : database as String? ?? 'project.db';
     return ProjectManifest(
       schemaVersion: schemaVersion,
-      id: json['id'] as String,
+      id: (json['projectId'] ?? json['id']) as String,
       name: json['name'] as String,
       description: json['description'] as String? ?? '',
       projectVersion:
@@ -57,7 +65,7 @@ class ProjectManifest {
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       appVersion: application['version'] as String? ?? 'unknown',
       tags: (json['tags'] as List<dynamic>? ?? const []).cast<String>(),
-      databaseFilename: json['database'] as String? ?? 'project.db',
+      databaseFilename: databaseFilename,
     );
   }
 }

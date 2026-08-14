@@ -60,6 +60,7 @@ import 'tables/audio_assets.dart';
 import 'tables/dialogue.dart';
 import 'tables/audio_timeline.dart';
 import 'tables/audio_waveform.dart';
+import 'tables/project_resilience.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -98,6 +99,7 @@ import '../../features/audio/application/audio_asset_repository.dart';
 import '../../features/dialogue/application/dialogue_repository.dart';
 import '../../features/audio_timeline/application/audio_timeline_repository.dart';
 import '../../features/audio_import/application/audio_import_repository.dart';
+import '../../features/project_resilience/application/project_resilience_repository.dart';
 
 part 'project_database.g.dart';
 
@@ -227,6 +229,11 @@ class ProjectMetadata extends Table {
     AudioTimelineClips,
     AudioAutomationKeyframes,
     AudioWaveformCaches,
+    ExternalFiles,
+    ProjectBackups,
+    CacheEntries,
+    TrashEntries,
+    ProjectMigrationHistory,
   ],
   daos: [
     AssetDao,
@@ -254,13 +261,14 @@ class ProjectMetadata extends Table {
     DialogueRepository,
     AudioTimelineRepository,
     AudioImportRepository,
+    ProjectResilienceRepository,
   ],
 )
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 33;
+  int get schemaVersion => 34;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -488,6 +496,13 @@ class ProjectDatabase extends _$ProjectDatabase {
       }
       if (from < 33) {
         await m.createTable(audioWaveformCaches);
+      }
+      if (from < 34) {
+        await m.createTable(externalFiles);
+        await m.createTable(projectBackups);
+        await m.createTable(cacheEntries);
+        await m.createTable(trashEntries);
+        await m.createTable(projectMigrationHistory);
       }
     },
   );

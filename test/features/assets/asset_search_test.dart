@@ -103,6 +103,6 @@ void main() {
     expect(asset.favorite, isTrue);
     expect(asset.lastOpenedAt?.toUtc(), DateTime.utc(2026, 1, 2));
     expect(tags.name, 'void');
-    expect(second.schemaVersion, 33);
+    expect(second.schemaVersion, 34);
   });
 }

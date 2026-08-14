@@ -18,7 +18,7 @@ import 'package:void_scriptor/features/projects/presentation/project_persistence
 void main() {
   test('ProjectManifest round-trips JSON with schema version', () {
     final manifest = ProjectManifest(
-      schemaVersion: 1,
+      schemaVersion: 16,
       id: 'project-1',
       name: 'Void Universe',
       description: 'Main universe',
@@ -27,16 +27,16 @@ void main() {
       updatedAt: DateTime.utc(2026, 1, 2),
       appVersion: '0.1.0',
       tags: const ['fantasy', 'main'],
-      databaseFilename: 'project.db',
+      databaseFilename: 'database/project.db',
     );
 
     final restored = ProjectManifest.fromJson(manifest.toJson());
     expect(restored.id, manifest.id);
-    expect(restored.schemaVersion, 1);
+    expect(restored.schemaVersion, 16);
     expect(restored.updatedAt, manifest.updatedAt);
     expect(restored.tags, manifest.tags);
-    expect(restored.databaseFilename, 'project.db');
-    expect(manifest.toJson()['database'], 'project.db');
+    expect(restored.databaseFilename, 'database/project.db');
+    expect(manifest.toJson()['database'], {'file': 'database/project.db'});
   });
 
   test('ProjectManifest rejects unsupported schema version', () {
@@ -58,7 +58,10 @@ void main() {
     final service = ProjectFileService(rootDirectory: root);
 
     final project = await service.createStructure('project-1');
-    expect(project.path, endsWith('${Platform.pathSeparator}project-1'));
+    expect(
+      project.path,
+      endsWith('${Platform.pathSeparator}project-1.voidproject'),
+    );
     for (final folder in ProjectFileService.requiredFolders) {
       expect(
         Directory(
@@ -104,14 +107,18 @@ void main() {
     final root = await Directory.systemTemp.createTemp('s07-paths-');
     addTearDown(() => root.delete(recursive: true));
     final paths = ProjectPaths(rootDirectory: root);
-    expect((await paths.project('abc')).path, endsWith('abc'));
+    expect((await paths.project('abc')).path, endsWith('abc.voidproject'));
     expect(
       (await paths.manifest('abc')).path,
-      endsWith('abc${Platform.pathSeparator}project.json'),
+      endsWith(
+        'abc.voidproject${Platform.pathSeparator}manifest${Platform.pathSeparator}project.json',
+      ),
     );
     expect(
       (await paths.database('abc')).path,
-      endsWith('abc${Platform.pathSeparator}project.db'),
+      endsWith(
+        'abc.voidproject${Platform.pathSeparator}database${Platform.pathSeparator}project.db',
+      ),
     );
   });
 

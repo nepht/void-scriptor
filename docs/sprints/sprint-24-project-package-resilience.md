@@ -1,0 +1,65 @@
+# Sprint 24 — Project Package, Import/Export, Backup, Recovery
+
+## Scope
+
+Sprint 24 hardens project persistence around a portable `.voidproject` package. A working package is a directory; transfer/export is a ZIP archive with the same `.voidproject` extension.
+
+## Canonical working package
+
+```text
+<id>.voidproject/
+├── manifest/project.json
+├── database/project.db
+├── assets/
+├── cache/
+├── backups/
+└── exports/
+```
+
+`ProjectPackage` and `ProjectPackagePaths` are the canonical path abstractions. Domain file references use logical `/`-separated relative paths such as `assets/audio/<uuid>.wav`; absolute paths are only retained for explicitly external dependencies.
+
+## Manifest format
+
+`VoidProjectFormat.currentSchema` is `16`. This is the project format schema and is intentionally separate from `application.version` (`0.1.0`). Manifest writes are atomic using `.tmp` and `.bak` companions.
+
+## Resilience services
+
+- `ProjectPackageService`: creates the package structure transactionally and removes partial packages on failure.
+- `ProjectResilienceRepository`: stores external files, backup records, cache entries, trash entries, and migration history in project-scoped Drift tables.
+- `ProjectPathMigrator`: converts absolute paths inside the package to portable relative paths; external paths remain external.
+- `ProjectIntegrityService`: validates manifest/database status and reports missing and orphan files.
+- `ProjectSessionLock`: writes a secret-free session marker and detects unclean shutdowns.
+- `ProjectBackupService`: quick backups contain manifest and database; cache remains disposable.
+- `ProjectCacheService` and `ProjectTrashService`: clear disposable data and support reversible file deletion.
+
+The project database schema is now v34, with the Sprint 24 resilience tables added in migration `v33 → v34`.
+
+## Portable archive
+
+`PortableProjectService` exports only manifest, database, and selected assets. Disposable cache and backups are excluded by default. The archive is reopened and checked for `manifest/project.json`, `database/project.db`, and the archive manifest before import. Import extracts to a working package and supports import-as-copy UUID rewriting.
+
+## UI and routes
+
+Added responsive resilience center screens and routes:
+
+- `/project-diagnostics`
+- `/project-repair`
+- `/project-backups`
+- `/project-export`
+
+The screens are intentionally service-facing; future project-session providers can inject live scan reports without moving Drift queries into widgets.
+
+## Verification
+
+```text
+dart format --set-exit-if-changed lib test       PASS
+dart run build_runner build                      PASS
+flutter analyze                                  PASS
+flutter test                                     PASS — 214 tests
+flutter build web --release                      PASS
+git diff --check                                  PASS
+AD_HOC_VERIFY_RESULT: PASS
+TEMP_VERIFY_CLEAN
+```
+
+Flutter emitted the existing Material/Cupertino font warning during web build, but the release artifact completed successfully.

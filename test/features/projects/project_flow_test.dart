@@ -65,7 +65,7 @@ void main() {
     expect(Directory(project.localPath).existsSync(), isTrue);
     expect(Directory('${project.localPath}/assets').existsSync(), isTrue);
     expect(
-      File('${project.localPath}/project.json').readAsStringSync(),
+      File('${project.localPath}/manifest/project.json').readAsStringSync(),
       contains('Void Universe'),
     );
   });

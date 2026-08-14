@@ -25,13 +25,13 @@ final class ProjectPaths {
   }
 
   Future<Directory> project(String projectId) async =>
-      Directory(p.join((await root()).path, projectId));
+      Directory(p.join((await root()).path, '$projectId.voidproject'));
 
   Future<File> manifest(String projectId) async =>
-      File(p.join((await project(projectId)).path, 'project.json'));
+      File(p.join((await project(projectId)).path, 'manifest', 'project.json'));
 
   Future<File> database(String projectId) async =>
-      File(p.join((await project(projectId)).path, 'project.db'));
+      File(p.join((await project(projectId)).path, 'database', 'project.db'));
 
   Future<File> registry() async => File(
     p.join(

@@ -26,6 +26,10 @@ abstract final class AppRoutes {
   static const props = '/props';
   static const cinematicProduction = '/cinematic-production';
   static const productionValidation = '/production-validation';
+  static const projectDiagnostics = '/project-diagnostics';
+  static const projectRepair = '/project-repair';
+  static const projectBackups = '/project-backups';
+  static const projectExport = '/project-export';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

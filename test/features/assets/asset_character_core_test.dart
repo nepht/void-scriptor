@@ -55,7 +55,7 @@ void main() {
     final database = await ProjectDatabaseService().open(databasePath);
     addTearDown(database.close);
 
-    expect(database.schemaVersion, 33);
+    expect(database.schemaVersion, 34);
     expect(await database.select(database.assets).get(), isEmpty);
     expect(await database.select(database.characters).get(), isEmpty);
   });
@@ -99,7 +99,7 @@ void main() {
       );
       expect(
         await Directory(
-          '${root.path}/project-1/assets/characters/$id',
+          '${(await paths.project('project-1')).path}/assets/characters/$id',
         ).exists(),
         isTrue,
       );

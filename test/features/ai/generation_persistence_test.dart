@@ -56,6 +56,6 @@ void main() {
       (await restored.getInputs(job.id)).single.snapshotData,
       contains('Qowner'),
     );
-    expect(second.schemaVersion, 33);
+    expect(second.schemaVersion, 34);
   });
 }

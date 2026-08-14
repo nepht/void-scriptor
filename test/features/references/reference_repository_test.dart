@@ -57,8 +57,9 @@ void main() {
         references.every((item) => item.contentHash?.isNotEmpty == true),
         isTrue,
       );
+      final packageRoot = (await paths.project('p')).path;
       expect(
-        await File('${root.path}/p/${references.first.filePath}').exists(),
+        await File('$packageRoot/${references.first.filePath}').exists(),
         isTrue,
       );
     },
@@ -116,7 +117,8 @@ void main() {
       );
       final version =
           (await database.select(database.referenceVersions).get()).single;
-      final snapshot = File('${root.path}/p/${version.filePath}');
+      final packageRoot = (await paths.project('p')).path;
+      final snapshot = File('$packageRoot/${version.filePath}');
       expect(await snapshot.readAsBytes(), [1, 2, 3]);
       await importer.restoreVersion(
         projectId: 'p',
@@ -124,7 +126,8 @@ void main() {
         versionId: version.id,
       );
       final current = await database.referenceDao.byId('face-1');
-      expect(await File('${root.path}/p/${current!.filePath}').readAsBytes(), [
+      final packageRoot2 = (await paths.project('p')).path;
+      expect(await File('$packageRoot2/${current!.filePath}').readAsBytes(), [
         1,
         2,
         3,

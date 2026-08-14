@@ -53382,6 +53382,2133 @@ class AudioWaveformCachesCompanion extends UpdateCompanion<AudioWaveformCache> {
   }
 }
 
+class $ExternalFilesTable extends ExternalFiles
+    with TableInfo<$ExternalFilesTable, ExternalFile> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExternalFilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _absolutePathMeta = const VerificationMeta(
+    'absolutePath',
+  );
+  @override
+  late final GeneratedColumn<String> absolutePath = GeneratedColumn<String>(
+    'absolute_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentHashMeta = const VerificationMeta(
+    'contentHash',
+  );
+  @override
+  late final GeneratedColumn<String> contentHash = GeneratedColumn<String>(
+    'content_hash',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _availableMeta = const VerificationMeta(
+    'available',
+  );
+  @override
+  late final GeneratedColumn<bool> available = GeneratedColumn<bool>(
+    'available',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("available" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    absolutePath,
+    contentHash,
+    available,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'external_files';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ExternalFile> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('absolute_path')) {
+      context.handle(
+        _absolutePathMeta,
+        absolutePath.isAcceptableOrUnknown(
+          data['absolute_path']!,
+          _absolutePathMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_absolutePathMeta);
+    }
+    if (data.containsKey('content_hash')) {
+      context.handle(
+        _contentHashMeta,
+        contentHash.isAcceptableOrUnknown(
+          data['content_hash']!,
+          _contentHashMeta,
+        ),
+      );
+    }
+    if (data.containsKey('available')) {
+      context.handle(
+        _availableMeta,
+        available.isAcceptableOrUnknown(data['available']!, _availableMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ExternalFile map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ExternalFile(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      absolutePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}absolute_path'],
+      )!,
+      contentHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_hash'],
+      ),
+      available: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}available'],
+      )!,
+    );
+  }
+
+  @override
+  $ExternalFilesTable createAlias(String alias) {
+    return $ExternalFilesTable(attachedDatabase, alias);
+  }
+}
+
+class ExternalFile extends DataClass implements Insertable<ExternalFile> {
+  final String id;
+  final String projectId;
+  final String absolutePath;
+  final String? contentHash;
+  final bool available;
+  const ExternalFile({
+    required this.id,
+    required this.projectId,
+    required this.absolutePath,
+    this.contentHash,
+    required this.available,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['absolute_path'] = Variable<String>(absolutePath);
+    if (!nullToAbsent || contentHash != null) {
+      map['content_hash'] = Variable<String>(contentHash);
+    }
+    map['available'] = Variable<bool>(available);
+    return map;
+  }
+
+  ExternalFilesCompanion toCompanion(bool nullToAbsent) {
+    return ExternalFilesCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      absolutePath: Value(absolutePath),
+      contentHash: contentHash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contentHash),
+      available: Value(available),
+    );
+  }
+
+  factory ExternalFile.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExternalFile(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      absolutePath: serializer.fromJson<String>(json['absolutePath']),
+      contentHash: serializer.fromJson<String?>(json['contentHash']),
+      available: serializer.fromJson<bool>(json['available']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'absolutePath': serializer.toJson<String>(absolutePath),
+      'contentHash': serializer.toJson<String?>(contentHash),
+      'available': serializer.toJson<bool>(available),
+    };
+  }
+
+  ExternalFile copyWith({
+    String? id,
+    String? projectId,
+    String? absolutePath,
+    Value<String?> contentHash = const Value.absent(),
+    bool? available,
+  }) => ExternalFile(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    absolutePath: absolutePath ?? this.absolutePath,
+    contentHash: contentHash.present ? contentHash.value : this.contentHash,
+    available: available ?? this.available,
+  );
+  ExternalFile copyWithCompanion(ExternalFilesCompanion data) {
+    return ExternalFile(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      absolutePath: data.absolutePath.present
+          ? data.absolutePath.value
+          : this.absolutePath,
+      contentHash: data.contentHash.present
+          ? data.contentHash.value
+          : this.contentHash,
+      available: data.available.present ? data.available.value : this.available,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExternalFile(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('absolutePath: $absolutePath, ')
+          ..write('contentHash: $contentHash, ')
+          ..write('available: $available')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, projectId, absolutePath, contentHash, available);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExternalFile &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.absolutePath == this.absolutePath &&
+          other.contentHash == this.contentHash &&
+          other.available == this.available);
+}
+
+class ExternalFilesCompanion extends UpdateCompanion<ExternalFile> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> absolutePath;
+  final Value<String?> contentHash;
+  final Value<bool> available;
+  final Value<int> rowid;
+  const ExternalFilesCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.absolutePath = const Value.absent(),
+    this.contentHash = const Value.absent(),
+    this.available = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ExternalFilesCompanion.insert({
+    required String id,
+    required String projectId,
+    required String absolutePath,
+    this.contentHash = const Value.absent(),
+    this.available = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       absolutePath = Value(absolutePath);
+  static Insertable<ExternalFile> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? absolutePath,
+    Expression<String>? contentHash,
+    Expression<bool>? available,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (absolutePath != null) 'absolute_path': absolutePath,
+      if (contentHash != null) 'content_hash': contentHash,
+      if (available != null) 'available': available,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ExternalFilesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? absolutePath,
+    Value<String?>? contentHash,
+    Value<bool>? available,
+    Value<int>? rowid,
+  }) {
+    return ExternalFilesCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      absolutePath: absolutePath ?? this.absolutePath,
+      contentHash: contentHash ?? this.contentHash,
+      available: available ?? this.available,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (absolutePath.present) {
+      map['absolute_path'] = Variable<String>(absolutePath.value);
+    }
+    if (contentHash.present) {
+      map['content_hash'] = Variable<String>(contentHash.value);
+    }
+    if (available.present) {
+      map['available'] = Variable<bool>(available.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExternalFilesCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('absolutePath: $absolutePath, ')
+          ..write('contentHash: $contentHash, ')
+          ..write('available: $available, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProjectBackupsTable extends ProjectBackups
+    with TableInfo<$ProjectBackupsTable, ProjectBackup> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProjectBackupsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _relativePathMeta = const VerificationMeta(
+    'relativePath',
+  );
+  @override
+  late final GeneratedColumn<String> relativePath = GeneratedColumn<String>(
+    'relative_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _schemaVersionMeta = const VerificationMeta(
+    'schemaVersion',
+  );
+  @override
+  late final GeneratedColumn<int> schemaVersion = GeneratedColumn<int>(
+    'schema_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sizeBytesMeta = const VerificationMeta(
+    'sizeBytes',
+  );
+  @override
+  late final GeneratedColumn<int> sizeBytes = GeneratedColumn<int>(
+    'size_bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    type,
+    relativePath,
+    schemaVersion,
+    sizeBytes,
+    createdAt,
+    note,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'project_backups';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProjectBackup> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('relative_path')) {
+      context.handle(
+        _relativePathMeta,
+        relativePath.isAcceptableOrUnknown(
+          data['relative_path']!,
+          _relativePathMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_relativePathMeta);
+    }
+    if (data.containsKey('schema_version')) {
+      context.handle(
+        _schemaVersionMeta,
+        schemaVersion.isAcceptableOrUnknown(
+          data['schema_version']!,
+          _schemaVersionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_schemaVersionMeta);
+    }
+    if (data.containsKey('size_bytes')) {
+      context.handle(
+        _sizeBytesMeta,
+        sizeBytes.isAcceptableOrUnknown(data['size_bytes']!, _sizeBytesMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sizeBytesMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProjectBackup map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProjectBackup(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      relativePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}relative_path'],
+      )!,
+      schemaVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}schema_version'],
+      )!,
+      sizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}size_bytes'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      )!,
+    );
+  }
+
+  @override
+  $ProjectBackupsTable createAlias(String alias) {
+    return $ProjectBackupsTable(attachedDatabase, alias);
+  }
+}
+
+class ProjectBackup extends DataClass implements Insertable<ProjectBackup> {
+  final String id;
+  final String projectId;
+  final String type;
+  final String relativePath;
+  final int schemaVersion;
+  final int sizeBytes;
+  final DateTime createdAt;
+  final String note;
+  const ProjectBackup({
+    required this.id,
+    required this.projectId,
+    required this.type,
+    required this.relativePath,
+    required this.schemaVersion,
+    required this.sizeBytes,
+    required this.createdAt,
+    required this.note,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['type'] = Variable<String>(type);
+    map['relative_path'] = Variable<String>(relativePath);
+    map['schema_version'] = Variable<int>(schemaVersion);
+    map['size_bytes'] = Variable<int>(sizeBytes);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['note'] = Variable<String>(note);
+    return map;
+  }
+
+  ProjectBackupsCompanion toCompanion(bool nullToAbsent) {
+    return ProjectBackupsCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      type: Value(type),
+      relativePath: Value(relativePath),
+      schemaVersion: Value(schemaVersion),
+      sizeBytes: Value(sizeBytes),
+      createdAt: Value(createdAt),
+      note: Value(note),
+    );
+  }
+
+  factory ProjectBackup.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProjectBackup(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      type: serializer.fromJson<String>(json['type']),
+      relativePath: serializer.fromJson<String>(json['relativePath']),
+      schemaVersion: serializer.fromJson<int>(json['schemaVersion']),
+      sizeBytes: serializer.fromJson<int>(json['sizeBytes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      note: serializer.fromJson<String>(json['note']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'type': serializer.toJson<String>(type),
+      'relativePath': serializer.toJson<String>(relativePath),
+      'schemaVersion': serializer.toJson<int>(schemaVersion),
+      'sizeBytes': serializer.toJson<int>(sizeBytes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'note': serializer.toJson<String>(note),
+    };
+  }
+
+  ProjectBackup copyWith({
+    String? id,
+    String? projectId,
+    String? type,
+    String? relativePath,
+    int? schemaVersion,
+    int? sizeBytes,
+    DateTime? createdAt,
+    String? note,
+  }) => ProjectBackup(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    type: type ?? this.type,
+    relativePath: relativePath ?? this.relativePath,
+    schemaVersion: schemaVersion ?? this.schemaVersion,
+    sizeBytes: sizeBytes ?? this.sizeBytes,
+    createdAt: createdAt ?? this.createdAt,
+    note: note ?? this.note,
+  );
+  ProjectBackup copyWithCompanion(ProjectBackupsCompanion data) {
+    return ProjectBackup(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      type: data.type.present ? data.type.value : this.type,
+      relativePath: data.relativePath.present
+          ? data.relativePath.value
+          : this.relativePath,
+      schemaVersion: data.schemaVersion.present
+          ? data.schemaVersion.value
+          : this.schemaVersion,
+      sizeBytes: data.sizeBytes.present ? data.sizeBytes.value : this.sizeBytes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      note: data.note.present ? data.note.value : this.note,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectBackup(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('type: $type, ')
+          ..write('relativePath: $relativePath, ')
+          ..write('schemaVersion: $schemaVersion, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    type,
+    relativePath,
+    schemaVersion,
+    sizeBytes,
+    createdAt,
+    note,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProjectBackup &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.type == this.type &&
+          other.relativePath == this.relativePath &&
+          other.schemaVersion == this.schemaVersion &&
+          other.sizeBytes == this.sizeBytes &&
+          other.createdAt == this.createdAt &&
+          other.note == this.note);
+}
+
+class ProjectBackupsCompanion extends UpdateCompanion<ProjectBackup> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> type;
+  final Value<String> relativePath;
+  final Value<int> schemaVersion;
+  final Value<int> sizeBytes;
+  final Value<DateTime> createdAt;
+  final Value<String> note;
+  final Value<int> rowid;
+  const ProjectBackupsCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.type = const Value.absent(),
+    this.relativePath = const Value.absent(),
+    this.schemaVersion = const Value.absent(),
+    this.sizeBytes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.note = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProjectBackupsCompanion.insert({
+    required String id,
+    required String projectId,
+    required String type,
+    required String relativePath,
+    required int schemaVersion,
+    required int sizeBytes,
+    required DateTime createdAt,
+    this.note = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       type = Value(type),
+       relativePath = Value(relativePath),
+       schemaVersion = Value(schemaVersion),
+       sizeBytes = Value(sizeBytes),
+       createdAt = Value(createdAt);
+  static Insertable<ProjectBackup> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? type,
+    Expression<String>? relativePath,
+    Expression<int>? schemaVersion,
+    Expression<int>? sizeBytes,
+    Expression<DateTime>? createdAt,
+    Expression<String>? note,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (type != null) 'type': type,
+      if (relativePath != null) 'relative_path': relativePath,
+      if (schemaVersion != null) 'schema_version': schemaVersion,
+      if (sizeBytes != null) 'size_bytes': sizeBytes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (note != null) 'note': note,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProjectBackupsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? type,
+    Value<String>? relativePath,
+    Value<int>? schemaVersion,
+    Value<int>? sizeBytes,
+    Value<DateTime>? createdAt,
+    Value<String>? note,
+    Value<int>? rowid,
+  }) {
+    return ProjectBackupsCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      type: type ?? this.type,
+      relativePath: relativePath ?? this.relativePath,
+      schemaVersion: schemaVersion ?? this.schemaVersion,
+      sizeBytes: sizeBytes ?? this.sizeBytes,
+      createdAt: createdAt ?? this.createdAt,
+      note: note ?? this.note,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (relativePath.present) {
+      map['relative_path'] = Variable<String>(relativePath.value);
+    }
+    if (schemaVersion.present) {
+      map['schema_version'] = Variable<int>(schemaVersion.value);
+    }
+    if (sizeBytes.present) {
+      map['size_bytes'] = Variable<int>(sizeBytes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectBackupsCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('type: $type, ')
+          ..write('relativePath: $relativePath, ')
+          ..write('schemaVersion: $schemaVersion, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('note: $note, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CacheEntriesTable extends CacheEntries
+    with TableInfo<$CacheEntriesTable, CacheEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CacheEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+    'key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _relativePathMeta = const VerificationMeta(
+    'relativePath',
+  );
+  @override
+  late final GeneratedColumn<String> relativePath = GeneratedColumn<String>(
+    'relative_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cacheTypeMeta = const VerificationMeta(
+    'cacheType',
+  );
+  @override
+  late final GeneratedColumn<String> cacheType = GeneratedColumn<String>(
+    'cache_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sizeBytesMeta = const VerificationMeta(
+    'sizeBytes',
+  );
+  @override
+  late final GeneratedColumn<int> sizeBytes = GeneratedColumn<int>(
+    'size_bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastAccessedAtMeta = const VerificationMeta(
+    'lastAccessedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastAccessedAt =
+      GeneratedColumn<DateTime>(
+        'last_accessed_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    key,
+    relativePath,
+    cacheType,
+    sizeBytes,
+    createdAt,
+    lastAccessedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cache_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CacheEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('key')) {
+      context.handle(
+        _keyMeta,
+        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (data.containsKey('relative_path')) {
+      context.handle(
+        _relativePathMeta,
+        relativePath.isAcceptableOrUnknown(
+          data['relative_path']!,
+          _relativePathMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_relativePathMeta);
+    }
+    if (data.containsKey('cache_type')) {
+      context.handle(
+        _cacheTypeMeta,
+        cacheType.isAcceptableOrUnknown(data['cache_type']!, _cacheTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_cacheTypeMeta);
+    }
+    if (data.containsKey('size_bytes')) {
+      context.handle(
+        _sizeBytesMeta,
+        sizeBytes.isAcceptableOrUnknown(data['size_bytes']!, _sizeBytesMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sizeBytesMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('last_accessed_at')) {
+      context.handle(
+        _lastAccessedAtMeta,
+        lastAccessedAt.isAcceptableOrUnknown(
+          data['last_accessed_at']!,
+          _lastAccessedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lastAccessedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {key};
+  @override
+  CacheEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CacheEntry(
+      key: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}key'],
+      )!,
+      relativePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}relative_path'],
+      )!,
+      cacheType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cache_type'],
+      )!,
+      sizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}size_bytes'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      lastAccessedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_accessed_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CacheEntriesTable createAlias(String alias) {
+    return $CacheEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class CacheEntry extends DataClass implements Insertable<CacheEntry> {
+  final String key;
+  final String relativePath;
+  final String cacheType;
+  final int sizeBytes;
+  final DateTime createdAt;
+  final DateTime lastAccessedAt;
+  const CacheEntry({
+    required this.key,
+    required this.relativePath,
+    required this.cacheType,
+    required this.sizeBytes,
+    required this.createdAt,
+    required this.lastAccessedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['key'] = Variable<String>(key);
+    map['relative_path'] = Variable<String>(relativePath);
+    map['cache_type'] = Variable<String>(cacheType);
+    map['size_bytes'] = Variable<int>(sizeBytes);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['last_accessed_at'] = Variable<DateTime>(lastAccessedAt);
+    return map;
+  }
+
+  CacheEntriesCompanion toCompanion(bool nullToAbsent) {
+    return CacheEntriesCompanion(
+      key: Value(key),
+      relativePath: Value(relativePath),
+      cacheType: Value(cacheType),
+      sizeBytes: Value(sizeBytes),
+      createdAt: Value(createdAt),
+      lastAccessedAt: Value(lastAccessedAt),
+    );
+  }
+
+  factory CacheEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CacheEntry(
+      key: serializer.fromJson<String>(json['key']),
+      relativePath: serializer.fromJson<String>(json['relativePath']),
+      cacheType: serializer.fromJson<String>(json['cacheType']),
+      sizeBytes: serializer.fromJson<int>(json['sizeBytes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      lastAccessedAt: serializer.fromJson<DateTime>(json['lastAccessedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'key': serializer.toJson<String>(key),
+      'relativePath': serializer.toJson<String>(relativePath),
+      'cacheType': serializer.toJson<String>(cacheType),
+      'sizeBytes': serializer.toJson<int>(sizeBytes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'lastAccessedAt': serializer.toJson<DateTime>(lastAccessedAt),
+    };
+  }
+
+  CacheEntry copyWith({
+    String? key,
+    String? relativePath,
+    String? cacheType,
+    int? sizeBytes,
+    DateTime? createdAt,
+    DateTime? lastAccessedAt,
+  }) => CacheEntry(
+    key: key ?? this.key,
+    relativePath: relativePath ?? this.relativePath,
+    cacheType: cacheType ?? this.cacheType,
+    sizeBytes: sizeBytes ?? this.sizeBytes,
+    createdAt: createdAt ?? this.createdAt,
+    lastAccessedAt: lastAccessedAt ?? this.lastAccessedAt,
+  );
+  CacheEntry copyWithCompanion(CacheEntriesCompanion data) {
+    return CacheEntry(
+      key: data.key.present ? data.key.value : this.key,
+      relativePath: data.relativePath.present
+          ? data.relativePath.value
+          : this.relativePath,
+      cacheType: data.cacheType.present ? data.cacheType.value : this.cacheType,
+      sizeBytes: data.sizeBytes.present ? data.sizeBytes.value : this.sizeBytes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      lastAccessedAt: data.lastAccessedAt.present
+          ? data.lastAccessedAt.value
+          : this.lastAccessedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CacheEntry(')
+          ..write('key: $key, ')
+          ..write('relativePath: $relativePath, ')
+          ..write('cacheType: $cacheType, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('lastAccessedAt: $lastAccessedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    key,
+    relativePath,
+    cacheType,
+    sizeBytes,
+    createdAt,
+    lastAccessedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CacheEntry &&
+          other.key == this.key &&
+          other.relativePath == this.relativePath &&
+          other.cacheType == this.cacheType &&
+          other.sizeBytes == this.sizeBytes &&
+          other.createdAt == this.createdAt &&
+          other.lastAccessedAt == this.lastAccessedAt);
+}
+
+class CacheEntriesCompanion extends UpdateCompanion<CacheEntry> {
+  final Value<String> key;
+  final Value<String> relativePath;
+  final Value<String> cacheType;
+  final Value<int> sizeBytes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> lastAccessedAt;
+  final Value<int> rowid;
+  const CacheEntriesCompanion({
+    this.key = const Value.absent(),
+    this.relativePath = const Value.absent(),
+    this.cacheType = const Value.absent(),
+    this.sizeBytes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.lastAccessedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CacheEntriesCompanion.insert({
+    required String key,
+    required String relativePath,
+    required String cacheType,
+    required int sizeBytes,
+    required DateTime createdAt,
+    required DateTime lastAccessedAt,
+    this.rowid = const Value.absent(),
+  }) : key = Value(key),
+       relativePath = Value(relativePath),
+       cacheType = Value(cacheType),
+       sizeBytes = Value(sizeBytes),
+       createdAt = Value(createdAt),
+       lastAccessedAt = Value(lastAccessedAt);
+  static Insertable<CacheEntry> custom({
+    Expression<String>? key,
+    Expression<String>? relativePath,
+    Expression<String>? cacheType,
+    Expression<int>? sizeBytes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? lastAccessedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (key != null) 'key': key,
+      if (relativePath != null) 'relative_path': relativePath,
+      if (cacheType != null) 'cache_type': cacheType,
+      if (sizeBytes != null) 'size_bytes': sizeBytes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (lastAccessedAt != null) 'last_accessed_at': lastAccessedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CacheEntriesCompanion copyWith({
+    Value<String>? key,
+    Value<String>? relativePath,
+    Value<String>? cacheType,
+    Value<int>? sizeBytes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? lastAccessedAt,
+    Value<int>? rowid,
+  }) {
+    return CacheEntriesCompanion(
+      key: key ?? this.key,
+      relativePath: relativePath ?? this.relativePath,
+      cacheType: cacheType ?? this.cacheType,
+      sizeBytes: sizeBytes ?? this.sizeBytes,
+      createdAt: createdAt ?? this.createdAt,
+      lastAccessedAt: lastAccessedAt ?? this.lastAccessedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (relativePath.present) {
+      map['relative_path'] = Variable<String>(relativePath.value);
+    }
+    if (cacheType.present) {
+      map['cache_type'] = Variable<String>(cacheType.value);
+    }
+    if (sizeBytes.present) {
+      map['size_bytes'] = Variable<int>(sizeBytes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (lastAccessedAt.present) {
+      map['last_accessed_at'] = Variable<DateTime>(lastAccessedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CacheEntriesCompanion(')
+          ..write('key: $key, ')
+          ..write('relativePath: $relativePath, ')
+          ..write('cacheType: $cacheType, ')
+          ..write('sizeBytes: $sizeBytes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('lastAccessedAt: $lastAccessedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TrashEntriesTable extends TrashEntries
+    with TableInfo<$TrashEntriesTable, TrashEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TrashEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _originalPathMeta = const VerificationMeta(
+    'originalPath',
+  );
+  @override
+  late final GeneratedColumn<String> originalPath = GeneratedColumn<String>(
+    'original_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _trashPathMeta = const VerificationMeta(
+    'trashPath',
+  );
+  @override
+  late final GeneratedColumn<String> trashPath = GeneratedColumn<String>(
+    'trash_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entityIdMeta = const VerificationMeta(
+    'entityId',
+  );
+  @override
+  late final GeneratedColumn<String> entityId = GeneratedColumn<String>(
+    'entity_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    originalPath,
+    trashPath,
+    entityId,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'trash_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TrashEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('original_path')) {
+      context.handle(
+        _originalPathMeta,
+        originalPath.isAcceptableOrUnknown(
+          data['original_path']!,
+          _originalPathMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_originalPathMeta);
+    }
+    if (data.containsKey('trash_path')) {
+      context.handle(
+        _trashPathMeta,
+        trashPath.isAcceptableOrUnknown(data['trash_path']!, _trashPathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trashPathMeta);
+    }
+    if (data.containsKey('entity_id')) {
+      context.handle(
+        _entityIdMeta,
+        entityId.isAcceptableOrUnknown(data['entity_id']!, _entityIdMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_deletedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TrashEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TrashEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      originalPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}original_path'],
+      )!,
+      trashPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trash_path'],
+      )!,
+      entityId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_id'],
+      ),
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      )!,
+    );
+  }
+
+  @override
+  $TrashEntriesTable createAlias(String alias) {
+    return $TrashEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class TrashEntry extends DataClass implements Insertable<TrashEntry> {
+  final String id;
+  final String originalPath;
+  final String trashPath;
+  final String? entityId;
+  final DateTime deletedAt;
+  const TrashEntry({
+    required this.id,
+    required this.originalPath,
+    required this.trashPath,
+    this.entityId,
+    required this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['original_path'] = Variable<String>(originalPath);
+    map['trash_path'] = Variable<String>(trashPath);
+    if (!nullToAbsent || entityId != null) {
+      map['entity_id'] = Variable<String>(entityId);
+    }
+    map['deleted_at'] = Variable<DateTime>(deletedAt);
+    return map;
+  }
+
+  TrashEntriesCompanion toCompanion(bool nullToAbsent) {
+    return TrashEntriesCompanion(
+      id: Value(id),
+      originalPath: Value(originalPath),
+      trashPath: Value(trashPath),
+      entityId: entityId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(entityId),
+      deletedAt: Value(deletedAt),
+    );
+  }
+
+  factory TrashEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TrashEntry(
+      id: serializer.fromJson<String>(json['id']),
+      originalPath: serializer.fromJson<String>(json['originalPath']),
+      trashPath: serializer.fromJson<String>(json['trashPath']),
+      entityId: serializer.fromJson<String?>(json['entityId']),
+      deletedAt: serializer.fromJson<DateTime>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'originalPath': serializer.toJson<String>(originalPath),
+      'trashPath': serializer.toJson<String>(trashPath),
+      'entityId': serializer.toJson<String?>(entityId),
+      'deletedAt': serializer.toJson<DateTime>(deletedAt),
+    };
+  }
+
+  TrashEntry copyWith({
+    String? id,
+    String? originalPath,
+    String? trashPath,
+    Value<String?> entityId = const Value.absent(),
+    DateTime? deletedAt,
+  }) => TrashEntry(
+    id: id ?? this.id,
+    originalPath: originalPath ?? this.originalPath,
+    trashPath: trashPath ?? this.trashPath,
+    entityId: entityId.present ? entityId.value : this.entityId,
+    deletedAt: deletedAt ?? this.deletedAt,
+  );
+  TrashEntry copyWithCompanion(TrashEntriesCompanion data) {
+    return TrashEntry(
+      id: data.id.present ? data.id.value : this.id,
+      originalPath: data.originalPath.present
+          ? data.originalPath.value
+          : this.originalPath,
+      trashPath: data.trashPath.present ? data.trashPath.value : this.trashPath,
+      entityId: data.entityId.present ? data.entityId.value : this.entityId,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrashEntry(')
+          ..write('id: $id, ')
+          ..write('originalPath: $originalPath, ')
+          ..write('trashPath: $trashPath, ')
+          ..write('entityId: $entityId, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, originalPath, trashPath, entityId, deletedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TrashEntry &&
+          other.id == this.id &&
+          other.originalPath == this.originalPath &&
+          other.trashPath == this.trashPath &&
+          other.entityId == this.entityId &&
+          other.deletedAt == this.deletedAt);
+}
+
+class TrashEntriesCompanion extends UpdateCompanion<TrashEntry> {
+  final Value<String> id;
+  final Value<String> originalPath;
+  final Value<String> trashPath;
+  final Value<String?> entityId;
+  final Value<DateTime> deletedAt;
+  final Value<int> rowid;
+  const TrashEntriesCompanion({
+    this.id = const Value.absent(),
+    this.originalPath = const Value.absent(),
+    this.trashPath = const Value.absent(),
+    this.entityId = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TrashEntriesCompanion.insert({
+    required String id,
+    required String originalPath,
+    required String trashPath,
+    this.entityId = const Value.absent(),
+    required DateTime deletedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       originalPath = Value(originalPath),
+       trashPath = Value(trashPath),
+       deletedAt = Value(deletedAt);
+  static Insertable<TrashEntry> custom({
+    Expression<String>? id,
+    Expression<String>? originalPath,
+    Expression<String>? trashPath,
+    Expression<String>? entityId,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (originalPath != null) 'original_path': originalPath,
+      if (trashPath != null) 'trash_path': trashPath,
+      if (entityId != null) 'entity_id': entityId,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TrashEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? originalPath,
+    Value<String>? trashPath,
+    Value<String?>? entityId,
+    Value<DateTime>? deletedAt,
+    Value<int>? rowid,
+  }) {
+    return TrashEntriesCompanion(
+      id: id ?? this.id,
+      originalPath: originalPath ?? this.originalPath,
+      trashPath: trashPath ?? this.trashPath,
+      entityId: entityId ?? this.entityId,
+      deletedAt: deletedAt ?? this.deletedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (originalPath.present) {
+      map['original_path'] = Variable<String>(originalPath.value);
+    }
+    if (trashPath.present) {
+      map['trash_path'] = Variable<String>(trashPath.value);
+    }
+    if (entityId.present) {
+      map['entity_id'] = Variable<String>(entityId.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrashEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('originalPath: $originalPath, ')
+          ..write('trashPath: $trashPath, ')
+          ..write('entityId: $entityId, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProjectMigrationHistoryTable extends ProjectMigrationHistory
+    with TableInfo<$ProjectMigrationHistoryTable, ProjectMigrationHistoryData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProjectMigrationHistoryTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fromVersionMeta = const VerificationMeta(
+    'fromVersion',
+  );
+  @override
+  late final GeneratedColumn<int> fromVersion = GeneratedColumn<int>(
+    'from_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _toVersionMeta = const VerificationMeta(
+    'toVersion',
+  );
+  @override
+  late final GeneratedColumn<int> toVersion = GeneratedColumn<int>(
+    'to_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _appVersionMeta = const VerificationMeta(
+    'appVersion',
+  );
+  @override
+  late final GeneratedColumn<String> appVersion = GeneratedColumn<String>(
+    'app_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _migratedAtMeta = const VerificationMeta(
+    'migratedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> migratedAt = GeneratedColumn<DateTime>(
+    'migrated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _successfulMeta = const VerificationMeta(
+    'successful',
+  );
+  @override
+  late final GeneratedColumn<bool> successful = GeneratedColumn<bool>(
+    'successful',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("successful" IN (0, 1))',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    fromVersion,
+    toVersion,
+    appVersion,
+    migratedAt,
+    successful,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'project_migration_history';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProjectMigrationHistoryData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('from_version')) {
+      context.handle(
+        _fromVersionMeta,
+        fromVersion.isAcceptableOrUnknown(
+          data['from_version']!,
+          _fromVersionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fromVersionMeta);
+    }
+    if (data.containsKey('to_version')) {
+      context.handle(
+        _toVersionMeta,
+        toVersion.isAcceptableOrUnknown(data['to_version']!, _toVersionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_toVersionMeta);
+    }
+    if (data.containsKey('app_version')) {
+      context.handle(
+        _appVersionMeta,
+        appVersion.isAcceptableOrUnknown(data['app_version']!, _appVersionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_appVersionMeta);
+    }
+    if (data.containsKey('migrated_at')) {
+      context.handle(
+        _migratedAtMeta,
+        migratedAt.isAcceptableOrUnknown(data['migrated_at']!, _migratedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_migratedAtMeta);
+    }
+    if (data.containsKey('successful')) {
+      context.handle(
+        _successfulMeta,
+        successful.isAcceptableOrUnknown(data['successful']!, _successfulMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_successfulMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProjectMigrationHistoryData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProjectMigrationHistoryData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      fromVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}from_version'],
+      )!,
+      toVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}to_version'],
+      )!,
+      appVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}app_version'],
+      )!,
+      migratedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}migrated_at'],
+      )!,
+      successful: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}successful'],
+      )!,
+    );
+  }
+
+  @override
+  $ProjectMigrationHistoryTable createAlias(String alias) {
+    return $ProjectMigrationHistoryTable(attachedDatabase, alias);
+  }
+}
+
+class ProjectMigrationHistoryData extends DataClass
+    implements Insertable<ProjectMigrationHistoryData> {
+  final String id;
+  final int fromVersion;
+  final int toVersion;
+  final String appVersion;
+  final DateTime migratedAt;
+  final bool successful;
+  const ProjectMigrationHistoryData({
+    required this.id,
+    required this.fromVersion,
+    required this.toVersion,
+    required this.appVersion,
+    required this.migratedAt,
+    required this.successful,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['from_version'] = Variable<int>(fromVersion);
+    map['to_version'] = Variable<int>(toVersion);
+    map['app_version'] = Variable<String>(appVersion);
+    map['migrated_at'] = Variable<DateTime>(migratedAt);
+    map['successful'] = Variable<bool>(successful);
+    return map;
+  }
+
+  ProjectMigrationHistoryCompanion toCompanion(bool nullToAbsent) {
+    return ProjectMigrationHistoryCompanion(
+      id: Value(id),
+      fromVersion: Value(fromVersion),
+      toVersion: Value(toVersion),
+      appVersion: Value(appVersion),
+      migratedAt: Value(migratedAt),
+      successful: Value(successful),
+    );
+  }
+
+  factory ProjectMigrationHistoryData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProjectMigrationHistoryData(
+      id: serializer.fromJson<String>(json['id']),
+      fromVersion: serializer.fromJson<int>(json['fromVersion']),
+      toVersion: serializer.fromJson<int>(json['toVersion']),
+      appVersion: serializer.fromJson<String>(json['appVersion']),
+      migratedAt: serializer.fromJson<DateTime>(json['migratedAt']),
+      successful: serializer.fromJson<bool>(json['successful']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'fromVersion': serializer.toJson<int>(fromVersion),
+      'toVersion': serializer.toJson<int>(toVersion),
+      'appVersion': serializer.toJson<String>(appVersion),
+      'migratedAt': serializer.toJson<DateTime>(migratedAt),
+      'successful': serializer.toJson<bool>(successful),
+    };
+  }
+
+  ProjectMigrationHistoryData copyWith({
+    String? id,
+    int? fromVersion,
+    int? toVersion,
+    String? appVersion,
+    DateTime? migratedAt,
+    bool? successful,
+  }) => ProjectMigrationHistoryData(
+    id: id ?? this.id,
+    fromVersion: fromVersion ?? this.fromVersion,
+    toVersion: toVersion ?? this.toVersion,
+    appVersion: appVersion ?? this.appVersion,
+    migratedAt: migratedAt ?? this.migratedAt,
+    successful: successful ?? this.successful,
+  );
+  ProjectMigrationHistoryData copyWithCompanion(
+    ProjectMigrationHistoryCompanion data,
+  ) {
+    return ProjectMigrationHistoryData(
+      id: data.id.present ? data.id.value : this.id,
+      fromVersion: data.fromVersion.present
+          ? data.fromVersion.value
+          : this.fromVersion,
+      toVersion: data.toVersion.present ? data.toVersion.value : this.toVersion,
+      appVersion: data.appVersion.present
+          ? data.appVersion.value
+          : this.appVersion,
+      migratedAt: data.migratedAt.present
+          ? data.migratedAt.value
+          : this.migratedAt,
+      successful: data.successful.present
+          ? data.successful.value
+          : this.successful,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectMigrationHistoryData(')
+          ..write('id: $id, ')
+          ..write('fromVersion: $fromVersion, ')
+          ..write('toVersion: $toVersion, ')
+          ..write('appVersion: $appVersion, ')
+          ..write('migratedAt: $migratedAt, ')
+          ..write('successful: $successful')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    fromVersion,
+    toVersion,
+    appVersion,
+    migratedAt,
+    successful,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProjectMigrationHistoryData &&
+          other.id == this.id &&
+          other.fromVersion == this.fromVersion &&
+          other.toVersion == this.toVersion &&
+          other.appVersion == this.appVersion &&
+          other.migratedAt == this.migratedAt &&
+          other.successful == this.successful);
+}
+
+class ProjectMigrationHistoryCompanion
+    extends UpdateCompanion<ProjectMigrationHistoryData> {
+  final Value<String> id;
+  final Value<int> fromVersion;
+  final Value<int> toVersion;
+  final Value<String> appVersion;
+  final Value<DateTime> migratedAt;
+  final Value<bool> successful;
+  final Value<int> rowid;
+  const ProjectMigrationHistoryCompanion({
+    this.id = const Value.absent(),
+    this.fromVersion = const Value.absent(),
+    this.toVersion = const Value.absent(),
+    this.appVersion = const Value.absent(),
+    this.migratedAt = const Value.absent(),
+    this.successful = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProjectMigrationHistoryCompanion.insert({
+    required String id,
+    required int fromVersion,
+    required int toVersion,
+    required String appVersion,
+    required DateTime migratedAt,
+    required bool successful,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       fromVersion = Value(fromVersion),
+       toVersion = Value(toVersion),
+       appVersion = Value(appVersion),
+       migratedAt = Value(migratedAt),
+       successful = Value(successful);
+  static Insertable<ProjectMigrationHistoryData> custom({
+    Expression<String>? id,
+    Expression<int>? fromVersion,
+    Expression<int>? toVersion,
+    Expression<String>? appVersion,
+    Expression<DateTime>? migratedAt,
+    Expression<bool>? successful,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (fromVersion != null) 'from_version': fromVersion,
+      if (toVersion != null) 'to_version': toVersion,
+      if (appVersion != null) 'app_version': appVersion,
+      if (migratedAt != null) 'migrated_at': migratedAt,
+      if (successful != null) 'successful': successful,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProjectMigrationHistoryCompanion copyWith({
+    Value<String>? id,
+    Value<int>? fromVersion,
+    Value<int>? toVersion,
+    Value<String>? appVersion,
+    Value<DateTime>? migratedAt,
+    Value<bool>? successful,
+    Value<int>? rowid,
+  }) {
+    return ProjectMigrationHistoryCompanion(
+      id: id ?? this.id,
+      fromVersion: fromVersion ?? this.fromVersion,
+      toVersion: toVersion ?? this.toVersion,
+      appVersion: appVersion ?? this.appVersion,
+      migratedAt: migratedAt ?? this.migratedAt,
+      successful: successful ?? this.successful,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (fromVersion.present) {
+      map['from_version'] = Variable<int>(fromVersion.value);
+    }
+    if (toVersion.present) {
+      map['to_version'] = Variable<int>(toVersion.value);
+    }
+    if (appVersion.present) {
+      map['app_version'] = Variable<String>(appVersion.value);
+    }
+    if (migratedAt.present) {
+      map['migrated_at'] = Variable<DateTime>(migratedAt.value);
+    }
+    if (successful.present) {
+      map['successful'] = Variable<bool>(successful.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectMigrationHistoryCompanion(')
+          ..write('id: $id, ')
+          ..write('fromVersion: $fromVersion, ')
+          ..write('toVersion: $toVersion, ')
+          ..write('appVersion: $appVersion, ')
+          ..write('migratedAt: $migratedAt, ')
+          ..write('successful: $successful, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -53584,6 +55711,12 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
       $AudioAutomationKeyframesTable(this);
   late final $AudioWaveformCachesTable audioWaveformCaches =
       $AudioWaveformCachesTable(this);
+  late final $ExternalFilesTable externalFiles = $ExternalFilesTable(this);
+  late final $ProjectBackupsTable projectBackups = $ProjectBackupsTable(this);
+  late final $CacheEntriesTable cacheEntries = $CacheEntriesTable(this);
+  late final $TrashEntriesTable trashEntries = $TrashEntriesTable(this);
+  late final $ProjectMigrationHistoryTable projectMigrationHistory =
+      $ProjectMigrationHistoryTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -53637,6 +55770,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
       AudioTimelineRepository(this as ProjectDatabase);
   late final AudioImportRepository audioImportRepository =
       AudioImportRepository(this as ProjectDatabase);
+  late final ProjectResilienceRepository projectResilienceRepository =
+      ProjectResilienceRepository(this as ProjectDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -53758,6 +55893,11 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     audioTimelineClips,
     audioAutomationKeyframes,
     audioWaveformCaches,
+    externalFiles,
+    projectBackups,
+    cacheEntries,
+    trashEntries,
+    projectMigrationHistory,
   ];
 }
 
@@ -82468,6 +84608,1158 @@ typedef $$AudioWaveformCachesTableProcessedTableManager =
       AudioWaveformCache,
       PrefetchHooks Function()
     >;
+typedef $$ExternalFilesTableCreateCompanionBuilder =
+    ExternalFilesCompanion Function({
+      required String id,
+      required String projectId,
+      required String absolutePath,
+      Value<String?> contentHash,
+      Value<bool> available,
+      Value<int> rowid,
+    });
+typedef $$ExternalFilesTableUpdateCompanionBuilder =
+    ExternalFilesCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> absolutePath,
+      Value<String?> contentHash,
+      Value<bool> available,
+      Value<int> rowid,
+    });
+
+class $$ExternalFilesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $ExternalFilesTable> {
+  $$ExternalFilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get absolutePath => $composableBuilder(
+    column: $table.absolutePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentHash => $composableBuilder(
+    column: $table.contentHash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get available => $composableBuilder(
+    column: $table.available,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ExternalFilesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $ExternalFilesTable> {
+  $$ExternalFilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get absolutePath => $composableBuilder(
+    column: $table.absolutePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contentHash => $composableBuilder(
+    column: $table.contentHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get available => $composableBuilder(
+    column: $table.available,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ExternalFilesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $ExternalFilesTable> {
+  $$ExternalFilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get absolutePath => $composableBuilder(
+    column: $table.absolutePath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get contentHash => $composableBuilder(
+    column: $table.contentHash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get available =>
+      $composableBuilder(column: $table.available, builder: (column) => column);
+}
+
+class $$ExternalFilesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $ExternalFilesTable,
+          ExternalFile,
+          $$ExternalFilesTableFilterComposer,
+          $$ExternalFilesTableOrderingComposer,
+          $$ExternalFilesTableAnnotationComposer,
+          $$ExternalFilesTableCreateCompanionBuilder,
+          $$ExternalFilesTableUpdateCompanionBuilder,
+          (
+            ExternalFile,
+            BaseReferences<
+              _$ProjectDatabase,
+              $ExternalFilesTable,
+              ExternalFile
+            >,
+          ),
+          ExternalFile,
+          PrefetchHooks Function()
+        > {
+  $$ExternalFilesTableTableManager(
+    _$ProjectDatabase db,
+    $ExternalFilesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ExternalFilesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ExternalFilesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ExternalFilesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> absolutePath = const Value.absent(),
+                Value<String?> contentHash = const Value.absent(),
+                Value<bool> available = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ExternalFilesCompanion(
+                id: id,
+                projectId: projectId,
+                absolutePath: absolutePath,
+                contentHash: contentHash,
+                available: available,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String absolutePath,
+                Value<String?> contentHash = const Value.absent(),
+                Value<bool> available = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ExternalFilesCompanion.insert(
+                id: id,
+                projectId: projectId,
+                absolutePath: absolutePath,
+                contentHash: contentHash,
+                available: available,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ExternalFilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $ExternalFilesTable,
+      ExternalFile,
+      $$ExternalFilesTableFilterComposer,
+      $$ExternalFilesTableOrderingComposer,
+      $$ExternalFilesTableAnnotationComposer,
+      $$ExternalFilesTableCreateCompanionBuilder,
+      $$ExternalFilesTableUpdateCompanionBuilder,
+      (
+        ExternalFile,
+        BaseReferences<_$ProjectDatabase, $ExternalFilesTable, ExternalFile>,
+      ),
+      ExternalFile,
+      PrefetchHooks Function()
+    >;
+typedef $$ProjectBackupsTableCreateCompanionBuilder =
+    ProjectBackupsCompanion Function({
+      required String id,
+      required String projectId,
+      required String type,
+      required String relativePath,
+      required int schemaVersion,
+      required int sizeBytes,
+      required DateTime createdAt,
+      Value<String> note,
+      Value<int> rowid,
+    });
+typedef $$ProjectBackupsTableUpdateCompanionBuilder =
+    ProjectBackupsCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> type,
+      Value<String> relativePath,
+      Value<int> schemaVersion,
+      Value<int> sizeBytes,
+      Value<DateTime> createdAt,
+      Value<String> note,
+      Value<int> rowid,
+    });
+
+class $$ProjectBackupsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $ProjectBackupsTable> {
+  $$ProjectBackupsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get relativePath => $composableBuilder(
+    column: $table.relativePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get schemaVersion => $composableBuilder(
+    column: $table.schemaVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProjectBackupsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $ProjectBackupsTable> {
+  $$ProjectBackupsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get relativePath => $composableBuilder(
+    column: $table.relativePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get schemaVersion => $composableBuilder(
+    column: $table.schemaVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProjectBackupsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $ProjectBackupsTable> {
+  $$ProjectBackupsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get relativePath => $composableBuilder(
+    column: $table.relativePath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get schemaVersion => $composableBuilder(
+    column: $table.schemaVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sizeBytes =>
+      $composableBuilder(column: $table.sizeBytes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+}
+
+class $$ProjectBackupsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $ProjectBackupsTable,
+          ProjectBackup,
+          $$ProjectBackupsTableFilterComposer,
+          $$ProjectBackupsTableOrderingComposer,
+          $$ProjectBackupsTableAnnotationComposer,
+          $$ProjectBackupsTableCreateCompanionBuilder,
+          $$ProjectBackupsTableUpdateCompanionBuilder,
+          (
+            ProjectBackup,
+            BaseReferences<
+              _$ProjectDatabase,
+              $ProjectBackupsTable,
+              ProjectBackup
+            >,
+          ),
+          ProjectBackup,
+          PrefetchHooks Function()
+        > {
+  $$ProjectBackupsTableTableManager(
+    _$ProjectDatabase db,
+    $ProjectBackupsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProjectBackupsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProjectBackupsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProjectBackupsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> relativePath = const Value.absent(),
+                Value<int> schemaVersion = const Value.absent(),
+                Value<int> sizeBytes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProjectBackupsCompanion(
+                id: id,
+                projectId: projectId,
+                type: type,
+                relativePath: relativePath,
+                schemaVersion: schemaVersion,
+                sizeBytes: sizeBytes,
+                createdAt: createdAt,
+                note: note,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String type,
+                required String relativePath,
+                required int schemaVersion,
+                required int sizeBytes,
+                required DateTime createdAt,
+                Value<String> note = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProjectBackupsCompanion.insert(
+                id: id,
+                projectId: projectId,
+                type: type,
+                relativePath: relativePath,
+                schemaVersion: schemaVersion,
+                sizeBytes: sizeBytes,
+                createdAt: createdAt,
+                note: note,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProjectBackupsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $ProjectBackupsTable,
+      ProjectBackup,
+      $$ProjectBackupsTableFilterComposer,
+      $$ProjectBackupsTableOrderingComposer,
+      $$ProjectBackupsTableAnnotationComposer,
+      $$ProjectBackupsTableCreateCompanionBuilder,
+      $$ProjectBackupsTableUpdateCompanionBuilder,
+      (
+        ProjectBackup,
+        BaseReferences<_$ProjectDatabase, $ProjectBackupsTable, ProjectBackup>,
+      ),
+      ProjectBackup,
+      PrefetchHooks Function()
+    >;
+typedef $$CacheEntriesTableCreateCompanionBuilder =
+    CacheEntriesCompanion Function({
+      required String key,
+      required String relativePath,
+      required String cacheType,
+      required int sizeBytes,
+      required DateTime createdAt,
+      required DateTime lastAccessedAt,
+      Value<int> rowid,
+    });
+typedef $$CacheEntriesTableUpdateCompanionBuilder =
+    CacheEntriesCompanion Function({
+      Value<String> key,
+      Value<String> relativePath,
+      Value<String> cacheType,
+      Value<int> sizeBytes,
+      Value<DateTime> createdAt,
+      Value<DateTime> lastAccessedAt,
+      Value<int> rowid,
+    });
+
+class $$CacheEntriesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CacheEntriesTable> {
+  $$CacheEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get relativePath => $composableBuilder(
+    column: $table.relativePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cacheType => $composableBuilder(
+    column: $table.cacheType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastAccessedAt => $composableBuilder(
+    column: $table.lastAccessedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CacheEntriesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CacheEntriesTable> {
+  $$CacheEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get relativePath => $composableBuilder(
+    column: $table.relativePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cacheType => $composableBuilder(
+    column: $table.cacheType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sizeBytes => $composableBuilder(
+    column: $table.sizeBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastAccessedAt => $composableBuilder(
+    column: $table.lastAccessedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CacheEntriesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CacheEntriesTable> {
+  $$CacheEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => column);
+
+  GeneratedColumn<String> get relativePath => $composableBuilder(
+    column: $table.relativePath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get cacheType =>
+      $composableBuilder(column: $table.cacheType, builder: (column) => column);
+
+  GeneratedColumn<int> get sizeBytes =>
+      $composableBuilder(column: $table.sizeBytes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastAccessedAt => $composableBuilder(
+    column: $table.lastAccessedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$CacheEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CacheEntriesTable,
+          CacheEntry,
+          $$CacheEntriesTableFilterComposer,
+          $$CacheEntriesTableOrderingComposer,
+          $$CacheEntriesTableAnnotationComposer,
+          $$CacheEntriesTableCreateCompanionBuilder,
+          $$CacheEntriesTableUpdateCompanionBuilder,
+          (
+            CacheEntry,
+            BaseReferences<_$ProjectDatabase, $CacheEntriesTable, CacheEntry>,
+          ),
+          CacheEntry,
+          PrefetchHooks Function()
+        > {
+  $$CacheEntriesTableTableManager(
+    _$ProjectDatabase db,
+    $CacheEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CacheEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CacheEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CacheEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> key = const Value.absent(),
+                Value<String> relativePath = const Value.absent(),
+                Value<String> cacheType = const Value.absent(),
+                Value<int> sizeBytes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> lastAccessedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CacheEntriesCompanion(
+                key: key,
+                relativePath: relativePath,
+                cacheType: cacheType,
+                sizeBytes: sizeBytes,
+                createdAt: createdAt,
+                lastAccessedAt: lastAccessedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String key,
+                required String relativePath,
+                required String cacheType,
+                required int sizeBytes,
+                required DateTime createdAt,
+                required DateTime lastAccessedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => CacheEntriesCompanion.insert(
+                key: key,
+                relativePath: relativePath,
+                cacheType: cacheType,
+                sizeBytes: sizeBytes,
+                createdAt: createdAt,
+                lastAccessedAt: lastAccessedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CacheEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CacheEntriesTable,
+      CacheEntry,
+      $$CacheEntriesTableFilterComposer,
+      $$CacheEntriesTableOrderingComposer,
+      $$CacheEntriesTableAnnotationComposer,
+      $$CacheEntriesTableCreateCompanionBuilder,
+      $$CacheEntriesTableUpdateCompanionBuilder,
+      (
+        CacheEntry,
+        BaseReferences<_$ProjectDatabase, $CacheEntriesTable, CacheEntry>,
+      ),
+      CacheEntry,
+      PrefetchHooks Function()
+    >;
+typedef $$TrashEntriesTableCreateCompanionBuilder =
+    TrashEntriesCompanion Function({
+      required String id,
+      required String originalPath,
+      required String trashPath,
+      Value<String?> entityId,
+      required DateTime deletedAt,
+      Value<int> rowid,
+    });
+typedef $$TrashEntriesTableUpdateCompanionBuilder =
+    TrashEntriesCompanion Function({
+      Value<String> id,
+      Value<String> originalPath,
+      Value<String> trashPath,
+      Value<String?> entityId,
+      Value<DateTime> deletedAt,
+      Value<int> rowid,
+    });
+
+class $$TrashEntriesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $TrashEntriesTable> {
+  $$TrashEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get originalPath => $composableBuilder(
+    column: $table.originalPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trashPath => $composableBuilder(
+    column: $table.trashPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entityId => $composableBuilder(
+    column: $table.entityId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TrashEntriesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $TrashEntriesTable> {
+  $$TrashEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get originalPath => $composableBuilder(
+    column: $table.originalPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trashPath => $composableBuilder(
+    column: $table.trashPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entityId => $composableBuilder(
+    column: $table.entityId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TrashEntriesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $TrashEntriesTable> {
+  $$TrashEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get originalPath => $composableBuilder(
+    column: $table.originalPath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get trashPath =>
+      $composableBuilder(column: $table.trashPath, builder: (column) => column);
+
+  GeneratedColumn<String> get entityId =>
+      $composableBuilder(column: $table.entityId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+}
+
+class $$TrashEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $TrashEntriesTable,
+          TrashEntry,
+          $$TrashEntriesTableFilterComposer,
+          $$TrashEntriesTableOrderingComposer,
+          $$TrashEntriesTableAnnotationComposer,
+          $$TrashEntriesTableCreateCompanionBuilder,
+          $$TrashEntriesTableUpdateCompanionBuilder,
+          (
+            TrashEntry,
+            BaseReferences<_$ProjectDatabase, $TrashEntriesTable, TrashEntry>,
+          ),
+          TrashEntry,
+          PrefetchHooks Function()
+        > {
+  $$TrashEntriesTableTableManager(
+    _$ProjectDatabase db,
+    $TrashEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TrashEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TrashEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TrashEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> originalPath = const Value.absent(),
+                Value<String> trashPath = const Value.absent(),
+                Value<String?> entityId = const Value.absent(),
+                Value<DateTime> deletedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrashEntriesCompanion(
+                id: id,
+                originalPath: originalPath,
+                trashPath: trashPath,
+                entityId: entityId,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String originalPath,
+                required String trashPath,
+                Value<String?> entityId = const Value.absent(),
+                required DateTime deletedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => TrashEntriesCompanion.insert(
+                id: id,
+                originalPath: originalPath,
+                trashPath: trashPath,
+                entityId: entityId,
+                deletedAt: deletedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TrashEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $TrashEntriesTable,
+      TrashEntry,
+      $$TrashEntriesTableFilterComposer,
+      $$TrashEntriesTableOrderingComposer,
+      $$TrashEntriesTableAnnotationComposer,
+      $$TrashEntriesTableCreateCompanionBuilder,
+      $$TrashEntriesTableUpdateCompanionBuilder,
+      (
+        TrashEntry,
+        BaseReferences<_$ProjectDatabase, $TrashEntriesTable, TrashEntry>,
+      ),
+      TrashEntry,
+      PrefetchHooks Function()
+    >;
+typedef $$ProjectMigrationHistoryTableCreateCompanionBuilder =
+    ProjectMigrationHistoryCompanion Function({
+      required String id,
+      required int fromVersion,
+      required int toVersion,
+      required String appVersion,
+      required DateTime migratedAt,
+      required bool successful,
+      Value<int> rowid,
+    });
+typedef $$ProjectMigrationHistoryTableUpdateCompanionBuilder =
+    ProjectMigrationHistoryCompanion Function({
+      Value<String> id,
+      Value<int> fromVersion,
+      Value<int> toVersion,
+      Value<String> appVersion,
+      Value<DateTime> migratedAt,
+      Value<bool> successful,
+      Value<int> rowid,
+    });
+
+class $$ProjectMigrationHistoryTableFilterComposer
+    extends Composer<_$ProjectDatabase, $ProjectMigrationHistoryTable> {
+  $$ProjectMigrationHistoryTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get fromVersion => $composableBuilder(
+    column: $table.fromVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get toVersion => $composableBuilder(
+    column: $table.toVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get appVersion => $composableBuilder(
+    column: $table.appVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get migratedAt => $composableBuilder(
+    column: $table.migratedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get successful => $composableBuilder(
+    column: $table.successful,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProjectMigrationHistoryTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $ProjectMigrationHistoryTable> {
+  $$ProjectMigrationHistoryTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get fromVersion => $composableBuilder(
+    column: $table.fromVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get toVersion => $composableBuilder(
+    column: $table.toVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get appVersion => $composableBuilder(
+    column: $table.appVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get migratedAt => $composableBuilder(
+    column: $table.migratedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get successful => $composableBuilder(
+    column: $table.successful,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProjectMigrationHistoryTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $ProjectMigrationHistoryTable> {
+  $$ProjectMigrationHistoryTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get fromVersion => $composableBuilder(
+    column: $table.fromVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get toVersion =>
+      $composableBuilder(column: $table.toVersion, builder: (column) => column);
+
+  GeneratedColumn<String> get appVersion => $composableBuilder(
+    column: $table.appVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get migratedAt => $composableBuilder(
+    column: $table.migratedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get successful => $composableBuilder(
+    column: $table.successful,
+    builder: (column) => column,
+  );
+}
+
+class $$ProjectMigrationHistoryTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $ProjectMigrationHistoryTable,
+          ProjectMigrationHistoryData,
+          $$ProjectMigrationHistoryTableFilterComposer,
+          $$ProjectMigrationHistoryTableOrderingComposer,
+          $$ProjectMigrationHistoryTableAnnotationComposer,
+          $$ProjectMigrationHistoryTableCreateCompanionBuilder,
+          $$ProjectMigrationHistoryTableUpdateCompanionBuilder,
+          (
+            ProjectMigrationHistoryData,
+            BaseReferences<
+              _$ProjectDatabase,
+              $ProjectMigrationHistoryTable,
+              ProjectMigrationHistoryData
+            >,
+          ),
+          ProjectMigrationHistoryData,
+          PrefetchHooks Function()
+        > {
+  $$ProjectMigrationHistoryTableTableManager(
+    _$ProjectDatabase db,
+    $ProjectMigrationHistoryTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProjectMigrationHistoryTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ProjectMigrationHistoryTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ProjectMigrationHistoryTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<int> fromVersion = const Value.absent(),
+                Value<int> toVersion = const Value.absent(),
+                Value<String> appVersion = const Value.absent(),
+                Value<DateTime> migratedAt = const Value.absent(),
+                Value<bool> successful = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProjectMigrationHistoryCompanion(
+                id: id,
+                fromVersion: fromVersion,
+                toVersion: toVersion,
+                appVersion: appVersion,
+                migratedAt: migratedAt,
+                successful: successful,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required int fromVersion,
+                required int toVersion,
+                required String appVersion,
+                required DateTime migratedAt,
+                required bool successful,
+                Value<int> rowid = const Value.absent(),
+              }) => ProjectMigrationHistoryCompanion.insert(
+                id: id,
+                fromVersion: fromVersion,
+                toVersion: toVersion,
+                appVersion: appVersion,
+                migratedAt: migratedAt,
+                successful: successful,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProjectMigrationHistoryTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $ProjectMigrationHistoryTable,
+      ProjectMigrationHistoryData,
+      $$ProjectMigrationHistoryTableFilterComposer,
+      $$ProjectMigrationHistoryTableOrderingComposer,
+      $$ProjectMigrationHistoryTableAnnotationComposer,
+      $$ProjectMigrationHistoryTableCreateCompanionBuilder,
+      $$ProjectMigrationHistoryTableUpdateCompanionBuilder,
+      (
+        ProjectMigrationHistoryData,
+        BaseReferences<
+          _$ProjectDatabase,
+          $ProjectMigrationHistoryTable,
+          ProjectMigrationHistoryData
+        >,
+      ),
+      ProjectMigrationHistoryData,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -82767,4 +86059,17 @@ class $ProjectDatabaseManager {
       );
   $$AudioWaveformCachesTableTableManager get audioWaveformCaches =>
       $$AudioWaveformCachesTableTableManager(_db, _db.audioWaveformCaches);
+  $$ExternalFilesTableTableManager get externalFiles =>
+      $$ExternalFilesTableTableManager(_db, _db.externalFiles);
+  $$ProjectBackupsTableTableManager get projectBackups =>
+      $$ProjectBackupsTableTableManager(_db, _db.projectBackups);
+  $$CacheEntriesTableTableManager get cacheEntries =>
+      $$CacheEntriesTableTableManager(_db, _db.cacheEntries);
+  $$TrashEntriesTableTableManager get trashEntries =>
+      $$TrashEntriesTableTableManager(_db, _db.trashEntries);
+  $$ProjectMigrationHistoryTableTableManager get projectMigrationHistory =>
+      $$ProjectMigrationHistoryTableTableManager(
+        _db,
+        _db.projectMigrationHistory,
+      );
 }

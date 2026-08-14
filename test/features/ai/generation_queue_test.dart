@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/ai/application/generation_queue.dart';
 import 'package:void_scriptor/features/ai/domain/generation_job.dart';
@@ -34,9 +36,32 @@ void main() {
     final queue = GenerationQueue(executor: (_) async => executed = true);
     final job = _job('cancelled', GenerationPriority.normal);
     queue.enqueue(job);
-    expect(queue.cancel(job.id), isTrue);
+    expect(await queue.cancel(job.id), isTrue);
     await queue.drain();
     expect(executed, isFalse);
+    expect(queue.statusOf(job.id), GenerationJobStatus.cancelled);
+  });
+
+  test('cancel cooperatively stops a running job', () async {
+    final started = Completer<void>();
+    final release = Completer<void>();
+    final cancelled = <String>[];
+    final queue = GenerationQueue(
+      executor: (job) async {
+        started.complete();
+        await release.future;
+      },
+      canceller: (job) async => cancelled.add(job.id),
+    );
+    final job = _job('running', GenerationPriority.normal);
+    queue.enqueue(job);
+    final draining = queue.drain();
+    await started.future;
+
+    expect(await queue.cancel(job.id), isTrue);
+    expect(cancelled, ['running']);
+    release.complete();
+    await draining;
     expect(queue.statusOf(job.id), GenerationJobStatus.cancelled);
   });
 

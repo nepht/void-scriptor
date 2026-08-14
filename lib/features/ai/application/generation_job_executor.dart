@@ -65,6 +65,18 @@ class GenerationJobExecutor {
   final PromptLoader promptLoader;
   final PostGenerationHook? postGenerationHook;
 
+  Future<void> cancel(GenerationJob job) async {
+    try {
+      await registry.require(job.providerId).cancel(job.id);
+    } finally {
+      await repository.updateStatus(
+        job.id,
+        GenerationJobStatus.cancelled,
+        progress: 0,
+      );
+    }
+  }
+
   Future<void> execute(GenerationJob job) async {
     await repository.updateStatus(
       job.id,

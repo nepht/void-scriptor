@@ -38,6 +38,22 @@ void main() {
     await expectLater(executor.execute(_job()), throwsA(isA<Exception>()));
     expect(repository.statuses.last, GenerationJobStatus.failed);
   });
+  test('executor forwards running cancellation and persists status', () async {
+    final repository = FakeGenerationRepository();
+    final provider = FakeProvider();
+    final executor = GenerationJobExecutor(
+      registry: AiProviderRegistry([provider]),
+      repository: repository,
+      outputService: FakeOutputService(),
+      promptLoader: (_) async =>
+          const LoadedPrompt(prompt: 'prompt', target: PromptTarget.image),
+    );
+
+    await executor.cancel(_job());
+
+    expect(provider.cancelledRequestIds, ['job-1']);
+    expect(repository.statuses.last, GenerationJobStatus.cancelled);
+  });
 }
 
 GenerationJob _job() => GenerationJob(
@@ -50,6 +66,8 @@ GenerationJob _job() => GenerationJob(
 );
 
 class FakeProvider implements AiProvider {
+  final cancelledRequestIds = <String>[];
+
   @override
   String get id => 'fake';
   @override
@@ -71,7 +89,10 @@ class FakeProvider implements AiProvider {
         ],
       );
   @override
-  Future<void> cancel(String requestId) async {}
+  Future<void> cancel(String requestId) async {
+    cancelledRequestIds.add(requestId);
+  }
+
   @override
   bool validateTarget(PromptTarget target) => true;
 }

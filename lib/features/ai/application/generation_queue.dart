@@ -2,12 +2,17 @@ import 'dart:async';
 import '../domain/generation_job.dart';
 
 typedef GenerationJobExecutor = Future<void> Function(GenerationJob job);
+typedef GenerationJobCanceller = Future<void> Function(GenerationJob job);
 
 class GenerationQueue {
-  GenerationQueue({this.maxConcurrentJobs = 2, required this.executor})
-    : assert(maxConcurrentJobs > 0);
+  GenerationQueue({
+    this.maxConcurrentJobs = 2,
+    required this.executor,
+    this.canceller,
+  }) : assert(maxConcurrentJobs > 0);
   final int maxConcurrentJobs;
   final GenerationJobExecutor executor;
+  final GenerationJobCanceller? canceller;
   final List<GenerationJob> _pending = [];
   final Map<String, GenerationJob> _jobs = {};
   final Map<String, GenerationJobStatus> _statuses = {};
@@ -37,14 +42,19 @@ class GenerationQueue {
     return true;
   }
 
-  bool cancel(String jobId) {
-    final wasPending = _pending.any((job) => job.id == jobId);
-    _pending.removeWhere((job) => job.id == jobId);
-    if (!wasPending && _statuses[jobId] != GenerationJobStatus.running) {
+  Future<bool> cancel(String jobId) async {
+    final job = _jobs[jobId];
+    final wasPending = _pending.any((candidate) => candidate.id == jobId);
+    final wasRunning = _statuses[jobId] == GenerationJobStatus.running;
+    _pending.removeWhere((candidate) => candidate.id == jobId);
+    if (!wasPending && !wasRunning) {
       return false;
     }
     _cancelled.add(jobId);
     _statuses[jobId] = GenerationJobStatus.cancelled;
+    if (wasRunning && job != null) {
+      await canceller?.call(job);
+    }
     return true;
   }
 

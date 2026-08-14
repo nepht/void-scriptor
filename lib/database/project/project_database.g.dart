@@ -55509,6 +55509,613 @@ class ProjectMigrationHistoryCompanion
   }
 }
 
+class $CommandHistoryEntriesTable extends CommandHistoryEntries
+    with TableInfo<$CommandHistoryEntriesTable, CommandHistoryEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CommandHistoryEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _commandTypeMeta = const VerificationMeta(
+    'commandType',
+  );
+  @override
+  late final GeneratedColumn<String> commandType = GeneratedColumn<String>(
+    'command_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadMeta = const VerificationMeta(
+    'payload',
+  );
+  @override
+  late final GeneratedColumn<String> payload = GeneratedColumn<String>(
+    'payload',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _undoPayloadMeta = const VerificationMeta(
+    'undoPayload',
+  );
+  @override
+  late final GeneratedColumn<String> undoPayload = GeneratedColumn<String>(
+    'undo_payload',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sequenceMeta = const VerificationMeta(
+    'sequence',
+  );
+  @override
+  late final GeneratedColumn<int> sequence = GeneratedColumn<int>(
+    'sequence',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('user'),
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('applied'),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    commandType,
+    label,
+    payload,
+    undoPayload,
+    sequence,
+    source,
+    status,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'command_history_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CommandHistoryEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('command_type')) {
+      context.handle(
+        _commandTypeMeta,
+        commandType.isAcceptableOrUnknown(
+          data['command_type']!,
+          _commandTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_commandTypeMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('payload')) {
+      context.handle(
+        _payloadMeta,
+        payload.isAcceptableOrUnknown(data['payload']!, _payloadMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadMeta);
+    }
+    if (data.containsKey('undo_payload')) {
+      context.handle(
+        _undoPayloadMeta,
+        undoPayload.isAcceptableOrUnknown(
+          data['undo_payload']!,
+          _undoPayloadMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sequence')) {
+      context.handle(
+        _sequenceMeta,
+        sequence.isAcceptableOrUnknown(data['sequence']!, _sequenceMeta),
+      );
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CommandHistoryEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CommandHistoryEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      commandType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}command_type'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      payload: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload'],
+      )!,
+      undoPayload: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}undo_payload'],
+      ),
+      sequence: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sequence'],
+      )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CommandHistoryEntriesTable createAlias(String alias) {
+    return $CommandHistoryEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class CommandHistoryEntry extends DataClass
+    implements Insertable<CommandHistoryEntry> {
+  final String id;
+  final String projectId;
+  final String commandType;
+  final String label;
+  final String payload;
+  final String? undoPayload;
+  final int sequence;
+  final String source;
+  final String status;
+  final DateTime createdAt;
+  const CommandHistoryEntry({
+    required this.id,
+    required this.projectId,
+    required this.commandType,
+    required this.label,
+    required this.payload,
+    this.undoPayload,
+    required this.sequence,
+    required this.source,
+    required this.status,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['command_type'] = Variable<String>(commandType);
+    map['label'] = Variable<String>(label);
+    map['payload'] = Variable<String>(payload);
+    if (!nullToAbsent || undoPayload != null) {
+      map['undo_payload'] = Variable<String>(undoPayload);
+    }
+    map['sequence'] = Variable<int>(sequence);
+    map['source'] = Variable<String>(source);
+    map['status'] = Variable<String>(status);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  CommandHistoryEntriesCompanion toCompanion(bool nullToAbsent) {
+    return CommandHistoryEntriesCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      commandType: Value(commandType),
+      label: Value(label),
+      payload: Value(payload),
+      undoPayload: undoPayload == null && nullToAbsent
+          ? const Value.absent()
+          : Value(undoPayload),
+      sequence: Value(sequence),
+      source: Value(source),
+      status: Value(status),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory CommandHistoryEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CommandHistoryEntry(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      commandType: serializer.fromJson<String>(json['commandType']),
+      label: serializer.fromJson<String>(json['label']),
+      payload: serializer.fromJson<String>(json['payload']),
+      undoPayload: serializer.fromJson<String?>(json['undoPayload']),
+      sequence: serializer.fromJson<int>(json['sequence']),
+      source: serializer.fromJson<String>(json['source']),
+      status: serializer.fromJson<String>(json['status']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'commandType': serializer.toJson<String>(commandType),
+      'label': serializer.toJson<String>(label),
+      'payload': serializer.toJson<String>(payload),
+      'undoPayload': serializer.toJson<String?>(undoPayload),
+      'sequence': serializer.toJson<int>(sequence),
+      'source': serializer.toJson<String>(source),
+      'status': serializer.toJson<String>(status),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  CommandHistoryEntry copyWith({
+    String? id,
+    String? projectId,
+    String? commandType,
+    String? label,
+    String? payload,
+    Value<String?> undoPayload = const Value.absent(),
+    int? sequence,
+    String? source,
+    String? status,
+    DateTime? createdAt,
+  }) => CommandHistoryEntry(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    commandType: commandType ?? this.commandType,
+    label: label ?? this.label,
+    payload: payload ?? this.payload,
+    undoPayload: undoPayload.present ? undoPayload.value : this.undoPayload,
+    sequence: sequence ?? this.sequence,
+    source: source ?? this.source,
+    status: status ?? this.status,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  CommandHistoryEntry copyWithCompanion(CommandHistoryEntriesCompanion data) {
+    return CommandHistoryEntry(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      commandType: data.commandType.present
+          ? data.commandType.value
+          : this.commandType,
+      label: data.label.present ? data.label.value : this.label,
+      payload: data.payload.present ? data.payload.value : this.payload,
+      undoPayload: data.undoPayload.present
+          ? data.undoPayload.value
+          : this.undoPayload,
+      sequence: data.sequence.present ? data.sequence.value : this.sequence,
+      source: data.source.present ? data.source.value : this.source,
+      status: data.status.present ? data.status.value : this.status,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CommandHistoryEntry(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('commandType: $commandType, ')
+          ..write('label: $label, ')
+          ..write('payload: $payload, ')
+          ..write('undoPayload: $undoPayload, ')
+          ..write('sequence: $sequence, ')
+          ..write('source: $source, ')
+          ..write('status: $status, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    commandType,
+    label,
+    payload,
+    undoPayload,
+    sequence,
+    source,
+    status,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CommandHistoryEntry &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.commandType == this.commandType &&
+          other.label == this.label &&
+          other.payload == this.payload &&
+          other.undoPayload == this.undoPayload &&
+          other.sequence == this.sequence &&
+          other.source == this.source &&
+          other.status == this.status &&
+          other.createdAt == this.createdAt);
+}
+
+class CommandHistoryEntriesCompanion
+    extends UpdateCompanion<CommandHistoryEntry> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> commandType;
+  final Value<String> label;
+  final Value<String> payload;
+  final Value<String?> undoPayload;
+  final Value<int> sequence;
+  final Value<String> source;
+  final Value<String> status;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const CommandHistoryEntriesCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.commandType = const Value.absent(),
+    this.label = const Value.absent(),
+    this.payload = const Value.absent(),
+    this.undoPayload = const Value.absent(),
+    this.sequence = const Value.absent(),
+    this.source = const Value.absent(),
+    this.status = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CommandHistoryEntriesCompanion.insert({
+    required String id,
+    required String projectId,
+    required String commandType,
+    required String label,
+    required String payload,
+    this.undoPayload = const Value.absent(),
+    this.sequence = const Value.absent(),
+    this.source = const Value.absent(),
+    this.status = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       commandType = Value(commandType),
+       label = Value(label),
+       payload = Value(payload);
+  static Insertable<CommandHistoryEntry> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? commandType,
+    Expression<String>? label,
+    Expression<String>? payload,
+    Expression<String>? undoPayload,
+    Expression<int>? sequence,
+    Expression<String>? source,
+    Expression<String>? status,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (commandType != null) 'command_type': commandType,
+      if (label != null) 'label': label,
+      if (payload != null) 'payload': payload,
+      if (undoPayload != null) 'undo_payload': undoPayload,
+      if (sequence != null) 'sequence': sequence,
+      if (source != null) 'source': source,
+      if (status != null) 'status': status,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CommandHistoryEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? commandType,
+    Value<String>? label,
+    Value<String>? payload,
+    Value<String?>? undoPayload,
+    Value<int>? sequence,
+    Value<String>? source,
+    Value<String>? status,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return CommandHistoryEntriesCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      commandType: commandType ?? this.commandType,
+      label: label ?? this.label,
+      payload: payload ?? this.payload,
+      undoPayload: undoPayload ?? this.undoPayload,
+      sequence: sequence ?? this.sequence,
+      source: source ?? this.source,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (commandType.present) {
+      map['command_type'] = Variable<String>(commandType.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (payload.present) {
+      map['payload'] = Variable<String>(payload.value);
+    }
+    if (undoPayload.present) {
+      map['undo_payload'] = Variable<String>(undoPayload.value);
+    }
+    if (sequence.present) {
+      map['sequence'] = Variable<int>(sequence.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CommandHistoryEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('commandType: $commandType, ')
+          ..write('label: $label, ')
+          ..write('payload: $payload, ')
+          ..write('undoPayload: $undoPayload, ')
+          ..write('sequence: $sequence, ')
+          ..write('source: $source, ')
+          ..write('status: $status, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -55717,6 +56324,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final $TrashEntriesTable trashEntries = $TrashEntriesTable(this);
   late final $ProjectMigrationHistoryTable projectMigrationHistory =
       $ProjectMigrationHistoryTable(this);
+  late final $CommandHistoryEntriesTable commandHistoryEntries =
+      $CommandHistoryEntriesTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -55898,6 +56507,7 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     cacheEntries,
     trashEntries,
     projectMigrationHistory,
+    commandHistoryEntries,
   ];
 }
 
@@ -85760,6 +86370,324 @@ typedef $$ProjectMigrationHistoryTableProcessedTableManager =
       ProjectMigrationHistoryData,
       PrefetchHooks Function()
     >;
+typedef $$CommandHistoryEntriesTableCreateCompanionBuilder =
+    CommandHistoryEntriesCompanion Function({
+      required String id,
+      required String projectId,
+      required String commandType,
+      required String label,
+      required String payload,
+      Value<String?> undoPayload,
+      Value<int> sequence,
+      Value<String> source,
+      Value<String> status,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+typedef $$CommandHistoryEntriesTableUpdateCompanionBuilder =
+    CommandHistoryEntriesCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> commandType,
+      Value<String> label,
+      Value<String> payload,
+      Value<String?> undoPayload,
+      Value<int> sequence,
+      Value<String> source,
+      Value<String> status,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$CommandHistoryEntriesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CommandHistoryEntriesTable> {
+  $$CommandHistoryEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get commandType => $composableBuilder(
+    column: $table.commandType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get undoPayload => $composableBuilder(
+    column: $table.undoPayload,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sequence => $composableBuilder(
+    column: $table.sequence,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CommandHistoryEntriesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CommandHistoryEntriesTable> {
+  $$CommandHistoryEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get commandType => $composableBuilder(
+    column: $table.commandType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get undoPayload => $composableBuilder(
+    column: $table.undoPayload,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sequence => $composableBuilder(
+    column: $table.sequence,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CommandHistoryEntriesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CommandHistoryEntriesTable> {
+  $$CommandHistoryEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get commandType => $composableBuilder(
+    column: $table.commandType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<String> get payload =>
+      $composableBuilder(column: $table.payload, builder: (column) => column);
+
+  GeneratedColumn<String> get undoPayload => $composableBuilder(
+    column: $table.undoPayload,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sequence =>
+      $composableBuilder(column: $table.sequence, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$CommandHistoryEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CommandHistoryEntriesTable,
+          CommandHistoryEntry,
+          $$CommandHistoryEntriesTableFilterComposer,
+          $$CommandHistoryEntriesTableOrderingComposer,
+          $$CommandHistoryEntriesTableAnnotationComposer,
+          $$CommandHistoryEntriesTableCreateCompanionBuilder,
+          $$CommandHistoryEntriesTableUpdateCompanionBuilder,
+          (
+            CommandHistoryEntry,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CommandHistoryEntriesTable,
+              CommandHistoryEntry
+            >,
+          ),
+          CommandHistoryEntry,
+          PrefetchHooks Function()
+        > {
+  $$CommandHistoryEntriesTableTableManager(
+    _$ProjectDatabase db,
+    $CommandHistoryEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CommandHistoryEntriesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CommandHistoryEntriesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CommandHistoryEntriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> commandType = const Value.absent(),
+                Value<String> label = const Value.absent(),
+                Value<String> payload = const Value.absent(),
+                Value<String?> undoPayload = const Value.absent(),
+                Value<int> sequence = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CommandHistoryEntriesCompanion(
+                id: id,
+                projectId: projectId,
+                commandType: commandType,
+                label: label,
+                payload: payload,
+                undoPayload: undoPayload,
+                sequence: sequence,
+                source: source,
+                status: status,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String commandType,
+                required String label,
+                required String payload,
+                Value<String?> undoPayload = const Value.absent(),
+                Value<int> sequence = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CommandHistoryEntriesCompanion.insert(
+                id: id,
+                projectId: projectId,
+                commandType: commandType,
+                label: label,
+                payload: payload,
+                undoPayload: undoPayload,
+                sequence: sequence,
+                source: source,
+                status: status,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CommandHistoryEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CommandHistoryEntriesTable,
+      CommandHistoryEntry,
+      $$CommandHistoryEntriesTableFilterComposer,
+      $$CommandHistoryEntriesTableOrderingComposer,
+      $$CommandHistoryEntriesTableAnnotationComposer,
+      $$CommandHistoryEntriesTableCreateCompanionBuilder,
+      $$CommandHistoryEntriesTableUpdateCompanionBuilder,
+      (
+        CommandHistoryEntry,
+        BaseReferences<
+          _$ProjectDatabase,
+          $CommandHistoryEntriesTable,
+          CommandHistoryEntry
+        >,
+      ),
+      CommandHistoryEntry,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -86072,4 +87000,6 @@ class $ProjectDatabaseManager {
         _db,
         _db.projectMigrationHistory,
       );
+  $$CommandHistoryEntriesTableTableManager get commandHistoryEntries =>
+      $$CommandHistoryEntriesTableTableManager(_db, _db.commandHistoryEntries);
 }

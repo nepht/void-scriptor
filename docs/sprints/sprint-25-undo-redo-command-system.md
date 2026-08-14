@@ -55,14 +55,13 @@ UI UPDATE
 
 ## Next vertical slices
 
-1. Add Drift `CommandHistoryEntries` table and schema migration from live schema 34 to 35.
-2. Add project-scoped `CommandHistoryRepository` and stable command type registry.
-3. Replace the current no-op transaction abstraction in project sessions with Drift `database.transaction`.
-4. Add mutation sequence and dirty state derived from current/saved sequence.
-5. Add real Character rename command as the first repository-backed mutation tracer.
-6. Wire command bus to undo/redo shortcuts and toolbar state.
-7. Add composite/bulk command failure rollback against a real project database.
-8. Add revisions, snapshots, compare, restore, and asset versions only after command persistence is proven.
+1. Replace the no-op transaction abstraction in project sessions with Drift `database.transaction`.
+2. Add project-scoped `CommandHistoryEntries` with schema migration 34→35, repository serialization, and stable command type registry. **Completed in current checkpoint.**
+3. Add mutation sequence and dirty state derived from current/saved sequence. **Domain state completed; session persistence pending.**
+4. Add real Character rename command as the first repository-backed mutation tracer.
+5. Wire command bus to undo/redo shortcuts and toolbar state.
+6. Add composite/bulk command failure rollback against a real project database.
+7. Add revisions, snapshots, compare, restore, and asset versions only after command persistence is proven.
 
 ## Design boundaries
 

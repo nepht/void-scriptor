@@ -61,6 +61,7 @@ import 'tables/dialogue.dart';
 import 'tables/audio_timeline.dart';
 import 'tables/audio_waveform.dart';
 import 'tables/project_resilience.dart';
+import 'tables/command_history_entries.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -234,6 +235,7 @@ class ProjectMetadata extends Table {
     CacheEntries,
     TrashEntries,
     ProjectMigrationHistory,
+    CommandHistoryEntries,
   ],
   daos: [
     AssetDao,
@@ -267,7 +269,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 34;
+  static const currentSchemaVersion = 35;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -505,6 +507,9 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(cacheEntries);
         await m.createTable(trashEntries);
         await m.createTable(projectMigrationHistory);
+      }
+      if (from < 35) {
+        await m.createTable(commandHistoryEntries);
       }
     },
   );

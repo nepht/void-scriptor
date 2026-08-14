@@ -60,7 +60,7 @@ void main() {
         projectId: 'p-1',
         type: 'manual',
         relativePath: 'backups/b-1',
-        schemaVersion: 34,
+        schemaVersion: ProjectDatabase.currentSchemaVersion,
         sizeBytes: 10,
         createdAt: DateTime(2026),
       ),

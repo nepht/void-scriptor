@@ -1,0 +1,255 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:drift/drift.dart';
+import 'package:path/path.dart' as p;
+
+import '../../../database/project/project_database.dart';
+import '../application/portable_project_service.dart';
+import 'project_integrity_service.dart';
+import 'project_recovery_services.dart';
+import 'project_resilience_repository.dart';
+import 'project_session_manager.dart';
+import 'project_storage_analyzer.dart';
+
+class ProjectResilienceSnapshot {
+  const ProjectResilienceSnapshot({
+    required this.integrity,
+    required this.storage,
+    required this.backupItems,
+    required this.trashItems,
+    required this.orphanPaths,
+  });
+
+  final ProjectIntegrityReport integrity;
+  final ProjectStorageReport storage;
+  final int backupItems;
+  final int trashItems;
+  final Set<String> orphanPaths;
+}
+
+class ProjectResilienceController {
+  ProjectResilienceController(this.session);
+
+  final ProjectSession session;
+
+  Future<ProjectResilienceSnapshot> scan() async {
+    final referencedPaths = await _referencedAssetPaths(session.database);
+    final external = await session.database.projectResilienceRepository
+        .externalFor(session.package.projectId);
+    var databaseHealthy = false;
+    try {
+      final result = await session.database
+          .customSelect('PRAGMA quick_check')
+          .getSingle();
+      databaseHealthy = result.data.values.first == 'ok';
+    } on Object {
+      databaseHealthy = false;
+    }
+    final integrity = await ProjectIntegrityService(session.package).scan(
+      referencedPaths: referencedPaths,
+      databaseHealthy: databaseHealthy,
+      externalFiles: external.length,
+    );
+    final storage = await ProjectStorageAnalyzer(session.package).analyze();
+    final actual = storage.files
+        .where((file) => file.relativePath.startsWith('assets/'))
+        .map((file) => file.relativePath)
+        .toSet();
+    final trashItems = (await _trashMetadata()).length;
+    final backupItems = (await _backupDirectories()).length;
+    return ProjectResilienceSnapshot(
+      integrity: integrity,
+      storage: storage,
+      backupItems: backupItems,
+      trashItems: trashItems,
+      orphanPaths: actual.difference(referencedPaths),
+    );
+  }
+
+  Future<Directory> createBackup({String note = ''}) async {
+    _requireWritable();
+    await session.database.customStatement('PRAGMA wal_checkpoint(FULL)');
+    final backup = await ProjectBackupService().create(
+      package: session.package,
+      type: 'manual',
+      note: note,
+    );
+    final metadata =
+        jsonDecode(
+              await File(p.join(backup.path, 'backup.json')).readAsString(),
+            )
+            as Map<String, dynamic>;
+    await session.database.projectResilienceRepository.addBackup(
+      ProjectBackupsCompanion.insert(
+        id: metadata['id'] as String,
+        projectId: session.package.projectId,
+        type: 'manual',
+        relativePath: p
+            .relative(backup.path, from: session.package.root.path)
+            .replaceAll('\\', '/'),
+        schemaVersion: metadata['schemaVersion'] as int,
+        sizeBytes: await _directorySize(backup),
+        createdAt: DateTime.parse(metadata['createdAt'] as String),
+        note: Value(note),
+      ),
+    );
+    return backup;
+  }
+
+  Future<File> exportPortable() async {
+    await session.database.customStatement('PRAGMA wal_checkpoint(FULL)');
+    return PortableProjectExporter().exportPortable(session.package);
+  }
+
+  Future<void> clearCache() async {
+    _requireWritable();
+    await ProjectCacheService(session.package).clear();
+    await session.database.projectResilienceRepository.clearCache();
+  }
+
+  Future<int> moveOrphansToTrash() async {
+    _requireWritable();
+    final snapshot = await scan();
+    var moved = 0;
+    for (final relative in snapshot.orphanPaths) {
+      final source = File(session.package.resolve(relative));
+      if (await source.exists()) {
+        await ProjectTrashService(session.package).moveToTrash(source);
+        moved++;
+      }
+    }
+    return moved;
+  }
+
+  Future<bool> restoreLatestTrash() async {
+    _requireWritable();
+    final metadata = await _trashMetadata();
+    if (metadata.isEmpty) return false;
+    metadata.sort((a, b) => b.deletedAt.compareTo(a.deletedAt));
+    final latest = metadata.first;
+    final trashed = File(session.package.resolve(latest.trashPath));
+    if (!await trashed.exists()) return false;
+    await ProjectTrashService(
+      session.package,
+    ).restore(trashed, session.package.resolve(latest.originalPath));
+    await latest.metadata.delete();
+    return true;
+  }
+
+  Future<int> emptyTrash() async {
+    _requireWritable();
+    final items = await _trashMetadata();
+    if (await session.package.trashDirectory.exists()) {
+      await session.package.trashDirectory.delete(recursive: true);
+    }
+    await session.package.trashDirectory.create(recursive: true);
+    return items.length;
+  }
+
+  void _requireWritable() {
+    if (session.mode == ProjectOpenMode.readOnly) {
+      throw StateError('Project is open read-only');
+    }
+  }
+
+  Future<Set<String>> _referencedAssetPaths(ProjectDatabase database) async {
+    const excludedTables = {
+      'external_files',
+      'project_backups',
+      'cache_entries',
+      'trash_entries',
+      'project_migration_history',
+    };
+    final references = <String>{};
+    final tables = await database
+        .customSelect(
+          "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'",
+        )
+        .get();
+    for (final tableRow in tables) {
+      final table = tableRow.data['name'] as String;
+      if (excludedTables.contains(table)) continue;
+      final columns = await database
+          .customSelect('PRAGMA table_info("$table")')
+          .get();
+      final pathColumns = columns
+          .map((row) => row.data['name'] as String)
+          .where(
+            (name) =>
+                name == 'path' ||
+                name.endsWith('_path') ||
+                name.endsWith('_file'),
+          );
+      for (final column in pathColumns) {
+        final values = await database
+            .customSelect(
+              'SELECT "$column" AS value FROM "$table" WHERE "$column" IS NOT NULL',
+            )
+            .get();
+        for (final row in values) {
+          final value = row.data['value'];
+          if (value is String &&
+              value.startsWith('assets/') &&
+              !p.isAbsolute(value)) {
+            references.add(value.replaceAll('\\', '/'));
+          }
+        }
+      }
+    }
+    return references;
+  }
+
+  Future<List<Directory>> _backupDirectories() async {
+    if (!await session.package.backupDirectory.exists()) return const [];
+    return session.package.backupDirectory
+        .list()
+        .where((entity) => entity is Directory)
+        .cast<Directory>()
+        .toList();
+  }
+
+  Future<List<_TrashMetadata>> _trashMetadata() async {
+    if (!await session.package.trashDirectory.exists()) return const [];
+    final result = <_TrashMetadata>[];
+    await for (final entity in session.package.trashDirectory.list()) {
+      if (entity is! File || p.extension(entity.path) != '.json') continue;
+      try {
+        final json =
+            jsonDecode(await entity.readAsString()) as Map<String, dynamic>;
+        result.add(
+          _TrashMetadata(
+            metadata: entity,
+            originalPath: json['originalPath'] as String,
+            trashPath: json['trashPath'] as String,
+            deletedAt: DateTime.parse(json['deletedAt'] as String),
+          ),
+        );
+      } on Object {
+        continue;
+      }
+    }
+    return result;
+  }
+
+  Future<int> _directorySize(Directory directory) async {
+    var bytes = 0;
+    await for (final entity in directory.list(recursive: true)) {
+      if (entity is File) bytes += await entity.length();
+    }
+    return bytes;
+  }
+}
+
+class _TrashMetadata {
+  const _TrashMetadata({
+    required this.metadata,
+    required this.originalPath,
+    required this.trashPath,
+    required this.deletedAt,
+  });
+  final File metadata;
+  final String originalPath;
+  final String trashPath;
+  final DateTime deletedAt;
+}

@@ -52,6 +52,18 @@ Import-as-copy now rewrites both the manifest project ID and every SQLite table 
 
 `ProjectStorageAnalyzer` performs an on-demand filesystem scan and classifies database, references, images, video, audio, generated, exports, backups, cache, and other files. It returns total/category bytes and deterministic largest-file results.
 
+The follow-up hardening also wires the services into production UI and lifecycle:
+
+- the Studio top bar opens Project Diagnostics;
+- diagnostics, repair, backups, export, import, storage, cache, and trash have live routes backed by the active project session;
+- orphan repair moves files to project trash, with restore-latest and permanent empty-trash actions;
+- trash metadata stores package-relative paths instead of absolute internal paths;
+- manual backup, WAL checkpoint, portable export, cache clearing, and import-as-copy are executable from UI;
+- import-as-copy registers the relocated package in the project registry and rolls back the extracted package if registry persistence fails;
+- every normal project open reads SQLite `user_version`; an older database receives a pre-migration backup before Drift migration;
+- native read-only sessions use a genuinely read-only SQLite connection with migrations disabled, so repositories cannot mutate the database accidentally;
+- desktop top-bar content scrolls adaptively at compact desktop widths instead of overflowing.
+
 ## Portable archive
 
 `PortableProjectService` exports only manifest, database, and selected assets. Disposable cache and backups are excluded by default. The archive is reopened and checked for `manifest/project.json`, `database/project.db`, and the archive manifest before import. Import extracts to a working package and supports import-as-copy UUID rewriting.

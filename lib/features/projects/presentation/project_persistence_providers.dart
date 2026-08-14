@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/persistence/project_open_service.dart';
 import '../../../core/persistence/project_paths.dart';
 import '../../../core/persistence/project_registry_service.dart';
 import '../../../core/project_package/project_package.dart';
@@ -25,16 +24,13 @@ final projectRepositoryProvider = Provider<ProjectRepositoryImpl>(
 );
 
 final projectSessionProvider =
-    AsyncNotifierProvider<ProjectSessionController, OpenProject?>(
+    AsyncNotifierProvider<ProjectSessionController, ProjectSession?>(
       ProjectSessionController.new,
     );
 
-final currentProjectSessionProvider =
-    AsyncNotifierProvider<CurrentProjectSessionController, ProjectSession?>(
-      CurrentProjectSessionController.new,
-    );
+final currentProjectSessionProvider = projectSessionProvider;
 
-class CurrentProjectSessionController extends AsyncNotifier<ProjectSession?> {
+class ProjectSessionController extends AsyncNotifier<ProjectSession?> {
   ProjectSession? _session;
   final ProjectSessionManager _manager = ProjectSessionManager();
 
@@ -49,7 +45,7 @@ class CurrentProjectSessionController extends AsyncNotifier<ProjectSession?> {
     return null;
   }
 
-  Future<ProjectSession> open(
+  Future<ProjectSession> openProject(
     String projectId, {
     ProjectOpenMode mode = ProjectOpenMode.readWrite,
   }) async {
@@ -65,6 +61,11 @@ class CurrentProjectSessionController extends AsyncNotifier<ProjectSession?> {
     return session;
   }
 
+  Future<ProjectSession> open(
+    String projectId, {
+    ProjectOpenMode mode = ProjectOpenMode.readWrite,
+  }) => openProject(projectId, mode: mode);
+
   Future<void> save() async {
     final session = _session;
     if (session == null) return;
@@ -75,36 +76,6 @@ class CurrentProjectSessionController extends AsyncNotifier<ProjectSession?> {
   Future<void> closeProject() async {
     await _session?.close();
     _session = null;
-    state = const AsyncData(null);
-  }
-}
-
-class ProjectSessionController extends AsyncNotifier<OpenProject?> {
-  OpenProject? _opened;
-
-  @override
-  Future<OpenProject?> build() async {
-    ref.onDispose(() {
-      _opened?.database.close();
-      _opened = null;
-    });
-    return null;
-  }
-
-  Future<OpenProject> openProject(String projectId) async {
-    state = const AsyncLoading();
-    await _opened?.close();
-    final opened = await ProjectOpenService(
-      paths: ref.read(projectPathsProvider),
-    ).open(projectId);
-    _opened = opened;
-    state = AsyncData(opened);
-    return opened;
-  }
-
-  Future<void> closeProject() async {
-    await _opened?.close();
-    _opened = null;
     state = const AsyncData(null);
   }
 }

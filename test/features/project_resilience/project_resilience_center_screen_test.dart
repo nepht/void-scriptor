@@ -21,4 +21,30 @@ void main() {
     expect(find.text('Missing Files'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'resilience center executes live action and reports busy safely',
+    (tester) async {
+      var calls = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ProjectResilienceCenterScreen(
+            title: 'Project Cache',
+            items: const ['Cache size: 2 KB'],
+            actions: [
+              ProjectResilienceAction(
+                label: 'Clear Cache',
+                icon: Icons.cleaning_services,
+                onPressed: () async => calls++,
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.tap(find.text('Clear Cache'));
+      await tester.pump();
+      expect(calls, 1);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

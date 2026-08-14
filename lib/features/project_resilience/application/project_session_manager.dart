@@ -11,6 +11,8 @@ import 'project_recovery_services.dart';
 
 enum ProjectOpenMode { readWrite, readOnly }
 
+typedef ProjectSchemaVersionReader = Future<int?> Function(String databasePath);
+
 class ProjectSession {
   ProjectSession({
     required this.package,
@@ -58,6 +60,12 @@ class ProjectSession {
 }
 
 class ProjectSessionManager {
+  ProjectSessionManager({ProjectSchemaVersionReader? schemaVersionReader})
+    : _schemaVersionReader =
+          schemaVersionReader ?? ProjectDatabaseService().schemaVersion;
+
+  final ProjectSchemaVersionReader _schemaVersionReader;
+
   Future<ProjectSession> open(
     ProjectPackage package, {
     ProjectOpenMode mode = ProjectOpenMode.readWrite,
@@ -81,9 +89,31 @@ class ProjectSessionManager {
       );
     }
     try {
-      final database = await ProjectDatabaseService().open(
+      final existingVersion = await _schemaVersionReader(
         package.databaseFile.path,
       );
+      if (mode == ProjectOpenMode.readOnly &&
+          existingVersion != null &&
+          existingVersion < ProjectDatabase.currentSchemaVersion) {
+        throw StateError(
+          'Read-only open cannot migrate database v$existingVersion',
+        );
+      }
+      if (mode == ProjectOpenMode.readWrite &&
+          existingVersion != null &&
+          existingVersion < ProjectDatabase.currentSchemaVersion) {
+        await ProjectBackupService().create(
+          package: package,
+          type: 'pre-migration',
+          note:
+              'Automatic backup before database migration '
+              'v$existingVersion → v${ProjectDatabase.currentSchemaVersion}',
+        );
+      }
+      final databaseService = ProjectDatabaseService();
+      final database = mode == ProjectOpenMode.readOnly
+          ? await databaseService.openReadOnly(package.databaseFile.path)
+          : await databaseService.open(package.databaseFile.path);
       return ProjectSession(
         package: package,
         manifest: manifest,

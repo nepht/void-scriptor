@@ -228,6 +228,12 @@ void main() {
           .openProject(id);
       expect(opened.manifest.id, id);
       expect(container.read(projectSessionProvider).value?.manifest.id, id);
+      expect(
+        File(
+          '${(await paths.project(id)).path}${Platform.pathSeparator}session.lock',
+        ).existsSync(),
+        isTrue,
+      );
       await container.read(projectSessionProvider.notifier).closeProject();
       expect(container.read(projectSessionProvider).value, isNull);
     },

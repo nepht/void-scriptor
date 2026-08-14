@@ -30,6 +30,10 @@ abstract final class AppRoutes {
   static const projectRepair = '/project-repair';
   static const projectBackups = '/project-backups';
   static const projectExport = '/project-export';
+  static const projectImport = '/project-import';
+  static const projectStorage = '/project-storage';
+  static const projectCache = '/project-cache';
+  static const projectTrash = '/project-trash';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

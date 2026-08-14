@@ -18,78 +18,97 @@ class VoidTopBar extends StatelessWidget {
         color: VoidColors.panel,
         border: Border(bottom: BorderSide(color: VoidColors.borderSoft)),
       ),
-      child: Row(
-        children: [
-          const SizedBox(width: 230, child: VoidLogo()),
-
-          const SizedBox(width: 12),
-
-          _TopMenuButton(
-            label: 'Workspace',
-            onTap: () => onMenuSelected('workspace'),
-          ),
-
-          _TopMenuButton(
-            label: 'Projects',
-            onTap: () => onMenuSelected('projects'),
-          ),
-
-          _TopMenuButton(label: 'AI Tools', onTap: () => onMenuSelected('ai')),
-
-          _TopMenuButton(
-            label: 'Assets',
-            onTap: () => onMenuSelected('assets'),
-          ),
-
-          _TopMenuButton(label: 'Bible', onTap: () => onMenuSelected('bible')),
-
-          _TopMenuButton(
-            label: 'Marketplace',
-            onTap: () => onMenuSelected('marketplace'),
-          ),
-
-          _TopMenuButton(
-            label: 'Donate',
-            onTap: () => onMenuSelected('donate'),
-          ),
-
-          const Spacer(),
-
-          SizedBox(
-            width: 240,
-            height: 34,
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search',
-                prefixIcon: const Icon(Icons.search, size: 17),
-                contentPadding: EdgeInsets.zero,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(7),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final wide = constraints.maxWidth >= 1200;
+          return Row(
+            children: [
+              const SizedBox(width: 230, child: VoidLogo()),
+              const SizedBox(width: 12),
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _TopMenuButton(
+                        label: 'Workspace',
+                        onTap: () => onMenuSelected('workspace'),
+                      ),
+                      _TopMenuButton(
+                        label: 'Projects',
+                        onTap: () => onMenuSelected('projects'),
+                      ),
+                      _TopMenuButton(
+                        label: 'AI Tools',
+                        onTap: () => onMenuSelected('ai'),
+                      ),
+                      _TopMenuButton(
+                        label: 'Assets',
+                        onTap: () => onMenuSelected('assets'),
+                      ),
+                      _TopMenuButton(
+                        label: 'Bible',
+                        onTap: () => onMenuSelected('bible'),
+                      ),
+                      if (wide) ...[
+                        _TopMenuButton(
+                          label: 'Marketplace',
+                          onTap: () => onMenuSelected('marketplace'),
+                        ),
+                        _TopMenuButton(
+                          label: 'Donate',
+                          onTap: () => onMenuSelected('donate'),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ),
-
-          const SizedBox(width: 12),
-
-          const _TopIconButton(icon: Icons.notifications_none_rounded),
-
-          const _TopIconButton(icon: Icons.cloud_outlined),
-
-          IconButton(
-            tooltip: 'Logout',
-            onPressed: onLogout,
-            icon: const Icon(Icons.logout_rounded, size: 18),
-          ),
-
-          const SizedBox(width: 6),
-
-          const CircleAvatar(
-            radius: 16,
-            backgroundColor: VoidColors.primary,
-            child: Icon(Icons.person_outline, size: 18, color: Colors.white),
-          ),
-        ],
+              if (wide) ...[
+                const SizedBox(width: 12),
+                SizedBox(
+                  width: 240,
+                  height: 34,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search',
+                      prefixIcon: const Icon(Icons.search, size: 17),
+                      contentPadding: EdgeInsets.zero,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+              const SizedBox(width: 8),
+              _TopIconButton(
+                icon: Icons.health_and_safety_outlined,
+                tooltip: 'Project resilience',
+                onPressed: () => onMenuSelected('resilience'),
+              ),
+              const _TopIconButton(
+                icon: Icons.notifications_none_rounded,
+                tooltip: 'Notifications',
+              ),
+              IconButton(
+                tooltip: 'Logout',
+                onPressed: onLogout,
+                icon: const Icon(Icons.logout_rounded, size: 18),
+              ),
+              const SizedBox(width: 6),
+              const CircleAvatar(
+                radius: 16,
+                backgroundColor: VoidColors.primary,
+                child: Icon(
+                  Icons.person_outline,
+                  size: 18,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -122,16 +141,22 @@ class _TopMenuButton extends StatelessWidget {
 }
 
 class _TopIconButton extends StatelessWidget {
-  const _TopIconButton({required this.icon});
+  const _TopIconButton({
+    required this.icon,
+    required this.tooltip,
+    this.onPressed,
+  });
 
   final IconData icon;
+  final String tooltip;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      visualDensity: VisualDensity.compact,
-      onPressed: () {},
-      icon: Icon(icon, size: 18, color: VoidColors.textSecondary),
+      tooltip: tooltip,
+      onPressed: onPressed,
+      icon: Icon(icon, size: 18),
     );
   }
 }

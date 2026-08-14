@@ -179,34 +179,20 @@ GoRoute _productionValidationRoute() => GoRoute(
       ProductionValidationCenterScreen(issues: const [], onRefresh: () {}),
 );
 List<RouteBase> _resilienceRoutes() => [
-  GoRoute(
-    path: AppRoutes.projectDiagnostics,
-    builder: (_, __) => const ProjectResilienceCenterScreen(
-      title: 'Project Diagnostics',
-      items: ['Manifest', 'Database', 'Portable Status'],
+  for (final entry in {
+    AppRoutes.projectDiagnostics: ProjectResilienceView.diagnostics,
+    AppRoutes.projectRepair: ProjectResilienceView.repair,
+    AppRoutes.projectBackups: ProjectResilienceView.backups,
+    AppRoutes.projectExport: ProjectResilienceView.export,
+    AppRoutes.projectImport: ProjectResilienceView.import,
+    AppRoutes.projectStorage: ProjectResilienceView.storage,
+    AppRoutes.projectCache: ProjectResilienceView.cache,
+    AppRoutes.projectTrash: ProjectResilienceView.trash,
+  }.entries)
+    GoRoute(
+      path: entry.key,
+      builder: (_, __) => ProjectResilienceWorkspaceScreen(view: entry.value),
     ),
-  ),
-  GoRoute(
-    path: AppRoutes.projectRepair,
-    builder: (_, __) => const ProjectResilienceCenterScreen(
-      title: 'Project Repair',
-      items: ['Missing Files', 'Orphan Files', 'Broken References'],
-    ),
-  ),
-  GoRoute(
-    path: AppRoutes.projectBackups,
-    builder: (_, __) => const ProjectResilienceCenterScreen(
-      title: 'Project Backups',
-      items: ['Automatic', 'Manual', 'Pre-Migration'],
-    ),
-  ),
-  GoRoute(
-    path: AppRoutes.projectExport,
-    builder: (_, __) => const ProjectResilienceCenterScreen(
-      title: 'Project Export',
-      items: ['Portable Archive', 'Assets', 'Database'],
-    ),
-  ),
 ];
 
 List<RouteBase> _productionAssetRoutes() => [

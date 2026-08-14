@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../routing/app_routes.dart';
 import '../../../features/explorer/presentation/explorer_panel.dart';
 import '../../../features/inspector/presentation/inspector_panel.dart';
 import '../../../features/workspace/presentation/workspace_panel.dart';
@@ -25,6 +26,9 @@ class VoidDesktopShell extends StatelessWidget {
               }
               if (menu == 'bible') {
                 context.go('/bible');
+              }
+              if (menu == 'resilience') {
+                context.go(AppRoutes.projectDiagnostics);
               }
             },
             onLogout: onLogout,

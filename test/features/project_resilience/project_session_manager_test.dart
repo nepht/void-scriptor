@@ -26,6 +26,32 @@ void main() {
     expect(await package.sessionFile.exists(), isFalse);
   });
 
+  test(
+    'creates a pre-migration backup before opening an older database',
+    () async {
+      final root = await Directory.systemTemp.createTemp(
+        'hermes-s24-migration-',
+      );
+      addTearDown(() => root.delete(recursive: true));
+      final package = await ProjectPackageService(
+        rootDirectory: root,
+      ).create(name: 'Migration');
+      final session = await ProjectSessionManager(
+        schemaVersionReader: (_) async => 33,
+      ).open(package);
+      addTearDown(session.close);
+      final backups = await package.backupDirectory
+          .list()
+          .where((entry) => entry is Directory)
+          .toList();
+      expect(backups, hasLength(1));
+      expect(
+        await File('${backups.single.path}/backup.json').readAsString(),
+        contains('pre-migration'),
+      );
+    },
+  );
+
   test('read-only session does not mutate lock or save', () async {
     final package = await ProjectPackageService(
       rootDirectory: root,
@@ -36,7 +62,13 @@ void main() {
     expect(session.mode, ProjectOpenMode.readOnly);
     expect(await package.lockFile.exists(), isFalse);
 
-    await expectLater(session.save(), throwsA(isA<StateError>()));
+    await expectLater(session.save(), throwsStateError);
+    await expectLater(
+      session.database.customStatement(
+        "INSERT INTO project_metadata (key, value) VALUES ('forbidden', '1')",
+      ),
+      throwsA(isA<Object>()),
+    );
     await manager.close(session);
   });
 }

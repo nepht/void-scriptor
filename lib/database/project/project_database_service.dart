@@ -9,4 +9,10 @@ class ProjectDatabaseService {
 
   Future<ProjectDatabase> open(String databasePath) =>
       openProjectDatabase(databasePath);
+
+  Future<ProjectDatabase> openReadOnly(String databasePath) =>
+      openProjectDatabaseReadOnly(databasePath);
+
+  Future<int?> schemaVersion(String databasePath) =>
+      readProjectDatabaseSchemaVersion(databasePath);
 }

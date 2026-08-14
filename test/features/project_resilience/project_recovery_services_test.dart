@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:path/path.dart' as p;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/project_package/project_package_service.dart';
 import 'package:void_scriptor/features/project_resilience/application/project_recovery_services.dart';
@@ -46,6 +48,18 @@ void main() {
       );
       final trashed = await ProjectTrashService(package).moveToTrash(source);
       expect(await source.exists(), isFalse);
+      final metadata =
+          jsonDecode(
+                await File(
+                  p.join(
+                    package.trashDirectory.path,
+                    '${p.basenameWithoutExtension(trashed.path)}.json',
+                  ),
+                ).readAsString(),
+              )
+              as Map<String, dynamic>;
+      expect(metadata['originalPath'], 'assets/images/file.txt');
+      expect(metadata['trashPath'], startsWith('trash/files/'));
       await ProjectTrashService(package).restore(trashed, source.path);
       expect(await source.exists(), isTrue);
     },

@@ -267,8 +267,10 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
+  static const currentSchemaVersion = 34;
+
   @override
-  int get schemaVersion => 34;
+  int get schemaVersion => currentSchemaVersion;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

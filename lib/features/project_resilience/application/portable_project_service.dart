@@ -5,7 +5,9 @@ import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 import '../../../core/project_package/project_package.dart';
 import '../../../core/persistence/project_manifest.dart';
+import '../../../core/persistence/project_registry_service.dart';
 import '../../../database/project/project_database_service.dart';
+import '../../projects/domain/project_model.dart';
 
 class ArchiveManifest {
   const ArchiveManifest({
@@ -187,6 +189,54 @@ class PortableProjectImporter {
       }
     } finally {
       await database.close();
+    }
+  }
+}
+
+class PortableProjectImportCoordinator {
+  PortableProjectImportCoordinator({
+    required this.registry,
+    PortableProjectImporter? importer,
+  }) : importer = importer ?? PortableProjectImporter();
+
+  final ProjectRegistryService registry;
+  final PortableProjectImporter importer;
+
+  Future<ProjectPackage> importAndRegister(
+    File archive, {
+    required Directory destination,
+    bool asCopy = false,
+  }) async {
+    final package = await importer.importArchive(
+      archive,
+      destination: destination,
+      asCopy: asCopy,
+    );
+    try {
+      final manifest = ProjectManifest.fromJson(
+        jsonDecode(await package.manifestFile.readAsString())
+            as Map<String, dynamic>,
+      );
+      final now = DateTime.now().toUtc();
+      await registry.upsert(
+        ProjectModel(
+          id: manifest.id,
+          name: manifest.name,
+          description: manifest.description,
+          createdAt: manifest.createdAt,
+          updatedAt: manifest.updatedAt,
+          lastOpenedAt: now,
+          localPath: package.root.path,
+          version: manifest.projectVersion,
+          tags: manifest.tags,
+        ),
+      );
+      return package;
+    } catch (_) {
+      if (await package.root.exists()) {
+        await package.root.delete(recursive: true);
+      }
+      rethrow;
     }
   }
 }

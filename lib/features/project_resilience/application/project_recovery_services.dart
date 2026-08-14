@@ -4,6 +4,7 @@ import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 import '../../../core/project_package/project_package.dart';
 import '../../../core/project_package/void_project_format.dart';
+import '../../../database/project/project_database.dart';
 
 class ProjectSessionLock {
   ProjectSessionLock(this.package);
@@ -49,7 +50,7 @@ class ProjectBackupService {
         'id': id,
         'projectId': package.projectId,
         'type': type,
-        'schemaVersion': 34,
+        'schemaVersion': ProjectDatabase.currentSchemaVersion,
         'createdAt': DateTime.now().toUtc().toIso8601String(),
         'note': note,
       }),
@@ -100,6 +101,15 @@ class ProjectTrashService {
   const ProjectTrashService(this.package);
   final ProjectPackage package;
   Future<File> moveToTrash(File source, {String? entityId}) async {
+    final sourceAbsolute = p.normalize(p.absolute(source.path));
+    final packageRoot = p.normalize(p.absolute(package.root.path));
+    if (!p.isWithin(packageRoot, sourceAbsolute)) {
+      throw ArgumentError.value(
+        source.path,
+        'source',
+        'must be inside project',
+      );
+    }
     final id = const Uuid().v4();
     final target = File(
       p.join(
@@ -113,8 +123,12 @@ class ProjectTrashService {
     await File(p.join(package.trashDirectory.path, '$id.json')).writeAsString(
       jsonEncode({
         'id': id,
-        'originalPath': source.path,
-        'trashPath': target.path,
+        'originalPath': p
+            .relative(sourceAbsolute, from: packageRoot)
+            .replaceAll('\\', '/'),
+        'trashPath': p
+            .relative(target.path, from: packageRoot)
+            .replaceAll('\\', '/'),
         'entityId': entityId,
         'deletedAt': DateTime.now().toUtc().toIso8601String(),
       }),

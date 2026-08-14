@@ -34,6 +34,24 @@ Sprint 24 hardens project persistence around a portable `.voidproject` package. 
 
 The project database schema is now v34, with the Sprint 24 resilience tables added in migration `v33 → v34`.
 
+## Lifecycle hardening follow-up
+
+`ProjectSessionManager` now owns the open lifecycle:
+
+```text
+read manifest
+→ validate package identity
+→ acquire session.lock + .project.lock
+→ open database
+→ expose ProjectSession
+```
+
+`ProjectSession.close()` closes Drift first and releases both lock markers. `ProjectOpenMode.readOnly` permits inspection without acquiring a write lock and rejects save attempts. `currentProjectSessionProvider` exposes this lifecycle to Riverpod consumers, including `open`, `save`, and `closeProject`.
+
+Import-as-copy now rewrites both the manifest project ID and every SQLite table containing a `project_id` column. This prevents copied packages from retaining rows owned by the original project.
+
+`ProjectStorageAnalyzer` performs an on-demand filesystem scan and classifies database, references, images, video, audio, generated, exports, backups, cache, and other files. It returns total/category bytes and deterministic largest-file results.
+
 ## Portable archive
 
 `PortableProjectService` exports only manifest, database, and selected assets. Disposable cache and backups are excluded by default. The archive is reopened and checked for `manifest/project.json`, `database/project.db`, and the archive manifest before import. Import extracts to a working package and supports import-as-copy UUID rewriting.

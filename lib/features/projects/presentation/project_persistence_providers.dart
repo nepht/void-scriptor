@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/persistence/project_open_service.dart';
 import '../../../core/persistence/project_paths.dart';
 import '../../../core/persistence/project_registry_service.dart';
+import '../../../core/project_package/project_package.dart';
+import '../../project_resilience/application/project_session_manager.dart';
 import '../data/project_local_data_source.dart';
 import '../data/project_repository_impl.dart';
 
@@ -26,6 +28,56 @@ final projectSessionProvider =
     AsyncNotifierProvider<ProjectSessionController, OpenProject?>(
       ProjectSessionController.new,
     );
+
+final currentProjectSessionProvider =
+    AsyncNotifierProvider<CurrentProjectSessionController, ProjectSession?>(
+      CurrentProjectSessionController.new,
+    );
+
+class CurrentProjectSessionController extends AsyncNotifier<ProjectSession?> {
+  ProjectSession? _session;
+  final ProjectSessionManager _manager = ProjectSessionManager();
+
+  @override
+  Future<ProjectSession?> build() async {
+    ref.onDispose(() {
+      final session = _session;
+      if (session != null) {
+        session.close();
+      }
+    });
+    return null;
+  }
+
+  Future<ProjectSession> open(
+    String projectId, {
+    ProjectOpenMode mode = ProjectOpenMode.readWrite,
+  }) async {
+    state = const AsyncLoading();
+    await _session?.close();
+    final root = await ref.read(projectPathsProvider).project(projectId);
+    final session = await _manager.open(
+      ProjectPackage(projectId: projectId, root: root),
+      mode: mode,
+    );
+    _session = session;
+    state = AsyncData(session);
+    return session;
+  }
+
+  Future<void> save() async {
+    final session = _session;
+    if (session == null) return;
+    await session.save();
+    state = AsyncData(session);
+  }
+
+  Future<void> closeProject() async {
+    await _session?.close();
+    _session = null;
+    state = const AsyncData(null);
+  }
+}
 
 class ProjectSessionController extends AsyncNotifier<OpenProject?> {
   OpenProject? _opened;

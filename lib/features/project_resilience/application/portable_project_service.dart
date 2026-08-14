@@ -5,6 +5,7 @@ import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 import '../../../core/project_package/project_package.dart';
 import '../../../core/persistence/project_manifest.dart';
+import '../../../database/project/project_database_service.dart';
 
 class ArchiveManifest {
   const ArchiveManifest({
@@ -147,6 +148,7 @@ class PortableProjectImporter {
         await package.manifestFile.writeAsString(
           const JsonEncoder.withIndent('  ').convert(rewritten.toJson()),
         );
+        await _rewriteDatabaseProjectId(package, manifest.id, id);
       }
       return package;
     } catch (_) {
@@ -154,6 +156,37 @@ class PortableProjectImporter {
         await package.root.delete(recursive: true);
       }
       rethrow;
+    }
+  }
+
+  Future<void> _rewriteDatabaseProjectId(
+    ProjectPackage package,
+    String oldId,
+    String newId,
+  ) async {
+    final database = await ProjectDatabaseService().open(
+      package.databaseFile.path,
+    );
+    try {
+      final tables = await database
+          .customSelect(
+            "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'",
+          )
+          .get();
+      for (final row in tables) {
+        final table = row.data['name'] as String;
+        final columns = await database
+            .customSelect('PRAGMA table_info("$table")')
+            .get();
+        if (columns.any((column) => column.data['name'] == 'project_id')) {
+          await database.customStatement(
+            'UPDATE "$table" SET project_id = ? WHERE project_id = ?',
+            [newId, oldId],
+          );
+        }
+      }
+    } finally {
+      await database.close();
     }
   }
 }

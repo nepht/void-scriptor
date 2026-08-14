@@ -55,7 +55,7 @@ UI UPDATE
 
 ## Next vertical slices
 
-1. Replace the no-op transaction abstraction in project sessions with Drift `database.transaction`.
+1. Replace the no-op transaction abstraction in project sessions with Drift `database.transaction`. **Coordinator implemented and rollback-tested; session wiring remains pending.**
 2. Add project-scoped `CommandHistoryEntries` with schema migration 34→35, repository serialization, and stable command type registry. **Completed in current checkpoint.**
 3. Add mutation sequence and dirty state derived from current/saved sequence. **Domain state completed; session persistence pending.**
 4. Add real Character rename command as the first repository-backed mutation tracer.

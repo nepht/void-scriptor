@@ -133,6 +133,29 @@ void main() {
     },
   );
 
+  test(
+    'ProjectPaths falls back when the documents root is not writable',
+    () async {
+      final root = await Directory.systemTemp.createTemp('s07-fallback-');
+      addTearDown(() => root.delete(recursive: true));
+      final blocked = File('${root.path}${Platform.pathSeparator}blocked');
+      await blocked.writeAsString('not a directory');
+      final paths = ProjectPaths(
+        documentsPath: () async => blocked.path,
+        supportPath: () async => root.path,
+      );
+
+      final resolved = await paths.root();
+
+      expect(
+        resolved.path,
+        endsWith('VoidScriptor${Platform.pathSeparator}Projects'),
+      );
+      expect(resolved.existsSync(), isTrue);
+      expect(resolved.path, isNot(contains('blocked')));
+    },
+  );
+
   test('ProjectPaths resolves project-local manifest and database', () async {
     final root = await Directory.systemTemp.createTemp('s07-paths-');
     addTearDown(() => root.delete(recursive: true));

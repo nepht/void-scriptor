@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:path_provider/path_provider.dart';
-
 import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/typography/void_typography.dart';
 import '../../../design_system/widgets/void_button.dart';
 import 'project_controller.dart';
+import 'project_persistence_providers.dart';
 
 class CreateProjectScreen extends ConsumerStatefulWidget {
   const CreateProjectScreen({super.key});
@@ -39,13 +38,13 @@ class _CreateProjectScreenState extends ConsumerState<CreateProjectScreen> {
 
     setState(() => _creating = true);
     try {
-      final directory = await getApplicationDocumentsDirectory();
+      final projectRoot = await ref.read(projectPathsProvider).root();
       final project = await ref
           .read(projectControllerProvider.notifier)
           .createProject(
             name: name,
             description: _descriptionController.text.trim(),
-            localPath: '${directory.path}/VoidScriptor/Projects',
+            localPath: projectRoot.path,
           );
       ref.read(currentProjectProvider.notifier).state = project;
       if (mounted) context.go('/studio/${project.id}');

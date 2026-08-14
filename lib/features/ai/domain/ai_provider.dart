@@ -8,6 +8,8 @@ enum AiCapability {
   textGeneration,
   imageGeneration,
   imageEditing,
+  audioGeneration,
+  voiceGeneration,
   videoGeneration,
   visionInput,
   referenceImages,
@@ -157,6 +159,8 @@ class MockAiProvider implements AiProvider {
       PromptTarget.vehicle ||
       PromptTarget.prop => AiCapability.imageGeneration,
       PromptTarget.story => AiCapability.textGeneration,
+      PromptTarget.vfx || PromptTarget.audio => AiCapability.audioGeneration,
+      PromptTarget.dialogue => AiCapability.voiceGeneration,
     };
     if (!capabilities.contains(required)) {
       throw UnsupportedError(

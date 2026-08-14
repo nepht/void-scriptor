@@ -20,6 +20,7 @@ import '../../features/references/presentation/project_reference_library_screen.
 import '../../features/references/presentation/reference_comparison_screen.dart';
 import '../../features/bible/presentation/project_bible_workspace_screen.dart';
 import '../../features/production_assets/presentation/production_asset_workspace_screen.dart';
+import '../../features/cinematic_production/presentation/cinematic_production_workspace_screen.dart';
 import '../shell/void_app_shell.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
@@ -48,6 +49,8 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
         builder: (_, __) => const ProjectBibleWorkspaceScreen(),
       ),
       ..._productionAssetRoutes(),
+      _cinematicProductionRoute(),
+      _productionValidationRoute(),
       GoRoute(
         path: '${AppRoutes.references}/compare',
         builder: (_, state) => ReferenceComparisonScreen(
@@ -144,6 +147,8 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
       builder: (_, __) => const ProjectBibleWorkspaceScreen(),
     ),
     ..._productionAssetRoutes(),
+    _cinematicProductionRoute(),
+    _productionValidationRoute(),
     GoRoute(
       path: '${AppRoutes.references}/compare',
       builder: (_, state) => ReferenceComparisonScreen(
@@ -154,6 +159,22 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
   ];
 }
 
+GoRoute _cinematicProductionRoute() => GoRoute(
+  path: AppRoutes.cinematicProduction,
+  builder: (context, _) => CinematicProductionWorkspaceScreen(
+    onImportAudio: () => ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Audio import siap melalui Audio Import Service.'),
+      ),
+    ),
+    onOpenValidation: () => context.go(AppRoutes.productionValidation),
+  ),
+);
+GoRoute _productionValidationRoute() => GoRoute(
+  path: AppRoutes.productionValidation,
+  builder: (_, __) =>
+      ProductionValidationCenterScreen(issues: const [], onRefresh: () {}),
+);
 List<RouteBase> _productionAssetRoutes() => [
   for (final entry in {
     AppRoutes.creatures: ProductionAssetKind.creature,

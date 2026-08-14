@@ -55,6 +55,11 @@ import 'tables/creatures.dart';
 import 'tables/vehicles.dart';
 import 'tables/props.dart';
 import 'tables/scene_asset_instances.dart';
+import 'tables/vfx.dart';
+import 'tables/audio_assets.dart';
+import 'tables/dialogue.dart';
+import 'tables/audio_timeline.dart';
+import 'tables/audio_waveform.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -88,6 +93,11 @@ import '../../features/creatures/data/creature_repository.dart';
 import '../../features/vehicles/data/vehicle_repository.dart';
 import '../../features/props/data/prop_repository.dart';
 import '../../features/scene_assets/application/scene_asset_instance_repository.dart';
+import '../../features/vfx/data/vfx_repository.dart';
+import '../../features/audio/application/audio_asset_repository.dart';
+import '../../features/dialogue/application/dialogue_repository.dart';
+import '../../features/audio_timeline/application/audio_timeline_repository.dart';
+import '../../features/audio_import/application/audio_import_repository.dart';
 
 part 'project_database.g.dart';
 
@@ -197,6 +207,26 @@ class ProjectMetadata extends Table {
     SceneInstanceTransforms,
     SceneInstanceProperties,
     SceneContinuitySnapshots,
+    VfxAssets,
+    VfxBehaviorProfiles,
+    VfxStates,
+    VfxTimelineClips,
+    VfxKeyframes,
+    AudioFiles,
+    SoundEffects,
+    SoundEffectVariations,
+    AmbienceAssets,
+    AmbienceLayers,
+    AmbienceVariants,
+    MusicCues,
+    MusicSections,
+    VoiceProfiles,
+    VoiceReferences,
+    DialogueLines,
+    DialogueTakes,
+    AudioTimelineClips,
+    AudioAutomationKeyframes,
+    AudioWaveformCaches,
   ],
   daos: [
     AssetDao,
@@ -219,13 +249,18 @@ class ProjectMetadata extends Table {
     VehicleRepository,
     PropRepository,
     SceneAssetInstanceRepository,
+    VfxRepository,
+    AudioAssetRepository,
+    DialogueRepository,
+    AudioTimelineRepository,
+    AudioImportRepository,
   ],
 )
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
   @override
-  int get schemaVersion => 28;
+  int get schemaVersion => 33;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -423,6 +458,36 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(sceneInstanceTransforms);
         await m.createTable(sceneInstanceProperties);
         await m.createTable(sceneContinuitySnapshots);
+      }
+      if (from < 29) {
+        await m.createTable(vfxAssets);
+        await m.createTable(vfxBehaviorProfiles);
+        await m.createTable(vfxStates);
+        await m.createTable(vfxTimelineClips);
+        await m.createTable(vfxKeyframes);
+      }
+      if (from < 30) {
+        await m.createTable(audioFiles);
+        await m.createTable(soundEffects);
+        await m.createTable(soundEffectVariations);
+        await m.createTable(ambienceAssets);
+        await m.createTable(ambienceLayers);
+        await m.createTable(ambienceVariants);
+        await m.createTable(musicCues);
+        await m.createTable(musicSections);
+      }
+      if (from < 31) {
+        await m.createTable(voiceProfiles);
+        await m.createTable(voiceReferences);
+        await m.createTable(dialogueLines);
+        await m.createTable(dialogueTakes);
+      }
+      if (from < 32) {
+        await m.createTable(audioTimelineClips);
+        await m.createTable(audioAutomationKeyframes);
+      }
+      if (from < 33) {
+        await m.createTable(audioWaveformCaches);
       }
     },
   );

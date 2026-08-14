@@ -93,6 +93,33 @@ class BuiltInPromptPresets {
       ],
     ),
     PromptPreset(
+      id: 'vfx-design-sheet',
+      name: 'VFX Design Sheet',
+      target: PromptTarget.vfx,
+      baseInstructions: [
+        'show effect silhouette, behavior states, and light interaction',
+        'preserve progression from opening to stable to dissipation',
+      ],
+    ),
+    PromptPreset(
+      id: 'audio-mood-brief',
+      name: 'Audio Mood Brief',
+      target: PromptTarget.audio,
+      baseInstructions: [
+        'describe instrumentation, texture, dynamics, and cinematic intent',
+        'include transition points and restrained production direction',
+      ],
+    ),
+    PromptPreset(
+      id: 'dialogue-voice-direction',
+      name: 'Dialogue Voice Direction',
+      target: PromptTarget.dialogue,
+      baseInstructions: [
+        'describe vocal texture, emotional arc, pacing, and pronunciation',
+        'preserve character identity and scene continuity',
+      ],
+    ),
+    PromptPreset(
       id: 'storyboard',
       name: 'Storyboard',
       target: PromptTarget.story,

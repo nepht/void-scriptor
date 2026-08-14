@@ -72,6 +72,6 @@ void main() {
     expect(hierarchy.scenes.single.characters.single.modeId, 'mode-1');
     expect(hierarchy.scenes.single.environment?.timePreset, 'noon');
     expect(hierarchy.scenes.single.beats.single.content, 'Qowner descends.');
-    expect(second.schemaVersion, 28);
+    expect(second.schemaVersion, 33);
   });
 }

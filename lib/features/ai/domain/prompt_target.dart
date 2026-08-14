@@ -9,4 +9,7 @@ enum PromptTarget {
   creature,
   vehicle,
   prop,
+  vfx,
+  audio,
+  dialogue,
 }

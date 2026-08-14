@@ -24,6 +24,8 @@ abstract final class AppRoutes {
   static const creatures = '/creatures';
   static const vehicles = '/vehicles';
   static const props = '/props';
+  static const cinematicProduction = '/cinematic-production';
+  static const productionValidation = '/production-validation';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

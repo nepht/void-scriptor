@@ -44431,6 +44431,8957 @@ class SceneContinuitySnapshotsCompanion
   }
 }
 
+class $VfxAssetsTable extends VfxAssets
+    with TableInfo<$VfxAssetsTable, VfxAsset> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VfxAssetsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _visualBehaviorMeta = const VerificationMeta(
+    'visualBehavior',
+  );
+  @override
+  late final GeneratedColumn<String> visualBehavior = GeneratedColumn<String>(
+    'visual_behavior',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _colorPaletteMeta = const VerificationMeta(
+    'colorPalette',
+  );
+  @override
+  late final GeneratedColumn<String> colorPalette = GeneratedColumn<String>(
+    'color_palette',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    assetId,
+    projectId,
+    name,
+    category,
+    description,
+    visualBehavior,
+    colorPalette,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vfx_assets';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VfxAsset> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('visual_behavior')) {
+      context.handle(
+        _visualBehaviorMeta,
+        visualBehavior.isAcceptableOrUnknown(
+          data['visual_behavior']!,
+          _visualBehaviorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('color_palette')) {
+      context.handle(
+        _colorPaletteMeta,
+        colorPalette.isAcceptableOrUnknown(
+          data['color_palette']!,
+          _colorPaletteMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {assetId};
+  @override
+  VfxAsset map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VfxAsset(
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      visualBehavior: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}visual_behavior'],
+      )!,
+      colorPalette: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}color_palette'],
+      )!,
+    );
+  }
+
+  @override
+  $VfxAssetsTable createAlias(String alias) {
+    return $VfxAssetsTable(attachedDatabase, alias);
+  }
+}
+
+class VfxAsset extends DataClass implements Insertable<VfxAsset> {
+  final String assetId;
+  final String projectId;
+  final String name;
+  final String category;
+  final String description;
+  final String visualBehavior;
+  final String colorPalette;
+  const VfxAsset({
+    required this.assetId,
+    required this.projectId,
+    required this.name,
+    required this.category,
+    required this.description,
+    required this.visualBehavior,
+    required this.colorPalette,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['asset_id'] = Variable<String>(assetId);
+    map['project_id'] = Variable<String>(projectId);
+    map['name'] = Variable<String>(name);
+    map['category'] = Variable<String>(category);
+    map['description'] = Variable<String>(description);
+    map['visual_behavior'] = Variable<String>(visualBehavior);
+    map['color_palette'] = Variable<String>(colorPalette);
+    return map;
+  }
+
+  VfxAssetsCompanion toCompanion(bool nullToAbsent) {
+    return VfxAssetsCompanion(
+      assetId: Value(assetId),
+      projectId: Value(projectId),
+      name: Value(name),
+      category: Value(category),
+      description: Value(description),
+      visualBehavior: Value(visualBehavior),
+      colorPalette: Value(colorPalette),
+    );
+  }
+
+  factory VfxAsset.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VfxAsset(
+      assetId: serializer.fromJson<String>(json['assetId']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      name: serializer.fromJson<String>(json['name']),
+      category: serializer.fromJson<String>(json['category']),
+      description: serializer.fromJson<String>(json['description']),
+      visualBehavior: serializer.fromJson<String>(json['visualBehavior']),
+      colorPalette: serializer.fromJson<String>(json['colorPalette']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'assetId': serializer.toJson<String>(assetId),
+      'projectId': serializer.toJson<String>(projectId),
+      'name': serializer.toJson<String>(name),
+      'category': serializer.toJson<String>(category),
+      'description': serializer.toJson<String>(description),
+      'visualBehavior': serializer.toJson<String>(visualBehavior),
+      'colorPalette': serializer.toJson<String>(colorPalette),
+    };
+  }
+
+  VfxAsset copyWith({
+    String? assetId,
+    String? projectId,
+    String? name,
+    String? category,
+    String? description,
+    String? visualBehavior,
+    String? colorPalette,
+  }) => VfxAsset(
+    assetId: assetId ?? this.assetId,
+    projectId: projectId ?? this.projectId,
+    name: name ?? this.name,
+    category: category ?? this.category,
+    description: description ?? this.description,
+    visualBehavior: visualBehavior ?? this.visualBehavior,
+    colorPalette: colorPalette ?? this.colorPalette,
+  );
+  VfxAsset copyWithCompanion(VfxAssetsCompanion data) {
+    return VfxAsset(
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      name: data.name.present ? data.name.value : this.name,
+      category: data.category.present ? data.category.value : this.category,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      visualBehavior: data.visualBehavior.present
+          ? data.visualBehavior.value
+          : this.visualBehavior,
+      colorPalette: data.colorPalette.present
+          ? data.colorPalette.value
+          : this.colorPalette,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VfxAsset(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('category: $category, ')
+          ..write('description: $description, ')
+          ..write('visualBehavior: $visualBehavior, ')
+          ..write('colorPalette: $colorPalette')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    assetId,
+    projectId,
+    name,
+    category,
+    description,
+    visualBehavior,
+    colorPalette,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VfxAsset &&
+          other.assetId == this.assetId &&
+          other.projectId == this.projectId &&
+          other.name == this.name &&
+          other.category == this.category &&
+          other.description == this.description &&
+          other.visualBehavior == this.visualBehavior &&
+          other.colorPalette == this.colorPalette);
+}
+
+class VfxAssetsCompanion extends UpdateCompanion<VfxAsset> {
+  final Value<String> assetId;
+  final Value<String> projectId;
+  final Value<String> name;
+  final Value<String> category;
+  final Value<String> description;
+  final Value<String> visualBehavior;
+  final Value<String> colorPalette;
+  final Value<int> rowid;
+  const VfxAssetsCompanion({
+    this.assetId = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.category = const Value.absent(),
+    this.description = const Value.absent(),
+    this.visualBehavior = const Value.absent(),
+    this.colorPalette = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VfxAssetsCompanion.insert({
+    required String assetId,
+    required String projectId,
+    required String name,
+    required String category,
+    this.description = const Value.absent(),
+    this.visualBehavior = const Value.absent(),
+    this.colorPalette = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : assetId = Value(assetId),
+       projectId = Value(projectId),
+       name = Value(name),
+       category = Value(category);
+  static Insertable<VfxAsset> custom({
+    Expression<String>? assetId,
+    Expression<String>? projectId,
+    Expression<String>? name,
+    Expression<String>? category,
+    Expression<String>? description,
+    Expression<String>? visualBehavior,
+    Expression<String>? colorPalette,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (assetId != null) 'asset_id': assetId,
+      if (projectId != null) 'project_id': projectId,
+      if (name != null) 'name': name,
+      if (category != null) 'category': category,
+      if (description != null) 'description': description,
+      if (visualBehavior != null) 'visual_behavior': visualBehavior,
+      if (colorPalette != null) 'color_palette': colorPalette,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VfxAssetsCompanion copyWith({
+    Value<String>? assetId,
+    Value<String>? projectId,
+    Value<String>? name,
+    Value<String>? category,
+    Value<String>? description,
+    Value<String>? visualBehavior,
+    Value<String>? colorPalette,
+    Value<int>? rowid,
+  }) {
+    return VfxAssetsCompanion(
+      assetId: assetId ?? this.assetId,
+      projectId: projectId ?? this.projectId,
+      name: name ?? this.name,
+      category: category ?? this.category,
+      description: description ?? this.description,
+      visualBehavior: visualBehavior ?? this.visualBehavior,
+      colorPalette: colorPalette ?? this.colorPalette,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (visualBehavior.present) {
+      map['visual_behavior'] = Variable<String>(visualBehavior.value);
+    }
+    if (colorPalette.present) {
+      map['color_palette'] = Variable<String>(colorPalette.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VfxAssetsCompanion(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('category: $category, ')
+          ..write('description: $description, ')
+          ..write('visualBehavior: $visualBehavior, ')
+          ..write('colorPalette: $colorPalette, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VfxBehaviorProfilesTable extends VfxBehaviorProfiles
+    with TableInfo<$VfxBehaviorProfilesTable, VfxBehaviorProfile> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VfxBehaviorProfilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _vfxIdMeta = const VerificationMeta('vfxId');
+  @override
+  late final GeneratedColumn<String> vfxId = GeneratedColumn<String>(
+    'vfx_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _originBehaviorMeta = const VerificationMeta(
+    'originBehavior',
+  );
+  @override
+  late final GeneratedColumn<String> originBehavior = GeneratedColumn<String>(
+    'origin_behavior',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _movementBehaviorMeta = const VerificationMeta(
+    'movementBehavior',
+  );
+  @override
+  late final GeneratedColumn<String> movementBehavior = GeneratedColumn<String>(
+    'movement_behavior',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _dissipationBehaviorMeta =
+      const VerificationMeta('dissipationBehavior');
+  @override
+  late final GeneratedColumn<String> dissipationBehavior =
+      GeneratedColumn<String>(
+        'dissipation_behavior',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _environmentalInteractionMeta =
+      const VerificationMeta('environmentalInteraction');
+  @override
+  late final GeneratedColumn<String> environmentalInteraction =
+      GeneratedColumn<String>(
+        'environmental_interaction',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _defaultDurationSecondsMeta =
+      const VerificationMeta('defaultDurationSeconds');
+  @override
+  late final GeneratedColumn<double> defaultDurationSeconds =
+      GeneratedColumn<double>(
+        'default_duration_seconds',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _emitsLightMeta = const VerificationMeta(
+    'emitsLight',
+  );
+  @override
+  late final GeneratedColumn<bool> emitsLight = GeneratedColumn<bool>(
+    'emits_light',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("emits_light" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    vfxId,
+    originBehavior,
+    movementBehavior,
+    dissipationBehavior,
+    environmentalInteraction,
+    defaultDurationSeconds,
+    emitsLight,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vfx_behavior_profiles';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VfxBehaviorProfile> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('vfx_id')) {
+      context.handle(
+        _vfxIdMeta,
+        vfxId.isAcceptableOrUnknown(data['vfx_id']!, _vfxIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_vfxIdMeta);
+    }
+    if (data.containsKey('origin_behavior')) {
+      context.handle(
+        _originBehaviorMeta,
+        originBehavior.isAcceptableOrUnknown(
+          data['origin_behavior']!,
+          _originBehaviorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('movement_behavior')) {
+      context.handle(
+        _movementBehaviorMeta,
+        movementBehavior.isAcceptableOrUnknown(
+          data['movement_behavior']!,
+          _movementBehaviorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dissipation_behavior')) {
+      context.handle(
+        _dissipationBehaviorMeta,
+        dissipationBehavior.isAcceptableOrUnknown(
+          data['dissipation_behavior']!,
+          _dissipationBehaviorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('environmental_interaction')) {
+      context.handle(
+        _environmentalInteractionMeta,
+        environmentalInteraction.isAcceptableOrUnknown(
+          data['environmental_interaction']!,
+          _environmentalInteractionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('default_duration_seconds')) {
+      context.handle(
+        _defaultDurationSecondsMeta,
+        defaultDurationSeconds.isAcceptableOrUnknown(
+          data['default_duration_seconds']!,
+          _defaultDurationSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('emits_light')) {
+      context.handle(
+        _emitsLightMeta,
+        emitsLight.isAcceptableOrUnknown(data['emits_light']!, _emitsLightMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {vfxId};
+  @override
+  VfxBehaviorProfile map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VfxBehaviorProfile(
+      vfxId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}vfx_id'],
+      )!,
+      originBehavior: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}origin_behavior'],
+      )!,
+      movementBehavior: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}movement_behavior'],
+      )!,
+      dissipationBehavior: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dissipation_behavior'],
+      )!,
+      environmentalInteraction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}environmental_interaction'],
+      )!,
+      defaultDurationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}default_duration_seconds'],
+      ),
+      emitsLight: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}emits_light'],
+      )!,
+    );
+  }
+
+  @override
+  $VfxBehaviorProfilesTable createAlias(String alias) {
+    return $VfxBehaviorProfilesTable(attachedDatabase, alias);
+  }
+}
+
+class VfxBehaviorProfile extends DataClass
+    implements Insertable<VfxBehaviorProfile> {
+  final String vfxId;
+  final String originBehavior;
+  final String movementBehavior;
+  final String dissipationBehavior;
+  final String environmentalInteraction;
+  final double? defaultDurationSeconds;
+  final bool emitsLight;
+  const VfxBehaviorProfile({
+    required this.vfxId,
+    required this.originBehavior,
+    required this.movementBehavior,
+    required this.dissipationBehavior,
+    required this.environmentalInteraction,
+    this.defaultDurationSeconds,
+    required this.emitsLight,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['vfx_id'] = Variable<String>(vfxId);
+    map['origin_behavior'] = Variable<String>(originBehavior);
+    map['movement_behavior'] = Variable<String>(movementBehavior);
+    map['dissipation_behavior'] = Variable<String>(dissipationBehavior);
+    map['environmental_interaction'] = Variable<String>(
+      environmentalInteraction,
+    );
+    if (!nullToAbsent || defaultDurationSeconds != null) {
+      map['default_duration_seconds'] = Variable<double>(
+        defaultDurationSeconds,
+      );
+    }
+    map['emits_light'] = Variable<bool>(emitsLight);
+    return map;
+  }
+
+  VfxBehaviorProfilesCompanion toCompanion(bool nullToAbsent) {
+    return VfxBehaviorProfilesCompanion(
+      vfxId: Value(vfxId),
+      originBehavior: Value(originBehavior),
+      movementBehavior: Value(movementBehavior),
+      dissipationBehavior: Value(dissipationBehavior),
+      environmentalInteraction: Value(environmentalInteraction),
+      defaultDurationSeconds: defaultDurationSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(defaultDurationSeconds),
+      emitsLight: Value(emitsLight),
+    );
+  }
+
+  factory VfxBehaviorProfile.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VfxBehaviorProfile(
+      vfxId: serializer.fromJson<String>(json['vfxId']),
+      originBehavior: serializer.fromJson<String>(json['originBehavior']),
+      movementBehavior: serializer.fromJson<String>(json['movementBehavior']),
+      dissipationBehavior: serializer.fromJson<String>(
+        json['dissipationBehavior'],
+      ),
+      environmentalInteraction: serializer.fromJson<String>(
+        json['environmentalInteraction'],
+      ),
+      defaultDurationSeconds: serializer.fromJson<double?>(
+        json['defaultDurationSeconds'],
+      ),
+      emitsLight: serializer.fromJson<bool>(json['emitsLight']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'vfxId': serializer.toJson<String>(vfxId),
+      'originBehavior': serializer.toJson<String>(originBehavior),
+      'movementBehavior': serializer.toJson<String>(movementBehavior),
+      'dissipationBehavior': serializer.toJson<String>(dissipationBehavior),
+      'environmentalInteraction': serializer.toJson<String>(
+        environmentalInteraction,
+      ),
+      'defaultDurationSeconds': serializer.toJson<double?>(
+        defaultDurationSeconds,
+      ),
+      'emitsLight': serializer.toJson<bool>(emitsLight),
+    };
+  }
+
+  VfxBehaviorProfile copyWith({
+    String? vfxId,
+    String? originBehavior,
+    String? movementBehavior,
+    String? dissipationBehavior,
+    String? environmentalInteraction,
+    Value<double?> defaultDurationSeconds = const Value.absent(),
+    bool? emitsLight,
+  }) => VfxBehaviorProfile(
+    vfxId: vfxId ?? this.vfxId,
+    originBehavior: originBehavior ?? this.originBehavior,
+    movementBehavior: movementBehavior ?? this.movementBehavior,
+    dissipationBehavior: dissipationBehavior ?? this.dissipationBehavior,
+    environmentalInteraction:
+        environmentalInteraction ?? this.environmentalInteraction,
+    defaultDurationSeconds: defaultDurationSeconds.present
+        ? defaultDurationSeconds.value
+        : this.defaultDurationSeconds,
+    emitsLight: emitsLight ?? this.emitsLight,
+  );
+  VfxBehaviorProfile copyWithCompanion(VfxBehaviorProfilesCompanion data) {
+    return VfxBehaviorProfile(
+      vfxId: data.vfxId.present ? data.vfxId.value : this.vfxId,
+      originBehavior: data.originBehavior.present
+          ? data.originBehavior.value
+          : this.originBehavior,
+      movementBehavior: data.movementBehavior.present
+          ? data.movementBehavior.value
+          : this.movementBehavior,
+      dissipationBehavior: data.dissipationBehavior.present
+          ? data.dissipationBehavior.value
+          : this.dissipationBehavior,
+      environmentalInteraction: data.environmentalInteraction.present
+          ? data.environmentalInteraction.value
+          : this.environmentalInteraction,
+      defaultDurationSeconds: data.defaultDurationSeconds.present
+          ? data.defaultDurationSeconds.value
+          : this.defaultDurationSeconds,
+      emitsLight: data.emitsLight.present
+          ? data.emitsLight.value
+          : this.emitsLight,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VfxBehaviorProfile(')
+          ..write('vfxId: $vfxId, ')
+          ..write('originBehavior: $originBehavior, ')
+          ..write('movementBehavior: $movementBehavior, ')
+          ..write('dissipationBehavior: $dissipationBehavior, ')
+          ..write('environmentalInteraction: $environmentalInteraction, ')
+          ..write('defaultDurationSeconds: $defaultDurationSeconds, ')
+          ..write('emitsLight: $emitsLight')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    vfxId,
+    originBehavior,
+    movementBehavior,
+    dissipationBehavior,
+    environmentalInteraction,
+    defaultDurationSeconds,
+    emitsLight,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VfxBehaviorProfile &&
+          other.vfxId == this.vfxId &&
+          other.originBehavior == this.originBehavior &&
+          other.movementBehavior == this.movementBehavior &&
+          other.dissipationBehavior == this.dissipationBehavior &&
+          other.environmentalInteraction == this.environmentalInteraction &&
+          other.defaultDurationSeconds == this.defaultDurationSeconds &&
+          other.emitsLight == this.emitsLight);
+}
+
+class VfxBehaviorProfilesCompanion extends UpdateCompanion<VfxBehaviorProfile> {
+  final Value<String> vfxId;
+  final Value<String> originBehavior;
+  final Value<String> movementBehavior;
+  final Value<String> dissipationBehavior;
+  final Value<String> environmentalInteraction;
+  final Value<double?> defaultDurationSeconds;
+  final Value<bool> emitsLight;
+  final Value<int> rowid;
+  const VfxBehaviorProfilesCompanion({
+    this.vfxId = const Value.absent(),
+    this.originBehavior = const Value.absent(),
+    this.movementBehavior = const Value.absent(),
+    this.dissipationBehavior = const Value.absent(),
+    this.environmentalInteraction = const Value.absent(),
+    this.defaultDurationSeconds = const Value.absent(),
+    this.emitsLight = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VfxBehaviorProfilesCompanion.insert({
+    required String vfxId,
+    this.originBehavior = const Value.absent(),
+    this.movementBehavior = const Value.absent(),
+    this.dissipationBehavior = const Value.absent(),
+    this.environmentalInteraction = const Value.absent(),
+    this.defaultDurationSeconds = const Value.absent(),
+    this.emitsLight = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : vfxId = Value(vfxId);
+  static Insertable<VfxBehaviorProfile> custom({
+    Expression<String>? vfxId,
+    Expression<String>? originBehavior,
+    Expression<String>? movementBehavior,
+    Expression<String>? dissipationBehavior,
+    Expression<String>? environmentalInteraction,
+    Expression<double>? defaultDurationSeconds,
+    Expression<bool>? emitsLight,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (vfxId != null) 'vfx_id': vfxId,
+      if (originBehavior != null) 'origin_behavior': originBehavior,
+      if (movementBehavior != null) 'movement_behavior': movementBehavior,
+      if (dissipationBehavior != null)
+        'dissipation_behavior': dissipationBehavior,
+      if (environmentalInteraction != null)
+        'environmental_interaction': environmentalInteraction,
+      if (defaultDurationSeconds != null)
+        'default_duration_seconds': defaultDurationSeconds,
+      if (emitsLight != null) 'emits_light': emitsLight,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VfxBehaviorProfilesCompanion copyWith({
+    Value<String>? vfxId,
+    Value<String>? originBehavior,
+    Value<String>? movementBehavior,
+    Value<String>? dissipationBehavior,
+    Value<String>? environmentalInteraction,
+    Value<double?>? defaultDurationSeconds,
+    Value<bool>? emitsLight,
+    Value<int>? rowid,
+  }) {
+    return VfxBehaviorProfilesCompanion(
+      vfxId: vfxId ?? this.vfxId,
+      originBehavior: originBehavior ?? this.originBehavior,
+      movementBehavior: movementBehavior ?? this.movementBehavior,
+      dissipationBehavior: dissipationBehavior ?? this.dissipationBehavior,
+      environmentalInteraction:
+          environmentalInteraction ?? this.environmentalInteraction,
+      defaultDurationSeconds:
+          defaultDurationSeconds ?? this.defaultDurationSeconds,
+      emitsLight: emitsLight ?? this.emitsLight,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (vfxId.present) {
+      map['vfx_id'] = Variable<String>(vfxId.value);
+    }
+    if (originBehavior.present) {
+      map['origin_behavior'] = Variable<String>(originBehavior.value);
+    }
+    if (movementBehavior.present) {
+      map['movement_behavior'] = Variable<String>(movementBehavior.value);
+    }
+    if (dissipationBehavior.present) {
+      map['dissipation_behavior'] = Variable<String>(dissipationBehavior.value);
+    }
+    if (environmentalInteraction.present) {
+      map['environmental_interaction'] = Variable<String>(
+        environmentalInteraction.value,
+      );
+    }
+    if (defaultDurationSeconds.present) {
+      map['default_duration_seconds'] = Variable<double>(
+        defaultDurationSeconds.value,
+      );
+    }
+    if (emitsLight.present) {
+      map['emits_light'] = Variable<bool>(emitsLight.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VfxBehaviorProfilesCompanion(')
+          ..write('vfxId: $vfxId, ')
+          ..write('originBehavior: $originBehavior, ')
+          ..write('movementBehavior: $movementBehavior, ')
+          ..write('dissipationBehavior: $dissipationBehavior, ')
+          ..write('environmentalInteraction: $environmentalInteraction, ')
+          ..write('defaultDurationSeconds: $defaultDurationSeconds, ')
+          ..write('emitsLight: $emitsLight, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VfxStatesTable extends VfxStates
+    with TableInfo<$VfxStatesTable, VfxState> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VfxStatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _vfxIdMeta = const VerificationMeta('vfxId');
+  @override
+  late final GeneratedColumn<String> vfxId = GeneratedColumn<String>(
+    'vfx_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _referenceSetIdMeta = const VerificationMeta(
+    'referenceSetId',
+  );
+  @override
+  late final GeneratedColumn<String> referenceSetId = GeneratedColumn<String>(
+    'reference_set_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    vfxId,
+    name,
+    description,
+    referenceSetId,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vfx_states';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VfxState> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('vfx_id')) {
+      context.handle(
+        _vfxIdMeta,
+        vfxId.isAcceptableOrUnknown(data['vfx_id']!, _vfxIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_vfxIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reference_set_id')) {
+      context.handle(
+        _referenceSetIdMeta,
+        referenceSetId.isAcceptableOrUnknown(
+          data['reference_set_id']!,
+          _referenceSetIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VfxState map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VfxState(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      vfxId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}vfx_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      referenceSetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reference_set_id'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $VfxStatesTable createAlias(String alias) {
+    return $VfxStatesTable(attachedDatabase, alias);
+  }
+}
+
+class VfxState extends DataClass implements Insertable<VfxState> {
+  final String id;
+  final String vfxId;
+  final String name;
+  final String description;
+  final String? referenceSetId;
+  final int sortOrder;
+  const VfxState({
+    required this.id,
+    required this.vfxId,
+    required this.name,
+    required this.description,
+    this.referenceSetId,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['vfx_id'] = Variable<String>(vfxId);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    if (!nullToAbsent || referenceSetId != null) {
+      map['reference_set_id'] = Variable<String>(referenceSetId);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  VfxStatesCompanion toCompanion(bool nullToAbsent) {
+    return VfxStatesCompanion(
+      id: Value(id),
+      vfxId: Value(vfxId),
+      name: Value(name),
+      description: Value(description),
+      referenceSetId: referenceSetId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referenceSetId),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory VfxState.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VfxState(
+      id: serializer.fromJson<String>(json['id']),
+      vfxId: serializer.fromJson<String>(json['vfxId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      referenceSetId: serializer.fromJson<String?>(json['referenceSetId']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'vfxId': serializer.toJson<String>(vfxId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'referenceSetId': serializer.toJson<String?>(referenceSetId),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  VfxState copyWith({
+    String? id,
+    String? vfxId,
+    String? name,
+    String? description,
+    Value<String?> referenceSetId = const Value.absent(),
+    int? sortOrder,
+  }) => VfxState(
+    id: id ?? this.id,
+    vfxId: vfxId ?? this.vfxId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    referenceSetId: referenceSetId.present
+        ? referenceSetId.value
+        : this.referenceSetId,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  VfxState copyWithCompanion(VfxStatesCompanion data) {
+    return VfxState(
+      id: data.id.present ? data.id.value : this.id,
+      vfxId: data.vfxId.present ? data.vfxId.value : this.vfxId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      referenceSetId: data.referenceSetId.present
+          ? data.referenceSetId.value
+          : this.referenceSetId,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VfxState(')
+          ..write('id: $id, ')
+          ..write('vfxId: $vfxId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('referenceSetId: $referenceSetId, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, vfxId, name, description, referenceSetId, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VfxState &&
+          other.id == this.id &&
+          other.vfxId == this.vfxId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.referenceSetId == this.referenceSetId &&
+          other.sortOrder == this.sortOrder);
+}
+
+class VfxStatesCompanion extends UpdateCompanion<VfxState> {
+  final Value<String> id;
+  final Value<String> vfxId;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<String?> referenceSetId;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const VfxStatesCompanion({
+    this.id = const Value.absent(),
+    this.vfxId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.referenceSetId = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VfxStatesCompanion.insert({
+    required String id,
+    required String vfxId,
+    required String name,
+    this.description = const Value.absent(),
+    this.referenceSetId = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       vfxId = Value(vfxId),
+       name = Value(name);
+  static Insertable<VfxState> custom({
+    Expression<String>? id,
+    Expression<String>? vfxId,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? referenceSetId,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (vfxId != null) 'vfx_id': vfxId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (referenceSetId != null) 'reference_set_id': referenceSetId,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VfxStatesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? vfxId,
+    Value<String>? name,
+    Value<String>? description,
+    Value<String?>? referenceSetId,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return VfxStatesCompanion(
+      id: id ?? this.id,
+      vfxId: vfxId ?? this.vfxId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      referenceSetId: referenceSetId ?? this.referenceSetId,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (vfxId.present) {
+      map['vfx_id'] = Variable<String>(vfxId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (referenceSetId.present) {
+      map['reference_set_id'] = Variable<String>(referenceSetId.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VfxStatesCompanion(')
+          ..write('id: $id, ')
+          ..write('vfxId: $vfxId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('referenceSetId: $referenceSetId, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VfxTimelineClipsTable extends VfxTimelineClips
+    with TableInfo<$VfxTimelineClipsTable, VfxTimelineClip> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VfxTimelineClipsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sceneIdMeta = const VerificationMeta(
+    'sceneId',
+  );
+  @override
+  late final GeneratedColumn<String> sceneId = GeneratedColumn<String>(
+    'scene_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _vfxAssetIdMeta = const VerificationMeta(
+    'vfxAssetId',
+  );
+  @override
+  late final GeneratedColumn<String> vfxAssetId = GeneratedColumn<String>(
+    'vfx_asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startSecondsMeta = const VerificationMeta(
+    'startSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> startSeconds = GeneratedColumn<double>(
+    'start_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> durationSeconds = GeneratedColumn<double>(
+    'duration_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stateIdMeta = const VerificationMeta(
+    'stateId',
+  );
+  @override
+  late final GeneratedColumn<String> stateId = GeneratedColumn<String>(
+    'state_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _attachedInstanceIdMeta =
+      const VerificationMeta('attachedInstanceId');
+  @override
+  late final GeneratedColumn<String> attachedInstanceId =
+      GeneratedColumn<String>(
+        'attached_instance_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sceneId,
+    vfxAssetId,
+    startSeconds,
+    durationSeconds,
+    stateId,
+    attachedInstanceId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vfx_timeline_clips';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VfxTimelineClip> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('scene_id')) {
+      context.handle(
+        _sceneIdMeta,
+        sceneId.isAcceptableOrUnknown(data['scene_id']!, _sceneIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneIdMeta);
+    }
+    if (data.containsKey('vfx_asset_id')) {
+      context.handle(
+        _vfxAssetIdMeta,
+        vfxAssetId.isAcceptableOrUnknown(
+          data['vfx_asset_id']!,
+          _vfxAssetIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_vfxAssetIdMeta);
+    }
+    if (data.containsKey('start_seconds')) {
+      context.handle(
+        _startSecondsMeta,
+        startSeconds.isAcceptableOrUnknown(
+          data['start_seconds']!,
+          _startSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_startSecondsMeta);
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_durationSecondsMeta);
+    }
+    if (data.containsKey('state_id')) {
+      context.handle(
+        _stateIdMeta,
+        stateId.isAcceptableOrUnknown(data['state_id']!, _stateIdMeta),
+      );
+    }
+    if (data.containsKey('attached_instance_id')) {
+      context.handle(
+        _attachedInstanceIdMeta,
+        attachedInstanceId.isAcceptableOrUnknown(
+          data['attached_instance_id']!,
+          _attachedInstanceIdMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VfxTimelineClip map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VfxTimelineClip(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      sceneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scene_id'],
+      )!,
+      vfxAssetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}vfx_asset_id'],
+      )!,
+      startSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}start_seconds'],
+      )!,
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}duration_seconds'],
+      )!,
+      stateId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}state_id'],
+      ),
+      attachedInstanceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}attached_instance_id'],
+      ),
+    );
+  }
+
+  @override
+  $VfxTimelineClipsTable createAlias(String alias) {
+    return $VfxTimelineClipsTable(attachedDatabase, alias);
+  }
+}
+
+class VfxTimelineClip extends DataClass implements Insertable<VfxTimelineClip> {
+  final String id;
+  final String sceneId;
+  final String vfxAssetId;
+  final double startSeconds;
+  final double durationSeconds;
+  final String? stateId;
+  final String? attachedInstanceId;
+  const VfxTimelineClip({
+    required this.id,
+    required this.sceneId,
+    required this.vfxAssetId,
+    required this.startSeconds,
+    required this.durationSeconds,
+    this.stateId,
+    this.attachedInstanceId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['scene_id'] = Variable<String>(sceneId);
+    map['vfx_asset_id'] = Variable<String>(vfxAssetId);
+    map['start_seconds'] = Variable<double>(startSeconds);
+    map['duration_seconds'] = Variable<double>(durationSeconds);
+    if (!nullToAbsent || stateId != null) {
+      map['state_id'] = Variable<String>(stateId);
+    }
+    if (!nullToAbsent || attachedInstanceId != null) {
+      map['attached_instance_id'] = Variable<String>(attachedInstanceId);
+    }
+    return map;
+  }
+
+  VfxTimelineClipsCompanion toCompanion(bool nullToAbsent) {
+    return VfxTimelineClipsCompanion(
+      id: Value(id),
+      sceneId: Value(sceneId),
+      vfxAssetId: Value(vfxAssetId),
+      startSeconds: Value(startSeconds),
+      durationSeconds: Value(durationSeconds),
+      stateId: stateId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(stateId),
+      attachedInstanceId: attachedInstanceId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(attachedInstanceId),
+    );
+  }
+
+  factory VfxTimelineClip.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VfxTimelineClip(
+      id: serializer.fromJson<String>(json['id']),
+      sceneId: serializer.fromJson<String>(json['sceneId']),
+      vfxAssetId: serializer.fromJson<String>(json['vfxAssetId']),
+      startSeconds: serializer.fromJson<double>(json['startSeconds']),
+      durationSeconds: serializer.fromJson<double>(json['durationSeconds']),
+      stateId: serializer.fromJson<String?>(json['stateId']),
+      attachedInstanceId: serializer.fromJson<String?>(
+        json['attachedInstanceId'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sceneId': serializer.toJson<String>(sceneId),
+      'vfxAssetId': serializer.toJson<String>(vfxAssetId),
+      'startSeconds': serializer.toJson<double>(startSeconds),
+      'durationSeconds': serializer.toJson<double>(durationSeconds),
+      'stateId': serializer.toJson<String?>(stateId),
+      'attachedInstanceId': serializer.toJson<String?>(attachedInstanceId),
+    };
+  }
+
+  VfxTimelineClip copyWith({
+    String? id,
+    String? sceneId,
+    String? vfxAssetId,
+    double? startSeconds,
+    double? durationSeconds,
+    Value<String?> stateId = const Value.absent(),
+    Value<String?> attachedInstanceId = const Value.absent(),
+  }) => VfxTimelineClip(
+    id: id ?? this.id,
+    sceneId: sceneId ?? this.sceneId,
+    vfxAssetId: vfxAssetId ?? this.vfxAssetId,
+    startSeconds: startSeconds ?? this.startSeconds,
+    durationSeconds: durationSeconds ?? this.durationSeconds,
+    stateId: stateId.present ? stateId.value : this.stateId,
+    attachedInstanceId: attachedInstanceId.present
+        ? attachedInstanceId.value
+        : this.attachedInstanceId,
+  );
+  VfxTimelineClip copyWithCompanion(VfxTimelineClipsCompanion data) {
+    return VfxTimelineClip(
+      id: data.id.present ? data.id.value : this.id,
+      sceneId: data.sceneId.present ? data.sceneId.value : this.sceneId,
+      vfxAssetId: data.vfxAssetId.present
+          ? data.vfxAssetId.value
+          : this.vfxAssetId,
+      startSeconds: data.startSeconds.present
+          ? data.startSeconds.value
+          : this.startSeconds,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      stateId: data.stateId.present ? data.stateId.value : this.stateId,
+      attachedInstanceId: data.attachedInstanceId.present
+          ? data.attachedInstanceId.value
+          : this.attachedInstanceId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VfxTimelineClip(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('vfxAssetId: $vfxAssetId, ')
+          ..write('startSeconds: $startSeconds, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('stateId: $stateId, ')
+          ..write('attachedInstanceId: $attachedInstanceId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    sceneId,
+    vfxAssetId,
+    startSeconds,
+    durationSeconds,
+    stateId,
+    attachedInstanceId,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VfxTimelineClip &&
+          other.id == this.id &&
+          other.sceneId == this.sceneId &&
+          other.vfxAssetId == this.vfxAssetId &&
+          other.startSeconds == this.startSeconds &&
+          other.durationSeconds == this.durationSeconds &&
+          other.stateId == this.stateId &&
+          other.attachedInstanceId == this.attachedInstanceId);
+}
+
+class VfxTimelineClipsCompanion extends UpdateCompanion<VfxTimelineClip> {
+  final Value<String> id;
+  final Value<String> sceneId;
+  final Value<String> vfxAssetId;
+  final Value<double> startSeconds;
+  final Value<double> durationSeconds;
+  final Value<String?> stateId;
+  final Value<String?> attachedInstanceId;
+  final Value<int> rowid;
+  const VfxTimelineClipsCompanion({
+    this.id = const Value.absent(),
+    this.sceneId = const Value.absent(),
+    this.vfxAssetId = const Value.absent(),
+    this.startSeconds = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.stateId = const Value.absent(),
+    this.attachedInstanceId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VfxTimelineClipsCompanion.insert({
+    required String id,
+    required String sceneId,
+    required String vfxAssetId,
+    required double startSeconds,
+    required double durationSeconds,
+    this.stateId = const Value.absent(),
+    this.attachedInstanceId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       sceneId = Value(sceneId),
+       vfxAssetId = Value(vfxAssetId),
+       startSeconds = Value(startSeconds),
+       durationSeconds = Value(durationSeconds);
+  static Insertable<VfxTimelineClip> custom({
+    Expression<String>? id,
+    Expression<String>? sceneId,
+    Expression<String>? vfxAssetId,
+    Expression<double>? startSeconds,
+    Expression<double>? durationSeconds,
+    Expression<String>? stateId,
+    Expression<String>? attachedInstanceId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sceneId != null) 'scene_id': sceneId,
+      if (vfxAssetId != null) 'vfx_asset_id': vfxAssetId,
+      if (startSeconds != null) 'start_seconds': startSeconds,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (stateId != null) 'state_id': stateId,
+      if (attachedInstanceId != null)
+        'attached_instance_id': attachedInstanceId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VfxTimelineClipsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? sceneId,
+    Value<String>? vfxAssetId,
+    Value<double>? startSeconds,
+    Value<double>? durationSeconds,
+    Value<String?>? stateId,
+    Value<String?>? attachedInstanceId,
+    Value<int>? rowid,
+  }) {
+    return VfxTimelineClipsCompanion(
+      id: id ?? this.id,
+      sceneId: sceneId ?? this.sceneId,
+      vfxAssetId: vfxAssetId ?? this.vfxAssetId,
+      startSeconds: startSeconds ?? this.startSeconds,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      stateId: stateId ?? this.stateId,
+      attachedInstanceId: attachedInstanceId ?? this.attachedInstanceId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sceneId.present) {
+      map['scene_id'] = Variable<String>(sceneId.value);
+    }
+    if (vfxAssetId.present) {
+      map['vfx_asset_id'] = Variable<String>(vfxAssetId.value);
+    }
+    if (startSeconds.present) {
+      map['start_seconds'] = Variable<double>(startSeconds.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<double>(durationSeconds.value);
+    }
+    if (stateId.present) {
+      map['state_id'] = Variable<String>(stateId.value);
+    }
+    if (attachedInstanceId.present) {
+      map['attached_instance_id'] = Variable<String>(attachedInstanceId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VfxTimelineClipsCompanion(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('vfxAssetId: $vfxAssetId, ')
+          ..write('startSeconds: $startSeconds, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('stateId: $stateId, ')
+          ..write('attachedInstanceId: $attachedInstanceId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VfxKeyframesTable extends VfxKeyframes
+    with TableInfo<$VfxKeyframesTable, VfxKeyframe> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VfxKeyframesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _clipIdMeta = const VerificationMeta('clipId');
+  @override
+  late final GeneratedColumn<String> clipId = GeneratedColumn<String>(
+    'clip_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timeSecondsMeta = const VerificationMeta(
+    'timeSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> timeSeconds = GeneratedColumn<double>(
+    'time_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _propertyMeta = const VerificationMeta(
+    'property',
+  );
+  @override
+  late final GeneratedColumn<String> property = GeneratedColumn<String>(
+    'property',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    clipId,
+    timeSeconds,
+    property,
+    value,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vfx_keyframes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VfxKeyframe> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('clip_id')) {
+      context.handle(
+        _clipIdMeta,
+        clipId.isAcceptableOrUnknown(data['clip_id']!, _clipIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_clipIdMeta);
+    }
+    if (data.containsKey('time_seconds')) {
+      context.handle(
+        _timeSecondsMeta,
+        timeSeconds.isAcceptableOrUnknown(
+          data['time_seconds']!,
+          _timeSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_timeSecondsMeta);
+    }
+    if (data.containsKey('property')) {
+      context.handle(
+        _propertyMeta,
+        property.isAcceptableOrUnknown(data['property']!, _propertyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_propertyMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VfxKeyframe map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VfxKeyframe(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      clipId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}clip_id'],
+      )!,
+      timeSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}time_seconds'],
+      )!,
+      property: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}property'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}value'],
+      )!,
+    );
+  }
+
+  @override
+  $VfxKeyframesTable createAlias(String alias) {
+    return $VfxKeyframesTable(attachedDatabase, alias);
+  }
+}
+
+class VfxKeyframe extends DataClass implements Insertable<VfxKeyframe> {
+  final String id;
+  final String clipId;
+  final double timeSeconds;
+  final String property;
+  final double value;
+  const VfxKeyframe({
+    required this.id,
+    required this.clipId,
+    required this.timeSeconds,
+    required this.property,
+    required this.value,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['clip_id'] = Variable<String>(clipId);
+    map['time_seconds'] = Variable<double>(timeSeconds);
+    map['property'] = Variable<String>(property);
+    map['value'] = Variable<double>(value);
+    return map;
+  }
+
+  VfxKeyframesCompanion toCompanion(bool nullToAbsent) {
+    return VfxKeyframesCompanion(
+      id: Value(id),
+      clipId: Value(clipId),
+      timeSeconds: Value(timeSeconds),
+      property: Value(property),
+      value: Value(value),
+    );
+  }
+
+  factory VfxKeyframe.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VfxKeyframe(
+      id: serializer.fromJson<String>(json['id']),
+      clipId: serializer.fromJson<String>(json['clipId']),
+      timeSeconds: serializer.fromJson<double>(json['timeSeconds']),
+      property: serializer.fromJson<String>(json['property']),
+      value: serializer.fromJson<double>(json['value']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'clipId': serializer.toJson<String>(clipId),
+      'timeSeconds': serializer.toJson<double>(timeSeconds),
+      'property': serializer.toJson<String>(property),
+      'value': serializer.toJson<double>(value),
+    };
+  }
+
+  VfxKeyframe copyWith({
+    String? id,
+    String? clipId,
+    double? timeSeconds,
+    String? property,
+    double? value,
+  }) => VfxKeyframe(
+    id: id ?? this.id,
+    clipId: clipId ?? this.clipId,
+    timeSeconds: timeSeconds ?? this.timeSeconds,
+    property: property ?? this.property,
+    value: value ?? this.value,
+  );
+  VfxKeyframe copyWithCompanion(VfxKeyframesCompanion data) {
+    return VfxKeyframe(
+      id: data.id.present ? data.id.value : this.id,
+      clipId: data.clipId.present ? data.clipId.value : this.clipId,
+      timeSeconds: data.timeSeconds.present
+          ? data.timeSeconds.value
+          : this.timeSeconds,
+      property: data.property.present ? data.property.value : this.property,
+      value: data.value.present ? data.value.value : this.value,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VfxKeyframe(')
+          ..write('id: $id, ')
+          ..write('clipId: $clipId, ')
+          ..write('timeSeconds: $timeSeconds, ')
+          ..write('property: $property, ')
+          ..write('value: $value')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, clipId, timeSeconds, property, value);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VfxKeyframe &&
+          other.id == this.id &&
+          other.clipId == this.clipId &&
+          other.timeSeconds == this.timeSeconds &&
+          other.property == this.property &&
+          other.value == this.value);
+}
+
+class VfxKeyframesCompanion extends UpdateCompanion<VfxKeyframe> {
+  final Value<String> id;
+  final Value<String> clipId;
+  final Value<double> timeSeconds;
+  final Value<String> property;
+  final Value<double> value;
+  final Value<int> rowid;
+  const VfxKeyframesCompanion({
+    this.id = const Value.absent(),
+    this.clipId = const Value.absent(),
+    this.timeSeconds = const Value.absent(),
+    this.property = const Value.absent(),
+    this.value = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VfxKeyframesCompanion.insert({
+    required String id,
+    required String clipId,
+    required double timeSeconds,
+    required String property,
+    required double value,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       clipId = Value(clipId),
+       timeSeconds = Value(timeSeconds),
+       property = Value(property),
+       value = Value(value);
+  static Insertable<VfxKeyframe> custom({
+    Expression<String>? id,
+    Expression<String>? clipId,
+    Expression<double>? timeSeconds,
+    Expression<String>? property,
+    Expression<double>? value,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (clipId != null) 'clip_id': clipId,
+      if (timeSeconds != null) 'time_seconds': timeSeconds,
+      if (property != null) 'property': property,
+      if (value != null) 'value': value,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VfxKeyframesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? clipId,
+    Value<double>? timeSeconds,
+    Value<String>? property,
+    Value<double>? value,
+    Value<int>? rowid,
+  }) {
+    return VfxKeyframesCompanion(
+      id: id ?? this.id,
+      clipId: clipId ?? this.clipId,
+      timeSeconds: timeSeconds ?? this.timeSeconds,
+      property: property ?? this.property,
+      value: value ?? this.value,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (clipId.present) {
+      map['clip_id'] = Variable<String>(clipId.value);
+    }
+    if (timeSeconds.present) {
+      map['time_seconds'] = Variable<double>(timeSeconds.value);
+    }
+    if (property.present) {
+      map['property'] = Variable<String>(property.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VfxKeyframesCompanion(')
+          ..write('id: $id, ')
+          ..write('clipId: $clipId, ')
+          ..write('timeSeconds: $timeSeconds, ')
+          ..write('property: $property, ')
+          ..write('value: $value, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AudioFilesTable extends AudioFiles
+    with TableInfo<$AudioFilesTable, AudioFile> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AudioFilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _filePathMeta = const VerificationMeta(
+    'filePath',
+  );
+  @override
+  late final GeneratedColumn<String> filePath = GeneratedColumn<String>(
+    'file_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentHashMeta = const VerificationMeta(
+    'contentHash',
+  );
+  @override
+  late final GeneratedColumn<String> contentHash = GeneratedColumn<String>(
+    'content_hash',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> durationSeconds = GeneratedColumn<double>(
+    'duration_seconds',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sampleRateMeta = const VerificationMeta(
+    'sampleRate',
+  );
+  @override
+  late final GeneratedColumn<int> sampleRate = GeneratedColumn<int>(
+    'sample_rate',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _channelsMeta = const VerificationMeta(
+    'channels',
+  );
+  @override
+  late final GeneratedColumn<int> channels = GeneratedColumn<int>(
+    'channels',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    filePath,
+    contentHash,
+    durationSeconds,
+    sampleRate,
+    channels,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'audio_files';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AudioFile> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('file_path')) {
+      context.handle(
+        _filePathMeta,
+        filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_filePathMeta);
+    }
+    if (data.containsKey('content_hash')) {
+      context.handle(
+        _contentHashMeta,
+        contentHash.isAcceptableOrUnknown(
+          data['content_hash']!,
+          _contentHashMeta,
+        ),
+      );
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sample_rate')) {
+      context.handle(
+        _sampleRateMeta,
+        sampleRate.isAcceptableOrUnknown(data['sample_rate']!, _sampleRateMeta),
+      );
+    }
+    if (data.containsKey('channels')) {
+      context.handle(
+        _channelsMeta,
+        channels.isAcceptableOrUnknown(data['channels']!, _channelsMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AudioFile map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AudioFile(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      filePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_path'],
+      )!,
+      contentHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_hash'],
+      ),
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}duration_seconds'],
+      ),
+      sampleRate: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sample_rate'],
+      ),
+      channels: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}channels'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AudioFilesTable createAlias(String alias) {
+    return $AudioFilesTable(attachedDatabase, alias);
+  }
+}
+
+class AudioFile extends DataClass implements Insertable<AudioFile> {
+  final String id;
+  final String projectId;
+  final String filePath;
+  final String? contentHash;
+  final double? durationSeconds;
+  final int? sampleRate;
+  final int? channels;
+  final DateTime createdAt;
+  const AudioFile({
+    required this.id,
+    required this.projectId,
+    required this.filePath,
+    this.contentHash,
+    this.durationSeconds,
+    this.sampleRate,
+    this.channels,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['file_path'] = Variable<String>(filePath);
+    if (!nullToAbsent || contentHash != null) {
+      map['content_hash'] = Variable<String>(contentHash);
+    }
+    if (!nullToAbsent || durationSeconds != null) {
+      map['duration_seconds'] = Variable<double>(durationSeconds);
+    }
+    if (!nullToAbsent || sampleRate != null) {
+      map['sample_rate'] = Variable<int>(sampleRate);
+    }
+    if (!nullToAbsent || channels != null) {
+      map['channels'] = Variable<int>(channels);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  AudioFilesCompanion toCompanion(bool nullToAbsent) {
+    return AudioFilesCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      filePath: Value(filePath),
+      contentHash: contentHash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contentHash),
+      durationSeconds: durationSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(durationSeconds),
+      sampleRate: sampleRate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sampleRate),
+      channels: channels == null && nullToAbsent
+          ? const Value.absent()
+          : Value(channels),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory AudioFile.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AudioFile(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      filePath: serializer.fromJson<String>(json['filePath']),
+      contentHash: serializer.fromJson<String?>(json['contentHash']),
+      durationSeconds: serializer.fromJson<double?>(json['durationSeconds']),
+      sampleRate: serializer.fromJson<int?>(json['sampleRate']),
+      channels: serializer.fromJson<int?>(json['channels']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'filePath': serializer.toJson<String>(filePath),
+      'contentHash': serializer.toJson<String?>(contentHash),
+      'durationSeconds': serializer.toJson<double?>(durationSeconds),
+      'sampleRate': serializer.toJson<int?>(sampleRate),
+      'channels': serializer.toJson<int?>(channels),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  AudioFile copyWith({
+    String? id,
+    String? projectId,
+    String? filePath,
+    Value<String?> contentHash = const Value.absent(),
+    Value<double?> durationSeconds = const Value.absent(),
+    Value<int?> sampleRate = const Value.absent(),
+    Value<int?> channels = const Value.absent(),
+    DateTime? createdAt,
+  }) => AudioFile(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    filePath: filePath ?? this.filePath,
+    contentHash: contentHash.present ? contentHash.value : this.contentHash,
+    durationSeconds: durationSeconds.present
+        ? durationSeconds.value
+        : this.durationSeconds,
+    sampleRate: sampleRate.present ? sampleRate.value : this.sampleRate,
+    channels: channels.present ? channels.value : this.channels,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  AudioFile copyWithCompanion(AudioFilesCompanion data) {
+    return AudioFile(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      filePath: data.filePath.present ? data.filePath.value : this.filePath,
+      contentHash: data.contentHash.present
+          ? data.contentHash.value
+          : this.contentHash,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      sampleRate: data.sampleRate.present
+          ? data.sampleRate.value
+          : this.sampleRate,
+      channels: data.channels.present ? data.channels.value : this.channels,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AudioFile(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('filePath: $filePath, ')
+          ..write('contentHash: $contentHash, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('sampleRate: $sampleRate, ')
+          ..write('channels: $channels, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    filePath,
+    contentHash,
+    durationSeconds,
+    sampleRate,
+    channels,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AudioFile &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.filePath == this.filePath &&
+          other.contentHash == this.contentHash &&
+          other.durationSeconds == this.durationSeconds &&
+          other.sampleRate == this.sampleRate &&
+          other.channels == this.channels &&
+          other.createdAt == this.createdAt);
+}
+
+class AudioFilesCompanion extends UpdateCompanion<AudioFile> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> filePath;
+  final Value<String?> contentHash;
+  final Value<double?> durationSeconds;
+  final Value<int?> sampleRate;
+  final Value<int?> channels;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const AudioFilesCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.filePath = const Value.absent(),
+    this.contentHash = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.sampleRate = const Value.absent(),
+    this.channels = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AudioFilesCompanion.insert({
+    required String id,
+    required String projectId,
+    required String filePath,
+    this.contentHash = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.sampleRate = const Value.absent(),
+    this.channels = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       filePath = Value(filePath),
+       createdAt = Value(createdAt);
+  static Insertable<AudioFile> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? filePath,
+    Expression<String>? contentHash,
+    Expression<double>? durationSeconds,
+    Expression<int>? sampleRate,
+    Expression<int>? channels,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (filePath != null) 'file_path': filePath,
+      if (contentHash != null) 'content_hash': contentHash,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (sampleRate != null) 'sample_rate': sampleRate,
+      if (channels != null) 'channels': channels,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AudioFilesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? filePath,
+    Value<String?>? contentHash,
+    Value<double?>? durationSeconds,
+    Value<int?>? sampleRate,
+    Value<int?>? channels,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return AudioFilesCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      filePath: filePath ?? this.filePath,
+      contentHash: contentHash ?? this.contentHash,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      sampleRate: sampleRate ?? this.sampleRate,
+      channels: channels ?? this.channels,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (filePath.present) {
+      map['file_path'] = Variable<String>(filePath.value);
+    }
+    if (contentHash.present) {
+      map['content_hash'] = Variable<String>(contentHash.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<double>(durationSeconds.value);
+    }
+    if (sampleRate.present) {
+      map['sample_rate'] = Variable<int>(sampleRate.value);
+    }
+    if (channels.present) {
+      map['channels'] = Variable<int>(channels.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AudioFilesCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('filePath: $filePath, ')
+          ..write('contentHash: $contentHash, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('sampleRate: $sampleRate, ')
+          ..write('channels: $channels, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SoundEffectsTable extends SoundEffects
+    with TableInfo<$SoundEffectsTable, SoundEffect> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SoundEffectsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _audioFileIdMeta = const VerificationMeta(
+    'audioFileId',
+  );
+  @override
+  late final GeneratedColumn<String> audioFileId = GeneratedColumn<String>(
+    'audio_file_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _loopableMeta = const VerificationMeta(
+    'loopable',
+  );
+  @override
+  late final GeneratedColumn<bool> loopable = GeneratedColumn<bool>(
+    'loopable',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("loopable" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    assetId,
+    projectId,
+    audioFileId,
+    name,
+    category,
+    description,
+    loopable,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sound_effects';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SoundEffect> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('audio_file_id')) {
+      context.handle(
+        _audioFileIdMeta,
+        audioFileId.isAcceptableOrUnknown(
+          data['audio_file_id']!,
+          _audioFileIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('loopable')) {
+      context.handle(
+        _loopableMeta,
+        loopable.isAcceptableOrUnknown(data['loopable']!, _loopableMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {assetId};
+  @override
+  SoundEffect map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SoundEffect(
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      audioFileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}audio_file_id'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      loopable: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}loopable'],
+      )!,
+    );
+  }
+
+  @override
+  $SoundEffectsTable createAlias(String alias) {
+    return $SoundEffectsTable(attachedDatabase, alias);
+  }
+}
+
+class SoundEffect extends DataClass implements Insertable<SoundEffect> {
+  final String assetId;
+  final String projectId;
+  final String? audioFileId;
+  final String name;
+  final String category;
+  final String description;
+  final bool loopable;
+  const SoundEffect({
+    required this.assetId,
+    required this.projectId,
+    this.audioFileId,
+    required this.name,
+    required this.category,
+    required this.description,
+    required this.loopable,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['asset_id'] = Variable<String>(assetId);
+    map['project_id'] = Variable<String>(projectId);
+    if (!nullToAbsent || audioFileId != null) {
+      map['audio_file_id'] = Variable<String>(audioFileId);
+    }
+    map['name'] = Variable<String>(name);
+    map['category'] = Variable<String>(category);
+    map['description'] = Variable<String>(description);
+    map['loopable'] = Variable<bool>(loopable);
+    return map;
+  }
+
+  SoundEffectsCompanion toCompanion(bool nullToAbsent) {
+    return SoundEffectsCompanion(
+      assetId: Value(assetId),
+      projectId: Value(projectId),
+      audioFileId: audioFileId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(audioFileId),
+      name: Value(name),
+      category: Value(category),
+      description: Value(description),
+      loopable: Value(loopable),
+    );
+  }
+
+  factory SoundEffect.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SoundEffect(
+      assetId: serializer.fromJson<String>(json['assetId']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      audioFileId: serializer.fromJson<String?>(json['audioFileId']),
+      name: serializer.fromJson<String>(json['name']),
+      category: serializer.fromJson<String>(json['category']),
+      description: serializer.fromJson<String>(json['description']),
+      loopable: serializer.fromJson<bool>(json['loopable']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'assetId': serializer.toJson<String>(assetId),
+      'projectId': serializer.toJson<String>(projectId),
+      'audioFileId': serializer.toJson<String?>(audioFileId),
+      'name': serializer.toJson<String>(name),
+      'category': serializer.toJson<String>(category),
+      'description': serializer.toJson<String>(description),
+      'loopable': serializer.toJson<bool>(loopable),
+    };
+  }
+
+  SoundEffect copyWith({
+    String? assetId,
+    String? projectId,
+    Value<String?> audioFileId = const Value.absent(),
+    String? name,
+    String? category,
+    String? description,
+    bool? loopable,
+  }) => SoundEffect(
+    assetId: assetId ?? this.assetId,
+    projectId: projectId ?? this.projectId,
+    audioFileId: audioFileId.present ? audioFileId.value : this.audioFileId,
+    name: name ?? this.name,
+    category: category ?? this.category,
+    description: description ?? this.description,
+    loopable: loopable ?? this.loopable,
+  );
+  SoundEffect copyWithCompanion(SoundEffectsCompanion data) {
+    return SoundEffect(
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      audioFileId: data.audioFileId.present
+          ? data.audioFileId.value
+          : this.audioFileId,
+      name: data.name.present ? data.name.value : this.name,
+      category: data.category.present ? data.category.value : this.category,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      loopable: data.loopable.present ? data.loopable.value : this.loopable,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SoundEffect(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('name: $name, ')
+          ..write('category: $category, ')
+          ..write('description: $description, ')
+          ..write('loopable: $loopable')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    assetId,
+    projectId,
+    audioFileId,
+    name,
+    category,
+    description,
+    loopable,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SoundEffect &&
+          other.assetId == this.assetId &&
+          other.projectId == this.projectId &&
+          other.audioFileId == this.audioFileId &&
+          other.name == this.name &&
+          other.category == this.category &&
+          other.description == this.description &&
+          other.loopable == this.loopable);
+}
+
+class SoundEffectsCompanion extends UpdateCompanion<SoundEffect> {
+  final Value<String> assetId;
+  final Value<String> projectId;
+  final Value<String?> audioFileId;
+  final Value<String> name;
+  final Value<String> category;
+  final Value<String> description;
+  final Value<bool> loopable;
+  final Value<int> rowid;
+  const SoundEffectsCompanion({
+    this.assetId = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.audioFileId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.category = const Value.absent(),
+    this.description = const Value.absent(),
+    this.loopable = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SoundEffectsCompanion.insert({
+    required String assetId,
+    required String projectId,
+    this.audioFileId = const Value.absent(),
+    required String name,
+    required String category,
+    this.description = const Value.absent(),
+    this.loopable = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : assetId = Value(assetId),
+       projectId = Value(projectId),
+       name = Value(name),
+       category = Value(category);
+  static Insertable<SoundEffect> custom({
+    Expression<String>? assetId,
+    Expression<String>? projectId,
+    Expression<String>? audioFileId,
+    Expression<String>? name,
+    Expression<String>? category,
+    Expression<String>? description,
+    Expression<bool>? loopable,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (assetId != null) 'asset_id': assetId,
+      if (projectId != null) 'project_id': projectId,
+      if (audioFileId != null) 'audio_file_id': audioFileId,
+      if (name != null) 'name': name,
+      if (category != null) 'category': category,
+      if (description != null) 'description': description,
+      if (loopable != null) 'loopable': loopable,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SoundEffectsCompanion copyWith({
+    Value<String>? assetId,
+    Value<String>? projectId,
+    Value<String?>? audioFileId,
+    Value<String>? name,
+    Value<String>? category,
+    Value<String>? description,
+    Value<bool>? loopable,
+    Value<int>? rowid,
+  }) {
+    return SoundEffectsCompanion(
+      assetId: assetId ?? this.assetId,
+      projectId: projectId ?? this.projectId,
+      audioFileId: audioFileId ?? this.audioFileId,
+      name: name ?? this.name,
+      category: category ?? this.category,
+      description: description ?? this.description,
+      loopable: loopable ?? this.loopable,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (audioFileId.present) {
+      map['audio_file_id'] = Variable<String>(audioFileId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (loopable.present) {
+      map['loopable'] = Variable<bool>(loopable.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SoundEffectsCompanion(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('name: $name, ')
+          ..write('category: $category, ')
+          ..write('description: $description, ')
+          ..write('loopable: $loopable, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SoundEffectVariationsTable extends SoundEffectVariations
+    with TableInfo<$SoundEffectVariationsTable, SoundEffectVariation> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SoundEffectVariationsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _soundEffectIdMeta = const VerificationMeta(
+    'soundEffectId',
+  );
+  @override
+  late final GeneratedColumn<String> soundEffectId = GeneratedColumn<String>(
+    'sound_effect_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _audioFileIdMeta = const VerificationMeta(
+    'audioFileId',
+  );
+  @override
+  late final GeneratedColumn<String> audioFileId = GeneratedColumn<String>(
+    'audio_file_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _weightMeta = const VerificationMeta('weight');
+  @override
+  late final GeneratedColumn<double> weight = GeneratedColumn<double>(
+    'weight',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    soundEffectId,
+    audioFileId,
+    label,
+    weight,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sound_effect_variations';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SoundEffectVariation> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('sound_effect_id')) {
+      context.handle(
+        _soundEffectIdMeta,
+        soundEffectId.isAcceptableOrUnknown(
+          data['sound_effect_id']!,
+          _soundEffectIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_soundEffectIdMeta);
+    }
+    if (data.containsKey('audio_file_id')) {
+      context.handle(
+        _audioFileIdMeta,
+        audioFileId.isAcceptableOrUnknown(
+          data['audio_file_id']!,
+          _audioFileIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_audioFileIdMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    }
+    if (data.containsKey('weight')) {
+      context.handle(
+        _weightMeta,
+        weight.isAcceptableOrUnknown(data['weight']!, _weightMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SoundEffectVariation map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SoundEffectVariation(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      soundEffectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sound_effect_id'],
+      )!,
+      audioFileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}audio_file_id'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      weight: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}weight'],
+      )!,
+    );
+  }
+
+  @override
+  $SoundEffectVariationsTable createAlias(String alias) {
+    return $SoundEffectVariationsTable(attachedDatabase, alias);
+  }
+}
+
+class SoundEffectVariation extends DataClass
+    implements Insertable<SoundEffectVariation> {
+  final String id;
+  final String soundEffectId;
+  final String audioFileId;
+  final String label;
+  final double weight;
+  const SoundEffectVariation({
+    required this.id,
+    required this.soundEffectId,
+    required this.audioFileId,
+    required this.label,
+    required this.weight,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['sound_effect_id'] = Variable<String>(soundEffectId);
+    map['audio_file_id'] = Variable<String>(audioFileId);
+    map['label'] = Variable<String>(label);
+    map['weight'] = Variable<double>(weight);
+    return map;
+  }
+
+  SoundEffectVariationsCompanion toCompanion(bool nullToAbsent) {
+    return SoundEffectVariationsCompanion(
+      id: Value(id),
+      soundEffectId: Value(soundEffectId),
+      audioFileId: Value(audioFileId),
+      label: Value(label),
+      weight: Value(weight),
+    );
+  }
+
+  factory SoundEffectVariation.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SoundEffectVariation(
+      id: serializer.fromJson<String>(json['id']),
+      soundEffectId: serializer.fromJson<String>(json['soundEffectId']),
+      audioFileId: serializer.fromJson<String>(json['audioFileId']),
+      label: serializer.fromJson<String>(json['label']),
+      weight: serializer.fromJson<double>(json['weight']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'soundEffectId': serializer.toJson<String>(soundEffectId),
+      'audioFileId': serializer.toJson<String>(audioFileId),
+      'label': serializer.toJson<String>(label),
+      'weight': serializer.toJson<double>(weight),
+    };
+  }
+
+  SoundEffectVariation copyWith({
+    String? id,
+    String? soundEffectId,
+    String? audioFileId,
+    String? label,
+    double? weight,
+  }) => SoundEffectVariation(
+    id: id ?? this.id,
+    soundEffectId: soundEffectId ?? this.soundEffectId,
+    audioFileId: audioFileId ?? this.audioFileId,
+    label: label ?? this.label,
+    weight: weight ?? this.weight,
+  );
+  SoundEffectVariation copyWithCompanion(SoundEffectVariationsCompanion data) {
+    return SoundEffectVariation(
+      id: data.id.present ? data.id.value : this.id,
+      soundEffectId: data.soundEffectId.present
+          ? data.soundEffectId.value
+          : this.soundEffectId,
+      audioFileId: data.audioFileId.present
+          ? data.audioFileId.value
+          : this.audioFileId,
+      label: data.label.present ? data.label.value : this.label,
+      weight: data.weight.present ? data.weight.value : this.weight,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SoundEffectVariation(')
+          ..write('id: $id, ')
+          ..write('soundEffectId: $soundEffectId, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('label: $label, ')
+          ..write('weight: $weight')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, soundEffectId, audioFileId, label, weight);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SoundEffectVariation &&
+          other.id == this.id &&
+          other.soundEffectId == this.soundEffectId &&
+          other.audioFileId == this.audioFileId &&
+          other.label == this.label &&
+          other.weight == this.weight);
+}
+
+class SoundEffectVariationsCompanion
+    extends UpdateCompanion<SoundEffectVariation> {
+  final Value<String> id;
+  final Value<String> soundEffectId;
+  final Value<String> audioFileId;
+  final Value<String> label;
+  final Value<double> weight;
+  final Value<int> rowid;
+  const SoundEffectVariationsCompanion({
+    this.id = const Value.absent(),
+    this.soundEffectId = const Value.absent(),
+    this.audioFileId = const Value.absent(),
+    this.label = const Value.absent(),
+    this.weight = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SoundEffectVariationsCompanion.insert({
+    required String id,
+    required String soundEffectId,
+    required String audioFileId,
+    this.label = const Value.absent(),
+    this.weight = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       soundEffectId = Value(soundEffectId),
+       audioFileId = Value(audioFileId);
+  static Insertable<SoundEffectVariation> custom({
+    Expression<String>? id,
+    Expression<String>? soundEffectId,
+    Expression<String>? audioFileId,
+    Expression<String>? label,
+    Expression<double>? weight,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (soundEffectId != null) 'sound_effect_id': soundEffectId,
+      if (audioFileId != null) 'audio_file_id': audioFileId,
+      if (label != null) 'label': label,
+      if (weight != null) 'weight': weight,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SoundEffectVariationsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? soundEffectId,
+    Value<String>? audioFileId,
+    Value<String>? label,
+    Value<double>? weight,
+    Value<int>? rowid,
+  }) {
+    return SoundEffectVariationsCompanion(
+      id: id ?? this.id,
+      soundEffectId: soundEffectId ?? this.soundEffectId,
+      audioFileId: audioFileId ?? this.audioFileId,
+      label: label ?? this.label,
+      weight: weight ?? this.weight,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (soundEffectId.present) {
+      map['sound_effect_id'] = Variable<String>(soundEffectId.value);
+    }
+    if (audioFileId.present) {
+      map['audio_file_id'] = Variable<String>(audioFileId.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (weight.present) {
+      map['weight'] = Variable<double>(weight.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SoundEffectVariationsCompanion(')
+          ..write('id: $id, ')
+          ..write('soundEffectId: $soundEffectId, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('label: $label, ')
+          ..write('weight: $weight, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AmbienceAssetsTable extends AmbienceAssets
+    with TableInfo<$AmbienceAssetsTable, AmbienceAsset> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AmbienceAssetsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _audioFileIdMeta = const VerificationMeta(
+    'audioFileId',
+  );
+  @override
+  late final GeneratedColumn<String> audioFileId = GeneratedColumn<String>(
+    'audio_file_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _loopableMeta = const VerificationMeta(
+    'loopable',
+  );
+  @override
+  late final GeneratedColumn<bool> loopable = GeneratedColumn<bool>(
+    'loopable',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("loopable" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    assetId,
+    projectId,
+    audioFileId,
+    name,
+    description,
+    loopable,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ambience_assets';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AmbienceAsset> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('audio_file_id')) {
+      context.handle(
+        _audioFileIdMeta,
+        audioFileId.isAcceptableOrUnknown(
+          data['audio_file_id']!,
+          _audioFileIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('loopable')) {
+      context.handle(
+        _loopableMeta,
+        loopable.isAcceptableOrUnknown(data['loopable']!, _loopableMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {assetId};
+  @override
+  AmbienceAsset map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AmbienceAsset(
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      audioFileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}audio_file_id'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      loopable: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}loopable'],
+      )!,
+    );
+  }
+
+  @override
+  $AmbienceAssetsTable createAlias(String alias) {
+    return $AmbienceAssetsTable(attachedDatabase, alias);
+  }
+}
+
+class AmbienceAsset extends DataClass implements Insertable<AmbienceAsset> {
+  final String assetId;
+  final String projectId;
+  final String? audioFileId;
+  final String name;
+  final String description;
+  final bool loopable;
+  const AmbienceAsset({
+    required this.assetId,
+    required this.projectId,
+    this.audioFileId,
+    required this.name,
+    required this.description,
+    required this.loopable,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['asset_id'] = Variable<String>(assetId);
+    map['project_id'] = Variable<String>(projectId);
+    if (!nullToAbsent || audioFileId != null) {
+      map['audio_file_id'] = Variable<String>(audioFileId);
+    }
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['loopable'] = Variable<bool>(loopable);
+    return map;
+  }
+
+  AmbienceAssetsCompanion toCompanion(bool nullToAbsent) {
+    return AmbienceAssetsCompanion(
+      assetId: Value(assetId),
+      projectId: Value(projectId),
+      audioFileId: audioFileId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(audioFileId),
+      name: Value(name),
+      description: Value(description),
+      loopable: Value(loopable),
+    );
+  }
+
+  factory AmbienceAsset.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AmbienceAsset(
+      assetId: serializer.fromJson<String>(json['assetId']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      audioFileId: serializer.fromJson<String?>(json['audioFileId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      loopable: serializer.fromJson<bool>(json['loopable']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'assetId': serializer.toJson<String>(assetId),
+      'projectId': serializer.toJson<String>(projectId),
+      'audioFileId': serializer.toJson<String?>(audioFileId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'loopable': serializer.toJson<bool>(loopable),
+    };
+  }
+
+  AmbienceAsset copyWith({
+    String? assetId,
+    String? projectId,
+    Value<String?> audioFileId = const Value.absent(),
+    String? name,
+    String? description,
+    bool? loopable,
+  }) => AmbienceAsset(
+    assetId: assetId ?? this.assetId,
+    projectId: projectId ?? this.projectId,
+    audioFileId: audioFileId.present ? audioFileId.value : this.audioFileId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    loopable: loopable ?? this.loopable,
+  );
+  AmbienceAsset copyWithCompanion(AmbienceAssetsCompanion data) {
+    return AmbienceAsset(
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      audioFileId: data.audioFileId.present
+          ? data.audioFileId.value
+          : this.audioFileId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      loopable: data.loopable.present ? data.loopable.value : this.loopable,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AmbienceAsset(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('loopable: $loopable')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(assetId, projectId, audioFileId, name, description, loopable);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AmbienceAsset &&
+          other.assetId == this.assetId &&
+          other.projectId == this.projectId &&
+          other.audioFileId == this.audioFileId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.loopable == this.loopable);
+}
+
+class AmbienceAssetsCompanion extends UpdateCompanion<AmbienceAsset> {
+  final Value<String> assetId;
+  final Value<String> projectId;
+  final Value<String?> audioFileId;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<bool> loopable;
+  final Value<int> rowid;
+  const AmbienceAssetsCompanion({
+    this.assetId = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.audioFileId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.loopable = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AmbienceAssetsCompanion.insert({
+    required String assetId,
+    required String projectId,
+    this.audioFileId = const Value.absent(),
+    required String name,
+    this.description = const Value.absent(),
+    this.loopable = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : assetId = Value(assetId),
+       projectId = Value(projectId),
+       name = Value(name);
+  static Insertable<AmbienceAsset> custom({
+    Expression<String>? assetId,
+    Expression<String>? projectId,
+    Expression<String>? audioFileId,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<bool>? loopable,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (assetId != null) 'asset_id': assetId,
+      if (projectId != null) 'project_id': projectId,
+      if (audioFileId != null) 'audio_file_id': audioFileId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (loopable != null) 'loopable': loopable,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AmbienceAssetsCompanion copyWith({
+    Value<String>? assetId,
+    Value<String>? projectId,
+    Value<String?>? audioFileId,
+    Value<String>? name,
+    Value<String>? description,
+    Value<bool>? loopable,
+    Value<int>? rowid,
+  }) {
+    return AmbienceAssetsCompanion(
+      assetId: assetId ?? this.assetId,
+      projectId: projectId ?? this.projectId,
+      audioFileId: audioFileId ?? this.audioFileId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      loopable: loopable ?? this.loopable,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (audioFileId.present) {
+      map['audio_file_id'] = Variable<String>(audioFileId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (loopable.present) {
+      map['loopable'] = Variable<bool>(loopable.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AmbienceAssetsCompanion(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('loopable: $loopable, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AmbienceLayersTable extends AmbienceLayers
+    with TableInfo<$AmbienceLayersTable, AmbienceLayer> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AmbienceLayersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ambienceIdMeta = const VerificationMeta(
+    'ambienceId',
+  );
+  @override
+  late final GeneratedColumn<String> ambienceId = GeneratedColumn<String>(
+    'ambience_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _audioFileIdMeta = const VerificationMeta(
+    'audioFileId',
+  );
+  @override
+  late final GeneratedColumn<String> audioFileId = GeneratedColumn<String>(
+    'audio_file_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _defaultGainDbMeta = const VerificationMeta(
+    'defaultGainDb',
+  );
+  @override
+  late final GeneratedColumn<double> defaultGainDb = GeneratedColumn<double>(
+    'default_gain_db',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    ambienceId,
+    audioFileId,
+    name,
+    defaultGainDb,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ambience_layers';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AmbienceLayer> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('ambience_id')) {
+      context.handle(
+        _ambienceIdMeta,
+        ambienceId.isAcceptableOrUnknown(data['ambience_id']!, _ambienceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ambienceIdMeta);
+    }
+    if (data.containsKey('audio_file_id')) {
+      context.handle(
+        _audioFileIdMeta,
+        audioFileId.isAcceptableOrUnknown(
+          data['audio_file_id']!,
+          _audioFileIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_audioFileIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('default_gain_db')) {
+      context.handle(
+        _defaultGainDbMeta,
+        defaultGainDb.isAcceptableOrUnknown(
+          data['default_gain_db']!,
+          _defaultGainDbMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AmbienceLayer map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AmbienceLayer(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      ambienceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ambience_id'],
+      )!,
+      audioFileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}audio_file_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      defaultGainDb: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}default_gain_db'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $AmbienceLayersTable createAlias(String alias) {
+    return $AmbienceLayersTable(attachedDatabase, alias);
+  }
+}
+
+class AmbienceLayer extends DataClass implements Insertable<AmbienceLayer> {
+  final String id;
+  final String ambienceId;
+  final String audioFileId;
+  final String name;
+  final double defaultGainDb;
+  final int sortOrder;
+  const AmbienceLayer({
+    required this.id,
+    required this.ambienceId,
+    required this.audioFileId,
+    required this.name,
+    required this.defaultGainDb,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['ambience_id'] = Variable<String>(ambienceId);
+    map['audio_file_id'] = Variable<String>(audioFileId);
+    map['name'] = Variable<String>(name);
+    map['default_gain_db'] = Variable<double>(defaultGainDb);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  AmbienceLayersCompanion toCompanion(bool nullToAbsent) {
+    return AmbienceLayersCompanion(
+      id: Value(id),
+      ambienceId: Value(ambienceId),
+      audioFileId: Value(audioFileId),
+      name: Value(name),
+      defaultGainDb: Value(defaultGainDb),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory AmbienceLayer.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AmbienceLayer(
+      id: serializer.fromJson<String>(json['id']),
+      ambienceId: serializer.fromJson<String>(json['ambienceId']),
+      audioFileId: serializer.fromJson<String>(json['audioFileId']),
+      name: serializer.fromJson<String>(json['name']),
+      defaultGainDb: serializer.fromJson<double>(json['defaultGainDb']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'ambienceId': serializer.toJson<String>(ambienceId),
+      'audioFileId': serializer.toJson<String>(audioFileId),
+      'name': serializer.toJson<String>(name),
+      'defaultGainDb': serializer.toJson<double>(defaultGainDb),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  AmbienceLayer copyWith({
+    String? id,
+    String? ambienceId,
+    String? audioFileId,
+    String? name,
+    double? defaultGainDb,
+    int? sortOrder,
+  }) => AmbienceLayer(
+    id: id ?? this.id,
+    ambienceId: ambienceId ?? this.ambienceId,
+    audioFileId: audioFileId ?? this.audioFileId,
+    name: name ?? this.name,
+    defaultGainDb: defaultGainDb ?? this.defaultGainDb,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  AmbienceLayer copyWithCompanion(AmbienceLayersCompanion data) {
+    return AmbienceLayer(
+      id: data.id.present ? data.id.value : this.id,
+      ambienceId: data.ambienceId.present
+          ? data.ambienceId.value
+          : this.ambienceId,
+      audioFileId: data.audioFileId.present
+          ? data.audioFileId.value
+          : this.audioFileId,
+      name: data.name.present ? data.name.value : this.name,
+      defaultGainDb: data.defaultGainDb.present
+          ? data.defaultGainDb.value
+          : this.defaultGainDb,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AmbienceLayer(')
+          ..write('id: $id, ')
+          ..write('ambienceId: $ambienceId, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('name: $name, ')
+          ..write('defaultGainDb: $defaultGainDb, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, ambienceId, audioFileId, name, defaultGainDb, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AmbienceLayer &&
+          other.id == this.id &&
+          other.ambienceId == this.ambienceId &&
+          other.audioFileId == this.audioFileId &&
+          other.name == this.name &&
+          other.defaultGainDb == this.defaultGainDb &&
+          other.sortOrder == this.sortOrder);
+}
+
+class AmbienceLayersCompanion extends UpdateCompanion<AmbienceLayer> {
+  final Value<String> id;
+  final Value<String> ambienceId;
+  final Value<String> audioFileId;
+  final Value<String> name;
+  final Value<double> defaultGainDb;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const AmbienceLayersCompanion({
+    this.id = const Value.absent(),
+    this.ambienceId = const Value.absent(),
+    this.audioFileId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.defaultGainDb = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AmbienceLayersCompanion.insert({
+    required String id,
+    required String ambienceId,
+    required String audioFileId,
+    required String name,
+    this.defaultGainDb = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       ambienceId = Value(ambienceId),
+       audioFileId = Value(audioFileId),
+       name = Value(name);
+  static Insertable<AmbienceLayer> custom({
+    Expression<String>? id,
+    Expression<String>? ambienceId,
+    Expression<String>? audioFileId,
+    Expression<String>? name,
+    Expression<double>? defaultGainDb,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (ambienceId != null) 'ambience_id': ambienceId,
+      if (audioFileId != null) 'audio_file_id': audioFileId,
+      if (name != null) 'name': name,
+      if (defaultGainDb != null) 'default_gain_db': defaultGainDb,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AmbienceLayersCompanion copyWith({
+    Value<String>? id,
+    Value<String>? ambienceId,
+    Value<String>? audioFileId,
+    Value<String>? name,
+    Value<double>? defaultGainDb,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return AmbienceLayersCompanion(
+      id: id ?? this.id,
+      ambienceId: ambienceId ?? this.ambienceId,
+      audioFileId: audioFileId ?? this.audioFileId,
+      name: name ?? this.name,
+      defaultGainDb: defaultGainDb ?? this.defaultGainDb,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (ambienceId.present) {
+      map['ambience_id'] = Variable<String>(ambienceId.value);
+    }
+    if (audioFileId.present) {
+      map['audio_file_id'] = Variable<String>(audioFileId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (defaultGainDb.present) {
+      map['default_gain_db'] = Variable<double>(defaultGainDb.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AmbienceLayersCompanion(')
+          ..write('id: $id, ')
+          ..write('ambienceId: $ambienceId, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('name: $name, ')
+          ..write('defaultGainDb: $defaultGainDb, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AmbienceVariantsTable extends AmbienceVariants
+    with TableInfo<$AmbienceVariantsTable, AmbienceVariant> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AmbienceVariantsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ambienceIdMeta = const VerificationMeta(
+    'ambienceId',
+  );
+  @override
+  late final GeneratedColumn<String> ambienceId = GeneratedColumn<String>(
+    'ambience_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _referenceAudioFileIdMeta =
+      const VerificationMeta('referenceAudioFileId');
+  @override
+  late final GeneratedColumn<String> referenceAudioFileId =
+      GeneratedColumn<String>(
+        'reference_audio_file_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _conditionsMeta = const VerificationMeta(
+    'conditions',
+  );
+  @override
+  late final GeneratedColumn<String> conditions = GeneratedColumn<String>(
+    'conditions',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    ambienceId,
+    name,
+    referenceAudioFileId,
+    conditions,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ambience_variants';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AmbienceVariant> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('ambience_id')) {
+      context.handle(
+        _ambienceIdMeta,
+        ambienceId.isAcceptableOrUnknown(data['ambience_id']!, _ambienceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ambienceIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('reference_audio_file_id')) {
+      context.handle(
+        _referenceAudioFileIdMeta,
+        referenceAudioFileId.isAcceptableOrUnknown(
+          data['reference_audio_file_id']!,
+          _referenceAudioFileIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('conditions')) {
+      context.handle(
+        _conditionsMeta,
+        conditions.isAcceptableOrUnknown(data['conditions']!, _conditionsMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AmbienceVariant map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AmbienceVariant(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      ambienceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ambience_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      referenceAudioFileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reference_audio_file_id'],
+      ),
+      conditions: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}conditions'],
+      )!,
+    );
+  }
+
+  @override
+  $AmbienceVariantsTable createAlias(String alias) {
+    return $AmbienceVariantsTable(attachedDatabase, alias);
+  }
+}
+
+class AmbienceVariant extends DataClass implements Insertable<AmbienceVariant> {
+  final String id;
+  final String ambienceId;
+  final String name;
+  final String? referenceAudioFileId;
+  final String conditions;
+  const AmbienceVariant({
+    required this.id,
+    required this.ambienceId,
+    required this.name,
+    this.referenceAudioFileId,
+    required this.conditions,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['ambience_id'] = Variable<String>(ambienceId);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || referenceAudioFileId != null) {
+      map['reference_audio_file_id'] = Variable<String>(referenceAudioFileId);
+    }
+    map['conditions'] = Variable<String>(conditions);
+    return map;
+  }
+
+  AmbienceVariantsCompanion toCompanion(bool nullToAbsent) {
+    return AmbienceVariantsCompanion(
+      id: Value(id),
+      ambienceId: Value(ambienceId),
+      name: Value(name),
+      referenceAudioFileId: referenceAudioFileId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referenceAudioFileId),
+      conditions: Value(conditions),
+    );
+  }
+
+  factory AmbienceVariant.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AmbienceVariant(
+      id: serializer.fromJson<String>(json['id']),
+      ambienceId: serializer.fromJson<String>(json['ambienceId']),
+      name: serializer.fromJson<String>(json['name']),
+      referenceAudioFileId: serializer.fromJson<String?>(
+        json['referenceAudioFileId'],
+      ),
+      conditions: serializer.fromJson<String>(json['conditions']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'ambienceId': serializer.toJson<String>(ambienceId),
+      'name': serializer.toJson<String>(name),
+      'referenceAudioFileId': serializer.toJson<String?>(referenceAudioFileId),
+      'conditions': serializer.toJson<String>(conditions),
+    };
+  }
+
+  AmbienceVariant copyWith({
+    String? id,
+    String? ambienceId,
+    String? name,
+    Value<String?> referenceAudioFileId = const Value.absent(),
+    String? conditions,
+  }) => AmbienceVariant(
+    id: id ?? this.id,
+    ambienceId: ambienceId ?? this.ambienceId,
+    name: name ?? this.name,
+    referenceAudioFileId: referenceAudioFileId.present
+        ? referenceAudioFileId.value
+        : this.referenceAudioFileId,
+    conditions: conditions ?? this.conditions,
+  );
+  AmbienceVariant copyWithCompanion(AmbienceVariantsCompanion data) {
+    return AmbienceVariant(
+      id: data.id.present ? data.id.value : this.id,
+      ambienceId: data.ambienceId.present
+          ? data.ambienceId.value
+          : this.ambienceId,
+      name: data.name.present ? data.name.value : this.name,
+      referenceAudioFileId: data.referenceAudioFileId.present
+          ? data.referenceAudioFileId.value
+          : this.referenceAudioFileId,
+      conditions: data.conditions.present
+          ? data.conditions.value
+          : this.conditions,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AmbienceVariant(')
+          ..write('id: $id, ')
+          ..write('ambienceId: $ambienceId, ')
+          ..write('name: $name, ')
+          ..write('referenceAudioFileId: $referenceAudioFileId, ')
+          ..write('conditions: $conditions')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, ambienceId, name, referenceAudioFileId, conditions);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AmbienceVariant &&
+          other.id == this.id &&
+          other.ambienceId == this.ambienceId &&
+          other.name == this.name &&
+          other.referenceAudioFileId == this.referenceAudioFileId &&
+          other.conditions == this.conditions);
+}
+
+class AmbienceVariantsCompanion extends UpdateCompanion<AmbienceVariant> {
+  final Value<String> id;
+  final Value<String> ambienceId;
+  final Value<String> name;
+  final Value<String?> referenceAudioFileId;
+  final Value<String> conditions;
+  final Value<int> rowid;
+  const AmbienceVariantsCompanion({
+    this.id = const Value.absent(),
+    this.ambienceId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.referenceAudioFileId = const Value.absent(),
+    this.conditions = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AmbienceVariantsCompanion.insert({
+    required String id,
+    required String ambienceId,
+    required String name,
+    this.referenceAudioFileId = const Value.absent(),
+    this.conditions = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       ambienceId = Value(ambienceId),
+       name = Value(name);
+  static Insertable<AmbienceVariant> custom({
+    Expression<String>? id,
+    Expression<String>? ambienceId,
+    Expression<String>? name,
+    Expression<String>? referenceAudioFileId,
+    Expression<String>? conditions,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (ambienceId != null) 'ambience_id': ambienceId,
+      if (name != null) 'name': name,
+      if (referenceAudioFileId != null)
+        'reference_audio_file_id': referenceAudioFileId,
+      if (conditions != null) 'conditions': conditions,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AmbienceVariantsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? ambienceId,
+    Value<String>? name,
+    Value<String?>? referenceAudioFileId,
+    Value<String>? conditions,
+    Value<int>? rowid,
+  }) {
+    return AmbienceVariantsCompanion(
+      id: id ?? this.id,
+      ambienceId: ambienceId ?? this.ambienceId,
+      name: name ?? this.name,
+      referenceAudioFileId: referenceAudioFileId ?? this.referenceAudioFileId,
+      conditions: conditions ?? this.conditions,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (ambienceId.present) {
+      map['ambience_id'] = Variable<String>(ambienceId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (referenceAudioFileId.present) {
+      map['reference_audio_file_id'] = Variable<String>(
+        referenceAudioFileId.value,
+      );
+    }
+    if (conditions.present) {
+      map['conditions'] = Variable<String>(conditions.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AmbienceVariantsCompanion(')
+          ..write('id: $id, ')
+          ..write('ambienceId: $ambienceId, ')
+          ..write('name: $name, ')
+          ..write('referenceAudioFileId: $referenceAudioFileId, ')
+          ..write('conditions: $conditions, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MusicCuesTable extends MusicCues
+    with TableInfo<$MusicCuesTable, MusicCue> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MusicCuesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _audioFileIdMeta = const VerificationMeta(
+    'audioFileId',
+  );
+  @override
+  late final GeneratedColumn<String> audioFileId = GeneratedColumn<String>(
+    'audio_file_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _moodMeta = const VerificationMeta('mood');
+  @override
+  late final GeneratedColumn<String> mood = GeneratedColumn<String>(
+    'mood',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bpmMeta = const VerificationMeta('bpm');
+  @override
+  late final GeneratedColumn<double> bpm = GeneratedColumn<double>(
+    'bpm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _musicalKeyMeta = const VerificationMeta(
+    'musicalKey',
+  );
+  @override
+  late final GeneratedColumn<String> musicalKey = GeneratedColumn<String>(
+    'musical_key',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _loopableMeta = const VerificationMeta(
+    'loopable',
+  );
+  @override
+  late final GeneratedColumn<bool> loopable = GeneratedColumn<bool>(
+    'loopable',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("loopable" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    assetId,
+    projectId,
+    audioFileId,
+    name,
+    mood,
+    bpm,
+    musicalKey,
+    description,
+    loopable,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'music_cues';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MusicCue> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('audio_file_id')) {
+      context.handle(
+        _audioFileIdMeta,
+        audioFileId.isAcceptableOrUnknown(
+          data['audio_file_id']!,
+          _audioFileIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('mood')) {
+      context.handle(
+        _moodMeta,
+        mood.isAcceptableOrUnknown(data['mood']!, _moodMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_moodMeta);
+    }
+    if (data.containsKey('bpm')) {
+      context.handle(
+        _bpmMeta,
+        bpm.isAcceptableOrUnknown(data['bpm']!, _bpmMeta),
+      );
+    }
+    if (data.containsKey('musical_key')) {
+      context.handle(
+        _musicalKeyMeta,
+        musicalKey.isAcceptableOrUnknown(data['musical_key']!, _musicalKeyMeta),
+      );
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('loopable')) {
+      context.handle(
+        _loopableMeta,
+        loopable.isAcceptableOrUnknown(data['loopable']!, _loopableMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {assetId};
+  @override
+  MusicCue map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MusicCue(
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      audioFileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}audio_file_id'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      mood: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mood'],
+      )!,
+      bpm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}bpm'],
+      ),
+      musicalKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}musical_key'],
+      ),
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      loopable: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}loopable'],
+      )!,
+    );
+  }
+
+  @override
+  $MusicCuesTable createAlias(String alias) {
+    return $MusicCuesTable(attachedDatabase, alias);
+  }
+}
+
+class MusicCue extends DataClass implements Insertable<MusicCue> {
+  final String assetId;
+  final String projectId;
+  final String? audioFileId;
+  final String name;
+  final String mood;
+  final double? bpm;
+  final String? musicalKey;
+  final String description;
+  final bool loopable;
+  const MusicCue({
+    required this.assetId,
+    required this.projectId,
+    this.audioFileId,
+    required this.name,
+    required this.mood,
+    this.bpm,
+    this.musicalKey,
+    required this.description,
+    required this.loopable,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['asset_id'] = Variable<String>(assetId);
+    map['project_id'] = Variable<String>(projectId);
+    if (!nullToAbsent || audioFileId != null) {
+      map['audio_file_id'] = Variable<String>(audioFileId);
+    }
+    map['name'] = Variable<String>(name);
+    map['mood'] = Variable<String>(mood);
+    if (!nullToAbsent || bpm != null) {
+      map['bpm'] = Variable<double>(bpm);
+    }
+    if (!nullToAbsent || musicalKey != null) {
+      map['musical_key'] = Variable<String>(musicalKey);
+    }
+    map['description'] = Variable<String>(description);
+    map['loopable'] = Variable<bool>(loopable);
+    return map;
+  }
+
+  MusicCuesCompanion toCompanion(bool nullToAbsent) {
+    return MusicCuesCompanion(
+      assetId: Value(assetId),
+      projectId: Value(projectId),
+      audioFileId: audioFileId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(audioFileId),
+      name: Value(name),
+      mood: Value(mood),
+      bpm: bpm == null && nullToAbsent ? const Value.absent() : Value(bpm),
+      musicalKey: musicalKey == null && nullToAbsent
+          ? const Value.absent()
+          : Value(musicalKey),
+      description: Value(description),
+      loopable: Value(loopable),
+    );
+  }
+
+  factory MusicCue.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MusicCue(
+      assetId: serializer.fromJson<String>(json['assetId']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      audioFileId: serializer.fromJson<String?>(json['audioFileId']),
+      name: serializer.fromJson<String>(json['name']),
+      mood: serializer.fromJson<String>(json['mood']),
+      bpm: serializer.fromJson<double?>(json['bpm']),
+      musicalKey: serializer.fromJson<String?>(json['musicalKey']),
+      description: serializer.fromJson<String>(json['description']),
+      loopable: serializer.fromJson<bool>(json['loopable']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'assetId': serializer.toJson<String>(assetId),
+      'projectId': serializer.toJson<String>(projectId),
+      'audioFileId': serializer.toJson<String?>(audioFileId),
+      'name': serializer.toJson<String>(name),
+      'mood': serializer.toJson<String>(mood),
+      'bpm': serializer.toJson<double?>(bpm),
+      'musicalKey': serializer.toJson<String?>(musicalKey),
+      'description': serializer.toJson<String>(description),
+      'loopable': serializer.toJson<bool>(loopable),
+    };
+  }
+
+  MusicCue copyWith({
+    String? assetId,
+    String? projectId,
+    Value<String?> audioFileId = const Value.absent(),
+    String? name,
+    String? mood,
+    Value<double?> bpm = const Value.absent(),
+    Value<String?> musicalKey = const Value.absent(),
+    String? description,
+    bool? loopable,
+  }) => MusicCue(
+    assetId: assetId ?? this.assetId,
+    projectId: projectId ?? this.projectId,
+    audioFileId: audioFileId.present ? audioFileId.value : this.audioFileId,
+    name: name ?? this.name,
+    mood: mood ?? this.mood,
+    bpm: bpm.present ? bpm.value : this.bpm,
+    musicalKey: musicalKey.present ? musicalKey.value : this.musicalKey,
+    description: description ?? this.description,
+    loopable: loopable ?? this.loopable,
+  );
+  MusicCue copyWithCompanion(MusicCuesCompanion data) {
+    return MusicCue(
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      audioFileId: data.audioFileId.present
+          ? data.audioFileId.value
+          : this.audioFileId,
+      name: data.name.present ? data.name.value : this.name,
+      mood: data.mood.present ? data.mood.value : this.mood,
+      bpm: data.bpm.present ? data.bpm.value : this.bpm,
+      musicalKey: data.musicalKey.present
+          ? data.musicalKey.value
+          : this.musicalKey,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      loopable: data.loopable.present ? data.loopable.value : this.loopable,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MusicCue(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('name: $name, ')
+          ..write('mood: $mood, ')
+          ..write('bpm: $bpm, ')
+          ..write('musicalKey: $musicalKey, ')
+          ..write('description: $description, ')
+          ..write('loopable: $loopable')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    assetId,
+    projectId,
+    audioFileId,
+    name,
+    mood,
+    bpm,
+    musicalKey,
+    description,
+    loopable,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MusicCue &&
+          other.assetId == this.assetId &&
+          other.projectId == this.projectId &&
+          other.audioFileId == this.audioFileId &&
+          other.name == this.name &&
+          other.mood == this.mood &&
+          other.bpm == this.bpm &&
+          other.musicalKey == this.musicalKey &&
+          other.description == this.description &&
+          other.loopable == this.loopable);
+}
+
+class MusicCuesCompanion extends UpdateCompanion<MusicCue> {
+  final Value<String> assetId;
+  final Value<String> projectId;
+  final Value<String?> audioFileId;
+  final Value<String> name;
+  final Value<String> mood;
+  final Value<double?> bpm;
+  final Value<String?> musicalKey;
+  final Value<String> description;
+  final Value<bool> loopable;
+  final Value<int> rowid;
+  const MusicCuesCompanion({
+    this.assetId = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.audioFileId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.mood = const Value.absent(),
+    this.bpm = const Value.absent(),
+    this.musicalKey = const Value.absent(),
+    this.description = const Value.absent(),
+    this.loopable = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MusicCuesCompanion.insert({
+    required String assetId,
+    required String projectId,
+    this.audioFileId = const Value.absent(),
+    required String name,
+    required String mood,
+    this.bpm = const Value.absent(),
+    this.musicalKey = const Value.absent(),
+    this.description = const Value.absent(),
+    this.loopable = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : assetId = Value(assetId),
+       projectId = Value(projectId),
+       name = Value(name),
+       mood = Value(mood);
+  static Insertable<MusicCue> custom({
+    Expression<String>? assetId,
+    Expression<String>? projectId,
+    Expression<String>? audioFileId,
+    Expression<String>? name,
+    Expression<String>? mood,
+    Expression<double>? bpm,
+    Expression<String>? musicalKey,
+    Expression<String>? description,
+    Expression<bool>? loopable,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (assetId != null) 'asset_id': assetId,
+      if (projectId != null) 'project_id': projectId,
+      if (audioFileId != null) 'audio_file_id': audioFileId,
+      if (name != null) 'name': name,
+      if (mood != null) 'mood': mood,
+      if (bpm != null) 'bpm': bpm,
+      if (musicalKey != null) 'musical_key': musicalKey,
+      if (description != null) 'description': description,
+      if (loopable != null) 'loopable': loopable,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MusicCuesCompanion copyWith({
+    Value<String>? assetId,
+    Value<String>? projectId,
+    Value<String?>? audioFileId,
+    Value<String>? name,
+    Value<String>? mood,
+    Value<double?>? bpm,
+    Value<String?>? musicalKey,
+    Value<String>? description,
+    Value<bool>? loopable,
+    Value<int>? rowid,
+  }) {
+    return MusicCuesCompanion(
+      assetId: assetId ?? this.assetId,
+      projectId: projectId ?? this.projectId,
+      audioFileId: audioFileId ?? this.audioFileId,
+      name: name ?? this.name,
+      mood: mood ?? this.mood,
+      bpm: bpm ?? this.bpm,
+      musicalKey: musicalKey ?? this.musicalKey,
+      description: description ?? this.description,
+      loopable: loopable ?? this.loopable,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (audioFileId.present) {
+      map['audio_file_id'] = Variable<String>(audioFileId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (mood.present) {
+      map['mood'] = Variable<String>(mood.value);
+    }
+    if (bpm.present) {
+      map['bpm'] = Variable<double>(bpm.value);
+    }
+    if (musicalKey.present) {
+      map['musical_key'] = Variable<String>(musicalKey.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (loopable.present) {
+      map['loopable'] = Variable<bool>(loopable.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MusicCuesCompanion(')
+          ..write('assetId: $assetId, ')
+          ..write('projectId: $projectId, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('name: $name, ')
+          ..write('mood: $mood, ')
+          ..write('bpm: $bpm, ')
+          ..write('musicalKey: $musicalKey, ')
+          ..write('description: $description, ')
+          ..write('loopable: $loopable, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MusicSectionsTable extends MusicSections
+    with TableInfo<$MusicSectionsTable, MusicSection> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MusicSectionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _musicIdMeta = const VerificationMeta(
+    'musicId',
+  );
+  @override
+  late final GeneratedColumn<String> musicId = GeneratedColumn<String>(
+    'music_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startSecondsMeta = const VerificationMeta(
+    'startSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> startSeconds = GeneratedColumn<double>(
+    'start_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endSecondsMeta = const VerificationMeta(
+    'endSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> endSeconds = GeneratedColumn<double>(
+    'end_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _moodMeta = const VerificationMeta('mood');
+  @override
+  late final GeneratedColumn<String> mood = GeneratedColumn<String>(
+    'mood',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    musicId,
+    name,
+    startSeconds,
+    endSeconds,
+    mood,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'music_sections';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MusicSection> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('music_id')) {
+      context.handle(
+        _musicIdMeta,
+        musicId.isAcceptableOrUnknown(data['music_id']!, _musicIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_musicIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('start_seconds')) {
+      context.handle(
+        _startSecondsMeta,
+        startSeconds.isAcceptableOrUnknown(
+          data['start_seconds']!,
+          _startSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_startSecondsMeta);
+    }
+    if (data.containsKey('end_seconds')) {
+      context.handle(
+        _endSecondsMeta,
+        endSeconds.isAcceptableOrUnknown(data['end_seconds']!, _endSecondsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_endSecondsMeta);
+    }
+    if (data.containsKey('mood')) {
+      context.handle(
+        _moodMeta,
+        mood.isAcceptableOrUnknown(data['mood']!, _moodMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MusicSection map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MusicSection(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      musicId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}music_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      startSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}start_seconds'],
+      )!,
+      endSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}end_seconds'],
+      )!,
+      mood: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mood'],
+      ),
+    );
+  }
+
+  @override
+  $MusicSectionsTable createAlias(String alias) {
+    return $MusicSectionsTable(attachedDatabase, alias);
+  }
+}
+
+class MusicSection extends DataClass implements Insertable<MusicSection> {
+  final String id;
+  final String musicId;
+  final String name;
+  final double startSeconds;
+  final double endSeconds;
+  final String? mood;
+  const MusicSection({
+    required this.id,
+    required this.musicId,
+    required this.name,
+    required this.startSeconds,
+    required this.endSeconds,
+    this.mood,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['music_id'] = Variable<String>(musicId);
+    map['name'] = Variable<String>(name);
+    map['start_seconds'] = Variable<double>(startSeconds);
+    map['end_seconds'] = Variable<double>(endSeconds);
+    if (!nullToAbsent || mood != null) {
+      map['mood'] = Variable<String>(mood);
+    }
+    return map;
+  }
+
+  MusicSectionsCompanion toCompanion(bool nullToAbsent) {
+    return MusicSectionsCompanion(
+      id: Value(id),
+      musicId: Value(musicId),
+      name: Value(name),
+      startSeconds: Value(startSeconds),
+      endSeconds: Value(endSeconds),
+      mood: mood == null && nullToAbsent ? const Value.absent() : Value(mood),
+    );
+  }
+
+  factory MusicSection.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MusicSection(
+      id: serializer.fromJson<String>(json['id']),
+      musicId: serializer.fromJson<String>(json['musicId']),
+      name: serializer.fromJson<String>(json['name']),
+      startSeconds: serializer.fromJson<double>(json['startSeconds']),
+      endSeconds: serializer.fromJson<double>(json['endSeconds']),
+      mood: serializer.fromJson<String?>(json['mood']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'musicId': serializer.toJson<String>(musicId),
+      'name': serializer.toJson<String>(name),
+      'startSeconds': serializer.toJson<double>(startSeconds),
+      'endSeconds': serializer.toJson<double>(endSeconds),
+      'mood': serializer.toJson<String?>(mood),
+    };
+  }
+
+  MusicSection copyWith({
+    String? id,
+    String? musicId,
+    String? name,
+    double? startSeconds,
+    double? endSeconds,
+    Value<String?> mood = const Value.absent(),
+  }) => MusicSection(
+    id: id ?? this.id,
+    musicId: musicId ?? this.musicId,
+    name: name ?? this.name,
+    startSeconds: startSeconds ?? this.startSeconds,
+    endSeconds: endSeconds ?? this.endSeconds,
+    mood: mood.present ? mood.value : this.mood,
+  );
+  MusicSection copyWithCompanion(MusicSectionsCompanion data) {
+    return MusicSection(
+      id: data.id.present ? data.id.value : this.id,
+      musicId: data.musicId.present ? data.musicId.value : this.musicId,
+      name: data.name.present ? data.name.value : this.name,
+      startSeconds: data.startSeconds.present
+          ? data.startSeconds.value
+          : this.startSeconds,
+      endSeconds: data.endSeconds.present
+          ? data.endSeconds.value
+          : this.endSeconds,
+      mood: data.mood.present ? data.mood.value : this.mood,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MusicSection(')
+          ..write('id: $id, ')
+          ..write('musicId: $musicId, ')
+          ..write('name: $name, ')
+          ..write('startSeconds: $startSeconds, ')
+          ..write('endSeconds: $endSeconds, ')
+          ..write('mood: $mood')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, musicId, name, startSeconds, endSeconds, mood);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MusicSection &&
+          other.id == this.id &&
+          other.musicId == this.musicId &&
+          other.name == this.name &&
+          other.startSeconds == this.startSeconds &&
+          other.endSeconds == this.endSeconds &&
+          other.mood == this.mood);
+}
+
+class MusicSectionsCompanion extends UpdateCompanion<MusicSection> {
+  final Value<String> id;
+  final Value<String> musicId;
+  final Value<String> name;
+  final Value<double> startSeconds;
+  final Value<double> endSeconds;
+  final Value<String?> mood;
+  final Value<int> rowid;
+  const MusicSectionsCompanion({
+    this.id = const Value.absent(),
+    this.musicId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.startSeconds = const Value.absent(),
+    this.endSeconds = const Value.absent(),
+    this.mood = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MusicSectionsCompanion.insert({
+    required String id,
+    required String musicId,
+    required String name,
+    required double startSeconds,
+    required double endSeconds,
+    this.mood = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       musicId = Value(musicId),
+       name = Value(name),
+       startSeconds = Value(startSeconds),
+       endSeconds = Value(endSeconds);
+  static Insertable<MusicSection> custom({
+    Expression<String>? id,
+    Expression<String>? musicId,
+    Expression<String>? name,
+    Expression<double>? startSeconds,
+    Expression<double>? endSeconds,
+    Expression<String>? mood,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (musicId != null) 'music_id': musicId,
+      if (name != null) 'name': name,
+      if (startSeconds != null) 'start_seconds': startSeconds,
+      if (endSeconds != null) 'end_seconds': endSeconds,
+      if (mood != null) 'mood': mood,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MusicSectionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? musicId,
+    Value<String>? name,
+    Value<double>? startSeconds,
+    Value<double>? endSeconds,
+    Value<String?>? mood,
+    Value<int>? rowid,
+  }) {
+    return MusicSectionsCompanion(
+      id: id ?? this.id,
+      musicId: musicId ?? this.musicId,
+      name: name ?? this.name,
+      startSeconds: startSeconds ?? this.startSeconds,
+      endSeconds: endSeconds ?? this.endSeconds,
+      mood: mood ?? this.mood,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (musicId.present) {
+      map['music_id'] = Variable<String>(musicId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (startSeconds.present) {
+      map['start_seconds'] = Variable<double>(startSeconds.value);
+    }
+    if (endSeconds.present) {
+      map['end_seconds'] = Variable<double>(endSeconds.value);
+    }
+    if (mood.present) {
+      map['mood'] = Variable<String>(mood.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MusicSectionsCompanion(')
+          ..write('id: $id, ')
+          ..write('musicId: $musicId, ')
+          ..write('name: $name, ')
+          ..write('startSeconds: $startSeconds, ')
+          ..write('endSeconds: $endSeconds, ')
+          ..write('mood: $mood, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VoiceProfilesTable extends VoiceProfiles
+    with TableInfo<$VoiceProfilesTable, VoiceProfile> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VoiceProfilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _characterIdMeta = const VerificationMeta(
+    'characterId',
+  );
+  @override
+  late final GeneratedColumn<String> characterId = GeneratedColumn<String>(
+    'character_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _displayNameMeta = const VerificationMeta(
+    'displayName',
+  );
+  @override
+  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
+    'display_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _languageMeta = const VerificationMeta(
+    'language',
+  );
+  @override
+  late final GeneratedColumn<String> language = GeneratedColumn<String>(
+    'language',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _vocalTextureMeta = const VerificationMeta(
+    'vocalTexture',
+  );
+  @override
+  late final GeneratedColumn<String> vocalTexture = GeneratedColumn<String>(
+    'vocal_texture',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deliveryNotesMeta = const VerificationMeta(
+    'deliveryNotes',
+  );
+  @override
+  late final GeneratedColumn<String> deliveryNotes = GeneratedColumn<String>(
+    'delivery_notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    characterId,
+    displayName,
+    language,
+    vocalTexture,
+    deliveryNotes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'voice_profiles';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VoiceProfile> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('character_id')) {
+      context.handle(
+        _characterIdMeta,
+        characterId.isAcceptableOrUnknown(
+          data['character_id']!,
+          _characterIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_characterIdMeta);
+    }
+    if (data.containsKey('display_name')) {
+      context.handle(
+        _displayNameMeta,
+        displayName.isAcceptableOrUnknown(
+          data['display_name']!,
+          _displayNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayNameMeta);
+    }
+    if (data.containsKey('language')) {
+      context.handle(
+        _languageMeta,
+        language.isAcceptableOrUnknown(data['language']!, _languageMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_languageMeta);
+    }
+    if (data.containsKey('vocal_texture')) {
+      context.handle(
+        _vocalTextureMeta,
+        vocalTexture.isAcceptableOrUnknown(
+          data['vocal_texture']!,
+          _vocalTextureMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_vocalTextureMeta);
+    }
+    if (data.containsKey('delivery_notes')) {
+      context.handle(
+        _deliveryNotesMeta,
+        deliveryNotes.isAcceptableOrUnknown(
+          data['delivery_notes']!,
+          _deliveryNotesMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_deliveryNotesMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {characterId};
+  @override
+  VoiceProfile map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VoiceProfile(
+      characterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}character_id'],
+      )!,
+      displayName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}display_name'],
+      )!,
+      language: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}language'],
+      )!,
+      vocalTexture: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}vocal_texture'],
+      )!,
+      deliveryNotes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}delivery_notes'],
+      )!,
+    );
+  }
+
+  @override
+  $VoiceProfilesTable createAlias(String alias) {
+    return $VoiceProfilesTable(attachedDatabase, alias);
+  }
+}
+
+class VoiceProfile extends DataClass implements Insertable<VoiceProfile> {
+  final String characterId;
+  final String displayName;
+  final String language;
+  final String vocalTexture;
+  final String deliveryNotes;
+  const VoiceProfile({
+    required this.characterId,
+    required this.displayName,
+    required this.language,
+    required this.vocalTexture,
+    required this.deliveryNotes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['character_id'] = Variable<String>(characterId);
+    map['display_name'] = Variable<String>(displayName);
+    map['language'] = Variable<String>(language);
+    map['vocal_texture'] = Variable<String>(vocalTexture);
+    map['delivery_notes'] = Variable<String>(deliveryNotes);
+    return map;
+  }
+
+  VoiceProfilesCompanion toCompanion(bool nullToAbsent) {
+    return VoiceProfilesCompanion(
+      characterId: Value(characterId),
+      displayName: Value(displayName),
+      language: Value(language),
+      vocalTexture: Value(vocalTexture),
+      deliveryNotes: Value(deliveryNotes),
+    );
+  }
+
+  factory VoiceProfile.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VoiceProfile(
+      characterId: serializer.fromJson<String>(json['characterId']),
+      displayName: serializer.fromJson<String>(json['displayName']),
+      language: serializer.fromJson<String>(json['language']),
+      vocalTexture: serializer.fromJson<String>(json['vocalTexture']),
+      deliveryNotes: serializer.fromJson<String>(json['deliveryNotes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'characterId': serializer.toJson<String>(characterId),
+      'displayName': serializer.toJson<String>(displayName),
+      'language': serializer.toJson<String>(language),
+      'vocalTexture': serializer.toJson<String>(vocalTexture),
+      'deliveryNotes': serializer.toJson<String>(deliveryNotes),
+    };
+  }
+
+  VoiceProfile copyWith({
+    String? characterId,
+    String? displayName,
+    String? language,
+    String? vocalTexture,
+    String? deliveryNotes,
+  }) => VoiceProfile(
+    characterId: characterId ?? this.characterId,
+    displayName: displayName ?? this.displayName,
+    language: language ?? this.language,
+    vocalTexture: vocalTexture ?? this.vocalTexture,
+    deliveryNotes: deliveryNotes ?? this.deliveryNotes,
+  );
+  VoiceProfile copyWithCompanion(VoiceProfilesCompanion data) {
+    return VoiceProfile(
+      characterId: data.characterId.present
+          ? data.characterId.value
+          : this.characterId,
+      displayName: data.displayName.present
+          ? data.displayName.value
+          : this.displayName,
+      language: data.language.present ? data.language.value : this.language,
+      vocalTexture: data.vocalTexture.present
+          ? data.vocalTexture.value
+          : this.vocalTexture,
+      deliveryNotes: data.deliveryNotes.present
+          ? data.deliveryNotes.value
+          : this.deliveryNotes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VoiceProfile(')
+          ..write('characterId: $characterId, ')
+          ..write('displayName: $displayName, ')
+          ..write('language: $language, ')
+          ..write('vocalTexture: $vocalTexture, ')
+          ..write('deliveryNotes: $deliveryNotes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    characterId,
+    displayName,
+    language,
+    vocalTexture,
+    deliveryNotes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VoiceProfile &&
+          other.characterId == this.characterId &&
+          other.displayName == this.displayName &&
+          other.language == this.language &&
+          other.vocalTexture == this.vocalTexture &&
+          other.deliveryNotes == this.deliveryNotes);
+}
+
+class VoiceProfilesCompanion extends UpdateCompanion<VoiceProfile> {
+  final Value<String> characterId;
+  final Value<String> displayName;
+  final Value<String> language;
+  final Value<String> vocalTexture;
+  final Value<String> deliveryNotes;
+  final Value<int> rowid;
+  const VoiceProfilesCompanion({
+    this.characterId = const Value.absent(),
+    this.displayName = const Value.absent(),
+    this.language = const Value.absent(),
+    this.vocalTexture = const Value.absent(),
+    this.deliveryNotes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VoiceProfilesCompanion.insert({
+    required String characterId,
+    required String displayName,
+    required String language,
+    required String vocalTexture,
+    required String deliveryNotes,
+    this.rowid = const Value.absent(),
+  }) : characterId = Value(characterId),
+       displayName = Value(displayName),
+       language = Value(language),
+       vocalTexture = Value(vocalTexture),
+       deliveryNotes = Value(deliveryNotes);
+  static Insertable<VoiceProfile> custom({
+    Expression<String>? characterId,
+    Expression<String>? displayName,
+    Expression<String>? language,
+    Expression<String>? vocalTexture,
+    Expression<String>? deliveryNotes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (characterId != null) 'character_id': characterId,
+      if (displayName != null) 'display_name': displayName,
+      if (language != null) 'language': language,
+      if (vocalTexture != null) 'vocal_texture': vocalTexture,
+      if (deliveryNotes != null) 'delivery_notes': deliveryNotes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VoiceProfilesCompanion copyWith({
+    Value<String>? characterId,
+    Value<String>? displayName,
+    Value<String>? language,
+    Value<String>? vocalTexture,
+    Value<String>? deliveryNotes,
+    Value<int>? rowid,
+  }) {
+    return VoiceProfilesCompanion(
+      characterId: characterId ?? this.characterId,
+      displayName: displayName ?? this.displayName,
+      language: language ?? this.language,
+      vocalTexture: vocalTexture ?? this.vocalTexture,
+      deliveryNotes: deliveryNotes ?? this.deliveryNotes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (characterId.present) {
+      map['character_id'] = Variable<String>(characterId.value);
+    }
+    if (displayName.present) {
+      map['display_name'] = Variable<String>(displayName.value);
+    }
+    if (language.present) {
+      map['language'] = Variable<String>(language.value);
+    }
+    if (vocalTexture.present) {
+      map['vocal_texture'] = Variable<String>(vocalTexture.value);
+    }
+    if (deliveryNotes.present) {
+      map['delivery_notes'] = Variable<String>(deliveryNotes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VoiceProfilesCompanion(')
+          ..write('characterId: $characterId, ')
+          ..write('displayName: $displayName, ')
+          ..write('language: $language, ')
+          ..write('vocalTexture: $vocalTexture, ')
+          ..write('deliveryNotes: $deliveryNotes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VoiceReferencesTable extends VoiceReferences
+    with TableInfo<$VoiceReferencesTable, VoiceReference> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VoiceReferencesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _characterIdMeta = const VerificationMeta(
+    'characterId',
+  );
+  @override
+  late final GeneratedColumn<String> characterId = GeneratedColumn<String>(
+    'character_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _audioFileIdMeta = const VerificationMeta(
+    'audioFileId',
+  );
+  @override
+  late final GeneratedColumn<String> audioFileId = GeneratedColumn<String>(
+    'audio_file_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _primaryMeta = const VerificationMeta(
+    'primary',
+  );
+  @override
+  late final GeneratedColumn<bool> primary = GeneratedColumn<bool>(
+    'primary',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("primary" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    characterId,
+    audioFileId,
+    name,
+    primary,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'voice_references';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VoiceReference> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('character_id')) {
+      context.handle(
+        _characterIdMeta,
+        characterId.isAcceptableOrUnknown(
+          data['character_id']!,
+          _characterIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_characterIdMeta);
+    }
+    if (data.containsKey('audio_file_id')) {
+      context.handle(
+        _audioFileIdMeta,
+        audioFileId.isAcceptableOrUnknown(
+          data['audio_file_id']!,
+          _audioFileIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_audioFileIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('primary')) {
+      context.handle(
+        _primaryMeta,
+        primary.isAcceptableOrUnknown(data['primary']!, _primaryMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VoiceReference map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VoiceReference(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      characterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}character_id'],
+      )!,
+      audioFileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}audio_file_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      primary: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}primary'],
+      )!,
+    );
+  }
+
+  @override
+  $VoiceReferencesTable createAlias(String alias) {
+    return $VoiceReferencesTable(attachedDatabase, alias);
+  }
+}
+
+class VoiceReference extends DataClass implements Insertable<VoiceReference> {
+  final String id;
+  final String characterId;
+  final String audioFileId;
+  final String name;
+  final bool primary;
+  const VoiceReference({
+    required this.id,
+    required this.characterId,
+    required this.audioFileId,
+    required this.name,
+    required this.primary,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['character_id'] = Variable<String>(characterId);
+    map['audio_file_id'] = Variable<String>(audioFileId);
+    map['name'] = Variable<String>(name);
+    map['primary'] = Variable<bool>(primary);
+    return map;
+  }
+
+  VoiceReferencesCompanion toCompanion(bool nullToAbsent) {
+    return VoiceReferencesCompanion(
+      id: Value(id),
+      characterId: Value(characterId),
+      audioFileId: Value(audioFileId),
+      name: Value(name),
+      primary: Value(primary),
+    );
+  }
+
+  factory VoiceReference.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VoiceReference(
+      id: serializer.fromJson<String>(json['id']),
+      characterId: serializer.fromJson<String>(json['characterId']),
+      audioFileId: serializer.fromJson<String>(json['audioFileId']),
+      name: serializer.fromJson<String>(json['name']),
+      primary: serializer.fromJson<bool>(json['primary']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'characterId': serializer.toJson<String>(characterId),
+      'audioFileId': serializer.toJson<String>(audioFileId),
+      'name': serializer.toJson<String>(name),
+      'primary': serializer.toJson<bool>(primary),
+    };
+  }
+
+  VoiceReference copyWith({
+    String? id,
+    String? characterId,
+    String? audioFileId,
+    String? name,
+    bool? primary,
+  }) => VoiceReference(
+    id: id ?? this.id,
+    characterId: characterId ?? this.characterId,
+    audioFileId: audioFileId ?? this.audioFileId,
+    name: name ?? this.name,
+    primary: primary ?? this.primary,
+  );
+  VoiceReference copyWithCompanion(VoiceReferencesCompanion data) {
+    return VoiceReference(
+      id: data.id.present ? data.id.value : this.id,
+      characterId: data.characterId.present
+          ? data.characterId.value
+          : this.characterId,
+      audioFileId: data.audioFileId.present
+          ? data.audioFileId.value
+          : this.audioFileId,
+      name: data.name.present ? data.name.value : this.name,
+      primary: data.primary.present ? data.primary.value : this.primary,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VoiceReference(')
+          ..write('id: $id, ')
+          ..write('characterId: $characterId, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('name: $name, ')
+          ..write('primary: $primary')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, characterId, audioFileId, name, primary);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VoiceReference &&
+          other.id == this.id &&
+          other.characterId == this.characterId &&
+          other.audioFileId == this.audioFileId &&
+          other.name == this.name &&
+          other.primary == this.primary);
+}
+
+class VoiceReferencesCompanion extends UpdateCompanion<VoiceReference> {
+  final Value<String> id;
+  final Value<String> characterId;
+  final Value<String> audioFileId;
+  final Value<String> name;
+  final Value<bool> primary;
+  final Value<int> rowid;
+  const VoiceReferencesCompanion({
+    this.id = const Value.absent(),
+    this.characterId = const Value.absent(),
+    this.audioFileId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.primary = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VoiceReferencesCompanion.insert({
+    required String id,
+    required String characterId,
+    required String audioFileId,
+    required String name,
+    this.primary = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       characterId = Value(characterId),
+       audioFileId = Value(audioFileId),
+       name = Value(name);
+  static Insertable<VoiceReference> custom({
+    Expression<String>? id,
+    Expression<String>? characterId,
+    Expression<String>? audioFileId,
+    Expression<String>? name,
+    Expression<bool>? primary,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (characterId != null) 'character_id': characterId,
+      if (audioFileId != null) 'audio_file_id': audioFileId,
+      if (name != null) 'name': name,
+      if (primary != null) 'primary': primary,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VoiceReferencesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? characterId,
+    Value<String>? audioFileId,
+    Value<String>? name,
+    Value<bool>? primary,
+    Value<int>? rowid,
+  }) {
+    return VoiceReferencesCompanion(
+      id: id ?? this.id,
+      characterId: characterId ?? this.characterId,
+      audioFileId: audioFileId ?? this.audioFileId,
+      name: name ?? this.name,
+      primary: primary ?? this.primary,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (characterId.present) {
+      map['character_id'] = Variable<String>(characterId.value);
+    }
+    if (audioFileId.present) {
+      map['audio_file_id'] = Variable<String>(audioFileId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (primary.present) {
+      map['primary'] = Variable<bool>(primary.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VoiceReferencesCompanion(')
+          ..write('id: $id, ')
+          ..write('characterId: $characterId, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('name: $name, ')
+          ..write('primary: $primary, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DialogueLinesTable extends DialogueLines
+    with TableInfo<$DialogueLinesTable, DialogueLine> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DialogueLinesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sceneIdMeta = const VerificationMeta(
+    'sceneId',
+  );
+  @override
+  late final GeneratedColumn<String> sceneId = GeneratedColumn<String>(
+    'scene_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _characterIdMeta = const VerificationMeta(
+    'characterId',
+  );
+  @override
+  late final GeneratedColumn<String> characterId = GeneratedColumn<String>(
+    'character_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lineTextMeta = const VerificationMeta(
+    'lineText',
+  );
+  @override
+  late final GeneratedColumn<String> lineText = GeneratedColumn<String>(
+    'line_text',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startSecondsMeta = const VerificationMeta(
+    'startSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> startSeconds = GeneratedColumn<double>(
+    'start_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> durationSeconds = GeneratedColumn<double>(
+    'duration_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _subtitleTextMeta = const VerificationMeta(
+    'subtitleText',
+  );
+  @override
+  late final GeneratedColumn<String> subtitleText = GeneratedColumn<String>(
+    'subtitle_text',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    projectId,
+    sceneId,
+    characterId,
+    lineText,
+    startSeconds,
+    durationSeconds,
+    subtitleText,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'dialogue_lines';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DialogueLine> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('scene_id')) {
+      context.handle(
+        _sceneIdMeta,
+        sceneId.isAcceptableOrUnknown(data['scene_id']!, _sceneIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneIdMeta);
+    }
+    if (data.containsKey('character_id')) {
+      context.handle(
+        _characterIdMeta,
+        characterId.isAcceptableOrUnknown(
+          data['character_id']!,
+          _characterIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_characterIdMeta);
+    }
+    if (data.containsKey('line_text')) {
+      context.handle(
+        _lineTextMeta,
+        lineText.isAcceptableOrUnknown(data['line_text']!, _lineTextMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lineTextMeta);
+    }
+    if (data.containsKey('start_seconds')) {
+      context.handle(
+        _startSecondsMeta,
+        startSeconds.isAcceptableOrUnknown(
+          data['start_seconds']!,
+          _startSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_startSecondsMeta);
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_durationSecondsMeta);
+    }
+    if (data.containsKey('subtitle_text')) {
+      context.handle(
+        _subtitleTextMeta,
+        subtitleText.isAcceptableOrUnknown(
+          data['subtitle_text']!,
+          _subtitleTextMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_subtitleTextMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DialogueLine map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DialogueLine(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      sceneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scene_id'],
+      )!,
+      characterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}character_id'],
+      )!,
+      lineText: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}line_text'],
+      )!,
+      startSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}start_seconds'],
+      )!,
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}duration_seconds'],
+      )!,
+      subtitleText: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}subtitle_text'],
+      )!,
+    );
+  }
+
+  @override
+  $DialogueLinesTable createAlias(String alias) {
+    return $DialogueLinesTable(attachedDatabase, alias);
+  }
+}
+
+class DialogueLine extends DataClass implements Insertable<DialogueLine> {
+  final String id;
+  final String projectId;
+  final String sceneId;
+  final String characterId;
+  final String lineText;
+  final double startSeconds;
+  final double durationSeconds;
+  final String subtitleText;
+  const DialogueLine({
+    required this.id,
+    required this.projectId,
+    required this.sceneId,
+    required this.characterId,
+    required this.lineText,
+    required this.startSeconds,
+    required this.durationSeconds,
+    required this.subtitleText,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['scene_id'] = Variable<String>(sceneId);
+    map['character_id'] = Variable<String>(characterId);
+    map['line_text'] = Variable<String>(lineText);
+    map['start_seconds'] = Variable<double>(startSeconds);
+    map['duration_seconds'] = Variable<double>(durationSeconds);
+    map['subtitle_text'] = Variable<String>(subtitleText);
+    return map;
+  }
+
+  DialogueLinesCompanion toCompanion(bool nullToAbsent) {
+    return DialogueLinesCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      sceneId: Value(sceneId),
+      characterId: Value(characterId),
+      lineText: Value(lineText),
+      startSeconds: Value(startSeconds),
+      durationSeconds: Value(durationSeconds),
+      subtitleText: Value(subtitleText),
+    );
+  }
+
+  factory DialogueLine.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DialogueLine(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      sceneId: serializer.fromJson<String>(json['sceneId']),
+      characterId: serializer.fromJson<String>(json['characterId']),
+      lineText: serializer.fromJson<String>(json['lineText']),
+      startSeconds: serializer.fromJson<double>(json['startSeconds']),
+      durationSeconds: serializer.fromJson<double>(json['durationSeconds']),
+      subtitleText: serializer.fromJson<String>(json['subtitleText']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'sceneId': serializer.toJson<String>(sceneId),
+      'characterId': serializer.toJson<String>(characterId),
+      'lineText': serializer.toJson<String>(lineText),
+      'startSeconds': serializer.toJson<double>(startSeconds),
+      'durationSeconds': serializer.toJson<double>(durationSeconds),
+      'subtitleText': serializer.toJson<String>(subtitleText),
+    };
+  }
+
+  DialogueLine copyWith({
+    String? id,
+    String? projectId,
+    String? sceneId,
+    String? characterId,
+    String? lineText,
+    double? startSeconds,
+    double? durationSeconds,
+    String? subtitleText,
+  }) => DialogueLine(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    sceneId: sceneId ?? this.sceneId,
+    characterId: characterId ?? this.characterId,
+    lineText: lineText ?? this.lineText,
+    startSeconds: startSeconds ?? this.startSeconds,
+    durationSeconds: durationSeconds ?? this.durationSeconds,
+    subtitleText: subtitleText ?? this.subtitleText,
+  );
+  DialogueLine copyWithCompanion(DialogueLinesCompanion data) {
+    return DialogueLine(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      sceneId: data.sceneId.present ? data.sceneId.value : this.sceneId,
+      characterId: data.characterId.present
+          ? data.characterId.value
+          : this.characterId,
+      lineText: data.lineText.present ? data.lineText.value : this.lineText,
+      startSeconds: data.startSeconds.present
+          ? data.startSeconds.value
+          : this.startSeconds,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      subtitleText: data.subtitleText.present
+          ? data.subtitleText.value
+          : this.subtitleText,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DialogueLine(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('characterId: $characterId, ')
+          ..write('lineText: $lineText, ')
+          ..write('startSeconds: $startSeconds, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('subtitleText: $subtitleText')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    projectId,
+    sceneId,
+    characterId,
+    lineText,
+    startSeconds,
+    durationSeconds,
+    subtitleText,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DialogueLine &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.sceneId == this.sceneId &&
+          other.characterId == this.characterId &&
+          other.lineText == this.lineText &&
+          other.startSeconds == this.startSeconds &&
+          other.durationSeconds == this.durationSeconds &&
+          other.subtitleText == this.subtitleText);
+}
+
+class DialogueLinesCompanion extends UpdateCompanion<DialogueLine> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> sceneId;
+  final Value<String> characterId;
+  final Value<String> lineText;
+  final Value<double> startSeconds;
+  final Value<double> durationSeconds;
+  final Value<String> subtitleText;
+  final Value<int> rowid;
+  const DialogueLinesCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.sceneId = const Value.absent(),
+    this.characterId = const Value.absent(),
+    this.lineText = const Value.absent(),
+    this.startSeconds = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.subtitleText = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DialogueLinesCompanion.insert({
+    required String id,
+    required String projectId,
+    required String sceneId,
+    required String characterId,
+    required String lineText,
+    required double startSeconds,
+    required double durationSeconds,
+    required String subtitleText,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       sceneId = Value(sceneId),
+       characterId = Value(characterId),
+       lineText = Value(lineText),
+       startSeconds = Value(startSeconds),
+       durationSeconds = Value(durationSeconds),
+       subtitleText = Value(subtitleText);
+  static Insertable<DialogueLine> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? sceneId,
+    Expression<String>? characterId,
+    Expression<String>? lineText,
+    Expression<double>? startSeconds,
+    Expression<double>? durationSeconds,
+    Expression<String>? subtitleText,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (sceneId != null) 'scene_id': sceneId,
+      if (characterId != null) 'character_id': characterId,
+      if (lineText != null) 'line_text': lineText,
+      if (startSeconds != null) 'start_seconds': startSeconds,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (subtitleText != null) 'subtitle_text': subtitleText,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DialogueLinesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? sceneId,
+    Value<String>? characterId,
+    Value<String>? lineText,
+    Value<double>? startSeconds,
+    Value<double>? durationSeconds,
+    Value<String>? subtitleText,
+    Value<int>? rowid,
+  }) {
+    return DialogueLinesCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      sceneId: sceneId ?? this.sceneId,
+      characterId: characterId ?? this.characterId,
+      lineText: lineText ?? this.lineText,
+      startSeconds: startSeconds ?? this.startSeconds,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      subtitleText: subtitleText ?? this.subtitleText,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (sceneId.present) {
+      map['scene_id'] = Variable<String>(sceneId.value);
+    }
+    if (characterId.present) {
+      map['character_id'] = Variable<String>(characterId.value);
+    }
+    if (lineText.present) {
+      map['line_text'] = Variable<String>(lineText.value);
+    }
+    if (startSeconds.present) {
+      map['start_seconds'] = Variable<double>(startSeconds.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<double>(durationSeconds.value);
+    }
+    if (subtitleText.present) {
+      map['subtitle_text'] = Variable<String>(subtitleText.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DialogueLinesCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('characterId: $characterId, ')
+          ..write('lineText: $lineText, ')
+          ..write('startSeconds: $startSeconds, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('subtitleText: $subtitleText, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DialogueTakesTable extends DialogueTakes
+    with TableInfo<$DialogueTakesTable, DialogueTake> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DialogueTakesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lineIdMeta = const VerificationMeta('lineId');
+  @override
+  late final GeneratedColumn<String> lineId = GeneratedColumn<String>(
+    'line_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _audioFileIdMeta = const VerificationMeta(
+    'audioFileId',
+  );
+  @override
+  late final GeneratedColumn<String> audioFileId = GeneratedColumn<String>(
+    'audio_file_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _selectedMeta = const VerificationMeta(
+    'selected',
+  );
+  @override
+  late final GeneratedColumn<bool> selected = GeneratedColumn<bool>(
+    'selected',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("selected" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    lineId,
+    audioFileId,
+    label,
+    selected,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'dialogue_takes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DialogueTake> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('line_id')) {
+      context.handle(
+        _lineIdMeta,
+        lineId.isAcceptableOrUnknown(data['line_id']!, _lineIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lineIdMeta);
+    }
+    if (data.containsKey('audio_file_id')) {
+      context.handle(
+        _audioFileIdMeta,
+        audioFileId.isAcceptableOrUnknown(
+          data['audio_file_id']!,
+          _audioFileIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_audioFileIdMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('selected')) {
+      context.handle(
+        _selectedMeta,
+        selected.isAcceptableOrUnknown(data['selected']!, _selectedMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DialogueTake map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DialogueTake(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      lineId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}line_id'],
+      )!,
+      audioFileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}audio_file_id'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      selected: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}selected'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+    );
+  }
+
+  @override
+  $DialogueTakesTable createAlias(String alias) {
+    return $DialogueTakesTable(attachedDatabase, alias);
+  }
+}
+
+class DialogueTake extends DataClass implements Insertable<DialogueTake> {
+  final String id;
+  final String lineId;
+  final String audioFileId;
+  final String label;
+  final bool selected;
+  final String notes;
+  const DialogueTake({
+    required this.id,
+    required this.lineId,
+    required this.audioFileId,
+    required this.label,
+    required this.selected,
+    required this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['line_id'] = Variable<String>(lineId);
+    map['audio_file_id'] = Variable<String>(audioFileId);
+    map['label'] = Variable<String>(label);
+    map['selected'] = Variable<bool>(selected);
+    map['notes'] = Variable<String>(notes);
+    return map;
+  }
+
+  DialogueTakesCompanion toCompanion(bool nullToAbsent) {
+    return DialogueTakesCompanion(
+      id: Value(id),
+      lineId: Value(lineId),
+      audioFileId: Value(audioFileId),
+      label: Value(label),
+      selected: Value(selected),
+      notes: Value(notes),
+    );
+  }
+
+  factory DialogueTake.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DialogueTake(
+      id: serializer.fromJson<String>(json['id']),
+      lineId: serializer.fromJson<String>(json['lineId']),
+      audioFileId: serializer.fromJson<String>(json['audioFileId']),
+      label: serializer.fromJson<String>(json['label']),
+      selected: serializer.fromJson<bool>(json['selected']),
+      notes: serializer.fromJson<String>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'lineId': serializer.toJson<String>(lineId),
+      'audioFileId': serializer.toJson<String>(audioFileId),
+      'label': serializer.toJson<String>(label),
+      'selected': serializer.toJson<bool>(selected),
+      'notes': serializer.toJson<String>(notes),
+    };
+  }
+
+  DialogueTake copyWith({
+    String? id,
+    String? lineId,
+    String? audioFileId,
+    String? label,
+    bool? selected,
+    String? notes,
+  }) => DialogueTake(
+    id: id ?? this.id,
+    lineId: lineId ?? this.lineId,
+    audioFileId: audioFileId ?? this.audioFileId,
+    label: label ?? this.label,
+    selected: selected ?? this.selected,
+    notes: notes ?? this.notes,
+  );
+  DialogueTake copyWithCompanion(DialogueTakesCompanion data) {
+    return DialogueTake(
+      id: data.id.present ? data.id.value : this.id,
+      lineId: data.lineId.present ? data.lineId.value : this.lineId,
+      audioFileId: data.audioFileId.present
+          ? data.audioFileId.value
+          : this.audioFileId,
+      label: data.label.present ? data.label.value : this.label,
+      selected: data.selected.present ? data.selected.value : this.selected,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DialogueTake(')
+          ..write('id: $id, ')
+          ..write('lineId: $lineId, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('label: $label, ')
+          ..write('selected: $selected, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, lineId, audioFileId, label, selected, notes);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DialogueTake &&
+          other.id == this.id &&
+          other.lineId == this.lineId &&
+          other.audioFileId == this.audioFileId &&
+          other.label == this.label &&
+          other.selected == this.selected &&
+          other.notes == this.notes);
+}
+
+class DialogueTakesCompanion extends UpdateCompanion<DialogueTake> {
+  final Value<String> id;
+  final Value<String> lineId;
+  final Value<String> audioFileId;
+  final Value<String> label;
+  final Value<bool> selected;
+  final Value<String> notes;
+  final Value<int> rowid;
+  const DialogueTakesCompanion({
+    this.id = const Value.absent(),
+    this.lineId = const Value.absent(),
+    this.audioFileId = const Value.absent(),
+    this.label = const Value.absent(),
+    this.selected = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DialogueTakesCompanion.insert({
+    required String id,
+    required String lineId,
+    required String audioFileId,
+    required String label,
+    this.selected = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       lineId = Value(lineId),
+       audioFileId = Value(audioFileId),
+       label = Value(label);
+  static Insertable<DialogueTake> custom({
+    Expression<String>? id,
+    Expression<String>? lineId,
+    Expression<String>? audioFileId,
+    Expression<String>? label,
+    Expression<bool>? selected,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (lineId != null) 'line_id': lineId,
+      if (audioFileId != null) 'audio_file_id': audioFileId,
+      if (label != null) 'label': label,
+      if (selected != null) 'selected': selected,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DialogueTakesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? lineId,
+    Value<String>? audioFileId,
+    Value<String>? label,
+    Value<bool>? selected,
+    Value<String>? notes,
+    Value<int>? rowid,
+  }) {
+    return DialogueTakesCompanion(
+      id: id ?? this.id,
+      lineId: lineId ?? this.lineId,
+      audioFileId: audioFileId ?? this.audioFileId,
+      label: label ?? this.label,
+      selected: selected ?? this.selected,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (lineId.present) {
+      map['line_id'] = Variable<String>(lineId.value);
+    }
+    if (audioFileId.present) {
+      map['audio_file_id'] = Variable<String>(audioFileId.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (selected.present) {
+      map['selected'] = Variable<bool>(selected.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DialogueTakesCompanion(')
+          ..write('id: $id, ')
+          ..write('lineId: $lineId, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('label: $label, ')
+          ..write('selected: $selected, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AudioTimelineClipsTable extends AudioTimelineClips
+    with TableInfo<$AudioTimelineClipsTable, AudioTimelineClip> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AudioTimelineClipsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timelineIdMeta = const VerificationMeta(
+    'timelineId',
+  );
+  @override
+  late final GeneratedColumn<String> timelineId = GeneratedColumn<String>(
+    'timeline_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _trackTypeMeta = const VerificationMeta(
+    'trackType',
+  );
+  @override
+  late final GeneratedColumn<String> trackType = GeneratedColumn<String>(
+    'track_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _audioFileIdMeta = const VerificationMeta(
+    'audioFileId',
+  );
+  @override
+  late final GeneratedColumn<String> audioFileId = GeneratedColumn<String>(
+    'audio_file_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startSecondsMeta = const VerificationMeta(
+    'startSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> startSeconds = GeneratedColumn<double>(
+    'start_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> durationSeconds = GeneratedColumn<double>(
+    'duration_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fadeInSecondsMeta = const VerificationMeta(
+    'fadeInSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> fadeInSeconds = GeneratedColumn<double>(
+    'fade_in_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _fadeOutSecondsMeta = const VerificationMeta(
+    'fadeOutSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> fadeOutSeconds = GeneratedColumn<double>(
+    'fade_out_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _gainDbMeta = const VerificationMeta('gainDb');
+  @override
+  late final GeneratedColumn<double> gainDb = GeneratedColumn<double>(
+    'gain_db',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _panMeta = const VerificationMeta('pan');
+  @override
+  late final GeneratedColumn<double> pan = GeneratedColumn<double>(
+    'pan',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _intentMeta = const VerificationMeta('intent');
+  @override
+  late final GeneratedColumn<String> intent = GeneratedColumn<String>(
+    'intent',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    timelineId,
+    trackType,
+    audioFileId,
+    startSeconds,
+    durationSeconds,
+    fadeInSeconds,
+    fadeOutSeconds,
+    gainDb,
+    pan,
+    intent,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'audio_timeline_clips';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AudioTimelineClip> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('timeline_id')) {
+      context.handle(
+        _timelineIdMeta,
+        timelineId.isAcceptableOrUnknown(data['timeline_id']!, _timelineIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timelineIdMeta);
+    }
+    if (data.containsKey('track_type')) {
+      context.handle(
+        _trackTypeMeta,
+        trackType.isAcceptableOrUnknown(data['track_type']!, _trackTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trackTypeMeta);
+    }
+    if (data.containsKey('audio_file_id')) {
+      context.handle(
+        _audioFileIdMeta,
+        audioFileId.isAcceptableOrUnknown(
+          data['audio_file_id']!,
+          _audioFileIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_audioFileIdMeta);
+    }
+    if (data.containsKey('start_seconds')) {
+      context.handle(
+        _startSecondsMeta,
+        startSeconds.isAcceptableOrUnknown(
+          data['start_seconds']!,
+          _startSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_startSecondsMeta);
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_durationSecondsMeta);
+    }
+    if (data.containsKey('fade_in_seconds')) {
+      context.handle(
+        _fadeInSecondsMeta,
+        fadeInSeconds.isAcceptableOrUnknown(
+          data['fade_in_seconds']!,
+          _fadeInSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fade_out_seconds')) {
+      context.handle(
+        _fadeOutSecondsMeta,
+        fadeOutSeconds.isAcceptableOrUnknown(
+          data['fade_out_seconds']!,
+          _fadeOutSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('gain_db')) {
+      context.handle(
+        _gainDbMeta,
+        gainDb.isAcceptableOrUnknown(data['gain_db']!, _gainDbMeta),
+      );
+    }
+    if (data.containsKey('pan')) {
+      context.handle(
+        _panMeta,
+        pan.isAcceptableOrUnknown(data['pan']!, _panMeta),
+      );
+    }
+    if (data.containsKey('intent')) {
+      context.handle(
+        _intentMeta,
+        intent.isAcceptableOrUnknown(data['intent']!, _intentMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AudioTimelineClip map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AudioTimelineClip(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      timelineId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}timeline_id'],
+      )!,
+      trackType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}track_type'],
+      )!,
+      audioFileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}audio_file_id'],
+      )!,
+      startSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}start_seconds'],
+      )!,
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}duration_seconds'],
+      )!,
+      fadeInSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}fade_in_seconds'],
+      )!,
+      fadeOutSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}fade_out_seconds'],
+      )!,
+      gainDb: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}gain_db'],
+      )!,
+      pan: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}pan'],
+      )!,
+      intent: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}intent'],
+      ),
+    );
+  }
+
+  @override
+  $AudioTimelineClipsTable createAlias(String alias) {
+    return $AudioTimelineClipsTable(attachedDatabase, alias);
+  }
+}
+
+class AudioTimelineClip extends DataClass
+    implements Insertable<AudioTimelineClip> {
+  final String id;
+  final String timelineId;
+  final String trackType;
+  final String audioFileId;
+  final double startSeconds;
+  final double durationSeconds;
+  final double fadeInSeconds;
+  final double fadeOutSeconds;
+  final double gainDb;
+  final double pan;
+  final String? intent;
+  const AudioTimelineClip({
+    required this.id,
+    required this.timelineId,
+    required this.trackType,
+    required this.audioFileId,
+    required this.startSeconds,
+    required this.durationSeconds,
+    required this.fadeInSeconds,
+    required this.fadeOutSeconds,
+    required this.gainDb,
+    required this.pan,
+    this.intent,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['timeline_id'] = Variable<String>(timelineId);
+    map['track_type'] = Variable<String>(trackType);
+    map['audio_file_id'] = Variable<String>(audioFileId);
+    map['start_seconds'] = Variable<double>(startSeconds);
+    map['duration_seconds'] = Variable<double>(durationSeconds);
+    map['fade_in_seconds'] = Variable<double>(fadeInSeconds);
+    map['fade_out_seconds'] = Variable<double>(fadeOutSeconds);
+    map['gain_db'] = Variable<double>(gainDb);
+    map['pan'] = Variable<double>(pan);
+    if (!nullToAbsent || intent != null) {
+      map['intent'] = Variable<String>(intent);
+    }
+    return map;
+  }
+
+  AudioTimelineClipsCompanion toCompanion(bool nullToAbsent) {
+    return AudioTimelineClipsCompanion(
+      id: Value(id),
+      timelineId: Value(timelineId),
+      trackType: Value(trackType),
+      audioFileId: Value(audioFileId),
+      startSeconds: Value(startSeconds),
+      durationSeconds: Value(durationSeconds),
+      fadeInSeconds: Value(fadeInSeconds),
+      fadeOutSeconds: Value(fadeOutSeconds),
+      gainDb: Value(gainDb),
+      pan: Value(pan),
+      intent: intent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(intent),
+    );
+  }
+
+  factory AudioTimelineClip.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AudioTimelineClip(
+      id: serializer.fromJson<String>(json['id']),
+      timelineId: serializer.fromJson<String>(json['timelineId']),
+      trackType: serializer.fromJson<String>(json['trackType']),
+      audioFileId: serializer.fromJson<String>(json['audioFileId']),
+      startSeconds: serializer.fromJson<double>(json['startSeconds']),
+      durationSeconds: serializer.fromJson<double>(json['durationSeconds']),
+      fadeInSeconds: serializer.fromJson<double>(json['fadeInSeconds']),
+      fadeOutSeconds: serializer.fromJson<double>(json['fadeOutSeconds']),
+      gainDb: serializer.fromJson<double>(json['gainDb']),
+      pan: serializer.fromJson<double>(json['pan']),
+      intent: serializer.fromJson<String?>(json['intent']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'timelineId': serializer.toJson<String>(timelineId),
+      'trackType': serializer.toJson<String>(trackType),
+      'audioFileId': serializer.toJson<String>(audioFileId),
+      'startSeconds': serializer.toJson<double>(startSeconds),
+      'durationSeconds': serializer.toJson<double>(durationSeconds),
+      'fadeInSeconds': serializer.toJson<double>(fadeInSeconds),
+      'fadeOutSeconds': serializer.toJson<double>(fadeOutSeconds),
+      'gainDb': serializer.toJson<double>(gainDb),
+      'pan': serializer.toJson<double>(pan),
+      'intent': serializer.toJson<String?>(intent),
+    };
+  }
+
+  AudioTimelineClip copyWith({
+    String? id,
+    String? timelineId,
+    String? trackType,
+    String? audioFileId,
+    double? startSeconds,
+    double? durationSeconds,
+    double? fadeInSeconds,
+    double? fadeOutSeconds,
+    double? gainDb,
+    double? pan,
+    Value<String?> intent = const Value.absent(),
+  }) => AudioTimelineClip(
+    id: id ?? this.id,
+    timelineId: timelineId ?? this.timelineId,
+    trackType: trackType ?? this.trackType,
+    audioFileId: audioFileId ?? this.audioFileId,
+    startSeconds: startSeconds ?? this.startSeconds,
+    durationSeconds: durationSeconds ?? this.durationSeconds,
+    fadeInSeconds: fadeInSeconds ?? this.fadeInSeconds,
+    fadeOutSeconds: fadeOutSeconds ?? this.fadeOutSeconds,
+    gainDb: gainDb ?? this.gainDb,
+    pan: pan ?? this.pan,
+    intent: intent.present ? intent.value : this.intent,
+  );
+  AudioTimelineClip copyWithCompanion(AudioTimelineClipsCompanion data) {
+    return AudioTimelineClip(
+      id: data.id.present ? data.id.value : this.id,
+      timelineId: data.timelineId.present
+          ? data.timelineId.value
+          : this.timelineId,
+      trackType: data.trackType.present ? data.trackType.value : this.trackType,
+      audioFileId: data.audioFileId.present
+          ? data.audioFileId.value
+          : this.audioFileId,
+      startSeconds: data.startSeconds.present
+          ? data.startSeconds.value
+          : this.startSeconds,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      fadeInSeconds: data.fadeInSeconds.present
+          ? data.fadeInSeconds.value
+          : this.fadeInSeconds,
+      fadeOutSeconds: data.fadeOutSeconds.present
+          ? data.fadeOutSeconds.value
+          : this.fadeOutSeconds,
+      gainDb: data.gainDb.present ? data.gainDb.value : this.gainDb,
+      pan: data.pan.present ? data.pan.value : this.pan,
+      intent: data.intent.present ? data.intent.value : this.intent,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AudioTimelineClip(')
+          ..write('id: $id, ')
+          ..write('timelineId: $timelineId, ')
+          ..write('trackType: $trackType, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('startSeconds: $startSeconds, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('fadeInSeconds: $fadeInSeconds, ')
+          ..write('fadeOutSeconds: $fadeOutSeconds, ')
+          ..write('gainDb: $gainDb, ')
+          ..write('pan: $pan, ')
+          ..write('intent: $intent')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    timelineId,
+    trackType,
+    audioFileId,
+    startSeconds,
+    durationSeconds,
+    fadeInSeconds,
+    fadeOutSeconds,
+    gainDb,
+    pan,
+    intent,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AudioTimelineClip &&
+          other.id == this.id &&
+          other.timelineId == this.timelineId &&
+          other.trackType == this.trackType &&
+          other.audioFileId == this.audioFileId &&
+          other.startSeconds == this.startSeconds &&
+          other.durationSeconds == this.durationSeconds &&
+          other.fadeInSeconds == this.fadeInSeconds &&
+          other.fadeOutSeconds == this.fadeOutSeconds &&
+          other.gainDb == this.gainDb &&
+          other.pan == this.pan &&
+          other.intent == this.intent);
+}
+
+class AudioTimelineClipsCompanion extends UpdateCompanion<AudioTimelineClip> {
+  final Value<String> id;
+  final Value<String> timelineId;
+  final Value<String> trackType;
+  final Value<String> audioFileId;
+  final Value<double> startSeconds;
+  final Value<double> durationSeconds;
+  final Value<double> fadeInSeconds;
+  final Value<double> fadeOutSeconds;
+  final Value<double> gainDb;
+  final Value<double> pan;
+  final Value<String?> intent;
+  final Value<int> rowid;
+  const AudioTimelineClipsCompanion({
+    this.id = const Value.absent(),
+    this.timelineId = const Value.absent(),
+    this.trackType = const Value.absent(),
+    this.audioFileId = const Value.absent(),
+    this.startSeconds = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.fadeInSeconds = const Value.absent(),
+    this.fadeOutSeconds = const Value.absent(),
+    this.gainDb = const Value.absent(),
+    this.pan = const Value.absent(),
+    this.intent = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AudioTimelineClipsCompanion.insert({
+    required String id,
+    required String timelineId,
+    required String trackType,
+    required String audioFileId,
+    required double startSeconds,
+    required double durationSeconds,
+    this.fadeInSeconds = const Value.absent(),
+    this.fadeOutSeconds = const Value.absent(),
+    this.gainDb = const Value.absent(),
+    this.pan = const Value.absent(),
+    this.intent = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       timelineId = Value(timelineId),
+       trackType = Value(trackType),
+       audioFileId = Value(audioFileId),
+       startSeconds = Value(startSeconds),
+       durationSeconds = Value(durationSeconds);
+  static Insertable<AudioTimelineClip> custom({
+    Expression<String>? id,
+    Expression<String>? timelineId,
+    Expression<String>? trackType,
+    Expression<String>? audioFileId,
+    Expression<double>? startSeconds,
+    Expression<double>? durationSeconds,
+    Expression<double>? fadeInSeconds,
+    Expression<double>? fadeOutSeconds,
+    Expression<double>? gainDb,
+    Expression<double>? pan,
+    Expression<String>? intent,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (timelineId != null) 'timeline_id': timelineId,
+      if (trackType != null) 'track_type': trackType,
+      if (audioFileId != null) 'audio_file_id': audioFileId,
+      if (startSeconds != null) 'start_seconds': startSeconds,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (fadeInSeconds != null) 'fade_in_seconds': fadeInSeconds,
+      if (fadeOutSeconds != null) 'fade_out_seconds': fadeOutSeconds,
+      if (gainDb != null) 'gain_db': gainDb,
+      if (pan != null) 'pan': pan,
+      if (intent != null) 'intent': intent,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AudioTimelineClipsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? timelineId,
+    Value<String>? trackType,
+    Value<String>? audioFileId,
+    Value<double>? startSeconds,
+    Value<double>? durationSeconds,
+    Value<double>? fadeInSeconds,
+    Value<double>? fadeOutSeconds,
+    Value<double>? gainDb,
+    Value<double>? pan,
+    Value<String?>? intent,
+    Value<int>? rowid,
+  }) {
+    return AudioTimelineClipsCompanion(
+      id: id ?? this.id,
+      timelineId: timelineId ?? this.timelineId,
+      trackType: trackType ?? this.trackType,
+      audioFileId: audioFileId ?? this.audioFileId,
+      startSeconds: startSeconds ?? this.startSeconds,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      fadeInSeconds: fadeInSeconds ?? this.fadeInSeconds,
+      fadeOutSeconds: fadeOutSeconds ?? this.fadeOutSeconds,
+      gainDb: gainDb ?? this.gainDb,
+      pan: pan ?? this.pan,
+      intent: intent ?? this.intent,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (timelineId.present) {
+      map['timeline_id'] = Variable<String>(timelineId.value);
+    }
+    if (trackType.present) {
+      map['track_type'] = Variable<String>(trackType.value);
+    }
+    if (audioFileId.present) {
+      map['audio_file_id'] = Variable<String>(audioFileId.value);
+    }
+    if (startSeconds.present) {
+      map['start_seconds'] = Variable<double>(startSeconds.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<double>(durationSeconds.value);
+    }
+    if (fadeInSeconds.present) {
+      map['fade_in_seconds'] = Variable<double>(fadeInSeconds.value);
+    }
+    if (fadeOutSeconds.present) {
+      map['fade_out_seconds'] = Variable<double>(fadeOutSeconds.value);
+    }
+    if (gainDb.present) {
+      map['gain_db'] = Variable<double>(gainDb.value);
+    }
+    if (pan.present) {
+      map['pan'] = Variable<double>(pan.value);
+    }
+    if (intent.present) {
+      map['intent'] = Variable<String>(intent.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AudioTimelineClipsCompanion(')
+          ..write('id: $id, ')
+          ..write('timelineId: $timelineId, ')
+          ..write('trackType: $trackType, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('startSeconds: $startSeconds, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('fadeInSeconds: $fadeInSeconds, ')
+          ..write('fadeOutSeconds: $fadeOutSeconds, ')
+          ..write('gainDb: $gainDb, ')
+          ..write('pan: $pan, ')
+          ..write('intent: $intent, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AudioAutomationKeyframesTable extends AudioAutomationKeyframes
+    with TableInfo<$AudioAutomationKeyframesTable, AudioAutomationKeyframe> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AudioAutomationKeyframesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _clipIdMeta = const VerificationMeta('clipId');
+  @override
+  late final GeneratedColumn<String> clipId = GeneratedColumn<String>(
+    'clip_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timeSecondsMeta = const VerificationMeta(
+    'timeSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> timeSeconds = GeneratedColumn<double>(
+    'time_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _parameterMeta = const VerificationMeta(
+    'parameter',
+  );
+  @override
+  late final GeneratedColumn<String> parameter = GeneratedColumn<String>(
+    'parameter',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    clipId,
+    timeSeconds,
+    parameter,
+    value,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'audio_automation_keyframes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AudioAutomationKeyframe> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('clip_id')) {
+      context.handle(
+        _clipIdMeta,
+        clipId.isAcceptableOrUnknown(data['clip_id']!, _clipIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_clipIdMeta);
+    }
+    if (data.containsKey('time_seconds')) {
+      context.handle(
+        _timeSecondsMeta,
+        timeSeconds.isAcceptableOrUnknown(
+          data['time_seconds']!,
+          _timeSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_timeSecondsMeta);
+    }
+    if (data.containsKey('parameter')) {
+      context.handle(
+        _parameterMeta,
+        parameter.isAcceptableOrUnknown(data['parameter']!, _parameterMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_parameterMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AudioAutomationKeyframe map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AudioAutomationKeyframe(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      clipId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}clip_id'],
+      )!,
+      timeSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}time_seconds'],
+      )!,
+      parameter: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}parameter'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}value'],
+      )!,
+    );
+  }
+
+  @override
+  $AudioAutomationKeyframesTable createAlias(String alias) {
+    return $AudioAutomationKeyframesTable(attachedDatabase, alias);
+  }
+}
+
+class AudioAutomationKeyframe extends DataClass
+    implements Insertable<AudioAutomationKeyframe> {
+  final String id;
+  final String clipId;
+  final double timeSeconds;
+  final String parameter;
+  final double value;
+  const AudioAutomationKeyframe({
+    required this.id,
+    required this.clipId,
+    required this.timeSeconds,
+    required this.parameter,
+    required this.value,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['clip_id'] = Variable<String>(clipId);
+    map['time_seconds'] = Variable<double>(timeSeconds);
+    map['parameter'] = Variable<String>(parameter);
+    map['value'] = Variable<double>(value);
+    return map;
+  }
+
+  AudioAutomationKeyframesCompanion toCompanion(bool nullToAbsent) {
+    return AudioAutomationKeyframesCompanion(
+      id: Value(id),
+      clipId: Value(clipId),
+      timeSeconds: Value(timeSeconds),
+      parameter: Value(parameter),
+      value: Value(value),
+    );
+  }
+
+  factory AudioAutomationKeyframe.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AudioAutomationKeyframe(
+      id: serializer.fromJson<String>(json['id']),
+      clipId: serializer.fromJson<String>(json['clipId']),
+      timeSeconds: serializer.fromJson<double>(json['timeSeconds']),
+      parameter: serializer.fromJson<String>(json['parameter']),
+      value: serializer.fromJson<double>(json['value']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'clipId': serializer.toJson<String>(clipId),
+      'timeSeconds': serializer.toJson<double>(timeSeconds),
+      'parameter': serializer.toJson<String>(parameter),
+      'value': serializer.toJson<double>(value),
+    };
+  }
+
+  AudioAutomationKeyframe copyWith({
+    String? id,
+    String? clipId,
+    double? timeSeconds,
+    String? parameter,
+    double? value,
+  }) => AudioAutomationKeyframe(
+    id: id ?? this.id,
+    clipId: clipId ?? this.clipId,
+    timeSeconds: timeSeconds ?? this.timeSeconds,
+    parameter: parameter ?? this.parameter,
+    value: value ?? this.value,
+  );
+  AudioAutomationKeyframe copyWithCompanion(
+    AudioAutomationKeyframesCompanion data,
+  ) {
+    return AudioAutomationKeyframe(
+      id: data.id.present ? data.id.value : this.id,
+      clipId: data.clipId.present ? data.clipId.value : this.clipId,
+      timeSeconds: data.timeSeconds.present
+          ? data.timeSeconds.value
+          : this.timeSeconds,
+      parameter: data.parameter.present ? data.parameter.value : this.parameter,
+      value: data.value.present ? data.value.value : this.value,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AudioAutomationKeyframe(')
+          ..write('id: $id, ')
+          ..write('clipId: $clipId, ')
+          ..write('timeSeconds: $timeSeconds, ')
+          ..write('parameter: $parameter, ')
+          ..write('value: $value')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, clipId, timeSeconds, parameter, value);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AudioAutomationKeyframe &&
+          other.id == this.id &&
+          other.clipId == this.clipId &&
+          other.timeSeconds == this.timeSeconds &&
+          other.parameter == this.parameter &&
+          other.value == this.value);
+}
+
+class AudioAutomationKeyframesCompanion
+    extends UpdateCompanion<AudioAutomationKeyframe> {
+  final Value<String> id;
+  final Value<String> clipId;
+  final Value<double> timeSeconds;
+  final Value<String> parameter;
+  final Value<double> value;
+  final Value<int> rowid;
+  const AudioAutomationKeyframesCompanion({
+    this.id = const Value.absent(),
+    this.clipId = const Value.absent(),
+    this.timeSeconds = const Value.absent(),
+    this.parameter = const Value.absent(),
+    this.value = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AudioAutomationKeyframesCompanion.insert({
+    required String id,
+    required String clipId,
+    required double timeSeconds,
+    required String parameter,
+    required double value,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       clipId = Value(clipId),
+       timeSeconds = Value(timeSeconds),
+       parameter = Value(parameter),
+       value = Value(value);
+  static Insertable<AudioAutomationKeyframe> custom({
+    Expression<String>? id,
+    Expression<String>? clipId,
+    Expression<double>? timeSeconds,
+    Expression<String>? parameter,
+    Expression<double>? value,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (clipId != null) 'clip_id': clipId,
+      if (timeSeconds != null) 'time_seconds': timeSeconds,
+      if (parameter != null) 'parameter': parameter,
+      if (value != null) 'value': value,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AudioAutomationKeyframesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? clipId,
+    Value<double>? timeSeconds,
+    Value<String>? parameter,
+    Value<double>? value,
+    Value<int>? rowid,
+  }) {
+    return AudioAutomationKeyframesCompanion(
+      id: id ?? this.id,
+      clipId: clipId ?? this.clipId,
+      timeSeconds: timeSeconds ?? this.timeSeconds,
+      parameter: parameter ?? this.parameter,
+      value: value ?? this.value,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (clipId.present) {
+      map['clip_id'] = Variable<String>(clipId.value);
+    }
+    if (timeSeconds.present) {
+      map['time_seconds'] = Variable<double>(timeSeconds.value);
+    }
+    if (parameter.present) {
+      map['parameter'] = Variable<String>(parameter.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AudioAutomationKeyframesCompanion(')
+          ..write('id: $id, ')
+          ..write('clipId: $clipId, ')
+          ..write('timeSeconds: $timeSeconds, ')
+          ..write('parameter: $parameter, ')
+          ..write('value: $value, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AudioWaveformCachesTable extends AudioWaveformCaches
+    with TableInfo<$AudioWaveformCachesTable, AudioWaveformCache> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AudioWaveformCachesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _audioFileIdMeta = const VerificationMeta(
+    'audioFileId',
+  );
+  @override
+  late final GeneratedColumn<String> audioFileId = GeneratedColumn<String>(
+    'audio_file_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sampleCountMeta = const VerificationMeta(
+    'sampleCount',
+  );
+  @override
+  late final GeneratedColumn<int> sampleCount = GeneratedColumn<int>(
+    'sample_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _peaksJsonMeta = const VerificationMeta(
+    'peaksJson',
+  );
+  @override
+  late final GeneratedColumn<String> peaksJson = GeneratedColumn<String>(
+    'peaks_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    audioFileId,
+    sampleCount,
+    peaksJson,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'audio_waveform_caches';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AudioWaveformCache> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('audio_file_id')) {
+      context.handle(
+        _audioFileIdMeta,
+        audioFileId.isAcceptableOrUnknown(
+          data['audio_file_id']!,
+          _audioFileIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_audioFileIdMeta);
+    }
+    if (data.containsKey('sample_count')) {
+      context.handle(
+        _sampleCountMeta,
+        sampleCount.isAcceptableOrUnknown(
+          data['sample_count']!,
+          _sampleCountMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_sampleCountMeta);
+    }
+    if (data.containsKey('peaks_json')) {
+      context.handle(
+        _peaksJsonMeta,
+        peaksJson.isAcceptableOrUnknown(data['peaks_json']!, _peaksJsonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_peaksJsonMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AudioWaveformCache map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AudioWaveformCache(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      audioFileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}audio_file_id'],
+      )!,
+      sampleCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sample_count'],
+      )!,
+      peaksJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}peaks_json'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AudioWaveformCachesTable createAlias(String alias) {
+    return $AudioWaveformCachesTable(attachedDatabase, alias);
+  }
+}
+
+class AudioWaveformCache extends DataClass
+    implements Insertable<AudioWaveformCache> {
+  final String id;
+  final String audioFileId;
+  final int sampleCount;
+  final String peaksJson;
+  final DateTime createdAt;
+  const AudioWaveformCache({
+    required this.id,
+    required this.audioFileId,
+    required this.sampleCount,
+    required this.peaksJson,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['audio_file_id'] = Variable<String>(audioFileId);
+    map['sample_count'] = Variable<int>(sampleCount);
+    map['peaks_json'] = Variable<String>(peaksJson);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  AudioWaveformCachesCompanion toCompanion(bool nullToAbsent) {
+    return AudioWaveformCachesCompanion(
+      id: Value(id),
+      audioFileId: Value(audioFileId),
+      sampleCount: Value(sampleCount),
+      peaksJson: Value(peaksJson),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory AudioWaveformCache.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AudioWaveformCache(
+      id: serializer.fromJson<String>(json['id']),
+      audioFileId: serializer.fromJson<String>(json['audioFileId']),
+      sampleCount: serializer.fromJson<int>(json['sampleCount']),
+      peaksJson: serializer.fromJson<String>(json['peaksJson']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'audioFileId': serializer.toJson<String>(audioFileId),
+      'sampleCount': serializer.toJson<int>(sampleCount),
+      'peaksJson': serializer.toJson<String>(peaksJson),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  AudioWaveformCache copyWith({
+    String? id,
+    String? audioFileId,
+    int? sampleCount,
+    String? peaksJson,
+    DateTime? createdAt,
+  }) => AudioWaveformCache(
+    id: id ?? this.id,
+    audioFileId: audioFileId ?? this.audioFileId,
+    sampleCount: sampleCount ?? this.sampleCount,
+    peaksJson: peaksJson ?? this.peaksJson,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  AudioWaveformCache copyWithCompanion(AudioWaveformCachesCompanion data) {
+    return AudioWaveformCache(
+      id: data.id.present ? data.id.value : this.id,
+      audioFileId: data.audioFileId.present
+          ? data.audioFileId.value
+          : this.audioFileId,
+      sampleCount: data.sampleCount.present
+          ? data.sampleCount.value
+          : this.sampleCount,
+      peaksJson: data.peaksJson.present ? data.peaksJson.value : this.peaksJson,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AudioWaveformCache(')
+          ..write('id: $id, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('sampleCount: $sampleCount, ')
+          ..write('peaksJson: $peaksJson, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, audioFileId, sampleCount, peaksJson, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AudioWaveformCache &&
+          other.id == this.id &&
+          other.audioFileId == this.audioFileId &&
+          other.sampleCount == this.sampleCount &&
+          other.peaksJson == this.peaksJson &&
+          other.createdAt == this.createdAt);
+}
+
+class AudioWaveformCachesCompanion extends UpdateCompanion<AudioWaveformCache> {
+  final Value<String> id;
+  final Value<String> audioFileId;
+  final Value<int> sampleCount;
+  final Value<String> peaksJson;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const AudioWaveformCachesCompanion({
+    this.id = const Value.absent(),
+    this.audioFileId = const Value.absent(),
+    this.sampleCount = const Value.absent(),
+    this.peaksJson = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AudioWaveformCachesCompanion.insert({
+    required String id,
+    required String audioFileId,
+    required int sampleCount,
+    required String peaksJson,
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       audioFileId = Value(audioFileId),
+       sampleCount = Value(sampleCount),
+       peaksJson = Value(peaksJson),
+       createdAt = Value(createdAt);
+  static Insertable<AudioWaveformCache> custom({
+    Expression<String>? id,
+    Expression<String>? audioFileId,
+    Expression<int>? sampleCount,
+    Expression<String>? peaksJson,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (audioFileId != null) 'audio_file_id': audioFileId,
+      if (sampleCount != null) 'sample_count': sampleCount,
+      if (peaksJson != null) 'peaks_json': peaksJson,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AudioWaveformCachesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? audioFileId,
+    Value<int>? sampleCount,
+    Value<String>? peaksJson,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return AudioWaveformCachesCompanion(
+      id: id ?? this.id,
+      audioFileId: audioFileId ?? this.audioFileId,
+      sampleCount: sampleCount ?? this.sampleCount,
+      peaksJson: peaksJson ?? this.peaksJson,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (audioFileId.present) {
+      map['audio_file_id'] = Variable<String>(audioFileId.value);
+    }
+    if (sampleCount.present) {
+      map['sample_count'] = Variable<int>(sampleCount.value);
+    }
+    if (peaksJson.present) {
+      map['peaks_json'] = Variable<String>(peaksJson.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AudioWaveformCachesCompanion(')
+          ..write('id: $id, ')
+          ..write('audioFileId: $audioFileId, ')
+          ..write('sampleCount: $sampleCount, ')
+          ..write('peaksJson: $peaksJson, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -44602,6 +53553,37 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
       $SceneInstancePropertiesTable(this);
   late final $SceneContinuitySnapshotsTable sceneContinuitySnapshots =
       $SceneContinuitySnapshotsTable(this);
+  late final $VfxAssetsTable vfxAssets = $VfxAssetsTable(this);
+  late final $VfxBehaviorProfilesTable vfxBehaviorProfiles =
+      $VfxBehaviorProfilesTable(this);
+  late final $VfxStatesTable vfxStates = $VfxStatesTable(this);
+  late final $VfxTimelineClipsTable vfxTimelineClips = $VfxTimelineClipsTable(
+    this,
+  );
+  late final $VfxKeyframesTable vfxKeyframes = $VfxKeyframesTable(this);
+  late final $AudioFilesTable audioFiles = $AudioFilesTable(this);
+  late final $SoundEffectsTable soundEffects = $SoundEffectsTable(this);
+  late final $SoundEffectVariationsTable soundEffectVariations =
+      $SoundEffectVariationsTable(this);
+  late final $AmbienceAssetsTable ambienceAssets = $AmbienceAssetsTable(this);
+  late final $AmbienceLayersTable ambienceLayers = $AmbienceLayersTable(this);
+  late final $AmbienceVariantsTable ambienceVariants = $AmbienceVariantsTable(
+    this,
+  );
+  late final $MusicCuesTable musicCues = $MusicCuesTable(this);
+  late final $MusicSectionsTable musicSections = $MusicSectionsTable(this);
+  late final $VoiceProfilesTable voiceProfiles = $VoiceProfilesTable(this);
+  late final $VoiceReferencesTable voiceReferences = $VoiceReferencesTable(
+    this,
+  );
+  late final $DialogueLinesTable dialogueLines = $DialogueLinesTable(this);
+  late final $DialogueTakesTable dialogueTakes = $DialogueTakesTable(this);
+  late final $AudioTimelineClipsTable audioTimelineClips =
+      $AudioTimelineClipsTable(this);
+  late final $AudioAutomationKeyframesTable audioAutomationKeyframes =
+      $AudioAutomationKeyframesTable(this);
+  late final $AudioWaveformCachesTable audioWaveformCaches =
+      $AudioWaveformCachesTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -44642,6 +53624,19 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   );
   late final SceneAssetInstanceRepository sceneAssetInstanceRepository =
       SceneAssetInstanceRepository(this as ProjectDatabase);
+  late final VfxRepository vfxRepository = VfxRepository(
+    this as ProjectDatabase,
+  );
+  late final AudioAssetRepository audioAssetRepository = AudioAssetRepository(
+    this as ProjectDatabase,
+  );
+  late final DialogueRepository dialogueRepository = DialogueRepository(
+    this as ProjectDatabase,
+  );
+  late final AudioTimelineRepository audioTimelineRepository =
+      AudioTimelineRepository(this as ProjectDatabase);
+  late final AudioImportRepository audioImportRepository =
+      AudioImportRepository(this as ProjectDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -44743,6 +53738,26 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     sceneInstanceTransforms,
     sceneInstanceProperties,
     sceneContinuitySnapshots,
+    vfxAssets,
+    vfxBehaviorProfiles,
+    vfxStates,
+    vfxTimelineClips,
+    vfxKeyframes,
+    audioFiles,
+    soundEffects,
+    soundEffectVariations,
+    ambienceAssets,
+    ambienceLayers,
+    ambienceVariants,
+    musicCues,
+    musicSections,
+    voiceProfiles,
+    voiceReferences,
+    dialogueLines,
+    dialogueTakes,
+    audioTimelineClips,
+    audioAutomationKeyframes,
+    audioWaveformCaches,
   ];
 }
 
@@ -68646,6 +77661,4813 @@ typedef $$SceneContinuitySnapshotsTableProcessedTableManager =
       SceneContinuitySnapshot,
       PrefetchHooks Function()
     >;
+typedef $$VfxAssetsTableCreateCompanionBuilder =
+    VfxAssetsCompanion Function({
+      required String assetId,
+      required String projectId,
+      required String name,
+      required String category,
+      Value<String> description,
+      Value<String> visualBehavior,
+      Value<String> colorPalette,
+      Value<int> rowid,
+    });
+typedef $$VfxAssetsTableUpdateCompanionBuilder =
+    VfxAssetsCompanion Function({
+      Value<String> assetId,
+      Value<String> projectId,
+      Value<String> name,
+      Value<String> category,
+      Value<String> description,
+      Value<String> visualBehavior,
+      Value<String> colorPalette,
+      Value<int> rowid,
+    });
+
+class $$VfxAssetsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $VfxAssetsTable> {
+  $$VfxAssetsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get visualBehavior => $composableBuilder(
+    column: $table.visualBehavior,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get colorPalette => $composableBuilder(
+    column: $table.colorPalette,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VfxAssetsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $VfxAssetsTable> {
+  $$VfxAssetsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get visualBehavior => $composableBuilder(
+    column: $table.visualBehavior,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get colorPalette => $composableBuilder(
+    column: $table.colorPalette,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VfxAssetsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $VfxAssetsTable> {
+  $$VfxAssetsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get visualBehavior => $composableBuilder(
+    column: $table.visualBehavior,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get colorPalette => $composableBuilder(
+    column: $table.colorPalette,
+    builder: (column) => column,
+  );
+}
+
+class $$VfxAssetsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $VfxAssetsTable,
+          VfxAsset,
+          $$VfxAssetsTableFilterComposer,
+          $$VfxAssetsTableOrderingComposer,
+          $$VfxAssetsTableAnnotationComposer,
+          $$VfxAssetsTableCreateCompanionBuilder,
+          $$VfxAssetsTableUpdateCompanionBuilder,
+          (
+            VfxAsset,
+            BaseReferences<_$ProjectDatabase, $VfxAssetsTable, VfxAsset>,
+          ),
+          VfxAsset,
+          PrefetchHooks Function()
+        > {
+  $$VfxAssetsTableTableManager(_$ProjectDatabase db, $VfxAssetsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VfxAssetsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VfxAssetsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VfxAssetsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> assetId = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> visualBehavior = const Value.absent(),
+                Value<String> colorPalette = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VfxAssetsCompanion(
+                assetId: assetId,
+                projectId: projectId,
+                name: name,
+                category: category,
+                description: description,
+                visualBehavior: visualBehavior,
+                colorPalette: colorPalette,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String assetId,
+                required String projectId,
+                required String name,
+                required String category,
+                Value<String> description = const Value.absent(),
+                Value<String> visualBehavior = const Value.absent(),
+                Value<String> colorPalette = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VfxAssetsCompanion.insert(
+                assetId: assetId,
+                projectId: projectId,
+                name: name,
+                category: category,
+                description: description,
+                visualBehavior: visualBehavior,
+                colorPalette: colorPalette,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VfxAssetsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $VfxAssetsTable,
+      VfxAsset,
+      $$VfxAssetsTableFilterComposer,
+      $$VfxAssetsTableOrderingComposer,
+      $$VfxAssetsTableAnnotationComposer,
+      $$VfxAssetsTableCreateCompanionBuilder,
+      $$VfxAssetsTableUpdateCompanionBuilder,
+      (VfxAsset, BaseReferences<_$ProjectDatabase, $VfxAssetsTable, VfxAsset>),
+      VfxAsset,
+      PrefetchHooks Function()
+    >;
+typedef $$VfxBehaviorProfilesTableCreateCompanionBuilder =
+    VfxBehaviorProfilesCompanion Function({
+      required String vfxId,
+      Value<String> originBehavior,
+      Value<String> movementBehavior,
+      Value<String> dissipationBehavior,
+      Value<String> environmentalInteraction,
+      Value<double?> defaultDurationSeconds,
+      Value<bool> emitsLight,
+      Value<int> rowid,
+    });
+typedef $$VfxBehaviorProfilesTableUpdateCompanionBuilder =
+    VfxBehaviorProfilesCompanion Function({
+      Value<String> vfxId,
+      Value<String> originBehavior,
+      Value<String> movementBehavior,
+      Value<String> dissipationBehavior,
+      Value<String> environmentalInteraction,
+      Value<double?> defaultDurationSeconds,
+      Value<bool> emitsLight,
+      Value<int> rowid,
+    });
+
+class $$VfxBehaviorProfilesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $VfxBehaviorProfilesTable> {
+  $$VfxBehaviorProfilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get vfxId => $composableBuilder(
+    column: $table.vfxId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get originBehavior => $composableBuilder(
+    column: $table.originBehavior,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get movementBehavior => $composableBuilder(
+    column: $table.movementBehavior,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dissipationBehavior => $composableBuilder(
+    column: $table.dissipationBehavior,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get environmentalInteraction => $composableBuilder(
+    column: $table.environmentalInteraction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get defaultDurationSeconds => $composableBuilder(
+    column: $table.defaultDurationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get emitsLight => $composableBuilder(
+    column: $table.emitsLight,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VfxBehaviorProfilesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $VfxBehaviorProfilesTable> {
+  $$VfxBehaviorProfilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get vfxId => $composableBuilder(
+    column: $table.vfxId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get originBehavior => $composableBuilder(
+    column: $table.originBehavior,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get movementBehavior => $composableBuilder(
+    column: $table.movementBehavior,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dissipationBehavior => $composableBuilder(
+    column: $table.dissipationBehavior,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get environmentalInteraction => $composableBuilder(
+    column: $table.environmentalInteraction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get defaultDurationSeconds => $composableBuilder(
+    column: $table.defaultDurationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get emitsLight => $composableBuilder(
+    column: $table.emitsLight,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VfxBehaviorProfilesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $VfxBehaviorProfilesTable> {
+  $$VfxBehaviorProfilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get vfxId =>
+      $composableBuilder(column: $table.vfxId, builder: (column) => column);
+
+  GeneratedColumn<String> get originBehavior => $composableBuilder(
+    column: $table.originBehavior,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get movementBehavior => $composableBuilder(
+    column: $table.movementBehavior,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dissipationBehavior => $composableBuilder(
+    column: $table.dissipationBehavior,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get environmentalInteraction => $composableBuilder(
+    column: $table.environmentalInteraction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get defaultDurationSeconds => $composableBuilder(
+    column: $table.defaultDurationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get emitsLight => $composableBuilder(
+    column: $table.emitsLight,
+    builder: (column) => column,
+  );
+}
+
+class $$VfxBehaviorProfilesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $VfxBehaviorProfilesTable,
+          VfxBehaviorProfile,
+          $$VfxBehaviorProfilesTableFilterComposer,
+          $$VfxBehaviorProfilesTableOrderingComposer,
+          $$VfxBehaviorProfilesTableAnnotationComposer,
+          $$VfxBehaviorProfilesTableCreateCompanionBuilder,
+          $$VfxBehaviorProfilesTableUpdateCompanionBuilder,
+          (
+            VfxBehaviorProfile,
+            BaseReferences<
+              _$ProjectDatabase,
+              $VfxBehaviorProfilesTable,
+              VfxBehaviorProfile
+            >,
+          ),
+          VfxBehaviorProfile,
+          PrefetchHooks Function()
+        > {
+  $$VfxBehaviorProfilesTableTableManager(
+    _$ProjectDatabase db,
+    $VfxBehaviorProfilesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VfxBehaviorProfilesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VfxBehaviorProfilesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$VfxBehaviorProfilesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> vfxId = const Value.absent(),
+                Value<String> originBehavior = const Value.absent(),
+                Value<String> movementBehavior = const Value.absent(),
+                Value<String> dissipationBehavior = const Value.absent(),
+                Value<String> environmentalInteraction = const Value.absent(),
+                Value<double?> defaultDurationSeconds = const Value.absent(),
+                Value<bool> emitsLight = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VfxBehaviorProfilesCompanion(
+                vfxId: vfxId,
+                originBehavior: originBehavior,
+                movementBehavior: movementBehavior,
+                dissipationBehavior: dissipationBehavior,
+                environmentalInteraction: environmentalInteraction,
+                defaultDurationSeconds: defaultDurationSeconds,
+                emitsLight: emitsLight,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String vfxId,
+                Value<String> originBehavior = const Value.absent(),
+                Value<String> movementBehavior = const Value.absent(),
+                Value<String> dissipationBehavior = const Value.absent(),
+                Value<String> environmentalInteraction = const Value.absent(),
+                Value<double?> defaultDurationSeconds = const Value.absent(),
+                Value<bool> emitsLight = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VfxBehaviorProfilesCompanion.insert(
+                vfxId: vfxId,
+                originBehavior: originBehavior,
+                movementBehavior: movementBehavior,
+                dissipationBehavior: dissipationBehavior,
+                environmentalInteraction: environmentalInteraction,
+                defaultDurationSeconds: defaultDurationSeconds,
+                emitsLight: emitsLight,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VfxBehaviorProfilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $VfxBehaviorProfilesTable,
+      VfxBehaviorProfile,
+      $$VfxBehaviorProfilesTableFilterComposer,
+      $$VfxBehaviorProfilesTableOrderingComposer,
+      $$VfxBehaviorProfilesTableAnnotationComposer,
+      $$VfxBehaviorProfilesTableCreateCompanionBuilder,
+      $$VfxBehaviorProfilesTableUpdateCompanionBuilder,
+      (
+        VfxBehaviorProfile,
+        BaseReferences<
+          _$ProjectDatabase,
+          $VfxBehaviorProfilesTable,
+          VfxBehaviorProfile
+        >,
+      ),
+      VfxBehaviorProfile,
+      PrefetchHooks Function()
+    >;
+typedef $$VfxStatesTableCreateCompanionBuilder =
+    VfxStatesCompanion Function({
+      required String id,
+      required String vfxId,
+      required String name,
+      Value<String> description,
+      Value<String?> referenceSetId,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$VfxStatesTableUpdateCompanionBuilder =
+    VfxStatesCompanion Function({
+      Value<String> id,
+      Value<String> vfxId,
+      Value<String> name,
+      Value<String> description,
+      Value<String?> referenceSetId,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$VfxStatesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $VfxStatesTable> {
+  $$VfxStatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get vfxId => $composableBuilder(
+    column: $table.vfxId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VfxStatesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $VfxStatesTable> {
+  $$VfxStatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get vfxId => $composableBuilder(
+    column: $table.vfxId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VfxStatesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $VfxStatesTable> {
+  $$VfxStatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get vfxId =>
+      $composableBuilder(column: $table.vfxId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get referenceSetId => $composableBuilder(
+    column: $table.referenceSetId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$VfxStatesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $VfxStatesTable,
+          VfxState,
+          $$VfxStatesTableFilterComposer,
+          $$VfxStatesTableOrderingComposer,
+          $$VfxStatesTableAnnotationComposer,
+          $$VfxStatesTableCreateCompanionBuilder,
+          $$VfxStatesTableUpdateCompanionBuilder,
+          (
+            VfxState,
+            BaseReferences<_$ProjectDatabase, $VfxStatesTable, VfxState>,
+          ),
+          VfxState,
+          PrefetchHooks Function()
+        > {
+  $$VfxStatesTableTableManager(_$ProjectDatabase db, $VfxStatesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VfxStatesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VfxStatesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VfxStatesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> vfxId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String?> referenceSetId = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VfxStatesCompanion(
+                id: id,
+                vfxId: vfxId,
+                name: name,
+                description: description,
+                referenceSetId: referenceSetId,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String vfxId,
+                required String name,
+                Value<String> description = const Value.absent(),
+                Value<String?> referenceSetId = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VfxStatesCompanion.insert(
+                id: id,
+                vfxId: vfxId,
+                name: name,
+                description: description,
+                referenceSetId: referenceSetId,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VfxStatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $VfxStatesTable,
+      VfxState,
+      $$VfxStatesTableFilterComposer,
+      $$VfxStatesTableOrderingComposer,
+      $$VfxStatesTableAnnotationComposer,
+      $$VfxStatesTableCreateCompanionBuilder,
+      $$VfxStatesTableUpdateCompanionBuilder,
+      (VfxState, BaseReferences<_$ProjectDatabase, $VfxStatesTable, VfxState>),
+      VfxState,
+      PrefetchHooks Function()
+    >;
+typedef $$VfxTimelineClipsTableCreateCompanionBuilder =
+    VfxTimelineClipsCompanion Function({
+      required String id,
+      required String sceneId,
+      required String vfxAssetId,
+      required double startSeconds,
+      required double durationSeconds,
+      Value<String?> stateId,
+      Value<String?> attachedInstanceId,
+      Value<int> rowid,
+    });
+typedef $$VfxTimelineClipsTableUpdateCompanionBuilder =
+    VfxTimelineClipsCompanion Function({
+      Value<String> id,
+      Value<String> sceneId,
+      Value<String> vfxAssetId,
+      Value<double> startSeconds,
+      Value<double> durationSeconds,
+      Value<String?> stateId,
+      Value<String?> attachedInstanceId,
+      Value<int> rowid,
+    });
+
+class $$VfxTimelineClipsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $VfxTimelineClipsTable> {
+  $$VfxTimelineClipsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get vfxAssetId => $composableBuilder(
+    column: $table.vfxAssetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stateId => $composableBuilder(
+    column: $table.stateId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get attachedInstanceId => $composableBuilder(
+    column: $table.attachedInstanceId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VfxTimelineClipsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $VfxTimelineClipsTable> {
+  $$VfxTimelineClipsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get vfxAssetId => $composableBuilder(
+    column: $table.vfxAssetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stateId => $composableBuilder(
+    column: $table.stateId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get attachedInstanceId => $composableBuilder(
+    column: $table.attachedInstanceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VfxTimelineClipsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $VfxTimelineClipsTable> {
+  $$VfxTimelineClipsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get sceneId =>
+      $composableBuilder(column: $table.sceneId, builder: (column) => column);
+
+  GeneratedColumn<String> get vfxAssetId => $composableBuilder(
+    column: $table.vfxAssetId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get stateId =>
+      $composableBuilder(column: $table.stateId, builder: (column) => column);
+
+  GeneratedColumn<String> get attachedInstanceId => $composableBuilder(
+    column: $table.attachedInstanceId,
+    builder: (column) => column,
+  );
+}
+
+class $$VfxTimelineClipsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $VfxTimelineClipsTable,
+          VfxTimelineClip,
+          $$VfxTimelineClipsTableFilterComposer,
+          $$VfxTimelineClipsTableOrderingComposer,
+          $$VfxTimelineClipsTableAnnotationComposer,
+          $$VfxTimelineClipsTableCreateCompanionBuilder,
+          $$VfxTimelineClipsTableUpdateCompanionBuilder,
+          (
+            VfxTimelineClip,
+            BaseReferences<
+              _$ProjectDatabase,
+              $VfxTimelineClipsTable,
+              VfxTimelineClip
+            >,
+          ),
+          VfxTimelineClip,
+          PrefetchHooks Function()
+        > {
+  $$VfxTimelineClipsTableTableManager(
+    _$ProjectDatabase db,
+    $VfxTimelineClipsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VfxTimelineClipsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VfxTimelineClipsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VfxTimelineClipsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> sceneId = const Value.absent(),
+                Value<String> vfxAssetId = const Value.absent(),
+                Value<double> startSeconds = const Value.absent(),
+                Value<double> durationSeconds = const Value.absent(),
+                Value<String?> stateId = const Value.absent(),
+                Value<String?> attachedInstanceId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VfxTimelineClipsCompanion(
+                id: id,
+                sceneId: sceneId,
+                vfxAssetId: vfxAssetId,
+                startSeconds: startSeconds,
+                durationSeconds: durationSeconds,
+                stateId: stateId,
+                attachedInstanceId: attachedInstanceId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String sceneId,
+                required String vfxAssetId,
+                required double startSeconds,
+                required double durationSeconds,
+                Value<String?> stateId = const Value.absent(),
+                Value<String?> attachedInstanceId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VfxTimelineClipsCompanion.insert(
+                id: id,
+                sceneId: sceneId,
+                vfxAssetId: vfxAssetId,
+                startSeconds: startSeconds,
+                durationSeconds: durationSeconds,
+                stateId: stateId,
+                attachedInstanceId: attachedInstanceId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VfxTimelineClipsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $VfxTimelineClipsTable,
+      VfxTimelineClip,
+      $$VfxTimelineClipsTableFilterComposer,
+      $$VfxTimelineClipsTableOrderingComposer,
+      $$VfxTimelineClipsTableAnnotationComposer,
+      $$VfxTimelineClipsTableCreateCompanionBuilder,
+      $$VfxTimelineClipsTableUpdateCompanionBuilder,
+      (
+        VfxTimelineClip,
+        BaseReferences<
+          _$ProjectDatabase,
+          $VfxTimelineClipsTable,
+          VfxTimelineClip
+        >,
+      ),
+      VfxTimelineClip,
+      PrefetchHooks Function()
+    >;
+typedef $$VfxKeyframesTableCreateCompanionBuilder =
+    VfxKeyframesCompanion Function({
+      required String id,
+      required String clipId,
+      required double timeSeconds,
+      required String property,
+      required double value,
+      Value<int> rowid,
+    });
+typedef $$VfxKeyframesTableUpdateCompanionBuilder =
+    VfxKeyframesCompanion Function({
+      Value<String> id,
+      Value<String> clipId,
+      Value<double> timeSeconds,
+      Value<String> property,
+      Value<double> value,
+      Value<int> rowid,
+    });
+
+class $$VfxKeyframesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $VfxKeyframesTable> {
+  $$VfxKeyframesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clipId => $composableBuilder(
+    column: $table.clipId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get timeSeconds => $composableBuilder(
+    column: $table.timeSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get property => $composableBuilder(
+    column: $table.property,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VfxKeyframesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $VfxKeyframesTable> {
+  $$VfxKeyframesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clipId => $composableBuilder(
+    column: $table.clipId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get timeSeconds => $composableBuilder(
+    column: $table.timeSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get property => $composableBuilder(
+    column: $table.property,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VfxKeyframesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $VfxKeyframesTable> {
+  $$VfxKeyframesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get clipId =>
+      $composableBuilder(column: $table.clipId, builder: (column) => column);
+
+  GeneratedColumn<double> get timeSeconds => $composableBuilder(
+    column: $table.timeSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get property =>
+      $composableBuilder(column: $table.property, builder: (column) => column);
+
+  GeneratedColumn<double> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+}
+
+class $$VfxKeyframesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $VfxKeyframesTable,
+          VfxKeyframe,
+          $$VfxKeyframesTableFilterComposer,
+          $$VfxKeyframesTableOrderingComposer,
+          $$VfxKeyframesTableAnnotationComposer,
+          $$VfxKeyframesTableCreateCompanionBuilder,
+          $$VfxKeyframesTableUpdateCompanionBuilder,
+          (
+            VfxKeyframe,
+            BaseReferences<_$ProjectDatabase, $VfxKeyframesTable, VfxKeyframe>,
+          ),
+          VfxKeyframe,
+          PrefetchHooks Function()
+        > {
+  $$VfxKeyframesTableTableManager(
+    _$ProjectDatabase db,
+    $VfxKeyframesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VfxKeyframesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VfxKeyframesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VfxKeyframesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> clipId = const Value.absent(),
+                Value<double> timeSeconds = const Value.absent(),
+                Value<String> property = const Value.absent(),
+                Value<double> value = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VfxKeyframesCompanion(
+                id: id,
+                clipId: clipId,
+                timeSeconds: timeSeconds,
+                property: property,
+                value: value,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String clipId,
+                required double timeSeconds,
+                required String property,
+                required double value,
+                Value<int> rowid = const Value.absent(),
+              }) => VfxKeyframesCompanion.insert(
+                id: id,
+                clipId: clipId,
+                timeSeconds: timeSeconds,
+                property: property,
+                value: value,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VfxKeyframesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $VfxKeyframesTable,
+      VfxKeyframe,
+      $$VfxKeyframesTableFilterComposer,
+      $$VfxKeyframesTableOrderingComposer,
+      $$VfxKeyframesTableAnnotationComposer,
+      $$VfxKeyframesTableCreateCompanionBuilder,
+      $$VfxKeyframesTableUpdateCompanionBuilder,
+      (
+        VfxKeyframe,
+        BaseReferences<_$ProjectDatabase, $VfxKeyframesTable, VfxKeyframe>,
+      ),
+      VfxKeyframe,
+      PrefetchHooks Function()
+    >;
+typedef $$AudioFilesTableCreateCompanionBuilder =
+    AudioFilesCompanion Function({
+      required String id,
+      required String projectId,
+      required String filePath,
+      Value<String?> contentHash,
+      Value<double?> durationSeconds,
+      Value<int?> sampleRate,
+      Value<int?> channels,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$AudioFilesTableUpdateCompanionBuilder =
+    AudioFilesCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> filePath,
+      Value<String?> contentHash,
+      Value<double?> durationSeconds,
+      Value<int?> sampleRate,
+      Value<int?> channels,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$AudioFilesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AudioFilesTable> {
+  $$AudioFilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentHash => $composableBuilder(
+    column: $table.contentHash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sampleRate => $composableBuilder(
+    column: $table.sampleRate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get channels => $composableBuilder(
+    column: $table.channels,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AudioFilesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AudioFilesTable> {
+  $$AudioFilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contentHash => $composableBuilder(
+    column: $table.contentHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sampleRate => $composableBuilder(
+    column: $table.sampleRate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get channels => $composableBuilder(
+    column: $table.channels,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AudioFilesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AudioFilesTable> {
+  $$AudioFilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get filePath =>
+      $composableBuilder(column: $table.filePath, builder: (column) => column);
+
+  GeneratedColumn<String> get contentHash => $composableBuilder(
+    column: $table.contentHash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sampleRate => $composableBuilder(
+    column: $table.sampleRate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get channels =>
+      $composableBuilder(column: $table.channels, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$AudioFilesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AudioFilesTable,
+          AudioFile,
+          $$AudioFilesTableFilterComposer,
+          $$AudioFilesTableOrderingComposer,
+          $$AudioFilesTableAnnotationComposer,
+          $$AudioFilesTableCreateCompanionBuilder,
+          $$AudioFilesTableUpdateCompanionBuilder,
+          (
+            AudioFile,
+            BaseReferences<_$ProjectDatabase, $AudioFilesTable, AudioFile>,
+          ),
+          AudioFile,
+          PrefetchHooks Function()
+        > {
+  $$AudioFilesTableTableManager(_$ProjectDatabase db, $AudioFilesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AudioFilesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AudioFilesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AudioFilesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> filePath = const Value.absent(),
+                Value<String?> contentHash = const Value.absent(),
+                Value<double?> durationSeconds = const Value.absent(),
+                Value<int?> sampleRate = const Value.absent(),
+                Value<int?> channels = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AudioFilesCompanion(
+                id: id,
+                projectId: projectId,
+                filePath: filePath,
+                contentHash: contentHash,
+                durationSeconds: durationSeconds,
+                sampleRate: sampleRate,
+                channels: channels,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String filePath,
+                Value<String?> contentHash = const Value.absent(),
+                Value<double?> durationSeconds = const Value.absent(),
+                Value<int?> sampleRate = const Value.absent(),
+                Value<int?> channels = const Value.absent(),
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AudioFilesCompanion.insert(
+                id: id,
+                projectId: projectId,
+                filePath: filePath,
+                contentHash: contentHash,
+                durationSeconds: durationSeconds,
+                sampleRate: sampleRate,
+                channels: channels,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AudioFilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AudioFilesTable,
+      AudioFile,
+      $$AudioFilesTableFilterComposer,
+      $$AudioFilesTableOrderingComposer,
+      $$AudioFilesTableAnnotationComposer,
+      $$AudioFilesTableCreateCompanionBuilder,
+      $$AudioFilesTableUpdateCompanionBuilder,
+      (
+        AudioFile,
+        BaseReferences<_$ProjectDatabase, $AudioFilesTable, AudioFile>,
+      ),
+      AudioFile,
+      PrefetchHooks Function()
+    >;
+typedef $$SoundEffectsTableCreateCompanionBuilder =
+    SoundEffectsCompanion Function({
+      required String assetId,
+      required String projectId,
+      Value<String?> audioFileId,
+      required String name,
+      required String category,
+      Value<String> description,
+      Value<bool> loopable,
+      Value<int> rowid,
+    });
+typedef $$SoundEffectsTableUpdateCompanionBuilder =
+    SoundEffectsCompanion Function({
+      Value<String> assetId,
+      Value<String> projectId,
+      Value<String?> audioFileId,
+      Value<String> name,
+      Value<String> category,
+      Value<String> description,
+      Value<bool> loopable,
+      Value<int> rowid,
+    });
+
+class $$SoundEffectsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $SoundEffectsTable> {
+  $$SoundEffectsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get loopable => $composableBuilder(
+    column: $table.loopable,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SoundEffectsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $SoundEffectsTable> {
+  $$SoundEffectsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get loopable => $composableBuilder(
+    column: $table.loopable,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SoundEffectsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $SoundEffectsTable> {
+  $$SoundEffectsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get loopable =>
+      $composableBuilder(column: $table.loopable, builder: (column) => column);
+}
+
+class $$SoundEffectsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $SoundEffectsTable,
+          SoundEffect,
+          $$SoundEffectsTableFilterComposer,
+          $$SoundEffectsTableOrderingComposer,
+          $$SoundEffectsTableAnnotationComposer,
+          $$SoundEffectsTableCreateCompanionBuilder,
+          $$SoundEffectsTableUpdateCompanionBuilder,
+          (
+            SoundEffect,
+            BaseReferences<_$ProjectDatabase, $SoundEffectsTable, SoundEffect>,
+          ),
+          SoundEffect,
+          PrefetchHooks Function()
+        > {
+  $$SoundEffectsTableTableManager(
+    _$ProjectDatabase db,
+    $SoundEffectsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SoundEffectsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SoundEffectsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SoundEffectsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> assetId = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String?> audioFileId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<bool> loopable = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SoundEffectsCompanion(
+                assetId: assetId,
+                projectId: projectId,
+                audioFileId: audioFileId,
+                name: name,
+                category: category,
+                description: description,
+                loopable: loopable,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String assetId,
+                required String projectId,
+                Value<String?> audioFileId = const Value.absent(),
+                required String name,
+                required String category,
+                Value<String> description = const Value.absent(),
+                Value<bool> loopable = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SoundEffectsCompanion.insert(
+                assetId: assetId,
+                projectId: projectId,
+                audioFileId: audioFileId,
+                name: name,
+                category: category,
+                description: description,
+                loopable: loopable,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SoundEffectsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $SoundEffectsTable,
+      SoundEffect,
+      $$SoundEffectsTableFilterComposer,
+      $$SoundEffectsTableOrderingComposer,
+      $$SoundEffectsTableAnnotationComposer,
+      $$SoundEffectsTableCreateCompanionBuilder,
+      $$SoundEffectsTableUpdateCompanionBuilder,
+      (
+        SoundEffect,
+        BaseReferences<_$ProjectDatabase, $SoundEffectsTable, SoundEffect>,
+      ),
+      SoundEffect,
+      PrefetchHooks Function()
+    >;
+typedef $$SoundEffectVariationsTableCreateCompanionBuilder =
+    SoundEffectVariationsCompanion Function({
+      required String id,
+      required String soundEffectId,
+      required String audioFileId,
+      Value<String> label,
+      Value<double> weight,
+      Value<int> rowid,
+    });
+typedef $$SoundEffectVariationsTableUpdateCompanionBuilder =
+    SoundEffectVariationsCompanion Function({
+      Value<String> id,
+      Value<String> soundEffectId,
+      Value<String> audioFileId,
+      Value<String> label,
+      Value<double> weight,
+      Value<int> rowid,
+    });
+
+class $$SoundEffectVariationsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $SoundEffectVariationsTable> {
+  $$SoundEffectVariationsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get soundEffectId => $composableBuilder(
+    column: $table.soundEffectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get weight => $composableBuilder(
+    column: $table.weight,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SoundEffectVariationsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $SoundEffectVariationsTable> {
+  $$SoundEffectVariationsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get soundEffectId => $composableBuilder(
+    column: $table.soundEffectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get weight => $composableBuilder(
+    column: $table.weight,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SoundEffectVariationsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $SoundEffectVariationsTable> {
+  $$SoundEffectVariationsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get soundEffectId => $composableBuilder(
+    column: $table.soundEffectId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<double> get weight =>
+      $composableBuilder(column: $table.weight, builder: (column) => column);
+}
+
+class $$SoundEffectVariationsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $SoundEffectVariationsTable,
+          SoundEffectVariation,
+          $$SoundEffectVariationsTableFilterComposer,
+          $$SoundEffectVariationsTableOrderingComposer,
+          $$SoundEffectVariationsTableAnnotationComposer,
+          $$SoundEffectVariationsTableCreateCompanionBuilder,
+          $$SoundEffectVariationsTableUpdateCompanionBuilder,
+          (
+            SoundEffectVariation,
+            BaseReferences<
+              _$ProjectDatabase,
+              $SoundEffectVariationsTable,
+              SoundEffectVariation
+            >,
+          ),
+          SoundEffectVariation,
+          PrefetchHooks Function()
+        > {
+  $$SoundEffectVariationsTableTableManager(
+    _$ProjectDatabase db,
+    $SoundEffectVariationsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SoundEffectVariationsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$SoundEffectVariationsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SoundEffectVariationsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> soundEffectId = const Value.absent(),
+                Value<String> audioFileId = const Value.absent(),
+                Value<String> label = const Value.absent(),
+                Value<double> weight = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SoundEffectVariationsCompanion(
+                id: id,
+                soundEffectId: soundEffectId,
+                audioFileId: audioFileId,
+                label: label,
+                weight: weight,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String soundEffectId,
+                required String audioFileId,
+                Value<String> label = const Value.absent(),
+                Value<double> weight = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SoundEffectVariationsCompanion.insert(
+                id: id,
+                soundEffectId: soundEffectId,
+                audioFileId: audioFileId,
+                label: label,
+                weight: weight,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SoundEffectVariationsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $SoundEffectVariationsTable,
+      SoundEffectVariation,
+      $$SoundEffectVariationsTableFilterComposer,
+      $$SoundEffectVariationsTableOrderingComposer,
+      $$SoundEffectVariationsTableAnnotationComposer,
+      $$SoundEffectVariationsTableCreateCompanionBuilder,
+      $$SoundEffectVariationsTableUpdateCompanionBuilder,
+      (
+        SoundEffectVariation,
+        BaseReferences<
+          _$ProjectDatabase,
+          $SoundEffectVariationsTable,
+          SoundEffectVariation
+        >,
+      ),
+      SoundEffectVariation,
+      PrefetchHooks Function()
+    >;
+typedef $$AmbienceAssetsTableCreateCompanionBuilder =
+    AmbienceAssetsCompanion Function({
+      required String assetId,
+      required String projectId,
+      Value<String?> audioFileId,
+      required String name,
+      Value<String> description,
+      Value<bool> loopable,
+      Value<int> rowid,
+    });
+typedef $$AmbienceAssetsTableUpdateCompanionBuilder =
+    AmbienceAssetsCompanion Function({
+      Value<String> assetId,
+      Value<String> projectId,
+      Value<String?> audioFileId,
+      Value<String> name,
+      Value<String> description,
+      Value<bool> loopable,
+      Value<int> rowid,
+    });
+
+class $$AmbienceAssetsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AmbienceAssetsTable> {
+  $$AmbienceAssetsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get loopable => $composableBuilder(
+    column: $table.loopable,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AmbienceAssetsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AmbienceAssetsTable> {
+  $$AmbienceAssetsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get loopable => $composableBuilder(
+    column: $table.loopable,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AmbienceAssetsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AmbienceAssetsTable> {
+  $$AmbienceAssetsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get loopable =>
+      $composableBuilder(column: $table.loopable, builder: (column) => column);
+}
+
+class $$AmbienceAssetsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AmbienceAssetsTable,
+          AmbienceAsset,
+          $$AmbienceAssetsTableFilterComposer,
+          $$AmbienceAssetsTableOrderingComposer,
+          $$AmbienceAssetsTableAnnotationComposer,
+          $$AmbienceAssetsTableCreateCompanionBuilder,
+          $$AmbienceAssetsTableUpdateCompanionBuilder,
+          (
+            AmbienceAsset,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AmbienceAssetsTable,
+              AmbienceAsset
+            >,
+          ),
+          AmbienceAsset,
+          PrefetchHooks Function()
+        > {
+  $$AmbienceAssetsTableTableManager(
+    _$ProjectDatabase db,
+    $AmbienceAssetsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AmbienceAssetsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AmbienceAssetsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AmbienceAssetsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> assetId = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String?> audioFileId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<bool> loopable = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AmbienceAssetsCompanion(
+                assetId: assetId,
+                projectId: projectId,
+                audioFileId: audioFileId,
+                name: name,
+                description: description,
+                loopable: loopable,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String assetId,
+                required String projectId,
+                Value<String?> audioFileId = const Value.absent(),
+                required String name,
+                Value<String> description = const Value.absent(),
+                Value<bool> loopable = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AmbienceAssetsCompanion.insert(
+                assetId: assetId,
+                projectId: projectId,
+                audioFileId: audioFileId,
+                name: name,
+                description: description,
+                loopable: loopable,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AmbienceAssetsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AmbienceAssetsTable,
+      AmbienceAsset,
+      $$AmbienceAssetsTableFilterComposer,
+      $$AmbienceAssetsTableOrderingComposer,
+      $$AmbienceAssetsTableAnnotationComposer,
+      $$AmbienceAssetsTableCreateCompanionBuilder,
+      $$AmbienceAssetsTableUpdateCompanionBuilder,
+      (
+        AmbienceAsset,
+        BaseReferences<_$ProjectDatabase, $AmbienceAssetsTable, AmbienceAsset>,
+      ),
+      AmbienceAsset,
+      PrefetchHooks Function()
+    >;
+typedef $$AmbienceLayersTableCreateCompanionBuilder =
+    AmbienceLayersCompanion Function({
+      required String id,
+      required String ambienceId,
+      required String audioFileId,
+      required String name,
+      Value<double> defaultGainDb,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$AmbienceLayersTableUpdateCompanionBuilder =
+    AmbienceLayersCompanion Function({
+      Value<String> id,
+      Value<String> ambienceId,
+      Value<String> audioFileId,
+      Value<String> name,
+      Value<double> defaultGainDb,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+class $$AmbienceLayersTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AmbienceLayersTable> {
+  $$AmbienceLayersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ambienceId => $composableBuilder(
+    column: $table.ambienceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get defaultGainDb => $composableBuilder(
+    column: $table.defaultGainDb,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AmbienceLayersTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AmbienceLayersTable> {
+  $$AmbienceLayersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ambienceId => $composableBuilder(
+    column: $table.ambienceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get defaultGainDb => $composableBuilder(
+    column: $table.defaultGainDb,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AmbienceLayersTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AmbienceLayersTable> {
+  $$AmbienceLayersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get ambienceId => $composableBuilder(
+    column: $table.ambienceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<double> get defaultGainDb => $composableBuilder(
+    column: $table.defaultGainDb,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+}
+
+class $$AmbienceLayersTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AmbienceLayersTable,
+          AmbienceLayer,
+          $$AmbienceLayersTableFilterComposer,
+          $$AmbienceLayersTableOrderingComposer,
+          $$AmbienceLayersTableAnnotationComposer,
+          $$AmbienceLayersTableCreateCompanionBuilder,
+          $$AmbienceLayersTableUpdateCompanionBuilder,
+          (
+            AmbienceLayer,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AmbienceLayersTable,
+              AmbienceLayer
+            >,
+          ),
+          AmbienceLayer,
+          PrefetchHooks Function()
+        > {
+  $$AmbienceLayersTableTableManager(
+    _$ProjectDatabase db,
+    $AmbienceLayersTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AmbienceLayersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AmbienceLayersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AmbienceLayersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> ambienceId = const Value.absent(),
+                Value<String> audioFileId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<double> defaultGainDb = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AmbienceLayersCompanion(
+                id: id,
+                ambienceId: ambienceId,
+                audioFileId: audioFileId,
+                name: name,
+                defaultGainDb: defaultGainDb,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String ambienceId,
+                required String audioFileId,
+                required String name,
+                Value<double> defaultGainDb = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AmbienceLayersCompanion.insert(
+                id: id,
+                ambienceId: ambienceId,
+                audioFileId: audioFileId,
+                name: name,
+                defaultGainDb: defaultGainDb,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AmbienceLayersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AmbienceLayersTable,
+      AmbienceLayer,
+      $$AmbienceLayersTableFilterComposer,
+      $$AmbienceLayersTableOrderingComposer,
+      $$AmbienceLayersTableAnnotationComposer,
+      $$AmbienceLayersTableCreateCompanionBuilder,
+      $$AmbienceLayersTableUpdateCompanionBuilder,
+      (
+        AmbienceLayer,
+        BaseReferences<_$ProjectDatabase, $AmbienceLayersTable, AmbienceLayer>,
+      ),
+      AmbienceLayer,
+      PrefetchHooks Function()
+    >;
+typedef $$AmbienceVariantsTableCreateCompanionBuilder =
+    AmbienceVariantsCompanion Function({
+      required String id,
+      required String ambienceId,
+      required String name,
+      Value<String?> referenceAudioFileId,
+      Value<String> conditions,
+      Value<int> rowid,
+    });
+typedef $$AmbienceVariantsTableUpdateCompanionBuilder =
+    AmbienceVariantsCompanion Function({
+      Value<String> id,
+      Value<String> ambienceId,
+      Value<String> name,
+      Value<String?> referenceAudioFileId,
+      Value<String> conditions,
+      Value<int> rowid,
+    });
+
+class $$AmbienceVariantsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AmbienceVariantsTable> {
+  $$AmbienceVariantsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ambienceId => $composableBuilder(
+    column: $table.ambienceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referenceAudioFileId => $composableBuilder(
+    column: $table.referenceAudioFileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get conditions => $composableBuilder(
+    column: $table.conditions,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AmbienceVariantsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AmbienceVariantsTable> {
+  $$AmbienceVariantsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ambienceId => $composableBuilder(
+    column: $table.ambienceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referenceAudioFileId => $composableBuilder(
+    column: $table.referenceAudioFileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get conditions => $composableBuilder(
+    column: $table.conditions,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AmbienceVariantsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AmbienceVariantsTable> {
+  $$AmbienceVariantsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get ambienceId => $composableBuilder(
+    column: $table.ambienceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get referenceAudioFileId => $composableBuilder(
+    column: $table.referenceAudioFileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get conditions => $composableBuilder(
+    column: $table.conditions,
+    builder: (column) => column,
+  );
+}
+
+class $$AmbienceVariantsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AmbienceVariantsTable,
+          AmbienceVariant,
+          $$AmbienceVariantsTableFilterComposer,
+          $$AmbienceVariantsTableOrderingComposer,
+          $$AmbienceVariantsTableAnnotationComposer,
+          $$AmbienceVariantsTableCreateCompanionBuilder,
+          $$AmbienceVariantsTableUpdateCompanionBuilder,
+          (
+            AmbienceVariant,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AmbienceVariantsTable,
+              AmbienceVariant
+            >,
+          ),
+          AmbienceVariant,
+          PrefetchHooks Function()
+        > {
+  $$AmbienceVariantsTableTableManager(
+    _$ProjectDatabase db,
+    $AmbienceVariantsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AmbienceVariantsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AmbienceVariantsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AmbienceVariantsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> ambienceId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> referenceAudioFileId = const Value.absent(),
+                Value<String> conditions = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AmbienceVariantsCompanion(
+                id: id,
+                ambienceId: ambienceId,
+                name: name,
+                referenceAudioFileId: referenceAudioFileId,
+                conditions: conditions,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String ambienceId,
+                required String name,
+                Value<String?> referenceAudioFileId = const Value.absent(),
+                Value<String> conditions = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AmbienceVariantsCompanion.insert(
+                id: id,
+                ambienceId: ambienceId,
+                name: name,
+                referenceAudioFileId: referenceAudioFileId,
+                conditions: conditions,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AmbienceVariantsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AmbienceVariantsTable,
+      AmbienceVariant,
+      $$AmbienceVariantsTableFilterComposer,
+      $$AmbienceVariantsTableOrderingComposer,
+      $$AmbienceVariantsTableAnnotationComposer,
+      $$AmbienceVariantsTableCreateCompanionBuilder,
+      $$AmbienceVariantsTableUpdateCompanionBuilder,
+      (
+        AmbienceVariant,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AmbienceVariantsTable,
+          AmbienceVariant
+        >,
+      ),
+      AmbienceVariant,
+      PrefetchHooks Function()
+    >;
+typedef $$MusicCuesTableCreateCompanionBuilder =
+    MusicCuesCompanion Function({
+      required String assetId,
+      required String projectId,
+      Value<String?> audioFileId,
+      required String name,
+      required String mood,
+      Value<double?> bpm,
+      Value<String?> musicalKey,
+      Value<String> description,
+      Value<bool> loopable,
+      Value<int> rowid,
+    });
+typedef $$MusicCuesTableUpdateCompanionBuilder =
+    MusicCuesCompanion Function({
+      Value<String> assetId,
+      Value<String> projectId,
+      Value<String?> audioFileId,
+      Value<String> name,
+      Value<String> mood,
+      Value<double?> bpm,
+      Value<String?> musicalKey,
+      Value<String> description,
+      Value<bool> loopable,
+      Value<int> rowid,
+    });
+
+class $$MusicCuesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $MusicCuesTable> {
+  $$MusicCuesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mood => $composableBuilder(
+    column: $table.mood,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bpm => $composableBuilder(
+    column: $table.bpm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get musicalKey => $composableBuilder(
+    column: $table.musicalKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get loopable => $composableBuilder(
+    column: $table.loopable,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MusicCuesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $MusicCuesTable> {
+  $$MusicCuesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mood => $composableBuilder(
+    column: $table.mood,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bpm => $composableBuilder(
+    column: $table.bpm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get musicalKey => $composableBuilder(
+    column: $table.musicalKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get loopable => $composableBuilder(
+    column: $table.loopable,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MusicCuesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $MusicCuesTable> {
+  $$MusicCuesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get mood =>
+      $composableBuilder(column: $table.mood, builder: (column) => column);
+
+  GeneratedColumn<double> get bpm =>
+      $composableBuilder(column: $table.bpm, builder: (column) => column);
+
+  GeneratedColumn<String> get musicalKey => $composableBuilder(
+    column: $table.musicalKey,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get loopable =>
+      $composableBuilder(column: $table.loopable, builder: (column) => column);
+}
+
+class $$MusicCuesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $MusicCuesTable,
+          MusicCue,
+          $$MusicCuesTableFilterComposer,
+          $$MusicCuesTableOrderingComposer,
+          $$MusicCuesTableAnnotationComposer,
+          $$MusicCuesTableCreateCompanionBuilder,
+          $$MusicCuesTableUpdateCompanionBuilder,
+          (
+            MusicCue,
+            BaseReferences<_$ProjectDatabase, $MusicCuesTable, MusicCue>,
+          ),
+          MusicCue,
+          PrefetchHooks Function()
+        > {
+  $$MusicCuesTableTableManager(_$ProjectDatabase db, $MusicCuesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MusicCuesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MusicCuesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MusicCuesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> assetId = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String?> audioFileId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> mood = const Value.absent(),
+                Value<double?> bpm = const Value.absent(),
+                Value<String?> musicalKey = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<bool> loopable = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MusicCuesCompanion(
+                assetId: assetId,
+                projectId: projectId,
+                audioFileId: audioFileId,
+                name: name,
+                mood: mood,
+                bpm: bpm,
+                musicalKey: musicalKey,
+                description: description,
+                loopable: loopable,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String assetId,
+                required String projectId,
+                Value<String?> audioFileId = const Value.absent(),
+                required String name,
+                required String mood,
+                Value<double?> bpm = const Value.absent(),
+                Value<String?> musicalKey = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<bool> loopable = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MusicCuesCompanion.insert(
+                assetId: assetId,
+                projectId: projectId,
+                audioFileId: audioFileId,
+                name: name,
+                mood: mood,
+                bpm: bpm,
+                musicalKey: musicalKey,
+                description: description,
+                loopable: loopable,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MusicCuesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $MusicCuesTable,
+      MusicCue,
+      $$MusicCuesTableFilterComposer,
+      $$MusicCuesTableOrderingComposer,
+      $$MusicCuesTableAnnotationComposer,
+      $$MusicCuesTableCreateCompanionBuilder,
+      $$MusicCuesTableUpdateCompanionBuilder,
+      (MusicCue, BaseReferences<_$ProjectDatabase, $MusicCuesTable, MusicCue>),
+      MusicCue,
+      PrefetchHooks Function()
+    >;
+typedef $$MusicSectionsTableCreateCompanionBuilder =
+    MusicSectionsCompanion Function({
+      required String id,
+      required String musicId,
+      required String name,
+      required double startSeconds,
+      required double endSeconds,
+      Value<String?> mood,
+      Value<int> rowid,
+    });
+typedef $$MusicSectionsTableUpdateCompanionBuilder =
+    MusicSectionsCompanion Function({
+      Value<String> id,
+      Value<String> musicId,
+      Value<String> name,
+      Value<double> startSeconds,
+      Value<double> endSeconds,
+      Value<String?> mood,
+      Value<int> rowid,
+    });
+
+class $$MusicSectionsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $MusicSectionsTable> {
+  $$MusicSectionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get musicId => $composableBuilder(
+    column: $table.musicId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get endSeconds => $composableBuilder(
+    column: $table.endSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mood => $composableBuilder(
+    column: $table.mood,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MusicSectionsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $MusicSectionsTable> {
+  $$MusicSectionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get musicId => $composableBuilder(
+    column: $table.musicId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get endSeconds => $composableBuilder(
+    column: $table.endSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mood => $composableBuilder(
+    column: $table.mood,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MusicSectionsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $MusicSectionsTable> {
+  $$MusicSectionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get musicId =>
+      $composableBuilder(column: $table.musicId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get endSeconds => $composableBuilder(
+    column: $table.endSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get mood =>
+      $composableBuilder(column: $table.mood, builder: (column) => column);
+}
+
+class $$MusicSectionsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $MusicSectionsTable,
+          MusicSection,
+          $$MusicSectionsTableFilterComposer,
+          $$MusicSectionsTableOrderingComposer,
+          $$MusicSectionsTableAnnotationComposer,
+          $$MusicSectionsTableCreateCompanionBuilder,
+          $$MusicSectionsTableUpdateCompanionBuilder,
+          (
+            MusicSection,
+            BaseReferences<
+              _$ProjectDatabase,
+              $MusicSectionsTable,
+              MusicSection
+            >,
+          ),
+          MusicSection,
+          PrefetchHooks Function()
+        > {
+  $$MusicSectionsTableTableManager(
+    _$ProjectDatabase db,
+    $MusicSectionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MusicSectionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MusicSectionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MusicSectionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> musicId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<double> startSeconds = const Value.absent(),
+                Value<double> endSeconds = const Value.absent(),
+                Value<String?> mood = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MusicSectionsCompanion(
+                id: id,
+                musicId: musicId,
+                name: name,
+                startSeconds: startSeconds,
+                endSeconds: endSeconds,
+                mood: mood,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String musicId,
+                required String name,
+                required double startSeconds,
+                required double endSeconds,
+                Value<String?> mood = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MusicSectionsCompanion.insert(
+                id: id,
+                musicId: musicId,
+                name: name,
+                startSeconds: startSeconds,
+                endSeconds: endSeconds,
+                mood: mood,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MusicSectionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $MusicSectionsTable,
+      MusicSection,
+      $$MusicSectionsTableFilterComposer,
+      $$MusicSectionsTableOrderingComposer,
+      $$MusicSectionsTableAnnotationComposer,
+      $$MusicSectionsTableCreateCompanionBuilder,
+      $$MusicSectionsTableUpdateCompanionBuilder,
+      (
+        MusicSection,
+        BaseReferences<_$ProjectDatabase, $MusicSectionsTable, MusicSection>,
+      ),
+      MusicSection,
+      PrefetchHooks Function()
+    >;
+typedef $$VoiceProfilesTableCreateCompanionBuilder =
+    VoiceProfilesCompanion Function({
+      required String characterId,
+      required String displayName,
+      required String language,
+      required String vocalTexture,
+      required String deliveryNotes,
+      Value<int> rowid,
+    });
+typedef $$VoiceProfilesTableUpdateCompanionBuilder =
+    VoiceProfilesCompanion Function({
+      Value<String> characterId,
+      Value<String> displayName,
+      Value<String> language,
+      Value<String> vocalTexture,
+      Value<String> deliveryNotes,
+      Value<int> rowid,
+    });
+
+class $$VoiceProfilesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $VoiceProfilesTable> {
+  $$VoiceProfilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get language => $composableBuilder(
+    column: $table.language,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get vocalTexture => $composableBuilder(
+    column: $table.vocalTexture,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deliveryNotes => $composableBuilder(
+    column: $table.deliveryNotes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VoiceProfilesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $VoiceProfilesTable> {
+  $$VoiceProfilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get language => $composableBuilder(
+    column: $table.language,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get vocalTexture => $composableBuilder(
+    column: $table.vocalTexture,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deliveryNotes => $composableBuilder(
+    column: $table.deliveryNotes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VoiceProfilesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $VoiceProfilesTable> {
+  $$VoiceProfilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get language =>
+      $composableBuilder(column: $table.language, builder: (column) => column);
+
+  GeneratedColumn<String> get vocalTexture => $composableBuilder(
+    column: $table.vocalTexture,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get deliveryNotes => $composableBuilder(
+    column: $table.deliveryNotes,
+    builder: (column) => column,
+  );
+}
+
+class $$VoiceProfilesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $VoiceProfilesTable,
+          VoiceProfile,
+          $$VoiceProfilesTableFilterComposer,
+          $$VoiceProfilesTableOrderingComposer,
+          $$VoiceProfilesTableAnnotationComposer,
+          $$VoiceProfilesTableCreateCompanionBuilder,
+          $$VoiceProfilesTableUpdateCompanionBuilder,
+          (
+            VoiceProfile,
+            BaseReferences<
+              _$ProjectDatabase,
+              $VoiceProfilesTable,
+              VoiceProfile
+            >,
+          ),
+          VoiceProfile,
+          PrefetchHooks Function()
+        > {
+  $$VoiceProfilesTableTableManager(
+    _$ProjectDatabase db,
+    $VoiceProfilesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VoiceProfilesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VoiceProfilesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VoiceProfilesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> characterId = const Value.absent(),
+                Value<String> displayName = const Value.absent(),
+                Value<String> language = const Value.absent(),
+                Value<String> vocalTexture = const Value.absent(),
+                Value<String> deliveryNotes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VoiceProfilesCompanion(
+                characterId: characterId,
+                displayName: displayName,
+                language: language,
+                vocalTexture: vocalTexture,
+                deliveryNotes: deliveryNotes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String characterId,
+                required String displayName,
+                required String language,
+                required String vocalTexture,
+                required String deliveryNotes,
+                Value<int> rowid = const Value.absent(),
+              }) => VoiceProfilesCompanion.insert(
+                characterId: characterId,
+                displayName: displayName,
+                language: language,
+                vocalTexture: vocalTexture,
+                deliveryNotes: deliveryNotes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VoiceProfilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $VoiceProfilesTable,
+      VoiceProfile,
+      $$VoiceProfilesTableFilterComposer,
+      $$VoiceProfilesTableOrderingComposer,
+      $$VoiceProfilesTableAnnotationComposer,
+      $$VoiceProfilesTableCreateCompanionBuilder,
+      $$VoiceProfilesTableUpdateCompanionBuilder,
+      (
+        VoiceProfile,
+        BaseReferences<_$ProjectDatabase, $VoiceProfilesTable, VoiceProfile>,
+      ),
+      VoiceProfile,
+      PrefetchHooks Function()
+    >;
+typedef $$VoiceReferencesTableCreateCompanionBuilder =
+    VoiceReferencesCompanion Function({
+      required String id,
+      required String characterId,
+      required String audioFileId,
+      required String name,
+      Value<bool> primary,
+      Value<int> rowid,
+    });
+typedef $$VoiceReferencesTableUpdateCompanionBuilder =
+    VoiceReferencesCompanion Function({
+      Value<String> id,
+      Value<String> characterId,
+      Value<String> audioFileId,
+      Value<String> name,
+      Value<bool> primary,
+      Value<int> rowid,
+    });
+
+class $$VoiceReferencesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $VoiceReferencesTable> {
+  $$VoiceReferencesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get primary => $composableBuilder(
+    column: $table.primary,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VoiceReferencesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $VoiceReferencesTable> {
+  $$VoiceReferencesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get primary => $composableBuilder(
+    column: $table.primary,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VoiceReferencesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $VoiceReferencesTable> {
+  $$VoiceReferencesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<bool> get primary =>
+      $composableBuilder(column: $table.primary, builder: (column) => column);
+}
+
+class $$VoiceReferencesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $VoiceReferencesTable,
+          VoiceReference,
+          $$VoiceReferencesTableFilterComposer,
+          $$VoiceReferencesTableOrderingComposer,
+          $$VoiceReferencesTableAnnotationComposer,
+          $$VoiceReferencesTableCreateCompanionBuilder,
+          $$VoiceReferencesTableUpdateCompanionBuilder,
+          (
+            VoiceReference,
+            BaseReferences<
+              _$ProjectDatabase,
+              $VoiceReferencesTable,
+              VoiceReference
+            >,
+          ),
+          VoiceReference,
+          PrefetchHooks Function()
+        > {
+  $$VoiceReferencesTableTableManager(
+    _$ProjectDatabase db,
+    $VoiceReferencesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VoiceReferencesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VoiceReferencesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VoiceReferencesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> characterId = const Value.absent(),
+                Value<String> audioFileId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<bool> primary = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VoiceReferencesCompanion(
+                id: id,
+                characterId: characterId,
+                audioFileId: audioFileId,
+                name: name,
+                primary: primary,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String characterId,
+                required String audioFileId,
+                required String name,
+                Value<bool> primary = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VoiceReferencesCompanion.insert(
+                id: id,
+                characterId: characterId,
+                audioFileId: audioFileId,
+                name: name,
+                primary: primary,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VoiceReferencesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $VoiceReferencesTable,
+      VoiceReference,
+      $$VoiceReferencesTableFilterComposer,
+      $$VoiceReferencesTableOrderingComposer,
+      $$VoiceReferencesTableAnnotationComposer,
+      $$VoiceReferencesTableCreateCompanionBuilder,
+      $$VoiceReferencesTableUpdateCompanionBuilder,
+      (
+        VoiceReference,
+        BaseReferences<
+          _$ProjectDatabase,
+          $VoiceReferencesTable,
+          VoiceReference
+        >,
+      ),
+      VoiceReference,
+      PrefetchHooks Function()
+    >;
+typedef $$DialogueLinesTableCreateCompanionBuilder =
+    DialogueLinesCompanion Function({
+      required String id,
+      required String projectId,
+      required String sceneId,
+      required String characterId,
+      required String lineText,
+      required double startSeconds,
+      required double durationSeconds,
+      required String subtitleText,
+      Value<int> rowid,
+    });
+typedef $$DialogueLinesTableUpdateCompanionBuilder =
+    DialogueLinesCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> sceneId,
+      Value<String> characterId,
+      Value<String> lineText,
+      Value<double> startSeconds,
+      Value<double> durationSeconds,
+      Value<String> subtitleText,
+      Value<int> rowid,
+    });
+
+class $$DialogueLinesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $DialogueLinesTable> {
+  $$DialogueLinesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lineText => $composableBuilder(
+    column: $table.lineText,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get subtitleText => $composableBuilder(
+    column: $table.subtitleText,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DialogueLinesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $DialogueLinesTable> {
+  $$DialogueLinesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lineText => $composableBuilder(
+    column: $table.lineText,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get subtitleText => $composableBuilder(
+    column: $table.subtitleText,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DialogueLinesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $DialogueLinesTable> {
+  $$DialogueLinesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get sceneId =>
+      $composableBuilder(column: $table.sceneId, builder: (column) => column);
+
+  GeneratedColumn<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lineText =>
+      $composableBuilder(column: $table.lineText, builder: (column) => column);
+
+  GeneratedColumn<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get subtitleText => $composableBuilder(
+    column: $table.subtitleText,
+    builder: (column) => column,
+  );
+}
+
+class $$DialogueLinesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $DialogueLinesTable,
+          DialogueLine,
+          $$DialogueLinesTableFilterComposer,
+          $$DialogueLinesTableOrderingComposer,
+          $$DialogueLinesTableAnnotationComposer,
+          $$DialogueLinesTableCreateCompanionBuilder,
+          $$DialogueLinesTableUpdateCompanionBuilder,
+          (
+            DialogueLine,
+            BaseReferences<
+              _$ProjectDatabase,
+              $DialogueLinesTable,
+              DialogueLine
+            >,
+          ),
+          DialogueLine,
+          PrefetchHooks Function()
+        > {
+  $$DialogueLinesTableTableManager(
+    _$ProjectDatabase db,
+    $DialogueLinesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DialogueLinesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DialogueLinesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DialogueLinesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> sceneId = const Value.absent(),
+                Value<String> characterId = const Value.absent(),
+                Value<String> lineText = const Value.absent(),
+                Value<double> startSeconds = const Value.absent(),
+                Value<double> durationSeconds = const Value.absent(),
+                Value<String> subtitleText = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DialogueLinesCompanion(
+                id: id,
+                projectId: projectId,
+                sceneId: sceneId,
+                characterId: characterId,
+                lineText: lineText,
+                startSeconds: startSeconds,
+                durationSeconds: durationSeconds,
+                subtitleText: subtitleText,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String sceneId,
+                required String characterId,
+                required String lineText,
+                required double startSeconds,
+                required double durationSeconds,
+                required String subtitleText,
+                Value<int> rowid = const Value.absent(),
+              }) => DialogueLinesCompanion.insert(
+                id: id,
+                projectId: projectId,
+                sceneId: sceneId,
+                characterId: characterId,
+                lineText: lineText,
+                startSeconds: startSeconds,
+                durationSeconds: durationSeconds,
+                subtitleText: subtitleText,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DialogueLinesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $DialogueLinesTable,
+      DialogueLine,
+      $$DialogueLinesTableFilterComposer,
+      $$DialogueLinesTableOrderingComposer,
+      $$DialogueLinesTableAnnotationComposer,
+      $$DialogueLinesTableCreateCompanionBuilder,
+      $$DialogueLinesTableUpdateCompanionBuilder,
+      (
+        DialogueLine,
+        BaseReferences<_$ProjectDatabase, $DialogueLinesTable, DialogueLine>,
+      ),
+      DialogueLine,
+      PrefetchHooks Function()
+    >;
+typedef $$DialogueTakesTableCreateCompanionBuilder =
+    DialogueTakesCompanion Function({
+      required String id,
+      required String lineId,
+      required String audioFileId,
+      required String label,
+      Value<bool> selected,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+typedef $$DialogueTakesTableUpdateCompanionBuilder =
+    DialogueTakesCompanion Function({
+      Value<String> id,
+      Value<String> lineId,
+      Value<String> audioFileId,
+      Value<String> label,
+      Value<bool> selected,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+
+class $$DialogueTakesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $DialogueTakesTable> {
+  $$DialogueTakesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lineId => $composableBuilder(
+    column: $table.lineId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get selected => $composableBuilder(
+    column: $table.selected,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DialogueTakesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $DialogueTakesTable> {
+  $$DialogueTakesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lineId => $composableBuilder(
+    column: $table.lineId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get selected => $composableBuilder(
+    column: $table.selected,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DialogueTakesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $DialogueTakesTable> {
+  $$DialogueTakesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get lineId =>
+      $composableBuilder(column: $table.lineId, builder: (column) => column);
+
+  GeneratedColumn<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<bool> get selected =>
+      $composableBuilder(column: $table.selected, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$DialogueTakesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $DialogueTakesTable,
+          DialogueTake,
+          $$DialogueTakesTableFilterComposer,
+          $$DialogueTakesTableOrderingComposer,
+          $$DialogueTakesTableAnnotationComposer,
+          $$DialogueTakesTableCreateCompanionBuilder,
+          $$DialogueTakesTableUpdateCompanionBuilder,
+          (
+            DialogueTake,
+            BaseReferences<
+              _$ProjectDatabase,
+              $DialogueTakesTable,
+              DialogueTake
+            >,
+          ),
+          DialogueTake,
+          PrefetchHooks Function()
+        > {
+  $$DialogueTakesTableTableManager(
+    _$ProjectDatabase db,
+    $DialogueTakesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DialogueTakesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DialogueTakesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DialogueTakesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> lineId = const Value.absent(),
+                Value<String> audioFileId = const Value.absent(),
+                Value<String> label = const Value.absent(),
+                Value<bool> selected = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DialogueTakesCompanion(
+                id: id,
+                lineId: lineId,
+                audioFileId: audioFileId,
+                label: label,
+                selected: selected,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String lineId,
+                required String audioFileId,
+                required String label,
+                Value<bool> selected = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DialogueTakesCompanion.insert(
+                id: id,
+                lineId: lineId,
+                audioFileId: audioFileId,
+                label: label,
+                selected: selected,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DialogueTakesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $DialogueTakesTable,
+      DialogueTake,
+      $$DialogueTakesTableFilterComposer,
+      $$DialogueTakesTableOrderingComposer,
+      $$DialogueTakesTableAnnotationComposer,
+      $$DialogueTakesTableCreateCompanionBuilder,
+      $$DialogueTakesTableUpdateCompanionBuilder,
+      (
+        DialogueTake,
+        BaseReferences<_$ProjectDatabase, $DialogueTakesTable, DialogueTake>,
+      ),
+      DialogueTake,
+      PrefetchHooks Function()
+    >;
+typedef $$AudioTimelineClipsTableCreateCompanionBuilder =
+    AudioTimelineClipsCompanion Function({
+      required String id,
+      required String timelineId,
+      required String trackType,
+      required String audioFileId,
+      required double startSeconds,
+      required double durationSeconds,
+      Value<double> fadeInSeconds,
+      Value<double> fadeOutSeconds,
+      Value<double> gainDb,
+      Value<double> pan,
+      Value<String?> intent,
+      Value<int> rowid,
+    });
+typedef $$AudioTimelineClipsTableUpdateCompanionBuilder =
+    AudioTimelineClipsCompanion Function({
+      Value<String> id,
+      Value<String> timelineId,
+      Value<String> trackType,
+      Value<String> audioFileId,
+      Value<double> startSeconds,
+      Value<double> durationSeconds,
+      Value<double> fadeInSeconds,
+      Value<double> fadeOutSeconds,
+      Value<double> gainDb,
+      Value<double> pan,
+      Value<String?> intent,
+      Value<int> rowid,
+    });
+
+class $$AudioTimelineClipsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AudioTimelineClipsTable> {
+  $$AudioTimelineClipsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get timelineId => $composableBuilder(
+    column: $table.timelineId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trackType => $composableBuilder(
+    column: $table.trackType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get fadeInSeconds => $composableBuilder(
+    column: $table.fadeInSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get fadeOutSeconds => $composableBuilder(
+    column: $table.fadeOutSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get gainDb => $composableBuilder(
+    column: $table.gainDb,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get pan => $composableBuilder(
+    column: $table.pan,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get intent => $composableBuilder(
+    column: $table.intent,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AudioTimelineClipsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AudioTimelineClipsTable> {
+  $$AudioTimelineClipsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timelineId => $composableBuilder(
+    column: $table.timelineId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trackType => $composableBuilder(
+    column: $table.trackType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get fadeInSeconds => $composableBuilder(
+    column: $table.fadeInSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get fadeOutSeconds => $composableBuilder(
+    column: $table.fadeOutSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get gainDb => $composableBuilder(
+    column: $table.gainDb,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get pan => $composableBuilder(
+    column: $table.pan,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get intent => $composableBuilder(
+    column: $table.intent,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AudioTimelineClipsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AudioTimelineClipsTable> {
+  $$AudioTimelineClipsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get timelineId => $composableBuilder(
+    column: $table.timelineId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get trackType =>
+      $composableBuilder(column: $table.trackType, builder: (column) => column);
+
+  GeneratedColumn<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get fadeInSeconds => $composableBuilder(
+    column: $table.fadeInSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get fadeOutSeconds => $composableBuilder(
+    column: $table.fadeOutSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get gainDb =>
+      $composableBuilder(column: $table.gainDb, builder: (column) => column);
+
+  GeneratedColumn<double> get pan =>
+      $composableBuilder(column: $table.pan, builder: (column) => column);
+
+  GeneratedColumn<String> get intent =>
+      $composableBuilder(column: $table.intent, builder: (column) => column);
+}
+
+class $$AudioTimelineClipsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AudioTimelineClipsTable,
+          AudioTimelineClip,
+          $$AudioTimelineClipsTableFilterComposer,
+          $$AudioTimelineClipsTableOrderingComposer,
+          $$AudioTimelineClipsTableAnnotationComposer,
+          $$AudioTimelineClipsTableCreateCompanionBuilder,
+          $$AudioTimelineClipsTableUpdateCompanionBuilder,
+          (
+            AudioTimelineClip,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AudioTimelineClipsTable,
+              AudioTimelineClip
+            >,
+          ),
+          AudioTimelineClip,
+          PrefetchHooks Function()
+        > {
+  $$AudioTimelineClipsTableTableManager(
+    _$ProjectDatabase db,
+    $AudioTimelineClipsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AudioTimelineClipsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AudioTimelineClipsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AudioTimelineClipsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> timelineId = const Value.absent(),
+                Value<String> trackType = const Value.absent(),
+                Value<String> audioFileId = const Value.absent(),
+                Value<double> startSeconds = const Value.absent(),
+                Value<double> durationSeconds = const Value.absent(),
+                Value<double> fadeInSeconds = const Value.absent(),
+                Value<double> fadeOutSeconds = const Value.absent(),
+                Value<double> gainDb = const Value.absent(),
+                Value<double> pan = const Value.absent(),
+                Value<String?> intent = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AudioTimelineClipsCompanion(
+                id: id,
+                timelineId: timelineId,
+                trackType: trackType,
+                audioFileId: audioFileId,
+                startSeconds: startSeconds,
+                durationSeconds: durationSeconds,
+                fadeInSeconds: fadeInSeconds,
+                fadeOutSeconds: fadeOutSeconds,
+                gainDb: gainDb,
+                pan: pan,
+                intent: intent,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String timelineId,
+                required String trackType,
+                required String audioFileId,
+                required double startSeconds,
+                required double durationSeconds,
+                Value<double> fadeInSeconds = const Value.absent(),
+                Value<double> fadeOutSeconds = const Value.absent(),
+                Value<double> gainDb = const Value.absent(),
+                Value<double> pan = const Value.absent(),
+                Value<String?> intent = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AudioTimelineClipsCompanion.insert(
+                id: id,
+                timelineId: timelineId,
+                trackType: trackType,
+                audioFileId: audioFileId,
+                startSeconds: startSeconds,
+                durationSeconds: durationSeconds,
+                fadeInSeconds: fadeInSeconds,
+                fadeOutSeconds: fadeOutSeconds,
+                gainDb: gainDb,
+                pan: pan,
+                intent: intent,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AudioTimelineClipsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AudioTimelineClipsTable,
+      AudioTimelineClip,
+      $$AudioTimelineClipsTableFilterComposer,
+      $$AudioTimelineClipsTableOrderingComposer,
+      $$AudioTimelineClipsTableAnnotationComposer,
+      $$AudioTimelineClipsTableCreateCompanionBuilder,
+      $$AudioTimelineClipsTableUpdateCompanionBuilder,
+      (
+        AudioTimelineClip,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AudioTimelineClipsTable,
+          AudioTimelineClip
+        >,
+      ),
+      AudioTimelineClip,
+      PrefetchHooks Function()
+    >;
+typedef $$AudioAutomationKeyframesTableCreateCompanionBuilder =
+    AudioAutomationKeyframesCompanion Function({
+      required String id,
+      required String clipId,
+      required double timeSeconds,
+      required String parameter,
+      required double value,
+      Value<int> rowid,
+    });
+typedef $$AudioAutomationKeyframesTableUpdateCompanionBuilder =
+    AudioAutomationKeyframesCompanion Function({
+      Value<String> id,
+      Value<String> clipId,
+      Value<double> timeSeconds,
+      Value<String> parameter,
+      Value<double> value,
+      Value<int> rowid,
+    });
+
+class $$AudioAutomationKeyframesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AudioAutomationKeyframesTable> {
+  $$AudioAutomationKeyframesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clipId => $composableBuilder(
+    column: $table.clipId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get timeSeconds => $composableBuilder(
+    column: $table.timeSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get parameter => $composableBuilder(
+    column: $table.parameter,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AudioAutomationKeyframesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AudioAutomationKeyframesTable> {
+  $$AudioAutomationKeyframesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clipId => $composableBuilder(
+    column: $table.clipId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get timeSeconds => $composableBuilder(
+    column: $table.timeSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get parameter => $composableBuilder(
+    column: $table.parameter,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AudioAutomationKeyframesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AudioAutomationKeyframesTable> {
+  $$AudioAutomationKeyframesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get clipId =>
+      $composableBuilder(column: $table.clipId, builder: (column) => column);
+
+  GeneratedColumn<double> get timeSeconds => $composableBuilder(
+    column: $table.timeSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get parameter =>
+      $composableBuilder(column: $table.parameter, builder: (column) => column);
+
+  GeneratedColumn<double> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+}
+
+class $$AudioAutomationKeyframesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AudioAutomationKeyframesTable,
+          AudioAutomationKeyframe,
+          $$AudioAutomationKeyframesTableFilterComposer,
+          $$AudioAutomationKeyframesTableOrderingComposer,
+          $$AudioAutomationKeyframesTableAnnotationComposer,
+          $$AudioAutomationKeyframesTableCreateCompanionBuilder,
+          $$AudioAutomationKeyframesTableUpdateCompanionBuilder,
+          (
+            AudioAutomationKeyframe,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AudioAutomationKeyframesTable,
+              AudioAutomationKeyframe
+            >,
+          ),
+          AudioAutomationKeyframe,
+          PrefetchHooks Function()
+        > {
+  $$AudioAutomationKeyframesTableTableManager(
+    _$ProjectDatabase db,
+    $AudioAutomationKeyframesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AudioAutomationKeyframesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$AudioAutomationKeyframesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$AudioAutomationKeyframesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> clipId = const Value.absent(),
+                Value<double> timeSeconds = const Value.absent(),
+                Value<String> parameter = const Value.absent(),
+                Value<double> value = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AudioAutomationKeyframesCompanion(
+                id: id,
+                clipId: clipId,
+                timeSeconds: timeSeconds,
+                parameter: parameter,
+                value: value,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String clipId,
+                required double timeSeconds,
+                required String parameter,
+                required double value,
+                Value<int> rowid = const Value.absent(),
+              }) => AudioAutomationKeyframesCompanion.insert(
+                id: id,
+                clipId: clipId,
+                timeSeconds: timeSeconds,
+                parameter: parameter,
+                value: value,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AudioAutomationKeyframesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AudioAutomationKeyframesTable,
+      AudioAutomationKeyframe,
+      $$AudioAutomationKeyframesTableFilterComposer,
+      $$AudioAutomationKeyframesTableOrderingComposer,
+      $$AudioAutomationKeyframesTableAnnotationComposer,
+      $$AudioAutomationKeyframesTableCreateCompanionBuilder,
+      $$AudioAutomationKeyframesTableUpdateCompanionBuilder,
+      (
+        AudioAutomationKeyframe,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AudioAutomationKeyframesTable,
+          AudioAutomationKeyframe
+        >,
+      ),
+      AudioAutomationKeyframe,
+      PrefetchHooks Function()
+    >;
+typedef $$AudioWaveformCachesTableCreateCompanionBuilder =
+    AudioWaveformCachesCompanion Function({
+      required String id,
+      required String audioFileId,
+      required int sampleCount,
+      required String peaksJson,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$AudioWaveformCachesTableUpdateCompanionBuilder =
+    AudioWaveformCachesCompanion Function({
+      Value<String> id,
+      Value<String> audioFileId,
+      Value<int> sampleCount,
+      Value<String> peaksJson,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$AudioWaveformCachesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AudioWaveformCachesTable> {
+  $$AudioWaveformCachesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sampleCount => $composableBuilder(
+    column: $table.sampleCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get peaksJson => $composableBuilder(
+    column: $table.peaksJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AudioWaveformCachesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AudioWaveformCachesTable> {
+  $$AudioWaveformCachesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sampleCount => $composableBuilder(
+    column: $table.sampleCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get peaksJson => $composableBuilder(
+    column: $table.peaksJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AudioWaveformCachesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AudioWaveformCachesTable> {
+  $$AudioWaveformCachesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get audioFileId => $composableBuilder(
+    column: $table.audioFileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sampleCount => $composableBuilder(
+    column: $table.sampleCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get peaksJson =>
+      $composableBuilder(column: $table.peaksJson, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$AudioWaveformCachesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AudioWaveformCachesTable,
+          AudioWaveformCache,
+          $$AudioWaveformCachesTableFilterComposer,
+          $$AudioWaveformCachesTableOrderingComposer,
+          $$AudioWaveformCachesTableAnnotationComposer,
+          $$AudioWaveformCachesTableCreateCompanionBuilder,
+          $$AudioWaveformCachesTableUpdateCompanionBuilder,
+          (
+            AudioWaveformCache,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AudioWaveformCachesTable,
+              AudioWaveformCache
+            >,
+          ),
+          AudioWaveformCache,
+          PrefetchHooks Function()
+        > {
+  $$AudioWaveformCachesTableTableManager(
+    _$ProjectDatabase db,
+    $AudioWaveformCachesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AudioWaveformCachesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AudioWaveformCachesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$AudioWaveformCachesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> audioFileId = const Value.absent(),
+                Value<int> sampleCount = const Value.absent(),
+                Value<String> peaksJson = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AudioWaveformCachesCompanion(
+                id: id,
+                audioFileId: audioFileId,
+                sampleCount: sampleCount,
+                peaksJson: peaksJson,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String audioFileId,
+                required int sampleCount,
+                required String peaksJson,
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AudioWaveformCachesCompanion.insert(
+                id: id,
+                audioFileId: audioFileId,
+                sampleCount: sampleCount,
+                peaksJson: peaksJson,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AudioWaveformCachesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AudioWaveformCachesTable,
+      AudioWaveformCache,
+      $$AudioWaveformCachesTableFilterComposer,
+      $$AudioWaveformCachesTableOrderingComposer,
+      $$AudioWaveformCachesTableAnnotationComposer,
+      $$AudioWaveformCachesTableCreateCompanionBuilder,
+      $$AudioWaveformCachesTableUpdateCompanionBuilder,
+      (
+        AudioWaveformCache,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AudioWaveformCachesTable,
+          AudioWaveformCache
+        >,
+      ),
+      AudioWaveformCache,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -68902,4 +82724,47 @@ class $ProjectDatabaseManager {
         _db,
         _db.sceneContinuitySnapshots,
       );
+  $$VfxAssetsTableTableManager get vfxAssets =>
+      $$VfxAssetsTableTableManager(_db, _db.vfxAssets);
+  $$VfxBehaviorProfilesTableTableManager get vfxBehaviorProfiles =>
+      $$VfxBehaviorProfilesTableTableManager(_db, _db.vfxBehaviorProfiles);
+  $$VfxStatesTableTableManager get vfxStates =>
+      $$VfxStatesTableTableManager(_db, _db.vfxStates);
+  $$VfxTimelineClipsTableTableManager get vfxTimelineClips =>
+      $$VfxTimelineClipsTableTableManager(_db, _db.vfxTimelineClips);
+  $$VfxKeyframesTableTableManager get vfxKeyframes =>
+      $$VfxKeyframesTableTableManager(_db, _db.vfxKeyframes);
+  $$AudioFilesTableTableManager get audioFiles =>
+      $$AudioFilesTableTableManager(_db, _db.audioFiles);
+  $$SoundEffectsTableTableManager get soundEffects =>
+      $$SoundEffectsTableTableManager(_db, _db.soundEffects);
+  $$SoundEffectVariationsTableTableManager get soundEffectVariations =>
+      $$SoundEffectVariationsTableTableManager(_db, _db.soundEffectVariations);
+  $$AmbienceAssetsTableTableManager get ambienceAssets =>
+      $$AmbienceAssetsTableTableManager(_db, _db.ambienceAssets);
+  $$AmbienceLayersTableTableManager get ambienceLayers =>
+      $$AmbienceLayersTableTableManager(_db, _db.ambienceLayers);
+  $$AmbienceVariantsTableTableManager get ambienceVariants =>
+      $$AmbienceVariantsTableTableManager(_db, _db.ambienceVariants);
+  $$MusicCuesTableTableManager get musicCues =>
+      $$MusicCuesTableTableManager(_db, _db.musicCues);
+  $$MusicSectionsTableTableManager get musicSections =>
+      $$MusicSectionsTableTableManager(_db, _db.musicSections);
+  $$VoiceProfilesTableTableManager get voiceProfiles =>
+      $$VoiceProfilesTableTableManager(_db, _db.voiceProfiles);
+  $$VoiceReferencesTableTableManager get voiceReferences =>
+      $$VoiceReferencesTableTableManager(_db, _db.voiceReferences);
+  $$DialogueLinesTableTableManager get dialogueLines =>
+      $$DialogueLinesTableTableManager(_db, _db.dialogueLines);
+  $$DialogueTakesTableTableManager get dialogueTakes =>
+      $$DialogueTakesTableTableManager(_db, _db.dialogueTakes);
+  $$AudioTimelineClipsTableTableManager get audioTimelineClips =>
+      $$AudioTimelineClipsTableTableManager(_db, _db.audioTimelineClips);
+  $$AudioAutomationKeyframesTableTableManager get audioAutomationKeyframes =>
+      $$AudioAutomationKeyframesTableTableManager(
+        _db,
+        _db.audioAutomationKeyframes,
+      );
+  $$AudioWaveformCachesTableTableManager get audioWaveformCaches =>
+      $$AudioWaveformCachesTableTableManager(_db, _db.audioWaveformCaches);
 }

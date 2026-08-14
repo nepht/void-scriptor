@@ -66,7 +66,7 @@ void main() {
     addTearDown(second.close);
     final restored = CreatureRepository(second);
 
-    expect(second.schemaVersion, 28);
+    expect(second.schemaVersion, 33);
     expect((await second.assetDao.getById(creatureId))?.type, 'creature');
     expect(
       (await restored.getCreature(creatureId))?.category,

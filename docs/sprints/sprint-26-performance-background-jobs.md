@@ -59,7 +59,9 @@ Current regression evidence after schema assertion updates:
 ```text
 dart format       PASS
 flutter analyze   PASS
-flutter test      PASS — 299 tests
+flutter test      PASS — 304 tests
+web release       PASS
+linux debug       PASS
 ```
 
 

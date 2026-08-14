@@ -62,6 +62,7 @@ import 'tables/audio_timeline.dart';
 import 'tables/audio_waveform.dart';
 import 'tables/project_resilience.dart';
 import 'tables/command_history_entries.dart';
+import 'tables/background_jobs.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -80,6 +81,7 @@ import 'daos/asset_dao.dart';
 import 'daos/character_dao.dart';
 import 'daos/character_mode_dao.dart';
 import 'daos/relation_dao.dart';
+import 'daos/background_job_dao.dart';
 import 'daos/wardrobe_dao.dart';
 import 'daos/weapon_dao.dart';
 import 'daos/environment_dao.dart';
@@ -236,6 +238,7 @@ class ProjectMetadata extends Table {
     TrashEntries,
     ProjectMigrationHistory,
     CommandHistoryEntries,
+    BackgroundJobs,
   ],
   daos: [
     AssetDao,
@@ -264,12 +267,13 @@ class ProjectMetadata extends Table {
     AudioTimelineRepository,
     AudioImportRepository,
     ProjectResilienceRepository,
+    BackgroundJobDao,
   ],
 )
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 35;
+  static const currentSchemaVersion = 36;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -510,6 +514,9 @@ class ProjectDatabase extends _$ProjectDatabase {
       }
       if (from < 35) {
         await m.createTable(commandHistoryEntries);
+      }
+      if (from < 36) {
+        await m.createTable(backgroundJobs);
       }
     },
   );

@@ -34,7 +34,34 @@ Implemented:
 5. cooperative cancellation of running work;
 6. resource-specific concurrency limits.
 
-## Explicit non-claims for this slice
+## Verified vertical slice 2: persistence, workers, and Task Center
+
+Implemented and tested:
+
+- Drift `BackgroundJobs` table and DAO;
+- schema migration `35 → 36`;
+- persistent job insert/update/list/delete contract;
+- close/reopen persistence round-trip;
+- `BackgroundWorker.runCpu` isolate boundary;
+- bounded retry policy;
+- dependency readiness graph;
+- `BackgroundJobController` lifecycle and cancellation;
+- minimal `TaskCenterScreen` showing active jobs and cancel action;
+- thumbnail size/cache-key/LRU/viewport-priority foundation;
+- pagination/cursor result abstraction;
+- incremental search document index abstraction;
+- debounced search with stale-generation suppression;
+- timeline viewport/overscan intersection rules;
+- waveform coarse/medium/fine resolution selection.
+
+Current regression evidence after schema assertion updates:
+
+```text
+dart format       PASS
+flutter analyze   PASS
+flutter test      PASS — 299 tests
+```
+
 
 The following remain subsequent Sprint 26 slices and are not claimed as implemented:
 

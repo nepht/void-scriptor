@@ -24,6 +24,7 @@ class BackgroundJobQueue {
   Stream<BackgroundJob> get updates => _updates.stream;
   Iterable<String> get pendingTaskKeys =>
       _pending.map((task) => task.taskKey).whereType<String>();
+  Iterable<BackgroundJob> get jobs => _jobs.values;
   BackgroundJob? jobOf(String id) => _jobs[id];
 
   bool enqueue(BackgroundTask task) {

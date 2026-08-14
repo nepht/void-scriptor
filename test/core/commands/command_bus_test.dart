@@ -13,13 +13,22 @@ void main() {
       final bus = CommandBus(
         history: history,
         transactionCoordinator: TraceTransactionCoordinator(trace),
+        onPersist: (command) async {
+          trace.add('persist:${command.id}');
+        },
         onEvent: (event) => trace.add(event.type.name),
       );
       final command = TraceCommand(trace, id: 'rename-1', label: 'Rename');
 
       await bus.execute(command);
 
-      expect(trace, ['begin', 'execute', 'commit', 'commandExecuted']);
+      expect(trace, [
+        'begin',
+        'execute',
+        'persist:rename-1',
+        'commit',
+        'commandExecuted',
+      ]);
       expect(history.canUndo, isTrue);
     },
   );
@@ -30,6 +39,9 @@ void main() {
     final bus = CommandBus(
       history: history,
       transactionCoordinator: TraceTransactionCoordinator(trace),
+      onPersist: (command) async {
+        trace.add('persist:${command.id}');
+      },
       onEvent: (event) => trace.add(event.type.name),
     );
     final command = TraceCommand(

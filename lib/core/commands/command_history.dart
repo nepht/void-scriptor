@@ -11,6 +11,8 @@ class CommandHistory {
   bool get canRedo => _redoStack.isNotEmpty;
   String? get undoLabel => canUndo ? _undoStack.last.label : null;
   String? get redoLabel => canRedo ? _redoStack.last.label : null;
+  AppCommand? get undoCommand => canUndo ? _undoStack.last : null;
+  AppCommand? get redoCommand => canRedo ? _redoStack.last : null;
 
   Future<void> execute(AppCommand command) async {
     await command.execute();

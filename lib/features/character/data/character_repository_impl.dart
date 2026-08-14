@@ -46,32 +46,34 @@ class CharacterRepositoryImpl implements CharacterRepository {
 
   @override
   Future<void> updateCharacter(CharacterModel character) async {
-    await database
-        .update(database.characters)
-        .replace(
-          CharactersCompanion(
-            assetId: Value(character.assetId),
-            projectId: Value(character.projectId),
-            displayName: Value(character.displayName),
-            alias: Value(character.alias),
-            biography: Value(character.biography),
-            personality: Value(character.personality),
-            gender: Value(character.gender),
-            age: Value(character.age),
-            heightCm: Value(character.heightCm),
-            hair: Value(character.hair),
-            eyes: Value(character.eyes),
-            skin: Value(character.skin),
-          ),
-        );
-    await (database.update(
-      database.assets,
-    )..where((row) => row.id.equals(character.assetId))).write(
-      AssetsCompanion(
-        name: Value(character.displayName),
-        updatedAt: Value(DateTime.now()),
-      ),
-    );
+    await database.transaction(() async {
+      await database
+          .update(database.characters)
+          .replace(
+            CharactersCompanion(
+              assetId: Value(character.assetId),
+              projectId: Value(character.projectId),
+              displayName: Value(character.displayName),
+              alias: Value(character.alias),
+              biography: Value(character.biography),
+              personality: Value(character.personality),
+              gender: Value(character.gender),
+              age: Value(character.age),
+              heightCm: Value(character.heightCm),
+              hair: Value(character.hair),
+              eyes: Value(character.eyes),
+              skin: Value(character.skin),
+            ),
+          );
+      await (database.update(
+        database.assets,
+      )..where((row) => row.id.equals(character.assetId))).write(
+        AssetsCompanion(
+          name: Value(character.displayName),
+          updatedAt: Value(DateTime.now()),
+        ),
+      );
+    });
   }
 
   @override

@@ -1,6 +1,6 @@
 # Sprint 25 — Undo/Redo, Command System, History, and Versioning
 
-**Status:** In progress  
+**Status:** Complete — local gates passed; hosted CI remains blocked by GitHub billing.
 **Current checkpoint:** 25.1 Mutation architecture foundation
 
 ## Goal
@@ -53,15 +53,32 @@ UI UPDATE
 - Composite command reverse undo and forward redo.
 - Existing command registry and global search regression.
 
-## Next vertical slices
+## Sprint 25 completion slices
 
-1. Replace the no-op transaction abstraction in project sessions with Drift `database.transaction`. **Coordinator implemented and rollback-tested; session wiring remains pending.**
-2. Add project-scoped `CommandHistoryEntries` with schema migration 34→35, repository serialization, and stable command type registry. **Completed in current checkpoint.**
-3. Add mutation sequence and dirty state derived from current/saved sequence. **Domain state completed; session persistence pending.**
-4. Add real Character rename command as the first repository-backed mutation tracer.
-5. Wire command bus to undo/redo shortcuts and toolbar state.
-6. Add composite/bulk command failure rollback against a real project database.
-7. Add revisions, snapshots, compare, restore, and asset versions only after command persistence is proven.
+- Drift `CommandHistoryEntries` schema migration 34→35, project filtering, payload JSON, undo payload, status transitions, and stable command metadata.
+- Real `DriftTransactionCoordinator` with rollback test.
+- `ProjectMutationRuntime` attached to every writable/read-only project session, including durable mutation sequence and save point.
+- Repository-backed `RenameCharacterCommand` with project ownership validation and atomic Character + Asset rename.
+- CommandBus persistence callbacks for execute, undo, and redo plus event-driven history/status refresh.
+- Desktop Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z, Ctrl/Cmd+Y, and Ctrl/Cmd+S shortcuts.
+- Status bar indicators for dirty, undoable, and redoable state.
+- Package-scoped snapshot/version service with create, list, compare, restore, and retention pruning.
+- Full focused and regression tests for the above slices.
+
+## Verification
+
+The final local verification command is:
+
+```text
+dart run build_runner build
+ dart format --set-exit-if-changed lib test
+ flutter analyze
+ flutter test
+ flutter build web --release
+ git diff --check
+```
+
+Hosted CI cannot currently be used as a code signal because GitHub refuses to start jobs while billing/spending-limit is blocked.
 
 ## Design boundaries
 

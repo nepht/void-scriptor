@@ -15,16 +15,23 @@ class CommandBus {
   CommandBus({
     required this.history,
     required this.transactionCoordinator,
+    this.onPersist,
+    this.onUndoPersist,
+    this.onRedoPersist,
     this.onEvent,
   });
 
   final CommandHistory history;
   final TransactionCoordinator transactionCoordinator;
+  final Future<void> Function(AppCommand command)? onPersist;
+  final Future<void> Function(AppCommand command)? onUndoPersist;
+  final Future<void> Function(AppCommand command)? onRedoPersist;
   final void Function(CommandEvent event)? onEvent;
 
   Future<void> execute(AppCommand command) async {
     await transactionCoordinator.run(() async {
       await command.execute();
+      await onPersist?.call(command);
       await history.push(command);
     });
     onEvent?.call(
@@ -33,37 +40,26 @@ class CommandBus {
   }
 
   Future<void> undo() async {
-    final commandLabel = history.undoLabel;
-    if (commandLabel == null) return;
-    await transactionCoordinator.run(history.undo);
+    final command = history.undoCommand;
+    if (command == null) return;
+    await transactionCoordinator.run(() async {
+      await history.undo();
+      await onUndoPersist?.call(command);
+    });
     onEvent?.call(
-      CommandEvent(
-        type: CommandEventType.commandUndone,
-        command: _HistoryEventCommand(commandLabel),
-      ),
+      CommandEvent(type: CommandEventType.commandUndone, command: command),
     );
   }
 
   Future<void> redo() async {
-    final commandLabel = history.redoLabel;
-    if (commandLabel == null) return;
-    await transactionCoordinator.run(history.redo);
+    final command = history.redoCommand;
+    if (command == null) return;
+    await transactionCoordinator.run(() async {
+      await history.redo();
+      await onRedoPersist?.call(command);
+    });
     onEvent?.call(
-      CommandEvent(
-        type: CommandEventType.commandRedone,
-        command: _HistoryEventCommand(commandLabel),
-      ),
+      CommandEvent(type: CommandEventType.commandRedone, command: command),
     );
   }
-}
-
-class _HistoryEventCommand extends BaseCommand {
-  _HistoryEventCommand(String label)
-    : super(id: 'history-event', projectId: '', label: label);
-
-  @override
-  Future<void> execute() async {}
-
-  @override
-  Future<void> undo() async {}
 }

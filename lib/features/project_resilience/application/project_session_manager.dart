@@ -7,6 +7,7 @@ import '../../../core/project_package/project_package.dart';
 import '../../../database/project/project_database.dart';
 import '../../../database/project/project_database_service.dart';
 import 'project_integrity_service.dart';
+import 'project_mutation_runtime.dart';
 import 'project_recovery_services.dart';
 
 enum ProjectOpenMode { readWrite, readOnly }
@@ -21,6 +22,7 @@ class ProjectSession {
     required this.mode,
     required this.openedAt,
     required this.lock,
+    required this.mutationRuntime,
   });
 
   final ProjectPackage package;
@@ -29,12 +31,14 @@ class ProjectSession {
   final ProjectOpenMode mode;
   final DateTime openedAt;
   final ProjectSessionLock lock;
+  final ProjectMutationRuntime mutationRuntime;
 
   Future<void> save() async {
     if (mode == ProjectOpenMode.readOnly) {
       throw StateError('Read-only project sessions cannot be saved');
     }
     await database.customStatement('PRAGMA wal_checkpoint(TRUNCATE)');
+    await mutationRuntime.markSaved();
     final updated = ProjectManifest(
       schemaVersion: manifest.schemaVersion,
       id: manifest.id,
@@ -114,6 +118,11 @@ class ProjectSessionManager {
       final database = mode == ProjectOpenMode.readOnly
           ? await databaseService.openReadOnly(package.databaseFile.path)
           : await databaseService.open(package.databaseFile.path);
+      final mutationRuntime = await ProjectMutationRuntime.open(
+        database: database,
+        projectId: package.projectId,
+        readOnly: mode == ProjectOpenMode.readOnly,
+      );
       return ProjectSession(
         package: package,
         manifest: manifest,
@@ -121,6 +130,7 @@ class ProjectSessionManager {
         mode: mode,
         openedAt: DateTime.now().toUtc(),
         lock: lock,
+        mutationRuntime: mutationRuntime,
       );
     } catch (_) {
       if (mode == ProjectOpenMode.readWrite) await lock.release();

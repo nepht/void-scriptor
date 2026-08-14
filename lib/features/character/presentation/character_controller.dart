@@ -8,6 +8,7 @@ import '../data/character_repository_impl.dart';
 import '../domain/character_model.dart';
 import '../application/create_character_service.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
+import '../application/rename_character_command.dart';
 
 final selectedCharacterIdProvider = Provider<String?>(
   (ref) => ref.watch(selectionProvider)?.assetType == AssetType.character
@@ -54,6 +55,31 @@ class CharacterActions {
           ),
         );
     return id;
+  }
+
+  Future<void> rename(String id, String newName) async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null || session.manifest.id != projectId) {
+      throw StateError('No active project session');
+    }
+    final repository = CharacterRepositoryImpl(
+      database: database,
+      projectId: projectId,
+      paths: ref.read(projectPathsProvider),
+    );
+    final current = await repository.getCharacter(id);
+    if (current == null) throw StateError('Character not found');
+    await session.mutationRuntime.bus.execute(
+      RenameCharacterCommand(
+        id: 'character.rename:$id:${DateTime.now().microsecondsSinceEpoch}',
+        projectId: projectId,
+        repository: repository,
+        characterId: id,
+        oldName: current.displayName,
+        newName: newName,
+      ),
+    );
+    ref.invalidate(characterControllerProvider(projectId));
   }
 
   Future<void> delete(String id) async {

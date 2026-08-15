@@ -5,6 +5,7 @@ part of 'background_job_dao.dart';
 // ignore_for_file: type=lint
 mixin _$BackgroundJobDaoMixin on DatabaseAccessor<ProjectDatabase> {
   $BackgroundJobsTable get backgroundJobs => attachedDatabase.backgroundJobs;
+  $JobDependenciesTable get jobDependencies => attachedDatabase.jobDependencies;
   BackgroundJobDaoManager get managers => BackgroundJobDaoManager(this);
 }
 
@@ -15,5 +16,10 @@ class BackgroundJobDaoManager {
       $$BackgroundJobsTableTableManager(
         _db.attachedDatabase,
         _db.backgroundJobs,
+      );
+  $$JobDependenciesTableTableManager get jobDependencies =>
+      $$JobDependenciesTableTableManager(
+        _db.attachedDatabase,
+        _db.jobDependencies,
       );
 }

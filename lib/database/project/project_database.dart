@@ -63,6 +63,7 @@ import 'tables/audio_waveform.dart';
 import 'tables/project_resilience.dart';
 import 'tables/command_history_entries.dart';
 import 'tables/background_jobs.dart';
+import 'tables/job_dependencies.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -239,6 +240,7 @@ class ProjectMetadata extends Table {
     ProjectMigrationHistory,
     CommandHistoryEntries,
     BackgroundJobs,
+    JobDependencies,
   ],
   daos: [
     AssetDao,
@@ -273,7 +275,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 37;
+  static const currentSchemaVersion = 38;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -521,6 +523,9 @@ class ProjectDatabase extends _$ProjectDatabase {
       }
       if (from < 37) {
         await _createIndexes();
+      }
+      if (from < 38) {
+        await m.createTable(jobDependencies);
       }
     },
   );

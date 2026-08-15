@@ -56819,6 +56819,226 @@ class BackgroundJobsCompanion extends UpdateCompanion<BackgroundJob> {
   }
 }
 
+class $JobDependenciesTable extends JobDependencies
+    with TableInfo<$JobDependenciesTable, JobDependency> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $JobDependenciesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _jobIdMeta = const VerificationMeta('jobId');
+  @override
+  late final GeneratedColumn<String> jobId = GeneratedColumn<String>(
+    'job_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dependsOnIdMeta = const VerificationMeta(
+    'dependsOnId',
+  );
+  @override
+  late final GeneratedColumn<String> dependsOnId = GeneratedColumn<String>(
+    'depends_on_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [jobId, dependsOnId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'job_dependencies';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<JobDependency> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('job_id')) {
+      context.handle(
+        _jobIdMeta,
+        jobId.isAcceptableOrUnknown(data['job_id']!, _jobIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_jobIdMeta);
+    }
+    if (data.containsKey('depends_on_id')) {
+      context.handle(
+        _dependsOnIdMeta,
+        dependsOnId.isAcceptableOrUnknown(
+          data['depends_on_id']!,
+          _dependsOnIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_dependsOnIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {jobId, dependsOnId};
+  @override
+  JobDependency map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return JobDependency(
+      jobId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}job_id'],
+      )!,
+      dependsOnId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}depends_on_id'],
+      )!,
+    );
+  }
+
+  @override
+  $JobDependenciesTable createAlias(String alias) {
+    return $JobDependenciesTable(attachedDatabase, alias);
+  }
+}
+
+class JobDependency extends DataClass implements Insertable<JobDependency> {
+  final String jobId;
+  final String dependsOnId;
+  const JobDependency({required this.jobId, required this.dependsOnId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['job_id'] = Variable<String>(jobId);
+    map['depends_on_id'] = Variable<String>(dependsOnId);
+    return map;
+  }
+
+  JobDependenciesCompanion toCompanion(bool nullToAbsent) {
+    return JobDependenciesCompanion(
+      jobId: Value(jobId),
+      dependsOnId: Value(dependsOnId),
+    );
+  }
+
+  factory JobDependency.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return JobDependency(
+      jobId: serializer.fromJson<String>(json['jobId']),
+      dependsOnId: serializer.fromJson<String>(json['dependsOnId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'jobId': serializer.toJson<String>(jobId),
+      'dependsOnId': serializer.toJson<String>(dependsOnId),
+    };
+  }
+
+  JobDependency copyWith({String? jobId, String? dependsOnId}) => JobDependency(
+    jobId: jobId ?? this.jobId,
+    dependsOnId: dependsOnId ?? this.dependsOnId,
+  );
+  JobDependency copyWithCompanion(JobDependenciesCompanion data) {
+    return JobDependency(
+      jobId: data.jobId.present ? data.jobId.value : this.jobId,
+      dependsOnId: data.dependsOnId.present
+          ? data.dependsOnId.value
+          : this.dependsOnId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('JobDependency(')
+          ..write('jobId: $jobId, ')
+          ..write('dependsOnId: $dependsOnId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(jobId, dependsOnId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is JobDependency &&
+          other.jobId == this.jobId &&
+          other.dependsOnId == this.dependsOnId);
+}
+
+class JobDependenciesCompanion extends UpdateCompanion<JobDependency> {
+  final Value<String> jobId;
+  final Value<String> dependsOnId;
+  final Value<int> rowid;
+  const JobDependenciesCompanion({
+    this.jobId = const Value.absent(),
+    this.dependsOnId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  JobDependenciesCompanion.insert({
+    required String jobId,
+    required String dependsOnId,
+    this.rowid = const Value.absent(),
+  }) : jobId = Value(jobId),
+       dependsOnId = Value(dependsOnId);
+  static Insertable<JobDependency> custom({
+    Expression<String>? jobId,
+    Expression<String>? dependsOnId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (jobId != null) 'job_id': jobId,
+      if (dependsOnId != null) 'depends_on_id': dependsOnId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  JobDependenciesCompanion copyWith({
+    Value<String>? jobId,
+    Value<String>? dependsOnId,
+    Value<int>? rowid,
+  }) {
+    return JobDependenciesCompanion(
+      jobId: jobId ?? this.jobId,
+      dependsOnId: dependsOnId ?? this.dependsOnId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (jobId.present) {
+      map['job_id'] = Variable<String>(jobId.value);
+    }
+    if (dependsOnId.present) {
+      map['depends_on_id'] = Variable<String>(dependsOnId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('JobDependenciesCompanion(')
+          ..write('jobId: $jobId, ')
+          ..write('dependsOnId: $dependsOnId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -57030,6 +57250,9 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final $CommandHistoryEntriesTable commandHistoryEntries =
       $CommandHistoryEntriesTable(this);
   late final $BackgroundJobsTable backgroundJobs = $BackgroundJobsTable(this);
+  late final $JobDependenciesTable jobDependencies = $JobDependenciesTable(
+    this,
+  );
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -57216,6 +57439,7 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     projectMigrationHistory,
     commandHistoryEntries,
     backgroundJobs,
+    jobDependencies,
   ];
 }
 
@@ -87737,6 +87961,157 @@ typedef $$BackgroundJobsTableProcessedTableManager =
       BackgroundJob,
       PrefetchHooks Function()
     >;
+typedef $$JobDependenciesTableCreateCompanionBuilder =
+    JobDependenciesCompanion Function({
+      required String jobId,
+      required String dependsOnId,
+      Value<int> rowid,
+    });
+typedef $$JobDependenciesTableUpdateCompanionBuilder =
+    JobDependenciesCompanion Function({
+      Value<String> jobId,
+      Value<String> dependsOnId,
+      Value<int> rowid,
+    });
+
+class $$JobDependenciesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $JobDependenciesTable> {
+  $$JobDependenciesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get jobId => $composableBuilder(
+    column: $table.jobId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dependsOnId => $composableBuilder(
+    column: $table.dependsOnId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$JobDependenciesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $JobDependenciesTable> {
+  $$JobDependenciesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get jobId => $composableBuilder(
+    column: $table.jobId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dependsOnId => $composableBuilder(
+    column: $table.dependsOnId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$JobDependenciesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $JobDependenciesTable> {
+  $$JobDependenciesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get jobId =>
+      $composableBuilder(column: $table.jobId, builder: (column) => column);
+
+  GeneratedColumn<String> get dependsOnId => $composableBuilder(
+    column: $table.dependsOnId,
+    builder: (column) => column,
+  );
+}
+
+class $$JobDependenciesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $JobDependenciesTable,
+          JobDependency,
+          $$JobDependenciesTableFilterComposer,
+          $$JobDependenciesTableOrderingComposer,
+          $$JobDependenciesTableAnnotationComposer,
+          $$JobDependenciesTableCreateCompanionBuilder,
+          $$JobDependenciesTableUpdateCompanionBuilder,
+          (
+            JobDependency,
+            BaseReferences<
+              _$ProjectDatabase,
+              $JobDependenciesTable,
+              JobDependency
+            >,
+          ),
+          JobDependency,
+          PrefetchHooks Function()
+        > {
+  $$JobDependenciesTableTableManager(
+    _$ProjectDatabase db,
+    $JobDependenciesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$JobDependenciesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$JobDependenciesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$JobDependenciesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> jobId = const Value.absent(),
+                Value<String> dependsOnId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => JobDependenciesCompanion(
+                jobId: jobId,
+                dependsOnId: dependsOnId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String jobId,
+                required String dependsOnId,
+                Value<int> rowid = const Value.absent(),
+              }) => JobDependenciesCompanion.insert(
+                jobId: jobId,
+                dependsOnId: dependsOnId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$JobDependenciesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $JobDependenciesTable,
+      JobDependency,
+      $$JobDependenciesTableFilterComposer,
+      $$JobDependenciesTableOrderingComposer,
+      $$JobDependenciesTableAnnotationComposer,
+      $$JobDependenciesTableCreateCompanionBuilder,
+      $$JobDependenciesTableUpdateCompanionBuilder,
+      (
+        JobDependency,
+        BaseReferences<_$ProjectDatabase, $JobDependenciesTable, JobDependency>,
+      ),
+      JobDependency,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -88053,4 +88428,6 @@ class $ProjectDatabaseManager {
       $$CommandHistoryEntriesTableTableManager(_db, _db.commandHistoryEntries);
   $$BackgroundJobsTableTableManager get backgroundJobs =>
       $$BackgroundJobsTableTableManager(_db, _db.backgroundJobs);
+  $$JobDependenciesTableTableManager get jobDependencies =>
+      $$JobDependenciesTableTableManager(_db, _db.jobDependencies);
 }

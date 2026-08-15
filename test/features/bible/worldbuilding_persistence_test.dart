@@ -58,7 +58,7 @@ void main() {
     final power = await reopened.getPowerSystem('power-1');
     final abilities = await reopened.abilitiesFor('power-1');
 
-    expect(second.schemaVersion, 40);
+    expect(second.schemaVersion, 41);
     expect(species?.origin, 'The Abyss');
     expect(power?.source, 'Abyssal');
     expect(abilities.single.name, 'Void Blade');

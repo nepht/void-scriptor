@@ -61,7 +61,7 @@ void main() {
       final second = await service.open(dbPath);
       addTearDown(second.close);
       final restored = SceneAssetInstanceRepository(second);
-      expect(second.schemaVersion, 40);
+      expect(second.schemaVersion, 41);
       final inherited = await restored.getInstance('cup-2');
       expect(inherited?.assetId, 'cup');
       expect(inherited?.stateId, 'half');

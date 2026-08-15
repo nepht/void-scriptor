@@ -8,9 +8,8 @@ class SyncStatus {
     this.message,
   });
 
-  const SyncStatus.syncing({DateTime? startedAt})
+  const SyncStatus.syncing({this.startedAt})
     : state = SyncState.syncing,
-      startedAt = startedAt,
       lastSyncAt = null,
       message = null;
 

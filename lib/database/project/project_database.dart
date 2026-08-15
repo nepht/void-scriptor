@@ -69,6 +69,11 @@ import 'tables/project_layout_states.dart';
 import 'tables/ai_usage_logs.dart';
 import 'tables/ai_model_catalog.dart';
 import 'tables/ai_output_reviews.dart';
+import 'tables/sync_logs.dart';
+import 'tables/sync_conflicts.dart';
+import 'tables/project_collaborators.dart';
+import 'tables/project_comments.dart';
+import 'tables/activity_events.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -251,6 +256,11 @@ class ProjectMetadata extends Table {
     AiUsageLogs,
     AiModelCatalog,
     AiOutputReviews,
+    SyncLogs,
+    SyncConflicts,
+    ProjectCollaborators,
+    ProjectComments,
+    ActivityEvents,
   ],
   daos: [
     AssetDao,
@@ -285,7 +295,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 40;
+  static const currentSchemaVersion = 41;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -545,6 +555,13 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(aiUsageLogs);
         await m.createTable(aiModelCatalog);
         await m.createTable(aiOutputReviews);
+      }
+      if (from < 41) {
+        await m.createTable(syncLogs);
+        await m.createTable(syncConflicts);
+        await m.createTable(projectCollaborators);
+        await m.createTable(projectComments);
+        await m.createTable(activityEvents);
       }
     },
   );

@@ -44,7 +44,7 @@ void main() {
       second,
     ).conditionsFor('rule-1');
 
-    expect(second.schemaVersion, 36);
+    expect(second.schemaVersion, 37);
     expect(rules.single.scope, CanonRuleScope.powerSystem);
     expect(rules.single.scopeTargetId, 'power-void-black');
     expect(conditions.single.validatorType, CanonValidatorType.forbiddenValue);

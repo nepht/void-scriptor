@@ -273,7 +273,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 36;
+  static const currentSchemaVersion = 37;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -282,6 +282,7 @@ class ProjectDatabase extends _$ProjectDatabase {
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
+      await _createIndexes();
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
@@ -518,8 +519,41 @@ class ProjectDatabase extends _$ProjectDatabase {
       if (from < 36) {
         await m.createTable(backgroundJobs);
       }
+      if (from < 37) {
+        await _createIndexes();
+      }
     },
   );
+
+  Future<void> _createIndexes() async {
+    const indexStatements = [
+      'CREATE INDEX IF NOT EXISTS idx_assets_project_id ON assets (project_id)',
+      'CREATE INDEX IF NOT EXISTS idx_assets_type ON assets (type)',
+      'CREATE INDEX IF NOT EXISTS idx_assets_name ON assets (name)',
+      'CREATE INDEX IF NOT EXISTS idx_assets_updated_at ON assets (updated_at)',
+      'CREATE INDEX IF NOT EXISTS idx_assets_project_type_updated '
+          'ON assets (project_id, type, updated_at)',
+      'CREATE INDEX IF NOT EXISTS idx_asset_tags_asset_id ON asset_tags (asset_id)',
+      'CREATE INDEX IF NOT EXISTS idx_asset_tags_tag ON asset_tags (tag)',
+      'CREATE INDEX IF NOT EXISTS idx_asset_tag_links_asset_id '
+          'ON asset_tag_links (asset_id)',
+      'CREATE INDEX IF NOT EXISTS idx_asset_tag_links_tag_id '
+          'ON asset_tag_links (tag_id)',
+      'CREATE INDEX IF NOT EXISTS idx_asset_relations_source '
+          'ON asset_relations (source_asset_id)',
+      'CREATE INDEX IF NOT EXISTS idx_asset_relations_target '
+          'ON asset_relations (target_asset_id)',
+      'CREATE INDEX IF NOT EXISTS idx_scene_characters_scene_id '
+          'ON scene_characters (scene_id)',
+      'CREATE INDEX IF NOT EXISTS idx_timeline_clips_track_id '
+          'ON timeline_clips (track_id)',
+      'CREATE INDEX IF NOT EXISTS idx_timeline_clips_start_seconds '
+          'ON timeline_clips (start_seconds)',
+    ];
+    for (final statement in indexStatements) {
+      await customStatement(statement);
+    }
+  }
 
   Future<void> initialize() async {
     await customStatement(

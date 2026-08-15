@@ -19,7 +19,9 @@ class PromptDiffer {
     final afterLines = after.split('\n');
     final beforeSet = beforeLines.toSet();
     final afterSet = afterLines.toSet();
-    final added = afterLines.where((line) => !beforeSet.contains(line)).toList();
+    final added = afterLines
+        .where((line) => !beforeSet.contains(line))
+        .toList();
     final removed = beforeLines
         .where((line) => !afterSet.contains(line))
         .toList();

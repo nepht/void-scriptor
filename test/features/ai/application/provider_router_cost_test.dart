@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/ai/domain/ai_provider.dart';
-import 'package:void_scriptor/features/ai/domain/ai_streaming.dart';
 import 'package:void_scriptor/features/ai/application/provider_router.dart';
 
 class _PricedProvider extends _BaseProvider {
@@ -10,7 +9,9 @@ class _PricedProvider extends _BaseProvider {
 
 class _BaseProvider with AiStreamingFallback implements AiProvider {
   _BaseProvider(this.id, this.capabilities);
+  @override
   final String id;
+  @override
   final Set<AiCapability> capabilities;
   double get costPerOutput => 0;
 

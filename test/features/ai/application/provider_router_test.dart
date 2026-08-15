@@ -3,16 +3,12 @@ import 'package:void_scriptor/features/ai/domain/ai_provider.dart';
 import 'package:void_scriptor/features/ai/domain/ai_streaming.dart';
 import 'package:void_scriptor/features/ai/application/provider_router.dart';
 
-class _Provider implements AiProvider {
-  _Provider({
-    required this.id,
-    required this.capabilities,
-    this.enabled = true,
-    this.failTimes = 0,
-  });
+class _Provider with AiStreamingFallback implements AiProvider {
+  _Provider({required this.id, required this.capabilities, this.failTimes = 0});
+  @override
   final String id;
+  @override
   final Set<AiCapability> capabilities;
-  final bool enabled;
   int failTimes;
 
   @override
@@ -38,13 +34,13 @@ class _Provider implements AiProvider {
     final required = switch (target) {
       PromptTarget.video => AiCapability.videoGeneration,
       PromptTarget.story => AiCapability.textGeneration,
-      PromptTarget.vfx ||
-      PromptTarget.audio => AiCapability.audioGeneration,
+      PromptTarget.vfx || PromptTarget.audio => AiCapability.audioGeneration,
       PromptTarget.dialogue => AiCapability.voiceGeneration,
       _ => AiCapability.imageGeneration,
     };
     return capabilities.contains(required);
   }
+
   @override
   Stream<AiStreamingChunk> streamGenerate(AiGenerationRequest request) async* {
     yield AiStreamingChunk.text('$id out');
@@ -81,7 +77,11 @@ void main() {
     );
     final router = ProviderRouter([primary, fallback]);
     final result = await router.generateWithFallback(
-      AiGenerationRequest(jobId: 'j', prompt: 'p', target: PromptTarget.story),
+      const AiGenerationRequest(
+        jobId: 'j',
+        prompt: 'p',
+        target: PromptTarget.story,
+      ),
       preferred: 'primary',
     );
     expect(result.providerRequestId, 'fallback-r');
@@ -97,7 +97,7 @@ void main() {
     ]);
     expect(
       () => router.generateWithFallback(
-        AiGenerationRequest(
+        const AiGenerationRequest(
           jobId: 'j',
           prompt: 'p',
           target: PromptTarget.story,

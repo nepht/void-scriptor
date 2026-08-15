@@ -36,19 +36,17 @@ class ModelCatalogRepository {
   }
 
   Future<List<AiModelInfo>> getModels(String providerId) async {
-    final rows =
-        await (database.select(database.aiModelCatalog)
-              ..where((row) => row.providerId.equals(providerId)))
-            .get();
+    final rows = await (database.select(
+      database.aiModelCatalog,
+    )..where((row) => row.providerId.equals(providerId))).get();
     return rows
         .map(
           (row) => AiModelInfo(
             id: row.modelId,
             displayName: row.modelId,
-            capabilities:
-                (jsonDecode(row.capabilitiesJson) as List)
-                    .map((name) => AiCapability.values.byName(name as String))
-                    .toSet(),
+            capabilities: (jsonDecode(row.capabilitiesJson) as List)
+                .map((name) => AiCapability.values.byName(name as String))
+                .toSet(),
           ),
         )
         .toList(growable: false);

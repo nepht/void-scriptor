@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/ai/domain/ai_provider.dart';
-import 'package:void_scriptor/features/ai/domain/ai_streaming.dart';
 import 'package:void_scriptor/features/ai/application/ai_batch.dart';
 
 class _Provider with AiStreamingFallback implements AiProvider {

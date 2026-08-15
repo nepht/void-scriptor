@@ -23,7 +23,7 @@ void main() {
 
   testWidgets('shows per-item success and failure', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(body: BatchResultView(results: results)),
       ),
     );

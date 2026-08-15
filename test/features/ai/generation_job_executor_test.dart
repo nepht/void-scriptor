@@ -90,7 +90,7 @@ GenerationJob _job() => GenerationJob(
   createdAt: DateTime.utc(2026),
 );
 
-class FakeProvider implements AiProvider {
+class FakeProvider with AiStreamingFallback implements AiProvider {
   final cancelledRequestIds = <String>[];
 
   @override

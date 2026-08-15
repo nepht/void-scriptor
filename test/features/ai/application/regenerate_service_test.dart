@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/ai/domain/ai_provider.dart';
-import 'package:void_scriptor/features/ai/domain/ai_streaming.dart';
 import 'package:void_scriptor/features/ai/application/regenerate_service.dart';
 
 class _Provider with AiStreamingFallback implements AiProvider {
@@ -17,7 +16,7 @@ class _Provider with AiStreamingFallback implements AiProvider {
   @override
   Future<AiGenerationResult> generate(AiGenerationRequest request) async {
     prompts.add(request.prompt);
-    return AiGenerationResult(
+    return const AiGenerationResult(
       providerRequestId: 'r',
       outputs: [AiGeneratedOutput(type: AiOutputType.text, text: 'new')],
     );

@@ -29,9 +29,9 @@ class OutputReviewRepository {
   }
 
   Future<OutputReview?> getReview(String generationId) async {
-    final row = await (database.select(database.aiOutputReviews)
-          ..where((r) => r.generationId.equals(generationId)))
-        .getSingleOrNull();
+    final row = await (database.select(
+      database.aiOutputReviews,
+    )..where((r) => r.generationId.equals(generationId))).getSingleOrNull();
     if (row == null) return null;
     return OutputReview(
       generationId: row.generationId,

@@ -19,7 +19,7 @@ void main() {
   });
 
   test('model-specific factor scales the estimate', () {
-    final heavy = TokenEstimator(charsPerToken: 2);
+    const heavy = TokenEstimator(charsPerToken: 2);
     expect(heavy.estimate('12345678'), 4);
   });
 }

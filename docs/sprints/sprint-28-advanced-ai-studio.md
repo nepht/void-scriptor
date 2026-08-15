@@ -2,7 +2,15 @@
 
 > **Sumber judul kanonik**: uteke memory `90d845b9` ("S28 Advanced AI Studio") — hanya judul,
 > tanpa step detail. Step di bawah **dirancang oleh nephthys** dari judul kanonik + audit repo
-> nyata (fondasi S17/S18 yang sudah LULUS). **Belum disetujui Choirudin** — ini proposal.
+> nyata (fondasi S17/S18 yang sudah LULUS), lalu **disetujui Choirudin**.
+
+## Status: ✅ DONE (28.1–28.24)
+
+- **Schema**: v39 → **v40** (`ai_usage_logs`, `ai_model_catalog`, `ai_output_reviews`).
+- **Evidence 28.24**: `flutter analyze` = No issues found; `flutter test` = **504 PASS**;
+  `flutter build web --release` = ✓ Built; `dart format --set-exit-if-changed` = clean;
+  `git diff --check` = clean.
+- Semua commit ter-push ke `origin master`.
 
 ## Tujuan
 

@@ -22,7 +22,7 @@ void main() {
   });
 
   test('AiStreamingResult aggregates chunks into text', () {
-    final result = AiStreamingResult(
+    const result = AiStreamingResult(
       outputs: [
         AiGeneratedOutput(type: AiOutputType.text, text: 'part1 '),
         AiGeneratedOutput(type: AiOutputType.text, text: 'part2'),

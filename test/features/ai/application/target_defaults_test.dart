@@ -21,12 +21,14 @@ void main() {
   });
 
   test('can override default provider for a target', () {
-    final defaults = TargetDefaults(overrides: {
-      PromptTarget.story: const ProviderModelChoice(
-        providerId: 'ollama',
-        modelId: 'llama3',
-      ),
-    });
+    const defaults = TargetDefaults(
+      overrides: {
+        PromptTarget.story: ProviderModelChoice(
+          providerId: 'ollama',
+          modelId: 'llama3',
+        ),
+      },
+    );
     expect(defaults.defaultFor(PromptTarget.story)?.providerId, 'ollama');
     expect(defaults.defaultFor(PromptTarget.story)?.modelId, 'llama3');
   });

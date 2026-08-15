@@ -1,5 +1,9 @@
 import 'dart:async';
 
+import '../search/search_document.dart';
+
+export '../search/search_document.dart';
+
 class PageRequest {
   const PageRequest({required this.limit, this.offset = 0, this.cursor});
 
@@ -23,20 +27,6 @@ class PageResult<T> {
 class AssetPageCursor {
   const AssetPageCursor({this.value});
   final String? value;
-}
-
-class SearchDocument {
-  const SearchDocument({
-    required this.entityId,
-    required this.entityType,
-    required this.title,
-    required this.body,
-  });
-
-  final String entityId;
-  final String entityType;
-  final String title;
-  final String body;
 }
 
 class InMemoryFullTextIndex {

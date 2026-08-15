@@ -56,7 +56,7 @@ void main() {
   });
 
   test('cache keys compare by value equality', () {
-    const a = ThumbnailCacheKey.fromContentHash('x', ThumbnailSize.small);
+    final a = ThumbnailCacheKey.fromContentHash('x', ThumbnailSize.small);
     const b = ThumbnailCacheKey('x_128_v1');
     expect(a, b);
   });

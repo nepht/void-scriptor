@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import '../../../core/selection/selection_controller.dart';
 import '../../../core/selection/selection_model.dart';
+import '../application/asset_pagination.dart';
 import '../application/asset_repository.dart';
 import '../application/asset_view_preference_store.dart';
 import '../domain/asset_search_query.dart';
@@ -27,11 +28,13 @@ class AssetBrowserScreen extends ConsumerStatefulWidget {
 class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
   final _searchController = TextEditingController();
   final _searchFocusNode = FocusNode();
+  final _scrollController = ScrollController();
   AssetViewMode _viewMode = AssetViewMode.grid;
   AssetType? _type;
   bool _favoriteOnly = false;
   final Set<String> _selectedAssetIds = {};
   late final AssetViewPreferenceStore _viewPreferenceStore;
+  late final AssetPaginationController _pagination;
 
   @override
   void initState() {
@@ -39,7 +42,22 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
     _viewPreferenceStore =
         widget.viewPreferenceStore ??
         SharedPreferencesAssetViewPreferenceStore();
+    _pagination = AssetPaginationController(source: widget.assets);
+    _scrollController.addListener(_onScroll);
+    _pagination.addListener(_onPaginationChanged);
     _restoreViewMode();
+    _syncPagination();
+  }
+
+  void _onPaginationChanged() {
+    if (mounted) setState(() {});
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 400) {
+      _pagination.loadMore();
+    }
   }
 
   Future<void> _restoreViewMode() async {
@@ -55,12 +73,15 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
+    _pagination.removeListener(_onPaginationChanged);
+    _pagination.dispose();
     _searchController.dispose();
     _searchFocusNode.dispose();
     super.dispose();
   }
 
-  List<SearchableAsset> get _filtered {
+  List<SearchableAsset> get _filteredAll {
     final parsed = const SearchQueryParser().parse(_searchController.text);
     final needle = parsed.text.trim().toLowerCase();
     return widget.assets
@@ -82,6 +103,20 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
               asset.tags.any((tag) => tag.contains(needle));
         })
         .toList(growable: false);
+  }
+
+  List<SearchableAsset> get _filtered => _pagination.items;
+
+  void _syncPagination() {
+    _pagination.replaceSource(_filteredAll);
+  }
+
+  @override
+  void didUpdateWidget(AssetBrowserScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.assets, widget.assets)) {
+      _syncPagination();
+    }
   }
 
   @override
@@ -152,8 +187,10 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
                       FilterChip(
                         label: const Text('Favorites'),
                         selected: _favoriteOnly,
-                        onSelected: (value) =>
-                            setState(() => _favoriteOnly = value),
+                        onSelected: (value) {
+                          setState(() => _favoriteOnly = value);
+                          _syncPagination();
+                        },
                       ),
                       const SizedBox(width: 8),
                       DropdownButton<AssetType?>(
@@ -171,13 +208,19 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
                             ),
                           ),
                         ],
-                        onChanged: (value) => setState(() => _type = value),
+                        onChanged: (value) {
+                          setState(() => _type = value);
+                          _syncPagination();
+                        },
                       ),
                     ];
                     final search = TextField(
                       focusNode: _searchFocusNode,
                       controller: _searchController,
-                      onChanged: (_) => setState(() {}),
+                      onChanged: (_) {
+                        setState(() {});
+                        _syncPagination();
+                      },
                       decoration: const InputDecoration(
                         prefixIcon: Icon(Icons.search),
                         hintText: 'Search everything...',
@@ -221,6 +264,7 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
   Widget _buildResults(BuildContext context) {
     if (_viewMode == AssetViewMode.list || _viewMode == AssetViewMode.compact) {
       return ListView.builder(
+        controller: _scrollController,
         itemCount: _filtered.length,
         itemBuilder: (_, index) => AssetListTile(
           asset: _filtered[index],
@@ -232,6 +276,7 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
       );
     }
     return GridView.builder(
+      controller: _scrollController,
       padding: const EdgeInsets.all(12),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 230,

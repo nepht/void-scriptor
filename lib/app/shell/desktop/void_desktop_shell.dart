@@ -11,6 +11,9 @@ import '../../../features/inspector/presentation/inspector_panel.dart';
 import '../../../features/project_resilience/application/project_mutation_runtime.dart';
 import '../../../features/projects/presentation/project_persistence_providers.dart';
 import '../../../features/workspace/presentation/workspace_panel.dart';
+import '../../../features/workspace_layout/application/workspace_tab_controller.dart';
+import '../../../features/workspace_layout/presentation/workspace_layout_shell.dart';
+import '../../../features/workspace_layout/presentation/workspace_tab_bar.dart';
 import '../../routing/app_routes.dart';
 import 'void_status_bar.dart';
 import 'void_top_bar.dart';
@@ -108,12 +111,15 @@ class VoidDesktopShell extends ConsumerWidget {
                 : () => unawaited(runtime.bus.redo()),
           ),
           const Expanded(
-            child: Row(
-              children: [
-                ExplorerPanel(),
-                Expanded(child: WorkspacePanel()),
-                InspectorPanel(),
-              ],
+            child: WorkspaceLayoutShell(
+              explorer: ExplorerPanel(),
+              workspace: Column(
+                children: [
+                  _WorkspaceTabStrip(),
+                  Expanded(child: WorkspacePanel()),
+                ],
+              ),
+              inspector: InspectorPanel(),
             ),
           ),
           VoidStatusBar(
@@ -123,6 +129,24 @@ class VoidDesktopShell extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _WorkspaceTabStrip extends ConsumerWidget {
+  const _WorkspaceTabStrip();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(workspaceTabsProvider);
+    if (state.tabs.isEmpty) return const SizedBox.shrink();
+    final notifier = ref.read(workspaceTabsProvider.notifier);
+    return WorkspaceTabBar(
+      tabs: state.tabs,
+      activeTabId: state.activeTabId,
+      onSelect: notifier.activate,
+      onClose: notifier.close,
+      onCloseOthers: notifier.closeOthers,
     );
   }
 }

@@ -44,6 +44,11 @@ class LayoutController extends Notifier<PanelLayout> {
     state = preset.layout;
   }
 
+  /// Applies a raw layout (used by per-project restoration).
+  void applyLayout(PanelLayout layout) {
+    state = layout;
+  }
+
   double _clampWidth(double width) {
     final total = state.leftWidth + state.rightWidth;
     // A panel may grow only until the other keeps at least minWidth.

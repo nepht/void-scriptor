@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../database/project/project_database.dart' hide LayoutPreset;
 import '../domain/layout_model.dart';
@@ -92,3 +93,11 @@ class DriftLayoutPresetRepository implements LayoutPresetRepository {
     );
   }
 }
+
+/// Injects the layout preset repository (Step 27.20). Overridden in tests and
+/// wired to the active `ProjectDatabase` at app startup.
+final layoutPresetRepositoryProvider = Provider<LayoutPresetRepository>(
+  (ref) => throw UnimplementedError(
+    'layoutPresetRepositoryProvider must be overridden at app startup',
+  ),
+);

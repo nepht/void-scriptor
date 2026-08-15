@@ -24,6 +24,7 @@ import '../../features/production_assets/presentation/production_asset_workspace
 import '../../features/cinematic_production/presentation/cinematic_production_workspace_screen.dart';
 import '../../features/project_resilience/presentation/project_resilience_center_screen.dart';
 import '../shell/void_app_shell.dart';
+import '../shell/desktop/collaboration_comments_screen.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
@@ -37,6 +38,8 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
           builder: (_, __) => switch (route.value) {
             AppRoutes.workspace => const ProviderScope(child: VoidAppShell()),
             AppRoutes.aiStudio => const AdvancedAiStudioScreen(),
+            AppRoutes.collaborationComments =>
+              const CollaborationCommentsScreen(),
             _ => FoundationRouteScreen(label: route.key),
           },
         ),
@@ -115,7 +118,8 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
           route.value != AppRoutes.dashboard &&
           route.value != AppRoutes.projects &&
           route.value != AppRoutes.workspace &&
-          route.value != AppRoutes.aiStudio)
+          route.value != AppRoutes.aiStudio &&
+          route.value != AppRoutes.collaborationComments)
         GoRoute(
           path: route.value,
           builder: (_, __) => _FoundationRouteLabel(label: route.key),
@@ -123,6 +127,10 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     GoRoute(
       path: AppRoutes.aiStudio,
       builder: (_, __) => const AdvancedAiStudioScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.collaborationComments,
+      builder: (_, __) => const CollaborationCommentsScreen(),
     ),
     GoRoute(
       path: AppRoutes.workspace,

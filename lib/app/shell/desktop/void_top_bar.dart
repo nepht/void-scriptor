@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
+import '../../../features/collaboration/domain/sync_models.dart';
+import '../../../features/collaboration/presentation/sync_status_indicator.dart';
 
 class VoidTopBar extends StatelessWidget {
   const VoidTopBar({
@@ -12,6 +14,7 @@ class VoidTopBar extends StatelessWidget {
     this.onRedo,
     this.canUndo = false,
     this.canRedo = false,
+    this.syncStatus = const SyncStatus(),
   });
 
   final ValueChanged<String> onMenuSelected;
@@ -20,6 +23,7 @@ class VoidTopBar extends StatelessWidget {
   final VoidCallback? onRedo;
   final bool canUndo;
   final bool canRedo;
+  final SyncStatus syncStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +112,10 @@ class VoidTopBar extends StatelessWidget {
                 icon: Icons.health_and_safety_outlined,
                 tooltip: 'Project resilience',
                 onPressed: () => onMenuSelected('resilience'),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: SyncStatusIndicator(status: syncStatus),
               ),
               const _TopIconButton(
                 icon: Icons.notifications_none_rounded,

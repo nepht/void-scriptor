@@ -34,6 +34,7 @@ abstract final class AppRoutes {
   static const projectStorage = '/project-storage';
   static const projectCache = '/project-cache';
   static const projectTrash = '/project-trash';
+  static const collaborationComments = '/collaboration/comments';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,
@@ -44,5 +45,6 @@ abstract final class AppRoutes {
     'AI STUDIO': aiStudio,
     'DONATION': donation,
     'WORKSPACE': workspace,
+    'COLLABORATION COMMENTS': collaborationComments,
   };
 }

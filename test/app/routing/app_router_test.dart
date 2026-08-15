@@ -26,6 +26,8 @@ void main() {
           ? 'Workspace' // Mengubah dari 'VOID SCRIPTOR' menjadi 'Workspace'
           : route.value == AppRoutes.aiStudio
           ? 'Advanced AI Studio'
+          : route.value == AppRoutes.collaborationComments
+          ? 'Project Comments'
           : route.key;
       expect(find.text(expectedLabel), findsOneWidget);
       expect(tester.takeException(), isNull);

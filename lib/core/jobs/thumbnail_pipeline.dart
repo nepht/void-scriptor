@@ -47,6 +47,8 @@ class ThumbnailMemoryCache {
   final int maxItems;
   final Map<String, Object> _items = {};
 
+  int get itemsCount => _items.length;
+
   T? get<T>(String key) {
     final value = _items.remove(key);
     if (value == null) return null;

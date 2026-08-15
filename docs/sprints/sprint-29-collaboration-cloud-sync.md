@@ -4,6 +4,15 @@
 > judul, tanpa step detail. Step di bawah **dirancang oleh nephthys** dari judul kanonik +
 > audit repo nyata. Pola sama dengan S28: interface + impl lokal/mock, jujur soal batas cloud.
 
+## Status: ✅ DONE (29.1–29.21)
+
+- **Schema**: v40 → **v41** (`sync_logs`, `sync_conflicts`, `project_collaborators`,
+  `project_comments`, `activity_events`).
+- **Evidence 29.21**: `flutter analyze` = No issues found; `flutter test` = **535 PASS**;
+  `flutter build web --release` = ✓ Built; `dart format --set-exit-if-changed` = clean;
+  `git diff --check` = clean.
+- Semua commit ter-push ke `origin master`.
+
 ## Tujuan
 
 Menambah fondasi **sinkronisasi cloud + kolaborasi** pada sistem project yang sudah ada

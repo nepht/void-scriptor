@@ -5,7 +5,6 @@ import 'package:void_scriptor/features/collaboration/presentation/share_project_
 
 void main() {
   testWidgets('shows role picker and invite button', (tester) async {
-    CollaboratorRole? selected;
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
@@ -13,11 +12,7 @@ void main() {
             builder: (context) => TextButton(
               onPressed: () => showDialog<void>(
                 context: context,
-                builder: (_) => ShareProjectDialog(
-                  onInvite: (email, role) {
-                    selected = role;
-                  },
-                ),
+                builder: (_) => ShareProjectDialog(onInvite: (email, role) {}),
               ),
               child: const Text('open'),
             ),

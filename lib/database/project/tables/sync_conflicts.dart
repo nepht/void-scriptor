@@ -8,6 +8,7 @@ class SyncConflicts extends Table {
   TextColumn get baseJson => text()();
   TextColumn get oursJson => text()();
   TextColumn get theirsJson => text()();
-  TextColumn get resolution => text().nullable()(); // keepOurs / keepTheirs / manual
+  TextColumn get resolution =>
+      text().nullable()(); // keepOurs / keepTheirs / manual
   DateTimeColumn get createdAt => dateTime()();
 }

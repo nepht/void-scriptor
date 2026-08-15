@@ -8,7 +8,7 @@ import '../domain/asset_search_query.dart';
 /// scrolls (infinite scroll, Step 26.25). This keeps render cost bounded by
 /// what the user has actually revealed, not the total asset count.
 class AssetPaginationController extends ChangeNotifier {
-  AssetPaginationController({required List<SearchableAsset> this._source}) {
+  AssetPaginationController({required this._source}) {
     loadMore();
   }
   static const int pageSize = 80;

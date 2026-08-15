@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/database/project/project_database.dart';
 import 'package:void_scriptor/database/project/project_database_service.dart';
-import 'package:void_scriptor/database/project/tables/assets.dart';
 
 void main() {
   late Directory root;

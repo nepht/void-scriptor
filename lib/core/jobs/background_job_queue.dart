@@ -87,9 +87,8 @@ class BackgroundJobQueue {
     }
   }
 
-  bool _hasRunnablePending() => _pending.any(
-    (task) => !_isPaused(_jobs[task.id]!.priority),
-  );
+  bool _hasRunnablePending() =>
+      _pending.any((task) => !_isPaused(_jobs[task.id]!.priority));
 
   /// Pauses scheduling of jobs at or below [priority] (Step 26.71).
   ///

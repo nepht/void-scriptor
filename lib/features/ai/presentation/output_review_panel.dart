@@ -38,7 +38,8 @@ class _OutputReviewPanelState extends State<OutputReviewPanel> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
+        Wrap(
+          spacing: 4,
           children: [
             TextButton.icon(
               onPressed: widget.onApprove,

@@ -9,7 +9,7 @@ abstract interface class OpenAiClient {
   });
 }
 
-class OpenAiProvider implements AiProvider {
+class OpenAiProvider with AiStreamingFallback implements AiProvider {
   OpenAiProvider({required this.credentialStore, required this.client});
   final CredentialStore credentialStore;
   final OpenAiClient client;

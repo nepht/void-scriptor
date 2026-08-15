@@ -9,7 +9,7 @@ abstract interface class GeminiClient {
   });
 }
 
-class GeminiProvider implements AiProvider {
+class GeminiProvider with AiStreamingFallback implements AiProvider {
   GeminiProvider({required this.credentialStore, required this.client});
   final CredentialStore credentialStore;
   final GeminiClient client;

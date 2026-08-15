@@ -8,7 +8,7 @@ abstract interface class OllamaClient {
   });
 }
 
-class OllamaProvider implements AiProvider {
+class OllamaProvider with AiStreamingFallback implements AiProvider {
   OllamaProvider({
     required this.client,
     this.baseUrl = 'http://localhost:11434',

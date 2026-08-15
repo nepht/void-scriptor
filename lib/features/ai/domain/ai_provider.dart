@@ -1,5 +1,6 @@
 import 'prompt_preset.dart';
 import 'prompt_target.dart';
+import 'ai_streaming.dart';
 export 'prompt_target.dart';
 
 enum AiProviderType { openAi, gemini, ollama, comfyUi, custom }
@@ -101,6 +102,28 @@ abstract interface class AiProvider {
   Future<AiGenerationResult> generate(AiGenerationRequest request);
   Future<void> cancel(String requestId);
   bool validateTarget(PromptTarget target);
+
+  /// Streams generation chunks (Step 28.2). Providers that support streaming
+  /// override this; the rest use [AiStreamingFallback].
+  Stream<AiStreamingChunk> streamGenerate(AiGenerationRequest request);
+}
+
+/// Default streaming behavior: emit a single done chunk carrying the aggregated
+/// `generate` result. Mix into providers that do not support native streaming.
+mixin AiStreamingFallback implements AiProvider {
+  @override
+  Stream<AiStreamingChunk> streamGenerate(AiGenerationRequest request) async* {
+    final result = await generate(request);
+    if (result.outputs.isEmpty) {
+      yield const AiStreamingChunk.done();
+      return;
+    }
+    final text = result.outputs.map((o) => o.text ?? '').join();
+    if (text.isNotEmpty) {
+      yield AiStreamingChunk.text(text);
+    }
+    yield const AiStreamingChunk.done();
+  }
 }
 
 class AiProviderRegistry {
@@ -114,7 +137,7 @@ class AiProviderRegistry {
   List<AiProvider> get all => List.unmodifiable(_providers.values);
 }
 
-class MockAiProvider implements AiProvider {
+class MockAiProvider with AiStreamingFallback implements AiProvider {
   const MockAiProvider();
   @override
   String get id => 'mock';

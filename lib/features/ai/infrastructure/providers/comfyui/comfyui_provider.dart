@@ -9,7 +9,7 @@ abstract interface class ComfyUiClient {
   Future<void> cancel({required String baseUrl, required String requestId});
 }
 
-class ComfyUiProvider implements AiProvider {
+class ComfyUiProvider with AiStreamingFallback implements AiProvider {
   ComfyUiProvider({
     required this.client,
     this.baseUrl = 'http://localhost:8188',

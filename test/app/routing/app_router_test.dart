@@ -24,6 +24,8 @@ void main() {
 
       final expectedLabel = route.value == AppRoutes.workspace
           ? 'Workspace' // Mengubah dari 'VOID SCRIPTOR' menjadi 'Workspace'
+          : route.value == AppRoutes.aiStudio
+          ? 'Advanced AI Studio'
           : route.key;
       expect(find.text(expectedLabel), findsOneWidget);
       expect(tester.takeException(), isNull);

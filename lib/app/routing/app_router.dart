@@ -15,6 +15,7 @@ import '../../features/ai/presentation/ai_prompt_composer_screen.dart';
 import '../../features/ai/presentation/ai_provider_workspace_screen.dart';
 import '../../features/ai/presentation/ai_generation_queue_screen.dart';
 import '../../features/ai/presentation/project_ai_generation_gallery_screen.dart';
+import '../../features/ai/presentation/advanced_ai_studio_screen.dart';
 import '../../features/assets/presentation/asset_browser_screen.dart';
 import '../../features/references/presentation/project_reference_library_screen.dart';
 import '../../features/references/presentation/reference_comparison_screen.dart';
@@ -33,9 +34,11 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
       for (final route in AppRoutes.foundationRoutes.entries)
         GoRoute(
           path: route.value,
-          builder: (_, __) => route.value == AppRoutes.workspace
-              ? const ProviderScope(child: VoidAppShell())
-              : FoundationRouteScreen(label: route.key),
+          builder: (_, __) => switch (route.value) {
+            AppRoutes.workspace => const ProviderScope(child: VoidAppShell()),
+            AppRoutes.aiStudio => const AdvancedAiStudioScreen(),
+            _ => FoundationRouteScreen(label: route.key),
+          },
         ),
       GoRoute(
         path: AppRoutes.assets,
@@ -111,11 +114,16 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
       if (route.value != AppRoutes.splash &&
           route.value != AppRoutes.dashboard &&
           route.value != AppRoutes.projects &&
-          route.value != AppRoutes.workspace)
+          route.value != AppRoutes.workspace &&
+          route.value != AppRoutes.aiStudio)
         GoRoute(
           path: route.value,
           builder: (_, __) => _FoundationRouteLabel(label: route.key),
         ),
+    GoRoute(
+      path: AppRoutes.aiStudio,
+      builder: (_, __) => const AdvancedAiStudioScreen(),
+    ),
     GoRoute(
       path: AppRoutes.workspace,
       builder: (_, __) => VoidAppShell(onLogout: onLogout),

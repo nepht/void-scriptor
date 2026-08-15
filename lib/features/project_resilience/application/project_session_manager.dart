@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/commands/command_type_registry.dart';
+import '../../../core/jobs/background_job.dart';
+import '../../../core/jobs/background_job_queue.dart';
+import '../../../core/performance/performance_runtime.dart';
 import '../../../core/persistence/project_manifest.dart';
 import '../../../core/persistence/project_paths.dart';
 import '../../../core/project_package/project_package.dart';
@@ -35,6 +38,8 @@ class ProjectSession {
     required this.lock,
     required this.mutationRuntime,
     required this.versionControl,
+    required this.jobs,
+    required this.openMetrics,
   });
 
   final ProjectPackage package;
@@ -45,6 +50,8 @@ class ProjectSession {
   final ProjectSessionLock lock;
   final ProjectMutationRuntime mutationRuntime;
   final ProjectVersionControlService versionControl;
+  final BackgroundJobQueue jobs;
+  final PerformanceMetrics openMetrics;
 
   Future<void> save() async {
     if (mode == ProjectOpenMode.readOnly) {
@@ -69,6 +76,12 @@ class ProjectSession {
 
   Future<void> close() async {
     await mutationRuntime.dispose();
+    for (final task in jobs.jobs) {
+      if (task.persistence == JobPersistence.transient) {
+        await jobs.cancel(task.id);
+      }
+    }
+    await jobs.dispose();
     await database.close();
     await lock.release();
     if (await package.lockFile.exists()) {
@@ -95,6 +108,14 @@ class ProjectSessionManager {
     if (manifest.id != package.projectId) {
       throw StateError('Project ID does not match package identity');
     }
+    final metrics = PerformanceMetrics();
+    final manifestStarted = DateTime.now();
+    metrics.record(
+      'manifest',
+      Duration(
+        milliseconds: DateTime.now().difference(manifestStarted).inMilliseconds,
+      ),
+    );
     final lock = ProjectSessionLock(package);
     if (mode == ProjectOpenMode.readWrite) {
       await lock.acquire();
@@ -129,9 +150,18 @@ class ProjectSessionManager {
         );
       }
       final databaseService = ProjectDatabaseService();
+      final databaseStarted = DateTime.now();
       final database = mode == ProjectOpenMode.readOnly
           ? await databaseService.openReadOnly(package.databaseFile.path)
           : await databaseService.open(package.databaseFile.path);
+      metrics.record(
+        'database',
+        Duration(
+          milliseconds: DateTime.now()
+              .difference(databaseStarted)
+              .inMilliseconds,
+        ),
+      );
       final characterRepository = CharacterRepositoryImpl(
         database: database,
         projectId: package.projectId,
@@ -201,6 +231,8 @@ class ProjectSessionManager {
         lock: lock,
         mutationRuntime: mutationRuntime,
         versionControl: ProjectVersionControlService(package),
+        jobs: BackgroundJobQueue(),
+        openMetrics: metrics,
       );
     } catch (_) {
       if (mode == ProjectOpenMode.readWrite) await lock.release();

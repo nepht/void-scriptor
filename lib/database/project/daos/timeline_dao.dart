@@ -26,6 +26,35 @@ class TimelineDao extends DatabaseAccessor<ProjectDatabase>
             ..where((row) => row.timelineId.equals(timelineId))
             ..orderBy([(row) => OrderingTerm(expression: row.sortOrder)]))
           .get();
+
+  /// Returns only the clips intersecting the requested time window
+  /// (with overscan), so render complexity depends on visible items rather
+  /// than the total clip count (Step 26.36).
+  Future<List<TimelineClip>> getVisibleClips({
+    required String timelineId,
+    required double startSeconds,
+    required double endSeconds,
+    double overscanSeconds = 0,
+    String? trackId,
+  }) {
+    final queryStart = startSeconds - overscanSeconds;
+    final queryEnd = endSeconds + overscanSeconds;
+    final query = select(timelineClips)
+      ..where(
+        (row) =>
+            row.timelineId.equals(timelineId) &
+            row.startSeconds.isSmallerOrEqualValue(queryEnd) &
+            (row.startSeconds + row.durationSeconds).isBiggerOrEqualValue(
+              queryStart,
+            ) &
+            (trackId == null
+                ? const Constant(true)
+                : row.trackId.equals(trackId)),
+      )
+      ..orderBy([(row) => OrderingTerm(expression: row.startSeconds)]);
+    return query.get();
+  }
+
   Future<void> updateClip(
     String id, {
     double? startSeconds,

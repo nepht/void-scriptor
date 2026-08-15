@@ -321,3 +321,38 @@ git diff --check
 1. **Detachable window (multi-window)** memerlukan plugin `desktop_multi_window` (atau `bitsdojo_window`) — belum ada di pubspec. Fase ini saya tandai sebagai **infra scaffold + no-op jujur**, bukan fitur penuh, sampai plugin disetujui untuk ditambahkan.
 2. **Persistensi layout** butuh migration schema v39 (table `layout_presets` + `project_layout_state`) — konsisten dengan pola migration v37/v38.
 3. **Responsive**: pada viewport sempit (mobile/tablet), `ResizablePanel` tidak dipakai — collapse otomatis; multi-tab tetap jalan. Harus diuji via widget test narrow viewport (pola `auth_flow_test` yang ada).
+
+---
+
+## Status: ✅ SELESAI (27.1 → 27.21) — 2026-08-15
+
+Seluruh step Sprint 27 diimplementasikan via TDD RED→GREEN, `flutter analyze` bersih,
+commit + push per unit fitur. Bukti gate (live, bukan klaim):
+
+```text
+dart format --set-exit-if-changed lib test   PASS (667 files, 0 changed)
+flutter analyze                               PASS (0 issues)
+flutter test                                  458 PASS  ← naik dari 437
+flutter build web --release                   PASS (62.4s, ✓ Built build/web)
+git diff --check                              PASS
+```
+
+Commit (terbaru dulu):
+
+```text
+a0117ec feat(sprint-27): add layout preset menu, detachable window scaffold, per-project restoration
+ae3ae0d feat(sprint-27): add split editor and fullscreen preview
+6dc30a7 refactor(sprint-27): wire desktop shell through workspace layout shell
+cf5d5a6 feat(sprint-27): add workspace tab bar and dockable layout shell
+c0cf54d feat(sprint-27): add resizable and collapsible panel widgets
+1ae5cee feat(sprint-27): add layout keyboard navigation intents
+70e7dee feat(sprint-27): add layout preset persistence via schema v39
+ce37074 feat(sprint-27): add layout and workspace tab controllers
+6cd1347 feat(sprint-27): add workspace layout domain models
+```
+
+### Catatan risiko yang tersisa (bukan blocker Sprint 27)
+- **Detachable window** = scaffold jujur (SnackBar) — butuh plugin multi-window di sprint mendatang.
+- **Narrow viewport responsive** — `ResizablePanel` belum punya test viewport sempit khusus; dicatat sebagai follow-up.
+- **Build web advisory** "CupertinoIcons" adalah warning pre-existing, tidak menggagalkan build.
+

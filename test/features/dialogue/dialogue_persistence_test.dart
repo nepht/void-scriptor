@@ -77,7 +77,7 @@ void main() {
       final second = await service.open(dbPath);
       addTearDown(second.close);
       final restored = DialogueRepository(second);
-      expect(second.schemaVersion, 38);
+      expect(second.schemaVersion, 39);
       expect((await restored.getVoiceProfile('qowner'))?.language, 'id-ID');
       expect(
         (await restored.primaryVoiceReference('qowner'))?.audioFileId,

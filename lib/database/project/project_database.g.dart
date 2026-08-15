@@ -57039,6 +57039,529 @@ class JobDependenciesCompanion extends UpdateCompanion<JobDependency> {
   }
 }
 
+class $LayoutPresetsTable extends LayoutPresets
+    with TableInfo<$LayoutPresetsTable, LayoutPreset> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LayoutPresetsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _jsonMeta = const VerificationMeta('json');
+  @override
+  late final GeneratedColumn<String> json = GeneratedColumn<String>(
+    'json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, projectId, name, json];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'layout_presets';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LayoutPreset> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('json')) {
+      context.handle(
+        _jsonMeta,
+        json.isAcceptableOrUnknown(data['json']!, _jsonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_jsonMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LayoutPreset map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LayoutPreset(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      json: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}json'],
+      )!,
+    );
+  }
+
+  @override
+  $LayoutPresetsTable createAlias(String alias) {
+    return $LayoutPresetsTable(attachedDatabase, alias);
+  }
+}
+
+class LayoutPreset extends DataClass implements Insertable<LayoutPreset> {
+  final String id;
+  final String projectId;
+  final String name;
+  final String json;
+  const LayoutPreset({
+    required this.id,
+    required this.projectId,
+    required this.name,
+    required this.json,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['name'] = Variable<String>(name);
+    map['json'] = Variable<String>(json);
+    return map;
+  }
+
+  LayoutPresetsCompanion toCompanion(bool nullToAbsent) {
+    return LayoutPresetsCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      name: Value(name),
+      json: Value(json),
+    );
+  }
+
+  factory LayoutPreset.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LayoutPreset(
+      id: serializer.fromJson<String>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      name: serializer.fromJson<String>(json['name']),
+      json: serializer.fromJson<String>(json['json']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'name': serializer.toJson<String>(name),
+      'json': serializer.toJson<String>(json),
+    };
+  }
+
+  LayoutPreset copyWith({
+    String? id,
+    String? projectId,
+    String? name,
+    String? json,
+  }) => LayoutPreset(
+    id: id ?? this.id,
+    projectId: projectId ?? this.projectId,
+    name: name ?? this.name,
+    json: json ?? this.json,
+  );
+  LayoutPreset copyWithCompanion(LayoutPresetsCompanion data) {
+    return LayoutPreset(
+      id: data.id.present ? data.id.value : this.id,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      name: data.name.present ? data.name.value : this.name,
+      json: data.json.present ? data.json.value : this.json,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LayoutPreset(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('json: $json')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, projectId, name, json);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LayoutPreset &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.name == this.name &&
+          other.json == this.json);
+}
+
+class LayoutPresetsCompanion extends UpdateCompanion<LayoutPreset> {
+  final Value<String> id;
+  final Value<String> projectId;
+  final Value<String> name;
+  final Value<String> json;
+  final Value<int> rowid;
+  const LayoutPresetsCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.json = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LayoutPresetsCompanion.insert({
+    required String id,
+    required String projectId,
+    required String name,
+    required String json,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       projectId = Value(projectId),
+       name = Value(name),
+       json = Value(json);
+  static Insertable<LayoutPreset> custom({
+    Expression<String>? id,
+    Expression<String>? projectId,
+    Expression<String>? name,
+    Expression<String>? json,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (name != null) 'name': name,
+      if (json != null) 'json': json,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LayoutPresetsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? projectId,
+    Value<String>? name,
+    Value<String>? json,
+    Value<int>? rowid,
+  }) {
+    return LayoutPresetsCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      name: name ?? this.name,
+      json: json ?? this.json,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (json.present) {
+      map['json'] = Variable<String>(json.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LayoutPresetsCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('name: $name, ')
+          ..write('json: $json, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProjectLayoutStatesTable extends ProjectLayoutStates
+    with TableInfo<$ProjectLayoutStatesTable, ProjectLayoutState> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProjectLayoutStatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _jsonMeta = const VerificationMeta('json');
+  @override
+  late final GeneratedColumn<String> json = GeneratedColumn<String>(
+    'json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [projectId, json];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'project_layout_states';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProjectLayoutState> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('json')) {
+      context.handle(
+        _jsonMeta,
+        json.isAcceptableOrUnknown(data['json']!, _jsonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_jsonMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {projectId};
+  @override
+  ProjectLayoutState map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProjectLayoutState(
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      json: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}json'],
+      )!,
+    );
+  }
+
+  @override
+  $ProjectLayoutStatesTable createAlias(String alias) {
+    return $ProjectLayoutStatesTable(attachedDatabase, alias);
+  }
+}
+
+class ProjectLayoutState extends DataClass
+    implements Insertable<ProjectLayoutState> {
+  final String projectId;
+  final String json;
+  const ProjectLayoutState({required this.projectId, required this.json});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['project_id'] = Variable<String>(projectId);
+    map['json'] = Variable<String>(json);
+    return map;
+  }
+
+  ProjectLayoutStatesCompanion toCompanion(bool nullToAbsent) {
+    return ProjectLayoutStatesCompanion(
+      projectId: Value(projectId),
+      json: Value(json),
+    );
+  }
+
+  factory ProjectLayoutState.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProjectLayoutState(
+      projectId: serializer.fromJson<String>(json['projectId']),
+      json: serializer.fromJson<String>(json['json']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'projectId': serializer.toJson<String>(projectId),
+      'json': serializer.toJson<String>(json),
+    };
+  }
+
+  ProjectLayoutState copyWith({String? projectId, String? json}) =>
+      ProjectLayoutState(
+        projectId: projectId ?? this.projectId,
+        json: json ?? this.json,
+      );
+  ProjectLayoutState copyWithCompanion(ProjectLayoutStatesCompanion data) {
+    return ProjectLayoutState(
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      json: data.json.present ? data.json.value : this.json,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectLayoutState(')
+          ..write('projectId: $projectId, ')
+          ..write('json: $json')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(projectId, json);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProjectLayoutState &&
+          other.projectId == this.projectId &&
+          other.json == this.json);
+}
+
+class ProjectLayoutStatesCompanion extends UpdateCompanion<ProjectLayoutState> {
+  final Value<String> projectId;
+  final Value<String> json;
+  final Value<int> rowid;
+  const ProjectLayoutStatesCompanion({
+    this.projectId = const Value.absent(),
+    this.json = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProjectLayoutStatesCompanion.insert({
+    required String projectId,
+    required String json,
+    this.rowid = const Value.absent(),
+  }) : projectId = Value(projectId),
+       json = Value(json);
+  static Insertable<ProjectLayoutState> custom({
+    Expression<String>? projectId,
+    Expression<String>? json,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (projectId != null) 'project_id': projectId,
+      if (json != null) 'json': json,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProjectLayoutStatesCompanion copyWith({
+    Value<String>? projectId,
+    Value<String>? json,
+    Value<int>? rowid,
+  }) {
+    return ProjectLayoutStatesCompanion(
+      projectId: projectId ?? this.projectId,
+      json: json ?? this.json,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (json.present) {
+      map['json'] = Variable<String>(json.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectLayoutStatesCompanion(')
+          ..write('projectId: $projectId, ')
+          ..write('json: $json, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -57253,6 +57776,9 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final $JobDependenciesTable jobDependencies = $JobDependenciesTable(
     this,
   );
+  late final $LayoutPresetsTable layoutPresets = $LayoutPresetsTable(this);
+  late final $ProjectLayoutStatesTable projectLayoutStates =
+      $ProjectLayoutStatesTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -57440,6 +57966,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     commandHistoryEntries,
     backgroundJobs,
     jobDependencies,
+    layoutPresets,
+    projectLayoutStates,
   ];
 }
 
@@ -88112,6 +88640,352 @@ typedef $$JobDependenciesTableProcessedTableManager =
       JobDependency,
       PrefetchHooks Function()
     >;
+typedef $$LayoutPresetsTableCreateCompanionBuilder =
+    LayoutPresetsCompanion Function({
+      required String id,
+      required String projectId,
+      required String name,
+      required String json,
+      Value<int> rowid,
+    });
+typedef $$LayoutPresetsTableUpdateCompanionBuilder =
+    LayoutPresetsCompanion Function({
+      Value<String> id,
+      Value<String> projectId,
+      Value<String> name,
+      Value<String> json,
+      Value<int> rowid,
+    });
+
+class $$LayoutPresetsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $LayoutPresetsTable> {
+  $$LayoutPresetsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get json => $composableBuilder(
+    column: $table.json,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LayoutPresetsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $LayoutPresetsTable> {
+  $$LayoutPresetsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get json => $composableBuilder(
+    column: $table.json,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LayoutPresetsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $LayoutPresetsTable> {
+  $$LayoutPresetsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get json =>
+      $composableBuilder(column: $table.json, builder: (column) => column);
+}
+
+class $$LayoutPresetsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $LayoutPresetsTable,
+          LayoutPreset,
+          $$LayoutPresetsTableFilterComposer,
+          $$LayoutPresetsTableOrderingComposer,
+          $$LayoutPresetsTableAnnotationComposer,
+          $$LayoutPresetsTableCreateCompanionBuilder,
+          $$LayoutPresetsTableUpdateCompanionBuilder,
+          (
+            LayoutPreset,
+            BaseReferences<
+              _$ProjectDatabase,
+              $LayoutPresetsTable,
+              LayoutPreset
+            >,
+          ),
+          LayoutPreset,
+          PrefetchHooks Function()
+        > {
+  $$LayoutPresetsTableTableManager(
+    _$ProjectDatabase db,
+    $LayoutPresetsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LayoutPresetsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LayoutPresetsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LayoutPresetsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> json = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LayoutPresetsCompanion(
+                id: id,
+                projectId: projectId,
+                name: name,
+                json: json,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String projectId,
+                required String name,
+                required String json,
+                Value<int> rowid = const Value.absent(),
+              }) => LayoutPresetsCompanion.insert(
+                id: id,
+                projectId: projectId,
+                name: name,
+                json: json,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LayoutPresetsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $LayoutPresetsTable,
+      LayoutPreset,
+      $$LayoutPresetsTableFilterComposer,
+      $$LayoutPresetsTableOrderingComposer,
+      $$LayoutPresetsTableAnnotationComposer,
+      $$LayoutPresetsTableCreateCompanionBuilder,
+      $$LayoutPresetsTableUpdateCompanionBuilder,
+      (
+        LayoutPreset,
+        BaseReferences<_$ProjectDatabase, $LayoutPresetsTable, LayoutPreset>,
+      ),
+      LayoutPreset,
+      PrefetchHooks Function()
+    >;
+typedef $$ProjectLayoutStatesTableCreateCompanionBuilder =
+    ProjectLayoutStatesCompanion Function({
+      required String projectId,
+      required String json,
+      Value<int> rowid,
+    });
+typedef $$ProjectLayoutStatesTableUpdateCompanionBuilder =
+    ProjectLayoutStatesCompanion Function({
+      Value<String> projectId,
+      Value<String> json,
+      Value<int> rowid,
+    });
+
+class $$ProjectLayoutStatesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $ProjectLayoutStatesTable> {
+  $$ProjectLayoutStatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get json => $composableBuilder(
+    column: $table.json,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProjectLayoutStatesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $ProjectLayoutStatesTable> {
+  $$ProjectLayoutStatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get json => $composableBuilder(
+    column: $table.json,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProjectLayoutStatesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $ProjectLayoutStatesTable> {
+  $$ProjectLayoutStatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get json =>
+      $composableBuilder(column: $table.json, builder: (column) => column);
+}
+
+class $$ProjectLayoutStatesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $ProjectLayoutStatesTable,
+          ProjectLayoutState,
+          $$ProjectLayoutStatesTableFilterComposer,
+          $$ProjectLayoutStatesTableOrderingComposer,
+          $$ProjectLayoutStatesTableAnnotationComposer,
+          $$ProjectLayoutStatesTableCreateCompanionBuilder,
+          $$ProjectLayoutStatesTableUpdateCompanionBuilder,
+          (
+            ProjectLayoutState,
+            BaseReferences<
+              _$ProjectDatabase,
+              $ProjectLayoutStatesTable,
+              ProjectLayoutState
+            >,
+          ),
+          ProjectLayoutState,
+          PrefetchHooks Function()
+        > {
+  $$ProjectLayoutStatesTableTableManager(
+    _$ProjectDatabase db,
+    $ProjectLayoutStatesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProjectLayoutStatesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProjectLayoutStatesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ProjectLayoutStatesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> projectId = const Value.absent(),
+                Value<String> json = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProjectLayoutStatesCompanion(
+                projectId: projectId,
+                json: json,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String projectId,
+                required String json,
+                Value<int> rowid = const Value.absent(),
+              }) => ProjectLayoutStatesCompanion.insert(
+                projectId: projectId,
+                json: json,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProjectLayoutStatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $ProjectLayoutStatesTable,
+      ProjectLayoutState,
+      $$ProjectLayoutStatesTableFilterComposer,
+      $$ProjectLayoutStatesTableOrderingComposer,
+      $$ProjectLayoutStatesTableAnnotationComposer,
+      $$ProjectLayoutStatesTableCreateCompanionBuilder,
+      $$ProjectLayoutStatesTableUpdateCompanionBuilder,
+      (
+        ProjectLayoutState,
+        BaseReferences<
+          _$ProjectDatabase,
+          $ProjectLayoutStatesTable,
+          ProjectLayoutState
+        >,
+      ),
+      ProjectLayoutState,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -88430,4 +89304,8 @@ class $ProjectDatabaseManager {
       $$BackgroundJobsTableTableManager(_db, _db.backgroundJobs);
   $$JobDependenciesTableTableManager get jobDependencies =>
       $$JobDependenciesTableTableManager(_db, _db.jobDependencies);
+  $$LayoutPresetsTableTableManager get layoutPresets =>
+      $$LayoutPresetsTableTableManager(_db, _db.layoutPresets);
+  $$ProjectLayoutStatesTableTableManager get projectLayoutStates =>
+      $$ProjectLayoutStatesTableTableManager(_db, _db.projectLayoutStates);
 }

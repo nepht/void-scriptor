@@ -64,6 +64,8 @@ import 'tables/project_resilience.dart';
 import 'tables/command_history_entries.dart';
 import 'tables/background_jobs.dart';
 import 'tables/job_dependencies.dart';
+import 'tables/layout_presets.dart';
+import 'tables/project_layout_states.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -241,6 +243,8 @@ class ProjectMetadata extends Table {
     CommandHistoryEntries,
     BackgroundJobs,
     JobDependencies,
+    LayoutPresets,
+    ProjectLayoutStates,
   ],
   daos: [
     AssetDao,
@@ -275,7 +279,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 38;
+  static const currentSchemaVersion = 39;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -526,6 +530,10 @@ class ProjectDatabase extends _$ProjectDatabase {
       }
       if (from < 38) {
         await m.createTable(jobDependencies);
+      }
+      if (from < 39) {
+        await m.createTable(layoutPresets);
+        await m.createTable(projectLayoutStates);
       }
     },
   );

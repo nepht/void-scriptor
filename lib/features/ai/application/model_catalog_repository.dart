@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:drift/drift.dart';
-
 import '../../../database/project/project_database.dart';
 import '../domain/ai_provider.dart';
 

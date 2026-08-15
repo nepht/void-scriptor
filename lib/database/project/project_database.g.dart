@@ -57562,6 +57562,1230 @@ class ProjectLayoutStatesCompanion extends UpdateCompanion<ProjectLayoutState> {
   }
 }
 
+class $AiUsageLogsTable extends AiUsageLogs
+    with TableInfo<$AiUsageLogsTable, AiUsageLog> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AiUsageLogsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _generationIdMeta = const VerificationMeta(
+    'generationId',
+  );
+  @override
+  late final GeneratedColumn<String> generationId = GeneratedColumn<String>(
+    'generation_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _providerMeta = const VerificationMeta(
+    'provider',
+  );
+  @override
+  late final GeneratedColumn<String> provider = GeneratedColumn<String>(
+    'provider',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _modelMeta = const VerificationMeta('model');
+  @override
+  late final GeneratedColumn<String> model = GeneratedColumn<String>(
+    'model',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _promptTokensMeta = const VerificationMeta(
+    'promptTokens',
+  );
+  @override
+  late final GeneratedColumn<int> promptTokens = GeneratedColumn<int>(
+    'prompt_tokens',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _completionTokensMeta = const VerificationMeta(
+    'completionTokens',
+  );
+  @override
+  late final GeneratedColumn<int> completionTokens = GeneratedColumn<int>(
+    'completion_tokens',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _costMeta = const VerificationMeta('cost');
+  @override
+  late final GeneratedColumn<double> cost = GeneratedColumn<double>(
+    'cost',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    generationId,
+    provider,
+    model,
+    promptTokens,
+    completionTokens,
+    cost,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ai_usage_logs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AiUsageLog> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('generation_id')) {
+      context.handle(
+        _generationIdMeta,
+        generationId.isAcceptableOrUnknown(
+          data['generation_id']!,
+          _generationIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_generationIdMeta);
+    }
+    if (data.containsKey('provider')) {
+      context.handle(
+        _providerMeta,
+        provider.isAcceptableOrUnknown(data['provider']!, _providerMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_providerMeta);
+    }
+    if (data.containsKey('model')) {
+      context.handle(
+        _modelMeta,
+        model.isAcceptableOrUnknown(data['model']!, _modelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_modelMeta);
+    }
+    if (data.containsKey('prompt_tokens')) {
+      context.handle(
+        _promptTokensMeta,
+        promptTokens.isAcceptableOrUnknown(
+          data['prompt_tokens']!,
+          _promptTokensMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_promptTokensMeta);
+    }
+    if (data.containsKey('completion_tokens')) {
+      context.handle(
+        _completionTokensMeta,
+        completionTokens.isAcceptableOrUnknown(
+          data['completion_tokens']!,
+          _completionTokensMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_completionTokensMeta);
+    }
+    if (data.containsKey('cost')) {
+      context.handle(
+        _costMeta,
+        cost.isAcceptableOrUnknown(data['cost']!, _costMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_costMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AiUsageLog map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AiUsageLog(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      generationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}generation_id'],
+      )!,
+      provider: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provider'],
+      )!,
+      model: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}model'],
+      )!,
+      promptTokens: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prompt_tokens'],
+      )!,
+      completionTokens: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}completion_tokens'],
+      )!,
+      cost: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}cost'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AiUsageLogsTable createAlias(String alias) {
+    return $AiUsageLogsTable(attachedDatabase, alias);
+  }
+}
+
+class AiUsageLog extends DataClass implements Insertable<AiUsageLog> {
+  final String id;
+  final String generationId;
+  final String provider;
+  final String model;
+  final int promptTokens;
+  final int completionTokens;
+  final double cost;
+  final DateTime createdAt;
+  const AiUsageLog({
+    required this.id,
+    required this.generationId,
+    required this.provider,
+    required this.model,
+    required this.promptTokens,
+    required this.completionTokens,
+    required this.cost,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['generation_id'] = Variable<String>(generationId);
+    map['provider'] = Variable<String>(provider);
+    map['model'] = Variable<String>(model);
+    map['prompt_tokens'] = Variable<int>(promptTokens);
+    map['completion_tokens'] = Variable<int>(completionTokens);
+    map['cost'] = Variable<double>(cost);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  AiUsageLogsCompanion toCompanion(bool nullToAbsent) {
+    return AiUsageLogsCompanion(
+      id: Value(id),
+      generationId: Value(generationId),
+      provider: Value(provider),
+      model: Value(model),
+      promptTokens: Value(promptTokens),
+      completionTokens: Value(completionTokens),
+      cost: Value(cost),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory AiUsageLog.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AiUsageLog(
+      id: serializer.fromJson<String>(json['id']),
+      generationId: serializer.fromJson<String>(json['generationId']),
+      provider: serializer.fromJson<String>(json['provider']),
+      model: serializer.fromJson<String>(json['model']),
+      promptTokens: serializer.fromJson<int>(json['promptTokens']),
+      completionTokens: serializer.fromJson<int>(json['completionTokens']),
+      cost: serializer.fromJson<double>(json['cost']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'generationId': serializer.toJson<String>(generationId),
+      'provider': serializer.toJson<String>(provider),
+      'model': serializer.toJson<String>(model),
+      'promptTokens': serializer.toJson<int>(promptTokens),
+      'completionTokens': serializer.toJson<int>(completionTokens),
+      'cost': serializer.toJson<double>(cost),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  AiUsageLog copyWith({
+    String? id,
+    String? generationId,
+    String? provider,
+    String? model,
+    int? promptTokens,
+    int? completionTokens,
+    double? cost,
+    DateTime? createdAt,
+  }) => AiUsageLog(
+    id: id ?? this.id,
+    generationId: generationId ?? this.generationId,
+    provider: provider ?? this.provider,
+    model: model ?? this.model,
+    promptTokens: promptTokens ?? this.promptTokens,
+    completionTokens: completionTokens ?? this.completionTokens,
+    cost: cost ?? this.cost,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  AiUsageLog copyWithCompanion(AiUsageLogsCompanion data) {
+    return AiUsageLog(
+      id: data.id.present ? data.id.value : this.id,
+      generationId: data.generationId.present
+          ? data.generationId.value
+          : this.generationId,
+      provider: data.provider.present ? data.provider.value : this.provider,
+      model: data.model.present ? data.model.value : this.model,
+      promptTokens: data.promptTokens.present
+          ? data.promptTokens.value
+          : this.promptTokens,
+      completionTokens: data.completionTokens.present
+          ? data.completionTokens.value
+          : this.completionTokens,
+      cost: data.cost.present ? data.cost.value : this.cost,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiUsageLog(')
+          ..write('id: $id, ')
+          ..write('generationId: $generationId, ')
+          ..write('provider: $provider, ')
+          ..write('model: $model, ')
+          ..write('promptTokens: $promptTokens, ')
+          ..write('completionTokens: $completionTokens, ')
+          ..write('cost: $cost, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    generationId,
+    provider,
+    model,
+    promptTokens,
+    completionTokens,
+    cost,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AiUsageLog &&
+          other.id == this.id &&
+          other.generationId == this.generationId &&
+          other.provider == this.provider &&
+          other.model == this.model &&
+          other.promptTokens == this.promptTokens &&
+          other.completionTokens == this.completionTokens &&
+          other.cost == this.cost &&
+          other.createdAt == this.createdAt);
+}
+
+class AiUsageLogsCompanion extends UpdateCompanion<AiUsageLog> {
+  final Value<String> id;
+  final Value<String> generationId;
+  final Value<String> provider;
+  final Value<String> model;
+  final Value<int> promptTokens;
+  final Value<int> completionTokens;
+  final Value<double> cost;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const AiUsageLogsCompanion({
+    this.id = const Value.absent(),
+    this.generationId = const Value.absent(),
+    this.provider = const Value.absent(),
+    this.model = const Value.absent(),
+    this.promptTokens = const Value.absent(),
+    this.completionTokens = const Value.absent(),
+    this.cost = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AiUsageLogsCompanion.insert({
+    required String id,
+    required String generationId,
+    required String provider,
+    required String model,
+    required int promptTokens,
+    required int completionTokens,
+    required double cost,
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       generationId = Value(generationId),
+       provider = Value(provider),
+       model = Value(model),
+       promptTokens = Value(promptTokens),
+       completionTokens = Value(completionTokens),
+       cost = Value(cost),
+       createdAt = Value(createdAt);
+  static Insertable<AiUsageLog> custom({
+    Expression<String>? id,
+    Expression<String>? generationId,
+    Expression<String>? provider,
+    Expression<String>? model,
+    Expression<int>? promptTokens,
+    Expression<int>? completionTokens,
+    Expression<double>? cost,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (generationId != null) 'generation_id': generationId,
+      if (provider != null) 'provider': provider,
+      if (model != null) 'model': model,
+      if (promptTokens != null) 'prompt_tokens': promptTokens,
+      if (completionTokens != null) 'completion_tokens': completionTokens,
+      if (cost != null) 'cost': cost,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AiUsageLogsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? generationId,
+    Value<String>? provider,
+    Value<String>? model,
+    Value<int>? promptTokens,
+    Value<int>? completionTokens,
+    Value<double>? cost,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return AiUsageLogsCompanion(
+      id: id ?? this.id,
+      generationId: generationId ?? this.generationId,
+      provider: provider ?? this.provider,
+      model: model ?? this.model,
+      promptTokens: promptTokens ?? this.promptTokens,
+      completionTokens: completionTokens ?? this.completionTokens,
+      cost: cost ?? this.cost,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (generationId.present) {
+      map['generation_id'] = Variable<String>(generationId.value);
+    }
+    if (provider.present) {
+      map['provider'] = Variable<String>(provider.value);
+    }
+    if (model.present) {
+      map['model'] = Variable<String>(model.value);
+    }
+    if (promptTokens.present) {
+      map['prompt_tokens'] = Variable<int>(promptTokens.value);
+    }
+    if (completionTokens.present) {
+      map['completion_tokens'] = Variable<int>(completionTokens.value);
+    }
+    if (cost.present) {
+      map['cost'] = Variable<double>(cost.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiUsageLogsCompanion(')
+          ..write('id: $id, ')
+          ..write('generationId: $generationId, ')
+          ..write('provider: $provider, ')
+          ..write('model: $model, ')
+          ..write('promptTokens: $promptTokens, ')
+          ..write('completionTokens: $completionTokens, ')
+          ..write('cost: $cost, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AiModelCatalogTable extends AiModelCatalog
+    with TableInfo<$AiModelCatalogTable, AiModelCatalogData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AiModelCatalogTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _providerIdMeta = const VerificationMeta(
+    'providerId',
+  );
+  @override
+  late final GeneratedColumn<String> providerId = GeneratedColumn<String>(
+    'provider_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _modelIdMeta = const VerificationMeta(
+    'modelId',
+  );
+  @override
+  late final GeneratedColumn<String> modelId = GeneratedColumn<String>(
+    'model_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _capabilitiesJsonMeta = const VerificationMeta(
+    'capabilitiesJson',
+  );
+  @override
+  late final GeneratedColumn<String> capabilitiesJson = GeneratedColumn<String>(
+    'capabilities_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cachedAtMeta = const VerificationMeta(
+    'cachedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> cachedAt = GeneratedColumn<DateTime>(
+    'cached_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    providerId,
+    modelId,
+    capabilitiesJson,
+    cachedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ai_model_catalog';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AiModelCatalogData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('provider_id')) {
+      context.handle(
+        _providerIdMeta,
+        providerId.isAcceptableOrUnknown(data['provider_id']!, _providerIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_providerIdMeta);
+    }
+    if (data.containsKey('model_id')) {
+      context.handle(
+        _modelIdMeta,
+        modelId.isAcceptableOrUnknown(data['model_id']!, _modelIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_modelIdMeta);
+    }
+    if (data.containsKey('capabilities_json')) {
+      context.handle(
+        _capabilitiesJsonMeta,
+        capabilitiesJson.isAcceptableOrUnknown(
+          data['capabilities_json']!,
+          _capabilitiesJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_capabilitiesJsonMeta);
+    }
+    if (data.containsKey('cached_at')) {
+      context.handle(
+        _cachedAtMeta,
+        cachedAt.isAcceptableOrUnknown(data['cached_at']!, _cachedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_cachedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {providerId, modelId};
+  @override
+  AiModelCatalogData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AiModelCatalogData(
+      providerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provider_id'],
+      )!,
+      modelId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}model_id'],
+      )!,
+      capabilitiesJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}capabilities_json'],
+      )!,
+      cachedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}cached_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AiModelCatalogTable createAlias(String alias) {
+    return $AiModelCatalogTable(attachedDatabase, alias);
+  }
+}
+
+class AiModelCatalogData extends DataClass
+    implements Insertable<AiModelCatalogData> {
+  final String providerId;
+  final String modelId;
+  final String capabilitiesJson;
+  final DateTime cachedAt;
+  const AiModelCatalogData({
+    required this.providerId,
+    required this.modelId,
+    required this.capabilitiesJson,
+    required this.cachedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['provider_id'] = Variable<String>(providerId);
+    map['model_id'] = Variable<String>(modelId);
+    map['capabilities_json'] = Variable<String>(capabilitiesJson);
+    map['cached_at'] = Variable<DateTime>(cachedAt);
+    return map;
+  }
+
+  AiModelCatalogCompanion toCompanion(bool nullToAbsent) {
+    return AiModelCatalogCompanion(
+      providerId: Value(providerId),
+      modelId: Value(modelId),
+      capabilitiesJson: Value(capabilitiesJson),
+      cachedAt: Value(cachedAt),
+    );
+  }
+
+  factory AiModelCatalogData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AiModelCatalogData(
+      providerId: serializer.fromJson<String>(json['providerId']),
+      modelId: serializer.fromJson<String>(json['modelId']),
+      capabilitiesJson: serializer.fromJson<String>(json['capabilitiesJson']),
+      cachedAt: serializer.fromJson<DateTime>(json['cachedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'providerId': serializer.toJson<String>(providerId),
+      'modelId': serializer.toJson<String>(modelId),
+      'capabilitiesJson': serializer.toJson<String>(capabilitiesJson),
+      'cachedAt': serializer.toJson<DateTime>(cachedAt),
+    };
+  }
+
+  AiModelCatalogData copyWith({
+    String? providerId,
+    String? modelId,
+    String? capabilitiesJson,
+    DateTime? cachedAt,
+  }) => AiModelCatalogData(
+    providerId: providerId ?? this.providerId,
+    modelId: modelId ?? this.modelId,
+    capabilitiesJson: capabilitiesJson ?? this.capabilitiesJson,
+    cachedAt: cachedAt ?? this.cachedAt,
+  );
+  AiModelCatalogData copyWithCompanion(AiModelCatalogCompanion data) {
+    return AiModelCatalogData(
+      providerId: data.providerId.present
+          ? data.providerId.value
+          : this.providerId,
+      modelId: data.modelId.present ? data.modelId.value : this.modelId,
+      capabilitiesJson: data.capabilitiesJson.present
+          ? data.capabilitiesJson.value
+          : this.capabilitiesJson,
+      cachedAt: data.cachedAt.present ? data.cachedAt.value : this.cachedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiModelCatalogData(')
+          ..write('providerId: $providerId, ')
+          ..write('modelId: $modelId, ')
+          ..write('capabilitiesJson: $capabilitiesJson, ')
+          ..write('cachedAt: $cachedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(providerId, modelId, capabilitiesJson, cachedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AiModelCatalogData &&
+          other.providerId == this.providerId &&
+          other.modelId == this.modelId &&
+          other.capabilitiesJson == this.capabilitiesJson &&
+          other.cachedAt == this.cachedAt);
+}
+
+class AiModelCatalogCompanion extends UpdateCompanion<AiModelCatalogData> {
+  final Value<String> providerId;
+  final Value<String> modelId;
+  final Value<String> capabilitiesJson;
+  final Value<DateTime> cachedAt;
+  final Value<int> rowid;
+  const AiModelCatalogCompanion({
+    this.providerId = const Value.absent(),
+    this.modelId = const Value.absent(),
+    this.capabilitiesJson = const Value.absent(),
+    this.cachedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AiModelCatalogCompanion.insert({
+    required String providerId,
+    required String modelId,
+    required String capabilitiesJson,
+    required DateTime cachedAt,
+    this.rowid = const Value.absent(),
+  }) : providerId = Value(providerId),
+       modelId = Value(modelId),
+       capabilitiesJson = Value(capabilitiesJson),
+       cachedAt = Value(cachedAt);
+  static Insertable<AiModelCatalogData> custom({
+    Expression<String>? providerId,
+    Expression<String>? modelId,
+    Expression<String>? capabilitiesJson,
+    Expression<DateTime>? cachedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (providerId != null) 'provider_id': providerId,
+      if (modelId != null) 'model_id': modelId,
+      if (capabilitiesJson != null) 'capabilities_json': capabilitiesJson,
+      if (cachedAt != null) 'cached_at': cachedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AiModelCatalogCompanion copyWith({
+    Value<String>? providerId,
+    Value<String>? modelId,
+    Value<String>? capabilitiesJson,
+    Value<DateTime>? cachedAt,
+    Value<int>? rowid,
+  }) {
+    return AiModelCatalogCompanion(
+      providerId: providerId ?? this.providerId,
+      modelId: modelId ?? this.modelId,
+      capabilitiesJson: capabilitiesJson ?? this.capabilitiesJson,
+      cachedAt: cachedAt ?? this.cachedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (providerId.present) {
+      map['provider_id'] = Variable<String>(providerId.value);
+    }
+    if (modelId.present) {
+      map['model_id'] = Variable<String>(modelId.value);
+    }
+    if (capabilitiesJson.present) {
+      map['capabilities_json'] = Variable<String>(capabilitiesJson.value);
+    }
+    if (cachedAt.present) {
+      map['cached_at'] = Variable<DateTime>(cachedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiModelCatalogCompanion(')
+          ..write('providerId: $providerId, ')
+          ..write('modelId: $modelId, ')
+          ..write('capabilitiesJson: $capabilitiesJson, ')
+          ..write('cachedAt: $cachedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AiOutputReviewsTable extends AiOutputReviews
+    with TableInfo<$AiOutputReviewsTable, AiOutputReview> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AiOutputReviewsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _generationIdMeta = const VerificationMeta(
+    'generationId',
+  );
+  @override
+  late final GeneratedColumn<String> generationId = GeneratedColumn<String>(
+    'generation_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _feedbackMeta = const VerificationMeta(
+    'feedback',
+  );
+  @override
+  late final GeneratedColumn<String> feedback = GeneratedColumn<String>(
+    'feedback',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    generationId,
+    status,
+    feedback,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ai_output_reviews';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AiOutputReview> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('generation_id')) {
+      context.handle(
+        _generationIdMeta,
+        generationId.isAcceptableOrUnknown(
+          data['generation_id']!,
+          _generationIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_generationIdMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('feedback')) {
+      context.handle(
+        _feedbackMeta,
+        feedback.isAcceptableOrUnknown(data['feedback']!, _feedbackMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {generationId};
+  @override
+  AiOutputReview map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AiOutputReview(
+      generationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}generation_id'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      feedback: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}feedback'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AiOutputReviewsTable createAlias(String alias) {
+    return $AiOutputReviewsTable(attachedDatabase, alias);
+  }
+}
+
+class AiOutputReview extends DataClass implements Insertable<AiOutputReview> {
+  final String generationId;
+  final String status;
+  final String? feedback;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const AiOutputReview({
+    required this.generationId,
+    required this.status,
+    this.feedback,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['generation_id'] = Variable<String>(generationId);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || feedback != null) {
+      map['feedback'] = Variable<String>(feedback);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  AiOutputReviewsCompanion toCompanion(bool nullToAbsent) {
+    return AiOutputReviewsCompanion(
+      generationId: Value(generationId),
+      status: Value(status),
+      feedback: feedback == null && nullToAbsent
+          ? const Value.absent()
+          : Value(feedback),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory AiOutputReview.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AiOutputReview(
+      generationId: serializer.fromJson<String>(json['generationId']),
+      status: serializer.fromJson<String>(json['status']),
+      feedback: serializer.fromJson<String?>(json['feedback']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'generationId': serializer.toJson<String>(generationId),
+      'status': serializer.toJson<String>(status),
+      'feedback': serializer.toJson<String?>(feedback),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  AiOutputReview copyWith({
+    String? generationId,
+    String? status,
+    Value<String?> feedback = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => AiOutputReview(
+    generationId: generationId ?? this.generationId,
+    status: status ?? this.status,
+    feedback: feedback.present ? feedback.value : this.feedback,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  AiOutputReview copyWithCompanion(AiOutputReviewsCompanion data) {
+    return AiOutputReview(
+      generationId: data.generationId.present
+          ? data.generationId.value
+          : this.generationId,
+      status: data.status.present ? data.status.value : this.status,
+      feedback: data.feedback.present ? data.feedback.value : this.feedback,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiOutputReview(')
+          ..write('generationId: $generationId, ')
+          ..write('status: $status, ')
+          ..write('feedback: $feedback, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(generationId, status, feedback, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AiOutputReview &&
+          other.generationId == this.generationId &&
+          other.status == this.status &&
+          other.feedback == this.feedback &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class AiOutputReviewsCompanion extends UpdateCompanion<AiOutputReview> {
+  final Value<String> generationId;
+  final Value<String> status;
+  final Value<String?> feedback;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const AiOutputReviewsCompanion({
+    this.generationId = const Value.absent(),
+    this.status = const Value.absent(),
+    this.feedback = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AiOutputReviewsCompanion.insert({
+    required String generationId,
+    required String status,
+    this.feedback = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : generationId = Value(generationId),
+       status = Value(status),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<AiOutputReview> custom({
+    Expression<String>? generationId,
+    Expression<String>? status,
+    Expression<String>? feedback,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (generationId != null) 'generation_id': generationId,
+      if (status != null) 'status': status,
+      if (feedback != null) 'feedback': feedback,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AiOutputReviewsCompanion copyWith({
+    Value<String>? generationId,
+    Value<String>? status,
+    Value<String?>? feedback,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return AiOutputReviewsCompanion(
+      generationId: generationId ?? this.generationId,
+      status: status ?? this.status,
+      feedback: feedback ?? this.feedback,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (generationId.present) {
+      map['generation_id'] = Variable<String>(generationId.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (feedback.present) {
+      map['feedback'] = Variable<String>(feedback.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AiOutputReviewsCompanion(')
+          ..write('generationId: $generationId, ')
+          ..write('status: $status, ')
+          ..write('feedback: $feedback, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -57779,6 +59003,11 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final $LayoutPresetsTable layoutPresets = $LayoutPresetsTable(this);
   late final $ProjectLayoutStatesTable projectLayoutStates =
       $ProjectLayoutStatesTable(this);
+  late final $AiUsageLogsTable aiUsageLogs = $AiUsageLogsTable(this);
+  late final $AiModelCatalogTable aiModelCatalog = $AiModelCatalogTable(this);
+  late final $AiOutputReviewsTable aiOutputReviews = $AiOutputReviewsTable(
+    this,
+  );
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -57968,6 +59197,9 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     jobDependencies,
     layoutPresets,
     projectLayoutStates,
+    aiUsageLogs,
+    aiModelCatalog,
+    aiOutputReviews,
   ];
 }
 
@@ -88986,6 +90218,676 @@ typedef $$ProjectLayoutStatesTableProcessedTableManager =
       ProjectLayoutState,
       PrefetchHooks Function()
     >;
+typedef $$AiUsageLogsTableCreateCompanionBuilder =
+    AiUsageLogsCompanion Function({
+      required String id,
+      required String generationId,
+      required String provider,
+      required String model,
+      required int promptTokens,
+      required int completionTokens,
+      required double cost,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$AiUsageLogsTableUpdateCompanionBuilder =
+    AiUsageLogsCompanion Function({
+      Value<String> id,
+      Value<String> generationId,
+      Value<String> provider,
+      Value<String> model,
+      Value<int> promptTokens,
+      Value<int> completionTokens,
+      Value<double> cost,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$AiUsageLogsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AiUsageLogsTable> {
+  $$AiUsageLogsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get generationId => $composableBuilder(
+    column: $table.generationId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get provider => $composableBuilder(
+    column: $table.provider,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get model => $composableBuilder(
+    column: $table.model,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get promptTokens => $composableBuilder(
+    column: $table.promptTokens,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get completionTokens => $composableBuilder(
+    column: $table.completionTokens,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get cost => $composableBuilder(
+    column: $table.cost,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AiUsageLogsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AiUsageLogsTable> {
+  $$AiUsageLogsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get generationId => $composableBuilder(
+    column: $table.generationId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get provider => $composableBuilder(
+    column: $table.provider,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get model => $composableBuilder(
+    column: $table.model,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get promptTokens => $composableBuilder(
+    column: $table.promptTokens,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get completionTokens => $composableBuilder(
+    column: $table.completionTokens,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get cost => $composableBuilder(
+    column: $table.cost,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AiUsageLogsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AiUsageLogsTable> {
+  $$AiUsageLogsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get generationId => $composableBuilder(
+    column: $table.generationId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get provider =>
+      $composableBuilder(column: $table.provider, builder: (column) => column);
+
+  GeneratedColumn<String> get model =>
+      $composableBuilder(column: $table.model, builder: (column) => column);
+
+  GeneratedColumn<int> get promptTokens => $composableBuilder(
+    column: $table.promptTokens,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get completionTokens => $composableBuilder(
+    column: $table.completionTokens,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get cost =>
+      $composableBuilder(column: $table.cost, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$AiUsageLogsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AiUsageLogsTable,
+          AiUsageLog,
+          $$AiUsageLogsTableFilterComposer,
+          $$AiUsageLogsTableOrderingComposer,
+          $$AiUsageLogsTableAnnotationComposer,
+          $$AiUsageLogsTableCreateCompanionBuilder,
+          $$AiUsageLogsTableUpdateCompanionBuilder,
+          (
+            AiUsageLog,
+            BaseReferences<_$ProjectDatabase, $AiUsageLogsTable, AiUsageLog>,
+          ),
+          AiUsageLog,
+          PrefetchHooks Function()
+        > {
+  $$AiUsageLogsTableTableManager(_$ProjectDatabase db, $AiUsageLogsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AiUsageLogsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AiUsageLogsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AiUsageLogsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> generationId = const Value.absent(),
+                Value<String> provider = const Value.absent(),
+                Value<String> model = const Value.absent(),
+                Value<int> promptTokens = const Value.absent(),
+                Value<int> completionTokens = const Value.absent(),
+                Value<double> cost = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiUsageLogsCompanion(
+                id: id,
+                generationId: generationId,
+                provider: provider,
+                model: model,
+                promptTokens: promptTokens,
+                completionTokens: completionTokens,
+                cost: cost,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String generationId,
+                required String provider,
+                required String model,
+                required int promptTokens,
+                required int completionTokens,
+                required double cost,
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AiUsageLogsCompanion.insert(
+                id: id,
+                generationId: generationId,
+                provider: provider,
+                model: model,
+                promptTokens: promptTokens,
+                completionTokens: completionTokens,
+                cost: cost,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AiUsageLogsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AiUsageLogsTable,
+      AiUsageLog,
+      $$AiUsageLogsTableFilterComposer,
+      $$AiUsageLogsTableOrderingComposer,
+      $$AiUsageLogsTableAnnotationComposer,
+      $$AiUsageLogsTableCreateCompanionBuilder,
+      $$AiUsageLogsTableUpdateCompanionBuilder,
+      (
+        AiUsageLog,
+        BaseReferences<_$ProjectDatabase, $AiUsageLogsTable, AiUsageLog>,
+      ),
+      AiUsageLog,
+      PrefetchHooks Function()
+    >;
+typedef $$AiModelCatalogTableCreateCompanionBuilder =
+    AiModelCatalogCompanion Function({
+      required String providerId,
+      required String modelId,
+      required String capabilitiesJson,
+      required DateTime cachedAt,
+      Value<int> rowid,
+    });
+typedef $$AiModelCatalogTableUpdateCompanionBuilder =
+    AiModelCatalogCompanion Function({
+      Value<String> providerId,
+      Value<String> modelId,
+      Value<String> capabilitiesJson,
+      Value<DateTime> cachedAt,
+      Value<int> rowid,
+    });
+
+class $$AiModelCatalogTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AiModelCatalogTable> {
+  $$AiModelCatalogTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get providerId => $composableBuilder(
+    column: $table.providerId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get modelId => $composableBuilder(
+    column: $table.modelId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get capabilitiesJson => $composableBuilder(
+    column: $table.capabilitiesJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get cachedAt => $composableBuilder(
+    column: $table.cachedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AiModelCatalogTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AiModelCatalogTable> {
+  $$AiModelCatalogTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get providerId => $composableBuilder(
+    column: $table.providerId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get modelId => $composableBuilder(
+    column: $table.modelId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get capabilitiesJson => $composableBuilder(
+    column: $table.capabilitiesJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get cachedAt => $composableBuilder(
+    column: $table.cachedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AiModelCatalogTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AiModelCatalogTable> {
+  $$AiModelCatalogTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get providerId => $composableBuilder(
+    column: $table.providerId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get modelId =>
+      $composableBuilder(column: $table.modelId, builder: (column) => column);
+
+  GeneratedColumn<String> get capabilitiesJson => $composableBuilder(
+    column: $table.capabilitiesJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get cachedAt =>
+      $composableBuilder(column: $table.cachedAt, builder: (column) => column);
+}
+
+class $$AiModelCatalogTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AiModelCatalogTable,
+          AiModelCatalogData,
+          $$AiModelCatalogTableFilterComposer,
+          $$AiModelCatalogTableOrderingComposer,
+          $$AiModelCatalogTableAnnotationComposer,
+          $$AiModelCatalogTableCreateCompanionBuilder,
+          $$AiModelCatalogTableUpdateCompanionBuilder,
+          (
+            AiModelCatalogData,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AiModelCatalogTable,
+              AiModelCatalogData
+            >,
+          ),
+          AiModelCatalogData,
+          PrefetchHooks Function()
+        > {
+  $$AiModelCatalogTableTableManager(
+    _$ProjectDatabase db,
+    $AiModelCatalogTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AiModelCatalogTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AiModelCatalogTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AiModelCatalogTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> providerId = const Value.absent(),
+                Value<String> modelId = const Value.absent(),
+                Value<String> capabilitiesJson = const Value.absent(),
+                Value<DateTime> cachedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiModelCatalogCompanion(
+                providerId: providerId,
+                modelId: modelId,
+                capabilitiesJson: capabilitiesJson,
+                cachedAt: cachedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String providerId,
+                required String modelId,
+                required String capabilitiesJson,
+                required DateTime cachedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AiModelCatalogCompanion.insert(
+                providerId: providerId,
+                modelId: modelId,
+                capabilitiesJson: capabilitiesJson,
+                cachedAt: cachedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AiModelCatalogTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AiModelCatalogTable,
+      AiModelCatalogData,
+      $$AiModelCatalogTableFilterComposer,
+      $$AiModelCatalogTableOrderingComposer,
+      $$AiModelCatalogTableAnnotationComposer,
+      $$AiModelCatalogTableCreateCompanionBuilder,
+      $$AiModelCatalogTableUpdateCompanionBuilder,
+      (
+        AiModelCatalogData,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AiModelCatalogTable,
+          AiModelCatalogData
+        >,
+      ),
+      AiModelCatalogData,
+      PrefetchHooks Function()
+    >;
+typedef $$AiOutputReviewsTableCreateCompanionBuilder =
+    AiOutputReviewsCompanion Function({
+      required String generationId,
+      required String status,
+      Value<String?> feedback,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$AiOutputReviewsTableUpdateCompanionBuilder =
+    AiOutputReviewsCompanion Function({
+      Value<String> generationId,
+      Value<String> status,
+      Value<String?> feedback,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$AiOutputReviewsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AiOutputReviewsTable> {
+  $$AiOutputReviewsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get generationId => $composableBuilder(
+    column: $table.generationId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get feedback => $composableBuilder(
+    column: $table.feedback,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AiOutputReviewsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AiOutputReviewsTable> {
+  $$AiOutputReviewsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get generationId => $composableBuilder(
+    column: $table.generationId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get feedback => $composableBuilder(
+    column: $table.feedback,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AiOutputReviewsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AiOutputReviewsTable> {
+  $$AiOutputReviewsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get generationId => $composableBuilder(
+    column: $table.generationId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get feedback =>
+      $composableBuilder(column: $table.feedback, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$AiOutputReviewsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AiOutputReviewsTable,
+          AiOutputReview,
+          $$AiOutputReviewsTableFilterComposer,
+          $$AiOutputReviewsTableOrderingComposer,
+          $$AiOutputReviewsTableAnnotationComposer,
+          $$AiOutputReviewsTableCreateCompanionBuilder,
+          $$AiOutputReviewsTableUpdateCompanionBuilder,
+          (
+            AiOutputReview,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AiOutputReviewsTable,
+              AiOutputReview
+            >,
+          ),
+          AiOutputReview,
+          PrefetchHooks Function()
+        > {
+  $$AiOutputReviewsTableTableManager(
+    _$ProjectDatabase db,
+    $AiOutputReviewsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AiOutputReviewsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AiOutputReviewsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AiOutputReviewsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> generationId = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> feedback = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AiOutputReviewsCompanion(
+                generationId: generationId,
+                status: status,
+                feedback: feedback,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String generationId,
+                required String status,
+                Value<String?> feedback = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AiOutputReviewsCompanion.insert(
+                generationId: generationId,
+                status: status,
+                feedback: feedback,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AiOutputReviewsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AiOutputReviewsTable,
+      AiOutputReview,
+      $$AiOutputReviewsTableFilterComposer,
+      $$AiOutputReviewsTableOrderingComposer,
+      $$AiOutputReviewsTableAnnotationComposer,
+      $$AiOutputReviewsTableCreateCompanionBuilder,
+      $$AiOutputReviewsTableUpdateCompanionBuilder,
+      (
+        AiOutputReview,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AiOutputReviewsTable,
+          AiOutputReview
+        >,
+      ),
+      AiOutputReview,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -89308,4 +91210,10 @@ class $ProjectDatabaseManager {
       $$LayoutPresetsTableTableManager(_db, _db.layoutPresets);
   $$ProjectLayoutStatesTableTableManager get projectLayoutStates =>
       $$ProjectLayoutStatesTableTableManager(_db, _db.projectLayoutStates);
+  $$AiUsageLogsTableTableManager get aiUsageLogs =>
+      $$AiUsageLogsTableTableManager(_db, _db.aiUsageLogs);
+  $$AiModelCatalogTableTableManager get aiModelCatalog =>
+      $$AiModelCatalogTableTableManager(_db, _db.aiModelCatalog);
+  $$AiOutputReviewsTableTableManager get aiOutputReviews =>
+      $$AiOutputReviewsTableTableManager(_db, _db.aiOutputReviews);
 }

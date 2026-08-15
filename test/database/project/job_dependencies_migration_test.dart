@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/database/project/project_database.dart';
 
 void main() {
-  test('schema v39 includes job_dependencies table', () async {
+  test('schema v40 includes job_dependencies table', () async {
     final dir = Directory.systemTemp.createTempSync('vs_jobdep_');
     addTearDown(() => dir.deleteSync(recursive: true));
     final db = ProjectDatabase(NativeDatabase(File('${dir.path}/project.db')));
@@ -27,7 +27,7 @@ void main() {
     await db.close();
   });
 
-  test('schema version is 39', () {
-    expect(ProjectDatabase.currentSchemaVersion, 39);
+  test('schema version is 40', () {
+    expect(ProjectDatabase.currentSchemaVersion, 40);
   });
 }

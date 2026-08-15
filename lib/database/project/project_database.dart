@@ -66,6 +66,9 @@ import 'tables/background_jobs.dart';
 import 'tables/job_dependencies.dart';
 import 'tables/layout_presets.dart';
 import 'tables/project_layout_states.dart';
+import 'tables/ai_usage_logs.dart';
+import 'tables/ai_model_catalog.dart';
+import 'tables/ai_output_reviews.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -245,6 +248,9 @@ class ProjectMetadata extends Table {
     JobDependencies,
     LayoutPresets,
     ProjectLayoutStates,
+    AiUsageLogs,
+    AiModelCatalog,
+    AiOutputReviews,
   ],
   daos: [
     AssetDao,
@@ -279,7 +285,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 39;
+  static const currentSchemaVersion = 40;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -534,6 +540,11 @@ class ProjectDatabase extends _$ProjectDatabase {
       if (from < 39) {
         await m.createTable(layoutPresets);
         await m.createTable(projectLayoutStates);
+      }
+      if (from < 40) {
+        await m.createTable(aiUsageLogs);
+        await m.createTable(aiModelCatalog);
+        await m.createTable(aiOutputReviews);
       }
     },
   );

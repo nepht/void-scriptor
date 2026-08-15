@@ -16,7 +16,10 @@ void main() {
     const resolver = WaveformPeakResolver();
     final fine = List.generate(100, (i) => (i % 2 == 0 ? 1.0 : -1.0));
 
-    final coarse = resolver.downsample(fine, resolution: WaveformResolution.coarse);
+    final coarse = resolver.downsample(
+      fine,
+      resolution: WaveformResolution.coarse,
+    );
     expect(coarse.length, lessThan(fine.length));
     expect(coarse.every((v) => v >= -1 && v <= 1), isTrue);
   });
@@ -25,12 +28,18 @@ void main() {
     const resolver = WaveformPeakResolver();
     final coarse = [1.0, -1.0, 1.0];
 
-    final fine = resolver.downsample(coarse, resolution: WaveformResolution.fine);
+    final fine = resolver.downsample(
+      coarse,
+      resolution: WaveformResolution.fine,
+    );
     expect(fine.length, coarse.length);
   });
 
   test('empty peaks return empty list', () {
     const resolver = WaveformPeakResolver();
-    expect(resolver.downsample(const [], resolution: WaveformResolution.fine), isEmpty);
+    expect(
+      resolver.downsample(const [], resolution: WaveformResolution.fine),
+      isEmpty,
+    );
   });
 }

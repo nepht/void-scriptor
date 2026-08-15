@@ -82,7 +82,7 @@ void main() {
 
       final second = await service.open(databaseFile.path);
       addTearDown(second.close);
-      expect(second.schemaVersion, 37);
+      expect(second.schemaVersion, ProjectDatabase.currentSchemaVersion);
       expect(
         (await second.select(second.references).get()).single.name,
         'Master Face',

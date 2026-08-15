@@ -15,7 +15,7 @@ void main() {
     final first = await service.open(path);
     addTearDown(first.close);
 
-    expect(first.schemaVersion, 37);
+    expect(first.schemaVersion, ProjectDatabase.currentSchemaVersion);
     await first.backgroundJobDao.insertJob(
       BackgroundJobsCompanion.insert(
         id: 'job-export-1',

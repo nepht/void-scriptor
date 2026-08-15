@@ -20,6 +20,7 @@ class BackgroundJobQueue {
   final StreamController<BackgroundJob> _updates =
       StreamController<BackgroundJob>.broadcast(sync: true);
   bool _draining = false;
+  BackgroundJobPriority? _pauseThreshold;
 
   Stream<BackgroundJob> get updates => _updates.stream;
   Iterable<String> get pendingTaskKeys =>
@@ -73,17 +74,33 @@ class BackgroundJobQueue {
     if (_draining) return;
     _draining = true;
     try {
-      while (_pending.isNotEmpty || _active.isNotEmpty) {
+      while (_active.isNotEmpty || _hasRunnablePending()) {
         _scheduleAvailable();
         if (_active.isNotEmpty) {
           await Future.any(_active.values);
-        } else if (_pending.isNotEmpty) {
+        } else if (_hasRunnablePending()) {
           await Future<void>.delayed(Duration.zero);
         }
       }
     } finally {
       _draining = false;
     }
+  }
+
+  bool _hasRunnablePending() => _pending.any(
+    (task) => !_isPaused(_jobs[task.id]!.priority),
+  );
+
+  /// Pauses scheduling of jobs at or below [priority] (Step 26.71).
+  ///
+  /// Critical user tasks (export/backup) above the threshold keep running.
+  void pause(BackgroundJobPriority priority) {
+    _pauseThreshold = priority;
+  }
+
+  /// Resumes scheduling for all previously paused jobs.
+  void resume() {
+    _pauseThreshold = null;
   }
 
   Future<void> dispose() async {
@@ -112,13 +129,21 @@ class BackgroundJobQueue {
     for (var i = 0; i < _pending.length; i++) {
       final task = _pending[i];
       if (!_fits(task.resources)) continue;
-      final weight = priorityWeight(_jobs[task.id]!.priority);
+      final job = _jobs[task.id]!;
+      if (_isPaused(job.priority)) continue;
+      final weight = priorityWeight(job.priority);
       if (weight > bestWeight) {
         bestIndex = i;
         bestWeight = weight;
       }
     }
     return bestIndex;
+  }
+
+  bool _isPaused(BackgroundJobPriority priority) {
+    final threshold = _pauseThreshold;
+    if (threshold == null) return false;
+    return priorityWeight(priority) <= priorityWeight(threshold);
   }
 
   Future<void> _run(BackgroundTask task) async {

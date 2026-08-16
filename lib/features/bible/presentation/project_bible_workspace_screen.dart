@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
@@ -102,6 +103,11 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = Row(
       children: [
+        IconButton(
+          tooltip: 'Back',
+          onPressed: context.canPop() ? context.pop : null,
+          icon: const Icon(Icons.arrow_back),
+        ),
         Icon(Icons.menu_book_outlined, color: context.palette.primaryBright),
         const SizedBox(width: 10),
         Expanded(
@@ -227,12 +233,12 @@ class _MetricCard extends StatelessWidget {
       children: [
         Icon(icon, color: context.palette.primaryBright),
         const SizedBox(height: 12),
-        Text(label, style:  TextStyle(color: context.palette.textMuted)),
+        Text(label, style: TextStyle(color: context.palette.textMuted)),
         const SizedBox(height: 4),
         Text(
           value,
           overflow: TextOverflow.ellipsis,
-          style:  TextStyle(
+          style: TextStyle(
             color: context.palette.textPrimary,
             fontWeight: FontWeight.w700,
           ),
@@ -245,7 +251,7 @@ class _MetricCard extends StatelessWidget {
 class _CanonHealthCard extends StatelessWidget {
   const _CanonHealthCard();
   @override
-  Widget build(BuildContext context) =>  _BibleCard(
+  Widget build(BuildContext context) => _BibleCard(
     title: 'CANON HEALTH',
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,14 +283,17 @@ class _CanonHealthCard extends StatelessWidget {
 class _ConflictCard extends StatelessWidget {
   const _ConflictCard();
   @override
-  Widget build(BuildContext context) =>  _BibleCard(
+  Widget build(BuildContext context) => _BibleCard(
     title: 'CANON CONFLICTS',
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
           contentPadding: EdgeInsets.zero,
-          leading: Icon(Icons.check_circle_outline, color: context.palette.success),
+          leading: Icon(
+            Icons.check_circle_outline,
+            color: context.palette.success,
+          ),
           title: const Text('Conflict detector ready'),
           subtitle: const Text('Run a scan to validate project canon.'),
         ),
@@ -297,7 +306,7 @@ class _ConflictCard extends StatelessWidget {
 class _TimelineCard extends StatelessWidget {
   const _TimelineCard();
   @override
-  Widget build(BuildContext context) =>  _BibleCard(
+  Widget build(BuildContext context) => _BibleCard(
     title: 'TIMELINE / ERAS',
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -333,7 +342,7 @@ class _BibleCard extends StatelessWidget {
           if (title != null) ...[
             Text(
               title!,
-              style:  TextStyle(
+              style: TextStyle(
                 color: context.palette.textMuted,
                 fontSize: 12,
                 fontWeight: FontWeight.w700,

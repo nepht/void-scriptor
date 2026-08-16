@@ -12,5 +12,6 @@ void main() {
 
     expect(find.byType(ProjectBibleWorkspaceScreen), findsOneWidget);
     expect(find.text('PROJECT BIBLE'), findsOneWidget);
+    expect(find.byTooltip('Back'), findsOneWidget);
   });
 }

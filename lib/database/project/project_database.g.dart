@@ -61001,6 +61001,499 @@ class ActivityEventsCompanion extends UpdateCompanion<ActivityEvent> {
   }
 }
 
+class $SecuritySettingsTable extends SecuritySettings
+    with TableInfo<$SecuritySettingsTable, SecuritySetting> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SecuritySettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _encryptionEnabledMeta = const VerificationMeta(
+    'encryptionEnabled',
+  );
+  @override
+  late final GeneratedColumn<bool> encryptionEnabled = GeneratedColumn<bool>(
+    'encryption_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("encryption_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _kdfIterationsMeta = const VerificationMeta(
+    'kdfIterations',
+  );
+  @override
+  late final GeneratedColumn<int> kdfIterations = GeneratedColumn<int>(
+    'kdf_iterations',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(100000),
+  );
+  static const VerificationMeta _passphraseSaltMeta = const VerificationMeta(
+    'passphraseSalt',
+  );
+  @override
+  late final GeneratedColumn<String> passphraseSalt = GeneratedColumn<String>(
+    'passphrase_salt',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _passphraseHashMeta = const VerificationMeta(
+    'passphraseHash',
+  );
+  @override
+  late final GeneratedColumn<String> passphraseHash = GeneratedColumn<String>(
+    'passphrase_hash',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lockedMeta = const VerificationMeta('locked');
+  @override
+  late final GeneratedColumn<bool> locked = GeneratedColumn<bool>(
+    'locked',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("locked" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    projectId,
+    encryptionEnabled,
+    kdfIterations,
+    passphraseSalt,
+    passphraseHash,
+    locked,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'security_settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SecuritySetting> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('encryption_enabled')) {
+      context.handle(
+        _encryptionEnabledMeta,
+        encryptionEnabled.isAcceptableOrUnknown(
+          data['encryption_enabled']!,
+          _encryptionEnabledMeta,
+        ),
+      );
+    }
+    if (data.containsKey('kdf_iterations')) {
+      context.handle(
+        _kdfIterationsMeta,
+        kdfIterations.isAcceptableOrUnknown(
+          data['kdf_iterations']!,
+          _kdfIterationsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('passphrase_salt')) {
+      context.handle(
+        _passphraseSaltMeta,
+        passphraseSalt.isAcceptableOrUnknown(
+          data['passphrase_salt']!,
+          _passphraseSaltMeta,
+        ),
+      );
+    }
+    if (data.containsKey('passphrase_hash')) {
+      context.handle(
+        _passphraseHashMeta,
+        passphraseHash.isAcceptableOrUnknown(
+          data['passphrase_hash']!,
+          _passphraseHashMeta,
+        ),
+      );
+    }
+    if (data.containsKey('locked')) {
+      context.handle(
+        _lockedMeta,
+        locked.isAcceptableOrUnknown(data['locked']!, _lockedMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {projectId};
+  @override
+  SecuritySetting map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SecuritySetting(
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      encryptionEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}encryption_enabled'],
+      )!,
+      kdfIterations: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}kdf_iterations'],
+      )!,
+      passphraseSalt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}passphrase_salt'],
+      ),
+      passphraseHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}passphrase_hash'],
+      ),
+      locked: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}locked'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SecuritySettingsTable createAlias(String alias) {
+    return $SecuritySettingsTable(attachedDatabase, alias);
+  }
+}
+
+class SecuritySetting extends DataClass implements Insertable<SecuritySetting> {
+  final String projectId;
+  final bool encryptionEnabled;
+  final int kdfIterations;
+  final String? passphraseSalt;
+  final String? passphraseHash;
+  final bool locked;
+  final DateTime updatedAt;
+  const SecuritySetting({
+    required this.projectId,
+    required this.encryptionEnabled,
+    required this.kdfIterations,
+    this.passphraseSalt,
+    this.passphraseHash,
+    required this.locked,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['project_id'] = Variable<String>(projectId);
+    map['encryption_enabled'] = Variable<bool>(encryptionEnabled);
+    map['kdf_iterations'] = Variable<int>(kdfIterations);
+    if (!nullToAbsent || passphraseSalt != null) {
+      map['passphrase_salt'] = Variable<String>(passphraseSalt);
+    }
+    if (!nullToAbsent || passphraseHash != null) {
+      map['passphrase_hash'] = Variable<String>(passphraseHash);
+    }
+    map['locked'] = Variable<bool>(locked);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  SecuritySettingsCompanion toCompanion(bool nullToAbsent) {
+    return SecuritySettingsCompanion(
+      projectId: Value(projectId),
+      encryptionEnabled: Value(encryptionEnabled),
+      kdfIterations: Value(kdfIterations),
+      passphraseSalt: passphraseSalt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(passphraseSalt),
+      passphraseHash: passphraseHash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(passphraseHash),
+      locked: Value(locked),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory SecuritySetting.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SecuritySetting(
+      projectId: serializer.fromJson<String>(json['projectId']),
+      encryptionEnabled: serializer.fromJson<bool>(json['encryptionEnabled']),
+      kdfIterations: serializer.fromJson<int>(json['kdfIterations']),
+      passphraseSalt: serializer.fromJson<String?>(json['passphraseSalt']),
+      passphraseHash: serializer.fromJson<String?>(json['passphraseHash']),
+      locked: serializer.fromJson<bool>(json['locked']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'projectId': serializer.toJson<String>(projectId),
+      'encryptionEnabled': serializer.toJson<bool>(encryptionEnabled),
+      'kdfIterations': serializer.toJson<int>(kdfIterations),
+      'passphraseSalt': serializer.toJson<String?>(passphraseSalt),
+      'passphraseHash': serializer.toJson<String?>(passphraseHash),
+      'locked': serializer.toJson<bool>(locked),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  SecuritySetting copyWith({
+    String? projectId,
+    bool? encryptionEnabled,
+    int? kdfIterations,
+    Value<String?> passphraseSalt = const Value.absent(),
+    Value<String?> passphraseHash = const Value.absent(),
+    bool? locked,
+    DateTime? updatedAt,
+  }) => SecuritySetting(
+    projectId: projectId ?? this.projectId,
+    encryptionEnabled: encryptionEnabled ?? this.encryptionEnabled,
+    kdfIterations: kdfIterations ?? this.kdfIterations,
+    passphraseSalt: passphraseSalt.present
+        ? passphraseSalt.value
+        : this.passphraseSalt,
+    passphraseHash: passphraseHash.present
+        ? passphraseHash.value
+        : this.passphraseHash,
+    locked: locked ?? this.locked,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  SecuritySetting copyWithCompanion(SecuritySettingsCompanion data) {
+    return SecuritySetting(
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      encryptionEnabled: data.encryptionEnabled.present
+          ? data.encryptionEnabled.value
+          : this.encryptionEnabled,
+      kdfIterations: data.kdfIterations.present
+          ? data.kdfIterations.value
+          : this.kdfIterations,
+      passphraseSalt: data.passphraseSalt.present
+          ? data.passphraseSalt.value
+          : this.passphraseSalt,
+      passphraseHash: data.passphraseHash.present
+          ? data.passphraseHash.value
+          : this.passphraseHash,
+      locked: data.locked.present ? data.locked.value : this.locked,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SecuritySetting(')
+          ..write('projectId: $projectId, ')
+          ..write('encryptionEnabled: $encryptionEnabled, ')
+          ..write('kdfIterations: $kdfIterations, ')
+          ..write('passphraseSalt: $passphraseSalt, ')
+          ..write('passphraseHash: $passphraseHash, ')
+          ..write('locked: $locked, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    projectId,
+    encryptionEnabled,
+    kdfIterations,
+    passphraseSalt,
+    passphraseHash,
+    locked,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SecuritySetting &&
+          other.projectId == this.projectId &&
+          other.encryptionEnabled == this.encryptionEnabled &&
+          other.kdfIterations == this.kdfIterations &&
+          other.passphraseSalt == this.passphraseSalt &&
+          other.passphraseHash == this.passphraseHash &&
+          other.locked == this.locked &&
+          other.updatedAt == this.updatedAt);
+}
+
+class SecuritySettingsCompanion extends UpdateCompanion<SecuritySetting> {
+  final Value<String> projectId;
+  final Value<bool> encryptionEnabled;
+  final Value<int> kdfIterations;
+  final Value<String?> passphraseSalt;
+  final Value<String?> passphraseHash;
+  final Value<bool> locked;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const SecuritySettingsCompanion({
+    this.projectId = const Value.absent(),
+    this.encryptionEnabled = const Value.absent(),
+    this.kdfIterations = const Value.absent(),
+    this.passphraseSalt = const Value.absent(),
+    this.passphraseHash = const Value.absent(),
+    this.locked = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SecuritySettingsCompanion.insert({
+    required String projectId,
+    this.encryptionEnabled = const Value.absent(),
+    this.kdfIterations = const Value.absent(),
+    this.passphraseSalt = const Value.absent(),
+    this.passphraseHash = const Value.absent(),
+    this.locked = const Value.absent(),
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : projectId = Value(projectId),
+       updatedAt = Value(updatedAt);
+  static Insertable<SecuritySetting> custom({
+    Expression<String>? projectId,
+    Expression<bool>? encryptionEnabled,
+    Expression<int>? kdfIterations,
+    Expression<String>? passphraseSalt,
+    Expression<String>? passphraseHash,
+    Expression<bool>? locked,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (projectId != null) 'project_id': projectId,
+      if (encryptionEnabled != null) 'encryption_enabled': encryptionEnabled,
+      if (kdfIterations != null) 'kdf_iterations': kdfIterations,
+      if (passphraseSalt != null) 'passphrase_salt': passphraseSalt,
+      if (passphraseHash != null) 'passphrase_hash': passphraseHash,
+      if (locked != null) 'locked': locked,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SecuritySettingsCompanion copyWith({
+    Value<String>? projectId,
+    Value<bool>? encryptionEnabled,
+    Value<int>? kdfIterations,
+    Value<String?>? passphraseSalt,
+    Value<String?>? passphraseHash,
+    Value<bool>? locked,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return SecuritySettingsCompanion(
+      projectId: projectId ?? this.projectId,
+      encryptionEnabled: encryptionEnabled ?? this.encryptionEnabled,
+      kdfIterations: kdfIterations ?? this.kdfIterations,
+      passphraseSalt: passphraseSalt ?? this.passphraseSalt,
+      passphraseHash: passphraseHash ?? this.passphraseHash,
+      locked: locked ?? this.locked,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (encryptionEnabled.present) {
+      map['encryption_enabled'] = Variable<bool>(encryptionEnabled.value);
+    }
+    if (kdfIterations.present) {
+      map['kdf_iterations'] = Variable<int>(kdfIterations.value);
+    }
+    if (passphraseSalt.present) {
+      map['passphrase_salt'] = Variable<String>(passphraseSalt.value);
+    }
+    if (passphraseHash.present) {
+      map['passphrase_hash'] = Variable<String>(passphraseHash.value);
+    }
+    if (locked.present) {
+      map['locked'] = Variable<bool>(locked.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SecuritySettingsCompanion(')
+          ..write('projectId: $projectId, ')
+          ..write('encryptionEnabled: $encryptionEnabled, ')
+          ..write('kdfIterations: $kdfIterations, ')
+          ..write('passphraseSalt: $passphraseSalt, ')
+          ..write('passphraseHash: $passphraseHash, ')
+          ..write('locked: $locked, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -61231,6 +61724,9 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     this,
   );
   late final $ActivityEventsTable activityEvents = $ActivityEventsTable(this);
+  late final $SecuritySettingsTable securitySettings = $SecuritySettingsTable(
+    this,
+  );
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -61428,6 +61924,7 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     projectCollaborators,
     projectComments,
     activityEvents,
+    securitySettings,
   ];
 }
 
@@ -94310,6 +94807,262 @@ typedef $$ActivityEventsTableProcessedTableManager =
       ActivityEvent,
       PrefetchHooks Function()
     >;
+typedef $$SecuritySettingsTableCreateCompanionBuilder =
+    SecuritySettingsCompanion Function({
+      required String projectId,
+      Value<bool> encryptionEnabled,
+      Value<int> kdfIterations,
+      Value<String?> passphraseSalt,
+      Value<String?> passphraseHash,
+      Value<bool> locked,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$SecuritySettingsTableUpdateCompanionBuilder =
+    SecuritySettingsCompanion Function({
+      Value<String> projectId,
+      Value<bool> encryptionEnabled,
+      Value<int> kdfIterations,
+      Value<String?> passphraseSalt,
+      Value<String?> passphraseHash,
+      Value<bool> locked,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$SecuritySettingsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $SecuritySettingsTable> {
+  $$SecuritySettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get encryptionEnabled => $composableBuilder(
+    column: $table.encryptionEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get kdfIterations => $composableBuilder(
+    column: $table.kdfIterations,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get passphraseSalt => $composableBuilder(
+    column: $table.passphraseSalt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get passphraseHash => $composableBuilder(
+    column: $table.passphraseHash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get locked => $composableBuilder(
+    column: $table.locked,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SecuritySettingsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $SecuritySettingsTable> {
+  $$SecuritySettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get encryptionEnabled => $composableBuilder(
+    column: $table.encryptionEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get kdfIterations => $composableBuilder(
+    column: $table.kdfIterations,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get passphraseSalt => $composableBuilder(
+    column: $table.passphraseSalt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get passphraseHash => $composableBuilder(
+    column: $table.passphraseHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get locked => $composableBuilder(
+    column: $table.locked,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SecuritySettingsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $SecuritySettingsTable> {
+  $$SecuritySettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<bool> get encryptionEnabled => $composableBuilder(
+    column: $table.encryptionEnabled,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get kdfIterations => $composableBuilder(
+    column: $table.kdfIterations,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get passphraseSalt => $composableBuilder(
+    column: $table.passphraseSalt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get passphraseHash => $composableBuilder(
+    column: $table.passphraseHash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get locked =>
+      $composableBuilder(column: $table.locked, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$SecuritySettingsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $SecuritySettingsTable,
+          SecuritySetting,
+          $$SecuritySettingsTableFilterComposer,
+          $$SecuritySettingsTableOrderingComposer,
+          $$SecuritySettingsTableAnnotationComposer,
+          $$SecuritySettingsTableCreateCompanionBuilder,
+          $$SecuritySettingsTableUpdateCompanionBuilder,
+          (
+            SecuritySetting,
+            BaseReferences<
+              _$ProjectDatabase,
+              $SecuritySettingsTable,
+              SecuritySetting
+            >,
+          ),
+          SecuritySetting,
+          PrefetchHooks Function()
+        > {
+  $$SecuritySettingsTableTableManager(
+    _$ProjectDatabase db,
+    $SecuritySettingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SecuritySettingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SecuritySettingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SecuritySettingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> projectId = const Value.absent(),
+                Value<bool> encryptionEnabled = const Value.absent(),
+                Value<int> kdfIterations = const Value.absent(),
+                Value<String?> passphraseSalt = const Value.absent(),
+                Value<String?> passphraseHash = const Value.absent(),
+                Value<bool> locked = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SecuritySettingsCompanion(
+                projectId: projectId,
+                encryptionEnabled: encryptionEnabled,
+                kdfIterations: kdfIterations,
+                passphraseSalt: passphraseSalt,
+                passphraseHash: passphraseHash,
+                locked: locked,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String projectId,
+                Value<bool> encryptionEnabled = const Value.absent(),
+                Value<int> kdfIterations = const Value.absent(),
+                Value<String?> passphraseSalt = const Value.absent(),
+                Value<String?> passphraseHash = const Value.absent(),
+                Value<bool> locked = const Value.absent(),
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => SecuritySettingsCompanion.insert(
+                projectId: projectId,
+                encryptionEnabled: encryptionEnabled,
+                kdfIterations: kdfIterations,
+                passphraseSalt: passphraseSalt,
+                passphraseHash: passphraseHash,
+                locked: locked,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SecuritySettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $SecuritySettingsTable,
+      SecuritySetting,
+      $$SecuritySettingsTableFilterComposer,
+      $$SecuritySettingsTableOrderingComposer,
+      $$SecuritySettingsTableAnnotationComposer,
+      $$SecuritySettingsTableCreateCompanionBuilder,
+      $$SecuritySettingsTableUpdateCompanionBuilder,
+      (
+        SecuritySetting,
+        BaseReferences<
+          _$ProjectDatabase,
+          $SecuritySettingsTable,
+          SecuritySetting
+        >,
+      ),
+      SecuritySetting,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -94648,4 +95401,6 @@ class $ProjectDatabaseManager {
       $$ProjectCommentsTableTableManager(_db, _db.projectComments);
   $$ActivityEventsTableTableManager get activityEvents =>
       $$ActivityEventsTableTableManager(_db, _db.activityEvents);
+  $$SecuritySettingsTableTableManager get securitySettings =>
+      $$SecuritySettingsTableTableManager(_db, _db.securitySettings);
 }

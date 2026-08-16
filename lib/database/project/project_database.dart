@@ -74,6 +74,7 @@ import 'tables/sync_conflicts.dart';
 import 'tables/project_collaborators.dart';
 import 'tables/project_comments.dart';
 import 'tables/activity_events.dart';
+import 'tables/security_settings.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -261,6 +262,7 @@ class ProjectMetadata extends Table {
     ProjectCollaborators,
     ProjectComments,
     ActivityEvents,
+    SecuritySettings,
   ],
   daos: [
     AssetDao,
@@ -295,7 +297,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 41;
+  static const currentSchemaVersion = 42;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -562,6 +564,9 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(projectCollaborators);
         await m.createTable(projectComments);
         await m.createTable(activityEvents);
+      }
+      if (from < 42) {
+        await m.createTable(securitySettings);
       }
     },
   );

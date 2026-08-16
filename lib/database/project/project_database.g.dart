@@ -62324,6 +62324,747 @@ class PluginSettingsCompanion extends UpdateCompanion<PluginSetting> {
   }
 }
 
+class $AnimationTracksTable extends AnimationTracks
+    with TableInfo<$AnimationTracksTable, AnimationTrack> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AnimationTracksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _clipIdMeta = const VerificationMeta('clipId');
+  @override
+  late final GeneratedColumn<String> clipId = GeneratedColumn<String>(
+    'clip_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetPropertyMeta = const VerificationMeta(
+    'targetProperty',
+  );
+  @override
+  late final GeneratedColumn<String> targetProperty = GeneratedColumn<String>(
+    'target_property',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _interpolationMeta = const VerificationMeta(
+    'interpolation',
+  );
+  @override
+  late final GeneratedColumn<String> interpolation = GeneratedColumn<String>(
+    'interpolation',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> durationSeconds = GeneratedColumn<double>(
+    'duration_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    clipId,
+    name,
+    targetProperty,
+    interpolation,
+    durationSeconds,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'animation_tracks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AnimationTrack> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('clip_id')) {
+      context.handle(
+        _clipIdMeta,
+        clipId.isAcceptableOrUnknown(data['clip_id']!, _clipIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_clipIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('target_property')) {
+      context.handle(
+        _targetPropertyMeta,
+        targetProperty.isAcceptableOrUnknown(
+          data['target_property']!,
+          _targetPropertyMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_targetPropertyMeta);
+    }
+    if (data.containsKey('interpolation')) {
+      context.handle(
+        _interpolationMeta,
+        interpolation.isAcceptableOrUnknown(
+          data['interpolation']!,
+          _interpolationMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_interpolationMeta);
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_durationSecondsMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AnimationTrack map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AnimationTrack(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      clipId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}clip_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      targetProperty: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_property'],
+      )!,
+      interpolation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}interpolation'],
+      )!,
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}duration_seconds'],
+      )!,
+    );
+  }
+
+  @override
+  $AnimationTracksTable createAlias(String alias) {
+    return $AnimationTracksTable(attachedDatabase, alias);
+  }
+}
+
+class AnimationTrack extends DataClass implements Insertable<AnimationTrack> {
+  final String id;
+  final String clipId;
+  final String name;
+  final String targetProperty;
+  final String interpolation;
+  final double durationSeconds;
+  const AnimationTrack({
+    required this.id,
+    required this.clipId,
+    required this.name,
+    required this.targetProperty,
+    required this.interpolation,
+    required this.durationSeconds,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['clip_id'] = Variable<String>(clipId);
+    map['name'] = Variable<String>(name);
+    map['target_property'] = Variable<String>(targetProperty);
+    map['interpolation'] = Variable<String>(interpolation);
+    map['duration_seconds'] = Variable<double>(durationSeconds);
+    return map;
+  }
+
+  AnimationTracksCompanion toCompanion(bool nullToAbsent) {
+    return AnimationTracksCompanion(
+      id: Value(id),
+      clipId: Value(clipId),
+      name: Value(name),
+      targetProperty: Value(targetProperty),
+      interpolation: Value(interpolation),
+      durationSeconds: Value(durationSeconds),
+    );
+  }
+
+  factory AnimationTrack.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AnimationTrack(
+      id: serializer.fromJson<String>(json['id']),
+      clipId: serializer.fromJson<String>(json['clipId']),
+      name: serializer.fromJson<String>(json['name']),
+      targetProperty: serializer.fromJson<String>(json['targetProperty']),
+      interpolation: serializer.fromJson<String>(json['interpolation']),
+      durationSeconds: serializer.fromJson<double>(json['durationSeconds']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'clipId': serializer.toJson<String>(clipId),
+      'name': serializer.toJson<String>(name),
+      'targetProperty': serializer.toJson<String>(targetProperty),
+      'interpolation': serializer.toJson<String>(interpolation),
+      'durationSeconds': serializer.toJson<double>(durationSeconds),
+    };
+  }
+
+  AnimationTrack copyWith({
+    String? id,
+    String? clipId,
+    String? name,
+    String? targetProperty,
+    String? interpolation,
+    double? durationSeconds,
+  }) => AnimationTrack(
+    id: id ?? this.id,
+    clipId: clipId ?? this.clipId,
+    name: name ?? this.name,
+    targetProperty: targetProperty ?? this.targetProperty,
+    interpolation: interpolation ?? this.interpolation,
+    durationSeconds: durationSeconds ?? this.durationSeconds,
+  );
+  AnimationTrack copyWithCompanion(AnimationTracksCompanion data) {
+    return AnimationTrack(
+      id: data.id.present ? data.id.value : this.id,
+      clipId: data.clipId.present ? data.clipId.value : this.clipId,
+      name: data.name.present ? data.name.value : this.name,
+      targetProperty: data.targetProperty.present
+          ? data.targetProperty.value
+          : this.targetProperty,
+      interpolation: data.interpolation.present
+          ? data.interpolation.value
+          : this.interpolation,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AnimationTrack(')
+          ..write('id: $id, ')
+          ..write('clipId: $clipId, ')
+          ..write('name: $name, ')
+          ..write('targetProperty: $targetProperty, ')
+          ..write('interpolation: $interpolation, ')
+          ..write('durationSeconds: $durationSeconds')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    clipId,
+    name,
+    targetProperty,
+    interpolation,
+    durationSeconds,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AnimationTrack &&
+          other.id == this.id &&
+          other.clipId == this.clipId &&
+          other.name == this.name &&
+          other.targetProperty == this.targetProperty &&
+          other.interpolation == this.interpolation &&
+          other.durationSeconds == this.durationSeconds);
+}
+
+class AnimationTracksCompanion extends UpdateCompanion<AnimationTrack> {
+  final Value<String> id;
+  final Value<String> clipId;
+  final Value<String> name;
+  final Value<String> targetProperty;
+  final Value<String> interpolation;
+  final Value<double> durationSeconds;
+  final Value<int> rowid;
+  const AnimationTracksCompanion({
+    this.id = const Value.absent(),
+    this.clipId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.targetProperty = const Value.absent(),
+    this.interpolation = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AnimationTracksCompanion.insert({
+    required String id,
+    required String clipId,
+    required String name,
+    required String targetProperty,
+    required String interpolation,
+    required double durationSeconds,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       clipId = Value(clipId),
+       name = Value(name),
+       targetProperty = Value(targetProperty),
+       interpolation = Value(interpolation),
+       durationSeconds = Value(durationSeconds);
+  static Insertable<AnimationTrack> custom({
+    Expression<String>? id,
+    Expression<String>? clipId,
+    Expression<String>? name,
+    Expression<String>? targetProperty,
+    Expression<String>? interpolation,
+    Expression<double>? durationSeconds,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (clipId != null) 'clip_id': clipId,
+      if (name != null) 'name': name,
+      if (targetProperty != null) 'target_property': targetProperty,
+      if (interpolation != null) 'interpolation': interpolation,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AnimationTracksCompanion copyWith({
+    Value<String>? id,
+    Value<String>? clipId,
+    Value<String>? name,
+    Value<String>? targetProperty,
+    Value<String>? interpolation,
+    Value<double>? durationSeconds,
+    Value<int>? rowid,
+  }) {
+    return AnimationTracksCompanion(
+      id: id ?? this.id,
+      clipId: clipId ?? this.clipId,
+      name: name ?? this.name,
+      targetProperty: targetProperty ?? this.targetProperty,
+      interpolation: interpolation ?? this.interpolation,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (clipId.present) {
+      map['clip_id'] = Variable<String>(clipId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (targetProperty.present) {
+      map['target_property'] = Variable<String>(targetProperty.value);
+    }
+    if (interpolation.present) {
+      map['interpolation'] = Variable<String>(interpolation.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<double>(durationSeconds.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AnimationTracksCompanion(')
+          ..write('id: $id, ')
+          ..write('clipId: $clipId, ')
+          ..write('name: $name, ')
+          ..write('targetProperty: $targetProperty, ')
+          ..write('interpolation: $interpolation, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AnimationKeyframesTable extends AnimationKeyframes
+    with TableInfo<$AnimationKeyframesTable, AnimationKeyframe> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AnimationKeyframesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _trackIdMeta = const VerificationMeta(
+    'trackId',
+  );
+  @override
+  late final GeneratedColumn<String> trackId = GeneratedColumn<String>(
+    'track_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timeSecondsMeta = const VerificationMeta(
+    'timeSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> timeSeconds = GeneratedColumn<double>(
+    'time_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, trackId, timeSeconds, value];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'animation_keyframes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AnimationKeyframe> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('track_id')) {
+      context.handle(
+        _trackIdMeta,
+        trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trackIdMeta);
+    }
+    if (data.containsKey('time_seconds')) {
+      context.handle(
+        _timeSecondsMeta,
+        timeSeconds.isAcceptableOrUnknown(
+          data['time_seconds']!,
+          _timeSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_timeSecondsMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AnimationKeyframe map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AnimationKeyframe(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      trackId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}track_id'],
+      )!,
+      timeSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}time_seconds'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}value'],
+      )!,
+    );
+  }
+
+  @override
+  $AnimationKeyframesTable createAlias(String alias) {
+    return $AnimationKeyframesTable(attachedDatabase, alias);
+  }
+}
+
+class AnimationKeyframe extends DataClass
+    implements Insertable<AnimationKeyframe> {
+  final String id;
+  final String trackId;
+  final double timeSeconds;
+  final double value;
+  const AnimationKeyframe({
+    required this.id,
+    required this.trackId,
+    required this.timeSeconds,
+    required this.value,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['track_id'] = Variable<String>(trackId);
+    map['time_seconds'] = Variable<double>(timeSeconds);
+    map['value'] = Variable<double>(value);
+    return map;
+  }
+
+  AnimationKeyframesCompanion toCompanion(bool nullToAbsent) {
+    return AnimationKeyframesCompanion(
+      id: Value(id),
+      trackId: Value(trackId),
+      timeSeconds: Value(timeSeconds),
+      value: Value(value),
+    );
+  }
+
+  factory AnimationKeyframe.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AnimationKeyframe(
+      id: serializer.fromJson<String>(json['id']),
+      trackId: serializer.fromJson<String>(json['trackId']),
+      timeSeconds: serializer.fromJson<double>(json['timeSeconds']),
+      value: serializer.fromJson<double>(json['value']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'trackId': serializer.toJson<String>(trackId),
+      'timeSeconds': serializer.toJson<double>(timeSeconds),
+      'value': serializer.toJson<double>(value),
+    };
+  }
+
+  AnimationKeyframe copyWith({
+    String? id,
+    String? trackId,
+    double? timeSeconds,
+    double? value,
+  }) => AnimationKeyframe(
+    id: id ?? this.id,
+    trackId: trackId ?? this.trackId,
+    timeSeconds: timeSeconds ?? this.timeSeconds,
+    value: value ?? this.value,
+  );
+  AnimationKeyframe copyWithCompanion(AnimationKeyframesCompanion data) {
+    return AnimationKeyframe(
+      id: data.id.present ? data.id.value : this.id,
+      trackId: data.trackId.present ? data.trackId.value : this.trackId,
+      timeSeconds: data.timeSeconds.present
+          ? data.timeSeconds.value
+          : this.timeSeconds,
+      value: data.value.present ? data.value.value : this.value,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AnimationKeyframe(')
+          ..write('id: $id, ')
+          ..write('trackId: $trackId, ')
+          ..write('timeSeconds: $timeSeconds, ')
+          ..write('value: $value')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, trackId, timeSeconds, value);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AnimationKeyframe &&
+          other.id == this.id &&
+          other.trackId == this.trackId &&
+          other.timeSeconds == this.timeSeconds &&
+          other.value == this.value);
+}
+
+class AnimationKeyframesCompanion extends UpdateCompanion<AnimationKeyframe> {
+  final Value<String> id;
+  final Value<String> trackId;
+  final Value<double> timeSeconds;
+  final Value<double> value;
+  final Value<int> rowid;
+  const AnimationKeyframesCompanion({
+    this.id = const Value.absent(),
+    this.trackId = const Value.absent(),
+    this.timeSeconds = const Value.absent(),
+    this.value = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AnimationKeyframesCompanion.insert({
+    required String id,
+    required String trackId,
+    required double timeSeconds,
+    required double value,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       trackId = Value(trackId),
+       timeSeconds = Value(timeSeconds),
+       value = Value(value);
+  static Insertable<AnimationKeyframe> custom({
+    Expression<String>? id,
+    Expression<String>? trackId,
+    Expression<double>? timeSeconds,
+    Expression<double>? value,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trackId != null) 'track_id': trackId,
+      if (timeSeconds != null) 'time_seconds': timeSeconds,
+      if (value != null) 'value': value,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AnimationKeyframesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? trackId,
+    Value<double>? timeSeconds,
+    Value<double>? value,
+    Value<int>? rowid,
+  }) {
+    return AnimationKeyframesCompanion(
+      id: id ?? this.id,
+      trackId: trackId ?? this.trackId,
+      timeSeconds: timeSeconds ?? this.timeSeconds,
+      value: value ?? this.value,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (trackId.present) {
+      map['track_id'] = Variable<String>(trackId.value);
+    }
+    if (timeSeconds.present) {
+      map['time_seconds'] = Variable<double>(timeSeconds.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AnimationKeyframesCompanion(')
+          ..write('id: $id, ')
+          ..write('trackId: $trackId, ')
+          ..write('timeSeconds: $timeSeconds, ')
+          ..write('value: $value, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -62559,6 +63300,11 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   );
   late final $PluginsTable plugins = $PluginsTable(this);
   late final $PluginSettingsTable pluginSettings = $PluginSettingsTable(this);
+  late final $AnimationTracksTable animationTracks = $AnimationTracksTable(
+    this,
+  );
+  late final $AnimationKeyframesTable animationKeyframes =
+      $AnimationKeyframesTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -62759,6 +63505,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     securitySettings,
     plugins,
     pluginSettings,
+    animationTracks,
+    animationKeyframes,
   ];
 }
 
@@ -96341,6 +97089,437 @@ typedef $$PluginSettingsTableProcessedTableManager =
       PluginSetting,
       PrefetchHooks Function()
     >;
+typedef $$AnimationTracksTableCreateCompanionBuilder =
+    AnimationTracksCompanion Function({
+      required String id,
+      required String clipId,
+      required String name,
+      required String targetProperty,
+      required String interpolation,
+      required double durationSeconds,
+      Value<int> rowid,
+    });
+typedef $$AnimationTracksTableUpdateCompanionBuilder =
+    AnimationTracksCompanion Function({
+      Value<String> id,
+      Value<String> clipId,
+      Value<String> name,
+      Value<String> targetProperty,
+      Value<String> interpolation,
+      Value<double> durationSeconds,
+      Value<int> rowid,
+    });
+
+class $$AnimationTracksTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AnimationTracksTable> {
+  $$AnimationTracksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clipId => $composableBuilder(
+    column: $table.clipId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get targetProperty => $composableBuilder(
+    column: $table.targetProperty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get interpolation => $composableBuilder(
+    column: $table.interpolation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AnimationTracksTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AnimationTracksTable> {
+  $$AnimationTracksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clipId => $composableBuilder(
+    column: $table.clipId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetProperty => $composableBuilder(
+    column: $table.targetProperty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get interpolation => $composableBuilder(
+    column: $table.interpolation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AnimationTracksTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AnimationTracksTable> {
+  $$AnimationTracksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get clipId =>
+      $composableBuilder(column: $table.clipId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get targetProperty => $composableBuilder(
+    column: $table.targetProperty,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get interpolation => $composableBuilder(
+    column: $table.interpolation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+}
+
+class $$AnimationTracksTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AnimationTracksTable,
+          AnimationTrack,
+          $$AnimationTracksTableFilterComposer,
+          $$AnimationTracksTableOrderingComposer,
+          $$AnimationTracksTableAnnotationComposer,
+          $$AnimationTracksTableCreateCompanionBuilder,
+          $$AnimationTracksTableUpdateCompanionBuilder,
+          (
+            AnimationTrack,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AnimationTracksTable,
+              AnimationTrack
+            >,
+          ),
+          AnimationTrack,
+          PrefetchHooks Function()
+        > {
+  $$AnimationTracksTableTableManager(
+    _$ProjectDatabase db,
+    $AnimationTracksTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AnimationTracksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AnimationTracksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AnimationTracksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> clipId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> targetProperty = const Value.absent(),
+                Value<String> interpolation = const Value.absent(),
+                Value<double> durationSeconds = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AnimationTracksCompanion(
+                id: id,
+                clipId: clipId,
+                name: name,
+                targetProperty: targetProperty,
+                interpolation: interpolation,
+                durationSeconds: durationSeconds,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String clipId,
+                required String name,
+                required String targetProperty,
+                required String interpolation,
+                required double durationSeconds,
+                Value<int> rowid = const Value.absent(),
+              }) => AnimationTracksCompanion.insert(
+                id: id,
+                clipId: clipId,
+                name: name,
+                targetProperty: targetProperty,
+                interpolation: interpolation,
+                durationSeconds: durationSeconds,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AnimationTracksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AnimationTracksTable,
+      AnimationTrack,
+      $$AnimationTracksTableFilterComposer,
+      $$AnimationTracksTableOrderingComposer,
+      $$AnimationTracksTableAnnotationComposer,
+      $$AnimationTracksTableCreateCompanionBuilder,
+      $$AnimationTracksTableUpdateCompanionBuilder,
+      (
+        AnimationTrack,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AnimationTracksTable,
+          AnimationTrack
+        >,
+      ),
+      AnimationTrack,
+      PrefetchHooks Function()
+    >;
+typedef $$AnimationKeyframesTableCreateCompanionBuilder =
+    AnimationKeyframesCompanion Function({
+      required String id,
+      required String trackId,
+      required double timeSeconds,
+      required double value,
+      Value<int> rowid,
+    });
+typedef $$AnimationKeyframesTableUpdateCompanionBuilder =
+    AnimationKeyframesCompanion Function({
+      Value<String> id,
+      Value<String> trackId,
+      Value<double> timeSeconds,
+      Value<double> value,
+      Value<int> rowid,
+    });
+
+class $$AnimationKeyframesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AnimationKeyframesTable> {
+  $$AnimationKeyframesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trackId => $composableBuilder(
+    column: $table.trackId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get timeSeconds => $composableBuilder(
+    column: $table.timeSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AnimationKeyframesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AnimationKeyframesTable> {
+  $$AnimationKeyframesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trackId => $composableBuilder(
+    column: $table.trackId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get timeSeconds => $composableBuilder(
+    column: $table.timeSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AnimationKeyframesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AnimationKeyframesTable> {
+  $$AnimationKeyframesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trackId =>
+      $composableBuilder(column: $table.trackId, builder: (column) => column);
+
+  GeneratedColumn<double> get timeSeconds => $composableBuilder(
+    column: $table.timeSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+}
+
+class $$AnimationKeyframesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AnimationKeyframesTable,
+          AnimationKeyframe,
+          $$AnimationKeyframesTableFilterComposer,
+          $$AnimationKeyframesTableOrderingComposer,
+          $$AnimationKeyframesTableAnnotationComposer,
+          $$AnimationKeyframesTableCreateCompanionBuilder,
+          $$AnimationKeyframesTableUpdateCompanionBuilder,
+          (
+            AnimationKeyframe,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AnimationKeyframesTable,
+              AnimationKeyframe
+            >,
+          ),
+          AnimationKeyframe,
+          PrefetchHooks Function()
+        > {
+  $$AnimationKeyframesTableTableManager(
+    _$ProjectDatabase db,
+    $AnimationKeyframesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AnimationKeyframesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AnimationKeyframesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AnimationKeyframesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> trackId = const Value.absent(),
+                Value<double> timeSeconds = const Value.absent(),
+                Value<double> value = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AnimationKeyframesCompanion(
+                id: id,
+                trackId: trackId,
+                timeSeconds: timeSeconds,
+                value: value,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String trackId,
+                required double timeSeconds,
+                required double value,
+                Value<int> rowid = const Value.absent(),
+              }) => AnimationKeyframesCompanion.insert(
+                id: id,
+                trackId: trackId,
+                timeSeconds: timeSeconds,
+                value: value,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AnimationKeyframesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AnimationKeyframesTable,
+      AnimationKeyframe,
+      $$AnimationKeyframesTableFilterComposer,
+      $$AnimationKeyframesTableOrderingComposer,
+      $$AnimationKeyframesTableAnnotationComposer,
+      $$AnimationKeyframesTableCreateCompanionBuilder,
+      $$AnimationKeyframesTableUpdateCompanionBuilder,
+      (
+        AnimationKeyframe,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AnimationKeyframesTable,
+          AnimationKeyframe
+        >,
+      ),
+      AnimationKeyframe,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -96685,4 +97864,8 @@ class $ProjectDatabaseManager {
       $$PluginsTableTableManager(_db, _db.plugins);
   $$PluginSettingsTableTableManager get pluginSettings =>
       $$PluginSettingsTableTableManager(_db, _db.pluginSettings);
+  $$AnimationTracksTableTableManager get animationTracks =>
+      $$AnimationTracksTableTableManager(_db, _db.animationTracks);
+  $$AnimationKeyframesTableTableManager get animationKeyframes =>
+      $$AnimationKeyframesTableTableManager(_db, _db.animationKeyframes);
 }

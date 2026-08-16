@@ -60,7 +60,7 @@ void main() {
       final eras = await reopened.listEras('project-1');
       final participants = await reopened.participantsFor('event-1');
 
-      expect(second.schemaVersion, 43);
+      expect(second.schemaVersion, 44);
       expect(eras.single.name, 'Neo Era');
       expect(participants.single.role, 'survivor');
       expect(participants.single.assetId, 'reika-1');

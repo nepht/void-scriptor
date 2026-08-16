@@ -35,6 +35,6 @@ void main() {
       (await restored.getRevisions(id)).single.content,
       'MASTER PROMPT edited',
     );
-    expect(second.schemaVersion, 43);
+    expect(second.schemaVersion, 44);
   });
 }

@@ -27,7 +27,7 @@ void main() {
     expect(logs.single.message, 'ok');
   });
 
-  test('schema version is 43', () {
-    expect(ProjectDatabase.currentSchemaVersion, 43);
+  test('schema version is 44', () {
+    expect(ProjectDatabase.currentSchemaVersion, 44);
   });
 }

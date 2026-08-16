@@ -1,5 +1,7 @@
 # Sprint 31 — Plugin System + SDK
 
+> **STATUS: DONE** — 31.1–31.21 GREEN, 587 PASS, analyze 0 issues, build web ✓.
+
 > **Sumber judul kanonik**: uteke memory `90d845b9` ("S31 Plugin System+SDK") — hanya judul.
 > Step dirancang oleh nephthys dari judul + audit repo nyata: pola registry mapan
 > (`CommandTypeRegistry`, `AiProviderRegistry`), flag `PlatformCapabilities.supportsDesktopPlugins`,

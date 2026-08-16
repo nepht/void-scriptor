@@ -1,6 +1,7 @@
 # Sprint 37 — Enterprise Studio Management
 
-> **STATUS: PROPOSAL**
+> **STATUS: DONE** — 37.1–37.21 GREEN, 702 PASS, analyze 0 issues, build web ✓.
+
 > **Sumber judul kanonik**: uteke memory `90d845b9` ("S37 Enterprise Studio Management") — hanya judul.
 > Fondasi audit: `Collaborator` (owner/editor/viewer), `CollaboratorRepository`,
 > `ProjectComment`, table `project_collaborators`.

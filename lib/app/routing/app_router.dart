@@ -31,6 +31,8 @@ import '../../core/plugin/presentation/plugin_manager_screen.dart';
 import '../../core/plugin/builtin/demo_plugin.dart';
 import '../../core/plugin/domain/plugin_manifest.dart';
 import '../../core/render/presentation/render_preview_panel.dart';
+import '../../core/animation/presentation/animation_preview_panel.dart';
+import '../../core/animation/builtin/demo_animation.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
@@ -89,6 +91,14 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
           culledCount: 0,
           width: 320,
           height: 180,
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.animation,
+        builder: (_, __) => AnimationPreviewPanel(
+          currentTime: 0,
+          durationSeconds: DemoAnimation.bounce.durationSeconds,
+          trackCount: DemoAnimation.bounce.tracks.length,
         ),
       ),
     ],
@@ -223,6 +233,14 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
         culledCount: 0,
         width: 320,
         height: 180,
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.animation,
+      builder: (_, __) => AnimationPreviewPanel(
+        currentTime: 0,
+        durationSeconds: DemoAnimation.bounce.durationSeconds,
+        trackCount: DemoAnimation.bounce.tracks.length,
       ),
     ),
   ];

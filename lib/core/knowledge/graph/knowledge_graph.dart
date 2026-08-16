@@ -47,4 +47,7 @@ class KnowledgeGraph {
 
   int get entityCount => _entities.length;
   int get relationCount => _relations.length;
+
+  List<KnowledgeEntity> get entities => List.unmodifiable(_entities.values);
+  List<EntityRelation> get relations => List.unmodifiable(_relations);
 }

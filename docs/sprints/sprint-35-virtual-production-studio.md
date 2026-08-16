@@ -1,6 +1,7 @@
 # Sprint 35 — Virtual Production Studio
 
-> **STATUS: PROPOSAL**
+> **STATUS: DONE** — 35.1–35.21 GREEN, 666 PASS, analyze 0 issues, build web ✓.
+
 > **Sumber judul kanonik**: uteke memory `90d845b9` ("S35 Virtual Production Studio") — hanya judul.
 > Fondasi audit: `CinematicProductionWorkspaceScreen` (VFX/Audio/Timeline cards + validation),
 > render engine S32 (camera/pipeline), animasi S33 (keyframe), audio S34 (DSP).

@@ -1,6 +1,7 @@
 # Sprint 36 — Publishing + Distribution
 
-> **STATUS: PROPOSAL**
+> **STATUS: DONE** — 36.1–36.21 GREEN, 682 PASS, analyze 0 issues, build web ✓.
+
 > **Sumber judul kanonik**: uteke memory `90d845b9` ("S36 Publishing+Distribution") — hanya judul.
 > Fondasi audit: `PortableProjectExporter` (zip `.voidproject`), `ArchiveManifest`,
 > `ProjectPackage`, `ProjectManifest` (schemaVersion/version/tags).

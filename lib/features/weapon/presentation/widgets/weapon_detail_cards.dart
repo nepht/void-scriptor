@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../design_system/colors/void_colors.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class WeaponTechnicalViewCard extends StatelessWidget {
   const WeaponTechnicalViewCard({super.key});
@@ -12,15 +12,15 @@ class WeaponTechnicalViewCard extends StatelessWidget {
       aspectRatio: 4 / 5,
       child: Container(
         decoration: BoxDecoration(
-          color: VoidColors.surfaceElevated,
+          color: context.palette.surfaceElevated,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: VoidColors.borderSoft),
+          border: Border.all(color: context.palette.borderSoft),
         ),
-        child: const Center(
+        child:  Center(
           child: Icon(
             Icons.auto_fix_high_outlined,
             size: 58,
-            color: VoidColors.textMuted,
+            color: context.palette.textMuted,
           ),
         ),
       ),
@@ -142,11 +142,11 @@ class WeaponVariantsCard extends StatelessWidget {
 class WeaponReferencesCard extends StatelessWidget {
   const WeaponReferencesCard({super.key});
   @override
-  Widget build(BuildContext context) => const _WeaponCard(
+  Widget build(BuildContext context) =>  _WeaponCard(
     title: 'References',
     child: Text(
       'Front, Side, Back, Top, Close-up, Blade, Handle, Core, Effects',
-      style: TextStyle(color: VoidColors.textMuted),
+      style: TextStyle(color: context.palette.textMuted),
     ),
   );
 }
@@ -157,7 +157,7 @@ class _WeaponCard extends StatelessWidget {
   final Widget child;
   @override
   Widget build(BuildContext context) => Card(
-    color: VoidColors.panelSecondary,
+    color: context.palette.panelSecondary,
     child: Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -165,7 +165,7 @@ class _WeaponCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(color: VoidColors.textPrimary, fontSize: 16),
+            style:  TextStyle(color: context.palette.textPrimary, fontSize: 16),
           ),
           const SizedBox(height: 14),
           child,
@@ -188,13 +188,13 @@ class _PropertyRow extends StatelessWidget {
           width: 120,
           child: Text(
             label,
-            style: const TextStyle(color: VoidColors.textMuted),
+            style:  TextStyle(color: context.palette.textMuted),
           ),
         ),
         Expanded(
           child: Text(
             value,
-            style: const TextStyle(color: VoidColors.textPrimary),
+            style:  TextStyle(color: context.palette.textPrimary),
           ),
         ),
       ],
@@ -208,7 +208,7 @@ class _Chip extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Chip(
     label: Text(label),
-    backgroundColor: VoidColors.surfaceElevated,
-    labelStyle: const TextStyle(color: VoidColors.textPrimary),
+    backgroundColor: context.palette.surfaceElevated,
+    labelStyle:  TextStyle(color: context.palette.textPrimary),
   );
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../colors/void_colors.dart';
 import '../radius/void_radius.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class VoidCard extends StatelessWidget {
   const VoidCard({
@@ -18,7 +18,7 @@ class VoidCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: VoidColors.surface,
+      color: context.palette.surface,
       borderRadius: BorderRadius.circular(VoidRadius.lg),
       child: InkWell(
         onTap: onTap,
@@ -27,7 +27,7 @@ class VoidCard extends StatelessWidget {
           padding: padding,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(VoidRadius.lg),
-            border: Border.all(color: VoidColors.borderSoft),
+            border: Border.all(color: context.palette.borderSoft),
           ),
           child: child,
         ),

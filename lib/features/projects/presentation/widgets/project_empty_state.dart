@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/routing/app_routes.dart';
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class ProjectEmptyState extends StatelessWidget {
   const ProjectEmptyState({super.key});
@@ -20,14 +20,14 @@ class ProjectEmptyState extends StatelessWidget {
               width: 72,
               height: 72,
               decoration: BoxDecoration(
-                color: VoidColors.surface,
+                color: context.palette.surface,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: VoidColors.borderSoft),
+                border: Border.all(color: context.palette.borderSoft),
               ),
-              child: const Icon(
+              child:  Icon(
                 Icons.folder_open_outlined,
                 size: 32,
-                color: VoidColors.primaryBright,
+                color: context.palette.primaryBright,
               ),
             ),
             const SizedBox(height: 20),

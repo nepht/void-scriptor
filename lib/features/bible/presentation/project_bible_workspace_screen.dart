@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../design_system/colors/void_colors.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 const _projectBibleSections = <String>[
   'Universe Overview',
@@ -25,7 +25,7 @@ class _ProjectBibleWorkspaceScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: VoidColors.background,
+      backgroundColor: context.palette.background,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -100,16 +100,16 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const title = Row(
+    final title = Row(
       children: [
-        Icon(Icons.menu_book_outlined, color: VoidColors.primaryBright),
-        SizedBox(width: 10),
+        Icon(Icons.menu_book_outlined, color: context.palette.primaryBright),
+        const SizedBox(width: 10),
         Expanded(
           child: Text(
             'PROJECT BIBLE',
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: VoidColors.textPrimary,
+              color: context.palette.textPrimary,
               fontSize: 22,
               fontWeight: FontWeight.w800,
               letterSpacing: 1.4,
@@ -118,16 +118,16 @@ class _Header extends StatelessWidget {
         ),
       ],
     );
-    const subtitle = Text(
+    final subtitle = Text(
       'Canon database and worldbuilding system',
-      style: TextStyle(color: VoidColors.textMuted),
+      style: TextStyle(color: context.palette.textMuted),
     );
     return narrow
-        ? const Column(
+        ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [title, SizedBox(height: 4), subtitle],
+            children: [title, const SizedBox(height: 4), subtitle],
           )
-        : const Row(
+        : Row(
             children: [
               Expanded(child: title),
               subtitle,
@@ -225,15 +225,15 @@ class _MetricCard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: VoidColors.primaryBright),
+        Icon(icon, color: context.palette.primaryBright),
         const SizedBox(height: 12),
-        Text(label, style: const TextStyle(color: VoidColors.textMuted)),
+        Text(label, style:  TextStyle(color: context.palette.textMuted)),
         const SizedBox(height: 4),
         Text(
           value,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: VoidColors.textPrimary,
+          style:  TextStyle(
+            color: context.palette.textPrimary,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -245,7 +245,7 @@ class _MetricCard extends StatelessWidget {
 class _CanonHealthCard extends StatelessWidget {
   const _CanonHealthCard();
   @override
-  Widget build(BuildContext context) => const _BibleCard(
+  Widget build(BuildContext context) =>  _BibleCard(
     title: 'CANON HEALTH',
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -253,21 +253,21 @@ class _CanonHealthCard extends StatelessWidget {
         Text(
           '100%',
           style: TextStyle(
-            color: VoidColors.success,
+            color: context.palette.success,
             fontSize: 32,
             fontWeight: FontWeight.w800,
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(
           'No unresolved conflicts',
-          style: TextStyle(color: VoidColors.textSecondary),
+          style: TextStyle(color: context.palette.textSecondary),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         LinearProgressIndicator(
           value: 1,
-          color: VoidColors.success,
-          backgroundColor: VoidColors.border,
+          color: context.palette.success,
+          backgroundColor: context.palette.border,
         ),
       ],
     ),
@@ -277,18 +277,18 @@ class _CanonHealthCard extends StatelessWidget {
 class _ConflictCard extends StatelessWidget {
   const _ConflictCard();
   @override
-  Widget build(BuildContext context) => const _BibleCard(
+  Widget build(BuildContext context) =>  _BibleCard(
     title: 'CANON CONFLICTS',
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
           contentPadding: EdgeInsets.zero,
-          leading: Icon(Icons.check_circle_outline, color: VoidColors.success),
-          title: Text('Conflict detector ready'),
-          subtitle: Text('Run a scan to validate project canon.'),
+          leading: Icon(Icons.check_circle_outline, color: context.palette.success),
+          title: const Text('Conflict detector ready'),
+          subtitle: const Text('Run a scan to validate project canon.'),
         ),
-        Chip(label: Text('0 unresolved')),
+        const Chip(label: Text('0 unresolved')),
       ],
     ),
   );
@@ -297,20 +297,20 @@ class _ConflictCard extends StatelessWidget {
 class _TimelineCard extends StatelessWidget {
   const _TimelineCard();
   @override
-  Widget build(BuildContext context) => const _BibleCard(
+  Widget build(BuildContext context) =>  _BibleCard(
     title: 'TIMELINE / ERAS',
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
           contentPadding: EdgeInsets.zero,
-          leading: Icon(Icons.timeline, color: VoidColors.primaryBright),
-          title: Text('No eras yet'),
-          subtitle: Text(
+          leading: Icon(Icons.timeline, color: context.palette.primaryBright),
+          title: const Text('No eras yet'),
+          subtitle: const Text(
             'Create eras and historical events to build chronology.',
           ),
         ),
-        Chip(label: Text('Timeline ready')),
+        const Chip(label: Text('Timeline ready')),
       ],
     ),
   );
@@ -323,7 +323,7 @@ class _BibleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Card(
-    color: VoidColors.panelSecondary,
+    color: context.palette.panelSecondary,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     child: Padding(
       padding: const EdgeInsets.all(16),
@@ -333,8 +333,8 @@ class _BibleCard extends StatelessWidget {
           if (title != null) ...[
             Text(
               title!,
-              style: const TextStyle(
-                color: VoidColors.textMuted,
+              style:  TextStyle(
+                color: context.palette.textMuted,
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1,

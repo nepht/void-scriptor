@@ -22,9 +22,16 @@ void main() {
   });
 
   test('Presence tracks lastSeen on update', () {
-    final presence = Presence(avatarId: 'av1', zoneId: 'z1');
+    var tick = DateTime(2026, 1, 1);
+    final presence = Presence(
+      avatarId: 'av1',
+      zoneId: 'z1',
+      now: () => tick,
+    );
     final before = presence.lastSeen;
+    tick = tick.add(const Duration(seconds: 1));
     presence.moveTo('z3');
     expect(presence.lastSeen, isNot(before));
+    expect(presence.lastSeen, tick);
   });
 }

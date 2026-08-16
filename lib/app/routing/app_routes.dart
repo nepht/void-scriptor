@@ -37,7 +37,6 @@ abstract final class AppRoutes {
   static const collaborationComments = '/collaboration/comments';
   static const security = '/security';
   static const securityLock = '/security/lock';
-  static const appearance = '/appearance';
   static const plugins = '/plugins';
   static const render = '/render';
   static const animation = '/animation';

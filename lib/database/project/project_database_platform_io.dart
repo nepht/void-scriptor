@@ -7,8 +7,13 @@ import 'project_database.dart';
 
 Future<ProjectDatabase> openProjectDatabase(String databasePath) async {
   final database = ProjectDatabase(NativeDatabase(File(databasePath)));
-  await database.initialize();
-  return database;
+  try {
+    await database.initialize();
+    return database;
+  } catch (_) {
+    await database.close();
+    rethrow;
+  }
 }
 
 Future<ProjectDatabase> openProjectDatabaseReadOnly(String databasePath) async {

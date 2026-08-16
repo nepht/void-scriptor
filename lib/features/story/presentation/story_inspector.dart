@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../design_system/colors/void_colors.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class StoryInspector extends StatelessWidget {
   const StoryInspector({super.key, required this.storyId});
   final String storyId;
   @override
   Widget build(BuildContext context) => ColoredBox(
-    color: VoidColors.panel,
+    color: context.palette.panel,
     child: Padding(
       padding: const EdgeInsets.all(14),
       child: Column(
@@ -14,17 +14,17 @@ class StoryInspector extends StatelessWidget {
         children: [
           Text(
             storyId,
-            style: const TextStyle(
-              color: VoidColors.textPrimary,
+            style:  TextStyle(
+              color: context.palette.textPrimary,
               fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: 6),
-          const Text('Story', style: TextStyle(color: VoidColors.textMuted)),
+           Text('Story', style: TextStyle(color: context.palette.textMuted)),
           const Divider(),
-          const Text(
+           Text(
             'Status\nDraft\n\nCanon\nDraft',
-            style: TextStyle(color: VoidColors.textSecondary, height: 1.5),
+            style: TextStyle(color: context.palette.textSecondary, height: 1.5),
           ),
         ],
       ),

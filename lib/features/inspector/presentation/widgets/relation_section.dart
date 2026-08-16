@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/selection/selection_controller.dart';
 import '../../../../core/selection/selection_model.dart';
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../assets/domain/asset_type.dart';
 import '../../../../database/project/project_database.dart';
 import '../../../projects/presentation/project_persistence_providers.dart';
@@ -11,6 +10,7 @@ import '../../../relations/application/relation_display_service.dart';
 import '../../../relations/application/relation_command.dart';
 import '../../../relations/data/relation_repository_impl.dart';
 import '../../../assets/domain/asset_relation_type.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 final relationDisplayProvider =
     FutureProvider.family<List<RelationDisplayItem>, String>((
@@ -59,10 +59,10 @@ class RelationSection extends ConsumerWidget {
       children: [
         Row(
           children: [
-            const Expanded(
+             Expanded(
               child: Text(
                 'Relations',
-                style: TextStyle(color: VoidColors.primaryBright, fontSize: 13),
+                style: TextStyle(color: context.palette.primaryBright, fontSize: 13),
               ),
             ),
             TextButton.icon(
@@ -74,18 +74,18 @@ class RelationSection extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         relations.when(
-          loading: () => const Text(
+          loading: () =>  Text(
             'Loading...',
-            style: TextStyle(color: VoidColors.textMuted),
+            style: TextStyle(color: context.palette.textMuted),
           ),
           error: (error, _) => Text(
             '$error',
-            style: const TextStyle(color: VoidColors.textMuted),
+            style:  TextStyle(color: context.palette.textMuted),
           ),
           data: (items) => items.isEmpty
-              ? const Text(
+              ?  Text(
                   'No relations yet',
-                  style: TextStyle(color: VoidColors.textMuted),
+                  style: TextStyle(color: context.palette.textMuted),
                 )
               : Column(
                   children: items
@@ -98,22 +98,22 @@ class RelationSection extends ConsumerWidget {
                                 ? Icons.arrow_back_outlined
                                 : Icons.arrow_forward_outlined,
                             size: 16,
-                            color: VoidColors.primaryBright,
+                            color: context.palette.primaryBright,
                           ),
                           title: Text(
                             item.label,
-                            style: const TextStyle(color: VoidColors.textMuted),
+                            style:  TextStyle(color: context.palette.textMuted),
                           ),
                           subtitle: Text(
                             item.assetName,
-                            style: const TextStyle(
-                              color: VoidColors.textPrimary,
+                            style:  TextStyle(
+                              color: context.palette.textPrimary,
                             ),
                           ),
                           trailing: IconButton(
                             tooltip: 'Delete relation',
                             icon: const Icon(Icons.delete_outline, size: 16),
-                            color: VoidColors.textMuted,
+                            color: context.palette.textMuted,
                             onPressed: () async {
                               final confirmed = await confirmRelationDeletion(
                                 context,

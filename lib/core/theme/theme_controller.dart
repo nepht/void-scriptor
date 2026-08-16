@@ -8,7 +8,8 @@ class ThemeController extends AsyncNotifier<AppThemeMode> {
   @override
   Future<AppThemeMode> build() async {
     final store = ref.read(themePreferenceStoreProvider);
-    return await store.load() ?? AppThemeMode.system;
+    final loaded = await store.load();
+    return loaded ?? AppThemeMode.system;
   }
 
   Future<void> setMode(AppThemeMode mode) async {

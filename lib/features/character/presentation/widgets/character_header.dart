@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class CharacterHeader extends StatelessWidget {
   const CharacterHeader({super.key, required this.name, required this.alias});
@@ -12,16 +12,16 @@ class CharacterHeader extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     height: 58,
     padding: const EdgeInsets.symmetric(horizontal: 18),
-    decoration: const BoxDecoration(
-      color: VoidColors.panelSecondary,
-      border: Border(bottom: BorderSide(color: VoidColors.borderSoft)),
+    decoration:  BoxDecoration(
+      color: context.palette.panelSecondary,
+      border: Border(bottom: BorderSide(color: context.palette.borderSoft)),
     ),
     child: Row(
       children: [
-        const Icon(
+         Icon(
           Icons.person_outline,
           size: 18,
-          color: VoidColors.primaryBright,
+          color: context.palette.primaryBright,
         ),
         const SizedBox(width: 10),
         Expanded(

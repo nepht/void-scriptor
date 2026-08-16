@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../design_system/colors/void_colors.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 import '../data/environment_repository_impl.dart';
 import '../domain/environment_model.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 final environmentWorkspaceProvider =
     FutureProvider.family<EnvironmentModel?, String>((
@@ -30,7 +30,7 @@ class EnvironmentWorkspaceScreen extends ConsumerWidget {
         .valueOrNull;
     final width = MediaQuery.sizeOf(context).width;
     return ColoredBox(
-      color: VoidColors.background,
+      color: context.palette.background,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Center(
@@ -99,7 +99,7 @@ class _EnvironmentHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
     children: [
-      const Icon(Icons.landscape_outlined, color: VoidColors.primaryBright),
+       Icon(Icons.landscape_outlined, color: context.palette.primaryBright),
       const SizedBox(width: 10),
       Expanded(
         child: Column(
@@ -107,14 +107,14 @@ class _EnvironmentHeader extends StatelessWidget {
           children: [
             Text(
               name,
-              style: const TextStyle(
-                color: VoidColors.textPrimary,
+              style:  TextStyle(
+                color: context.palette.textPrimary,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
               overflow: TextOverflow.ellipsis,
             ),
-            Text(type, style: const TextStyle(color: VoidColors.textMuted)),
+            Text(type, style:  TextStyle(color: context.palette.textMuted)),
           ],
         ),
       ),
@@ -130,20 +130,20 @@ class _EnvironmentHeader extends StatelessWidget {
 class _EnvironmentPreviewCard extends StatelessWidget {
   const _EnvironmentPreviewCard();
   @override
-  Widget build(BuildContext context) => const _EnvironmentCard(
+  Widget build(BuildContext context) =>  _EnvironmentCard(
     title: 'LOCATION PREVIEW',
     child: AspectRatio(
       aspectRatio: 16 / 9,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: VoidColors.panel,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          color: context.palette.panel,
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),
         child: Center(
           child: Icon(
             Icons.landscape_outlined,
             size: 54,
-            color: VoidColors.textMuted,
+            color: context.palette.textMuted,
           ),
         ),
       ),
@@ -227,7 +227,7 @@ class _EnvironmentCard extends StatelessWidget {
   final Widget child;
   @override
   Widget build(BuildContext context) => Card(
-    color: VoidColors.panelSecondary,
+    color: context.palette.panelSecondary,
     child: Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -235,8 +235,8 @@ class _EnvironmentCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              color: VoidColors.primaryBright,
+            style:  TextStyle(
+              color: context.palette.primaryBright,
               fontSize: 12,
               fontWeight: FontWeight.w700,
               letterSpacing: 1,
@@ -263,13 +263,13 @@ class _PropertyRow extends StatelessWidget {
           width: 105,
           child: Text(
             label,
-            style: const TextStyle(color: VoidColors.textMuted),
+            style:  TextStyle(color: context.palette.textMuted),
           ),
         ),
         Expanded(
           child: Text(
             value,
-            style: const TextStyle(color: VoidColors.textPrimary),
+            style:  TextStyle(color: context.palette.textPrimary),
             overflow: TextOverflow.ellipsis,
           ),
         ),

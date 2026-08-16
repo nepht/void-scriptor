@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/app/shell/desktop/void_top_bar.dart';
+
+import '../../shared/theme_test_overrides.dart';
 
 void main() {
   testWidgets('undo and redo toolbar buttons follow command state', (
@@ -11,16 +14,19 @@ void main() {
 
     Future<void> pump({required bool canUndo, required bool canRedo}) {
       return tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SizedBox(
-              width: 1400,
-              child: VoidTopBar(
-                onMenuSelected: (_) {},
-                canUndo: canUndo,
-                canRedo: canRedo,
-                onUndo: () => undoCount++,
-                onRedo: () => redoCount++,
+        ProviderScope(
+          overrides: themeTestOverrides(),
+          child: MaterialApp(
+            home: Scaffold(
+              body: SizedBox(
+                width: 1400,
+                child: VoidTopBar(
+                  onMenuSelected: (_) {},
+                  canUndo: canUndo,
+                  canRedo: canRedo,
+                  onUndo: () => undoCount++,
+                  onRedo: () => redoCount++,
+                ),
               ),
             ),
           ),

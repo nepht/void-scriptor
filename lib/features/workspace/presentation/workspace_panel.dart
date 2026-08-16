@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 import 'workspace_resolver.dart';
 
-import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/typography/void_typography.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class WorkspacePanel extends ConsumerWidget {
   const WorkspacePanel({super.key});
@@ -19,7 +19,7 @@ class WorkspacePanel extends ConsumerWidget {
         .id;
 
     return Container(
-      color: VoidColors.backgroundSecondary,
+      color: context.palette.backgroundSecondary,
       child: Column(
         children: [
           const _WorkspaceHeader(),
@@ -42,13 +42,13 @@ class _WorkspaceHeader extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     height: 44,
     padding: const EdgeInsets.symmetric(horizontal: 16),
-    decoration: const BoxDecoration(
-      color: VoidColors.panelSecondary,
-      border: Border(bottom: BorderSide(color: VoidColors.borderSoft)),
+    decoration:  BoxDecoration(
+      color: context.palette.panelSecondary,
+      border: Border(bottom: BorderSide(color: context.palette.borderSoft)),
     ),
-    child: const Row(
+    child:  Row(
       children: [
-        Expanded(
+        const Expanded(
           child: Row(
             children: [
               Flexible(
@@ -73,9 +73,9 @@ class _WorkspaceHeader extends StatelessWidget {
             ],
           ),
         ),
-        Icon(Icons.star_border, size: 17, color: VoidColors.textMuted),
-        SizedBox(width: 12),
-        Icon(Icons.history, size: 17, color: VoidColors.textMuted),
+        Icon(Icons.star_border, size: 17, color: context.palette.textMuted),
+        const SizedBox(width: 12),
+        Icon(Icons.history, size: 17, color: context.palette.textMuted),
       ],
     ),
   );
@@ -86,9 +86,9 @@ class _WorkspaceTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     height: 38,
-    decoration: const BoxDecoration(
-      color: VoidColors.panel,
-      border: Border(bottom: BorderSide(color: VoidColors.borderSoft)),
+    decoration:  BoxDecoration(
+      color: context.palette.panel,
+      border: Border(bottom: BorderSide(color: context.palette.borderSoft)),
     ),
     child: const SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -121,7 +121,7 @@ class _Tab extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: active ? VoidColors.primary : Colors.transparent,
+              color: active ? context.palette.primary : Colors.transparent,
               width: 2,
             ),
           ),
@@ -129,7 +129,7 @@ class _Tab extends StatelessWidget {
         child: Text(
           label,
           style: TextStyle(
-            color: active ? VoidColors.textPrimary : VoidColors.textMuted,
+            color: active ? context.palette.textPrimary : context.palette.textMuted,
             fontSize: 11,
             fontWeight: active ? FontWeight.w600 : FontWeight.w400,
           ),
@@ -142,17 +142,17 @@ class _Tab extends StatelessWidget {
 class _EmptyWorkspace extends StatelessWidget {
   const _EmptyWorkspace();
   @override
-  Widget build(BuildContext context) => const Center(
+  Widget build(BuildContext context) =>  Center(
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.grid_view_rounded, size: 38, color: VoidColors.textMuted),
-        SizedBox(height: 14),
-        Text('Workspace', style: VoidTypography.headingMedium),
-        SizedBox(height: 6),
-        Text('Character Workspace', style: VoidTypography.caption),
-        SizedBox(height: 6),
-        Text(
+        Icon(Icons.grid_view_rounded, size: 38, color: context.palette.textMuted),
+        const SizedBox(height: 14),
+        const Text('Workspace', style: VoidTypography.headingMedium),
+        const SizedBox(height: 6),
+        const Text('Character Workspace', style: VoidTypography.caption),
+        const SizedBox(height: 6),
+        const Text(
           'Pilih Character dari Explorer untuk membuka Character Sheet.',
           style: VoidTypography.caption,
         ),

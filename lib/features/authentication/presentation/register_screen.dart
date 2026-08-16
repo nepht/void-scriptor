@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/typography/void_typography.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
 import '../../../design_system/widgets/void_button.dart';
@@ -32,8 +31,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: VoidColors.background,
+      backgroundColor: scheme.surface,
       body: Stack(
         children: [
           // Full-bleed background with dark overlay for readability
@@ -50,9 +52,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    VoidColors.background.withValues(alpha: 0.55),
-                    VoidColors.background.withValues(alpha: 0.75),
-                    VoidColors.background.withValues(alpha: 0.88),
+                    scheme.surface.withValues(alpha: isDark ? 0.55 : 0.25),
+                    scheme.surface.withValues(alpha: isDark ? 0.75 : 0.45),
+                    scheme.surface.withValues(alpha: isDark ? 0.88 : 0.72),
                   ],
                 ),
               ),
@@ -66,9 +68,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(30),
                   decoration: BoxDecoration(
-                    color: VoidColors.surface.withValues(alpha: 0.82),
+                    color: scheme.surface.withValues(
+                      alpha: isDark ? 0.82 : 0.90,
+                    ),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: VoidColors.borderSoft),
+                    border: Border.all(color: scheme.outlineVariant),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.5),
@@ -80,14 +84,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Center(child: VoidLogo()),
+                      Center(child: VoidLogo(textColor: scheme.onSurface)),
 
                       const SizedBox(height: 30),
 
-                      const Text(
+                      Text(
                         'Create your account',
                         textAlign: TextAlign.center,
-                        style: VoidTypography.headingLarge,
+                        style: VoidTypography.headingLarge.copyWith(
+                          color: scheme.onSurface,
+                        ),
                       ),
 
                       const SizedBox(height: 28),

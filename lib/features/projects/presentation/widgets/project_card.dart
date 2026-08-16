@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
 import '../../domain/project_model.dart';
 import '../project_controller.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class ProjectCard extends ConsumerWidget {
   const ProjectCard({super.key, required this.project});
@@ -26,15 +26,15 @@ class ProjectCard extends ConsumerWidget {
         children: [
           Expanded(
             child: Container(
-              decoration: const BoxDecoration(
-                color: VoidColors.surfaceElevated,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+              decoration:  BoxDecoration(
+                color: context.palette.surfaceElevated,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               ),
-              child: const Center(
+              child:  Center(
                 child: Icon(
                   Icons.auto_awesome_mosaic_outlined,
                   size: 38,
-                  color: VoidColors.textMuted,
+                  color: context.palette.textMuted,
                 ),
               ),
             ),

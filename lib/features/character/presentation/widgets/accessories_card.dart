@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class AccessoriesCard extends StatelessWidget {
   const AccessoriesCard({super.key});
@@ -31,7 +31,7 @@ class _Item extends StatelessWidget {
     padding: const EdgeInsets.symmetric(vertical: 7),
     child: Row(
       children: [
-        Icon(icon, size: 17, color: VoidColors.textMuted),
+        Icon(icon, size: 17, color: context.palette.textMuted),
         const SizedBox(width: 9),
         Text(label, style: VoidTypography.body),
       ],

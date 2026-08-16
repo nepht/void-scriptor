@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../design_system/colors/void_colors.dart';
+import '../../../core/theme/theme_mode_menu.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
 import '../../../features/collaboration/domain/sync_models.dart';
 import '../../../features/collaboration/presentation/sync_status_indicator.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class VoidTopBar extends StatelessWidget {
   const VoidTopBar({
@@ -30,9 +31,9 @@ class VoidTopBar extends StatelessWidget {
     return Container(
       height: 58,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: const BoxDecoration(
-        color: VoidColors.panel,
-        border: Border(bottom: BorderSide(color: VoidColors.borderSoft)),
+      decoration:  BoxDecoration(
+        color: context.palette.panel,
+        border: Border(bottom: BorderSide(color: context.palette.borderSoft)),
       ),
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -121,21 +122,17 @@ class VoidTopBar extends StatelessWidget {
                 icon: Icons.notifications_none_rounded,
                 tooltip: 'Notifications',
               ),
-              IconButton(
-                tooltip: 'Appearance',
-                onPressed: () => onMenuSelected('appearance'),
-                icon: const Icon(Icons.palette_outlined, size: 18),
-              ),
+              const ThemeModeMenu(),
               IconButton(
                 tooltip: 'Logout',
                 onPressed: onLogout,
                 icon: const Icon(Icons.logout_rounded, size: 18),
               ),
               const SizedBox(width: 6),
-              const CircleAvatar(
+               CircleAvatar(
                 radius: 16,
-                backgroundColor: VoidColors.primary,
-                child: Icon(
+                backgroundColor: context.palette.primary,
+                child: const Icon(
                   Icons.person_outline,
                   size: 18,
                   color: Colors.white,
@@ -164,10 +161,10 @@ class _TopMenuButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
         child: Text(
           label,
-          style: const TextStyle(
+          style:  TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w500,
-            color: VoidColors.textSecondary,
+            color: context.palette.textSecondary,
           ),
         ),
       ),

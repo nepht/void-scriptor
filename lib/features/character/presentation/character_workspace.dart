@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/typography/void_typography.dart';
 import '../domain/character_model.dart';
 import 'character_controller.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class CharacterWorkspace extends ConsumerWidget {
   const CharacterWorkspace({super.key, required this.projectId});
@@ -80,7 +80,7 @@ class _CharacterHeader extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     height: 44,
     padding: const EdgeInsets.symmetric(horizontal: 16),
-    color: VoidColors.panelSecondary,
+    color: context.palette.panelSecondary,
     child: const Row(
       children: [
         Text('Void Universe', style: VoidTypography.title),
@@ -102,10 +102,10 @@ class _EmptyCharacterState extends StatelessWidget {
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Icon(
+         Icon(
           Icons.person_add_alt_1_outlined,
           size: 42,
-          color: VoidColors.textMuted,
+          color: context.palette.textMuted,
         ),
         const SizedBox(height: 14),
         const Text('No Characters Yet', style: VoidTypography.headingMedium),
@@ -141,13 +141,13 @@ class _CharacterSheet extends StatelessWidget {
             width: 220,
             height: 280,
             decoration: BoxDecoration(
-              color: VoidColors.surfaceElevated,
+              color: context.palette.surfaceElevated,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
+            child:  Icon(
               Icons.person_outline,
               size: 72,
-              color: VoidColors.textMuted,
+              color: context.palette.textMuted,
             ),
           ),
           const SizedBox(width: 26),

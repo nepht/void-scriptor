@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../database/project/project_database.dart';
-import '../../../design_system/colors/void_colors.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class StoryGroup extends StatelessWidget {
   const StoryGroup({
@@ -19,14 +19,14 @@ class StoryGroup extends StatelessWidget {
     initiallyExpanded: true,
     tilePadding: const EdgeInsets.symmetric(horizontal: 9),
     childrenPadding: const EdgeInsets.only(left: 28),
-    leading: const Icon(
+    leading:  Icon(
       Icons.menu_book_outlined,
       size: 16,
-      color: VoidColors.textMuted,
+      color: context.palette.textMuted,
     ),
-    title: const Text(
+    title:  Text(
       'Story',
-      style: TextStyle(color: VoidColors.textSecondary, fontSize: 12),
+      style: TextStyle(color: context.palette.textSecondary, fontSize: 12),
     ),
     children: stories.when(
       loading: () => [const ListTile(dense: true, title: Text('Loading...'))],
@@ -40,8 +40,8 @@ class StoryGroup extends StatelessWidget {
                     minTileHeight: 30,
                     title: Text(
                       item.name,
-                      style: const TextStyle(
-                        color: VoidColors.textMuted,
+                      style:  TextStyle(
+                        color: context.palette.textMuted,
                         fontSize: 11,
                       ),
                     ),

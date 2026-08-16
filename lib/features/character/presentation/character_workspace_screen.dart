@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../design_system/colors/void_colors.dart';
 import '../domain/character_model.dart';
 import '../domain/character_identity_profile.dart';
 import 'character_workspace_controller.dart';
@@ -17,6 +16,7 @@ import 'widgets/references_card.dart';
 import 'widgets/silhouette_card.dart';
 import 'widgets/turnaround_card.dart';
 import '../../character_mode/presentation/widgets/character_mode_section.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class CharacterWorkspaceScreen extends ConsumerStatefulWidget {
   const CharacterWorkspaceScreen({super.key, required this.characterId});
@@ -33,7 +33,7 @@ class _CharacterWorkspaceScreenState
     final state = ref.watch(characterWorkspaceProvider(widget.characterId));
     final identity = ref.watch(characterIdentityProvider(widget.characterId));
     return Container(
-      color: VoidColors.backgroundSecondary,
+      color: context.palette.backgroundSecondary,
       child: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(child: Text('$error')),

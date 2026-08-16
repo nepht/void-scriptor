@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../design_system/colors/void_colors.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class WardrobeHeader extends StatelessWidget {
   const WardrobeHeader({super.key, required this.name, required this.category});
@@ -15,15 +15,15 @@ class WardrobeHeader extends StatelessWidget {
       return Container(
         constraints: const BoxConstraints(minHeight: 64),
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-        decoration: const BoxDecoration(
-          color: VoidColors.panelSecondary,
-          border: Border(bottom: BorderSide(color: VoidColors.borderSoft)),
+        decoration:  BoxDecoration(
+          color: context.palette.panelSecondary,
+          border: Border(bottom: BorderSide(color: context.palette.borderSoft)),
         ),
         child: Row(
           children: [
-            const Icon(
+             Icon(
               Icons.checkroom_outlined,
-              color: VoidColors.primaryBright,
+              color: context.palette.primaryBright,
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -35,13 +35,13 @@ class WardrobeHeader extends StatelessWidget {
                     name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: VoidColors.textPrimary),
+                    style:  TextStyle(color: context.palette.textPrimary),
                   ),
                   Text(
                     category,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: VoidColors.textMuted),
+                    style:  TextStyle(color: context.palette.textMuted),
                   ),
                 ],
               ),

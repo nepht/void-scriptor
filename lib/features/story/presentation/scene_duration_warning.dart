@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../domain/scene_timeline.dart';
-import '../../../design_system/colors/void_colors.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class SceneDurationWarning extends StatelessWidget {
   const SceneDurationWarning({super.key, required this.validation});
@@ -9,19 +9,19 @@ class SceneDurationWarning extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!validation.isMismatch) return const SizedBox.shrink();
     return Card(
-      color: VoidColors.warning.withValues(alpha: 0.15),
+      color: context.palette.warning.withValues(alpha: 0.15),
       child: ListTile(
-        leading: const Icon(
+        leading:  Icon(
           Icons.warning_amber_outlined,
-          color: VoidColors.warning,
+          color: context.palette.warning,
         ),
-        title: const Text(
+        title:  Text(
           'Scene duration mismatch',
-          style: TextStyle(color: VoidColors.warning),
+          style: TextStyle(color: context.palette.warning),
         ),
         subtitle: Text(
           'Scene: ${validation.sceneDurationSeconds!.toStringAsFixed(1)} sec · Beats: ${validation.totalBeatDuration.toStringAsFixed(1)} sec',
-          style: const TextStyle(color: VoidColors.textSecondary),
+          style:  TextStyle(color: context.palette.textSecondary),
         ),
       ),
     );

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
 import '../../../features/explorer/presentation/explorer_panel.dart';
 import '../../../features/workspace/presentation/workspace_panel.dart';
 import '../../routing/app_routes.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class VoidMobileShell extends StatefulWidget {
   const VoidMobileShell({super.key, this.onLogout, this.projectId});
@@ -43,7 +43,7 @@ class _VoidMobileShellState extends State<VoidMobileShell> {
   Future<void> _showMoreActions() {
     return showModalBottomSheet<void>(
       context: context,
-      backgroundColor: VoidColors.panel,
+      backgroundColor: context.palette.panel,
       builder: (sheetContext) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -78,9 +78,9 @@ class _VoidMobileShellState extends State<VoidMobileShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: VoidColors.background,
+      backgroundColor: context.palette.background,
       appBar: AppBar(
-        backgroundColor: VoidColors.panel,
+        backgroundColor: context.palette.panel,
         titleSpacing: 12,
         title: const VoidLogo(),
         actions: [
@@ -101,9 +101,9 @@ class _VoidMobileShellState extends State<VoidMobileShell> {
           ),
         ],
       ),
-      drawer: const Drawer(
-        backgroundColor: VoidColors.panel,
-        child: SafeArea(child: ExplorerPanel()),
+      drawer:  Drawer(
+        backgroundColor: context.palette.panel,
+        child: const SafeArea(child: ExplorerPanel()),
       ),
       body: const WorkspacePanel(),
       bottomNavigationBar: NavigationBar(
@@ -146,8 +146,8 @@ class _MoreDestination extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-    leading: Icon(icon, color: VoidColors.textSecondary),
-    title: Text(label, style: const TextStyle(color: VoidColors.textPrimary)),
+    leading: Icon(icon, color: context.palette.textSecondary),
+    title: Text(label, style:  TextStyle(color: context.palette.textPrimary)),
     onTap: onTap,
   );
 }

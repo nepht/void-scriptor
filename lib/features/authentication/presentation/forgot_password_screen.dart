@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/typography/void_typography.dart';
 import '../../../design_system/widgets/void_button.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key, required this.onBack});
@@ -26,7 +26,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: VoidColors.background,
+      backgroundColor: context.palette.background,
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 420),
@@ -35,9 +35,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             child: Container(
               padding: const EdgeInsets.all(30),
               decoration: BoxDecoration(
-                color: VoidColors.surface,
+                color: context.palette.surface,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: VoidColors.borderSoft),
+                border: Border.all(color: context.palette.borderSoft),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,

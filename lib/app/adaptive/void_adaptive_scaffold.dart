@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../design_system/colors/void_colors.dart';
 import 'void_device_type.dart';
 import 'void_resolver.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class VoidAdaptiveScaffold extends StatelessWidget {
   const VoidAdaptiveScaffold({
@@ -28,7 +28,7 @@ class VoidAdaptiveScaffold extends StatelessWidget {
           case VoidDeviceType.phone:
             return Scaffold(
               key: const Key('scaffold-phone'),
-              backgroundColor: VoidColors.background,
+              backgroundColor: context.palette.background,
               body: body,
               bottomNavigationBar: mobileNavigation,
             );
@@ -36,7 +36,7 @@ class VoidAdaptiveScaffold extends StatelessWidget {
           case VoidDeviceType.compactDesktop:
             return Scaffold(
               key: const Key('scaffold-tablet-or-compact'),
-              backgroundColor: VoidColors.background,
+              backgroundColor: context.palette.background,
               body: Row(
                 children: [
                   desktopSidebar,
@@ -47,7 +47,7 @@ class VoidAdaptiveScaffold extends StatelessWidget {
           case VoidDeviceType.desktop:
             return Scaffold(
               key: const Key('scaffold-desktop'),
-              backgroundColor: VoidColors.background,
+              backgroundColor: context.palette.background,
               body: Row(
                 children: [
                   desktopSidebar,

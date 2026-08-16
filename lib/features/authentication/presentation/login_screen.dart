@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/auth_controller.dart';
-import '../../../app/routing/app_routes.dart';
-import '../../../design_system/colors/void_colors.dart';
+import '../../../core/theme/theme_mode_menu.dart';
 import '../../../design_system/typography/void_typography.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
 import '../../../design_system/widgets/void_button.dart';
@@ -49,11 +47,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
-
     final loading = authState.isLoading;
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: VoidColors.background,
+      backgroundColor: scheme.surface,
       body: Stack(
         children: [
           // Full-bleed background with dark overlay for readability
@@ -70,22 +69,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    VoidColors.background.withValues(alpha: 0.55),
-                    VoidColors.background.withValues(alpha: 0.75),
-                    VoidColors.background.withValues(alpha: 0.88),
+                    scheme.surface.withValues(alpha: isDark ? 0.55 : 0.25),
+                    scheme.surface.withValues(alpha: isDark ? 0.75 : 0.45),
+                    scheme.surface.withValues(alpha: isDark ? 0.88 : 0.72),
                   ],
                 ),
               ),
             ),
           ),
-          // Akses pengaturan tampilan langsung dari layar login
+          // Pengaturan tampilan langsung dari layar login (menu popup kompak)
           Positioned(
             top: 12,
             right: 12,
-            child: IconButton(
-              tooltip: 'Appearance',
-              onPressed: () => context.go(AppRoutes.appearance),
-              icon: const Icon(Icons.palette_outlined, size: 20),
+            child: Material(
+              color: scheme.surface.withValues(alpha: 0.5),
+              shape: const CircleBorder(),
+              child: const ThemeModeMenu(iconSize: 20),
             ),
           ),
           Center(
@@ -96,9 +95,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(30),
                   decoration: BoxDecoration(
-                    color: VoidColors.surface.withValues(alpha: 0.82),
+                    color: scheme.surface.withValues(
+                      alpha: isDark ? 0.82 : 0.90,
+                    ),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: VoidColors.borderSoft),
+                    border: Border.all(color: scheme.outlineVariant),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.5),
@@ -110,27 +111,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Center(child: VoidLogo()),
+                      Center(child: VoidLogo(textColor: scheme.onSurface)),
 
                       const SizedBox(height: 34),
 
-                      const Text(
+                      Text(
                         'Welcome back',
                         textAlign: TextAlign.center,
-                        style: VoidTypography.headingLarge,
+                        style: VoidTypography.headingLarge.copyWith(
+                          color: scheme.onSurface,
+                        ),
                       ),
 
                       const SizedBox(height: 8),
 
-                      const Text(
+                      Text(
                         'Sign in to continue to Void Scriptor.',
                         textAlign: TextAlign.center,
-                        style: VoidTypography.body,
+                        style: VoidTypography.body.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
                       ),
 
                       const SizedBox(height: 30),
 
-                      const Text('Email', style: VoidTypography.label),
+                      Text(
+                        'Email',
+                        style: VoidTypography.label.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
 
                       const SizedBox(height: 8),
 
@@ -145,7 +155,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                       const SizedBox(height: 18),
 
-                      const Text('Password', style: VoidTypography.label),
+                      Text(
+                        'Password',
+                        style: VoidTypography.label.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
 
                       const SizedBox(height: 8),
 
@@ -185,9 +200,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               });
                             },
                           ),
-                          const Text(
+                          Text(
                             'Remember me',
-                            style: VoidTypography.caption,
+                            style: VoidTypography.caption.copyWith(
+                              color: scheme.onSurfaceVariant,
+                            ),
                           ),
                           TextButton(
                             onPressed: widget.onForgotPassword,
@@ -209,14 +226,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                       const SizedBox(height: 20),
 
-                      const Row(
+                      Row(
                         children: [
-                          Expanded(child: Divider()),
+                          const Expanded(child: Divider()),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Text('OR', style: VoidTypography.caption),
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(
+                              'OR',
+                              style: VoidTypography.caption.copyWith(
+                                color: scheme.onSurfaceVariant,
+                              ),
+                            ),
                           ),
-                          Expanded(child: Divider()),
+                          const Expanded(child: Divider()),
                         ],
                       ),
 
@@ -254,9 +276,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         alignment: WrapAlignment.center,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          const Text(
+                          Text(
                             'No account?',
-                            style: VoidTypography.caption,
+                            style: VoidTypography.caption.copyWith(
+                              color: scheme.onSurfaceVariant,
+                            ),
                           ),
                           TextButton(
                             onPressed: widget.onRegister,

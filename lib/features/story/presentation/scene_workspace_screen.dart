@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../design_system/colors/void_colors.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 import '../application/create_story_service.dart';
 import '../data/story_repository_impl.dart';
@@ -16,6 +15,7 @@ import '../../scene_assets/application/scene_asset_instance_repository.dart';
 import '../../scene_assets/domain/scene_asset_instance.dart';
 import '../../scene_assets/presentation/scene_asset_panel.dart';
 import '../../../app/routing/app_routes.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 final sceneWorkspaceProvider = FutureProvider.family<StorySceneNode?, String>((
   ref,
@@ -189,7 +189,7 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
       (sum, beat) => sum + (beat.durationSeconds ?? 0),
     );
     return ColoredBox(
-      color: VoidColors.background,
+      color: context.palette.background,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -197,8 +197,8 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
           children: [
             Text(
               'Scene — ${widget.title}',
-              style: const TextStyle(
-                color: VoidColors.textPrimary,
+              style:  TextStyle(
+                color: context.palette.textPrimary,
                 fontSize: 21,
                 fontWeight: FontWeight.w700,
               ),
@@ -207,7 +207,7 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
               beats.isEmpty
                   ? 'Duration not set'
                   : '${total.toStringAsFixed(1)} sec of beats',
-              style: const TextStyle(color: VoidColors.textMuted),
+              style:  TextStyle(color: context.palette.textMuted),
             ),
             const SizedBox(height: 10),
             FilledButton.icon(
@@ -267,16 +267,16 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
             ),
             const SizedBox(height: 12),
             Card(
-              color: VoidColors.panel,
+              color: context.palette.panel,
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                     Text(
                       'ACTION BEATS',
                       style: TextStyle(
-                        color: VoidColors.primaryBright,
+                        color: context.palette.primaryBright,
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.1,
@@ -284,9 +284,9 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
                     ),
                     const SizedBox(height: 10),
                     if (beats.isEmpty)
-                      const Text(
+                       Text(
                         'No beats yet',
-                        style: TextStyle(color: VoidColors.textSecondary),
+                        style: TextStyle(color: context.palette.textSecondary),
                       ),
                     if (beats.isNotEmpty)
                       SceneBeatEditor(
@@ -322,7 +322,7 @@ class _Section extends StatelessWidget {
   final List<Widget> children;
   @override
   Widget build(BuildContext context) => Card(
-    color: VoidColors.panel,
+    color: context.palette.panel,
     child: Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -330,8 +330,8 @@ class _Section extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              color: VoidColors.primaryBright,
+            style:  TextStyle(
+              color: context.palette.primaryBright,
               fontSize: 11,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.1,
@@ -339,8 +339,8 @@ class _Section extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           DefaultTextStyle(
-            style: const TextStyle(
-              color: VoidColors.textSecondary,
+            style:  TextStyle(
+              color: context.palette.textSecondary,
               height: 1.6,
             ),
             child: Column(

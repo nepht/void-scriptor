@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../design_system/colors/void_colors.dart';
 import '../domain/wardrobe_model.dart';
 import 'wardrobe_workspace_controller.dart';
 import 'widgets/wardrobe_detail_cards.dart';
 import 'widgets/wardrobe_header.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class WardrobeWorkspaceScreen extends ConsumerWidget {
   const WardrobeWorkspaceScreen({super.key, required this.wardrobeId});
@@ -16,7 +16,7 @@ class WardrobeWorkspaceScreen extends ConsumerWidget {
     final state = ref.watch(wardrobeWorkspaceProvider(wardrobeId));
     final model = state.valueOrNull;
     return Container(
-      color: VoidColors.backgroundSecondary,
+      color: context.palette.backgroundSecondary,
       child: Column(
         children: [
           WardrobeHeader(

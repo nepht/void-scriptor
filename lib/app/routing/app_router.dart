@@ -27,7 +27,6 @@ import '../shell/void_app_shell.dart';
 import '../shell/desktop/collaboration_comments_screen.dart';
 import '../../core/security/presentation/project_lock_screen.dart';
 import '../../core/security/presentation/security_settings_screen.dart';
-import '../../core/theme/appearance_settings_screen.dart';
 import '../../core/plugin/presentation/plugin_manager_screen.dart';
 import '../../core/plugin/builtin/demo_plugin.dart';
 import '../../core/plugin/domain/plugin_manifest.dart';
@@ -288,10 +287,6 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     GoRoute(
       path: AppRoutes.security,
       builder: (_, __) => const SecuritySettingsScreen(),
-    ),
-    GoRoute(
-      path: AppRoutes.appearance,
-      builder: (_, __) => const AppearanceSettingsScreen(),
     ),
     GoRoute(
       path: AppRoutes.securityLock,

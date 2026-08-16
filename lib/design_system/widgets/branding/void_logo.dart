@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../../colors/void_colors.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class VoidLogo extends StatelessWidget {
-  const VoidLogo({super.key, this.compact = false});
+  const VoidLogo({super.key, this.compact = false, this.textColor});
 
   final bool compact;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
+    final labelColor = textColor ?? context.palette.textPrimary;
     return compact
         ? Image.asset(
             'assets/logos/void_scriptor_logo.png',
@@ -26,10 +28,10 @@ class VoidLogo extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
               const SizedBox(width: 10),
-              const Text(
+              Text(
                 'VOID SCRIPTOR',
                 style: TextStyle(
-                  color: VoidColors.textPrimary,
+                  color: labelColor,
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.4,

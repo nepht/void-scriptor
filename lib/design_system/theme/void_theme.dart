@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../colors/void_colors.dart';
 import '../colors/void_colors_light.dart';
+import 'void_palette.dart';
 
 abstract final class VoidTheme {
   static ThemeData get dark {
@@ -19,6 +20,7 @@ abstract final class VoidTheme {
     return ThemeData(
       brightness: Brightness.dark,
       colorScheme: scheme,
+      extensions: const [VoidPalette.dark],
       scaffoldBackgroundColor: VoidColors.background,
       dividerColor: VoidColors.divider,
       splashColor: Colors.transparent,
@@ -79,6 +81,7 @@ abstract final class VoidTheme {
     return ThemeData(
       brightness: Brightness.light,
       colorScheme: scheme,
+      extensions: const [VoidPalette.light],
       scaffoldBackgroundColor: VoidColorsLight.background,
       dividerColor: VoidColorsLight.divider,
       splashColor: Colors.transparent,

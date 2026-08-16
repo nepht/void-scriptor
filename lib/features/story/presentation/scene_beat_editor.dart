@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../design_system/colors/void_colors.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class SceneBeatEditor extends StatelessWidget {
   const SceneBeatEditor({
@@ -29,22 +29,22 @@ class SceneBeatEditor extends StatelessWidget {
           : beat.startSecond!.toStringAsFixed(1).padLeft(4, '0');
       return Card(
         key: ValueKey(beat.id),
-        color: VoidColors.panelSecondary,
+        color: context.palette.panelSecondary,
         child: ListTile(
           leading: Text(
             start,
-            style: const TextStyle(
-              color: VoidColors.primaryBright,
-              fontFeatures: [FontFeature.tabularFigures()],
+            style:  TextStyle(
+              color: context.palette.primaryBright,
+              fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
           title: Text(
             beat.content,
-            style: const TextStyle(color: VoidColors.textPrimary),
+            style:  TextStyle(color: context.palette.textPrimary),
           ),
           subtitle: Text(
             '${beat.beatType.toUpperCase()}  ·  ${beat.durationSeconds?.toStringAsFixed(1) ?? '—'} sec',
-            style: const TextStyle(color: VoidColors.textMuted, fontSize: 11),
+            style:  TextStyle(color: context.palette.textMuted, fontSize: 11),
           ),
           trailing: IconButton(
             icon: const Icon(Icons.delete_outline),

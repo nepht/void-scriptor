@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../../../design_system/colors/void_colors.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class StoryWorkspaceScreen extends StatelessWidget {
   const StoryWorkspaceScreen({super.key, required this.storyId});
   final String storyId;
   @override
   Widget build(BuildContext context) => ColoredBox(
-    color: VoidColors.background,
+    color: context.palette.background,
     child: SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: ConstrainedBox(
@@ -17,8 +17,8 @@ class StoryWorkspaceScreen extends StatelessWidget {
           children: [
             Text(
               'Story Bible — $storyId',
-              style: const TextStyle(
-                color: VoidColors.textPrimary,
+              style:  TextStyle(
+                color: context.palette.textPrimary,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
@@ -37,19 +37,19 @@ class StoryWorkspaceScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            const _StoryPanel(
+             _StoryPanel(
               title: 'STORY STRUCTURE',
               child: Text(
                 'Arcs, chapters, and scenes are persisted in the project database.',
-                style: TextStyle(color: VoidColors.textSecondary),
+                style: TextStyle(color: context.palette.textSecondary),
               ),
             ),
             const SizedBox(height: 12),
-            const _StoryPanel(
+             _StoryPanel(
               title: 'STORY BIBLE',
               child: Text(
                 'Premise\nThemes\nTone\nWorld Rules\nCanon Rules',
-                style: TextStyle(color: VoidColors.textSecondary, height: 1.6),
+                style: TextStyle(color: context.palette.textSecondary, height: 1.6),
               ),
             ),
           ],
@@ -65,7 +65,7 @@ class _StoryPanel extends StatelessWidget {
   final Widget child;
   @override
   Widget build(BuildContext context) => Card(
-    color: VoidColors.panel,
+    color: context.palette.panel,
     child: Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -73,8 +73,8 @@ class _StoryPanel extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              color: VoidColors.primaryBright,
+            style:  TextStyle(
+              color: context.palette.primaryBright,
               fontSize: 11,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.1,

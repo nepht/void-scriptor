@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class CharacterPortraitCard extends StatelessWidget {
   const CharacterPortraitCard({super.key, this.imagePath});
@@ -17,22 +17,22 @@ class CharacterPortraitCard extends StatelessWidget {
           aspectRatio: 3 / 4,
           child: Container(
             decoration: BoxDecoration(
-              color: VoidColors.surfaceElevated,
+              color: context.palette.surfaceElevated,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: VoidColors.borderSoft),
+              border: Border.all(color: context.palette.borderSoft),
             ),
             child: imagePath == null
-                ? const Center(
+                ?  Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           Icons.person_outline,
                           size: 42,
-                          color: VoidColors.textMuted,
+                          color: context.palette.textMuted,
                         ),
-                        SizedBox(height: 10),
-                        Text('No portrait', style: VoidTypography.caption),
+                        const SizedBox(height: 10),
+                        const Text('No portrait', style: VoidTypography.caption),
                       ],
                     ),
                   )

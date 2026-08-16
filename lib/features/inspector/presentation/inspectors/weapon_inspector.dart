@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../projects/presentation/project_persistence_providers.dart';
 import '../../../weapon/data/weapon_repository_impl.dart';
 import '../widgets/relation_section.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 final weaponInspectorProvider =
     FutureProvider.family<WeaponInspectorData?, String>((ref, weaponId) async {
@@ -65,7 +65,7 @@ class WeaponInspector extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(weaponInspectorProvider(weaponId)).valueOrNull;
     return Container(
-      color: VoidColors.panel,
+      color: context.palette.panel,
       padding: const EdgeInsets.all(16),
       child: SingleChildScrollView(
         child: Column(
@@ -73,13 +73,13 @@ class WeaponInspector extends ConsumerWidget {
           children: [
             Text(
               data?.name ?? weaponId,
-              style: const TextStyle(
-                color: VoidColors.textPrimary,
+              style:  TextStyle(
+                color: context.palette.textPrimary,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const Text('Weapon', style: TextStyle(color: VoidColors.textMuted)),
+             Text('Weapon', style: TextStyle(color: context.palette.textMuted)),
             const SizedBox(height: 20),
             _Section(
               title: 'Properties',
@@ -112,7 +112,7 @@ class _Section extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(color: VoidColors.primaryBright, fontSize: 13),
+          style:  TextStyle(color: context.palette.primaryBright, fontSize: 13),
         ),
         const SizedBox(height: 8),
         for (final row in rows)
@@ -124,13 +124,13 @@ class _Section extends StatelessWidget {
                   width: 78,
                   child: Text(
                     row.$1,
-                    style: const TextStyle(color: VoidColors.textMuted),
+                    style:  TextStyle(color: context.palette.textMuted),
                   ),
                 ),
                 Expanded(
                   child: Text(
                     row.$2,
-                    style: const TextStyle(color: VoidColors.textPrimary),
+                    style:  TextStyle(color: context.palette.textPrimary),
                   ),
                 ),
               ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class IdentityPreservationCard extends StatelessWidget {
   const IdentityPreservationCard({
@@ -60,7 +60,7 @@ class _LockRow extends StatelessWidget {
       Text(
         value ? 'ON' : 'OFF',
         style: TextStyle(
-          color: value ? VoidColors.success : VoidColors.textMuted,
+          color: value ? context.palette.success : context.palette.textMuted,
           fontSize: 11,
           fontWeight: FontWeight.w700,
         ),

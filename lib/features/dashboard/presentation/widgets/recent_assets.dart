@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class RecentAssets extends StatelessWidget {
   const RecentAssets({super.key});
@@ -56,14 +56,14 @@ class _AssetTile extends StatelessWidget {
     return Container(
       constraints: const BoxConstraints(minHeight: 92),
       decoration: BoxDecoration(
-        color: VoidColors.surfaceElevated,
+        color: context.palette.surfaceElevated,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: VoidColors.borderSoft),
+        border: Border.all(color: context.palette.borderSoft),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: VoidColors.primaryBright),
+          Icon(icon, color: context.palette.primaryBright),
           const SizedBox(height: 8),
           Text(label, style: VoidTypography.caption),
         ],

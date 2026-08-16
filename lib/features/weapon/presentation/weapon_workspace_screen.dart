@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../design_system/colors/void_colors.dart';
 import '../domain/weapon_model.dart';
 import 'weapon_workspace_controller.dart';
 import 'widgets/weapon_detail_cards.dart';
 import 'widgets/weapon_header.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class WeaponWorkspaceScreen extends ConsumerWidget {
   const WeaponWorkspaceScreen({super.key, required this.weaponId});
@@ -22,7 +22,7 @@ class WeaponWorkspaceScreen extends ConsumerWidget {
       energy: _value(model?.energyType, 'Void Energy'),
     );
     return Container(
-      color: VoidColors.backgroundSecondary,
+      color: context.palette.backgroundSecondary,
       child: Column(
         children: [
           WeaponHeader(

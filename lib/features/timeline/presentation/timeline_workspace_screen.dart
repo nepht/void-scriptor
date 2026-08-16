@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../design_system/colors/void_colors.dart';
 import '../domain/timeline_model.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class TimelineWorkspaceScreen extends StatefulWidget {
   const TimelineWorkspaceScreen({
@@ -71,7 +71,7 @@ class _TimelineWorkspaceScreenState extends State<TimelineWorkspaceScreen> {
     }
     final scale = TimelineScale(pixelsPerSecond: _pixelsPerSecond);
     return ColoredBox(
-      color: VoidColors.background,
+      color: context.palette.background,
       child: Column(
         children: [
           TimelineHeader(
@@ -86,9 +86,9 @@ class _TimelineWorkspaceScreenState extends State<TimelineWorkspaceScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Row(
                 children: [
-                  const Text(
+                   Text(
                     'Zoom',
-                    style: TextStyle(color: VoidColors.textSecondary),
+                    style: TextStyle(color: context.palette.textSecondary),
                   ),
                   IconButton(
                     tooltip: 'Zoom out',
@@ -102,7 +102,7 @@ class _TimelineWorkspaceScreenState extends State<TimelineWorkspaceScreen> {
                   ),
                   Text(
                     '${_pixelsPerSecond.toInt()} px/sec',
-                    style: const TextStyle(color: VoidColors.textSecondary),
+                    style:  TextStyle(color: context.palette.textSecondary),
                   ),
                   IconButton(
                     tooltip: 'Zoom in',
@@ -186,23 +186,23 @@ class TimelineHeader extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     height: 52,
     padding: const EdgeInsets.symmetric(horizontal: 16),
-    color: VoidColors.panelSecondary,
+    color: context.palette.panelSecondary,
     child: Row(
       children: [
-        const Icon(Icons.timeline_outlined, color: VoidColors.primaryBright),
+         Icon(Icons.timeline_outlined, color: context.palette.primaryBright),
         const SizedBox(width: 10),
         Expanded(
           child: Text(
             sceneTitle,
-            style: const TextStyle(
-              color: VoidColors.textPrimary,
+            style:  TextStyle(
+              color: context.palette.textPrimary,
               fontWeight: FontWeight.w700,
             ),
           ),
         ),
         Text(
           '${duration.toStringAsFixed(1)} sec · ${currentTime.toStringAsFixed(1)}',
-          style: const TextStyle(color: VoidColors.textSecondary),
+          style:  TextStyle(color: context.palette.textSecondary),
         ),
         IconButton(
           tooltip: 'Play',
@@ -242,6 +242,8 @@ class TimelineRuler extends StatelessWidget {
               painter: _RulerPainter(
                 duration: duration,
                 pixelsPerSecond: pixelsPerSecond,
+                lineColor: context.palette.borderSoft,
+                textColor: context.palette.textMuted,
               ),
             ),
           ),
@@ -273,18 +275,18 @@ class TimelineClip extends StatelessWidget {
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
         color: selected
-            ? VoidColors.primary.withValues(alpha: .25)
-            : VoidColors.surfaceElevated,
+            ? context.palette.primary.withValues(alpha: .25)
+            : context.palette.surfaceElevated,
         borderRadius: BorderRadius.circular(5),
         border: Border.all(
-          color: selected ? VoidColors.primary : VoidColors.border,
+          color: selected ? context.palette.primary : context.palette.border,
         ),
       ),
       child: Text(
         clip.label,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: const TextStyle(color: VoidColors.textSecondary, fontSize: 11),
+        style:  TextStyle(color: context.palette.textSecondary, fontSize: 11),
       ),
     ),
   );
@@ -318,8 +320,8 @@ class _TrackRow extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             child: Text(
               _label(track),
-              style: const TextStyle(
-                color: VoidColors.textSecondary,
+              style:  TextStyle(
+                color: context.palette.textSecondary,
                 fontSize: 12,
               ),
             ),
@@ -369,19 +371,26 @@ class _TrackRow extends StatelessWidget {
 }
 
 class _RulerPainter extends CustomPainter {
-  const _RulerPainter({required this.duration, required this.pixelsPerSecond});
+  const _RulerPainter({
+    required this.duration,
+    required this.pixelsPerSecond,
+    required this.lineColor,
+    required this.textColor,
+  });
   final double duration;
   final double pixelsPerSecond;
+  final Color lineColor;
+  final Color textColor;
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = VoidColors.borderSoft;
+    final paint = Paint()..color = lineColor;
     for (var second = 0.0; second <= duration; second += 1) {
       final x = second * pixelsPerSecond;
       canvas.drawLine(Offset(x, 15), Offset(x, 30), paint);
       TextPainter(
           text: TextSpan(
             text: second.toStringAsFixed(0),
-            style: const TextStyle(color: VoidColors.textMuted, fontSize: 10),
+            style: TextStyle(color: textColor, fontSize: 10),
           ),
           textDirection: TextDirection.ltr,
         )
@@ -407,23 +416,23 @@ class _PreviewPanel extends StatelessWidget {
   final VoidCallback onBack;
   @override
   Widget build(BuildContext context) => ColoredBox(
-    color: VoidColors.background,
+    color: context.palette.background,
     child: Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
+           Icon(
             Icons.movie_creation_outlined,
             size: 64,
-            color: VoidColors.primaryBright,
+            color: context.palette.primaryBright,
           ),
           Text(
             title,
-            style: const TextStyle(color: VoidColors.textPrimary, fontSize: 22),
+            style:  TextStyle(color: context.palette.textPrimary, fontSize: 22),
           ),
           Text(
             'Preview · ${time.toStringAsFixed(1)} sec',
-            style: const TextStyle(color: VoidColors.textSecondary),
+            style:  TextStyle(color: context.palette.textSecondary),
           ),
           const SizedBox(height: 16),
           FilledButton.icon(

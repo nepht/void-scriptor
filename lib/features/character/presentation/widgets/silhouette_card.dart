@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class SilhouetteCard extends StatelessWidget {
   const SilhouetteCard({super.key});
@@ -16,14 +16,14 @@ class SilhouetteCard extends StatelessWidget {
           height: 180,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: VoidColors.surfaceElevated,
+            color: context.palette.surfaceElevated,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: VoidColors.borderSoft),
+            border: Border.all(color: context.palette.borderSoft),
           ),
-          child: const Icon(
+          child:  Icon(
             Icons.accessibility_new,
             size: 64,
-            color: VoidColors.textDisabled,
+            color: context.palette.textDisabled,
           ),
         ),
       ],

@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class ReferencesCard extends StatelessWidget {
   const ReferencesCard({super.key});
@@ -30,10 +30,10 @@ class ReferencesCard extends StatelessWidget {
                   ),
                 ),
               ),
-              icon: const Icon(
+              icon:  Icon(
                 Icons.add,
                 size: 18,
-                color: VoidColors.textMuted,
+                color: context.palette.textMuted,
               ),
             ),
           ],
@@ -66,9 +66,9 @@ class _Ref extends StatelessWidget {
     alignment: Alignment.bottomCenter,
     padding: const EdgeInsets.all(8),
     decoration: BoxDecoration(
-      color: VoidColors.surfaceElevated,
+      color: context.palette.surfaceElevated,
       borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: VoidColors.borderSoft),
+      border: Border.all(color: context.palette.borderSoft),
     ),
     child: Text(label, style: VoidTypography.caption),
   );

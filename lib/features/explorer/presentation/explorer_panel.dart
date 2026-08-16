@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/selection/selection_controller.dart';
 import '../../../core/selection/selection_model.dart';
-import '../../../design_system/colors/void_colors.dart';
 import '../../assets/domain/asset_type.dart';
 import '../../character/domain/character_model.dart';
 import '../../character/presentation/character_controller.dart';
@@ -17,6 +16,7 @@ import '../../environment/data/environment_repository_impl.dart';
 import '../../environment/domain/environment_model.dart';
 import '../../../database/project/project_database.dart';
 import 'explorer_story_group.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 final storyExplorerProvider = FutureProvider.family<List<Asset>, String>((
   ref,
@@ -92,19 +92,19 @@ class ExplorerPanel extends ConsumerWidget {
 
     return Container(
       width: 245,
-      decoration: const BoxDecoration(
-        color: VoidColors.panel,
-        border: Border(right: BorderSide(color: VoidColors.borderSoft)),
+      decoration:  BoxDecoration(
+        color: context.palette.panel,
+        border: Border(right: BorderSide(color: context.palette.borderSoft)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(14, 14, 14, 10),
+           Padding(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
             child: Text(
               'PROJECT EXPLORER',
               style: TextStyle(
-                color: VoidColors.textMuted,
+                color: context.palette.textMuted,
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1.1,
@@ -217,12 +217,12 @@ class _ExplorerItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: VoidColors.textMuted),
+          Icon(icon, size: 16, color: context.palette.textMuted),
           const SizedBox(width: 9),
           Text(
             label,
-            style: const TextStyle(
-              color: VoidColors.textSecondary,
+            style:  TextStyle(
+              color: context.palette.textSecondary,
               fontSize: 12,
             ),
           ),
@@ -246,14 +246,14 @@ class _CharacterGroup extends StatelessWidget {
     initiallyExpanded: true,
     tilePadding: const EdgeInsets.symmetric(horizontal: 9),
     childrenPadding: const EdgeInsets.only(left: 28),
-    leading: const Icon(
+    leading:  Icon(
       Icons.people_outline,
       size: 16,
-      color: VoidColors.textMuted,
+      color: context.palette.textMuted,
     ),
-    title: const Text(
+    title:  Text(
       'Characters',
-      style: TextStyle(color: VoidColors.textSecondary, fontSize: 12),
+      style: TextStyle(color: context.palette.textSecondary, fontSize: 12),
     ),
     children: characters.when(
       loading: () => [const ListTile(dense: true, title: Text('Loading...'))],
@@ -267,13 +267,13 @@ class _CharacterGroup extends StatelessWidget {
                     minTileHeight: 30,
                     title: Text(
                       item.displayName,
-                      style: const TextStyle(
-                        color: VoidColors.textMuted,
+                      style:  TextStyle(
+                        color: context.palette.textMuted,
                         fontSize: 11,
                       ),
                     ),
                     selected: selectedId == item.assetId,
-                    selectedTileColor: VoidColors.primary.withValues(
+                    selectedTileColor: context.palette.primary.withValues(
                       alpha: 0.12,
                     ),
                     onTap: () => onSelected(item),
@@ -300,14 +300,14 @@ class _WeaponGroup extends StatelessWidget {
     initiallyExpanded: true,
     tilePadding: const EdgeInsets.symmetric(horizontal: 9),
     childrenPadding: const EdgeInsets.only(left: 28),
-    leading: const Icon(
+    leading:  Icon(
       Icons.auto_fix_high_outlined,
       size: 16,
-      color: VoidColors.textMuted,
+      color: context.palette.textMuted,
     ),
-    title: const Text(
+    title:  Text(
       'Weapons',
-      style: TextStyle(color: VoidColors.textSecondary, fontSize: 12),
+      style: TextStyle(color: context.palette.textSecondary, fontSize: 12),
     ),
     children: weapons.when(
       loading: () => [const ListTile(dense: true, title: Text('Loading...'))],
@@ -321,13 +321,13 @@ class _WeaponGroup extends StatelessWidget {
                     minTileHeight: 30,
                     title: Text(
                       item.name,
-                      style: const TextStyle(
-                        color: VoidColors.textMuted,
+                      style:  TextStyle(
+                        color: context.palette.textMuted,
                         fontSize: 11,
                       ),
                     ),
                     selected: selectedId == item.assetId,
-                    selectedTileColor: VoidColors.primary.withValues(
+                    selectedTileColor: context.palette.primary.withValues(
                       alpha: 0.12,
                     ),
                     onTap: () => onSelected(item),
@@ -352,14 +352,14 @@ class _WardrobeGroup extends StatelessWidget {
     initiallyExpanded: true,
     tilePadding: const EdgeInsets.symmetric(horizontal: 9),
     childrenPadding: const EdgeInsets.only(left: 28),
-    leading: const Icon(
+    leading:  Icon(
       Icons.checkroom_outlined,
       size: 16,
-      color: VoidColors.textMuted,
+      color: context.palette.textMuted,
     ),
-    title: const Text(
+    title:  Text(
       'Wardrobe',
-      style: TextStyle(color: VoidColors.textSecondary, fontSize: 12),
+      style: TextStyle(color: context.palette.textSecondary, fontSize: 12),
     ),
     children: wardrobes.when(
       loading: () => [const ListTile(dense: true, title: Text('Loading...'))],
@@ -373,13 +373,13 @@ class _WardrobeGroup extends StatelessWidget {
                     minTileHeight: 30,
                     title: Text(
                       item.name,
-                      style: const TextStyle(
-                        color: VoidColors.textMuted,
+                      style:  TextStyle(
+                        color: context.palette.textMuted,
                         fontSize: 11,
                       ),
                     ),
                     selected: selectedId == item.assetId,
-                    selectedTileColor: VoidColors.primary.withValues(
+                    selectedTileColor: context.palette.primary.withValues(
                       alpha: 0.12,
                     ),
                     onTap: () => onSelected(item),

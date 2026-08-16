@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class DonationCard extends StatelessWidget {
   const DonationCard({super.key});
@@ -13,12 +13,12 @@ class DonationCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Wrap(
+           Wrap(
             spacing: 8,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Icon(Icons.favorite_outline, color: VoidColors.primaryBright),
-              Text(
+              Icon(Icons.favorite_outline, color: context.palette.primaryBright),
+              const Text(
                 'Support Void Scriptor',
                 style: VoidTypography.headingMedium,
               ),

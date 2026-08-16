@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../wardrobe/data/wardrobe_repository_impl.dart';
 import '../../../projects/presentation/project_persistence_providers.dart';
 import '../widgets/relation_section.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 final wardrobeInspectorProvider =
     FutureProvider.family<WardrobeInspectorData?, String>((
@@ -71,22 +71,22 @@ class WardrobeInspector extends ConsumerWidget {
     final data = state.valueOrNull;
     if (data == null) {
       return Container(
-        color: VoidColors.panel,
+        color: context.palette.panel,
         padding: const EdgeInsets.all(16),
         child: Text(wardrobeId, style: VoidTypography.title),
       );
     }
     return Container(
-      color: VoidColors.panel,
+      color: context.palette.panel,
       padding: const EdgeInsets.all(16),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(data.name, style: VoidTypography.title),
-            const Text(
+             Text(
               'Wardrobe',
-              style: TextStyle(color: VoidColors.textMuted),
+              style: TextStyle(color: context.palette.textMuted),
             ),
             const SizedBox(height: 20),
             _Section(
@@ -123,7 +123,7 @@ class _Section extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(color: VoidColors.primaryBright, fontSize: 13),
+          style:  TextStyle(color: context.palette.primaryBright, fontSize: 13),
         ),
         const SizedBox(height: 8),
         for (final row in rows)
@@ -136,13 +136,13 @@ class _Section extends StatelessWidget {
                   width: 78,
                   child: Text(
                     row.$1,
-                    style: const TextStyle(color: VoidColors.textMuted),
+                    style:  TextStyle(color: context.palette.textMuted),
                   ),
                 ),
                 Expanded(
                   child: Text(
                     row.$2,
-                    style: const TextStyle(color: VoidColors.textPrimary),
+                    style:  TextStyle(color: context.palette.textPrimary),
                   ),
                 ),
               ],

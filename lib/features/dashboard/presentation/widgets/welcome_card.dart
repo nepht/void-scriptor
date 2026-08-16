@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class WelcomeCard extends StatelessWidget {
   const WelcomeCard({super.key, required this.displayName});
@@ -14,10 +14,10 @@ class WelcomeCard extends StatelessWidget {
     return VoidCard(
       child: Row(
         children: [
-          const CircleAvatar(
+           CircleAvatar(
             radius: 28,
-            backgroundColor: VoidColors.primary,
-            child: Icon(Icons.person_outline, color: Colors.white, size: 26),
+            backgroundColor: context.palette.primary,
+            child: const Icon(Icons.person_outline, color: Colors.white, size: 26),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -36,9 +36,9 @@ class WelcomeCard extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(
+           Icon(
             Icons.auto_awesome_outlined,
-            color: VoidColors.primaryBright,
+            color: context.palette.primaryBright,
           ),
         ],
       ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../design_system/colors/void_colors.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 import '../data/environment_repository_impl.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 final environmentInspectorProvider = FutureProvider.family<String?, String>((
   ref,
@@ -26,7 +26,7 @@ class EnvironmentInspector extends ConsumerWidget {
         .watch(environmentInspectorProvider(environmentId))
         .valueOrNull;
     return Container(
-      color: VoidColors.panel,
+      color: context.palette.panel,
       padding: const EdgeInsets.all(16),
       child: SingleChildScrollView(
         child: Column(
@@ -34,29 +34,29 @@ class EnvironmentInspector extends ConsumerWidget {
           children: [
             Text(
               model ?? environmentId,
-              style: const TextStyle(
-                color: VoidColors.textPrimary,
+              style:  TextStyle(
+                color: context.palette.textPrimary,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const Text(
+             Text(
               'Environment',
-              style: TextStyle(color: VoidColors.textMuted),
+              style: TextStyle(color: context.palette.textMuted),
             ),
             const SizedBox(height: 20),
-            const Text(
+             Text(
               'SCENE CONTEXT',
               style: TextStyle(
-                color: VoidColors.primaryBright,
+                color: context.palette.primaryBright,
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: 10),
-            const Text(
+             Text(
               'Lighting, weather, zones, continuity, and physics are stored in the project database.',
-              style: TextStyle(color: VoidColors.textSecondary),
+              style: TextStyle(color: context.palette.textSecondary),
             ),
           ],
         ),

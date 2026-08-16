@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/routing/app_routes.dart';
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
 import '../../../projects/domain/project_model.dart';
 import '../../../projects/presentation/project_controller.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class RecentProjects extends ConsumerWidget {
   const RecentProjects({super.key});
@@ -107,12 +107,12 @@ class _ProjectItem extends ConsumerWidget {
               width: 56,
               height: 42,
               decoration: BoxDecoration(
-                color: VoidColors.surfaceElevated,
+                color: context.palette.surfaceElevated,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(
+              child:  Icon(
                 Icons.folder_outlined,
-                color: VoidColors.textMuted,
+                color: context.palette.textMuted,
               ),
             ),
             const SizedBox(width: 12),
@@ -133,7 +133,7 @@ class _ProjectItem extends ConsumerWidget {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: VoidColors.textMuted),
+             Icon(Icons.chevron_right, color: context.palette.textMuted),
           ],
         ),
       ),

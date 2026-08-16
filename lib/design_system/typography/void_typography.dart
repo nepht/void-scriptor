@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../colors/void_colors.dart';
 
 abstract final class VoidTypography {

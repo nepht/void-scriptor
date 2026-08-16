@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/routing/app_routes.dart';
 import '../../../core/auth/auth_controller.dart';
-import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
 import 'widgets/ai_activity_card.dart';
@@ -17,6 +16,7 @@ import 'widgets/recent_projects.dart';
 import 'widgets/statistics_panel.dart';
 import 'widgets/storage_card.dart';
 import 'widgets/welcome_card.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -26,7 +26,7 @@ class DashboardScreen extends ConsumerWidget {
     final session = ref.watch(authControllerProvider);
 
     return Scaffold(
-      backgroundColor: VoidColors.background,
+      backgroundColor: context.palette.background,
       appBar: AppBar(
         title: const Text('Dashboard'),
         actions: [

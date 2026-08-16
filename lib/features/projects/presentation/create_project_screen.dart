@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/typography/void_typography.dart';
 import '../../../design_system/widgets/void_button.dart';
 import 'project_controller.dart';
 import 'project_persistence_providers.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class CreateProjectScreen extends ConsumerStatefulWidget {
   const CreateProjectScreen({super.key});
@@ -56,7 +56,7 @@ class _CreateProjectScreenState extends ConsumerState<CreateProjectScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: VoidColors.background,
+      backgroundColor: context.palette.background,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -65,9 +65,9 @@ class _CreateProjectScreenState extends ConsumerState<CreateProjectScreen> {
             child: Container(
               padding: const EdgeInsets.all(30),
               decoration: BoxDecoration(
-                color: VoidColors.surface,
+                color: context.palette.surface,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: VoidColors.borderSoft),
+                border: Border.all(color: context.palette.borderSoft),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../design_system/colors/void_colors.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
+import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class TurnaroundCard extends StatelessWidget {
   const TurnaroundCard({super.key});
@@ -42,14 +42,14 @@ class _Slot extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     decoration: BoxDecoration(
-      color: VoidColors.surfaceElevated,
+      color: context.palette.surfaceElevated,
       borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: VoidColors.borderSoft),
+      border: Border.all(color: context.palette.borderSoft),
     ),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(Icons.accessibility_new, color: VoidColors.textMuted),
+         Icon(Icons.accessibility_new, color: context.palette.textMuted),
         const SizedBox(height: 8),
         Text(label, style: VoidTypography.caption),
       ],

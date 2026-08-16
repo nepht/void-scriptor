@@ -7,7 +7,7 @@ import 'package:void_scriptor/core/plugin/domain/plugin_manifest.dart';
 import 'package:void_scriptor/core/plugin/application/plugin_repository.dart';
 
 void main() {
-  PluginManifest _manifest(String id) => PluginManifest.fromJson({
+  PluginManifest manifest(String id) => PluginManifest.fromJson({
     'id': id,
     'name': 'Name $id',
     'version': '1.0.0',
@@ -23,7 +23,7 @@ void main() {
     addTearDown(db.close);
     final repo = PluginRepository(database: db);
 
-    await repo.savePlugin(_manifest('com.example.a'));
+    await repo.savePlugin(manifest('com.example.a'));
     final plugins = await repo.listPlugins();
     expect(plugins, hasLength(1));
     expect(plugins.first.id, 'com.example.a');
@@ -35,7 +35,7 @@ void main() {
     addTearDown(db.close);
     final repo = PluginRepository(database: db);
 
-    await repo.savePlugin(_manifest('com.example.a'));
+    await repo.savePlugin(manifest('com.example.a'));
     await repo.setEnabled('com.example.a', true);
     final plugins = await repo.listPlugins();
     expect(plugins.first.status, PluginStatus.enabled);
@@ -46,7 +46,7 @@ void main() {
     addTearDown(db.close);
     final repo = PluginRepository(database: db);
 
-    await repo.savePlugin(_manifest('com.example.a'));
+    await repo.savePlugin(manifest('com.example.a'));
     await repo.setSetting('com.example.a', 'theme', 'dark');
     expect(await repo.getSetting('com.example.a', 'theme'), 'dark');
     expect((await repo.settingsFor('com.example.a'))['theme'], 'dark');
@@ -61,7 +61,7 @@ void main() {
 
       final db = ProjectDatabase(NativeDatabase(file));
       final repo = PluginRepository(database: db);
-      await repo.savePlugin(_manifest('com.example.a'));
+      await repo.savePlugin(manifest('com.example.a'));
       await repo.setEnabled('com.example.a', true);
       await repo.setSetting('com.example.a', 'k', 'v');
       await db.close();

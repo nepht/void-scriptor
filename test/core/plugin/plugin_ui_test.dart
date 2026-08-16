@@ -35,14 +35,13 @@ void main() {
   testWidgets('PluginInstallDialog validates and returns manifest', (
     tester,
   ) async {
-    PluginManifest? result;
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           body: Builder(
             builder: (context) => TextButton(
-              onPressed: () async {
-                result = await showDialog<PluginManifest>(
+              onPressed: () {
+                showDialog<PluginManifest>(
                   context: context,
                   builder: (_) => const PluginInstallDialog(),
                 );

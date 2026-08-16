@@ -27,6 +27,9 @@ import '../shell/void_app_shell.dart';
 import '../shell/desktop/collaboration_comments_screen.dart';
 import '../../core/security/presentation/project_lock_screen.dart';
 import '../../core/security/presentation/security_settings_screen.dart';
+import '../../core/plugin/presentation/plugin_manager_screen.dart';
+import '../../core/plugin/builtin/demo_plugin.dart';
+import '../../core/plugin/domain/plugin_manifest.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
@@ -70,6 +73,12 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
         builder: (_, state) => ReferenceComparisonScreen(
           referencePath: state.uri.queryParameters['reference'] ?? '',
           generatedPath: state.uri.queryParameters['generated'] ?? '',
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.plugins,
+        builder: (_, __) => PluginManagerScreen(
+          plugins: [PluginDescriptor(manifest: DemoPlugin().manifest)],
         ),
       ),
     ],
@@ -189,6 +198,12 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
       builder: (_, state) => ReferenceComparisonScreen(
         referencePath: state.uri.queryParameters['reference'] ?? '',
         generatedPath: state.uri.queryParameters['generated'] ?? '',
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.plugins,
+      builder: (_, __) => PluginManagerScreen(
+        plugins: [PluginDescriptor(manifest: DemoPlugin().manifest)],
       ),
     ),
   ];

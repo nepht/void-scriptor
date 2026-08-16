@@ -40,6 +40,8 @@ import '../../core/publishing/presentation/publishing_panel.dart';
 import '../../core/publishing/builtin/demo_publishing.dart';
 import '../../core/enterprise/presentation/studio_management_panel.dart';
 import '../../core/enterprise/builtin/demo_studio.dart';
+import '../../core/knowledge/presentation/knowledge_engine_panel.dart';
+import '../../core/knowledge/builtin/demo_knowledge.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
@@ -136,6 +138,13 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
           maxSeats: DemoStudio.registry.seats.maxSeats,
         ),
       ),
+      GoRoute(
+        path: AppRoutes.knowledge,
+        builder: (_, __) => KnowledgeEnginePanel(
+          entityCount: DemoKnowledge.graph.entityCount,
+          relationCount: DemoKnowledge.graph.relationCount,
+        ),
+      ),
     ],
   );
 }
@@ -190,6 +199,13 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
         plan: DemoStudio.registry.studio.plan,
         usedSeats: DemoStudio.registry.seats.usedSeats,
         maxSeats: DemoStudio.registry.seats.maxSeats,
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.knowledge,
+      builder: (_, __) => KnowledgeEnginePanel(
+        entityCount: DemoKnowledge.graph.entityCount,
+        relationCount: DemoKnowledge.graph.relationCount,
       ),
     ),
     for (final route in AppRoutes.foundationRoutes.entries)

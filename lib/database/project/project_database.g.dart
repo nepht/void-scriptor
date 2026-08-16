@@ -68069,6 +68069,701 @@ class SpatialAnchorsCompanion extends UpdateCompanion<SpatialAnchor> {
   }
 }
 
+class $MetaverseWorldsTable extends MetaverseWorlds
+    with TableInfo<$MetaverseWorldsTable, MetaverseWorld> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MetaverseWorldsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name, description];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'metaverse_worlds';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MetaverseWorld> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MetaverseWorld map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MetaverseWorld(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+    );
+  }
+
+  @override
+  $MetaverseWorldsTable createAlias(String alias) {
+    return $MetaverseWorldsTable(attachedDatabase, alias);
+  }
+}
+
+class MetaverseWorld extends DataClass implements Insertable<MetaverseWorld> {
+  final String id;
+  final String name;
+  final String description;
+  const MetaverseWorld({
+    required this.id,
+    required this.name,
+    required this.description,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    return map;
+  }
+
+  MetaverseWorldsCompanion toCompanion(bool nullToAbsent) {
+    return MetaverseWorldsCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: Value(description),
+    );
+  }
+
+  factory MetaverseWorld.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MetaverseWorld(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+    };
+  }
+
+  MetaverseWorld copyWith({String? id, String? name, String? description}) =>
+      MetaverseWorld(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+      );
+  MetaverseWorld copyWithCompanion(MetaverseWorldsCompanion data) {
+    return MetaverseWorld(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MetaverseWorld(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, description);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MetaverseWorld &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description);
+}
+
+class MetaverseWorldsCompanion extends UpdateCompanion<MetaverseWorld> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<int> rowid;
+  const MetaverseWorldsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MetaverseWorldsCompanion.insert({
+    required String id,
+    required String name,
+    required String description,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       description = Value(description);
+  static Insertable<MetaverseWorld> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MetaverseWorldsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String>? description,
+    Value<int>? rowid,
+  }) {
+    return MetaverseWorldsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MetaverseWorldsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MetaverseZonesTable extends MetaverseZones
+    with TableInfo<$MetaverseZonesTable, MetaverseZone> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MetaverseZonesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _worldIdMeta = const VerificationMeta(
+    'worldId',
+  );
+  @override
+  late final GeneratedColumn<String> worldId = GeneratedColumn<String>(
+    'world_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _regionIdMeta = const VerificationMeta(
+    'regionId',
+  );
+  @override
+  late final GeneratedColumn<String> regionId = GeneratedColumn<String>(
+    'region_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _xMeta = const VerificationMeta('x');
+  @override
+  late final GeneratedColumn<double> x = GeneratedColumn<double>(
+    'x',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _yMeta = const VerificationMeta('y');
+  @override
+  late final GeneratedColumn<double> y = GeneratedColumn<double>(
+    'y',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _zMeta = const VerificationMeta('z');
+  @override
+  late final GeneratedColumn<double> z = GeneratedColumn<double>(
+    'z',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, worldId, regionId, name, x, y, z];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'metaverse_zones';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MetaverseZone> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('world_id')) {
+      context.handle(
+        _worldIdMeta,
+        worldId.isAcceptableOrUnknown(data['world_id']!, _worldIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_worldIdMeta);
+    }
+    if (data.containsKey('region_id')) {
+      context.handle(
+        _regionIdMeta,
+        regionId.isAcceptableOrUnknown(data['region_id']!, _regionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_regionIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('x')) {
+      context.handle(_xMeta, x.isAcceptableOrUnknown(data['x']!, _xMeta));
+    } else if (isInserting) {
+      context.missing(_xMeta);
+    }
+    if (data.containsKey('y')) {
+      context.handle(_yMeta, y.isAcceptableOrUnknown(data['y']!, _yMeta));
+    } else if (isInserting) {
+      context.missing(_yMeta);
+    }
+    if (data.containsKey('z')) {
+      context.handle(_zMeta, z.isAcceptableOrUnknown(data['z']!, _zMeta));
+    } else if (isInserting) {
+      context.missing(_zMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MetaverseZone map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MetaverseZone(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      worldId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}world_id'],
+      )!,
+      regionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}region_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      x: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}x'],
+      )!,
+      y: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}y'],
+      )!,
+      z: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}z'],
+      )!,
+    );
+  }
+
+  @override
+  $MetaverseZonesTable createAlias(String alias) {
+    return $MetaverseZonesTable(attachedDatabase, alias);
+  }
+}
+
+class MetaverseZone extends DataClass implements Insertable<MetaverseZone> {
+  final String id;
+  final String worldId;
+  final String regionId;
+  final String name;
+  final double x;
+  final double y;
+  final double z;
+  const MetaverseZone({
+    required this.id,
+    required this.worldId,
+    required this.regionId,
+    required this.name,
+    required this.x,
+    required this.y,
+    required this.z,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['world_id'] = Variable<String>(worldId);
+    map['region_id'] = Variable<String>(regionId);
+    map['name'] = Variable<String>(name);
+    map['x'] = Variable<double>(x);
+    map['y'] = Variable<double>(y);
+    map['z'] = Variable<double>(z);
+    return map;
+  }
+
+  MetaverseZonesCompanion toCompanion(bool nullToAbsent) {
+    return MetaverseZonesCompanion(
+      id: Value(id),
+      worldId: Value(worldId),
+      regionId: Value(regionId),
+      name: Value(name),
+      x: Value(x),
+      y: Value(y),
+      z: Value(z),
+    );
+  }
+
+  factory MetaverseZone.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MetaverseZone(
+      id: serializer.fromJson<String>(json['id']),
+      worldId: serializer.fromJson<String>(json['worldId']),
+      regionId: serializer.fromJson<String>(json['regionId']),
+      name: serializer.fromJson<String>(json['name']),
+      x: serializer.fromJson<double>(json['x']),
+      y: serializer.fromJson<double>(json['y']),
+      z: serializer.fromJson<double>(json['z']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'worldId': serializer.toJson<String>(worldId),
+      'regionId': serializer.toJson<String>(regionId),
+      'name': serializer.toJson<String>(name),
+      'x': serializer.toJson<double>(x),
+      'y': serializer.toJson<double>(y),
+      'z': serializer.toJson<double>(z),
+    };
+  }
+
+  MetaverseZone copyWith({
+    String? id,
+    String? worldId,
+    String? regionId,
+    String? name,
+    double? x,
+    double? y,
+    double? z,
+  }) => MetaverseZone(
+    id: id ?? this.id,
+    worldId: worldId ?? this.worldId,
+    regionId: regionId ?? this.regionId,
+    name: name ?? this.name,
+    x: x ?? this.x,
+    y: y ?? this.y,
+    z: z ?? this.z,
+  );
+  MetaverseZone copyWithCompanion(MetaverseZonesCompanion data) {
+    return MetaverseZone(
+      id: data.id.present ? data.id.value : this.id,
+      worldId: data.worldId.present ? data.worldId.value : this.worldId,
+      regionId: data.regionId.present ? data.regionId.value : this.regionId,
+      name: data.name.present ? data.name.value : this.name,
+      x: data.x.present ? data.x.value : this.x,
+      y: data.y.present ? data.y.value : this.y,
+      z: data.z.present ? data.z.value : this.z,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MetaverseZone(')
+          ..write('id: $id, ')
+          ..write('worldId: $worldId, ')
+          ..write('regionId: $regionId, ')
+          ..write('name: $name, ')
+          ..write('x: $x, ')
+          ..write('y: $y, ')
+          ..write('z: $z')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, worldId, regionId, name, x, y, z);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MetaverseZone &&
+          other.id == this.id &&
+          other.worldId == this.worldId &&
+          other.regionId == this.regionId &&
+          other.name == this.name &&
+          other.x == this.x &&
+          other.y == this.y &&
+          other.z == this.z);
+}
+
+class MetaverseZonesCompanion extends UpdateCompanion<MetaverseZone> {
+  final Value<String> id;
+  final Value<String> worldId;
+  final Value<String> regionId;
+  final Value<String> name;
+  final Value<double> x;
+  final Value<double> y;
+  final Value<double> z;
+  final Value<int> rowid;
+  const MetaverseZonesCompanion({
+    this.id = const Value.absent(),
+    this.worldId = const Value.absent(),
+    this.regionId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.x = const Value.absent(),
+    this.y = const Value.absent(),
+    this.z = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MetaverseZonesCompanion.insert({
+    required String id,
+    required String worldId,
+    required String regionId,
+    required String name,
+    required double x,
+    required double y,
+    required double z,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       worldId = Value(worldId),
+       regionId = Value(regionId),
+       name = Value(name),
+       x = Value(x),
+       y = Value(y),
+       z = Value(z);
+  static Insertable<MetaverseZone> custom({
+    Expression<String>? id,
+    Expression<String>? worldId,
+    Expression<String>? regionId,
+    Expression<String>? name,
+    Expression<double>? x,
+    Expression<double>? y,
+    Expression<double>? z,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (worldId != null) 'world_id': worldId,
+      if (regionId != null) 'region_id': regionId,
+      if (name != null) 'name': name,
+      if (x != null) 'x': x,
+      if (y != null) 'y': y,
+      if (z != null) 'z': z,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MetaverseZonesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? worldId,
+    Value<String>? regionId,
+    Value<String>? name,
+    Value<double>? x,
+    Value<double>? y,
+    Value<double>? z,
+    Value<int>? rowid,
+  }) {
+    return MetaverseZonesCompanion(
+      id: id ?? this.id,
+      worldId: worldId ?? this.worldId,
+      regionId: regionId ?? this.regionId,
+      name: name ?? this.name,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (worldId.present) {
+      map['world_id'] = Variable<String>(worldId.value);
+    }
+    if (regionId.present) {
+      map['region_id'] = Variable<String>(regionId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (x.present) {
+      map['x'] = Variable<double>(x.value);
+    }
+    if (y.present) {
+      map['y'] = Variable<double>(y.value);
+    }
+    if (z.present) {
+      map['z'] = Variable<double>(z.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MetaverseZonesCompanion(')
+          ..write('id: $id, ')
+          ..write('worldId: $worldId, ')
+          ..write('regionId: $regionId, ')
+          ..write('name: $name, ')
+          ..write('x: $x, ')
+          ..write('y: $y, ')
+          ..write('z: $z, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -68326,6 +69021,10 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final $CreativeIdeasTable creativeIdeas = $CreativeIdeasTable(this);
   late final $XrSessionsTable xrSessions = $XrSessionsTable(this);
   late final $SpatialAnchorsTable spatialAnchors = $SpatialAnchorsTable(this);
+  late final $MetaverseWorldsTable metaverseWorlds = $MetaverseWorldsTable(
+    this,
+  );
+  late final $MetaverseZonesTable metaverseZones = $MetaverseZonesTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -68542,6 +69241,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     creativeIdeas,
     xrSessions,
     spatialAnchors,
+    metaverseWorlds,
+    metaverseZones,
   ];
 }
 
@@ -105436,6 +106137,424 @@ typedef $$SpatialAnchorsTableProcessedTableManager =
       SpatialAnchor,
       PrefetchHooks Function()
     >;
+typedef $$MetaverseWorldsTableCreateCompanionBuilder =
+    MetaverseWorldsCompanion Function({
+      required String id,
+      required String name,
+      required String description,
+      Value<int> rowid,
+    });
+typedef $$MetaverseWorldsTableUpdateCompanionBuilder =
+    MetaverseWorldsCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String> description,
+      Value<int> rowid,
+    });
+
+class $$MetaverseWorldsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $MetaverseWorldsTable> {
+  $$MetaverseWorldsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MetaverseWorldsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $MetaverseWorldsTable> {
+  $$MetaverseWorldsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MetaverseWorldsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $MetaverseWorldsTable> {
+  $$MetaverseWorldsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+}
+
+class $$MetaverseWorldsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $MetaverseWorldsTable,
+          MetaverseWorld,
+          $$MetaverseWorldsTableFilterComposer,
+          $$MetaverseWorldsTableOrderingComposer,
+          $$MetaverseWorldsTableAnnotationComposer,
+          $$MetaverseWorldsTableCreateCompanionBuilder,
+          $$MetaverseWorldsTableUpdateCompanionBuilder,
+          (
+            MetaverseWorld,
+            BaseReferences<
+              _$ProjectDatabase,
+              $MetaverseWorldsTable,
+              MetaverseWorld
+            >,
+          ),
+          MetaverseWorld,
+          PrefetchHooks Function()
+        > {
+  $$MetaverseWorldsTableTableManager(
+    _$ProjectDatabase db,
+    $MetaverseWorldsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MetaverseWorldsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MetaverseWorldsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MetaverseWorldsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MetaverseWorldsCompanion(
+                id: id,
+                name: name,
+                description: description,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required String description,
+                Value<int> rowid = const Value.absent(),
+              }) => MetaverseWorldsCompanion.insert(
+                id: id,
+                name: name,
+                description: description,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MetaverseWorldsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $MetaverseWorldsTable,
+      MetaverseWorld,
+      $$MetaverseWorldsTableFilterComposer,
+      $$MetaverseWorldsTableOrderingComposer,
+      $$MetaverseWorldsTableAnnotationComposer,
+      $$MetaverseWorldsTableCreateCompanionBuilder,
+      $$MetaverseWorldsTableUpdateCompanionBuilder,
+      (
+        MetaverseWorld,
+        BaseReferences<
+          _$ProjectDatabase,
+          $MetaverseWorldsTable,
+          MetaverseWorld
+        >,
+      ),
+      MetaverseWorld,
+      PrefetchHooks Function()
+    >;
+typedef $$MetaverseZonesTableCreateCompanionBuilder =
+    MetaverseZonesCompanion Function({
+      required String id,
+      required String worldId,
+      required String regionId,
+      required String name,
+      required double x,
+      required double y,
+      required double z,
+      Value<int> rowid,
+    });
+typedef $$MetaverseZonesTableUpdateCompanionBuilder =
+    MetaverseZonesCompanion Function({
+      Value<String> id,
+      Value<String> worldId,
+      Value<String> regionId,
+      Value<String> name,
+      Value<double> x,
+      Value<double> y,
+      Value<double> z,
+      Value<int> rowid,
+    });
+
+class $$MetaverseZonesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $MetaverseZonesTable> {
+  $$MetaverseZonesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get worldId => $composableBuilder(
+    column: $table.worldId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get regionId => $composableBuilder(
+    column: $table.regionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get x => $composableBuilder(
+    column: $table.x,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get y => $composableBuilder(
+    column: $table.y,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get z => $composableBuilder(
+    column: $table.z,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MetaverseZonesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $MetaverseZonesTable> {
+  $$MetaverseZonesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get worldId => $composableBuilder(
+    column: $table.worldId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get regionId => $composableBuilder(
+    column: $table.regionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get x => $composableBuilder(
+    column: $table.x,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get y => $composableBuilder(
+    column: $table.y,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get z => $composableBuilder(
+    column: $table.z,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MetaverseZonesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $MetaverseZonesTable> {
+  $$MetaverseZonesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get worldId =>
+      $composableBuilder(column: $table.worldId, builder: (column) => column);
+
+  GeneratedColumn<String> get regionId =>
+      $composableBuilder(column: $table.regionId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<double> get x =>
+      $composableBuilder(column: $table.x, builder: (column) => column);
+
+  GeneratedColumn<double> get y =>
+      $composableBuilder(column: $table.y, builder: (column) => column);
+
+  GeneratedColumn<double> get z =>
+      $composableBuilder(column: $table.z, builder: (column) => column);
+}
+
+class $$MetaverseZonesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $MetaverseZonesTable,
+          MetaverseZone,
+          $$MetaverseZonesTableFilterComposer,
+          $$MetaverseZonesTableOrderingComposer,
+          $$MetaverseZonesTableAnnotationComposer,
+          $$MetaverseZonesTableCreateCompanionBuilder,
+          $$MetaverseZonesTableUpdateCompanionBuilder,
+          (
+            MetaverseZone,
+            BaseReferences<
+              _$ProjectDatabase,
+              $MetaverseZonesTable,
+              MetaverseZone
+            >,
+          ),
+          MetaverseZone,
+          PrefetchHooks Function()
+        > {
+  $$MetaverseZonesTableTableManager(
+    _$ProjectDatabase db,
+    $MetaverseZonesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MetaverseZonesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MetaverseZonesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MetaverseZonesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> worldId = const Value.absent(),
+                Value<String> regionId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<double> x = const Value.absent(),
+                Value<double> y = const Value.absent(),
+                Value<double> z = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MetaverseZonesCompanion(
+                id: id,
+                worldId: worldId,
+                regionId: regionId,
+                name: name,
+                x: x,
+                y: y,
+                z: z,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String worldId,
+                required String regionId,
+                required String name,
+                required double x,
+                required double y,
+                required double z,
+                Value<int> rowid = const Value.absent(),
+              }) => MetaverseZonesCompanion.insert(
+                id: id,
+                worldId: worldId,
+                regionId: regionId,
+                name: name,
+                x: x,
+                y: y,
+                z: z,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MetaverseZonesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $MetaverseZonesTable,
+      MetaverseZone,
+      $$MetaverseZonesTableFilterComposer,
+      $$MetaverseZonesTableOrderingComposer,
+      $$MetaverseZonesTableAnnotationComposer,
+      $$MetaverseZonesTableCreateCompanionBuilder,
+      $$MetaverseZonesTableUpdateCompanionBuilder,
+      (
+        MetaverseZone,
+        BaseReferences<_$ProjectDatabase, $MetaverseZonesTable, MetaverseZone>,
+      ),
+      MetaverseZone,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -105812,4 +106931,8 @@ class $ProjectDatabaseManager {
       $$XrSessionsTableTableManager(_db, _db.xrSessions);
   $$SpatialAnchorsTableTableManager get spatialAnchors =>
       $$SpatialAnchorsTableTableManager(_db, _db.spatialAnchors);
+  $$MetaverseWorldsTableTableManager get metaverseWorlds =>
+      $$MetaverseWorldsTableTableManager(_db, _db.metaverseWorlds);
+  $$MetaverseZonesTableTableManager get metaverseZones =>
+      $$MetaverseZonesTableTableManager(_db, _db.metaverseZones);
 }

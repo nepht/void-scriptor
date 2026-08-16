@@ -89,7 +89,7 @@ void main() {
     final second = await service.open(dbPath);
     addTearDown(second.close);
     final restored = VfxRepository(second);
-    expect(second.schemaVersion, 52);
+    expect(second.schemaVersion, 53);
     expect((await second.assetDao.getById(vfxId))?.type, 'vfx');
     expect((await restored.getVfx(vfxId))?.category, VfxCategory.portal);
     expect((await restored.getBehavior(vfxId))?.emitsLight, isTrue);

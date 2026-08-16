@@ -85,6 +85,7 @@ import 'tables/knowledge.dart';
 import 'tables/agents.dart';
 import 'tables/creative.dart';
 import 'tables/xr.dart';
+import 'tables/metaverse.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -291,6 +292,8 @@ class ProjectMetadata extends Table {
     CreativeIdeas,
     XrSessions,
     SpatialAnchors,
+    MetaverseWorlds,
+    MetaverseZones,
   ],
   daos: [
     AssetDao,
@@ -325,7 +328,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 52;
+  static const currentSchemaVersion = 53;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -633,6 +636,10 @@ class ProjectDatabase extends _$ProjectDatabase {
       if (from < 52) {
         await m.createTable(xrSessions);
         await m.createTable(spatialAnchors);
+      }
+      if (from < 53) {
+        await m.createTable(metaverseWorlds);
+        await m.createTable(metaverseZones);
       }
     },
   );

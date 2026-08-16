@@ -53,6 +53,6 @@ void main() {
     final restarted = CreateTimelineService(database: second);
     expect((await restarted.getTracks(timelineId)).length, 11);
     expect((await restarted.getClips(timelineId)).single.label, 'Descend');
-    expect(second.schemaVersion, 52);
+    expect(second.schemaVersion, 53);
   });
 }

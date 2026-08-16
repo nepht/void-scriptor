@@ -1,6 +1,7 @@
 # Sprint 33 — Advanced Animation System
 
-> **STATUS: PROPOSAL**
+> **STATUS: DONE** — 33.1–33.21 GREEN, 630 PASS, analyze 0 issues, build web ✓.
+
 > **Sumber judul kanonik**: uteke memory `90d845b9` ("S33 Advanced Animation System") — hanya judul.
 > Step dirancang oleh nephthys dari judul + audit repo nyata: `VfxKeyframeModel` (keyframe data single-value),
 > `TimelineModel` (fps/time), `TimelineClipModel` (start/duration), `audio_timeline`, `timeline_clips`.

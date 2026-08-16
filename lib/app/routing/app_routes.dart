@@ -48,6 +48,7 @@ abstract final class AppRoutes {
   static const knowledge = '/knowledge';
   static const agents = '/agents';
   static const creativeOs = '/creative-os';
+  static const xrStudio = '/xr-studio';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

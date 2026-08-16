@@ -46,6 +46,8 @@ import '../../core/knowledge/builtin/demo_knowledge.dart';
 import '../../core/agent/presentation/agent_platform_panel.dart';
 import '../../core/creative/presentation/creative_os_panel.dart';
 import '../../core/creative/builtin/demo_creative_os.dart';
+import '../../core/xr/presentation/xr_studio_panel.dart';
+import '../../core/xr/builtin/demo_xr_studio.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
@@ -161,6 +163,13 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
           stage: DemoCreativeOs.pipeline.currentStage.name,
         ),
       ),
+      GoRoute(
+        path: AppRoutes.xrStudio,
+        builder: (_, __) => XrStudioPanel(
+          sessionState: DemoXrStudio.session.state.name,
+          anchorCount: DemoXrStudio.scene.anchorCount,
+        ),
+      ),
     ],
   );
 }
@@ -230,6 +239,13 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
       builder: (_, __) => CreativeOsPanel(
         briefCount: 1,
         stage: DemoCreativeOs.pipeline.currentStage.name,
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.xrStudio,
+      builder: (_, __) => XrStudioPanel(
+        sessionState: DemoXrStudio.session.state.name,
+        anchorCount: DemoXrStudio.scene.anchorCount,
       ),
     ),
     for (final route in AppRoutes.foundationRoutes.entries)

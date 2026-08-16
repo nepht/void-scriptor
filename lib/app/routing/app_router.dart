@@ -41,6 +41,11 @@ import '../../core/publishing/presentation/publishing_panel.dart';
 import '../../core/publishing/builtin/demo_publishing.dart';
 import '../../core/enterprise/presentation/studio_management_panel.dart';
 import '../../core/enterprise/builtin/demo_studio.dart';
+import '../../core/knowledge/presentation/knowledge_engine_panel.dart';
+import '../../core/knowledge/builtin/demo_knowledge.dart';
+import '../../core/agent/presentation/agent_platform_panel.dart';
+import '../../core/creative/presentation/creative_os_panel.dart';
+import '../../core/creative/builtin/demo_creative_os.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
@@ -137,6 +142,25 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
           maxSeats: DemoStudio.registry.seats.maxSeats,
         ),
       ),
+      GoRoute(
+        path: AppRoutes.knowledge,
+        builder: (_, __) => KnowledgeEnginePanel(
+          entityCount: DemoKnowledge.graph.entityCount,
+          relationCount: DemoKnowledge.graph.relationCount,
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.agents,
+        builder: (_, __) =>
+            const AgentPlatformPanel(agentCount: 2, runningCount: 0),
+      ),
+      GoRoute(
+        path: AppRoutes.creativeOs,
+        builder: (_, __) => CreativeOsPanel(
+          briefCount: 1,
+          stage: DemoCreativeOs.pipeline.currentStage.name,
+        ),
+      ),
     ],
   );
 }
@@ -187,6 +211,25 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
         plan: DemoStudio.registry.studio.plan,
         usedSeats: DemoStudio.registry.seats.usedSeats,
         maxSeats: DemoStudio.registry.seats.maxSeats,
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.knowledge,
+      builder: (_, __) => KnowledgeEnginePanel(
+        entityCount: DemoKnowledge.graph.entityCount,
+        relationCount: DemoKnowledge.graph.relationCount,
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.agents,
+      builder: (_, __) =>
+          const AgentPlatformPanel(agentCount: 2, runningCount: 0),
+    ),
+    GoRoute(
+      path: AppRoutes.creativeOs,
+      builder: (_, __) => CreativeOsPanel(
+        briefCount: 1,
+        stage: DemoCreativeOs.pipeline.currentStage.name,
       ),
     ),
     for (final route in AppRoutes.foundationRoutes.entries)

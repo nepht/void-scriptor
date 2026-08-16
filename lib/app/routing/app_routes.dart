@@ -45,6 +45,9 @@ abstract final class AppRoutes {
   static const virtualProduction = '/virtual-production';
   static const publishing = '/publishing';
   static const enterpriseStudio = '/enterprise-studio';
+  static const knowledge = '/knowledge';
+  static const agents = '/agents';
+  static const creativeOs = '/creative-os';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

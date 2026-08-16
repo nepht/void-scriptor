@@ -1,7 +1,7 @@
 /// Presence of an avatar in a zone (Step 42.5–42.6).
 class Presence {
   Presence({required this.avatarId, required this.zoneId})
-      : _lastSeen = DateTime.now();
+    : _lastSeen = DateTime.now();
 
   final String avatarId;
   String zoneId;

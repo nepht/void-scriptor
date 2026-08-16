@@ -7,8 +7,9 @@ import 'desktop/void_desktop_shell.dart';
 import 'mobile/void_mobile_shell.dart';
 
 class VoidAppShell extends ConsumerStatefulWidget {
-  const VoidAppShell({super.key, this.onLogout, this.projectId});
+  const VoidAppShell({super.key, this.content, this.onLogout, this.projectId});
 
+  final Widget? content;
   final VoidCallback? onLogout;
   final String? projectId;
 
@@ -45,12 +46,14 @@ class _VoidAppShellState extends ConsumerState<VoidAppShell> {
       builder: (context, constraints) {
         if (constraints.maxWidth < VoidBreakpoints.tablet) {
           return VoidMobileShell(
+            content: widget.content,
             onLogout: widget.onLogout,
             projectId: widget.projectId,
           );
         }
 
         return VoidDesktopShell(
+          content: widget.content,
           onLogout: widget.onLogout,
           projectId: widget.projectId,
         );

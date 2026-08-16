@@ -19,8 +19,14 @@ import 'void_status_bar.dart';
 import 'void_top_bar.dart';
 
 class VoidDesktopShell extends ConsumerWidget {
-  const VoidDesktopShell({super.key, this.onLogout, this.projectId});
+  const VoidDesktopShell({
+    super.key,
+    this.content,
+    this.onLogout,
+    this.projectId,
+  });
 
+  final Widget? content;
   final VoidCallback? onLogout;
   final String? projectId;
 
@@ -28,12 +34,12 @@ class VoidDesktopShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(projectSessionProvider).valueOrNull;
     final runtime = session?.mutationRuntime;
-    final content = runtime == null
-        ? _buildContent(context, null, null)
+    final renderedContent = runtime == null
+        ? _buildContent(context, null, null, content)
         : ValueListenableBuilder<ProjectMutationState>(
             valueListenable: runtime.stateNotifier,
             builder: (context, state, child) =>
-                _buildContent(context, runtime, state),
+                _buildContent(context, runtime, state, content),
           );
     return Shortcuts(
       shortcuts: {
@@ -79,7 +85,7 @@ class VoidDesktopShell extends ConsumerWidget {
             },
           ),
         },
-        child: Focus(autofocus: true, child: content),
+        child: Focus(autofocus: true, child: renderedContent),
       ),
     );
   }
@@ -88,17 +94,18 @@ class VoidDesktopShell extends ConsumerWidget {
     BuildContext context,
     ProjectMutationRuntime? runtime,
     ProjectMutationState? state,
+    Widget? suppliedContent,
   ) {
     return Scaffold(
       body: Column(
         children: [
           VoidTopBar(
             onMenuSelected: (menu) {
-              if (menu == 'assets') context.go('/assets');
-              if (menu == 'bible') context.go('/bible');
-              if (menu == 'ai') context.go(AppRoutes.aiStudio);
+              if (menu == 'assets') context.push('/assets');
+              if (menu == 'bible') context.push('/bible');
+              if (menu == 'ai') context.push(AppRoutes.aiStudio);
               if (menu == 'resilience') {
-                context.go(AppRoutes.projectDiagnostics);
+                context.push(AppRoutes.projectDiagnostics);
               }
             },
             onLogout: onLogout,
@@ -111,17 +118,19 @@ class VoidDesktopShell extends ConsumerWidget {
                 ? null
                 : () => unawaited(runtime.bus.redo()),
           ),
-          const Expanded(
-            child: WorkspaceLayoutShell(
-              explorer: ExplorerPanel(),
-              workspace: Column(
-                children: [
-                  _WorkspaceTabStrip(),
-                  Expanded(child: WorkspacePanel()),
-                ],
-              ),
-              inspector: InspectorPanel(),
-            ),
+          Expanded(
+            child:
+                suppliedContent ??
+                const WorkspaceLayoutShell(
+                  explorer: ExplorerPanel(),
+                  workspace: Column(
+                    children: [
+                      _WorkspaceTabStrip(),
+                      Expanded(child: WorkspacePanel()),
+                    ],
+                  ),
+                  inspector: InspectorPanel(),
+                ),
           ),
           VoidStatusBar(
             dirty: state?.isDirty ?? false,

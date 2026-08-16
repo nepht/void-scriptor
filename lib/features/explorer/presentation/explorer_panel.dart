@@ -96,7 +96,9 @@ class ExplorerPanel extends ConsumerWidget {
         color: context.palette.panel,
         border: Border(right: BorderSide(color: context.palette.borderSoft)),
       ),
-      child: Column(
+      child: Material(
+        color: Colors.transparent,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
            Padding(
@@ -200,6 +202,7 @@ class ExplorerPanel extends ConsumerWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

@@ -204,7 +204,7 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
     GoRoute(
       path: AppRoutes.dashboard,
-      builder: (_, __) => const DashboardScreen(),
+      builder: (_, __) => const VoidAppShell(content: DashboardScreen()),
     ),
     GoRoute(
       path: AppRoutes.projects,

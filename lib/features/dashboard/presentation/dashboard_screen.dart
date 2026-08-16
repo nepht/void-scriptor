@@ -27,16 +27,6 @@ class DashboardScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: context.palette.background,
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        actions: [
-          IconButton(
-            tooltip: 'Logout',
-            onPressed: () => ref.read(authControllerProvider.notifier).logout(),
-            icon: const Icon(Icons.logout),
-          ),
-        ],
-      ),
       body: SafeArea(
         child: session.when(
           loading: () => const Center(child: CircularProgressIndicator()),

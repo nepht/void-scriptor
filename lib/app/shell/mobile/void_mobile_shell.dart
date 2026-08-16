@@ -8,8 +8,14 @@ import '../../routing/app_routes.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class VoidMobileShell extends StatefulWidget {
-  const VoidMobileShell({super.key, this.onLogout, this.projectId});
+  const VoidMobileShell({
+    super.key,
+    this.content,
+    this.onLogout,
+    this.projectId,
+  });
 
+  final Widget? content;
   final VoidCallback? onLogout;
   final String? projectId;
 
@@ -37,7 +43,7 @@ class _VoidMobileShellState extends State<VoidMobileShell> {
       3 => AppRoutes.assets,
       _ => AppRoutes.workspace,
     };
-    context.go(route);
+    context.push(route);
   }
 
   Future<void> _showMoreActions() {
@@ -72,7 +78,7 @@ class _VoidMobileShellState extends State<VoidMobileShell> {
 
   void _goFromSheet(BuildContext sheetContext, String route) {
     Navigator.of(sheetContext).pop();
-    context.go(route);
+    context.push(route);
   }
 
   @override
@@ -86,12 +92,12 @@ class _VoidMobileShellState extends State<VoidMobileShell> {
         actions: [
           IconButton(
             tooltip: 'Search assets',
-            onPressed: () => context.go(AppRoutes.assets),
+            onPressed: () => context.push(AppRoutes.assets),
             icon: const Icon(Icons.search),
           ),
           IconButton(
             tooltip: 'Profile',
-            onPressed: () => context.go(AppRoutes.dashboard),
+            onPressed: () => context.push(AppRoutes.dashboard),
             icon: const Icon(Icons.person_outline),
           ),
           IconButton(
@@ -101,11 +107,11 @@ class _VoidMobileShellState extends State<VoidMobileShell> {
           ),
         ],
       ),
-      drawer:  Drawer(
+      drawer: Drawer(
         backgroundColor: context.palette.panel,
         child: const SafeArea(child: ExplorerPanel()),
       ),
-      body: const WorkspacePanel(),
+      body: widget.content ?? const WorkspacePanel(),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: _selectDestination,
@@ -147,7 +153,7 @@ class _MoreDestination extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListTile(
     leading: Icon(icon, color: context.palette.textSecondary),
-    title: Text(label, style:  TextStyle(color: context.palette.textPrimary)),
+    title: Text(label, style: TextStyle(color: context.palette.textPrimary)),
     onTap: onTap,
   );
 }

@@ -37,7 +37,7 @@ void main() {
     await tester.pumpWidget(_dashboardApp(size: const Size(1440, 1200)));
     await tester.pump(const Duration(milliseconds: 200));
 
-    expect(find.text('Dashboard'), findsNWidgets(2));
+    expect(find.text('Dashboard'), findsOneWidget);
     expect(find.text('Welcome back, Guest'), findsOneWidget);
     expect(find.text('Recent Projects'), findsOneWidget);
     expect(find.text('Recent Assets'), findsOneWidget);

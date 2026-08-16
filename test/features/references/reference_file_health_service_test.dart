@@ -45,7 +45,10 @@ void main() {
       await moved.writeAsBytes([1, 2, 3]);
       final result = await service.inspect(reference);
       expect(result.health, ReferenceHealth.moved);
-      expect(result.relocatedPath, endsWith('moved/face.png'));
+      expect(
+        result.relocatedPath?.replaceAll('\\', '/'),
+        endsWith('moved/face.png'),
+      );
     },
   );
 }

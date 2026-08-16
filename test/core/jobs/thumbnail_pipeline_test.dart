@@ -57,7 +57,7 @@ void main() {
     );
     expect(
       request.sourcePath,
-      isNot(contains(Platform.pathSeparator == '/' ? '\\' : '/')),
+      isNot(contains(Platform.pathSeparator)),
     );
   });
 }

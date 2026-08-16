@@ -13,11 +13,16 @@ void main() {
       root: Directory('/tmp/Void Universe.voidproject'),
     );
 
-    expect(package.manifestFile.path, contains('manifest/project.json'));
-    expect(package.databaseFile.path, contains('database/project.db'));
-    expect(ProjectPackagePaths.audio(package).path, contains('assets/audio'));
+    String portable(String path) => path.replaceAll('\\', '/');
+
+    expect(portable(package.manifestFile.path), contains('manifest/project.json'));
+    expect(portable(package.databaseFile.path), contains('database/project.db'));
     expect(
-      ProjectPackagePaths.waveforms(package).path,
+      portable(ProjectPackagePaths.audio(package).path),
+      contains('assets/audio'),
+    );
+    expect(
+      portable(ProjectPackagePaths.waveforms(package).path),
       contains('cache/waveforms'),
     );
   });

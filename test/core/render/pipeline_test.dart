@@ -21,10 +21,7 @@ void main() {
         id: id,
         center: position,
         radius: radius,
-        material: const Material(
-          id: 'm',
-          baseColor: RenderColor(1, 1, 1),
-        ),
+        material: const Material(id: 'm', baseColor: RenderColor(1, 1, 1)),
       );
 
   test('Renderable exposes bounds and material', () {

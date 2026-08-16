@@ -1,6 +1,7 @@
 # Sprint 32 — Advanced Rendering Engine
 
-> **STATUS: PROPOSAL**
+> **STATUS: DONE** — 32.1–32.21 GREEN, 608 PASS, analyze 0 issues, build web ✓.
+
 > **Sumber judul kanonik**: uteke memory `90d845b9` ("S32 Advanced Rendering Engine") — hanya judul.
 > Step dirancang oleh nephthys dari judul + audit repo nyata: `thumbnail_pipeline` (cache/viewport priority),
 > `image_prefetcher`, `environment_lighting_profiles` (data lighting), VFX (data model tanpa render).

@@ -78,81 +78,83 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ],
                   ),
                   child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Center(child: VoidLogo()),
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Center(child: VoidLogo()),
 
-                  const SizedBox(height: 30),
+                      const SizedBox(height: 30),
 
-                  const Text(
-                    'Create your account',
-                    textAlign: TextAlign.center,
-                    style: VoidTypography.headingLarge,
+                      const Text(
+                        'Create your account',
+                        textAlign: TextAlign.center,
+                        style: VoidTypography.headingLarge,
+                      ),
+
+                      const SizedBox(height: 28),
+
+                      TextField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Display name',
+                        ),
+                      ),
+
+                      const SizedBox(height: 14),
+
+                      TextField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(labelText: 'Email'),
+                      ),
+
+                      const SizedBox(height: 14),
+
+                      TextField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Password',
+                        ),
+                      ),
+
+                      const SizedBox(height: 14),
+
+                      TextField(
+                        controller: _confirmController,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Confirm password',
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      VoidButton(
+                        label: 'Create Account',
+                        icon: Icons.person_add_outlined,
+                        onPressed: _createAccount,
+                      ),
+
+                      if (_feedback != null) ...[
+                        const SizedBox(height: 12),
+                        Text(_feedback!, textAlign: TextAlign.center),
+                      ],
+
+                      const SizedBox(height: 18),
+
+                      TextButton(
+                        onPressed: widget.onBackToLogin,
+                        child: const Text('Already have an account? Sign in'),
+                      ),
+                    ],
                   ),
-
-                  const SizedBox(height: 28),
-
-                  TextField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Display name',
-                    ),
-                  ),
-
-                  const SizedBox(height: 14),
-
-                  TextField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(labelText: 'Email'),
-                  ),
-
-                  const SizedBox(height: 14),
-
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(labelText: 'Password'),
-                  ),
-
-                  const SizedBox(height: 14),
-
-                  TextField(
-                    controller: _confirmController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Confirm password',
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  VoidButton(
-                    label: 'Create Account',
-                    icon: Icons.person_add_outlined,
-                    onPressed: _createAccount,
-                  ),
-
-                  if (_feedback != null) ...[
-                    const SizedBox(height: 12),
-                    Text(_feedback!, textAlign: TextAlign.center),
-                  ],
-
-                  const SizedBox(height: 18),
-
-                  TextButton(
-                    onPressed: widget.onBackToLogin,
-                    child: const Text('Already have an account? Sign in'),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
-    ],
-  ),
-);
+    );
   }
 
   void _createAccount() {

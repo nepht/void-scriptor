@@ -96,164 +96,170 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ],
                   ),
                   child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Center(child: VoidLogo()),
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Center(child: VoidLogo()),
 
-                  const SizedBox(height: 34),
+                      const SizedBox(height: 34),
 
-                  const Text(
-                    'Welcome back',
-                    textAlign: TextAlign.center,
-                    style: VoidTypography.headingLarge,
-                  ),
+                      const Text(
+                        'Welcome back',
+                        textAlign: TextAlign.center,
+                        style: VoidTypography.headingLarge,
+                      ),
 
-                  const SizedBox(height: 8),
+                      const SizedBox(height: 8),
 
-                  const Text(
-                    'Sign in to continue to Void Scriptor.',
-                    textAlign: TextAlign.center,
-                    style: VoidTypography.body,
-                  ),
+                      const Text(
+                        'Sign in to continue to Void Scriptor.',
+                        textAlign: TextAlign.center,
+                        style: VoidTypography.body,
+                      ),
 
-                  const SizedBox(height: 30),
+                      const SizedBox(height: 30),
 
-                  const Text('Email', style: VoidTypography.label),
+                      const Text('Email', style: VoidTypography.label),
 
-                  const SizedBox(height: 8),
+                      const SizedBox(height: 8),
 
-                  TextField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    autofillHints: const [AutofillHints.email],
-                    decoration: const InputDecoration(
-                      hintText: 'creator@example.com',
-                    ),
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  const Text('Password', style: VoidTypography.label),
-
-                  const SizedBox(height: 8),
-
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: _obscurePassword,
-                    autofillHints: const [AutofillHints.password],
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
-                        },
-                        icon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined,
+                      TextField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        autofillHints: const [AutofillHints.email],
+                        decoration: const InputDecoration(
+                          hintText: 'creator@example.com',
                         ),
                       ),
-                    ),
-                  ),
 
-                  const SizedBox(height: 10),
+                      const SizedBox(height: 18),
 
-                  Wrap(
-                    alignment: WrapAlignment.spaceBetween,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    runSpacing: 4,
-                    children: [
-                      Checkbox(
-                        value: _rememberMe,
-                        onChanged: (value) {
-                          setState(() {
-                            _rememberMe = value ?? false;
-                          });
-                        },
+                      const Text('Password', style: VoidTypography.label),
+
+                      const SizedBox(height: 8),
+
+                      TextField(
+                        controller: _passwordController,
+                        obscureText: _obscurePassword,
+                        autofillHints: const [AutofillHints.password],
+                        decoration: InputDecoration(
+                          hintText: 'Password',
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                            ),
+                          ),
+                        ),
                       ),
-                      const Text('Remember me', style: VoidTypography.caption),
-                      TextButton(
-                        onPressed: widget.onForgotPassword,
-                        child: const Text('Forgot password?'),
+
+                      const SizedBox(height: 10),
+
+                      Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        runSpacing: 4,
+                        children: [
+                          Checkbox(
+                            value: _rememberMe,
+                            onChanged: (value) {
+                              setState(() {
+                                _rememberMe = value ?? false;
+                              });
+                            },
+                          ),
+                          const Text(
+                            'Remember me',
+                            style: VoidTypography.caption,
+                          ),
+                          TextButton(
+                            onPressed: widget.onForgotPassword,
+                            child: const Text('Forgot password?'),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 14),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: VoidButton(
+                          label: loading ? 'Signing In...' : 'Sign In',
+                          icon: Icons.login_rounded,
+                          onPressed: loading ? null : _login,
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      const Row(
+                        children: [
+                          Expanded(child: Divider()),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            child: Text('OR', style: VoidTypography.caption),
+                          ),
+                          Expanded(child: Divider()),
+                        ],
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      OutlinedButton.icon(
+                        onPressed: loading
+                            ? null
+                            : () {
+                                ref
+                                    .read(authControllerProvider.notifier)
+                                    .continueAsGuest();
+                              },
+                        icon: const Icon(Icons.person_outline),
+                        label: const Text('Continue as Guest'),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      OutlinedButton.icon(
+                        onPressed: loading
+                            ? null
+                            : () {
+                                ref
+                                    .read(authControllerProvider.notifier)
+                                    .continueOffline();
+                              },
+                        icon: const Icon(Icons.wifi_off_outlined),
+                        label: const Text('Work Offline'),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          const Text(
+                            'No account?',
+                            style: VoidTypography.caption,
+                          ),
+                          TextButton(
+                            onPressed: widget.onRegister,
+                            child: const Text('Create account'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-
-                  const SizedBox(height: 14),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: VoidButton(
-                      label: loading ? 'Signing In...' : 'Sign In',
-                      icon: Icons.login_rounded,
-                      onPressed: loading ? null : _login,
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  const Row(
-                    children: [
-                      Expanded(child: Divider()),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('OR', style: VoidTypography.caption),
-                      ),
-                      Expanded(child: Divider()),
-                    ],
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  OutlinedButton.icon(
-                    onPressed: loading
-                        ? null
-                        : () {
-                            ref
-                                .read(authControllerProvider.notifier)
-                                .continueAsGuest();
-                          },
-                    icon: const Icon(Icons.person_outline),
-                    label: const Text('Continue as Guest'),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  OutlinedButton.icon(
-                    onPressed: loading
-                        ? null
-                        : () {
-                            ref
-                                .read(authControllerProvider.notifier)
-                                .continueOffline();
-                          },
-                    icon: const Icon(Icons.wifi_off_outlined),
-                    label: const Text('Work Offline'),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      const Text('No account?', style: VoidTypography.caption),
-                      TextButton(
-                        onPressed: widget.onRegister,
-                        child: const Text('Create account'),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
-    ],
-  ),
-);
+    );
   }
 }

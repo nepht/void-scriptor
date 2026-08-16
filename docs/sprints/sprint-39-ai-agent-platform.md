@@ -1,6 +1,7 @@
 # Sprint 39 — AI Agent Platform
 
-> **STATUS: PROPOSAL**
+> **STATUS: DONE** — 39.1–39.21 GREEN, 738 PASS, analyze 0 issues, build web ✓.
+
 > **Sumber judul kanonik**: uteke memory `90d845b9` ("S39 AI Agent Platform") — hanya judul.
 > Fondasi audit: `features/ai` (prompt composer, provider workspace, generation queue,
 > gallery), plugin system S31 (host/registry/sandbox). Belum ada agent/tool/orchestration.

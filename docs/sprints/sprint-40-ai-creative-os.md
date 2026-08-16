@@ -1,6 +1,7 @@
 # Sprint 40 — AI Creative OS
 
-> **STATUS: PROPOSAL**
+> **STATUS: DONE** — 40.1–40.21 GREEN, 761 PASS, analyze 0 issues, build web ✓.
+
 > **Sumber judul kanonik**: uteke memory `90d845b9` ("S40 AI Creative OS") — hanya judul.
 > Fondasi audit: `features/ai` (prompt composer, compiler, differ, provider router,
 > streaming, generation job, gallery, context resolver). S39 agent platform.

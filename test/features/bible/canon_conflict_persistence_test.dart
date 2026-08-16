@@ -31,7 +31,7 @@ void main() {
     addTearDown(second.close);
     final conflicts = await CanonConflictRepository(second).list('project-1');
 
-    expect(second.schemaVersion, 42);
+    expect(second.schemaVersion, 43);
     expect(conflicts.single.resolved, isTrue);
     expect(conflicts.single.resolutionNote, 'Intentional alternate timeline.');
   });

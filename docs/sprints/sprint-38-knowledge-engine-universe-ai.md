@@ -1,6 +1,7 @@
 # Sprint 38 — Knowledge Engine + Universe AI
 
-> **STATUS: PROPOSAL**
+> **STATUS: DONE** — 38.1–38.21 GREEN, 720 PASS, analyze 0 issues, build web ✓.
+
 > **Sumber judul kanonik**: uteke memory `90d845b9` ("S38 Knowledge Engine+Universe AI") — hanya judul.
 > Fondasi audit: `BibleEntries` (type/title/content/canonStatus/tagsJson),
 > `RelationDao`/`AssetRelations` (graph relations), `StoryDao`, `CharacterDao`,

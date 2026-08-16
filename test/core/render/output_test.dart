@@ -20,7 +20,7 @@ void main() {
   );
 
   test('RenderPass produces a RenderFrame with stats', () {
-    final pass = RenderPass();
+    const pass = RenderPass();
     final frame = pass.render(
       camera: camera(),
       renderables: [

@@ -30,6 +30,7 @@ import '../../core/security/presentation/security_settings_screen.dart';
 import '../../core/plugin/presentation/plugin_manager_screen.dart';
 import '../../core/plugin/builtin/demo_plugin.dart';
 import '../../core/plugin/domain/plugin_manifest.dart';
+import '../../core/render/presentation/render_preview_panel.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
@@ -79,6 +80,15 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
         path: AppRoutes.plugins,
         builder: (_, __) => PluginManagerScreen(
           plugins: [PluginDescriptor(manifest: DemoPlugin().manifest)],
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.render,
+        builder: (_, __) => const RenderPreviewPanel(
+          drawCalls: 0,
+          culledCount: 0,
+          width: 320,
+          height: 180,
         ),
       ),
     ],
@@ -204,6 +214,15 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
       path: AppRoutes.plugins,
       builder: (_, __) => PluginManagerScreen(
         plugins: [PluginDescriptor(manifest: DemoPlugin().manifest)],
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.render,
+      builder: (_, __) => const RenderPreviewPanel(
+        drawCalls: 0,
+        culledCount: 0,
+        width: 320,
+        height: 180,
       ),
     ),
   ];

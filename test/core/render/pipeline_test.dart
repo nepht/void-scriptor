@@ -21,7 +21,10 @@ void main() {
         id: id,
         center: position,
         radius: radius,
-        material: Material(id: 'm', baseColor: const RenderColor(1, 1, 1)),
+        material: const Material(
+          id: 'm',
+          baseColor: RenderColor(1, 1, 1),
+        ),
       );
 
   test('Renderable exposes bounds and material', () {
@@ -32,7 +35,7 @@ void main() {
   });
 
   test('RenderPipeline culls off-screen and sorts by depth', () {
-    final pipeline = RenderPipeline();
+    const pipeline = RenderPipeline();
     final inFrustum = makeRenderable('in', Vector3(0, 0, 0), 1.0);
     final behind = makeRenderable('behind', Vector3(0, 0, 50), 1.0);
 
@@ -47,7 +50,7 @@ void main() {
   });
 
   test('RenderPipeline sorts back-to-front by depth', () {
-    final pipeline = RenderPipeline();
+    const pipeline = RenderPipeline();
     final near = makeRenderable('near', Vector3(0, 0, -1), 1.0);
     final far = makeRenderable('far', Vector3(0, 0, -3), 1.0);
 

@@ -38,6 +38,7 @@ abstract final class AppRoutes {
   static const security = '/security';
   static const securityLock = '/security/lock';
   static const plugins = '/plugins';
+  static const render = '/render';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

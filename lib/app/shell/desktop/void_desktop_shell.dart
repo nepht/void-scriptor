@@ -97,6 +97,7 @@ class VoidDesktopShell extends ConsumerWidget {
               if (menu == 'assets') context.go('/assets');
               if (menu == 'bible') context.go('/bible');
               if (menu == 'ai') context.go(AppRoutes.aiStudio);
+              if (menu == 'appearance') context.go(AppRoutes.appearance);
               if (menu == 'resilience') {
                 context.go(AppRoutes.projectDiagnostics);
               }

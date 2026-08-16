@@ -122,6 +122,11 @@ class VoidTopBar extends StatelessWidget {
                 tooltip: 'Notifications',
               ),
               IconButton(
+                tooltip: 'Appearance',
+                onPressed: () => onMenuSelected('appearance'),
+                icon: const Icon(Icons.palette_outlined, size: 18),
+              ),
+              IconButton(
                 tooltip: 'Logout',
                 onPressed: onLogout,
                 icon: const Icon(Icons.logout_rounded, size: 18),

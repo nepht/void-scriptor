@@ -66661,6 +66661,717 @@ class AgentToolCallsCompanion extends UpdateCompanion<AgentToolCall> {
   }
 }
 
+class $CreativeBriefsTable extends CreativeBriefs
+    with TableInfo<$CreativeBriefsTable, CreativeBrief> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CreativeBriefsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _genreMeta = const VerificationMeta('genre');
+  @override
+  late final GeneratedColumn<String> genre = GeneratedColumn<String>(
+    'genre',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _toneMeta = const VerificationMeta('tone');
+  @override
+  late final GeneratedColumn<String> tone = GeneratedColumn<String>(
+    'tone',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _goalsJsonMeta = const VerificationMeta(
+    'goalsJson',
+  );
+  @override
+  late final GeneratedColumn<String> goalsJson = GeneratedColumn<String>(
+    'goals_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, title, genre, tone, goalsJson];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'creative_briefs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CreativeBrief> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('genre')) {
+      context.handle(
+        _genreMeta,
+        genre.isAcceptableOrUnknown(data['genre']!, _genreMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_genreMeta);
+    }
+    if (data.containsKey('tone')) {
+      context.handle(
+        _toneMeta,
+        tone.isAcceptableOrUnknown(data['tone']!, _toneMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_toneMeta);
+    }
+    if (data.containsKey('goals_json')) {
+      context.handle(
+        _goalsJsonMeta,
+        goalsJson.isAcceptableOrUnknown(data['goals_json']!, _goalsJsonMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CreativeBrief map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CreativeBrief(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      genre: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}genre'],
+      )!,
+      tone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tone'],
+      )!,
+      goalsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}goals_json'],
+      )!,
+    );
+  }
+
+  @override
+  $CreativeBriefsTable createAlias(String alias) {
+    return $CreativeBriefsTable(attachedDatabase, alias);
+  }
+}
+
+class CreativeBrief extends DataClass implements Insertable<CreativeBrief> {
+  final String id;
+  final String title;
+  final String genre;
+  final String tone;
+  final String goalsJson;
+  const CreativeBrief({
+    required this.id,
+    required this.title,
+    required this.genre,
+    required this.tone,
+    required this.goalsJson,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['title'] = Variable<String>(title);
+    map['genre'] = Variable<String>(genre);
+    map['tone'] = Variable<String>(tone);
+    map['goals_json'] = Variable<String>(goalsJson);
+    return map;
+  }
+
+  CreativeBriefsCompanion toCompanion(bool nullToAbsent) {
+    return CreativeBriefsCompanion(
+      id: Value(id),
+      title: Value(title),
+      genre: Value(genre),
+      tone: Value(tone),
+      goalsJson: Value(goalsJson),
+    );
+  }
+
+  factory CreativeBrief.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CreativeBrief(
+      id: serializer.fromJson<String>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      genre: serializer.fromJson<String>(json['genre']),
+      tone: serializer.fromJson<String>(json['tone']),
+      goalsJson: serializer.fromJson<String>(json['goalsJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'title': serializer.toJson<String>(title),
+      'genre': serializer.toJson<String>(genre),
+      'tone': serializer.toJson<String>(tone),
+      'goalsJson': serializer.toJson<String>(goalsJson),
+    };
+  }
+
+  CreativeBrief copyWith({
+    String? id,
+    String? title,
+    String? genre,
+    String? tone,
+    String? goalsJson,
+  }) => CreativeBrief(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    genre: genre ?? this.genre,
+    tone: tone ?? this.tone,
+    goalsJson: goalsJson ?? this.goalsJson,
+  );
+  CreativeBrief copyWithCompanion(CreativeBriefsCompanion data) {
+    return CreativeBrief(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      genre: data.genre.present ? data.genre.value : this.genre,
+      tone: data.tone.present ? data.tone.value : this.tone,
+      goalsJson: data.goalsJson.present ? data.goalsJson.value : this.goalsJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreativeBrief(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('genre: $genre, ')
+          ..write('tone: $tone, ')
+          ..write('goalsJson: $goalsJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, title, genre, tone, goalsJson);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CreativeBrief &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.genre == this.genre &&
+          other.tone == this.tone &&
+          other.goalsJson == this.goalsJson);
+}
+
+class CreativeBriefsCompanion extends UpdateCompanion<CreativeBrief> {
+  final Value<String> id;
+  final Value<String> title;
+  final Value<String> genre;
+  final Value<String> tone;
+  final Value<String> goalsJson;
+  final Value<int> rowid;
+  const CreativeBriefsCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.genre = const Value.absent(),
+    this.tone = const Value.absent(),
+    this.goalsJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CreativeBriefsCompanion.insert({
+    required String id,
+    required String title,
+    required String genre,
+    required String tone,
+    this.goalsJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       title = Value(title),
+       genre = Value(genre),
+       tone = Value(tone);
+  static Insertable<CreativeBrief> custom({
+    Expression<String>? id,
+    Expression<String>? title,
+    Expression<String>? genre,
+    Expression<String>? tone,
+    Expression<String>? goalsJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (genre != null) 'genre': genre,
+      if (tone != null) 'tone': tone,
+      if (goalsJson != null) 'goals_json': goalsJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CreativeBriefsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? title,
+    Value<String>? genre,
+    Value<String>? tone,
+    Value<String>? goalsJson,
+    Value<int>? rowid,
+  }) {
+    return CreativeBriefsCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      genre: genre ?? this.genre,
+      tone: tone ?? this.tone,
+      goalsJson: goalsJson ?? this.goalsJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (genre.present) {
+      map['genre'] = Variable<String>(genre.value);
+    }
+    if (tone.present) {
+      map['tone'] = Variable<String>(tone.value);
+    }
+    if (goalsJson.present) {
+      map['goals_json'] = Variable<String>(goalsJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreativeBriefsCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('genre: $genre, ')
+          ..write('tone: $tone, ')
+          ..write('goalsJson: $goalsJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CreativeIdeasTable extends CreativeIdeas
+    with TableInfo<$CreativeIdeasTable, CreativeIdea> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CreativeIdeasTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _briefIdMeta = const VerificationMeta(
+    'briefId',
+  );
+  @override
+  late final GeneratedColumn<String> briefId = GeneratedColumn<String>(
+    'brief_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tagsJsonMeta = const VerificationMeta(
+    'tagsJson',
+  );
+  @override
+  late final GeneratedColumn<String> tagsJson = GeneratedColumn<String>(
+    'tags_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    briefId,
+    title,
+    description,
+    tagsJson,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'creative_ideas';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CreativeIdea> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('brief_id')) {
+      context.handle(
+        _briefIdMeta,
+        briefId.isAcceptableOrUnknown(data['brief_id']!, _briefIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_briefIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('tags_json')) {
+      context.handle(
+        _tagsJsonMeta,
+        tagsJson.isAcceptableOrUnknown(data['tags_json']!, _tagsJsonMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CreativeIdea map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CreativeIdea(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      briefId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}brief_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      tagsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tags_json'],
+      )!,
+    );
+  }
+
+  @override
+  $CreativeIdeasTable createAlias(String alias) {
+    return $CreativeIdeasTable(attachedDatabase, alias);
+  }
+}
+
+class CreativeIdea extends DataClass implements Insertable<CreativeIdea> {
+  final String id;
+  final String briefId;
+  final String title;
+  final String description;
+  final String tagsJson;
+  const CreativeIdea({
+    required this.id,
+    required this.briefId,
+    required this.title,
+    required this.description,
+    required this.tagsJson,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['brief_id'] = Variable<String>(briefId);
+    map['title'] = Variable<String>(title);
+    map['description'] = Variable<String>(description);
+    map['tags_json'] = Variable<String>(tagsJson);
+    return map;
+  }
+
+  CreativeIdeasCompanion toCompanion(bool nullToAbsent) {
+    return CreativeIdeasCompanion(
+      id: Value(id),
+      briefId: Value(briefId),
+      title: Value(title),
+      description: Value(description),
+      tagsJson: Value(tagsJson),
+    );
+  }
+
+  factory CreativeIdea.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CreativeIdea(
+      id: serializer.fromJson<String>(json['id']),
+      briefId: serializer.fromJson<String>(json['briefId']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String>(json['description']),
+      tagsJson: serializer.fromJson<String>(json['tagsJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'briefId': serializer.toJson<String>(briefId),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String>(description),
+      'tagsJson': serializer.toJson<String>(tagsJson),
+    };
+  }
+
+  CreativeIdea copyWith({
+    String? id,
+    String? briefId,
+    String? title,
+    String? description,
+    String? tagsJson,
+  }) => CreativeIdea(
+    id: id ?? this.id,
+    briefId: briefId ?? this.briefId,
+    title: title ?? this.title,
+    description: description ?? this.description,
+    tagsJson: tagsJson ?? this.tagsJson,
+  );
+  CreativeIdea copyWithCompanion(CreativeIdeasCompanion data) {
+    return CreativeIdea(
+      id: data.id.present ? data.id.value : this.id,
+      briefId: data.briefId.present ? data.briefId.value : this.briefId,
+      title: data.title.present ? data.title.value : this.title,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      tagsJson: data.tagsJson.present ? data.tagsJson.value : this.tagsJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreativeIdea(')
+          ..write('id: $id, ')
+          ..write('briefId: $briefId, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('tagsJson: $tagsJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, briefId, title, description, tagsJson);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CreativeIdea &&
+          other.id == this.id &&
+          other.briefId == this.briefId &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.tagsJson == this.tagsJson);
+}
+
+class CreativeIdeasCompanion extends UpdateCompanion<CreativeIdea> {
+  final Value<String> id;
+  final Value<String> briefId;
+  final Value<String> title;
+  final Value<String> description;
+  final Value<String> tagsJson;
+  final Value<int> rowid;
+  const CreativeIdeasCompanion({
+    this.id = const Value.absent(),
+    this.briefId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.tagsJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CreativeIdeasCompanion.insert({
+    required String id,
+    required String briefId,
+    required String title,
+    required String description,
+    this.tagsJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       briefId = Value(briefId),
+       title = Value(title),
+       description = Value(description);
+  static Insertable<CreativeIdea> custom({
+    Expression<String>? id,
+    Expression<String>? briefId,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<String>? tagsJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (briefId != null) 'brief_id': briefId,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (tagsJson != null) 'tags_json': tagsJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CreativeIdeasCompanion copyWith({
+    Value<String>? id,
+    Value<String>? briefId,
+    Value<String>? title,
+    Value<String>? description,
+    Value<String>? tagsJson,
+    Value<int>? rowid,
+  }) {
+    return CreativeIdeasCompanion(
+      id: id ?? this.id,
+      briefId: briefId ?? this.briefId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      tagsJson: tagsJson ?? this.tagsJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (briefId.present) {
+      map['brief_id'] = Variable<String>(briefId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (tagsJson.present) {
+      map['tags_json'] = Variable<String>(tagsJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreativeIdeasCompanion(')
+          ..write('id: $id, ')
+          ..write('briefId: $briefId, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('tagsJson: $tagsJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -66914,6 +67625,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
       $KnowledgeRelationsTable(this);
   late final $AgentsTable agents = $AgentsTable(this);
   late final $AgentToolCallsTable agentToolCalls = $AgentToolCallsTable(this);
+  late final $CreativeBriefsTable creativeBriefs = $CreativeBriefsTable(this);
+  late final $CreativeIdeasTable creativeIdeas = $CreativeIdeasTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -67126,6 +67839,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     knowledgeRelations,
     agents,
     agentToolCalls,
+    creativeBriefs,
+    creativeIdeas,
   ];
 }
 
@@ -103200,6 +103915,420 @@ typedef $$AgentToolCallsTableProcessedTableManager =
       AgentToolCall,
       PrefetchHooks Function()
     >;
+typedef $$CreativeBriefsTableCreateCompanionBuilder =
+    CreativeBriefsCompanion Function({
+      required String id,
+      required String title,
+      required String genre,
+      required String tone,
+      Value<String> goalsJson,
+      Value<int> rowid,
+    });
+typedef $$CreativeBriefsTableUpdateCompanionBuilder =
+    CreativeBriefsCompanion Function({
+      Value<String> id,
+      Value<String> title,
+      Value<String> genre,
+      Value<String> tone,
+      Value<String> goalsJson,
+      Value<int> rowid,
+    });
+
+class $$CreativeBriefsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CreativeBriefsTable> {
+  $$CreativeBriefsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get genre => $composableBuilder(
+    column: $table.genre,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tone => $composableBuilder(
+    column: $table.tone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get goalsJson => $composableBuilder(
+    column: $table.goalsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CreativeBriefsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CreativeBriefsTable> {
+  $$CreativeBriefsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get genre => $composableBuilder(
+    column: $table.genre,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tone => $composableBuilder(
+    column: $table.tone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get goalsJson => $composableBuilder(
+    column: $table.goalsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CreativeBriefsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CreativeBriefsTable> {
+  $$CreativeBriefsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get genre =>
+      $composableBuilder(column: $table.genre, builder: (column) => column);
+
+  GeneratedColumn<String> get tone =>
+      $composableBuilder(column: $table.tone, builder: (column) => column);
+
+  GeneratedColumn<String> get goalsJson =>
+      $composableBuilder(column: $table.goalsJson, builder: (column) => column);
+}
+
+class $$CreativeBriefsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CreativeBriefsTable,
+          CreativeBrief,
+          $$CreativeBriefsTableFilterComposer,
+          $$CreativeBriefsTableOrderingComposer,
+          $$CreativeBriefsTableAnnotationComposer,
+          $$CreativeBriefsTableCreateCompanionBuilder,
+          $$CreativeBriefsTableUpdateCompanionBuilder,
+          (
+            CreativeBrief,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CreativeBriefsTable,
+              CreativeBrief
+            >,
+          ),
+          CreativeBrief,
+          PrefetchHooks Function()
+        > {
+  $$CreativeBriefsTableTableManager(
+    _$ProjectDatabase db,
+    $CreativeBriefsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CreativeBriefsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CreativeBriefsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CreativeBriefsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> genre = const Value.absent(),
+                Value<String> tone = const Value.absent(),
+                Value<String> goalsJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreativeBriefsCompanion(
+                id: id,
+                title: title,
+                genre: genre,
+                tone: tone,
+                goalsJson: goalsJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String title,
+                required String genre,
+                required String tone,
+                Value<String> goalsJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreativeBriefsCompanion.insert(
+                id: id,
+                title: title,
+                genre: genre,
+                tone: tone,
+                goalsJson: goalsJson,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CreativeBriefsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CreativeBriefsTable,
+      CreativeBrief,
+      $$CreativeBriefsTableFilterComposer,
+      $$CreativeBriefsTableOrderingComposer,
+      $$CreativeBriefsTableAnnotationComposer,
+      $$CreativeBriefsTableCreateCompanionBuilder,
+      $$CreativeBriefsTableUpdateCompanionBuilder,
+      (
+        CreativeBrief,
+        BaseReferences<_$ProjectDatabase, $CreativeBriefsTable, CreativeBrief>,
+      ),
+      CreativeBrief,
+      PrefetchHooks Function()
+    >;
+typedef $$CreativeIdeasTableCreateCompanionBuilder =
+    CreativeIdeasCompanion Function({
+      required String id,
+      required String briefId,
+      required String title,
+      required String description,
+      Value<String> tagsJson,
+      Value<int> rowid,
+    });
+typedef $$CreativeIdeasTableUpdateCompanionBuilder =
+    CreativeIdeasCompanion Function({
+      Value<String> id,
+      Value<String> briefId,
+      Value<String> title,
+      Value<String> description,
+      Value<String> tagsJson,
+      Value<int> rowid,
+    });
+
+class $$CreativeIdeasTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CreativeIdeasTable> {
+  $$CreativeIdeasTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get briefId => $composableBuilder(
+    column: $table.briefId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tagsJson => $composableBuilder(
+    column: $table.tagsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CreativeIdeasTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CreativeIdeasTable> {
+  $$CreativeIdeasTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get briefId => $composableBuilder(
+    column: $table.briefId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tagsJson => $composableBuilder(
+    column: $table.tagsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CreativeIdeasTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CreativeIdeasTable> {
+  $$CreativeIdeasTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get briefId =>
+      $composableBuilder(column: $table.briefId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get tagsJson =>
+      $composableBuilder(column: $table.tagsJson, builder: (column) => column);
+}
+
+class $$CreativeIdeasTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CreativeIdeasTable,
+          CreativeIdea,
+          $$CreativeIdeasTableFilterComposer,
+          $$CreativeIdeasTableOrderingComposer,
+          $$CreativeIdeasTableAnnotationComposer,
+          $$CreativeIdeasTableCreateCompanionBuilder,
+          $$CreativeIdeasTableUpdateCompanionBuilder,
+          (
+            CreativeIdea,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CreativeIdeasTable,
+              CreativeIdea
+            >,
+          ),
+          CreativeIdea,
+          PrefetchHooks Function()
+        > {
+  $$CreativeIdeasTableTableManager(
+    _$ProjectDatabase db,
+    $CreativeIdeasTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CreativeIdeasTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CreativeIdeasTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CreativeIdeasTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> briefId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> tagsJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreativeIdeasCompanion(
+                id: id,
+                briefId: briefId,
+                title: title,
+                description: description,
+                tagsJson: tagsJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String briefId,
+                required String title,
+                required String description,
+                Value<String> tagsJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreativeIdeasCompanion.insert(
+                id: id,
+                briefId: briefId,
+                title: title,
+                description: description,
+                tagsJson: tagsJson,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CreativeIdeasTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CreativeIdeasTable,
+      CreativeIdea,
+      $$CreativeIdeasTableFilterComposer,
+      $$CreativeIdeasTableOrderingComposer,
+      $$CreativeIdeasTableAnnotationComposer,
+      $$CreativeIdeasTableCreateCompanionBuilder,
+      $$CreativeIdeasTableUpdateCompanionBuilder,
+      (
+        CreativeIdea,
+        BaseReferences<_$ProjectDatabase, $CreativeIdeasTable, CreativeIdea>,
+      ),
+      CreativeIdea,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -103568,4 +104697,8 @@ class $ProjectDatabaseManager {
       $$AgentsTableTableManager(_db, _db.agents);
   $$AgentToolCallsTableTableManager get agentToolCalls =>
       $$AgentToolCallsTableTableManager(_db, _db.agentToolCalls);
+  $$CreativeBriefsTableTableManager get creativeBriefs =>
+      $$CreativeBriefsTableTableManager(_db, _db.creativeBriefs);
+  $$CreativeIdeasTableTableManager get creativeIdeas =>
+      $$CreativeIdeasTableTableManager(_db, _db.creativeIdeas);
 }

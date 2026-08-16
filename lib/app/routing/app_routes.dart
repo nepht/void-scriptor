@@ -37,6 +37,7 @@ abstract final class AppRoutes {
   static const collaborationComments = '/collaboration/comments';
   static const security = '/security';
   static const securityLock = '/security/lock';
+  static const appearance = '/appearance';
   static const plugins = '/plugins';
   static const render = '/render';
   static const animation = '/animation';
@@ -44,8 +45,6 @@ abstract final class AppRoutes {
   static const virtualProduction = '/virtual-production';
   static const publishing = '/publishing';
   static const enterpriseStudio = '/enterprise-studio';
-  static const knowledge = '/knowledge';
-  static const agents = '/agents';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

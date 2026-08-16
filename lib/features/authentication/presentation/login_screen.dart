@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/auth_controller.dart';
+import '../../../app/routing/app_routes.dart';
 import '../../../design_system/colors/void_colors.dart';
 import '../../../design_system/typography/void_typography.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
@@ -74,6 +76,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ],
                 ),
               ),
+            ),
+          ),
+          // Akses pengaturan tampilan langsung dari layar login
+          Positioned(
+            top: 12,
+            right: 12,
+            child: IconButton(
+              tooltip: 'Appearance',
+              onPressed: () => context.go(AppRoutes.appearance),
+              icon: const Icon(Icons.palette_outlined, size: 20),
             ),
           ),
           Center(

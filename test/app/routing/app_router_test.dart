@@ -1,14 +1,26 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:void_scriptor/app/routing/app_routes.dart';
 import 'package:void_scriptor/app/routing/app_router.dart';
 import 'package:void_scriptor/app/void_scriptor_app.dart';
+
+import '../../shared/theme_test_overrides.dart';
+
+Widget _app(GoRouter router) {
+  return ProviderScope(
+    overrides: themeTestOverrides(),
+    child: VoidScriptorApp(routerConfig: router),
+  );
+}
 
 void main() {
   testWidgets('router dimulai dari splash', (tester) async {
     final router = createAppRouter();
     addTearDown(router.dispose);
 
-    await tester.pumpWidget(VoidScriptorApp(routerConfig: router));
+    await tester.pumpWidget(_app(router));
     await tester.pumpAndSettle();
 
     expect(find.text('SPLASH'), findsOneWidget);
@@ -19,7 +31,7 @@ void main() {
       final router = createAppRouter(initialLocation: route.value);
       addTearDown(router.dispose);
 
-      await tester.pumpWidget(VoidScriptorApp(routerConfig: router));
+      await tester.pumpWidget(_app(router));
       await tester.pumpAndSettle();
 
       final expectedLabel = route.value == AppRoutes.workspace

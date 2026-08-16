@@ -4,8 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:void_scriptor/app/void_app.dart';
 
+import '../../shared/theme_test_overrides.dart';
+
 Widget _app() {
-  return const ProviderScope(child: VoidScriptorApp());
+  return ProviderScope(
+    overrides: themeTestOverrides(),
+    child: const VoidScriptorApp(),
+  );
 }
 
 Future<void> _settleAuth(WidgetTester tester) async {

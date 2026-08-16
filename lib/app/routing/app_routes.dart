@@ -41,6 +41,7 @@ abstract final class AppRoutes {
   static const render = '/render';
   static const animation = '/animation';
   static const audio = '/audio';
+  static const virtualProduction = '/virtual-production';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

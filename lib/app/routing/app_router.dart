@@ -34,6 +34,8 @@ import '../../core/render/presentation/render_preview_panel.dart';
 import '../../core/animation/presentation/animation_preview_panel.dart';
 import '../../core/animation/builtin/demo_animation.dart';
 import '../../core/audio_engine/presentation/audio_meter_panel.dart';
+import '../../core/virtual_production/presentation/virtual_production_panel.dart';
+import '../../core/virtual_production/builtin/demo_virtual_production.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
@@ -105,6 +107,14 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
       GoRoute(
         path: AppRoutes.audio,
         builder: (_, __) => const AudioMeterPanel(rmsDb: -18, gainDb: -6),
+      ),
+      GoRoute(
+        path: AppRoutes.virtualProduction,
+        builder: (_, __) => VirtualProductionPanel(
+          shotCount: DemoVirtualProduction.shotList.shots.length,
+          takeCount: 0,
+          totalDurationSeconds: DemoVirtualProduction.shotList.totalDuration,
+        ),
       ),
     ],
   );
@@ -251,6 +261,14 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     GoRoute(
       path: AppRoutes.audio,
       builder: (_, __) => const AudioMeterPanel(rmsDb: -18, gainDb: -6),
+    ),
+    GoRoute(
+      path: AppRoutes.virtualProduction,
+      builder: (_, __) => VirtualProductionPanel(
+        shotCount: DemoVirtualProduction.shotList.shots.length,
+        takeCount: 0,
+        totalDurationSeconds: DemoVirtualProduction.shotList.totalDuration,
+      ),
     ),
   ];
 }

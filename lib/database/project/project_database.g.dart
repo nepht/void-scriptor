@@ -63483,6 +63483,725 @@ class AudioAutomationCurvesCompanion
   }
 }
 
+class $ShotsTable extends Shots with TableInfo<$ShotsTable, Shot> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ShotsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startSecondsMeta = const VerificationMeta(
+    'startSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> startSeconds = GeneratedColumn<double>(
+    'start_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> durationSeconds = GeneratedColumn<double>(
+    'duration_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cameraIdMeta = const VerificationMeta(
+    'cameraId',
+  );
+  @override
+  late final GeneratedColumn<String> cameraId = GeneratedColumn<String>(
+    'camera_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    startSeconds,
+    durationSeconds,
+    cameraId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'shots';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Shot> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('start_seconds')) {
+      context.handle(
+        _startSecondsMeta,
+        startSeconds.isAcceptableOrUnknown(
+          data['start_seconds']!,
+          _startSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_startSecondsMeta);
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_durationSecondsMeta);
+    }
+    if (data.containsKey('camera_id')) {
+      context.handle(
+        _cameraIdMeta,
+        cameraId.isAcceptableOrUnknown(data['camera_id']!, _cameraIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_cameraIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Shot map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Shot(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      startSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}start_seconds'],
+      )!,
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}duration_seconds'],
+      )!,
+      cameraId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}camera_id'],
+      )!,
+    );
+  }
+
+  @override
+  $ShotsTable createAlias(String alias) {
+    return $ShotsTable(attachedDatabase, alias);
+  }
+}
+
+class Shot extends DataClass implements Insertable<Shot> {
+  final String id;
+  final String name;
+  final double startSeconds;
+  final double durationSeconds;
+  final String cameraId;
+  const Shot({
+    required this.id,
+    required this.name,
+    required this.startSeconds,
+    required this.durationSeconds,
+    required this.cameraId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['start_seconds'] = Variable<double>(startSeconds);
+    map['duration_seconds'] = Variable<double>(durationSeconds);
+    map['camera_id'] = Variable<String>(cameraId);
+    return map;
+  }
+
+  ShotsCompanion toCompanion(bool nullToAbsent) {
+    return ShotsCompanion(
+      id: Value(id),
+      name: Value(name),
+      startSeconds: Value(startSeconds),
+      durationSeconds: Value(durationSeconds),
+      cameraId: Value(cameraId),
+    );
+  }
+
+  factory Shot.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Shot(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      startSeconds: serializer.fromJson<double>(json['startSeconds']),
+      durationSeconds: serializer.fromJson<double>(json['durationSeconds']),
+      cameraId: serializer.fromJson<String>(json['cameraId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'startSeconds': serializer.toJson<double>(startSeconds),
+      'durationSeconds': serializer.toJson<double>(durationSeconds),
+      'cameraId': serializer.toJson<String>(cameraId),
+    };
+  }
+
+  Shot copyWith({
+    String? id,
+    String? name,
+    double? startSeconds,
+    double? durationSeconds,
+    String? cameraId,
+  }) => Shot(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    startSeconds: startSeconds ?? this.startSeconds,
+    durationSeconds: durationSeconds ?? this.durationSeconds,
+    cameraId: cameraId ?? this.cameraId,
+  );
+  Shot copyWithCompanion(ShotsCompanion data) {
+    return Shot(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      startSeconds: data.startSeconds.present
+          ? data.startSeconds.value
+          : this.startSeconds,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      cameraId: data.cameraId.present ? data.cameraId.value : this.cameraId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Shot(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('startSeconds: $startSeconds, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('cameraId: $cameraId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, startSeconds, durationSeconds, cameraId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Shot &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.startSeconds == this.startSeconds &&
+          other.durationSeconds == this.durationSeconds &&
+          other.cameraId == this.cameraId);
+}
+
+class ShotsCompanion extends UpdateCompanion<Shot> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<double> startSeconds;
+  final Value<double> durationSeconds;
+  final Value<String> cameraId;
+  final Value<int> rowid;
+  const ShotsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.startSeconds = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.cameraId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ShotsCompanion.insert({
+    required String id,
+    required String name,
+    required double startSeconds,
+    required double durationSeconds,
+    required String cameraId,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       startSeconds = Value(startSeconds),
+       durationSeconds = Value(durationSeconds),
+       cameraId = Value(cameraId);
+  static Insertable<Shot> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<double>? startSeconds,
+    Expression<double>? durationSeconds,
+    Expression<String>? cameraId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (startSeconds != null) 'start_seconds': startSeconds,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (cameraId != null) 'camera_id': cameraId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ShotsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<double>? startSeconds,
+    Value<double>? durationSeconds,
+    Value<String>? cameraId,
+    Value<int>? rowid,
+  }) {
+    return ShotsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      startSeconds: startSeconds ?? this.startSeconds,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      cameraId: cameraId ?? this.cameraId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (startSeconds.present) {
+      map['start_seconds'] = Variable<double>(startSeconds.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<double>(durationSeconds.value);
+    }
+    if (cameraId.present) {
+      map['camera_id'] = Variable<String>(cameraId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ShotsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('startSeconds: $startSeconds, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('cameraId: $cameraId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TakesTable extends Takes with TableInfo<$TakesTable, Take> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TakesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _shotIdMeta = const VerificationMeta('shotId');
+  @override
+  late final GeneratedColumn<String> shotId = GeneratedColumn<String>(
+    'shot_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _takeNumberMeta = const VerificationMeta(
+    'takeNumber',
+  );
+  @override
+  late final GeneratedColumn<int> takeNumber = GeneratedColumn<int>(
+    'take_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stateMeta = const VerificationMeta('state');
+  @override
+  late final GeneratedColumn<String> state = GeneratedColumn<String>(
+    'state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, shotId, takeNumber, state, notes];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'takes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Take> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('shot_id')) {
+      context.handle(
+        _shotIdMeta,
+        shotId.isAcceptableOrUnknown(data['shot_id']!, _shotIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_shotIdMeta);
+    }
+    if (data.containsKey('take_number')) {
+      context.handle(
+        _takeNumberMeta,
+        takeNumber.isAcceptableOrUnknown(data['take_number']!, _takeNumberMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_takeNumberMeta);
+    }
+    if (data.containsKey('state')) {
+      context.handle(
+        _stateMeta,
+        state.isAcceptableOrUnknown(data['state']!, _stateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stateMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Take map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Take(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      shotId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}shot_id'],
+      )!,
+      takeNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}take_number'],
+      )!,
+      state: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}state'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+    );
+  }
+
+  @override
+  $TakesTable createAlias(String alias) {
+    return $TakesTable(attachedDatabase, alias);
+  }
+}
+
+class Take extends DataClass implements Insertable<Take> {
+  final String id;
+  final String shotId;
+  final int takeNumber;
+  final String state;
+  final String notes;
+  const Take({
+    required this.id,
+    required this.shotId,
+    required this.takeNumber,
+    required this.state,
+    required this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['shot_id'] = Variable<String>(shotId);
+    map['take_number'] = Variable<int>(takeNumber);
+    map['state'] = Variable<String>(state);
+    map['notes'] = Variable<String>(notes);
+    return map;
+  }
+
+  TakesCompanion toCompanion(bool nullToAbsent) {
+    return TakesCompanion(
+      id: Value(id),
+      shotId: Value(shotId),
+      takeNumber: Value(takeNumber),
+      state: Value(state),
+      notes: Value(notes),
+    );
+  }
+
+  factory Take.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Take(
+      id: serializer.fromJson<String>(json['id']),
+      shotId: serializer.fromJson<String>(json['shotId']),
+      takeNumber: serializer.fromJson<int>(json['takeNumber']),
+      state: serializer.fromJson<String>(json['state']),
+      notes: serializer.fromJson<String>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'shotId': serializer.toJson<String>(shotId),
+      'takeNumber': serializer.toJson<int>(takeNumber),
+      'state': serializer.toJson<String>(state),
+      'notes': serializer.toJson<String>(notes),
+    };
+  }
+
+  Take copyWith({
+    String? id,
+    String? shotId,
+    int? takeNumber,
+    String? state,
+    String? notes,
+  }) => Take(
+    id: id ?? this.id,
+    shotId: shotId ?? this.shotId,
+    takeNumber: takeNumber ?? this.takeNumber,
+    state: state ?? this.state,
+    notes: notes ?? this.notes,
+  );
+  Take copyWithCompanion(TakesCompanion data) {
+    return Take(
+      id: data.id.present ? data.id.value : this.id,
+      shotId: data.shotId.present ? data.shotId.value : this.shotId,
+      takeNumber: data.takeNumber.present
+          ? data.takeNumber.value
+          : this.takeNumber,
+      state: data.state.present ? data.state.value : this.state,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Take(')
+          ..write('id: $id, ')
+          ..write('shotId: $shotId, ')
+          ..write('takeNumber: $takeNumber, ')
+          ..write('state: $state, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, shotId, takeNumber, state, notes);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Take &&
+          other.id == this.id &&
+          other.shotId == this.shotId &&
+          other.takeNumber == this.takeNumber &&
+          other.state == this.state &&
+          other.notes == this.notes);
+}
+
+class TakesCompanion extends UpdateCompanion<Take> {
+  final Value<String> id;
+  final Value<String> shotId;
+  final Value<int> takeNumber;
+  final Value<String> state;
+  final Value<String> notes;
+  final Value<int> rowid;
+  const TakesCompanion({
+    this.id = const Value.absent(),
+    this.shotId = const Value.absent(),
+    this.takeNumber = const Value.absent(),
+    this.state = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TakesCompanion.insert({
+    required String id,
+    required String shotId,
+    required int takeNumber,
+    required String state,
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       shotId = Value(shotId),
+       takeNumber = Value(takeNumber),
+       state = Value(state);
+  static Insertable<Take> custom({
+    Expression<String>? id,
+    Expression<String>? shotId,
+    Expression<int>? takeNumber,
+    Expression<String>? state,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (shotId != null) 'shot_id': shotId,
+      if (takeNumber != null) 'take_number': takeNumber,
+      if (state != null) 'state': state,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TakesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? shotId,
+    Value<int>? takeNumber,
+    Value<String>? state,
+    Value<String>? notes,
+    Value<int>? rowid,
+  }) {
+    return TakesCompanion(
+      id: id ?? this.id,
+      shotId: shotId ?? this.shotId,
+      takeNumber: takeNumber ?? this.takeNumber,
+      state: state ?? this.state,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (shotId.present) {
+      map['shot_id'] = Variable<String>(shotId.value);
+    }
+    if (takeNumber.present) {
+      map['take_number'] = Variable<int>(takeNumber.value);
+    }
+    if (state.present) {
+      map['state'] = Variable<String>(state.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TakesCompanion(')
+          ..write('id: $id, ')
+          ..write('shotId: $shotId, ')
+          ..write('takeNumber: $takeNumber, ')
+          ..write('state: $state, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -63725,6 +64444,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
       $AnimationKeyframesTable(this);
   late final $AudioAutomationCurvesTable audioAutomationCurves =
       $AudioAutomationCurvesTable(this);
+  late final $ShotsTable shots = $ShotsTable(this);
+  late final $TakesTable takes = $TakesTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -63928,6 +64649,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     animationTracks,
     animationKeyframes,
     audioAutomationCurves,
+    shots,
+    takes,
   ];
 }
 
@@ -98183,6 +98906,400 @@ typedef $$AudioAutomationCurvesTableProcessedTableManager =
       AudioAutomationCurve,
       PrefetchHooks Function()
     >;
+typedef $$ShotsTableCreateCompanionBuilder =
+    ShotsCompanion Function({
+      required String id,
+      required String name,
+      required double startSeconds,
+      required double durationSeconds,
+      required String cameraId,
+      Value<int> rowid,
+    });
+typedef $$ShotsTableUpdateCompanionBuilder =
+    ShotsCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<double> startSeconds,
+      Value<double> durationSeconds,
+      Value<String> cameraId,
+      Value<int> rowid,
+    });
+
+class $$ShotsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $ShotsTable> {
+  $$ShotsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cameraId => $composableBuilder(
+    column: $table.cameraId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ShotsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $ShotsTable> {
+  $$ShotsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cameraId => $composableBuilder(
+    column: $table.cameraId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ShotsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $ShotsTable> {
+  $$ShotsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<double> get startSeconds => $composableBuilder(
+    column: $table.startSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get cameraId =>
+      $composableBuilder(column: $table.cameraId, builder: (column) => column);
+}
+
+class $$ShotsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $ShotsTable,
+          Shot,
+          $$ShotsTableFilterComposer,
+          $$ShotsTableOrderingComposer,
+          $$ShotsTableAnnotationComposer,
+          $$ShotsTableCreateCompanionBuilder,
+          $$ShotsTableUpdateCompanionBuilder,
+          (Shot, BaseReferences<_$ProjectDatabase, $ShotsTable, Shot>),
+          Shot,
+          PrefetchHooks Function()
+        > {
+  $$ShotsTableTableManager(_$ProjectDatabase db, $ShotsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ShotsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ShotsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ShotsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<double> startSeconds = const Value.absent(),
+                Value<double> durationSeconds = const Value.absent(),
+                Value<String> cameraId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ShotsCompanion(
+                id: id,
+                name: name,
+                startSeconds: startSeconds,
+                durationSeconds: durationSeconds,
+                cameraId: cameraId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required double startSeconds,
+                required double durationSeconds,
+                required String cameraId,
+                Value<int> rowid = const Value.absent(),
+              }) => ShotsCompanion.insert(
+                id: id,
+                name: name,
+                startSeconds: startSeconds,
+                durationSeconds: durationSeconds,
+                cameraId: cameraId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ShotsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $ShotsTable,
+      Shot,
+      $$ShotsTableFilterComposer,
+      $$ShotsTableOrderingComposer,
+      $$ShotsTableAnnotationComposer,
+      $$ShotsTableCreateCompanionBuilder,
+      $$ShotsTableUpdateCompanionBuilder,
+      (Shot, BaseReferences<_$ProjectDatabase, $ShotsTable, Shot>),
+      Shot,
+      PrefetchHooks Function()
+    >;
+typedef $$TakesTableCreateCompanionBuilder =
+    TakesCompanion Function({
+      required String id,
+      required String shotId,
+      required int takeNumber,
+      required String state,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+typedef $$TakesTableUpdateCompanionBuilder =
+    TakesCompanion Function({
+      Value<String> id,
+      Value<String> shotId,
+      Value<int> takeNumber,
+      Value<String> state,
+      Value<String> notes,
+      Value<int> rowid,
+    });
+
+class $$TakesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $TakesTable> {
+  $$TakesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get shotId => $composableBuilder(
+    column: $table.shotId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get takeNumber => $composableBuilder(
+    column: $table.takeNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TakesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $TakesTable> {
+  $$TakesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get shotId => $composableBuilder(
+    column: $table.shotId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get takeNumber => $composableBuilder(
+    column: $table.takeNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TakesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $TakesTable> {
+  $$TakesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get shotId =>
+      $composableBuilder(column: $table.shotId, builder: (column) => column);
+
+  GeneratedColumn<int> get takeNumber => $composableBuilder(
+    column: $table.takeNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get state =>
+      $composableBuilder(column: $table.state, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$TakesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $TakesTable,
+          Take,
+          $$TakesTableFilterComposer,
+          $$TakesTableOrderingComposer,
+          $$TakesTableAnnotationComposer,
+          $$TakesTableCreateCompanionBuilder,
+          $$TakesTableUpdateCompanionBuilder,
+          (Take, BaseReferences<_$ProjectDatabase, $TakesTable, Take>),
+          Take,
+          PrefetchHooks Function()
+        > {
+  $$TakesTableTableManager(_$ProjectDatabase db, $TakesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TakesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TakesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TakesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> shotId = const Value.absent(),
+                Value<int> takeNumber = const Value.absent(),
+                Value<String> state = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TakesCompanion(
+                id: id,
+                shotId: shotId,
+                takeNumber: takeNumber,
+                state: state,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String shotId,
+                required int takeNumber,
+                required String state,
+                Value<String> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TakesCompanion.insert(
+                id: id,
+                shotId: shotId,
+                takeNumber: takeNumber,
+                state: state,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TakesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $TakesTable,
+      Take,
+      $$TakesTableFilterComposer,
+      $$TakesTableOrderingComposer,
+      $$TakesTableAnnotationComposer,
+      $$TakesTableCreateCompanionBuilder,
+      $$TakesTableUpdateCompanionBuilder,
+      (Take, BaseReferences<_$ProjectDatabase, $TakesTable, Take>),
+      Take,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -98533,4 +99650,8 @@ class $ProjectDatabaseManager {
       $$AnimationKeyframesTableTableManager(_db, _db.animationKeyframes);
   $$AudioAutomationCurvesTableTableManager get audioAutomationCurves =>
       $$AudioAutomationCurvesTableTableManager(_db, _db.audioAutomationCurves);
+  $$ShotsTableTableManager get shots =>
+      $$ShotsTableTableManager(_db, _db.shots);
+  $$TakesTableTableManager get takes =>
+      $$TakesTableTableManager(_db, _db.takes);
 }

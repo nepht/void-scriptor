@@ -57,7 +57,7 @@ void main() {
     final second = await service.open(dbPath);
     addTearDown(second.close);
     final restored = VehicleRepository(second);
-    expect(second.schemaVersion, 45);
+    expect(second.schemaVersion, 46);
     expect((await second.assetDao.getById(id))?.type, 'vehicle');
     expect(
       (await restored.getVehicle(id))?.category,

@@ -64668,6 +64668,665 @@ class PublishRecordsCompanion extends UpdateCompanion<PublishRecord> {
   }
 }
 
+class $StudioMembersTable extends StudioMembers
+    with TableInfo<$StudioMembersTable, StudioMember> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StudioMembersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _studioIdMeta = const VerificationMeta(
+    'studioId',
+  );
+  @override
+  late final GeneratedColumn<String> studioId = GeneratedColumn<String>(
+    'studio_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
+  @override
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+    'role',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [userId, studioId, role, status];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'studio_members';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StudioMember> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('studio_id')) {
+      context.handle(
+        _studioIdMeta,
+        studioId.isAcceptableOrUnknown(data['studio_id']!, _studioIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_studioIdMeta);
+    }
+    if (data.containsKey('role')) {
+      context.handle(
+        _roleMeta,
+        role.isAcceptableOrUnknown(data['role']!, _roleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_roleMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {userId};
+  @override
+  StudioMember map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StudioMember(
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      studioId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}studio_id'],
+      )!,
+      role: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}role'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+    );
+  }
+
+  @override
+  $StudioMembersTable createAlias(String alias) {
+    return $StudioMembersTable(attachedDatabase, alias);
+  }
+}
+
+class StudioMember extends DataClass implements Insertable<StudioMember> {
+  final String userId;
+  final String studioId;
+  final String role;
+  final String status;
+  const StudioMember({
+    required this.userId,
+    required this.studioId,
+    required this.role,
+    required this.status,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['user_id'] = Variable<String>(userId);
+    map['studio_id'] = Variable<String>(studioId);
+    map['role'] = Variable<String>(role);
+    map['status'] = Variable<String>(status);
+    return map;
+  }
+
+  StudioMembersCompanion toCompanion(bool nullToAbsent) {
+    return StudioMembersCompanion(
+      userId: Value(userId),
+      studioId: Value(studioId),
+      role: Value(role),
+      status: Value(status),
+    );
+  }
+
+  factory StudioMember.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StudioMember(
+      userId: serializer.fromJson<String>(json['userId']),
+      studioId: serializer.fromJson<String>(json['studioId']),
+      role: serializer.fromJson<String>(json['role']),
+      status: serializer.fromJson<String>(json['status']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'userId': serializer.toJson<String>(userId),
+      'studioId': serializer.toJson<String>(studioId),
+      'role': serializer.toJson<String>(role),
+      'status': serializer.toJson<String>(status),
+    };
+  }
+
+  StudioMember copyWith({
+    String? userId,
+    String? studioId,
+    String? role,
+    String? status,
+  }) => StudioMember(
+    userId: userId ?? this.userId,
+    studioId: studioId ?? this.studioId,
+    role: role ?? this.role,
+    status: status ?? this.status,
+  );
+  StudioMember copyWithCompanion(StudioMembersCompanion data) {
+    return StudioMember(
+      userId: data.userId.present ? data.userId.value : this.userId,
+      studioId: data.studioId.present ? data.studioId.value : this.studioId,
+      role: data.role.present ? data.role.value : this.role,
+      status: data.status.present ? data.status.value : this.status,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StudioMember(')
+          ..write('userId: $userId, ')
+          ..write('studioId: $studioId, ')
+          ..write('role: $role, ')
+          ..write('status: $status')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(userId, studioId, role, status);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StudioMember &&
+          other.userId == this.userId &&
+          other.studioId == this.studioId &&
+          other.role == this.role &&
+          other.status == this.status);
+}
+
+class StudioMembersCompanion extends UpdateCompanion<StudioMember> {
+  final Value<String> userId;
+  final Value<String> studioId;
+  final Value<String> role;
+  final Value<String> status;
+  final Value<int> rowid;
+  const StudioMembersCompanion({
+    this.userId = const Value.absent(),
+    this.studioId = const Value.absent(),
+    this.role = const Value.absent(),
+    this.status = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StudioMembersCompanion.insert({
+    required String userId,
+    required String studioId,
+    required String role,
+    required String status,
+    this.rowid = const Value.absent(),
+  }) : userId = Value(userId),
+       studioId = Value(studioId),
+       role = Value(role),
+       status = Value(status);
+  static Insertable<StudioMember> custom({
+    Expression<String>? userId,
+    Expression<String>? studioId,
+    Expression<String>? role,
+    Expression<String>? status,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (userId != null) 'user_id': userId,
+      if (studioId != null) 'studio_id': studioId,
+      if (role != null) 'role': role,
+      if (status != null) 'status': status,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StudioMembersCompanion copyWith({
+    Value<String>? userId,
+    Value<String>? studioId,
+    Value<String>? role,
+    Value<String>? status,
+    Value<int>? rowid,
+  }) {
+    return StudioMembersCompanion(
+      userId: userId ?? this.userId,
+      studioId: studioId ?? this.studioId,
+      role: role ?? this.role,
+      status: status ?? this.status,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (studioId.present) {
+      map['studio_id'] = Variable<String>(studioId.value);
+    }
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StudioMembersCompanion(')
+          ..write('userId: $userId, ')
+          ..write('studioId: $studioId, ')
+          ..write('role: $role, ')
+          ..write('status: $status, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AuditEventsTable extends AuditEvents
+    with TableInfo<$AuditEventsTable, AuditEvent> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AuditEventsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _actorMeta = const VerificationMeta('actor');
+  @override
+  late final GeneratedColumn<String> actor = GeneratedColumn<String>(
+    'actor',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _actionMeta = const VerificationMeta('action');
+  @override
+  late final GeneratedColumn<String> action = GeneratedColumn<String>(
+    'action',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetMeta = const VerificationMeta('target');
+  @override
+  late final GeneratedColumn<String> target = GeneratedColumn<String>(
+    'target',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timestampMeta = const VerificationMeta(
+    'timestamp',
+  );
+  @override
+  late final GeneratedColumn<DateTime> timestamp = GeneratedColumn<DateTime>(
+    'timestamp',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, actor, action, target, timestamp];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'audit_events';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AuditEvent> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('actor')) {
+      context.handle(
+        _actorMeta,
+        actor.isAcceptableOrUnknown(data['actor']!, _actorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_actorMeta);
+    }
+    if (data.containsKey('action')) {
+      context.handle(
+        _actionMeta,
+        action.isAcceptableOrUnknown(data['action']!, _actionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_actionMeta);
+    }
+    if (data.containsKey('target')) {
+      context.handle(
+        _targetMeta,
+        target.isAcceptableOrUnknown(data['target']!, _targetMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_targetMeta);
+    }
+    if (data.containsKey('timestamp')) {
+      context.handle(
+        _timestampMeta,
+        timestamp.isAcceptableOrUnknown(data['timestamp']!, _timestampMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timestampMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AuditEvent map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AuditEvent(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      actor: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}actor'],
+      )!,
+      action: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}action'],
+      )!,
+      target: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target'],
+      )!,
+      timestamp: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}timestamp'],
+      )!,
+    );
+  }
+
+  @override
+  $AuditEventsTable createAlias(String alias) {
+    return $AuditEventsTable(attachedDatabase, alias);
+  }
+}
+
+class AuditEvent extends DataClass implements Insertable<AuditEvent> {
+  final String id;
+  final String actor;
+  final String action;
+  final String target;
+  final DateTime timestamp;
+  const AuditEvent({
+    required this.id,
+    required this.actor,
+    required this.action,
+    required this.target,
+    required this.timestamp,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['actor'] = Variable<String>(actor);
+    map['action'] = Variable<String>(action);
+    map['target'] = Variable<String>(target);
+    map['timestamp'] = Variable<DateTime>(timestamp);
+    return map;
+  }
+
+  AuditEventsCompanion toCompanion(bool nullToAbsent) {
+    return AuditEventsCompanion(
+      id: Value(id),
+      actor: Value(actor),
+      action: Value(action),
+      target: Value(target),
+      timestamp: Value(timestamp),
+    );
+  }
+
+  factory AuditEvent.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AuditEvent(
+      id: serializer.fromJson<String>(json['id']),
+      actor: serializer.fromJson<String>(json['actor']),
+      action: serializer.fromJson<String>(json['action']),
+      target: serializer.fromJson<String>(json['target']),
+      timestamp: serializer.fromJson<DateTime>(json['timestamp']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'actor': serializer.toJson<String>(actor),
+      'action': serializer.toJson<String>(action),
+      'target': serializer.toJson<String>(target),
+      'timestamp': serializer.toJson<DateTime>(timestamp),
+    };
+  }
+
+  AuditEvent copyWith({
+    String? id,
+    String? actor,
+    String? action,
+    String? target,
+    DateTime? timestamp,
+  }) => AuditEvent(
+    id: id ?? this.id,
+    actor: actor ?? this.actor,
+    action: action ?? this.action,
+    target: target ?? this.target,
+    timestamp: timestamp ?? this.timestamp,
+  );
+  AuditEvent copyWithCompanion(AuditEventsCompanion data) {
+    return AuditEvent(
+      id: data.id.present ? data.id.value : this.id,
+      actor: data.actor.present ? data.actor.value : this.actor,
+      action: data.action.present ? data.action.value : this.action,
+      target: data.target.present ? data.target.value : this.target,
+      timestamp: data.timestamp.present ? data.timestamp.value : this.timestamp,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AuditEvent(')
+          ..write('id: $id, ')
+          ..write('actor: $actor, ')
+          ..write('action: $action, ')
+          ..write('target: $target, ')
+          ..write('timestamp: $timestamp')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, actor, action, target, timestamp);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AuditEvent &&
+          other.id == this.id &&
+          other.actor == this.actor &&
+          other.action == this.action &&
+          other.target == this.target &&
+          other.timestamp == this.timestamp);
+}
+
+class AuditEventsCompanion extends UpdateCompanion<AuditEvent> {
+  final Value<String> id;
+  final Value<String> actor;
+  final Value<String> action;
+  final Value<String> target;
+  final Value<DateTime> timestamp;
+  final Value<int> rowid;
+  const AuditEventsCompanion({
+    this.id = const Value.absent(),
+    this.actor = const Value.absent(),
+    this.action = const Value.absent(),
+    this.target = const Value.absent(),
+    this.timestamp = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AuditEventsCompanion.insert({
+    required String id,
+    required String actor,
+    required String action,
+    required String target,
+    required DateTime timestamp,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       actor = Value(actor),
+       action = Value(action),
+       target = Value(target),
+       timestamp = Value(timestamp);
+  static Insertable<AuditEvent> custom({
+    Expression<String>? id,
+    Expression<String>? actor,
+    Expression<String>? action,
+    Expression<String>? target,
+    Expression<DateTime>? timestamp,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (actor != null) 'actor': actor,
+      if (action != null) 'action': action,
+      if (target != null) 'target': target,
+      if (timestamp != null) 'timestamp': timestamp,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AuditEventsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? actor,
+    Value<String>? action,
+    Value<String>? target,
+    Value<DateTime>? timestamp,
+    Value<int>? rowid,
+  }) {
+    return AuditEventsCompanion(
+      id: id ?? this.id,
+      actor: actor ?? this.actor,
+      action: action ?? this.action,
+      target: target ?? this.target,
+      timestamp: timestamp ?? this.timestamp,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (actor.present) {
+      map['actor'] = Variable<String>(actor.value);
+    }
+    if (action.present) {
+      map['action'] = Variable<String>(action.value);
+    }
+    if (target.present) {
+      map['target'] = Variable<String>(target.value);
+    }
+    if (timestamp.present) {
+      map['timestamp'] = Variable<DateTime>(timestamp.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AuditEventsCompanion(')
+          ..write('id: $id, ')
+          ..write('actor: $actor, ')
+          ..write('action: $action, ')
+          ..write('target: $target, ')
+          ..write('timestamp: $timestamp, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -64913,6 +65572,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final $ShotsTable shots = $ShotsTable(this);
   late final $TakesTable takes = $TakesTable(this);
   late final $PublishRecordsTable publishRecords = $PublishRecordsTable(this);
+  late final $StudioMembersTable studioMembers = $StudioMembersTable(this);
+  late final $AuditEventsTable auditEvents = $AuditEventsTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -65119,6 +65780,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     shots,
     takes,
     publishRecords,
+    studioMembers,
+    auditEvents,
   ];
 }
 
@@ -100014,6 +100677,393 @@ typedef $$PublishRecordsTableProcessedTableManager =
       PublishRecord,
       PrefetchHooks Function()
     >;
+typedef $$StudioMembersTableCreateCompanionBuilder =
+    StudioMembersCompanion Function({
+      required String userId,
+      required String studioId,
+      required String role,
+      required String status,
+      Value<int> rowid,
+    });
+typedef $$StudioMembersTableUpdateCompanionBuilder =
+    StudioMembersCompanion Function({
+      Value<String> userId,
+      Value<String> studioId,
+      Value<String> role,
+      Value<String> status,
+      Value<int> rowid,
+    });
+
+class $$StudioMembersTableFilterComposer
+    extends Composer<_$ProjectDatabase, $StudioMembersTable> {
+  $$StudioMembersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get studioId => $composableBuilder(
+    column: $table.studioId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$StudioMembersTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $StudioMembersTable> {
+  $$StudioMembersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get studioId => $composableBuilder(
+    column: $table.studioId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$StudioMembersTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $StudioMembersTable> {
+  $$StudioMembersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get studioId =>
+      $composableBuilder(column: $table.studioId, builder: (column) => column);
+
+  GeneratedColumn<String> get role =>
+      $composableBuilder(column: $table.role, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+}
+
+class $$StudioMembersTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $StudioMembersTable,
+          StudioMember,
+          $$StudioMembersTableFilterComposer,
+          $$StudioMembersTableOrderingComposer,
+          $$StudioMembersTableAnnotationComposer,
+          $$StudioMembersTableCreateCompanionBuilder,
+          $$StudioMembersTableUpdateCompanionBuilder,
+          (
+            StudioMember,
+            BaseReferences<
+              _$ProjectDatabase,
+              $StudioMembersTable,
+              StudioMember
+            >,
+          ),
+          StudioMember,
+          PrefetchHooks Function()
+        > {
+  $$StudioMembersTableTableManager(
+    _$ProjectDatabase db,
+    $StudioMembersTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StudioMembersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StudioMembersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StudioMembersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> userId = const Value.absent(),
+                Value<String> studioId = const Value.absent(),
+                Value<String> role = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StudioMembersCompanion(
+                userId: userId,
+                studioId: studioId,
+                role: role,
+                status: status,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String userId,
+                required String studioId,
+                required String role,
+                required String status,
+                Value<int> rowid = const Value.absent(),
+              }) => StudioMembersCompanion.insert(
+                userId: userId,
+                studioId: studioId,
+                role: role,
+                status: status,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$StudioMembersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $StudioMembersTable,
+      StudioMember,
+      $$StudioMembersTableFilterComposer,
+      $$StudioMembersTableOrderingComposer,
+      $$StudioMembersTableAnnotationComposer,
+      $$StudioMembersTableCreateCompanionBuilder,
+      $$StudioMembersTableUpdateCompanionBuilder,
+      (
+        StudioMember,
+        BaseReferences<_$ProjectDatabase, $StudioMembersTable, StudioMember>,
+      ),
+      StudioMember,
+      PrefetchHooks Function()
+    >;
+typedef $$AuditEventsTableCreateCompanionBuilder =
+    AuditEventsCompanion Function({
+      required String id,
+      required String actor,
+      required String action,
+      required String target,
+      required DateTime timestamp,
+      Value<int> rowid,
+    });
+typedef $$AuditEventsTableUpdateCompanionBuilder =
+    AuditEventsCompanion Function({
+      Value<String> id,
+      Value<String> actor,
+      Value<String> action,
+      Value<String> target,
+      Value<DateTime> timestamp,
+      Value<int> rowid,
+    });
+
+class $$AuditEventsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AuditEventsTable> {
+  $$AuditEventsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get actor => $composableBuilder(
+    column: $table.actor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get action => $composableBuilder(
+    column: $table.action,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get target => $composableBuilder(
+    column: $table.target,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get timestamp => $composableBuilder(
+    column: $table.timestamp,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AuditEventsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AuditEventsTable> {
+  $$AuditEventsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get actor => $composableBuilder(
+    column: $table.actor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get action => $composableBuilder(
+    column: $table.action,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get target => $composableBuilder(
+    column: $table.target,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get timestamp => $composableBuilder(
+    column: $table.timestamp,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AuditEventsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AuditEventsTable> {
+  $$AuditEventsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get actor =>
+      $composableBuilder(column: $table.actor, builder: (column) => column);
+
+  GeneratedColumn<String> get action =>
+      $composableBuilder(column: $table.action, builder: (column) => column);
+
+  GeneratedColumn<String> get target =>
+      $composableBuilder(column: $table.target, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get timestamp =>
+      $composableBuilder(column: $table.timestamp, builder: (column) => column);
+}
+
+class $$AuditEventsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AuditEventsTable,
+          AuditEvent,
+          $$AuditEventsTableFilterComposer,
+          $$AuditEventsTableOrderingComposer,
+          $$AuditEventsTableAnnotationComposer,
+          $$AuditEventsTableCreateCompanionBuilder,
+          $$AuditEventsTableUpdateCompanionBuilder,
+          (
+            AuditEvent,
+            BaseReferences<_$ProjectDatabase, $AuditEventsTable, AuditEvent>,
+          ),
+          AuditEvent,
+          PrefetchHooks Function()
+        > {
+  $$AuditEventsTableTableManager(_$ProjectDatabase db, $AuditEventsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AuditEventsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AuditEventsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AuditEventsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> actor = const Value.absent(),
+                Value<String> action = const Value.absent(),
+                Value<String> target = const Value.absent(),
+                Value<DateTime> timestamp = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AuditEventsCompanion(
+                id: id,
+                actor: actor,
+                action: action,
+                target: target,
+                timestamp: timestamp,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String actor,
+                required String action,
+                required String target,
+                required DateTime timestamp,
+                Value<int> rowid = const Value.absent(),
+              }) => AuditEventsCompanion.insert(
+                id: id,
+                actor: actor,
+                action: action,
+                target: target,
+                timestamp: timestamp,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AuditEventsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AuditEventsTable,
+      AuditEvent,
+      $$AuditEventsTableFilterComposer,
+      $$AuditEventsTableOrderingComposer,
+      $$AuditEventsTableAnnotationComposer,
+      $$AuditEventsTableCreateCompanionBuilder,
+      $$AuditEventsTableUpdateCompanionBuilder,
+      (
+        AuditEvent,
+        BaseReferences<_$ProjectDatabase, $AuditEventsTable, AuditEvent>,
+      ),
+      AuditEvent,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -100370,4 +101420,8 @@ class $ProjectDatabaseManager {
       $$TakesTableTableManager(_db, _db.takes);
   $$PublishRecordsTableTableManager get publishRecords =>
       $$PublishRecordsTableTableManager(_db, _db.publishRecords);
+  $$StudioMembersTableTableManager get studioMembers =>
+      $$StudioMembersTableTableManager(_db, _db.studioMembers);
+  $$AuditEventsTableTableManager get auditEvents =>
+      $$AuditEventsTableTableManager(_db, _db.auditEvents);
 }

@@ -25,6 +25,8 @@ import '../../features/cinematic_production/presentation/cinematic_production_wo
 import '../../features/project_resilience/presentation/project_resilience_center_screen.dart';
 import '../shell/void_app_shell.dart';
 import '../shell/desktop/collaboration_comments_screen.dart';
+import '../../core/security/presentation/project_lock_screen.dart';
+import '../../core/security/presentation/security_settings_screen.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
@@ -40,6 +42,10 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
             AppRoutes.aiStudio => const AdvancedAiStudioScreen(),
             AppRoutes.collaborationComments =>
               const CollaborationCommentsScreen(),
+            AppRoutes.security => const SecuritySettingsScreen(),
+            AppRoutes.securityLock => const ProjectLockScreen(
+              projectName: 'Proyek',
+            ),
             _ => FoundationRouteScreen(label: route.key),
           },
         ),
@@ -119,7 +125,9 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
           route.value != AppRoutes.projects &&
           route.value != AppRoutes.workspace &&
           route.value != AppRoutes.aiStudio &&
-          route.value != AppRoutes.collaborationComments)
+          route.value != AppRoutes.collaborationComments &&
+          route.value != AppRoutes.security &&
+          route.value != AppRoutes.securityLock)
         GoRoute(
           path: route.value,
           builder: (_, __) => _FoundationRouteLabel(label: route.key),
@@ -131,6 +139,14 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     GoRoute(
       path: AppRoutes.collaborationComments,
       builder: (_, __) => const CollaborationCommentsScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.security,
+      builder: (_, __) => const SecuritySettingsScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.securityLock,
+      builder: (_, __) => const ProjectLockScreen(projectName: 'Proyek'),
     ),
     GoRoute(
       path: AppRoutes.workspace,

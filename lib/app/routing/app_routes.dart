@@ -35,6 +35,8 @@ abstract final class AppRoutes {
   static const projectCache = '/project-cache';
   static const projectTrash = '/project-trash';
   static const collaborationComments = '/collaboration/comments';
+  static const security = '/security';
+  static const securityLock = '/security/lock';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

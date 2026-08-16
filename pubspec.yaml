@@ -24,6 +24,7 @@ dependencies:
   sqlite3: ^3.5.1
   uuid: ^4.6.0
   cryptography: ^2.9.0
+  vector_math: ^2.2.0
 
 dev_dependencies:
   flutter_test:

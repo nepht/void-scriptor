@@ -64,3 +64,8 @@ eksternal tetap di luar).
 - Enkripsi lokal hanya sekuat passphrase pengguna; tanpa passphrase kuat, at-rest lemah.
 - `cryptography` dep baru (murni Dart, web-safe) — harus lolos `flutter build web`.
 - Tidak ada KMS/escrow; lupa passphrase = data tidak bisa dipulihkan.
+
+## Status
+
+**DONE** — 30.1–30.21 selesai, `flutter analyze` No issues, full test 564 PASS,
+`flutter build web --release` ✓, `git diff --check` clean.

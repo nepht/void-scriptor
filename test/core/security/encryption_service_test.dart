@@ -14,14 +14,14 @@ void main() {
   });
 
   test('encryptString then decryptString roundtrips', () async {
-    final service = EncryptionService(cipher: const AesGcmCipher());
+    const service = EncryptionService(cipher: AesGcmCipher());
     final encrypted = await service.encryptString(key, 'secret data');
     final decrypted = await service.decryptString(key, encrypted);
     expect(decrypted, 'secret data');
   });
 
   test('encryptBytes then decryptBytes roundtrips', () async {
-    final service = EncryptionService(cipher: const AesGcmCipher());
+    const service = EncryptionService(cipher: AesGcmCipher());
     final bytes = utf8.encode('binary payload');
     final encrypted = await service.encryptBytes(key, bytes);
     final decrypted = await service.decryptBytes(key, encrypted);

@@ -63065,6 +63065,424 @@ class AnimationKeyframesCompanion extends UpdateCompanion<AnimationKeyframe> {
   }
 }
 
+class $AudioAutomationCurvesTable extends AudioAutomationCurves
+    with TableInfo<$AudioAutomationCurvesTable, AudioAutomationCurve> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AudioAutomationCurvesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _clipIdMeta = const VerificationMeta('clipId');
+  @override
+  late final GeneratedColumn<String> clipId = GeneratedColumn<String>(
+    'clip_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _parameterMeta = const VerificationMeta(
+    'parameter',
+  );
+  @override
+  late final GeneratedColumn<String> parameter = GeneratedColumn<String>(
+    'parameter',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _interpolationMeta = const VerificationMeta(
+    'interpolation',
+  );
+  @override
+  late final GeneratedColumn<String> interpolation = GeneratedColumn<String>(
+    'interpolation',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timeSecondsMeta = const VerificationMeta(
+    'timeSeconds',
+  );
+  @override
+  late final GeneratedColumn<double> timeSeconds = GeneratedColumn<double>(
+    'time_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    clipId,
+    parameter,
+    interpolation,
+    timeSeconds,
+    value,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'audio_automation_curves';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AudioAutomationCurve> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('clip_id')) {
+      context.handle(
+        _clipIdMeta,
+        clipId.isAcceptableOrUnknown(data['clip_id']!, _clipIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_clipIdMeta);
+    }
+    if (data.containsKey('parameter')) {
+      context.handle(
+        _parameterMeta,
+        parameter.isAcceptableOrUnknown(data['parameter']!, _parameterMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_parameterMeta);
+    }
+    if (data.containsKey('interpolation')) {
+      context.handle(
+        _interpolationMeta,
+        interpolation.isAcceptableOrUnknown(
+          data['interpolation']!,
+          _interpolationMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_interpolationMeta);
+    }
+    if (data.containsKey('time_seconds')) {
+      context.handle(
+        _timeSecondsMeta,
+        timeSeconds.isAcceptableOrUnknown(
+          data['time_seconds']!,
+          _timeSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_timeSecondsMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AudioAutomationCurve map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AudioAutomationCurve(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      clipId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}clip_id'],
+      )!,
+      parameter: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}parameter'],
+      )!,
+      interpolation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}interpolation'],
+      )!,
+      timeSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}time_seconds'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}value'],
+      )!,
+    );
+  }
+
+  @override
+  $AudioAutomationCurvesTable createAlias(String alias) {
+    return $AudioAutomationCurvesTable(attachedDatabase, alias);
+  }
+}
+
+class AudioAutomationCurve extends DataClass
+    implements Insertable<AudioAutomationCurve> {
+  final String id;
+  final String clipId;
+  final String parameter;
+  final String interpolation;
+  final double timeSeconds;
+  final double value;
+  const AudioAutomationCurve({
+    required this.id,
+    required this.clipId,
+    required this.parameter,
+    required this.interpolation,
+    required this.timeSeconds,
+    required this.value,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['clip_id'] = Variable<String>(clipId);
+    map['parameter'] = Variable<String>(parameter);
+    map['interpolation'] = Variable<String>(interpolation);
+    map['time_seconds'] = Variable<double>(timeSeconds);
+    map['value'] = Variable<double>(value);
+    return map;
+  }
+
+  AudioAutomationCurvesCompanion toCompanion(bool nullToAbsent) {
+    return AudioAutomationCurvesCompanion(
+      id: Value(id),
+      clipId: Value(clipId),
+      parameter: Value(parameter),
+      interpolation: Value(interpolation),
+      timeSeconds: Value(timeSeconds),
+      value: Value(value),
+    );
+  }
+
+  factory AudioAutomationCurve.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AudioAutomationCurve(
+      id: serializer.fromJson<String>(json['id']),
+      clipId: serializer.fromJson<String>(json['clipId']),
+      parameter: serializer.fromJson<String>(json['parameter']),
+      interpolation: serializer.fromJson<String>(json['interpolation']),
+      timeSeconds: serializer.fromJson<double>(json['timeSeconds']),
+      value: serializer.fromJson<double>(json['value']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'clipId': serializer.toJson<String>(clipId),
+      'parameter': serializer.toJson<String>(parameter),
+      'interpolation': serializer.toJson<String>(interpolation),
+      'timeSeconds': serializer.toJson<double>(timeSeconds),
+      'value': serializer.toJson<double>(value),
+    };
+  }
+
+  AudioAutomationCurve copyWith({
+    String? id,
+    String? clipId,
+    String? parameter,
+    String? interpolation,
+    double? timeSeconds,
+    double? value,
+  }) => AudioAutomationCurve(
+    id: id ?? this.id,
+    clipId: clipId ?? this.clipId,
+    parameter: parameter ?? this.parameter,
+    interpolation: interpolation ?? this.interpolation,
+    timeSeconds: timeSeconds ?? this.timeSeconds,
+    value: value ?? this.value,
+  );
+  AudioAutomationCurve copyWithCompanion(AudioAutomationCurvesCompanion data) {
+    return AudioAutomationCurve(
+      id: data.id.present ? data.id.value : this.id,
+      clipId: data.clipId.present ? data.clipId.value : this.clipId,
+      parameter: data.parameter.present ? data.parameter.value : this.parameter,
+      interpolation: data.interpolation.present
+          ? data.interpolation.value
+          : this.interpolation,
+      timeSeconds: data.timeSeconds.present
+          ? data.timeSeconds.value
+          : this.timeSeconds,
+      value: data.value.present ? data.value.value : this.value,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AudioAutomationCurve(')
+          ..write('id: $id, ')
+          ..write('clipId: $clipId, ')
+          ..write('parameter: $parameter, ')
+          ..write('interpolation: $interpolation, ')
+          ..write('timeSeconds: $timeSeconds, ')
+          ..write('value: $value')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, clipId, parameter, interpolation, timeSeconds, value);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AudioAutomationCurve &&
+          other.id == this.id &&
+          other.clipId == this.clipId &&
+          other.parameter == this.parameter &&
+          other.interpolation == this.interpolation &&
+          other.timeSeconds == this.timeSeconds &&
+          other.value == this.value);
+}
+
+class AudioAutomationCurvesCompanion
+    extends UpdateCompanion<AudioAutomationCurve> {
+  final Value<String> id;
+  final Value<String> clipId;
+  final Value<String> parameter;
+  final Value<String> interpolation;
+  final Value<double> timeSeconds;
+  final Value<double> value;
+  final Value<int> rowid;
+  const AudioAutomationCurvesCompanion({
+    this.id = const Value.absent(),
+    this.clipId = const Value.absent(),
+    this.parameter = const Value.absent(),
+    this.interpolation = const Value.absent(),
+    this.timeSeconds = const Value.absent(),
+    this.value = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AudioAutomationCurvesCompanion.insert({
+    required String id,
+    required String clipId,
+    required String parameter,
+    required String interpolation,
+    required double timeSeconds,
+    required double value,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       clipId = Value(clipId),
+       parameter = Value(parameter),
+       interpolation = Value(interpolation),
+       timeSeconds = Value(timeSeconds),
+       value = Value(value);
+  static Insertable<AudioAutomationCurve> custom({
+    Expression<String>? id,
+    Expression<String>? clipId,
+    Expression<String>? parameter,
+    Expression<String>? interpolation,
+    Expression<double>? timeSeconds,
+    Expression<double>? value,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (clipId != null) 'clip_id': clipId,
+      if (parameter != null) 'parameter': parameter,
+      if (interpolation != null) 'interpolation': interpolation,
+      if (timeSeconds != null) 'time_seconds': timeSeconds,
+      if (value != null) 'value': value,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AudioAutomationCurvesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? clipId,
+    Value<String>? parameter,
+    Value<String>? interpolation,
+    Value<double>? timeSeconds,
+    Value<double>? value,
+    Value<int>? rowid,
+  }) {
+    return AudioAutomationCurvesCompanion(
+      id: id ?? this.id,
+      clipId: clipId ?? this.clipId,
+      parameter: parameter ?? this.parameter,
+      interpolation: interpolation ?? this.interpolation,
+      timeSeconds: timeSeconds ?? this.timeSeconds,
+      value: value ?? this.value,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (clipId.present) {
+      map['clip_id'] = Variable<String>(clipId.value);
+    }
+    if (parameter.present) {
+      map['parameter'] = Variable<String>(parameter.value);
+    }
+    if (interpolation.present) {
+      map['interpolation'] = Variable<String>(interpolation.value);
+    }
+    if (timeSeconds.present) {
+      map['time_seconds'] = Variable<double>(timeSeconds.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AudioAutomationCurvesCompanion(')
+          ..write('id: $id, ')
+          ..write('clipId: $clipId, ')
+          ..write('parameter: $parameter, ')
+          ..write('interpolation: $interpolation, ')
+          ..write('timeSeconds: $timeSeconds, ')
+          ..write('value: $value, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -63305,6 +63723,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   );
   late final $AnimationKeyframesTable animationKeyframes =
       $AnimationKeyframesTable(this);
+  late final $AudioAutomationCurvesTable audioAutomationCurves =
+      $AudioAutomationCurvesTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -63507,6 +63927,7 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     pluginSettings,
     animationTracks,
     animationKeyframes,
+    audioAutomationCurves,
   ];
 }
 
@@ -97520,6 +97941,248 @@ typedef $$AnimationKeyframesTableProcessedTableManager =
       AnimationKeyframe,
       PrefetchHooks Function()
     >;
+typedef $$AudioAutomationCurvesTableCreateCompanionBuilder =
+    AudioAutomationCurvesCompanion Function({
+      required String id,
+      required String clipId,
+      required String parameter,
+      required String interpolation,
+      required double timeSeconds,
+      required double value,
+      Value<int> rowid,
+    });
+typedef $$AudioAutomationCurvesTableUpdateCompanionBuilder =
+    AudioAutomationCurvesCompanion Function({
+      Value<String> id,
+      Value<String> clipId,
+      Value<String> parameter,
+      Value<String> interpolation,
+      Value<double> timeSeconds,
+      Value<double> value,
+      Value<int> rowid,
+    });
+
+class $$AudioAutomationCurvesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AudioAutomationCurvesTable> {
+  $$AudioAutomationCurvesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clipId => $composableBuilder(
+    column: $table.clipId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get parameter => $composableBuilder(
+    column: $table.parameter,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get interpolation => $composableBuilder(
+    column: $table.interpolation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get timeSeconds => $composableBuilder(
+    column: $table.timeSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AudioAutomationCurvesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AudioAutomationCurvesTable> {
+  $$AudioAutomationCurvesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clipId => $composableBuilder(
+    column: $table.clipId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get parameter => $composableBuilder(
+    column: $table.parameter,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get interpolation => $composableBuilder(
+    column: $table.interpolation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get timeSeconds => $composableBuilder(
+    column: $table.timeSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AudioAutomationCurvesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AudioAutomationCurvesTable> {
+  $$AudioAutomationCurvesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get clipId =>
+      $composableBuilder(column: $table.clipId, builder: (column) => column);
+
+  GeneratedColumn<String> get parameter =>
+      $composableBuilder(column: $table.parameter, builder: (column) => column);
+
+  GeneratedColumn<String> get interpolation => $composableBuilder(
+    column: $table.interpolation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get timeSeconds => $composableBuilder(
+    column: $table.timeSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+}
+
+class $$AudioAutomationCurvesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AudioAutomationCurvesTable,
+          AudioAutomationCurve,
+          $$AudioAutomationCurvesTableFilterComposer,
+          $$AudioAutomationCurvesTableOrderingComposer,
+          $$AudioAutomationCurvesTableAnnotationComposer,
+          $$AudioAutomationCurvesTableCreateCompanionBuilder,
+          $$AudioAutomationCurvesTableUpdateCompanionBuilder,
+          (
+            AudioAutomationCurve,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AudioAutomationCurvesTable,
+              AudioAutomationCurve
+            >,
+          ),
+          AudioAutomationCurve,
+          PrefetchHooks Function()
+        > {
+  $$AudioAutomationCurvesTableTableManager(
+    _$ProjectDatabase db,
+    $AudioAutomationCurvesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AudioAutomationCurvesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$AudioAutomationCurvesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$AudioAutomationCurvesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> clipId = const Value.absent(),
+                Value<String> parameter = const Value.absent(),
+                Value<String> interpolation = const Value.absent(),
+                Value<double> timeSeconds = const Value.absent(),
+                Value<double> value = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AudioAutomationCurvesCompanion(
+                id: id,
+                clipId: clipId,
+                parameter: parameter,
+                interpolation: interpolation,
+                timeSeconds: timeSeconds,
+                value: value,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String clipId,
+                required String parameter,
+                required String interpolation,
+                required double timeSeconds,
+                required double value,
+                Value<int> rowid = const Value.absent(),
+              }) => AudioAutomationCurvesCompanion.insert(
+                id: id,
+                clipId: clipId,
+                parameter: parameter,
+                interpolation: interpolation,
+                timeSeconds: timeSeconds,
+                value: value,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AudioAutomationCurvesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AudioAutomationCurvesTable,
+      AudioAutomationCurve,
+      $$AudioAutomationCurvesTableFilterComposer,
+      $$AudioAutomationCurvesTableOrderingComposer,
+      $$AudioAutomationCurvesTableAnnotationComposer,
+      $$AudioAutomationCurvesTableCreateCompanionBuilder,
+      $$AudioAutomationCurvesTableUpdateCompanionBuilder,
+      (
+        AudioAutomationCurve,
+        BaseReferences<
+          _$ProjectDatabase,
+          $AudioAutomationCurvesTable,
+          AudioAutomationCurve
+        >,
+      ),
+      AudioAutomationCurve,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -97868,4 +98531,6 @@ class $ProjectDatabaseManager {
       $$AnimationTracksTableTableManager(_db, _db.animationTracks);
   $$AnimationKeyframesTableTableManager get animationKeyframes =>
       $$AnimationKeyframesTableTableManager(_db, _db.animationKeyframes);
+  $$AudioAutomationCurvesTableTableManager get audioAutomationCurves =>
+      $$AudioAutomationCurvesTableTableManager(_db, _db.audioAutomationCurves);
 }

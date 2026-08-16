@@ -77,6 +77,7 @@ import 'tables/activity_events.dart';
 import 'tables/security_settings.dart';
 import 'tables/plugins.dart';
 import 'tables/animation.dart';
+import 'tables/audio_automation_curves.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -269,6 +270,7 @@ class ProjectMetadata extends Table {
     PluginSettings,
     AnimationTracks,
     AnimationKeyframes,
+    AudioAutomationCurves,
   ],
   daos: [
     AssetDao,
@@ -303,7 +305,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 44;
+  static const currentSchemaVersion = 45;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -581,6 +583,9 @@ class ProjectDatabase extends _$ProjectDatabase {
       if (from < 44) {
         await m.createTable(animationTracks);
         await m.createTable(animationKeyframes);
+      }
+      if (from < 45) {
+        await m.createTable(audioAutomationCurves);
       }
     },
   );

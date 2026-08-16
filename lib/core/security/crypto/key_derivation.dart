@@ -32,7 +32,7 @@ class Pbkdf2KeyDeriver {
     required int length,
   }) async {
     final passwordBytes = utf8.encode(passphrase);
-    final hashLen = 32; // SHA-256
+    const hashLen = 32; // SHA-256
     final blockCount = (length / hashLen).ceil();
     final output = <int>[];
 

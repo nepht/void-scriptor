@@ -48,6 +48,8 @@ import '../../core/creative/presentation/creative_os_panel.dart';
 import '../../core/creative/builtin/demo_creative_os.dart';
 import '../../core/xr/presentation/xr_studio_panel.dart';
 import '../../core/xr/builtin/demo_xr_studio.dart';
+import '../../core/metaverse/presentation/metaverse_studio_panel.dart';
+import '../../core/metaverse/builtin/demo_metaverse.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
@@ -170,6 +172,13 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
           anchorCount: DemoXrStudio.scene.anchorCount,
         ),
       ),
+      GoRoute(
+        path: AppRoutes.metaverse,
+        builder: (_, __) => MetaverseStudioPanel(
+          worldCount: DemoMetaverse.registry.worldCount,
+          zoneCount: DemoMetaverse.registry.zoneCount,
+        ),
+      ),
     ],
   );
 }
@@ -246,6 +255,13 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
       builder: (_, __) => XrStudioPanel(
         sessionState: DemoXrStudio.session.state.name,
         anchorCount: DemoXrStudio.scene.anchorCount,
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.metaverse,
+      builder: (_, __) => MetaverseStudioPanel(
+        worldCount: DemoMetaverse.registry.worldCount,
+        zoneCount: DemoMetaverse.registry.zoneCount,
       ),
     ),
     for (final route in AppRoutes.foundationRoutes.entries)

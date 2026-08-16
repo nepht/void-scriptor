@@ -49,6 +49,7 @@ abstract final class AppRoutes {
   static const agents = '/agents';
   static const creativeOs = '/creative-os';
   static const xrStudio = '/xr-studio';
+  static const metaverse = '/metaverse';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

@@ -180,6 +180,10 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
       ),
     ),
     GoRoute(
+      path: AppRoutes.studio,
+      builder: (_, __) => VoidAppShell(onLogout: onLogout),
+    ),
+    GoRoute(
       path: AppRoutes.enterpriseStudio,
       builder: (_, __) => StudioManagementPanel(
         studioName: DemoStudio.registry.studio.name,

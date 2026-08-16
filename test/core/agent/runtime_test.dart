@@ -21,7 +21,7 @@ void main() {
       agent: agent,
       task: 'find the warden',
       toolCalls: [
-        ToolCallSpec(toolName: 'search', args: {'q': 'warden'}),
+        const ToolCallSpec(toolName: 'search', args: {'q': 'warden'}),
       ],
     );
     expect(result.state, AgentState.done);
@@ -44,7 +44,7 @@ void main() {
       agent: agent,
       task: 'find the warden',
       toolCalls: [
-        ToolCallSpec(toolName: 'search', args: {'q': 'warden'}),
+        const ToolCallSpec(toolName: 'search', args: {'q': 'warden'}),
       ],
     );
     expect(result.memory.turns, hasLength(2));
@@ -62,7 +62,7 @@ void main() {
     final result = runtime.run(
       agent: agent,
       task: 'do it',
-      toolCalls: [ToolCallSpec(toolName: 'missing', args: const {})],
+      toolCalls: [const ToolCallSpec(toolName: 'missing', args: {})],
     );
     expect(result.state, AgentState.failed);
   });

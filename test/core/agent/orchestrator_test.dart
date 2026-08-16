@@ -43,7 +43,7 @@ void main() {
       agentId: 'a1',
       task: 'search the warden',
       toolCalls: [
-        ToolCallSpec(toolName: 'search', args: {'q': 'warden'}),
+        const ToolCallSpec(toolName: 'search', args: {'q': 'warden'}),
       ],
     );
     expect(result.state, AgentState.done);

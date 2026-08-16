@@ -42,6 +42,7 @@ import '../../core/enterprise/presentation/studio_management_panel.dart';
 import '../../core/enterprise/builtin/demo_studio.dart';
 import '../../core/knowledge/presentation/knowledge_engine_panel.dart';
 import '../../core/knowledge/builtin/demo_knowledge.dart';
+import '../../core/agent/presentation/agent_platform_panel.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
@@ -145,6 +146,11 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
           relationCount: DemoKnowledge.graph.relationCount,
         ),
       ),
+      GoRoute(
+        path: AppRoutes.agents,
+        builder: (_, __) =>
+            const AgentPlatformPanel(agentCount: 2, runningCount: 0),
+      ),
     ],
   );
 }
@@ -207,6 +213,11 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
         entityCount: DemoKnowledge.graph.entityCount,
         relationCount: DemoKnowledge.graph.relationCount,
       ),
+    ),
+    GoRoute(
+      path: AppRoutes.agents,
+      builder: (_, __) =>
+          const AgentPlatformPanel(agentCount: 2, runningCount: 0),
     ),
     for (final route in AppRoutes.foundationRoutes.entries)
       if (route.value != AppRoutes.splash &&

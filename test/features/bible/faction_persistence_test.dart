@@ -31,7 +31,7 @@ void main() {
     addTearDown(second.close);
     final faction = await FactionRepository(second).get('faction-1');
 
-    expect(second.schemaVersion, 51);
+    expect(second.schemaVersion, 52);
     expect(faction?.name, 'Clan Kokuen');
     expect(faction?.status, 'destroyed');
     expect(faction?.headquarters, 'Mountain Region');

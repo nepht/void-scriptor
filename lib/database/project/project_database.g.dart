@@ -67372,6 +67372,703 @@ class CreativeIdeasCompanion extends UpdateCompanion<CreativeIdea> {
   }
 }
 
+class $XrSessionsTable extends XrSessions
+    with TableInfo<$XrSessionsTable, XrSession> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $XrSessionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stateMeta = const VerificationMeta('state');
+  @override
+  late final GeneratedColumn<String> state = GeneratedColumn<String>(
+    'state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startedAtMeta = const VerificationMeta(
+    'startedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startedAt = GeneratedColumn<DateTime>(
+    'started_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _endedAtMeta = const VerificationMeta(
+    'endedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> endedAt = GeneratedColumn<DateTime>(
+    'ended_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, state, startedAt, endedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'xr_sessions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<XrSession> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('state')) {
+      context.handle(
+        _stateMeta,
+        state.isAcceptableOrUnknown(data['state']!, _stateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stateMeta);
+    }
+    if (data.containsKey('started_at')) {
+      context.handle(
+        _startedAtMeta,
+        startedAt.isAcceptableOrUnknown(data['started_at']!, _startedAtMeta),
+      );
+    }
+    if (data.containsKey('ended_at')) {
+      context.handle(
+        _endedAtMeta,
+        endedAt.isAcceptableOrUnknown(data['ended_at']!, _endedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  XrSession map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return XrSession(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      state: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}state'],
+      )!,
+      startedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}started_at'],
+      ),
+      endedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}ended_at'],
+      ),
+    );
+  }
+
+  @override
+  $XrSessionsTable createAlias(String alias) {
+    return $XrSessionsTable(attachedDatabase, alias);
+  }
+}
+
+class XrSession extends DataClass implements Insertable<XrSession> {
+  final String id;
+  final String state;
+  final DateTime? startedAt;
+  final DateTime? endedAt;
+  const XrSession({
+    required this.id,
+    required this.state,
+    this.startedAt,
+    this.endedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['state'] = Variable<String>(state);
+    if (!nullToAbsent || startedAt != null) {
+      map['started_at'] = Variable<DateTime>(startedAt);
+    }
+    if (!nullToAbsent || endedAt != null) {
+      map['ended_at'] = Variable<DateTime>(endedAt);
+    }
+    return map;
+  }
+
+  XrSessionsCompanion toCompanion(bool nullToAbsent) {
+    return XrSessionsCompanion(
+      id: Value(id),
+      state: Value(state),
+      startedAt: startedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startedAt),
+      endedAt: endedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endedAt),
+    );
+  }
+
+  factory XrSession.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return XrSession(
+      id: serializer.fromJson<String>(json['id']),
+      state: serializer.fromJson<String>(json['state']),
+      startedAt: serializer.fromJson<DateTime?>(json['startedAt']),
+      endedAt: serializer.fromJson<DateTime?>(json['endedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'state': serializer.toJson<String>(state),
+      'startedAt': serializer.toJson<DateTime?>(startedAt),
+      'endedAt': serializer.toJson<DateTime?>(endedAt),
+    };
+  }
+
+  XrSession copyWith({
+    String? id,
+    String? state,
+    Value<DateTime?> startedAt = const Value.absent(),
+    Value<DateTime?> endedAt = const Value.absent(),
+  }) => XrSession(
+    id: id ?? this.id,
+    state: state ?? this.state,
+    startedAt: startedAt.present ? startedAt.value : this.startedAt,
+    endedAt: endedAt.present ? endedAt.value : this.endedAt,
+  );
+  XrSession copyWithCompanion(XrSessionsCompanion data) {
+    return XrSession(
+      id: data.id.present ? data.id.value : this.id,
+      state: data.state.present ? data.state.value : this.state,
+      startedAt: data.startedAt.present ? data.startedAt.value : this.startedAt,
+      endedAt: data.endedAt.present ? data.endedAt.value : this.endedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('XrSession(')
+          ..write('id: $id, ')
+          ..write('state: $state, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('endedAt: $endedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, state, startedAt, endedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is XrSession &&
+          other.id == this.id &&
+          other.state == this.state &&
+          other.startedAt == this.startedAt &&
+          other.endedAt == this.endedAt);
+}
+
+class XrSessionsCompanion extends UpdateCompanion<XrSession> {
+  final Value<String> id;
+  final Value<String> state;
+  final Value<DateTime?> startedAt;
+  final Value<DateTime?> endedAt;
+  final Value<int> rowid;
+  const XrSessionsCompanion({
+    this.id = const Value.absent(),
+    this.state = const Value.absent(),
+    this.startedAt = const Value.absent(),
+    this.endedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  XrSessionsCompanion.insert({
+    required String id,
+    required String state,
+    this.startedAt = const Value.absent(),
+    this.endedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       state = Value(state);
+  static Insertable<XrSession> custom({
+    Expression<String>? id,
+    Expression<String>? state,
+    Expression<DateTime>? startedAt,
+    Expression<DateTime>? endedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (state != null) 'state': state,
+      if (startedAt != null) 'started_at': startedAt,
+      if (endedAt != null) 'ended_at': endedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  XrSessionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? state,
+    Value<DateTime?>? startedAt,
+    Value<DateTime?>? endedAt,
+    Value<int>? rowid,
+  }) {
+    return XrSessionsCompanion(
+      id: id ?? this.id,
+      state: state ?? this.state,
+      startedAt: startedAt ?? this.startedAt,
+      endedAt: endedAt ?? this.endedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (state.present) {
+      map['state'] = Variable<String>(state.value);
+    }
+    if (startedAt.present) {
+      map['started_at'] = Variable<DateTime>(startedAt.value);
+    }
+    if (endedAt.present) {
+      map['ended_at'] = Variable<DateTime>(endedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('XrSessionsCompanion(')
+          ..write('id: $id, ')
+          ..write('state: $state, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('endedAt: $endedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SpatialAnchorsTable extends SpatialAnchors
+    with TableInfo<$SpatialAnchorsTable, SpatialAnchor> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SpatialAnchorsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sessionIdMeta = const VerificationMeta(
+    'sessionId',
+  );
+  @override
+  late final GeneratedColumn<String> sessionId = GeneratedColumn<String>(
+    'session_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentIdMeta = const VerificationMeta(
+    'contentId',
+  );
+  @override
+  late final GeneratedColumn<String> contentId = GeneratedColumn<String>(
+    'content_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _xMeta = const VerificationMeta('x');
+  @override
+  late final GeneratedColumn<double> x = GeneratedColumn<double>(
+    'x',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _yMeta = const VerificationMeta('y');
+  @override
+  late final GeneratedColumn<double> y = GeneratedColumn<double>(
+    'y',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _zMeta = const VerificationMeta('z');
+  @override
+  late final GeneratedColumn<double> z = GeneratedColumn<double>(
+    'z',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, sessionId, contentId, x, y, z];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'spatial_anchors';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SpatialAnchor> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('session_id')) {
+      context.handle(
+        _sessionIdMeta,
+        sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sessionIdMeta);
+    }
+    if (data.containsKey('content_id')) {
+      context.handle(
+        _contentIdMeta,
+        contentId.isAcceptableOrUnknown(data['content_id']!, _contentIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_contentIdMeta);
+    }
+    if (data.containsKey('x')) {
+      context.handle(_xMeta, x.isAcceptableOrUnknown(data['x']!, _xMeta));
+    } else if (isInserting) {
+      context.missing(_xMeta);
+    }
+    if (data.containsKey('y')) {
+      context.handle(_yMeta, y.isAcceptableOrUnknown(data['y']!, _yMeta));
+    } else if (isInserting) {
+      context.missing(_yMeta);
+    }
+    if (data.containsKey('z')) {
+      context.handle(_zMeta, z.isAcceptableOrUnknown(data['z']!, _zMeta));
+    } else if (isInserting) {
+      context.missing(_zMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SpatialAnchor map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SpatialAnchor(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      sessionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}session_id'],
+      )!,
+      contentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_id'],
+      )!,
+      x: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}x'],
+      )!,
+      y: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}y'],
+      )!,
+      z: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}z'],
+      )!,
+    );
+  }
+
+  @override
+  $SpatialAnchorsTable createAlias(String alias) {
+    return $SpatialAnchorsTable(attachedDatabase, alias);
+  }
+}
+
+class SpatialAnchor extends DataClass implements Insertable<SpatialAnchor> {
+  final String id;
+  final String sessionId;
+  final String contentId;
+  final double x;
+  final double y;
+  final double z;
+  const SpatialAnchor({
+    required this.id,
+    required this.sessionId,
+    required this.contentId,
+    required this.x,
+    required this.y,
+    required this.z,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['session_id'] = Variable<String>(sessionId);
+    map['content_id'] = Variable<String>(contentId);
+    map['x'] = Variable<double>(x);
+    map['y'] = Variable<double>(y);
+    map['z'] = Variable<double>(z);
+    return map;
+  }
+
+  SpatialAnchorsCompanion toCompanion(bool nullToAbsent) {
+    return SpatialAnchorsCompanion(
+      id: Value(id),
+      sessionId: Value(sessionId),
+      contentId: Value(contentId),
+      x: Value(x),
+      y: Value(y),
+      z: Value(z),
+    );
+  }
+
+  factory SpatialAnchor.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SpatialAnchor(
+      id: serializer.fromJson<String>(json['id']),
+      sessionId: serializer.fromJson<String>(json['sessionId']),
+      contentId: serializer.fromJson<String>(json['contentId']),
+      x: serializer.fromJson<double>(json['x']),
+      y: serializer.fromJson<double>(json['y']),
+      z: serializer.fromJson<double>(json['z']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sessionId': serializer.toJson<String>(sessionId),
+      'contentId': serializer.toJson<String>(contentId),
+      'x': serializer.toJson<double>(x),
+      'y': serializer.toJson<double>(y),
+      'z': serializer.toJson<double>(z),
+    };
+  }
+
+  SpatialAnchor copyWith({
+    String? id,
+    String? sessionId,
+    String? contentId,
+    double? x,
+    double? y,
+    double? z,
+  }) => SpatialAnchor(
+    id: id ?? this.id,
+    sessionId: sessionId ?? this.sessionId,
+    contentId: contentId ?? this.contentId,
+    x: x ?? this.x,
+    y: y ?? this.y,
+    z: z ?? this.z,
+  );
+  SpatialAnchor copyWithCompanion(SpatialAnchorsCompanion data) {
+    return SpatialAnchor(
+      id: data.id.present ? data.id.value : this.id,
+      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
+      contentId: data.contentId.present ? data.contentId.value : this.contentId,
+      x: data.x.present ? data.x.value : this.x,
+      y: data.y.present ? data.y.value : this.y,
+      z: data.z.present ? data.z.value : this.z,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SpatialAnchor(')
+          ..write('id: $id, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('contentId: $contentId, ')
+          ..write('x: $x, ')
+          ..write('y: $y, ')
+          ..write('z: $z')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, sessionId, contentId, x, y, z);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SpatialAnchor &&
+          other.id == this.id &&
+          other.sessionId == this.sessionId &&
+          other.contentId == this.contentId &&
+          other.x == this.x &&
+          other.y == this.y &&
+          other.z == this.z);
+}
+
+class SpatialAnchorsCompanion extends UpdateCompanion<SpatialAnchor> {
+  final Value<String> id;
+  final Value<String> sessionId;
+  final Value<String> contentId;
+  final Value<double> x;
+  final Value<double> y;
+  final Value<double> z;
+  final Value<int> rowid;
+  const SpatialAnchorsCompanion({
+    this.id = const Value.absent(),
+    this.sessionId = const Value.absent(),
+    this.contentId = const Value.absent(),
+    this.x = const Value.absent(),
+    this.y = const Value.absent(),
+    this.z = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SpatialAnchorsCompanion.insert({
+    required String id,
+    required String sessionId,
+    required String contentId,
+    required double x,
+    required double y,
+    required double z,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       sessionId = Value(sessionId),
+       contentId = Value(contentId),
+       x = Value(x),
+       y = Value(y),
+       z = Value(z);
+  static Insertable<SpatialAnchor> custom({
+    Expression<String>? id,
+    Expression<String>? sessionId,
+    Expression<String>? contentId,
+    Expression<double>? x,
+    Expression<double>? y,
+    Expression<double>? z,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sessionId != null) 'session_id': sessionId,
+      if (contentId != null) 'content_id': contentId,
+      if (x != null) 'x': x,
+      if (y != null) 'y': y,
+      if (z != null) 'z': z,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SpatialAnchorsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? sessionId,
+    Value<String>? contentId,
+    Value<double>? x,
+    Value<double>? y,
+    Value<double>? z,
+    Value<int>? rowid,
+  }) {
+    return SpatialAnchorsCompanion(
+      id: id ?? this.id,
+      sessionId: sessionId ?? this.sessionId,
+      contentId: contentId ?? this.contentId,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sessionId.present) {
+      map['session_id'] = Variable<String>(sessionId.value);
+    }
+    if (contentId.present) {
+      map['content_id'] = Variable<String>(contentId.value);
+    }
+    if (x.present) {
+      map['x'] = Variable<double>(x.value);
+    }
+    if (y.present) {
+      map['y'] = Variable<double>(y.value);
+    }
+    if (z.present) {
+      map['z'] = Variable<double>(z.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SpatialAnchorsCompanion(')
+          ..write('id: $id, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('contentId: $contentId, ')
+          ..write('x: $x, ')
+          ..write('y: $y, ')
+          ..write('z: $z, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -67627,6 +68324,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final $AgentToolCallsTable agentToolCalls = $AgentToolCallsTable(this);
   late final $CreativeBriefsTable creativeBriefs = $CreativeBriefsTable(this);
   late final $CreativeIdeasTable creativeIdeas = $CreativeIdeasTable(this);
+  late final $XrSessionsTable xrSessions = $XrSessionsTable(this);
+  late final $SpatialAnchorsTable spatialAnchors = $SpatialAnchorsTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -67841,6 +68540,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     agentToolCalls,
     creativeBriefs,
     creativeIdeas,
+    xrSessions,
+    spatialAnchors,
   ];
 }
 
@@ -104329,6 +105030,412 @@ typedef $$CreativeIdeasTableProcessedTableManager =
       CreativeIdea,
       PrefetchHooks Function()
     >;
+typedef $$XrSessionsTableCreateCompanionBuilder =
+    XrSessionsCompanion Function({
+      required String id,
+      required String state,
+      Value<DateTime?> startedAt,
+      Value<DateTime?> endedAt,
+      Value<int> rowid,
+    });
+typedef $$XrSessionsTableUpdateCompanionBuilder =
+    XrSessionsCompanion Function({
+      Value<String> id,
+      Value<String> state,
+      Value<DateTime?> startedAt,
+      Value<DateTime?> endedAt,
+      Value<int> rowid,
+    });
+
+class $$XrSessionsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $XrSessionsTable> {
+  $$XrSessionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endedAt => $composableBuilder(
+    column: $table.endedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$XrSessionsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $XrSessionsTable> {
+  $$XrSessionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endedAt => $composableBuilder(
+    column: $table.endedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$XrSessionsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $XrSessionsTable> {
+  $$XrSessionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get state =>
+      $composableBuilder(column: $table.state, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startedAt =>
+      $composableBuilder(column: $table.startedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endedAt =>
+      $composableBuilder(column: $table.endedAt, builder: (column) => column);
+}
+
+class $$XrSessionsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $XrSessionsTable,
+          XrSession,
+          $$XrSessionsTableFilterComposer,
+          $$XrSessionsTableOrderingComposer,
+          $$XrSessionsTableAnnotationComposer,
+          $$XrSessionsTableCreateCompanionBuilder,
+          $$XrSessionsTableUpdateCompanionBuilder,
+          (
+            XrSession,
+            BaseReferences<_$ProjectDatabase, $XrSessionsTable, XrSession>,
+          ),
+          XrSession,
+          PrefetchHooks Function()
+        > {
+  $$XrSessionsTableTableManager(_$ProjectDatabase db, $XrSessionsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$XrSessionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$XrSessionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$XrSessionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> state = const Value.absent(),
+                Value<DateTime?> startedAt = const Value.absent(),
+                Value<DateTime?> endedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => XrSessionsCompanion(
+                id: id,
+                state: state,
+                startedAt: startedAt,
+                endedAt: endedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String state,
+                Value<DateTime?> startedAt = const Value.absent(),
+                Value<DateTime?> endedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => XrSessionsCompanion.insert(
+                id: id,
+                state: state,
+                startedAt: startedAt,
+                endedAt: endedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$XrSessionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $XrSessionsTable,
+      XrSession,
+      $$XrSessionsTableFilterComposer,
+      $$XrSessionsTableOrderingComposer,
+      $$XrSessionsTableAnnotationComposer,
+      $$XrSessionsTableCreateCompanionBuilder,
+      $$XrSessionsTableUpdateCompanionBuilder,
+      (
+        XrSession,
+        BaseReferences<_$ProjectDatabase, $XrSessionsTable, XrSession>,
+      ),
+      XrSession,
+      PrefetchHooks Function()
+    >;
+typedef $$SpatialAnchorsTableCreateCompanionBuilder =
+    SpatialAnchorsCompanion Function({
+      required String id,
+      required String sessionId,
+      required String contentId,
+      required double x,
+      required double y,
+      required double z,
+      Value<int> rowid,
+    });
+typedef $$SpatialAnchorsTableUpdateCompanionBuilder =
+    SpatialAnchorsCompanion Function({
+      Value<String> id,
+      Value<String> sessionId,
+      Value<String> contentId,
+      Value<double> x,
+      Value<double> y,
+      Value<double> z,
+      Value<int> rowid,
+    });
+
+class $$SpatialAnchorsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $SpatialAnchorsTable> {
+  $$SpatialAnchorsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sessionId => $composableBuilder(
+    column: $table.sessionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentId => $composableBuilder(
+    column: $table.contentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get x => $composableBuilder(
+    column: $table.x,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get y => $composableBuilder(
+    column: $table.y,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get z => $composableBuilder(
+    column: $table.z,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SpatialAnchorsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $SpatialAnchorsTable> {
+  $$SpatialAnchorsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sessionId => $composableBuilder(
+    column: $table.sessionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contentId => $composableBuilder(
+    column: $table.contentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get x => $composableBuilder(
+    column: $table.x,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get y => $composableBuilder(
+    column: $table.y,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get z => $composableBuilder(
+    column: $table.z,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SpatialAnchorsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $SpatialAnchorsTable> {
+  $$SpatialAnchorsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get sessionId =>
+      $composableBuilder(column: $table.sessionId, builder: (column) => column);
+
+  GeneratedColumn<String> get contentId =>
+      $composableBuilder(column: $table.contentId, builder: (column) => column);
+
+  GeneratedColumn<double> get x =>
+      $composableBuilder(column: $table.x, builder: (column) => column);
+
+  GeneratedColumn<double> get y =>
+      $composableBuilder(column: $table.y, builder: (column) => column);
+
+  GeneratedColumn<double> get z =>
+      $composableBuilder(column: $table.z, builder: (column) => column);
+}
+
+class $$SpatialAnchorsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $SpatialAnchorsTable,
+          SpatialAnchor,
+          $$SpatialAnchorsTableFilterComposer,
+          $$SpatialAnchorsTableOrderingComposer,
+          $$SpatialAnchorsTableAnnotationComposer,
+          $$SpatialAnchorsTableCreateCompanionBuilder,
+          $$SpatialAnchorsTableUpdateCompanionBuilder,
+          (
+            SpatialAnchor,
+            BaseReferences<
+              _$ProjectDatabase,
+              $SpatialAnchorsTable,
+              SpatialAnchor
+            >,
+          ),
+          SpatialAnchor,
+          PrefetchHooks Function()
+        > {
+  $$SpatialAnchorsTableTableManager(
+    _$ProjectDatabase db,
+    $SpatialAnchorsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SpatialAnchorsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SpatialAnchorsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SpatialAnchorsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> sessionId = const Value.absent(),
+                Value<String> contentId = const Value.absent(),
+                Value<double> x = const Value.absent(),
+                Value<double> y = const Value.absent(),
+                Value<double> z = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SpatialAnchorsCompanion(
+                id: id,
+                sessionId: sessionId,
+                contentId: contentId,
+                x: x,
+                y: y,
+                z: z,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String sessionId,
+                required String contentId,
+                required double x,
+                required double y,
+                required double z,
+                Value<int> rowid = const Value.absent(),
+              }) => SpatialAnchorsCompanion.insert(
+                id: id,
+                sessionId: sessionId,
+                contentId: contentId,
+                x: x,
+                y: y,
+                z: z,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SpatialAnchorsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $SpatialAnchorsTable,
+      SpatialAnchor,
+      $$SpatialAnchorsTableFilterComposer,
+      $$SpatialAnchorsTableOrderingComposer,
+      $$SpatialAnchorsTableAnnotationComposer,
+      $$SpatialAnchorsTableCreateCompanionBuilder,
+      $$SpatialAnchorsTableUpdateCompanionBuilder,
+      (
+        SpatialAnchor,
+        BaseReferences<_$ProjectDatabase, $SpatialAnchorsTable, SpatialAnchor>,
+      ),
+      SpatialAnchor,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -104701,4 +105808,8 @@ class $ProjectDatabaseManager {
       $$CreativeBriefsTableTableManager(_db, _db.creativeBriefs);
   $$CreativeIdeasTableTableManager get creativeIdeas =>
       $$CreativeIdeasTableTableManager(_db, _db.creativeIdeas);
+  $$XrSessionsTableTableManager get xrSessions =>
+      $$XrSessionsTableTableManager(_db, _db.xrSessions);
+  $$SpatialAnchorsTableTableManager get spatialAnchors =>
+      $$SpatialAnchorsTableTableManager(_db, _db.spatialAnchors);
 }

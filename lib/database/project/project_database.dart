@@ -81,6 +81,7 @@ import 'tables/audio_automation_curves.dart';
 import 'tables/shots.dart';
 import 'tables/publish_records.dart';
 import 'tables/studio.dart';
+import 'tables/knowledge.dart';
 import 'tables/characters.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
@@ -279,6 +280,8 @@ class ProjectMetadata extends Table {
     PublishRecords,
     StudioMembers,
     AuditEvents,
+    KnowledgeEntities,
+    KnowledgeRelations,
   ],
   daos: [
     AssetDao,
@@ -313,7 +316,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 48;
+  static const currentSchemaVersion = 49;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -605,6 +608,10 @@ class ProjectDatabase extends _$ProjectDatabase {
       if (from < 48) {
         await m.createTable(studioMembers);
         await m.createTable(auditEvents);
+      }
+      if (from < 49) {
+        await m.createTable(knowledgeEntities);
+        await m.createTable(knowledgeRelations);
       }
     },
   );

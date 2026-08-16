@@ -65327,6 +65327,619 @@ class AuditEventsCompanion extends UpdateCompanion<AuditEvent> {
   }
 }
 
+class $KnowledgeEntitiesTable extends KnowledgeEntities
+    with TableInfo<$KnowledgeEntitiesTable, KnowledgeEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $KnowledgeEntitiesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _factsJsonMeta = const VerificationMeta(
+    'factsJson',
+  );
+  @override
+  late final GeneratedColumn<String> factsJson = GeneratedColumn<String>(
+    'facts_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, type, title, factsJson];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'knowledge_entities';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<KnowledgeEntity> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('facts_json')) {
+      context.handle(
+        _factsJsonMeta,
+        factsJson.isAcceptableOrUnknown(data['facts_json']!, _factsJsonMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  KnowledgeEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return KnowledgeEntity(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      factsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}facts_json'],
+      )!,
+    );
+  }
+
+  @override
+  $KnowledgeEntitiesTable createAlias(String alias) {
+    return $KnowledgeEntitiesTable(attachedDatabase, alias);
+  }
+}
+
+class KnowledgeEntity extends DataClass implements Insertable<KnowledgeEntity> {
+  final String id;
+  final String type;
+  final String title;
+  final String factsJson;
+  const KnowledgeEntity({
+    required this.id,
+    required this.type,
+    required this.title,
+    required this.factsJson,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['type'] = Variable<String>(type);
+    map['title'] = Variable<String>(title);
+    map['facts_json'] = Variable<String>(factsJson);
+    return map;
+  }
+
+  KnowledgeEntitiesCompanion toCompanion(bool nullToAbsent) {
+    return KnowledgeEntitiesCompanion(
+      id: Value(id),
+      type: Value(type),
+      title: Value(title),
+      factsJson: Value(factsJson),
+    );
+  }
+
+  factory KnowledgeEntity.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return KnowledgeEntity(
+      id: serializer.fromJson<String>(json['id']),
+      type: serializer.fromJson<String>(json['type']),
+      title: serializer.fromJson<String>(json['title']),
+      factsJson: serializer.fromJson<String>(json['factsJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'type': serializer.toJson<String>(type),
+      'title': serializer.toJson<String>(title),
+      'factsJson': serializer.toJson<String>(factsJson),
+    };
+  }
+
+  KnowledgeEntity copyWith({
+    String? id,
+    String? type,
+    String? title,
+    String? factsJson,
+  }) => KnowledgeEntity(
+    id: id ?? this.id,
+    type: type ?? this.type,
+    title: title ?? this.title,
+    factsJson: factsJson ?? this.factsJson,
+  );
+  KnowledgeEntity copyWithCompanion(KnowledgeEntitiesCompanion data) {
+    return KnowledgeEntity(
+      id: data.id.present ? data.id.value : this.id,
+      type: data.type.present ? data.type.value : this.type,
+      title: data.title.present ? data.title.value : this.title,
+      factsJson: data.factsJson.present ? data.factsJson.value : this.factsJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KnowledgeEntity(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('title: $title, ')
+          ..write('factsJson: $factsJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, type, title, factsJson);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is KnowledgeEntity &&
+          other.id == this.id &&
+          other.type == this.type &&
+          other.title == this.title &&
+          other.factsJson == this.factsJson);
+}
+
+class KnowledgeEntitiesCompanion extends UpdateCompanion<KnowledgeEntity> {
+  final Value<String> id;
+  final Value<String> type;
+  final Value<String> title;
+  final Value<String> factsJson;
+  final Value<int> rowid;
+  const KnowledgeEntitiesCompanion({
+    this.id = const Value.absent(),
+    this.type = const Value.absent(),
+    this.title = const Value.absent(),
+    this.factsJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  KnowledgeEntitiesCompanion.insert({
+    required String id,
+    required String type,
+    required String title,
+    this.factsJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       type = Value(type),
+       title = Value(title);
+  static Insertable<KnowledgeEntity> custom({
+    Expression<String>? id,
+    Expression<String>? type,
+    Expression<String>? title,
+    Expression<String>? factsJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (type != null) 'type': type,
+      if (title != null) 'title': title,
+      if (factsJson != null) 'facts_json': factsJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  KnowledgeEntitiesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? type,
+    Value<String>? title,
+    Value<String>? factsJson,
+    Value<int>? rowid,
+  }) {
+    return KnowledgeEntitiesCompanion(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      title: title ?? this.title,
+      factsJson: factsJson ?? this.factsJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (factsJson.present) {
+      map['facts_json'] = Variable<String>(factsJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KnowledgeEntitiesCompanion(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('title: $title, ')
+          ..write('factsJson: $factsJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $KnowledgeRelationsTable extends KnowledgeRelations
+    with TableInfo<$KnowledgeRelationsTable, KnowledgeRelation> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $KnowledgeRelationsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceIdMeta = const VerificationMeta(
+    'sourceId',
+  );
+  @override
+  late final GeneratedColumn<String> sourceId = GeneratedColumn<String>(
+    'source_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetIdMeta = const VerificationMeta(
+    'targetId',
+  );
+  @override
+  late final GeneratedColumn<String> targetId = GeneratedColumn<String>(
+    'target_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, sourceId, targetId, kind];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'knowledge_relations';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<KnowledgeRelation> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('source_id')) {
+      context.handle(
+        _sourceIdMeta,
+        sourceId.isAcceptableOrUnknown(data['source_id']!, _sourceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceIdMeta);
+    }
+    if (data.containsKey('target_id')) {
+      context.handle(
+        _targetIdMeta,
+        targetId.isAcceptableOrUnknown(data['target_id']!, _targetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_targetIdMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  KnowledgeRelation map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return KnowledgeRelation(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      sourceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_id'],
+      )!,
+      targetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_id'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+    );
+  }
+
+  @override
+  $KnowledgeRelationsTable createAlias(String alias) {
+    return $KnowledgeRelationsTable(attachedDatabase, alias);
+  }
+}
+
+class KnowledgeRelation extends DataClass
+    implements Insertable<KnowledgeRelation> {
+  final String id;
+  final String sourceId;
+  final String targetId;
+  final String kind;
+  const KnowledgeRelation({
+    required this.id,
+    required this.sourceId,
+    required this.targetId,
+    required this.kind,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['source_id'] = Variable<String>(sourceId);
+    map['target_id'] = Variable<String>(targetId);
+    map['kind'] = Variable<String>(kind);
+    return map;
+  }
+
+  KnowledgeRelationsCompanion toCompanion(bool nullToAbsent) {
+    return KnowledgeRelationsCompanion(
+      id: Value(id),
+      sourceId: Value(sourceId),
+      targetId: Value(targetId),
+      kind: Value(kind),
+    );
+  }
+
+  factory KnowledgeRelation.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return KnowledgeRelation(
+      id: serializer.fromJson<String>(json['id']),
+      sourceId: serializer.fromJson<String>(json['sourceId']),
+      targetId: serializer.fromJson<String>(json['targetId']),
+      kind: serializer.fromJson<String>(json['kind']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sourceId': serializer.toJson<String>(sourceId),
+      'targetId': serializer.toJson<String>(targetId),
+      'kind': serializer.toJson<String>(kind),
+    };
+  }
+
+  KnowledgeRelation copyWith({
+    String? id,
+    String? sourceId,
+    String? targetId,
+    String? kind,
+  }) => KnowledgeRelation(
+    id: id ?? this.id,
+    sourceId: sourceId ?? this.sourceId,
+    targetId: targetId ?? this.targetId,
+    kind: kind ?? this.kind,
+  );
+  KnowledgeRelation copyWithCompanion(KnowledgeRelationsCompanion data) {
+    return KnowledgeRelation(
+      id: data.id.present ? data.id.value : this.id,
+      sourceId: data.sourceId.present ? data.sourceId.value : this.sourceId,
+      targetId: data.targetId.present ? data.targetId.value : this.targetId,
+      kind: data.kind.present ? data.kind.value : this.kind,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KnowledgeRelation(')
+          ..write('id: $id, ')
+          ..write('sourceId: $sourceId, ')
+          ..write('targetId: $targetId, ')
+          ..write('kind: $kind')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, sourceId, targetId, kind);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is KnowledgeRelation &&
+          other.id == this.id &&
+          other.sourceId == this.sourceId &&
+          other.targetId == this.targetId &&
+          other.kind == this.kind);
+}
+
+class KnowledgeRelationsCompanion extends UpdateCompanion<KnowledgeRelation> {
+  final Value<String> id;
+  final Value<String> sourceId;
+  final Value<String> targetId;
+  final Value<String> kind;
+  final Value<int> rowid;
+  const KnowledgeRelationsCompanion({
+    this.id = const Value.absent(),
+    this.sourceId = const Value.absent(),
+    this.targetId = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  KnowledgeRelationsCompanion.insert({
+    required String id,
+    required String sourceId,
+    required String targetId,
+    required String kind,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       sourceId = Value(sourceId),
+       targetId = Value(targetId),
+       kind = Value(kind);
+  static Insertable<KnowledgeRelation> custom({
+    Expression<String>? id,
+    Expression<String>? sourceId,
+    Expression<String>? targetId,
+    Expression<String>? kind,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sourceId != null) 'source_id': sourceId,
+      if (targetId != null) 'target_id': targetId,
+      if (kind != null) 'kind': kind,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  KnowledgeRelationsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? sourceId,
+    Value<String>? targetId,
+    Value<String>? kind,
+    Value<int>? rowid,
+  }) {
+    return KnowledgeRelationsCompanion(
+      id: id ?? this.id,
+      sourceId: sourceId ?? this.sourceId,
+      targetId: targetId ?? this.targetId,
+      kind: kind ?? this.kind,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sourceId.present) {
+      map['source_id'] = Variable<String>(sourceId.value);
+    }
+    if (targetId.present) {
+      map['target_id'] = Variable<String>(targetId.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KnowledgeRelationsCompanion(')
+          ..write('id: $id, ')
+          ..write('sourceId: $sourceId, ')
+          ..write('targetId: $targetId, ')
+          ..write('kind: $kind, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -65574,6 +66187,10 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final $PublishRecordsTable publishRecords = $PublishRecordsTable(this);
   late final $StudioMembersTable studioMembers = $StudioMembersTable(this);
   late final $AuditEventsTable auditEvents = $AuditEventsTable(this);
+  late final $KnowledgeEntitiesTable knowledgeEntities =
+      $KnowledgeEntitiesTable(this);
+  late final $KnowledgeRelationsTable knowledgeRelations =
+      $KnowledgeRelationsTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -65782,6 +66399,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     publishRecords,
     studioMembers,
     auditEvents,
+    knowledgeEntities,
+    knowledgeRelations,
   ];
 }
 
@@ -101064,6 +101683,394 @@ typedef $$AuditEventsTableProcessedTableManager =
       AuditEvent,
       PrefetchHooks Function()
     >;
+typedef $$KnowledgeEntitiesTableCreateCompanionBuilder =
+    KnowledgeEntitiesCompanion Function({
+      required String id,
+      required String type,
+      required String title,
+      Value<String> factsJson,
+      Value<int> rowid,
+    });
+typedef $$KnowledgeEntitiesTableUpdateCompanionBuilder =
+    KnowledgeEntitiesCompanion Function({
+      Value<String> id,
+      Value<String> type,
+      Value<String> title,
+      Value<String> factsJson,
+      Value<int> rowid,
+    });
+
+class $$KnowledgeEntitiesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $KnowledgeEntitiesTable> {
+  $$KnowledgeEntitiesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get factsJson => $composableBuilder(
+    column: $table.factsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$KnowledgeEntitiesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $KnowledgeEntitiesTable> {
+  $$KnowledgeEntitiesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get factsJson => $composableBuilder(
+    column: $table.factsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$KnowledgeEntitiesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $KnowledgeEntitiesTable> {
+  $$KnowledgeEntitiesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get factsJson =>
+      $composableBuilder(column: $table.factsJson, builder: (column) => column);
+}
+
+class $$KnowledgeEntitiesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $KnowledgeEntitiesTable,
+          KnowledgeEntity,
+          $$KnowledgeEntitiesTableFilterComposer,
+          $$KnowledgeEntitiesTableOrderingComposer,
+          $$KnowledgeEntitiesTableAnnotationComposer,
+          $$KnowledgeEntitiesTableCreateCompanionBuilder,
+          $$KnowledgeEntitiesTableUpdateCompanionBuilder,
+          (
+            KnowledgeEntity,
+            BaseReferences<
+              _$ProjectDatabase,
+              $KnowledgeEntitiesTable,
+              KnowledgeEntity
+            >,
+          ),
+          KnowledgeEntity,
+          PrefetchHooks Function()
+        > {
+  $$KnowledgeEntitiesTableTableManager(
+    _$ProjectDatabase db,
+    $KnowledgeEntitiesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$KnowledgeEntitiesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$KnowledgeEntitiesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$KnowledgeEntitiesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> factsJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => KnowledgeEntitiesCompanion(
+                id: id,
+                type: type,
+                title: title,
+                factsJson: factsJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String type,
+                required String title,
+                Value<String> factsJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => KnowledgeEntitiesCompanion.insert(
+                id: id,
+                type: type,
+                title: title,
+                factsJson: factsJson,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$KnowledgeEntitiesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $KnowledgeEntitiesTable,
+      KnowledgeEntity,
+      $$KnowledgeEntitiesTableFilterComposer,
+      $$KnowledgeEntitiesTableOrderingComposer,
+      $$KnowledgeEntitiesTableAnnotationComposer,
+      $$KnowledgeEntitiesTableCreateCompanionBuilder,
+      $$KnowledgeEntitiesTableUpdateCompanionBuilder,
+      (
+        KnowledgeEntity,
+        BaseReferences<
+          _$ProjectDatabase,
+          $KnowledgeEntitiesTable,
+          KnowledgeEntity
+        >,
+      ),
+      KnowledgeEntity,
+      PrefetchHooks Function()
+    >;
+typedef $$KnowledgeRelationsTableCreateCompanionBuilder =
+    KnowledgeRelationsCompanion Function({
+      required String id,
+      required String sourceId,
+      required String targetId,
+      required String kind,
+      Value<int> rowid,
+    });
+typedef $$KnowledgeRelationsTableUpdateCompanionBuilder =
+    KnowledgeRelationsCompanion Function({
+      Value<String> id,
+      Value<String> sourceId,
+      Value<String> targetId,
+      Value<String> kind,
+      Value<int> rowid,
+    });
+
+class $$KnowledgeRelationsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $KnowledgeRelationsTable> {
+  $$KnowledgeRelationsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceId => $composableBuilder(
+    column: $table.sourceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get targetId => $composableBuilder(
+    column: $table.targetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$KnowledgeRelationsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $KnowledgeRelationsTable> {
+  $$KnowledgeRelationsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceId => $composableBuilder(
+    column: $table.sourceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetId => $composableBuilder(
+    column: $table.targetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$KnowledgeRelationsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $KnowledgeRelationsTable> {
+  $$KnowledgeRelationsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceId =>
+      $composableBuilder(column: $table.sourceId, builder: (column) => column);
+
+  GeneratedColumn<String> get targetId =>
+      $composableBuilder(column: $table.targetId, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+}
+
+class $$KnowledgeRelationsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $KnowledgeRelationsTable,
+          KnowledgeRelation,
+          $$KnowledgeRelationsTableFilterComposer,
+          $$KnowledgeRelationsTableOrderingComposer,
+          $$KnowledgeRelationsTableAnnotationComposer,
+          $$KnowledgeRelationsTableCreateCompanionBuilder,
+          $$KnowledgeRelationsTableUpdateCompanionBuilder,
+          (
+            KnowledgeRelation,
+            BaseReferences<
+              _$ProjectDatabase,
+              $KnowledgeRelationsTable,
+              KnowledgeRelation
+            >,
+          ),
+          KnowledgeRelation,
+          PrefetchHooks Function()
+        > {
+  $$KnowledgeRelationsTableTableManager(
+    _$ProjectDatabase db,
+    $KnowledgeRelationsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$KnowledgeRelationsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$KnowledgeRelationsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$KnowledgeRelationsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> sourceId = const Value.absent(),
+                Value<String> targetId = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => KnowledgeRelationsCompanion(
+                id: id,
+                sourceId: sourceId,
+                targetId: targetId,
+                kind: kind,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String sourceId,
+                required String targetId,
+                required String kind,
+                Value<int> rowid = const Value.absent(),
+              }) => KnowledgeRelationsCompanion.insert(
+                id: id,
+                sourceId: sourceId,
+                targetId: targetId,
+                kind: kind,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$KnowledgeRelationsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $KnowledgeRelationsTable,
+      KnowledgeRelation,
+      $$KnowledgeRelationsTableFilterComposer,
+      $$KnowledgeRelationsTableOrderingComposer,
+      $$KnowledgeRelationsTableAnnotationComposer,
+      $$KnowledgeRelationsTableCreateCompanionBuilder,
+      $$KnowledgeRelationsTableUpdateCompanionBuilder,
+      (
+        KnowledgeRelation,
+        BaseReferences<
+          _$ProjectDatabase,
+          $KnowledgeRelationsTable,
+          KnowledgeRelation
+        >,
+      ),
+      KnowledgeRelation,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -101424,4 +102431,8 @@ class $ProjectDatabaseManager {
       $$StudioMembersTableTableManager(_db, _db.studioMembers);
   $$AuditEventsTableTableManager get auditEvents =>
       $$AuditEventsTableTableManager(_db, _db.auditEvents);
+  $$KnowledgeEntitiesTableTableManager get knowledgeEntities =>
+      $$KnowledgeEntitiesTableTableManager(_db, _db.knowledgeEntities);
+  $$KnowledgeRelationsTableTableManager get knowledgeRelations =>
+      $$KnowledgeRelationsTableTableManager(_db, _db.knowledgeRelations);
 }

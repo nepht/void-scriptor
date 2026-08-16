@@ -65940,6 +65940,727 @@ class KnowledgeRelationsCompanion extends UpdateCompanion<KnowledgeRelation> {
   }
 }
 
+class $AgentsTable extends Agents with TableInfo<$AgentsTable, Agent> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AgentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _systemPromptMeta = const VerificationMeta(
+    'systemPrompt',
+  );
+  @override
+  late final GeneratedColumn<String> systemPrompt = GeneratedColumn<String>(
+    'system_prompt',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _toolNamesJsonMeta = const VerificationMeta(
+    'toolNamesJson',
+  );
+  @override
+  late final GeneratedColumn<String> toolNamesJson = GeneratedColumn<String>(
+    'tool_names_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name, systemPrompt, toolNamesJson];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'agents';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Agent> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('system_prompt')) {
+      context.handle(
+        _systemPromptMeta,
+        systemPrompt.isAcceptableOrUnknown(
+          data['system_prompt']!,
+          _systemPromptMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_systemPromptMeta);
+    }
+    if (data.containsKey('tool_names_json')) {
+      context.handle(
+        _toolNamesJsonMeta,
+        toolNamesJson.isAcceptableOrUnknown(
+          data['tool_names_json']!,
+          _toolNamesJsonMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Agent map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Agent(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      systemPrompt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}system_prompt'],
+      )!,
+      toolNamesJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tool_names_json'],
+      )!,
+    );
+  }
+
+  @override
+  $AgentsTable createAlias(String alias) {
+    return $AgentsTable(attachedDatabase, alias);
+  }
+}
+
+class Agent extends DataClass implements Insertable<Agent> {
+  final String id;
+  final String name;
+  final String systemPrompt;
+  final String toolNamesJson;
+  const Agent({
+    required this.id,
+    required this.name,
+    required this.systemPrompt,
+    required this.toolNamesJson,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['system_prompt'] = Variable<String>(systemPrompt);
+    map['tool_names_json'] = Variable<String>(toolNamesJson);
+    return map;
+  }
+
+  AgentsCompanion toCompanion(bool nullToAbsent) {
+    return AgentsCompanion(
+      id: Value(id),
+      name: Value(name),
+      systemPrompt: Value(systemPrompt),
+      toolNamesJson: Value(toolNamesJson),
+    );
+  }
+
+  factory Agent.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Agent(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      systemPrompt: serializer.fromJson<String>(json['systemPrompt']),
+      toolNamesJson: serializer.fromJson<String>(json['toolNamesJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'systemPrompt': serializer.toJson<String>(systemPrompt),
+      'toolNamesJson': serializer.toJson<String>(toolNamesJson),
+    };
+  }
+
+  Agent copyWith({
+    String? id,
+    String? name,
+    String? systemPrompt,
+    String? toolNamesJson,
+  }) => Agent(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    systemPrompt: systemPrompt ?? this.systemPrompt,
+    toolNamesJson: toolNamesJson ?? this.toolNamesJson,
+  );
+  Agent copyWithCompanion(AgentsCompanion data) {
+    return Agent(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      systemPrompt: data.systemPrompt.present
+          ? data.systemPrompt.value
+          : this.systemPrompt,
+      toolNamesJson: data.toolNamesJson.present
+          ? data.toolNamesJson.value
+          : this.toolNamesJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Agent(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('systemPrompt: $systemPrompt, ')
+          ..write('toolNamesJson: $toolNamesJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, systemPrompt, toolNamesJson);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Agent &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.systemPrompt == this.systemPrompt &&
+          other.toolNamesJson == this.toolNamesJson);
+}
+
+class AgentsCompanion extends UpdateCompanion<Agent> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> systemPrompt;
+  final Value<String> toolNamesJson;
+  final Value<int> rowid;
+  const AgentsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.systemPrompt = const Value.absent(),
+    this.toolNamesJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AgentsCompanion.insert({
+    required String id,
+    required String name,
+    required String systemPrompt,
+    this.toolNamesJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       systemPrompt = Value(systemPrompt);
+  static Insertable<Agent> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? systemPrompt,
+    Expression<String>? toolNamesJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (systemPrompt != null) 'system_prompt': systemPrompt,
+      if (toolNamesJson != null) 'tool_names_json': toolNamesJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AgentsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String>? systemPrompt,
+    Value<String>? toolNamesJson,
+    Value<int>? rowid,
+  }) {
+    return AgentsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      systemPrompt: systemPrompt ?? this.systemPrompt,
+      toolNamesJson: toolNamesJson ?? this.toolNamesJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (systemPrompt.present) {
+      map['system_prompt'] = Variable<String>(systemPrompt.value);
+    }
+    if (toolNamesJson.present) {
+      map['tool_names_json'] = Variable<String>(toolNamesJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AgentsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('systemPrompt: $systemPrompt, ')
+          ..write('toolNamesJson: $toolNamesJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AgentToolCallsTable extends AgentToolCalls
+    with TableInfo<$AgentToolCallsTable, AgentToolCall> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AgentToolCallsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _agentIdMeta = const VerificationMeta(
+    'agentId',
+  );
+  @override
+  late final GeneratedColumn<String> agentId = GeneratedColumn<String>(
+    'agent_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _toolNameMeta = const VerificationMeta(
+    'toolName',
+  );
+  @override
+  late final GeneratedColumn<String> toolName = GeneratedColumn<String>(
+    'tool_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _inputMeta = const VerificationMeta('input');
+  @override
+  late final GeneratedColumn<String> input = GeneratedColumn<String>(
+    'input',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _outputMeta = const VerificationMeta('output');
+  @override
+  late final GeneratedColumn<String> output = GeneratedColumn<String>(
+    'output',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timestampMeta = const VerificationMeta(
+    'timestamp',
+  );
+  @override
+  late final GeneratedColumn<DateTime> timestamp = GeneratedColumn<DateTime>(
+    'timestamp',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    agentId,
+    toolName,
+    input,
+    output,
+    timestamp,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'agent_tool_calls';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AgentToolCall> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('agent_id')) {
+      context.handle(
+        _agentIdMeta,
+        agentId.isAcceptableOrUnknown(data['agent_id']!, _agentIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_agentIdMeta);
+    }
+    if (data.containsKey('tool_name')) {
+      context.handle(
+        _toolNameMeta,
+        toolName.isAcceptableOrUnknown(data['tool_name']!, _toolNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_toolNameMeta);
+    }
+    if (data.containsKey('input')) {
+      context.handle(
+        _inputMeta,
+        input.isAcceptableOrUnknown(data['input']!, _inputMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_inputMeta);
+    }
+    if (data.containsKey('output')) {
+      context.handle(
+        _outputMeta,
+        output.isAcceptableOrUnknown(data['output']!, _outputMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_outputMeta);
+    }
+    if (data.containsKey('timestamp')) {
+      context.handle(
+        _timestampMeta,
+        timestamp.isAcceptableOrUnknown(data['timestamp']!, _timestampMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timestampMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AgentToolCall map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AgentToolCall(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      agentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}agent_id'],
+      )!,
+      toolName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tool_name'],
+      )!,
+      input: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}input'],
+      )!,
+      output: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}output'],
+      )!,
+      timestamp: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}timestamp'],
+      )!,
+    );
+  }
+
+  @override
+  $AgentToolCallsTable createAlias(String alias) {
+    return $AgentToolCallsTable(attachedDatabase, alias);
+  }
+}
+
+class AgentToolCall extends DataClass implements Insertable<AgentToolCall> {
+  final String id;
+  final String agentId;
+  final String toolName;
+  final String input;
+  final String output;
+  final DateTime timestamp;
+  const AgentToolCall({
+    required this.id,
+    required this.agentId,
+    required this.toolName,
+    required this.input,
+    required this.output,
+    required this.timestamp,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['agent_id'] = Variable<String>(agentId);
+    map['tool_name'] = Variable<String>(toolName);
+    map['input'] = Variable<String>(input);
+    map['output'] = Variable<String>(output);
+    map['timestamp'] = Variable<DateTime>(timestamp);
+    return map;
+  }
+
+  AgentToolCallsCompanion toCompanion(bool nullToAbsent) {
+    return AgentToolCallsCompanion(
+      id: Value(id),
+      agentId: Value(agentId),
+      toolName: Value(toolName),
+      input: Value(input),
+      output: Value(output),
+      timestamp: Value(timestamp),
+    );
+  }
+
+  factory AgentToolCall.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AgentToolCall(
+      id: serializer.fromJson<String>(json['id']),
+      agentId: serializer.fromJson<String>(json['agentId']),
+      toolName: serializer.fromJson<String>(json['toolName']),
+      input: serializer.fromJson<String>(json['input']),
+      output: serializer.fromJson<String>(json['output']),
+      timestamp: serializer.fromJson<DateTime>(json['timestamp']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'agentId': serializer.toJson<String>(agentId),
+      'toolName': serializer.toJson<String>(toolName),
+      'input': serializer.toJson<String>(input),
+      'output': serializer.toJson<String>(output),
+      'timestamp': serializer.toJson<DateTime>(timestamp),
+    };
+  }
+
+  AgentToolCall copyWith({
+    String? id,
+    String? agentId,
+    String? toolName,
+    String? input,
+    String? output,
+    DateTime? timestamp,
+  }) => AgentToolCall(
+    id: id ?? this.id,
+    agentId: agentId ?? this.agentId,
+    toolName: toolName ?? this.toolName,
+    input: input ?? this.input,
+    output: output ?? this.output,
+    timestamp: timestamp ?? this.timestamp,
+  );
+  AgentToolCall copyWithCompanion(AgentToolCallsCompanion data) {
+    return AgentToolCall(
+      id: data.id.present ? data.id.value : this.id,
+      agentId: data.agentId.present ? data.agentId.value : this.agentId,
+      toolName: data.toolName.present ? data.toolName.value : this.toolName,
+      input: data.input.present ? data.input.value : this.input,
+      output: data.output.present ? data.output.value : this.output,
+      timestamp: data.timestamp.present ? data.timestamp.value : this.timestamp,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AgentToolCall(')
+          ..write('id: $id, ')
+          ..write('agentId: $agentId, ')
+          ..write('toolName: $toolName, ')
+          ..write('input: $input, ')
+          ..write('output: $output, ')
+          ..write('timestamp: $timestamp')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, agentId, toolName, input, output, timestamp);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AgentToolCall &&
+          other.id == this.id &&
+          other.agentId == this.agentId &&
+          other.toolName == this.toolName &&
+          other.input == this.input &&
+          other.output == this.output &&
+          other.timestamp == this.timestamp);
+}
+
+class AgentToolCallsCompanion extends UpdateCompanion<AgentToolCall> {
+  final Value<String> id;
+  final Value<String> agentId;
+  final Value<String> toolName;
+  final Value<String> input;
+  final Value<String> output;
+  final Value<DateTime> timestamp;
+  final Value<int> rowid;
+  const AgentToolCallsCompanion({
+    this.id = const Value.absent(),
+    this.agentId = const Value.absent(),
+    this.toolName = const Value.absent(),
+    this.input = const Value.absent(),
+    this.output = const Value.absent(),
+    this.timestamp = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AgentToolCallsCompanion.insert({
+    required String id,
+    required String agentId,
+    required String toolName,
+    required String input,
+    required String output,
+    required DateTime timestamp,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       agentId = Value(agentId),
+       toolName = Value(toolName),
+       input = Value(input),
+       output = Value(output),
+       timestamp = Value(timestamp);
+  static Insertable<AgentToolCall> custom({
+    Expression<String>? id,
+    Expression<String>? agentId,
+    Expression<String>? toolName,
+    Expression<String>? input,
+    Expression<String>? output,
+    Expression<DateTime>? timestamp,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (agentId != null) 'agent_id': agentId,
+      if (toolName != null) 'tool_name': toolName,
+      if (input != null) 'input': input,
+      if (output != null) 'output': output,
+      if (timestamp != null) 'timestamp': timestamp,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AgentToolCallsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? agentId,
+    Value<String>? toolName,
+    Value<String>? input,
+    Value<String>? output,
+    Value<DateTime>? timestamp,
+    Value<int>? rowid,
+  }) {
+    return AgentToolCallsCompanion(
+      id: id ?? this.id,
+      agentId: agentId ?? this.agentId,
+      toolName: toolName ?? this.toolName,
+      input: input ?? this.input,
+      output: output ?? this.output,
+      timestamp: timestamp ?? this.timestamp,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (agentId.present) {
+      map['agent_id'] = Variable<String>(agentId.value);
+    }
+    if (toolName.present) {
+      map['tool_name'] = Variable<String>(toolName.value);
+    }
+    if (input.present) {
+      map['input'] = Variable<String>(input.value);
+    }
+    if (output.present) {
+      map['output'] = Variable<String>(output.value);
+    }
+    if (timestamp.present) {
+      map['timestamp'] = Variable<DateTime>(timestamp.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AgentToolCallsCompanion(')
+          ..write('id: $id, ')
+          ..write('agentId: $agentId, ')
+          ..write('toolName: $toolName, ')
+          ..write('input: $input, ')
+          ..write('output: $output, ')
+          ..write('timestamp: $timestamp, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ProjectDatabase extends GeneratedDatabase {
   _$ProjectDatabase(QueryExecutor e) : super(e);
   $ProjectDatabaseManager get managers => $ProjectDatabaseManager(this);
@@ -66191,6 +66912,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
       $KnowledgeEntitiesTable(this);
   late final $KnowledgeRelationsTable knowledgeRelations =
       $KnowledgeRelationsTable(this);
+  late final $AgentsTable agents = $AgentsTable(this);
+  late final $AgentToolCallsTable agentToolCalls = $AgentToolCallsTable(this);
   late final AssetDao assetDao = AssetDao(this as ProjectDatabase);
   late final CharacterDao characterDao = CharacterDao(this as ProjectDatabase);
   late final CharacterModeDao characterModeDao = CharacterModeDao(
@@ -66401,6 +67124,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     auditEvents,
     knowledgeEntities,
     knowledgeRelations,
+    agents,
+    agentToolCalls,
   ];
 }
 
@@ -102071,6 +102796,410 @@ typedef $$KnowledgeRelationsTableProcessedTableManager =
       KnowledgeRelation,
       PrefetchHooks Function()
     >;
+typedef $$AgentsTableCreateCompanionBuilder =
+    AgentsCompanion Function({
+      required String id,
+      required String name,
+      required String systemPrompt,
+      Value<String> toolNamesJson,
+      Value<int> rowid,
+    });
+typedef $$AgentsTableUpdateCompanionBuilder =
+    AgentsCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String> systemPrompt,
+      Value<String> toolNamesJson,
+      Value<int> rowid,
+    });
+
+class $$AgentsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AgentsTable> {
+  $$AgentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get systemPrompt => $composableBuilder(
+    column: $table.systemPrompt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get toolNamesJson => $composableBuilder(
+    column: $table.toolNamesJson,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AgentsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AgentsTable> {
+  $$AgentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get systemPrompt => $composableBuilder(
+    column: $table.systemPrompt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get toolNamesJson => $composableBuilder(
+    column: $table.toolNamesJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AgentsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AgentsTable> {
+  $$AgentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get systemPrompt => $composableBuilder(
+    column: $table.systemPrompt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get toolNamesJson => $composableBuilder(
+    column: $table.toolNamesJson,
+    builder: (column) => column,
+  );
+}
+
+class $$AgentsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AgentsTable,
+          Agent,
+          $$AgentsTableFilterComposer,
+          $$AgentsTableOrderingComposer,
+          $$AgentsTableAnnotationComposer,
+          $$AgentsTableCreateCompanionBuilder,
+          $$AgentsTableUpdateCompanionBuilder,
+          (Agent, BaseReferences<_$ProjectDatabase, $AgentsTable, Agent>),
+          Agent,
+          PrefetchHooks Function()
+        > {
+  $$AgentsTableTableManager(_$ProjectDatabase db, $AgentsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AgentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AgentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AgentsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> systemPrompt = const Value.absent(),
+                Value<String> toolNamesJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AgentsCompanion(
+                id: id,
+                name: name,
+                systemPrompt: systemPrompt,
+                toolNamesJson: toolNamesJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required String systemPrompt,
+                Value<String> toolNamesJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AgentsCompanion.insert(
+                id: id,
+                name: name,
+                systemPrompt: systemPrompt,
+                toolNamesJson: toolNamesJson,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AgentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AgentsTable,
+      Agent,
+      $$AgentsTableFilterComposer,
+      $$AgentsTableOrderingComposer,
+      $$AgentsTableAnnotationComposer,
+      $$AgentsTableCreateCompanionBuilder,
+      $$AgentsTableUpdateCompanionBuilder,
+      (Agent, BaseReferences<_$ProjectDatabase, $AgentsTable, Agent>),
+      Agent,
+      PrefetchHooks Function()
+    >;
+typedef $$AgentToolCallsTableCreateCompanionBuilder =
+    AgentToolCallsCompanion Function({
+      required String id,
+      required String agentId,
+      required String toolName,
+      required String input,
+      required String output,
+      required DateTime timestamp,
+      Value<int> rowid,
+    });
+typedef $$AgentToolCallsTableUpdateCompanionBuilder =
+    AgentToolCallsCompanion Function({
+      Value<String> id,
+      Value<String> agentId,
+      Value<String> toolName,
+      Value<String> input,
+      Value<String> output,
+      Value<DateTime> timestamp,
+      Value<int> rowid,
+    });
+
+class $$AgentToolCallsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $AgentToolCallsTable> {
+  $$AgentToolCallsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get agentId => $composableBuilder(
+    column: $table.agentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get toolName => $composableBuilder(
+    column: $table.toolName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get input => $composableBuilder(
+    column: $table.input,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get output => $composableBuilder(
+    column: $table.output,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get timestamp => $composableBuilder(
+    column: $table.timestamp,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AgentToolCallsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $AgentToolCallsTable> {
+  $$AgentToolCallsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get agentId => $composableBuilder(
+    column: $table.agentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get toolName => $composableBuilder(
+    column: $table.toolName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get input => $composableBuilder(
+    column: $table.input,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get output => $composableBuilder(
+    column: $table.output,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get timestamp => $composableBuilder(
+    column: $table.timestamp,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AgentToolCallsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $AgentToolCallsTable> {
+  $$AgentToolCallsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get agentId =>
+      $composableBuilder(column: $table.agentId, builder: (column) => column);
+
+  GeneratedColumn<String> get toolName =>
+      $composableBuilder(column: $table.toolName, builder: (column) => column);
+
+  GeneratedColumn<String> get input =>
+      $composableBuilder(column: $table.input, builder: (column) => column);
+
+  GeneratedColumn<String> get output =>
+      $composableBuilder(column: $table.output, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get timestamp =>
+      $composableBuilder(column: $table.timestamp, builder: (column) => column);
+}
+
+class $$AgentToolCallsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $AgentToolCallsTable,
+          AgentToolCall,
+          $$AgentToolCallsTableFilterComposer,
+          $$AgentToolCallsTableOrderingComposer,
+          $$AgentToolCallsTableAnnotationComposer,
+          $$AgentToolCallsTableCreateCompanionBuilder,
+          $$AgentToolCallsTableUpdateCompanionBuilder,
+          (
+            AgentToolCall,
+            BaseReferences<
+              _$ProjectDatabase,
+              $AgentToolCallsTable,
+              AgentToolCall
+            >,
+          ),
+          AgentToolCall,
+          PrefetchHooks Function()
+        > {
+  $$AgentToolCallsTableTableManager(
+    _$ProjectDatabase db,
+    $AgentToolCallsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AgentToolCallsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AgentToolCallsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AgentToolCallsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> agentId = const Value.absent(),
+                Value<String> toolName = const Value.absent(),
+                Value<String> input = const Value.absent(),
+                Value<String> output = const Value.absent(),
+                Value<DateTime> timestamp = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AgentToolCallsCompanion(
+                id: id,
+                agentId: agentId,
+                toolName: toolName,
+                input: input,
+                output: output,
+                timestamp: timestamp,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String agentId,
+                required String toolName,
+                required String input,
+                required String output,
+                required DateTime timestamp,
+                Value<int> rowid = const Value.absent(),
+              }) => AgentToolCallsCompanion.insert(
+                id: id,
+                agentId: agentId,
+                toolName: toolName,
+                input: input,
+                output: output,
+                timestamp: timestamp,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AgentToolCallsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $AgentToolCallsTable,
+      AgentToolCall,
+      $$AgentToolCallsTableFilterComposer,
+      $$AgentToolCallsTableOrderingComposer,
+      $$AgentToolCallsTableAnnotationComposer,
+      $$AgentToolCallsTableCreateCompanionBuilder,
+      $$AgentToolCallsTableUpdateCompanionBuilder,
+      (
+        AgentToolCall,
+        BaseReferences<_$ProjectDatabase, $AgentToolCallsTable, AgentToolCall>,
+      ),
+      AgentToolCall,
+      PrefetchHooks Function()
+    >;
 
 class $ProjectDatabaseManager {
   final _$ProjectDatabase _db;
@@ -102435,4 +103564,8 @@ class $ProjectDatabaseManager {
       $$KnowledgeEntitiesTableTableManager(_db, _db.knowledgeEntities);
   $$KnowledgeRelationsTableTableManager get knowledgeRelations =>
       $$KnowledgeRelationsTableTableManager(_db, _db.knowledgeRelations);
+  $$AgentsTableTableManager get agents =>
+      $$AgentsTableTableManager(_db, _db.agents);
+  $$AgentToolCallsTableTableManager get agentToolCalls =>
+      $$AgentToolCallsTableTableManager(_db, _db.agentToolCalls);
 }

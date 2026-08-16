@@ -7,8 +7,8 @@ import 'package:void_scriptor/features/workspace_layout/domain/layout_model.dart
 import 'package:void_scriptor/features/workspace_layout/domain/layout_preset.dart';
 
 void main() {
-  test('schema version is 49', () {
-    expect(ProjectDatabase.currentSchemaVersion, 49);
+  test('schema version is 50', () {
+    expect(ProjectDatabase.currentSchemaVersion, 50);
   });
 
   test('layout_presets and project_layout_states roundtrip', () async {

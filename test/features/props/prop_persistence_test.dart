@@ -49,7 +49,7 @@ void main() {
     final second = await service.open(path);
     addTearDown(second.close);
     final restored = PropRepository(second);
-    expect(second.schemaVersion, 49);
+    expect(second.schemaVersion, 50);
     expect((await second.assetDao.getById(id))?.type, 'prop');
     expect((await restored.getProp(id))?.storyCritical, isTrue);
     expect((await restored.getSpecification(id))?.material, 'Paper');

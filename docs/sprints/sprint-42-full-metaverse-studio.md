@@ -1,6 +1,7 @@
 # Sprint 42 — Full Metaverse Studio
 
-> **STATUS: PROPOSAL**
+> **STATUS: DONE** — 42.1–42.21 GREEN, 797 PASS, analyze 0 issues, build web ✓.
+
 > **Sumber judul kanonik**: uteke memory `90d845b9` ("S42 Full Metaverse Studio") — hanya judul.
 > Fondasi audit: environment zones (`environment_zones.dart`, `scene_environment_contexts.dart`,
 > `environment_props.dart`), XR S41 (session, spatial anchors, room scale), enterprise S37

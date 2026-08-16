@@ -38,6 +38,8 @@ import '../../core/virtual_production/presentation/virtual_production_panel.dart
 import '../../core/virtual_production/builtin/demo_virtual_production.dart';
 import '../../core/publishing/presentation/publishing_panel.dart';
 import '../../core/publishing/builtin/demo_publishing.dart';
+import '../../core/enterprise/presentation/studio_management_panel.dart';
+import '../../core/enterprise/builtin/demo_studio.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
@@ -125,6 +127,15 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
           latestVersion: DemoPublishing.manifest.version.toString(),
         ),
       ),
+      GoRoute(
+        path: AppRoutes.enterpriseStudio,
+        builder: (_, __) => StudioManagementPanel(
+          studioName: DemoStudio.registry.studio.name,
+          plan: DemoStudio.registry.studio.plan,
+          usedSeats: DemoStudio.registry.seats.usedSeats,
+          maxSeats: DemoStudio.registry.seats.maxSeats,
+        ),
+      ),
     ],
   );
 }
@@ -169,8 +180,13 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
       ),
     ),
     GoRoute(
-      path: AppRoutes.studio,
-      builder: (_, __) => VoidAppShell(onLogout: onLogout),
+      path: AppRoutes.enterpriseStudio,
+      builder: (_, __) => StudioManagementPanel(
+        studioName: DemoStudio.registry.studio.name,
+        plan: DemoStudio.registry.studio.plan,
+        usedSeats: DemoStudio.registry.seats.usedSeats,
+        maxSeats: DemoStudio.registry.seats.maxSeats,
+      ),
     ),
     for (final route in AppRoutes.foundationRoutes.entries)
       if (route.value != AppRoutes.splash &&

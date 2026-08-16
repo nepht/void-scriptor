@@ -5,7 +5,7 @@ import 'package:void_scriptor/core/enterprise/member/team_member.dart';
 
 void main() {
   test('TeamMember holds identity and role', () {
-    final member = TeamMember(
+    const member = TeamMember(
       userId: 'u1',
       role: StudioRole.member,
       status: MemberStatus.active,
@@ -21,7 +21,7 @@ void main() {
   });
 
   test('TeamMember.can delegates to role', () {
-    final member = TeamMember(
+    const member = TeamMember(
       userId: 'u1',
       role: StudioRole.member,
       status: MemberStatus.active,

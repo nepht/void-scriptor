@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/enterprise/studio/studio.dart';
 import 'package:void_scriptor/core/enterprise/role/studio_role.dart';
-import 'package:void_scriptor/core/enterprise/member/team_member.dart';
 import 'package:void_scriptor/core/enterprise/license/seat_license.dart';
 import 'package:void_scriptor/core/enterprise/registry/studio_registry.dart';
 

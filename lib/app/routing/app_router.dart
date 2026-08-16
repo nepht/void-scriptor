@@ -36,6 +36,8 @@ import '../../core/animation/builtin/demo_animation.dart';
 import '../../core/audio_engine/presentation/audio_meter_panel.dart';
 import '../../core/virtual_production/presentation/virtual_production_panel.dart';
 import '../../core/virtual_production/builtin/demo_virtual_production.dart';
+import '../../core/publishing/presentation/publishing_panel.dart';
+import '../../core/publishing/builtin/demo_publishing.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
@@ -114,6 +116,13 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
           shotCount: DemoVirtualProduction.shotList.shots.length,
           takeCount: 0,
           totalDurationSeconds: DemoVirtualProduction.shotList.totalDuration,
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.publishing,
+        builder: (_, __) => PublishingPanel(
+          channelCount: 3,
+          latestVersion: DemoPublishing.manifest.version.toString(),
         ),
       ),
     ],
@@ -268,6 +277,13 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
         shotCount: DemoVirtualProduction.shotList.shots.length,
         takeCount: 0,
         totalDurationSeconds: DemoVirtualProduction.shotList.totalDuration,
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.publishing,
+      builder: (_, __) => PublishingPanel(
+        channelCount: 3,
+        latestVersion: DemoPublishing.manifest.version.toString(),
       ),
     ),
   ];

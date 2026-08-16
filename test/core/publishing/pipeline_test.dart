@@ -7,14 +7,14 @@ import 'package:void_scriptor/core/publishing/pipeline/publishing_pipeline.dart'
 
 void main() {
   PublishManifest manifest() => PublishManifest(
-    version: SemVer(1, 0, 0),
+    version: const SemVer(1, 0, 0),
     changelog: 'release',
     checksum: 'abc',
     artifacts: const {BuildTarget.web: 'web.zip'},
   );
 
   test('PublishingPipeline runs stages in order', () {
-    final pipeline = PublishingPipeline();
+    const pipeline = PublishingPipeline();
     final result = pipeline.run(
       manifest: manifest(),
       channel: ReleaseChannel.stable,
@@ -24,7 +24,7 @@ void main() {
   });
 
   test('PublishingPipeline propagates failure', () {
-    final pipeline = PublishingPipeline(buildFails: true);
+    const pipeline = PublishingPipeline(buildFails: true);
     final result = pipeline.run(
       manifest: manifest(),
       channel: ReleaseChannel.stable,

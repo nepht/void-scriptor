@@ -6,7 +6,7 @@ import 'package:void_scriptor/core/publishing/manifest/publish_manifest.dart';
 void main() {
   test('PublishManifest holds fields', () {
     final manifest = PublishManifest(
-      version: SemVer(1, 0, 0),
+      version: const SemVer(1, 0, 0),
       changelog: 'Initial release',
       checksum: 'abc123',
       artifacts: const {BuildTarget.web: 'web.zip'},
@@ -18,7 +18,7 @@ void main() {
 
   test('PublishManifest serializes to JSON and back', () {
     final manifest = PublishManifest(
-      version: SemVer(2, 1, 0),
+      version: const SemVer(2, 1, 0),
       changelog: 'New features',
       checksum: 'def456',
       artifacts: const {BuildTarget.desktop: 'desktop.zip'},
@@ -33,7 +33,7 @@ void main() {
   test('PublishManifest validation requires changelog', () {
     expect(
       () => PublishManifest(
-        version: SemVer(1, 0, 0),
+        version: const SemVer(1, 0, 0),
         changelog: '',
         checksum: 'abc',
         artifacts: const {},

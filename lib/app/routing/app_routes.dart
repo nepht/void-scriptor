@@ -40,6 +40,7 @@ abstract final class AppRoutes {
   static const plugins = '/plugins';
   static const render = '/render';
   static const animation = '/animation';
+  static const audio = '/audio';
 
   static const foundationRoutes = <String, String>{
     'SPLASH': splash,

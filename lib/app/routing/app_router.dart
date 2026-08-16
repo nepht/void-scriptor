@@ -33,6 +33,7 @@ import '../../core/plugin/domain/plugin_manifest.dart';
 import '../../core/render/presentation/render_preview_panel.dart';
 import '../../core/animation/presentation/animation_preview_panel.dart';
 import '../../core/animation/builtin/demo_animation.dart';
+import '../../core/audio_engine/presentation/audio_meter_panel.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
@@ -100,6 +101,10 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
           durationSeconds: DemoAnimation.bounce.durationSeconds,
           trackCount: DemoAnimation.bounce.tracks.length,
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.audio,
+        builder: (_, __) => const AudioMeterPanel(rmsDb: -18, gainDb: -6),
       ),
     ],
   );
@@ -242,6 +247,10 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
         durationSeconds: DemoAnimation.bounce.durationSeconds,
         trackCount: DemoAnimation.bounce.tracks.length,
       ),
+    ),
+    GoRoute(
+      path: AppRoutes.audio,
+      builder: (_, __) => const AudioMeterPanel(rmsDb: -18, gainDb: -6),
     ),
   ];
 }

@@ -5,7 +5,7 @@ import 'package:void_scriptor/core/audio_engine/modulation/automation_curve.dart
 
 void main() {
   test('GainEnvelope linear ramp', () {
-    final env = GainEnvelope(initial: 0, target: 1, durationSeconds: 1);
+    const env = GainEnvelope(initial: 0, target: 1, durationSeconds: 1);
     expect(env.valueAt(0), closeTo(0, 1e-6));
     expect(env.valueAt(0.5), closeTo(0.5, 1e-6));
     expect(env.valueAt(1), closeTo(1, 1e-6));

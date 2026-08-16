@@ -1,6 +1,7 @@
 # Sprint 41 — Immersive Creation + XR Studio
 
-> **STATUS: PROPOSAL**
+> **STATUS: DONE** — 41.1–41.21 GREEN, 779 PASS, analyze 0 issues, build web ✓.
+
 > **Sumber judul kanonik**: uteke memory `90d845b9` ("S41 Immersive Creation+XR Studio") — hanya judul.
 > Fondasi audit: render 3D S32 (scene graph, camera, material, light, transform3d, scene node),
 > virtual production S35 (stage, shot, camera). Belum ada XR/spatial/stereoscopic/headset.

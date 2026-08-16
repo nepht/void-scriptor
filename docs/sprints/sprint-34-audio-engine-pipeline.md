@@ -1,6 +1,7 @@
 # Sprint 34 — Audio Engine Pipeline
 
-> **STATUS: PROPOSAL**
+> **STATUS: DONE** — 34.1–34.21 GREEN, 650 PASS, analyze 0 issues, build web ✓.
+
 > **Sumber judul kanonik**: uteke memory `90d845b9` ("S34 Advanced Audio Engine") — hanya judul.
 > Step dirancan dari judul + audit repo nyata: `AudioMixer` (gain/solo/mute/ducking — model),
 > `AudioTimelineClipModel` (fade/pan/gain), `AudioAutomationKeyframeModel`, `AudioFileModel`.

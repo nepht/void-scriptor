@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/jobs/thumbnail_pipeline.dart';
 
@@ -55,9 +53,7 @@ void main() {
       cacheKey: 'abc_128_v1',
       size: ThumbnailSize.small,
     );
-    expect(
-      request.sourcePath,
-      isNot(contains(Platform.pathSeparator)),
-    );
+    expect(request.sourcePath, 'assets/references/a.png');
+    expect(request.sourcePath, isNot(startsWith('/')));
   });
 }

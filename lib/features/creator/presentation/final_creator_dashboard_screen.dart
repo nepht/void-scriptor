@@ -115,6 +115,8 @@ class _SidebarItem extends StatelessWidget {
 }
 
 class _DashboardContent extends StatelessWidget {
+  const _DashboardContent();
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(

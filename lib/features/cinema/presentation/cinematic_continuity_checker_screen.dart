@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
-import '../../../design_system/typography/void_typography.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 /// Step 48.86 — Cinematic Continuity Checker.

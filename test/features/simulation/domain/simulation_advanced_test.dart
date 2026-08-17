@@ -6,7 +6,7 @@ import 'package:void_scriptor/features/simulation/domain/settlement.dart';
 void main() {
   group('FactionState', () {
     test('holds faction influence and relation', () {
-      final f = FactionState(
+      const f = FactionState(
         id: 'f1',
         worldId: 'w1',
         name: 'Order of the Shard',

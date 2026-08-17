@@ -30,7 +30,7 @@ void main() {
 
   group('CinematicShot', () {
     test('holds shot metadata', () {
-      final shot = CinematicShot(
+      const shot = CinematicShot(
         id: 's1',
         cinematicId: 'c1',
         name: 'Opening Wide',

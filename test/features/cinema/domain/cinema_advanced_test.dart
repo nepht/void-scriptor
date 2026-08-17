@@ -72,7 +72,7 @@ void main() {
 
   group('DialogueClip', () {
     test('holds dialogue timing', () {
-      final clip = DialogueClip(
+      const clip = DialogueClip(
         id: 'd1',
         shotId: 's1',
         characterId: 'char1',

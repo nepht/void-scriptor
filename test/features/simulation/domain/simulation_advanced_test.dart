@@ -85,7 +85,7 @@ void main() {
 
   group('CreaturePopulation', () {
     test('tracks population and balance', () {
-      final pop = CreaturePopulation(
+      const pop = CreaturePopulation(
         id: 'p1',
         speciesId: 'sp1',
         eco: const EcosystemState(id: 'e1', worldId: 'w1', balance: 0.8),

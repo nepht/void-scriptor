@@ -34,7 +34,7 @@ void main() {
 
   group('CrossoverStatePackage', () {
     test('packages return state', () {
-      final pkg = CrossoverStatePackage(
+      const pkg = CrossoverStatePackage(
         id: 'pkg1',
         entityId: 'char1',
         originUniverseId: 'u1',

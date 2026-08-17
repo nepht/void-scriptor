@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
+import '../application/creator_studio_controller.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 /// Step 43.6 — Dashboard Metrics.
@@ -9,27 +11,48 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 /// Menampilkan 8 metrik: Active Projects, Published Works, Portfolio Views,
 /// Followers, Collaborations, Asset Sales, AI Usage, Storage.
 /// Untuk user pribadi, statistik sosial dapat disembunyikan.
-class DashboardMetricsScreen extends StatelessWidget {
+/// Data bersumber dari [creatorStudioProvider].
+class DashboardMetricsScreen extends ConsumerWidget {
   const DashboardMetricsScreen({super.key, this.showSocialStats = true});
 
   final bool showSocialStats;
 
   @override
-  Widget build(BuildContext context) {
-    const metrics = <_Metric>[
-      _Metric('Active Projects', '12', Icons.folder_copy_outlined),
-      _Metric('Published Works', '3', Icons.public_outlined),
-      _Metric('Portfolio Views', '1.2k', Icons.remove_red_eye_outlined),
-      _Metric('Followers', '48', Icons.people_outline),
-      _Metric('Collaborations', '2', Icons.group_work_outlined),
-      _Metric('Asset Sales', '17', Icons.sell_outlined),
-      _Metric('AI Usage', '86%', Icons.auto_awesome_outlined),
-      _Metric('Storage', '1.8 GB', Icons.storage_outlined),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final metrics = ref.watch(creatorStudioProvider).metrics;
+    final items = <_Metric>[
+      _Metric(
+        'Active Projects',
+        '${metrics.activeProjects}',
+        Icons.folder_copy_outlined,
+      ),
+      _Metric(
+        'Published Works',
+        '${metrics.publishedWorks}',
+        Icons.public_outlined,
+      ),
+      _Metric(
+        'Portfolio Views',
+        _compact(metrics.portfolioViews),
+        Icons.remove_red_eye_outlined,
+      ),
+      if (metrics.followers != null)
+        _Metric('Followers', '${metrics.followers}', Icons.people_outline),
+      if (metrics.collaborations != null)
+        _Metric(
+          'Collaborations',
+          '${metrics.collaborations}',
+          Icons.group_work_outlined,
+        ),
+      if (metrics.assetSales != null)
+        _Metric('Asset Sales', '${metrics.assetSales}', Icons.sell_outlined),
+      _Metric('AI Usage', '${metrics.aiUsage}%', Icons.auto_awesome_outlined),
+      _Metric('Storage', metrics.storageLabel, Icons.storage_outlined),
     ];
 
     final visible = showSocialStats
-        ? metrics
-        : metrics.where((m) => !_socialLabels.contains(m.label)).toList();
+        ? items
+        : items.where((m) => !_socialLabels.contains(m.label)).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -59,6 +82,13 @@ class DashboardMetricsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  static String _compact(int value) {
+    if (value >= 1000) {
+      return '${(value / 1000).toStringAsFixed(1)}k';
+    }
+    return '$value';
   }
 }
 

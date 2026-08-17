@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
+import '../application/creator_studio_controller.dart';
+import '../domain/creator_workspace_section.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 /// Step 43.7 — Creator Workspace.
@@ -10,23 +13,16 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 /// My Assets, My Stories, My AI Agents, My Workflows, Portfolio, Archive.
 /// Workspace menggunakan Asset Core yang sudah dibuat sebelumnya,
 /// bukan database aset kedua yang terpisah.
-class CreatorWorkspaceScreen extends StatelessWidget {
+/// Data bersumber dari [CreatorWorkspaceSection.values] dan state aktif dari
+/// [creatorStudioProvider].
+class CreatorWorkspaceScreen extends ConsumerWidget {
   const CreatorWorkspaceScreen({super.key});
 
-  static const sections = <_WorkspaceSection>[
-    _WorkspaceSection('My Projects', Icons.folder_copy_outlined),
-    _WorkspaceSection('My Characters', Icons.person_outline),
-    _WorkspaceSection('My Worlds', Icons.public_outlined),
-    _WorkspaceSection('My Assets', Icons.inventory_2_outlined),
-    _WorkspaceSection('My Stories', Icons.menu_book_outlined),
-    _WorkspaceSection('My AI Agents', Icons.smart_toy_outlined),
-    _WorkspaceSection('My Workflows', Icons.account_tree_outlined),
-    _WorkspaceSection('Portfolio', Icons.work_outline),
-    _WorkspaceSection('Archive', Icons.archive_outlined),
-  ];
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeSection = ref.watch(creatorStudioProvider).activeSection;
+    final sections = CreatorWorkspaceSection.values;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Creator Workspace'),
@@ -46,7 +42,16 @@ class CreatorWorkspaceScreen extends StatelessWidget {
                 mainAxisSpacing: VoidSpacing.md,
                 crossAxisSpacing: VoidSpacing.md,
                 childAspectRatio: wide ? 2.8 : 1.6,
-                children: [for (final s in sections) _SectionCard(section: s)],
+                children: [
+                  for (final s in sections)
+                    _SectionCard(
+                      section: s,
+                      isActive: s == activeSection,
+                      onTap: () => ref
+                          .read(creatorStudioProvider.notifier)
+                          .setSection(s),
+                    )
+                ],
               ),
             );
           },
@@ -56,41 +61,54 @@ class CreatorWorkspaceScreen extends StatelessWidget {
   }
 }
 
-class _WorkspaceSection {
-  const _WorkspaceSection(this.label, this.icon);
-
-  final String label;
-  final IconData icon;
-}
-
 class _SectionCard extends StatelessWidget {
-  const _SectionCard({required this.section});
+  const _SectionCard({
+    required this.section,
+    required this.isActive,
+    required this.onTap,
+  });
 
-  final _WorkspaceSection section;
+  final CreatorWorkspaceSection section;
+  final bool isActive;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(VoidSpacing.md),
-      decoration: BoxDecoration(
-        color: context.palette.surface,
+    final color = isActive
+        ? context.palette.primary.withAlpha(51) // 20% opacity
+        : context.palette.surface;
+
+    return Card(
+      color: color,
+      elevation: isActive ? 4 : 1,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
+        side: isActive
+            ? BorderSide(color: context.palette.primary, width: 1)
+            : BorderSide.none,
       ),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        alignment: Alignment.centerLeft,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(section.icon, color: context.palette.primary, size: 22),
-            const SizedBox(width: VoidSpacing.sm),
-            Text(
-              section.label,
-              style: VoidTypography.body.copyWith(
-                color: context.palette.textPrimary,
-              ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(VoidSpacing.md),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(section.icon, color: context.palette.primary, size: 22),
+                const SizedBox(width: VoidSpacing.sm),
+                Text(
+                  section.label,
+                  style: VoidTypography.body.copyWith(
+                    color: context.palette.textPrimary,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

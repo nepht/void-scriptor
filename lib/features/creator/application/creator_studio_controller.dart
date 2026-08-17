@@ -22,6 +22,21 @@ class CreatorStudioState {
     this.activeSection = CreatorWorkspaceSection.myProjects,
   });
 
+  /// State demo dengan metrik contoh (untuk test & preview).
+  const CreatorStudioState.demo()
+    : metrics = const CreatorMetrics(
+        activeProjects: 12,
+        publishedWorks: 3,
+        portfolioViews: 1200,
+        followers: 48,
+        collaborations: 2,
+        assetSales: 17,
+        aiUsage: 86,
+        storageBytes: 1932735283,
+      ),
+      profile = null,
+      activeSection = CreatorWorkspaceSection.myProjects;
+
   final CreatorMetrics metrics;
   final CreatorProfile? profile;
   final CreatorWorkspaceSection activeSection;
@@ -40,8 +55,13 @@ class CreatorStudioState {
 }
 
 class CreatorStudioController extends Notifier<CreatorStudioState> {
+  CreatorStudioController({this.demo = false});
+
+  final bool demo;
+
   @override
-  CreatorStudioState build() => const CreatorStudioState();
+  CreatorStudioState build() =>
+      demo ? const CreatorStudioState.demo() : const CreatorStudioState();
 
   void setSection(CreatorWorkspaceSection section) {
     state = state.copyWith(activeSection: section);

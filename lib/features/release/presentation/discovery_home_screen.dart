@@ -32,7 +32,7 @@ class DiscoveryHomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _SectionHeader(title: 'Featured'),
+              const _SectionHeader(title: 'Featured'),
               const SizedBox(height: VoidSpacing.md),
               Container(
                 width: double.infinity,

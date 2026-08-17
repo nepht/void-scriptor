@@ -88,7 +88,7 @@ void main() {
       final pop = CreaturePopulation(
         id: 'p1',
         speciesId: 'sp1',
-        eco: EcosystemState(id: 'e1', worldId: 'w1', balance: 0.8),
+        eco: const EcosystemState(id: 'e1', worldId: 'w1', balance: 0.8),
         count: 1000,
       );
       expect(pop.count, 1000);

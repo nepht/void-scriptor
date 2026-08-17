@@ -31,10 +31,13 @@ class ProductDetailScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: VoidSpacing.md),
-              _InfoRow(label: 'Description', value: 'Product description here'),
-              _InfoRow(label: 'Version', value: '1.0.0'),
-              _InfoRow(label: 'Rating', value: '4.8 / 5.0'),
-              _InfoRow(label: 'Reviews', value: '128'),
+              const _InfoRow(
+                label: 'Description',
+                value: 'Product description here',
+              ),
+              const _InfoRow(label: 'Version', value: '1.0.0'),
+              const _InfoRow(label: 'Rating', value: '4.8 / 5.0'),
+              const _InfoRow(label: 'Reviews', value: '128'),
               const SizedBox(height: VoidSpacing.lg),
               Row(
                 children: [

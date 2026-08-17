@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../design_system/spacing/void_spacing.dart';
-import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
-
 /// Step 43.52 — Mobile Navigation.
 ///
 /// Bottom navigation untuk layar mobile: Home, Projects, Create, AI, Profile.

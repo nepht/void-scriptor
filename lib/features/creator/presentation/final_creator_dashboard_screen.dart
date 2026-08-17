@@ -41,8 +41,8 @@ class FinalCreatorDashboardScreen extends StatelessWidget {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _Sidebar(),
-                  Expanded(child: _DashboardContent()),
+                  const _Sidebar(),
+                  const Expanded(child: _DashboardContent()),
                 ],
               );
             }

@@ -60,7 +60,7 @@ void main() {
 
   group('Inventory', () {
     test('adds and removes items', () {
-      final inv = Inventory(
+      const inv = Inventory(
         id: 'inv1',
         entityId: 'e1',
         items: [InventoryItem(id: 'i1', name: 'Potion', quantity: 2)],
@@ -72,9 +72,9 @@ void main() {
 
   group('SkillTree', () {
     test('unlocks skills', () {
-      final tree = SkillTree(
+      const tree = SkillTree(
         id: 'st1',
-        skillNodes: {'slash': SkillNode(id: 'slash', name: 'Slash')},
+        skillNodes: {'slash': const SkillNode(id: 'slash', name: 'Slash')},
         unlockedNodeIds: [],
       );
       final updated = tree.unlock('slash');

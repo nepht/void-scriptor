@@ -74,7 +74,7 @@ void main() {
     test('unlocks skills', () {
       const tree = SkillTree(
         id: 'st1',
-        skillNodes: {'slash': const SkillNode(id: 'slash', name: 'Slash')},
+        skillNodes: {'slash': SkillNode(id: 'slash', name: 'Slash')},
         unlockedNodeIds: [],
       );
       final updated = tree.unlock('slash');

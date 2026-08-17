@@ -38,15 +38,15 @@ class FinalCreatorDashboardScreen extends StatelessWidget {
           builder: (context, constraints) {
             final wide = constraints.maxWidth >= 900;
             if (wide) {
-              return Row(
+              return const Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const _Sidebar(),
-                  const Expanded(child: _DashboardContent()),
+                  _Sidebar(),
+                  Expanded(child: _DashboardContent()),
                 ],
               );
             }
-            return Column(
+            return const Column(
               children: [
                 _Sidebar(horizontal: true),
                 Expanded(child: _DashboardContent()),

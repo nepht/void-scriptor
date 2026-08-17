@@ -101,11 +101,15 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final router = GoRouter.maybeOf(context);
+    final navigator = Navigator.of(context);
+    final canPop = router?.canPop() ?? navigator.canPop();
+    final pop = router?.pop ?? navigator.maybePop;
     final title = Row(
       children: [
         IconButton(
           tooltip: 'Back',
-          onPressed: context.canPop() ? context.pop : null,
+          onPressed: canPop ? pop : null,
           icon: const Icon(Icons.arrow_back),
         ),
         Icon(Icons.menu_book_outlined, color: context.palette.primaryBright),

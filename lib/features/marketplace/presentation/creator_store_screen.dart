@@ -31,12 +31,12 @@ class CreatorStoreScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: VoidSpacing.md),
-              Row(
+              const Row(
                 children: [
                   _StatBadge(label: 'Products', value: '12'),
-                  const SizedBox(width: VoidSpacing.sm),
+                  SizedBox(width: VoidSpacing.sm),
                   _StatBadge(label: 'Followers', value: '1.2k'),
-                  const SizedBox(width: VoidSpacing.sm),
+                  SizedBox(width: VoidSpacing.sm),
                   _StatBadge(label: 'Rating', value: '4.9'),
                 ],
               ),

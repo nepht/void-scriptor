@@ -43,14 +43,14 @@ class DonationDashboardScreen extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: _GoalCard(
+                          child: const _GoalCard(
                             label: 'Monthly Goal',
                             value: 'Rp 2.450.000 / Rp 5.000.000',
                           ),
                         ),
                         const SizedBox(width: VoidSpacing.md),
                         Expanded(
-                          child: _GoalCard(
+                          child: const _GoalCard(
                             label: 'Supporters',
                             value: '32 patrons',
                           ),

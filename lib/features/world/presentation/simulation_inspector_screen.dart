@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -8,7 +9,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 ///
 /// Klik lokasi (mis. Neo Megacity) → detail: Population, Economy,
 /// Stability, Weather, Threat, Active Events.
-class SimulationInspectorScreen extends StatelessWidget {
+class SimulationInspectorScreen extends ConsumerWidget {
   const SimulationInspectorScreen({super.key});
 
   static const _stats = <(String, String)>[
@@ -21,7 +22,8 @@ class SimulationInspectorScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final worldState = ref.watch(worldProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Simulation Inspector'),

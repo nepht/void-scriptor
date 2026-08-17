@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -7,7 +8,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 /// Step 46.90 — Event Feed.
 ///
 /// Panel berisi timeline event dunia (jam + deskripsi).
-class EventFeedScreen extends StatelessWidget {
+class EventFeedScreen extends ConsumerWidget {
   const EventFeedScreen({super.key});
 
   static const _events = <(String, String)>[
@@ -18,7 +19,8 @@ class EventFeedScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final worldState = ref.watch(worldProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('World Events'),

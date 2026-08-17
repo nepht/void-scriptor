@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -8,7 +9,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 ///
 /// Workspace simulasi: sidebar (Overview, Population, Economy, ...),
 /// world map, playback control (Day 421, 100x).
-class WorldSimulationWorkspaceScreen extends StatelessWidget {
+class WorldSimulationWorkspaceScreen extends ConsumerWidget {
   const WorldSimulationWorkspaceScreen({super.key});
 
   static const _menuItems = <(String, IconData)>[
@@ -20,7 +21,8 @@ class WorldSimulationWorkspaceScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final worldState = ref.watch(worldProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('World Simulation'),

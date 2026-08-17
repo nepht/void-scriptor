@@ -1,0 +1,22 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:void_scriptor/features/platform/presentation/theme_settings_screen.dart';
+
+void main() {
+  Widget wrap(Widget child) => MaterialApp(home: child);
+
+  testWidgets('menampilkan opsi theme', (tester) async {
+    await tester.pumpWidget(wrap(const ThemeSettingsScreen()));
+    expect(find.text('Dark'), findsOneWidget);
+    expect(find.text('Light'), findsOneWidget);
+    expect(find.text('System'), findsOneWidget);
+  });
+
+  testWidgets('tidak overflow di layar sempit', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(wrap(const ThemeSettingsScreen()));
+    expect(tester.takeException(), isNull);
+  });
+}

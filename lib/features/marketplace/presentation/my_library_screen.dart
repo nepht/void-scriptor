@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
-import '../../../design_system/typography/void_typography.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 /// Step 44.52 — My Library.
@@ -25,10 +24,8 @@ class MyLibraryScreen extends StatelessWidget {
           child: Column(
             children: [
               TabBar(tabs: [for (final t in _tabs) Tab(text: t)]),
-              Expanded(
-                child: TabBarView(
-                  children: [const _InstalledTab(), const _UpdatesTab()],
-                ),
+              const Expanded(
+                child: TabBarView(children: [_InstalledTab(), _UpdatesTab()]),
               ),
             ],
           ),

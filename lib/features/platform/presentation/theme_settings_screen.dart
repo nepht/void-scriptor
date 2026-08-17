@@ -16,7 +16,7 @@ class ThemeSettingsScreen extends StatefulWidget {
 
 class _ThemeSettingsScreenState extends State<ThemeSettingsScreen> {
   static const _themes = <String>['Dark', 'Light', 'System'];
-  int _selected = 0;
+  String _selected = 'Dark';
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +38,16 @@ class _ThemeSettingsScreenState extends State<ThemeSettingsScreen> {
                 ),
               ),
               const SizedBox(height: VoidSpacing.md),
-              for (var i = 0; i < _themes.length; i++)
-                RadioListTile<int>(
-                  title: Text(_themes[i]),
-                  value: i,
-                  groupValue: _selected,
-                  onChanged: (v) => setState(() => _selected = v!),
+              RadioGroup<String>(
+                groupValue: _selected,
+                onChanged: (v) => setState(() => _selected = v!),
+                child: Column(
+                  children: [
+                    for (final t in _themes)
+                      RadioListTile<String>(title: Text(t), value: t),
+                  ],
                 ),
+              ),
             ],
           ),
         ),

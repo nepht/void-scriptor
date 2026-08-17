@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -8,7 +9,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 ///
 /// Layout: sidebar WORLD (Levels, Characters) + GAME WORLD + INSPECTOR,
 /// dengan tombol Play dan Build.
-class GameCreationDashboardScreen extends StatelessWidget {
+class GameCreationDashboardScreen extends ConsumerWidget {
   const GameCreationDashboardScreen({super.key});
 
   static const _worldItems = <(String, IconData)>[
@@ -18,7 +19,8 @@ class GameCreationDashboardScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final gameState = ref.watch(gameProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Game'),

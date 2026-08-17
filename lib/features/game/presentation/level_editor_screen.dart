@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -7,7 +8,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 /// Step 47.9 — Level Editor.
 ///
 /// 3 panel: Assets (kiri), 3D World (tengah), Inspector (kanan) + Play.
-class LevelEditorScreen extends StatelessWidget {
+class LevelEditorScreen extends ConsumerWidget {
   const LevelEditorScreen({super.key});
 
   static const _assets = <(String, IconData)>[
@@ -18,7 +19,8 @@ class LevelEditorScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final gameState = ref.watch(gameProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Level Editor'),

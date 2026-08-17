@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -8,7 +9,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 ///
 /// Daftar elemen HUD: Health, Energy, Ability, Weapon, Minimap,
 /// Quest, Interaction, Boss Health.
-class HudDesignerScreen extends StatelessWidget {
+class HudDesignerScreen extends ConsumerWidget {
   const HudDesignerScreen({super.key});
 
   static const _hudItems = <(String, IconData)>[
@@ -23,7 +24,8 @@ class HudDesignerScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final gameState = ref.watch(gameProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('HUD Designer'),

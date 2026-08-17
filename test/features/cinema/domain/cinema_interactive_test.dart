@@ -47,7 +47,7 @@ void main() {
         id: 'sb1',
         cinematicId: 'c1',
         panels: [
-          StoryboardPanel(
+          const StoryboardPanel(
             id: 'p1',
             description: 'Wide establishing shot',
             frame: 0,
@@ -60,17 +60,17 @@ void main() {
 
   group('ChoiceNode', () {
     test('holds choice with conditions', () {
-      final choice = ChoiceNode(
+      const choice = ChoiceNode(
         id: 'cn1',
         prompt: 'Accept the Void?',
         choices: [
-          const ChoiceOption(
+          ChoiceOption(
             id: 'o1',
             label: 'Yes',
             consequenceId: 'branch-void',
             condition: 'intent >= 50',
           ),
-          const ChoiceOption(
+          ChoiceOption(
             id: 'o2',
             label: 'No',
             consequenceId: 'branch-human',

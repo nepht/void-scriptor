@@ -40,17 +40,17 @@ class DonationDashboardScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 28),
                   if (wide)
-                    Row(
+                    const Row(
                       children: [
                         Expanded(
-                          child: const _GoalCard(
+                          child: _GoalCard(
                             label: 'Monthly Goal',
                             value: 'Rp 2.450.000 / Rp 5.000.000',
                           ),
                         ),
-                        const SizedBox(width: VoidSpacing.md),
+                        SizedBox(width: VoidSpacing.md),
                         Expanded(
-                          child: const _GoalCard(
+                          child: _GoalCard(
                             label: 'Supporters',
                             value: '32 patrons',
                           ),
@@ -58,12 +58,12 @@ class DonationDashboardScreen extends StatelessWidget {
                       ],
                     )
                   else ...[
-                    _GoalCard(
+                    const _GoalCard(
                       label: 'Monthly Goal',
                       value: 'Rp 2.450.000 / Rp 5.000.000',
                     ),
                     const SizedBox(height: VoidSpacing.md),
-                    _GoalCard(label: 'Supporters', value: '32 patrons'),
+                    const _GoalCard(label: 'Supporters', value: '32 patrons'),
                   ],
                   const SizedBox(height: 28),
                   const Text(

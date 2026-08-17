@@ -18,7 +18,7 @@ void main() {
     });
 
     test('holds metric values and formats numbers', () {
-      final metrics = CreatorMetrics(
+      const metrics = CreatorMetrics(
         activeProjects: 3,
         publishedWorks: 12,
         portfolioViews: 345,

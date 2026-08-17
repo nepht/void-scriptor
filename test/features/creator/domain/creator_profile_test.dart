@@ -5,7 +5,7 @@ void main() {
   group('CreatorProfile', () {
     test('creates with required fields', () {
       // RED: This will fail because class does not exist yet
-      final profile = CreatorProfile(
+      const profile = CreatorProfile(
         id: 'test-id',
         userId: 'user-123',
         displayName: 'Test Creator',
@@ -16,7 +16,7 @@ void main() {
     });
 
     test('copyWith creates new instance with changed fields', () {
-      final original = CreatorProfile(
+      const original = CreatorProfile(
         id: 'id1',
         userId: 'user1',
         displayName: 'Original',
@@ -33,7 +33,7 @@ void main() {
     });
 
     test('toJson and fromJson roundtrip', () {
-      final original = CreatorProfile(
+      const original = CreatorProfile(
         id: 'id1',
         userId: 'user1',
         displayName: 'Test',

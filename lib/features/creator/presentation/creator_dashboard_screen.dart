@@ -37,12 +37,12 @@ class CreatorDashboardScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'CREATOR DASHBOARD',
                     style: VoidTypography.displayMedium,
                   ),
                   const SizedBox(height: 6),
-                  Text(
+                  const Text(
                     'Your public creator identity, portfolio and analytics.',
                     style: VoidTypography.body,
                   ),
@@ -56,7 +56,10 @@ class CreatorDashboardScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 32),
-                  Text('Recent Projects', style: VoidTypography.headingMedium),
+                  const Text(
+                    'Recent Projects',
+                    style: VoidTypography.headingMedium,
+                  ),
                   const SizedBox(height: 12),
                   if (wide)
                     Row(

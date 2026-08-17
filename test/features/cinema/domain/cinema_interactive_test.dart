@@ -43,11 +43,11 @@ void main() {
 
   group('Storyboard', () {
     test('holds storyboard metadata', () {
-      final sb = Storyboard(
+      const sb = Storyboard(
         id: 'sb1',
         cinematicId: 'c1',
         panels: [
-          const StoryboardPanel(
+          StoryboardPanel(
             id: 'p1',
             description: 'Wide establishing shot',
             frame: 0,

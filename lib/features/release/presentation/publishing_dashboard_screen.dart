@@ -30,7 +30,8 @@ class PublishingDashboardScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(right: VoidSpacing.md),
             child: FilledButton.icon(
-              onPressed: () {},
+              onPressed: () =>
+                  ref.read(releaseProvider.notifier).startPublish(),
               icon: const Icon(Icons.add, size: 18),
               label: const Text('New Release'),
             ),

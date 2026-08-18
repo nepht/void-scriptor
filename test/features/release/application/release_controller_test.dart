@@ -27,5 +27,21 @@ void main() {
       notifier.finishPublish();
       expect(container.read(releaseProvider).isPublishing, isFalse);
     });
+
+    test(
+      'toggleFollowing and toggleWatching update public project actions',
+      () {
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+        final notifier = container.read(releaseProvider.notifier);
+
+        notifier.toggleFollowing();
+        notifier.toggleWatching();
+
+        final state = container.read(releaseProvider);
+        expect(state.isFollowing, isTrue);
+        expect(state.isWatching, isTrue);
+      },
+    );
   });
 }

@@ -41,21 +41,25 @@ class PublicProjectPageScreen extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: FilledButton(
-                        onPressed: () {},
+                        onPressed: () => ref
+                            .read(releaseProvider.notifier)
+                            .toggleFollowing(),
                         child: const Text('Follow'),
                       ),
                     ),
                     const SizedBox(width: VoidSpacing.sm),
                     Expanded(
                       child: OutlinedButton(
-                        onPressed: () {},
+                        onPressed: () =>
+                            ref.read(releaseProvider.notifier).toggleWatching(),
                         child: const Text('Watch'),
                       ),
                     ),
                     const SizedBox(width: VoidSpacing.sm),
                     Expanded(
                       child: OutlinedButton(
-                        onPressed: () {},
+                        onPressed: () =>
+                            ref.read(releaseProvider.notifier).startPublish(),
                         child: const Text('Play'),
                       ),
                     ),

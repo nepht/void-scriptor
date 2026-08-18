@@ -21,7 +21,7 @@ class CreatorWorkspaceScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeSection = ref.watch(creatorStudioProvider).activeSection;
-    final sections = CreatorWorkspaceSection.values;
+    const sections = CreatorWorkspaceSection.values;
 
     return Scaffold(
       appBar: AppBar(

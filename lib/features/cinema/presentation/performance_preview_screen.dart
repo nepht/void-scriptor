@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -8,7 +9,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 ///
 /// Preview dapat mematikan: High Quality Hair, Heavy VFX, Ray Tracing,
 /// High Resolution Shadows, Crowd Detail.
-class PerformancePreviewScreen extends StatelessWidget {
+class PerformancePreviewScreen extends ConsumerWidget {
   const PerformancePreviewScreen({super.key});
 
   static const _toggles = <(String, IconData)>[
@@ -20,7 +21,8 @@ class PerformancePreviewScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final cinemaState = ref.watch(cinemaProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Performance Preview'),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -7,7 +8,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 /// Step 48.85 — Shot Status Dashboard.
 ///
 /// TOTAL SHOTS 214 — Approved 126, Review 31, In Progress 42, Blocked 15.
-class ShotStatusDashboardScreen extends StatelessWidget {
+class ShotStatusDashboardScreen extends ConsumerWidget {
   const ShotStatusDashboardScreen({super.key});
 
   static const _statuses = <(String, int)>[
@@ -18,7 +19,8 @@ class ShotStatusDashboardScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final cinemaState = ref.watch(cinemaProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Shot Status'),

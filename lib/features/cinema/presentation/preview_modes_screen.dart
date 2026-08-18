@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -7,14 +8,14 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 /// Step 48.65 — Preview Modes.
 ///
 /// Storyboard, Animatic, Low Quality, Real-Time, Final Preview.
-class PreviewModesScreen extends StatefulWidget {
+class PreviewModesScreen extends ConsumerStatefulWidget {
   const PreviewModesScreen({super.key});
 
   @override
-  State<PreviewModesScreen> createState() => _PreviewModesScreenState();
+  ConsumerState<PreviewModesScreen> createState() => _PreviewModesScreenState();
 }
 
-class _PreviewModesScreenState extends State<PreviewModesScreen> {
+class _PreviewModesScreenState extends ConsumerState<PreviewModesScreen> {
   static const _modes = <String>[
     'Storyboard',
     'Animatic',
@@ -27,6 +28,7 @@ class _PreviewModesScreenState extends State<PreviewModesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // final cinemaState = ref.watch(cinemaProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Preview Modes'),

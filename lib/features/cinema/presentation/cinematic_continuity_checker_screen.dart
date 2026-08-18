@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
@@ -7,7 +8,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 ///
 /// Periksa: Wardrobe, Hair, Weapon, Damage, Blood/Dirt, Time of Day,
 /// Weather, Prop Position, Character Position, Lighting.
-class CinematicContinuityCheckerScreen extends StatelessWidget {
+class CinematicContinuityCheckerScreen extends ConsumerWidget {
   const CinematicContinuityCheckerScreen({super.key});
 
   static const _items = <(String, IconData)>[
@@ -24,7 +25,8 @@ class CinematicContinuityCheckerScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final cinemaState = ref.watch(cinemaProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Continuity Checker'),

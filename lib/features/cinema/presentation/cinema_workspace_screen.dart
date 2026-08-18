@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -8,7 +9,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 ///
 /// Layout 3 panel: PROJECT (kiri), viewport (tengah), detail (kanan),
 /// dengan tombol Preview dan Render di top bar.
-class CinemaWorkspaceScreen extends StatelessWidget {
+class CinemaWorkspaceScreen extends ConsumerWidget {
   const CinemaWorkspaceScreen({super.key});
 
   static const _projectItems = <(String, IconData)>[
@@ -18,7 +19,8 @@ class CinemaWorkspaceScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final cinemaState = ref.watch(cinemaProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cinema'),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:void_scriptor/features/platform/application/platform_controller.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -7,7 +9,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 /// Step 50.118 — Optional Tour.
 ///
 /// Tour: Dashboard, Projects, Character, AI Studio, Publish.
-class OptionalTourScreen extends StatelessWidget {
+class OptionalTourScreen extends ConsumerWidget {
   const OptionalTourScreen({super.key});
 
   static const _stops = <(String, IconData)>[
@@ -19,7 +21,8 @@ class OptionalTourScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(platformProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tour'),

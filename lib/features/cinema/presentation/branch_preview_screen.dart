@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:void_scriptor/features/cinema/application/cinema_controller.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -19,8 +20,9 @@ class BranchPreviewScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final cinemaState = ref.watch(cinemaProvider);
+    final cinemaState = ref.watch(cinemaProvider);
     return Scaffold(
+      key: ValueKey(cinemaState.isPlaying),
       appBar: AppBar(
         title: const Text('Branch Preview'),
         backgroundColor: context.palette.surface,

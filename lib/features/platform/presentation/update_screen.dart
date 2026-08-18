@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:void_scriptor/features/platform/application/platform_controller.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -9,7 +11,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 /// Void Scriptor 1.0.1 available.
 /// Download: 124 MB — Includes: Crash fixes, Timeline performance.
 /// [Later] [Download].
-class UpdateScreen extends StatelessWidget {
+class UpdateScreen extends ConsumerWidget {
   const UpdateScreen({super.key});
 
   static const _notes = <String>[
@@ -18,7 +20,8 @@ class UpdateScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(platformProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Update'),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:void_scriptor/features/platform/application/platform_controller.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -8,7 +10,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 ///
 /// Semua fungsi utama dapat digunakan via keyboard:
 /// Tab, Shift+Tab, Enter, Escape, Arrow Keys, Shortcuts.
-class KeyboardNavigationScreen extends StatelessWidget {
+class KeyboardNavigationScreen extends ConsumerWidget {
   const KeyboardNavigationScreen({super.key});
 
   static const _shortcuts = <(String, String)>[
@@ -22,7 +24,8 @@ class KeyboardNavigationScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(platformProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Keyboard Navigation'),

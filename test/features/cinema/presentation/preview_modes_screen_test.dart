@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/cinema/presentation/preview_modes_screen.dart';
 
 void main() {
-  Widget wrap(Widget child) => MaterialApp(home: child);
+  Widget wrap(Widget child) => ProviderScope(child: MaterialApp(home: child));
 
   testWidgets('menampilkan 5 mode preview', (tester) async {
     await tester.pumpWidget(wrap(const PreviewModesScreen()));

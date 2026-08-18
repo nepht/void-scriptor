@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:void_scriptor/features/platform/application/platform_controller.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
@@ -8,11 +10,12 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 ///
 /// Pertama kali: Welcome to Void Scriptor
 /// [Create Project] [Open Project] [Explore Demo].
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(platformProvider);
     return Scaffold(
       body: SafeArea(
         child: Center(

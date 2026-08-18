@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:void_scriptor/features/cinema/application/cinema_controller.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
@@ -26,8 +27,9 @@ class CinematicContinuityCheckerScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final cinemaState = ref.watch(cinemaProvider);
+    final cinemaState = ref.watch(cinemaProvider);
     return Scaffold(
+      key: ValueKey(cinemaState.isPlaying),
       appBar: AppBar(
         title: const Text('Continuity Checker'),
         backgroundColor: context.palette.surface,

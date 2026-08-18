@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
+import 'package:void_scriptor/features/release/application/release_controller.dart';
 
 /// Step 49.44 — Discovery Home.
 ///
 /// Featured, New Releases, Trending, Recommended, Games, Films,
 /// Interactive, Creators, Universes.
-class DiscoveryHomeScreen extends StatelessWidget {
+class DiscoveryHomeScreen extends ConsumerWidget {
   const DiscoveryHomeScreen({super.key});
 
   static const _categories = <String>[
@@ -20,7 +22,8 @@ class DiscoveryHomeScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(releaseProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Discover'),

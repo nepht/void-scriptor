@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
+import 'package:void_scriptor/features/release/application/release_controller.dart';
 
 /// Step 49.3 — Publishing Workspace.
 ///
 /// Workspace Publish: Overview, Releases, Platforms.
-class PublishingWorkspaceScreen extends StatelessWidget {
+class PublishingWorkspaceScreen extends ConsumerWidget {
   const PublishingWorkspaceScreen({super.key});
 
   static const _menuItems = <(String, IconData)>[
@@ -17,7 +19,8 @@ class PublishingWorkspaceScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(releaseProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Publish'),

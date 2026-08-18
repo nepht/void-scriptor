@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
+import 'package:void_scriptor/features/release/application/release_controller.dart';
 
 /// Step 49.61 — Revenue Dashboard.
 ///
 /// REVENUE per stream: Film, Games, Marketplace, Support,
 /// Subscriptions, DLC.
-class RevenueDashboardScreen extends StatelessWidget {
+class RevenueDashboardScreen extends ConsumerWidget {
   const RevenueDashboardScreen({super.key});
 
   static const _streams = <(String, String)>[
@@ -21,7 +23,8 @@ class RevenueDashboardScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(releaseProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Revenue'),

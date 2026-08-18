@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
+import 'package:void_scriptor/features/release/application/release_controller.dart';
 
 /// Step 49.99 — Publishing Dashboard.
 ///
 /// Publish: sidebar (Overview, Releases, ...) + konten + tombol
 /// New Release.
-class PublishingDashboardScreen extends StatelessWidget {
+class PublishingDashboardScreen extends ConsumerWidget {
   const PublishingDashboardScreen({super.key});
 
   static const _menuItems = <(String, IconData)>[
@@ -18,7 +20,8 @@ class PublishingDashboardScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(releaseProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Publish'),

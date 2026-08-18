@@ -43,7 +43,7 @@ void main() {
     expect(find.text('Welcome Guest'), findsOneWidget);
     expect(find.text('Open Studio'), findsOneWidget);
 
-    await tester.tap(find.text('Open Studio'));
+    await _tapVisible(tester, find.text('Open Studio'));
     await tester.pumpAndSettle();
     expect(find.text('Workspace'), findsOneWidget);
 

@@ -19,7 +19,7 @@ A historical commit, screen, or passing test suite is not proof that every histo
 
 | Sprint | Available contract | Initial status | Evidence / remaining work |
 |---|---|---|---|
-| S1 | Partial historical contract | PARTIAL (local/web DONE) | Exact original step list is not recoverable; current app/auth/dashboard gate: 45 tests passed, analyzer clean, web release build passed; Android/Windows evidence is historical and macOS/iOS require native host. |
+| S1 | Full step contract recovered (20 steps) | PARTIAL (local/web DONE) | S01.1–S01.20 mapped; exact original step list recovered from share JSON (update 2026-08-17) `6a82a8ad`; current app/auth/dashboard gate: 45 tests passed, analyzer clean, web release build passed; Android/Windows evidence is historical and macOS/iOS require native host. |
 | S2–S5 | Foundation audit | S2 DONE for confirmed scope; S3–S5 pending audit | S2 project package/manifest/registry/database/session scope: 32 tests passed and scoped analyzer clean. Native packaging evidence remains platform-specific. |
 | S6–S8 | Character/project foundation | DONE for confirmed gaps | Original unrecorded acceptance variants remain unverifiable. |
 | S9–S12 | Workspace/environment/inspector | PARTIAL | Mobile inspector and original acceptance variants require additional evidence. |

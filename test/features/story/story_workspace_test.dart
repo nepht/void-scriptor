@@ -18,6 +18,9 @@ void main() {
       ),
     );
     expect(find.text('STORY STRUCTURE'), findsOneWidget);
+    expect(find.text('CHAPTERS'), findsOneWidget);
+    expect(find.text('SCENE EDITOR'), findsOneWidget);
+    expect(find.byType(TextField), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(
       const ProviderScope(

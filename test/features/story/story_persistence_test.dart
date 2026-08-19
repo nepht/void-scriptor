@@ -55,6 +55,10 @@ void main() {
       startSecond: 0,
       durationSeconds: 2,
     );
+    await StoryRepositoryImpl(
+      database: first,
+      projectId: 'project-1',
+    ).saveSceneDraft(sceneId, 'Qowner descends into the neon rain.');
     await first.close();
 
     final second = await service.open(dbPath);
@@ -71,7 +75,17 @@ void main() {
     );
     expect(hierarchy.scenes.single.characters.single.modeId, 'mode-1');
     expect(hierarchy.scenes.single.environment?.timePreset, 'noon');
-    expect(hierarchy.scenes.single.beats.single.content, 'Qowner descends.');
+    expect(
+      hierarchy.scenes.single.beats
+          .where((beat) => beat.beatType == 'action')
+          .single
+          .content,
+      'Qowner descends.',
+    );
+    expect(
+      await repository.getSceneDraft(sceneId),
+      'Qowner descends into the neon rain.',
+    );
     expect(second.schemaVersion, 53);
   });
 }

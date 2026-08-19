@@ -1,3 +1,5 @@
+import 'package:drift/drift.dart';
+
 import '../../../database/project/project_database.dart';
 import '../domain/story_model.dart';
 
@@ -47,6 +49,41 @@ class StoryRepositoryImpl {
   StoryRepositoryImpl({required this.database, required this.projectId});
   final ProjectDatabase database;
   final String projectId;
+
+  Future<void> saveSceneDraft(String sceneId, String content) async {
+    final existing =
+        await (database.select(database.sceneBeats)..where(
+              (row) =>
+                  row.sceneId.equals(sceneId) & row.beatType.equals('draft'),
+            ))
+            .getSingleOrNull();
+    if (existing == null) {
+      await database
+          .into(database.sceneBeats)
+          .insert(
+            SceneBeatsCompanion.insert(
+              id: '${sceneId}_draft',
+              sceneId: sceneId,
+              beatType: const Value('draft'),
+              content: content,
+            ),
+          );
+    } else {
+      await (database.update(database.sceneBeats)
+            ..where((row) => row.id.equals(existing.id)))
+          .write(SceneBeatsCompanion(content: Value(content)));
+    }
+  }
+
+  Future<String?> getSceneDraft(String sceneId) async {
+    final draft =
+        await (database.select(database.sceneBeats)..where(
+              (row) =>
+                  row.sceneId.equals(sceneId) & row.beatType.equals('draft'),
+            ))
+            .getSingleOrNull();
+    return draft?.content;
+  }
 
   Future<StorySceneNode?> getScene(String sceneId) async {
     final scene = await database.storyDao.getScene(sceneId);

@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/persistence/project_paths.dart';
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/story/application/create_story_service.dart';
+import 'package:void_scriptor/features/story/application/story_markdown_exporter.dart';
 import 'package:void_scriptor/features/story/data/story_repository_impl.dart';
 
 void main() {
@@ -86,6 +87,13 @@ void main() {
       await repository.getSceneDraft(sceneId),
       'Qowner descends into the neon rain.',
     );
+    final markdown = await const StoryMarkdownExporter().exportStory(
+      repository,
+      storyId,
+    );
+    expect(markdown, contains('# Qowner: Rise of the Void'));
+    expect(markdown, contains('## Arrival'));
+    expect(markdown, contains('Qowner descends into the neon rain.'));
     expect(second.schemaVersion, 53);
   });
 }

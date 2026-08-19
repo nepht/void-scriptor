@@ -21,6 +21,9 @@ void main() {
     expect(find.text('CHAPTERS'), findsOneWidget);
     expect(find.text('SCENE EDITOR'), findsOneWidget);
     expect(find.byType(TextField), findsOneWidget);
+    await tester.enterText(find.byType(TextField), 'Satu dua tiga');
+    await tester.pump();
+    expect(find.text('3 kata'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(
       const ProviderScope(

@@ -44,7 +44,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   void _updateWordCount(String value) {
     _words = value.trim().isEmpty
         ? 0
-        : value.trim().split(RegExp(r'\\s+')).length;
+        : value.trim().split(RegExp(r'\s+')).length;
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
+import 'package:void_scriptor/design_system/theme/void_palette.dart';
 import '../application/debounced_autosave.dart';
 
 import '../data/story_repository_impl.dart';
@@ -22,6 +23,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   final _draft = TextEditingController();
   final _autosave = DebouncedAutosave();
   int _words = 0;
+  String? _selectedSceneId;
 
   @override
   void initState() {
@@ -59,6 +61,53 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     if (repository != null && sceneId != null) {
       _autosave.schedule(() => repository.saveSceneDraft(sceneId, value));
     }
+  }
+
+  Widget _buildLiveChapters(VoidPalette p) {
+    final repository = widget.repository;
+    if (repository == null) {
+      return const Text('Belum ada session project aktif.');
+    }
+    return FutureBuilder<StoryHierarchy>(
+      future: repository.getStoryHierarchy(widget.storyId),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Text(
+            snapshot.hasError
+                ? 'Story belum memiliki struktur.'
+                : 'Memuat struktur story...',
+          );
+        }
+        final hierarchy = snapshot.data!;
+        final rows = <Widget>[];
+        for (final chapter in hierarchy.chapters) {
+          rows.add(_Row(label: chapter.title));
+          for (final scene in chapter.scenes) {
+            rows.add(
+              _Row(
+                label: scene.title,
+                indent: true,
+                selected: scene.id == (_selectedSceneId ?? widget.sceneId),
+                onTap: () {
+                  setState(() => _selectedSceneId = scene.id);
+                  _loadDraftFor(scene.id);
+                },
+              ),
+            );
+          }
+        }
+        return rows.isEmpty
+            ? const Text('Belum ada chapter atau scene.')
+            : Column(children: rows);
+      },
+    );
+  }
+
+  Future<void> _loadDraftFor(String sceneId) async {
+    final content = await widget.repository?.getSceneDraft(sceneId);
+    if (!mounted) return;
+    _draft.value = TextEditingValue(text: content ?? '');
+    setState(() => _updateWordCount(content ?? ''));
   }
 
   @override
@@ -102,17 +151,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              const _Panel(
-                title: 'CHAPTERS',
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _Row(label: 'Chapter 1 — Awal Perjalanan'),
-                    _Row(label: 'Scene 1 — Pembukaan', indent: true),
-                    _Row(label: 'Chapter 2 — Konsekuensi'),
-                  ],
-                ),
-              ),
+              _Panel(title: 'CHAPTERS', child: _buildLiveChapters(p)),
               const SizedBox(height: 12),
               _Panel(
                 title: 'SCENE EDITOR',
@@ -172,21 +211,32 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
 }
 
 class _Row extends StatelessWidget {
-  const _Row({required this.label, this.indent = false});
+  const _Row({
+    required this.label,
+    this.indent = false,
+    this.selected = false,
+    this.onTap,
+  });
   final String label;
   final bool indent;
+  final bool selected;
+  final VoidCallback? onTap;
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: EdgeInsets.only(left: indent ? 24 : 0, top: 7, bottom: 7),
-    child: Row(
-      children: [
-        Icon(
-          indent ? Icons.description_outlined : Icons.menu_book_outlined,
-          size: 17,
-        ),
-        const SizedBox(width: 8),
-        Expanded(child: Text(label, overflow: TextOverflow.ellipsis)),
-      ],
+  Widget build(BuildContext context) => InkWell(
+    onTap: onTap,
+    child: Container(
+      color: selected ? context.palette.panelSecondary : null,
+      padding: EdgeInsets.only(left: indent ? 24 : 0, top: 7, bottom: 7),
+      child: Row(
+        children: [
+          Icon(
+            indent ? Icons.description_outlined : Icons.menu_book_outlined,
+            size: 17,
+          ),
+          const SizedBox(width: 8),
+          Expanded(child: Text(label, overflow: TextOverflow.ellipsis)),
+        ],
+      ),
     ),
   );
 }

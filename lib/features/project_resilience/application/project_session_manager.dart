@@ -127,6 +127,7 @@ class ProjectSessionManager {
         }),
       );
     }
+    ProjectDatabase? database;
     try {
       final existingVersion = await _schemaVersionReader(
         package.databaseFile.path,
@@ -151,7 +152,7 @@ class ProjectSessionManager {
       }
       final databaseService = ProjectDatabaseService();
       final databaseStarted = DateTime.now();
-      final database = mode == ProjectOpenMode.readOnly
+      database = mode == ProjectOpenMode.readOnly
           ? await databaseService.openReadOnly(package.databaseFile.path)
           : await databaseService.open(package.databaseFile.path);
       metrics.record(
@@ -235,12 +236,16 @@ class ProjectSessionManager {
         openMetrics: metrics,
       );
     } catch (_) {
-      if (mode == ProjectOpenMode.readWrite) await lock.release();
-      if (mode == ProjectOpenMode.readWrite &&
-          await package.lockFile.exists()) {
-        await package.lockFile.delete();
-      }
-      rethrow;
+    if (mode == ProjectOpenMode.readWrite) await lock.release();
+    if (mode == ProjectOpenMode.readWrite &&
+        await package.lockFile.exists()) {
+      await package.lockFile.delete();
+    }
+    // Ensure database is closed if it was partially opened
+    try {
+      if (database != null) await database.close();
+    } catch (_) {}
+    rethrow;
     }
   }
 

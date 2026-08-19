@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/theme_mode_menu.dart';
+import '../../../design_system/widgets/branding/brand_assets.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
 import '../../../features/collaboration/domain/sync_models.dart';
 import '../../../features/collaboration/presentation/sync_status_indicator.dart';
@@ -119,10 +120,17 @@ class VoidTopBar extends StatelessWidget {
                 child: SyncStatusIndicator(status: syncStatus),
               ),
               const _TopIconButton(
-                icon: Icons.notifications_none_rounded,
-                tooltip: 'Notifications',
-              ),
-              const ThemeModeMenu(),
+   icon: Icons.notifications_none_rounded,
+   tooltip: 'Notifications',
+ ),
+ _TopIconButton(
+   icon: Icons.favorite_border_rounded,
+   tooltip: 'Donate / Support',
+   onPressed: () {
+     _showDonationDialog(context);
+   },
+ ),
+ const ThemeModeMenu(),
               IconButton(
                 tooltip: 'Logout',
                 onPressed: onLogout,
@@ -191,4 +199,101 @@ class _TopIconButton extends StatelessWidget {
       icon: Icon(icon, size: 18),
     );
   }
+}
+
+class DonationOption {
+  final String label;
+  final String? asset;
+  final IconData? icon;
+  final String note;
+
+  const DonationOption({
+    required this.label,
+    this.asset,
+    this.icon,
+    required this.note,
+  });
+}
+
+void _showDonationDialog(BuildContext context) {
+  const methods = [
+    DonationOption(
+      label: 'QRIS',
+      asset: BrandAssets.paymentQris,
+      note: 'Scan QRIS dengan e-wallet apa pun.',
+    ),
+    DonationOption(
+      label: 'SeaBank',
+      asset: BrandAssets.paymentSeaBank,
+      note: 'Transfer bank SeaBank (no admin fee).',
+    ),
+    DonationOption(
+      label: 'DANA',
+      asset: BrandAssets.paymentDana,
+      note: 'Transfer ke akun DANA.',
+    ),
+    DonationOption(
+      label: 'GoPay',
+      asset: BrandAssets.paymentGoPay,
+      note: 'Transfer ke akun GoPay.',
+    ),
+    DonationOption(
+      label: 'Visa',
+      asset: BrandAssets.paymentVisa,
+      note: 'Kartu Visa (via payment gateway).',
+    ),
+  ];
+
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Row(
+        children: [
+          Icon(Icons.favorite_rounded, color: Colors.pinkAccent),
+          SizedBox(width: 8),
+          Text('Support Void Scriptor'),
+        ],
+      ),
+      content: SizedBox(
+        width: 420,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Pilih metode pembayaran. Integrasi otomatis belum '
+                'aktif — nomor/QR akan ditampilkan di sini setelah '
+                'konfigurasi payment gateway.',
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(height: 16),
+              ...methods.map(
+                (m) => ListTile(
+                  leading: m.asset != null
+                      ? BrandLogo(assetPath: m.asset!, width: 32, height: 32)
+                      : Icon(m.icon ?? Icons.payment),
+                  title: Text(m.label),
+                  subtitle: Text(m.note, style: const TextStyle(fontSize: 11)),
+                  onTap: () {
+                    Navigator.of(ctx).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Metode ${m.label} dipilih (belum terkonfigurasi).'),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(ctx).pop(),
+          child: const Text('Tutup'),
+        ),
+      ],
+    ),
+  );
 }

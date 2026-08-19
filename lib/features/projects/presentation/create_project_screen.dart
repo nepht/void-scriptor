@@ -6,6 +6,7 @@ import '../../../design_system/widgets/void_button.dart';
 import 'project_controller.dart';
 import 'project_persistence_providers.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
+import '../../../app/routing/app_routes.dart';
 
 class CreateProjectScreen extends ConsumerStatefulWidget {
   const CreateProjectScreen({super.key});
@@ -103,7 +104,7 @@ class _CreateProjectScreenState extends ConsumerState<CreateProjectScreen> {
                   Row(
                     children: [
                       TextButton(
-                        onPressed: _creating ? null : () => context.pop(),
+                        onPressed: _creating ? null : () => context.go(AppRoutes.projects),
                         child: const Text('Cancel'),
                       ),
                       const Spacer(),

@@ -27,6 +27,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   bool _rememberMe = true;
   bool _obscurePassword = true;
+  bool _socialLoading = false;
 
   @override
   void dispose() {
@@ -43,6 +44,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           password: _passwordController.text,
         );
   }
+
+  Future<void> _loginWithGoogle() async {
+    setState(() {
+      _socialLoading = true;
+    });
+    // Backend Google OAuth belum dikonfigurasi — tunjukkan feedback jujur.
+    await Future.delayed(const Duration(milliseconds: 600));
+    if (!mounted) return;
+    setState(() => _socialLoading = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Google login belum tersedia. Silakan pakai email/password.'),
+      ),
+    );
+  }
+
+  Future<void> _loginWithGithub() async {
+    setState(() {
+      _socialLoading = true;
+    });
+    await Future.delayed(const Duration(milliseconds: 600));
+    if (!mounted) return;
+    setState(() => _socialLoading = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('GitHub login belum tersedia. Silakan pakai email/password.'),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +255,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 18),
 
                       Row(
                         children: [
@@ -239,6 +270,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                           ),
                           const Expanded(child: Divider()),
+                        ],
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      // ── Social login (UI saja; backend belum dikonfigurasi) ──
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: _socialLoading ? null : _loginWithGoogle,
+                              icon: const _GoogleGlyph(size: 18),
+                              label: const Text('Google'),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: _socialLoading ? null : _loginWithGithub,
+                              icon: const Icon(Icons.code_rounded),
+                              label: const Text('GitHub'),
+                            ),
+                          ),
                         ],
                       ),
 
@@ -299,3 +353,50 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 }
+
+/// Glyph "G" Google (multi-warna) tanpa aset eksternal.
+class _GoogleGlyph extends StatelessWidget {
+  final double size;
+  const _GoogleGlyph({this.size = 18});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: CustomPaint(painter: _GoogleGlyphPainter()),
+    );
+  }
+}
+
+class _GoogleGlyphPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final p = size.shortestSide;
+    final r = p / 2;
+    final c = Offset(size.width / 2, size.height / 2);
+
+    // Ring dasar (putih)
+    final ring = Paint()..color = Colors.white;
+    canvas.drawCircle(c, r, ring);
+
+    // Huruf G sederhana (biru)
+    final text = TextPainter(
+      text: TextSpan(
+        text: 'G',
+        style: TextStyle(
+          fontSize: p * 0.62,
+          fontWeight: FontWeight.bold,
+          color: const Color(0xFF4285F4),
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    text.layout();
+    text.paint(canvas, c - Offset(text.width / 2, text.height / 2));
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+

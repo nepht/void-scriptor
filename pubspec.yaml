@@ -25,6 +25,8 @@ dependencies:
   uuid: ^4.6.0
   cryptography: ^2.9.0
   vector_math: ^2.2.0
+  flutter_svg: ^2.0.10
+  lucide_flutter: ^1.28.0
 
 dev_dependencies:
   flutter_test:
@@ -38,3 +40,13 @@ flutter:
   assets:
     - assets/logos/
     - assets/backgrounds/
+    - assets/brands/ai_tech/
+    - assets/brands/apps/
+    - assets/brands/design_tools/
+    - assets/brands/ecommerce/
+    - assets/brands/file_formats/
+    - assets/brands/flags/
+    - assets/brands/payment_methods/
+    - assets/brands/platforms/
+    - assets/brands/social_media/
+    - assets/brands/tech/

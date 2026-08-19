@@ -40,6 +40,7 @@ class WorkspaceResolver extends ConsumerWidget {
                 database: session.database,
                 projectId: session.manifest.id,
               ),
+        exportDirectory: session?.package.exportDirectory,
       ),
       _ => const ProjectOverview(),
     };

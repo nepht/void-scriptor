@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 import 'package:void_scriptor/design_system/theme/void_palette.dart';
 import '../application/debounced_autosave.dart';
+import '../application/story_markdown_exporter.dart';
 
 import '../data/story_repository_impl.dart';
 
@@ -11,10 +14,12 @@ class StoryWorkspaceScreen extends StatefulWidget {
     required this.storyId,
     this.repository,
     this.sceneId,
+    this.exportDirectory,
   });
   final String storyId;
   final StoryRepositoryImpl? repository;
   final String? sceneId;
+  final Directory? exportDirectory;
   @override
   State<StoryWorkspaceScreen> createState() => _StoryWorkspaceScreenState();
 }
@@ -61,6 +66,21 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     if (repository != null && sceneId != null) {
       _autosave.schedule(() => repository.saveSceneDraft(sceneId, value));
     }
+  }
+
+  Future<void> _exportMarkdown() async {
+    final repository = widget.repository;
+    final directory = widget.exportDirectory;
+    if (repository == null || directory == null) return;
+    final file = await const StoryMarkdownExporter().writeExport(
+      repository,
+      widget.storyId,
+      exportDirectory: directory,
+    );
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Markdown diekspor: ${file.path}')));
   }
 
   Widget _buildLiveChapters(VoidPalette p) {
@@ -122,13 +142,28 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Story Bible — ${widget.storyId}',
-                style: TextStyle(
-                  color: p.textPrimary,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Story Bible — ${widget.storyId}',
+                      style: TextStyle(
+                        color: p.textPrimary,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed:
+                        widget.repository == null ||
+                            widget.exportDirectory == null
+                        ? null
+                        : _exportMarkdown,
+                    icon: const Icon(Icons.download_outlined),
+                    label: const Text('Export Markdown'),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
               const Wrap(

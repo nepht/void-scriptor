@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:path/path.dart' as p;
+
 import '../data/story_repository_impl.dart';
 
 class StoryMarkdownExporter {
@@ -27,6 +31,26 @@ class StoryMarkdownExporter {
       }
     }
     return buffer.toString().trimRight();
+  }
+
+  Future<File> writeExport(
+    StoryRepositoryImpl repository,
+    String storyId, {
+    required Directory exportDirectory,
+    String fileName = 'story.md',
+  }) async {
+    final safeName = p.basename(fileName);
+    if (safeName != fileName || !safeName.endsWith('.md')) {
+      throw ArgumentError.value(
+        fileName,
+        'fileName',
+        'must be a Markdown filename',
+      );
+    }
+    await exportDirectory.create(recursive: true);
+    final file = File(p.join(exportDirectory.path, safeName));
+    await file.writeAsString(await exportStory(repository, storyId));
+    return file;
   }
 }
 

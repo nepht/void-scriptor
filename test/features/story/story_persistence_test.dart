@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:path/path.dart' as p;
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/persistence/project_paths.dart';
 import 'package:void_scriptor/database/project/project_database_service.dart';
@@ -94,6 +96,14 @@ void main() {
     expect(markdown, contains('# Qowner: Rise of the Void'));
     expect(markdown, contains('## Arrival'));
     expect(markdown, contains('Qowner descends into the neon rain.'));
+    final exportFile = await const StoryMarkdownExporter().writeExport(
+      repository,
+      storyId,
+      exportDirectory: Directory(p.join(root.path, 'exports')),
+      fileName: 'qowner.md',
+    );
+    expect(await exportFile.exists(), isTrue);
+    expect(await exportFile.readAsString(), markdown);
     expect(second.schemaVersion, 53);
   });
 }

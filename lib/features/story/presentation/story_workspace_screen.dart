@@ -22,6 +22,29 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   final _draft = TextEditingController();
   final _autosave = DebouncedAutosave();
   int _words = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDraft();
+  }
+
+  Future<void> _loadDraft() async {
+    final repository = widget.repository;
+    final sceneId = widget.sceneId;
+    if (repository == null || sceneId == null) return;
+    final content = await repository.getSceneDraft(sceneId);
+    if (!mounted || content == null) return;
+    _draft.value = TextEditingValue(text: content);
+    setState(() => _updateWordCount(content));
+  }
+
+  void _updateWordCount(String value) {
+    _words = value.trim().isEmpty
+        ? 0
+        : value.trim().split(RegExp(r'\\s+')).length;
+  }
+
   @override
   void dispose() {
     _autosave.dispose();
@@ -30,11 +53,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   }
 
   void _count(String value) {
-    setState(
-      () => _words = value.trim().isEmpty
-          ? 0
-          : value.trim().split(RegExp(r'\s+')).length,
-    );
+    setState(() => _updateWordCount(value));
     final repository = widget.repository;
     final sceneId = widget.sceneId;
     if (repository != null && sceneId != null) {

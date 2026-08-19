@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/persistence/project_paths.dart';
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/story/application/create_story_service.dart';
+import 'package:void_scriptor/features/story/application/story_docx_exporter.dart';
 import 'package:void_scriptor/features/story/application/story_markdown_exporter.dart';
 import 'package:void_scriptor/features/story/data/story_repository_impl.dart';
 
@@ -104,6 +105,16 @@ void main() {
     );
     expect(await exportFile.exists(), isTrue);
     expect(await exportFile.readAsString(), markdown);
+    final docxFile = await const StoryDocxExporter().writeExport(
+      repository,
+      storyId,
+      exportDirectory: Directory(p.join(root.path, 'exports')),
+      fileName: 'qowner.docx',
+    );
+    expect(await docxFile.exists(), isTrue);
+    final docxBytes = await docxFile.readAsBytes();
+    expect(docxBytes.take(2), orderedEquals([0x50, 0x4b]));
+    expect(docxBytes.length, greaterThan(500));
     expect(second.schemaVersion, 53);
   });
 }

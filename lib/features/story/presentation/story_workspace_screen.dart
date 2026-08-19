@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 import 'package:void_scriptor/design_system/theme/void_palette.dart';
 import '../application/debounced_autosave.dart';
+import '../application/story_docx_exporter.dart';
 import '../application/story_markdown_exporter.dart';
 
 import '../data/story_repository_impl.dart';
@@ -83,6 +84,41 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     ).showSnackBar(SnackBar(content: Text('Markdown diekspor: ${file.path}')));
   }
 
+  Future<void> _exportDocx() async {
+    final repository = widget.repository;
+    final directory = widget.exportDirectory;
+    if (repository == null || directory == null) return;
+    final file = await const StoryDocxExporter().writeExport(
+      repository,
+      widget.storyId,
+      exportDirectory: directory,
+    );
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('DOCX diekspor: ${file.path}')));
+  }
+
+  Widget _exportActions() => Wrap(
+    spacing: 8,
+    children: [
+      OutlinedButton.icon(
+        onPressed: widget.repository == null || widget.exportDirectory == null
+            ? null
+            : _exportMarkdown,
+        icon: const Icon(Icons.download_outlined),
+        label: const Text('Export Markdown'),
+      ),
+      OutlinedButton.icon(
+        onPressed: widget.repository == null || widget.exportDirectory == null
+            ? null
+            : _exportDocx,
+        icon: const Icon(Icons.article_outlined),
+        label: const Text('Export DOCX'),
+      ),
+    ],
+  );
+
   Widget _buildLiveChapters(VoidPalette p) {
     final repository = widget.repository;
     if (repository == null) {
@@ -142,27 +178,19 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Text(
-                      'Story Bible — ${widget.storyId}',
-                      style: TextStyle(
-                        color: p.textPrimary,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                      ),
+                  Text(
+                    'Story Bible — ${widget.storyId}',
+                    style: TextStyle(
+                      color: p.textPrimary,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  OutlinedButton.icon(
-                    onPressed:
-                        widget.repository == null ||
-                            widget.exportDirectory == null
-                        ? null
-                        : _exportMarkdown,
-                    icon: const Icon(Icons.download_outlined),
-                    label: const Text('Export Markdown'),
-                  ),
+                  const SizedBox(height: 10),
+                  _exportActions(),
                 ],
               ),
               const SizedBox(height: 16),

@@ -21,6 +21,7 @@ void main() {
     expect(find.text('CHAPTERS'), findsOneWidget);
     expect(find.text('SCENE EDITOR'), findsOneWidget);
     expect(find.text('Export Markdown'), findsOneWidget);
+    expect(find.text('Export DOCX'), findsOneWidget);
     expect(find.byType(TextField), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'Satu dua tiga');
     await tester.pump();

@@ -23,12 +23,9 @@ void main() {
   });
 
   test('procedural generation is seed deterministic and manual edits win', () {
-    final first = const ProceduralTerrain(
-      seed: 42,
-    ).generate(width: 2, height: 2);
-    final second = const ProceduralTerrain(
-      seed: 42,
-    ).generate(width: 2, height: 2);
+    const terrain = ProceduralTerrain(seed: 42);
+    final first = terrain.generate(width: 2, height: 2);
+    final second = terrain.generate(width: 2, height: 2);
     expect(first.values, second.values);
     final blended = TerrainComposer().blend(first, {(0, 0): 9});
     expect(blended.valueAt(0, 0), 9);

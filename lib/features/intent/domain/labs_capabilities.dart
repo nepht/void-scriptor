@@ -9,7 +9,8 @@ class LabsCapabilities {
   String get version => '0.51-experimental';
 
   bool isEnabled(LabsFeature feature) =>
-      enabled.contains(feature) && available.contains(feature);
+      enabled.contains(feature) &&
+      (available.isEmpty || available.contains(feature));
 
   LabsFallback fallbackFor(LabsFeature feature) =>
       isEnabled(feature) ? LabsFallback.none : LabsFallback.standardInput;

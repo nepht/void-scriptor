@@ -20,7 +20,7 @@ void main() {
       capabilities: {'draft'},
     );
     final selector = AgentSelector([director, writer]);
-    expect(selector.select('breakdown').id, 'a1');
+    expect(selector.select('breakdown')?.id, 'a1');
     expect(
       selector.score(director, 'review'),
       greaterThan(selector.score(writer, 'review')),

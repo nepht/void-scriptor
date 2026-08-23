@@ -43,6 +43,14 @@ tanggal 2026-08-23. Otoritas versi/tag tetap D6 (release-contract-v1.md).
   `docs/release/sprint-101-security-review.md`; tanpa pelemahan keamanan,
   satu utang dicatat (penyaringan konten cerita dalam artefak diagnostik,
   aman oleh kontainmen lokal-saja).
+- Uji hidup jalur pemulihan (101.9): binary rebuild dari `72bb941`
+  diluncurkan dengan streak terinjeksi `consecutiveFailures:2` → artefak
+  disk membuktikan eskalasi nyata: `startup-decision.json` =
+  `{"mode":"recovery","attempt":3}`, lalu `startup.json` kembali ke 0 —
+  artinya frame pertama RecoveryShell benar-benar ter-render; proses stabil,
+  log tanpa exception. Tangkapan layar tidak memungkinkan (jendela WSLg tak
+  terekspos ke enumerasi jendela Windows); bukti fungsional bersandar pada
+  artefak disk yang sama dengan jalur boot normal.
 
 ## Ledger 26 langkah
 

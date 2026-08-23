@@ -117,4 +117,31 @@ void main() {
     expect(raw, isNot(contains('Kastel')));
     expect(raw, contains('[REDACTED]'));
   });
+
+  test('terms can be updated after construction and apply to next capture',
+      () {
+    final diag = CrashDiagnostics(directory: dir);
+
+    diag.handleFlutterError(
+      FlutterErrorDetails(exception: StateError('fail Mira')),
+    );
+    expect(
+      CrashLogEntry.fromJsonString(
+        dir.listSync().whereType<File>().single.readAsStringSync(),
+      ).message,
+      contains('Mira'),
+    );
+
+    diag.updateSensitiveTerms(const ['Mira']);
+    diag.handleFlutterError(
+      FlutterErrorDetails(exception: StateError('fail Mira again')),
+    );
+
+    final files = dir.listSync().whereType<File>().toList()
+      ..sort((a, b) => a.path.compareTo(b.path));
+    final newest = CrashLogEntry.fromJsonString(
+      files.last.readAsStringSync(),
+    );
+    expect(newest.message, isNot(contains('Mira')));
+  });
 }

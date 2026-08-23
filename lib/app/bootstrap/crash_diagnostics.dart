@@ -120,11 +120,27 @@ class CrashDiagnostics {
   /// project. Creative text is arbitrary, so it cannot be pattern-matched;
   /// instead the app supplies the exact titles/names that must never reach a
   /// diagnostic artifact. Empty list = behavior unchanged.
-  final List<String> sensitiveTerms;
+  ///
+  /// Backing storage is mutable via [updateSensitiveTerms] because the sink
+  /// is constructed during bootstrap, before any project session opens.
+  final List<String> _sensitiveTerms;
+
+  List<String> get sensitiveTerms => List.unmodifiable(_sensitiveTerms);
 
   static int _sequence = 0;
 
-  CrashDiagnostics({required this.directory, this.sensitiveTerms = const []});
+  CrashDiagnostics({
+    required this.directory,
+    List<String> sensitiveTerms = const [],
+  }) : _sensitiveTerms = List.of(sensitiveTerms);
+
+  /// Replaces the active story-term set (used by project-session wiring when
+  /// the opened project changes).
+  void updateSensitiveTerms(List<String> terms) {
+    _sensitiveTerms
+      ..clear()
+      ..addAll(terms);
+  }
 
   /// Replaces every occurrence of an injected story term (case-insensitive)
   /// with [STORY].

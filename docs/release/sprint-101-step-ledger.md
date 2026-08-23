@@ -16,9 +16,12 @@ tanggal 2026-08-23. Otoritas versi/tag tetap D6 (release-contract-v1.md).
   `lib/app/bootstrap/startup_recovery_policy.dart`,
   `lib/app/bootstrap/app_diagnostics.dart`; wiring produksi `lib/main.dart`.
 - Privasi (101.17): `test/app/bootstrap/privacy_regression_test.dart`
-  (5 test) — artefak crash/startup terkurung di direktori lokal,
+  (8 test) — artefak crash/startup terkurung di direktori lokal,
   skema JSON terkunci tanpa field telemetri, konten bebas endpoint
-  remote, permukaan dependensi bootstrap bebas paket jaringan.
+  remote, permukaan dependensi bootstrap bebas paket jaringan,
+  secret di pesan/stack/signature teredaksi `[REDACTED]` sebelum
+  menyentuh disk (diagnostic_redaction), dan `CrashDiagnostics.purge()`
+  menghapus seluruh artefak diagnostik on demand (data_deletion).
 - Proses baru: `docs/release/hotfix-runbook-v1.0.1.md`,
   `.github/ISSUE_TEMPLATE/{bug_report,crash_report}.yml`, `config.yml`.
 - Refs lokal (101.1): `release/1.0`, `hotfix/1.0.1` @ `334022a`.
@@ -43,7 +46,7 @@ tanggal 2026-08-23. Otoritas versi/tag tetap D6 (release-contract-v1.md).
 | 101.14 | Rollback Validation | BLOCKED | Bergantung jalur update/installer yang tidak ada. |
 | 101.15 | Performance Comparison | DEFERRED | Tidak ada artefak baseline v1.0.0 terukur; perbandingan tanpa baseline = karangan. Profil benchmark dev-only ada (Sprint 26) untuk dipakai nanti. |
 | 101.16 | Security Review | PARTIAL | Checklist wajib per-hotfix ditetapkan (runbook §Review keamanan); penerapan pertama menyusul pada diff hotfix nyata. Disiplin secret sudah berjalan lintas sesi. |
-| 101.17 | Privacy Regression | VERIFIED | Aplikasi lokal-saja kini dijaga test otomatis: 5 test membuktikan artefak hanya lahir di direktori diagnostics yang diinjeksikan, skema JSON tanpa field telemetri, tanpa marker endpoint/provider remote, dan layer bootstrap bebas dependensi jaringan (`privacy_regression_test.dart`). Tanpa transfer keluar by design. |
+| 101.17 | Privacy Regression | VERIFIED | Aplikasi lokal-saja kini dijaga test otomatis: 8 test membuktikan artefak hanya lahir di direktori diagnostics yang diinjeksikan, skema JSON tanpa field telemetri, tanpa marker endpoint/provider remote, layer bootstrap bebas dependensi jaringan, secret teredaksi `[REDACTED]` sebelum ke disk, dan `purge()` tersedia untuk penghapusan data (`privacy_regression_test.dart`). Tanpa transfer keluar by design. |
 | 101.18 | Accessibility Regression | PENDING | Baseline a11y v1 belum pernah dibangun (tidak ada yang bisa diregresikan); dicatat sebagai utang, bukan klaim. |
 | 101.19 | Localization Regression | PENDING | Infrastruktur l10n (ARB/AppLocalizations) tidak ada di repo — diverifikasi kosong. Locale en/id menjadi target infrastruktur mendatang. |
 | 101.20 | Automated Regression Suite | VERIFIED | Aturan 1-fix-1-test ditegakkan runbook + CI hijau; fix pada slice ini sendiri lahir dari RED test (bukti proses). |

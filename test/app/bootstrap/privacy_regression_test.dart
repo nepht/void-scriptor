@@ -118,6 +118,67 @@ void main() {
     });
   });
 
+  group('diagnostic redaction & deletion (101.17 test_scope)', () {
+    late Directory redactDir;
+
+    setUp(() {
+      redactDir = Directory.systemTemp.createTempSync('vs_privacy_redact');
+    });
+
+    tearDown(() {
+      try {
+        if (redactDir.existsSync()) redactDir.deleteSync(recursive: true);
+      } on FileSystemException {
+        Future<void>.delayed(const Duration(milliseconds: 50)).then((_) {
+          try {
+            if (redactDir.existsSync()) redactDir.deleteSync(recursive: true);
+          } catch (_) {}
+        });
+      }
+    });
+
+    test('redacts secret-looking material from captured entries', () {
+      final diag = CrashDiagnostics(directory: redactDir);
+
+      diag.handleZoneError(
+        Exception(
+          'auth failed with Bearer abc123secret and api_key=sk-live999',
+        ),
+        StackTrace.current,
+      );
+
+      final raw = redactDir
+          .listSync()
+          .whereType<File>()
+          .single
+          .readAsStringSync();
+      expect(raw, isNot(contains('abc123secret')));
+      expect(raw, isNot(contains('sk-live999')));
+      expect(raw, contains('[REDACTED]'));
+      // Entry stays structured and readable after redaction.
+      final entry = CrashLogEntry.fromJsonString(raw);
+      expect(entry.message, contains('auth failed'));
+    });
+
+    test('crash signatures never embed secrets', () {
+      final sig = CrashSignature.of(Exception('token=supersecret42'), null);
+      expect(sig.value, isNot(contains('supersecret42')));
+      expect(sig.value, contains('[REDACTED]'));
+    });
+
+    test('purge removes captured artifacts on demand (data deletion)', () {
+      final diag = CrashDiagnostics(directory: redactDir);
+      diag.handleFlutterError(
+        FlutterErrorDetails(exception: StateError('purge probe')),
+      );
+      expect(redactDir.listSync().whereType<File>(), isNotEmpty);
+
+      diag.purge();
+
+      expect(redactDir.listSync().whereType<File>(), isEmpty);
+    });
+  });
+
   group('bootstrap dependency surface', () {
     /// The only files allowed to implement capture/persistence plumbing.
     /// Scanned as text so a future network import cannot slip in silently.

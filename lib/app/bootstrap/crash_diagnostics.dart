@@ -3,6 +3,36 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+/// Secret-scrubbing patterns (101.17 diagnostic_redaction). Anything that
+/// looks like a credential must never reach disk, even inside an error
+/// message or stack trace. Order: bearer headers, labeled assignments,
+/// then provider-shaped token prefixes.
+final RegExp _bearerHeaderPattern = RegExp(
+  r'\bbearer\s+\S+',
+  caseSensitive: false,
+);
+final RegExp _labeledSecretPattern = RegExp(
+  r'\b(api[_-]?key|apikey|token|password|passwd|secret|authorization)'
+  r'\s*[:=]\s*\S+',
+  caseSensitive: false,
+);
+final RegExp _providerShapedTokenPattern = RegExp(
+  r'\b(?:sk|pk|ghp|gho|github_pat|xox)[-][A-Za-z0-9_-]{8,}',
+  caseSensitive: false,
+);
+
+/// Replaces secret-looking material with [REDACTED].
+String _redactSecrets(String text) {
+  var out = text;
+  out = out.replaceFirstMapped(_bearerHeaderPattern, (_) => '[REDACTED]');
+  out = out.replaceFirstMapped(_labeledSecretPattern, (_) => '[REDACTED]');
+  out = out.replaceFirstMapped(
+    _providerShapedTokenPattern,
+    (_) => '[REDACTED]',
+  );
+  return out;
+}
+
 /// Sprint 101.3 / 101.8 / 101.9 — post-release crash capture.
 ///
 /// Every captured error is written as one structured JSON file under the
@@ -69,7 +99,7 @@ class CrashSignature {
     final firstLine = newlineIndex >= 0
         ? text.substring(0, newlineIndex)
         : text;
-    return CrashSignature(firstLine.trim());
+    return CrashSignature(_redactSecrets(firstLine.trim()));
   }
 
   @override
@@ -118,9 +148,9 @@ class CrashDiagnostics {
       final entry = CrashLogEntry(
         id: '$stamp-$_sequence',
         kind: kind,
-        message: error.toString(),
+        message: _redactSecrets(error.toString()),
         signature: CrashSignature.of(error, stack).value,
-        stack: stack?.toString() ?? '',
+        stack: _redactSecrets(stack?.toString() ?? ''),
         zone: zone,
         occurredAt: now.toIso8601String(),
       );
@@ -128,6 +158,24 @@ class CrashDiagnostics {
         '${directory.path}${Platform.pathSeparator}'
         '${kind.replaceAll('_', '-')}-$stamp-$_sequence.json',
       ).writeAsStringSync(entry.toJsonString(), flush: true);
+    } catch (_) {
+      // Swallow diagnostics failures by design (see class doc).
+    }
+  }
+
+  /// Data deletion (101.17): removes every captured artifact inside
+  /// [directory]. Best-effort like the rest of the sink — a file that
+  /// cannot be deleted must not crash the caller.
+  void purge() {
+    try {
+      if (!directory.existsSync()) return;
+      for (final entity in directory.listSync()) {
+        try {
+          entity.deleteSync(recursive: true);
+        } on FileSystemException {
+          // Ignore individual failures: purge is best-effort.
+        }
+      }
     } catch (_) {
       // Swallow diagnostics failures by design (see class doc).
     }

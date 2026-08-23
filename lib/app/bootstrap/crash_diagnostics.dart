@@ -116,9 +116,29 @@ class CrashSignature {
 class CrashDiagnostics {
   final Directory directory;
 
+  /// Sprint 102 / C1 — injected story-content terms captured from the active
+  /// project. Creative text is arbitrary, so it cannot be pattern-matched;
+  /// instead the app supplies the exact titles/names that must never reach a
+  /// diagnostic artifact. Empty list = behavior unchanged.
+  final List<String> sensitiveTerms;
+
   static int _sequence = 0;
 
-  CrashDiagnostics({required this.directory});
+  CrashDiagnostics({required this.directory, this.sensitiveTerms = const []});
+
+  /// Replaces every occurrence of an injected story term (case-insensitive)
+  /// with [STORY].
+  String _redactStoryContent(String text) {
+    var out = text;
+    for (final term in sensitiveTerms) {
+      if (term.isEmpty) continue;
+      out = out.replaceAll(
+        RegExp(RegExp.escape(term), caseSensitive: false),
+        '[STORY]',
+      );
+    }
+    return out;
+  }
 
   void handleFlutterError(FlutterErrorDetails details) {
     _capture(
@@ -148,9 +168,9 @@ class CrashDiagnostics {
       final entry = CrashLogEntry(
         id: '$stamp-$_sequence',
         kind: kind,
-        message: _redactSecrets(error.toString()),
-        signature: CrashSignature.of(error, stack).value,
-        stack: _redactSecrets(stack?.toString() ?? ''),
+        message: _redactStoryContent(_redactSecrets(error.toString())),
+        signature: _redactStoryContent(CrashSignature.of(error, stack).value),
+        stack: _redactStoryContent(_redactSecrets(stack?.toString() ?? '')),
         zone: zone,
         occurredAt: now.toIso8601String(),
       );

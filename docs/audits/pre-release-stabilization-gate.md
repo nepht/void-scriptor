@@ -416,3 +416,25 @@ disetujui eksekusi):
 Status gerbang: G6 ditutup sebagai VERIFIED-with-disclosure untuk sisi
 keputusan; pelaksanaan penuh v1.0.0 menunggu rantai D4 sisa sebagaimana
 didisclosure di atas.
+
+## G6_CI_RECOVERY_EVIDENCE
+
+Setelah push D2, CI master kembali bermakna dan menunjuk tiga utang riwayat;
+semuanya ditangani berurutan dengan bukti:
+
+1. FORMAT (run 32623996965): 49 pelanggaran `dart format` tertanam sejak
+   sebelum push (riwayat jalur lain). Diperbaiki mekanis di worktree
+   terpisah, commit `chore: dart format baseline across lib+test (49 files)`
+   (8fb1b5f), tanpa menyentuh worktree utama.
+2. ANALYZE (run 32624619496): test yatim ter-commit lama
+   `test/features/marketplace/application/marketplace_controller_test.dart`
+   mengimpor controller yang hanya ada sebagai file untracked di jalur
+   terlindung konkuren. Dengan izin eksplisit Choirudin, satu file
+   `lib/features/marketplace/application/marketplace_controller.dart`
+   (47 baris) dicommit scoped (55878e0) dengan disclosure; probe detached
+   HEAD membuktikan analyze 0 issues dan test target 3/3 PASS sebelum push.
+   Tiga modifikasi presentasi marketplace tetap uncommitted.
+3. Verdict akhir run 32627484098 pada SHA 55878e0: completed/success.
+   Pertama kali master hijau penuh di CI (analyze + test + build
+   Linux/Web/Android/macOS/iOS). Watcher: /home/nepht/ci_watch5.log
+   (ci_exit=0).

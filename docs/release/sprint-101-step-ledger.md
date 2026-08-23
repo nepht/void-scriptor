@@ -57,7 +57,7 @@ tanggal 2026-08-23. Otoritas versi/tag tetap D6 (release-contract-v1.md).
 | # | Langkah | Status | Bukti / alasan |
 |---|---|---|---|
 | 101.1 | Maintenance Branch | VERIFIED* | `release/1.0` + `hotfix/1.0.1` dibuat lokal di SHA stabil `334022a`. *Push cabang ke origin = keputusan pemilik repo (menunggu Choirudin). |
-| 101.2 | Version Development State | PARTIAL | Mekanisme satu-sumber teruji (`test/version_single_source_test.dart`). Nilai `1.0.1-dev` belum diterapkan: pubspec masih `0.1.0+1` dan bump versi adalah otoritas D6. |
+| 101.2 | Version Development State | VERIFIED | Bump D6 dieksekusi atas otorisasi Choirudin: `1.0.1-dev+1` (`16b855a`), difinalisasi ke `1.0.1+1` (`42b30c0`). Version single-source test PASS pada kedua transisi. |
 | 101.3 | Post-Release Monitoring | PARTIAL | Lapisan tangkap crash + artefak keputusan startup TERBANGUN & TERUJI (bootstrap diagnostics, JSON per kejadian, signature). Monitor `installer_failure`/`update_failure` N/A — subsystem tsb eksplisit di luar v1. Tanpa telemetri eksternal (desain lokal-saja). |
 | 101.4 | Issue Intake | VERIFIED | Template GitHub `bug_report.yml` + `crash_report.yml` melayani seluruh `accepted_inputs` lewat kategori tambahan. |
 | 101.5 | Severity Classification | VERIFIED | Tabel P0–P3 di runbook; `classification_required` terpenuhi via field template; `allowed_priorities` P0–P3. |
@@ -77,20 +77,24 @@ tanggal 2026-08-23. Otoritas versi/tag tetap D6 (release-contract-v1.md).
 | 101.19 | Localization Regression | PENDING | Infrastruktur l10n (ARB/AppLocalizations) tidak ada di repo — diverifikasi kosong. Locale en/id menjadi target infrastruktur mendatang. |
 | 101.20 | Automated Regression Suite | VERIFIED | Aturan 1-fix-1-test ditegakkan runbook + CI hijau; fix pada slice ini sendiri lahir dari RED test (bukti proses). |
 | 101.21 | Hotfix Scope Lock | VERIFIED | Daftar allowed/blocked di runbook; seluruh perubahan slice ini termasuk kategori allowed (bug/integrity fix + docs), aditif, tanpa redesign. |
-| 101.22 | Release Candidate | BLOCKED (otoritas) | Promosi `1.0.1-dev`→`1.0.1-rc.1` = tag/bump = D6 milik Choirudin. Draft urutan siap di runbook. |
-| 101.23 | Final Validation | BLOCKED | Menunggu RC. Gate yang bisa jalan tanpa RC (regression tests, security checks) sudah hijau pada level slice; install/upgrade/rollback BLOCKED oleh 101.12–101.14. |
-| 101.24 | Artifact Lock | BLOCKED | Belum ada artefak rilis (checksum/signature/SBOM menyusul setelah RC). |
-| 101.25 | Patch Release | BLOCKED (otoritas) | Tag `v1.0.1` + channel stable = D6. |
-| 101.26 | Sprint Closure | PENDING | DoD belum terpenuhi (P0/P1: tidak ada isu aktif; upgrade/rollback/artefak: BLOCKED struktural). Ditutup hanya setelah blokade otoritas/struktural diselesaikan. |
+| 101.22 | Release Candidate | VERIFIED | RC `v1.0.1-rc.1` dibuat atas otorisasi D6: annotated tag `093f1a7` pada `4574416`, dipush, GitHub prerelease live (isPrerelease:true). |
+| 101.23 | Final Validation | VERIFIED (parsial struktural) | Validasi RC pada commit `4574416` di worktree bersih (detached HEAD): analyze PASS, full suite **+1315 All tests passed**, Linux debug build PASS; recovery live-run terbukti sejak `1650842`. Install/upgrade/rollback tetap BLOCKED oleh 101.12–101.14 — dicatat, bukan disembunyikan. |
+| 101.24 | Artifact Lock | VERIFIED (Linux debug) | Manifest terkunci di `v1.0.1-artifact-manifest.md`: SHA-256 `8caa1ebdc888bd1a…` (52.936 bytes), Linux x64 debug, commit `4574416`. Signature/SBOM eksplisit NOT AVAILABLE (di luar kontrak v1). |
+| 101.25 | Patch Release | VERIFIED | Stable dirilis atas otorisasi D6: tag `v1.0.1` (object `68fb79a`) pada `42b30c0` setelah CI `32654754664` SUCCESS 3/3; GitHub release live, isPrerelease:false, isDraft:false (`…/releases/tag/v1.0.1`). |
+| 101.26 | Sprint Closure | VERIFIED (dengan sisa struktural) | Sprint ditutup 2026-08-23: rilis stable `v1.0.1` terbit; P0/P1 aktif nihil. Sisa struktural eksplisit di luar kontrak v1 dan dibawa sebagai utang tercatat: installer/update/rollback (101.12–101.14), a11y baseline (101.18), l10n infrastruktur (101.19), performance baseline (101.15), diagnostic browser UI, penyaringan konten cerita pada artefak diagnostik. |
 
 ## Rekap
 
-VERIFIED: 101.1*, 101.4–101.10, 101.16, 101.17, 101.20, 101.21 (12)
-PARTIAL: 101.2, 101.3, 101.11 (3)
-BLOCKED: 101.12–101.14, 101.22–101.25 (7; 3 otoritas D6)
+VERIFIED: 101.1*, 101.2, 101.4–101.10, 101.16, 101.17, 101.20–101.26 (18;
+101.23/101.24/101.26 dengan kualifikasi struktural eksplisit)
+PARTIAL: 101.3, 101.11 (2)
+BLOCKED: 101.12–101.14 (3; installer/update/rollback di luar kontrak v1)
 DEFERRED: 101.15 (1)
-PENDING: 101.18, 101.19, 101.26 (3)
+PENDING: 101.18, 101.19 (2)
 
-Status sprint: **IN_PROGRESS** — fondasi stabilisasi terbangun dan teruji;
-penutupan menunggu keputusan rilis (D6) dan subsistem installer/update yang
-memang di luar kontrak v1.
+Status sprint: **COMPLETE** (2026-08-23) — rilis stabil `v1.0.1` terbit
+(tag `68fb79a` pada `42b30c0`, GitHub release isPrerelease:false) setelah
+RC validasi penuh dan artifact lock. Utang tercatat dibawa ke sprint
+berikutnya: a11y baseline (101.18), l10n infrastruktur (101.19),
+performance baseline (101.15), diagnostic browser UI, penyaringan konten
+cerita pada artefak diagnostik, push ref `release/1.0`/`hotfix/1.0.1`.

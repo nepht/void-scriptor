@@ -7,7 +7,7 @@ class CharacterEmptyState extends StatelessWidget {
   const CharacterEmptyState({super.key});
 
   @override
-  Widget build(BuildContext context) =>  Center(
+  Widget build(BuildContext context) => Center(
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -17,7 +17,10 @@ class CharacterEmptyState extends StatelessWidget {
           color: context.palette.textMuted,
         ),
         const SizedBox(height: 12),
-        const Text('No Character Selected', style: VoidTypography.headingMedium),
+        const Text(
+          'No Character Selected',
+          style: VoidTypography.headingMedium,
+        ),
         const SizedBox(height: 6),
         const Text(
           'Select a character from Explorer to open the workspace.',

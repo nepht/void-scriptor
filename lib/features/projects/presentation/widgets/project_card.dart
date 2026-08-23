@@ -26,11 +26,13 @@ class ProjectCard extends ConsumerWidget {
         children: [
           Expanded(
             child: Container(
-              decoration:  BoxDecoration(
+              decoration: BoxDecoration(
                 color: context.palette.surfaceElevated,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(12),
+                ),
               ),
-              child:  Center(
+              child: Center(
                 child: Icon(
                   Icons.auto_awesome_mosaic_outlined,
                   size: 38,

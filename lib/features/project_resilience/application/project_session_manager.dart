@@ -236,16 +236,16 @@ class ProjectSessionManager {
         openMetrics: metrics,
       );
     } catch (_) {
-    if (mode == ProjectOpenMode.readWrite) await lock.release();
-    if (mode == ProjectOpenMode.readWrite &&
-        await package.lockFile.exists()) {
-      await package.lockFile.delete();
-    }
-    // Ensure database is closed if it was partially opened
-    try {
-      if (database != null) await database.close();
-    } catch (_) {}
-    rethrow;
+      if (mode == ProjectOpenMode.readWrite) await lock.release();
+      if (mode == ProjectOpenMode.readWrite &&
+          await package.lockFile.exists()) {
+        await package.lockFile.delete();
+      }
+      // Ensure database is closed if it was partially opened
+      try {
+        if (database != null) await database.close();
+      } catch (_) {}
+      rethrow;
     }
   }
 

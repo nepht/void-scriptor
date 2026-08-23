@@ -84,7 +84,7 @@ class WardrobeInspector extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(data.name, style: VoidTypography.title),
-             Text(
+            Text(
               'Wardrobe',
               style: TextStyle(color: context.palette.textMuted),
             ),
@@ -123,7 +123,7 @@ class _Section extends StatelessWidget {
       children: [
         Text(
           title,
-          style:  TextStyle(color: context.palette.primaryBright, fontSize: 13),
+          style: TextStyle(color: context.palette.primaryBright, fontSize: 13),
         ),
         const SizedBox(height: 8),
         for (final row in rows)
@@ -136,13 +136,13 @@ class _Section extends StatelessWidget {
                   width: 78,
                   child: Text(
                     row.$1,
-                    style:  TextStyle(color: context.palette.textMuted),
+                    style: TextStyle(color: context.palette.textMuted),
                   ),
                 ),
                 Expanded(
                   child: Text(
                     row.$2,
-                    style:  TextStyle(color: context.palette.textPrimary),
+                    style: TextStyle(color: context.palette.textPrimary),
                   ),
                 ),
               ],

@@ -15,8 +15,14 @@ void main() {
 
     String portable(String path) => path.replaceAll('\\', '/');
 
-    expect(portable(package.manifestFile.path), contains('manifest/project.json'));
-    expect(portable(package.databaseFile.path), contains('database/project.db'));
+    expect(
+      portable(package.manifestFile.path),
+      contains('manifest/project.json'),
+    );
+    expect(
+      portable(package.databaseFile.path),
+      contains('database/project.db'),
+    );
     expect(
       portable(ProjectPackagePaths.audio(package).path),
       contains('assets/audio'),

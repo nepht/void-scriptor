@@ -180,8 +180,11 @@ class VoidPalette extends ThemeExtension<VoidPalette> {
     if (other is! VoidPalette) return this;
     return VoidPalette(
       background: Color.lerp(background, other.background, t)!,
-      backgroundSecondary:
-          Color.lerp(backgroundSecondary, other.backgroundSecondary, t)!,
+      backgroundSecondary: Color.lerp(
+        backgroundSecondary,
+        other.backgroundSecondary,
+        t,
+      )!,
       surface: Color.lerp(surface, other.surface, t)!,
       surfaceElevated: Color.lerp(surfaceElevated, other.surfaceElevated, t)!,
       surfaceHover: Color.lerp(surfaceHover, other.surfaceHover, t)!,

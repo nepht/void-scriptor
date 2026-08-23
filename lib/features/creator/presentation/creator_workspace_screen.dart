@@ -50,7 +50,7 @@ class CreatorWorkspaceScreen extends ConsumerWidget {
                       onTap: () => ref
                           .read(creatorStudioProvider.notifier)
                           .setSection(s),
-                    )
+                    ),
                 ],
               ),
             );

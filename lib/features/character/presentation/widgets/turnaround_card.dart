@@ -49,7 +49,7 @@ class _Slot extends StatelessWidget {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-         Icon(Icons.accessibility_new, color: context.palette.textMuted),
+        Icon(Icons.accessibility_new, color: context.palette.textMuted),
         const SizedBox(height: 8),
         Text(label, style: VoidTypography.caption),
       ],

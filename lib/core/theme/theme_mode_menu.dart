@@ -13,20 +13,20 @@ class ThemeModeMenu extends ConsumerWidget {
 
   final double iconSize;
 
-  static const _entries =
-      <({AppThemeMode mode, String label, IconData icon})>[
-        (
-          mode: AppThemeMode.system,
-          label: 'System (default)',
-          icon: Icons.brightness_auto_rounded,
-        ),
-        (mode: AppThemeMode.light, label: 'Light', icon: Icons.light_mode_rounded),
-        (mode: AppThemeMode.dark, label: 'Dark', icon: Icons.dark_mode_rounded),
-      ];
+  static const _entries = <({AppThemeMode mode, String label, IconData icon})>[
+    (
+      mode: AppThemeMode.system,
+      label: 'System (default)',
+      icon: Icons.brightness_auto_rounded,
+    ),
+    (mode: AppThemeMode.light, label: 'Light', icon: Icons.light_mode_rounded),
+    (mode: AppThemeMode.dark, label: 'Dark', icon: Icons.dark_mode_rounded),
+  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final current = ref.watch(themeControllerProvider).value ?? AppThemeMode.system;
+    final current =
+        ref.watch(themeControllerProvider).value ?? AppThemeMode.system;
 
     return PopupMenuButton<AppThemeMode>(
       tooltip: 'Theme',

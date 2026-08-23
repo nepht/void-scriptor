@@ -16,7 +16,7 @@ class WardrobeProductCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: context.palette.borderSoft),
         ),
-        child:  Center(
+        child: Center(
           child: Icon(
             Icons.checkroom_outlined,
             size: 56,
@@ -139,7 +139,7 @@ class WardrobeReferencesCard extends StatelessWidget {
   const WardrobeReferencesCard({super.key});
 
   @override
-  Widget build(BuildContext context) =>  _WardrobeCard(
+  Widget build(BuildContext context) => _WardrobeCard(
     title: 'References',
     child: Text(
       'Front, Back, Side, Fabric, Construction, Hardware, Color',
@@ -162,7 +162,7 @@ class _WardrobeCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style:  TextStyle(color: context.palette.textPrimary, fontSize: 16),
+            style: TextStyle(color: context.palette.textPrimary, fontSize: 16),
           ),
           const SizedBox(height: 14),
           child,
@@ -185,13 +185,13 @@ class _PropertyRow extends StatelessWidget {
           width: 120,
           child: Text(
             label,
-            style:  TextStyle(color: context.palette.textMuted),
+            style: TextStyle(color: context.palette.textMuted),
           ),
         ),
         Expanded(
           child: Text(
             value,
-            style:  TextStyle(color: context.palette.textPrimary),
+            style: TextStyle(color: context.palette.textPrimary),
           ),
         ),
       ],
@@ -206,7 +206,7 @@ class _Chip extends StatelessWidget {
   Widget build(BuildContext context) => Chip(
     label: Text(label),
     backgroundColor: context.palette.surfaceElevated,
-    labelStyle:  TextStyle(color: context.palette.textPrimary),
+    labelStyle: TextStyle(color: context.palette.textPrimary),
   );
 }
 
@@ -228,7 +228,7 @@ class _ColorSwatch extends StatelessWidget {
         ),
       ),
       const SizedBox(width: 8),
-      Text(name, style:  TextStyle(color: context.palette.textMuted)),
+      Text(name, style: TextStyle(color: context.palette.textMuted)),
     ],
   );
 }

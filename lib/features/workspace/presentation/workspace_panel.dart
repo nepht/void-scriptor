@@ -42,11 +42,11 @@ class _WorkspaceHeader extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     height: 44,
     padding: const EdgeInsets.symmetric(horizontal: 16),
-    decoration:  BoxDecoration(
+    decoration: BoxDecoration(
       color: context.palette.panelSecondary,
       border: Border(bottom: BorderSide(color: context.palette.borderSoft)),
     ),
-    child:  Row(
+    child: Row(
       children: [
         const Expanded(
           child: Row(
@@ -86,7 +86,7 @@ class _WorkspaceTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     height: 38,
-    decoration:  BoxDecoration(
+    decoration: BoxDecoration(
       color: context.palette.panel,
       border: Border(bottom: BorderSide(color: context.palette.borderSoft)),
     ),
@@ -129,7 +129,9 @@ class _Tab extends StatelessWidget {
         child: Text(
           label,
           style: TextStyle(
-            color: active ? context.palette.textPrimary : context.palette.textMuted,
+            color: active
+                ? context.palette.textPrimary
+                : context.palette.textMuted,
             fontSize: 11,
             fontWeight: active ? FontWeight.w600 : FontWeight.w400,
           ),
@@ -142,11 +144,15 @@ class _Tab extends StatelessWidget {
 class _EmptyWorkspace extends StatelessWidget {
   const _EmptyWorkspace();
   @override
-  Widget build(BuildContext context) =>  Center(
+  Widget build(BuildContext context) => Center(
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.grid_view_rounded, size: 38, color: context.palette.textMuted),
+        Icon(
+          Icons.grid_view_rounded,
+          size: 38,
+          color: context.palette.textMuted,
+        ),
         const SizedBox(height: 14),
         const Text('Workspace', style: VoidTypography.headingMedium),
         const SizedBox(height: 6),

@@ -9,8 +9,9 @@ import 'package:void_scriptor/core/theme/theme_mode_menu.dart';
 import 'package:void_scriptor/core/theme/theme_preference_store.dart';
 
 void main() {
-  testWidgets('ThemeModeMenu menampilkan 3 opsi tema dan mengganti ke Light',
-      (tester) async {
+  testWidgets('ThemeModeMenu menampilkan 3 opsi tema dan mengganti ke Light', (
+    tester,
+  ) async {
     final store = InMemoryThemePreferenceStore();
     final container = ProviderContainer(
       overrides: [themePreferenceStoreProvider.overrideWithValue(store)],
@@ -20,9 +21,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(
-          home: Scaffold(body: ThemeModeMenu()),
-        ),
+        child: const MaterialApp(home: Scaffold(body: ThemeModeMenu())),
       ),
     );
     await tester.pumpAndSettle();
@@ -42,29 +41,33 @@ void main() {
     expect(await store.load(), AppThemeMode.light);
   });
 
-  testWidgets('VoidScriptorApp menerapkan light theme saat mode light dipilih',
-      (tester) async {
-    final store = InMemoryThemePreferenceStore();
-    await store.save(AppThemeMode.light);
+  testWidgets(
+    'VoidScriptorApp menerapkan light theme saat mode light dipilih',
+    (tester) async {
+      final store = InMemoryThemePreferenceStore();
+      await store.save(AppThemeMode.light);
 
-    final router = GoRouter(routes: [
-      GoRoute(
-        path: '/',
-        builder: (_, _) => const Scaffold(body: Text('home')),
-      ),
-    ]);
-    addTearDown(router.dispose);
+      final router = GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (_, _) => const Scaffold(body: Text('home')),
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [themePreferenceStoreProvider.overrideWithValue(store)],
-        child: VoidScriptorApp(routerConfig: router),
-      ),
-    );
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [themePreferenceStoreProvider.overrideWithValue(store)],
+          child: VoidScriptorApp(routerConfig: router),
+        ),
+      );
+      await tester.pumpAndSettle();
 
-    final materialApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
-    expect(materialApp.themeMode, ThemeMode.light);
-    expect(materialApp.theme?.brightness, Brightness.light);
-  });
+      final materialApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
+      expect(materialApp.themeMode, ThemeMode.light);
+      expect(materialApp.theme?.brightness, Brightness.light);
+    },
+  );
 }

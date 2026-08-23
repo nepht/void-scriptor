@@ -32,7 +32,7 @@ class VoidTopBar extends StatelessWidget {
     return Container(
       height: 58,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration:  BoxDecoration(
+      decoration: BoxDecoration(
         color: context.palette.panel,
         border: Border(bottom: BorderSide(color: context.palette.borderSoft)),
       ),
@@ -120,24 +120,24 @@ class VoidTopBar extends StatelessWidget {
                 child: SyncStatusIndicator(status: syncStatus),
               ),
               const _TopIconButton(
-   icon: Icons.notifications_none_rounded,
-   tooltip: 'Notifications',
- ),
- _TopIconButton(
-   icon: Icons.favorite_border_rounded,
-   tooltip: 'Donate / Support',
-   onPressed: () {
-     _showDonationDialog(context);
-   },
- ),
- const ThemeModeMenu(),
+                icon: Icons.notifications_none_rounded,
+                tooltip: 'Notifications',
+              ),
+              _TopIconButton(
+                icon: Icons.favorite_border_rounded,
+                tooltip: 'Donate / Support',
+                onPressed: () {
+                  _showDonationDialog(context);
+                },
+              ),
+              const ThemeModeMenu(),
               IconButton(
                 tooltip: 'Logout',
                 onPressed: onLogout,
                 icon: const Icon(Icons.logout_rounded, size: 18),
               ),
               const SizedBox(width: 6),
-               CircleAvatar(
+              CircleAvatar(
                 radius: 16,
                 backgroundColor: context.palette.primary,
                 child: const Icon(
@@ -169,7 +169,7 @@ class _TopMenuButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
         child: Text(
           label,
-          style:  TextStyle(
+          style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w500,
             color: context.palette.textSecondary,
@@ -278,7 +278,9 @@ void _showDonationDialog(BuildContext context) {
                     Navigator.of(ctx).pop();
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Metode ${m.label} dipilih (belum terkonfigurasi).'),
+                        content: Text(
+                          'Metode ${m.label} dipilih (belum terkonfigurasi).',
+                        ),
                       ),
                     );
                   },

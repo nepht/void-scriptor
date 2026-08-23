@@ -9,7 +9,7 @@ class AiActivityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  VoidCard(
+    return VoidCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

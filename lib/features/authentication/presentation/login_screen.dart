@@ -55,7 +55,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     setState(() => _socialLoading = false);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Google login belum tersedia. Silakan pakai email/password.'),
+        content: Text(
+          'Google login belum tersedia. Silakan pakai email/password.',
+        ),
       ),
     );
   }
@@ -69,11 +71,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     setState(() => _socialLoading = false);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('GitHub login belum tersedia. Silakan pakai email/password.'),
+        content: Text(
+          'GitHub login belum tersedia. Silakan pakai email/password.',
+        ),
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -280,7 +283,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         children: [
                           Expanded(
                             child: OutlinedButton.icon(
-                              onPressed: _socialLoading ? null : _loginWithGoogle,
+                              onPressed: _socialLoading
+                                  ? null
+                                  : _loginWithGoogle,
                               icon: const _GoogleGlyph(size: 18),
                               label: const Text('Google'),
                             ),
@@ -288,7 +293,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: OutlinedButton.icon(
-                              onPressed: _socialLoading ? null : _loginWithGithub,
+                              onPressed: _socialLoading
+                                  ? null
+                                  : _loginWithGithub,
                               icon: const Icon(Icons.code_rounded),
                               label: const Text('GitHub'),
                             ),
@@ -399,4 +406,3 @@ class _GoogleGlyphPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-

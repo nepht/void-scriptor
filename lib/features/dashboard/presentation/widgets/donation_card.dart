@@ -13,11 +13,14 @@ class DonationCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-           Wrap(
+          Wrap(
             spacing: 8,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Icon(Icons.favorite_outline, color: context.palette.primaryBright),
+              Icon(
+                Icons.favorite_outline,
+                color: context.palette.primaryBright,
+              ),
               const Text(
                 'Support Void Scriptor',
                 style: VoidTypography.headingMedium,

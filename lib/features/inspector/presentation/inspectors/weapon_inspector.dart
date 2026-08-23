@@ -73,13 +73,13 @@ class WeaponInspector extends ConsumerWidget {
           children: [
             Text(
               data?.name ?? weaponId,
-              style:  TextStyle(
+              style: TextStyle(
                 color: context.palette.textPrimary,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
             ),
-             Text('Weapon', style: TextStyle(color: context.palette.textMuted)),
+            Text('Weapon', style: TextStyle(color: context.palette.textMuted)),
             const SizedBox(height: 20),
             _Section(
               title: 'Properties',
@@ -112,7 +112,7 @@ class _Section extends StatelessWidget {
       children: [
         Text(
           title,
-          style:  TextStyle(color: context.palette.primaryBright, fontSize: 13),
+          style: TextStyle(color: context.palette.primaryBright, fontSize: 13),
         ),
         const SizedBox(height: 8),
         for (final row in rows)
@@ -124,13 +124,13 @@ class _Section extends StatelessWidget {
                   width: 78,
                   child: Text(
                     row.$1,
-                    style:  TextStyle(color: context.palette.textMuted),
+                    style: TextStyle(color: context.palette.textMuted),
                   ),
                 ),
                 Expanded(
                   child: Text(
                     row.$2,
-                    style:  TextStyle(color: context.palette.textPrimary),
+                    style: TextStyle(color: context.palette.textPrimary),
                   ),
                 ),
               ],

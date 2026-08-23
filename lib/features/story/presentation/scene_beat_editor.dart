@@ -33,18 +33,18 @@ class SceneBeatEditor extends StatelessWidget {
         child: ListTile(
           leading: Text(
             start,
-            style:  TextStyle(
+            style: TextStyle(
               color: context.palette.primaryBright,
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
           title: Text(
             beat.content,
-            style:  TextStyle(color: context.palette.textPrimary),
+            style: TextStyle(color: context.palette.textPrimary),
           ),
           subtitle: Text(
             '${beat.beatType.toUpperCase()}  ·  ${beat.durationSeconds?.toStringAsFixed(1) ?? '—'} sec',
-            style:  TextStyle(color: context.palette.textMuted, fontSize: 11),
+            style: TextStyle(color: context.palette.textMuted, fontSize: 11),
           ),
           trailing: IconButton(
             icon: const Icon(Icons.delete_outline),

@@ -86,7 +86,7 @@ class _TimelineWorkspaceScreenState extends State<TimelineWorkspaceScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Row(
                 children: [
-                   Text(
+                  Text(
                     'Zoom',
                     style: TextStyle(color: context.palette.textSecondary),
                   ),
@@ -102,7 +102,7 @@ class _TimelineWorkspaceScreenState extends State<TimelineWorkspaceScreen> {
                   ),
                   Text(
                     '${_pixelsPerSecond.toInt()} px/sec',
-                    style:  TextStyle(color: context.palette.textSecondary),
+                    style: TextStyle(color: context.palette.textSecondary),
                   ),
                   IconButton(
                     tooltip: 'Zoom in',
@@ -189,12 +189,12 @@ class TimelineHeader extends StatelessWidget {
     color: context.palette.panelSecondary,
     child: Row(
       children: [
-         Icon(Icons.timeline_outlined, color: context.palette.primaryBright),
+        Icon(Icons.timeline_outlined, color: context.palette.primaryBright),
         const SizedBox(width: 10),
         Expanded(
           child: Text(
             sceneTitle,
-            style:  TextStyle(
+            style: TextStyle(
               color: context.palette.textPrimary,
               fontWeight: FontWeight.w700,
             ),
@@ -202,7 +202,7 @@ class TimelineHeader extends StatelessWidget {
         ),
         Text(
           '${duration.toStringAsFixed(1)} sec · ${currentTime.toStringAsFixed(1)}',
-          style:  TextStyle(color: context.palette.textSecondary),
+          style: TextStyle(color: context.palette.textSecondary),
         ),
         IconButton(
           tooltip: 'Play',
@@ -286,7 +286,7 @@ class TimelineClip extends StatelessWidget {
         clip.label,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style:  TextStyle(color: context.palette.textSecondary, fontSize: 11),
+        style: TextStyle(color: context.palette.textSecondary, fontSize: 11),
       ),
     ),
   );
@@ -320,7 +320,7 @@ class _TrackRow extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             child: Text(
               _label(track),
-              style:  TextStyle(
+              style: TextStyle(
                 color: context.palette.textSecondary,
                 fontSize: 12,
               ),
@@ -421,18 +421,18 @@ class _PreviewPanel extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-           Icon(
+          Icon(
             Icons.movie_creation_outlined,
             size: 64,
             color: context.palette.primaryBright,
           ),
           Text(
             title,
-            style:  TextStyle(color: context.palette.textPrimary, fontSize: 22),
+            style: TextStyle(color: context.palette.textPrimary, fontSize: 22),
           ),
           Text(
             'Preview · ${time.toStringAsFixed(1)} sec',
-            style:  TextStyle(color: context.palette.textSecondary),
+            style: TextStyle(color: context.palette.textSecondary),
           ),
           const SizedBox(height: 16),
           FilledButton.icon(

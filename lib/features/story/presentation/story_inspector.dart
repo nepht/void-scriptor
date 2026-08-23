@@ -14,15 +14,15 @@ class StoryInspector extends StatelessWidget {
         children: [
           Text(
             storyId,
-            style:  TextStyle(
+            style: TextStyle(
               color: context.palette.textPrimary,
               fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: 6),
-           Text('Story', style: TextStyle(color: context.palette.textMuted)),
+          Text('Story', style: TextStyle(color: context.palette.textMuted)),
           const Divider(),
-           Text(
+          Text(
             'Status\nDraft\n\nCanon\nDraft',
             style: TextStyle(color: context.palette.textSecondary, height: 1.5),
           ),

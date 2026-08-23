@@ -19,7 +19,7 @@ class VoidStatusBar extends StatelessWidget {
     return Container(
       height: 26,
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      decoration:  BoxDecoration(
+      decoration: BoxDecoration(
         color: context.palette.panel,
         border: Border(top: BorderSide(color: context.palette.borderSoft)),
       ),
@@ -32,7 +32,7 @@ class VoidStatusBar extends StatelessWidget {
           _Status(label: 'Redo', active: canRedo),
           _Status(label: 'Dirty', active: dirty),
           const Spacer(),
-           Text(
+          Text(
             'Void Scriptor 0.1 Alpha',
             style: TextStyle(color: context.palette.textMuted, fontSize: 10),
           ),
@@ -57,12 +57,14 @@ class _Status extends StatelessWidget {
           Icon(
             Icons.circle,
             size: 6,
-            color: active ? context.palette.success : context.palette.textDisabled,
+            color: active
+                ? context.palette.success
+                : context.palette.textDisabled,
           ),
           const SizedBox(width: 5),
           Text(
             label,
-            style:  TextStyle(fontSize: 10, color: context.palette.textMuted),
+            style: TextStyle(fontSize: 10, color: context.palette.textMuted),
           ),
         ],
       ),

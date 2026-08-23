@@ -61,11 +61,7 @@ void main() {
   test('Teleport updates presence timestamp', () {
     final registry = buildRegistry();
     var tick = DateTime(2026, 1, 1);
-    final presence = Presence(
-      avatarId: 'av1',
-      zoneId: 'z1',
-      now: () => tick,
-    );
+    final presence = Presence(avatarId: 'av1', zoneId: 'z1', now: () => tick);
     final teleport = Teleport(registry: registry);
     final before = presence.lastSeen;
 

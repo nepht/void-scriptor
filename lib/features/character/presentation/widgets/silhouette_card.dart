@@ -20,7 +20,7 @@ class SilhouetteCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: context.palette.borderSoft),
           ),
-          child:  Icon(
+          child: Icon(
             Icons.accessibility_new,
             size: 64,
             color: context.palette.textDisabled,

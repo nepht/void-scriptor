@@ -70,11 +70,7 @@ class BrandGallery extends StatelessWidget {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                BrandLogo(
-                  assetPath: b.asset,
-                  width: 36,
-                  height: 36,
-                ),
+                BrandLogo(assetPath: b.asset, width: 36, height: 36),
                 const SizedBox(height: 6),
                 Text(
                   b.label,

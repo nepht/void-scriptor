@@ -14,10 +14,14 @@ class WelcomeCard extends StatelessWidget {
     return VoidCard(
       child: Row(
         children: [
-           CircleAvatar(
+          CircleAvatar(
             radius: 28,
             backgroundColor: context.palette.primary,
-            child: const Icon(Icons.person_outline, color: Colors.white, size: 26),
+            child: const Icon(
+              Icons.person_outline,
+              color: Colors.white,
+              size: 26,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -36,7 +40,7 @@ class WelcomeCard extends StatelessWidget {
               ],
             ),
           ),
-           Icon(
+          Icon(
             Icons.auto_awesome_outlined,
             color: context.palette.primaryBright,
           ),

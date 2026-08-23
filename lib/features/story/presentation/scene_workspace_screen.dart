@@ -197,7 +197,7 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
           children: [
             Text(
               'Scene — ${widget.title}',
-              style:  TextStyle(
+              style: TextStyle(
                 color: context.palette.textPrimary,
                 fontSize: 21,
                 fontWeight: FontWeight.w700,
@@ -207,7 +207,7 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
               beats.isEmpty
                   ? 'Duration not set'
                   : '${total.toStringAsFixed(1)} sec of beats',
-              style:  TextStyle(color: context.palette.textMuted),
+              style: TextStyle(color: context.palette.textMuted),
             ),
             const SizedBox(height: 10),
             FilledButton.icon(
@@ -273,7 +273,7 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                     Text(
+                    Text(
                       'ACTION BEATS',
                       style: TextStyle(
                         color: context.palette.primaryBright,
@@ -284,7 +284,7 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
                     ),
                     const SizedBox(height: 10),
                     if (beats.isEmpty)
-                       Text(
+                      Text(
                         'No beats yet',
                         style: TextStyle(color: context.palette.textSecondary),
                       ),
@@ -330,7 +330,7 @@ class _Section extends StatelessWidget {
         children: [
           Text(
             title,
-            style:  TextStyle(
+            style: TextStyle(
               color: context.palette.primaryBright,
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -339,10 +339,7 @@ class _Section extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           DefaultTextStyle(
-            style:  TextStyle(
-              color: context.palette.textSecondary,
-              height: 1.6,
-            ),
+            style: TextStyle(color: context.palette.textSecondary, height: 1.6),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: children,

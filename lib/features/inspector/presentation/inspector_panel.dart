@@ -8,7 +8,7 @@ class InspectorPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     width: 310,
-    decoration:  BoxDecoration(
+    decoration: BoxDecoration(
       color: context.palette.panel,
       border: Border(left: BorderSide(color: context.palette.borderSoft)),
     ),
@@ -25,7 +25,7 @@ class InspectorPanel extends StatelessWidget {
 class _InspectorHeader extends StatelessWidget {
   const _InspectorHeader();
   @override
-  Widget build(BuildContext context) =>  SizedBox(
+  Widget build(BuildContext context) => SizedBox(
     height: 44,
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14),

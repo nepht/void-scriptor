@@ -26,7 +26,8 @@ void main() {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
-    container.read(creatorStudioProvider.notifier)
+    container
+        .read(creatorStudioProvider.notifier)
         .setSection(CreatorWorkspaceSection.portfolio);
 
     await tester.pumpWidget(
@@ -35,7 +36,7 @@ void main() {
         child: const MaterialApp(home: CreatorWorkspaceScreen()),
       ),
     );
-    await tester.pump(); 
+    await tester.pump();
 
     final cardFinder = find.ancestor(
       of: find.text('Portfolio'),
@@ -76,7 +77,7 @@ void main() {
     addTearDown(tester.view.reset);
     final container = ProviderContainer();
     addTearDown(container.dispose);
-    
+
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,

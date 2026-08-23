@@ -19,12 +19,12 @@ class StoryGroup extends StatelessWidget {
     initiallyExpanded: true,
     tilePadding: const EdgeInsets.symmetric(horizontal: 9),
     childrenPadding: const EdgeInsets.only(left: 28),
-    leading:  Icon(
+    leading: Icon(
       Icons.menu_book_outlined,
       size: 16,
       color: context.palette.textMuted,
     ),
-    title:  Text(
+    title: Text(
       'Story',
       style: TextStyle(color: context.palette.textSecondary, fontSize: 12),
     ),
@@ -40,7 +40,7 @@ class StoryGroup extends StatelessWidget {
                     minTileHeight: 30,
                     title: Text(
                       item.name,
-                      style:  TextStyle(
+                      style: TextStyle(
                         color: context.palette.textMuted,
                         fontSize: 11,
                       ),

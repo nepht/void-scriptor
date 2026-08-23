@@ -11,17 +11,17 @@ class SceneDurationWarning extends StatelessWidget {
     return Card(
       color: context.palette.warning.withValues(alpha: 0.15),
       child: ListTile(
-        leading:  Icon(
+        leading: Icon(
           Icons.warning_amber_outlined,
           color: context.palette.warning,
         ),
-        title:  Text(
+        title: Text(
           'Scene duration mismatch',
           style: TextStyle(color: context.palette.warning),
         ),
         subtitle: Text(
           'Scene: ${validation.sceneDurationSeconds!.toStringAsFixed(1)} sec · Beats: ${validation.totalBeatDuration.toStringAsFixed(1)} sec',
-          style:  TextStyle(color: context.palette.textSecondary),
+          style: TextStyle(color: context.palette.textSecondary),
         ),
       ),
     );

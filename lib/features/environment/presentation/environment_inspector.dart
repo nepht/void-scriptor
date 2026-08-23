@@ -34,18 +34,18 @@ class EnvironmentInspector extends ConsumerWidget {
           children: [
             Text(
               model ?? environmentId,
-              style:  TextStyle(
+              style: TextStyle(
                 color: context.palette.textPrimary,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
             ),
-             Text(
+            Text(
               'Environment',
               style: TextStyle(color: context.palette.textMuted),
             ),
             const SizedBox(height: 20),
-             Text(
+            Text(
               'SCENE CONTEXT',
               style: TextStyle(
                 color: context.palette.primaryBright,
@@ -54,7 +54,7 @@ class EnvironmentInspector extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 10),
-             Text(
+            Text(
               'Lighting, weather, zones, continuity, and physics are stored in the project database.',
               style: TextStyle(color: context.palette.textSecondary),
             ),

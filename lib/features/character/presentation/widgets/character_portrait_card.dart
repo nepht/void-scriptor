@@ -22,7 +22,7 @@ class CharacterPortraitCard extends StatelessWidget {
               border: Border.all(color: context.palette.borderSoft),
             ),
             child: imagePath == null
-                ?  Center(
+                ? Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -32,7 +32,10 @@ class CharacterPortraitCard extends StatelessWidget {
                           color: context.palette.textMuted,
                         ),
                         const SizedBox(height: 10),
-                        const Text('No portrait', style: VoidTypography.caption),
+                        const Text(
+                          'No portrait',
+                          style: VoidTypography.caption,
+                        ),
                       ],
                     ),
                   )

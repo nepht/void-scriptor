@@ -110,7 +110,7 @@ class _ProjectItem extends ConsumerWidget {
                 color: context.palette.surfaceElevated,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child:  Icon(
+              child: Icon(
                 Icons.folder_outlined,
                 color: context.palette.textMuted,
               ),
@@ -133,7 +133,7 @@ class _ProjectItem extends ConsumerWidget {
                 ],
               ),
             ),
-             Icon(Icons.chevron_right, color: context.palette.textMuted),
+            Icon(Icons.chevron_right, color: context.palette.textMuted),
           ],
         ),
       ),

@@ -12,13 +12,13 @@ class CharacterHeader extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     height: 58,
     padding: const EdgeInsets.symmetric(horizontal: 18),
-    decoration:  BoxDecoration(
+    decoration: BoxDecoration(
       color: context.palette.panelSecondary,
       border: Border(bottom: BorderSide(color: context.palette.borderSoft)),
     ),
     child: Row(
       children: [
-         Icon(
+        Icon(
           Icons.person_outline,
           size: 18,
           color: context.palette.primaryBright,

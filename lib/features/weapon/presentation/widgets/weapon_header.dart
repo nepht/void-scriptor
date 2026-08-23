@@ -15,13 +15,13 @@ class WeaponHeader extends StatelessWidget {
       return Container(
         constraints: const BoxConstraints(minHeight: 64),
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-        decoration:  BoxDecoration(
+        decoration: BoxDecoration(
           color: context.palette.panelSecondary,
           border: Border(bottom: BorderSide(color: context.palette.borderSoft)),
         ),
         child: Row(
           children: [
-             Icon(
+            Icon(
               Icons.auto_fix_high_outlined,
               color: context.palette.primaryBright,
             ),
@@ -35,13 +35,13 @@ class WeaponHeader extends StatelessWidget {
                     name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style:  TextStyle(color: context.palette.textPrimary),
+                    style: TextStyle(color: context.palette.textPrimary),
                   ),
                   Text(
                     type,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style:  TextStyle(color: context.palette.textMuted),
+                    style: TextStyle(color: context.palette.textMuted),
                   ),
                 ],
               ),

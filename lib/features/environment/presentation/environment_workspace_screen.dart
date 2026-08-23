@@ -99,7 +99,7 @@ class _EnvironmentHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
     children: [
-       Icon(Icons.landscape_outlined, color: context.palette.primaryBright),
+      Icon(Icons.landscape_outlined, color: context.palette.primaryBright),
       const SizedBox(width: 10),
       Expanded(
         child: Column(
@@ -107,14 +107,14 @@ class _EnvironmentHeader extends StatelessWidget {
           children: [
             Text(
               name,
-              style:  TextStyle(
+              style: TextStyle(
                 color: context.palette.textPrimary,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
               overflow: TextOverflow.ellipsis,
             ),
-            Text(type, style:  TextStyle(color: context.palette.textMuted)),
+            Text(type, style: TextStyle(color: context.palette.textMuted)),
           ],
         ),
       ),
@@ -130,7 +130,7 @@ class _EnvironmentHeader extends StatelessWidget {
 class _EnvironmentPreviewCard extends StatelessWidget {
   const _EnvironmentPreviewCard();
   @override
-  Widget build(BuildContext context) =>  _EnvironmentCard(
+  Widget build(BuildContext context) => _EnvironmentCard(
     title: 'LOCATION PREVIEW',
     child: AspectRatio(
       aspectRatio: 16 / 9,
@@ -235,7 +235,7 @@ class _EnvironmentCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style:  TextStyle(
+            style: TextStyle(
               color: context.palette.primaryBright,
               fontSize: 12,
               fontWeight: FontWeight.w700,
@@ -263,13 +263,13 @@ class _PropertyRow extends StatelessWidget {
           width: 105,
           child: Text(
             label,
-            style:  TextStyle(color: context.palette.textMuted),
+            style: TextStyle(color: context.palette.textMuted),
           ),
         ),
         Expanded(
           child: Text(
             value,
-            style:  TextStyle(color: context.palette.textPrimary),
+            style: TextStyle(color: context.palette.textPrimary),
             overflow: TextOverflow.ellipsis,
           ),
         ),

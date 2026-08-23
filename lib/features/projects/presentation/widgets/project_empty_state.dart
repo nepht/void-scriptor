@@ -24,7 +24,7 @@ class ProjectEmptyState extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: context.palette.borderSoft),
               ),
-              child:  Icon(
+              child: Icon(
                 Icons.folder_open_outlined,
                 size: 32,
                 color: context.palette.primaryBright,

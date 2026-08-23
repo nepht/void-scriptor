@@ -30,11 +30,7 @@ class ReferencesCard extends StatelessWidget {
                   ),
                 ),
               ),
-              icon:  Icon(
-                Icons.add,
-                size: 18,
-                color: context.palette.textMuted,
-              ),
+              icon: Icon(Icons.add, size: 18, color: context.palette.textMuted),
             ),
           ],
         ),

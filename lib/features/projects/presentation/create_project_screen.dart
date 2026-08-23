@@ -104,7 +104,9 @@ class _CreateProjectScreenState extends ConsumerState<CreateProjectScreen> {
                   Row(
                     children: [
                       TextButton(
-                        onPressed: _creating ? null : () => context.go(AppRoutes.projects),
+                        onPressed: _creating
+                            ? null
+                            : () => context.go(AppRoutes.projects),
                         child: const Text('Cancel'),
                       ),
                       const Spacer(),

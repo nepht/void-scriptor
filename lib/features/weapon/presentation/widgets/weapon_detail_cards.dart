@@ -16,7 +16,7 @@ class WeaponTechnicalViewCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: context.palette.borderSoft),
         ),
-        child:  Center(
+        child: Center(
           child: Icon(
             Icons.auto_fix_high_outlined,
             size: 58,
@@ -142,7 +142,7 @@ class WeaponVariantsCard extends StatelessWidget {
 class WeaponReferencesCard extends StatelessWidget {
   const WeaponReferencesCard({super.key});
   @override
-  Widget build(BuildContext context) =>  _WeaponCard(
+  Widget build(BuildContext context) => _WeaponCard(
     title: 'References',
     child: Text(
       'Front, Side, Back, Top, Close-up, Blade, Handle, Core, Effects',
@@ -165,7 +165,7 @@ class _WeaponCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style:  TextStyle(color: context.palette.textPrimary, fontSize: 16),
+            style: TextStyle(color: context.palette.textPrimary, fontSize: 16),
           ),
           const SizedBox(height: 14),
           child,
@@ -188,13 +188,13 @@ class _PropertyRow extends StatelessWidget {
           width: 120,
           child: Text(
             label,
-            style:  TextStyle(color: context.palette.textMuted),
+            style: TextStyle(color: context.palette.textMuted),
           ),
         ),
         Expanded(
           child: Text(
             value,
-            style:  TextStyle(color: context.palette.textPrimary),
+            style: TextStyle(color: context.palette.textPrimary),
           ),
         ),
       ],
@@ -209,6 +209,6 @@ class _Chip extends StatelessWidget {
   Widget build(BuildContext context) => Chip(
     label: Text(label),
     backgroundColor: context.palette.surfaceElevated,
-    labelStyle:  TextStyle(color: context.palette.textPrimary),
+    labelStyle: TextStyle(color: context.palette.textPrimary),
   );
 }

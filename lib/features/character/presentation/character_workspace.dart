@@ -102,7 +102,7 @@ class _EmptyCharacterState extends StatelessWidget {
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-         Icon(
+        Icon(
           Icons.person_add_alt_1_outlined,
           size: 42,
           color: context.palette.textMuted,
@@ -144,7 +144,7 @@ class _CharacterSheet extends StatelessWidget {
               color: context.palette.surfaceElevated,
               borderRadius: BorderRadius.circular(12),
             ),
-            child:  Icon(
+            child: Icon(
               Icons.person_outline,
               size: 72,
               color: context.palette.textMuted,

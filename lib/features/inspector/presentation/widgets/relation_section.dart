@@ -59,10 +59,13 @@ class RelationSection extends ConsumerWidget {
       children: [
         Row(
           children: [
-             Expanded(
+            Expanded(
               child: Text(
                 'Relations',
-                style: TextStyle(color: context.palette.primaryBright, fontSize: 13),
+                style: TextStyle(
+                  color: context.palette.primaryBright,
+                  fontSize: 13,
+                ),
               ),
             ),
             TextButton.icon(
@@ -74,16 +77,16 @@ class RelationSection extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         relations.when(
-          loading: () =>  Text(
+          loading: () => Text(
             'Loading...',
             style: TextStyle(color: context.palette.textMuted),
           ),
           error: (error, _) => Text(
             '$error',
-            style:  TextStyle(color: context.palette.textMuted),
+            style: TextStyle(color: context.palette.textMuted),
           ),
           data: (items) => items.isEmpty
-              ?  Text(
+              ? Text(
                   'No relations yet',
                   style: TextStyle(color: context.palette.textMuted),
                 )
@@ -102,11 +105,11 @@ class RelationSection extends ConsumerWidget {
                           ),
                           title: Text(
                             item.label,
-                            style:  TextStyle(color: context.palette.textMuted),
+                            style: TextStyle(color: context.palette.textMuted),
                           ),
                           subtitle: Text(
                             item.assetName,
-                            style:  TextStyle(
+                            style: TextStyle(
                               color: context.palette.textPrimary,
                             ),
                           ),

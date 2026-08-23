@@ -92,117 +92,117 @@ class ExplorerPanel extends ConsumerWidget {
 
     return Container(
       width: 245,
-      decoration:  BoxDecoration(
+      decoration: BoxDecoration(
         color: context.palette.panel,
         border: Border(right: BorderSide(color: context.palette.borderSoft)),
       ),
       child: Material(
         color: Colors.transparent,
         child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
-            child: Text(
-              'PROJECT EXPLORER',
-              style: TextStyle(
-                color: context.palette.textMuted,
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1.1,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
+              child: Text(
+                'PROJECT EXPLORER',
+                style: TextStyle(
+                  color: context.palette.textMuted,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.1,
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              children: [
-                const _ExplorerItem(
-                  icon: Icons.dashboard_outlined,
-                  label: 'Dashboard',
-                ),
-                const _ExplorerItem(
-                  icon: Icons.folder_outlined,
-                  label: 'Projects',
-                ),
-                _CharacterGroup(
-                  characters: characters,
-                  selectedId: ref.watch(selectionProvider)?.assetId,
-                  onSelected: (character) => ref
-                      .read(selectionProvider.notifier)
-                      .select(
-                        SelectionModel(
-                          assetId: character.assetId,
-                          assetType: AssetType.character,
-                          projectId: character.projectId,
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                children: [
+                  const _ExplorerItem(
+                    icon: Icons.dashboard_outlined,
+                    label: 'Dashboard',
+                  ),
+                  const _ExplorerItem(
+                    icon: Icons.folder_outlined,
+                    label: 'Projects',
+                  ),
+                  _CharacterGroup(
+                    characters: characters,
+                    selectedId: ref.watch(selectionProvider)?.assetId,
+                    onSelected: (character) => ref
+                        .read(selectionProvider.notifier)
+                        .select(
+                          SelectionModel(
+                            assetId: character.assetId,
+                            assetType: AssetType.character,
+                            projectId: character.projectId,
+                          ),
                         ),
-                      ),
-                ),
-                _WardrobeGroup(
-                  wardrobes: wardrobes,
-                  selectedId: ref.watch(selectionProvider)?.assetId,
-                  onSelected: (wardrobe) => ref
-                      .read(selectionProvider.notifier)
-                      .select(
-                        SelectionModel(
-                          assetId: wardrobe.assetId,
-                          assetType: AssetType.wardrobe,
-                          projectId: wardrobe.projectId,
+                  ),
+                  _WardrobeGroup(
+                    wardrobes: wardrobes,
+                    selectedId: ref.watch(selectionProvider)?.assetId,
+                    onSelected: (wardrobe) => ref
+                        .read(selectionProvider.notifier)
+                        .select(
+                          SelectionModel(
+                            assetId: wardrobe.assetId,
+                            assetType: AssetType.wardrobe,
+                            projectId: wardrobe.projectId,
+                          ),
                         ),
-                      ),
-                ),
-                _WeaponGroup(
-                  weapons: weapons,
-                  selectedId: ref.watch(selectionProvider)?.assetId,
-                  onSelected: (weapon) => ref
-                      .read(selectionProvider.notifier)
-                      .select(
-                        SelectionModel(
-                          assetId: weapon.assetId,
-                          assetType: AssetType.weapon,
-                          projectId: weapon.projectId,
+                  ),
+                  _WeaponGroup(
+                    weapons: weapons,
+                    selectedId: ref.watch(selectionProvider)?.assetId,
+                    onSelected: (weapon) => ref
+                        .read(selectionProvider.notifier)
+                        .select(
+                          SelectionModel(
+                            assetId: weapon.assetId,
+                            assetType: AssetType.weapon,
+                            projectId: weapon.projectId,
+                          ),
                         ),
-                      ),
-                ),
-                EnvironmentGroup(
-                  environments: environments,
-                  selectedId: ref.watch(selectionProvider)?.assetId,
-                  onSelected: (environment) => ref
-                      .read(selectionProvider.notifier)
-                      .select(
-                        SelectionModel(
-                          assetId: environment.assetId,
-                          assetType: AssetType.environment,
-                          projectId: environment.projectId,
+                  ),
+                  EnvironmentGroup(
+                    environments: environments,
+                    selectedId: ref.watch(selectionProvider)?.assetId,
+                    onSelected: (environment) => ref
+                        .read(selectionProvider.notifier)
+                        .select(
+                          SelectionModel(
+                            assetId: environment.assetId,
+                            assetType: AssetType.environment,
+                            projectId: environment.projectId,
+                          ),
                         ),
-                      ),
-                ),
-                StoryGroup(
-                  stories: stories,
-                  selectedId: ref.watch(selectionProvider)?.assetId,
-                  onSelected: (story) => ref
-                      .read(selectionProvider.notifier)
-                      .select(
-                        SelectionModel(
-                          assetId: story.id,
-                          assetType: AssetType.story,
-                          projectId: story.projectId,
+                  ),
+                  StoryGroup(
+                    stories: stories,
+                    selectedId: ref.watch(selectionProvider)?.assetId,
+                    onSelected: (story) => ref
+                        .read(selectionProvider.notifier)
+                        .select(
+                          SelectionModel(
+                            assetId: story.id,
+                            assetType: AssetType.story,
+                            projectId: story.projectId,
+                          ),
                         ),
-                      ),
-                ),
-                const _ExplorerItem(
-                  icon: Icons.timeline_outlined,
-                  label: 'Timeline',
-                ),
-                const _ExplorerItem(
-                  icon: Icons.auto_awesome_outlined,
-                  label: 'AI Studio',
-                ),
-              ],
+                  ),
+                  const _ExplorerItem(
+                    icon: Icons.timeline_outlined,
+                    label: 'Timeline',
+                  ),
+                  const _ExplorerItem(
+                    icon: Icons.auto_awesome_outlined,
+                    label: 'AI Studio',
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
@@ -224,7 +224,7 @@ class _ExplorerItem extends StatelessWidget {
           const SizedBox(width: 9),
           Text(
             label,
-            style:  TextStyle(
+            style: TextStyle(
               color: context.palette.textSecondary,
               fontSize: 12,
             ),
@@ -249,12 +249,12 @@ class _CharacterGroup extends StatelessWidget {
     initiallyExpanded: true,
     tilePadding: const EdgeInsets.symmetric(horizontal: 9),
     childrenPadding: const EdgeInsets.only(left: 28),
-    leading:  Icon(
+    leading: Icon(
       Icons.people_outline,
       size: 16,
       color: context.palette.textMuted,
     ),
-    title:  Text(
+    title: Text(
       'Characters',
       style: TextStyle(color: context.palette.textSecondary, fontSize: 12),
     ),
@@ -270,7 +270,7 @@ class _CharacterGroup extends StatelessWidget {
                     minTileHeight: 30,
                     title: Text(
                       item.displayName,
-                      style:  TextStyle(
+                      style: TextStyle(
                         color: context.palette.textMuted,
                         fontSize: 11,
                       ),
@@ -303,12 +303,12 @@ class _WeaponGroup extends StatelessWidget {
     initiallyExpanded: true,
     tilePadding: const EdgeInsets.symmetric(horizontal: 9),
     childrenPadding: const EdgeInsets.only(left: 28),
-    leading:  Icon(
+    leading: Icon(
       Icons.auto_fix_high_outlined,
       size: 16,
       color: context.palette.textMuted,
     ),
-    title:  Text(
+    title: Text(
       'Weapons',
       style: TextStyle(color: context.palette.textSecondary, fontSize: 12),
     ),
@@ -324,7 +324,7 @@ class _WeaponGroup extends StatelessWidget {
                     minTileHeight: 30,
                     title: Text(
                       item.name,
-                      style:  TextStyle(
+                      style: TextStyle(
                         color: context.palette.textMuted,
                         fontSize: 11,
                       ),
@@ -355,12 +355,12 @@ class _WardrobeGroup extends StatelessWidget {
     initiallyExpanded: true,
     tilePadding: const EdgeInsets.symmetric(horizontal: 9),
     childrenPadding: const EdgeInsets.only(left: 28),
-    leading:  Icon(
+    leading: Icon(
       Icons.checkroom_outlined,
       size: 16,
       color: context.palette.textMuted,
     ),
-    title:  Text(
+    title: Text(
       'Wardrobe',
       style: TextStyle(color: context.palette.textSecondary, fontSize: 12),
     ),
@@ -376,7 +376,7 @@ class _WardrobeGroup extends StatelessWidget {
                     minTileHeight: 30,
                     title: Text(
                       item.name,
-                      style:  TextStyle(
+                      style: TextStyle(
                         color: context.palette.textMuted,
                         fontSize: 11,
                       ),

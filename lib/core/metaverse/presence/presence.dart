@@ -6,8 +6,8 @@ class Presence {
     required this.avatarId,
     required this.zoneId,
     DateTime Function()? now,
-  })  : _now = now ?? DateTime.now,
-        _lastSeen = (now ?? DateTime.now)();
+  }) : _now = now ?? DateTime.now,
+       _lastSeen = (now ?? DateTime.now)();
 
   final String avatarId;
   String zoneId;

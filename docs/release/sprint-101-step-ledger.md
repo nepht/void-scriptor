@@ -25,6 +25,13 @@ tanggal 2026-08-23. Otoritas versi/tag tetap D6 (release-contract-v1.md).
 - Proses baru: `docs/release/hotfix-runbook-v1.0.1.md`,
   `.github/ISSUE_TEMPLATE/{bug_report,crash_report}.yml`, `config.yml`.
 - Refs lokal (101.1): `release/1.0`, `hotfix/1.0.1` @ `334022a`.
+- Uji hidup Linux (WSLg): binary debug `build/linux/x64/debug/bundle/void_scriptor`
+  diluncurkan langsung; proses stabil, log hanya warning rendering software
+  WSLg (MESA/EGL/ZINK), tanpa exception. Artefak bootstrap produksi di disk:
+  `~/.local/share/com.voidscriptor.void_scriptor/VoidScriptor/state/startup-decision.json`
+  (`mode:normal`, `attempt:1`) dan `state/startup.json`
+  (`consecutiveFailures:0` setelah frame pertama); `diagnostics/crash`
+  tidak tercipta (nol artefak crash pada boot sehat).
 
 ## Ledger 26 langkah
 

@@ -1,0 +1,99 @@
+name: Crash Report
+description: Aplikasi berhenti mendadak, gagal startup, atau error fatal (Sprint 101 intake).
+labels: ["bug", "crash"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Crash runtime tertangkap otomatis oleh diagnostics aplikasi dan
+        disimpan sebagai JSON per kejadian di
+        `<support>/VoidScriptor/diagnostics/crash/`. Bila memungkinkan,
+        lampirkan isi berkas tersebut — field `signature` dipakai untuk
+        mengelompokkan crash identik.
+  - type: input
+    id: version
+    attributes:
+      label: Versi aplikasi (version)
+      placeholder: "mis. 1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: build_id
+    attributes:
+      label: Build ID
+    validations:
+      required: false
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Windows
+        - Linux
+        - macOS
+        - Web
+        - Android
+        - iOS
+    validations:
+      required: true
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: Arsitektur
+      options:
+        - x64
+        - arm64
+        - tidak tahu
+    validations:
+      required: true
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Kapan crash terjadi?
+      options:
+        - Startup (aplikasi tidak berhasil terbuka)
+        - Saat membuka/membuat proyek
+        - Saat menyimpan
+        - Saat migrasi format/database
+        - Saat pemakaian normal
+    validations:
+      required: true
+  - type: textarea
+    id: crash_signature
+    attributes:
+      label: Signature crash (dari berkas diagnostics, bila ada)
+      placeholder: 'mis. "Bad state: cache corrupted"'
+    validations:
+      required: false
+  - type: textarea
+    id: reproduction_steps
+    attributes:
+      label: Langkah reproduksi
+    validations:
+      required: true
+  - type: textarea
+    id: expected_result
+    attributes:
+      label: Hasil yang diharapkan
+      placeholder: Aplikasi tetap berjalan / pesan error ramah.
+    validations:
+      required: true
+  - type: textarea
+    id: actual_result
+    attributes:
+      label: Hasil aktual
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Berkas diagnostics / log (tempel isi JSON crash di sini)
+      render: shell
+    validations:
+      required: false
+  - type: textarea
+    id: attachments
+    attributes:
+      label: Lampiran
+    validations:
+      required: false

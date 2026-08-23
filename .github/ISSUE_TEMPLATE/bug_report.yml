@@ -1,0 +1,91 @@
+name: Bug Report
+description: Laporkan perilaku salah pada Void Scriptor (Sprint 101 intake).
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Terima kasih melaporkan. Laporan ini masuk alur Sprint 101:
+        diklasifikasikan P0–P3 (risiko data hilang = P0 = release blocker).
+  - type: input
+    id: version
+    attributes:
+      label: Versi aplikasi (version)
+      description: Dari Settings/About atau output aplikasi.
+      placeholder: "mis. 1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: build_id
+    attributes:
+      label: Build ID
+      description: Jika ada (build CI atau timestamp build lokal).
+    validations:
+      required: false
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Windows
+        - Linux
+        - macOS
+        - Web
+        - Android
+        - iOS
+    validations:
+      required: true
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: Arsitektur
+      options:
+        - x64
+        - arm64
+        - tidak tahu
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction_steps
+    attributes:
+      label: Langkah reproduksi
+      description: Minimal satu jalur yang bisa diulang orang lain.
+      placeholder: |
+        1. Buka proyek X
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected_result
+    attributes:
+      label: Hasil yang diharapkan
+    validations:
+      required: true
+  - type: textarea
+    id: actual_result
+    attributes:
+      label: Hasil aktual
+    validations:
+      required: true
+  - type: checkboxes
+    id: data_integrity_issue
+    attributes:
+      label: Kategori tambahan
+      options:
+        - label: Isu ini berpotensi kehilangan/rusaknya data proyek (data-integrity issue → default P0)
+        - label: Isu instalasi (installation issue)
+        - label: Isu kompatibilitas (compatibility issue)
+        - label: Melampirkan diagnostic bundle
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log / pesan error
+      render: shell
+    validations:
+      required: false
+  - type: textarea
+    id: attachments
+    attributes:
+      label: Lampiran (screenshot/video)
+    validations:
+      required: false

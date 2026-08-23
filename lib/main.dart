@@ -20,15 +20,21 @@ Future<void> main() async {
   // renders IS a healthy boot of the recovery path.
   runApp(
     ProviderScope(
-      child: BootstrapGate(
-        outcome: handle.lastOutcome,
-        onResetConfig: () {
-          // configuration_reset (101.9): wipe the persisted streak and
-          // exit cleanly so the next launch boots normally.
-          handle.store.reset();
-          exit(0);
-        },
-        child: const VoidScriptorApp(),
+      // BootstrapGate must always have the minimum Material environment.
+      // RecoveryShell can be the first rendered surface, before the full
+      // VoidScriptorApp (and its own app shell) is safe to construct.
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: BootstrapGate(
+          outcome: handle.lastOutcome,
+          onResetConfig: () {
+            // configuration_reset (101.9): wipe the persisted streak and
+            // exit cleanly so the next launch boots normally.
+            handle.store.reset();
+            exit(0);
+          },
+          child: const VoidScriptorApp(),
+        ),
       ),
     ),
   );

@@ -32,6 +32,17 @@ tanggal 2026-08-23. Otoritas versi/tag tetap D6 (release-contract-v1.md).
   (`mode:normal`, `attempt:1`) dan `state/startup.json`
   (`consecutiveFailures:0` setelah frame pertama); `diagnostics/crash`
   tidak tercipta (nol artefak crash pada boot sehat).
+- Recovery UI (101.9): `lib/app/bootstrap/bootstrap_gate.dart`
+  (`RecoveryShell` + `BootstrapGate`, RED→GREEN, 10 test widget);
+  `lib/main.dart` kini mematuhi `lastOutcome.mode` — boot ter-eskalasi
+  menampilkan shell dependensi-nol dengan Try again / Reset configuration;
+  reset = `StartupFailureStore.reset()` + exit bersih (configuration_reset).
+  Focused bootstrap suite: **39/39 passed**; analyze bersih.
+- Security review (101.16): penerapan pertama checklist runbook atas diff
+  riil `origin/master...HEAD` (+1414/−1) — hasil per butir di
+  `docs/release/sprint-101-security-review.md`; tanpa pelemahan keamanan,
+  satu utang dicatat (penyaringan konten cerita dalam artefak diagnostik,
+  aman oleh kontainmen lokal-saja).
 
 ## Ledger 26 langkah
 
@@ -45,14 +56,14 @@ tanggal 2026-08-23. Otoritas versi/tag tetap D6 (release-contract-v1.md).
 | 101.6 | Reproduction Record | VERIFIED | Seluruh `required_fields` ada sebagai field template (issue_id otomatis dari nomor issue). |
 | 101.7 | Data-Loss Gate | VERIFIED | Aturan tertulis: risiko data = default P0 = release blocker (runbook §Data-Loss Gate; konsisten DoD 101.26). |
 | 101.8 | Crash Analysis | VERIFIED | `CrashSignature.of()` mengelompokkan per tipe+baris pertama pesan (3 test); prosedur triage 6 dimensi di runbook. |
-| 101.9 | Startup Recovery | PARTIAL | Mesin keputusan normal→safe→recovery + counter persisten + reset TERUJI end-to-end (`prepareBootstrap` 2-fase). Mode UI eksplisit (layar safe/diagnostic/reset) BELUM dibangun — keputusan mode saat ini hanya terekam sebagai artefak. |
+| 101.9 | Startup Recovery | VERIFIED* | Mesin keputusan normal→safe→recovery TERUJI end-to-end dan kini DIWAJIBKAN saat boot: `BootstrapGate` men-swap aplikasi penuh dengan `RecoveryShell` dependensi-nol untuk mode safe/recovery; Try again tersedia; Reset configuration menjalankan configuration_reset nyata (`store.reset()` + exit bersih, wiring di `main.dart`). 10 test widget baru (total bootstrap 39/39). *Mode diagnostic hadir sebagai petunjuk lokasi artefak crash di layar (`suggestDiagnostics`) + artefak JSON siap dilampirkan ke laporan; layar penjelajah diagnostik khusus tidak dibangun (utang kecil yang eksplisit). |
 | 101.10 | Project Integrity | VERIFIED (evidence ada) | Cakupan test hidup: open/close & lifecycle `test/features/project_resilience/project_session_lifecycle_test.dart`, save/autosave `save_coordinator_test.dart`, recovery `project_recovery_services_test.dart`, backup `backup_retention_service_test.dart`, health `lib/core/persistence/project_health_service.dart` + `test/core/persistence/project_persistence_test.dart` (atomic replacement). |
 | 101.11 | Migration Compatibility | PARTIAL | Kontrak live: format schema 16 (`VoidProjectFormat.currentSchema`), DB 53 (`ProjectDatabase.currentSchemaVersion`), plugin API semver berpasangan. Angka `=1` di spec dibaca sebagai kontrak kompatibilitas v1, bukan nilai literal live; tidak ada breaking change di slice ini. Rekonsiliasi angka menunggu putusan arsitek. |
 | 101.12 | Installer Validation | BLOCKED | Installer tidak ada; eksplisit DI LUAR cakupan v1.0.0 (release-contract-v1.md). |
 | 101.13 | Update Validation | BLOCKED | Update service tidak ada; eksplisit DI LUAR cakupan v1. |
 | 101.14 | Rollback Validation | BLOCKED | Bergantung jalur update/installer yang tidak ada. |
 | 101.15 | Performance Comparison | DEFERRED | Tidak ada artefak baseline v1.0.0 terukur; perbandingan tanpa baseline = karangan. Profil benchmark dev-only ada (Sprint 26) untuk dipakai nanti. |
-| 101.16 | Security Review | PARTIAL | Checklist wajib per-hotfix ditetapkan (runbook §Review keamanan); penerapan pertama menyusul pada diff hotfix nyata. Disiplin secret sudah berjalan lintas sesi. |
+| 101.16 | Security Review | VERIFIED | Checklist runbook diterapkan pertama kali pada diff riil sprint (`origin/master...HEAD`, +1414/−1): tanpa pelemahan path/input, tanpa secret baru (satu-satunya hit regex = fixture uji), izin platform & jalur update N/A struktural, perilaku lokal-saja terjaga oleh guard otomatis. Bukti per butir: `docs/release/sprint-101-security-review.md`; satu utang eksplisit (penyaringan konten cerita dalam artefak diagnostik). |
 | 101.17 | Privacy Regression | VERIFIED | Aplikasi lokal-saja kini dijaga test otomatis: 8 test membuktikan artefak hanya lahir di direktori diagnostics yang diinjeksikan, skema JSON tanpa field telemetri, tanpa marker endpoint/provider remote, layer bootstrap bebas dependensi jaringan, secret teredaksi `[REDACTED]` sebelum ke disk, dan `purge()` tersedia untuk penghapusan data (`privacy_regression_test.dart`). Tanpa transfer keluar by design. |
 | 101.18 | Accessibility Regression | PENDING | Baseline a11y v1 belum pernah dibangun (tidak ada yang bisa diregresikan); dicatat sebagai utang, bukan klaim. |
 | 101.19 | Localization Regression | PENDING | Infrastruktur l10n (ARB/AppLocalizations) tidak ada di repo — diverifikasi kosong. Locale en/id menjadi target infrastruktur mendatang. |
@@ -66,9 +77,9 @@ tanggal 2026-08-23. Otoritas versi/tag tetap D6 (release-contract-v1.md).
 
 ## Rekap
 
-VERIFIED: 101.1*, 101.4–101.8, 101.10, 101.17, 101.20, 101.21 (10)
-PARTIAL: 101.2, 101.3, 101.9, 101.11, 101.16 (5)
-BLOCKED: 101.12–101.14, 101.22–101.25 (8; 3 di antaranya otoritas D6)
+VERIFIED: 101.1*, 101.4–101.10, 101.16, 101.17, 101.20, 101.21 (12)
+PARTIAL: 101.2, 101.3, 101.11 (3)
+BLOCKED: 101.12–101.14, 101.22–101.25 (7; 3 otoritas D6)
 DEFERRED: 101.15 (1)
 PENDING: 101.18, 101.19, 101.26 (3)
 

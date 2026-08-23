@@ -5,8 +5,11 @@ Sumber kanonik: `sprint_102.json` (arsip resmi 2026-08-22, direktori
 `v1.0.1` stable (tag object `68fb79a`, commit `42b30c0`). Sprint 101
 COMPLETE per `sprint-101-step-ledger.md` → start condition terpenuhi.
 
-Status: DRAFT untuk Planning Approval Gate (102.29). Pemilik keputusan
-akhir: Choirudin (otoritas D6).
+Status: **APPROVED** — Planning Approval Gate (102.29) disetujui Choirudin
+pada 2026-08-24: "setuju semua kedepannya tanpa revisi, jalankan".
+Scope lock final; izin bump `1.1.0-dev` diberikan. Freeze date kalender
+tidak ditetapkan dalam approval ini dan tetap menunggu pernyataan
+eksplisit D6. Pemilik keputusan rilis akhir: Choirudin (otoritas D6).
 
 ## Bukti intake (dasar seluruh scope)
 
@@ -430,8 +433,8 @@ final + penetapan freeze date + izin bump `1.1.0-dev`.
 
 DoD checklist (dinilai saat closure):
 
-- [ ] release_objective_approved (menunggu 102.29)
-- [ ] scope_locked (draft siap)
+- [x] release_objective_approved (2026-08-24, Choirudin)
+- [x] scope_locked (draft siap)
 - [ ] compatibility_contract_recorded (§102.6)
 - [ ] risk_register_complete (§102.11)
 - [ ] architecture_and_data_reviews_complete (§102.16, §102.17)

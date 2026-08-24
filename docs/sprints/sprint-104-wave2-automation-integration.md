@@ -38,10 +38,10 @@ Start condition Sprint 103 COMPLETE + alpha lolos validasi internal → terpenuh
 | 104.27 | Workflow Saga | VERIFIED | `WorkflowSaga`: commit record per langkah, kompensasi reverse-order, TANPA klaim transaksi global (eksplisit di kontrak); 3 test |
 | 104.28 | Compensation Actions | VERIFIED | kompensasi eksplisit per registrasi; langkah tanpa compensator → CompensationUnsupported TERLIHAT (bukan skip senyap); kegagalan kompensasi ter-audit; (tercakup test saga) |
 | 104.29 | Automation Observability | VERIFIED | `AutomationMetrics`: 8 sinyal kanonik (trigger/run/success_rate/failure_rate/duration/approval_wait/retry/resource_usage) identifier-only, snapshot aman log; 1 test |
-| 104.30 | Automation Center UI | PENDING | — |
-| 104.31 | Rule Editor UI | PENDING | — |
-| 104.32 | Automation Templates | PENDING | — |
-| 104.33 | Import & Export | PENDING | — |
+| 104.30 | Automation Center UI | VERIFIED | `automation_center_screen.dart`: daftar rule + panel metrik identifier-only, responsif 1280px & 390px tanpa overflow (`takeException` null); widget test |
+| 104.31 | Rule Editor UI | VERIFIED | `RuleEditorScreen`: save hanya muncul saat draf lengkap & validasi bersih (gerbang 104.7); save menghasilkan rule teruji; widget test |
+| 104.32 | Automation Templates | VERIFIED | `AutomationTemplatesScreen`: 3 template kurasi (export/backup/thumbnails), instantiate menghasilkan rule siap pakai; widget test |
+| 104.33 | Import & Export | VERIFIED | `exportRules`/`importRules`: JSON round-trip identitas rule terjaga; payload ber-kunci secret-shaped DITOLAK fail-closed; 2 unit test |
 | 104.34 | Beta Validation & Artifact | PENDING | — |
 | 104.35 | Sprint Closure | PENDING | — |
 

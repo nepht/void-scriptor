@@ -52,8 +52,8 @@ change, proyek lama wajib tetap terbuka.
 | 103.28 | Performance & Resource Limits | VERIFIED | `workflow_limits.dart`: batas concurrent executions (default 4, ≤8), max steps/workflow 64, cap checkpoint; slot tracker acquire/release; 3 test |
 | 103.29 | Automated Test Matrix | VERIFIED | Full suite lokal: **+1617 All tests passed** (`vs_full_suite_103.log`, FULLTEST_EXIT=0) — unit workflow 65 + widget UI 6 + seluruh regresi repo; analyze No issues |
 | 103.30 | Documentation & Examples | VERIFIED | `docs/workflows/README.md` (peta modul, alur minimal, batasan desain) + `tool/workflow_example.dart` dieksekusi nyata: `succeeded steps=[apply, collect] audit=2` |
-| 103.31 | Alpha Artifact | PENDING | — |
-| 103.32 | Sprint Closure | PENDING | — |
+| 103.31 | Alpha Artifact | BLOCKED (prasyarat) | Gerbang wajib `migration_pass` belum dapat dipenuhi karena 103.22 BLOCKED (koordinasi skema v54/v55 di project_database.dart). Gerbang lain siap: tests_pass (+1617), recovery_pass (4 test + e2e), security_review (deny-by-default & privacy 7 test), performance_budget (gate release-train + baseline v1.0.1). Alpha TIDAK dibangun agar tidak melanggar preconditions kanonik |
+| 103.32 | Sprint Closure | PARTIAL (deferred keputusan arsitek) | DoD terpenuhi: contracts ✓, runner+state machine ✓, pause/cancel/recovery ✓, permissions+privacy ✓, UI workflow ✓, test matrix ✓ (+1617). DoD tertunda: persistence_and_migration_verified ✗ (103.22), alpha_artifact_verified ✗ (103.31). Penutupan penuh menunggu koordinasi skema oleh Choirudin |
 
 Hosted CI: DEFERRED sesuai keputusan D6 2026-08-24; gerbang lokal wajib
 per slice (focused tests + analyze + diff check).

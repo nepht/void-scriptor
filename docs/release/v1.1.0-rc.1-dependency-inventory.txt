@@ -1,0 +1,134 @@
+Dart SDK 3.12.2
+Flutter SDK 3.44.9
+void_scriptor 1.1.0-beta.1+4
+
+dependencies:
+- archive 4.0.9 [path posix]
+- crypto 3.0.7 [typed_data]
+- cryptography 2.9.0 [collection crypto ffi meta typed_data]
+- drift 2.34.3 [async convert collection meta stream_channel sqlite3 path stack_trace web]
+- flutter 0.0.0 [characters collection material_color_utilities meta vector_math sky_engine]
+- flutter_localizations 0.0.0 [flutter intl path]
+- flutter_riverpod 2.6.1 [collection flutter meta riverpod state_notifier]
+- flutter_secure_storage 10.3.1 [flutter flutter_secure_storage_darwin flutter_secure_storage_linux flutter_secure_storage_platform_interface flutter_secure_storage_web flutter_secure_storage_windows meta]
+- flutter_svg 2.3.0 [flutter http vector_graphics vector_graphics_codec vector_graphics_compiler]
+- go_router 14.8.1 [collection flutter flutter_web_plugins logging meta]
+- http 1.6.0 [async http_parser meta web]
+- image 4.9.1 [archive xml]
+- lucide_flutter 1.33.0 [flutter]
+- path 1.9.1
+- path_provider 2.1.6 [flutter path_provider_android path_provider_foundation path_provider_linux path_provider_platform_interface path_provider_windows]
+- shared_preferences 2.5.5 [flutter shared_preferences_android shared_preferences_foundation shared_preferences_linux shared_preferences_platform_interface shared_preferences_web shared_preferences_windows]
+- sqlite3 3.5.1 [collection ffi meta path web typed_data hooks code_assets native_toolchain_c crypto]
+- sqlite3_flutter_libs 0.6.0+eol
+- uuid 4.6.0 [crypto fixnum]
+- vector_math 2.2.0
+
+dev dependencies:
+- build_runner 2.15.1 [analyzer args async build build_config build_daemon built_collection built_value collection convert crypto dart_style glob graphs http_multi_server io json_annotation logging meta mime package_config path pool pub_semver shelf shelf_web_socket stream_transform watcher web_socket_channel yaml]
+- drift_dev 2.34.5 [charcode collection recase meta path json_annotation stream_transform args logging cli_util yaml io drift sqlite3 sqlparser analyzer source_span package_config pub_semver build build_config dart_style source_gen string_scanner]
+- flutter_lints 4.0.0 [lints]
+- flutter_test 0.0.0 [flutter test_api matcher path fake_async clock stack_trace vector_math leak_tracker_flutter_testing collection meta stream_channel]
+
+transitive dependencies:
+- _fe_analyzer_shared 100.0.0 [meta source_span]
+- analyzer 13.0.0 [_fe_analyzer_shared collection convert crypto glob meta package_config path pub_semver source_span watcher yaml]
+- args 2.7.0
+- async 2.13.1 [collection meta]
+- boolean_selector 2.1.2 [source_span string_scanner]
+- build 4.0.7 [analyzer crypto glob logging package_config path]
+- build_config 1.3.2 [checked_yaml json_annotation path pubspec_parse]
+- build_daemon 4.1.5 [built_collection built_value crypto http_multi_server logging package_config path pool pub_semver shelf shelf_web_socket stream_transform watcher web_socket_channel yaml]
+- built_collection 5.1.1
+- built_value 8.12.7 [built_collection collection fixnum meta]
+- characters 1.4.1
+- charcode 1.4.0
+- checked_yaml 2.0.4 [json_annotation source_span yaml]
+- cli_util 0.5.2 [ffi meta path]
+- clock 1.1.2
+- code_assets 1.2.1 [collection hooks]
+- collection 1.19.1
+- convert 3.1.2 [typed_data]
+- dart_style 3.1.9 [analyzer args collection package_config path pub_semver source_span yaml]
+- fake_async 1.3.3 [clock collection]
+- ffi 2.2.0
+- ffi_leak_tracker 0.1.2 [ffi]
+- file 7.0.1 [meta path]
+- fixnum 1.1.1
+- flutter_secure_storage_darwin 0.3.2 [flutter plugin_platform_interface]
+- flutter_secure_storage_linux 3.0.2 [flutter flutter_secure_storage_platform_interface]
+- flutter_secure_storage_platform_interface 2.0.3 [flutter plugin_platform_interface]
+- flutter_secure_storage_web 2.1.1 [flutter flutter_secure_storage_platform_interface flutter_web_plugins web]
+- flutter_secure_storage_windows 4.2.2 [ffi flutter flutter_secure_storage_platform_interface path path_provider path_provider_platform_interface win32]
+- flutter_web_plugins 0.0.0 [flutter]
+- glob 2.1.3 [async collection file path string_scanner]
+- graphs 2.3.2 [collection]
+- hooks 2.0.2 [collection crypto logging meta pub_semver record_use yaml]
+- http_multi_server 3.2.2 [async]
+- http_parser 4.1.2 [collection source_span string_scanner typed_data]
+- intl 0.20.2 [clock meta path]
+- io 1.0.5 [meta path string_scanner]
+- jni 1.0.3 [args collection ffi jni_util meta package_config path plugin_platform_interface]
+- jni_flutter 1.0.2 [flutter jni]
+- jni_util 1.0.0 [path]
+- json_annotation 4.12.0 [meta]
+- leak_tracker 11.0.2 [clock collection meta path vm_service]
+- leak_tracker_flutter_testing 3.0.10 [flutter leak_tracker leak_tracker_testing matcher meta]
+- leak_tracker_testing 3.0.2 [leak_tracker matcher meta]
+- lints 4.0.0
+- logging 1.3.0
+- matcher 0.12.19 [async meta stack_trace term_glyph test_api]
+- material_color_utilities 0.13.0 [collection]
+- meta 1.18.0
+- mime 2.0.0
+- native_toolchain_c 0.19.2 [code_assets glob hooks logging meta pub_semver]
+- objective_c 9.5.0 [code_assets collection ffi hooks logging meta pub_semver]
+- package_config 2.2.0 [path]
+- path_parsing 1.1.0 [meta vector_math]
+- path_provider_android 2.3.1 [flutter jni jni_flutter path_provider_platform_interface]
+- path_provider_foundation 2.6.0 [ffi flutter objective_c path_provider_platform_interface]
+- path_provider_linux 2.2.2 [ffi flutter path path_provider_platform_interface xdg_directories]
+- path_provider_platform_interface 2.1.3 [flutter platform plugin_platform_interface]
+- path_provider_windows 2.3.0 [ffi flutter path path_provider_platform_interface]
+- petitparser 7.0.2 [meta collection]
+- platform 3.1.6
+- plugin_platform_interface 2.1.8 [meta]
+- pool 1.5.2 [async stack_trace]
+- posix 6.5.2 [ffi meta path]
+- pub_semver 2.2.0 [collection]
+- pubspec_parse 1.5.0 [checked_yaml collection json_annotation pub_semver yaml]
+- recase 4.1.0
+- record_use 0.6.0 [collection meta pub_semver]
+- riverpod 2.6.1 [collection meta stack_trace state_notifier]
+- shared_preferences_android 2.4.27 [flutter meta shared_preferences_platform_interface]
+- shared_preferences_foundation 2.5.6 [flutter shared_preferences_platform_interface]
+- shared_preferences_linux 2.4.1 [file flutter path path_provider_linux path_provider_platform_interface shared_preferences_platform_interface]
+- shared_preferences_platform_interface 2.4.2 [flutter plugin_platform_interface]
+- shared_preferences_web 2.4.3 [flutter flutter_web_plugins shared_preferences_platform_interface web]
+- shared_preferences_windows 2.4.1 [file flutter path path_provider_platform_interface path_provider_windows shared_preferences_platform_interface]
+- shelf 1.4.2 [async collection http_parser path stack_trace stream_channel]
+- shelf_web_socket 3.0.0 [shelf stream_channel web_socket_channel]
+- sky_engine 0.0.0
+- source_gen 4.2.4 [analyzer async build dart_style glob path pub_semver source_span yaml]
+- source_span 1.10.2 [collection path term_glyph]
+- sqlparser 0.45.0 [meta collection source_span charcode]
+- stack_trace 1.12.1 [path]
+- state_notifier 1.0.0 [meta]
+- stream_channel 2.1.4 [async]
+- stream_transform 2.1.1
+- string_scanner 1.4.1 [source_span]
+- term_glyph 1.2.2
+- test_api 0.7.11 [async boolean_selector collection meta source_span stack_trace stream_channel string_scanner term_glyph]
+- typed_data 1.4.0 [collection]
+- vector_graphics 1.2.3 [flutter http vector_graphics_codec]
+- vector_graphics_codec 1.1.13
+- vector_graphics_compiler 1.3.0 [args meta path path_parsing vector_graphics_codec xml]
+- vm_service 15.2.0
+- watcher 1.2.1 [async path]
+- web 1.1.1
+- web_socket 1.0.1 [web]
+- web_socket_channel 3.0.3 [async crypto stream_channel web web_socket]
+- win32 6.4.0 [ffi ffi_leak_tracker meta]
+- xdg_directories 1.1.0 [meta path]
+- xml 7.0.1 [collection meta petitparser]
+- yaml 3.1.3 [collection source_span string_scanner]

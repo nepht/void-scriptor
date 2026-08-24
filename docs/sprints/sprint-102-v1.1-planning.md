@@ -443,3 +443,23 @@ DoD checklist (dinilai saat closure):
 - [ ] implementation_milestones_created (§102.28)
 
 Closure hanya sah setelah persetujuan 102.29 tercatat di dokumen ini.
+
+### Keputusan defer hosted CI master — 2026-08-24
+
+Choirudin menetapkan bahwa hosted CI master **di-defer/waive sementara** sampai
+aplikasi dianggap layak publish oleh Choirudin. Keputusan ini tidak mengubah,
+menghapus, atau melemahkan workflow CI maupun acceptance criteria Sprint 102.
+
+Batas keputusan:
+
+- Run hosted CI pada SHA `8dad71d7ca258908251a01c5358eba8be10f1917` tercatat
+  `completed/failure` karena seluruh job tidak dimulai akibat GitHub billing;
+  ini bukan bukti kegagalan kode.
+- Local gate tetap wajib: full `flutter test`, `flutter analyze`, target build
+yang tersedia, focused regression, manifest/checksum, dan `git diff --check`.
+- Status hosted CI tetap `DEFERRED/BLOCKED-EXTERNAL`, bukan `PASS` atau
+  `VERIFIED-HOSTED`.
+- RC/stable publish tetap memerlukan hosted CI green pada SHA kandidat yang
+  sama, serta otorisasi D6 untuk tag, version bump, push, dan release page.
+- Sprint berikutnya boleh dibuka setelah closeout lokal Sprint 102 dicatat;
+  pembukaan Sprint berikutnya tidak mengubah status hosted CI menjadi green.

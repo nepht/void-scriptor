@@ -45,11 +45,11 @@ change, proyek lama wajib tetap terbuka.
 | 103.21 | Privacy Evaluation | VERIFIED | local_only enforced, transfer eksternal wajib audit, data minimization via declared kinds; 4 test |
 | 103.22 | Workflow Persistence | BLOCKED (koordinasi skema) | Menunggu kejelasan kepemilikan v54/v55 pada project_database.dart |
 | 103.23 | Template Registry | VERIFIED | `workflow_templates.dart`: validasi saat register, re-register versi sama ditolak, instantiate identitas baru, konten tak tepercaya tidak pernah auto-exec; 4 test |
-| 103.24 | Workflow Library UI | PENDING | — |
-| 103.25 | Workflow Editor UI | PENDING | — |
-| 103.26 | Execution Monitor UI | PENDING | — |
+| 103.24 | Workflow Library UI | VERIFIED | `lib/features/workflow/presentation/workflow_library_screen.dart`: daftar template registry, instantiate identitas baru via callback; widget test list+instantiate+empty; 2 test |
+| 103.25 | Workflow Editor UI | VERIFIED | `workflow_editor_screen.dart`: edit field kanonik sebagai teks, validasi live via service ter-inject, Save hanya saat draft lengkap & bersih; widget test happy-path+duplicate-id; 2 test |
+| 103.26 | Execution Monitor UI | VERIFIED | `execution_monitor_screen.dart`: proyeksi snapshot murni (tanpa timer/polling), progress bar per eksekusi, ikon per state; widget test render+empty; 2 test |
 | 103.27 | Workflow Audit Trail | VERIFIED | `workflow_audit.dart`: 9 kind kanonik, entri identifier-only (detail dibuang — konten cerita/secrets tak bisa bocor), mapper event runner; 3 test |
-| 103.28 | Performance & Resource Limits | PENDING | — |
+| 103.28 | Performance & Resource Limits | VERIFIED | `workflow_limits.dart`: batas concurrent executions (default 4, ≤8), max steps/workflow 64, cap checkpoint; slot tracker acquire/release; 3 test |
 | 103.29 | Automated Test Matrix | PENDING | — |
 | 103.30 | Documentation & Examples | PENDING | — |
 | 103.31 | Alpha Artifact | PENDING | — |

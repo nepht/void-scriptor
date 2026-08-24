@@ -16,12 +16,12 @@ Start condition Sprint 103 COMPLETE + alpha lolos validasi internal → terpenuh
 | 104.5 | Automation Rule Model | VERIFIED | `automation_rule.dart`: rule_id+trigger+conditions+workflow_id+approval_policy+failure_policy+enabled dalam satu model; 2 test |
 | 104.6 | Condition Engine | VERIFIED | `automation_condition.dart`: evaluasi deterministik murni, operator typed enum tertutup (equals/notEquals/greaterThan/lessThan/contains/inSet), TANPA injeksi kode, missing fact gagal tertutup termasuk negasi; 4 test |
 | 104.7 | Expression Validation | VERIFIED | `rule_validation.dart`: known-fields per tipe trigger, kompatibilitas tipe literal, cap kompleksitas (maxConditionsPerRule), larangan struktural field `secret.*` di rule; 5 test |
-| 104.8 | Event Bus Integration | PENDING | — |
-| 104.9 | Scheduler Integration | PENDING | — |
-| 104.10 | Missed-Run Policy | PENDING | — |
-| 104.11 | Project Lifecycle Triggers | PENDING | — |
-| 104.12 | Asset Pipeline Triggers | PENDING | — |
-| 104.13 | Job Runtime Triggers | PENDING | — |
+| 104.8 | Event Bus Integration | VERIFIED | `lib/automation/trigger_event_bridge.dart`: bridge SATU-satunya subscription ke `CommandEventBus` existing (tanpa bus kedua), validasi skema event sebelum firing, fail-closed untuk trigger disabled/unregistered/tanpa eventName (`attachIssues`), dispose idempotent dengan cleanup subscription; hanya menjawab tipe projectEvent (schedule/asset/job/plugin milik 104.9/104.12/104.13/104.17); 7 test baru di `test/automation/trigger_event_bridge_test.dart`; suite automation penuh 24/24 PASS; analyzer scoped bersih; format+diff-check PASS |
+| 104.9 | Scheduler Integration | VERIFIED | `schedule_spec.dart`: spec kanonik dailyAt/every dengan offset timezone eksplisit (menit), next_run terhitung di dinding lokal, enabled flag; factory fail-closed (ArgumentError); catatan jujur: zona IANA/DST di luar cakupan inti — pemanggil resolve offset saat konfigurasi; 6 test |
+| 104.10 | Missed-Run Policy | VERIFIED | `missed_run_policy.dart`: 4 kebijakan kanonik SKIP/RUN_ONCE_AT_STARTUP/REQUIRE_CONFIRMATION/DISABLE_AND_WARN sebagai fungsi murni deterministik; tepat waktu tak pernah dihitung miss untuk semua kebijakan; 5 test |
+| 104.11 | Project Lifecycle Triggers | VERIFIED | `lifecycle_triggers.dart`: 5 event kanonik (PROJECT_OPENED/SAVED/CLOSED/RECOVERY_COMPLETED/HEALTH_ISSUE_DETECTED), facts identifier-only tanpa payload diagnostik; 3 test |
+| 104.12 | Asset Pipeline Triggers | VERIFIED | `asset_triggers.dart`: 5 event kanonik (ASSET_IMPORTED/UPDATED/THUMBNAIL_READY/ASSET_MISSING/ASSET_RELINKED), path thumbnail relatif opsional; 3 test |
+| 104.13 | Job Runtime Triggers | VERIFIED | `job_triggers.dart` (kosakata 4 event) + `job_event_bridge.dart`: terminal status stream `BackgroundJobQueue.updates` kanonik → jobSucceeded/jobFailed/jobCancelled (tanpa bus kedua); queued/running tak pernah menembak; rule disabled diam; dispose idempoten; 4 test (`job_event_bridge_test.dart`); suite automation +47 hijau, analyze bersih |
 | 104.14 | AI Provider Workflow Integration | PENDING | — |
 | 104.15 | Render Pipeline Integration | PENDING | — |
 | 104.16 | Publishing Integration | PENDING | — |

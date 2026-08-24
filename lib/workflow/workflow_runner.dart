@@ -391,6 +391,43 @@ class WorkflowRunner {
     return handle;
   }
 
+  /// Crash recovery (103.16): resume with steps already completed before
+  /// the interruption pre-marked as finished — they never re-execute.
+  WorkflowExecutionHandle startFromCheckpoint({
+    required WorkflowDefinition workflow,
+    required WorkflowExecutionPlan plan,
+    required Future<Object?> Function(
+      WorkflowStep step,
+      JobContext context,
+      int attempt,
+    )
+    work,
+    required String executionId,
+    required List<String> completedSteps,
+  }) {
+    final id = executionId;
+    final handle = WorkflowExecutionHandle._(id, Completer());
+    _live[id] = handle;
+    for (final stepId in completedSteps) {
+      if (plan.executionOrder.contains(stepId)) {
+        handle.finished.add(stepId);
+        handle.successes.add(stepId);
+        handle.launched.add(stepId);
+      }
+    }
+    _events.add(
+      WorkflowRunnerEvent(
+        kind: WorkflowRunnerEventKind.started,
+        executionId: id,
+        detail: 'resumed from checkpoint',
+      ),
+    );
+    handle.relaunch = () => _launchReady(handle, workflow, plan, work);
+    handle.workflow = workflow;
+    Future<void>.microtask(handle.relaunch!);
+    return handle;
+  }
+
   /// Pause takes effect at the next step boundary (103.14).
   void pause(String executionId) {
     final h = _live[executionId];

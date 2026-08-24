@@ -36,7 +36,7 @@ change, proyek lama wajib tetap terbuka.
 | 103.13 | Cancellation Propagation | VERIFIED | Kooperatif via `JobContext.isCancelled`; antrean mati instan lewat `queue.cancel`; cancel-before-start menang balapan (deferred launch); limitasi boundary didokumentasikan |
 | 103.14 | Pause & Resume | VERIFIED | Pause hanya pada boundary step (tanpa freeze proses); resume meluncurkan ulang step siap; 1 test |
 | 103.15 | Workflow Checkpoint | VERIFIED | Tulis atomik (tmp unik + rename) tiap step selesai DAN saat terminal state; field kanonik lengkap; roundtrip JSON; 1 test |
-| 103.16 | Crash Recovery | PARTIAL | Opsi kanonik terdefinisi (`WorkflowRecoveryOption` ×4), checkpoint store `read()` tersedia untuk deteksi; alur resume-from-checkpoint end-to-end BELUM diuji — menyusul slice khusus |
+| 103.16 | Crash Recovery | VERIFIED | `workflow_recovery.dart`: detect interrupted (non-terminal), resume-from-checkpoint e2e (completed steps TIDAK dieksekusi ulang), cancel-and-cleanup, inspect-only; 4 test |
 | 103.12 | Dependency Resolver | VERIFIED | Kahn + tie declaration-order, cycle detection (termasuk self-dep) dengan anggota siklus dilaporkan; `readyAt` deterministik; 5 test |
 | 103.17 | Retry Policy | VERIFIED | `workflow_policies.dart`: maxAttempts≤5, hanya error retryable, non-idempotent tidak pernah auto-retry; 3 test |
 | 103.18 | Timeout Policy | VERIFIED | per-step wajib & positif, workflow-level opsional; audit timeout di runner (103.8) |
@@ -44,11 +44,11 @@ change, proyek lama wajib tetap terbuka.
 | 103.20 | Permission Evaluation | VERIFIED | `workflow_security.dart`: deny-by-default (irisan requested∩granted), eskalasi struktural mustahil; 3 test |
 | 103.21 | Privacy Evaluation | VERIFIED | local_only enforced, transfer eksternal wajib audit, data minimization via declared kinds; 4 test |
 | 103.22 | Workflow Persistence | BLOCKED (koordinasi skema) | Menunggu kejelasan kepemilikan v54/v55 pada project_database.dart |
-| 103.23 | Template Registry | PENDING | — |
+| 103.23 | Template Registry | VERIFIED | `workflow_templates.dart`: validasi saat register, re-register versi sama ditolak, instantiate identitas baru, konten tak tepercaya tidak pernah auto-exec; 4 test |
 | 103.24 | Workflow Library UI | PENDING | — |
 | 103.25 | Workflow Editor UI | PENDING | — |
 | 103.26 | Execution Monitor UI | PENDING | — |
-| 103.27 | Workflow Audit Trail | PENDING | — |
+| 103.27 | Workflow Audit Trail | VERIFIED | `workflow_audit.dart`: 9 kind kanonik, entri identifier-only (detail dibuang — konten cerita/secrets tak bisa bocor), mapper event runner; 3 test |
 | 103.28 | Performance & Resource Limits | PENDING | — |
 | 103.29 | Automated Test Matrix | PENDING | — |
 | 103.30 | Documentation & Examples | PENDING | — |

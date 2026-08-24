@@ -22,13 +22,13 @@ Start condition Sprint 103 COMPLETE + alpha lolos validasi internal → terpenuh
 | 104.11 | Project Lifecycle Triggers | VERIFIED | `lifecycle_triggers.dart`: 5 event kanonik (PROJECT_OPENED/SAVED/CLOSED/RECOVERY_COMPLETED/HEALTH_ISSUE_DETECTED), facts identifier-only tanpa payload diagnostik; 3 test |
 | 104.12 | Asset Pipeline Triggers | VERIFIED | `asset_triggers.dart`: 5 event kanonik (ASSET_IMPORTED/UPDATED/THUMBNAIL_READY/ASSET_MISSING/ASSET_RELINKED), path thumbnail relatif opsional; 3 test |
 | 104.13 | Job Runtime Triggers | VERIFIED | `job_triggers.dart` (kosakata 4 event) + `job_event_bridge.dart`: terminal status stream `BackgroundJobQueue.updates` kanonik → jobSucceeded/jobFailed/jobCancelled (tanpa bus kedua); queued/running tak pernah menembak; rule disabled diam; dispose idempoten; 4 test (`job_event_bridge_test.dart`); suite automation +47 hijau, analyze bersih |
-| 104.14 | AI Provider Workflow Integration | PENDING | — |
-| 104.15 | Render Pipeline Integration | PENDING | — |
-| 104.16 | Publishing Integration | PENDING | — |
-| 104.17 | Plugin Workflow Steps | PENDING | — |
-| 104.18 | Capability Registry Integration | PENDING | — |
-| 104.19 | Secret Reference Model | PENDING | — |
-| 104.20 | Network Policy | PENDING | — |
+| 104.14 | AI Provider Workflow Integration | VERIFIED | `external_integrations.dart` `AiWorkflowIntegration`: generate WAJIB lewat `ProviderRouter.generateWithFallback` (tanpa bypass provider langsung), cek `external_transfer_check` SEBELUM panggilan (dibuktikan probe tak tersentuh saat ditolak), cost visibility via callback, cancel mendelegasikan ke `AiProvider.cancel`; 3 test |
+| 104.15 | Render Pipeline Integration | VERIFIED | `WorkflowRenderRequest` + `describeRenderJob`: kosakata render canonical, resource budget WAJIB (kosong → RenderBudgetException), output provenance rule+trigger terbawa; 2 test |
+| 104.16 | Publishing Integration | VERIFIED | `PublishingWorkflowAdapter`: destination allowlist eksplisit, human confirmation DEFAULT required, audit record identifier-only per keputusan; 2 test |
+| 104.17 | Plugin Workflow Steps | VERIFIED | `evaluatePluginStep`: apiVersion major wajib ==1 (selain itu rejectedApiVersion), declared capabilities dicek terhadap host grants (permission_check), uninstall terdefinisi via namespacing `plugin.<id>.<step>`; 4 test |
+| 104.18 | Capability Registry Integration | VERIFIED | `preflightCapabilities`: preflight sebelum aktivasi, capability hilang = hasil TERLIHAT (`report()`), tanpa silent fallback; 2 test |
+| 104.19 | Secret Reference Model | VERIFIED | `SecretReference.fromStore`: hanya kunci store yang berpindah (plaintext structurally impossible), toString selalu `[REDACTED]`, kunci kosong/multiline ditolak; 2 test |
+| 104.20 | Network Policy | VERIFIED | `AutomationNetworkPolicy.checkRequest`: deny-by-default di luar allowlist, entri audit per keputusan (destination+capability); 1 test |
 | 104.21 | Approval Gate Model | PENDING | — |
 | 104.22 | Human-in-the-Loop Runtime | PENDING | — |
 | 104.23 | Rate Limiting | PENDING | — |

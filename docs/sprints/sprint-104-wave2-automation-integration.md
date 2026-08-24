@@ -42,7 +42,7 @@ Start condition Sprint 103 COMPLETE + alpha lolos validasi internal → terpenuh
 | 104.31 | Rule Editor UI | VERIFIED | `RuleEditorScreen`: save hanya muncul saat draf lengkap & validasi bersih (gerbang 104.7); save menghasilkan rule teruji; widget test |
 | 104.32 | Automation Templates | VERIFIED | `AutomationTemplatesScreen`: 3 template kurasi (export/backup/thumbnails), instantiate menghasilkan rule siap pakai; widget test |
 | 104.33 | Import & Export | VERIFIED | `exportRules`/`importRules`: JSON round-trip identitas rule terjaga; payload ber-kunci secret-shaped DITOLAK fail-closed; 2 unit test |
-| 104.34 | Beta Validation & Artifact | PENDING | — |
-| 104.35 | Sprint Closure | PENDING | — |
+| 104.34 | Beta Validation & Artifact | VERIFIED | Versi `1.1.0-beta.1+4` (lockstep pubspec+format, test hijau); full suite **+1699 All tests passed** FULLTEST_EXIT=0 (mencakup integration/security/privacy/recovery/plugin/performance budget — seluruh test tree); release train dieksekusi: analyze PASS + focused gates PASS + Linux debug build PASS pada commit `4ba2a08`; manifest `docs/release/v1.1.0-beta.1-artifact-manifest.md` (53048 bytes, SHA-256 e87e6580…788d44c, signing/SBOM NOT AVAILABLE — di luar cakupan, konsisten pola v1.0.1) |
+| 104.35 | Sprint Closure | VERIFIED | DoD 8/8: trigger+condition engine operasional (104.3–104.7); scheduler+event integrasi terverifikasi (104.8–104.13); human approval terverifikasi (104.21–104.22); permissions/privacy/secrets ditegakkan (104.17, 104.19, 104.20 + workflow_security Sprint 103); idempotency+dedupe terverifikasi (104.25–104.26); saga+kompensasi teruji (104.27–104.28); automation UI lengkap (104.30–104.33); beta artifact tervalidasi (104.34). Catatan konkurensi: baris 104.8 milik agen kedua (trigger_event_bridge.dart untracked miliknya saat commit ini) |
 
 Hosted CI: tetap DEFERRED (keputusan D6); gerbang lokal wajib per slice.

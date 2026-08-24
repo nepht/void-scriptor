@@ -29,15 +29,15 @@ Start condition Sprint 103 COMPLETE + alpha lolos validasi internal → terpenuh
 | 104.18 | Capability Registry Integration | VERIFIED | `preflightCapabilities`: preflight sebelum aktivasi, capability hilang = hasil TERLIHAT (`report()`), tanpa silent fallback; 2 test |
 | 104.19 | Secret Reference Model | VERIFIED | `SecretReference.fromStore`: hanya kunci store yang berpindah (plaintext structurally impossible), toString selalu `[REDACTED]`, kunci kosong/multiline ditolak; 2 test |
 | 104.20 | Network Policy | VERIFIED | `AutomationNetworkPolicy.checkRequest`: deny-by-default di luar allowlist, entri audit per keputusan (destination+capability); 1 test |
-| 104.21 | Approval Gate Model | PENDING | — |
-| 104.22 | Human-in-the-Loop Runtime | PENDING | — |
-| 104.23 | Rate Limiting | PENDING | — |
-| 104.24 | Concurrency Control | PENDING | — |
-| 104.25 | Idempotency Contract | PENDING | — |
-| 104.26 | Duplicate Trigger Suppression | PENDING | — |
-| 104.27 | Workflow Saga | PENDING | — |
-| 104.28 | Compensation Actions | PENDING | — |
-| 104.29 | Automation Observability | PENDING | — |
+| 104.21 | Approval Gate Model | VERIFIED | `safety_runtime.dart`: 5 tipe gate kanonik (INFORMATIONAL/CONFIRMATION/REAUTHENTICATION/REVIEW_OUTPUT/APPROVE_EXTERNAL_TRANSFER); 1 test |
+| 104.22 | Human-in-the-Loop Runtime | VERIFIED | `HumanDecisionRuntime`: jeda TANPA checkpoint ditolak (checkpoint_before_wait), keputusan ter-audit, request kadaluarsa DENY by default (fail-safe); 2 test |
+| 104.23 | Rate Limiting | VERIFIED | `RateLimiter`: fixed-window per scope kanonik rule/workflow/provider/project/user; lewat budget → RateLimitExceeded, window baru mengizinkan lagi; 1 test |
+| 104.24 | Concurrency Control | VERIFIED | `ConcurrencyController`: project_lock tanpa syarat (1 run aktif per project), budget global max_concurrent_runs, conflict policy eksplisit; 2 test |
+| 104.25 | Idempotency Contract | VERIFIED | `IdempotencyStore.execute`: efek tercatat per idempotency_key, retry dengan kunci sama = StateError terlihat (bukan re-run senyap), effect record ber-timestamp; 1 test |
+| 104.26 | Duplicate Trigger Suppression | VERIFIED | `DuplicateTriggerSuppressor`: deduplication_key + window + source_event_id + decision; dalam window ditekan, lewat window diizinkan; 1 test |
+| 104.27 | Workflow Saga | VERIFIED | `WorkflowSaga`: commit record per langkah, kompensasi reverse-order, TANPA klaim transaksi global (eksplisit di kontrak); 3 test |
+| 104.28 | Compensation Actions | VERIFIED | kompensasi eksplisit per registrasi; langkah tanpa compensator → CompensationUnsupported TERLIHAT (bukan skip senyap); kegagalan kompensasi ter-audit; (tercakup test saga) |
+| 104.29 | Automation Observability | VERIFIED | `AutomationMetrics`: 8 sinyal kanonik (trigger/run/success_rate/failure_rate/duration/approval_wait/retry/resource_usage) identifier-only, snapshot aman log; 1 test |
 | 104.30 | Automation Center UI | PENDING | — |
 | 104.31 | Rule Editor UI | PENDING | — |
 | 104.32 | Automation Templates | PENDING | — |

@@ -3,6 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+import '../../core/persistence/project_open_service.dart'
+    show SensitiveTermsSink;
+
 /// Secret-scrubbing patterns (101.17 diagnostic_redaction). Anything that
 /// looks like a credential must never reach disk, even inside an error
 /// message or stack trace. Order: bearer headers, labeled assignments,
@@ -113,7 +116,7 @@ class CrashSignature {
   String toString() => 'CrashSignature($value)';
 }
 
-class CrashDiagnostics {
+class CrashDiagnostics implements SensitiveTermsSink {
   final Directory directory;
 
   /// Sprint 102 / C1 — injected story-content terms captured from the active
@@ -136,6 +139,7 @@ class CrashDiagnostics {
 
   /// Replaces the active story-term set (used by project-session wiring when
   /// the opened project changes).
+  @override
   void updateSensitiveTerms(List<String> terms) {
     _sensitiveTerms
       ..clear()

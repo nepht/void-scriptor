@@ -43,7 +43,7 @@ change, proyek lama wajib tetap terbuka.
 | 103.19 | Failure Policy | VERIFIED | 5 policy kanonik; default turun dari optional→skipIfOptional, mandatory→stop; 2 test |
 | 103.20 | Permission Evaluation | VERIFIED | `workflow_security.dart`: deny-by-default (irisan requested∩granted), eskalasi struktural mustahil; 3 test |
 | 103.21 | Privacy Evaluation | VERIFIED | local_only enforced, transfer eksternal wajib audit, data minimization via declared kinds; 4 test |
-| 103.22 | Workflow Persistence | BLOCKED (koordinasi skema) | Menunggu kejelasan kepemilikan v54/v55 pada project_database.dart |
+| 103.22 | Workflow Persistence | VERIFIED | Skema **v56 aditif di atas v55**: `WorkflowDefinitions` + `WorkflowRunRecords` (`lib/database/project/tables/workflow_persistence.dart`), migrasi ter-guard `if (from < 56)`, reuse `ProjectDatabase` (tanpa engine kedua); generator diregen; 2 test (migrasi + roundtrip); backup pra-migrasi tetap di lapisan sesi (`pre-migration`, existing); full suite **+1619 All tests passed**, 27 asersi skema basi diperbarui 55→56 |
 | 103.23 | Template Registry | VERIFIED | `workflow_templates.dart`: validasi saat register, re-register versi sama ditolak, instantiate identitas baru, konten tak tepercaya tidak pernah auto-exec; 4 test |
 | 103.24 | Workflow Library UI | VERIFIED | `lib/features/workflow/presentation/workflow_library_screen.dart`: daftar template registry, instantiate identitas baru via callback; widget test list+instantiate+empty; 2 test |
 | 103.25 | Workflow Editor UI | VERIFIED | `workflow_editor_screen.dart`: edit field kanonik sebagai teks, validasi live via service ter-inject, Save hanya saat draft lengkap & bersih; widget test happy-path+duplicate-id; 2 test |

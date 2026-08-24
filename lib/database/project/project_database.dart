@@ -52,6 +52,7 @@ import 'tables/canon_conflicts.dart';
 import 'tables/worldbuilding_entities.dart';
 import 'tables/bible_timeline.dart';
 import 'tables/creatures.dart';
+import 'tables/creature_ecology_states.dart';
 import 'tables/vehicles.dart';
 import 'tables/props.dart';
 import 'tables/scene_asset_instances.dart';
@@ -87,6 +88,8 @@ import 'tables/creative.dart';
 import 'tables/xr.dart';
 import 'tables/metaverse.dart';
 import 'tables/characters.dart';
+import 'tables/novel_character_links.dart';
+import 'tables/workflow_persistence.dart';
 import 'tables/wardrobes.dart';
 import 'tables/wardrobe_components.dart';
 import 'tables/wardrobe_colors.dart';
@@ -143,6 +146,9 @@ class ProjectMetadata extends Table {
     Assets,
     AssetTags,
     Characters,
+    NovelCharacterLinks,
+    WorkflowDefinitions,
+    WorkflowRunRecords,
     CharacterIdentityProfiles,
     CharacterReferences,
     CharacterModes,
@@ -223,6 +229,7 @@ class ProjectMetadata extends Table {
     CreaturePhysicalProfiles,
     CreatureAbilities,
     CreatureModes,
+    CreatureEcologyStates,
     Vehicles,
     VehicleSpecifications,
     VehicleComponents,
@@ -328,7 +335,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 53;
+  static const currentSchemaVersion = 56;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -641,6 +648,16 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(metaverseWorlds);
         await m.createTable(metaverseZones);
       }
+      if (from < 54) {
+        await m.createTable(creatureEcologyStates);
+      }
+      if (from < 55) {
+        await m.createTable(novelCharacterLinks);
+      }
+      if (from < 56) {
+        await m.createTable(workflowDefinitions);
+        await m.createTable(workflowRunRecords);
+      }
     },
   );
 
@@ -676,7 +693,8 @@ class ProjectDatabase extends _$ProjectDatabase {
 
   Future<void> initialize() async {
     await customStatement(
-      'INSERT OR IGNORE INTO project_metadata (key, value) VALUES (?, ?)',
+      'INSERT INTO project_metadata (key, value) VALUES (?, ?) '
+      'ON CONFLICT(key) DO UPDATE SET value = excluded.value',
       ['schemaVersion', schemaVersion.toString()],
     );
   }

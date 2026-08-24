@@ -1816,6 +1816,1563 @@ class CharactersCompanion extends UpdateCompanion<Character> {
   }
 }
 
+class $NovelCharacterLinksTable extends NovelCharacterLinks
+    with TableInfo<$NovelCharacterLinksTable, NovelCharacterLink> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NovelCharacterLinksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _linkIdMeta = const VerificationMeta('linkId');
+  @override
+  late final GeneratedColumn<String> linkId = GeneratedColumn<String>(
+    'link_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _novelWorkspaceIdMeta = const VerificationMeta(
+    'novelWorkspaceId',
+  );
+  @override
+  late final GeneratedColumn<String> novelWorkspaceId = GeneratedColumn<String>(
+    'novel_workspace_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _characterWorkspaceIdMeta =
+      const VerificationMeta('characterWorkspaceId');
+  @override
+  late final GeneratedColumn<String> characterWorkspaceId =
+      GeneratedColumn<String>(
+        'character_workspace_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _characterIdMeta = const VerificationMeta(
+    'characterId',
+  );
+  @override
+  late final GeneratedColumn<String> characterId = GeneratedColumn<String>(
+    'character_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _linkModeMeta = const VerificationMeta(
+    'linkMode',
+  );
+  @override
+  late final GeneratedColumn<String> linkMode = GeneratedColumn<String>(
+    'link_mode',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
+  @override
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+    'role',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _visibilityMeta = const VerificationMeta(
+    'visibility',
+  );
+  @override
+  late final GeneratedColumn<String> visibility = GeneratedColumn<String>(
+    'visibility',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    linkId,
+    projectId,
+    novelWorkspaceId,
+    characterWorkspaceId,
+    characterId,
+    linkMode,
+    role,
+    visibility,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'novel_character_links';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<NovelCharacterLink> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('link_id')) {
+      context.handle(
+        _linkIdMeta,
+        linkId.isAcceptableOrUnknown(data['link_id']!, _linkIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_linkIdMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('novel_workspace_id')) {
+      context.handle(
+        _novelWorkspaceIdMeta,
+        novelWorkspaceId.isAcceptableOrUnknown(
+          data['novel_workspace_id']!,
+          _novelWorkspaceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_novelWorkspaceIdMeta);
+    }
+    if (data.containsKey('character_workspace_id')) {
+      context.handle(
+        _characterWorkspaceIdMeta,
+        characterWorkspaceId.isAcceptableOrUnknown(
+          data['character_workspace_id']!,
+          _characterWorkspaceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_characterWorkspaceIdMeta);
+    }
+    if (data.containsKey('character_id')) {
+      context.handle(
+        _characterIdMeta,
+        characterId.isAcceptableOrUnknown(
+          data['character_id']!,
+          _characterIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_characterIdMeta);
+    }
+    if (data.containsKey('link_mode')) {
+      context.handle(
+        _linkModeMeta,
+        linkMode.isAcceptableOrUnknown(data['link_mode']!, _linkModeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_linkModeMeta);
+    }
+    if (data.containsKey('role')) {
+      context.handle(
+        _roleMeta,
+        role.isAcceptableOrUnknown(data['role']!, _roleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_roleMeta);
+    }
+    if (data.containsKey('visibility')) {
+      context.handle(
+        _visibilityMeta,
+        visibility.isAcceptableOrUnknown(data['visibility']!, _visibilityMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_visibilityMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {linkId};
+  @override
+  NovelCharacterLink map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NovelCharacterLink(
+      linkId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}link_id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      novelWorkspaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}novel_workspace_id'],
+      )!,
+      characterWorkspaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}character_workspace_id'],
+      )!,
+      characterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}character_id'],
+      )!,
+      linkMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}link_mode'],
+      )!,
+      role: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}role'],
+      )!,
+      visibility: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}visibility'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $NovelCharacterLinksTable createAlias(String alias) {
+    return $NovelCharacterLinksTable(attachedDatabase, alias);
+  }
+}
+
+class NovelCharacterLink extends DataClass
+    implements Insertable<NovelCharacterLink> {
+  final String linkId;
+  final String projectId;
+  final String novelWorkspaceId;
+  final String characterWorkspaceId;
+  final String characterId;
+  final String linkMode;
+  final String role;
+  final String visibility;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const NovelCharacterLink({
+    required this.linkId,
+    required this.projectId,
+    required this.novelWorkspaceId,
+    required this.characterWorkspaceId,
+    required this.characterId,
+    required this.linkMode,
+    required this.role,
+    required this.visibility,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['link_id'] = Variable<String>(linkId);
+    map['project_id'] = Variable<String>(projectId);
+    map['novel_workspace_id'] = Variable<String>(novelWorkspaceId);
+    map['character_workspace_id'] = Variable<String>(characterWorkspaceId);
+    map['character_id'] = Variable<String>(characterId);
+    map['link_mode'] = Variable<String>(linkMode);
+    map['role'] = Variable<String>(role);
+    map['visibility'] = Variable<String>(visibility);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  NovelCharacterLinksCompanion toCompanion(bool nullToAbsent) {
+    return NovelCharacterLinksCompanion(
+      linkId: Value(linkId),
+      projectId: Value(projectId),
+      novelWorkspaceId: Value(novelWorkspaceId),
+      characterWorkspaceId: Value(characterWorkspaceId),
+      characterId: Value(characterId),
+      linkMode: Value(linkMode),
+      role: Value(role),
+      visibility: Value(visibility),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory NovelCharacterLink.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NovelCharacterLink(
+      linkId: serializer.fromJson<String>(json['linkId']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      novelWorkspaceId: serializer.fromJson<String>(json['novelWorkspaceId']),
+      characterWorkspaceId: serializer.fromJson<String>(
+        json['characterWorkspaceId'],
+      ),
+      characterId: serializer.fromJson<String>(json['characterId']),
+      linkMode: serializer.fromJson<String>(json['linkMode']),
+      role: serializer.fromJson<String>(json['role']),
+      visibility: serializer.fromJson<String>(json['visibility']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'linkId': serializer.toJson<String>(linkId),
+      'projectId': serializer.toJson<String>(projectId),
+      'novelWorkspaceId': serializer.toJson<String>(novelWorkspaceId),
+      'characterWorkspaceId': serializer.toJson<String>(characterWorkspaceId),
+      'characterId': serializer.toJson<String>(characterId),
+      'linkMode': serializer.toJson<String>(linkMode),
+      'role': serializer.toJson<String>(role),
+      'visibility': serializer.toJson<String>(visibility),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  NovelCharacterLink copyWith({
+    String? linkId,
+    String? projectId,
+    String? novelWorkspaceId,
+    String? characterWorkspaceId,
+    String? characterId,
+    String? linkMode,
+    String? role,
+    String? visibility,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => NovelCharacterLink(
+    linkId: linkId ?? this.linkId,
+    projectId: projectId ?? this.projectId,
+    novelWorkspaceId: novelWorkspaceId ?? this.novelWorkspaceId,
+    characterWorkspaceId: characterWorkspaceId ?? this.characterWorkspaceId,
+    characterId: characterId ?? this.characterId,
+    linkMode: linkMode ?? this.linkMode,
+    role: role ?? this.role,
+    visibility: visibility ?? this.visibility,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  NovelCharacterLink copyWithCompanion(NovelCharacterLinksCompanion data) {
+    return NovelCharacterLink(
+      linkId: data.linkId.present ? data.linkId.value : this.linkId,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      novelWorkspaceId: data.novelWorkspaceId.present
+          ? data.novelWorkspaceId.value
+          : this.novelWorkspaceId,
+      characterWorkspaceId: data.characterWorkspaceId.present
+          ? data.characterWorkspaceId.value
+          : this.characterWorkspaceId,
+      characterId: data.characterId.present
+          ? data.characterId.value
+          : this.characterId,
+      linkMode: data.linkMode.present ? data.linkMode.value : this.linkMode,
+      role: data.role.present ? data.role.value : this.role,
+      visibility: data.visibility.present
+          ? data.visibility.value
+          : this.visibility,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NovelCharacterLink(')
+          ..write('linkId: $linkId, ')
+          ..write('projectId: $projectId, ')
+          ..write('novelWorkspaceId: $novelWorkspaceId, ')
+          ..write('characterWorkspaceId: $characterWorkspaceId, ')
+          ..write('characterId: $characterId, ')
+          ..write('linkMode: $linkMode, ')
+          ..write('role: $role, ')
+          ..write('visibility: $visibility, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    linkId,
+    projectId,
+    novelWorkspaceId,
+    characterWorkspaceId,
+    characterId,
+    linkMode,
+    role,
+    visibility,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NovelCharacterLink &&
+          other.linkId == this.linkId &&
+          other.projectId == this.projectId &&
+          other.novelWorkspaceId == this.novelWorkspaceId &&
+          other.characterWorkspaceId == this.characterWorkspaceId &&
+          other.characterId == this.characterId &&
+          other.linkMode == this.linkMode &&
+          other.role == this.role &&
+          other.visibility == this.visibility &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class NovelCharacterLinksCompanion extends UpdateCompanion<NovelCharacterLink> {
+  final Value<String> linkId;
+  final Value<String> projectId;
+  final Value<String> novelWorkspaceId;
+  final Value<String> characterWorkspaceId;
+  final Value<String> characterId;
+  final Value<String> linkMode;
+  final Value<String> role;
+  final Value<String> visibility;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const NovelCharacterLinksCompanion({
+    this.linkId = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.novelWorkspaceId = const Value.absent(),
+    this.characterWorkspaceId = const Value.absent(),
+    this.characterId = const Value.absent(),
+    this.linkMode = const Value.absent(),
+    this.role = const Value.absent(),
+    this.visibility = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  NovelCharacterLinksCompanion.insert({
+    required String linkId,
+    required String projectId,
+    required String novelWorkspaceId,
+    required String characterWorkspaceId,
+    required String characterId,
+    required String linkMode,
+    required String role,
+    required String visibility,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : linkId = Value(linkId),
+       projectId = Value(projectId),
+       novelWorkspaceId = Value(novelWorkspaceId),
+       characterWorkspaceId = Value(characterWorkspaceId),
+       characterId = Value(characterId),
+       linkMode = Value(linkMode),
+       role = Value(role),
+       visibility = Value(visibility),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<NovelCharacterLink> custom({
+    Expression<String>? linkId,
+    Expression<String>? projectId,
+    Expression<String>? novelWorkspaceId,
+    Expression<String>? characterWorkspaceId,
+    Expression<String>? characterId,
+    Expression<String>? linkMode,
+    Expression<String>? role,
+    Expression<String>? visibility,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (linkId != null) 'link_id': linkId,
+      if (projectId != null) 'project_id': projectId,
+      if (novelWorkspaceId != null) 'novel_workspace_id': novelWorkspaceId,
+      if (characterWorkspaceId != null)
+        'character_workspace_id': characterWorkspaceId,
+      if (characterId != null) 'character_id': characterId,
+      if (linkMode != null) 'link_mode': linkMode,
+      if (role != null) 'role': role,
+      if (visibility != null) 'visibility': visibility,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  NovelCharacterLinksCompanion copyWith({
+    Value<String>? linkId,
+    Value<String>? projectId,
+    Value<String>? novelWorkspaceId,
+    Value<String>? characterWorkspaceId,
+    Value<String>? characterId,
+    Value<String>? linkMode,
+    Value<String>? role,
+    Value<String>? visibility,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return NovelCharacterLinksCompanion(
+      linkId: linkId ?? this.linkId,
+      projectId: projectId ?? this.projectId,
+      novelWorkspaceId: novelWorkspaceId ?? this.novelWorkspaceId,
+      characterWorkspaceId: characterWorkspaceId ?? this.characterWorkspaceId,
+      characterId: characterId ?? this.characterId,
+      linkMode: linkMode ?? this.linkMode,
+      role: role ?? this.role,
+      visibility: visibility ?? this.visibility,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (linkId.present) {
+      map['link_id'] = Variable<String>(linkId.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (novelWorkspaceId.present) {
+      map['novel_workspace_id'] = Variable<String>(novelWorkspaceId.value);
+    }
+    if (characterWorkspaceId.present) {
+      map['character_workspace_id'] = Variable<String>(
+        characterWorkspaceId.value,
+      );
+    }
+    if (characterId.present) {
+      map['character_id'] = Variable<String>(characterId.value);
+    }
+    if (linkMode.present) {
+      map['link_mode'] = Variable<String>(linkMode.value);
+    }
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
+    if (visibility.present) {
+      map['visibility'] = Variable<String>(visibility.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NovelCharacterLinksCompanion(')
+          ..write('linkId: $linkId, ')
+          ..write('projectId: $projectId, ')
+          ..write('novelWorkspaceId: $novelWorkspaceId, ')
+          ..write('characterWorkspaceId: $characterWorkspaceId, ')
+          ..write('characterId: $characterId, ')
+          ..write('linkMode: $linkMode, ')
+          ..write('role: $role, ')
+          ..write('visibility: $visibility, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WorkflowDefinitionsTable extends WorkflowDefinitions
+    with TableInfo<$WorkflowDefinitionsTable, WorkflowDefinition> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkflowDefinitionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _definitionIdMeta = const VerificationMeta(
+    'definitionId',
+  );
+  @override
+  late final GeneratedColumn<String> definitionId = GeneratedColumn<String>(
+    'definition_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadJsonMeta = const VerificationMeta(
+    'payloadJson',
+  );
+  @override
+  late final GeneratedColumn<String> payloadJson = GeneratedColumn<String>(
+    'payload_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    definitionId,
+    version,
+    name,
+    payloadJson,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'workflow_definitions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WorkflowDefinition> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('definition_id')) {
+      context.handle(
+        _definitionIdMeta,
+        definitionId.isAcceptableOrUnknown(
+          data['definition_id']!,
+          _definitionIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_definitionIdMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_versionMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('payload_json')) {
+      context.handle(
+        _payloadJsonMeta,
+        payloadJson.isAcceptableOrUnknown(
+          data['payload_json']!,
+          _payloadJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadJsonMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {definitionId, version};
+  @override
+  WorkflowDefinition map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WorkflowDefinition(
+      definitionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}definition_id'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      payloadJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload_json'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      ),
+    );
+  }
+
+  @override
+  $WorkflowDefinitionsTable createAlias(String alias) {
+    return $WorkflowDefinitionsTable(attachedDatabase, alias);
+  }
+}
+
+class WorkflowDefinition extends DataClass
+    implements Insertable<WorkflowDefinition> {
+  final String definitionId;
+  final int version;
+  final String name;
+  final String payloadJson;
+  final DateTime createdAt;
+  final DateTime? updatedAt;
+  const WorkflowDefinition({
+    required this.definitionId,
+    required this.version,
+    required this.name,
+    required this.payloadJson,
+    required this.createdAt,
+    this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['definition_id'] = Variable<String>(definitionId);
+    map['version'] = Variable<int>(version);
+    map['name'] = Variable<String>(name);
+    map['payload_json'] = Variable<String>(payloadJson);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
+    return map;
+  }
+
+  WorkflowDefinitionsCompanion toCompanion(bool nullToAbsent) {
+    return WorkflowDefinitionsCompanion(
+      definitionId: Value(definitionId),
+      version: Value(version),
+      name: Value(name),
+      payloadJson: Value(payloadJson),
+      createdAt: Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+    );
+  }
+
+  factory WorkflowDefinition.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WorkflowDefinition(
+      definitionId: serializer.fromJson<String>(json['definitionId']),
+      version: serializer.fromJson<int>(json['version']),
+      name: serializer.fromJson<String>(json['name']),
+      payloadJson: serializer.fromJson<String>(json['payloadJson']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'definitionId': serializer.toJson<String>(definitionId),
+      'version': serializer.toJson<int>(version),
+      'name': serializer.toJson<String>(name),
+      'payloadJson': serializer.toJson<String>(payloadJson),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+    };
+  }
+
+  WorkflowDefinition copyWith({
+    String? definitionId,
+    int? version,
+    String? name,
+    String? payloadJson,
+    DateTime? createdAt,
+    Value<DateTime?> updatedAt = const Value.absent(),
+  }) => WorkflowDefinition(
+    definitionId: definitionId ?? this.definitionId,
+    version: version ?? this.version,
+    name: name ?? this.name,
+    payloadJson: payloadJson ?? this.payloadJson,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+  );
+  WorkflowDefinition copyWithCompanion(WorkflowDefinitionsCompanion data) {
+    return WorkflowDefinition(
+      definitionId: data.definitionId.present
+          ? data.definitionId.value
+          : this.definitionId,
+      version: data.version.present ? data.version.value : this.version,
+      name: data.name.present ? data.name.value : this.name,
+      payloadJson: data.payloadJson.present
+          ? data.payloadJson.value
+          : this.payloadJson,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkflowDefinition(')
+          ..write('definitionId: $definitionId, ')
+          ..write('version: $version, ')
+          ..write('name: $name, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    definitionId,
+    version,
+    name,
+    payloadJson,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WorkflowDefinition &&
+          other.definitionId == this.definitionId &&
+          other.version == this.version &&
+          other.name == this.name &&
+          other.payloadJson == this.payloadJson &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class WorkflowDefinitionsCompanion extends UpdateCompanion<WorkflowDefinition> {
+  final Value<String> definitionId;
+  final Value<int> version;
+  final Value<String> name;
+  final Value<String> payloadJson;
+  final Value<DateTime> createdAt;
+  final Value<DateTime?> updatedAt;
+  final Value<int> rowid;
+  const WorkflowDefinitionsCompanion({
+    this.definitionId = const Value.absent(),
+    this.version = const Value.absent(),
+    this.name = const Value.absent(),
+    this.payloadJson = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WorkflowDefinitionsCompanion.insert({
+    required String definitionId,
+    required int version,
+    required String name,
+    required String payloadJson,
+    required DateTime createdAt,
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : definitionId = Value(definitionId),
+       version = Value(version),
+       name = Value(name),
+       payloadJson = Value(payloadJson),
+       createdAt = Value(createdAt);
+  static Insertable<WorkflowDefinition> custom({
+    Expression<String>? definitionId,
+    Expression<int>? version,
+    Expression<String>? name,
+    Expression<String>? payloadJson,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (definitionId != null) 'definition_id': definitionId,
+      if (version != null) 'version': version,
+      if (name != null) 'name': name,
+      if (payloadJson != null) 'payload_json': payloadJson,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WorkflowDefinitionsCompanion copyWith({
+    Value<String>? definitionId,
+    Value<int>? version,
+    Value<String>? name,
+    Value<String>? payloadJson,
+    Value<DateTime>? createdAt,
+    Value<DateTime?>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return WorkflowDefinitionsCompanion(
+      definitionId: definitionId ?? this.definitionId,
+      version: version ?? this.version,
+      name: name ?? this.name,
+      payloadJson: payloadJson ?? this.payloadJson,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (definitionId.present) {
+      map['definition_id'] = Variable<String>(definitionId.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (payloadJson.present) {
+      map['payload_json'] = Variable<String>(payloadJson.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkflowDefinitionsCompanion(')
+          ..write('definitionId: $definitionId, ')
+          ..write('version: $version, ')
+          ..write('name: $name, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WorkflowRunRecordsTable extends WorkflowRunRecords
+    with TableInfo<$WorkflowRunRecordsTable, WorkflowRunRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkflowRunRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _executionIdMeta = const VerificationMeta(
+    'executionId',
+  );
+  @override
+  late final GeneratedColumn<String> executionId = GeneratedColumn<String>(
+    'execution_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _definitionIdMeta = const VerificationMeta(
+    'definitionId',
+  );
+  @override
+  late final GeneratedColumn<String> definitionId = GeneratedColumn<String>(
+    'definition_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _definitionVersionMeta = const VerificationMeta(
+    'definitionVersion',
+  );
+  @override
+  late final GeneratedColumn<int> definitionVersion = GeneratedColumn<int>(
+    'definition_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stateMeta = const VerificationMeta('state');
+  @override
+  late final GeneratedColumn<String> state = GeneratedColumn<String>(
+    'state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _checkpointJsonMeta = const VerificationMeta(
+    'checkpointJson',
+  );
+  @override
+  late final GeneratedColumn<String> checkpointJson = GeneratedColumn<String>(
+    'checkpoint_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _startedAtMeta = const VerificationMeta(
+    'startedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startedAt = GeneratedColumn<DateTime>(
+    'started_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _finishedAtMeta = const VerificationMeta(
+    'finishedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> finishedAt = GeneratedColumn<DateTime>(
+    'finished_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    executionId,
+    definitionId,
+    definitionVersion,
+    state,
+    checkpointJson,
+    startedAt,
+    finishedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'workflow_run_records';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WorkflowRunRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('execution_id')) {
+      context.handle(
+        _executionIdMeta,
+        executionId.isAcceptableOrUnknown(
+          data['execution_id']!,
+          _executionIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_executionIdMeta);
+    }
+    if (data.containsKey('definition_id')) {
+      context.handle(
+        _definitionIdMeta,
+        definitionId.isAcceptableOrUnknown(
+          data['definition_id']!,
+          _definitionIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_definitionIdMeta);
+    }
+    if (data.containsKey('definition_version')) {
+      context.handle(
+        _definitionVersionMeta,
+        definitionVersion.isAcceptableOrUnknown(
+          data['definition_version']!,
+          _definitionVersionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_definitionVersionMeta);
+    }
+    if (data.containsKey('state')) {
+      context.handle(
+        _stateMeta,
+        state.isAcceptableOrUnknown(data['state']!, _stateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stateMeta);
+    }
+    if (data.containsKey('checkpoint_json')) {
+      context.handle(
+        _checkpointJsonMeta,
+        checkpointJson.isAcceptableOrUnknown(
+          data['checkpoint_json']!,
+          _checkpointJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('started_at')) {
+      context.handle(
+        _startedAtMeta,
+        startedAt.isAcceptableOrUnknown(data['started_at']!, _startedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startedAtMeta);
+    }
+    if (data.containsKey('finished_at')) {
+      context.handle(
+        _finishedAtMeta,
+        finishedAt.isAcceptableOrUnknown(data['finished_at']!, _finishedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {executionId};
+  @override
+  WorkflowRunRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WorkflowRunRecord(
+      executionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}execution_id'],
+      )!,
+      definitionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}definition_id'],
+      )!,
+      definitionVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}definition_version'],
+      )!,
+      state: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}state'],
+      )!,
+      checkpointJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}checkpoint_json'],
+      ),
+      startedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}started_at'],
+      )!,
+      finishedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}finished_at'],
+      ),
+    );
+  }
+
+  @override
+  $WorkflowRunRecordsTable createAlias(String alias) {
+    return $WorkflowRunRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class WorkflowRunRecord extends DataClass
+    implements Insertable<WorkflowRunRecord> {
+  final String executionId;
+  final String definitionId;
+  final int definitionVersion;
+  final String state;
+  final String? checkpointJson;
+  final DateTime startedAt;
+  final DateTime? finishedAt;
+  const WorkflowRunRecord({
+    required this.executionId,
+    required this.definitionId,
+    required this.definitionVersion,
+    required this.state,
+    this.checkpointJson,
+    required this.startedAt,
+    this.finishedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['execution_id'] = Variable<String>(executionId);
+    map['definition_id'] = Variable<String>(definitionId);
+    map['definition_version'] = Variable<int>(definitionVersion);
+    map['state'] = Variable<String>(state);
+    if (!nullToAbsent || checkpointJson != null) {
+      map['checkpoint_json'] = Variable<String>(checkpointJson);
+    }
+    map['started_at'] = Variable<DateTime>(startedAt);
+    if (!nullToAbsent || finishedAt != null) {
+      map['finished_at'] = Variable<DateTime>(finishedAt);
+    }
+    return map;
+  }
+
+  WorkflowRunRecordsCompanion toCompanion(bool nullToAbsent) {
+    return WorkflowRunRecordsCompanion(
+      executionId: Value(executionId),
+      definitionId: Value(definitionId),
+      definitionVersion: Value(definitionVersion),
+      state: Value(state),
+      checkpointJson: checkpointJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(checkpointJson),
+      startedAt: Value(startedAt),
+      finishedAt: finishedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(finishedAt),
+    );
+  }
+
+  factory WorkflowRunRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WorkflowRunRecord(
+      executionId: serializer.fromJson<String>(json['executionId']),
+      definitionId: serializer.fromJson<String>(json['definitionId']),
+      definitionVersion: serializer.fromJson<int>(json['definitionVersion']),
+      state: serializer.fromJson<String>(json['state']),
+      checkpointJson: serializer.fromJson<String?>(json['checkpointJson']),
+      startedAt: serializer.fromJson<DateTime>(json['startedAt']),
+      finishedAt: serializer.fromJson<DateTime?>(json['finishedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'executionId': serializer.toJson<String>(executionId),
+      'definitionId': serializer.toJson<String>(definitionId),
+      'definitionVersion': serializer.toJson<int>(definitionVersion),
+      'state': serializer.toJson<String>(state),
+      'checkpointJson': serializer.toJson<String?>(checkpointJson),
+      'startedAt': serializer.toJson<DateTime>(startedAt),
+      'finishedAt': serializer.toJson<DateTime?>(finishedAt),
+    };
+  }
+
+  WorkflowRunRecord copyWith({
+    String? executionId,
+    String? definitionId,
+    int? definitionVersion,
+    String? state,
+    Value<String?> checkpointJson = const Value.absent(),
+    DateTime? startedAt,
+    Value<DateTime?> finishedAt = const Value.absent(),
+  }) => WorkflowRunRecord(
+    executionId: executionId ?? this.executionId,
+    definitionId: definitionId ?? this.definitionId,
+    definitionVersion: definitionVersion ?? this.definitionVersion,
+    state: state ?? this.state,
+    checkpointJson: checkpointJson.present
+        ? checkpointJson.value
+        : this.checkpointJson,
+    startedAt: startedAt ?? this.startedAt,
+    finishedAt: finishedAt.present ? finishedAt.value : this.finishedAt,
+  );
+  WorkflowRunRecord copyWithCompanion(WorkflowRunRecordsCompanion data) {
+    return WorkflowRunRecord(
+      executionId: data.executionId.present
+          ? data.executionId.value
+          : this.executionId,
+      definitionId: data.definitionId.present
+          ? data.definitionId.value
+          : this.definitionId,
+      definitionVersion: data.definitionVersion.present
+          ? data.definitionVersion.value
+          : this.definitionVersion,
+      state: data.state.present ? data.state.value : this.state,
+      checkpointJson: data.checkpointJson.present
+          ? data.checkpointJson.value
+          : this.checkpointJson,
+      startedAt: data.startedAt.present ? data.startedAt.value : this.startedAt,
+      finishedAt: data.finishedAt.present
+          ? data.finishedAt.value
+          : this.finishedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkflowRunRecord(')
+          ..write('executionId: $executionId, ')
+          ..write('definitionId: $definitionId, ')
+          ..write('definitionVersion: $definitionVersion, ')
+          ..write('state: $state, ')
+          ..write('checkpointJson: $checkpointJson, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('finishedAt: $finishedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    executionId,
+    definitionId,
+    definitionVersion,
+    state,
+    checkpointJson,
+    startedAt,
+    finishedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WorkflowRunRecord &&
+          other.executionId == this.executionId &&
+          other.definitionId == this.definitionId &&
+          other.definitionVersion == this.definitionVersion &&
+          other.state == this.state &&
+          other.checkpointJson == this.checkpointJson &&
+          other.startedAt == this.startedAt &&
+          other.finishedAt == this.finishedAt);
+}
+
+class WorkflowRunRecordsCompanion extends UpdateCompanion<WorkflowRunRecord> {
+  final Value<String> executionId;
+  final Value<String> definitionId;
+  final Value<int> definitionVersion;
+  final Value<String> state;
+  final Value<String?> checkpointJson;
+  final Value<DateTime> startedAt;
+  final Value<DateTime?> finishedAt;
+  final Value<int> rowid;
+  const WorkflowRunRecordsCompanion({
+    this.executionId = const Value.absent(),
+    this.definitionId = const Value.absent(),
+    this.definitionVersion = const Value.absent(),
+    this.state = const Value.absent(),
+    this.checkpointJson = const Value.absent(),
+    this.startedAt = const Value.absent(),
+    this.finishedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WorkflowRunRecordsCompanion.insert({
+    required String executionId,
+    required String definitionId,
+    required int definitionVersion,
+    required String state,
+    this.checkpointJson = const Value.absent(),
+    required DateTime startedAt,
+    this.finishedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : executionId = Value(executionId),
+       definitionId = Value(definitionId),
+       definitionVersion = Value(definitionVersion),
+       state = Value(state),
+       startedAt = Value(startedAt);
+  static Insertable<WorkflowRunRecord> custom({
+    Expression<String>? executionId,
+    Expression<String>? definitionId,
+    Expression<int>? definitionVersion,
+    Expression<String>? state,
+    Expression<String>? checkpointJson,
+    Expression<DateTime>? startedAt,
+    Expression<DateTime>? finishedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (executionId != null) 'execution_id': executionId,
+      if (definitionId != null) 'definition_id': definitionId,
+      if (definitionVersion != null) 'definition_version': definitionVersion,
+      if (state != null) 'state': state,
+      if (checkpointJson != null) 'checkpoint_json': checkpointJson,
+      if (startedAt != null) 'started_at': startedAt,
+      if (finishedAt != null) 'finished_at': finishedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WorkflowRunRecordsCompanion copyWith({
+    Value<String>? executionId,
+    Value<String>? definitionId,
+    Value<int>? definitionVersion,
+    Value<String>? state,
+    Value<String?>? checkpointJson,
+    Value<DateTime>? startedAt,
+    Value<DateTime?>? finishedAt,
+    Value<int>? rowid,
+  }) {
+    return WorkflowRunRecordsCompanion(
+      executionId: executionId ?? this.executionId,
+      definitionId: definitionId ?? this.definitionId,
+      definitionVersion: definitionVersion ?? this.definitionVersion,
+      state: state ?? this.state,
+      checkpointJson: checkpointJson ?? this.checkpointJson,
+      startedAt: startedAt ?? this.startedAt,
+      finishedAt: finishedAt ?? this.finishedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (executionId.present) {
+      map['execution_id'] = Variable<String>(executionId.value);
+    }
+    if (definitionId.present) {
+      map['definition_id'] = Variable<String>(definitionId.value);
+    }
+    if (definitionVersion.present) {
+      map['definition_version'] = Variable<int>(definitionVersion.value);
+    }
+    if (state.present) {
+      map['state'] = Variable<String>(state.value);
+    }
+    if (checkpointJson.present) {
+      map['checkpoint_json'] = Variable<String>(checkpointJson.value);
+    }
+    if (startedAt.present) {
+      map['started_at'] = Variable<DateTime>(startedAt.value);
+    }
+    if (finishedAt.present) {
+      map['finished_at'] = Variable<DateTime>(finishedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkflowRunRecordsCompanion(')
+          ..write('executionId: $executionId, ')
+          ..write('definitionId: $definitionId, ')
+          ..write('definitionVersion: $definitionVersion, ')
+          ..write('state: $state, ')
+          ..write('checkpointJson: $checkpointJson, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('finishedAt: $finishedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $CharacterIdentityProfilesTable extends CharacterIdentityProfiles
     with TableInfo<$CharacterIdentityProfilesTable, CharacterIdentityProfile> {
   @override
@@ -39200,6 +40757,536 @@ class CreatureModesCompanion extends UpdateCompanion<CreatureMode> {
   }
 }
 
+class $CreatureEcologyStatesTable extends CreatureEcologyStates
+    with TableInfo<$CreatureEcologyStatesTable, CreatureEcologyState> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CreatureEcologyStatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _creatureIdMeta = const VerificationMeta(
+    'creatureId',
+  );
+  @override
+  late final GeneratedColumn<String> creatureId = GeneratedColumn<String>(
+    'creature_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _speciesIdMeta = const VerificationMeta(
+    'speciesId',
+  );
+  @override
+  late final GeneratedColumn<String> speciesId = GeneratedColumn<String>(
+    'species_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _genomeJsonMeta = const VerificationMeta(
+    'genomeJson',
+  );
+  @override
+  late final GeneratedColumn<String> genomeJson = GeneratedColumn<String>(
+    'genome_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _phenotypeJsonMeta = const VerificationMeta(
+    'phenotypeJson',
+  );
+  @override
+  late final GeneratedColumn<String> phenotypeJson = GeneratedColumn<String>(
+    'phenotype_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _needsJsonMeta = const VerificationMeta(
+    'needsJson',
+  );
+  @override
+  late final GeneratedColumn<String> needsJson = GeneratedColumn<String>(
+    'needs_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lineageIdMeta = const VerificationMeta(
+    'lineageId',
+  );
+  @override
+  late final GeneratedColumn<String> lineageId = GeneratedColumn<String>(
+    'lineage_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _simulationTickMeta = const VerificationMeta(
+    'simulationTick',
+  );
+  @override
+  late final GeneratedColumn<int> simulationTick = GeneratedColumn<int>(
+    'simulation_tick',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    creatureId,
+    speciesId,
+    genomeJson,
+    phenotypeJson,
+    needsJson,
+    lineageId,
+    simulationTick,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'creature_ecology_states';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CreatureEcologyState> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('creature_id')) {
+      context.handle(
+        _creatureIdMeta,
+        creatureId.isAcceptableOrUnknown(data['creature_id']!, _creatureIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_creatureIdMeta);
+    }
+    if (data.containsKey('species_id')) {
+      context.handle(
+        _speciesIdMeta,
+        speciesId.isAcceptableOrUnknown(data['species_id']!, _speciesIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_speciesIdMeta);
+    }
+    if (data.containsKey('genome_json')) {
+      context.handle(
+        _genomeJsonMeta,
+        genomeJson.isAcceptableOrUnknown(data['genome_json']!, _genomeJsonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_genomeJsonMeta);
+    }
+    if (data.containsKey('phenotype_json')) {
+      context.handle(
+        _phenotypeJsonMeta,
+        phenotypeJson.isAcceptableOrUnknown(
+          data['phenotype_json']!,
+          _phenotypeJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_phenotypeJsonMeta);
+    }
+    if (data.containsKey('needs_json')) {
+      context.handle(
+        _needsJsonMeta,
+        needsJson.isAcceptableOrUnknown(data['needs_json']!, _needsJsonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_needsJsonMeta);
+    }
+    if (data.containsKey('lineage_id')) {
+      context.handle(
+        _lineageIdMeta,
+        lineageId.isAcceptableOrUnknown(data['lineage_id']!, _lineageIdMeta),
+      );
+    }
+    if (data.containsKey('simulation_tick')) {
+      context.handle(
+        _simulationTickMeta,
+        simulationTick.isAcceptableOrUnknown(
+          data['simulation_tick']!,
+          _simulationTickMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {creatureId};
+  @override
+  CreatureEcologyState map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CreatureEcologyState(
+      creatureId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}creature_id'],
+      )!,
+      speciesId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}species_id'],
+      )!,
+      genomeJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}genome_json'],
+      )!,
+      phenotypeJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phenotype_json'],
+      )!,
+      needsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}needs_json'],
+      )!,
+      lineageId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}lineage_id'],
+      ),
+      simulationTick: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}simulation_tick'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CreatureEcologyStatesTable createAlias(String alias) {
+    return $CreatureEcologyStatesTable(attachedDatabase, alias);
+  }
+}
+
+class CreatureEcologyState extends DataClass
+    implements Insertable<CreatureEcologyState> {
+  final String creatureId;
+  final String speciesId;
+  final String genomeJson;
+  final String phenotypeJson;
+  final String needsJson;
+  final String? lineageId;
+  final int simulationTick;
+  final DateTime updatedAt;
+  const CreatureEcologyState({
+    required this.creatureId,
+    required this.speciesId,
+    required this.genomeJson,
+    required this.phenotypeJson,
+    required this.needsJson,
+    this.lineageId,
+    required this.simulationTick,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['creature_id'] = Variable<String>(creatureId);
+    map['species_id'] = Variable<String>(speciesId);
+    map['genome_json'] = Variable<String>(genomeJson);
+    map['phenotype_json'] = Variable<String>(phenotypeJson);
+    map['needs_json'] = Variable<String>(needsJson);
+    if (!nullToAbsent || lineageId != null) {
+      map['lineage_id'] = Variable<String>(lineageId);
+    }
+    map['simulation_tick'] = Variable<int>(simulationTick);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  CreatureEcologyStatesCompanion toCompanion(bool nullToAbsent) {
+    return CreatureEcologyStatesCompanion(
+      creatureId: Value(creatureId),
+      speciesId: Value(speciesId),
+      genomeJson: Value(genomeJson),
+      phenotypeJson: Value(phenotypeJson),
+      needsJson: Value(needsJson),
+      lineageId: lineageId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lineageId),
+      simulationTick: Value(simulationTick),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory CreatureEcologyState.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CreatureEcologyState(
+      creatureId: serializer.fromJson<String>(json['creatureId']),
+      speciesId: serializer.fromJson<String>(json['speciesId']),
+      genomeJson: serializer.fromJson<String>(json['genomeJson']),
+      phenotypeJson: serializer.fromJson<String>(json['phenotypeJson']),
+      needsJson: serializer.fromJson<String>(json['needsJson']),
+      lineageId: serializer.fromJson<String?>(json['lineageId']),
+      simulationTick: serializer.fromJson<int>(json['simulationTick']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'creatureId': serializer.toJson<String>(creatureId),
+      'speciesId': serializer.toJson<String>(speciesId),
+      'genomeJson': serializer.toJson<String>(genomeJson),
+      'phenotypeJson': serializer.toJson<String>(phenotypeJson),
+      'needsJson': serializer.toJson<String>(needsJson),
+      'lineageId': serializer.toJson<String?>(lineageId),
+      'simulationTick': serializer.toJson<int>(simulationTick),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  CreatureEcologyState copyWith({
+    String? creatureId,
+    String? speciesId,
+    String? genomeJson,
+    String? phenotypeJson,
+    String? needsJson,
+    Value<String?> lineageId = const Value.absent(),
+    int? simulationTick,
+    DateTime? updatedAt,
+  }) => CreatureEcologyState(
+    creatureId: creatureId ?? this.creatureId,
+    speciesId: speciesId ?? this.speciesId,
+    genomeJson: genomeJson ?? this.genomeJson,
+    phenotypeJson: phenotypeJson ?? this.phenotypeJson,
+    needsJson: needsJson ?? this.needsJson,
+    lineageId: lineageId.present ? lineageId.value : this.lineageId,
+    simulationTick: simulationTick ?? this.simulationTick,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  CreatureEcologyState copyWithCompanion(CreatureEcologyStatesCompanion data) {
+    return CreatureEcologyState(
+      creatureId: data.creatureId.present
+          ? data.creatureId.value
+          : this.creatureId,
+      speciesId: data.speciesId.present ? data.speciesId.value : this.speciesId,
+      genomeJson: data.genomeJson.present
+          ? data.genomeJson.value
+          : this.genomeJson,
+      phenotypeJson: data.phenotypeJson.present
+          ? data.phenotypeJson.value
+          : this.phenotypeJson,
+      needsJson: data.needsJson.present ? data.needsJson.value : this.needsJson,
+      lineageId: data.lineageId.present ? data.lineageId.value : this.lineageId,
+      simulationTick: data.simulationTick.present
+          ? data.simulationTick.value
+          : this.simulationTick,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreatureEcologyState(')
+          ..write('creatureId: $creatureId, ')
+          ..write('speciesId: $speciesId, ')
+          ..write('genomeJson: $genomeJson, ')
+          ..write('phenotypeJson: $phenotypeJson, ')
+          ..write('needsJson: $needsJson, ')
+          ..write('lineageId: $lineageId, ')
+          ..write('simulationTick: $simulationTick, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    creatureId,
+    speciesId,
+    genomeJson,
+    phenotypeJson,
+    needsJson,
+    lineageId,
+    simulationTick,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CreatureEcologyState &&
+          other.creatureId == this.creatureId &&
+          other.speciesId == this.speciesId &&
+          other.genomeJson == this.genomeJson &&
+          other.phenotypeJson == this.phenotypeJson &&
+          other.needsJson == this.needsJson &&
+          other.lineageId == this.lineageId &&
+          other.simulationTick == this.simulationTick &&
+          other.updatedAt == this.updatedAt);
+}
+
+class CreatureEcologyStatesCompanion
+    extends UpdateCompanion<CreatureEcologyState> {
+  final Value<String> creatureId;
+  final Value<String> speciesId;
+  final Value<String> genomeJson;
+  final Value<String> phenotypeJson;
+  final Value<String> needsJson;
+  final Value<String?> lineageId;
+  final Value<int> simulationTick;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const CreatureEcologyStatesCompanion({
+    this.creatureId = const Value.absent(),
+    this.speciesId = const Value.absent(),
+    this.genomeJson = const Value.absent(),
+    this.phenotypeJson = const Value.absent(),
+    this.needsJson = const Value.absent(),
+    this.lineageId = const Value.absent(),
+    this.simulationTick = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CreatureEcologyStatesCompanion.insert({
+    required String creatureId,
+    required String speciesId,
+    required String genomeJson,
+    required String phenotypeJson,
+    required String needsJson,
+    this.lineageId = const Value.absent(),
+    this.simulationTick = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : creatureId = Value(creatureId),
+       speciesId = Value(speciesId),
+       genomeJson = Value(genomeJson),
+       phenotypeJson = Value(phenotypeJson),
+       needsJson = Value(needsJson);
+  static Insertable<CreatureEcologyState> custom({
+    Expression<String>? creatureId,
+    Expression<String>? speciesId,
+    Expression<String>? genomeJson,
+    Expression<String>? phenotypeJson,
+    Expression<String>? needsJson,
+    Expression<String>? lineageId,
+    Expression<int>? simulationTick,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (creatureId != null) 'creature_id': creatureId,
+      if (speciesId != null) 'species_id': speciesId,
+      if (genomeJson != null) 'genome_json': genomeJson,
+      if (phenotypeJson != null) 'phenotype_json': phenotypeJson,
+      if (needsJson != null) 'needs_json': needsJson,
+      if (lineageId != null) 'lineage_id': lineageId,
+      if (simulationTick != null) 'simulation_tick': simulationTick,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CreatureEcologyStatesCompanion copyWith({
+    Value<String>? creatureId,
+    Value<String>? speciesId,
+    Value<String>? genomeJson,
+    Value<String>? phenotypeJson,
+    Value<String>? needsJson,
+    Value<String?>? lineageId,
+    Value<int>? simulationTick,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return CreatureEcologyStatesCompanion(
+      creatureId: creatureId ?? this.creatureId,
+      speciesId: speciesId ?? this.speciesId,
+      genomeJson: genomeJson ?? this.genomeJson,
+      phenotypeJson: phenotypeJson ?? this.phenotypeJson,
+      needsJson: needsJson ?? this.needsJson,
+      lineageId: lineageId ?? this.lineageId,
+      simulationTick: simulationTick ?? this.simulationTick,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (creatureId.present) {
+      map['creature_id'] = Variable<String>(creatureId.value);
+    }
+    if (speciesId.present) {
+      map['species_id'] = Variable<String>(speciesId.value);
+    }
+    if (genomeJson.present) {
+      map['genome_json'] = Variable<String>(genomeJson.value);
+    }
+    if (phenotypeJson.present) {
+      map['phenotype_json'] = Variable<String>(phenotypeJson.value);
+    }
+    if (needsJson.present) {
+      map['needs_json'] = Variable<String>(needsJson.value);
+    }
+    if (lineageId.present) {
+      map['lineage_id'] = Variable<String>(lineageId.value);
+    }
+    if (simulationTick.present) {
+      map['simulation_tick'] = Variable<int>(simulationTick.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CreatureEcologyStatesCompanion(')
+          ..write('creatureId: $creatureId, ')
+          ..write('speciesId: $speciesId, ')
+          ..write('genomeJson: $genomeJson, ')
+          ..write('phenotypeJson: $phenotypeJson, ')
+          ..write('needsJson: $needsJson, ')
+          ..write('lineageId: $lineageId, ')
+          ..write('simulationTick: $simulationTick, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $VehiclesTable extends Vehicles with TableInfo<$VehiclesTable, Vehicle> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -68773,6 +70860,12 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final $AssetsTable assets = $AssetsTable(this);
   late final $AssetTagsTable assetTags = $AssetTagsTable(this);
   late final $CharactersTable characters = $CharactersTable(this);
+  late final $NovelCharacterLinksTable novelCharacterLinks =
+      $NovelCharacterLinksTable(this);
+  late final $WorkflowDefinitionsTable workflowDefinitions =
+      $WorkflowDefinitionsTable(this);
+  late final $WorkflowRunRecordsTable workflowRunRecords =
+      $WorkflowRunRecordsTable(this);
   late final $CharacterIdentityProfilesTable characterIdentityProfiles =
       $CharacterIdentityProfilesTable(this);
   late final $CharacterReferencesTable characterReferences =
@@ -68913,6 +71006,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final $CreatureAbilitiesTable creatureAbilities =
       $CreatureAbilitiesTable(this);
   late final $CreatureModesTable creatureModes = $CreatureModesTable(this);
+  late final $CreatureEcologyStatesTable creatureEcologyStates =
+      $CreatureEcologyStatesTable(this);
   late final $VehiclesTable vehicles = $VehiclesTable(this);
   late final $VehicleSpecificationsTable vehicleSpecifications =
       $VehicleSpecificationsTable(this);
@@ -69092,6 +71187,9 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     assets,
     assetTags,
     characters,
+    novelCharacterLinks,
+    workflowDefinitions,
+    workflowRunRecords,
     characterIdentityProfiles,
     characterReferences,
     characterModes,
@@ -69172,6 +71270,7 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     creaturePhysicalProfiles,
     creatureAbilities,
     creatureModes,
+    creatureEcologyStates,
     vehicles,
     vehicleSpecifications,
     vehicleComponents,
@@ -70194,6 +72293,825 @@ typedef $$CharactersTableProcessedTableManager =
         BaseReferences<_$ProjectDatabase, $CharactersTable, Character>,
       ),
       Character,
+      PrefetchHooks Function()
+    >;
+typedef $$NovelCharacterLinksTableCreateCompanionBuilder =
+    NovelCharacterLinksCompanion Function({
+      required String linkId,
+      required String projectId,
+      required String novelWorkspaceId,
+      required String characterWorkspaceId,
+      required String characterId,
+      required String linkMode,
+      required String role,
+      required String visibility,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$NovelCharacterLinksTableUpdateCompanionBuilder =
+    NovelCharacterLinksCompanion Function({
+      Value<String> linkId,
+      Value<String> projectId,
+      Value<String> novelWorkspaceId,
+      Value<String> characterWorkspaceId,
+      Value<String> characterId,
+      Value<String> linkMode,
+      Value<String> role,
+      Value<String> visibility,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$NovelCharacterLinksTableFilterComposer
+    extends Composer<_$ProjectDatabase, $NovelCharacterLinksTable> {
+  $$NovelCharacterLinksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get linkId => $composableBuilder(
+    column: $table.linkId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get novelWorkspaceId => $composableBuilder(
+    column: $table.novelWorkspaceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get characterWorkspaceId => $composableBuilder(
+    column: $table.characterWorkspaceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get linkMode => $composableBuilder(
+    column: $table.linkMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get visibility => $composableBuilder(
+    column: $table.visibility,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$NovelCharacterLinksTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $NovelCharacterLinksTable> {
+  $$NovelCharacterLinksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get linkId => $composableBuilder(
+    column: $table.linkId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get novelWorkspaceId => $composableBuilder(
+    column: $table.novelWorkspaceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get characterWorkspaceId => $composableBuilder(
+    column: $table.characterWorkspaceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get linkMode => $composableBuilder(
+    column: $table.linkMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get visibility => $composableBuilder(
+    column: $table.visibility,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$NovelCharacterLinksTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $NovelCharacterLinksTable> {
+  $$NovelCharacterLinksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get linkId =>
+      $composableBuilder(column: $table.linkId, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get novelWorkspaceId => $composableBuilder(
+    column: $table.novelWorkspaceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get characterWorkspaceId => $composableBuilder(
+    column: $table.characterWorkspaceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get linkMode =>
+      $composableBuilder(column: $table.linkMode, builder: (column) => column);
+
+  GeneratedColumn<String> get role =>
+      $composableBuilder(column: $table.role, builder: (column) => column);
+
+  GeneratedColumn<String> get visibility => $composableBuilder(
+    column: $table.visibility,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$NovelCharacterLinksTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $NovelCharacterLinksTable,
+          NovelCharacterLink,
+          $$NovelCharacterLinksTableFilterComposer,
+          $$NovelCharacterLinksTableOrderingComposer,
+          $$NovelCharacterLinksTableAnnotationComposer,
+          $$NovelCharacterLinksTableCreateCompanionBuilder,
+          $$NovelCharacterLinksTableUpdateCompanionBuilder,
+          (
+            NovelCharacterLink,
+            BaseReferences<
+              _$ProjectDatabase,
+              $NovelCharacterLinksTable,
+              NovelCharacterLink
+            >,
+          ),
+          NovelCharacterLink,
+          PrefetchHooks Function()
+        > {
+  $$NovelCharacterLinksTableTableManager(
+    _$ProjectDatabase db,
+    $NovelCharacterLinksTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NovelCharacterLinksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NovelCharacterLinksTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$NovelCharacterLinksTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> linkId = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> novelWorkspaceId = const Value.absent(),
+                Value<String> characterWorkspaceId = const Value.absent(),
+                Value<String> characterId = const Value.absent(),
+                Value<String> linkMode = const Value.absent(),
+                Value<String> role = const Value.absent(),
+                Value<String> visibility = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => NovelCharacterLinksCompanion(
+                linkId: linkId,
+                projectId: projectId,
+                novelWorkspaceId: novelWorkspaceId,
+                characterWorkspaceId: characterWorkspaceId,
+                characterId: characterId,
+                linkMode: linkMode,
+                role: role,
+                visibility: visibility,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String linkId,
+                required String projectId,
+                required String novelWorkspaceId,
+                required String characterWorkspaceId,
+                required String characterId,
+                required String linkMode,
+                required String role,
+                required String visibility,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => NovelCharacterLinksCompanion.insert(
+                linkId: linkId,
+                projectId: projectId,
+                novelWorkspaceId: novelWorkspaceId,
+                characterWorkspaceId: characterWorkspaceId,
+                characterId: characterId,
+                linkMode: linkMode,
+                role: role,
+                visibility: visibility,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$NovelCharacterLinksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $NovelCharacterLinksTable,
+      NovelCharacterLink,
+      $$NovelCharacterLinksTableFilterComposer,
+      $$NovelCharacterLinksTableOrderingComposer,
+      $$NovelCharacterLinksTableAnnotationComposer,
+      $$NovelCharacterLinksTableCreateCompanionBuilder,
+      $$NovelCharacterLinksTableUpdateCompanionBuilder,
+      (
+        NovelCharacterLink,
+        BaseReferences<
+          _$ProjectDatabase,
+          $NovelCharacterLinksTable,
+          NovelCharacterLink
+        >,
+      ),
+      NovelCharacterLink,
+      PrefetchHooks Function()
+    >;
+typedef $$WorkflowDefinitionsTableCreateCompanionBuilder =
+    WorkflowDefinitionsCompanion Function({
+      required String definitionId,
+      required int version,
+      required String name,
+      required String payloadJson,
+      required DateTime createdAt,
+      Value<DateTime?> updatedAt,
+      Value<int> rowid,
+    });
+typedef $$WorkflowDefinitionsTableUpdateCompanionBuilder =
+    WorkflowDefinitionsCompanion Function({
+      Value<String> definitionId,
+      Value<int> version,
+      Value<String> name,
+      Value<String> payloadJson,
+      Value<DateTime> createdAt,
+      Value<DateTime?> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$WorkflowDefinitionsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $WorkflowDefinitionsTable> {
+  $$WorkflowDefinitionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get definitionId => $composableBuilder(
+    column: $table.definitionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WorkflowDefinitionsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $WorkflowDefinitionsTable> {
+  $$WorkflowDefinitionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get definitionId => $composableBuilder(
+    column: $table.definitionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkflowDefinitionsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $WorkflowDefinitionsTable> {
+  $$WorkflowDefinitionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get definitionId => $composableBuilder(
+    column: $table.definitionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$WorkflowDefinitionsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $WorkflowDefinitionsTable,
+          WorkflowDefinition,
+          $$WorkflowDefinitionsTableFilterComposer,
+          $$WorkflowDefinitionsTableOrderingComposer,
+          $$WorkflowDefinitionsTableAnnotationComposer,
+          $$WorkflowDefinitionsTableCreateCompanionBuilder,
+          $$WorkflowDefinitionsTableUpdateCompanionBuilder,
+          (
+            WorkflowDefinition,
+            BaseReferences<
+              _$ProjectDatabase,
+              $WorkflowDefinitionsTable,
+              WorkflowDefinition
+            >,
+          ),
+          WorkflowDefinition,
+          PrefetchHooks Function()
+        > {
+  $$WorkflowDefinitionsTableTableManager(
+    _$ProjectDatabase db,
+    $WorkflowDefinitionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkflowDefinitionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WorkflowDefinitionsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$WorkflowDefinitionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> definitionId = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> payloadJson = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WorkflowDefinitionsCompanion(
+                definitionId: definitionId,
+                version: version,
+                name: name,
+                payloadJson: payloadJson,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String definitionId,
+                required int version,
+                required String name,
+                required String payloadJson,
+                required DateTime createdAt,
+                Value<DateTime?> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WorkflowDefinitionsCompanion.insert(
+                definitionId: definitionId,
+                version: version,
+                name: name,
+                payloadJson: payloadJson,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkflowDefinitionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $WorkflowDefinitionsTable,
+      WorkflowDefinition,
+      $$WorkflowDefinitionsTableFilterComposer,
+      $$WorkflowDefinitionsTableOrderingComposer,
+      $$WorkflowDefinitionsTableAnnotationComposer,
+      $$WorkflowDefinitionsTableCreateCompanionBuilder,
+      $$WorkflowDefinitionsTableUpdateCompanionBuilder,
+      (
+        WorkflowDefinition,
+        BaseReferences<
+          _$ProjectDatabase,
+          $WorkflowDefinitionsTable,
+          WorkflowDefinition
+        >,
+      ),
+      WorkflowDefinition,
+      PrefetchHooks Function()
+    >;
+typedef $$WorkflowRunRecordsTableCreateCompanionBuilder =
+    WorkflowRunRecordsCompanion Function({
+      required String executionId,
+      required String definitionId,
+      required int definitionVersion,
+      required String state,
+      Value<String?> checkpointJson,
+      required DateTime startedAt,
+      Value<DateTime?> finishedAt,
+      Value<int> rowid,
+    });
+typedef $$WorkflowRunRecordsTableUpdateCompanionBuilder =
+    WorkflowRunRecordsCompanion Function({
+      Value<String> executionId,
+      Value<String> definitionId,
+      Value<int> definitionVersion,
+      Value<String> state,
+      Value<String?> checkpointJson,
+      Value<DateTime> startedAt,
+      Value<DateTime?> finishedAt,
+      Value<int> rowid,
+    });
+
+class $$WorkflowRunRecordsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $WorkflowRunRecordsTable> {
+  $$WorkflowRunRecordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get executionId => $composableBuilder(
+    column: $table.executionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get definitionId => $composableBuilder(
+    column: $table.definitionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get definitionVersion => $composableBuilder(
+    column: $table.definitionVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get checkpointJson => $composableBuilder(
+    column: $table.checkpointJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get finishedAt => $composableBuilder(
+    column: $table.finishedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WorkflowRunRecordsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $WorkflowRunRecordsTable> {
+  $$WorkflowRunRecordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get executionId => $composableBuilder(
+    column: $table.executionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get definitionId => $composableBuilder(
+    column: $table.definitionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get definitionVersion => $composableBuilder(
+    column: $table.definitionVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get checkpointJson => $composableBuilder(
+    column: $table.checkpointJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get finishedAt => $composableBuilder(
+    column: $table.finishedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkflowRunRecordsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $WorkflowRunRecordsTable> {
+  $$WorkflowRunRecordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get executionId => $composableBuilder(
+    column: $table.executionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get definitionId => $composableBuilder(
+    column: $table.definitionId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get definitionVersion => $composableBuilder(
+    column: $table.definitionVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get state =>
+      $composableBuilder(column: $table.state, builder: (column) => column);
+
+  GeneratedColumn<String> get checkpointJson => $composableBuilder(
+    column: $table.checkpointJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get startedAt =>
+      $composableBuilder(column: $table.startedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get finishedAt => $composableBuilder(
+    column: $table.finishedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$WorkflowRunRecordsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $WorkflowRunRecordsTable,
+          WorkflowRunRecord,
+          $$WorkflowRunRecordsTableFilterComposer,
+          $$WorkflowRunRecordsTableOrderingComposer,
+          $$WorkflowRunRecordsTableAnnotationComposer,
+          $$WorkflowRunRecordsTableCreateCompanionBuilder,
+          $$WorkflowRunRecordsTableUpdateCompanionBuilder,
+          (
+            WorkflowRunRecord,
+            BaseReferences<
+              _$ProjectDatabase,
+              $WorkflowRunRecordsTable,
+              WorkflowRunRecord
+            >,
+          ),
+          WorkflowRunRecord,
+          PrefetchHooks Function()
+        > {
+  $$WorkflowRunRecordsTableTableManager(
+    _$ProjectDatabase db,
+    $WorkflowRunRecordsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkflowRunRecordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WorkflowRunRecordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WorkflowRunRecordsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> executionId = const Value.absent(),
+                Value<String> definitionId = const Value.absent(),
+                Value<int> definitionVersion = const Value.absent(),
+                Value<String> state = const Value.absent(),
+                Value<String?> checkpointJson = const Value.absent(),
+                Value<DateTime> startedAt = const Value.absent(),
+                Value<DateTime?> finishedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WorkflowRunRecordsCompanion(
+                executionId: executionId,
+                definitionId: definitionId,
+                definitionVersion: definitionVersion,
+                state: state,
+                checkpointJson: checkpointJson,
+                startedAt: startedAt,
+                finishedAt: finishedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String executionId,
+                required String definitionId,
+                required int definitionVersion,
+                required String state,
+                Value<String?> checkpointJson = const Value.absent(),
+                required DateTime startedAt,
+                Value<DateTime?> finishedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WorkflowRunRecordsCompanion.insert(
+                executionId: executionId,
+                definitionId: definitionId,
+                definitionVersion: definitionVersion,
+                state: state,
+                checkpointJson: checkpointJson,
+                startedAt: startedAt,
+                finishedAt: finishedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkflowRunRecordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $WorkflowRunRecordsTable,
+      WorkflowRunRecord,
+      $$WorkflowRunRecordsTableFilterComposer,
+      $$WorkflowRunRecordsTableOrderingComposer,
+      $$WorkflowRunRecordsTableAnnotationComposer,
+      $$WorkflowRunRecordsTableCreateCompanionBuilder,
+      $$WorkflowRunRecordsTableUpdateCompanionBuilder,
+      (
+        WorkflowRunRecord,
+        BaseReferences<
+          _$ProjectDatabase,
+          $WorkflowRunRecordsTable,
+          WorkflowRunRecord
+        >,
+      ),
+      WorkflowRunRecord,
       PrefetchHooks Function()
     >;
 typedef $$CharacterIdentityProfilesTableCreateCompanionBuilder =
@@ -90266,6 +93184,290 @@ typedef $$CreatureModesTableProcessedTableManager =
       CreatureMode,
       PrefetchHooks Function()
     >;
+typedef $$CreatureEcologyStatesTableCreateCompanionBuilder =
+    CreatureEcologyStatesCompanion Function({
+      required String creatureId,
+      required String speciesId,
+      required String genomeJson,
+      required String phenotypeJson,
+      required String needsJson,
+      Value<String?> lineageId,
+      Value<int> simulationTick,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+typedef $$CreatureEcologyStatesTableUpdateCompanionBuilder =
+    CreatureEcologyStatesCompanion Function({
+      Value<String> creatureId,
+      Value<String> speciesId,
+      Value<String> genomeJson,
+      Value<String> phenotypeJson,
+      Value<String> needsJson,
+      Value<String?> lineageId,
+      Value<int> simulationTick,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$CreatureEcologyStatesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CreatureEcologyStatesTable> {
+  $$CreatureEcologyStatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get creatureId => $composableBuilder(
+    column: $table.creatureId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get speciesId => $composableBuilder(
+    column: $table.speciesId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get genomeJson => $composableBuilder(
+    column: $table.genomeJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phenotypeJson => $composableBuilder(
+    column: $table.phenotypeJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get needsJson => $composableBuilder(
+    column: $table.needsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lineageId => $composableBuilder(
+    column: $table.lineageId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get simulationTick => $composableBuilder(
+    column: $table.simulationTick,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CreatureEcologyStatesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CreatureEcologyStatesTable> {
+  $$CreatureEcologyStatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get creatureId => $composableBuilder(
+    column: $table.creatureId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get speciesId => $composableBuilder(
+    column: $table.speciesId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get genomeJson => $composableBuilder(
+    column: $table.genomeJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phenotypeJson => $composableBuilder(
+    column: $table.phenotypeJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get needsJson => $composableBuilder(
+    column: $table.needsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lineageId => $composableBuilder(
+    column: $table.lineageId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get simulationTick => $composableBuilder(
+    column: $table.simulationTick,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CreatureEcologyStatesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CreatureEcologyStatesTable> {
+  $$CreatureEcologyStatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get creatureId => $composableBuilder(
+    column: $table.creatureId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get speciesId =>
+      $composableBuilder(column: $table.speciesId, builder: (column) => column);
+
+  GeneratedColumn<String> get genomeJson => $composableBuilder(
+    column: $table.genomeJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get phenotypeJson => $composableBuilder(
+    column: $table.phenotypeJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get needsJson =>
+      $composableBuilder(column: $table.needsJson, builder: (column) => column);
+
+  GeneratedColumn<String> get lineageId =>
+      $composableBuilder(column: $table.lineageId, builder: (column) => column);
+
+  GeneratedColumn<int> get simulationTick => $composableBuilder(
+    column: $table.simulationTick,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$CreatureEcologyStatesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CreatureEcologyStatesTable,
+          CreatureEcologyState,
+          $$CreatureEcologyStatesTableFilterComposer,
+          $$CreatureEcologyStatesTableOrderingComposer,
+          $$CreatureEcologyStatesTableAnnotationComposer,
+          $$CreatureEcologyStatesTableCreateCompanionBuilder,
+          $$CreatureEcologyStatesTableUpdateCompanionBuilder,
+          (
+            CreatureEcologyState,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CreatureEcologyStatesTable,
+              CreatureEcologyState
+            >,
+          ),
+          CreatureEcologyState,
+          PrefetchHooks Function()
+        > {
+  $$CreatureEcologyStatesTableTableManager(
+    _$ProjectDatabase db,
+    $CreatureEcologyStatesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CreatureEcologyStatesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CreatureEcologyStatesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CreatureEcologyStatesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> creatureId = const Value.absent(),
+                Value<String> speciesId = const Value.absent(),
+                Value<String> genomeJson = const Value.absent(),
+                Value<String> phenotypeJson = const Value.absent(),
+                Value<String> needsJson = const Value.absent(),
+                Value<String?> lineageId = const Value.absent(),
+                Value<int> simulationTick = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreatureEcologyStatesCompanion(
+                creatureId: creatureId,
+                speciesId: speciesId,
+                genomeJson: genomeJson,
+                phenotypeJson: phenotypeJson,
+                needsJson: needsJson,
+                lineageId: lineageId,
+                simulationTick: simulationTick,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String creatureId,
+                required String speciesId,
+                required String genomeJson,
+                required String phenotypeJson,
+                required String needsJson,
+                Value<String?> lineageId = const Value.absent(),
+                Value<int> simulationTick = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CreatureEcologyStatesCompanion.insert(
+                creatureId: creatureId,
+                speciesId: speciesId,
+                genomeJson: genomeJson,
+                phenotypeJson: phenotypeJson,
+                needsJson: needsJson,
+                lineageId: lineageId,
+                simulationTick: simulationTick,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CreatureEcologyStatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CreatureEcologyStatesTable,
+      CreatureEcologyState,
+      $$CreatureEcologyStatesTableFilterComposer,
+      $$CreatureEcologyStatesTableOrderingComposer,
+      $$CreatureEcologyStatesTableAnnotationComposer,
+      $$CreatureEcologyStatesTableCreateCompanionBuilder,
+      $$CreatureEcologyStatesTableUpdateCompanionBuilder,
+      (
+        CreatureEcologyState,
+        BaseReferences<
+          _$ProjectDatabase,
+          $CreatureEcologyStatesTable,
+          CreatureEcologyState
+        >,
+      ),
+      CreatureEcologyState,
+      PrefetchHooks Function()
+    >;
 typedef $$VehiclesTableCreateCompanionBuilder =
     VehiclesCompanion Function({
       required String assetId,
@@ -106567,6 +109769,12 @@ class $ProjectDatabaseManager {
       $$AssetTagsTableTableManager(_db, _db.assetTags);
   $$CharactersTableTableManager get characters =>
       $$CharactersTableTableManager(_db, _db.characters);
+  $$NovelCharacterLinksTableTableManager get novelCharacterLinks =>
+      $$NovelCharacterLinksTableTableManager(_db, _db.novelCharacterLinks);
+  $$WorkflowDefinitionsTableTableManager get workflowDefinitions =>
+      $$WorkflowDefinitionsTableTableManager(_db, _db.workflowDefinitions);
+  $$WorkflowRunRecordsTableTableManager get workflowRunRecords =>
+      $$WorkflowRunRecordsTableTableManager(_db, _db.workflowRunRecords);
   $$CharacterIdentityProfilesTableTableManager get characterIdentityProfiles =>
       $$CharacterIdentityProfilesTableTableManager(
         _db,
@@ -106778,6 +109986,8 @@ class $ProjectDatabaseManager {
       $$CreatureAbilitiesTableTableManager(_db, _db.creatureAbilities);
   $$CreatureModesTableTableManager get creatureModes =>
       $$CreatureModesTableTableManager(_db, _db.creatureModes);
+  $$CreatureEcologyStatesTableTableManager get creatureEcologyStates =>
+      $$CreatureEcologyStatesTableTableManager(_db, _db.creatureEcologyStates);
   $$VehiclesTableTableManager get vehicles =>
       $$VehiclesTableTableManager(_db, _db.vehicles);
   $$VehicleSpecificationsTableTableManager get vehicleSpecifications =>

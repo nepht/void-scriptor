@@ -60,6 +60,21 @@ void main() {
     expect((await repository.getEnvironments()).single.assetId, id);
     await repository.deleteEnvironment(id);
     expect(await database.assetDao.getById(id), isNull);
+    expect(await database.environmentDao.getEnvironment(id), isNull);
+    expect(await database.environmentDao.getWeatherProfiles(id), isEmpty);
+    expect(await database.environmentDao.getLightingProfiles(id), isEmpty);
+    expect(
+      await (database.select(
+        database.environmentPhysicsProfiles,
+      )..where((row) => row.environmentId.equals(id))).get(),
+      isEmpty,
+    );
+    expect(
+      await Directory(
+        '${(await paths.project('project-1')).path}${Platform.pathSeparator}assets${Platform.pathSeparator}environments${Platform.pathSeparator}$id',
+      ).exists(),
+      isFalse,
+    );
   });
 
   test('environment schema survives database restart', () async {
@@ -79,7 +94,7 @@ void main() {
 
     final second = await ProjectDatabaseService().open(databasePath);
     addTearDown(second.close);
-    expect(second.schemaVersion, 53);
+    expect(second.schemaVersion, 56);
     expect(
       (await second.environmentDao.getEnvironment(id))?.name,
       'Rooftop District',

@@ -50,8 +50,8 @@ change, proyek lama wajib tetap terbuka.
 | 103.26 | Execution Monitor UI | VERIFIED | `execution_monitor_screen.dart`: proyeksi snapshot murni (tanpa timer/polling), progress bar per eksekusi, ikon per state; widget test render+empty; 2 test |
 | 103.27 | Workflow Audit Trail | VERIFIED | `workflow_audit.dart`: 9 kind kanonik, entri identifier-only (detail dibuang — konten cerita/secrets tak bisa bocor), mapper event runner; 3 test |
 | 103.28 | Performance & Resource Limits | VERIFIED | `workflow_limits.dart`: batas concurrent executions (default 4, ≤8), max steps/workflow 64, cap checkpoint; slot tracker acquire/release; 3 test |
-| 103.29 | Automated Test Matrix | PENDING | — |
-| 103.30 | Documentation & Examples | PENDING | — |
+| 103.29 | Automated Test Matrix | VERIFIED | Full suite lokal: **+1617 All tests passed** (`vs_full_suite_103.log`, FULLTEST_EXIT=0) — unit workflow 65 + widget UI 6 + seluruh regresi repo; analyze No issues |
+| 103.30 | Documentation & Examples | VERIFIED | `docs/workflows/README.md` (peta modul, alur minimal, batasan desain) + `tool/workflow_example.dart` dieksekusi nyata: `succeeded steps=[apply, collect] audit=2` |
 | 103.31 | Alpha Artifact | PENDING | — |
 | 103.32 | Sprint Closure | PENDING | — |
 

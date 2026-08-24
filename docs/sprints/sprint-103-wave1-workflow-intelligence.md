@@ -25,22 +25,22 @@ change, proyek lama wajib tetap terbuka.
 | 103.1 | Wave Scope Confirmation | VERIFIED | Scope MUST = paket 102 APPROVED (`docs/sprints/sprint-102-v1.1-planning.md`, §102.14); owner engineering=nephthys, rilis=Choirudin; acceptance per langkah = test eksplisit |
 | 103.2 | Workflow Feature Flag | VERIFIED | TDD RED→GREEN `test/workflow/workflow_feature_flag_test.dart`; default OFF, override ter-audit via `WorkflowAuditSink`; 4 test hijau |
 | 103.3 | Workflow Domain Boundary | VERIFIED | Modul baru `lib/workflow/`; aturan dependensi tertulis di doc header `workflow_feature_flag.dart`: hanya boleh bergantung ke `core/`, konsumsi fitur lain lewat interface modul |
-| 103.4 | Workflow Definition Model | PENDING | — |
-| 103.5 | Workflow Step Model | PENDING | — |
-| 103.6 | Workflow Validation Service | PENDING | — |
-| 103.7 | Workflow Execution State | PENDING | — |
+| 103.4 | Workflow Definition Model | VERIFIED | `lib/workflow/workflow_definition.dart`: field kanonik lengkap (workflowId/name/version/steps/inputs/outputs/policy/createdAt/updatedAt) |
+| 103.5 | Workflow Step Model | VERIFIED | `WorkflowStep`: commandType, bindings typed (`WorkflowBinding` grammar in./step./out.), retryPolicy+timeout+failurePolicy, optional semantics |
+| 103.6 | Workflow Validation Service | VERIFIED | TDD 8 test hijau; kelima rule kanonik + unknown_dependency delegasi ke resolver |
+| 103.7 | Workflow Execution State | VERIFIED | State machine 9 status, transisi eksplisit (queued→cancelled instan mengikuti preseden Sprint 26), terminal tertutup; 6 test |
 | 103.8 | Workflow Runner | PENDING | — |
 | 103.9 | Command Binding | PENDING | — |
 | 103.10 | Input Binding | PENDING | — |
 | 103.11 | Output Binding | PENDING | — |
-| 103.12 | Dependency Resolver | PENDING | — |
+| 103.12 | Dependency Resolver | VERIFIED | Kahn + tie declaration-order, cycle detection (termasuk self-dep) dengan anggota siklus dilaporkan; `readyAt` deterministik; 5 test |
 | 103.13 | Cancellation Propagation | PENDING | — |
 | 103.14 | Pause & Resume | PENDING | — |
 | 103.15 | Workflow Checkpoint | PENDING | — |
 | 103.16 | Crash Recovery | PENDING | — |
-| 103.17 | Retry Policy | PENDING | — |
-| 103.18 | Timeout Policy | PENDING | — |
-| 103.19 | Failure Policy | PENDING | — |
+| 103.17 | Retry Policy | VERIFIED | `workflow_policies.dart`: maxAttempts≤5, hanya error retryable, non-idempotent tidak pernah auto-retry; 3 test |
+| 103.18 | Timeout Policy | VERIFIED | per-step wajib & positif, workflow-level opsional; audit timeout di runner (103.8) |
+| 103.19 | Failure Policy | VERIFIED | 5 policy kanonik; default turun dari optional→skipIfOptional, mandatory→stop; 2 test |
 | 103.20 | Permission Evaluation | PENDING | — |
 | 103.21 | Privacy Evaluation | PENDING | — |
 | 103.22 | Workflow Persistence | BLOCKED (koordinasi skema) | Menunggu kejelasan kepemilikan v54/v55 pada project_database.dart |

@@ -29,20 +29,20 @@ change, proyek lama wajib tetap terbuka.
 | 103.5 | Workflow Step Model | VERIFIED | `WorkflowStep`: commandType, bindings typed (`WorkflowBinding` grammar in./step./out.), retryPolicy+timeout+failurePolicy, optional semantics |
 | 103.6 | Workflow Validation Service | VERIFIED | TDD 8 test hijau; kelima rule kanonik + unknown_dependency delegasi ke resolver |
 | 103.7 | Workflow Execution State | VERIFIED | State machine 9 status, transisi eksplisit (queued→cancelled instan mengikuti preseden Sprint 26), terminal tertutup; 6 test |
-| 103.8 | Workflow Runner | PENDING | — |
-| 103.9 | Command Binding | PENDING | — |
-| 103.10 | Input Binding | PENDING | — |
-| 103.11 | Output Binding | PENDING | — |
+| 103.8 | Workflow Runner | VERIFIED | `workflow_runner.dart` di ATAS `BackgroundJobQueue` existing (reuse wajib 103.8; tanpa engine kedua): retry/timeout/skip/fail per policy, drain pump, event stream; 9 test |
+| 103.9 | Command Binding | VERIFIED | `CommandBindingValidator`: command harus terdaftar & capability-nya muat policy; 2 test |
+| 103.10 | Input Binding | VERIFIED | `InputBindingResolver`: hanya sumber deklaratif (`in.*`, `step.*`); implicit global ditolak; 3 test |
+| 103.11 | Output Binding | VERIFIED | `OutputCapture` typed + provenance; output tak dideklarasikan ditolak; 2 test |
+| 103.13 | Cancellation Propagation | VERIFIED | Kooperatif via `JobContext.isCancelled`; antrean mati instan lewat `queue.cancel`; cancel-before-start menang balapan (deferred launch); limitasi boundary didokumentasikan |
+| 103.14 | Pause & Resume | VERIFIED | Pause hanya pada boundary step (tanpa freeze proses); resume meluncurkan ulang step siap; 1 test |
+| 103.15 | Workflow Checkpoint | VERIFIED | Tulis atomik (tmp unik + rename) tiap step selesai DAN saat terminal state; field kanonik lengkap; roundtrip JSON; 1 test |
+| 103.16 | Crash Recovery | PARTIAL | Opsi kanonik terdefinisi (`WorkflowRecoveryOption` ×4), checkpoint store `read()` tersedia untuk deteksi; alur resume-from-checkpoint end-to-end BELUM diuji — menyusul slice khusus |
 | 103.12 | Dependency Resolver | VERIFIED | Kahn + tie declaration-order, cycle detection (termasuk self-dep) dengan anggota siklus dilaporkan; `readyAt` deterministik; 5 test |
-| 103.13 | Cancellation Propagation | PENDING | — |
-| 103.14 | Pause & Resume | PENDING | — |
-| 103.15 | Workflow Checkpoint | PENDING | — |
-| 103.16 | Crash Recovery | PENDING | — |
 | 103.17 | Retry Policy | VERIFIED | `workflow_policies.dart`: maxAttempts≤5, hanya error retryable, non-idempotent tidak pernah auto-retry; 3 test |
 | 103.18 | Timeout Policy | VERIFIED | per-step wajib & positif, workflow-level opsional; audit timeout di runner (103.8) |
 | 103.19 | Failure Policy | VERIFIED | 5 policy kanonik; default turun dari optional→skipIfOptional, mandatory→stop; 2 test |
-| 103.20 | Permission Evaluation | PENDING | — |
-| 103.21 | Privacy Evaluation | PENDING | — |
+| 103.20 | Permission Evaluation | VERIFIED | `workflow_security.dart`: deny-by-default (irisan requested∩granted), eskalasi struktural mustahil; 3 test |
+| 103.21 | Privacy Evaluation | VERIFIED | local_only enforced, transfer eksternal wajib audit, data minimization via declared kinds; 4 test |
 | 103.22 | Workflow Persistence | BLOCKED (koordinasi skema) | Menunggu kejelasan kepemilikan v54/v55 pada project_database.dart |
 | 103.23 | Template Registry | PENDING | — |
 | 103.24 | Workflow Library UI | PENDING | — |

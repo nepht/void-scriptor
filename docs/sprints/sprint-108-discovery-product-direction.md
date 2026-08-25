@@ -31,9 +31,9 @@
 | 108.6 | Workflow Observation | VERIFIED | `docs/discovery/v1.2/workflow-observation.md` — rekonstruksi sesi nyata 22–23 Agu atas proyek "Test Novel" (metode forensik mtime+DB read-only, isi cerita tak dibuka); temuan kunci: pemakaian berhenti total pasca-sesi uji |
 | 108.7 | Friction Map | VERIFIED | `docs/discovery/v1.2/friction-map.md` — F-01…F-05 dengan field wajib lengkap; tiap entri berbukti; F-03 (retensi) ditandai n=1 rapuh, F-04 ditandai inferensi |
 | 108.8 | Unmet-Need Map | VERIFIED | `docs/discovery/v1.2/unmet-needs.md` — UN-01…UN-06 rumusan masalah-murni berbukti (problem_before_solution); keinginan tanpa bukti sengaja tidak didaftarkan |
-| 108.9 | Support & Incident Analysis | PENDING | Pola masalah dari rekaman support/inciden |
-| 108.10 | Workflow Intelligence Evaluation | PENDING | Penggunaan, keberhasilan, batas fitur workflow v1.1 |
-| 108.11 | Automation Safety Evaluation | PENDING | Nilai vs risiko automation |
+| 108.9 | Support & Incident Analysis | VERIFIED | `docs/discovery/v1.2/support-incidents.md` — SI-01…SI-05 dengan group_by kanonik lengkap; nol insiden produk terverifikasi; pola root_cause yang bisa dikurangi: ketergantungan WSL tunggal + buta pemakaian |
+| 108.10 | Workflow Intelligence Evaluation | VERIFIED | `docs/discovery/v1.2/workflow-intelligence.md` — 7 metrik kanonik dievaluasi jujur: creation/repeat_use = 0 nyata, failure dsb. tak terdefinisi (0/0), abandonment subsistem 100%; kapabilitas teruji ≠ adopsi |
+| 108.11 | Automation Safety Evaluation | VERIFIED | `docs/discovery/v1.2/automation-safety.md` — 6 sinyal kanonik = 0 kejadian nyata; verdikt dua arah: nilai belum tersalurkan, risiko lapangan belum teruji; hanya keamanan kondisi-uji yang terbukti |
 | 108.12 | Platform Experience Review | PENDING | Perbandingan workflow/keterbatasan antar platform didukung |
 | 108.13 | Plugin Ecosystem Review | PENDING | Kebutuhan ekstensi & hambatan Plugin API v1 |
 | 108.14 | AI & Compute Direction Review | PENDING | Local/remote/provider: biaya, privasi, kualitas, latency |

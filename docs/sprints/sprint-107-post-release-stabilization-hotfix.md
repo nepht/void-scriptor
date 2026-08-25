@@ -20,8 +20,9 @@
 | 107.11 | Updater Failure Analysis | PENDING | Framework tahapan siap (manifest/download/hash/signature/install/restart/rollback) tapi updater itu sendiri belum ada (KI-04) — analisis hanya relevan bila updater dibangun di sprint ini |
 | 107.12 | Workflow Recovery Fixes | PENDING | Evidence-gated: hanya dieksekusi atas insiden terverifikasi |
 | 107.13 | False-Trigger Prevention | PENDING | Evidence-gated |
-| 107.14 | Duplicate-Effect Prevention | PENDING | Evidence-gated |
-| 107.15 | Approval-Gate Regression | PENDING | Dieksekusi bersama batch fix pertama |
+| 107.14 | Duplicate-Effect Prevention | VERIFIED | Regresi `DuplicateTriggerSuppressor` (+3 test): event logis sama dalam window = suppressed (audit bawa sourceEventId mentah), di luar window = allowed lagi, key berbeda tidak saling menekan |
+| 107.15 | Approval-Gate Regression | VERIFIED | Regresi approval gate (+5 test): wait tanpa checkpoint durable = throwsStateError; kelima ApprovalGateType menghasilkan request ter-checkpoint; keputusan dalam deadline diterima+di-audit; setelah deadline ditolak; timeout fail-safe DENIED dengan jejak audit |
+| 107.21 | Localization Regression | VERIFIED | Paritas en/id terukur: 4 vs 4 kunci, symmetric-diff ∅, tanpa nilai kosong/raw key (+2 test membaca lib/l10n/app_en.arb & app_id.arb langsung) |
 | 107.16 | Plugin Compatibility Fixes | PENDING | Evidence-gated (plugin API major 1 tetap beku) |
 | 107.17 | Security Hotfix Review | PENDING | Wajib untuk SETIAP fix sebelum masuk RC |
 | 107.18 | Privacy Hotfix Review | PENDING | Wajib untuk SETIAP fix sebelum masuk RC |
@@ -30,7 +31,7 @@
 | 107.21 | Localization Regression | PENDING | en + id, tanpa raw key, tanpa overflow — menunggu batch fix pertama |
 | 107.22 | Hotfix Scope Lock | PENDING | Dideklarasikan penuh saat kumpulan fix disetujui (blokir: new_feature/breaking_api/schema_redesign/large_refactor/ui_redesign) |
 | 107.23 | Automated Regression Suite | PENDING | Regression test per fix (unit/integration/migration/recovery/security/privacy/ui) |
-| 107.24 | Installer Validation | PENDING | Bergantung packaging (KI-04); source_versions 1.0.1 & 1.1.0 |
+| 107.24 | Installer Validation | PARTIAL | Paket portable diuji end-to-end dari ZIP tership: ekstraksi segar → `sha256sum -c` OK (biner tetap `e87e6580…`) → `VERIFY-SIGNATURE.sh` Verified OK → biner dieksekusi (proses hidup, Dart VM service menyala, jendela native WSLg `void_scriptor (Ubuntu)` muncul via msrdc). **Batas jujur:** render GUI hitam di WSLg tanpa GPU (MESA ZINK gagal pilih device) — verifikasi visual konten aplikasi DEFERRED ke mesin ber-GPU; installer MSI/deb tetap terbuka (KI-04) |
 | 107.25 | Update & Rollback Validation | PENDING | Gerbang manifest/hash/signature/install/restart/rollback |
 | 107.26 | Hotfix Release Candidate | PENDING | Target `1.1.1-rc.1`, promote_exact_rc=true |
 | 107.27 | RC Soak & Monitoring | PENDING | Binary beku selama soak |

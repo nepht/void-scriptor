@@ -1,0 +1,64 @@
+# Sprint 109 — VOID SCRIPTOR v1.2 Writer, Story & Lore Productivity
+
+- **Status:** BERJALAN (dibuka 2026-08-25 ±22:00 WIB, pasca penutupan S108) · **Base aktual:**  stable · **Target kanonik:** 
+- **Kanonik:**  (SPRINT_MASTER, 52 langkah, VALIDATED; )
+- **Deviasi kanonik terdokumentasi:**  kanonik menyebut ; nyata tetap 
+  (konsekuensi opsi A S107 — pola deviasi sama dengan S108, direkam atas rantai keputusan arsitek).
+- **Delivery rules kanonik diadopsi penuh:** tanpa fabricated completion; flag default OFF;
+  backward-compat + migration-rollback + local-first + export-data + review a11y & security wajib.
+- **Entry gate 109.1:** seluruh bukti tersedia dari paket gate 108.31 (@).
+
+| langkah | judul | status | bukti/catatan |
+|---|---|---|---|
+| 109.1 | Sprint Entry Gate | VERIFIED | Paket lengkap: direction approval (GO 108.31), scope disetujui (), success metrics, feasibility x5, risk register R-01..R-09 — semua di  |
+| 109.2 | Wave 1 Scope Contract | PENDING | Mengunci 13 capability, non-goals, dependency, dan acceptance boundary. |
+| 109.3 | Shared Architecture & Ownership | PENDING | Menetapkan boundary modul dan memisahkan Novel Workspace dari Character Workspace pada UI, ownership, persiste |
+| 109.4 | Shared Data Schema | PENDING | Merancang schema terpisah untuk Novel dan Character serta kontrak novel_character_link tanpa co-ownership data |
+| 109.5 | Migration, Backup & Rollback Plan | PENDING | Menjamin project lama dapat dibuka, dimigrasikan, dicadangkan, dan dipulihkan. |
+| 109.6 | Permission & Privacy Model | PENDING | Menentukan akses data lokal, media, sharing, ekspor, dan analisis. |
+| 109.7 | Accessibility & Localization Baseline | PENDING | Menetapkan standar keyboard, screen reader, scaling, contrast, motion, locale, dan text expansion. |
+| 109.8 | Feature Flags & Observability | PENDING | Menyiapkan rollout aman dan pengukuran tanpa mengumpulkan isi kreatif secara default. |
+| 109.9 | Inline Lore Link Syntax & Parser | PENDING | Mendukung sintaks [[Entity]] tanpa merusak teks atau ekspor. |
+| 109.10 | Lore Link Autocomplete & Preview | PENDING | Menyediakan pencarian, autocomplete, pembuatan entitas, dan preview kontekstual dari editor. |
+| 109.11 | Backlinks & Broken-Link Integrity | PENDING | Menampilkan referensi balik dan mendeteksi target hilang atau ambigu. |
+| 109.12 | Contradiction Rule Contract | PENDING | Menyatukan rule continuity untuk waktu, usia, lokasi, status hidup, kepemilikan, dan fakta canon. |
+| 109.13 | Contradiction Analysis Pipeline | PENDING | Menjalankan rule secara incremental dan menjaga referensi sumber. |
+| 109.14 | Contradiction Inbox | PENDING | Menyediakan inbox terpadu dengan filter, alasan, bukti, dan tindakan penyelesaian. |
+| 109.15 | Character Interview Workspace | PENDING | Menyediakan sesi wawancara orang pertama di Character Workspace sebagai sumber profil karakter kanonis. |
+| 109.16 | Voice Profile & Dialogue Consistency | PENDING | Menghasilkan profil diksi, nada, tabu, pola bicara, dan peringatan konsistensi yang dapat diedit. |
+| 109.17 | Conlang Registry & Dictionary | PENDING | Menyimpan bahasa, kata, arti, kelas kata, varian, dan contoh penggunaan. |
+| 109.18 | Conlang Grammar, Phonology & Script | PENDING | Mendokumentasikan rule tata bahasa, bunyi, romanisasi, dan sistem tulisan. |
+| 109.19 | Conlang Usage Consistency | PENDING | Mendeteksi ejaan atau arti yang tidak konsisten dengan kamus tanpa mengubah naskah otomatis. |
+| 109.20 | Focus Writing Mode | PENDING | Menyediakan ruang menulis minim distraksi dengan kontrol yang tetap dapat diakses. |
+| 109.21 | Word Targets & Session Progress | PENDING | Mendukung target kata per sesi, adegan, bab, dan project. |
+| 109.22 | Draft Snapshot Compare & Restore | PENDING | Membandingkan snapshot dan memulihkan versi secara aman tanpa menghapus versi kini. |
+| 109.23 | Writer-Focused Lore Graph | PENDING | Menampilkan hubungan entitas dengan filter domain, waktu, canon, dan project. |
+| 109.24 | Lore Graph Integrity Insights | PENDING | Mendeteksi node yatim, relasi konflik, dan jalur yang tidak lengkap. |
+| 109.25 | Plot Board Data Model | PENDING | Menyatukan kartu plot dengan bab, adegan, arc, POV, status, dan label pacing. |
+| 109.26 | Kanban Plot Interaction | PENDING | Mendukung pemindahan kartu melalui drag-and-drop dan keyboard. |
+| 109.27 | Plot Order Synchronization | PENDING | Menyinkronkan perubahan board dengan urutan cerita dan mencegah konflik diam-diam. |
+| 109.28 | Character Moodboard Workspace | PENDING | Menyimpan referensi visual kanonis di Character Workspace; Novel Workspace hanya menyimpan link dan override k |
+| 109.29 | Visual Description Continuity | PENDING | Membandingkan deskripsi karakter dengan atribut visual canon dan riwayat adegan. |
+| 109.30 | Spoiler Classification Model | PENDING | Menandai data berdasarkan level spoiler, titik reveal, dan audience. |
+| 109.31 | Reader Clearance & Redaction | PENDING | Menyensor atau menyembunyikan konten sesuai clearance pembaca beta. |
+| 109.32 | Spoiler-Safe Share Export | PENDING | Membuat paket berbagi yang telah diperiksa terhadap kebocoran spoiler. |
+| 109.33 | Scene POV Lock | PENDING | Menetapkan POV, tense, dan mode narasi pada adegan atau bagian. |
+| 109.34 | POV Knowledge Boundary | PENDING | Mencatat fakta yang diketahui karakter pada waktu tertentu. |
+| 109.35 | Head-Hopping Analysis & Report | PENDING | Mendeteksi perpindahan akses batin atau informasi di luar POV dengan penjelasan. |
+| 109.36 | Tension & Pacing Labels | PENDING | Mendukung label tensi manual dan sinyal pacing per adegan. |
+| 109.37 | Pacing Heatmap & Imbalance Warnings | PENDING | Menampilkan pola tensi per bab dan arc tanpa menilai kualitas secara absolut. |
+| 109.38 | Manuscript Export Profiles | PENDING | Mendefinisikan profil DOCX, plain text, dan web novel. |
+| 109.39 | Clean Export Transformation | PENDING | Menghapus metadata dan link internal sambil mempertahankan teks serta struktur naskah. |
+| 109.40 | Export Preflight & Format Validation | PENDING | Memeriksa struktur, aset, spoiler, karakter khusus, dan hasil render sebelum pengiriman. |
+| 109.41 | Subplot & Quest Data Model | PENDING | Mencatat tujuan, pemberi tugas, pihak terkait, dependency, konsekuensi gagal, dan status. |
+| 109.42 | Mission Board & Story Links | PENDING | Menyediakan board misi yang terhubung dengan adegan, karakter, lokasi, dan arc. |
+| 109.43 | Unresolved Subplot & Consequence Alerts | PENDING | Mengingatkan subplot menggantung atau konsekuensi yang belum diterapkan. |
+| 109.44 | Cross-Feature Integration | PENDING | Menghubungkan fitur melalui contract stabil sambil menjaga Novel dan Character sebagai workspace terpisah. |
+| 109.45 | Automated Test Matrix | PENDING | Menambahkan unit, integration, migration, contract, UI, dan end-to-end tests untuk seluruh scope. |
+| 109.46 | Performance & Scale Validation | PENDING | Menguji project besar, graph padat, dokumen panjang, banyak media, dan ekspor besar. |
+| 109.47 | Security & Privacy Verification | PENDING | Menguji sharing, redaction, media lokal, export, permission, dan metadata leakage. |
+| 109.48 | Accessibility & Localization Verification | PENDING | Memverifikasi seluruh workflow utama dengan keyboard, assistive technology, scaling, contrast, dan locale berb |
+| 109.49 | User Documentation & In-Product Guidance | PENDING | Menjelaskan cara pakai, batas analisis, privasi, backup, restore, sharing, dan export. |
+| 109.50 | Alpha Packaging & Upgrade Rehearsal | PENDING | Membuat build alpha terkontrol dan melatih upgrade serta rollback menggunakan salinan data. |
+| 109.51 | Alpha Acceptance Gate | PENDING | Menilai apakah Wave 1 layak menjadi v1.2.0-alpha.1. |
+| 109.52 | Sprint Closure | PENDING | Menutup Sprint 109 hanya setelah keputusan rilis atau penundaan tercatat. |

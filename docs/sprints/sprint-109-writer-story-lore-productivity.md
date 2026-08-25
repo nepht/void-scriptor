@@ -11,7 +11,7 @@
 | langkah | judul | status | bukti/catatan |
 |---|---|---|---|
 | 109.1 | Sprint Entry Gate | VERIFIED | Paket lengkap: direction approval (GO 108.31), scope disetujui (`scope-non-goals-draft.md`), success metrics, feasibility x5, risk register R-01..R-09 — semua di `docs/discovery/v1.2/` |
-| 109.2 | Wave 1 Scope Contract | PENDING | Mengunci 13 capability, non-goals, dependency, dan acceptance boundary. |
+| 109.2 | Wave 1 Scope Contract | VERIFIED | 4 output di `docs/planning/v1.2/`: feature_contracts.md (13 capability + kepemilikan ADR-WS-001), non_goals_and_open_decisions.md (NG-1..7 + D-SCHEMA-01 OPEN), acceptance_matrix.md (170 kriteria/35 langkah, terverifikasi programatik dari kanonik), dependency_map.md (L0-L3). Sumber: sprint_109.json feature_delivery + workspace_separation_architecture.json |
 | 109.3 | Shared Architecture & Ownership | PENDING | Menetapkan boundary modul dan memisahkan Novel Workspace dari Character Workspace pada UI, ownership, persiste |
 | 109.4 | Shared Data Schema | PENDING | Merancang schema terpisah untuk Novel dan Character serta kontrak novel_character_link tanpa co-ownership data |
 | 109.5 | Migration, Backup & Rollback Plan | PENDING | Menjamin project lama dapat dibuka, dimigrasikan, dicadangkan, dan dipulihkan. |

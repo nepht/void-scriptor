@@ -103,9 +103,7 @@ class _MetricsPanel extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
 // 104.31 — Rule editor (minimal but honest): workflow id + save gate.
-// ---------------------------------------------------------------------------
 
 class RuleEditorScreen extends StatefulWidget {
   const RuleEditorScreen({
@@ -172,9 +170,7 @@ class _RuleEditorScreenState extends State<RuleEditorScreen> {
   }
 }
 
-// ---------------------------------------------------------------------------
 // 104.32 — Automation templates: curated starting points.
-// ---------------------------------------------------------------------------
 
 class AutomationTemplatesScreen extends StatelessWidget {
   const AutomationTemplatesScreen({required this.onInstantiate, super.key});
@@ -223,9 +219,7 @@ class AutomationTemplatesScreen extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
 // 104.33 — Import & export (pure functions; UI-agnostic by design).
-// ---------------------------------------------------------------------------
 
 String exportRules(List<AutomationRule> rules) {
   final payload = rules

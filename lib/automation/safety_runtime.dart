@@ -6,9 +6,7 @@ library;
 /// explicit `now`, so tests need no sleeps and behaviour cannot drift.
 /// Audit surfaces carry identifiers only — never story content.
 
-// ---------------------------------------------------------------------------
 // 104.21 — approval gate model
-// ---------------------------------------------------------------------------
 
 enum ApprovalGateType {
   informational,
@@ -25,9 +23,7 @@ class ApprovalGate {
   final ApprovalGateType type;
 }
 
-// ---------------------------------------------------------------------------
 // 104.22 — human-in-the-loop runtime
-// ---------------------------------------------------------------------------
 
 enum HumanDecision { approved, denied }
 
@@ -90,9 +86,7 @@ class HumanDecisionRuntime {
   }
 }
 
-// ---------------------------------------------------------------------------
 // 104.23 — rate limiting across canonical scopes
-// ---------------------------------------------------------------------------
 
 enum RateScope { rule, workflow, provider, project, user }
 
@@ -127,9 +121,7 @@ class RateLimiter {
   }
 }
 
-// ---------------------------------------------------------------------------
 // 104.24 — concurrency control
-// ---------------------------------------------------------------------------
 
 enum ConflictPolicy { queue, reject }
 
@@ -176,9 +168,7 @@ class ConcurrencyController {
   }
 }
 
-// ---------------------------------------------------------------------------
 // 104.25 — idempotency contract
-// ---------------------------------------------------------------------------
 
 enum RetrySafety { retrySafe, retryUnsafe }
 
@@ -211,9 +201,7 @@ class IdempotencyStore {
   }
 }
 
-// ---------------------------------------------------------------------------
 // 104.26 — duplicate trigger suppression
-// ---------------------------------------------------------------------------
 
 enum SuppressionDecision { allowed, suppressed }
 
@@ -252,9 +240,7 @@ class DuplicateTriggerSuppressor {
   }
 }
 
-// ---------------------------------------------------------------------------
 // 104.27 / 104.28 — saga with explicit compensations
-// ---------------------------------------------------------------------------
 
 typedef Compensator = Future<void> Function();
 
@@ -318,9 +304,7 @@ class WorkflowSaga {
   }
 }
 
-// ---------------------------------------------------------------------------
 // 104.29 — observability (identifier-only signals)
-// ---------------------------------------------------------------------------
 
 class AutomationMetrics {
   int triggerCount = 0;

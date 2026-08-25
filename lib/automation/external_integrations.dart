@@ -28,9 +28,7 @@ import 'automation_rule.dart';
 /// * 104.20 Network policy: deny-by-default destination gating with an
 ///   audit record for every request decision.
 
-// ---------------------------------------------------------------------------
 // 104.14 — AI provider integration
-// ---------------------------------------------------------------------------
 
 class AiWorkflowIntegration {
   AiWorkflowIntegration({
@@ -78,9 +76,7 @@ class AiWorkflowIntegration {
       provider.cancel(requestId);
 }
 
-// ---------------------------------------------------------------------------
 // 104.15 — render pipeline integration
-// ---------------------------------------------------------------------------
 
 class WorkflowRenderRequest {
   const WorkflowRenderRequest({
@@ -136,9 +132,7 @@ class RenderQueueJobDescriptor {
   final Map<String, String> outputProvenance;
 }
 
-// ---------------------------------------------------------------------------
 // 104.16 — publishing integration
-// ---------------------------------------------------------------------------
 
 enum PublishConfirmation { notRequired, required }
 
@@ -169,9 +163,7 @@ class PublishingWorkflowAdapter {
   };
 }
 
-// ---------------------------------------------------------------------------
 // 104.17 — plugin workflow steps
-// ---------------------------------------------------------------------------
 
 class PluginStepRegistration {
   const PluginStepRegistration({
@@ -207,9 +199,7 @@ PluginStepDecision evaluatePluginStep(
 String pluginStepKey(String pluginId, String stepId) =>
     'plugin.$pluginId.$stepId';
 
-// ---------------------------------------------------------------------------
 // 104.18 — capability registry preflight
-// ---------------------------------------------------------------------------
 
 class CapabilityPreflightResult {
   const CapabilityPreflightResult({
@@ -235,9 +225,7 @@ CapabilityPreflightResult preflightCapabilities(
   missing: required.difference(available),
 );
 
-// ---------------------------------------------------------------------------
 // 104.19 — secret reference model
-// ---------------------------------------------------------------------------
 
 class SecretReference {
   const SecretReference._({required this.storeKey});
@@ -258,9 +246,7 @@ class SecretReference {
   String toString() => '[REDACTED]';
 }
 
-// ---------------------------------------------------------------------------
 // 104.20 — network policy
-// ---------------------------------------------------------------------------
 
 enum NetworkDecision { allowed, deniedByDefault }
 

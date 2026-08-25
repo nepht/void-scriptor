@@ -12,7 +12,7 @@
 |---|---|---|---|
 | 109.1 | Sprint Entry Gate | VERIFIED | Paket lengkap: direction approval (GO 108.31), scope disetujui (`scope-non-goals-draft.md`), success metrics, feasibility x5, risk register R-01..R-09 — semua di `docs/discovery/v1.2/` |
 | 109.2 | Wave 1 Scope Contract | VERIFIED | 4 output di `docs/planning/v1.2/`: feature_contracts.md (13 capability + kepemilikan ADR-WS-001), non_goals_and_open_decisions.md (NG-1..7 + D-SCHEMA-01 OPEN), acceptance_matrix.md (170 kriteria/35 langkah, terverifikasi programatik dari kanonik), dependency_map.md (L0-L3). Sumber: sprint_109.json feature_delivery + workspace_separation_architecture.json |
-| 109.3 | Shared Architecture & Ownership | PENDING | Menetapkan boundary modul dan memisahkan Novel Workspace dari Character Workspace pada UI, ownership, persiste |
+| 109.3 | Shared Architecture & Ownership | VERIFIED | Review 7 area di docs/planning/v1.2/architecture_ownership_review.md: 5 area VERIFIED (link contract, permission, deletion-review, namespace, service boundaries) + keputusan baru WS-EVENTS v1 (D-109.3-A) dan FISO-01 (D-109.3-B); koreksi jujur metadata kanonik NOT_STARTED — modul lib/features/workspaces/ 1418 LOC + tabel novel_character_links + 19 file tes SUDAH ADA; bukti eksekusi: flutter test test/features/workspaces = +55 All tests passed exit 0 (2026-08-26) |
 | 109.4 | Shared Data Schema | PENDING | Merancang schema terpisah untuk Novel dan Character serta kontrak novel_character_link tanpa co-ownership data |
 | 109.5 | Migration, Backup & Rollback Plan | PENDING | Menjamin project lama dapat dibuka, dimigrasikan, dicadangkan, dan dipulihkan. |
 | 109.6 | Permission & Privacy Model | PENDING | Menentukan akses data lokal, media, sharing, ekspor, dan analisis. |

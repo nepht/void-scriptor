@@ -37,9 +37,9 @@
 | 108.12 | Platform Experience Review | VERIFIED | `docs/discovery/v1.2/platform-experience.md` — 7 dimensi kanonik; tersedia ≠ tervalidasi (hanya Linux x64 berbukti penuh); web = kandidat platform kedua termurah; a11y dimensi tertipis |
 | 108.13 | Plugin Ecosystem Review | VERIFIED | `docs/discovery/v1.2/plugin-ecosystem.md` — API v1 teruji (+23) tapi nol permintaan nyata; verdikt: pelihara stabilitas v1, jangan investasi ekosistem tanpa bukti permintaan (menunggu uji S2) |
 | 108.14 | AI & Compute Direction Review | VERIFIED | `docs/discovery/v1.2/ai-compute-direction.md` — 4 provider terpasang; lokal mustahil di RX 590 (A-02/A-03); arah: remote opt-in + gerbang privasi; eksperimen kecil sebelum investasi |
-| 108.15 | Competitive & Adjacent Research | PENDING | Pola produk relevan tanpa menyalin otomatis |
-| 108.16 | Technology Capability Review | PENDING | Kemampuan teknologi tersedia & kematangannya |
-| 108.17 | Opportunity Registry | PENDING | Masalah terverifikasi → peluang yang dapat dibandingkan |
+| 108.15 | Competitive & Adjacent Research | VERIFIED | `docs/discovery/v1.2/competitive-adjacent-research.md` — 5 required_outputs lengkap (patterns/tradeoffs/differentiation/sources/tanggal); sumber publik nyata (Campfire/World Anvil/Scrivener/Novelcrafter/Sudowrite); pasar bergerak ke BYO-key = searah arsitektur VS |
+| 108.16 | Technology Capability Review | VERIFIED | `docs/discovery/v1.2/technology-capability.md` — 13 teknologi diklasifikasi jujur: 4 PRODUCTION_READY, 4 LIMITED, 1 EXPERIMENTAL, 4 UNSUITABLE (lokal-AI di RX 590, installer, telemetri, GUI-verify WSLg) |
+| 108.17 | Opportunity Registry | VERIFIED | `docs/discovery/v1.2/opportunity-registry.md` — OPP-01…OPP-06 dengan 7 field wajib per entri; hanya masalah terverifikasi yang diangkat; semua menunggu pemetaan & gate |
 | 108.18 | Opportunity Sizing | PENDING | Skala & ketidakpastian tiap peluang |
 | 108.19 | Strategic Fit | PENDING | Kesesuaian dengan identitas & prinsip VOID SCRIPTOR |
 | 108.20 | Architecture Feasibility | PENDING | Dapat dibangun tanpa merusak boundary/ownership |

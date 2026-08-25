@@ -80,17 +80,57 @@ class StartupRecoveryPolicy {
   }
 }
 
+/// Persistence backends for [StartupFailureStore]: file-backed on
+/// desktop/mobile, closure-backed in memory on the web target where
+/// dart:io operations throw UnsupportedError at runtime.
+typedef StateExists = bool Function();
+typedef StateRead = String Function();
+typedef StateWrite = void Function(String contents);
+typedef StateDelete = void Function();
+
 class StartupFailureStore {
   final File file;
 
-  StartupFailureStore({required this.file});
+  final StateExists? _exists;
+  final StateRead? _readText;
+  final StateWrite? _writeText;
+  final StateDelete? _delete;
+
+  /// File-backed backend (desktop/mobile default).
+  StartupFailureStore({required this.file})
+      : _exists = null,
+        _readText = null,
+        _writeText = null,
+        _delete = null;
+
+  /// In-memory backend for web boots: identical semantics, no filesystem.
+  factory StartupFailureStore.inMemory() {
+    String? payload;
+    return StartupFailureStore._injected(
+      File('startup.json'),
+      () => payload != null,
+      () => payload ?? '',
+      (contents) => payload = contents,
+      () => payload = null,
+    );
+  }
+
+  const StartupFailureStore._injected(
+    this.file,
+    this._exists,
+    this._readText,
+    this._writeText,
+    this._delete,
+  );
 
   StartupFailureState read() {
     try {
-      if (!file.existsSync()) {
+      final existsResult = _exists != null ? _exists() : file.existsSync();
+      if (!existsResult) {
         return const StartupFailureState();
       }
-      return StartupFailureState.fromJsonString(file.readAsStringSync());
+      final source = _readText != null ? _readText() : file.readAsStringSync();
+      return StartupFailureState.fromJsonString(source);
     } on FormatException {
       return const StartupFailureState();
     } on FileSystemException {
@@ -100,6 +140,10 @@ class StartupFailureStore {
 
   void write(StartupFailureState state) {
     try {
+      if (_writeText != null) {
+        _writeText(state.toJsonString());
+        return;
+      }
       file.parent.createSync(recursive: true);
       file.writeAsStringSync(state.toJsonString(), flush: true);
     } on FileSystemException {
@@ -114,9 +158,13 @@ class StartupFailureStore {
   /// A healthy shutdown clears the streak (101.9 contract).
   void recordHealthyShutdown() => write(const StartupFailureState());
 
-  /// Wipes the persisted state entirely — the configuration_reset mode.
+  /// Wipes the persisted state entirely - the configuration_reset mode.
   void reset() {
     try {
+      if (_delete != null) {
+        _delete();
+        return;
+      }
       if (file.existsSync()) file.deleteSync();
     } on FileSystemException {
       // Ignore: reset is best-effort.

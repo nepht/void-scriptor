@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -62,11 +64,16 @@ class BootstrapHandle {
   final StartupFailureStore store;
   final StartupRecoveryOutcome lastOutcome;
 
+  /// True when this boot persisted its decision artifact to storage.
+  /// Always false for in-memory (web) boots by design.
+  final bool stateFileWritten;
+
   @visibleForTesting
   const BootstrapHandle({
     required this.restoreDiagnostics,
     required this.store,
     required this.lastOutcome,
+    this.stateFileWritten = false,
   });
 }
 
@@ -76,40 +83,68 @@ class BootstrapHandle {
 /// up (healthy shutdown semantics).
 ///
 /// [rootOverride] redirects ALL storage under one directory (test seam).
-Future<BootstrapHandle> prepareBootstrap({Directory? rootOverride}) async {
-  final dirs = rootOverride != null
-      ? BootstrapDirectories.under(rootOverride)
-      : await BootstrapDirectories.resolve();
+/// Whether the default composition persists boot state to the filesystem.
+/// Desktop must remain file-backed; web selects in-memory explicitly.
+const bool prepareBootstrapUsesFilesByDefault = true;
 
-  final restore = CrashDiagnostics.attach(
-    CrashDiagnostics(directory: dirs.crash),
-  );
+/// Composes crash capture + startup-recovery counter.
+///
+/// On the web target (or [forceInMemory]) everything composes against an
+/// in-memory store with no dart:io calls, so the engine can render frame
+/// one in a browser. Diagnostics handlers stay untouched there; browser
+/// devtools surface uncaught errors natively.
+Future<BootstrapHandle> prepareBootstrap({
+  Directory? rootOverride,
+  @visibleForTesting bool forceInMemory = false,
+}) async {
+  final inMemory = forceInMemory || kIsWeb;
 
-  final store = StartupFailureStore(
-    file: File(p.join(dirs.state.path, 'startup.json')),
-  );
+  BootstrapDirectories? dirs;
+  if (!inMemory) {
+    dirs = rootOverride != null
+        ? BootstrapDirectories.under(rootOverride)
+        : await BootstrapDirectories.resolve();
+  }
+
+  final restore = inMemory
+      ? () {}
+      : CrashDiagnostics.attach(
+          CrashDiagnostics(directory: dirs!.crash),
+        );
+
+  final store = inMemory
+      ? StartupFailureStore.inMemory()
+      : StartupFailureStore(
+          file: File(p.join(dirs!.state.path, 'startup.json')),
+        );
   final outcome = StartupRecoveryPolicy.decide(
     readState: store.read,
     writeState: store.write,
   );
 
-  try {
-    dirs.state.createSync(recursive: true);
-    File(p.join(dirs.state.path, 'startup-decision.json')).writeAsStringSync(
-      jsonEncode(
-        _StartupDecision(
-          outcome.mode.name,
-          outcome.failureCountAfterDecision,
-        ).toJson(),
-      ),
-    );
-  } on FileSystemException {
-    // Monitoring artifacts are best-effort; never block boot.
+  var persisted = false;
+  if (!inMemory) {
+    try {
+      dirs!.state.createSync(recursive: true);
+      File(p.join(dirs.state.path, 'startup-decision.json'))
+          .writeAsStringSync(
+        jsonEncode(
+          _StartupDecision(
+            outcome.mode.name,
+            outcome.failureCountAfterDecision,
+          ).toJson(),
+        ),
+      );
+      persisted = true;
+    } on FileSystemException {
+      // Monitoring artifacts are best-effort; never block boot.
+    }
   }
 
   return BootstrapHandle(
     restoreDiagnostics: restore,
     store: store,
     lastOutcome: outcome,
+    stateFileWritten: persisted,
   );
 }

@@ -40,11 +40,11 @@
 | 108.15 | Competitive & Adjacent Research | VERIFIED | `docs/discovery/v1.2/competitive-adjacent-research.md` — 5 required_outputs lengkap (patterns/tradeoffs/differentiation/sources/tanggal); sumber publik nyata (Campfire/World Anvil/Scrivener/Novelcrafter/Sudowrite); pasar bergerak ke BYO-key = searah arsitektur VS |
 | 108.16 | Technology Capability Review | VERIFIED | `docs/discovery/v1.2/technology-capability.md` — 13 teknologi diklasifikasi jujur: 4 PRODUCTION_READY, 4 LIMITED, 1 EXPERIMENTAL, 4 UNSUITABLE (lokal-AI di RX 590, installer, telemetri, GUI-verify WSLg) |
 | 108.17 | Opportunity Registry | VERIFIED | `docs/discovery/v1.2/opportunity-registry.md` — OPP-01…OPP-06 dengan 7 field wajib per entri; hanya masalah terverifikasi yang diangkat; semua menunggu pemetaan & gate |
-| 108.18 | Opportunity Sizing | PENDING | Skala & ketidakpastian tiap peluang |
-| 108.19 | Strategic Fit | PENDING | Kesesuaian dengan identitas & prinsip VOID SCRIPTOR |
-| 108.20 | Architecture Feasibility | PENDING | Dapat dibangun tanpa merusak boundary/ownership |
-| 108.21 | Data & Migration Feasibility | PENDING | Kebutuhan data/schema/migrasi/backup/rollback |
-| 108.22 | Security & Privacy Feasibility | PENDING | Permission/threat/data flow/retention/transfer sejak discovery |
+| 108.18 | Opportunity Sizing | VERIFIED | `docs/discovery/v1.2/opportunity-sizing.md` — 6 dimensi × 6 peluang; jujur: populasi n=1 membuat semua reach mikro; nilai = kepastian arah; urutan impact-per-effort OPP-01→02→05→06→03→04 |
+| 108.19 | Strategic Fit | VERIFIED | `docs/discovery/v1.2/strategic-fit.md` — 6 kriteria identitas per peluang; dua titik ketegangan terekam (Web vs local-first; remote vs local-first) keduanya sah dengan posisi yang benar |
+| 108.20 | Architecture Feasibility | VERIFIED | `docs/discovery/v1.2/architecture-feasibility.md` — 7 scope review atas peta live (24 core/46 features); semua peluang feasible tanpa boundary baru, tanpa modul core baru |
+| 108.21 | Data & Migration Feasibility | VERIFIED | `docs/discovery/v1.2/data-migration-feasibility.md` — 4 required_outputs; skema v56 bisa beku sepanjang v1.2; rollback trivial utk OPP-05/06; DR lintas-mesin tercatat terbuka jujur |
+| 108.22 | Security & Privacy Feasibility | VERIFIED | `docs/discovery/v1.2/security-privacy-feasibility.md` — 5 required_outputs; risiko terkonsentrasi di OPP-06 (eksfiltrasi naskah) dengan mitigasi gerbang persetujuan per-konten; klasifikasi data 3 kelas |
 | 108.23 | Accessibility & Localization Feasibility | PENDING | A11y & lokalisasi sebelum prioritisasi |
 | 108.24 | Success Metric Design | PENDING | Metrik hasil, driver, guardrail utk peluang utama |
 | 108.25 | Experiment Plan | PENDING | Eksperimen terkecil untuk mengurangi ketidakpastian |

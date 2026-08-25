@@ -5,9 +5,18 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 import 'package:void_scriptor/design_system/theme/void_palette.dart';
 import '../application/debounced_autosave.dart';
 import '../application/story_docx_exporter.dart';
+import 'package:flutter/services.dart';
+
 import '../application/story_markdown_exporter.dart';
+import '../domain/lore_link_suggester.dart';
 
 import '../data/story_repository_impl.dart';
+import '../../workspaces/application/workspace_projection_cache.dart';
+import '../../workspaces/presentation/workspace_export_actions.dart';
+import '../../workspaces/presentation/workspace_export_options_dialog.dart';
+import '../../workspaces/presentation/workspace_import_actions.dart';
+import '../../workspaces/presentation/workspace_import_options_dialog.dart';
+import '../../workspaces/presentation/workspace_projection_card.dart';
 
 class StoryWorkspaceScreen extends StatefulWidget {
   const StoryWorkspaceScreen({
@@ -16,11 +25,38 @@ class StoryWorkspaceScreen extends StatefulWidget {
     this.repository,
     this.sceneId,
     this.exportDirectory,
+    this.workspaceProjection,
+    this.novelExportActions,
+    this.novelImportActions,
+    this.pickImportArchive,
+    this.loadLoreCatalog,
+    this.onCreateLoreEntity,
   });
   final String storyId;
   final StoryRepositoryImpl? repository;
   final String? sceneId;
   final Directory? exportDirectory;
+  final Future<WorkspaceProjection>? workspaceProjection;
+
+  /// Optional Novel workspace export binding. Null keeps the button absent —
+  /// the screen never fabricates an export path without an explicit binding.
+  final WorkspaceExportActions? novelExportActions;
+
+  /// Optional Novel workspace import binding. Null keeps the button absent.
+  final WorkspaceImportActions? novelImportActions;
+
+  /// Optional archive picker for the import flow. Null disables importing
+  /// honestly instead of pretending a picker exists.
+  final Future<File?> Function()? pickImportArchive;
+
+  /// Optional lore-linking binding (Step 109.10): loads the project lore
+  /// catalog for inline autocomplete. Null keeps the menu disabled.
+  final Future<List<LoreEntityRef>> Function()? loadLoreCatalog;
+
+  /// Optional lore-linking binding (Step 109.10): creates a brand-new lore
+  /// entity by name. Null hides the create action instead of faking it.
+  final Future<LoreEntityRef> Function(String name)? onCreateLoreEntity;
+
   @override
   State<StoryWorkspaceScreen> createState() => _StoryWorkspaceScreenState();
 }
@@ -30,11 +66,33 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   final _autosave = DebouncedAutosave();
   int _words = 0;
   String? _selectedSceneId;
+  String? _selectedSceneTitle;
+
+  /// Inline lore-link autocomplete state (Step 109.10). All overlay work is
+  /// driven from the draft text field; nothing renders without an explicit
+  /// [StoryWorkspaceScreen.loadLoreCatalog] binding.
+  final _layerLink = LayerLink();
+  OverlayEntry? _loreOverlay;
+  List<LoreEntityRef>? _loreCatalog;
+  String? _loreQuery;
+  List<LoreEntityRef> _loreSuggestions = const <LoreEntityRef>[];
+  LoreEntityRef? _loreExisting;
+  int? _loreHoverIndex;
+  int _loreHighlight = 0;
+  bool _loreCreating = false;
+
+  /// Additive ADR-WS-001 guard: while a novel archive export/import is in
+  /// flight the trigger buttons stay locked so a second tap cannot start a
+  /// parallel archive write (ux rule: disable + loading state, never allow
+  /// multiple submissions during processing).
+  bool _novelIoBusy = false;
 
   @override
   void initState() {
     super.initState();
+    _selectedSceneId = widget.sceneId;
     _loadDraft();
+    _prefetchLoreCatalog();
   }
 
   Future<void> _loadDraft() async {
@@ -55,6 +113,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
 
   @override
   void dispose() {
+    _teardownLoreMenu();
     _autosave.dispose();
     _draft.dispose();
     super.dispose();
@@ -63,10 +122,295 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   void _count(String value) {
     setState(() => _updateWordCount(value));
     final repository = widget.repository;
-    final sceneId = widget.sceneId;
+    final sceneId = _selectedSceneId;
     if (repository != null && sceneId != null) {
       _autosave.schedule(() => repository.saveSceneDraft(sceneId, value));
     }
+  }
+
+  // ---- Inline lore-link autocomplete (Step 109.10) -------------------------
+
+  void _onDraftChanged(String value) {
+    _count(value);
+    _syncLoreMenu();
+  }
+
+  void _prefetchLoreCatalog() {
+    final loader = widget.loadLoreCatalog;
+    if (loader == null || _loreCatalog != null) return;
+    loader().then((catalog) {
+      if (!mounted) return;
+      setState(() => _loreCatalog = catalog);
+    });
+  }
+
+  void _syncLoreMenu() {
+    if (widget.loadLoreCatalog == null) return;
+    final query = LoreLinkSyntax.activeQueryAt(
+      _draft.text,
+      _draft.selection.baseOffset,
+    );
+    if (query == null || query.trim().isEmpty) {
+      _teardownLoreMenu();
+      return;
+    }
+    final catalog = _loreCatalog;
+    if (catalog == null) return; // katalog masih dimuat: menu jujur absen.
+
+    const suggester = LoreLinkSuggester();
+    final suggestions = suggester.suggest(catalog, query: query);
+    final existing = suggester.exactMatchOf(catalog, query: query);
+    final canOfferCreation =
+        widget.onCreateLoreEntity != null && existing == null;
+    if (suggestions.isEmpty && !canOfferCreation) {
+      _teardownLoreMenu();
+      return;
+    }
+
+    if (_loreQuery != query) _loreHighlight = 0;
+    _loreHoverIndex = null;
+    _loreQuery = query;
+    _loreSuggestions = suggestions;
+    _loreExisting = existing;
+
+    HardwareKeyboard.instance.removeHandler(_handleLoreKey);
+    HardwareKeyboard.instance.addHandler(_handleLoreKey);
+    if (_loreOverlay == null) {
+      _loreOverlay = OverlayEntry(builder: (_) => _buildLorePanel());
+      Overlay.of(context).insert(_loreOverlay!);
+    } else {
+      _loreOverlay!.markNeedsBuild();
+    }
+  }
+
+  void _teardownLoreMenu() {
+    HardwareKeyboard.instance.removeHandler(_handleLoreKey);
+    _loreOverlay?.remove();
+    _loreOverlay = null;
+    _loreQuery = null;
+    _loreHoverIndex = null;
+  }
+
+  bool _handleLoreKey(KeyEvent event) {
+    if (_loreOverlay == null) return false;
+    if (event is! KeyDownEvent) return false;
+    switch (event.logicalKey) {
+      case LogicalKeyboardKey.arrowDown:
+        _moveLoreHighlight(1);
+        return true;
+      case LogicalKeyboardKey.arrowUp:
+        _moveLoreHighlight(-1);
+        return true;
+      case LogicalKeyboardKey.enter:
+      case LogicalKeyboardKey.numpadEnter:
+        _acceptLoreSuggestion();
+        return true;
+      case LogicalKeyboardKey.escape:
+        _teardownLoreMenu();
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  void _moveLoreHighlight(int delta) {
+    if (_loreSuggestions.isEmpty) return;
+    final next = _loreHighlight + delta;
+    final max = _loreSuggestions.length - 1;
+    _loreHighlight = next < 0 ? 0 : (next > max ? max : next);
+    _loreHoverIndex = null;
+    _loreOverlay?.markNeedsBuild();
+  }
+
+  LoreEntityRef? get _effectiveLoreHighlight {
+    if (_loreSuggestions.isEmpty) return null;
+    final hover = _loreHoverIndex;
+    if (hover != null && hover >= 0 && hover < _loreSuggestions.length) {
+      return _loreSuggestions[hover];
+    }
+    final max = _loreSuggestions.length - 1;
+    final index = _loreHighlight < 0
+        ? 0
+        : (_loreHighlight > max ? max : _loreHighlight);
+    return _loreSuggestions[index];
+  }
+
+  void _acceptLoreSuggestion() {
+    final entity = _effectiveLoreHighlight;
+    if (entity != null) {
+      _completeLoreLink(entity);
+      return;
+    }
+    _createLoreEntityFromMenu();
+  }
+
+  void _completeLoreLink(LoreEntityRef entity) {
+    final query = _loreQuery;
+    if (query == null) return;
+    final value = _draft.value;
+    final caret = value.selection.baseOffset < 0
+        ? 0
+        : (value.selection.baseOffset > value.text.length
+              ? value.text.length
+              : value.selection.baseOffset);
+    final start = caret - query.length - 2;
+    final expected = '[[$query';
+    if (start < 0 || value.text.substring(start, caret) != expected) {
+      _teardownLoreMenu();
+      return;
+    }
+    final replacement = '[[${entity.name}]]';
+    final newText = value.text.replaceRange(start, caret, replacement);
+    _draft.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: start + replacement.length),
+    );
+    _count(newText);
+    _teardownLoreMenu();
+  }
+
+  Future<void> _createLoreEntityFromMenu() async {
+    final creator = widget.onCreateLoreEntity;
+    final name = _loreQuery?.trim();
+    if (creator == null || name == null || name.isEmpty || _loreCreating) {
+      return;
+    }
+    _loreCreating = true;
+    try {
+      final created = await creator(name);
+      if (!mounted) return;
+      _loreCatalog = <LoreEntityRef>[...?_loreCatalog, created];
+      _completeLoreLink(created);
+    } finally {
+      _loreCreating = false;
+    }
+  }
+
+  void _setLoreHover(int? index) {
+    _loreHoverIndex = index;
+    _loreOverlay?.markNeedsBuild();
+  }
+
+  Widget _buildLorePanel() {
+    final scheme = Theme.of(context).colorScheme;
+    final highlighted = _effectiveLoreHighlight;
+    final canCreate =
+        widget.onCreateLoreEntity != null &&
+        _loreExisting == null &&
+        (_loreQuery?.trim().isNotEmpty ?? false);
+
+    return Positioned(
+      width: 360,
+      child: CompositedTransformFollower(
+        link: _layerLink,
+        targetAnchor: Alignment.bottomLeft,
+        followerAnchor: Alignment.topLeft,
+        offset: const Offset(8, 8),
+        showWhenUnlinked: false,
+        child: Material(
+          elevation: 8,
+          borderRadius: BorderRadius.circular(8),
+          color: scheme.surface,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (_loreSuggestions.isNotEmpty)
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 240),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    itemCount: _loreSuggestions.length,
+                    itemBuilder: (context, index) {
+                      final entity = _loreSuggestions[index];
+                      final max = _loreSuggestions.length - 1;
+                      final keyboardIndex = _loreHighlight < 0
+                          ? 0
+                          : (_loreHighlight > max ? max : _loreHighlight);
+                      final selected = _loreHoverIndex != null
+                          ? _loreHoverIndex == index
+                          : index == keyboardIndex;
+                      return MouseRegion(
+                        onEnter: (_) => _setLoreHover(index),
+                        onExit: (_) => _setLoreHover(null),
+                        child: InkWell(
+                          onTap: () => _completeLoreLink(entity),
+                          child: Container(
+                            color: selected ? scheme.secondaryContainer : null,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(child: Text(entity.name)),
+                                Text(
+                                  entity.kind,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: scheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              if (highlighted != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
+                  child: Text(
+                    highlighted.detail.isEmpty
+                        ? highlighted.kind
+                        : highlighted.detail,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: scheme.onSurfaceVariant,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              if (_loreExisting != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 6, 12, 8),
+                  child: Text(
+                    '${_loreExisting!.name} sudah ada di lore — '
+                    'pilih untuk menautkan.',
+                    style: TextStyle(
+                      color: scheme.onSurfaceVariant,
+                      fontSize: 12,
+                    ),
+                  ),
+                )
+              else if (canCreate)
+                InkWell(
+                  onTap: () => _createLoreEntityFromMenu(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.add, size: 16),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text('Buat entitas "${_loreQuery!.trim()}"'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _exportMarkdown() async {
@@ -99,6 +443,70 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     ).showSnackBar(SnackBar(content: Text('DOCX diekspor: ${file.path}')));
   }
 
+  Future<void> _exportNovelWorkspace() async {
+    final actions = widget.novelExportActions;
+    final directory = widget.exportDirectory;
+    if (actions == null || directory == null) return;
+    final options = await showWorkspaceExportOptionsDialog(context: context);
+    if (!mounted || options == null) return;
+    setState(() => _novelIoBusy = true);
+    try {
+      final file = await actions.run(
+        widget.storyId,
+        options,
+        destination: directory,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Novel workspace diekspor: ${file.path}')),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Ekspor Novel workspace gagal: $error')),
+      );
+    } finally {
+      if (mounted) setState(() => _novelIoBusy = false);
+    }
+  }
+
+  Future<void> _importNovelWorkspace() async {
+    final actions = widget.novelImportActions;
+    final pick = widget.pickImportArchive;
+    if (actions == null || pick == null) return;
+    final archive = await pick();
+    if (!mounted || archive == null) return;
+    final representation = await actions.peekCharacterRepresentation(archive);
+    if (!mounted) return;
+    final options = await showWorkspaceImportOptionsDialog(
+      context: context,
+      loadRepresentation: () async => representation,
+    );
+    if (!mounted || options == null) return;
+    setState(() => _novelIoBusy = true);
+    try {
+      final result = await actions.run(archive, options);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            result.skipped
+                ? 'Impor dilewati: workspace sudah ada.'
+                : 'Novel workspace diimpor: '
+                      '${result.restoredLinkCount} link dipulihkan.',
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Impor Novel workspace gagal: $error')),
+      );
+    } finally {
+      if (mounted) setState(() => _novelIoBusy = false);
+    }
+  }
+
   Widget _exportActions() => Wrap(
     spacing: 8,
     children: [
@@ -116,6 +524,24 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
         icon: const Icon(Icons.article_outlined),
         label: const Text('Export DOCX'),
       ),
+      // Additive ADR-WS-001 Novel workspace IO. Buttons appear only when an
+      // explicit binding is provided by the resolver.
+      if (widget.novelExportActions != null)
+        OutlinedButton.icon(
+          onPressed: widget.exportDirectory == null || _novelIoBusy
+              ? null
+              : _exportNovelWorkspace,
+          icon: const Icon(Icons.save_alt_outlined),
+          label: const Text('Export Novel'),
+        ),
+      if (widget.novelImportActions != null)
+        OutlinedButton.icon(
+          onPressed: widget.pickImportArchive == null || _novelIoBusy
+              ? null
+              : _importNovelWorkspace,
+          icon: const Icon(Icons.save_as_outlined),
+          label: const Text('Import Novel'),
+        ),
     ],
   );
 
@@ -139,13 +565,19 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
         for (final chapter in hierarchy.chapters) {
           rows.add(_Row(label: chapter.title));
           for (final scene in chapter.scenes) {
+            if (_selectedSceneTitle == null && scene.id == _selectedSceneId) {
+              _selectedSceneTitle = scene.title;
+            }
             rows.add(
               _Row(
                 label: scene.title,
                 indent: true,
                 selected: scene.id == (_selectedSceneId ?? widget.sceneId),
                 onTap: () {
-                  setState(() => _selectedSceneId = scene.id);
+                  setState(() {
+                    _selectedSceneId = scene.id;
+                    _selectedSceneTitle = scene.title;
+                  });
                   _loadDraftFor(scene.id);
                 },
               ),
@@ -206,6 +638,12 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                 ],
               ),
               const SizedBox(height: 20),
+              if (widget.workspaceProjection != null) ...[
+                WorkspaceProjectionCard(
+                  projectionFuture: widget.workspaceProjection!,
+                ),
+                const SizedBox(height: 12),
+              ],
               _Panel(
                 title: 'STORY STRUCTURE',
                 child: Text(
@@ -222,22 +660,27 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Scene 1 — Pembukaan',
+                      _selectedSceneTitle == null
+                          ? 'Select a scene to start writing'
+                          : 'Editing — $_selectedSceneTitle',
                       style: TextStyle(
                         color: p.textPrimary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 10),
-                    TextField(
-                      controller: _draft,
-                      minLines: 7,
-                      maxLines: 14,
-                      onChanged: _count,
-                      decoration: const InputDecoration(
-                        hintText: 'Tulis draft scene di sini...',
-                        border: OutlineInputBorder(),
-                        alignLabelWithHint: true,
+                    CompositedTransformTarget(
+                      link: _layerLink,
+                      child: TextField(
+                        controller: _draft,
+                        minLines: 7,
+                        maxLines: 14,
+                        onChanged: _onDraftChanged,
+                        decoration: const InputDecoration(
+                          hintText: 'Tulis draft scene di sini...',
+                          border: OutlineInputBorder(),
+                          alignLabelWithHint: true,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 8),

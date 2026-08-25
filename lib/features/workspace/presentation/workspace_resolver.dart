@@ -9,8 +9,12 @@ import '../../character/presentation/character_workspace_screen.dart';
 import '../../wardrobe/presentation/wardrobe_workspace_screen.dart';
 import '../../weapon/presentation/weapon_workspace_screen.dart';
 import '../../environment/presentation/environment_workspace_screen.dart';
+import '../../bible/application/create_lore_entity_service.dart';
+import '../../story/application/create_story_service.dart';
 import '../../story/data/story_repository_impl.dart';
 import '../../story/presentation/story_workspace_screen.dart';
+import '../../workspaces/presentation/workspace_export_actions.dart';
+import '../../workspaces/presentation/workspace_import_actions.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class WorkspaceResolver extends ConsumerWidget {
@@ -20,7 +24,42 @@ class WorkspaceResolver extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selection = ref.watch(selectionProvider);
     final session = ref.watch(projectSessionProvider).valueOrNull;
-    if (selection == null) return const ProjectOverview();
+    if (selection == null) {
+      return ProjectOverview(
+        onCreateNovel: session == null
+            ? null
+            : (title) async {
+                final service = CreateStoryService(
+                  database: session.database,
+                  paths: ref.read(projectPathsProvider),
+                );
+                final storyId = await service.createStory(
+                  projectId: session.manifest.id,
+                  title: title,
+                );
+                final chapterId = await service.createChapter(
+                  storyId: storyId,
+                  title: 'Chapter 1',
+                  chapterNumber: 1,
+                );
+                await service.createScene(
+                  storyId: storyId,
+                  chapterId: chapterId,
+                  title: 'Scene 1',
+                  sceneNumber: 1,
+                );
+                ref
+                    .read(selectionProvider.notifier)
+                    .select(
+                      SelectionModel(
+                        assetId: storyId,
+                        assetType: AssetType.story,
+                        projectId: session.manifest.id,
+                      ),
+                    );
+              },
+      );
+    }
     return switch (selection.assetType) {
       AssetType.character => CharacterWorkspaceScreen(
         characterId: selection.assetId,
@@ -40,7 +79,41 @@ class WorkspaceResolver extends ConsumerWidget {
                 database: session.database,
                 projectId: session.manifest.id,
               ),
+        loadLoreCatalog: session == null
+            ? null
+            : () {
+                final s = session;
+                return const CreateLoreEntityService().loadCatalog(
+                  s.database,
+                  s.manifest.id,
+                );
+              },
+        onCreateLoreEntity: session == null
+            ? null
+            : (name) {
+                final s = session;
+                return const CreateLoreEntityService().create(
+                  s.database,
+                  projectId: s.manifest.id,
+                  name: name,
+                );
+              },
         exportDirectory: session?.package.exportDirectory,
+        novelExportActions: session == null
+            ? null
+            : WorkspaceExportActions(
+                package: session.package,
+                links: session.novelCharacterLinks,
+              ),
+        novelImportActions: session == null
+            ? null
+            : WorkspaceImportActions(
+                package: session.package,
+                links: session.novelCharacterLinks,
+              ),
+        workspaceProjection: session?.workspaceProjectionReader.forNovel(
+          selection.assetId,
+        ),
       ),
       _ => const ProjectOverview(),
     };
@@ -48,12 +121,61 @@ class WorkspaceResolver extends ConsumerWidget {
 }
 
 class ProjectOverview extends StatelessWidget {
-  const ProjectOverview({super.key});
+  const ProjectOverview({super.key, this.onCreateNovel});
+
+  final Future<void> Function(String title)? onCreateNovel;
+
+  Future<void> _createNovel(BuildContext context) async {
+    var title = '';
+    final submitted = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Create Novel'),
+        content: TextField(
+          autofocus: true,
+          onChanged: (value) => title = value.trim(),
+          decoration: const InputDecoration(labelText: 'Novel title'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (title.isNotEmpty) Navigator.pop(dialogContext, title);
+            },
+            child: const Text('Create'),
+          ),
+        ],
+      ),
+    );
+    if (submitted == null || onCreateNovel == null) return;
+    await onCreateNovel!(submitted);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Novel created.')));
+  }
+
   @override
   Widget build(BuildContext context) => Center(
-    child: Text(
-      'Select an asset from Explorer to open its workspace.',
-      style: TextStyle(color: context.palette.textMuted),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Select an asset from Explorer to open its workspace.',
+          style: TextStyle(color: context.palette.textMuted),
+        ),
+        if (onCreateNovel != null) ...[
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            onPressed: () => _createNovel(context),
+            icon: const Icon(Icons.auto_stories_outlined),
+            label: const Text('Create Novel'),
+          ),
+        ],
+      ],
     ),
   );
 }

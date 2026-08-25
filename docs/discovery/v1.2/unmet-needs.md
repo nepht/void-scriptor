@@ -7,7 +7,7 @@
 
 | id | Masalah (sebelum solusi) | Bukti | Status kebutuhan |
 |---|---|---|---|
-| UN-01 | Pengguna tunggal belum menunjukkan pemakaian berkelanjutan — nilai harian produk belum terbukti bagi dirinya sendiri | aktivitas "Test Novel" berhenti 23 Agu 20:48; nol sesi sejak itu (mtime + pgrep watch) | TERBUKA — aluan berhenti belum diketahui |
+| UN-01 | Pengguna tunggal belum menunjukkan pemakaian berkelanjutan — nilai harian produk belum terbukti bagi dirinya sendiri | aktivitas "Test Novel" berhenti 23 Agu 20:48; nol sesi sejak itu (mtime + pgrep watch) | TERBUKA — **diperbarui E-1 25 Agu**: aktivitas itu ternyata uji coba; belum ada percobaan menulis harian sungguhan untuk gagal/b |
 | UN-02 | 152 dari 157 subsistem data tidak pernah tersentuh pemakaian nyata; tak diketahui apakah itu kebutuhan tak terpenuhi, kesadaran/onboarding, atau memang tak relevan | COUNT(*) DB "Test Novel": stories/chapters/scenes/assets/metadata saja | TERBUKA — butuh pemetaan penyebab |
 | UN-03 | Produk hanya dapat dijalankan dalam WSL Linux x64; OS tujuan resmi lain belum punya jalur pakai nyata | KI-03; kontrak C5; nol jejak eksekusi native lain | TERBUKA |
 | UN-04 | Keputusan arah produk dibuat tanpa sinyal pemakaian apa pun (buta pemakaian) | kebutuhan forensik mtime untuk seluruh observasi 108.6; KI-03/KI-04 | TERBUKA |

@@ -1,6 +1,9 @@
 # Sprint 108 — Void Scriptor v1.2 Discovery & Product Direction
 
-- **Status:** BERJALAN (dibuka 2026-08-25 20:29 WIB) · **Base aktual:** `1.1.0` stable · **Target:** tema rilis `v1.2` disetujui lewat Direction Approval Gate
+- **Status:** SELESAI — arah v1.2 DISETUJUI (GO) di gate 108.31 oleh Choirudin,
+  2026-08-25 ±21:45 WIB · **Base aktual:** `1.1.0` stable · **Hasil:** tema
+  rilis `v1.2` "Kembali ke Alur" + scope MUST×3/SHOULD×2/COULD×1/WON'T×6
+  disetujui sebagai arah resmi v1.2
 - **Kanonik:** `sprint_108.json` (32 langkah, VALIDATED; `depends_on: [107]`)
 - **Deviasi kanonik terdokumentasi (konsekuensi keputusan arsitek):** `start_condition`
   kanonik menyebut "Sprint 107 COMPLETE dan **v1.1.1** stabil selama observation
@@ -53,5 +56,5 @@
 | 108.28 | Opportunity Prioritization | VERIFIED | `docs/discovery/v1.2/opportunity-prioritization.md` — skor 7 kriteria × 6 peluang; urutan OPP-01(34)→02(30)→05(28); selisih tipis OPP-04/06 ditandai boleh dibalik di gate |
 | 108.29 | v1.2 Release Theme | VERIFIED | `docs/discovery/v1.2/release-theme-draft.md` — DRAFT "Kembali ke Alur" dengan 6 field wajib; eksplisit menunggu otoritas gate 108.31; alternatif yang ditolak beralas |
 | 108.30 | Scope & Non-Goals | VERIFIED | `docs/discovery/v1.2/scope-non-goals-draft.md` — MUST×3 / SHOULD×2 / COULD×1 / WON'T×6; batas keras lintas-kategori (skema v56 beku, C1–C5 & Plugin API tak berubah) |
-| 108.31 | Direction Approval Gate | PENDING | Paket bukti kanonik LENGKAP 7/7 (evidence-inventory, opportunity-registry, experiment-results, feasibility×5, success-metrics, scope-drafts, `risk-register.md` R-01…R-09) — keputusan GO/tunda milik Choirudin |
-| 108.32 | Sprint Closure | PENDING | Tutup discovery setelah arah v1.2 dipilih ATAU keputusan menunda dicatat |
+| 108.31 | Direction Approval Gate | VERIFIED | Keputusan Choirudin 2026-08-25 ±21:45 WIB: **GO** — tema & scope draft disetujui; paket bukti kanonik lengkap 7/7 (evidence-inventory, opportunity-registry, experiment-results, feasibility×5, success-metrics, scope-drafts, risk-register R-01…R-09) |
+| 108.32 | Sprint Closure | VERIFIED | `docs/discovery/v1.2/sprint-closure.md` — DoD 8 butir terpenuhi; E-1 tereksekusi & F-03 tertutup non-friksi; data uji dibersihkan atas permintaan arsitek (backup ganda SHA-256); sprint ditutup dengan arah v1.2 tercatat |

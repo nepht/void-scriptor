@@ -23,3 +23,12 @@ Choirudin tentang ALUAN berhentinya adalah eksperimen termurah yang membuka
 maknanya (masuk rencana 108.25). F-04 ditandai inferensi: tidak ada pernyataan
 friksi langsung dari pengguna; ia tetap terdaftar karena KI-03 membuat
 kemungkinannya tak terbantahkan.
+
+## RESOLUSI E-1 (2026-08-25 ±21:45 WIB, jawaban langsung Choirudin)
+
+F-03 **TERPECAHKAN — bukan friksi produk**: sesi 22–23 Agu adalah *uji coba*;
+tidak ada penulisan harian yang benar-benar berjalan lalu terhenti. Konsekuensi
+jujur: bukti pemakaian produktif S1 semakin tipis (satu-satunya "penggunaan
+aktif" pun uji coba), dan permintaan turunan arsitek adalah pembersihan data
+uji (tereksekusi 21:50 WIB, backup ganda terverifikasi SHA-256). F-03 tetap
+bersejarah di tabel di atas; baca bersama resolusi ini.

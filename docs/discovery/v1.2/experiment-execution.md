@@ -23,11 +23,17 @@
   namun tetap tidak diprioritaskan pada putaran ini (lihat 108.28) karena nilai
   langsungnya bagi S1 masih di bawah OPP-01/02/05.
 
-## E-1 — usability pengguna inti (BLOKIR — butuh Choi)
+## E-1 — usability pengguna inti (DIEKSEKUSI ✅ 25 Agu ±21:45 WIB)
 
 method/usaha sudah disiapkan (satu kalimat alasan berhenti + sesi terpandu).
-Menunggu jawaban Choi; TIDAK bisa digantikan agen. Ini eksperimen termurah
-dengan dampak penjelasan terbesar atas seluruh temuan discovery.
+**Hasil**: Choi menjawab langsung — proyek "Test Novel" hanyalah *uji coba*;
+tidak ada penulisan nyata yang berhenti. Turunan permintaan arsitek: bersihkan
+isi project uji + statistik agar tampilan mulai bersih → dieksekusi 21:50 WIB
+(kedua `.voidproject` dihapus, registry dikosongkan valid, 6 laporan crash era
+uji dihapus; backup data + app-state terverifikasi SHA-256
+`aaf66b86…` / `3f22289d…`). limitations: jawaban verbal satu-kalimat, tanpa
+sesi terpandu; decision_impact: F-03 tertutup sebagai non-friksi, tema v1.2
+beralih dari "pulihkan retensi" ke "mulai siklus menulis harian pertama".
 
 ## E-2 — spike AI remote (BLOKIR — butuh izin privasi + biaya)
 

@@ -12,6 +12,9 @@
 - expected_outcome: alasan berhenti diketahui (jawaban langsung Choi termurah); pemakaian harian tersambung lagi
 - constraints: n=1; tanpa telemetri; penyebab bisa non-produk (sibuk/keputusan sadar)
 - confidence: tinggi akan pentingnya; rendah akan penyebab (belum diuji)
+- **SUPERSEDED 25 Agu (hasil E-1)**: penyebab terjawab — sesi itu uji coba,
+  bukan penulisan yang terhenti. Masalah bergeser menjadi: mulai siklus
+  menulis harian sungguhan pertama (tercakup dalam tema "Kembali ke Alur").
 
 ### OPP-02 — Kedalaman jalur naratif daripada lebar subsistem
 - problem: hanya 5/157 tabel pernah tersentuh; nilai produk tak terrealisasi

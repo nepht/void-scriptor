@@ -1,6 +1,7 @@
-# 108.30 — Scope & Non-Goals v1.2 (DRAFT untuk gate 108.31)
+# 108.30 — Scope & Non-Goals v1.2 (DISetujUI di gate 108.31)
 
-> Status: **DRAFT usulan nephthys** — final setelah persetujuan Choi (108.31).
+> Status: **DISetujUI** — GO oleh Choirudin, 2026-08-25 ±21:45 WIB
+> (sebelumnya DRAFT usulan nephthys).
 > Kanonik categories: MUST / SHOULD / COULD / WONT
 
 ## MUST (identitas v1.2 — tanpa ini rilis tak bermakna)

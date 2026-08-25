@@ -1,7 +1,7 @@
 # 108.29 — v1.2 Release Theme (DRAFT untuk gate 108.31)
 
-> Status: **DRAFT usulan nephthys** — menjadi keputusan resmi hanya setelah
-> persetujuan Choirudin di Direction Approval Gate (108.31).
+> Status: **DISETUJUI sebagai arah resmi v1.2** — GO oleh Choirudin di
+> Direction Approval Gate (108.31), 2026-08-25 ±21:45 WIB.
 > Kanonik required_fields: theme, problem, target_users, expected_outcome,
 > non_goals, evidence
 

@@ -1,0 +1,21 @@
+{
+  "product": "VOID SCRIPTOR",
+  "version": "1.1.0",
+  "channel": "stable",
+  "platform": "linux",
+  "architecture": "x64",
+  "artifact_id": "rc-1",
+  "artifact_path": "build/linux/x64/debug/bundle/void_scriptor",
+  "hash_algorithm": "sha256",
+  "hash": "e87e6580508c9e4bf83539836b5f261735cc2d502e79cc28acf17d6b7788d44c",
+  "signature": "NOT_AVAILABLE_SIGNING_INFRASTRUCTURE_KI01",
+  "minimum_version": "1.0.1",
+  "supported_upgrade_sources": ["1.0.0", "1.0.1", "1.1.0-alpha.1", "1.1.0-beta.1", "1.1.0-rc.1"],
+  "artifact_url": "REPO_LOCAL://void_scriptor_multiplatform/build/linux/x64/debug/bundle/void_scriptor -- distribution endpoint belum live; artefak didistribusikan dari repositori sumber",
+  "release_notes": "docs/release/v1.1.0-release-notes.md",
+  "manifest_provenance": {
+    "promoted_from_commit": "696a667d21f8902adbf28aab1580ab4a53bfe96c",
+    "promotion_policy": "promote_exact_tested_artifact=true; rebuild_after_go_decision_allowed=false",
+    "equality_verified_at_head": "46e0426"
+  }
+}

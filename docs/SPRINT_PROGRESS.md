@@ -248,5 +248,15 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
   v56, 6 platform target tanpa backend; tidak ada file kunci/env,
   PRIVATE KEY NONE, dotenv NONE). Tag repositori tidak dibuat
   (menunggu otorisasi D6).
-- Langkah berikutnya: 145.6 Runtime Baseline (jalankan aplikasi di
-  lingkungan lokal aman + tangkap launch/flow/error).
+- **Cek build atas snapshot terkommit** (permintaan Choirudin): build Linux
+  debug pada worktree isolasi @c6af37b murni GAGAL dua kali — file tabel
+  `novel_character_links.dart` & `creature_ecology_states.dart` serta asset
+  `own_brands/void_scriptor` + `SpaceGrotesk` direferensikan kode terkommit
+  tapi belum terkommit. Set adopsi minimal 4 item → build #3 PASS dan probe
+  runtime proses-level lulus (hidup ≥30s, RSS ±550 MB stabil, VM service
+  menyala, nol exception, shutdown bersih). Detail: ledger 145,
+  section "TEMUAN INTEGRITAS". Keputusan adopsi menunggu Choirudin;
+  sampai itu HEAD murni NOT BUILDABLE secara reproduksi. Verifikasi visual
+  UI tetap DEFERRED (WSLg tanpa GPU).
+- Langkah berikutnya: keputusan adopsi set minimal (Choirudin), lalu
+  145.9 Working Feature Protection List.

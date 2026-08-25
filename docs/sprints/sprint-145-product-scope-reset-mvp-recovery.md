@@ -28,8 +28,8 @@ baseline lama.
 | 145.2 | Non-destructive Source Backup | VERIFIED (segar, nephthys 2026-08-25) | Pre-audit backup non-rotating + verifikasi baca-tulis penuh; rincian di bawah |
 | 145.3 | Project Structure Inventory | VERIFIED (nephthys, 2026-08-25 @dc06fe1+) | Bukti di bawah |
 | 145.4 | Secrets and Sensitive File Audit | VERIFIED (nephthys, 2026-08-25 @dc06fe1+) | Bukti di bawah |
-| 145.5 | Reproducible Build Baseline | COMPLETED (historis) | Kontrak: GitHub Actions run `32628588565` success multiplatform @334022a (era pra-billing; tidak dapat diverifikasi ulang sekarang, hosted CI kini DEFERRED keputusan D6) |
-| 145.6 | Runtime Baseline | PENDING | — |
+| 145.5 | Reproducible Build Baseline | COMPLETED (historis) + **TEMUAN INTEGRITAS segar** | Historis: GitHub Actions `32628588565` success @334022a (era pra-billing). Segar (nephthys 2026-08-25 @c6af37b): **build Linux debug GAGAL pada snapshot terkomit murni** — lihat section temuan di bawah; PASS hanya setelah set adopsi minimal diterapkan |
+| 145.6 | Runtime Baseline | VERIFIED (proses-level, nephthys 2026-08-25) | Launch bundle debug hasil build HEAD+adopsi: proses hidup ≥30s, RSS stabil ±550 MB (2 sampel), Dart VM service listening, nol exception/fatal di log, shutdown bersih SIGTERM exit 143. Verifikasi visual konten DEFERRED — WSLg tanpa GPU (MESA/ZINK gagal pilih device), konsisten dengan temuan 107.24 |
 | 145.7 | Automated Test Baseline | COMPLETED (historis) | Kontrak: analyze PASS, 41 focused Core tests, regresi 1.279 PASS @d4c3b8a, build Web/Linux PASS; keadaan kini: suite 1.735 PASS @dc06fe1 (bukti Checkpoint 3) |
 | 145.8 | Implementation Evidence Registry Population | COMPLETED (historis) | `implementation_evidence_registry.json` (IER-001) di export eksternal: 13 capability, ringkas 11 IMPLEMENTED_VERIFIED + 2 PLANNED; baseline audit 2026-08-23 |
 | 145.9–145.41 | (inventaris, scope-lock, slice, dsb.) | PENDING | — |
@@ -119,6 +119,46 @@ Metode read-only; output hanya path/jumlah, nilai tidak pernah dicetak:
   `environmentId` DAO).
 - Konsisten dengan kebijakan: kunci privat codesign tinggal di
   `~/codesign/` WSL, di luar repo.
+
+## TEMUAN INTEGRITAS — 2026-08-25: snapshot terkommit tidak buildable
+
+Ditemukan oleh cek build HEAD-murni (worktree isolasi `~/vs_head_buildcheck`
+pada `c6af37b`, tanpa file WIP siapa pun):
+
+1. Build #1 GAGAL (kernel_snapshot_program): `.g.dart` terkommit mereferensi
+   kelas `NovelCharacterLinks` & `CreatureEcologyStates`, tetapi file
+   definisinya tidak pernah terkommit:
+   - `lib/database/project/tables/novel_character_links.dart`
+   - `lib/database/project/tables/creature_ecology_states.dart`
+   Keduanya untracked di worktree utama (milik slice DB agen lain).
+2. Build #2 GAGAL (asset bundling): pubspec terkommit mendeklarasikan
+   `assets/brands/own_brands/void_scriptor/` dan
+   `assets/fonts/SpaceGrotesk/` yang juga belum terkommit.
+3. Pemindaian referensi menyeluruh (131 file lib/test untracked vs
+   `git grep HEAD`): hanya 2 file tabel + 2 path asset itu yang
+   direferensikan kode/pubspec terkommit. Set adopsi minimal = 4 item.
+4. Build #3 PASS (`✓ Built …/void_scriptor`) setelah set minimal
+   disalin ke worktree isolasi; runtime probe 145.6 lulus pada biner itu.
+
+Implikasi: clone bersih dari master saat ini TIDAK bisa dikompilasi; suite
+hijau kemarin berjalan di atas disk yang mengandung WIP tak-terkommit.
+Perbaikan permanen adalah KEPUTUSAN ADOPSI milik Choirudin (meng-commit
+set minimal, atau koordinasi dengan agen pemilik slice DB) — nephthys
+tidak meng-commit file milik agen lain tanpa otorisasi. Sampai diputuskan,
+HEAD murni tetap dianggap NOT BUILDABLE secara reproduksi.
+
+## Bukti 145.6 — Runtime Baseline proses-level (nephthys, 2026-08-25)
+
+- Biner: `~/vs_head_buildcheck/build/linux/x64/debug/bundle/void_scriptor`
+  (hasil build #3 pada `c6af37b` + set adopsi minimal).
+- Launch headless-safe (tanpa DISPLAY) via skrip probe:
+  ALIVE_AFTER_30S=yes; VmRSS 549.804 kB stabil pada dua sampel (3s apart);
+  Threads 24→23; log bootstrap berakhir di "The Dart VM service is
+  listening on http://127.0.0.1:…".
+- ERROR_SCAN: hanya warning grafis WSLg (libEGL/MESA/ZINK) — konsisten
+  temuan 107.24; nol unhandled exception/fatal/crash.
+- Shutdown: SIGTERM → exit status 143 (bersih, sesuai rencana).
+- Batas jujur: verifikasi visual konten UI DEFERRED (WSLg tanpa GPU).
 
 ## Catatan konkurensi
 

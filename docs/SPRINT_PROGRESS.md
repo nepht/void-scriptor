@@ -215,4 +215,31 @@ oleh artefak build dan melewatkan ledger yang kini terintegrasi.
   Bukti: `lib/automation/trigger_event_bridge.dart` +
   `test/automation/trigger_event_bridge_test.dart` (7 test), suite automation
   24/24 PASS, analyzer scoped bersih, format PASS, `git diff --check` PASS.
-- Langkah berikutnya: 104.9 Scheduler Integration.
+### Koreksi kedua — Sprint 104 ditutup penuh & front kerja pindah ke Sprint 145
+
+Entri "Langkah berikutnya: 104.9 Scheduler Integration" di atas sudah basi:
+ledger live `docs/sprints/sprint-104-wave2-automation-integration.md` kini
+menunjukkan seluruh Sprint 104 (104.1–104.35) VERIFIED oleh eksekutor paralel,
+termasuk beta artifact `1.1.0-beta.1+4` @4ba2a08. Rangkaian lanjutan juga
+sudah dieksekusi pihak lain: Sprint 105 (RC `1.1.0-rc.1+5`,
+GO_WITH_DOCUMENTED_RISK), Sprint 106 (v1.1.0 dipromosikan stable 2026-08-25,
+watch 106.33 IN_PROGRESS), dan Sprint 107 hotfix batch 1–2.
+
+Front kerja aktif sekarang: **Sprint 145 Product Scope Reset & Core MVP
+Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
+50 langkah). Ledger live baru:
+`docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md`.
+
+- Rekonsiliasi baseline: audit historis (145.1–145.8, 145.42) dilakukan
+  2026-08-23 pada baseline `334022a3…` / regresi @`d4c3b8a3…` — kedua SHA
+  diverifikasi ada dan ancestor HEAD saat ini (54 komit di belakang); klaim
+  COMPLETED dipertahankan sebagai bukti historis dengan provenance.
+- nephthys mengeksekusi **145.2 Non-destructive Source Backup**: VERIFIED.
+  Pre-audit backup non-rotating 64M di
+  `/mnt/d/Hermes_Storage/Backups/Void_Scriptor/Pre_Audit/
+  void_scriptor_multiplatform_preaudit_20260825_172347_dc06fe1.tar.gz`
+  pada HEAD `dc06fe1`; 12.327 file terverifikasi hash identik dengan source;
+  sidecar SHA-256 OK; keterbacaan `tar -tzf` OK (13.203 entri); manifest +
+  rute restore terdokumentasi di ledger 145. Tag repositori tidak dibuat
+  (menunggu otorisasi D6).
+- Langkah berikutnya: 145.3 Project Structure Inventory atas HEAD terkini.

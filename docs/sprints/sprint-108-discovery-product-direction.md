@@ -34,9 +34,9 @@
 | 108.9 | Support & Incident Analysis | VERIFIED | `docs/discovery/v1.2/support-incidents.md` — SI-01…SI-05 dengan group_by kanonik lengkap; nol insiden produk terverifikasi; pola root_cause yang bisa dikurangi: ketergantungan WSL tunggal + buta pemakaian |
 | 108.10 | Workflow Intelligence Evaluation | VERIFIED | `docs/discovery/v1.2/workflow-intelligence.md` — 7 metrik kanonik dievaluasi jujur: creation/repeat_use = 0 nyata, failure dsb. tak terdefinisi (0/0), abandonment subsistem 100%; kapabilitas teruji ≠ adopsi |
 | 108.11 | Automation Safety Evaluation | VERIFIED | `docs/discovery/v1.2/automation-safety.md` — 6 sinyal kanonik = 0 kejadian nyata; verdikt dua arah: nilai belum tersalurkan, risiko lapangan belum teruji; hanya keamanan kondisi-uji yang terbukti |
-| 108.12 | Platform Experience Review | PENDING | Perbandingan workflow/keterbatasan antar platform didukung |
-| 108.13 | Plugin Ecosystem Review | PENDING | Kebutuhan ekstensi & hambatan Plugin API v1 |
-| 108.14 | AI & Compute Direction Review | PENDING | Local/remote/provider: biaya, privasi, kualitas, latency |
+| 108.12 | Platform Experience Review | VERIFIED | `docs/discovery/v1.2/platform-experience.md` — 7 dimensi kanonik; tersedia ≠ tervalidasi (hanya Linux x64 berbukti penuh); web = kandidat platform kedua termurah; a11y dimensi tertipis |
+| 108.13 | Plugin Ecosystem Review | VERIFIED | `docs/discovery/v1.2/plugin-ecosystem.md` — API v1 teruji (+23) tapi nol permintaan nyata; verdikt: pelihara stabilitas v1, jangan investasi ekosistem tanpa bukti permintaan (menunggu uji S2) |
+| 108.14 | AI & Compute Direction Review | VERIFIED | `docs/discovery/v1.2/ai-compute-direction.md` — 4 provider terpasang; lokal mustahil di RX 590 (A-02/A-03); arah: remote opt-in + gerbang privasi; eksperimen kecil sebelum investasi |
 | 108.15 | Competitive & Adjacent Research | PENDING | Pola produk relevan tanpa menyalin otomatis |
 | 108.16 | Technology Capability Review | PENDING | Kemampuan teknologi tersedia & kematangannya |
 | 108.17 | Opportunity Registry | PENDING | Masalah terverifikasi → peluang yang dapat dibandingkan |

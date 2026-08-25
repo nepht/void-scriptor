@@ -1,11 +1,13 @@
 import 'dart:io' show exit;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/bootstrap/app_diagnostics.dart';
 import 'app/bootstrap/bootstrap_gate.dart';
 import 'app/void_app.dart';
+import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +27,13 @@ Future<void> main() async {
       // VoidScriptorApp (and its own app shell) is safe to construct.
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
         home: BootstrapGate(
           outcome: handle.lastOutcome,
           onResetConfig: () {

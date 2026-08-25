@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/theme/theme_controller.dart';
 import '../design_system/theme/void_theme.dart';
+import '../l10n/app_localizations.dart';
 import 'routing/app_router.dart';
 
 class VoidScriptorApp extends ConsumerWidget {
@@ -22,6 +24,13 @@ class VoidScriptorApp extends ConsumerWidget {
       themeMode: themeMode?.themeMode ?? ThemeMode.system,
       theme: VoidTheme.light,
       darkTheme: VoidTheme.dark,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: router,
     );
   }

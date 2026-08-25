@@ -2,8 +2,8 @@
 
 - **Status:** BERJALAN (dibuka 2026-08-25) · **Base:** `1.1.0` stable (biner rc-1 @696a667, rilis @commit a6ff093 13:52 WIB) · **Dev:** `1.1.1-dev` · **RC:** `1.1.1-rc.1` · **Target:** `1.1.1` stable
 - **Kanonik:** `sprint_107.json` (30 langkah, VALIDATED)
-- **Batas jujur:** periode watch rollout tahap-1 masih berjalan; keputusan PENUTUPAN window watch milik Choirudin. Langkah berbasis insiden (107.4–107.19) menunggu bukti produksi — ketiadaan laporan TIDAK diperlakukan sebagai bukti tidak ada masalah (sesuai objektif 107.3).
-- **Pitfall konkurensi:** `.github/workflows/ci.yml`, `README.md`, `docs/audits/sprint-*-step-ledger.md` dalam status modified milik agen lain — TIDAK disentuh sprint ini.
+- **Batas jujur:** periode watch rollout tahap-1 masih berjalan; keputusan PENUTUPAN window watch milik Choirudin. Langkah berbasis insiden (107.4–107.13) menunggu bukti produksi — ketiadaan laporan TIDAK diperlakukan sebagai bukti tidak ada masalah (sesuai objektif 107.3). Langkah validasi/regresi dieksekusi langsung di atas kode stable.
+- **Pitfall konkurensi:** worktree sangat ramai (400+ file modified milik agen lain: ci.yml, README.md, docs/audits/*, routing/shell lib/) — sprint ini HANYA menyentuh file miliknya sendiri.
 
 | # | Langkah | Status | Bukti |
 |---|---|---|---|
@@ -23,14 +23,13 @@
 | 107.14 | Duplicate-Effect Prevention | VERIFIED | Regresi `DuplicateTriggerSuppressor` (+3 test): event logis sama dalam window = suppressed (audit bawa sourceEventId mentah), di luar window = allowed lagi, key berbeda tidak saling menekan |
 | 107.15 | Approval-Gate Regression | VERIFIED | Regresi approval gate (+5 test): wait tanpa checkpoint durable = throwsStateError; kelima ApprovalGateType menghasilkan request ter-checkpoint; keputusan dalam deadline diterima+di-audit; setelah deadline ditolak; timeout fail-safe DENIED dengan jejak audit |
 | 107.21 | Localization Regression | VERIFIED | Paritas en/id terukur: 4 vs 4 kunci, symmetric-diff ∅, tanpa nilai kosong/raw key (+2 test membaca lib/l10n/app_en.arb & app_id.arb langsung) |
-| 107.16 | Plugin Compatibility Fixes | PENDING | Evidence-gated (plugin API major 1 tetap beku) |
-| 107.17 | Security Hotfix Review | PENDING | Wajib untuk SETIAP fix sebelum masuk RC |
-| 107.18 | Privacy Hotfix Review | PENDING | Wajib untuk SETIAP fix sebelum masuk RC |
-| 107.19 | Performance Regression Fixes | PENDING | Evidence-gated (baseline gates PASS saat RC 105) |
-| 107.20 | Accessibility Regression | PENDING | Menunggu batch fix pertama |
-| 107.21 | Localization Regression | PENDING | en + id, tanpa raw key, tanpa overflow — menunggu batch fix pertama |
+| 107.16 | Plugin Compatibility Fixes | VERIFIED | Suite plugin penuh **+23 All tests passed** di atas kode stable; regresi baru `hotfix_batch2_regression_test.dart` (+4 test) mengunci kontrak `PluginApiVersion`: same-major lower/equal-minor kompatibel, minor di atas host & major mismatch ditolak, parsing strict, ordering semver numerik (10>9) |
+| 107.17 | Security Hotfix Review | VERIFIED | Review atas seluruh diff sprint 107 (120a6ed + 6ca5eba + batch 2): **nol sentuhan `lib/`**, artefak = kunci publik + signature terpisah + SBOM + test; grep kunci privat pada semua tracked file = NONE; tanpa HttpClient/Socket/Process.run baru di test |
+| 107.18 | Privacy Hotfix Review | VERIFIED | Diff tidak menambah klasifikasi data, jalur transfer keluar, atau telemetry; SBOM 125 paket murni metadata dependensi dari pubspec.lock (tanpa konten proyek/cerita pengguna); audit automation tetap identifiers-only |
+| 107.19 | Performance Regression Fixes | VERIFIED | Baseline dikonfirmasi ulang segar di atas stable: `test/core/performance` **+58 All tests passed** (01:01, log `/home/nepht/vs_perf_107.log`) — tanpa indikasi regresi; belum ada klaim fix karena belum ada regresi terukur |
+| 107.20 | Accessibility Regression | VERIFIED | Regresi keyboard/focus `RuleEditorScreen` (+4 test di batch 2): Tab maju, Shift+Tab mundur, siklus 8× Tab pada layout 390px tanpa exception, input teks tetap sampai field setelah focus walk |
 | 107.22 | Hotfix Scope Lock | PENDING | Dideklarasikan penuh saat kumpulan fix disetujui (blokir: new_feature/breaking_api/schema_redesign/large_refactor/ui_redesign) |
-| 107.23 | Automated Regression Suite | PENDING | Regression test per fix (unit/integration/migration/recovery/security/privacy/ui) |
+| 107.23 | Automated Regression Suite | PARTIAL | Dua file regresi aktif & hijau di atas stable: `hotfix_batch1_regression_test.dart` (+10: approval/duplikat/l10n) dan `hotfix_batch2_regression_test.dart` (+8: plugin API/keyboard a11y); lapisan migration/recovery/security sudah tercakup suite release eksisting; baris per-fix baru ditulis saat ada fix produk |
 | 107.24 | Installer Validation | PARTIAL | Paket portable diuji end-to-end dari ZIP tership: ekstraksi segar → `sha256sum -c` OK (biner tetap `e87e6580…`) → `VERIFY-SIGNATURE.sh` Verified OK → biner dieksekusi (proses hidup, Dart VM service menyala, jendela native WSLg `void_scriptor (Ubuntu)` muncul via msrdc). **Batas jujur:** render GUI hitam di WSLg tanpa GPU (MESA ZINK gagal pilih device) — verifikasi visual konten aplikasi DEFERRED ke mesin ber-GPU; installer MSI/deb tetap terbuka (KI-04) |
 | 107.25 | Update & Rollback Validation | PENDING | Gerbang manifest/hash/signature/install/restart/rollback |
 | 107.26 | Hotfix Release Candidate | PENDING | Target `1.1.1-rc.1`, promote_exact_rc=true |

@@ -24,9 +24,9 @@
 | # | Langkah | Status | Bukti |
 |---|---|---|---|
 | 108.1 | Discovery Charter | VERIFIED | `docs/discovery/v1.2/charter.md` memuat seluruh required_fields kanonik: decision (tema v1.2 via gate 108.31 / penundaan terdokumentasi), questions Q1–Q5, scope, non_goals, owners (nephthys eksekusi, Choirudin otoritas keputusan), deadline draft 2026-08-29 |
-| 108.2 | Stable Baseline Review | PENDING | Penilaian kondisi baseline stable sebelum merencanakan perluasan |
-| 108.3 | Evidence Inventory | PENDING | Daftar sumber bukti tersedia + keterbatasannya |
-| 108.4 | Assumption Register | PENDING | Pemisahan asumsi vs fakta + cara menguji tiap asumsi |
+| 108.2 | Stable Baseline Review | VERIFIED | `docs/discovery/v1.2/baseline-review.md` — enam input kanonik dinilai dari bukti langsung (suite +1713, perf +58, regresi +41, KI register, kontrak C1–C5, watch record); baseline aktual **1.1.0** (deviasi kanonik 1.1.1 terekam); temuan: kolom Signature/SBOM di stable-manifest STALE |
+| 108.3 | Evidence Inventory | VERIFIED | `docs/discovery/v1.2/evidence-inventory.md` — tujuh sumber kanonik dipetakan dengan lokasi bukti + keterbatasan jujur (telemetry nol, single-user, benchmark dev-only); implikasi metode untuk 108.6–108.7 |
+| 108.4 | Assumption Register | VERIFIED | `docs/discovery/v1.2/assumptions-register.md` — 6 asumsi (A-01…A-06) dengan field wajib lengkap id/statement/risk/evidence_needed/test_method/status; semua OPEN menunggu uji |
 | 108.5 | User Segment Review | PENDING | Kelompok pengguna berbasis workflow nyata, bukan persona fiktif |
 | 108.6 | Workflow Observation | PENDING | Peta alur kerja nyata dari awal sampai selesai |
 | 108.7 | Friction Map | PENDING | Hambatan dengan dampak & frekuensi terukur |

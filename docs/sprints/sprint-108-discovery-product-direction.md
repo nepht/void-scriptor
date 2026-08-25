@@ -27,10 +27,10 @@
 | 108.2 | Stable Baseline Review | VERIFIED | `docs/discovery/v1.2/baseline-review.md` — enam input kanonik dinilai dari bukti langsung (suite +1713, perf +58, regresi +41, KI register, kontrak C1–C5, watch record); baseline aktual **1.1.0** (deviasi kanonik 1.1.1 terekam); temuan: kolom Signature/SBOM di stable-manifest STALE |
 | 108.3 | Evidence Inventory | VERIFIED | `docs/discovery/v1.2/evidence-inventory.md` — tujuh sumber kanonik dipetakan dengan lokasi bukti + keterbatasan jujur (telemetry nol, single-user, benchmark dev-only); implikasi metode untuk 108.6–108.7 |
 | 108.4 | Assumption Register | VERIFIED | `docs/discovery/v1.2/assumptions-register.md` — 6 asumsi (A-01…A-06) dengan field wajib lengkap id/statement/risk/evidence_needed/test_method/status; semua OPEN menunggu uji |
-| 108.5 | User Segment Review | PENDING | Kelompok pengguna berbasis workflow nyata, bukan persona fiktif |
-| 108.6 | Workflow Observation | PENDING | Peta alur kerja nyata dari awal sampai selesai |
-| 108.7 | Friction Map | PENDING | Hambatan dengan dampak & frekuensi terukur |
-| 108.8 | Unmet-Need Map | PENDING | Kebutuhan belum-terpenuhi tanpa melompat ke solusi |
+| 108.5 | User Segment Review | VERIFIED | `docs/discovery/v1.2/user-segments.md` — segmen S1 terbukti dari bukti pemakaian nyata (registry projects.json + DB), keenam dimensi kanonik terisi; segmen S2 dinyatakan HIPOTESIS tanpa persona fiktif |
+| 108.6 | Workflow Observation | VERIFIED | `docs/discovery/v1.2/workflow-observation.md` — rekonstruksi sesi nyata 22–23 Agu atas proyek "Test Novel" (metode forensik mtime+DB read-only, isi cerita tak dibuka); temuan kunci: pemakaian berhenti total pasca-sesi uji |
+| 108.7 | Friction Map | VERIFIED | `docs/discovery/v1.2/friction-map.md` — F-01…F-05 dengan field wajib lengkap; tiap entri berbukti; F-03 (retensi) ditandai n=1 rapuh, F-04 ditandai inferensi |
+| 108.8 | Unmet-Need Map | VERIFIED | `docs/discovery/v1.2/unmet-needs.md` — UN-01…UN-06 rumusan masalah-murni berbukti (problem_before_solution); keinginan tanpa bukti sengaja tidak didaftarkan |
 | 108.9 | Support & Incident Analysis | PENDING | Pola masalah dari rekaman support/inciden |
 | 108.10 | Workflow Intelligence Evaluation | PENDING | Penggunaan, keberhasilan, batas fitur workflow v1.1 |
 | 108.11 | Automation Safety Evaluation | PENDING | Nilai vs risiko automation |

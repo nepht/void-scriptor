@@ -45,13 +45,13 @@
 | 108.20 | Architecture Feasibility | VERIFIED | `docs/discovery/v1.2/architecture-feasibility.md` — 7 scope review atas peta live (24 core/46 features); semua peluang feasible tanpa boundary baru, tanpa modul core baru |
 | 108.21 | Data & Migration Feasibility | VERIFIED | `docs/discovery/v1.2/data-migration-feasibility.md` — 4 required_outputs; skema v56 bisa beku sepanjang v1.2; rollback trivial utk OPP-05/06; DR lintas-mesin tercatat terbuka jujur |
 | 108.22 | Security & Privacy Feasibility | VERIFIED | `docs/discovery/v1.2/security-privacy-feasibility.md` — 5 required_outputs; risiko terkonsentrasi di OPP-06 (eksfiltrasi naskah) dengan mitigasi gerbang persetujuan per-konten; klasifikasi data 3 kelas |
-| 108.23 | Accessibility & Localization Feasibility | PENDING | A11y & lokalisasi sebelum prioritisasi |
-| 108.24 | Success Metric Design | PENDING | Metrik hasil, driver, guardrail utk peluang utama |
-| 108.25 | Experiment Plan | PENDING | Eksperimen terkecil untuk mengurangi ketidakpastian |
-| 108.26 | Prototype Boundaries | PENDING | Prototype ≠ implementasi produksi |
-| 108.27 | Experiment Execution | PENDING | Eksekusi eksperimen + catatan hasil/kegagalan/batas |
-| 108.28 | Opportunity Prioritization | PENDING | Pilihan berdasar nilai, bukti, feasibility, biaya, risiko |
-| 108.29 | v1.2 Release Theme | PENDING | Satu tema rilis berbasis bukti |
-| 108.30 | Scope & Non-Goals | PENDING | Must/Should/Could/Won't + batas v1.2 |
+| 108.23 | Accessibility & Localization Feasibility | VERIFIED | `docs/discovery/v1.2/a11y-localization-feasibility.md` — 7 scope dari grep repo live: `Semantics(`=0, keyboard parsial, scaling/motion/contrast belum dikaji; temuan positif: infrastruktur l10n EN+ID (`app_id.arb`) ada nyata |
+| 108.24 | Success Metric Design | VERIFIED | `docs/discovery/v1.2/success-metric-design.md` — outcome/driver/guardrail/baseline/target/window lengkap; baseline jujur 0 sesi sejak 23 Agu; target usulan menunggu otoritas Choi; ketergantungan OPP-05 terekam |
+| 108.25 | Experiment Plan | VERIFIED | `docs/discovery/v1.2/experiment-plan.md` — E-1…E-5 dengan jenis kanonik, biaya, dan status kelayakan otonom jujur (E-3 satu-satunya yang bisa jalan tanpa Choi/sukarelawan) |
+| 108.26 | Prototype Boundaries | VERIFIED | `docs/discovery/v1.2/prototype-boundaries.md` — B1–B4 memetakan keempat requirement kanonik (no-production-data / flag-OFF / security-documented / disposable) + konsekuensi pelanggaran |
+| 108.27 | Experiment Execution | PARTIAL | `docs/discovery/v1.2/experiment-execution.md` — E-3 dieksekusi penuh otonom (build web ✓ 83,2s, artefak 59MB, HTTP 200 lokal); E-1/E-2/E-5 diblokir jujur (butuh Choi/izin privasi/sukarelawan); E-4 deferred ke sprint implementasi |
+| 108.28 | Opportunity Prioritization | VERIFIED | `docs/discovery/v1.2/opportunity-prioritization.md` — skor 7 kriteria × 6 peluang; urutan OPP-01(34)→02(30)→05(28); selisih tipis OPP-04/06 ditandai boleh dibalik di gate |
+| 108.29 | v1.2 Release Theme | VERIFIED | `docs/discovery/v1.2/release-theme-draft.md` — DRAFT "Kembali ke Alur" dengan 6 field wajib; eksplisit menunggu otoritas gate 108.31; alternatif yang ditolak beralas |
+| 108.30 | Scope & Non-Goals | VERIFIED | `docs/discovery/v1.2/scope-non-goals-draft.md` — MUST×3 / SHOULD×2 / COULD×1 / WON'T×6; batas keras lintas-kategori (skema v56 beku, C1–C5 & Plugin API tak berubah) |
 | 108.31 | Direction Approval Gate | PENDING | Persetujuan arah hanya jika bukti & risiko cukup jelas — keputusan Choirudin |
 | 108.32 | Sprint Closure | PENDING | Tutup discovery setelah arah v1.2 dipilih ATAU keputusan menunda dicatat |

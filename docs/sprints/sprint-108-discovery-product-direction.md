@@ -53,5 +53,5 @@
 | 108.28 | Opportunity Prioritization | VERIFIED | `docs/discovery/v1.2/opportunity-prioritization.md` — skor 7 kriteria × 6 peluang; urutan OPP-01(34)→02(30)→05(28); selisih tipis OPP-04/06 ditandai boleh dibalik di gate |
 | 108.29 | v1.2 Release Theme | VERIFIED | `docs/discovery/v1.2/release-theme-draft.md` — DRAFT "Kembali ke Alur" dengan 6 field wajib; eksplisit menunggu otoritas gate 108.31; alternatif yang ditolak beralas |
 | 108.30 | Scope & Non-Goals | VERIFIED | `docs/discovery/v1.2/scope-non-goals-draft.md` — MUST×3 / SHOULD×2 / COULD×1 / WON'T×6; batas keras lintas-kategori (skema v56 beku, C1–C5 & Plugin API tak berubah) |
-| 108.31 | Direction Approval Gate | PENDING | Persetujuan arah hanya jika bukti & risiko cukup jelas — keputusan Choirudin |
+| 108.31 | Direction Approval Gate | PENDING | Paket bukti kanonik LENGKAP 7/7 (evidence-inventory, opportunity-registry, experiment-results, feasibility×5, success-metrics, scope-drafts, `risk-register.md` R-01…R-09) — keputusan GO/tunda milik Choirudin |
 | 108.32 | Sprint Closure | PENDING | Tutup discovery setelah arah v1.2 dipilih ATAU keputusan menunda dicatat |

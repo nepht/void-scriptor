@@ -1,16 +1,16 @@
 # Sprint 109 — VOID SCRIPTOR v1.2 Writer, Story & Lore Productivity
 
-- **Status:** BERJALAN (dibuka 2026-08-25 ±22:00 WIB, pasca penutupan S108) · **Base aktual:**  stable · **Target kanonik:** 
-- **Kanonik:**  (SPRINT_MASTER, 52 langkah, VALIDATED; )
-- **Deviasi kanonik terdokumentasi:**  kanonik menyebut ; nyata tetap 
-  (konsekuensi opsi A S107 — pola deviasi sama dengan S108, direkam atas rantai keputusan arsitek).
-- **Delivery rules kanonik diadopsi penuh:** tanpa fabricated completion; flag default OFF;
-  backward-compat + migration-rollback + local-first + export-data + review a11y & security wajib.
-- **Entry gate 109.1:** seluruh bukti tersedia dari paket gate 108.31 (@).
+- **Status:** BERJALAN (dibuka 2026-08-25 ±22:00 WIB, pasca penutupan S108) · **Base aktual:** `1.1.0` stable · **Target kanonik:** `1.2.0-alpha.1`
+- **Kanonik:** `sprint_109.json` (SPRINT_MASTER, 52 langkah, VALIDATED; `depends_on: [108]`)
+- **Deviasi kanonik terdokumentasi:** `base_version` kanonik menyebut `1.1.1`; nyata tetap `1.1.0`
+  (konsekuensi opsi A Sprint 107 — pola deviasi sama dengan S108, direkam atas rantai keputusan arsitek).
+- **Delivery rules kanonik diadopsi penuh:** tanpa fabricated completion; feature flag default OFF;
+  backward-compat + migration-rollback + local-first + user-data-export + review a11y & security wajib.
+- **Entry gate 109.1:** seluruh bukti tersedia dari paket gate 108.31 (komit `ad55f76`).
 
 | langkah | judul | status | bukti/catatan |
 |---|---|---|---|
-| 109.1 | Sprint Entry Gate | VERIFIED | Paket lengkap: direction approval (GO 108.31), scope disetujui (), success metrics, feasibility x5, risk register R-01..R-09 — semua di  |
+| 109.1 | Sprint Entry Gate | VERIFIED | Paket lengkap: direction approval (GO 108.31), scope disetujui (`scope-non-goals-draft.md`), success metrics, feasibility x5, risk register R-01..R-09 — semua di `docs/discovery/v1.2/` |
 | 109.2 | Wave 1 Scope Contract | PENDING | Mengunci 13 capability, non-goals, dependency, dan acceptance boundary. |
 | 109.3 | Shared Architecture & Ownership | PENDING | Menetapkan boundary modul dan memisahkan Novel Workspace dari Character Workspace pada UI, ownership, persiste |
 | 109.4 | Shared Data Schema | PENDING | Merancang schema terpisah untuk Novel dan Character serta kontrak novel_character_link tanpa co-ownership data |

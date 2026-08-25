@@ -242,4 +242,11 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
   sidecar SHA-256 OK; keterbacaan `tar -tzf` OK (13.203 entri); manifest +
   rute restore terdokumentasi di ledger 145. Tag repositori tidak dibuat
   (menunggu otorisasi D6).
-- Langkah berikutnya: 145.3 Project Structure Inventory atas HEAD terkini.
+- nephthys melanjutkan dengan **145.3 Project Structure Inventory** dan
+  **145.4 Secrets and Sensitive File Audit**: keduanya VERIFIED read-only
+  (bukti lengkap di ledger 145: 968 lib / 607 test dart, DB Drift schema
+  v56, 6 platform target tanpa backend; tidak ada file kunci/env,
+  PRIVATE KEY NONE, dotenv NONE). Tag repositori tidak dibuat
+  (menunggu otorisasi D6).
+- Langkah berikutnya: 145.6 Runtime Baseline (jalankan aplikasi di
+  lingkungan lokal aman + tangkap launch/flow/error).

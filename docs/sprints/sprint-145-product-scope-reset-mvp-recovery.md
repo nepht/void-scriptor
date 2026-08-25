@@ -26,8 +26,8 @@ baseline lama.
 |---|---|---|---|
 | 145.1 | Application Source Entry Gate | COMPLETED (historis, diverifikasi silang) | Kontrak: project root `/home/nepht/Projects/void_scriptor_multiplatform`, origin/master `334022a3…`, Flutter 3.44.9/Dart 3.12.2; nephthys 2026-08-25: SHA ada & ancestor HEAD |
 | 145.2 | Non-destructive Source Backup | VERIFIED (segar, nephthys 2026-08-25) | Pre-audit backup non-rotating + verifikasi baca-tulis penuh; rincian di bawah |
-| 145.3 | Project Structure Inventory | PENDING | — |
-| 145.4 | Secrets and Sensitive File Audit | PENDING | — |
+| 145.3 | Project Structure Inventory | VERIFIED (nephthys, 2026-08-25 @dc06fe1+) | Bukti di bawah |
+| 145.4 | Secrets and Sensitive File Audit | VERIFIED (nephthys, 2026-08-25 @dc06fe1+) | Bukti di bawah |
 | 145.5 | Reproducible Build Baseline | COMPLETED (historis) | Kontrak: GitHub Actions run `32628588565` success multiplatform @334022a (era pra-billing; tidak dapat diverifikasi ulang sekarang, hosted CI kini DEFERRED keputusan D6) |
 | 145.6 | Runtime Baseline | PENDING | — |
 | 145.7 | Automated Test Baseline | COMPLETED (historis) | Kontrak: analyze PASS, 41 focused Core tests, regresi 1.279 PASS @d4c3b8a, build Web/Linux PASS; keadaan kini: suite 1.735 PASS @dc06fe1 (bukti Checkpoint 3) |
@@ -74,6 +74,51 @@ source tree; hanya `tar` membaca):
    di atas. Remote GitHub juga memuat HEAD yang sama (`dc06fe1`) sehingga
    rute kedua adalah `git clone` + reaplikasi pekerjaan tak-ter-commit dari
    arsip bila diperlukan.
+
+## Bukti 145.3 — Project Structure Inventory (nephthys, 2026-08-25, HEAD dc06fe1+)
+
+Read-only; angka = file `.dart` kecuali disebut lain:
+
+- Identitas: `void_scriptor` v`1.1.0-rc.1+5`, SDK `>=3.12.0 <4.0.0`;
+  2.033 tracked files; 127 entri `pubspec.lock`.
+- Kode: `lib` 968 (features 553, core 220, database 129, app 21,
+  automation 15, workflow 12, design_system 12, shared 3, release 1,
+  l10n 1); `test` 607 (features 400, core 132, app 26, automation 14,
+  workflow 13, release 7, database 5, lain-lain 10).
+- Database: Drift, `lib/database/project/{daos,tables}`,
+  `currentSchemaVersion = 56` (`project_database.dart:338`); migrasi di
+  `project_database.dart`; generated `project_database.g.dart`.
+- Platform targets: android/ios/linux/macos/windows/web semua PRESENT.
+  Tidak ada backend/server directory — arsitektur local-first.
+- Assets: 433 file (brands/backgrounds/fonts/logos) — catatan: sebagian
+  asset brand milik agen lain, statusnya diatur pemiliknya.
+- Tooling: `tool/workflow_example.dart`; `tools/*.py`
+  (generate_release_metadata, verify_engineering_report,
+  verify_repository_hardening); workflows: ci.yml, release-train.yml,
+  security.yml.
+- Docs: SPRINT_PROGRESS.md, MASTER_SPRINT.md, IMPLEMENTATION_GOAL/LEDGER,
+  audits/, benchmarks/, release/, sprints/, workflows/.
+- Generated/build: `build/`, `.dart_tool/` ada (tidak diinventarisasi
+  sebagai sumber).
+- Entry point: `lib/main.dart` (bootstrap gate + recovery shell, Sprint
+  101.3/101.9), root app `lib/app/void_app.dart`.
+
+## Bukti 145.4 — Secrets and Sensitive File Audit (nephthys, 2026-08-25)
+
+Metode read-only; output hanya path/jumlah, nilai tidak pernah dicetak:
+
+- Filename sensitif (worktree incl. untracked): hanya nama kode fitur
+  credential (`encrypted_credential_store.dart`,
+  `credential_store.dart`, `credentials_vault.dart`) — bukan file rahasia.
+- Blok `BEGIN … PRIVATE KEY` pada seluruh tracked files: NONE.
+- Kandidat assignment (api_key/token/password/passphrase) per area:
+  lib=7, test=6, tool/tools/web/platform-dirs=0 — indikasi awal identitas
+  variabel kode, bukan materi rahasia; review manual menyusul bila
+  dikontrakkan lebih dalam.
+- Referensi dotenv di lib/tool: NONE (kecocokan grep hanyalah
+  `environmentId` DAO).
+- Konsisten dengan kebijakan: kunci privat codesign tinggal di
+  `~/codesign/` WSL, di luar repo.
 
 ## Catatan konkurensi
 

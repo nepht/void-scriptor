@@ -332,3 +332,13 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Acceptance sprint_109.json tercakup 1:1: distraction_free,
   keyboard_exit, autosave_visible, theme_support, screen_reader_access.
   Bukti lengkap di ledger sprint-109 baris 109.20.
+
+### 2026-08-26 — Sprint 109.21 Word Targets & Session Progress (nephthys)
+
+- Lanjutan front Sprint 109: langkah kanonik 109.21 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN bersih -> gerbang penuh).
+- File milik slice ini: lib/features/story/domain/word_targets.dart,
+  test/features/story/word_targets_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: target_levels, live_progress,
+  session_reset, history, timezone_safe.
+  Bukti lengkap di ledger sprint-109 baris 109.21.

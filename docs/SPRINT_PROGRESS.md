@@ -526,3 +526,16 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
   kualitas absolut.
 - Catatan jujur: perbaikan null-safety closure flush + dua putaran lint.
   Bukti lengkap di ledger sprint-109 baris 109.37.
+
+### 2026-08-26 — Sprint 109.38 Manuscript Export Profiles (nephthys)
+
+- Pembuka trilogi ekspor: langkah kanonik 109.38 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN -> gerbang penuh).
+- Modul BARU feature 19:
+  lib/features/export/domain/export_profiles.dart +
+  test/features/export/export_profiles_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: profile_settings,
+  chapter_rules, scene_break_rules, front_matter, saved_presets.
+- Catatan jujur: assert vs ArgumentError diselesaikan mengikuti
+  otoritas tes.
+  Bukti lengkap di ledger sprint-109 baris 109.38.

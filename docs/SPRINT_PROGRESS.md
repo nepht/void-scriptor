@@ -280,3 +280,13 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Acceptance sprint_109.json tercakup 1:1: question_sets,
   first_person_answers, session_history, manual_edit, source_provenance.
   Bukti lengkap di ledger sprint-109 baris 109.15.
+
+### 2026-08-26 — Sprint 109.16 Voice Profile & Dialogue Consistency (nephthys)
+
+- Lanjutan front Sprint 109: langkah kanonik 109.16 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN -> lint fix -> gerbang penuh).
+- File milik slice ini: lib/features/dialogue/domain/voice_consistency.dart,
+  test/features/dialogue/voice_consistency_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: editable_voice_rules,
+  dialogue_comparison, explain_warning, disable_rule, no_auto_rewrite.
+  Bukti lengkap di ledger sprint-109 baris 109.16.

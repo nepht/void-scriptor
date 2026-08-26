@@ -122,6 +122,12 @@ class LoreGraph {
     _edges.add(edge);
   }
 
+  /// Salinan node urut penyusunan (akses baca untuk analisis).
+  List<LoreNode> get nodes => List.unmodifiable(_nodes.values);
+
+  /// Salinan edge urut penyusunan (akses baca untuk analisis).
+  List<LoreEdge> get edges => List.unmodifiable(_edges);
+
   /// Menyusun tampilan dengan filtrasi opsional; deterministik.
   LoreGraphView buildView({
     LoreDomain? domainFilter,

@@ -362,3 +362,15 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Acceptance sprint_109.json tercakup 1:1: filter_nodes, filter_edges,
   focus_entity, source_navigation, large_graph_fallback.
   Bukti lengkap di ledger sprint-109 baris 109.23.
+
+### 2026-08-26 — Sprint 109.24 Lore Graph Integrity Insights (nephthys)
+
+- Lanjutan front Sprint 109: langkah kanonik 109.24 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN -> gerbang penuh).
+- File milik slice ini: lib/features/lore/domain/lore_integrity.dart,
+  test/features/lore/lore_integrity_test.dart, plus aksesor baca aditif
+  pada lib/features/lore/domain/lore_graph.dart (milik slice 109.23 saya
+  sendiri).
+- Acceptance sprint_109.json tercakup 1:1: orphan_report, conflict_path,
+  missing_relation_hint, explain_result, dismiss_hint.
+  Bukti lengkap di ledger sprint-109 baris 109.24.

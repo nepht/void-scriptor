@@ -394,3 +394,13 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Acceptance sprint_109.json tercakup 1:1: drag_reorder,
   keyboard_reorder, multi_select, undo, screen_reader_announcement.
   Bukti lengkap di ledger sprint-109 baris 109.26.
+
+### 2026-08-26 — Sprint 109.27 Plot Order Synchronization (nephthys)
+
+- Lanjutan front Sprint 109: langkah kanonik 109.27 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN bersih -> gerbang penuh).
+- File milik slice ini: lib/features/plot/domain/plot_order_sync.dart,
+  test/features/plot/plot_order_sync_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: explicit_sync,
+  conflict_preview, dependency_warning, undo_sync, history.
+  Bukti lengkap di ledger sprint-109 baris 109.27.

@@ -501,3 +501,14 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Catatan jujur: filter dismissal hidup (activeFindings) mengikuti
   otoritas tes; beberapa iterasi lint sampai bersih.
   Bukti lengkap di ledger sprint-109 baris 109.35.
+
+### 2026-08-26 — Sprint 109.36 Tension & Pacing Labels (nephthys)
+
+- Pembuka trilogi pacing: langkah kanonik 109.36 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN bersih sekali jalan -> gerbang
+  penuh).
+- Modul BARU feature 18: lib/features/pacing/domain/tension_labels.dart
+  + test/features/pacing/tension_labels_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: manual_scale, custom_labels,
+  duration_signal, word_count_signal, arc_aggregation.
+  Bukti lengkap di ledger sprint-109 baris 109.36.

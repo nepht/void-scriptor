@@ -310,3 +310,15 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Acceptance sprint_109.json tercakup 1:1: grammar_rules,
   phoneme_inventory, orthography_map, script_notes, version_history.
   Bukti lengkap di ledger sprint-109 baris 109.18.
+
+### 2026-08-26 — Sprint 109.19 Conlang Usage Consistency (nephthys)
+
+- Lanjutan front Sprint 109: langkah kanonik 109.19 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN bersih -> gerbang penuh).
+- File milik slice ini: lib/features/world/domain/conlang_usage.dart,
+  test/features/world/conlang_usage_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: dictionary_lookup,
+  unknown_term_warning, variant_awareness, jump_to_occurrence,
+  user_override (+ konsistensi glos kurung vs arti kamus).
+- Prinsip no-auto-rewrite dijaga: naskah verbatim, temuan hanya merujuk
+  entri kamus. Bukti lengkap di ledger sprint-109 baris 109.19.

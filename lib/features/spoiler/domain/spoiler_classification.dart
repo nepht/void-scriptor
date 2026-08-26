@@ -43,6 +43,12 @@ class SpoilerRegistry {
   /// True bila audiens terdaftar (untuk modul yang mengikat registry).
   bool hasAudience(String audienceId) => _audiences.containsKey(audienceId);
 
+  /// Batas level audiens terdaftar ([StateError] bila tak ada);
+  /// dipakai modul manifest ekspor.
+  SpoilerLevel maxLevelOf(String audienceId) =>
+      _audiences[audienceId]?.maxLevel ??
+      (throw StateError('unknown audience: $audienceId'));
+
   void _requireAudience(String audienceId) {
     if (!_audiences.containsKey(audienceId)) {
       throw StateError('unknown audience: $audienceId');

@@ -450,3 +450,14 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Acceptance sprint_109.json tercakup 1:1: preview_as_reader, redaction,
   hidden_links, no_metadata_leak, revocable_access.
   Bukti lengkap di ledger sprint-109 baris 109.31.
+
+### 2026-08-26 — Sprint 109.32 Spoiler-Safe Share Export (nephthys)
+
+- Lanjutan front Sprint 109: langkah kanonik 109.32 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN -> gerbang penuh).
+- File milik slice ini: lib/features/spoiler/domain/share_export.dart,
+  test/features/spoiler/share_export_test.dart (+ aksesor aditif
+  maxLevelOf pada spoiler_classification.dart milik slice sendiri).
+- Acceptance sprint_109.json tercakup 1:1: preflight_report,
+  audience_manifest, sanitized_export, share_expiry, revoke.
+  Bukti lengkap di ledger sprint-109 baris 109.32.

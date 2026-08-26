@@ -461,3 +461,15 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Acceptance sprint_109.json tercakup 1:1: preflight_report,
   audience_manifest, sanitized_export, share_expiry, revoke.
   Bukti lengkap di ledger sprint-109 baris 109.32.
+
+### 2026-08-26 — Sprint 109.33 Scene POV Lock (nephthys)
+
+- Pembuka trilogi POV: langkah kanonik 109.33 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN bersih -> gerbang penuh).
+- Modul BARU feature 17: lib/features/pov/domain/pov_lock.dart +
+  test/features/pov/pov_lock_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: scene_pov, section_override,
+  tense, narration_mode, visible_status.
+- Catatan jujur: satu perbaikan desain internal sebelum eksekusi
+  (extension static-map bocor antarinstans -> Set unlocked di ledger).
+  Bukti lengkap di ledger sprint-109 baris 109.33.

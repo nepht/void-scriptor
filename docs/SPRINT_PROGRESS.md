@@ -260,3 +260,13 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
   UI tetap DEFERRED (WSLg tanpa GPU).
 - Langkah berikutnya: keputusan adopsi set minimal (Choirudin), lalu
   145.9 Working Feature Protection List.
+
+### 2026-08-26 — Sprint 109.14 Contradiction Inbox (nephthys)
+
+- Front kerja menyusul agen lain: langkah kanonik 109.14 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN -> lint fix -> gerbang penuh).
+- File milik slice ini: lib/features/story/domain/contradiction_inbox.dart,
+  test/features/story/contradiction_inbox_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: severity_filter, entity_filter,
+  jump_to_source, resolve_or_dismiss, history. Bukti lengkap di ledger
+  docs/sprints/sprint-109-writer-story-lore-productivity.md baris 109.14.

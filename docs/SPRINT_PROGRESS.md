@@ -352,3 +352,13 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Acceptance sprint_109.json tercakup 1:1: automatic_snapshot,
   manual_snapshot, diff_view, restore_creates_backup, retention_controls.
   Bukti lengkap di ledger sprint-109 baris 109.22.
+
+### 2026-08-26 — Sprint 109.23 Writer-Focused Lore Graph (nephthys)
+
+- Lanjutan front Sprint 109: langkah kanonik 109.23 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN bersih -> gerbang penuh).
+- Modul BARU feature 9: lib/features/lore/domain/lore_graph.dart +
+  test/features/lore/lore_graph_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: filter_nodes, filter_edges,
+  focus_entity, source_navigation, large_graph_fallback.
+  Bukti lengkap di ledger sprint-109 baris 109.23.

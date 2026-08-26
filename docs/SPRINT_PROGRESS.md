@@ -404,3 +404,16 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Acceptance sprint_109.json tercakup 1:1: explicit_sync,
   conflict_preview, dependency_warning, undo_sync, history.
   Bukti lengkap di ledger sprint-109 baris 109.27.
+
+### 2026-08-26 — Sprint 109.28 Character Moodboard Workspace (nephthys)
+
+- Lanjutan front Sprint 109: langkah kanonik 109.28 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN -> gerbang penuh).
+- File milik slice ini: lib/features/character/domain/character_moodboard.dart,
+  test/features/character/character_moodboard_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: local_media, categories,
+  annotations, source_credit, missing_file_state.
+- Catatan gerbang: baris ledger 109.28 ternyata tersimpan TERPOTONG
+  sejak penulisan awal ('...override k |'); pembaruan status memakai
+  pencocokan awalan baris, bukan teks objektif penuh.
+  Bukti lengkap di ledger sprint-109 baris 109.28.

@@ -486,3 +486,18 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Catatan jujur: koreksi kontradiksi draf tes (post-format text match)
   + pembersihan 21 info const via dart fix --apply.
   Bukti lengkap di ledger sprint-109 baris 109.34.
+
+### 2026-08-26 — Sprint 109.35 Head-Hopping Analysis & Report (nephthys)
+
+- Penutup trilogi POV: langkah kanonik 109.35 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN -> gerbang penuh).
+- File milik slice ini: lib/features/pov/domain/head_hop_analysis.dart,
+  test/features/pov/head_hop_analysis_test.dart.
+- Mengikat dua modul slice sendiri: PovLedger (109.33) +
+  KnowledgeLedger (109.34).
+- Acceptance sprint_109.json tercakup 1:1: narration_analysis,
+  knowledge_violation, jump_to_text, false_positive_control,
+  chapter_report.
+- Catatan jujur: filter dismissal hidup (activeFindings) mengikuti
+  otoritas tes; beberapa iterasi lint sampai bersih.
+  Bukti lengkap di ledger sprint-109 baris 109.35.

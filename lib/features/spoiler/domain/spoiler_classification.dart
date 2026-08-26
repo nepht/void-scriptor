@@ -40,6 +40,9 @@ class SpoilerRegistry {
   final Map<String, String> _revealPoints = <String, String>{};
   final Map<String, SpoilerAudience> _audiences = <String, SpoilerAudience>{};
 
+  /// True bila audiens terdaftar (untuk modul yang mengikat registry).
+  bool hasAudience(String audienceId) => _audiences.containsKey(audienceId);
+
   void _requireAudience(String audienceId) {
     if (!_audiences.containsKey(audienceId)) {
       throw StateError('unknown audience: $audienceId');

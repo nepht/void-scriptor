@@ -439,3 +439,14 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Catatan jujur: dua iterasi koreksi draf tes (panggilan posisional ->
   bernama; kontradiksi level-vs-reveal gate di grup reveal_point).
   Bukti lengkap di ledger sprint-109 baris 109.30.
+
+### 2026-08-26 — Sprint 109.31 Reader Clearance & Redaction (nephthys)
+
+- Lanjutan front Sprint 109: langkah kanonik 109.31 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN bersih sekali jalan -> gerbang penuh).
+- File milik slice ini: lib/features/spoiler/domain/reader_redaction.dart,
+  test/features/spoiler/reader_redaction_test.dart (+ aksesor aditif
+  hasAudience pada spoiler_classification.dart milik slice 109.30 sendiri).
+- Acceptance sprint_109.json tercakup 1:1: preview_as_reader, redaction,
+  hidden_links, no_metadata_leak, revocable_access.
+  Bukti lengkap di ledger sprint-109 baris 109.31.

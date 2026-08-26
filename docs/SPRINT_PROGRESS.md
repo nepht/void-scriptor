@@ -427,3 +427,15 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Acceptance sprint_109.json tercakup 1:1: attribute_registry,
   scene_comparison, explain_warning, timeline_awareness, user_override.
   Bukti lengkap di ledger sprint-109 baris 109.29.
+
+### 2026-08-26 — Sprint 109.30 Spoiler Classification Model (nephthys)
+
+- Penutup front Sprint 109: langkah kanonik 109.30 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN -> gerbang penuh).
+- Modul BARU feature 16: lib/features/spoiler/domain/spoiler_classification.dart +
+  test/features/spoiler/spoiler_classification_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: spoiler_levels, reveal_point,
+  audience_policy, inheritance_rules, safe_default.
+- Catatan jujur: dua iterasi koreksi draf tes (panggilan posisional ->
+  bernama; kontradiksi level-vs-reveal gate di grup reveal_point).
+  Bukti lengkap di ledger sprint-109 baris 109.30.

@@ -417,3 +417,13 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
   sejak penulisan awal ('...override k |'); pembaruan status memakai
   pencocokan awalan baris, bukan teks objektif penuh.
   Bukti lengkap di ledger sprint-109 baris 109.28.
+
+### 2026-08-26 — Sprint 109.29 Visual Description Continuity (nephthys)
+
+- Lanjutan front Sprint 109: langkah kanonik 109.29 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN bersih -> gerbang penuh).
+- File milik slice ini: lib/features/character/domain/visual_continuity.dart,
+  test/features/character/visual_continuity_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: attribute_registry,
+  scene_comparison, explain_warning, timeline_awareness, user_override.
+  Bukti lengkap di ledger sprint-109 baris 109.29.

@@ -512,3 +512,17 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Acceptance sprint_109.json tercakup 1:1: manual_scale, custom_labels,
   duration_signal, word_count_signal, arc_aggregation.
   Bukti lengkap di ledger sprint-109 baris 109.36.
+
+### 2026-08-26 — Sprint 109.37 Pacing Heatmap & Imbalance Warnings (nephthys)
+
+- Lanjutan trilogi pacing: langkah kanonik 109.37 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN -> gerbang penuh).
+- File milik slice ini: lib/features/pacing/domain/pacing_heatmap.dart,
+  test/features/pacing/pacing_heatmap_test.dart.
+- Mengikat modul slice sendiri: TensionLedger (109.36).
+- Acceptance sprint_109.json tercakup 1:1: heatmap, chapter_view,
+  arc_view, long_plateau_hint, custom_thresholds.
+- Prinsip objektif kanonik dijaga: petunjuk deskriptif, tanpa vonis
+  kualitas absolut.
+- Catatan jujur: perbaikan null-safety closure flush + dua putaran lint.
+  Bukti lengkap di ledger sprint-109 baris 109.37.

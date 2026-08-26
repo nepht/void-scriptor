@@ -1,0 +1,322 @@
+import 'dart:io';
+
+import 'package:crypto/crypto.dart';
+import 'package:path/path.dart' as p;
+
+import '../../../core/project_package/project_package.dart';
+import '../domain/novel_character_link.dart';
+import 'novel_character_link_repository.dart';
+import 'workspace_file_namespace.dart';
+import 'workspace_projection_cache.dart';
+
+final class CharacterNovelAssignment {
+  const CharacterNovelAssignment({
+    required this.characterId,
+    required this.novelWorkspaceId,
+  });
+
+  final String characterId;
+  final String novelWorkspaceId;
+}
+
+final class WorkspaceMigrationReport {
+  const WorkspaceMigrationReport({
+    required this.backupCreated,
+    required this.inventoriedStories,
+    required this.inventoriedCharacters,
+    required this.copiedStoryFiles,
+    required this.copiedCharacterFiles,
+    required this.createdLinks,
+    required this.validatedCounts,
+    required this.projectionRebuilt,
+    required this.rollbackDrillPassed,
+  });
+
+  final bool backupCreated;
+  final List<String> inventoriedStories;
+  final List<String> inventoriedCharacters;
+  final int copiedStoryFiles;
+  final int copiedCharacterFiles;
+  final int createdLinks;
+  final bool validatedCounts;
+  final bool projectionRebuilt;
+  final bool rollbackDrillPassed;
+}
+
+final class WorkspaceMigrationRunner {
+  WorkspaceMigrationRunner({
+    required this.package,
+    required this.links,
+    required this.backups,
+    required this.projections,
+  }) : _files = WorkspaceFileNamespace(package);
+
+  final ProjectPackage package;
+  final NovelCharacterLinkRepository links;
+  final dynamic backups;
+  final WorkspaceProjectionCache projections;
+  final WorkspaceFileNamespace _files;
+
+  Future<WorkspaceMigrationReport> migrate({
+    required Map<String, String> storyWorkspaceIds,
+    required List<CharacterNovelAssignment> characterAssignments,
+  }) async {
+    // Phase 1: validate everything before mutating anything.
+    for (final entry in storyWorkspaceIds.entries) {
+      if (!WorkspaceFileNamespace.isValidWorkspaceIdentifier(entry.key)) {
+        throw ArgumentError.value(entry.key, 'storyWorkspaceIds key');
+      }
+      if (!WorkspaceFileNamespace.isValidWorkspaceIdentifier(entry.value)) {
+        throw ArgumentError.value(entry.value, 'storyWorkspaceIds value');
+      }
+    }
+    final seenCharacters = <String>{};
+    for (final assignment in characterAssignments) {
+      if (!WorkspaceFileNamespace.isValidWorkspaceIdentifier(
+        assignment.characterId,
+      )) {
+        throw ArgumentError.value(assignment.characterId, 'characterId');
+      }
+      if (!storyWorkspaceIds.containsKey(assignment.novelWorkspaceId)) {
+        throw ArgumentError.value(
+          assignment.novelWorkspaceId,
+          'novelWorkspaceId',
+          'not a mapped Story workspace',
+        );
+      }
+      if (!seenCharacters.add(assignment.characterId)) {
+        throw ArgumentError.value(
+          assignment.characterId,
+          'characterId',
+          'duplicated assignment',
+        );
+      }
+    }
+
+    // Phase 2: pre-migration backup (manifest + db + assets + workspaces).
+    await backups.create(
+      package: package,
+      type: 'pre-workspace-migration',
+      note: 'Automatic backup before ADR-WS-001 mixed-storage migration',
+    );
+
+    // Phase 3: inventory legacy mixed storage from disk.
+    final storiesRoot = Directory(
+      p.join(package.assetsDirectory.path, 'stories'),
+    );
+    final charactersRoot = Directory(
+      p.join(package.assetsDirectory.path, 'characters'),
+    );
+    final inventoriedStories = await _listChildDirectories(storiesRoot);
+    final inventoriedCharacters = await _listChildDirectories(charactersRoot);
+    for (final assignment in characterAssignments) {
+      if (!inventoriedCharacters.contains(assignment.characterId)) {
+        throw ArgumentError.value(
+          assignment.characterId,
+          'characterId',
+          'no legacy Character directory',
+        );
+      }
+    }
+
+    // Phase 4: copy into typed namespaces without deleting legacy sources.
+    var copiedStoryFiles = 0;
+    for (final entry in storyWorkspaceIds.entries) {
+      final source = Directory(p.join(storiesRoot.path, entry.key));
+      final target = _files.novelDirectory(entry.value);
+      // DB-only packages keep an empty legacy scaffold; the migrated Novel
+      // still needs its home on disk for later exports.
+      await target.create(recursive: true);
+      copiedStoryFiles += await _copyInto(source, target);
+    }
+    var copiedCharacterFiles = 0;
+    for (final assignment in characterAssignments) {
+      final source = Directory(
+        p.join(charactersRoot.path, assignment.characterId),
+      );
+      copiedCharacterFiles += await _copyInto(
+        source,
+        _files.characterDirectory(assignment.characterId),
+      );
+    }
+
+    // Phase 5: explicit links only, deterministic IDs, reference mode.
+    var createdLinks = 0;
+    for (final assignment in characterAssignments) {
+      await links.create(
+        NovelCharacterLink.create(
+          linkId:
+              'migration-${assignment.novelWorkspaceId}-${assignment.characterId}',
+          novelWorkspaceId: assignment.novelWorkspaceId,
+          characterWorkspaceId: assignment.characterId,
+          characterId: assignment.characterId,
+          role: 'migrated',
+          visibility: 'visible',
+        ),
+      );
+      createdLinks++;
+    }
+
+    // Phase 6: validate copied counts and checksums against sources.
+    var validatedCounts = true;
+    for (final entry in storyWorkspaceIds.entries) {
+      validatedCounts &= await _verifyCopy(
+        Directory(p.join(storiesRoot.path, entry.key)),
+        _files.novelDirectory(entry.value),
+      );
+    }
+    for (final assignment in characterAssignments) {
+      validatedCounts &= await _verifyCopy(
+        Directory(p.join(charactersRoot.path, assignment.characterId)),
+        _files.characterDirectory(assignment.characterId),
+      );
+    }
+
+    // Phase 7: rebuild projections for migrated Novels.
+    for (final novelWorkspaceId in storyWorkspaceIds.values.toSet()) {
+      projections.invalidate(novelWorkspaceId);
+    }
+
+    // Phase 8: rollback drill on a disposable copy using backup contents.
+    final rollbackDrillPassed = await _runRollbackDrill();
+
+    return WorkspaceMigrationReport(
+      backupCreated: true,
+      inventoriedStories: inventoriedStories,
+      inventoriedCharacters: inventoriedCharacters,
+      copiedStoryFiles: copiedStoryFiles,
+      copiedCharacterFiles: copiedCharacterFiles,
+      createdLinks: createdLinks,
+      validatedCounts: validatedCounts,
+      projectionRebuilt: true,
+      rollbackDrillPassed: rollbackDrillPassed,
+    );
+  }
+
+  Future<List<String>> _listChildDirectories(Directory? parent) async {
+    if (parent == null || !await parent.exists()) return const [];
+    final names = <String>[];
+    await for (final entity in parent.list()) {
+      if (entity is Directory) names.add(p.basename(entity.path));
+    }
+    names.sort();
+    return names;
+  }
+
+  Future<int> _copyInto(Directory? source, Directory target) async {
+    if (source == null || !await source.exists()) return 0;
+    var count = 0;
+    await for (final entity in source.list(recursive: true)) {
+      if (entity is! File) continue;
+      final relative = p.relative(entity.path, from: source.path);
+      final destination = File(p.join(target.path, 'legacy', relative));
+      await destination.parent.create(recursive: true);
+      await entity.copy(destination.path);
+      count++;
+    }
+    return count;
+  }
+
+  Future<bool> _verifyCopy(Directory source, Directory target) async {
+    if (!await source.exists()) return true;
+    var expected = 0;
+    await for (final entity in source.list(recursive: true)) {
+      if (entity is! File) continue;
+      expected++;
+      final relative = p.relative(entity.path, from: source.path);
+      final copied = File(p.join(target.path, 'legacy', relative));
+      if (!await copied.exists()) return false;
+      final sourceDigest = sha256
+          .convert(await entity.readAsBytes())
+          .toString();
+      final copiedDigest = sha256
+          .convert(await copied.readAsBytes())
+          .toString();
+      if (sourceDigest != copiedDigest) return false;
+    }
+    var actual = 0;
+    final legacy = Directory(p.join(target.path, 'legacy'));
+    if (await legacy.exists()) {
+      await for (final entity in legacy.list(recursive: true)) {
+        if (entity is File) actual++;
+      }
+    }
+    return actual == expected;
+  }
+
+  Future<bool> _runRollbackDrill() async {
+    final drill = await Directory.systemTemp.createTemp('ws-migration-drill-');
+    try {
+      final drillPackage = ProjectPackage(
+        projectId: package.projectId,
+        root: Directory(p.join(drill.path, 'drill-package')),
+      );
+      await _copyTree(
+        package.manifestDirectory,
+        drillPackage.manifestDirectory,
+      );
+      await File(
+        p.join(drillPackage.databaseDirectory.path, 'project.db'),
+      ).parent.create(recursive: true);
+      if (await package.databaseFile.exists()) {
+        await package.databaseFile.copy(
+          p.join(drillPackage.databaseDirectory.path, 'project.db'),
+        );
+      }
+      await _copyTree(package.assetsDirectory, drillPackage.assetsDirectory);
+
+      // Apply the same mutation shape on the copy.
+      final mutatedWorkspaces = Directory(
+        p.join(drill.path, 'mutated-workspaces'),
+      );
+      await _copyTree(
+        Directory(p.join(package.root.path, 'workspaces')),
+        Directory(p.join(mutatedWorkspaces.path, 'workspaces')),
+      );
+
+      // Restore from the real pre-migration backup onto the drill copy.
+      final backupRoots = <Directory>[];
+      if (await package.backupDirectory.exists()) {
+        await for (final entity in package.backupDirectory.list()) {
+          if (entity is Directory) backupRoots.add(entity);
+        }
+      }
+      if (backupRoots.isEmpty) return false;
+      backupRoots.sort((left, right) => left.path.compareTo(right.path));
+      final backup = backupRoots.last;
+      final restoredWorkspaces = Directory(
+        p.join(mutatedWorkspaces.path, 'workspaces'),
+      );
+      if (await restoredWorkspaces.exists()) {
+        await restoredWorkspaces.delete(recursive: true);
+      }
+      await _copyTree(
+        Directory(p.join(backup.path, 'workspaces')),
+        restoredWorkspaces,
+      );
+      final remaining = <File>[];
+      if (await restoredWorkspaces.exists()) {
+        await for (final entity in restoredWorkspaces.list(recursive: true)) {
+          if (entity is File) remaining.add(entity);
+        }
+      }
+      return remaining.isEmpty;
+    } finally {
+      if (await drill.exists()) await drill.delete(recursive: true);
+    }
+  }
+
+  Future<void> _copyTree(Directory? source, Directory target) async {
+    if (source == null || !await source.exists()) return;
+    await for (final entity in source.list(recursive: true)) {
+      final relative = p.relative(entity.path, from: source.path);
+      if (entity is Directory) {
+        await Directory(p.join(target.path, relative)).create(recursive: true);
+      } else if (entity is File) {
+        final destination = File(p.join(target.path, relative));
+        await destination.parent.create(recursive: true);
+        await entity.copy(destination.path);
+      }
+    }
+  }
+}

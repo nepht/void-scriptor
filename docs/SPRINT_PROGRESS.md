@@ -290,3 +290,13 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Acceptance sprint_109.json tercakup 1:1: editable_voice_rules,
   dialogue_comparison, explain_warning, disable_rule, no_auto_rewrite.
   Bukti lengkap di ledger sprint-109 baris 109.16.
+
+### 2026-08-26 — Sprint 109.17 Conlang Registry & Dictionary (nephthys)
+
+- Lanjutan front Sprint 109: langkah kanonik 109.17 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN -> perbaikan draf tes + lint -> gerbang penuh).
+- File milik slice ini: lib/features/world/domain/conlang_registry.dart,
+  test/features/world/conlang_registry_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: multiple_languages,
+  dictionary_search, variant_forms, usage_examples, import_export.
+  Bukti lengkap di ledger sprint-109 baris 109.17.

@@ -473,3 +473,16 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Catatan jujur: satu perbaikan desain internal sebelum eksekusi
   (extension static-map bocor antarinstans -> Set unlocked di ledger).
   Bukti lengkap di ledger sprint-109 baris 109.33.
+
+### 2026-08-26 — Sprint 109.34 POV Knowledge Boundary (nephthys)
+
+- Lanjutan trilogi POV: langkah kanonik 109.34 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN -> gerbang penuh).
+- File milik slice ini: lib/features/pov/domain/knowledge_boundary.dart,
+  test/features/pov/knowledge_boundary_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: knowledge_events,
+  timeline_query, source_reference, uncertain_knowledge,
+  secret_handling.
+- Catatan jujur: koreksi kontradiksi draf tes (post-format text match)
+  + pembersihan 21 info const via dart fix --apply.
+  Bukti lengkap di ledger sprint-109 baris 109.34.

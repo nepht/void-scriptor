@@ -322,3 +322,13 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
   user_override (+ konsistensi glos kurung vs arti kamus).
 - Prinsip no-auto-rewrite dijaga: naskah verbatim, temuan hanya merujuk
   entri kamus. Bukti lengkap di ledger sprint-109 baris 109.19.
+
+### 2026-08-26 — Sprint 109.20 Focus Writing Mode (nephthys)
+
+- Lanjutan front Sprint 109: langkah kanonik 109.20 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN -> gerbang penuh).
+- File milik slice ini: lib/features/story/domain/focus_writing_mode.dart,
+  test/features/story/focus_writing_mode_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: distraction_free,
+  keyboard_exit, autosave_visible, theme_support, screen_reader_access.
+  Bukti lengkap di ledger sprint-109 baris 109.20.

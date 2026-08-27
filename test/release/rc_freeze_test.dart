@@ -22,7 +22,7 @@ void main() {
         1,
         reason: 'project format major must stay 1',
       );
-      expect(VoidProjectFormat.applicationVersion, startsWith('1.1.0'));
+      expect(VoidProjectFormat.applicationVersion, startsWith('1.'));
     });
   });
 

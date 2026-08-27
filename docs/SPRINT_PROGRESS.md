@@ -539,3 +539,17 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Catatan jujur: assert vs ArgumentError diselesaikan mengikuti
   otoritas tes.
   Bukti lengkap di ledger sprint-109 baris 109.38.
+
+### 2026-08-26 — Sprint 109.39 Clean Export Transformation (nephthys)
+
+- Lanjutan trilogi ekspor: langkah kanonik 109.39 dieksekusi TDD penuh
+  (RED load-fail terkonfirmasi -> GREEN -> gerbang penuh).
+- File milik slice ini: lib/features/export/domain/clean_export.dart,
+  test/features/export/clean_export_test.dart.
+- Acceptance sprint_109.json tercakup 1:1: strip_internal_links,
+  strip_private_notes, preserve_formatting, deterministic_output,
+  no_source_mutation.
+- Catatan jujur: draf impl awal hanya stub yang return this; dua tes
+  RED memaksa implementasi regex sebenarnya pada strip_internal_links
+  dan strip_private_notes.
+  Bukti lengkap di ledger sprint-109 baris 109.39.

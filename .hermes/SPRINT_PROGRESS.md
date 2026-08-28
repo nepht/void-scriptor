@@ -92,3 +92,25 @@ Verified local evidence from test/features/studio: 26 tests passed; analyzer cle
   test/core/feature_flags = 109/109 PASS (26 baru + 83 existing).
 - Scoped dart format + dart analyze: No issues found.
 - Commit: 0e97dd8 (2026-08-28 23:25 WIB).
+
+## Sprint 110.17 Genealogy Relationship Rules (nephthys, 2026-08-29 03:30 WIB)
+
+- Step 110.17 dieksekusi TDD penuh (RED: undefined GenealogyRelation/
+  GenealogyRegistry/ValidityRange -> GREEN 13/13).
+- Modul BARU: lib/features/world_logic/domain/genealogy_relationship_rules.dart
+  (236 baris) + test/features/world_logic/genealogy_relationship_rules_test.dart
+  (160 baris).
+- Acceptance sprint_110.json baris 110.17 (parent_child, adoption,
+  partnership, guardian, clan, validity_ranges) tercakup 1:1:
+  - parent_child: terarah, biologis, anti-siklus via DFS ancestor check,
+    konflik dengan adoption untuk node yang sama
+  - adoption: non-biologis, single adoption per child
+  - partnership: bidirectional, anti self-loop
+  - guardian: non-biologis, coexist dengan parent_child
+  - clan: membership klan dari klanId ke nodeId
+  - ValidityRange: fromTick/toTick opsional, isActiveAt dengan asOfTick escape
+    hatch untuk tick besar
+- Domain-only, tanpa persistence, UI, wall clock, locale, atau random;
+  konstruktor const untuk semua relation opsional validity.
+- Regression test/features/world_logic = 117/117 PASS (13 baru + 104 existing).
+- Scoped dart format + dart analyze: No issues found.

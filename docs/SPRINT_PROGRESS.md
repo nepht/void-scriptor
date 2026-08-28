@@ -676,5 +676,5 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Full regression test/features/world_logic + test/features/simulation +
   test/core/feature_flags = 117/117 PASS (naik dari 109/109 setelah
   8 test baru).
-- Commit: <pending> 2026-08-29 00:35 WIB (cron remediation; push
-  ditunda mengikuti kontrak push butuh izin, audit ledger hidup).
+- Commit: b559607 (nephthys, 2026-08-29 00:35 WIB, cron remediation;
+  push ditunda mengikuti kontrak push butuh izin, audit ledger hidup).

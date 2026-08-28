@@ -67,3 +67,28 @@ Verified local evidence from test/features/studio: 26 tests passed; analyzer cle
 - Regression test/features/world_logic = 30/30 PASS (12 baru + 18 existing).
 - Scoped dart format + dart analyze: No issues found.
 - Commit: 2f2308d.
+
+## Sprint 110.13 Custom Calendar and Celestial Time (nephthys, 2026-08-28 23:25 WIB)
+
+- Step 110.13 dieksekusi TDD penuh (RED undefined CustomMonth/CustomCalendar/
+  CelestialCycle/SeasonalCalendar/WeatherCalendarSampler -> GREEN 26/26).
+- Modul BARU: lib/features/world_logic/domain/custom_calendar.dart (304 baris)
+  + test/features/world_logic/custom_calendar_test.dart (257 baris).
+- Acceptance Wave 2 F5 (Custom Calendar and Celestial Time) dari scope contract
+  docs/planning/v1.2/sprint_110_scope_contract.md tercakup:
+  - CustomMonth: named months + variable daysPerMonth + indexInYear
+  - CustomCalendar: daysPerYear sum, monthsPerYear, dateFromTick, tickFromDate
+    (round-trip stabil), monthByName lookup, year roll, validation
+  - CelestialPhase enum: 8 lunar phases
+  - CelestialCycle: deterministic phaseAt, lengthInDays wrap, validation,
+    phaseDistribution
+  - SeasonalCalendar: maps calendar + monthIndex -> Season, full coverage,
+    repeats per year, validation
+  - WeatherCalendarSampler: deterministic mix seed + tick -> WeatherCondition
+    dengan provenance (origin, sourceId, reason)
+  - Konsumsi Season (110.9) dan WeatherCondition (110.10) tanpa duplikasi.
+- Domain-only, tanpa persistence, UI, wall clock, locale, atau global random.
+- Regression test/features/world_logic + test/features/simulation +
+  test/core/feature_flags = 109/109 PASS (26 baru + 83 existing).
+- Scoped dart format + dart analyze: No issues found.
+- Commit: pending.

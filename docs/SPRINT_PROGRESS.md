@@ -575,3 +575,82 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
   = 40/40 PASS (33 existing + 7 baru).
 - Catatan jujur: 19 lint prefer_const_constructors diselesaikan via
   dart fix --apply; constructor RouteEdge non-const demi ArgumentError
+
+### 2026-08-28 — Sprint 110.10 Travel Mode Profiles & Weather Modifier (nephthys)
+
+- Langkah kanonik 110.10 dieksekusi TDD penuh (RED load-fail terkonfirmasi
+  karena modul belum ada -> GREEN 6/6 -> analyzer scoped bersih).
+- Modul BARU: lib/features/world_logic/domain/travel_mode_profiles.dart +
+  test/features/world_logic/travel_mode_profiles_test.dart.
+- Acceptance sprint_110.json baris 110.10 tercakup 1:1: TerrainKind/
+  WeatherCondition enum, TravelModeProfile (baseSpeed/capacity/
+  passableTerrains/rest cycle), applyWeather multiplier deterministik,
+  exception TravelModeIncompatibleTerrain + TravelModeWeatherRefused
+  membawa reason, TravelModeRegistry built-in untuk walk/mount/vehicle/ship.
+- Domain-only, tanpa persistence/UI/wall clock/locale/random.
+- Regression test/features/world_logic + test/features/simulation
+  = 40/40 PASS (34 existing + 6 baru).
+- Commit: 2f2308d (2026-08-28 21:37 WIB).
+
+### 2026-08-28 — Sprint 110.11 Travel Supplies (nephthys)
+
+- Langkah kanonik 110.11 dieksekusi TDD penuh (RED -> GREEN 14/14 ->
+  analyzer scoped No issues found).
+- Modul BARU: lib/features/world_logic/domain/travel_supplies.dart +
+  test/features/world_logic/travel_supplies_test.dart.
+- Acceptance sprint_110.json baris 110.11 tercakup 1:1: SupplyKind enum,
+  SupplyBundle validated (qty>0, unit non-empty), SupplyPolicy
+  per-person-per-hour per (mode, kind), SupplyPolicies.standard registry,
+  SupplyLoadout party size + bundles unik per kind, SupplyPlanner.plan()
+  deterministik (consumption = distance/speed/terrain/season) dengan
+  SupplyStatus + SupplyShortage (kind, shortBy, reasonCode); melempar
+  RouteBlockedException saat edge terblokir.
+- Domain-only, deterministic, no persistence/UI/wall clock/locale/random.
+- Regression test/features/world_logic + test/features/simulation
+  = 66/66 PASS (40 existing + 14 baru + 12 modul lain).
+- Commit: 12be6b1 (2026-08-28 22:07 WIB).
+
+### 2026-08-28 — Sprint 110.12 Journey Consistency Validation (nephthys)
+
+- Langkah kanonik 110.12 dieksekusi TDD penuh (RED -> GREEN 7/7 ->
+  analyzer scoped No issues found).
+- Modul BARU: lib/features/world_logic/domain/journey_consistency_validator.dart +
+  test/features/world_logic/journey_consistency_validator_test.dart.
+- Acceptance sprint_110.json baris 110.12 tercakup 1:1: JourneySpec
+  (graph, origin, destination, segments, mode, season, party, loadout,
+  claimedDuration, rest), JourneyConsistencyValidator.validate
+  deterministik menyusun JourneyWarning (codes: scene_route_check,
+  time_feasibility, supply_warning, route_closure_awareness,
+  explain_warning) dengan validasi contiguity edge, origin/destination
+  membership, time feasibility via computed travel hours, supply
+  sufficiency via SupplyPlanner, blocked-edge awareness, dan non-empty
+  explain_warning ketika ada finding.
+- Domain-only, deterministic, no persistence/UI/wall clock/locale/random.
+- Full regression test/features/world_logic + test/features/simulation
+  = 73/73 PASS.
+- Commit: 09640ab (2026-08-28 22:24 WIB).
+
+### 2026-08-28 — Sprint 110.13 Custom Calendar and Celestial Time (nephthys)
+
+- Langkah kanonik 110.13 dieksekusi TDD penuh (RED -> GREEN 26/26 ->
+  analyzer scoped No issues found).
+- Modul BARU: lib/features/world_logic/domain/custom_calendar.dart +
+  test/features/world_logic/custom_calendar_test.dart.
+- Acceptance sprint_110.json baris 110.13 tercakup 1:1: CustomMonth
+  (named + variable daysInMonth + indexInYear), CustomCalendar
+  (daysPerYear sum, monthsPerYear, dateFromTick/tickFromDate round-trip,
+  year roll, monthByName lookup, validation: empty/zero/negative),
+  CelestialPhase enum (8 lunar phases), CelestialCycle (deterministic
+  phaseAt, lengthInDays wrap, validation, phaseDistribution),
+  SeasonalCalendar (full coverage monthIndex->Season, repeats per year,
+  validation), WeatherCalendarSampler (deterministic mix seed + tick ->
+  WeatherCondition dengan provenance: origin, sourceId, reason
+  berisi month/y/d/roll).
+- Konsumsi Season (110.9) dan WeatherCondition (110.10) tanpa duplikasi.
+- Domain-only, deterministic, no persistence/UI/wall clock/locale/random.
+- Full regression test/features/world_logic + test/features/simulation +
+  test/core/feature_flags = 109/109 PASS.
+- Commit: 0e97dd8 (2026-08-28 23:23 WIB); doc-recorded a8cab53.
+- Catatan jujur: ledger sprint-110 baris 17 awalnya duplikat rusak
+  (markdown escape kosong); dibersihkan ke baris tunggal dengan
+  path file + commit SHA eksplisit (2026-08-28 cron remediation).

@@ -24,8 +24,9 @@ Result: `76 tests passed`.
 | 82.36–82.42 | `PARTIAL` | Masks/tracking, compositing, adjustment layers, effect stacks, keyframed effects and stabilization lack implementation evidence. |
 | 82.43–82.49 | `PARTIAL` | Color correction/grading, LUTs, scopes, levels/curves/white balance/exposure/contrast/sharpen/blur are not implemented as an NLE pipeline. |
 | 82.50–82.56 | `PARTIAL` | Chroma key, AI background removal, render graph/GPU/proxy/cache and AI editing assistant remain unverified. |
+| 82.82 | `VERIFIED-LOCAL` | BAGIAN LXXXII - Render Graph Example. RenderGraphExample model + RenderGraphStepKind enum expose the eight-step pipeline order (Source Decode > Time Remap > Transform > Mask > Effects > Color > Composite > Output Transform) locked to the blueprint. Focused suite: 3 tests pass; scoped dart analyze reports No issues found. Source reconciled from full_sprint_sources/SPRINT_082.md (missing_steps.json notes 82.82 as a confirmed internal gap; canonical JSON snapshot missed the section). |
 | 82.57–82.63 | `UNVERIFIABLE` | Source is truncated at the archive boundary; missing step content is not inferred. |
-| 82.64–82.129 | `UNVERIFIABLE` | Declared steps remain provenance-preserved but unavailable in the partial source fragment. |
+| 82.64–82.129 | `UNVERIFIABLE` | Declared steps remain provenance-preserved but unavailable in the partial source fragment. Note: 82.82 was initially in this UNVERIFIABLE range because the JSON snapshot skips it; the full markdown source (full_sprint_sources/SPRINT_082.md) does contain BAGIAN LXXXII, and the step is now closed separately - see the 82.82 row above. |
 
 ## Boundary
 

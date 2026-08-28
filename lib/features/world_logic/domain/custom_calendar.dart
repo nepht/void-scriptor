@@ -172,6 +172,14 @@ class CelestialCycle {
     }
   }
 
+  /// Public phase index for [tick], mirroring [_phaseIndexFor].
+  /// Added for Sprint 110.15 (Celestial Cycles & Seasons).
+  int phaseIndexAt(int tick) {
+    final mod = tick % lengthInDays;
+    final normalized = mod < 0 ? mod + lengthInDays : mod;
+    return (normalized * phases) ~/ lengthInDays;
+  }
+
   int _phaseIndexFor(int tick) {
     final mod = tick % lengthInDays;
     final normalized = mod < 0 ? mod + lengthInDays : mod;
@@ -224,6 +232,20 @@ class SeasonalCalendar {
   Season seasonAt(int tick) {
     final date = calendar.dateFromTick(tick);
     return _seasonByMonth[date.monthIndex]!;
+  }
+
+  /// Lower-cased season name for [tick]. (Sprint 110.15 season_rules.)
+  String seasonNameAt(int tick) => seasonAt(tick).name.toLowerCase();
+
+  /// True when the season map covers every month of the calendar.
+  /// (Sprint 110.15 season_rules.)
+  bool get coversAllMonths {
+    final expected = calendar.monthsPerYear;
+    if (_seasonByMonth.length != expected) return false;
+    for (int i = 0; i < expected; i++) {
+      if (!_seasonByMonth.containsKey(i)) return false;
+    }
+    return true;
   }
 }
 

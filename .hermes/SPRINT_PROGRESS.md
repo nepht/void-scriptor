@@ -91,4 +91,4 @@ Verified local evidence from test/features/studio: 26 tests passed; analyzer cle
 - Regression test/features/world_logic + test/features/simulation +
   test/core/feature_flags = 109/109 PASS (26 baru + 83 existing).
 - Scoped dart format + dart analyze: No issues found.
-- Commit: pending.
+- Commit: 0e97dd8 (2026-08-28 23:25 WIB).

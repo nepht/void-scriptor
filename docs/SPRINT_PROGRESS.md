@@ -553,3 +553,25 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
   RED memaksa implementasi regex sebenarnya pada strip_internal_links
   dan strip_private_notes.
   Bukti lengkap di ledger sprint-109 baris 109.39.
+
+### 2026-08-28 — Sprint 110.9 Route Network & Terrain Cost (nephthys)
+
+### 2026-08-28 — Sprint 110.9 Route Network & Terrain Cost (nephthys)
+
+- Langkah kanonik 110.9 dieksekusi TDD penuh (RED load-fail terkonfirmasi
+  karena modul belum ada -> GREEN 7/7 -> analyzer scoped bersih).
+- Modul BARU: lib/features/world_logic/domain/route_network.dart +
+  test/features/world_logic/route_network_test.dart.
+- Acceptance sprint_110.json baris 110.9 tercakup 1:1: route_graph
+  (node/edge/jarak eksplisit + validasi rujukan), terrain_cost
+  (biaya = jarak * multiplier terrain per segmen, deterministik),
+  seasonal_access (sumur/spring/summer/autumn/winter multiplier
+  berbeda), blocked_routes (RouteBlockedException dengan edgeId +
+  reason), source_navigation (RouteSource revision + reason untuk
+  provenance).
+- Domain-only, tanpa persistence, UI, wall clock, locale, atau
+  random; kalkulasi deterministik.
+- Regression test/features/world_logic + test/features/simulation
+  = 40/40 PASS (33 existing + 7 baru).
+- Catatan jujur: 19 lint prefer_const_constructors diselesaikan via
+  dart fix --apply; constructor RouteEdge non-const demi ArgumentError

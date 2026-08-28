@@ -46,6 +46,7 @@ abstract final class AppRoutes {
   static const enterpriseStudio = '/enterprise-studio';
   static const knowledge = '/knowledge';
   static const agents = '/agents';
+  static const studioCommandCenter = '/studio-command-center';
   static const creativeOs = '/creative-os';
   static const xrStudio = '/xr-studio';
   static const metaverse = '/metaverse';

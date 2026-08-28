@@ -43,6 +43,7 @@ import '../../core/enterprise/builtin/demo_studio.dart';
 import '../../core/knowledge/presentation/knowledge_engine_panel.dart';
 import '../../core/knowledge/builtin/demo_knowledge.dart';
 import '../../core/agent/presentation/agent_platform_panel.dart';
+import '../../features/studio/presentation/studio_command_center.dart';
 import '../../core/creative/presentation/creative_os_panel.dart';
 import '../../core/creative/builtin/demo_creative_os.dart';
 import '../../core/xr/presentation/xr_studio_panel.dart';
@@ -156,6 +157,19 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
         path: AppRoutes.agents,
         builder: (_, __) =>
             const AgentPlatformPanel(agentCount: 2, runningCount: 0),
+      ),
+      GoRoute(
+        path: AppRoutes.studioCommandCenter,
+        builder: (_, __) => StudioCommandCenter(
+          studioName: DemoStudio.registry.studio.name,
+          plan: DemoStudio.registry.studio.plan,
+          usedSeats: DemoStudio.registry.seats.usedSeats,
+          maxSeats: DemoStudio.registry.seats.maxSeats,
+          agentCount: 2,
+          runningCount: 0,
+          taskCount: 0,
+          activeMode: 'Overview',
+        ),
       ),
       GoRoute(
         path: AppRoutes.creativeOs,

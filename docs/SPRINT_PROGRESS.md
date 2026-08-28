@@ -654,3 +654,27 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Catatan jujur: ledger sprint-110 baris 17 awalnya duplikat rusak
   (markdown escape kosong); dibersihkan ke baris tunggal dengan
   path file + commit SHA eksplisit (2026-08-28 cron remediation).
+
+
+### 2026-08-29 — Sprint 110.14 Calendar Conversion & Display (nephthys)
+
+- Langkah kanonik 110.14 dieksekusi TDD penuh (RED -> GREEN 8/8 ->
+  analyzer scoped No issues found -> format scoped clean).
+- Modul BARU: lib/features/world_logic/domain/calendar_conversion.dart +
+  test/features/world_logic/calendar_conversion_test.dart.
+- Acceptance sprint_110.json baris 110.14 (absolute_time, calendar_date,
+  round_trip, multiple_calendars, locale_format) tercakup 1:1:
+  CalendarLocale(id, separator, order: ymd/dmy/mdy) explicit, default
+  stabil; CalendarEpoch menggeser origin (campaign year vs in-world
+  year zero); CalendarRegistry memetakan id -> CustomCalendar (reuse
+  110.13); CalendarConversionService.format(absoluteTick, calendarId,
+  locale) -> CalendarDisplay(calendarId, date, locale, text) dan
+  parse(display, calendarId) menjamin round-trip; unknown calendar id
+  melempar ArgumentError; tidak ada DateTime.now()/global random/network.
+- Konsumsi 110.13 (CustomCalendar) tanpa duplikasi.
+- Domain-only, deterministic, no persistence/UI/wall clock/locale default/random.
+- Full regression test/features/world_logic + test/features/simulation +
+  test/core/feature_flags = 117/117 PASS (naik dari 109/109 setelah
+  8 test baru).
+- Commit: <pending> 2026-08-29 00:35 WIB (cron remediation; push
+  ditunda mengikuti kontrak push butuh izin, audit ledger hidup).

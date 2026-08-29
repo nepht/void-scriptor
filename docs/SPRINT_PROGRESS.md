@@ -678,3 +678,146 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
   8 test baru).
 - Commit: b559607 (nephthys, 2026-08-29 00:35 WIB, cron remediation;
   push ditunda mengikuti kontrak push butuh izin, audit ledger hidup).
+
+### 2026-08-29 -- Sprint 110.15 Celestial Cycles & Seasons (nephthys)
+
+- Langkah kanonik 110.15 dieksekusi TDD penuh (RED -> GREEN 8/8 ->
+  analyzer scoped No issues found -> format scoped clean).
+- Modul BARU: lib/features/world_logic/domain/celestial_cycles.dart +
+  test/features/world_logic/celestial_cycles_test.dart; ekstensi
+  CustomCalendar dengan seasonNameAt + coversAllMonths (110.13 reuse).
+- Acceptance sprint_110.json baris 110.15 tercakup 1:1: moon_cycles
+  (CelestialBody + 8-phase phaseAt/phaseIndexAt), multi_body_cycles
+  (CelestialSystem.alignmentAt + body lookup), season_rules
+  (SeasonalCalendar.seasonNameAt + coversAllMonths), festival_dates
+  (Festival + FestivalMatcher: FixedTickFestival, LunarFestival,
+  MonthlyFestival), cycle_preview (CyclePreview.window -> daftar
+  CyclePreviewEntry dengan date/season/bodyPhases/activeFestivals).
+- Domain-only, deterministic, no persistence/UI/wall clock/locale/random.
+- Full regression test/features/world_logic + test/features/simulation +
+  test/core/feature_flags = 125/125 PASS (naik dari 117/117, +8).
+- Commit: 65cafd1 (nephthys, 2026-08-29 01:25 WIB, cron remediation).
+- Catatan jujur: push mengikuti kontrak push butuh izin, audit ledger
+  hidup; tidak push otomatis.
+
+
+### 2026-08-29 -- Sprint 110.16 Calendar Weather Hooks (nephthys)
+
+- Langkah kanonik 110.16 dieksekusi TDD penuh (RED -> GREEN 11/11 ->
+  analyzer scoped No issues found -> format scoped clean).
+- Modul BARU: lib/features/world_logic/domain/calendar_weather_hooks.dart +
+  test/features/world_logic/calendar_weather_hooks_test.dart.
+- Acceptance sprint_110.json baris 110.16 tercakup 1:1: seasonal_weather
+  (SeasonalDistribution winter/summer/spring/autumn dominan berbeda),
+  seeded_generation (deterministik dari seed + tick + year + month + season,
+  identik untuk seed sama), manual_weather (Map<int, WeatherCondition> override
+  menang dengan provenance origin=manual), forecast_notes
+  (forecast(start,length) -> WeatherForecast dengan WeatherNote +
+  provenance CalendarWeatherProvenance), provenance reusable.
+- Konsumsi CustomCalendar/CalendarDate/SeasonalCalendar (110.13) dan
+  Season (110.9) dan WeatherCondition/WeatherSample (110.13) tanpa
+  duplikasi.
+- Domain-only, deterministic, no persistence/UI/wall clock/locale/random.
+- Full regression test/features/world_logic + test/features/simulation +
+  test/core/feature_flags = 136/136 PASS (naik dari 125/125, +11).
+- Commit: 617f968 (nephthys, 2026-08-29 02:05 WIB, cron remediation).
+- Catatan jujur: push mengikuti kontrak push butuh izin; tidak push
+  otomatis.
+
+
+### 2026-08-29 -- Sprint 110.17 Genealogy Relationship Rules (nephthys)
+
+- Langkah kanonik 110.17 dieksekusi TDD penuh (RED -> GREEN 13/13 ->
+  analyzer scoped No issues found -> format scoped clean).
+- Modul BARU: lib/features/world_logic/domain/genealogy_relationship_rules.dart +
+  test/features/world_logic/genealogy_relationship_rules_test.dart.
+- Acceptance sprint_110.json baris 110.17 tercakup 1:1: parent_child
+  (terarah, biologis, anti-siklus via DFS ancestor check, konflik dengan
+  adoption untuk node yang sama), adoption (non-biologis, single adoption
+  per child), partnership (bidirectional, anti self-loop), guardian
+  (non-biologis, coexist dengan parent_child), clan (membership dari
+  klanId ke nodeId), ValidityRange (fromTick/toTick opsional, isActiveAt
+  dengan asOfTick escape hatch).
+- Domain-only, deterministic, no persistence/UI/wall clock/locale/random;
+  konstruktor const untuk semua relation opsional validity.
+- Regression test/features/world_logic = 117/117 PASS (naik dari 104/104,
+  +13).
+- Commits: 4fd82ae feat + 1dc53db chmod-drop (nephthys, 2026-08-29 03:30 WIB,
+  cron remediation).
+- Catatan jujur: push mengikuti kontrak push butuh izin; tidak push
+  otomatis.
+
+
+### 2026-08-29 -- Sprint 110.18 Genealogy Tree Builder (nephthys)
+
+- Langkah kanonik 110.18 dieksekusi TDD penuh (RED -> GREEN 10/10 ->
+  analyzer scoped No issues found -> format scoped clean).
+- Modul BARU: lib/features/world_logic/domain/genealogy_tree_builder.dart +
+  test/features/world_logic/genealogy_tree_builder_test.dart.
+- Acceptance sprint_110.json baris 110.18 tercakup 1:1: family_dynasty_view
+  (GenealogyTree: roots, generations, ancestors/descendants,
+  dynastyClusters, validateInheritance atop 110.17 registry),
+  asOfTick_filter (semua kalkulasi memfilter relasi aktif sesuai
+  ValidityRange), kind_preservation (ancestorsWithKind membedakan
+  parent_child vs adoption), cycle_detection (DFS tiga-warna untuk
+  parent_child cycle implisit, via fromRelations bypass),
+  clan_parent_conflict, deterministic (no DateTime.now/global random/
+  locale/wall clock).
+- Konsumsi GenealogyRegistry/GenealogyRelation/ValidityRange/
+  GenealogyRelationType (110.17).
+- Domain-only siap-query untuk UI interaktif.
+- Regression test/features/world_logic = 127/127 PASS (naik dari 117/117,
+  +10).
+- Commit: 2d85ef4 (nephthys, 2026-08-29 05:30 WIB, cron remediation).
+- Catatan jujur: push mengikuti kontrak push butuh izin; tidak push
+  otomatis.
+
+
+### 2026-08-29 -- Sprint 110.19 Genealogy & Inheritance Validation (nephthys)
+
+- Langkah kanonik 110.19 dieksekusi TDD penuh (RED -> GREEN 9/9 ->
+  analyzer scoped No issues found -> format scoped clean).
+- Modul BARU: lib/features/world_logic/domain/genealogy_inheritance_validator.dart +
+  test/features/world_logic/genealogy_inheritance_validator_test.dart.
+- Acceptance sprint_110.json baris 110.19 tercakup 1:1: date_consistency
+  (parent_child.toTick < adoption.fromTick terdeteksi walau validity-nya
+  tidak overlap di asOfTick, jadi deteksi struktural bukan temporal),
+  cycle_detection (DFS tiga-warna reuse pattern 110.18, dengan dukungan
+  manual_exception untuk skip node di cycle), inheritance_rules
+  (InheritanceRuleSet.order + excludes, default parent_child > adoption >
+  guardian, partnership+clan excluded), candidate_order (candidatesFor
+  mengembalikan daftar pewaris terurut sesuai ruleSet.order), manual_exception
+  (Set<String> nodeId yang dilewati dari cycle detection).
+- Domain-only atop GenealogyRegistry + ValidityRange (110.17). Tidak ada
+  persistence/UI/wall clock/locale/random.
+- Full regression test/features/world_logic + test/features/simulation +
+  test/core/feature_flags = 168/168 PASS (naik dari 159/159, +9).
+- Commit: 787419f (nephthys, 2026-08-29 06:25 WIB, cron remediation).
+- Catatan jujur: push mengikuti kontrak push butuh izin; tidak push
+  otomatis.
+
+
+### 2026-08-29 -- Sprint 110.20 Territorial Control State (F11 step 1) (nephthys)
+
+- Langkah kanonik 110.20 dieksekusi TDD penuh (RED -> GREEN 7/7 ->
+  analyzer scoped No issues found -> format scoped clean).
+- Modul BARU: lib/features/world_logic/domain/territorial_control.dart +
+  test/features/world_logic/territorial_control_test.dart.
+- Acceptance sprint_110.json baris 110.20 tercakup 1:1: location_control_state
+  (TerritorialControl immutable: controllerId + locationId + ValidityRange +
+  optional ResultOrigin provenance, activeAt(tick) mengikuti interval
+  ValidityRange), registry_resolution (TerritorialControlRegistry.controllerOf
+  memilih record dengan fromTick terbesar yang masih active, atau null),
+  overlap_rejection (upsert melempar TerritorialControlOverlap saat range
+  baru overlap dengan record lain pada location yang sama; same-key
+  replacement diizinkan), layered_history (historyOf(locationId) ->
+  List<TerritorialControl> terurut ascending by ValidityRange.fromTick
+  untuk historical layer view F11), provenance_attachment
+  (attachProvenance menulis ResultOrigin dari 110.7 ke active record).
+- Konsumsi ValidityRange (110.17) dan ResultOrigin (110.7) tanpa duplikasi.
+- Domain-only, deterministic, no persistence/UI/wall clock/locale/random.
+- Full regression test/features/world_logic + test/features/simulation +
+  test/core/feature_flags = 175/175 PASS (naik dari 168/168, +7).
+- Commit: e28d04c (nephthys, 2026-08-29 08:13 WIB, cron remediation).
+- Catatan jujur: push mengikuti kontrak push butuh izin; tidak push
+  otomatis.

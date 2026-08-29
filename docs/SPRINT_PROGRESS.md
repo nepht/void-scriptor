@@ -848,3 +848,30 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
   +16 RED->GREEN + 13 dari existing suite yang re-run).
 - Catatan jujur: push mengikuti kontrak push butuh izin; tidak push
   otomatis.
+
+
+### 2026-08-29 -- Sprint 110.26 Age-at-Time Calculation (F14 step 1) (nephthys)
+
+- Langkah kanonik 110.26 dieksekusi TDD penuh (RED -> GREEN 9/9 ->
+  analyzer scoped No issues found -> format scoped clean).
+- Modul BARU: lib/features/world_logic/domain/character_age_at_time.dart +
+  test/features/world_logic/character_age_at_time_test.dart (9 tests).
+- Acceptance sprint_110.json baris 110.26 tercakup 1:1: birth_date
+  (CharacterDateResolution dari CalendarConversionService 110.14),
+  death_date (CharacterDateResolution opsional, isAliveAtScene deteksi
+  after_death saat atTick > deathTick), calendar_conversion
+  (calendarId + yearNumber + monthIndex + dayOfMonth + monthName mengikuti
+  CalendarDate 110.13), age_at_scene (ageYears = sceneDate.yearNumber -
+  birthDate.yearNumber agar konsisten dengan panjang tahun kalender;
+  remainingDays = delta % daysPerYear dari registry), unknown_date_handling
+  (CharacterUnknownDates.birthUnknown/deathUnknown sentinel, explanation
+  berisi birth_unknown/death_unknown/after_death; birthTick null tanpa
+  birthUnknown flag -> ArgumentError, scene tick < birth -> ArgumentError,
+  unknown calendar id -> ArgumentError propagasi dari 110.14).
+- Domain-only atop CalendarRegistry + CalendarConversionService (110.13/110.14).
+  Tidak ada persistence/UI/wall clock/locale/global random/network.
+- Full regression test/features/world_logic + test/features/simulation +
+  test/core/feature_flags 224/224 green (naik dari 215/215, +9 dari 110.26).
+- Commit: b5ac4fe (nephthys, 2026-08-29 12:25 WIB, cron remediation).
+- Catatan jujur: push mengikuti kontrak push butuh izin; tidak push
+  otomatis.

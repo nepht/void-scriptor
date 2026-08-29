@@ -821,3 +821,30 @@ Recovery** (kontrak kanonik `sprint_145.json`, CORRECTIVE_IMPLEMENTATION_PLAN,
 - Commit: e28d04c (nephthys, 2026-08-29 08:13 WIB, cron remediation).
 - Catatan jujur: push mengikuti kontrak push butuh izin; tidak push
   otomatis.
+
+### 2026-08-29 -- Sprint 110.22 Temporal Location & Route Validation (nephthys)
+
+- Langkah kanonik 110.22 dieksekusi TDD penuh (RED -> GREEN 16/16 ->
+  analyzer scoped No issues found -> format scoped clean).
+- Modul BARU: lib/features/world_logic/domain/temporal_location_route_validation.dart +
+  test/features/world_logic/temporal_location_route_validation_test.dart (16 tests, 301 baris).
+- Acceptance sprint_110.json baris 110.22 tercakup 1:1: location_validity
+  (LocationRecord immutable: id + names + ValidityRange + RouteSource,
+  isActiveAt inklusif fromTick, inklusif toTick, null toTick = open-ended),
+  name_at_time (LocationName dengan optional ValidityRange, nameAtTick
+  memilih nama aktif dengan fromTick terbesar agar rename boundary konsisten),
+  route_at_time (RouteEdgeLike immutable + RouteRegistry.edgeAtTick
+  mengembalikan edge hanya saat validity aktif), scene_warning
+  (validateSceneRequest -> TemporalValidationResult dengan kode
+  location_unknown_or_out_of_range, route_out_of_validity,
+  route_references_unknown_location; scene bersih -> findings kosong),
+  source_evidence (setiap LocationRecord/RouteEdgeLike membawa RouteSource,
+  defaultRouteSource fallback; setiap finding menyertakan evidenceId
+  pemicu untuk traceability).
+- Konsumsi ValidityRange (110.17) dan RouteSource/defaultRouteSource (110.9).
+- Domain-only, deterministic, no persistence/UI/wall clock/locale/random.
+- Full regression test/features/world_logic + test/features/simulation +
+  test/core/feature_flags 204/204 green (naik dari 175/175 sebelumnya,
+  +16 RED->GREEN + 13 dari existing suite yang re-run).
+- Catatan jujur: push mengikuti kontrak push butuh izin; tidak push
+  otomatis.

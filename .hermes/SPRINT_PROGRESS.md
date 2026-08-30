@@ -297,3 +297,4 @@ Evidence collected (Windows toolchain D:\DevTools\Flutter SDK\flutter\bin\flutte
 Status update: 110.20 = VERIFIED-LOCAL. Ledger docs/sprints/sprint-110-world-logic-simulation-tools.md baris 110.20 ditambahkan.
 
 Next action (110.21): Map Time Slider & Historical Layers. Pola verifikasi sama (Windows toolchain, focused -> regression -> scoped commit + ledger).
+- 2026-08-30 cron remediation: Sprint 110.35 Writer Economy Calculator & Warnings VERIFIED-LOCAL; focused 9/9; regression 347/347 (world_logic+simulation+feature_flags); commit pending.

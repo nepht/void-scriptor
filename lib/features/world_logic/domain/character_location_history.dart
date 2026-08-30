@@ -444,6 +444,22 @@ class CharacterLocationTimeline {
     return LocationResolution.unknown("no record for $personId at tick $tick");
   }
 
+  /// Whether a recorded segment can explain movement between two scene anchors.
+  bool hasTravelBetween({
+    required String fromLocationId,
+    required String toLocationId,
+    required int fromTick,
+    required int toTick,
+  }) {
+    return _segments.any(
+      (segment) =>
+          segment.fromLocationId == fromLocationId &&
+          segment.toLocationId == toLocationId &&
+          segment.startTick <= toTick &&
+          segment.endTick >= fromTick,
+    );
+  }
+
   TravelSegment? _firstSegmentAt(int tick) {
     for (final s in _segments) {
       if (s.isInTransitAt(tick)) return s;

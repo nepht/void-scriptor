@@ -274,3 +274,26 @@ Evidence collected:
 Status update: 110.17 = VERIFIED-LOCAL. Ledger docs/sprints/sprint-110-world-logic-simulation-tools.md baris 110.17 ditambahkan.
 
 Next action (110.18): Interactive Family and Dynasty Tree. WSL toolchain masih down; pola verifikasi sama.
+
+## Sprint 110.20 - cron remediation 2026-08-30 14:35 UTC+7 (VERIFIED-LOCAL)
+
+Canonical JSON acceptance sprint_110.json step 110.20 (Temporal Map State Model, Feature 11) tercakup 1:1.
+
+TDD RED -> GREEN pada Windows canonical D:\VoidScriptor\void_scriptor_multiplatform (HEAD a029acf0):
+- File lib/features/world_logic/domain/temporal_map_state.dart (357 lines) + test/features/world_logic/temporal_map_state_test.dart (350 lines).
+- 5 acceptance canonical: validity_ranges, boundary_versions, control_history, location_status, branch_awareness.
+- RED: 8+ undefined-class/cast errors (TemporalMapState/TemporalLocation/BoundaryVersion/ControlChange/StatusChange/MapPoint/LocationStatus + BoundaryVersion?.id + int? promotion).
+- GREEN setelah dua fix minimal: snapshot.activeBoundary.id -> !.id dan validUntil != null -> validUntil! pada perbandingan tick.
+- Per test 18 cases (validity 5 + boundary 4 + control 2 + status 2 + branch 3 + MapPoint 2).
+
+Evidence collected (Windows toolchain D:\DevTools\Flutter SDK\flutter\bin\flutter.bat):
+- flutter test test/features/world_logic/temporal_map_state_test.dart -> 18 passed, 0 failed.
+- dart format scoped 2 files -> 2 changed, re-run -> 0 changed.
+- dart analyze scoped owned 2 files -> No issues found!
+- Regression test/features/world_logic + test/features/simulation + test/core/feature_flags -> 189/189 PASSED (naik dari 171/171).
+- git diff --check -> PASS (warning CRLF pada file donation_dashboard_screen.dart milik agen lain, tidak disentuh).
+- Commit scoped 4c7e8e8 (impl+test) + 9ff111d (ledger) pada path owned.
+
+Status update: 110.20 = VERIFIED-LOCAL. Ledger docs/sprints/sprint-110-world-logic-simulation-tools.md baris 110.20 ditambahkan.
+
+Next action (110.21): Map Time Slider & Historical Layers. Pola verifikasi sama (Windows toolchain, focused -> regression -> scoped commit + ledger).

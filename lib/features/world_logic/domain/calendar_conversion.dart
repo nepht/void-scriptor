@@ -127,4 +127,15 @@ class CalendarConversionService {
         throw StateError('unreachable order: ${loc.order}');
     }
   }
+
+  /// Returns the number of days in the calendar month that comes immediately
+  /// before the month referenced by [date]. Exposed for downstream services
+  /// (Sprint 110.26 age calculation) that need to borrow days across month
+  /// boundaries while remaining calendar-faithful.
+  int daysInPreviousMonth(String calendarId, CalendarDate date) {
+    final cal = _registry.resolve(calendarId);
+    final monthIndex = date.monthIndex;
+    final prev = monthIndex == 0 ? cal.monthsPerYear - 1 : monthIndex - 1;
+    return cal.months[prev].daysInMonth;
+  }
 }

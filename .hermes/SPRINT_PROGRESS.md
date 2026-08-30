@@ -251,3 +251,26 @@ Evidence collected:
 Status update: 110.16 = VERIFIED-LOCAL.
 
 Next action (110.17): Genealogy Relationship Rules. WSL toolchain masih down; run berikutnya akan memakai pola yang sama.
+## Sprint 110.17 - cron remediation 2026-08-30 10:35 UTC+7 (VERIFIED-LOCAL)
+
+Status 110.17: VERIFIED-LOCAL (TDD penuh, scoped commit).
+
+WSL systemd user session masih gagal; toolchain WSL /home/nepht/toolchain/flutter/ tidak bisa dipakai sehingga fallback ke Windows mirror D:\VoidScriptor_Windows\void_scriptor_multiplatform dengan D:\DevTools\Flutter SDK\flutter\bin\flutter.exe. Edit TETAP di canonical WSL; mirror hanya untuk verifikasi, lalu sync balik ke WSL.
+
+TDD RED -> GREEN:
+- File lib/features/world_logic/domain/genealogy_relationships.dart (195 lines) + test/features/world_logic/genealogy_relationships_test.dart (270 lines).
+- Acceptance canonical sprint_110.json 110.17 tercakup 1:1: parent_child, adoption, partnership, guardian, clan, validity_ranges.
+- RED ke-1: const GenealogyRelation(id: "") tidak trigger ArgumentError di const expression (constructor assert) -> fix: factory GenealogyRelation.validated untuk runtime check + graph constructor untuk validUntil/validFrom/range check.
+- RED ke-2: clan target string clan:north ditolak graph karena bukan node -> fix: clan kind hanya validasi member (fromId) sebagai node; clan id free-form.
+
+Evidence collected:
+- flutter test test/features/world_logic/genealogy_relationships_test.dart -> 9 passed, 0 failed.
+- dart format --set-exit-if-changed -> 2 changed, re-run -> 0 changed.
+- dart analyze scoped clean: No issues found!
+- Regression test/features/world_logic + test/features/simulation + test/core/feature_flags -> 233/233 PASSED (naik dari 224/224).
+- git diff --check -> PASS.
+- Commit scoped 0fd39f8 (impl+test) + 3763b62 (ledger) pada path owned.
+
+Status update: 110.17 = VERIFIED-LOCAL. Ledger docs/sprints/sprint-110-world-logic-simulation-tools.md baris 110.17 ditambahkan.
+
+Next action (110.18): Interactive Family and Dynasty Tree. WSL toolchain masih down; pola verifikasi sama.

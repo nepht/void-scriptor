@@ -7,7 +7,13 @@
 
 library;
 
-enum GenealogyRelationKind { parentChild, adoption, partnership, guardian, clan }
+enum GenealogyRelationKind {
+  parentChild,
+  adoption,
+  partnership,
+  guardian,
+  clan,
+}
 
 class GenealogyNode {
   const GenealogyNode({required this.id, required this.name});
@@ -74,8 +80,8 @@ class GenealogyGraph {
   GenealogyGraph({
     required Map<String, GenealogyNode> nodes,
     required List<GenealogyRelation> edges,
-  })  : nodes = Map.unmodifiable(nodes),
-        _edges = List.unmodifiable(edges) {
+  }) : nodes = Map.unmodifiable(nodes),
+       _edges = List.unmodifiable(edges) {
     final ids = nodes.keys.toSet();
     for (final e in _edges) {
       if (e.validFrom < 0) {
@@ -96,21 +102,23 @@ class GenealogyGraph {
         }
       } else {
         if (!ids.contains(e.fromId) || !ids.contains(e.toId)) {
-          throw ArgumentError(
-            "relation references unknown node: ${e.id}",
-          );
+          throw ArgumentError("relation references unknown node: ${e.id}");
         }
       }
       if (e.fromId == e.toId) {
-        throw ArgumentError(
-          "self-loop not allowed: ${e.id}",
-        );
+        throw ArgumentError("self-loop not allowed: ${e.id}");
       }
     }
   }
 
   final Map<String, GenealogyNode> nodes;
   final List<GenealogyRelation> _edges;
+
+  /// Unmodifiable view of all edges in insertion order. Sprint 110.19 adds
+  /// this getter so the inheritance validator can iterate the edge set
+  /// without exposing the mutable internal list.
+  List<GenealogyRelation> get edges =>
+      List<GenealogyRelation>.unmodifiable(_edges);
 
   bool _isActive(GenealogyRelation e, int tick) {
     if (tick < e.validFrom) return false;
@@ -122,30 +130,36 @@ class GenealogyGraph {
     GenealogyRelationKind kind, {
     int? atTick,
   }) {
-    return _edges.where((e) {
-      if (e.kind != kind) return false;
-      if (atTick != null && !_isActive(e, atTick)) return false;
-      return true;
-    }).toList(growable: false);
+    return _edges
+        .where((e) {
+          if (e.kind != kind) return false;
+          if (atTick != null && !_isActive(e, atTick)) return false;
+          return true;
+        })
+        .toList(growable: false);
   }
 
   List<String> parentsOf(String nodeId, {int? atTick}) {
-    final pc = _edgesOfKind(GenealogyRelationKind.parentChild, atTick: atTick)
-        .where((e) => e.toId == nodeId)
-        .map((e) => e.fromId);
-    final ad = _edgesOfKind(GenealogyRelationKind.adoption, atTick: atTick)
-        .where((e) => e.toId == nodeId)
-        .map((e) => e.fromId);
+    final pc = _edgesOfKind(
+      GenealogyRelationKind.parentChild,
+      atTick: atTick,
+    ).where((e) => e.toId == nodeId).map((e) => e.fromId);
+    final ad = _edgesOfKind(
+      GenealogyRelationKind.adoption,
+      atTick: atTick,
+    ).where((e) => e.toId == nodeId).map((e) => e.fromId);
     return {...pc, ...ad}.toList(growable: false);
   }
 
   List<String> childrenOf(String nodeId, {int? atTick}) {
-    final pc = _edgesOfKind(GenealogyRelationKind.parentChild, atTick: atTick)
-        .where((e) => e.fromId == nodeId)
-        .map((e) => e.toId);
-    final ad = _edgesOfKind(GenealogyRelationKind.adoption, atTick: atTick)
-        .where((e) => e.fromId == nodeId)
-        .map((e) => e.toId);
+    final pc = _edgesOfKind(
+      GenealogyRelationKind.parentChild,
+      atTick: atTick,
+    ).where((e) => e.fromId == nodeId).map((e) => e.toId);
+    final ad = _edgesOfKind(
+      GenealogyRelationKind.adoption,
+      atTick: atTick,
+    ).where((e) => e.fromId == nodeId).map((e) => e.toId);
     return {...pc, ...ad}.toList(growable: false);
   }
 
@@ -158,7 +172,10 @@ class GenealogyGraph {
 
   List<String> partnersOf(String nodeId, {int? atTick}) {
     final list = <String>[];
-    for (final e in _edgesOfKind(GenealogyRelationKind.partnership, atTick: atTick)) {
+    for (final e in _edgesOfKind(
+      GenealogyRelationKind.partnership,
+      atTick: atTick,
+    )) {
       if (e.fromId == nodeId) list.add(e.toId);
       if (e.toId == nodeId) list.add(e.fromId);
     }
@@ -166,7 +183,10 @@ class GenealogyGraph {
   }
 
   String? guardianOf(String nodeId, {int? atTick}) {
-    for (final e in _edgesOfKind(GenealogyRelationKind.guardian, atTick: atTick)) {
+    for (final e in _edgesOfKind(
+      GenealogyRelationKind.guardian,
+      atTick: atTick,
+    )) {
       if (e.toId == nodeId) return e.fromId;
     }
     return null;

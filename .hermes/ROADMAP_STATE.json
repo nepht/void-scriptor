@@ -8,20 +8,20 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.19",
-  "next_step": "145.20",
+  "last_verified_step": "145.20",
+  "next_step": "145.21",
   "stability_gate": {
     "status": "PASS",
-    "resume_step": "145.20",
+    "resume_step": "145.21",
     "previous_result": {
-      "verified_at": "2026-08-31 (cron run)",
+      "verified_at": "2026-09-01 (cron run)",
       "roadmap_guard": "PASS",
       "flutter_analyze": "PASS (No issues found!)",
-      "focused_core_regression": "PASS (architecture+selection+commands+project_resilience+persistence, 45 tests)",
-      "full_flutter_test": "PASS (3202 tests)",
+      "focused_core_regression": "PASS (auth 10 + auth flow 7 + journey 1 + restart wiring 1 + project_flow 4 + create failure 1 = 23 tests)",
+      "full_flutter_test": "PASS (3215 tests)",
       "windows_debug_build": "PASS (build/windows/x64/runner/Debug/void_scriptor.exe)",
-      "head_at_verification": "48b7e751e25d7609cbd51b696c9afd0140810366",
-      "note": "145.19 moved three shared types to lib/core/domain with compatibility exports per ADR-0001; no behavior/schema/persistence change"
+      "head_at_verification": "c0b8b7d1c74a30444da6d2ae084cc970d4cbf82e",
+      "note": "145.20 Core Without Account: persisted local session restore, complete no-account local journey (create/edit/save/backup/restore/reopen), and restart-without-login UI wiring verified; native interaction UNVERIFIABLE without driver; ProjectBackupService.restore total-loss crash recorded as sibling-owned limitation"
     },
     "required_checks": [
       "dart run tool/roadmap_guard.dart",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-08-31T22:53:11.785779+07:00",
-  "updated_by": "nephthys cron 145.19: ADR-0001 + architecture gate zero violations; next=145.20",
+  "updated_at": "2026-09-01T11:00:00+07:00",
+  "updated_by": "nephthys cron 145.20: no-account local journey + persisted session verified; next=145.21",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

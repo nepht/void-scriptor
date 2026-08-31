@@ -645,3 +645,20 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
   - Regression test/features/world_logic + test/features/simulation + test/core/feature_flags: 733/733 (naik dari 695 di 111.9).
   - Commit bafb484 (2 file milik slice; file modified lain pre-existing pengguna tidak disentuh).
 - Berikutnya: 111.11 Effect, Toxicity and Interaction Model.
+
+
+## Sprint 111.11 Effect, Toxicity and Interaction Model (nephthys, 2026-08-31 20:30 WIB)
+
+- Step 111.11 dieksekusi TDD penuh (RED: 45 compile error modul undefined ->
+  GREEN 39/39 focused test).
+- Modul BARU: lib/features/world_logic/domain/encyclopedia_effect.dart +
+  test/features/world_logic/domain/encyclopedia_effect_test.dart.
+- Acceptance sprint_111.json 111.11 tercakup 1:1: effects (EffectKind/EffectEntry),
+  dose_ranges (DoseRange), onset (OnsetWindow), duration (DurationWindow),
+  toxicity (ToxicityLevel/ToxicityProfile), interactions
+  (InteractionKind/SubstanceInteraction). Query deterministik via EffectQuery +
+  EffectCatalog.
+- Gate: dart format 2 files; flutter analyze No issues found!; regression
+  world_logic+simulation+feature_flags 772/772 (naik dari 733 di 111.10).
+- Commit d396536. D-SCHEMA-01 tetap OPEN. Next step 111.12 Alchemy Recipe and
+  Preparation Registry.

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import '../../features/projects/domain/project_model.dart';
+import '../domain/project_model.dart';
 import 'project_recovery_service.dart';
 import 'project_paths.dart';
 

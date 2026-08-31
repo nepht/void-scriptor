@@ -8,20 +8,20 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.14",
-  "next_step": "145.19",
+  "last_verified_step": "145.19",
+  "next_step": "145.20",
   "stability_gate": {
     "status": "PASS",
-    "resume_step": "145.19",
+    "resume_step": "145.20",
     "previous_result": {
-      "verified_at": "2026-08-31T14:06:02.024757+00:00",
+      "verified_at": "2026-08-31 (cron run)",
       "roadmap_guard": "PASS",
       "flutter_analyze": "PASS (No issues found!)",
-      "focused_core_regression": "PASS (project_compatibility_fixtures_test.dart + roadmap_guard_test.dart, 11 tests)",
-      "full_flutter_test": "PASS (3200 tests)",
+      "focused_core_regression": "PASS (architecture+selection+commands+project_resilience+persistence, 45 tests)",
+      "full_flutter_test": "PASS (3202 tests)",
       "windows_debug_build": "PASS (build/windows/x64/runner/Debug/void_scriptor.exe)",
-      "head_at_verification": "84ba7405ecf3431fb6bd1e8fd236c8cdaa150676",
-      "note": "Historical full gate from 2026-08-31 14:06 UTC fresh verification; 145.14 documentation step touched only docs+test+ledger, no code/schema change"
+      "head_at_verification": "48b7e751e25d7609cbd51b696c9afd0140810366",
+      "note": "145.19 moved three shared types to lib/core/domain with compatibility exports per ADR-0001; no behavior/schema/persistence change"
     },
     "required_checks": [
       "dart run tool/roadmap_guard.dart",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-08-31T14:37:24.390919+00:00",
-  "updated_by": "nephthys cron 145.14: primary-user decision recorded from user notepad authorization; ledger+audit+guard verified; next=145.19",
+  "updated_at": "2026-08-31T22:53:11.785779+07:00",
+  "updated_by": "nephthys cron 145.19: ADR-0001 + architecture gate zero violations; next=145.20",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

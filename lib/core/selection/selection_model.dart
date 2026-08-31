@@ -1,4 +1,4 @@
-import '../../features/assets/domain/asset_type.dart';
+import '../domain/asset_type.dart';
 
 class SelectionModel {
   const SelectionModel({

@@ -1,5 +1,5 @@
 import 'app_command.dart';
-import '../../features/project_resilience/application/command_history_repository.dart';
+import '../domain/command_history.dart';
 
 typedef CommandFactory = AppCommand Function(CommandHistoryRecord record);
 

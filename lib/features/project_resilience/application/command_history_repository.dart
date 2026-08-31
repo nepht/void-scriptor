@@ -4,7 +4,10 @@ import 'package:drift/drift.dart';
 
 import '../../../database/project/project_database.dart';
 
-enum CommandHistoryStatus { applied, undone, abandoned }
+import '../../../core/domain/command_history.dart';
+
+export '../../../core/domain/command_history.dart'
+    show CommandHistoryRecord, CommandHistoryStatus;
 
 class CommandHistoryRecordInput {
   const CommandHistoryRecordInput({
@@ -26,32 +29,6 @@ class CommandHistoryRecordInput {
   final Map<String, Object?>? undoPayload;
   final int sequence;
   final String source;
-}
-
-class CommandHistoryRecord {
-  const CommandHistoryRecord({
-    required this.id,
-    required this.projectId,
-    required this.commandType,
-    required this.label,
-    required this.payload,
-    required this.undoPayload,
-    required this.sequence,
-    required this.source,
-    required this.status,
-    required this.createdAt,
-  });
-
-  final String id;
-  final String projectId;
-  final String commandType;
-  final String label;
-  final Map<String, dynamic> payload;
-  final Map<String, dynamic>? undoPayload;
-  final int sequence;
-  final String source;
-  final CommandHistoryStatus status;
-  final DateTime createdAt;
 }
 
 class CommandHistoryRepository {

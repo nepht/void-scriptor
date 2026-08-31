@@ -592,3 +592,31 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
   - Commit 55cceef.
 - ROADMAP_STATE.json update: last_verified_step 111.6, next_step 111.7, resume_step 111.6, updated_at 2026-08-31T16:30:00+07:00.
 - Ledger docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md 111.6 -> VERIFIED-LOCAL.
+
+## Sprint 111 cron remediation 2026-08-31 17:15 UTC+7 (111.7 VERIFIED-LOCAL)
+
+- HEAD sebelum langkah = 9c5b409 (master ahead 73, behind 18 origin/master). Stability gate PASS (full test 2653/2653 dicatat 16:30 UTC+7).
+- Placeholder artefak run sebelumnya: test/features/world_logic/encyclopedia_media_rights_test.dart (47 byte, dibuat 13:48) dilanjutkan dan diisi penuh.
+- 111.7 Media, Rights & Source Safety (RED->GREEN).
+  - Domain module: lib/features/world_logic/domain/encyclopedia_media_rights.dart (435 baris) + test/features/world_logic/encyclopedia_media_rights_test.dart (21 tests).
+  - Coverage 6 requirement: local_media (EncyclopediaMediaAsset path relatif proyek, tolak absolut/posix/drive/traversal, hash hex, withFileStatus immutable), source_credit (SourceCredit + MediaCreditRole), license_notes (MediaLicense + MediaLicenseTag flag attribusi/komersial default dari tag, custom wajib notes), missing_file_state (MediaFileStatus + markMissing), metadata_sanitization (MediaMetadataSanitizer hapus kunci GPS/lokasi/identitas case-insensitive), explicit_export (MediaExportPlanner wajib explicitExport true, missing dikecualikan default, includeMissing flag kedua, registry unik assetId/relativePath/creditId).
+  - Domain-only deterministic: no persistence/UI/locale/network/wall-clock/random. D-SCHEMA-01 tetap OPEN.
+  - TDD: RED compile fail (modul undefined) -> impl 3 chunk -> GREEN 21/21.
+  - dart fix --apply + dart format (1 file changed) + dart analyze scoped (No issues found!). git diff --check PASS.
+  - Regression test/features/world_logic + test/features/simulation + test/core/feature_flags: 642/642 (naik dari 621 di 111.6).
+  - Commit e836ea9 (2 file milik slice saja; file modified lain pre-existing pengguna tidak disentuh).
+- Berikutnya: update ledger 111.7, ROADMAP_STATE.json last_verified_step 111.7 / next_step 111.8.
+
+## Sprint 111 cron remediation 2026-08-31 18:10 UTC+7 (111.8 VERIFIED-LOCAL)
+
+- HEAD sebelum langkah = e836ea9 (master ahead 74, behind 18 origin/master).
+- Pointer state tertinggal: ROADMAP_STATE.json masih 111.6/111.7 padahal HEAD sudah berisi commit 111.7. Diverifikasi ulang: focused 111.7 21/21 + analyzer clean -> koreksi state konservatif, lanjut 111.8.
+- 111.8 Spoiler, Feature Flags & Accessibility Baseline (RED->GREEN).
+  - Domain module: lib/features/world_logic/domain/encyclopedia_spoiler_accessibility.dart + test/features/world_logic/encyclopedia_spoiler_accessibility_test.dart (22 tests).
+  - Coverage 6 requirement: spoiler_levels (SpoilerLevel safe/mild/major/ending + SpoilerPolicy allows threshold), reveal_points (RevealPoint validated/markRevealed + RevealRegistry guard duplikat), per_feature_flag (EncyclopediaFeatureFlags wave3 F23/F24/F26/F27/F28/F29 default OFF, idempotent), keyboard_navigation (KeyboardNavigationMap guard duplikat/bentrok + describe), screen_reader_labels (ScreenReaderLabels + fallback), nonvisual_fallback (NonvisualFallback requireDescription).
+  - Domain-only deterministic: no persistence/UI/locale/network/wall-clock/random. D-SCHEMA-01 tetap OPEN.
+  - TDD: RED compile fail (modul undefined) -> impl -> GREEN 22/22. Penyesuaian test: SpoilerPolicy dibuat non-const (validasi body), default tick=0/level=safe di RevealPoint.validated.
+  - dart format + dart analyze scoped (No issues found!); git diff --check PASS.
+  - Regression test/features/world_logic + test/features/simulation + test/core/feature_flags: 664/664 (naik dari 642 di 111.7).
+  - Commit scoped (2 file milik slice; file modified lain pre-existing pengguna tidak disentuh).
+- Berikutnya: 111.9 Ingredient & Substance Catalog.

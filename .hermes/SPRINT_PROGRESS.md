@@ -737,3 +737,17 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
   world_logic+simulation+feature_flags 951/951 (naik dari 912 di 111.15).
 - Commit 55039f7. D-SCHEMA-01 tetap OPEN. Next step 111.17 Weakness,
   Defense and Combat Reference.
+
+
+## Sprint 111.17 Weakness, Defense and Combat Reference (nephthys, 2026-08-31 23:40 WIB)
+
+- Step 111.17 dieksekusi TDD penuh (RED: uri_does_not_exist + undefined
+  identifiers -> GREEN 39/39 focused test).
+- Modul BARU: lib/features/world_logic/domain/encyclopedia_combat.dart +
+  test/features/world_logic/domain/encyclopedia_combat_test.dart.
+- Acceptance sprint_111.json 111.17 tercakup 1:1: weaknesses, resistances,
+  attack_patterns, warning_signs, combat_tactics, source_evidence.
+- Gate: dart format 2 files; flutter analyze No issues found!; regression
+  world_logic+simulation+feature_flags 990/990 (naik dari 951 di 111.16).
+- Commit 4e13c32. D-SCHEMA-01 tetap OPEN. Next step 111.18 Encounter &
+  Observation Journal.

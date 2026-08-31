@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.23",
+  "last_verified_step": "145.23+search-novel-partial",
   "next_step": "145.24",
   "stability_gate": {
     "status": "PASS",
@@ -17,11 +17,11 @@
       "verified_at": "2026-09-01 (cron run)",
       "roadmap_guard": "PASS",
       "flutter_analyze": "PASS (No issues found!)",
-      "focused_core_regression": "PASS (dashboard_local_status_test 3 tests)",
-      "full_flutter_test": "PASS (3226 tests)",
+      "focused_core_regression": "PASS (28 story tests incl. novel_search_test 2 tests)",
+      "full_flutter_test": "PASS (3228 tests)",
       "windows_debug_build": "PASS (build/windows/x64/runner/Debug/void_scriptor.exe)",
-      "head_at_verification": "d71d841afe984894a1f3255f359ba2f4f18118d8",
-      "note": "145.23 Startup Path Simplification: LocalOnlyStatusBadge honest local-only status at Dashboard first frame (Guest/Offline only); deferred optional-init boundary remains explicit"
+      "head_at_verification": "d0cbf81",
+      "note": "145.24 Novel Workspace Core advanced: searchNovel cross-scene search (story/chapter/scene/beat matching, sortOrder ordering) with 2 focused tests; ledger updated; snapshot persistence/UI, search UI journey, export fidelity matrix, native interaction remain open"
     },
     "required_checks": [
       "dart run tool/roadmap_guard.dart",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-01T04:50:00+07:00",
-  "updated_by": "nephthys cron 145.23: local-only status honest at Dashboard first frame; next=145.24",
+  "updated_at": "2026-09-01T04:58:00+07:00",
+  "updated_by": "nephthys cron: 145.24 searchNovel slice landed (commit d0cbf81); step remains PARTIAL - next=145.24 continuation (snapshot persistence/search UI journey)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

@@ -620,3 +620,16 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
   - Regression test/features/world_logic + test/features/simulation + test/core/feature_flags: 664/664 (naik dari 642 di 111.7).
   - Commit scoped (2 file milik slice; file modified lain pre-existing pengguna tidak disentuh).
 - Berikutnya: 111.9 Ingredient & Substance Catalog.
+
+## Sprint 111 cron remediation 2026-08-31 19:15 UTC+7 (111.9 VERIFIED-LOCAL)
+
+- 111.9 Ingredient & Substance Catalog (RED->GREEN).
+  - Domain module: lib/features/world_logic/domain/encyclopedia_ingredient.dart + test/features/world_logic/domain/encyclopedia_ingredient_test.dart (31 tests).
+  - Coverage 6 acceptance: ingredient_types (IngredientType enum flora/fauna/mineral/zat/synthetic/other + label), parts_used (IngredientPart.validated partId+name non-empty), local_variants (LocalVariant.validated variantId+region+description non-empty), aliases (IngredientAlias.validated alias non-empty, language opsional), media (IngredientMediaLink.validated mediaId non-empty, caption opsional), source_links (IngredientSourceLink.validated sourceId non-empty, note opsional).
+  - IngredientRecord.validated: tolak ingredientId/name kosong, guard duplikat partId/variantId/alias/mediaId/sourceId, koleksi immutable unmodifiable.
+  - Domain-only deterministic: no persistence/UI/locale/network/wall-clock/random. D-SCHEMA-01 tetap OPEN.
+  - TDD: RED compile fail (modul undefined) -> impl -> GREEN 31/31.
+  - dart format + dart analyze scoped (No issues found!); git diff --check PASS.
+  - Regression test/features/world_logic + test/features/simulation + test/core/feature_flags: 695/695 (naik dari 664 di 111.8).
+  - Commit 1efbb3b (2 file milik slice; file modified lain pre-existing pengguna tidak disentuh).
+- Berikutnya: 111.10 Habitat, Rarity & Harvest Model.

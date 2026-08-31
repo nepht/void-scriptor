@@ -1,25 +1,33 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "product": "Void Scriptor",
   "repository": "D:\\VoidScriptor\\void_scriptor_multiplatform",
   "flutter_sdk": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat",
   "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
   "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
-  "active_sprint": 111,
-  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_111.json",
-  "active_ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
-  "last_verified_step": "111.20",
-  "next_step": "111.21",
+  "active_sprint": 145,
+  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
+  "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
+  "last_verified_step": "145.12",
+  "next_step": "145.14",
   "stability_gate": {
     "status": "PASS",
-    "passed_at": "2026-08-31T23:55:00+07:00",
-    "full_test_result": "2653 passed, 0 failed (stability gate 2026-08-31T18:10:00+07:00); regression world_logic+simulation+feature_flags 1074/1074 untuk 111.19",
-    "resume_step": "111.19",
+    "resume_step": "145.14",
+    "previous_result": {
+      "verified_at": "2026-08-31T13:01:18.984588+00:00",
+      "roadmap_guard": "PASS",
+      "focused_roadmap_tests": "PASS_8_OF_8 (project_compatibility_fixtures_test.dart, 145.12 fixture matrix)",
+      "flutter_analyze": "PASS_NO_ISSUES",
+      "full_flutter_test": "PASS_3200_OF_3200",
+      "windows_debug_build": "PASS (build/windows/x64/runner/Debug/void_scriptor.exe)",
+      "known_warning": "Drift multiple-database lifecycle warnings remain visible in workspace import tests."
+    },
     "required_checks": [
-      "test/workflow/workflow_runner_test.dart",
-      "test/features/workspaces/workspace_import_collision_choices_test.dart",
+      "dart run tool/roadmap_guard.dart",
       "flutter analyze",
-      "full flutter test"
+      "focused Core MVP regression",
+      "full flutter test",
+      "Windows debug build"
     ]
   },
   "selection_rules": [
@@ -29,6 +37,18 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-01T01:00:00+07:00",
-  "updated_by": "nephthys 111.20 Artifact & Relic Registry"
+  "updated_at": "2026-08-31T13:01:18.984588+00:00",
+  "updated_by": "nephthys cron 145.12 reconciliation VERIFIED",
+  "active_stream": "corrective_core_mvp",
+  "suspended_streams": {
+    "sequential_expansion": {
+      "status": "SUSPENDED",
+      "priority": 2,
+      "sprint": 111,
+      "resume_step": "111.21",
+      "contract": "sprint_111.json",
+      "ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
+      "resume_condition": "corrective_core_mvp exit_gate is satisfied and recorded."
+    }
+  }
 }

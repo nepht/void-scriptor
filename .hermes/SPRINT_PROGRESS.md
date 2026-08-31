@@ -1,5 +1,9 @@
 # MASTER SPRINT EXECUTION STATE
 
+> APPEND-ONLY HISTORICAL LOG — jangan gunakan header atau entri lama sebagai
+> pointer. Gunakan `docs/roadmap/ROADMAP_POLICY.json`, ledger sprint aktif, dan
+> `.hermes/ROADMAP_STATE.json` yang sudah lolos roadmap guard.
+
 Overall Status: IN PROGRESS
 Current Sprint: 51 (VERIFIED-LOCAL)
 Next Sprint: 52 (PARTIAL/BLOCKED - canonical detail required)
@@ -788,3 +792,20 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
 - Acceptance sprint_111.json 111.20 tercakup 1:1: artifact_types, creator, origin, materials, components, condition, authenticity.
 - Gate: dart format 2 files; flutter analyze No issues found!; regression world_logic+simulation+feature_flags 1131/1131 (naik dari 1074 di 111.19).
 - Commit fddae18. D-SCHEMA-01 tetap OPEN. Next step 111.21 Ownership Lineage & Historical Events.
+
+
+## Sprint 145.12 Existing User Data Compatibility — rekonsiliasi cron (nephthys, 2026-08-31)
+
+- Scope executable 145.12 (fixture matrix manifest/registry/open, 8 acceptance
+  test) dieksekusi commit 878c62e. Run cron ini memverifikasi ulang live di
+  HEAD 878c62e: focused 8/8 PASS, flutter analyze No issues found!, full
+  suite 3200/3200 PASS, flutter build windows --debug PASS.
+- Sisa scope 145.12 terdelegasi eksplisit (bukan gap langkah ini): DB
+  old/current/future/corrupt migration matrix -> 145.40; process/power/disk/
+  permission/drive failure matrix -> 145.42; sample-data butuh data user
+  nyata; native UI proof -> gate terpisah.
+- Ledger 145.12 -> VERIFIED (delegasi eksplisit); runtime state:
+  last_verified_step 145.12, next_step 145.14 (145.13 sudah VERIFIED
+  2026-08-27); roadmap guard PASS exit 0 setelah rekonsiliasi.
+- Tidak ada source code, schema, migration, atau data user yang diubah dalam
+  run ini; hanya bookkeeping ledger + runtime state.

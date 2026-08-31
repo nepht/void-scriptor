@@ -25,28 +25,35 @@ class Treaty {
     required String sourceReason,
   }) {
     if (id.isEmpty) throw ArgumentError.value(id, "id", "id cannot be empty");
-    if (factionAId.isEmpty)
+    if (factionAId.isEmpty) {
       throw ArgumentError.value(factionAId, "factionAId", "cannot be empty");
-    if (factionBId.isEmpty)
+    }
+    if (factionBId.isEmpty) {
       throw ArgumentError.value(factionBId, "factionBId", "cannot be empty");
-    if (factionAId == factionBId)
+    }
+    if (factionAId == factionBId) {
       throw ArgumentError("Treaty requires two distinct factions");
-    if (validFrom < 0)
+    }
+    if (validFrom < 0) {
       throw ArgumentError.value(validFrom, "validFrom", "cannot be negative");
-    if (validUntil != null && validUntil < validFrom)
+    }
+    if (validUntil != null && validUntil < validFrom) {
       throw ArgumentError("validUntil must be >= validFrom");
-    if (sourceRevision.isEmpty)
+    }
+    if (sourceRevision.isEmpty) {
       throw ArgumentError.value(
         sourceRevision,
         "sourceRevision",
         "cannot be empty",
       );
-    if (sourceReason.isEmpty)
+    }
+    if (sourceReason.isEmpty) {
       throw ArgumentError.value(
         sourceReason,
         "sourceReason",
         "cannot be empty",
       );
+    }
     return Treaty._(
       id: id,
       factionAId: factionAId,
@@ -97,16 +104,21 @@ class Conflict {
     required String sourceReason,
   }) {
     if (id.isEmpty) throw ArgumentError.value(id, "id", "id cannot be empty");
-    if (sideAFactionId.isEmpty || sideBFactionId.isEmpty)
+    if (sideAFactionId.isEmpty || sideBFactionId.isEmpty) {
       throw ArgumentError("Conflict requires two factions with non-empty ids");
-    if (sideAFactionId == sideBFactionId)
+    }
+    if (sideAFactionId == sideBFactionId) {
       throw ArgumentError("Conflict requires two distinct factions");
-    if (validFrom < 0)
+    }
+    if (validFrom < 0) {
       throw ArgumentError.value(validFrom, "validFrom", "cannot be negative");
-    if (validUntil != null && validUntil < validFrom)
+    }
+    if (validUntil != null && validUntil < validFrom) {
       throw ArgumentError("validUntil must be >= validFrom");
-    if (sourceRevision.isEmpty || sourceReason.isEmpty)
+    }
+    if (sourceRevision.isEmpty || sourceReason.isEmpty) {
       throw ArgumentError("sourceRevision and sourceReason cannot be empty");
+    }
     return Conflict._(
       id: id,
       sideAFactionId: sideAFactionId,
@@ -157,19 +169,25 @@ class TradeLink {
     required String sourceReason,
   }) {
     if (id.isEmpty) throw ArgumentError.value(id, "id", "id cannot be empty");
-    if (fromFactionId.isEmpty || toFactionId.isEmpty)
+    if (fromFactionId.isEmpty || toFactionId.isEmpty) {
       throw ArgumentError("Trade link requires non-empty faction ids");
-    if (fromFactionId == toFactionId)
+    }
+    if (fromFactionId == toFactionId) {
       throw ArgumentError("Trade link requires two distinct factions");
-    if (commodity.isEmpty)
+    }
+    if (commodity.isEmpty) {
       throw ArgumentError.value(commodity, "commodity", "cannot be empty");
+    }
     if (rate <= 0) throw ArgumentError.value(rate, "rate", "must be positive");
-    if (validFrom < 0)
+    if (validFrom < 0) {
       throw ArgumentError.value(validFrom, "validFrom", "cannot be negative");
-    if (validUntil != null && validUntil < validFrom)
+    }
+    if (validUntil != null && validUntil < validFrom) {
       throw ArgumentError("validUntil must be >= validFrom");
-    if (sourceRevision.isEmpty || sourceReason.isEmpty)
+    }
+    if (sourceRevision.isEmpty || sourceReason.isEmpty) {
       throw ArgumentError("sourceRevision and sourceReason cannot be empty");
+    }
     return TradeLink._(
       id: id,
       fromFactionId: fromFactionId,
@@ -217,12 +235,15 @@ class DiplomacyChangeEvent {
   }) {
     if (id.isEmpty) throw ArgumentError.value(id, "id", "id cannot be empty");
     if (tick < 0) throw ArgumentError.value(tick, "tick", "cannot be negative");
-    if (treatyId.isEmpty)
+    if (treatyId.isEmpty) {
       throw ArgumentError.value(treatyId, "treatyId", "cannot be empty");
-    if (summary.isEmpty)
+    }
+    if (summary.isEmpty) {
       throw ArgumentError.value(summary, "summary", "cannot be empty");
-    if (sourceRevision.isEmpty || sourceReason.isEmpty)
+    }
+    if (sourceRevision.isEmpty || sourceReason.isEmpty) {
       throw ArgumentError("sourceRevision and sourceReason cannot be empty");
+    }
     return DiplomacyChangeEvent._(
       id: id,
       tick: tick,
@@ -254,20 +275,24 @@ class DiplomacyHistory {
     required List<DiplomacyChangeEvent> changeEvents,
   }) {
     for (final t in treaties) {
-      if (t.id.isEmpty)
+      if (t.id.isEmpty) {
         throw ArgumentError.value("", "treaty.id", "cannot be empty");
+      }
     }
     for (final c in conflicts) {
-      if (c.id.isEmpty)
+      if (c.id.isEmpty) {
         throw ArgumentError.value("", "conflict.id", "cannot be empty");
+      }
     }
     for (final l in tradeLinks) {
-      if (l.id.isEmpty)
+      if (l.id.isEmpty) {
         throw ArgumentError.value("", "tradeLink.id", "cannot be empty");
+      }
     }
     for (final e in changeEvents) {
-      if (e.id.isEmpty)
+      if (e.id.isEmpty) {
         throw ArgumentError.value("", "event.id", "cannot be empty");
+      }
     }
     return DiplomacyHistory._(
       treaties: List.unmodifiable(treaties),

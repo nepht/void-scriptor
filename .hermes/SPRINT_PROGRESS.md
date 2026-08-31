@@ -765,3 +765,17 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
   world_logic+simulation+feature_flags 1016/1016 (naik dari 990 di 111.17).
 - Commit fc439e3. D-SCHEMA-01 tetap OPEN. Next step 111.19 Harvestable
   Materials & Consequences.
+
+
+## Sprint 111.19 Harvestable Materials & Consequences (nephthys, 2026-09-01 00:15 WIB)
+
+- Step 111.19 dieksekusi TDD (RED: compile fail modul undefined + artefak
+  `H.hazardId`/`useId!1`/reduce -> GREEN 58/58 focused test).
+- Modul BARU: lib/features/world_logic/domain/encyclopedia_harvestable_material.dart +
+  test/features/world_logic/domain/encyclopedia_harvestable_material_test.dart.
+- Acceptance sprint_111.json 111.19 tercakup 1:1: materials, harvest_method,
+  quality, uses, hazards, legality, ecological_impact.
+- Gate: dart format 2 files; flutter analyze No issues found!; regression
+  world_logic+simulation+feature_flags 1074/1074 (naik dari 1016 di 111.18).
+- Commit 1976aaa. D-SCHEMA-01 tetap OPEN. Next step 111.20 Artifact & Relic
+  Registry.

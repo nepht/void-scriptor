@@ -8,13 +8,13 @@
   "active_sprint": 111,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_111.json",
   "active_ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
-  "last_verified_step": "111.14",
-  "next_step": "111.15",
+  "last_verified_step": "111.15",
+  "next_step": "111.16",
   "stability_gate": {
     "status": "PASS",
-    "passed_at": "2026-08-31T22:10:00+07:00",
-    "full_test_result": "2653 passed, 0 failed (stability gate 2026-08-31T18:10:00+07:00); regression world_logic+simulation+feature_flags 870/870 untuk 111.14",
-    "resume_step": "111.14",
+    "passed_at": "2026-08-31T22:40:00+07:00",
+    "full_test_result": "2653 passed, 0 failed (stability gate 2026-08-31T18:10:00+07:00); regression world_logic+simulation+feature_flags 912/912 untuk 111.15",
+    "resume_step": "111.15",
     "required_checks": [
       "test/workflow/workflow_runner_test.dart",
       "test/features/workspaces/workspace_import_collision_choices_test.dart",
@@ -29,6 +29,6 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-08-31T22:10:00+07:00",
-  "updated_by": "nephthys 111.14 Creature & Species Registry"
+  "updated_at": "2026-08-31T22:40:00+07:00",
+  "updated_by": "nephthys 111.15 Anatomy & Physiology Profile"
 }

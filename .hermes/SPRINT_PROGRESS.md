@@ -662,3 +662,20 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
   world_logic+simulation+feature_flags 772/772 (naik dari 733 di 111.10).
 - Commit d396536. D-SCHEMA-01 tetap OPEN. Next step 111.12 Alchemy Recipe and
   Preparation Registry.
+
+
+## Sprint 111.12 Alchemy Recipe and Preparation Registry (nephthys, 2026-08-31 21:10 WIB)
+
+- Step 111.12 dieksekusi TDD penuh (RED: uri_does_not_exist + undefined
+  identifiers -> GREEN 45/45 focused test).
+- Modul BARU: lib/features/world_logic/domain/encyclopedia_alchemy.dart +
+  test/features/world_logic/domain/encyclopedia_alchemy_test.dart.
+- Acceptance sprint_111.json 111.12 tercakup 1:1: ingredients
+  (RecipeIngredient), quantities (quantity+unit), tools (AlchemyTool),
+  ordered_steps (RecipeStep + sortedSteps), conditions (RecipeCondition),
+  failure_modes (RecipeFailureMode), side_effects (RecipeSideEffect).
+  Catalog deterministik via AlchemyRecipeCatalog.recipesByIngredient.
+- Gate: dart format 2 files; flutter analyze No issues found!; regression
+  world_logic+simulation+feature_flags 817/817 (naik dari 772 di 111.11).
+- Commit af36894. D-SCHEMA-01 tetap OPEN. Next step 111.13 Alchemy
+  Consistency Validation.

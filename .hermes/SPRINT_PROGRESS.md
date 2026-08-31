@@ -695,3 +695,17 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
   world_logic+simulation+feature_flags 842/842 (naik dari 817 di 111.12).
 - Commit d2bfab4. D-SCHEMA-01 tetap OPEN. Next step 111.14 Creature &
   Species Registry (Feature 24 Bestiary Journal).
+
+
+## Sprint 111.14 Creature and Species Registry (nephthys, 2026-08-31 22:10 WIB)
+
+- Step 111.14 dieksekusi TDD penuh (RED: uri_does_not_exist + undefined
+  identifiers -> GREEN 28/28 focused test).
+- Modul BARU: lib/features/world_logic/domain/encyclopedia_creature.dart +
+  test/features/world_logic/domain/encyclopedia_creature_test.dart.
+- Acceptance sprint_111.json 111.14 tercakup 1:1: species, variants,
+  life_stages, classification, local_names, canon_status.
+- Gate: dart format 2 files; flutter analyze No issues found!; regression
+  world_logic+simulation+feature_flags 870/870 (naik dari 842 di 111.13).
+- Commit 407d338. D-SCHEMA-01 tetap OPEN. Next step 111.15 Anatomy &
+  Physiology Profile.

@@ -633,3 +633,15 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
   - Regression test/features/world_logic + test/features/simulation + test/core/feature_flags: 695/695 (naik dari 664 di 111.8).
   - Commit 1efbb3b (2 file milik slice; file modified lain pre-existing pengguna tidak disentuh).
 - Berikutnya: 111.10 Habitat, Rarity & Harvest Model.
+
+## Sprint 111 cron remediation 2026-08-31 19:45 UTC+7 (111.10 VERIFIED-LOCAL)
+
+- 111.10 Habitat, Rarity and Harvest Model (RED to GREEN).
+  - Domain module: lib/features/world_logic/domain/encyclopedia_harvest.dart (293 baris) + test/features/world_logic/domain/encyclopedia_harvest_test.dart (429 baris, 38 tests).
+  - Coverage 6 acceptance: habitats (HabitatRef validated, guard duplikat), seasonality (SeasonWindow + isHarvestableInSeason, kosong = year-round), rarity (RarityLevel 5-tier ladder weight, isAtLeast), harvest_method (HarvestMethod validated tools opsional), hazards (HarvestHazard severity 1..5 opsional), availability_query (HarvestAvailabilityQuery minRarity/season/habitatId + matches/describe, HarvestCatalog query sorted by ingredientId deterministic).
+  - Domain-only deterministic: no persistence/UI/locale/network/wall-clock/random. D-SCHEMA-01 tetap OPEN.
+  - TDD: RED compile fail (modul undefined) -> impl -> GREEN 38/38.
+  - dart format + dart analyze scoped (No issues found!); git diff --check PASS.
+  - Regression test/features/world_logic + test/features/simulation + test/core/feature_flags: 733/733 (naik dari 695 di 111.9).
+  - Commit bafb484 (2 file milik slice; file modified lain pre-existing pengguna tidak disentuh).
+- Berikutnya: 111.11 Effect, Toxicity and Interaction Model.

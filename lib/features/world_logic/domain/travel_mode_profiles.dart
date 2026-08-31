@@ -54,14 +54,10 @@ class TravelModeProfile {
       throw ArgumentError("travel mode ${p.id} capacity must be > 0");
     }
     if (p.restAfterHours < 0) {
-      throw ArgumentError(
-        "travel mode ${p.id} restAfterHours must be >= 0",
-      );
+      throw ArgumentError("travel mode ${p.id} restAfterHours must be >= 0");
     }
     if (p.restDurationHours < 0) {
-      throw ArgumentError(
-        "travel mode ${p.id} restDurationHours must be >= 0",
-      );
+      throw ArgumentError("travel mode ${p.id} restDurationHours must be >= 0");
     }
     if (p.passableTerrains.isEmpty) {
       throw ArgumentError(

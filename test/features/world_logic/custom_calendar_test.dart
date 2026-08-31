@@ -8,7 +8,6 @@ import "package:void_scriptor/features/world_logic/domain/custom_calendar.dart";
 import "package:void_scriptor/features/world_logic/domain/route_network.dart"
     show Season;
 
-
 void main() {
   group("CustomMonth", () {
     test("saves properties", () {

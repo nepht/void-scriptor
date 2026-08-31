@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "product": "Void Scriptor",
+  "repository": "D:\\VoidScriptor\\void_scriptor_multiplatform",
+  "flutter_sdk": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat",
+  "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
+  "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
+  "active_sprint": 111,
+  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_111.json",
+  "active_ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
+  "last_verified_step": "111.6",
+  "next_step": "111.7",
+  "stability_gate": {
+    "status": "PASS",
+    "passed_at": "2026-08-31T16:30:00+07:00",
+    "full_test_result": "2653 passed, 0 failed",
+    "resume_step": "111.6",
+    "required_checks": [
+      "test/workflow/workflow_runner_test.dart",
+      "test/features/workspaces/workspace_import_collision_choices_test.dart",
+      "flutter analyze",
+      "full flutter test"
+    ]
+  },
+  "selection_rules": [
+    "Repository evidence and the active sprint ledger override stale narrative status text.",
+    "Never skip a pending step or invent acceptance criteria.",
+    "A reproducible regression blocks roadmap feature work until it is fixed and verified.",
+    "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
+    "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
+  ],
+  "updated_at": "2026-08-31T16:30:00+07:00",
+  "updated_by": "nephthys 111.6 Shared Schema migration"
+}

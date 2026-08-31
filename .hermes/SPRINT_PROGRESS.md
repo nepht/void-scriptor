@@ -779,3 +779,12 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
   world_logic+simulation+feature_flags 1074/1074 (naik dari 1016 di 111.18).
 - Commit 1976aaa. D-SCHEMA-01 tetap OPEN. Next step 111.20 Artifact & Relic
   Registry.
+
+
+## Sprint 111.20 Artifact & Relic Registry (nephthys, 2026-09-01 cron remediation)
+
+- Step 111.20 dieksekusi TDD (RED: compile fail modul undefined -> GREEN 57/57 focused test).
+- Modul BARU: lib/features/world_logic/domain/encyclopedia_artifact.dart + test/features/world_logic/domain/encyclopedia_artifact_test.dart.
+- Acceptance sprint_111.json 111.20 tercakup 1:1: artifact_types, creator, origin, materials, components, condition, authenticity.
+- Gate: dart format 2 files; flutter analyze No issues found!; regression world_logic+simulation+feature_flags 1131/1131 (naik dari 1074 di 111.19).
+- Commit fddae18. D-SCHEMA-01 tetap OPEN. Next step 111.21 Ownership Lineage & Historical Events.

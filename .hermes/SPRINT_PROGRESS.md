@@ -751,3 +751,17 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
   world_logic+simulation+feature_flags 990/990 (naik dari 951 di 111.16).
 - Commit 4e13c32. D-SCHEMA-01 tetap OPEN. Next step 111.18 Encounter &
   Observation Journal.
+
+## Sprint 111.18 Encounter and Observation Journal (nephthys, 2026-08-31 cron remediation)
+
+- Step 111.18 dieksekusi TDD (RED: analyze error expected_token dari artefak
+  `() => {` pada group yang dianggap set literal -> fix ke `() {` -> GREEN
+  26/26 focused test).
+- Modul BARU: lib/features/world_logic/domain/encyclopedia_encounter.dart +
+  test/features/world_logic/domain/encyclopedia_encounter_test.dart.
+- Acceptance sprint_111.json 111.18 tercakup 1:1: encounter_events, witnesses,
+  time_location, outcome, reliability, scene_links.
+- Gate: dart format 2 files; flutter analyze No issues found!; regression
+  world_logic+simulation+feature_flags 1016/1016 (naik dari 990 di 111.17).
+- Commit fc439e3. D-SCHEMA-01 tetap OPEN. Next step 111.19 Harvestable
+  Materials & Consequences.

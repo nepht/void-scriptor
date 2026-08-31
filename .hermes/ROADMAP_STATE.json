@@ -8,20 +8,20 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.21",
-  "next_step": "145.22",
+  "last_verified_step": "145.22",
+  "next_step": "145.23",
   "stability_gate": {
     "status": "PASS",
-    "resume_step": "145.22",
+    "resume_step": "145.23",
     "previous_result": {
       "verified_at": "2026-09-01 (cron run)",
       "roadmap_guard": "PASS",
       "flutter_analyze": "PASS (No issues found!)",
-      "focused_core_regression": "PASS (core_without_internet_providers_test 2 tests: journey + widget)",
-      "full_flutter_test": "PASS (3217 tests)",
+      "focused_core_regression": "PASS (capability_gate_test 6 tests)",
+      "full_flutter_test": "PASS (3223 tests)",
       "windows_debug_build": "PASS (build/windows/x64/runner/Debug/void_scriptor.exe)",
-      "head_at_verification": "87f1e191d65687526bf1aa5440553745593f68d4",
-      "note": "145.21 Core Without Internet or Providers: complete Core journey proven under injected total provider+DNS failure (no delay, no data loss, no modal trap, no credential/exception persistence); bounded non-modal failure UI verified; native interaction UNVERIFIABLE without computer_use driver"
+      "head_at_verification": "c622fac6a7be83683701d4e68f7dad35f5b28c96",
+      "note": "145.22 Module Boundary and Feature Flags: CapabilityGate default-OFF enforcement closes cross-module no-side-effect gap; per-capability wiring deferred until non-Core activation"
     },
     "required_checks": [
       "dart run tool/roadmap_guard.dart",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-01T12:10:00+07:00",
-  "updated_by": "nephthys cron 145.21: offline provider-failure journey + bounded UI verified; next=145.22",
+  "updated_at": "2026-09-01T04:05:00+07:00",
+  "updated_by": "nephthys cron 145.22: CapabilityGate boundary + no-side-effect enforcement verified; next=145.23",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

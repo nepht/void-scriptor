@@ -14,10 +14,14 @@
     "status": "PASS",
     "resume_step": "145.14",
     "previous_result": {
-      "verified_at": "2026-08-31T13:22:46.733629+00:00",
+      "verified_at": "2026-08-31T14:06:02.024757+00:00",
       "roadmap_guard": "PASS",
-      "ledger_reconciliation": "145.13 VERIFIED confirmed in live ledger + audit file present (docs/audits/product-promise-lock.md); 145.14 remains BLOCKED (user decision required); 145.15 VERIFIED confirmed (docs/audits/core-cloud-network-roadmap-split.md)",
-      "note": "Cron run: no mutation stream active; state cache reconciled from ledger consensus, not a new verification gate"
+      "flutter_analyze": "PASS (No issues found!)",
+      "focused_core_regression": "PASS (project_compatibility_fixtures_test.dart + roadmap_guard_test.dart, 11 tests)",
+      "full_flutter_test": "PASS (3200 tests)",
+      "windows_debug_build": "PASS (build/windows/x64/runner/Debug/void_scriptor.exe)",
+      "head_at_verification": "84ba7405ecf3431fb6bd1e8fd236c8cdaa150676",
+      "note": "Fresh full gate executed on Windows canonical repo; no ledger step changed, no mutation performed"
     },
     "required_checks": [
       "dart run tool/roadmap_guard.dart",
@@ -34,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-08-31T13:22:46.733629+00:00",
-  "updated_by": "nephthys cron 145.13 reconciliation (ledger-consistent, no new work)",
+  "updated_at": "2026-08-31T14:06:02.024757+00:00",
+  "updated_by": "nephthys cron fresh-gate verification (no step change; 145.14 remains BLOCKED awaiting user decision)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

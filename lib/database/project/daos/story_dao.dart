@@ -44,6 +44,11 @@ class StoryDao extends DatabaseAccessor<ProjectDatabase> with _$StoryDaoMixin {
             ..where((t) => t.storyId.equals(storyId))
             ..orderBy([(t) => OrderingTerm(expression: t.sortOrder)]))
           .get();
+  Future<List<StoryScene>> getScenesByChapter(String chapterId) =>
+      (select(storyScenes)
+            ..where((t) => t.chapterId.equals(chapterId))
+            ..orderBy([(t) => OrderingTerm(expression: t.sortOrder)]))
+          .get();
   Future<StoryScene?> getScene(String sceneId) => (select(
     storyScenes,
   )..where((t) => t.id.equals(sceneId))).getSingleOrNull();

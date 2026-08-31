@@ -45,6 +45,19 @@ class StorySceneNode {
   final List<SceneBeat> beats;
 }
 
+class NovelSearchResult {
+  const NovelSearchResult({
+    required this.sceneId,
+    required this.sceneTitle,
+    required this.chapterTitle,
+    required this.matchCount,
+  });
+  final String sceneId;
+  final String sceneTitle;
+  final String chapterTitle;
+  final int matchCount;
+}
+
 class StoryRepositoryImpl {
   StoryRepositoryImpl({required this.database, required this.projectId});
   final ProjectDatabase database;
@@ -160,5 +173,48 @@ class StoryRepositoryImpl {
       chapters: chapterNodes,
       scenes: sceneNodes,
     );
+  }
+
+  /// Pencarian novel lintas scene untuk langkah 145.24: mencocokkan query
+  /// (case-insensitive, di-trim) terhadap judul scene, judul bab, dan isi
+  /// draft/beat scene. Hasil unik per scene, tersegmen per chapter, terurut
+  /// mengikuti chapter lalu scene (sortOrder). Query kosong tidak mencari.
+  Future<List<NovelSearchResult>> searchNovel(String query) async {
+    final needle = query.trim().toLowerCase();
+    if (needle.isEmpty) return const <NovelSearchResult>[];
+
+    final storyIds = await (database.select(
+      database.stories,
+    )..where((t) => t.projectId.equals(projectId))).get();
+    if (storyIds.isEmpty) return const <NovelSearchResult>[];
+
+    final matches = <String, NovelSearchResult>{};
+    for (final story in storyIds) {
+      final chapters = await database.storyDao.getChapters(story.assetId);
+      for (final chapter in chapters) {
+        final scenes = await database.storyDao.getScenesByChapter(chapter.id);
+        for (final scene in scenes) {
+          var count = 0;
+          if (scene.title.toLowerCase().contains(needle)) count++;
+          if (chapter.title.toLowerCase().contains(needle)) count++;
+          final beats = await database.storyDao.getSceneBeats(scene.id);
+          for (final beat in beats) {
+            if (beat.content.toLowerCase().contains(needle)) count++;
+          }
+          if (count > 0) {
+            final existing = matches[scene.id];
+            matches[scene.id] = NovelSearchResult(
+              sceneId: scene.id,
+              sceneTitle: scene.title,
+              chapterTitle: chapter.title,
+              matchCount: existing == null
+                  ? count
+                  : existing.matchCount + count,
+            );
+          }
+        }
+      }
+    }
+    return matches.values.toList(growable: false);
   }
 }

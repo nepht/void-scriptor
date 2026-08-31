@@ -679,3 +679,19 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
   world_logic+simulation+feature_flags 817/817 (naik dari 772 di 111.11).
 - Commit af36894. D-SCHEMA-01 tetap OPEN. Next step 111.13 Alchemy
   Consistency Validation.
+
+
+## Sprint 111.13 Alchemy Consistency Validation (nephthys, 2026-08-31 21:40 WIB)
+
+- Step 111.13 dieksekusi TDD penuh (RED: uri_does_not_exist + undefined
+  identifiers -> GREEN 25/25 focused test).
+- Modul BARU: lib/features/world_logic/domain/encyclopedia_alchemy_validation.dart +
+  test/features/world_logic/domain/encyclopedia_alchemy_validation_test.dart.
+- Acceptance sprint_111.json 111.13 tercakup 1:1: missing_ingredient,
+  invalid_substitution, effect_conflict, preparation_conflict, explain_warning
+  (via AlchemyValidationReport.describe), manual_exception
+  (ManualException suppression).
+- Gate: dart format 2 files; flutter analyze No issues found!; regression
+  world_logic+simulation+feature_flags 842/842 (naik dari 817 di 111.12).
+- Commit d2bfab4. D-SCHEMA-01 tetap OPEN. Next step 111.14 Creature &
+  Species Registry (Feature 24 Bestiary Journal).

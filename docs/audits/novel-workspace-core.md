@@ -130,3 +130,24 @@ Next: `145.25 Character Workspace Core`.
   (Step 109.22) namun masih in-memory. Yang masih terbuka: persistensi/UI
   snapshot store, journey search di UI, matriks fidelity export, native
   interaction proof.
+
+## Update 2026-09-01 (cron 145.24 snapshot persistence)
+
+- Tabel `SceneDraftSnapshots` (schema 56→57, migrasi terjaga `if (from < 57)`):
+  id UUID, sceneId, projectId, kind auto/manual/restoreBackup, content verbatim,
+  label, createdAt. Kontrak mengikuti domain DraftSnapshotStore Step 109.22.
+- `StoryRepositoryImpl` baru: `captureSceneDraftSnapshot`, `getSceneDraftSnapshots`
+  (filter snapshotId/kind), `restoreSceneDraftSnapshot` (SELALU mencadangkan teks
+  kini sebagai restoreBackup sebelum pulih), `setDraftSnapshotRetention` (batas
+  per scene; dipangkas pada setiap capture).
+- RED terverifikasi (`captureSceneDraftSnapshot`/`getSceneDraftSnapshots`/
+  `setDraftSnapshotRetention` isn't defined) → GREEN.
+- Bukti: `flutter test test/features/story/draft_snapshot_persistence_test.dart`
+  3 PASS (persisten lintas close/reopen, restore-backup, retensi), story suite
+  131 PASS, `flutter analyze` No issues, `git diff --check` PASS, full suite
+  3231 PASS, `flutter build windows --debug` PASS. 26 asersi schema stale
+  diperbarui 56→57 (23 file `schemaVersion, 56` + freeze/migration matrix
+  release tests yang mengunci v56 — pola preceden v53→56).
+- Status gap diperbarui: snapshot persistence TERSEDIA di repository layer
+  (UI journey snapshot/search, matriks fidelity export, native interaction
+  proof masih terbuka).

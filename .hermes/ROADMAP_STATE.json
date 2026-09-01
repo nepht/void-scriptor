@@ -14,15 +14,15 @@
     "status": "PASS",
     "resume_step": "145.25",
     "previous_result": {
-      "verified_at": "2026-09-01 (cron run f)",
+      "verified_at": "2026-09-01 (cron run g)",
       "roadmap_guard": "PASS",
-      "flutter_analyze": "PASS (No issues found!)",
-      "focused_core_regression": "PASS (character_relations_journey_test 1 PASS + relations/character/story/inspector 181 PASS)",
-      "full_flutter_test": "PASS (3236 tests)",
-      "windows_debug_build": "PASS (build/windows/x64/runner/Debug/void_scriptor.exe, 21.4s)",
-      "native_alive_probe": "PASS (exe PID alive, MainWindowHandle valid, Responding=True, window render proven via pixel stats: 3057 unique colors, 7189 edge transitions)",
-      "head_at_verification": "1ce0f81 (relations journey test commit)",
-      "note": "145.25 quick-reference propagation closed (CharacterQuickRef domain, StoryRepositoryImpl.quickReferenceForScene, AiCharacterContext.quickRef via AiContextResolver, Story Workspace panel CHARACTER QUICK REF); focused 153 PASS; next_step remains 145.24 per roadmap guard recovery candidate"
+      "flutter_analyze": "PASS (No issues found!, 118.5s)",
+      "focused_core_regression": "PASS (workspace+character+relations+selection 48 PASS incl. new workspace_resolver_character_journey_test)",
+      "full_flutter_test": "PASS (3239 tests, ~11.5 min)",
+      "windows_debug_build": "PASS (build/windows/x64/runner/Debug/void_scriptor.exe, 45.7s)",
+      "native_alive_probe": "PASS (exe PID alive, MainWindowHandle valid, Responding=True, window render proven via pixel stats: 2093 unique colors, 112578 edge transitions on 1280x720)",
+      "head_at_verification": "8f05fad (ledger/audit evidence commit)",
+      "note": "145.25 full shared resolver journey closed (workspace_resolver_character_journey_test: selectionProvider mutation -> WorkspaceResolver -> live CharacterWorkspaceScreen, PASS-first evidence); 145.24+145.25 native render proof closed via alive probe; native interaction remains UNVERIFIABLE from cron; next_step stays 145.24 per guard recovery candidate"
     },
     "required_checks": [
       "dart run tool/roadmap_guard.dart",
@@ -39,8 +39,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-01T19:40:00+07:00",
-  "updated_by": "nephthys cron f: 145.25 quick-reference propagation closed at domain+AI+UI layers; next_step stays 145.24 (recovery candidate per guard)",
+  "updated_at": "2026-09-01T13:05:00+07:00",
+  "updated_by": "nephthys cron g: 145.25 resolver journey + 145.24/145.25 native render proof closed; native interaction UNVERIFIABLE from cron; next_step stays 145.24 (recovery candidate per guard)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

@@ -8,20 +8,20 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.25+base-voice-private-notes-slice (voice column schema 57->58 + notes silent-drop fix; next_step stays 145.24 per guard recovery candidate)",
-  "next_step": "145.24",
+  "last_verified_step": "145.24 Novel Workspace Core (evidence-closure reconciliation per RESOLUTION_GUIDANCE_145_24_145_26; objective exact sprint_145.json covered by executable evidence; native interaction klik/typing UNVERIFIABLE from cron)",
+  "next_step": "145.25",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
     "previous_result": {
-      "verified_at": "2026-09-01 (cron k)",
-      "roadmap_guard": "PASS (pre+post)",
-      "flutter_analyze": "PASS (No issues found!, 14.9s)",
-      "focused_core_regression": "PASS (character_voice_notes_test 5 PASS; character+story+release+database+project_package 230 PASS)",
-      "full_flutter_test": "PARTIAL (3262 PASS / 2 FAIL di surface concurrent 145.20: app_bootstrap_test vs main.dart uncommitted, splash_screen_test vs splash_screen.dart sibling-owned)",
-      "windows_debug_build": "PASS (30.9s)",
-      "head_at_verification": "dab9d25 + slice commit berikut",
-      "note": "145.25 BASE_VOICE + private notes wiring closed via TDD; voice/notes UI display/editor masih open; native interaction UNVERIFIABLE; full suite 2 kegagalan milik concurrent 145.20 (bukan area slice) - dilaporkan, tidak disentuh"
+      "verified_at": "2026-09-01 (cron h)",
+      "roadmap_guard": "PASS pre-run; PASS post-state (pointer 145.25)",
+      "flutter_analyze": "PASS (No issues found!, 16.7s)",
+      "focused_core_regression": "PASS (story 142 + workspaces 55 + focused search/snapshot/recovery/fidelity 7)",
+      "full_flutter_test": "PASS (3262 PASS / 2 FAIL concurrent-owned 145.20: app_bootstrap_test + splash_screen_test; root-caused, not touched)",
+      "windows_debug_build": "PASS (22.9s)",
+      "head_at_verification": "4770ecc",
+      "note": "145.24 closed VERIFIED via evidence reconciliation; no source slice needed this run; ledger/audit/state-only commits"
     },
     "required_checks": [
       "dart run tool/roadmap_guard.dart",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-01T19:05:00+07:00",
-  "updated_by": "nephthys cron k: 145.25 BASE_VOICE (Characters.voice schema 58) + private notes wiring (silent-drop fix) closed; test 5 PASS, analyze clean, windows build PASS; full suite 3262 PASS + 2 fail concurrent-owned (145.20 bootstrap/splash); next_step stays 145.24",
+  "updated_at": "2026-09-01T21:20:00+07:00",
+  "updated_by": "nephthys cron h: 145.24 Novel Workspace Core VERIFIED (evidence-closure reconciliation); next_step 145.25 Character Workspace Core; full suite 3262 PASS + 2 concurrent-owned fails (145.20 bootstrap/splash) reported untouched; build+analyze clean",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

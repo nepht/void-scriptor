@@ -66,12 +66,12 @@ Covered behaviors:
 | Restart persistence | VERIFIED by focused tests |
 | Resolver/selection to Story Workspace | VERIFIED by focused tests |
 | Import/export action safety | VERIFIED by focused tests |
-| Clean export fidelity across all required formats | PARTIAL; dedicated content comparison matrix remains open |
-| Word count | PARTIAL; no complete Core journey proof found in this batch |
-| Snapshot lifecycle | PARTIAL; draft/restart evidence exists, full user-controlled snapshot contract remains separate |
-| Search/lore journey | PARTIAL; domain/link components exist, full clean-device journey remains open |
+| Clean export fidelity across all required formats | VERIFIED by `StoryExportFidelity` + `test/features/story/story_export_fidelity_test.dart` (2026-09-01 cron c): markdown exact-line diff, DOCX zip-decode paragraph diff, DB ordering preserved, live manuscript untouched, XML-special + blank-line content intact |
+| Word count | VERIFIED: live word count wired + tested (`'3 kata'` assertion di `test/features/story/story_workspace_test.dart`; progres target di `test/features/story/word_targets_test.dart` 5 test) |
+| Snapshot lifecycle | VERIFIED for core contract (schema 56→57 persistence, capture, restore-with-backup, retention + UI journey): `draft_snapshot_persistence_test.dart` 3 PASS + `novel_workspace_search_snapshot_ui_test.dart` 3 PASS. Batas retensi lintas restart tetap session-scoped sesuai kontrak domain 109.22 (bukan gap slice ini) |
+| Search/lore journey | VERIFIED for core search: `searchNovel` cross-scene domain (`novel_search_test.dart` 2 PASS) + NOVEL SEARCH UI journey (`novel_workspace_search_snapshot_ui_test.dart`); lore link/backlink komponen teruji terpisah (`lore_link_autocomplete_test.dart`, `lore_backlinks_test.dart` di story suite) |
 | Native Windows interaction | PARTIAL (2026-09-01 cron g): native window render proven via alive probe (exe launched, PowerShell `MainWindowHandle` valid + `Responding=True`, `CopyFromScreen` pixel stats 2093 unique colors / 112578 edge transitions on 1280x720 — non-empty render). Foreground input/click interaction remains UNVERIFIABLE from cron (no computer_use driver; previously returned `snapshot_id_required`) |
-| Full Core vertical journey | PENDING; depends on 145.30–145.35 and 145.41–145.44 |
+| Full Core vertical journey | PENDING; depends on 145.30–145.35 and 145.41–145.44 (bukan acceptance tambahan 145.24 per RESOLUTION_GUIDANCE_145_24_145_26) |
 
 ## No-break conditions
 
@@ -86,7 +86,7 @@ Covered behaviors:
 
 ## Decision
 
-`145.24 Novel Workspace Core` berstatus **PARTIAL**. The local Story Workspace vertical slice has strong source and focused-test evidence (13 tests pass), including repository round trip, restart persistence, resolver wiring, autosave, and IO action safety. Word-count, complete snapshot semantics, full search/lore journey, clean-export fidelity matrix, native interaction, and release-blocking clean-device journey remain open.
+`145.24 Novel Workspace Core` berstatus **VERIFIED** (2026-09-01 cron h, rekonsiliasi evidence-closure per RESOLUTION_GUIDANCE_145_24_145_26). Seluruh objective exact sprint_145.json kini punya bukti eksekusi: project/novel metadata, chapter/scene tree, manuscript persistence + restart, ordering, search (domain + UI journey), word count, snapshots (persistence + restore + retention UI), clean export (fidelity matrix). Native interaction klik/typing tetap UNVERIFIABLE dari cron (tanpa computer_use) dan terekam jujur sebagai boundary tersendiri; native window render TERBUKTI via alive probe.
 
 Next: `145.25 Character Workspace Core`.
 
@@ -260,3 +260,24 @@ full suite 3239 PASS (~11.5 mnt); `flutter analyze` No issues (118.5s);
 roadmap guard PASS pre-run.
 - Sisa gap 145.24: native interaction proof (butuh computer_use / sesi
 interaktif pengguna). Cron tidak boleh mengklaimnya.
+
+## Update 2026-09-01 (cron h: evidence-closure reconciliation, 145.24 VERIFIED)
+
+- Rekonsiliasi audit + ledger hanya dari bukti eksekusi (RESOLUTION_GUIDANCE_145_24_145_26).
+  Tabel evidence-boundary direkonsiliasi: export fidelity, word count, snapshot
+  lifecycle, dan search journey naik ke VERIFIED karena masing-masing kini punya
+  test eksekusi nyata (bukan lagi komponen tanpa journey). Full Core vertical
+  journey tetap PENDING namun bukan acceptance tambahan 145.24.
+- Native interaction klik/typing tetap UNVERIFIABLE dari cron (tanpa
+  computer_use); native window render sudah terbukti via alive probe cron g.
+  Keputusan menjadikan klik/typing prasyarat verifikasi akan membutuhkan sesi
+  interaktif; 145.24 ditutup VERIFIED tanpa mengarang bukti tersebut.
+- Gates segar run ini (Windows canonical, HEAD 4770ecc): `flutter analyze` No
+  issues (16.7s); proving suite `flutter test test/features/story` 142 PASS;
+  `test/features/workspaces` 55 PASS; focused search/snapshot/recovery/fidelity
+  7 PASS; full `flutter test` 3262 PASS + 2 FAIL yang keduanya milik surface
+  concurrent 145.20 (app_bootstrap_test vs main.dart/app_router uncommitted;
+  splash_screen_test untracked vs splash_screen.dart sibling) - didiagnosis
+  root cause-nya dan dilaporkan, tidak disentuh; `git diff --check` PASS;
+  `flutter build windows --debug` PASS (22.9s). Tidak ada commit source baru;
+  perubahan hanya ledger/audit/state.

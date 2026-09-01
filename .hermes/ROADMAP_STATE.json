@@ -14,15 +14,14 @@
     "status": "PASS",
     "resume_step": "145.25",
     "previous_result": {
-      "verified_at": "2026-09-01 (cron run g)",
-      "roadmap_guard": "PASS",
-      "flutter_analyze": "PASS (No issues found!, 118.5s)",
-      "focused_core_regression": "PASS (workspace+character+relations+selection 48 PASS incl. new workspace_resolver_character_journey_test)",
-      "full_flutter_test": "PASS (3239 tests, ~11.5 min)",
-      "windows_debug_build": "PASS (build/windows/x64/runner/Debug/void_scriptor.exe, 45.7s)",
-      "native_alive_probe": "PASS (exe PID alive, MainWindowHandle valid, Responding=True, window render proven via pixel stats: 2093 unique colors, 112578 edge transitions on 1280x720)",
-      "head_at_verification": "8f05fad (ledger/audit evidence commit)",
-      "note": "145.25 full shared resolver journey closed (workspace_resolver_character_journey_test: selectionProvider mutation -> WorkspaceResolver -> live CharacterWorkspaceScreen, PASS-first evidence); 145.24+145.25 native render proof closed via alive probe; native interaction remains UNVERIFIABLE from cron; next_step stays 145.24 per guard recovery candidate"
+      "verified_at": "2026-09-01 (cron run j)",
+      "roadmap_guard": "PASS (pre-run)",
+      "flutter_analyze": "PASS (No issues found!, 18.3s)",
+      "focused_core_regression": "PASS (focused journal 6 PASS + story/resilience regression 52 PASS incl. new durable_draft_journal_failure_injection_test 2 PASS)",
+      "full_flutter_test": "PASS (3250 tests, ~12 min)",
+      "windows_debug_build": "PASS (build/windows/x64/runner/Debug/void_scriptor.exe, 21.9s)",
+      "head_at_verification": "e1dc5a5 (test+audit+ledger evidence commit)",
+      "note": "145.30 failure injection closed as evidence-first (no production code: journal already correct at this boundary); next_step stays 145.24 per guard recovery candidate; native process-kill harness, legacy SaveCoordinator integration, native interaction remain open"
     },
     "required_checks": [
       "dart run tool/roadmap_guard.dart",

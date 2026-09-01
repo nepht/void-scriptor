@@ -70,4 +70,36 @@ class FactionRepository extends DatabaseAccessor<ProjectDatabase>
         )
         .toList(growable: false);
   }
+
+  Future<domain.FactionModel?> findByName(String projectId, String name) async {
+    final rows = await listForProject(projectId);
+    final target = name.trim().toLowerCase();
+    for (final faction in rows) {
+      if (faction.name.trim().toLowerCase() == target) {
+        return faction;
+      }
+    }
+    return null;
+  }
+
+  Future<List<domain.FactionModel>> listForProject(String projectId) async {
+    final rows =
+        await (select(factions)
+              ..where((item) => item.projectId.equals(projectId))
+              ..orderBy([(item) => OrderingTerm(expression: item.name)]))
+            .get();
+    return rows
+        .map(
+          (row) => domain.FactionModel(
+            assetId: row.assetId,
+            projectId: row.projectId,
+            name: row.name,
+            description: row.description,
+            ideology: row.ideology,
+            status: row.status,
+            headquarters: row.headquarters,
+          ),
+        )
+        .toList(growable: false);
+  }
 }

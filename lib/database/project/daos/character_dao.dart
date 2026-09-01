@@ -4,11 +4,19 @@ import '../project_database.dart';
 import '../tables/characters.dart';
 import '../tables/character_identity_profiles.dart';
 import '../tables/character_references.dart';
+import '../tables/character_scope_layers.dart';
 
 part 'character_dao.g.dart';
 
 @DriftAccessor(
-  tables: [Characters, CharacterIdentityProfiles, CharacterReferences],
+  tables: [
+    Characters,
+    CharacterIdentityProfiles,
+    CharacterReferences,
+    CharacterCanonicalScopes,
+    CharacterUniverseTimelineOverrides,
+    CharacterNovelStates,
+  ],
 )
 class CharacterDao extends DatabaseAccessor<ProjectDatabase>
     with _$CharacterDaoMixin {
@@ -45,4 +53,41 @@ class CharacterDao extends DatabaseAccessor<ProjectDatabase>
   Future<void> removeCharacterReferences(String characterId) => (delete(
     characterReferences,
   )..where((row) => row.characterId.equals(characterId))).go();
+
+  Future<CharacterCanonicalScope?> getCanonicalScope(String characterId) =>
+      (select(
+        characterCanonicalScopes,
+      )..where((row) => row.characterId.equals(characterId))).getSingleOrNull();
+
+  Future<CharacterUniverseTimelineOverride?> getUniverseTimelineScope(
+    String characterId,
+  ) => (select(
+    characterUniverseTimelineOverrides,
+  )..where((row) => row.characterId.equals(characterId))).getSingleOrNull();
+
+  Future<CharacterNovelState?> getNovelScope(String characterId) => (select(
+    characterNovelStates,
+  )..where((row) => row.characterId.equals(characterId))).getSingleOrNull();
+
+  Future<void> upsertCanonicalScope(CharacterCanonicalScopesCompanion row) =>
+      into(characterCanonicalScopes).insertOnConflictUpdate(row);
+
+  Future<void> upsertUniverseTimelineScope(
+    CharacterUniverseTimelineOverridesCompanion row,
+  ) => into(characterUniverseTimelineOverrides).insertOnConflictUpdate(row);
+
+  Future<void> upsertNovelScope(CharacterNovelStatesCompanion row) =>
+      into(characterNovelStates).insertOnConflictUpdate(row);
+
+  Future<void> removeCharacterScopeRows(String characterId) async {
+    await (delete(
+      characterCanonicalScopes,
+    )..where((row) => row.characterId.equals(characterId))).go();
+    await (delete(
+      characterUniverseTimelineOverrides,
+    )..where((row) => row.characterId.equals(characterId))).go();
+    await (delete(
+      characterNovelStates,
+    )..where((row) => row.characterId.equals(characterId))).go();
+  }
 }

@@ -124,3 +124,21 @@ Sisa gap menuju VERIFIED 145.26:
 3. Character Workspace source-scope display (per guidance item 2 poin 9).
 4. Native interaction proof (UNVERIFIABLE dari cron; bukan acceptance item
    per presedens 145.24/145.25).
+
+
+## Persistence slice (2026-09-02, cron)
+
+Gap #1 (persistence scoped state) closed by `test/features/character/character_scope_persistence_test.dart` (5 PASS, RED terverifikasi: `getScopeState`s/`updateScopeState` undefined di interface sebelum implementasi):
+
+- Schema 58 -> 59: tiga tabel baru `lib/database/project/tables/character_scope_layers.dart` - `CharacterCanonicalScopes`, `CharacterUniverseTimelineOverrides`, `CharacterNovelStates` (PK characterId; kolom nullable hanya milik layer masing-masing, jadi write lintas layer mustahil secara fisik; null = inherit dari layer di bawah).
+- Migration guarded `if (from < 59)` createTable x3; data canonical existing tidak disentuh (tabel baru, tidak ada ALTER/DROP pada tabel lama; preseden v57/v58).
+- `CharacterDao`: `getCanonicalScope`/`getUniverseTimelineScope`/`getNovelScope`, `upsertCanonicalScope`/`upsertUniverseTimelineScope`/`upsertNovelScope`, `removeCharacterScopeRows` (delete-safety: `deleteCharacter` kini membersihkan ketiga tabel scope dalam transaksi yang sama).
+- `CharacterRepository` interface + `CharacterRepositoryImpl`: `getScopeStates` (Future<Map<CharacterScopeLayer, CharacterScopeState>>, selalu 3 layer, default empty state) dan `updateScopeState` (switch layer, hanya menulis tabel layer target).
+- 30 file test asersi schema stale 58 -> 59 (28 `schemaVersion, 58` + rc_freeze + rc_migration_recovery; yang terakhir juga: seedV53 strip 3 tabel scope + user_version 59 + v59 wave proven via sqlite_master containsAll).
+- Bukti gerbang: focused 5/5 PASS, character+release+database+project_package regression 108 PASS, analyze No issues (9.1s), full suite 3288 PASS / 1 FAIL (app_bootstrap_test konkuren 145.20, root-caused run sebelumnya, tidak disentuh), windows debug build PASS 29.9s + re-verify 28.2s pasca-format, diff --check PASS.
+
+Sisa gap menuju VERIFIED 145.26 (setelah slice ini):
+
+1. Integrasi command dengan repository/session nyata (execute menulis hanya layer yang dideklarasikan; clear override = fallback ke layer di bawah, bukan mutasi canonical).
+2. Character Workspace source-scope display (per guidance item 2 poin 9).
+3. Native interaction proof (UNVERIFIABLE dari cron; bukan acceptance item per presedens 145.24/145.25).

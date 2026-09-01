@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.26 Character Scope Layers PARTIAL (2026-09-02 cron, commit 681023e): contract-first domain slice landed dari kontrak eksplisit core_mvp_scope_reset_spec.json character_model (3 layers, ownership per layer, quick_edit_requires_scope_choice, override_never_silently_mutates_canonical); CharacterScopeLayer/FieldOwnership/ScopeState/EffectiveResolver/UpdateCharacterScopeCommand; RED terverifikasi, focused 14/14 PASS, char suite 53 PASS, analyze No issues, windows debug build PASS, diff --check PASS. Sisa: persistence scoped/migration preserving canonical, repository integration, Workspace source-scope display; next_step tetap 145.26",
+  "last_verified_step": "145.26 Character Scope Layers PARTIAL (2026-09-02 cron b, persistence slice): schema 58->59 tiga tabel scope layer (character_canonical_scopes / character_universe_timeline_overrides / character_novel_states, guarded migration, data canonical tidak tersentuh), CharacterDao get/upsert/remove per layer, removeCharacterScopeRows wired ke deleteCharacter (delete-safety), repository getScopeStates/updateScopeState (interface+impl), 30 file asersi schema stale 58->59. RED terverifikasi. Bukti: focused 5/5 PASS, regression character+release+database+project_package 108 PASS, analyze No issues, full suite 3288 PASS / 1 FAIL (app_bootstrap_test konkuren 145.20, tidak disentuh), windows debug build PASS 29.9s+28.2s, diff --check PASS. Sisa: command integration (execute scoped write), Workspace source-scope display; next_step tetap 145.26",
   "next_step": "145.26",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-02T04:10:00+07:00",
-  "updated_by": "nephthys cron: 145.26 contract-first slice (681023e); next_step tetap 145.26 sampai persistence+integration+source-scope display terbukti",
+  "updated_at": "2026-09-02T05:30:00+07:00",
+  "updated_by": "nephthys cron: 145.26 persistence slice (schema 59); next_step tetap 145.26",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

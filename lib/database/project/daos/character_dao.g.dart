@@ -9,6 +9,13 @@ mixin _$CharacterDaoMixin on DatabaseAccessor<ProjectDatabase> {
       attachedDatabase.characterIdentityProfiles;
   $CharacterReferencesTable get characterReferences =>
       attachedDatabase.characterReferences;
+  $CharacterCanonicalScopesTable get characterCanonicalScopes =>
+      attachedDatabase.characterCanonicalScopes;
+  $CharacterUniverseTimelineOverridesTable
+  get characterUniverseTimelineOverrides =>
+      attachedDatabase.characterUniverseTimelineOverrides;
+  $CharacterNovelStatesTable get characterNovelStates =>
+      attachedDatabase.characterNovelStates;
   CharacterDaoManager get managers => CharacterDaoManager(this);
 }
 
@@ -26,5 +33,21 @@ class CharacterDaoManager {
       $$CharacterReferencesTableTableManager(
         _db.attachedDatabase,
         _db.characterReferences,
+      );
+  $$CharacterCanonicalScopesTableTableManager get characterCanonicalScopes =>
+      $$CharacterCanonicalScopesTableTableManager(
+        _db.attachedDatabase,
+        _db.characterCanonicalScopes,
+      );
+  $$CharacterUniverseTimelineOverridesTableTableManager
+  get characterUniverseTimelineOverrides =>
+      $$CharacterUniverseTimelineOverridesTableTableManager(
+        _db.attachedDatabase,
+        _db.characterUniverseTimelineOverrides,
+      );
+  $$CharacterNovelStatesTableTableManager get characterNovelStates =>
+      $$CharacterNovelStatesTableTableManager(
+        _db.attachedDatabase,
+        _db.characterNovelStates,
       );
 }

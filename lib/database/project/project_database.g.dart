@@ -6543,6 +6543,1348 @@ class CharacterModeReferencesCompanion
   }
 }
 
+class $CharacterCanonicalScopesTable extends CharacterCanonicalScopes
+    with TableInfo<$CharacterCanonicalScopesTable, CharacterCanonicalScope> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CharacterCanonicalScopesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _characterIdMeta = const VerificationMeta(
+    'characterId',
+  );
+  @override
+  late final GeneratedColumn<String> characterId = GeneratedColumn<String>(
+    'character_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _identityMeta = const VerificationMeta(
+    'identity',
+  );
+  @override
+  late final GeneratedColumn<String> identity = GeneratedColumn<String>(
+    'identity',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _baseVoiceMeta = const VerificationMeta(
+    'baseVoice',
+  );
+  @override
+  late final GeneratedColumn<String> baseVoice = GeneratedColumn<String>(
+    'base_voice',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _baseVisualProfileMeta = const VerificationMeta(
+    'baseVisualProfile',
+  );
+  @override
+  late final GeneratedColumn<String> baseVisualProfile =
+      GeneratedColumn<String>(
+        'base_visual_profile',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _baseRelationReferencesMeta =
+      const VerificationMeta('baseRelationReferences');
+  @override
+  late final GeneratedColumn<String> baseRelationReferences =
+      GeneratedColumn<String>(
+        'base_relation_references',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    characterId,
+    identity,
+    baseVoice,
+    baseVisualProfile,
+    baseRelationReferences,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'character_canonical_scopes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CharacterCanonicalScope> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('character_id')) {
+      context.handle(
+        _characterIdMeta,
+        characterId.isAcceptableOrUnknown(
+          data['character_id']!,
+          _characterIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_characterIdMeta);
+    }
+    if (data.containsKey('identity')) {
+      context.handle(
+        _identityMeta,
+        identity.isAcceptableOrUnknown(data['identity']!, _identityMeta),
+      );
+    }
+    if (data.containsKey('base_voice')) {
+      context.handle(
+        _baseVoiceMeta,
+        baseVoice.isAcceptableOrUnknown(data['base_voice']!, _baseVoiceMeta),
+      );
+    }
+    if (data.containsKey('base_visual_profile')) {
+      context.handle(
+        _baseVisualProfileMeta,
+        baseVisualProfile.isAcceptableOrUnknown(
+          data['base_visual_profile']!,
+          _baseVisualProfileMeta,
+        ),
+      );
+    }
+    if (data.containsKey('base_relation_references')) {
+      context.handle(
+        _baseRelationReferencesMeta,
+        baseRelationReferences.isAcceptableOrUnknown(
+          data['base_relation_references']!,
+          _baseRelationReferencesMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {characterId};
+  @override
+  CharacterCanonicalScope map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CharacterCanonicalScope(
+      characterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}character_id'],
+      )!,
+      identity: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}identity'],
+      ),
+      baseVoice: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}base_voice'],
+      ),
+      baseVisualProfile: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}base_visual_profile'],
+      ),
+      baseRelationReferences: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}base_relation_references'],
+      ),
+    );
+  }
+
+  @override
+  $CharacterCanonicalScopesTable createAlias(String alias) {
+    return $CharacterCanonicalScopesTable(attachedDatabase, alias);
+  }
+}
+
+class CharacterCanonicalScope extends DataClass
+    implements Insertable<CharacterCanonicalScope> {
+  final String characterId;
+  final String? identity;
+  final String? baseVoice;
+  final String? baseVisualProfile;
+  final String? baseRelationReferences;
+  const CharacterCanonicalScope({
+    required this.characterId,
+    this.identity,
+    this.baseVoice,
+    this.baseVisualProfile,
+    this.baseRelationReferences,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['character_id'] = Variable<String>(characterId);
+    if (!nullToAbsent || identity != null) {
+      map['identity'] = Variable<String>(identity);
+    }
+    if (!nullToAbsent || baseVoice != null) {
+      map['base_voice'] = Variable<String>(baseVoice);
+    }
+    if (!nullToAbsent || baseVisualProfile != null) {
+      map['base_visual_profile'] = Variable<String>(baseVisualProfile);
+    }
+    if (!nullToAbsent || baseRelationReferences != null) {
+      map['base_relation_references'] = Variable<String>(
+        baseRelationReferences,
+      );
+    }
+    return map;
+  }
+
+  CharacterCanonicalScopesCompanion toCompanion(bool nullToAbsent) {
+    return CharacterCanonicalScopesCompanion(
+      characterId: Value(characterId),
+      identity: identity == null && nullToAbsent
+          ? const Value.absent()
+          : Value(identity),
+      baseVoice: baseVoice == null && nullToAbsent
+          ? const Value.absent()
+          : Value(baseVoice),
+      baseVisualProfile: baseVisualProfile == null && nullToAbsent
+          ? const Value.absent()
+          : Value(baseVisualProfile),
+      baseRelationReferences: baseRelationReferences == null && nullToAbsent
+          ? const Value.absent()
+          : Value(baseRelationReferences),
+    );
+  }
+
+  factory CharacterCanonicalScope.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CharacterCanonicalScope(
+      characterId: serializer.fromJson<String>(json['characterId']),
+      identity: serializer.fromJson<String?>(json['identity']),
+      baseVoice: serializer.fromJson<String?>(json['baseVoice']),
+      baseVisualProfile: serializer.fromJson<String?>(
+        json['baseVisualProfile'],
+      ),
+      baseRelationReferences: serializer.fromJson<String?>(
+        json['baseRelationReferences'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'characterId': serializer.toJson<String>(characterId),
+      'identity': serializer.toJson<String?>(identity),
+      'baseVoice': serializer.toJson<String?>(baseVoice),
+      'baseVisualProfile': serializer.toJson<String?>(baseVisualProfile),
+      'baseRelationReferences': serializer.toJson<String?>(
+        baseRelationReferences,
+      ),
+    };
+  }
+
+  CharacterCanonicalScope copyWith({
+    String? characterId,
+    Value<String?> identity = const Value.absent(),
+    Value<String?> baseVoice = const Value.absent(),
+    Value<String?> baseVisualProfile = const Value.absent(),
+    Value<String?> baseRelationReferences = const Value.absent(),
+  }) => CharacterCanonicalScope(
+    characterId: characterId ?? this.characterId,
+    identity: identity.present ? identity.value : this.identity,
+    baseVoice: baseVoice.present ? baseVoice.value : this.baseVoice,
+    baseVisualProfile: baseVisualProfile.present
+        ? baseVisualProfile.value
+        : this.baseVisualProfile,
+    baseRelationReferences: baseRelationReferences.present
+        ? baseRelationReferences.value
+        : this.baseRelationReferences,
+  );
+  CharacterCanonicalScope copyWithCompanion(
+    CharacterCanonicalScopesCompanion data,
+  ) {
+    return CharacterCanonicalScope(
+      characterId: data.characterId.present
+          ? data.characterId.value
+          : this.characterId,
+      identity: data.identity.present ? data.identity.value : this.identity,
+      baseVoice: data.baseVoice.present ? data.baseVoice.value : this.baseVoice,
+      baseVisualProfile: data.baseVisualProfile.present
+          ? data.baseVisualProfile.value
+          : this.baseVisualProfile,
+      baseRelationReferences: data.baseRelationReferences.present
+          ? data.baseRelationReferences.value
+          : this.baseRelationReferences,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterCanonicalScope(')
+          ..write('characterId: $characterId, ')
+          ..write('identity: $identity, ')
+          ..write('baseVoice: $baseVoice, ')
+          ..write('baseVisualProfile: $baseVisualProfile, ')
+          ..write('baseRelationReferences: $baseRelationReferences')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    characterId,
+    identity,
+    baseVoice,
+    baseVisualProfile,
+    baseRelationReferences,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CharacterCanonicalScope &&
+          other.characterId == this.characterId &&
+          other.identity == this.identity &&
+          other.baseVoice == this.baseVoice &&
+          other.baseVisualProfile == this.baseVisualProfile &&
+          other.baseRelationReferences == this.baseRelationReferences);
+}
+
+class CharacterCanonicalScopesCompanion
+    extends UpdateCompanion<CharacterCanonicalScope> {
+  final Value<String> characterId;
+  final Value<String?> identity;
+  final Value<String?> baseVoice;
+  final Value<String?> baseVisualProfile;
+  final Value<String?> baseRelationReferences;
+  final Value<int> rowid;
+  const CharacterCanonicalScopesCompanion({
+    this.characterId = const Value.absent(),
+    this.identity = const Value.absent(),
+    this.baseVoice = const Value.absent(),
+    this.baseVisualProfile = const Value.absent(),
+    this.baseRelationReferences = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CharacterCanonicalScopesCompanion.insert({
+    required String characterId,
+    this.identity = const Value.absent(),
+    this.baseVoice = const Value.absent(),
+    this.baseVisualProfile = const Value.absent(),
+    this.baseRelationReferences = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : characterId = Value(characterId);
+  static Insertable<CharacterCanonicalScope> custom({
+    Expression<String>? characterId,
+    Expression<String>? identity,
+    Expression<String>? baseVoice,
+    Expression<String>? baseVisualProfile,
+    Expression<String>? baseRelationReferences,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (characterId != null) 'character_id': characterId,
+      if (identity != null) 'identity': identity,
+      if (baseVoice != null) 'base_voice': baseVoice,
+      if (baseVisualProfile != null) 'base_visual_profile': baseVisualProfile,
+      if (baseRelationReferences != null)
+        'base_relation_references': baseRelationReferences,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CharacterCanonicalScopesCompanion copyWith({
+    Value<String>? characterId,
+    Value<String?>? identity,
+    Value<String?>? baseVoice,
+    Value<String?>? baseVisualProfile,
+    Value<String?>? baseRelationReferences,
+    Value<int>? rowid,
+  }) {
+    return CharacterCanonicalScopesCompanion(
+      characterId: characterId ?? this.characterId,
+      identity: identity ?? this.identity,
+      baseVoice: baseVoice ?? this.baseVoice,
+      baseVisualProfile: baseVisualProfile ?? this.baseVisualProfile,
+      baseRelationReferences:
+          baseRelationReferences ?? this.baseRelationReferences,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (characterId.present) {
+      map['character_id'] = Variable<String>(characterId.value);
+    }
+    if (identity.present) {
+      map['identity'] = Variable<String>(identity.value);
+    }
+    if (baseVoice.present) {
+      map['base_voice'] = Variable<String>(baseVoice.value);
+    }
+    if (baseVisualProfile.present) {
+      map['base_visual_profile'] = Variable<String>(baseVisualProfile.value);
+    }
+    if (baseRelationReferences.present) {
+      map['base_relation_references'] = Variable<String>(
+        baseRelationReferences.value,
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterCanonicalScopesCompanion(')
+          ..write('characterId: $characterId, ')
+          ..write('identity: $identity, ')
+          ..write('baseVoice: $baseVoice, ')
+          ..write('baseVisualProfile: $baseVisualProfile, ')
+          ..write('baseRelationReferences: $baseRelationReferences, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CharacterUniverseTimelineOverridesTable
+    extends CharacterUniverseTimelineOverrides
+    with
+        TableInfo<
+          $CharacterUniverseTimelineOverridesTable,
+          CharacterUniverseTimelineOverride
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CharacterUniverseTimelineOverridesTable(
+    this.attachedDatabase, [
+    this._alias,
+  ]);
+  static const VerificationMeta _characterIdMeta = const VerificationMeta(
+    'characterId',
+  );
+  @override
+  late final GeneratedColumn<String> characterId = GeneratedColumn<String>(
+    'character_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _alternateHistoryMeta = const VerificationMeta(
+    'alternateHistory',
+  );
+  @override
+  late final GeneratedColumn<String> alternateHistory = GeneratedColumn<String>(
+    'alternate_history',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _alternateRelationshipsMeta =
+      const VerificationMeta('alternateRelationships');
+  @override
+  late final GeneratedColumn<String> alternateRelationships =
+      GeneratedColumn<String>(
+        'alternate_relationships',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _eraSpecificFactsMeta = const VerificationMeta(
+    'eraSpecificFacts',
+  );
+  @override
+  late final GeneratedColumn<String> eraSpecificFacts = GeneratedColumn<String>(
+    'era_specific_facts',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    characterId,
+    alternateHistory,
+    alternateRelationships,
+    eraSpecificFacts,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'character_universe_timeline_overrides';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CharacterUniverseTimelineOverride> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('character_id')) {
+      context.handle(
+        _characterIdMeta,
+        characterId.isAcceptableOrUnknown(
+          data['character_id']!,
+          _characterIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_characterIdMeta);
+    }
+    if (data.containsKey('alternate_history')) {
+      context.handle(
+        _alternateHistoryMeta,
+        alternateHistory.isAcceptableOrUnknown(
+          data['alternate_history']!,
+          _alternateHistoryMeta,
+        ),
+      );
+    }
+    if (data.containsKey('alternate_relationships')) {
+      context.handle(
+        _alternateRelationshipsMeta,
+        alternateRelationships.isAcceptableOrUnknown(
+          data['alternate_relationships']!,
+          _alternateRelationshipsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('era_specific_facts')) {
+      context.handle(
+        _eraSpecificFactsMeta,
+        eraSpecificFacts.isAcceptableOrUnknown(
+          data['era_specific_facts']!,
+          _eraSpecificFactsMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {characterId};
+  @override
+  CharacterUniverseTimelineOverride map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CharacterUniverseTimelineOverride(
+      characterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}character_id'],
+      )!,
+      alternateHistory: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}alternate_history'],
+      ),
+      alternateRelationships: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}alternate_relationships'],
+      ),
+      eraSpecificFacts: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}era_specific_facts'],
+      ),
+    );
+  }
+
+  @override
+  $CharacterUniverseTimelineOverridesTable createAlias(String alias) {
+    return $CharacterUniverseTimelineOverridesTable(attachedDatabase, alias);
+  }
+}
+
+class CharacterUniverseTimelineOverride extends DataClass
+    implements Insertable<CharacterUniverseTimelineOverride> {
+  final String characterId;
+  final String? alternateHistory;
+  final String? alternateRelationships;
+  final String? eraSpecificFacts;
+  const CharacterUniverseTimelineOverride({
+    required this.characterId,
+    this.alternateHistory,
+    this.alternateRelationships,
+    this.eraSpecificFacts,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['character_id'] = Variable<String>(characterId);
+    if (!nullToAbsent || alternateHistory != null) {
+      map['alternate_history'] = Variable<String>(alternateHistory);
+    }
+    if (!nullToAbsent || alternateRelationships != null) {
+      map['alternate_relationships'] = Variable<String>(alternateRelationships);
+    }
+    if (!nullToAbsent || eraSpecificFacts != null) {
+      map['era_specific_facts'] = Variable<String>(eraSpecificFacts);
+    }
+    return map;
+  }
+
+  CharacterUniverseTimelineOverridesCompanion toCompanion(bool nullToAbsent) {
+    return CharacterUniverseTimelineOverridesCompanion(
+      characterId: Value(characterId),
+      alternateHistory: alternateHistory == null && nullToAbsent
+          ? const Value.absent()
+          : Value(alternateHistory),
+      alternateRelationships: alternateRelationships == null && nullToAbsent
+          ? const Value.absent()
+          : Value(alternateRelationships),
+      eraSpecificFacts: eraSpecificFacts == null && nullToAbsent
+          ? const Value.absent()
+          : Value(eraSpecificFacts),
+    );
+  }
+
+  factory CharacterUniverseTimelineOverride.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CharacterUniverseTimelineOverride(
+      characterId: serializer.fromJson<String>(json['characterId']),
+      alternateHistory: serializer.fromJson<String?>(json['alternateHistory']),
+      alternateRelationships: serializer.fromJson<String?>(
+        json['alternateRelationships'],
+      ),
+      eraSpecificFacts: serializer.fromJson<String?>(json['eraSpecificFacts']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'characterId': serializer.toJson<String>(characterId),
+      'alternateHistory': serializer.toJson<String?>(alternateHistory),
+      'alternateRelationships': serializer.toJson<String?>(
+        alternateRelationships,
+      ),
+      'eraSpecificFacts': serializer.toJson<String?>(eraSpecificFacts),
+    };
+  }
+
+  CharacterUniverseTimelineOverride copyWith({
+    String? characterId,
+    Value<String?> alternateHistory = const Value.absent(),
+    Value<String?> alternateRelationships = const Value.absent(),
+    Value<String?> eraSpecificFacts = const Value.absent(),
+  }) => CharacterUniverseTimelineOverride(
+    characterId: characterId ?? this.characterId,
+    alternateHistory: alternateHistory.present
+        ? alternateHistory.value
+        : this.alternateHistory,
+    alternateRelationships: alternateRelationships.present
+        ? alternateRelationships.value
+        : this.alternateRelationships,
+    eraSpecificFacts: eraSpecificFacts.present
+        ? eraSpecificFacts.value
+        : this.eraSpecificFacts,
+  );
+  CharacterUniverseTimelineOverride copyWithCompanion(
+    CharacterUniverseTimelineOverridesCompanion data,
+  ) {
+    return CharacterUniverseTimelineOverride(
+      characterId: data.characterId.present
+          ? data.characterId.value
+          : this.characterId,
+      alternateHistory: data.alternateHistory.present
+          ? data.alternateHistory.value
+          : this.alternateHistory,
+      alternateRelationships: data.alternateRelationships.present
+          ? data.alternateRelationships.value
+          : this.alternateRelationships,
+      eraSpecificFacts: data.eraSpecificFacts.present
+          ? data.eraSpecificFacts.value
+          : this.eraSpecificFacts,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterUniverseTimelineOverride(')
+          ..write('characterId: $characterId, ')
+          ..write('alternateHistory: $alternateHistory, ')
+          ..write('alternateRelationships: $alternateRelationships, ')
+          ..write('eraSpecificFacts: $eraSpecificFacts')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    characterId,
+    alternateHistory,
+    alternateRelationships,
+    eraSpecificFacts,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CharacterUniverseTimelineOverride &&
+          other.characterId == this.characterId &&
+          other.alternateHistory == this.alternateHistory &&
+          other.alternateRelationships == this.alternateRelationships &&
+          other.eraSpecificFacts == this.eraSpecificFacts);
+}
+
+class CharacterUniverseTimelineOverridesCompanion
+    extends UpdateCompanion<CharacterUniverseTimelineOverride> {
+  final Value<String> characterId;
+  final Value<String?> alternateHistory;
+  final Value<String?> alternateRelationships;
+  final Value<String?> eraSpecificFacts;
+  final Value<int> rowid;
+  const CharacterUniverseTimelineOverridesCompanion({
+    this.characterId = const Value.absent(),
+    this.alternateHistory = const Value.absent(),
+    this.alternateRelationships = const Value.absent(),
+    this.eraSpecificFacts = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CharacterUniverseTimelineOverridesCompanion.insert({
+    required String characterId,
+    this.alternateHistory = const Value.absent(),
+    this.alternateRelationships = const Value.absent(),
+    this.eraSpecificFacts = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : characterId = Value(characterId);
+  static Insertable<CharacterUniverseTimelineOverride> custom({
+    Expression<String>? characterId,
+    Expression<String>? alternateHistory,
+    Expression<String>? alternateRelationships,
+    Expression<String>? eraSpecificFacts,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (characterId != null) 'character_id': characterId,
+      if (alternateHistory != null) 'alternate_history': alternateHistory,
+      if (alternateRelationships != null)
+        'alternate_relationships': alternateRelationships,
+      if (eraSpecificFacts != null) 'era_specific_facts': eraSpecificFacts,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CharacterUniverseTimelineOverridesCompanion copyWith({
+    Value<String>? characterId,
+    Value<String?>? alternateHistory,
+    Value<String?>? alternateRelationships,
+    Value<String?>? eraSpecificFacts,
+    Value<int>? rowid,
+  }) {
+    return CharacterUniverseTimelineOverridesCompanion(
+      characterId: characterId ?? this.characterId,
+      alternateHistory: alternateHistory ?? this.alternateHistory,
+      alternateRelationships:
+          alternateRelationships ?? this.alternateRelationships,
+      eraSpecificFacts: eraSpecificFacts ?? this.eraSpecificFacts,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (characterId.present) {
+      map['character_id'] = Variable<String>(characterId.value);
+    }
+    if (alternateHistory.present) {
+      map['alternate_history'] = Variable<String>(alternateHistory.value);
+    }
+    if (alternateRelationships.present) {
+      map['alternate_relationships'] = Variable<String>(
+        alternateRelationships.value,
+      );
+    }
+    if (eraSpecificFacts.present) {
+      map['era_specific_facts'] = Variable<String>(eraSpecificFacts.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterUniverseTimelineOverridesCompanion(')
+          ..write('characterId: $characterId, ')
+          ..write('alternateHistory: $alternateHistory, ')
+          ..write('alternateRelationships: $alternateRelationships, ')
+          ..write('eraSpecificFacts: $eraSpecificFacts, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CharacterNovelStatesTable extends CharacterNovelStates
+    with TableInfo<$CharacterNovelStatesTable, CharacterNovelState> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CharacterNovelStatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _characterIdMeta = const VerificationMeta(
+    'characterId',
+  );
+  @override
+  late final GeneratedColumn<String> characterId = GeneratedColumn<String>(
+    'character_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
+  @override
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+    'role',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _arcMeta = const VerificationMeta('arc');
+  @override
+  late final GeneratedColumn<String> arc = GeneratedColumn<String>(
+    'arc',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _currentLocationMeta = const VerificationMeta(
+    'currentLocation',
+  );
+  @override
+  late final GeneratedColumn<String> currentLocation = GeneratedColumn<String>(
+    'current_location',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _currentAgeMeta = const VerificationMeta(
+    'currentAge',
+  );
+  @override
+  late final GeneratedColumn<String> currentAge = GeneratedColumn<String>(
+    'current_age',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _currentStatusMeta = const VerificationMeta(
+    'currentStatus',
+  );
+  @override
+  late final GeneratedColumn<String> currentStatus = GeneratedColumn<String>(
+    'current_status',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _scenePovMeta = const VerificationMeta(
+    'scenePov',
+  );
+  @override
+  late final GeneratedColumn<String> scenePov = GeneratedColumn<String>(
+    'scene_pov',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _novelRelationStateMeta =
+      const VerificationMeta('novelRelationState');
+  @override
+  late final GeneratedColumn<String> novelRelationState =
+      GeneratedColumn<String>(
+        'novel_relation_state',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    characterId,
+    role,
+    arc,
+    currentLocation,
+    currentAge,
+    currentStatus,
+    scenePov,
+    novelRelationState,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'character_novel_states';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CharacterNovelState> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('character_id')) {
+      context.handle(
+        _characterIdMeta,
+        characterId.isAcceptableOrUnknown(
+          data['character_id']!,
+          _characterIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_characterIdMeta);
+    }
+    if (data.containsKey('role')) {
+      context.handle(
+        _roleMeta,
+        role.isAcceptableOrUnknown(data['role']!, _roleMeta),
+      );
+    }
+    if (data.containsKey('arc')) {
+      context.handle(
+        _arcMeta,
+        arc.isAcceptableOrUnknown(data['arc']!, _arcMeta),
+      );
+    }
+    if (data.containsKey('current_location')) {
+      context.handle(
+        _currentLocationMeta,
+        currentLocation.isAcceptableOrUnknown(
+          data['current_location']!,
+          _currentLocationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('current_age')) {
+      context.handle(
+        _currentAgeMeta,
+        currentAge.isAcceptableOrUnknown(data['current_age']!, _currentAgeMeta),
+      );
+    }
+    if (data.containsKey('current_status')) {
+      context.handle(
+        _currentStatusMeta,
+        currentStatus.isAcceptableOrUnknown(
+          data['current_status']!,
+          _currentStatusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('scene_pov')) {
+      context.handle(
+        _scenePovMeta,
+        scenePov.isAcceptableOrUnknown(data['scene_pov']!, _scenePovMeta),
+      );
+    }
+    if (data.containsKey('novel_relation_state')) {
+      context.handle(
+        _novelRelationStateMeta,
+        novelRelationState.isAcceptableOrUnknown(
+          data['novel_relation_state']!,
+          _novelRelationStateMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {characterId};
+  @override
+  CharacterNovelState map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CharacterNovelState(
+      characterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}character_id'],
+      )!,
+      role: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}role'],
+      ),
+      arc: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}arc'],
+      ),
+      currentLocation: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}current_location'],
+      ),
+      currentAge: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}current_age'],
+      ),
+      currentStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}current_status'],
+      ),
+      scenePov: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scene_pov'],
+      ),
+      novelRelationState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}novel_relation_state'],
+      ),
+    );
+  }
+
+  @override
+  $CharacterNovelStatesTable createAlias(String alias) {
+    return $CharacterNovelStatesTable(attachedDatabase, alias);
+  }
+}
+
+class CharacterNovelState extends DataClass
+    implements Insertable<CharacterNovelState> {
+  final String characterId;
+  final String? role;
+  final String? arc;
+  final String? currentLocation;
+  final String? currentAge;
+  final String? currentStatus;
+  final String? scenePov;
+  final String? novelRelationState;
+  const CharacterNovelState({
+    required this.characterId,
+    this.role,
+    this.arc,
+    this.currentLocation,
+    this.currentAge,
+    this.currentStatus,
+    this.scenePov,
+    this.novelRelationState,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['character_id'] = Variable<String>(characterId);
+    if (!nullToAbsent || role != null) {
+      map['role'] = Variable<String>(role);
+    }
+    if (!nullToAbsent || arc != null) {
+      map['arc'] = Variable<String>(arc);
+    }
+    if (!nullToAbsent || currentLocation != null) {
+      map['current_location'] = Variable<String>(currentLocation);
+    }
+    if (!nullToAbsent || currentAge != null) {
+      map['current_age'] = Variable<String>(currentAge);
+    }
+    if (!nullToAbsent || currentStatus != null) {
+      map['current_status'] = Variable<String>(currentStatus);
+    }
+    if (!nullToAbsent || scenePov != null) {
+      map['scene_pov'] = Variable<String>(scenePov);
+    }
+    if (!nullToAbsent || novelRelationState != null) {
+      map['novel_relation_state'] = Variable<String>(novelRelationState);
+    }
+    return map;
+  }
+
+  CharacterNovelStatesCompanion toCompanion(bool nullToAbsent) {
+    return CharacterNovelStatesCompanion(
+      characterId: Value(characterId),
+      role: role == null && nullToAbsent ? const Value.absent() : Value(role),
+      arc: arc == null && nullToAbsent ? const Value.absent() : Value(arc),
+      currentLocation: currentLocation == null && nullToAbsent
+          ? const Value.absent()
+          : Value(currentLocation),
+      currentAge: currentAge == null && nullToAbsent
+          ? const Value.absent()
+          : Value(currentAge),
+      currentStatus: currentStatus == null && nullToAbsent
+          ? const Value.absent()
+          : Value(currentStatus),
+      scenePov: scenePov == null && nullToAbsent
+          ? const Value.absent()
+          : Value(scenePov),
+      novelRelationState: novelRelationState == null && nullToAbsent
+          ? const Value.absent()
+          : Value(novelRelationState),
+    );
+  }
+
+  factory CharacterNovelState.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CharacterNovelState(
+      characterId: serializer.fromJson<String>(json['characterId']),
+      role: serializer.fromJson<String?>(json['role']),
+      arc: serializer.fromJson<String?>(json['arc']),
+      currentLocation: serializer.fromJson<String?>(json['currentLocation']),
+      currentAge: serializer.fromJson<String?>(json['currentAge']),
+      currentStatus: serializer.fromJson<String?>(json['currentStatus']),
+      scenePov: serializer.fromJson<String?>(json['scenePov']),
+      novelRelationState: serializer.fromJson<String?>(
+        json['novelRelationState'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'characterId': serializer.toJson<String>(characterId),
+      'role': serializer.toJson<String?>(role),
+      'arc': serializer.toJson<String?>(arc),
+      'currentLocation': serializer.toJson<String?>(currentLocation),
+      'currentAge': serializer.toJson<String?>(currentAge),
+      'currentStatus': serializer.toJson<String?>(currentStatus),
+      'scenePov': serializer.toJson<String?>(scenePov),
+      'novelRelationState': serializer.toJson<String?>(novelRelationState),
+    };
+  }
+
+  CharacterNovelState copyWith({
+    String? characterId,
+    Value<String?> role = const Value.absent(),
+    Value<String?> arc = const Value.absent(),
+    Value<String?> currentLocation = const Value.absent(),
+    Value<String?> currentAge = const Value.absent(),
+    Value<String?> currentStatus = const Value.absent(),
+    Value<String?> scenePov = const Value.absent(),
+    Value<String?> novelRelationState = const Value.absent(),
+  }) => CharacterNovelState(
+    characterId: characterId ?? this.characterId,
+    role: role.present ? role.value : this.role,
+    arc: arc.present ? arc.value : this.arc,
+    currentLocation: currentLocation.present
+        ? currentLocation.value
+        : this.currentLocation,
+    currentAge: currentAge.present ? currentAge.value : this.currentAge,
+    currentStatus: currentStatus.present
+        ? currentStatus.value
+        : this.currentStatus,
+    scenePov: scenePov.present ? scenePov.value : this.scenePov,
+    novelRelationState: novelRelationState.present
+        ? novelRelationState.value
+        : this.novelRelationState,
+  );
+  CharacterNovelState copyWithCompanion(CharacterNovelStatesCompanion data) {
+    return CharacterNovelState(
+      characterId: data.characterId.present
+          ? data.characterId.value
+          : this.characterId,
+      role: data.role.present ? data.role.value : this.role,
+      arc: data.arc.present ? data.arc.value : this.arc,
+      currentLocation: data.currentLocation.present
+          ? data.currentLocation.value
+          : this.currentLocation,
+      currentAge: data.currentAge.present
+          ? data.currentAge.value
+          : this.currentAge,
+      currentStatus: data.currentStatus.present
+          ? data.currentStatus.value
+          : this.currentStatus,
+      scenePov: data.scenePov.present ? data.scenePov.value : this.scenePov,
+      novelRelationState: data.novelRelationState.present
+          ? data.novelRelationState.value
+          : this.novelRelationState,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterNovelState(')
+          ..write('characterId: $characterId, ')
+          ..write('role: $role, ')
+          ..write('arc: $arc, ')
+          ..write('currentLocation: $currentLocation, ')
+          ..write('currentAge: $currentAge, ')
+          ..write('currentStatus: $currentStatus, ')
+          ..write('scenePov: $scenePov, ')
+          ..write('novelRelationState: $novelRelationState')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    characterId,
+    role,
+    arc,
+    currentLocation,
+    currentAge,
+    currentStatus,
+    scenePov,
+    novelRelationState,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CharacterNovelState &&
+          other.characterId == this.characterId &&
+          other.role == this.role &&
+          other.arc == this.arc &&
+          other.currentLocation == this.currentLocation &&
+          other.currentAge == this.currentAge &&
+          other.currentStatus == this.currentStatus &&
+          other.scenePov == this.scenePov &&
+          other.novelRelationState == this.novelRelationState);
+}
+
+class CharacterNovelStatesCompanion
+    extends UpdateCompanion<CharacterNovelState> {
+  final Value<String> characterId;
+  final Value<String?> role;
+  final Value<String?> arc;
+  final Value<String?> currentLocation;
+  final Value<String?> currentAge;
+  final Value<String?> currentStatus;
+  final Value<String?> scenePov;
+  final Value<String?> novelRelationState;
+  final Value<int> rowid;
+  const CharacterNovelStatesCompanion({
+    this.characterId = const Value.absent(),
+    this.role = const Value.absent(),
+    this.arc = const Value.absent(),
+    this.currentLocation = const Value.absent(),
+    this.currentAge = const Value.absent(),
+    this.currentStatus = const Value.absent(),
+    this.scenePov = const Value.absent(),
+    this.novelRelationState = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CharacterNovelStatesCompanion.insert({
+    required String characterId,
+    this.role = const Value.absent(),
+    this.arc = const Value.absent(),
+    this.currentLocation = const Value.absent(),
+    this.currentAge = const Value.absent(),
+    this.currentStatus = const Value.absent(),
+    this.scenePov = const Value.absent(),
+    this.novelRelationState = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : characterId = Value(characterId);
+  static Insertable<CharacterNovelState> custom({
+    Expression<String>? characterId,
+    Expression<String>? role,
+    Expression<String>? arc,
+    Expression<String>? currentLocation,
+    Expression<String>? currentAge,
+    Expression<String>? currentStatus,
+    Expression<String>? scenePov,
+    Expression<String>? novelRelationState,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (characterId != null) 'character_id': characterId,
+      if (role != null) 'role': role,
+      if (arc != null) 'arc': arc,
+      if (currentLocation != null) 'current_location': currentLocation,
+      if (currentAge != null) 'current_age': currentAge,
+      if (currentStatus != null) 'current_status': currentStatus,
+      if (scenePov != null) 'scene_pov': scenePov,
+      if (novelRelationState != null)
+        'novel_relation_state': novelRelationState,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CharacterNovelStatesCompanion copyWith({
+    Value<String>? characterId,
+    Value<String?>? role,
+    Value<String?>? arc,
+    Value<String?>? currentLocation,
+    Value<String?>? currentAge,
+    Value<String?>? currentStatus,
+    Value<String?>? scenePov,
+    Value<String?>? novelRelationState,
+    Value<int>? rowid,
+  }) {
+    return CharacterNovelStatesCompanion(
+      characterId: characterId ?? this.characterId,
+      role: role ?? this.role,
+      arc: arc ?? this.arc,
+      currentLocation: currentLocation ?? this.currentLocation,
+      currentAge: currentAge ?? this.currentAge,
+      currentStatus: currentStatus ?? this.currentStatus,
+      scenePov: scenePov ?? this.scenePov,
+      novelRelationState: novelRelationState ?? this.novelRelationState,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (characterId.present) {
+      map['character_id'] = Variable<String>(characterId.value);
+    }
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
+    if (arc.present) {
+      map['arc'] = Variable<String>(arc.value);
+    }
+    if (currentLocation.present) {
+      map['current_location'] = Variable<String>(currentLocation.value);
+    }
+    if (currentAge.present) {
+      map['current_age'] = Variable<String>(currentAge.value);
+    }
+    if (currentStatus.present) {
+      map['current_status'] = Variable<String>(currentStatus.value);
+    }
+    if (scenePov.present) {
+      map['scene_pov'] = Variable<String>(scenePov.value);
+    }
+    if (novelRelationState.present) {
+      map['novel_relation_state'] = Variable<String>(novelRelationState.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterNovelStatesCompanion(')
+          ..write('characterId: $characterId, ')
+          ..write('role: $role, ')
+          ..write('arc: $arc, ')
+          ..write('currentLocation: $currentLocation, ')
+          ..write('currentAge: $currentAge, ')
+          ..write('currentStatus: $currentStatus, ')
+          ..write('scenePov: $scenePov, ')
+          ..write('novelRelationState: $novelRelationState, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $AssetRelationsTable extends AssetRelations
     with TableInfo<$AssetRelationsTable, AssetRelation> {
   @override
@@ -71375,6 +72717,14 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   characterModeIdentityOverrides = $CharacterModeIdentityOverridesTable(this);
   late final $CharacterModeReferencesTable characterModeReferences =
       $CharacterModeReferencesTable(this);
+  late final $CharacterCanonicalScopesTable characterCanonicalScopes =
+      $CharacterCanonicalScopesTable(this);
+  late final $CharacterUniverseTimelineOverridesTable
+  characterUniverseTimelineOverrides = $CharacterUniverseTimelineOverridesTable(
+    this,
+  );
+  late final $CharacterNovelStatesTable characterNovelStates =
+      $CharacterNovelStatesTable(this);
   late final $AssetRelationsTable assetRelations = $AssetRelationsTable(this);
   late final $WardrobesTable wardrobes = $WardrobesTable(this);
   late final $WardrobeComponentsTable wardrobeComponents =
@@ -71696,6 +73046,9 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     characterLoadoutEntries,
     characterModeIdentityOverrides,
     characterModeReferences,
+    characterCanonicalScopes,
+    characterUniverseTimelineOverrides,
+    characterNovelStates,
     assetRelations,
     wardrobes,
     wardrobeComponents,
@@ -75283,6 +76636,725 @@ typedef $$CharacterModeReferencesTableProcessedTableManager =
         >,
       ),
       CharacterModeReference,
+      PrefetchHooks Function()
+    >;
+typedef $$CharacterCanonicalScopesTableCreateCompanionBuilder =
+    CharacterCanonicalScopesCompanion Function({
+      required String characterId,
+      Value<String?> identity,
+      Value<String?> baseVoice,
+      Value<String?> baseVisualProfile,
+      Value<String?> baseRelationReferences,
+      Value<int> rowid,
+    });
+typedef $$CharacterCanonicalScopesTableUpdateCompanionBuilder =
+    CharacterCanonicalScopesCompanion Function({
+      Value<String> characterId,
+      Value<String?> identity,
+      Value<String?> baseVoice,
+      Value<String?> baseVisualProfile,
+      Value<String?> baseRelationReferences,
+      Value<int> rowid,
+    });
+
+class $$CharacterCanonicalScopesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CharacterCanonicalScopesTable> {
+  $$CharacterCanonicalScopesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get identity => $composableBuilder(
+    column: $table.identity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get baseVoice => $composableBuilder(
+    column: $table.baseVoice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get baseVisualProfile => $composableBuilder(
+    column: $table.baseVisualProfile,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get baseRelationReferences => $composableBuilder(
+    column: $table.baseRelationReferences,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CharacterCanonicalScopesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CharacterCanonicalScopesTable> {
+  $$CharacterCanonicalScopesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get identity => $composableBuilder(
+    column: $table.identity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get baseVoice => $composableBuilder(
+    column: $table.baseVoice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get baseVisualProfile => $composableBuilder(
+    column: $table.baseVisualProfile,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get baseRelationReferences => $composableBuilder(
+    column: $table.baseRelationReferences,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CharacterCanonicalScopesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CharacterCanonicalScopesTable> {
+  $$CharacterCanonicalScopesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get identity =>
+      $composableBuilder(column: $table.identity, builder: (column) => column);
+
+  GeneratedColumn<String> get baseVoice =>
+      $composableBuilder(column: $table.baseVoice, builder: (column) => column);
+
+  GeneratedColumn<String> get baseVisualProfile => $composableBuilder(
+    column: $table.baseVisualProfile,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get baseRelationReferences => $composableBuilder(
+    column: $table.baseRelationReferences,
+    builder: (column) => column,
+  );
+}
+
+class $$CharacterCanonicalScopesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CharacterCanonicalScopesTable,
+          CharacterCanonicalScope,
+          $$CharacterCanonicalScopesTableFilterComposer,
+          $$CharacterCanonicalScopesTableOrderingComposer,
+          $$CharacterCanonicalScopesTableAnnotationComposer,
+          $$CharacterCanonicalScopesTableCreateCompanionBuilder,
+          $$CharacterCanonicalScopesTableUpdateCompanionBuilder,
+          (
+            CharacterCanonicalScope,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CharacterCanonicalScopesTable,
+              CharacterCanonicalScope
+            >,
+          ),
+          CharacterCanonicalScope,
+          PrefetchHooks Function()
+        > {
+  $$CharacterCanonicalScopesTableTableManager(
+    _$ProjectDatabase db,
+    $CharacterCanonicalScopesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CharacterCanonicalScopesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CharacterCanonicalScopesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CharacterCanonicalScopesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> characterId = const Value.absent(),
+                Value<String?> identity = const Value.absent(),
+                Value<String?> baseVoice = const Value.absent(),
+                Value<String?> baseVisualProfile = const Value.absent(),
+                Value<String?> baseRelationReferences = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterCanonicalScopesCompanion(
+                characterId: characterId,
+                identity: identity,
+                baseVoice: baseVoice,
+                baseVisualProfile: baseVisualProfile,
+                baseRelationReferences: baseRelationReferences,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String characterId,
+                Value<String?> identity = const Value.absent(),
+                Value<String?> baseVoice = const Value.absent(),
+                Value<String?> baseVisualProfile = const Value.absent(),
+                Value<String?> baseRelationReferences = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterCanonicalScopesCompanion.insert(
+                characterId: characterId,
+                identity: identity,
+                baseVoice: baseVoice,
+                baseVisualProfile: baseVisualProfile,
+                baseRelationReferences: baseRelationReferences,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CharacterCanonicalScopesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CharacterCanonicalScopesTable,
+      CharacterCanonicalScope,
+      $$CharacterCanonicalScopesTableFilterComposer,
+      $$CharacterCanonicalScopesTableOrderingComposer,
+      $$CharacterCanonicalScopesTableAnnotationComposer,
+      $$CharacterCanonicalScopesTableCreateCompanionBuilder,
+      $$CharacterCanonicalScopesTableUpdateCompanionBuilder,
+      (
+        CharacterCanonicalScope,
+        BaseReferences<
+          _$ProjectDatabase,
+          $CharacterCanonicalScopesTable,
+          CharacterCanonicalScope
+        >,
+      ),
+      CharacterCanonicalScope,
+      PrefetchHooks Function()
+    >;
+typedef $$CharacterUniverseTimelineOverridesTableCreateCompanionBuilder =
+    CharacterUniverseTimelineOverridesCompanion Function({
+      required String characterId,
+      Value<String?> alternateHistory,
+      Value<String?> alternateRelationships,
+      Value<String?> eraSpecificFacts,
+      Value<int> rowid,
+    });
+typedef $$CharacterUniverseTimelineOverridesTableUpdateCompanionBuilder =
+    CharacterUniverseTimelineOverridesCompanion Function({
+      Value<String> characterId,
+      Value<String?> alternateHistory,
+      Value<String?> alternateRelationships,
+      Value<String?> eraSpecificFacts,
+      Value<int> rowid,
+    });
+
+class $$CharacterUniverseTimelineOverridesTableFilterComposer
+    extends
+        Composer<_$ProjectDatabase, $CharacterUniverseTimelineOverridesTable> {
+  $$CharacterUniverseTimelineOverridesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get alternateHistory => $composableBuilder(
+    column: $table.alternateHistory,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get alternateRelationships => $composableBuilder(
+    column: $table.alternateRelationships,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get eraSpecificFacts => $composableBuilder(
+    column: $table.eraSpecificFacts,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CharacterUniverseTimelineOverridesTableOrderingComposer
+    extends
+        Composer<_$ProjectDatabase, $CharacterUniverseTimelineOverridesTable> {
+  $$CharacterUniverseTimelineOverridesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get alternateHistory => $composableBuilder(
+    column: $table.alternateHistory,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get alternateRelationships => $composableBuilder(
+    column: $table.alternateRelationships,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get eraSpecificFacts => $composableBuilder(
+    column: $table.eraSpecificFacts,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CharacterUniverseTimelineOverridesTableAnnotationComposer
+    extends
+        Composer<_$ProjectDatabase, $CharacterUniverseTimelineOverridesTable> {
+  $$CharacterUniverseTimelineOverridesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get alternateHistory => $composableBuilder(
+    column: $table.alternateHistory,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get alternateRelationships => $composableBuilder(
+    column: $table.alternateRelationships,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get eraSpecificFacts => $composableBuilder(
+    column: $table.eraSpecificFacts,
+    builder: (column) => column,
+  );
+}
+
+class $$CharacterUniverseTimelineOverridesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CharacterUniverseTimelineOverridesTable,
+          CharacterUniverseTimelineOverride,
+          $$CharacterUniverseTimelineOverridesTableFilterComposer,
+          $$CharacterUniverseTimelineOverridesTableOrderingComposer,
+          $$CharacterUniverseTimelineOverridesTableAnnotationComposer,
+          $$CharacterUniverseTimelineOverridesTableCreateCompanionBuilder,
+          $$CharacterUniverseTimelineOverridesTableUpdateCompanionBuilder,
+          (
+            CharacterUniverseTimelineOverride,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CharacterUniverseTimelineOverridesTable,
+              CharacterUniverseTimelineOverride
+            >,
+          ),
+          CharacterUniverseTimelineOverride,
+          PrefetchHooks Function()
+        > {
+  $$CharacterUniverseTimelineOverridesTableTableManager(
+    _$ProjectDatabase db,
+    $CharacterUniverseTimelineOverridesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CharacterUniverseTimelineOverridesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CharacterUniverseTimelineOverridesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CharacterUniverseTimelineOverridesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> characterId = const Value.absent(),
+                Value<String?> alternateHistory = const Value.absent(),
+                Value<String?> alternateRelationships = const Value.absent(),
+                Value<String?> eraSpecificFacts = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterUniverseTimelineOverridesCompanion(
+                characterId: characterId,
+                alternateHistory: alternateHistory,
+                alternateRelationships: alternateRelationships,
+                eraSpecificFacts: eraSpecificFacts,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String characterId,
+                Value<String?> alternateHistory = const Value.absent(),
+                Value<String?> alternateRelationships = const Value.absent(),
+                Value<String?> eraSpecificFacts = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterUniverseTimelineOverridesCompanion.insert(
+                characterId: characterId,
+                alternateHistory: alternateHistory,
+                alternateRelationships: alternateRelationships,
+                eraSpecificFacts: eraSpecificFacts,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CharacterUniverseTimelineOverridesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CharacterUniverseTimelineOverridesTable,
+      CharacterUniverseTimelineOverride,
+      $$CharacterUniverseTimelineOverridesTableFilterComposer,
+      $$CharacterUniverseTimelineOverridesTableOrderingComposer,
+      $$CharacterUniverseTimelineOverridesTableAnnotationComposer,
+      $$CharacterUniverseTimelineOverridesTableCreateCompanionBuilder,
+      $$CharacterUniverseTimelineOverridesTableUpdateCompanionBuilder,
+      (
+        CharacterUniverseTimelineOverride,
+        BaseReferences<
+          _$ProjectDatabase,
+          $CharacterUniverseTimelineOverridesTable,
+          CharacterUniverseTimelineOverride
+        >,
+      ),
+      CharacterUniverseTimelineOverride,
+      PrefetchHooks Function()
+    >;
+typedef $$CharacterNovelStatesTableCreateCompanionBuilder =
+    CharacterNovelStatesCompanion Function({
+      required String characterId,
+      Value<String?> role,
+      Value<String?> arc,
+      Value<String?> currentLocation,
+      Value<String?> currentAge,
+      Value<String?> currentStatus,
+      Value<String?> scenePov,
+      Value<String?> novelRelationState,
+      Value<int> rowid,
+    });
+typedef $$CharacterNovelStatesTableUpdateCompanionBuilder =
+    CharacterNovelStatesCompanion Function({
+      Value<String> characterId,
+      Value<String?> role,
+      Value<String?> arc,
+      Value<String?> currentLocation,
+      Value<String?> currentAge,
+      Value<String?> currentStatus,
+      Value<String?> scenePov,
+      Value<String?> novelRelationState,
+      Value<int> rowid,
+    });
+
+class $$CharacterNovelStatesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CharacterNovelStatesTable> {
+  $$CharacterNovelStatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get arc => $composableBuilder(
+    column: $table.arc,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currentLocation => $composableBuilder(
+    column: $table.currentLocation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currentAge => $composableBuilder(
+    column: $table.currentAge,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get currentStatus => $composableBuilder(
+    column: $table.currentStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get scenePov => $composableBuilder(
+    column: $table.scenePov,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get novelRelationState => $composableBuilder(
+    column: $table.novelRelationState,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CharacterNovelStatesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CharacterNovelStatesTable> {
+  $$CharacterNovelStatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get arc => $composableBuilder(
+    column: $table.arc,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currentLocation => $composableBuilder(
+    column: $table.currentLocation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currentAge => $composableBuilder(
+    column: $table.currentAge,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get currentStatus => $composableBuilder(
+    column: $table.currentStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get scenePov => $composableBuilder(
+    column: $table.scenePov,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get novelRelationState => $composableBuilder(
+    column: $table.novelRelationState,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CharacterNovelStatesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CharacterNovelStatesTable> {
+  $$CharacterNovelStatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get role =>
+      $composableBuilder(column: $table.role, builder: (column) => column);
+
+  GeneratedColumn<String> get arc =>
+      $composableBuilder(column: $table.arc, builder: (column) => column);
+
+  GeneratedColumn<String> get currentLocation => $composableBuilder(
+    column: $table.currentLocation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get currentAge => $composableBuilder(
+    column: $table.currentAge,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get currentStatus => $composableBuilder(
+    column: $table.currentStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get scenePov =>
+      $composableBuilder(column: $table.scenePov, builder: (column) => column);
+
+  GeneratedColumn<String> get novelRelationState => $composableBuilder(
+    column: $table.novelRelationState,
+    builder: (column) => column,
+  );
+}
+
+class $$CharacterNovelStatesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CharacterNovelStatesTable,
+          CharacterNovelState,
+          $$CharacterNovelStatesTableFilterComposer,
+          $$CharacterNovelStatesTableOrderingComposer,
+          $$CharacterNovelStatesTableAnnotationComposer,
+          $$CharacterNovelStatesTableCreateCompanionBuilder,
+          $$CharacterNovelStatesTableUpdateCompanionBuilder,
+          (
+            CharacterNovelState,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CharacterNovelStatesTable,
+              CharacterNovelState
+            >,
+          ),
+          CharacterNovelState,
+          PrefetchHooks Function()
+        > {
+  $$CharacterNovelStatesTableTableManager(
+    _$ProjectDatabase db,
+    $CharacterNovelStatesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CharacterNovelStatesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CharacterNovelStatesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CharacterNovelStatesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> characterId = const Value.absent(),
+                Value<String?> role = const Value.absent(),
+                Value<String?> arc = const Value.absent(),
+                Value<String?> currentLocation = const Value.absent(),
+                Value<String?> currentAge = const Value.absent(),
+                Value<String?> currentStatus = const Value.absent(),
+                Value<String?> scenePov = const Value.absent(),
+                Value<String?> novelRelationState = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterNovelStatesCompanion(
+                characterId: characterId,
+                role: role,
+                arc: arc,
+                currentLocation: currentLocation,
+                currentAge: currentAge,
+                currentStatus: currentStatus,
+                scenePov: scenePov,
+                novelRelationState: novelRelationState,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String characterId,
+                Value<String?> role = const Value.absent(),
+                Value<String?> arc = const Value.absent(),
+                Value<String?> currentLocation = const Value.absent(),
+                Value<String?> currentAge = const Value.absent(),
+                Value<String?> currentStatus = const Value.absent(),
+                Value<String?> scenePov = const Value.absent(),
+                Value<String?> novelRelationState = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterNovelStatesCompanion.insert(
+                characterId: characterId,
+                role: role,
+                arc: arc,
+                currentLocation: currentLocation,
+                currentAge: currentAge,
+                currentStatus: currentStatus,
+                scenePov: scenePov,
+                novelRelationState: novelRelationState,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CharacterNovelStatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CharacterNovelStatesTable,
+      CharacterNovelState,
+      $$CharacterNovelStatesTableFilterComposer,
+      $$CharacterNovelStatesTableOrderingComposer,
+      $$CharacterNovelStatesTableAnnotationComposer,
+      $$CharacterNovelStatesTableCreateCompanionBuilder,
+      $$CharacterNovelStatesTableUpdateCompanionBuilder,
+      (
+        CharacterNovelState,
+        BaseReferences<
+          _$ProjectDatabase,
+          $CharacterNovelStatesTable,
+          CharacterNovelState
+        >,
+      ),
+      CharacterNovelState,
       PrefetchHooks Function()
     >;
 typedef $$AssetRelationsTableCreateCompanionBuilder =
@@ -110574,6 +112646,19 @@ class $ProjectDatabaseManager {
         _db,
         _db.characterModeReferences,
       );
+  $$CharacterCanonicalScopesTableTableManager get characterCanonicalScopes =>
+      $$CharacterCanonicalScopesTableTableManager(
+        _db,
+        _db.characterCanonicalScopes,
+      );
+  $$CharacterUniverseTimelineOverridesTableTableManager
+  get characterUniverseTimelineOverrides =>
+      $$CharacterUniverseTimelineOverridesTableTableManager(
+        _db,
+        _db.characterUniverseTimelineOverrides,
+      );
+  $$CharacterNovelStatesTableTableManager get characterNovelStates =>
+      $$CharacterNovelStatesTableTableManager(_db, _db.characterNovelStates);
   $$AssetRelationsTableTableManager get assetRelations =>
       $$AssetRelationsTableTableManager(_db, _db.assetRelations);
   $$WardrobesTableTableManager get wardrobes =>

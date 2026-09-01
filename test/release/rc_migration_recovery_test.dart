@@ -39,24 +39,33 @@ void main() {
     // v58 added characters.voice via addColumn; strip it so the rewind is
     // a faithful pre-58 state (the 57->58 block re-adds it on migration).
     await rewound.customStatement('ALTER TABLE characters DROP COLUMN voice');
+    // v59 added the three character scope layer tables; drop them too so
+    // the 58->59 block re-creates them on migration.
+    await rewound.customStatement(
+      'DROP TABLE IF EXISTS character_canonical_scopes',
+    );
+    await rewound.customStatement(
+      'DROP TABLE IF EXISTS character_universe_timeline_overrides',
+    );
+    await rewound.customStatement('DROP TABLE IF EXISTS character_novel_states');
     await rewound.customStatement('PRAGMA user_version = 53');
     await rewound.close();
   }
 
   group('105.10 migration matrix', () {
-    test('fresh RC install creates v58 directly', () async {
+    test('fresh RC install creates v59 directly', () async {
       final database = ProjectDatabase(NativeDatabase(dbFile()));
       await database.customSelect('SELECT 1').get();
-      expect(ProjectDatabase.currentSchemaVersion, 58);
+      expect(ProjectDatabase.currentSchemaVersion, 59);
       final version = await database
           .customSelect('PRAGMA user_version')
           .getSingle();
-      expect(version.data['user_version'], 58);
+      expect(version.data['user_version'], 59);
       await database.close();
     });
 
     test('beta_1_to_rc_1 path: opening an up-to-date DB is a no-op', () async {
-      // Build once (beta state == same schema 58), reopen, verify intact.
+      // Build once (beta state == same schema 59), reopen, verify intact.
       var database = ProjectDatabase(NativeDatabase(dbFile()));
       await database.customSelect('SELECT 1').get();
       await database.close();
@@ -65,12 +74,12 @@ void main() {
       final version = await database
           .customSelect('PRAGMA user_version')
           .getSingle();
-      expect(version.data['user_version'], 58);
+      expect(version.data['user_version'], 59);
       await database.close();
     });
 
     test(
-      'v1.0.x-era v53 database upgrades to v58 with all four waves',
+      'v1.0.x-era v53 database upgrades to v59 with all five waves',
       () async {
         await seedV53();
         final database = ProjectDatabase(NativeDatabase(dbFile()));
@@ -88,10 +97,15 @@ void main() {
             'workflow_definitions', // v56
             'workflow_run_records', // v56
             'scene_draft_snapshots', // v57
+            'character_canonical_scopes', // v59
+            'character_universe_timeline_overrides', // v59
+            'character_novel_states', // v59
           ]),
         );
         // v58 wave: the migrated database carries the new canonical
         // characters.voice column.
+        // v59 wave: the migrated database carries the three character scope
+        // layer tables.
         final voiceColumns = await database
             .customSelect("PRAGMA table_info(characters)")
             .get();
@@ -99,7 +113,7 @@ void main() {
         final version = await database
             .customSelect('PRAGMA user_version')
             .getSingle();
-        expect(version.data['user_version'], 58);
+        expect(version.data['user_version'], 59);
         await database.close();
       },
     );

@@ -5,13 +5,19 @@ import 'package:path/path.dart' as p;
 
 import '../../../database/project/daos/character_dao.dart';
 import '../../../database/project/project_database.dart'
-    hide CharacterIdentityProfile, CharacterReference;
+    hide
+        CharacterIdentityProfile,
+        CharacterReference,
+        CharacterCanonicalScope,
+        CharacterUniverseTimelineOverride,
+        CharacterNovelState;
 import '../../../core/persistence/project_paths.dart';
 import '../application/create_character_service.dart';
 import '../domain/character_model.dart';
 import '../domain/character_repository.dart';
 import '../domain/character_identity_profile.dart';
 import '../domain/character_reference.dart';
+import '../domain/character_scope_layers.dart';
 
 class CharacterRepositoryImpl implements CharacterRepository {
   CharacterRepositoryImpl({
@@ -96,6 +102,7 @@ class CharacterRepositoryImpl implements CharacterRepository {
   Future<void> deleteCharacter(String id) async {
     await database.transaction(() async {
       await _dao.removeCharacterReferences(id);
+      await _dao.removeCharacterScopeRows(id);
       await database.characterModeDao.removeCharacterModes(id);
       await database.assetDao.removeAssetData(id);
       await (database.delete(
@@ -212,4 +219,77 @@ class CharacterRepositoryImpl implements CharacterRepository {
     skin: row.skin,
     voice: row.voice,
   );
+
+  @override
+  Future<Map<CharacterScopeLayer, CharacterScopeState>> getScopeStates(
+    String characterId,
+  ) async {
+    final canonicalRow = await _dao.getCanonicalScope(characterId);
+    final universeRow = await _dao.getUniverseTimelineScope(characterId);
+    final novelRow = await _dao.getNovelScope(characterId);
+    return {
+      CharacterScopeLayer.canonical: CharacterScopeState(
+        identity: canonicalRow?.identity,
+        baseVoice: canonicalRow?.baseVoice,
+        baseVisualProfile: canonicalRow?.baseVisualProfile,
+        baseRelationReferences: canonicalRow?.baseRelationReferences,
+      ),
+      CharacterScopeLayer.universeTimeline: CharacterScopeState(
+        alternateHistory: universeRow?.alternateHistory,
+        alternateRelationships: universeRow?.alternateRelationships,
+        eraSpecificFacts: universeRow?.eraSpecificFacts,
+      ),
+      CharacterScopeLayer.novelSpecific: CharacterScopeState(
+        role: novelRow?.role,
+        arc: novelRow?.arc,
+        currentLocation: novelRow?.currentLocation,
+        currentAge: novelRow?.currentAge,
+        currentStatus: novelRow?.currentStatus,
+        scenePov: novelRow?.scenePov,
+        novelRelationState: novelRow?.novelRelationState,
+      ),
+    };
+  }
+
+  @override
+  Future<void> updateScopeState(
+    String characterId,
+    CharacterScopeLayer layer,
+    CharacterScopeState state,
+  ) async {
+    switch (layer) {
+      case CharacterScopeLayer.canonical:
+        await _dao.upsertCanonicalScope(
+          CharacterCanonicalScopesCompanion.insert(
+            characterId: characterId,
+            identity: Value(state.identity),
+            baseVoice: Value(state.baseVoice),
+            baseVisualProfile: Value(state.baseVisualProfile),
+            baseRelationReferences: Value(state.baseRelationReferences),
+          ),
+        );
+      case CharacterScopeLayer.universeTimeline:
+        await _dao.upsertUniverseTimelineScope(
+          CharacterUniverseTimelineOverridesCompanion.insert(
+            characterId: characterId,
+            alternateHistory: Value(state.alternateHistory),
+            alternateRelationships: Value(state.alternateRelationships),
+            eraSpecificFacts: Value(state.eraSpecificFacts),
+          ),
+        );
+      case CharacterScopeLayer.novelSpecific:
+        await _dao.upsertNovelScope(
+          CharacterNovelStatesCompanion.insert(
+            characterId: characterId,
+            role: Value(state.role),
+            arc: Value(state.arc),
+            currentLocation: Value(state.currentLocation),
+            currentAge: Value(state.currentAge),
+            currentStatus: Value(state.currentStatus),
+            scenePov: Value(state.scenePov),
+            novelRelationState: Value(state.novelRelationState),
+          ),
+        );
+    }
+  }
 }

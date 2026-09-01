@@ -8,6 +8,7 @@ import 'tables/character_modes.dart';
 import 'tables/character_loadout_entries.dart';
 import 'tables/character_mode_identity_overrides.dart';
 import 'tables/character_mode_references.dart';
+import 'tables/character_scope_layers.dart';
 import 'tables/environments.dart';
 import 'tables/environment_zones.dart';
 import 'tables/environment_architectures.dart';
@@ -156,6 +157,9 @@ class ProjectMetadata extends Table {
     CharacterLoadoutEntries,
     CharacterModeIdentityOverrides,
     CharacterModeReferences,
+    CharacterCanonicalScopes,
+    CharacterUniverseTimelineOverrides,
+    CharacterNovelStates,
     AssetRelations,
     Wardrobes,
     WardrobeComponents,
@@ -337,7 +341,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 58;
+  static const currentSchemaVersion = 59;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -665,6 +669,11 @@ class ProjectDatabase extends _$ProjectDatabase {
       }
       if (from < 58) {
         await m.addColumn(characters, characters.voice);
+      }
+      if (from < 59) {
+        await m.createTable(characterCanonicalScopes);
+        await m.createTable(characterUniverseTimelineOverrides);
+        await m.createTable(characterNovelStates);
       }
     },
   );

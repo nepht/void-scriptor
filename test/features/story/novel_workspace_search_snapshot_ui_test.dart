@@ -3,6 +3,7 @@ import 'package:drift/drift.dart' show QueryExecutor;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/database/project/project_database.dart';
 import 'package:void_scriptor/features/story/data/story_repository_impl.dart';
+import 'package:void_scriptor/features/character/domain/character_quick_ref.dart';
 import 'package:void_scriptor/features/story/domain/draft_snapshots.dart';
 import 'package:void_scriptor/features/story/domain/story_model.dart';
 import 'package:void_scriptor/features/story/presentation/story_workspace_screen.dart';
@@ -269,6 +270,13 @@ class _FakeStoryRepository extends StoryRepositoryImpl {
     capturedIds.add(id);
     return id;
   }
+
+  /// Step 145.25 menambah muat quick reference pada tap scene; fake UI
+  /// ini memodelkan hasil kosong tanpa menyentuh executor Drift.
+  @override
+  Future<List<CharacterQuickRef>> quickReferenceForScene(
+    String sceneId,
+  ) async => const <CharacterQuickRef>[];
 
   @override
   Future<List<SceneDraftSnapshot>> getSceneDraftSnapshots(

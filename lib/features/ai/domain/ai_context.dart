@@ -1,3 +1,5 @@
+import '../../character/domain/character_quick_ref.dart';
+
 class AiContext {
   const AiContext({
     required this.projectId,
@@ -45,6 +47,7 @@ class AiCharacterContext {
     this.weaponDescription = '',
     this.preservationRules = const [],
     this.referenceBundle,
+    this.quickRef,
   });
   final String characterId;
   final String name;
@@ -55,6 +58,10 @@ class AiCharacterContext {
   final String weaponDescription;
   final List<String> preservationRules;
   final AiReferenceBundle? referenceBundle;
+
+  /// Kartu ringkas kanonik karakter (Step 145.25) untuk propagasi
+  /// quick reference ke prompt AI.
+  final CharacterQuickRef? quickRef;
 }
 
 class AiReferenceBundle {

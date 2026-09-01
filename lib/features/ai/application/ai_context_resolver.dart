@@ -7,6 +7,8 @@ import '../../bible/application/canon_prompt_context.dart';
 import '../../bible/application/relevant_canon_context_resolver.dart';
 import '../../assets/domain/asset_type.dart';
 import '../../scene_assets/application/scene_asset_instance_repository.dart';
+import '../../story/data/story_repository_impl.dart';
+import '../../character/domain/character_quick_ref.dart';
 import 'ai_scene_asset_context_resolver.dart' as production;
 
 class AiContextResolver {
@@ -35,6 +37,7 @@ class AiContextResolver {
     );
     final sceneCharacters = await database.storyDao.getSceneCharacters(sceneId);
     final characters = <AiCharacterContext>[];
+    final quickRefs = await _quickReferences(sceneId);
     for (final sceneCharacter in sceneCharacters) {
       final character = await database.characterDao.getCharacter(
         sceneCharacter.characterId,
@@ -103,6 +106,7 @@ class AiContextResolver {
                 .toList(growable: false),
             lockInstructions: referenceBundle.promptInstructions,
           ),
+          quickRef: quickRefs.firstOrNull,
         ),
       );
     }
@@ -202,6 +206,13 @@ class AiContextResolver {
         )
         .toList(growable: false);
   }
+
+  /// Quick reference kanonik (145.25): daftar CharacterQuickRef scene.
+  Future<List<CharacterQuickRef>> _quickReferences(String sceneId) =>
+      StoryRepositoryImpl(
+        database: database,
+        projectId: '',
+      ).quickReferenceForScene(sceneId);
 
   String _identityDescription(dynamic character) => [
     character.biography,

@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import '../../../database/project/project_database.dart';
 import '../domain/story_model.dart';
 import '../domain/draft_snapshots.dart';
+import '../../character/domain/character_quick_ref.dart';
 
 class StoryHierarchy {
   const StoryHierarchy({
@@ -221,6 +222,45 @@ class StoryRepositoryImpl {
       }
     }
     return matches.values.toList(growable: false);
+  }
+
+  /// Quick reference karakter pada suatu adegan (Step 145.25): fakta
+  /// profil canon dari Characters + notes identitas + role keanggotaan
+  /// scene, dirangkai jadi kartu ringkas per karakter.
+  Future<List<CharacterQuickRef>> quickReferenceForScene(String sceneId) async {
+    final members = await database.storyDao.getSceneCharacters(sceneId);
+    final result = <CharacterQuickRef>[];
+    for (final member in members) {
+      final character = await database.characterDao.getCharacter(
+        member.characterId,
+      );
+      if (character == null) continue;
+      final identity = await database.characterDao.getIdentity(
+        character.assetId,
+      );
+      final rows = <String>[
+        character.biography,
+        character.personality,
+        if (character.gender.isNotEmpty) 'Gender: ${character.gender}',
+        if (character.age != null) 'Age: ${character.age}',
+        if (character.heightCm != null) 'Height: ${character.heightCm} cm',
+        'Hair: ${character.hair}',
+        'Eyes: ${character.eyes}',
+        'Skin: ${character.skin}',
+        if (identity != null && identity.notes.trim().isNotEmpty)
+          identity.notes.trim(),
+      ].where((row) => row.trim().isNotEmpty).toList(growable: false);
+      result.add(
+        CharacterQuickRef(
+          characterId: character.assetId,
+          name: character.displayName,
+          alias: character.alias.isEmpty ? null : character.alias,
+          compactDescription: rows.join('\n'),
+          role: member.role,
+        ),
+      );
+    }
+    return result;
   }
 
   /// Snapshot persistence draft (Step 145.24) — kontrak DraftSnapshotStore.

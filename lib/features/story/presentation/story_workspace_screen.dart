@@ -11,6 +11,7 @@ import '../application/story_markdown_exporter.dart';
 import '../domain/lore_link_suggester.dart';
 
 import '../data/story_repository_impl.dart';
+import '../../character/domain/character_quick_ref.dart';
 import 'package:void_scriptor/database/project/project_database.dart'
     show SceneDraftSnapshot;
 import '../../workspaces/application/workspace_projection_cache.dart';
@@ -98,6 +99,10 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   /// terpilih. Label snapshot manual diisi lewat field terpisah; restore
   /// selalu lewat repository.restoreSceneDraftSnapshot.
   List<SceneDraftSnapshot> _sceneSnapshots = const [];
+
+  /// Step 145.25 Character Workspace Core: kartu quick reference kanonik
+  /// karakter scene terpilih, dimuat lewat repository.quickReferenceForScene.
+  List<CharacterQuickRef> _sceneQuickRefs = const [];
   String _restoringSnapshotId = '';
 
   @override
@@ -560,6 +565,38 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
 
   /// Step 145.24: panel snapshot scene terpilih — capture manual berlabel,
   /// daftar snapshot, dan restore per baris (backup otomatis di repository).
+  /// Step 145.25: panel quick reference karakter scene terpilih.
+  Widget _buildQuickRefs(VoidPalette p) {
+    final sceneId = _selectedSceneId;
+    if (sceneId == null) {
+      return const Text('Pilih scene untuk melihat quick reference karakter.');
+    }
+    if (_sceneQuickRefs.isEmpty) {
+      return Text(
+        'Belum ada karakter pada scene ini.',
+        style: TextStyle(color: p.textSecondary),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final ref in _sceneQuickRefs)
+          ListTile(
+            dense: true,
+            leading: const Icon(Icons.person_outline),
+            title: Text(ref.name, style: TextStyle(color: p.textPrimary)),
+            subtitle: Text(
+              ref.compactDescription,
+              style: TextStyle(color: p.textSecondary),
+              maxLines: 6,
+              overflow: TextOverflow.ellipsis,
+            ),
+            trailing: Text(ref.role, style: TextStyle(color: p.textSecondary)),
+          ),
+      ],
+    );
+  }
+
   Widget _buildSnapshots(VoidPalette p) {
     final repository = widget.repository;
     final sceneId = _selectedSceneId;
@@ -654,9 +691,11 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                     _selectedSceneId = scene.id;
                     _selectedSceneTitle = scene.title;
                     _sceneSnapshots = const [];
+                    _sceneQuickRefs = const [];
                   });
                   _loadDraftFor(scene.id);
                   _loadSnapshotsFor(scene.id);
+                  _loadQuickRefsFor(scene.id);
                 },
               ),
             );
@@ -675,6 +714,15 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     if (!mounted) return;
     _draft.value = TextEditingValue(text: content ?? '');
     setState(() => _updateWordCount(content ?? ''));
+  }
+
+  /// Step 145.25: muat kartu quick reference karakter scene terpilih.
+  Future<void> _loadQuickRefsFor(String sceneId) async {
+    final repository = widget.repository;
+    if (repository == null) return;
+    final quickRefs = await repository.quickReferenceForScene(sceneId);
+    if (!mounted) return;
+    setState(() => _sceneQuickRefs = quickRefs);
   }
 
   /// Step 145.24: muat ulang daftar snapshot scene terpilih.
@@ -982,9 +1030,11 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                                 _selectedSceneId = result.sceneId;
                                 _selectedSceneTitle = result.sceneTitle;
                                 _sceneSnapshots = const [];
+                                _sceneQuickRefs = const [];
                               });
                               _loadDraftFor(result.sceneId);
                               _loadSnapshotsFor(result.sceneId);
+                              _loadQuickRefsFor(result.sceneId);
                             },
                           ),
                     ],
@@ -993,6 +1043,8 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
               ),
               const SizedBox(height: 12),
               _Panel(title: 'SCENE SNAPSHOTS', child: _buildSnapshots(p)),
+              const SizedBox(height: 12),
+              _Panel(title: 'CHARACTER QUICK REF', child: _buildQuickRefs(p)),
               const SizedBox(height: 12),
             ],
           ),

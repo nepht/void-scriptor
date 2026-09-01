@@ -70,7 +70,7 @@ Covered behaviors:
 | Word count | PARTIAL; no complete Core journey proof found in this batch |
 | Snapshot lifecycle | PARTIAL; draft/restart evidence exists, full user-controlled snapshot contract remains separate |
 | Search/lore journey | PARTIAL; domain/link components exist, full clean-device journey remains open |
-| Native Windows interaction | UNVERIFIABLE; driver previously returned `snapshot_id_required` |
+| Native Windows interaction | PARTIAL (2026-09-01 cron g): native window render proven via alive probe (exe launched, PowerShell `MainWindowHandle` valid + `Responding=True`, `CopyFromScreen` pixel stats 2093 unique colors / 112578 edge transitions on 1280x720 — non-empty render). Foreground input/click interaction remains UNVERIFIABLE from cron (no computer_use driver; previously returned `snapshot_id_required`) |
 | Full Core vertical journey | PENDING; depends on 145.30–145.35 and 145.41–145.44 |
 
 ## No-break conditions
@@ -239,3 +239,24 @@ Next: `145.25 Character Workspace Core`.
   build direkam di update ledger berikutnya.
 - Sisa gap 145.24: native interaction proof (cron tidak punya
   computer_use driver).
+
+## Update 2026-09-01 (cron g: native render proof)
+
+- Native alive probe pertama untuk 145.24 dieksekusi tanpa computer_use:
+build windows debug diluncurkan dari bash background (`exec
+./build/windows/x64/runner/Debug/void_scriptor.exe`), PowerShell
+`Get-Process` membaca PID, `MainWindowHandle` non-nol, `Responding=True`,
+judul window `void_scriptor`.
+- Render proof via `CopyFromScreen` pada window rect 1280x720:
+2093 unique colors + 112578 edge transitions = konten non-kosong
+(splash kosong biasanya <200 colors). Ini menutup boundary render,
+bukan interaction: tidak ada klik/typing native yang diklaim.
+- Aplikasi dimatikan bersih via `Stop-Process` setelah probe
+(tidak ada proses Flutter lain selama run; satu proses Flutter pada
+satu waktu dijaga: full test dan build dijalankan sekuensial).
+- Gates run ini: focused workspace+character+relations+selection 48 PASS;
+full suite 3239 PASS (~11.5 mnt); `flutter analyze` No issues (118.5s);
+`flutter build windows --debug` PASS (45.7s); `git diff --check` PASS;
+roadmap guard PASS pre-run.
+- Sisa gap 145.24: native interaction proof (butuh computer_use / sesi
+interaktif pengguna). Cron tidak boleh mengklaimnya.

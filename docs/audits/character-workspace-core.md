@@ -73,10 +73,10 @@ Covered behaviors:
 | Visual continuity and scoped override | VERIFIED by focused tests |
 | Moodboard/local reference handling | VERIFIED by focused tests |
 | Interview history/provenance | VERIFIED by focused tests |
-| Generic selection/resolver integration | PARTIAL; Character-local selection/controller evidence exists, complete clean-device route journey remains open |
+| Generic selection/resolver integration | VERIFIED by live-session journey (2026-09-01 cron g): `selectionProvider` mutation (production Explorer path, bukan override constructor) -> `WorkspaceResolver` -> `CharacterWorkspaceScreen` dengan data repository live (nama karakter dari DB, panel Character Identity) `test/features/workspace/workspace_resolver_character_journey_test.dart` 1 PASS; overview state saat selection null juga di-assert |
 | Character relations/linking | VERIFIED by live-session journey (2026-09-01 cron): create via mutation bus (`RelationCommand.create` -> `RelationRepositoryImpl`), `RelationDisplayService.forAsset` resolves label `uses` + target name `Void Dagger`, `RelationSection` renders inside `CharacterInspector` with live `projectSessionProvider`, repository delete resolves empty again — `test/features/relations/character_relations_journey_test.dart` 1 PASS (commit 1ce0f81) |
 | Quick reference across Story/Scene/AI context | VERIFIED at domain+AI+UI layers (2026-09-01 cron f): `CharacterQuickRef` domain (`lib/features/character/domain/character_quick_ref.dart`), `StoryRepositoryImpl.quickReferenceForScene` (canonical profile rows + identity notes + scene role; empty facts tidak bocor — kontrak baris eksak), `AiCharacterContext.quickRef` propagated by `AiContextResolver.resolveScene` (per-scene list, firstOrNull per character), Story Workspace panel `CHARACTER QUICK REF` loads on scene selection via repository (no dialog, no manual input). RED terverifikasi (quickReferenceForScene/quickRef/panel No element) -> GREEN: `test/features/story/character_quick_reference_test.dart` 1 PASS + `test/features/story/story_workspace_quick_ref_ui_test.dart` 1 PASS. Native Windows interaction tetap UNVERIFIABLE dari cron |
-| Native Windows interaction | UNVERIFIABLE; driver previously returned `snapshot_id_required` |
+| Native Windows interaction | PARTIAL (2026-09-01 cron g): native window render proven via alive probe (`MainWindowHandle` valid + `Responding=True` + CopyFromScreen pixel stats non-kosong); foreground input/click interaction tetap UNVERIFIABLE dari cron (no computer_use driver) |
 | Full Core vertical journey | PENDING; depends on remaining 145.30–145.35 and 145.41–145.44 contracts |
 
 ## No-break conditions
@@ -187,3 +187,29 @@ Current blockers remain: `145.19` dependency boundary, `145.20–145.25` partial
   build direkam di update ledger berikutnya.
 - Sisa gap 145.25: full shared resolver journey (clean-device route
   journey) dan native Windows interaction (UNVERIFIABLE dari cron).
+
+## Update 2026-09-01 (cron g: full shared resolver journey + native render proof)
+
+- Gap "full shared resolver journey" ditutup dengan journey test pada live
+session (real package + SQLite, bukan fake repository):
+`test/features/workspace/workspace_resolver_character_journey_test.dart`.
+- Journey: package dibuat via `ProjectPackageService`, session dibuka via
+`ProjectSessionManager`, karakter dibuat via `CharacterRepositoryImpl`,
+resolver dirender dengan `projectSessionProvider` override ke session live;
+overview state (`Novel Workspace`) di-assert saat selection null; lalu
+`selectionProvider.notifier.select(...)` dimutasi persis seperti jalur
+Explorer (bukan override selection controller) -> `WorkspaceResolver`
+me-render `CharacterWorkspaceScreen` dengan nama karakter dari database
+live + panel `Character Identity`. `tester.takeException()` null.
+- Test ini PASS pada percobaan pertama: perilaku production sudah benar;
+yang ditambahkan adalah bukti journey eksplisit (preseden: relations
+journey commit 1ce0f81). Tidak ada kode produksi yang diubah.
+- Native render proof: alive probe menemukan window dengan
+`MainWindowHandle` valid, `Responding=True`, pixel stats 2093 unique
+colors / 112578 edge transitions (1280x720) = render non-kosong.
+Interaction native (klik/typing) tetap UNVERIFIABLE dari cron.
+- Bukti: focused workspace+character+relations+selection 48 PASS;
+full suite 3239 PASS; `flutter analyze` No issues; windows debug build
+PASS (45.7s); `git diff --check` PASS.
+- Sisa gap 145.25: native Windows interaction (UNVERIFIABLE dari cron,
+butuh sesi interaktif/computer_use).

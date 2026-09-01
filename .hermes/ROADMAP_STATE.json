@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.26 Character Scope Layers VERIFIED (2026-09-02 cron: evidence-closure). Objective exact sprint_145.26 terbukti bukti eksekusi: contract test 14 PASS (discriminator 3 layer, ownership disjoint spec-exact, null=inherit, resolver precedence tanpa mutasi input, scoped command payload), persistence 5 PASS (schema 58->59 tiga tabel per layer, guarded migration, delete-safety, restart round-trip), command integration 3 PASS (UpdateCharacterScopeFieldCommand execute menulis merged state hanya layer target via repository, sibling preserved, non-owned ArgumentError pre-write, undo/redo field-scoped), source-scope display 2 PASS (characterScopeStatesProvider + CharacterScopeStatusCard chip layer berdata + baris efektif dari layer, production session path; RED ganda: card absent + RenderFlex overflow 28px pre-existing 390px, ModeSection pindah ke scroll area narrow). Gerbang: character suite 63 PASS, analyze No issues, full suite 3293 PASS / 1 FAIL (app_bootstrap_test konkuren 145.20, tidak disentuh), windows debug build PASS 28.0s, diff --check PASS, roadmap guard PASS pre-update. Native interaction UNVERIFIABLE (cron) - bukan acceptance item per presedens 145.24/145.25. Commits: 681023e, 91a98f4, 11de9de, 84e9b04 (feat) + ledger/state.",
+  "last_verified_step": "145.27 Core Worldbuilding Reduction PARTIAL with Factions editor UI closed (2026-09-02 cron, commit 3374abe). Factions row of the Core worldbuilding objective is now VERIFIED end-to-end: create/list/persistence (e286ca9) + editor UI (Project Bible FACTIONS section, ConsumerStatefulWidget over projectSessionProvider, create dialog via CreateFactionService, duplicate visible error, ref.listen session settle reload). Evidence: factions_editor_ui_test 4 PASS (RED verified), bible 36 PASS, route+bible 37 PASS, analyze No issues, full suite 3301 PASS / 1 FAIL (app_bootstrap_test concurrent 145.20, untouched), windows debug build PASS 29.1s, diff --check PASS, guard PASS pre+post. Remaining 145.27: Relationship Map contract, Lore Notes full contract (145.29), uniform route gating (concurrent-owned app_router.dart), user validation. Native interaction UNVERIFIABLE (cron).",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-02T15:05:00+07:00",
-  "updated_by": "nephthys cron: 145.27 Factions create/list/persistence slice landed (commit e286ca9, 4 PASS); 145.27 remains PARTIAL, pointer unchanged",
+  "updated_at": "2026-09-02T21:45:00+07:00",
+  "updated_by": "nephthys cron (next run): 145.27 Factions editor UI landed (commit 3374abe, 4 UI PASS); 145.27 remains PARTIAL, pointer unchanged",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

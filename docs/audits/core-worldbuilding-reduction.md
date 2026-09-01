@@ -48,7 +48,7 @@ Observed safeguards include:
 | Locations/Environment have live implementation/test evidence | VERIFIED |
 | Story/Lore has live implementation/test evidence | VERIFIED |
 | Timeline has live implementation/test evidence | PARTIAL; implementation/tests exist, complete Core journey remains open |
-| Factions have a complete Core editor/persistence journey | PARTIAL; persistence/create journey now proven (commit e286ca9: CreateFactionService + listForProject + restart persistence, 4 PASS); editor/UI journey remains open |
+| Factions have a complete Core editor/persistence journey | VERIFIED (2026-09-02 cron: editor UI closed, commit 3374abe); create/list/persistence (e286ca9) + editor UI journey (Project Bible FACTIONS section: live list, create dialog through CreateFactionService, duplicate-name visible error, narrow render) proven by 4 UI tests + 4 service tests |
 | Relationship Map has complete Core editor/persistence journey | PARTIAL; graph/relation seams exist, full UX contract remains open |
 | Lore Notes have complete rename/broken-link/keyboard journey | PARTIAL; domain/link seams exist, complete 145.29 contract remains open |
 | Non-Core capabilities are source-preserved | VERIFIED by live source inventory |
@@ -110,3 +110,34 @@ build PASS 29.1s, git diff --check PASS. Commit e286ca9.
 The Relationship Map and Lore Notes audit rows remain PARTIAL (Lore Notes
 full contract belongs to 145.29); uniform route gating remains PARTIAL and
 must not be repaired through the concurrently-owned app_router.dart.
+
+## Update 2026-09-02 (nephthys cron, Factions editor UI)
+
+The Factions editor UI gap is closed in the Project Bible workspace
+(commit 3374abe):
+
+- `ProjectBibleWorkspaceScreen` is now a `ConsumerStatefulWidget`; the new
+  `FACTIONS` section lists live project factions via
+  `FactionRepository.listForProject` on the active `projectSessionProvider`
+  session and reloads through `ref.listen` once the async session settles.
+- `Faksi Baru` opens a dialog that creates the faction through the same
+  `CreateFactionService` production path (blank name -> visible
+  "Nama tidak boleh kosong", duplicate name -> the StateError message inline);
+  success persists at the repository level, reloads the list, and shows a
+  snackbar.
+- Legacy `project_bible_workspace_test.dart` and
+  `test/app/project_bible_route_test.dart` now wrap in `ProviderScope`,
+  matching the production `main.dart` root scope.
+
+Evidence: `test/features/bible/factions_editor_ui_test.dart` 4 PASS (list
+journey, create journey incl. repository persistence re-check, duplicate
+rejection, 390px render without overflow); RED verified first (0 ChoiceChip
+Factions + empty state absent). bible suite 36 PASS, route+bible 37 PASS,
+`flutter analyze` No issues, full suite 3301 PASS / 1 FAIL
+(app_bootstrap_test, concurrent-owned 145.20, untouched), windows debug
+build PASS 29.1s, `git diff --check` PASS.
+
+Remaining 145.27 rows: Relationship Map contract, Lore Notes full contract
+(145.29), uniform route gating (concurrently-owned app_router.dart must not
+be touched from cron), user validation evidence. The step remains PARTIAL;
+the pointer stays 145.27.

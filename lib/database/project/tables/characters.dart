@@ -13,6 +13,7 @@ class Characters extends Table {
   TextColumn get hair => text().withDefault(const Constant(''))();
   TextColumn get eyes => text().withDefault(const Constant(''))();
   TextColumn get skin => text().withDefault(const Constant(''))();
+  TextColumn get voice => text().withDefault(const Constant(''))();
 
   @override
   Set<Column<Object>> get primaryKey => {assetId};

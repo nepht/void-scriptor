@@ -15,6 +15,7 @@ Map<String, Object?> characterToData(CharacterModel value) => {
   'hair': value.hair,
   'eyes': value.eyes,
   'skin': value.skin,
+  'voice': value.voice,
 };
 
 CharacterModel characterFromData(Map<String, Object?> value) => CharacterModel(
@@ -30,6 +31,7 @@ CharacterModel characterFromData(Map<String, Object?> value) => CharacterModel(
   hair: value['hair'] as String? ?? '',
   eyes: value['eyes'] as String? ?? '',
   skin: value['skin'] as String? ?? '',
+  voice: value['voice'] as String? ?? '',
 );
 
 class UpdateCharacterCommand extends BaseCommand {

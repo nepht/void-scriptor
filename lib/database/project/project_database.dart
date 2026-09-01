@@ -337,7 +337,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 57;
+  static const currentSchemaVersion = 58;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -662,6 +662,9 @@ class ProjectDatabase extends _$ProjectDatabase {
       }
       if (from < 57) {
         await m.createTable(sceneDraftSnapshots);
+      }
+      if (from < 58) {
+        await m.addColumn(characters, characters.voice);
       }
     },
   );

@@ -78,6 +78,7 @@ class CharacterRepositoryImpl implements CharacterRepository {
               hair: Value(character.hair),
               eyes: Value(character.eyes),
               skin: Value(character.skin),
+              voice: Value(character.voice),
             ),
           );
       await (database.update(
@@ -126,6 +127,7 @@ class CharacterRepositoryImpl implements CharacterRepository {
             bodyLock: row.bodyLock,
             colorLock: row.colorLock,
             outfitLock: row.outfitLock,
+            notes: row.notes,
           );
   }
 
@@ -139,6 +141,7 @@ class CharacterRepositoryImpl implements CharacterRepository {
           bodyLock: Value(profile.bodyLock),
           colorLock: Value(profile.colorLock),
           outfitLock: Value(profile.outfitLock),
+          notes: Value(profile.notes),
         ),
       );
 
@@ -207,5 +210,6 @@ class CharacterRepositoryImpl implements CharacterRepository {
     hair: row.hair,
     eyes: row.eyes,
     skin: row.skin,
+    voice: row.voice,
   );
 }

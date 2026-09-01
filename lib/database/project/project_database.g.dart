@@ -1256,6 +1256,16 @@ class $CharactersTable extends Characters
     requiredDuringInsert: false,
     defaultValue: const Constant(''),
   );
+  static const VerificationMeta _voiceMeta = const VerificationMeta('voice');
+  @override
+  late final GeneratedColumn<String> voice = GeneratedColumn<String>(
+    'voice',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     assetId,
@@ -1270,6 +1280,7 @@ class $CharactersTable extends Characters
     hair,
     eyes,
     skin,
+    voice,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1367,6 +1378,12 @@ class $CharactersTable extends Characters
         skin.isAcceptableOrUnknown(data['skin']!, _skinMeta),
       );
     }
+    if (data.containsKey('voice')) {
+      context.handle(
+        _voiceMeta,
+        voice.isAcceptableOrUnknown(data['voice']!, _voiceMeta),
+      );
+    }
     return context;
   }
 
@@ -1424,6 +1441,10 @@ class $CharactersTable extends Characters
         DriftSqlType.string,
         data['${effectivePrefix}skin'],
       )!,
+      voice: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}voice'],
+      )!,
     );
   }
 
@@ -1446,6 +1467,7 @@ class Character extends DataClass implements Insertable<Character> {
   final String hair;
   final String eyes;
   final String skin;
+  final String voice;
   const Character({
     required this.assetId,
     required this.projectId,
@@ -1459,6 +1481,7 @@ class Character extends DataClass implements Insertable<Character> {
     required this.hair,
     required this.eyes,
     required this.skin,
+    required this.voice,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1479,6 +1502,7 @@ class Character extends DataClass implements Insertable<Character> {
     map['hair'] = Variable<String>(hair);
     map['eyes'] = Variable<String>(eyes);
     map['skin'] = Variable<String>(skin);
+    map['voice'] = Variable<String>(voice);
     return map;
   }
 
@@ -1498,6 +1522,7 @@ class Character extends DataClass implements Insertable<Character> {
       hair: Value(hair),
       eyes: Value(eyes),
       skin: Value(skin),
+      voice: Value(voice),
     );
   }
 
@@ -1519,6 +1544,7 @@ class Character extends DataClass implements Insertable<Character> {
       hair: serializer.fromJson<String>(json['hair']),
       eyes: serializer.fromJson<String>(json['eyes']),
       skin: serializer.fromJson<String>(json['skin']),
+      voice: serializer.fromJson<String>(json['voice']),
     );
   }
   @override
@@ -1537,6 +1563,7 @@ class Character extends DataClass implements Insertable<Character> {
       'hair': serializer.toJson<String>(hair),
       'eyes': serializer.toJson<String>(eyes),
       'skin': serializer.toJson<String>(skin),
+      'voice': serializer.toJson<String>(voice),
     };
   }
 
@@ -1553,6 +1580,7 @@ class Character extends DataClass implements Insertable<Character> {
     String? hair,
     String? eyes,
     String? skin,
+    String? voice,
   }) => Character(
     assetId: assetId ?? this.assetId,
     projectId: projectId ?? this.projectId,
@@ -1566,6 +1594,7 @@ class Character extends DataClass implements Insertable<Character> {
     hair: hair ?? this.hair,
     eyes: eyes ?? this.eyes,
     skin: skin ?? this.skin,
+    voice: voice ?? this.voice,
   );
   Character copyWithCompanion(CharactersCompanion data) {
     return Character(
@@ -1585,6 +1614,7 @@ class Character extends DataClass implements Insertable<Character> {
       hair: data.hair.present ? data.hair.value : this.hair,
       eyes: data.eyes.present ? data.eyes.value : this.eyes,
       skin: data.skin.present ? data.skin.value : this.skin,
+      voice: data.voice.present ? data.voice.value : this.voice,
     );
   }
 
@@ -1602,7 +1632,8 @@ class Character extends DataClass implements Insertable<Character> {
           ..write('heightCm: $heightCm, ')
           ..write('hair: $hair, ')
           ..write('eyes: $eyes, ')
-          ..write('skin: $skin')
+          ..write('skin: $skin, ')
+          ..write('voice: $voice')
           ..write(')'))
         .toString();
   }
@@ -1621,6 +1652,7 @@ class Character extends DataClass implements Insertable<Character> {
     hair,
     eyes,
     skin,
+    voice,
   );
   @override
   bool operator ==(Object other) =>
@@ -1637,7 +1669,8 @@ class Character extends DataClass implements Insertable<Character> {
           other.heightCm == this.heightCm &&
           other.hair == this.hair &&
           other.eyes == this.eyes &&
-          other.skin == this.skin);
+          other.skin == this.skin &&
+          other.voice == this.voice);
 }
 
 class CharactersCompanion extends UpdateCompanion<Character> {
@@ -1653,6 +1686,7 @@ class CharactersCompanion extends UpdateCompanion<Character> {
   final Value<String> hair;
   final Value<String> eyes;
   final Value<String> skin;
+  final Value<String> voice;
   final Value<int> rowid;
   const CharactersCompanion({
     this.assetId = const Value.absent(),
@@ -1667,6 +1701,7 @@ class CharactersCompanion extends UpdateCompanion<Character> {
     this.hair = const Value.absent(),
     this.eyes = const Value.absent(),
     this.skin = const Value.absent(),
+    this.voice = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   CharactersCompanion.insert({
@@ -1682,6 +1717,7 @@ class CharactersCompanion extends UpdateCompanion<Character> {
     this.hair = const Value.absent(),
     this.eyes = const Value.absent(),
     this.skin = const Value.absent(),
+    this.voice = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : assetId = Value(assetId),
        projectId = Value(projectId),
@@ -1699,6 +1735,7 @@ class CharactersCompanion extends UpdateCompanion<Character> {
     Expression<String>? hair,
     Expression<String>? eyes,
     Expression<String>? skin,
+    Expression<String>? voice,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1714,6 +1751,7 @@ class CharactersCompanion extends UpdateCompanion<Character> {
       if (hair != null) 'hair': hair,
       if (eyes != null) 'eyes': eyes,
       if (skin != null) 'skin': skin,
+      if (voice != null) 'voice': voice,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1731,6 +1769,7 @@ class CharactersCompanion extends UpdateCompanion<Character> {
     Value<String>? hair,
     Value<String>? eyes,
     Value<String>? skin,
+    Value<String>? voice,
     Value<int>? rowid,
   }) {
     return CharactersCompanion(
@@ -1746,6 +1785,7 @@ class CharactersCompanion extends UpdateCompanion<Character> {
       hair: hair ?? this.hair,
       eyes: eyes ?? this.eyes,
       skin: skin ?? this.skin,
+      voice: voice ?? this.voice,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1789,6 +1829,9 @@ class CharactersCompanion extends UpdateCompanion<Character> {
     if (skin.present) {
       map['skin'] = Variable<String>(skin.value);
     }
+    if (voice.present) {
+      map['voice'] = Variable<String>(voice.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1810,6 +1853,7 @@ class CharactersCompanion extends UpdateCompanion<Character> {
           ..write('hair: $hair, ')
           ..write('eyes: $eyes, ')
           ..write('skin: $skin, ')
+          ..write('voice: $voice, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -72429,6 +72473,7 @@ typedef $$CharactersTableCreateCompanionBuilder =
       Value<String> hair,
       Value<String> eyes,
       Value<String> skin,
+      Value<String> voice,
       Value<int> rowid,
     });
 typedef $$CharactersTableUpdateCompanionBuilder =
@@ -72445,6 +72490,7 @@ typedef $$CharactersTableUpdateCompanionBuilder =
       Value<String> hair,
       Value<String> eyes,
       Value<String> skin,
+      Value<String> voice,
       Value<int> rowid,
     });
 
@@ -72514,6 +72560,11 @@ class $$CharactersTableFilterComposer
 
   ColumnFilters<String> get skin => $composableBuilder(
     column: $table.skin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get voice => $composableBuilder(
+    column: $table.voice,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -72586,6 +72637,11 @@ class $$CharactersTableOrderingComposer
     column: $table.skin,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get voice => $composableBuilder(
+    column: $table.voice,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CharactersTableAnnotationComposer
@@ -72636,6 +72692,9 @@ class $$CharactersTableAnnotationComposer
 
   GeneratedColumn<String> get skin =>
       $composableBuilder(column: $table.skin, builder: (column) => column);
+
+  GeneratedColumn<String> get voice =>
+      $composableBuilder(column: $table.voice, builder: (column) => column);
 }
 
 class $$CharactersTableTableManager
@@ -72681,6 +72740,7 @@ class $$CharactersTableTableManager
                 Value<String> hair = const Value.absent(),
                 Value<String> eyes = const Value.absent(),
                 Value<String> skin = const Value.absent(),
+                Value<String> voice = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CharactersCompanion(
                 assetId: assetId,
@@ -72695,6 +72755,7 @@ class $$CharactersTableTableManager
                 hair: hair,
                 eyes: eyes,
                 skin: skin,
+                voice: voice,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -72711,6 +72772,7 @@ class $$CharactersTableTableManager
                 Value<String> hair = const Value.absent(),
                 Value<String> eyes = const Value.absent(),
                 Value<String> skin = const Value.absent(),
+                Value<String> voice = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CharactersCompanion.insert(
                 assetId: assetId,
@@ -72725,6 +72787,7 @@ class $$CharactersTableTableManager
                 hair: hair,
                 eyes: eyes,
                 skin: skin,
+                voice: voice,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

@@ -247,6 +247,7 @@ class StoryRepositoryImpl {
         'Hair: ${character.hair}',
         'Eyes: ${character.eyes}',
         'Skin: ${character.skin}',
+        if (character.voice.isNotEmpty) 'Voice: ${character.voice}',
         if (identity != null && identity.notes.trim().isNotEmpty)
           identity.notes.trim(),
       ].where((row) => row.trim().isNotEmpty).toList(growable: false);

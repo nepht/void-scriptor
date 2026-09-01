@@ -20,8 +20,8 @@ void main() {
   File dbFile() => File('${dir.path}/project.db');
 
   /// Simulates a v53 (v1.0.1-era) database: full create at current schema,
-  /// then strip the v54-56 additions and rewind user_version. Valid because
-  /// the 54→56 migration block only creates tables.
+  /// then strip the v54-58 additions and rewind user_version. Valid because
+  /// the 54→57 migration block only creates tables and 57→58 adds one column.
   Future<void> seedV53() async {
     final bootstrap = ProjectDatabase(NativeDatabase(dbFile()));
     await bootstrap.customSelect('SELECT 1').get();
@@ -35,24 +35,28 @@ void main() {
     await rewound.customStatement('DROP TABLE IF EXISTS novel_character_links');
     await rewound.customStatement('DROP TABLE IF EXISTS workflow_definitions');
     await rewound.customStatement('DROP TABLE IF EXISTS workflow_run_records');
+    await rewound.customStatement('DROP TABLE IF EXISTS scene_draft_snapshots');
+    // v58 added characters.voice via addColumn; strip it so the rewind is
+    // a faithful pre-58 state (the 57->58 block re-adds it on migration).
+    await rewound.customStatement('ALTER TABLE characters DROP COLUMN voice');
     await rewound.customStatement('PRAGMA user_version = 53');
     await rewound.close();
   }
 
   group('105.10 migration matrix', () {
-    test('fresh RC install creates v56 directly', () async {
+    test('fresh RC install creates v58 directly', () async {
       final database = ProjectDatabase(NativeDatabase(dbFile()));
       await database.customSelect('SELECT 1').get();
-      expect(ProjectDatabase.currentSchemaVersion, 56);
+      expect(ProjectDatabase.currentSchemaVersion, 58);
       final version = await database
           .customSelect('PRAGMA user_version')
           .getSingle();
-      expect(version.data['user_version'], 56);
+      expect(version.data['user_version'], 58);
       await database.close();
     });
 
     test('beta_1_to_rc_1 path: opening an up-to-date DB is a no-op', () async {
-      // Build once (beta state == same schema 56), reopen, verify intact.
+      // Build once (beta state == same schema 58), reopen, verify intact.
       var database = ProjectDatabase(NativeDatabase(dbFile()));
       await database.customSelect('SELECT 1').get();
       await database.close();
@@ -61,12 +65,12 @@ void main() {
       final version = await database
           .customSelect('PRAGMA user_version')
           .getSingle();
-      expect(version.data['user_version'], 56);
+      expect(version.data['user_version'], 58);
       await database.close();
     });
 
     test(
-      'v1.0.x-era v53 database upgrades to v56 with all three waves',
+      'v1.0.x-era v53 database upgrades to v58 with all four waves',
       () async {
         await seedV53();
         final database = ProjectDatabase(NativeDatabase(dbFile()));
@@ -83,12 +87,19 @@ void main() {
             'novel_character_links', // v55
             'workflow_definitions', // v56
             'workflow_run_records', // v56
+            'scene_draft_snapshots', // v57
           ]),
         );
+        // v58 wave: the migrated database carries the new canonical
+        // characters.voice column.
+        final voiceColumns = await database
+            .customSelect("PRAGMA table_info(characters)")
+            .get();
+        expect(voiceColumns.map((r) => r.data['name']), contains('voice'));
         final version = await database
             .customSelect('PRAGMA user_version')
             .getSingle();
-        expect(version.data['user_version'], 56);
+        expect(version.data['user_version'], 58);
         await database.close();
       },
     );

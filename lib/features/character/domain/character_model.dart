@@ -12,6 +12,7 @@ class CharacterModel {
     this.hair = '',
     this.eyes = '',
     this.skin = '',
+    this.voice = '',
   });
 
   final String assetId;
@@ -26,6 +27,7 @@ class CharacterModel {
   final String hair;
   final String eyes;
   final String skin;
+  final String voice;
 
   CharacterModel copyWith({
     String? displayName,
@@ -38,6 +40,7 @@ class CharacterModel {
     String? hair,
     String? eyes,
     String? skin,
+    String? voice,
   }) => CharacterModel(
     assetId: assetId,
     projectId: projectId,
@@ -51,6 +54,7 @@ class CharacterModel {
     hair: hair ?? this.hair,
     eyes: eyes ?? this.eyes,
     skin: skin ?? this.skin,
+    voice: voice ?? this.voice,
   );
 
   CharacterModel copyWithName(String name) => copyWith(displayName: name);

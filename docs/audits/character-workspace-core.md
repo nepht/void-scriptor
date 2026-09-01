@@ -243,3 +243,42 @@ butuh sesi interaktif/computer_use).
   (identity card menampilkan Hair/Eyes/Skin, bukan voice; tidak ada
   editor untuk keduanya) — dicatat sebagai slice berikutnya; native
   interaction tetap UNVERIFIABLE dari cron.
+
+
+## Update 2026-09-01 (voice display + private notes editor UI)
+
+- Gap terakhir yang actionable dari cron ditutup dengan TDD (RED
+  terverifikasi: `Found 0 widgets with text "Tenang, berwibawa, sedikit
+  serak"` pada `test/features/character/character_voice_notes_ui_test.dart`):
+  1. **Voice row**: `CharacterIdentityCard` kini menerima `voice` dan
+     merender baris `Voice` di bawah `Eyes`; `character.voice` (BASE_VOICE,
+     schema 58) terlihat langsung di Character Workspace.
+  2. **Private notes editor**: widget baru
+     `lib/features/character/presentation/widgets/character_private_notes_card.dart`
+     (judul `Character Private Notes`, TextField multi-baris, tombol Save
+     eksplisit, guard anti-clobber terhadap update eksternal saat user
+     sedang mengetik) diletakkan SETELAH `IdentityPreservationCard` dan
+     SEBELUM `ReferencesCard`.
+  3. **Scoped-edit safety**: `CharacterIdentityProfile` kini punya
+     `copyWith`; kelima callback lock di screen diubah dari rebuild
+     field-per-field (yang MENJATUHKAN `notes`, `weaponLock`,
+     `accessoryLock`) menjadi `profile.copyWith(<lock>: value)`. Save
+     notes dan toggle lock kini melalui `UpdateCharacterIdentityCommand`
+     yang sama (undoable) tanpa silent mutation.
+- GREEN: `test/features/character/character_voice_notes_ui_test.dart`
+  1 PASS pada live session (real temp package + SQLite): voice row
+  tampil, editor notes terbuka, Save -> `getIdentity` membaca
+  `Jangan ubah warna mata`, toggle Face Lock tidak menjatuhkan notes.
+  Teknik: `scrollUntilVisible` sebelum setiap tap (card off-viewport di
+  y=2472), finder Switch di-scope ke `IdentityPreservationCard` (mode
+  section punya switch override sendiri), read-back persistensi via
+  bounded poll `tester.runAsync` (IO drift riil, fake async tak
+  menunggu).
+- Regression: `flutter test test/features/character` -> 39 PASS.
+- Full suite: 3267 PASS / 1 FAIL (app_bootstrap_test, surface concurrent
+  145.20 — main.dart/app_router uncommitted milik sibling, tidak disentuh).
+- Analyze: No issues found. `git diff --check`: PASS.
+- Windows debug build: PASS (35.7s) pada commit 01000fe.
+- Sisa gap 145.25: native interaction (UNVERIFIABLE dari cron, butuh
+  computer_use/attended session); full Core vertical journey PENDING
+  (depends 145.30-145.35, 145.41-145.44).

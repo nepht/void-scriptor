@@ -8,20 +8,20 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.24 Novel Workspace Core (evidence-closure reconciliation per RESOLUTION_GUIDANCE_145_24_145_26; objective exact sprint_145.json covered by executable evidence; native interaction klik/typing UNVERIFIABLE from cron)",
+  "last_verified_step": "145.25 Character Workspace Core (voice display + private notes editor UI closed on top of cron k BASE_VOICE/notes wiring; silent-drop identity bug fixed via copyWith; commit 01000fe; native interaction UNVERIFIABLE from cron)",
   "next_step": "145.25",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
     "previous_result": {
-      "verified_at": "2026-09-01 (cron h)",
+      "verified_at": "2026-09-01 (voice/notes UI cron)",
       "roadmap_guard": "PASS pre-run; PASS post-state (pointer 145.25)",
-      "flutter_analyze": "PASS (No issues found!, 16.7s)",
-      "focused_core_regression": "PASS (story 142 + workspaces 55 + focused search/snapshot/recovery/fidelity 7)",
-      "full_flutter_test": "PASS (3262 PASS / 2 FAIL concurrent-owned 145.20: app_bootstrap_test + splash_screen_test; root-caused, not touched)",
-      "windows_debug_build": "PASS (22.9s)",
-      "head_at_verification": "4770ecc",
-      "note": "145.24 closed VERIFIED via evidence reconciliation; no source slice needed this run; ledger/audit/state-only commits"
+      "flutter_analyze": "PASS (No issues found!)",
+      "focused_core_regression": "PASS (test/features/character 39 PASS incl. character_voice_notes_ui_test live-session journey)",
+      "full_flutter_test": "PASS (3267 PASS / 1 FAIL concurrent-owned 145.20: app_bootstrap_test vs uncommitted main.dart/app_router sibling changes; root-caused, not touched)",
+      "windows_debug_build": "PASS (35.7s)",
+      "head_at_verification": "01000fe",
+      "note": "145.25 voice/notes UI+editor gap closed via TDD; screen file staged mine-only to preserve concurrent deletion-review slice on disk"
     },
     "required_checks": [
       "dart run tool/roadmap_guard.dart",

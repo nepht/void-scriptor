@@ -8,20 +8,20 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.24+snapshot-persistence-partial",
+  "last_verified_step": "145.24+ui-journeys-partial",
   "next_step": "145.24",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.24",
     "previous_result": {
-      "verified_at": "2026-09-01 (cron run)",
+      "verified_at": "2026-09-01 (cron run b)",
       "roadmap_guard": "PASS",
       "flutter_analyze": "PASS (No issues found!)",
-      "focused_core_regression": "PASS (draft_snapshot_persistence_test 3 tests + story suite 131 tests)",
-      "full_flutter_test": "PASS (3231 tests)",
+      "focused_core_regression": "PASS (novel_workspace_search_snapshot_ui_test 2 tests + story suite 133 tests)",
+      "full_flutter_test": "PASS (3233 tests)",
       "windows_debug_build": "PASS (build/windows/x64/runner/Debug/void_scriptor.exe)",
-      "head_at_verification": "b0cd6a3 (pre-commit; schema 57 slice)",
-      "note": "145.24 Novel Workspace Core advanced: persistent scene draft snapshots (schema 56->57 SceneDraftSnapshots, capture/restore-with-backup/retention per kontrak 109.22) with 3 focused tests; ledger updated; snapshot UI journey, search UI journey, export fidelity matrix, native interaction remain open"
+      "head_at_verification": "def135a (pre-commit; UI journey slice)",
+      "note": "145.24 Novel Workspace Core advanced: NOVEL SEARCH + SCENE SNAPSHOTS panels in StoryWorkspaceScreen (dialog-based input preserves single-TextField main-tree contract; panels after STORY BIBLE keep existing tap geometry); ledger updated; export fidelity matrix and native proof remain open"
     },
     "required_checks": [
       "dart run tool/roadmap_guard.dart",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-01T07:45:00+07:00",
-  "updated_by": "nephthys cron: 145.24 draft snapshot persistence landed (schema 57); step remains PARTIAL - next=145.24 continuation (snapshot/search UI journey, export fidelity)",
+  "updated_at": "2026-09-01T11:35:00+07:00",
+  "updated_by": "nephthys cron: 145.24 search+snapshot UI journeys landed (StoryWorkspaceScreen dialog-based, 2 focused tests); step remains PARTIAL - next=145.24 continuation (export fidelity matrix, native proof)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

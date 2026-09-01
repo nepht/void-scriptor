@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 import 'package:void_scriptor/design_system/theme/void_palette.dart';
 import '../application/debounced_autosave.dart';
+import '../../project_resilience/application/durable_draft_journal.dart';
 import '../application/story_docx_exporter.dart';
 import 'package:flutter/services.dart';
 
@@ -35,6 +36,7 @@ class StoryWorkspaceScreen extends StatefulWidget {
     this.pickImportArchive,
     this.loadLoreCatalog,
     this.onCreateLoreEntity,
+    this.draftJournal,
   });
   final String storyId;
   final StoryRepositoryImpl? repository;
@@ -61,6 +63,11 @@ class StoryWorkspaceScreen extends StatefulWidget {
   /// entity by name. Null hides the create action instead of faking it.
   final Future<LoreEntityRef> Function(String name)? onCreateLoreEntity;
 
+  /// Step 145.30 Autosave Snapshot and Crash Recovery: durable journal
+  /// untuk draf yang belum tersimpan. Null (mis. layar test tanpa paket)
+  /// berarti journal tidak aktif; autosave utama tetap berjalan.
+  final DurableDraftJournal? draftJournal;
+
   @override
   State<StoryWorkspaceScreen> createState() => _StoryWorkspaceScreenState();
 }
@@ -68,6 +75,11 @@ class StoryWorkspaceScreen extends StatefulWidget {
 class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   final _draft = TextEditingController();
   final _autosave = DebouncedAutosave();
+
+  /// Step 145.30 Autosave Snapshot and Crash Recovery: journal draf
+  /// yang belum tersimpan durable. Null berarti tidak ada directory
+  /// binding (layar test tanpa paket) - journal jujur tidak aktif.
+  DurableDraftJournal? _draftJournal;
   int _words = 0;
   String? _selectedSceneId;
   String? _selectedSceneTitle;
@@ -120,6 +132,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   void initState() {
     super.initState();
     _selectedSceneId = widget.sceneId;
+    _draftJournal = widget.draftJournal;
     _loadDraft();
     _prefetchLoreCatalog();
   }
@@ -157,9 +170,15 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     }
     final repository = widget.repository;
     final sceneId = _selectedSceneId;
+    final journal = _draftJournal;
     if (repository != null && sceneId != null) {
+      // Step 145.30: draf di-journal secara durable SEBELUM autosave
+      // jalan, sehingga crash/power-loss tidak pernah kehilangan suntingan
+      // yang belum sempat tersimpan (no silent loss).
+      journal?.stage(sceneId: sceneId, content: value);
       _autosave.schedule(() async {
         await repository.saveSceneDraft(sceneId, value);
+        await journal?.acknowledge(sceneId);
         if (!mounted) return;
         setState(() => _lastSavedAt = DateTime.now());
       });

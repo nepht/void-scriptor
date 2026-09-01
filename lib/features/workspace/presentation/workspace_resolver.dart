@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,10 +13,12 @@ import '../../environment/presentation/environment_workspace_screen.dart';
 import '../../bible/application/create_lore_entity_service.dart';
 import '../../story/application/create_story_service.dart';
 import '../../story/data/story_repository_impl.dart';
+import '../../project_resilience/application/durable_draft_journal.dart';
 import '../../story/presentation/story_workspace_screen.dart';
 import '../../workspaces/presentation/workspace_export_actions.dart';
 import '../../workspaces/presentation/workspace_import_actions.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
+import '../../../design_system/typography/void_typography.dart';
 
 class WorkspaceResolver extends ConsumerWidget {
   const WorkspaceResolver({super.key});
@@ -73,6 +76,13 @@ class WorkspaceResolver extends ConsumerWidget {
       ),
       AssetType.story => StoryWorkspaceScreen(
         storyId: selection.assetId,
+        draftJournal: session == null
+            ? null
+            : DurableDraftJournal(
+                dir: Directory(
+                  '${session.package.root.path}/recovery/draft-journal',
+                ),
+              ),
         repository: session == null
             ? null
             : StoryRepositoryImpl(
@@ -163,6 +173,8 @@ class ProjectOverview extends StatelessWidget {
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        const Text('Novel Workspace', style: VoidTypography.headingMedium),
+        const SizedBox(height: 8),
         Text(
           'Select an asset from Explorer to open its workspace.',
           style: TextStyle(color: context.palette.textMuted),

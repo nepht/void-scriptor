@@ -123,6 +123,13 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   /// ini (label jujur 'Belum tersimpan').
   DateTime? _lastSavedAt;
 
+  /// Step 145.30 Autosave Snapshot and Crash Recovery: draf yang belum
+  /// tersimpan dan menunggu keputusan pengguna saat startup. Sumber data
+  /// tunggal = DurableDraftJournal.pendingEntries(); kosong berarti tidak
+  /// ada yang perlu dipulihkan (panel absen, bukan panel kosong).
+  List<PendingDraftEntry> _pendingRecovery = const [];
+  bool _recoveryBusy = false;
+
   /// Step 145.28: sesi fokus menulis (domain Step 109.20) yang
   /// di-wire ke layar. Saat aktif, panel chrome samping disembunyikan
   /// dan label autosave dirender dari sesi (autosave_visible).
@@ -134,6 +141,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     _selectedSceneId = widget.sceneId;
     _draftJournal = widget.draftJournal;
     _loadDraft();
+    _loadPendingRecovery();
     _prefetchLoreCatalog();
   }
 
@@ -649,6 +657,59 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   /// Step 145.24: panel snapshot scene terpilih — capture manual berlabel,
   /// daftar snapshot, dan restore per baris (backup otomatis di repository).
   /// Step 145.25: panel quick reference karakter scene terpilih.
+  /// Step 145.30: panel DRAFT RECOVERY — status pemulihan yang terlihat
+  /// (visible status) + restore/discard yang dikendalikan pengguna.
+  Widget _buildRecoveryPanel(VoidPalette p) {
+    if (_pendingRecovery.isEmpty) {
+      return Text(
+        'Tidak ada draf yang perlu dipulihkan.',
+        style: TextStyle(color: p.textSecondary),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '${_pendingRecovery.length} draf belum tersimpan dipulihkan dari sesi sebelumnya.',
+          style: TextStyle(color: p.textSecondary),
+        ),
+        const SizedBox(height: 8),
+        for (final entry in _pendingRecovery)
+          ListTile(
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            title: Text(
+              'Scene ${entry.sceneId}',
+              style: TextStyle(color: p.textPrimary),
+            ),
+            subtitle: Text(
+              entry.content,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: p.textSecondary),
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(
+                  onPressed: _recoveryBusy
+                      ? null
+                      : () => _restorePendingDraft(entry),
+                  child: const Text('Pulihkan Draft'),
+                ),
+                TextButton(
+                  onPressed: _recoveryBusy
+                      ? null
+                      : () => _discardPendingDraft(entry),
+                  child: const Text('Buang'),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
   Widget _buildQuickRefs(VoidPalette p) {
     final sceneId = _selectedSceneId;
     if (sceneId == null) {
@@ -806,6 +867,68 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     final quickRefs = await repository.quickReferenceForScene(sceneId);
     if (!mounted) return;
     setState(() => _sceneQuickRefs = quickRefs);
+  }
+
+  /// Step 145.30: muat daftar draf yang belum tersimpan dari journal
+  /// durable saat layar dibuka. Kosong berarti tidak ada recovery prompt.
+  Future<void> _loadPendingRecovery() async {
+    final journal = widget.draftJournal;
+    if (journal == null) return;
+    final pending = await journal.pendingEntries();
+    if (!mounted) return;
+    setState(() => _pendingRecovery = pending);
+  }
+
+  /// Step 145.30: pulihkan SATU entri pending (user-controlled restore).
+  /// Urutan no-silent-loss: simpan dulu ke repository, baru acknowledge
+  /// journal — crash di tengah meninggalkan entri journal yang masih
+  /// bisa dipulihkan ulang.
+  Future<void> _restorePendingDraft(PendingDraftEntry entry) async {
+    final repository = widget.repository;
+    if (repository == null || _recoveryBusy) return;
+    setState(() => _recoveryBusy = true);
+    try {
+      await repository.saveSceneDraft(entry.sceneId, entry.content);
+      await widget.draftJournal?.acknowledge(entry.sceneId);
+      if (!mounted) return;
+      if (_selectedSceneId == entry.sceneId) {
+        _draft.value = TextEditingValue(text: entry.content);
+        setState(() {
+          _updateWordCount(entry.content);
+          _pendingRecovery = List<PendingDraftEntry>.from(_pendingRecovery)
+            ..removeWhere((e) => e.sceneId == entry.sceneId);
+          _recoveryBusy = false;
+        });
+      } else {
+        setState(() {
+          _pendingRecovery = List<PendingDraftEntry>.from(_pendingRecovery)
+            ..removeWhere((e) => e.sceneId == entry.sceneId);
+          _recoveryBusy = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _recoveryBusy = false);
+      rethrow;
+    }
+  }
+
+  /// Step 145.30: buang entri pending tanpa menulis ke repository
+  /// (keputusan eksplisit pengguna; acknowledge = delete journal entry).
+  Future<void> _discardPendingDraft(PendingDraftEntry entry) async {
+    if (_recoveryBusy) return;
+    setState(() => _recoveryBusy = true);
+    try {
+      await widget.draftJournal?.acknowledge(entry.sceneId);
+      if (!mounted) return;
+      setState(() {
+        _pendingRecovery = List<PendingDraftEntry>.from(_pendingRecovery)
+          ..removeWhere((e) => e.sceneId == entry.sceneId);
+        _recoveryBusy = false;
+      });
+    } catch (_) {
+      if (mounted) setState(() => _recoveryBusy = false);
+      rethrow;
+    }
   }
 
   /// Step 145.24: muat ulang daftar snapshot scene terpilih.
@@ -1004,6 +1127,13 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                 ],
               ),
               const SizedBox(height: 20),
+              // Step 145.30: recovery prompt di dekat puncak layar agar
+              // terlihat langsung saat startup (visible status, no silent
+              // loss) tanpa bergantung pada scroll.
+              if (_pendingRecovery.isNotEmpty) ...[
+                _Panel(title: 'DRAFT RECOVERY', child: _buildRecoveryPanel(p)),
+                const SizedBox(height: 12),
+              ],
               if (widget.workspaceProjection != null) ...[
                 WorkspaceProjectionCard(
                   projectionFuture: widget.workspaceProjection!,

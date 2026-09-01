@@ -142,3 +142,27 @@ Langkah lanjutan yang diperlukan bila kontrak failure-injection disetujui:
   pemulihan ke pengguna), failure-injection disk-full/permission,
   process-kill harness native, integrasi SaveCoordinator/AutosaveJournal
   lama dengan journal durable ini.
+
+## Update 2026-09-01 (cron i: recovery startup prompt UI slice)
+
+- Slice recovery prompt UI landed:
+  `StoryWorkspaceScreen` kini memuat panel `DRAFT RECOVERY` dekat puncak
+  layar (sebelum panel chrome lain) saat `DurableDraftJournal` memiliki
+  entri pending; panel absen ketika journal kosong (negatif teruji).
+  Setiap entri menampilkan scene + cuplikan konten dengan dua aksi
+  user-controlled: 'Pulihkan Draft' (`saveSceneDraft` lalu `acknowledge`
+  — urutan no-silent-loss; crash di tengah meninggalkan entri yang masih
+  bisa dipulihkan ulang) dan 'Buang' (`acknowledge` tanpa menulis ke
+  repository). Guard `_recoveryBusy` mencegah aksi ganda.
+- RED terverifikasi: 2 journey gagal pada `Found 0 widgets with text
+  "DRAFT RECOVERY"`; test file sebelumnya (run terputus) memakai real IO
+  di fake-async zone sehingga hang — diperbaiki dengan
+  `_FakeDurableDraftJournal` in-memory (override `pendingEntries`/
+  `acknowledge`), kontrak asersi UI tidak berubah.
+- Bukti: focused 3 PASS (restore journey, discard journey, negative);
+  story+resilience regression 181 PASS; `flutter analyze` No issues;
+  full suite 3248 PASS (= 3245 + 3, cocok eksak);
+  `flutter build windows --debug` PASS; `git diff --check` PASS.
+- Sisa gap 145.30: failure-injection disk-full/permission, process-kill
+  harness native, integrasi SaveCoordinator/AutosaveJournal lama dengan
+  journal durable ini, native interaction proof (butuh sesi interaktif).

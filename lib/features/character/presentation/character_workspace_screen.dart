@@ -10,6 +10,7 @@ import 'widgets/character_empty_state.dart';
 import 'widgets/character_header.dart';
 import 'widgets/character_identity_card.dart';
 import 'widgets/character_portrait_card.dart';
+import 'widgets/character_scope_status_card.dart';
 import 'widgets/character_private_notes_card.dart';
 import 'widgets/color_palette_card.dart';
 import 'widgets/identity_preservation_card.dart';
@@ -54,24 +55,47 @@ class _CharacterWorkspaceScreenState
     CharacterIdentityProfile identity,
   ) => Column(
     children: [
-      CharacterHeader(name: character.displayName, alias: character.alias),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(18, 12, 18, 0),
-        child: CharacterModeSection(characterId: character.assetId),
+      CharacterHeader(
+        name: character.displayName,
+        alias: character.alias,
       ),
       Expanded(
         child: LayoutBuilder(
           builder: (context, constraints) {
             final desktop = constraints.maxWidth >= 1100;
-            return SingleChildScrollView(
+            final body = SingleChildScrollView(
               padding: const EdgeInsets.all(18),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxWidth: desktop ? 1180 : double.infinity,
                 ),
-                child: _content(character, identity, desktop),
+                child: desktop
+                    ? _content(character, identity, true)
+                    : Column(
+                        children: [
+                          // Narrow layout: the mode section joins the scroll
+                          // area so the fixed header column cannot overflow
+                          // on phone-sized viewports.
+                          CharacterModeSection(characterId: character.assetId),
+                          const SizedBox(height: 16),
+                          _content(character, identity, false),
+                        ],
+                      ),
               ),
             );
+            return desktop
+                ? Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(18, 12, 18, 0),
+                        child: CharacterModeSection(
+                          characterId: character.assetId,
+                        ),
+                      ),
+                      Expanded(child: body),
+                    ],
+                  )
+                : body;
           },
         ),
       ),
@@ -172,6 +196,8 @@ class _CharacterWorkspaceScreenState
         ),
         const SizedBox(height: 16),
         const ReferencesCard(),
+        const SizedBox(height: 16),
+        CharacterScopeStatusCard(characterId: character.assetId),
       ],
     );
   }

@@ -574,10 +574,21 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
       children: [
         Align(
           alignment: Alignment.centerLeft,
-          child: TextButton.icon(
-            onPressed: _showSnapshotDialog,
-            icon: const Icon(Icons.camera_alt_outlined),
-            label: const Text('Snapshot'),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextButton.icon(
+                onPressed: _showSnapshotDialog,
+                icon: const Icon(Icons.camera_alt_outlined),
+                label: const Text('Snapshot'),
+              ),
+              const SizedBox(width: 4),
+              TextButton.icon(
+                onPressed: _showRetentionDialog,
+                icon: const Icon(Icons.tune),
+                label: const Text('Atur Retensi'),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 8),
@@ -718,6 +729,47 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     );
     if (query == null || !mounted) return;
     await _runNovelSearch(query);
+  }
+
+  /// Step 145.24: atur batas retensi snapshot scene terpilih. Repository
+  /// memangkas pelanggaran yang sudah ada (kontrak 109.22
+  /// retention_controls; batas session-scoped mengikuti domain store).
+  Future<void> _showRetentionDialog() async {
+    final repository = widget.repository;
+    final sceneId = _selectedSceneId;
+    if (repository == null || sceneId == null) return;
+    final limitController = TextEditingController();
+    final limitText = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Atur Batas Retensi'),
+        content: TextField(
+          controller: limitController,
+          autofocus: true,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            hintText: 'Batas snapshot (mis. 5)',
+            border: OutlineInputBorder(),
+          ),
+          onSubmitted: (value) => Navigator.of(dialogContext).pop(value),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            onPressed: () =>
+                Navigator.of(dialogContext).pop(limitController.text),
+            child: const Text('Terapkan'),
+          ),
+        ],
+      ),
+    );
+    final limit = int.tryParse(limitText ?? '');
+    if (limit == null || limit <= 0 || !mounted) return;
+    await repository.setDraftSnapshotRetention(sceneId, maxSnapshots: limit);
+    await _loadSnapshotsFor(sceneId);
   }
 
   /// Step 145.24: rekam snapshot manual berlabel untuk scene terpilih.

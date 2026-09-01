@@ -150,6 +150,70 @@ void main() {
     expect(find.widgetWithText(TextField, 'teks awal scene A'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('snapshot retention UI sets limit and trims visible list', (
+    tester,
+  ) async {
+    final repository = _FakeStoryRepository()
+      ..hierarchy = _hierarchyWith(
+        chapterTitle: 'Chapter One',
+        sceneATitle: 'Kedatangan Void',
+        sceneBTitle: 'Gema Kedalaman',
+      )
+      ..draftByScene = {'scene-a': 'teks awal scene A'}
+      ..capturedLabels.addAll(['checkpoint 1', 'checkpoint 2'])
+      ..capturedIds.addAll(['snap-1', 'snap-2']);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: SizedBox(
+              width: 1200,
+              child: StoryWorkspaceScreen(
+                storyId: 'story-1',
+                repository: repository,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Pilih scene A sehingga editor memuat draft dan daftar snapshot.
+    await tester.ensureVisible(find.text('Kedatangan Void'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Kedatangan Void'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('checkpoint 1'), findsOneWidget);
+    expect(find.text('checkpoint 2'), findsOneWidget);
+
+    // Retention UI journey: buka dialog, isi batas 1, terapkan.
+    await tester.ensureVisible(find.text('Atur Retensi'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Atur Retensi'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(TextField),
+      ),
+      '1',
+    );
+    await tester.pump();
+    await tester.tap(find.text('Terapkan'));
+    await tester.pumpAndSettle();
+
+    expect(repository.lastRetentionSceneId, 'scene-a');
+    expect(repository.lastRetentionLimit, 1);
+    // Fake repository mensimulasikan pemangkasan tertua -> hanya tersisa
+    // snapshot terbaru yang tampil.
+    expect(find.text('checkpoint 1'), findsNothing);
+    expect(find.text('checkpoint 2'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }
 
 /// Fake repository deterministik untuk lapisan UI. Semua method yang dipakai
@@ -174,6 +238,8 @@ class _FakeStoryRepository extends StoryRepositoryImpl {
   final List<String> capturedLabels = [];
   final List<String> capturedIds = [];
   String? restoredSnapshotId;
+  String? lastRetentionSceneId;
+  int? lastRetentionLimit;
 
   @override
   Future<StoryHierarchy> getStoryHierarchy(String storyId) async => hierarchy;
@@ -239,6 +305,20 @@ class _FakeStoryRepository extends StoryRepositoryImpl {
     restoredSnapshotId = snapshotId;
     draftByScene[sceneId] = 'teks awal scene A';
     return 'teks awal scene A';
+  }
+
+  @override
+  Future<void> setDraftSnapshotRetention(
+    String sceneId, {
+    required int maxSnapshots,
+  }) async {
+    lastRetentionSceneId = sceneId;
+    lastRetentionLimit = maxSnapshots;
+    // Simulasi _enforceRetention: pangkas snapshot tertua dari daftar.
+    while (capturedIds.length > maxSnapshots) {
+      capturedIds.removeAt(0);
+      capturedLabels.removeAt(0);
+    }
   }
 }
 

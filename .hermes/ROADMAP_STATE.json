@@ -8,20 +8,20 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.30+recovery-startup-prompt-ui-slice-closed-partial (recovery prompt DRAFT RECOVERY wired; next_step stays 145.24 per guard recovery candidate)",
+  "last_verified_step": "145.25+base-voice-private-notes-slice (voice column schema 57->58 + notes silent-drop fix; next_step stays 145.24 per guard recovery candidate)",
   "next_step": "145.24",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
     "previous_result": {
-      "verified_at": "2026-09-01 (cron run j)",
-      "roadmap_guard": "PASS (pre-run)",
-      "flutter_analyze": "PASS (No issues found!, 18.3s)",
-      "focused_core_regression": "PASS (focused journal 6 PASS + story/resilience regression 52 PASS incl. new durable_draft_journal_failure_injection_test 2 PASS)",
-      "full_flutter_test": "PASS (3250 tests, ~12 min)",
-      "windows_debug_build": "PASS (build/windows/x64/runner/Debug/void_scriptor.exe, 21.9s)",
-      "head_at_verification": "e1dc5a5 (test+audit+ledger evidence commit)",
-      "note": "145.30 failure injection closed as evidence-first (no production code: journal already correct at this boundary); next_step stays 145.24 per guard recovery candidate; native process-kill harness, legacy SaveCoordinator integration, native interaction remain open"
+      "verified_at": "2026-09-01 (cron k)",
+      "roadmap_guard": "PASS (pre+post)",
+      "flutter_analyze": "PASS (No issues found!, 14.9s)",
+      "focused_core_regression": "PASS (character_voice_notes_test 5 PASS; character+story+release+database+project_package 230 PASS)",
+      "full_flutter_test": "PARTIAL (3262 PASS / 2 FAIL di surface concurrent 145.20: app_bootstrap_test vs main.dart uncommitted, splash_screen_test vs splash_screen.dart sibling-owned)",
+      "windows_debug_build": "PASS (30.9s)",
+      "head_at_verification": "dab9d25 + slice commit berikut",
+      "note": "145.25 BASE_VOICE + private notes wiring closed via TDD; voice/notes UI display/editor masih open; native interaction UNVERIFIABLE; full suite 2 kegagalan milik concurrent 145.20 (bukan area slice) - dilaporkan, tidak disentuh"
     },
     "required_checks": [
       "dart run tool/roadmap_guard.dart",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-01T17:30:00+07:00",
-  "updated_by": "nephthys cron i: 145.30 recovery startup prompt UI closed (panel DRAFT RECOVERY dekat puncak StoryWorkspaceScreen, Pulihkan Draft/Buang per entri pending, panel absen saat journal kosong; novel_recovery_prompt_ui_test 3 PASS, full suite 3248 PASS, analyze No issues, windows debug build PASS); next_step stays 145.24 (recovery candidate per guard)",
+  "updated_at": "2026-09-01T19:05:00+07:00",
+  "updated_by": "nephthys cron k: 145.25 BASE_VOICE (Characters.voice schema 58) + private notes wiring (silent-drop fix) closed; test 5 PASS, analyze clean, windows build PASS; full suite 3262 PASS + 2 fail concurrent-owned (145.20 bootstrap/splash); next_step stays 145.24",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

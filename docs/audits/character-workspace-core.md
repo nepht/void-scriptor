@@ -213,3 +213,33 @@ full suite 3239 PASS; `flutter analyze` No issues; windows debug build
 PASS (45.7s); `git diff --check` PASS.
 - Sisa gap 145.25: native Windows interaction (UNVERIFIABLE dari cron,
 butuh sesi interaktif/computer_use).
+
+## Update 2026-09-01 (cron k: BASE_VOICE + private notes wiring)
+
+- Dua gap objective 145.25 ditutup dengan TDD (RED terverifikasi):
+  1. **BASE_VOICE** (`canonical_owns` core_mvp_scope_reset_spec):
+     kolom `Characters.voice` (schema 57->58, guarded `if (from < 58)`
+     `m.addColumn(characters, characters.voice)`), field
+     `CharacterModel.voice` + copyWith, mapper `characterToData/
+     characterFromData` di `UpdateCharacterCommand`, tulis-baca di
+     `CharacterRepositoryImpl.updateCharacter/_fromRow`, dan baris
+     `Voice: <...>` di `StoryRepositoryImpl.quickReferenceForScene`
+     (hanya saat non-kosong).
+  2. **Private notes wiring**: `CharacterRepositoryImpl.getIdentity`
+     kini membaca `CharacterIdentityProfiles.notes` dan `updateIdentity`
+     menulisnya — sebelumnya kolom ada tapi SILENT-DROP di kedua
+     boundary (bug data-loss halus).
+- RED: `voice isn't defined` (5 compile error pada `CharacterModel`),
+  notes roundtrip gagal. GREEN: 5/5 test di
+  `test/features/character/character_voice_notes_test.dart` (notes
+  roundtrip dua arah, voice update+readback, voice lintas restart DB,
+  quick ref memuat baris Voice).
+- 29 asersi schema stale diperbarui 57->58 (23 `schemaVersion, 57`,
+  6 `currentSchemaVersion, 57`); rc_freeze wording v58; matrix
+  rc_migration seedV53 kini juga `ALTER TABLE characters DROP COLUMN
+  voice` agar rewind setia ke pre-58, dan wave v58 dibuktikan via
+  `PRAGMA table_info(characters)` contains 'voice'.
+- Sisa gap 145.25: voice/notes BELUM tampil di UI Character Workspace
+  (identity card menampilkan Hair/Eyes/Skin, bukan voice; tidak ada
+  editor untuk keduanya) — dicatat sebagai slice berikutnya; native
+  interaction tetap UNVERIFIABLE dari cron.

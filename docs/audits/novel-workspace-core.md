@@ -183,3 +183,30 @@ Next: `145.25 Character Workspace Core`.
   full suite 3233 PASS; `flutter build windows --debug` PASS.
 - Sisa gap 145.24: matriks fidelity export, native interaction proof
   (cron tidak punya computer_use driver), snapshot retention UI.
+
+## Update 2026-09-01 (cron c: export fidelity matrix)
+
+- Gap matriks fidelity export ditutup (commit slice ini):
+  `lib/features/story/application/story_export_fidelity.dart` berisi
+  `StoryExportFidelity` + `FidelityHunk`/`FidelityReport`; validator meniru
+  pola EKSAK kedua exporter (bukan regex longgar): markdown dibandingkan
+  baris-per-baris (heading, blank-line separator, draft verbatim,
+  trailing trimRight), DOCX di-decode dari zip (ZipDecoder verify:true),
+  document.xml diparse jadi paragraf (style + teks unescaped) lalu
+  dibandingkan urut.
+  `test/features/story/story_export_fidelity_test.dart` (1 test, fixture
+  2 bab x 2 scene, synopsis, karakter XML `<' ' '&' '>` di draft, blank
+  line internal draft): memverifikasi 5 prasyarat no-break 145.24 -
+  judul story tepat 1x, hunk chapter->scene->draft-line terstruktur,
+  urutan mengikuti ordering database (sortOrder), export TIDAK memutasi
+  naskah hidup (draft byte-identical sebelum/sesudah), semua konten draft
+  hadir utuh di kedua format.
+  Temuan fidelity: DOCX menambahkan paragraf kosong untuk blank line
+  internal draft (split per baris) - direkam sebagai kontrak format,
+  bukan bug; markdown mempertahankan blank line verbatim.
+  RED terverifikasi (StoryExportFidelity/FidelityHunk isn't defined).
+- Bukti: focused 1 PASS, story suite 134 PASS, `flutter analyze` No
+  issues, `git diff --check` PASS, full suite 3234 PASS,
+  `flutter build windows --debug` PASS.
+- Sisa gap 145.24: native interaction proof (cron tidak punya
+  computer_use driver), snapshot retention UI (minor).

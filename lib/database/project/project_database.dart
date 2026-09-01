@@ -25,6 +25,7 @@ import 'tables/story_scenes.dart';
 import 'tables/scene_characters.dart';
 import 'tables/scene_environment_contexts.dart';
 import 'tables/scene_beats.dart';
+import 'tables/scene_draft_snapshots.dart';
 import 'tables/scene_continuity_changes.dart';
 import 'tables/story_bible_sections.dart';
 import 'tables/timelines.dart';
@@ -186,6 +187,7 @@ class ProjectMetadata extends Table {
     SceneCharacters,
     SceneEnvironmentContexts,
     SceneBeats,
+    SceneDraftSnapshots,
     SceneContinuityChanges,
     StoryBibleSections,
     Timelines,
@@ -335,7 +337,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 56;
+  static const currentSchemaVersion = 57;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -657,6 +659,9 @@ class ProjectDatabase extends _$ProjectDatabase {
       if (from < 56) {
         await m.createTable(workflowDefinitions);
         await m.createTable(workflowRunRecords);
+      }
+      if (from < 57) {
+        await m.createTable(sceneDraftSnapshots);
       }
     },
   );

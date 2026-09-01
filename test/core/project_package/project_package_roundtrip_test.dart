@@ -21,9 +21,9 @@ void main() {
   });
 
   test('schema-16 package reopens with the current database schema', () async {
-    final package = await ProjectPackageService(rootDirectory: temp).create(
-      name: 'Sprint 102 Roundtrip',
-    );
+    final package = await ProjectPackageService(
+      rootDirectory: temp,
+    ).create(name: 'Sprint 102 Roundtrip');
 
     final manifest = ProjectManifest.fromJson(
       jsonDecode(await package.manifestFile.readAsString())
@@ -32,13 +32,17 @@ void main() {
     expect(manifest.schemaVersion, VoidProjectFormat.currentSchema);
     expect(manifest.schemaVersion, 16);
 
-    final first = await ProjectDatabaseService().open(package.databaseFile.path);
+    final first = await ProjectDatabaseService().open(
+      package.databaseFile.path,
+    );
     expect(first.schemaVersion, isNotNull);
     await first.close();
 
-    final second = await ProjectDatabaseService().open(package.databaseFile.path);
+    final second = await ProjectDatabaseService().open(
+      package.databaseFile.path,
+    );
     addTearDown(second.close);
-    expect(second.schemaVersion, 56);
+    expect(second.schemaVersion, 57);
     expect(second.schemaVersion, greaterThan(0));
   });
 }

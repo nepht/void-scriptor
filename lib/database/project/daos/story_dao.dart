@@ -7,6 +7,7 @@ import '../tables/story_scenes.dart';
 import '../tables/scene_characters.dart';
 import '../tables/scene_environment_contexts.dart';
 import '../tables/scene_beats.dart';
+import '../tables/scene_draft_snapshots.dart';
 import '../tables/scene_continuity_changes.dart';
 import '../tables/story_bible_sections.dart';
 
@@ -21,6 +22,7 @@ part 'story_dao.g.dart';
     SceneCharacters,
     SceneEnvironmentContexts,
     SceneBeats,
+    SceneDraftSnapshots,
     SceneContinuityChanges,
     StoryBibleSections,
   ],
@@ -66,4 +68,31 @@ class StoryDao extends DatabaseAccessor<ProjectDatabase> with _$StoryDaoMixin {
             ..where((t) => t.sceneId.equals(sceneId))
             ..orderBy([(t) => OrderingTerm(expression: t.sortOrder)]))
           .get();
+
+  Future<List<SceneDraftSnapshot>> getSceneDraftSnapshots(String sceneId) =>
+      (select(sceneDraftSnapshots)
+            ..where((t) => t.sceneId.equals(sceneId))
+            ..orderBy([(t) => OrderingTerm(expression: t.createdAt)]))
+          .get();
+
+  Future<void> insertSceneDraftSnapshot(SceneDraftSnapshotsCompanion entry) =>
+      into(sceneDraftSnapshots).insert(entry);
+
+  Future<int> deleteSceneDraftSnapshotsBefore(
+    String sceneId,
+    DateTime cutoff,
+  ) =>
+      (delete(sceneDraftSnapshots)..where(
+            (t) =>
+                t.sceneId.equals(sceneId) &
+                t.createdAt.isSmallerThanValue(cutoff),
+          ))
+          .go();
+
+  Future<void> deleteSceneDraftSnapshotsForScene(String sceneId) => (delete(
+    sceneDraftSnapshots,
+  )..where((t) => t.sceneId.equals(sceneId))).go();
+
+  Future<void> deleteSceneDraftSnapshotByIds(List<String> ids) =>
+      (delete(sceneDraftSnapshots)..where((t) => t.id.isIn(ids))).go();
 }

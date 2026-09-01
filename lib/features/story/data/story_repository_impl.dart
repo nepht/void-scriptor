@@ -1,7 +1,9 @@
 import 'package:drift/drift.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../database/project/project_database.dart';
 import '../domain/story_model.dart';
+import '../domain/draft_snapshots.dart';
 
 class StoryHierarchy {
   const StoryHierarchy({
@@ -62,6 +64,9 @@ class StoryRepositoryImpl {
   StoryRepositoryImpl({required this.database, required this.projectId});
   final ProjectDatabase database;
   final String projectId;
+
+  /// Batas retensi per scene (sesi berjalan; snapshot itu sendiri persisten).
+  final Map<String, int> _retentionLimits = <String, int>{};
 
   Future<void> saveSceneDraft(String sceneId, String content) async {
     final existing =
@@ -216,5 +221,108 @@ class StoryRepositoryImpl {
       }
     }
     return matches.values.toList(growable: false);
+  }
+
+  /// Snapshot persistence draft (Step 145.24) — kontrak DraftSnapshotStore.
+  Future<String> captureSceneDraftSnapshot(
+    String sceneId, {
+    required String label,
+    DraftSnapshotKind kind = DraftSnapshotKind.manual,
+  }) async {
+    final draft = await getSceneDraft(sceneId);
+    if (draft == null) {
+      throw StateError('no draft content for scene $sceneId');
+    }
+    final id = const Uuid().v4();
+    final dbKind = kind.name;
+    await database.storyDao.insertSceneDraftSnapshot(
+      SceneDraftSnapshotsCompanion.insert(
+        id: id,
+        sceneId: sceneId,
+        projectId: projectId,
+        kind: dbKind,
+        content: draft,
+        label: label,
+        createdAt: DateTime.now(),
+      ),
+    );
+    await _enforceRetention(sceneId);
+    return id;
+  }
+
+  Future<void> _enforceRetention(String sceneId) async {
+    final limit = _retentionLimits[sceneId];
+    if (limit == null || limit <= 0) return;
+    final all = await database.storyDao.getSceneDraftSnapshots(sceneId);
+    if (all.length <= limit) return;
+    final excess = all.length - limit;
+    final toDelete = all.take(excess).map((s) => s.id).toList();
+    if (toDelete.isEmpty) return;
+    await database.storyDao.deleteSceneDraftSnapshotByIds(toDelete);
+  }
+
+  Future<List<SceneDraftSnapshot>> getSceneDraftSnapshots(
+    String sceneId, {
+    String? snapshotId,
+    DraftSnapshotKind? kind,
+  }) async {
+    final all = await database.storyDao.getSceneDraftSnapshots(sceneId);
+    var result = all;
+    if (snapshotId != null) {
+      result = result.where((s) => s.id == snapshotId).toList();
+    }
+    if (kind != null) {
+      result = result.where((s) => _kindFromDb(s.kind) == kind).toList();
+    }
+    return result;
+  }
+
+  DraftSnapshotKind _kindFromDb(String dbKind) {
+    switch (dbKind) {
+      case 'auto':
+        return DraftSnapshotKind.auto;
+      case 'manual':
+        return DraftSnapshotKind.manual;
+      default:
+        return DraftSnapshotKind.restoreBackup;
+    }
+  }
+
+  Future<String> restoreSceneDraftSnapshot(
+    String sceneId, {
+    required String snapshotId,
+  }) async {
+    final snapshots = await database.storyDao.getSceneDraftSnapshots(sceneId);
+    final target = snapshots.firstWhere((s) => s.id == snapshotId);
+    final current = await getSceneDraft(sceneId);
+    if (current != null) {
+      // backup current draft before restore
+      await database.storyDao.insertSceneDraftSnapshot(
+        SceneDraftSnapshotsCompanion.insert(
+          id: const Uuid().v4(),
+          sceneId: sceneId,
+          projectId: projectId,
+          kind: 'restoreBackup',
+          content: current,
+          label: 'cadangan sebelum pulih',
+          createdAt: DateTime.now(),
+        ),
+      );
+    }
+    await saveSceneDraft(sceneId, target.content);
+    return target.content;
+  }
+
+  /// Menetapkan batas retensi snapshot untuk satu scene dan memangkas
+  /// pelanggaran yang sudah ada. Batas diterapkan juga pada capture berikutnya.
+  Future<void> setDraftSnapshotRetention(
+    String sceneId, {
+    required int maxSnapshots,
+  }) async {
+    if (maxSnapshots <= 0) {
+      throw ArgumentError('maxSnapshots must be positive');
+    }
+    _retentionLimits[sceneId] = maxSnapshots;
+    await _enforceRetention(sceneId);
   }
 }

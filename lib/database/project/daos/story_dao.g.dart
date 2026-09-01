@@ -12,6 +12,8 @@ mixin _$StoryDaoMixin on DatabaseAccessor<ProjectDatabase> {
   $SceneEnvironmentContextsTable get sceneEnvironmentContexts =>
       attachedDatabase.sceneEnvironmentContexts;
   $SceneBeatsTable get sceneBeats => attachedDatabase.sceneBeats;
+  $SceneDraftSnapshotsTable get sceneDraftSnapshots =>
+      attachedDatabase.sceneDraftSnapshots;
   $SceneContinuityChangesTable get sceneContinuityChanges =>
       attachedDatabase.sceneContinuityChanges;
   $StoryBibleSectionsTable get storyBibleSections =>
@@ -42,6 +44,11 @@ class StoryDaoManager {
       );
   $$SceneBeatsTableTableManager get sceneBeats =>
       $$SceneBeatsTableTableManager(_db.attachedDatabase, _db.sceneBeats);
+  $$SceneDraftSnapshotsTableTableManager get sceneDraftSnapshots =>
+      $$SceneDraftSnapshotsTableTableManager(
+        _db.attachedDatabase,
+        _db.sceneDraftSnapshots,
+      );
   $$SceneContinuityChangesTableTableManager get sceneContinuityChanges =>
       $$SceneContinuityChangesTableTableManager(
         _db.attachedDatabase,

@@ -34,7 +34,7 @@ void main() {
     addTearDown(second.close);
     final entries = await BibleRepository(second).listEntries('project-1');
 
-    expect(second.schemaVersion, 56);
+    expect(second.schemaVersion, 57);
     expect(entries.single.title, 'Clan Kokuen');
     expect(entries.single.type, BibleEntryType.faction);
     expect(entries.single.tags, ['clan', 'void']);

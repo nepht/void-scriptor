@@ -38,7 +38,7 @@ void main() {
     final second = await service.open(path);
     addTearDown(second.close);
     final units = await FactionRepository(second).unitsFor('faction-1');
-    expect(second.schemaVersion, 56);
+    expect(second.schemaVersion, 57);
     expect(units.single.parentUnitId, 'unit-root');
   });
 }

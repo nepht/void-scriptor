@@ -20977,6 +20977,460 @@ class SceneBeatsCompanion extends UpdateCompanion<SceneBeat> {
   }
 }
 
+class $SceneDraftSnapshotsTable extends SceneDraftSnapshots
+    with TableInfo<$SceneDraftSnapshotsTable, SceneDraftSnapshot> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SceneDraftSnapshotsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sceneIdMeta = const VerificationMeta(
+    'sceneId',
+  );
+  @override
+  late final GeneratedColumn<String> sceneId = GeneratedColumn<String>(
+    'scene_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sceneId,
+    projectId,
+    kind,
+    content,
+    label,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'scene_draft_snapshots';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SceneDraftSnapshot> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('scene_id')) {
+      context.handle(
+        _sceneIdMeta,
+        sceneId.isAcceptableOrUnknown(data['scene_id']!, _sceneIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneIdMeta);
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SceneDraftSnapshot map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SceneDraftSnapshot(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      sceneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scene_id'],
+      )!,
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SceneDraftSnapshotsTable createAlias(String alias) {
+    return $SceneDraftSnapshotsTable(attachedDatabase, alias);
+  }
+}
+
+class SceneDraftSnapshot extends DataClass
+    implements Insertable<SceneDraftSnapshot> {
+  final String id;
+  final String sceneId;
+  final String projectId;
+  final String kind;
+  final String content;
+  final String label;
+  final DateTime createdAt;
+  const SceneDraftSnapshot({
+    required this.id,
+    required this.sceneId,
+    required this.projectId,
+    required this.kind,
+    required this.content,
+    required this.label,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['scene_id'] = Variable<String>(sceneId);
+    map['project_id'] = Variable<String>(projectId);
+    map['kind'] = Variable<String>(kind);
+    map['content'] = Variable<String>(content);
+    map['label'] = Variable<String>(label);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  SceneDraftSnapshotsCompanion toCompanion(bool nullToAbsent) {
+    return SceneDraftSnapshotsCompanion(
+      id: Value(id),
+      sceneId: Value(sceneId),
+      projectId: Value(projectId),
+      kind: Value(kind),
+      content: Value(content),
+      label: Value(label),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory SceneDraftSnapshot.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SceneDraftSnapshot(
+      id: serializer.fromJson<String>(json['id']),
+      sceneId: serializer.fromJson<String>(json['sceneId']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      kind: serializer.fromJson<String>(json['kind']),
+      content: serializer.fromJson<String>(json['content']),
+      label: serializer.fromJson<String>(json['label']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sceneId': serializer.toJson<String>(sceneId),
+      'projectId': serializer.toJson<String>(projectId),
+      'kind': serializer.toJson<String>(kind),
+      'content': serializer.toJson<String>(content),
+      'label': serializer.toJson<String>(label),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  SceneDraftSnapshot copyWith({
+    String? id,
+    String? sceneId,
+    String? projectId,
+    String? kind,
+    String? content,
+    String? label,
+    DateTime? createdAt,
+  }) => SceneDraftSnapshot(
+    id: id ?? this.id,
+    sceneId: sceneId ?? this.sceneId,
+    projectId: projectId ?? this.projectId,
+    kind: kind ?? this.kind,
+    content: content ?? this.content,
+    label: label ?? this.label,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  SceneDraftSnapshot copyWithCompanion(SceneDraftSnapshotsCompanion data) {
+    return SceneDraftSnapshot(
+      id: data.id.present ? data.id.value : this.id,
+      sceneId: data.sceneId.present ? data.sceneId.value : this.sceneId,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      content: data.content.present ? data.content.value : this.content,
+      label: data.label.present ? data.label.value : this.label,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneDraftSnapshot(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('projectId: $projectId, ')
+          ..write('kind: $kind, ')
+          ..write('content: $content, ')
+          ..write('label: $label, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, sceneId, projectId, kind, content, label, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SceneDraftSnapshot &&
+          other.id == this.id &&
+          other.sceneId == this.sceneId &&
+          other.projectId == this.projectId &&
+          other.kind == this.kind &&
+          other.content == this.content &&
+          other.label == this.label &&
+          other.createdAt == this.createdAt);
+}
+
+class SceneDraftSnapshotsCompanion extends UpdateCompanion<SceneDraftSnapshot> {
+  final Value<String> id;
+  final Value<String> sceneId;
+  final Value<String> projectId;
+  final Value<String> kind;
+  final Value<String> content;
+  final Value<String> label;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const SceneDraftSnapshotsCompanion({
+    this.id = const Value.absent(),
+    this.sceneId = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.content = const Value.absent(),
+    this.label = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SceneDraftSnapshotsCompanion.insert({
+    required String id,
+    required String sceneId,
+    required String projectId,
+    required String kind,
+    required String content,
+    required String label,
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       sceneId = Value(sceneId),
+       projectId = Value(projectId),
+       kind = Value(kind),
+       content = Value(content),
+       label = Value(label),
+       createdAt = Value(createdAt);
+  static Insertable<SceneDraftSnapshot> custom({
+    Expression<String>? id,
+    Expression<String>? sceneId,
+    Expression<String>? projectId,
+    Expression<String>? kind,
+    Expression<String>? content,
+    Expression<String>? label,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sceneId != null) 'scene_id': sceneId,
+      if (projectId != null) 'project_id': projectId,
+      if (kind != null) 'kind': kind,
+      if (content != null) 'content': content,
+      if (label != null) 'label': label,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SceneDraftSnapshotsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? sceneId,
+    Value<String>? projectId,
+    Value<String>? kind,
+    Value<String>? content,
+    Value<String>? label,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return SceneDraftSnapshotsCompanion(
+      id: id ?? this.id,
+      sceneId: sceneId ?? this.sceneId,
+      projectId: projectId ?? this.projectId,
+      kind: kind ?? this.kind,
+      content: content ?? this.content,
+      label: label ?? this.label,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sceneId.present) {
+      map['scene_id'] = Variable<String>(sceneId.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneDraftSnapshotsCompanion(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('projectId: $projectId, ')
+          ..write('kind: $kind, ')
+          ..write('content: $content, ')
+          ..write('label: $label, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $SceneContinuityChangesTable extends SceneContinuityChanges
     with TableInfo<$SceneContinuityChangesTable, SceneContinuityChange> {
   @override
@@ -70933,6 +71387,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final $SceneEnvironmentContextsTable sceneEnvironmentContexts =
       $SceneEnvironmentContextsTable(this);
   late final $SceneBeatsTable sceneBeats = $SceneBeatsTable(this);
+  late final $SceneDraftSnapshotsTable sceneDraftSnapshots =
+      $SceneDraftSnapshotsTable(this);
   late final $SceneContinuityChangesTable sceneContinuityChanges =
       $SceneContinuityChangesTable(this);
   late final $StoryBibleSectionsTable storyBibleSections =
@@ -71227,6 +71683,7 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     sceneCharacters,
     sceneEnvironmentContexts,
     sceneBeats,
+    sceneDraftSnapshots,
     sceneContinuityChanges,
     storyBibleSections,
     timelines,
@@ -82554,6 +83011,260 @@ typedef $$SceneBeatsTableProcessedTableManager =
         BaseReferences<_$ProjectDatabase, $SceneBeatsTable, SceneBeat>,
       ),
       SceneBeat,
+      PrefetchHooks Function()
+    >;
+typedef $$SceneDraftSnapshotsTableCreateCompanionBuilder =
+    SceneDraftSnapshotsCompanion Function({
+      required String id,
+      required String sceneId,
+      required String projectId,
+      required String kind,
+      required String content,
+      required String label,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$SceneDraftSnapshotsTableUpdateCompanionBuilder =
+    SceneDraftSnapshotsCompanion Function({
+      Value<String> id,
+      Value<String> sceneId,
+      Value<String> projectId,
+      Value<String> kind,
+      Value<String> content,
+      Value<String> label,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$SceneDraftSnapshotsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $SceneDraftSnapshotsTable> {
+  $$SceneDraftSnapshotsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SceneDraftSnapshotsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $SceneDraftSnapshotsTable> {
+  $$SceneDraftSnapshotsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sceneId => $composableBuilder(
+    column: $table.sceneId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SceneDraftSnapshotsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $SceneDraftSnapshotsTable> {
+  $$SceneDraftSnapshotsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get sceneId =>
+      $composableBuilder(column: $table.sceneId, builder: (column) => column);
+
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$SceneDraftSnapshotsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $SceneDraftSnapshotsTable,
+          SceneDraftSnapshot,
+          $$SceneDraftSnapshotsTableFilterComposer,
+          $$SceneDraftSnapshotsTableOrderingComposer,
+          $$SceneDraftSnapshotsTableAnnotationComposer,
+          $$SceneDraftSnapshotsTableCreateCompanionBuilder,
+          $$SceneDraftSnapshotsTableUpdateCompanionBuilder,
+          (
+            SceneDraftSnapshot,
+            BaseReferences<
+              _$ProjectDatabase,
+              $SceneDraftSnapshotsTable,
+              SceneDraftSnapshot
+            >,
+          ),
+          SceneDraftSnapshot,
+          PrefetchHooks Function()
+        > {
+  $$SceneDraftSnapshotsTableTableManager(
+    _$ProjectDatabase db,
+    $SceneDraftSnapshotsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SceneDraftSnapshotsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SceneDraftSnapshotsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SceneDraftSnapshotsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> sceneId = const Value.absent(),
+                Value<String> projectId = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<String> label = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SceneDraftSnapshotsCompanion(
+                id: id,
+                sceneId: sceneId,
+                projectId: projectId,
+                kind: kind,
+                content: content,
+                label: label,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String sceneId,
+                required String projectId,
+                required String kind,
+                required String content,
+                required String label,
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => SceneDraftSnapshotsCompanion.insert(
+                id: id,
+                sceneId: sceneId,
+                projectId: projectId,
+                kind: kind,
+                content: content,
+                label: label,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SceneDraftSnapshotsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $SceneDraftSnapshotsTable,
+      SceneDraftSnapshot,
+      $$SceneDraftSnapshotsTableFilterComposer,
+      $$SceneDraftSnapshotsTableOrderingComposer,
+      $$SceneDraftSnapshotsTableAnnotationComposer,
+      $$SceneDraftSnapshotsTableCreateCompanionBuilder,
+      $$SceneDraftSnapshotsTableUpdateCompanionBuilder,
+      (
+        SceneDraftSnapshot,
+        BaseReferences<
+          _$ProjectDatabase,
+          $SceneDraftSnapshotsTable,
+          SceneDraftSnapshot
+        >,
+      ),
+      SceneDraftSnapshot,
       PrefetchHooks Function()
     >;
 typedef $$SceneContinuityChangesTableCreateCompanionBuilder =
@@ -109888,6 +110599,8 @@ class $ProjectDatabaseManager {
       );
   $$SceneBeatsTableTableManager get sceneBeats =>
       $$SceneBeatsTableTableManager(_db, _db.sceneBeats);
+  $$SceneDraftSnapshotsTableTableManager get sceneDraftSnapshots =>
+      $$SceneDraftSnapshotsTableTableManager(_db, _db.sceneDraftSnapshots);
   $$SceneContinuityChangesTableTableManager get sceneContinuityChanges =>
       $$SceneContinuityChangesTableTableManager(
         _db,

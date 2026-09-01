@@ -47,7 +47,7 @@ Observed safeguards include:
 | Characters have live implementation/test evidence | VERIFIED |
 | Locations/Environment have live implementation/test evidence | VERIFIED |
 | Story/Lore has live implementation/test evidence | VERIFIED |
-| Timeline has live implementation/test evidence | PARTIAL; implementation/tests exist, complete Core journey remains open |
+| Timeline has live implementation/test evidence | VERIFIED (2026-09-02 cron: scene-to-timeline journey closed; production Material fix + drag-to-command-to-DB journey + move persistence restart) |
 | Factions have a complete Core editor/persistence journey | VERIFIED (2026-09-02 cron: editor UI closed, commit 3374abe); create/list/persistence (e286ca9) + editor UI journey (Project Bible FACTIONS section: live list, create dialog through CreateFactionService, duplicate-name visible error, narrow render) proven by 4 UI tests + 4 service tests |
 | Relationship Map has complete Core editor/persistence journey | PARTIAL; graph/relation seams exist, full UX contract remains open |
 | Lore Notes have complete rename/broken-link/keyboard journey | PARTIAL; domain/link seams exist, complete 145.29 contract remains open |
@@ -170,3 +170,31 @@ PASS 34.2s, `git diff --check` PASS, roadmap guard PASS pre+post.
 Remaining 145.27 rows: Lore Notes full contract (145.29), uniform route
 gating (concurrently-owned app_router.dart must not be touched from cron),
 user validation evidence. The step remains PARTIAL; the pointer stays 145.27.
+
+## Update 2026-09-02 (nephthys cron, Timeline Core journey)
+
+Step 14527 Core Worldbuilding Reduction - the Timeline journey row is closed
+with an executable vertical slice:
+
+- Production bug found and fixed: opening Timeline from a real scene
+  (SceneWorkspaceScreen._openTimeline -> MaterialPageRoute) rendered
+  TimelineWorkspaceScreen without a Material ancestor, and TimelineClip's
+  InkWell crashed with No Material widget found. Fix wraps the pushed route
+  in a Scaffold (lib/features/story/presentation/scene_workspace_screen.dart).
+  The journey test reproduced this crash before the fix (RED for real).
+- test/features/timeline/timeline_scene_journey_test.dart proves the full
+  production path: live project session -> SceneWorkspaceScreen Open
+  Timeline -> ensureTimelineForScene -> TimelineWorkspaceScreen with the
+  live clip -> drag 160px -> MoveTimelineClipCommand through the mutation
+  bus -> clip startSeconds 2 persisted in the live SQLite database.
+- test/features/timeline/timeline_move_persistence_test.dart proves a
+  moved clip timing survives close/reopen of the project database (schema
+  59).
+
+Evidence: timeline suite 13 PASS, story+workspaces 197 PASS, flutter
+analyze No issues, git diff --check PASS, windows debug build PASS 26.9s.
+
+Remaining 14527 rows: Lore Notes full contract (14529), uniform route
+gating (concurrently-owned app_router.dart must not be touched from cron),
+user validation evidence. The step remains PARTIAL; the pointer stays
+14527.

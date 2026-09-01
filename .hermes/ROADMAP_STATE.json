@@ -8,8 +8,8 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.26 Character Scope Layers PARTIAL (2026-09-02 cron b, persistence slice): schema 58->59 tiga tabel scope layer (character_canonical_scopes / character_universe_timeline_overrides / character_novel_states, guarded migration, data canonical tidak tersentuh), CharacterDao get/upsert/remove per layer, removeCharacterScopeRows wired ke deleteCharacter (delete-safety), repository getScopeStates/updateScopeState (interface+impl), 30 file asersi schema stale 58->59. RED terverifikasi. Bukti: focused 5/5 PASS, regression character+release+database+project_package 108 PASS, analyze No issues, full suite 3288 PASS / 1 FAIL (app_bootstrap_test konkuren 145.20, tidak disentuh), windows debug build PASS 29.9s+28.2s, diff --check PASS. Sisa: command integration (execute scoped write), Workspace source-scope display; next_step tetap 145.26",
-  "next_step": "145.26",
+  "last_verified_step": "145.26 Character Scope Layers VERIFIED (2026-09-02 cron: evidence-closure). Objective exact sprint_145.26 terbukti bukti eksekusi: contract test 14 PASS (discriminator 3 layer, ownership disjoint spec-exact, null=inherit, resolver precedence tanpa mutasi input, scoped command payload), persistence 5 PASS (schema 58->59 tiga tabel per layer, guarded migration, delete-safety, restart round-trip), command integration 3 PASS (UpdateCharacterScopeFieldCommand execute menulis merged state hanya layer target via repository, sibling preserved, non-owned ArgumentError pre-write, undo/redo field-scoped), source-scope display 2 PASS (characterScopeStatesProvider + CharacterScopeStatusCard chip layer berdata + baris efektif dari layer, production session path; RED ganda: card absent + RenderFlex overflow 28px pre-existing 390px, ModeSection pindah ke scroll area narrow). Gerbang: character suite 63 PASS, analyze No issues, full suite 3293 PASS / 1 FAIL (app_bootstrap_test konkuren 145.20, tidak disentuh), windows debug build PASS 28.0s, diff --check PASS, roadmap guard PASS pre-update. Native interaction UNVERIFIABLE (cron) - bukan acceptance item per presedens 145.24/145.25. Commits: 681023e, 91a98f4, 11de9de, 84e9b04 (feat) + ledger/state.",
+  "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-02T05:30:00+07:00",
-  "updated_by": "nephthys cron: 145.26 persistence slice (schema 59); next_step tetap 145.26",
+  "updated_at": "2026-09-02T13:30:00+07:00",
+  "updated_by": "nephthys cron: 145.26 evidence-closure VERIFIED; pointer -> 145.27",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

@@ -142,3 +142,26 @@ Sisa gap menuju VERIFIED 145.26 (setelah slice ini):
 1. Integrasi command dengan repository/session nyata (execute menulis hanya layer yang dideklarasikan; clear override = fallback ke layer di bawah, bukan mutasi canonical).
 2. Character Workspace source-scope display (per guidance item 2 poin 9).
 3. Native interaction proof (UNVERIFIABLE dari cron; bukan acceptance item per presedens 145.24/145.25).
+
+
+## Command integration + source-scope display slices (2026-09-02, cron)
+
+Gap #1 (command integration) closed by `test/features/character/update_character_scope_field_command_test.dart` (3 PASS, RED terverifikasi: `UpdateCharacterScopeFieldCommand` undefined sebelum implementasi):
+
+- `lib/features/character/application/update_character_scope_field_command.dart` - `UpdateCharacterScopeFieldCommand` (BaseCommand): execute membaca state layer target via `getScopeStates`, merge SATU field milik layer tsb, tulis via `updateScopeState` - sibling field di layer yang sama tidak pernah ikut ter-clear; field bukan milik layer ditolak `ArgumentError` SEBELUM akses database; undo menulis kembali `oldValue` hanya pada field tsb; redo = execute. `null` newValue meng-clear override field tsb sehingga resolver efektif fallback ke layer di bawah (bukti test ketiga: clear CURRENT_STATUS novel -> efektif null, canonical rows tak tersentuh). Catatan desain: ownership disjoint berarti canonical table tidak punya kolom CURRENT_STATUS/CURRENT_LOCATION/ROLE/ARC - nilai efektif field tsb hanya berasal dari universe/novel layer.
+- Bukti gerbang: focused 3/3 PASS, character suite 61 PASS (pasca-format), format 2 files, analyze No issues, commit 11de9de.
+
+Gap #2 (Workspace source-scope display) closed by `test/features/character/character_scope_status_ui_test.dart` (2 PASS, RED terverifikasi: `Character Scope` text 0 widgets + RenderFlex overflow 28px pre-existing di 390px):
+
+- `lib/features/character/presentation/widgets/character_scope_status_card.dart` - `characterScopeStatesProvider` (FutureProvider.family via projectSessionProvider + CharacterRepositoryImpl.getScopeStates, production path) + `CharacterScopeStatusCard` (ConsumerWidget): menampilkan chip layer yang punya data (Canonical / Universe-Timeline / Novel-Specific) dan baris sumber efektif per field `Identity/Voice/Role/Status/Location: <nilai> (from <layer>)` - layer tanpa data tidak diklaim. Mounted di CharacterWorkspaceScreen SETELAH ReferencesCard (akhir konten) agar geometri tap test narrow existing tidak bergeser.
+- RED kedua sekaligus: test narrow 390px mereproduksi RenderFlex overflow 28px PRE-EXISTING di `character_workspace_screen.dart` (CharacterModeSection fixed di luar scroll area). Fix responsif: pada width < 1100 CharacterModeSection pindah ke DALAM SingleChildScrollView (di atas konten), desktop >= 1100 tidak berubah (mode section tetap fixed di atas scroll area). Test narrow existing `character_workspace_test.dart` (390x844) tetap PASS.
+- Pola test live-session: setup IO nyata (ProjectPackageService.create + ProjectSessionManager.open + drift writes) HARUS dibungkus `tester.runAsync` - tanpa itu test hang di fake-async zone (2 kali run hang terverifikasi lalu dibersihkan Stop-Process).
+- Bukti gerbang: focused 2/2 PASS, character suite 63 PASS, analyze No issues (9.5s setelah fix curly_braces lint), full suite 3293 PASS / 1 FAIL (app_bootstrap_test konkuren 145.20, tidak disentuh; 3288 + 5 test baru = 3293 eksak), windows debug build PASS 28.0s, diff --check PASS, commit 84e9b04 (mixed-file technique: staging mine-only - sibling deletion-review slice pada character_workspace_screen.dart dipreservasi di disk, tidak ikut ter-commit).
+
+Sisa gap menuju VERIFIED 145.26:
+
+1. Native interaction proof (UNVERIFIABLE dari cron; bukan acceptance item per presedens 145.24/145.25 - reconciliation guidance mengizinkan closure tanpa native click/type bila tool interaksi tidak tersedia).
+
+## Evidence-closure (2026-09-02, cron)
+
+Status naik PARTIAL -> VERIFIED via evidence-closure reconciliation (pola RESOLUTION_GUIDANCE_145_24_145_26): objective eksak "Menerapkan or document Canonical, Universe/Timeline Override, and Novel-specific State with explicit scoped edits and no silent canonical mutation" terbukti per item - implementasi (enum discriminator, ownership map spec-exact, resolver, 3 tabel persistence, scoped command dengan write nyata, display sumber scope) dan dokumentasi (audit ini + ledger) keduanya tersedia dengan test eksekusi live (14+5+3+2 PASS). No silent canonical mutation terbukti struktural (tabel disjoint per layer + ArgumentError pre-write + merge sibling) dan behavioral (test lintas layer + clear-override). Native interaction direkam jujur UNVERIFIABLE dan tidak menghalangi closure per guidance.

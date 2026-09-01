@@ -75,7 +75,7 @@ Covered behaviors:
 | Interview history/provenance | VERIFIED by focused tests |
 | Generic selection/resolver integration | PARTIAL; Character-local selection/controller evidence exists, complete clean-device route journey remains open |
 | Character relations/linking | VERIFIED by live-session journey (2026-09-01 cron): create via mutation bus (`RelationCommand.create` -> `RelationRepositoryImpl`), `RelationDisplayService.forAsset` resolves label `uses` + target name `Void Dagger`, `RelationSection` renders inside `CharacterInspector` with live `projectSessionProvider`, repository delete resolves empty again — `test/features/relations/character_relations_journey_test.dart` 1 PASS (commit 1ce0f81) |
-| Quick reference across Story/Scene/AI context | PARTIAL; identity surfaces exist, complete cross-feature context journey remains open |
+| Quick reference across Story/Scene/AI context | VERIFIED at domain+AI+UI layers (2026-09-01 cron f): `CharacterQuickRef` domain (`lib/features/character/domain/character_quick_ref.dart`), `StoryRepositoryImpl.quickReferenceForScene` (canonical profile rows + identity notes + scene role; empty facts tidak bocor — kontrak baris eksak), `AiCharacterContext.quickRef` propagated by `AiContextResolver.resolveScene` (per-scene list, firstOrNull per character), Story Workspace panel `CHARACTER QUICK REF` loads on scene selection via repository (no dialog, no manual input). RED terverifikasi (quickReferenceForScene/quickRef/panel No element) -> GREEN: `test/features/story/character_quick_reference_test.dart` 1 PASS + `test/features/story/story_workspace_quick_ref_ui_test.dart` 1 PASS. Native Windows interaction tetap UNVERIFIABLE dari cron |
 | Native Windows interaction | UNVERIFIABLE; driver previously returned `snapshot_id_required` |
 | Full Core vertical journey | PENDING; depends on remaining 145.30–145.35 and 145.41–145.44 contracts |
 
@@ -106,7 +106,7 @@ Boundary note: the dialog-driven add/delete click flow in a running native windo
 
 ## Decision
 
-`145.25 Character Workspace Core` berstatus **PARTIAL**. The Character Workspace and supporting identity/continuity primitives have strong live evidence: 33 focused tests pass. Relations/linking, complete quick-reference propagation into Story/Scene/AI context, full shared resolver journey, and native Windows interaction remain open.
+`145.25 Character Workspace Core` berstatus **PARTIAL**. The Character Workspace and supporting identity/continuity primitives have strong live evidence: 33 focused tests pass. Relations/linking closed (commit 1ce0f81), quick-reference propagation into Story/Scene/AI context closed at domain+AI+UI layers (commit slice ini); full shared resolver journey dan native Windows interaction remain open.
 
 Next: `145.26 Environment / Location Core`.
 
@@ -144,3 +144,46 @@ This is a scope/evidence audit. No production Character code, schema, migration,
 - 145.25: `docs/audits/character-workspace-core.md`
 
 Current blockers remain: `145.19` dependency boundary, `145.20–145.25` partial vertical slices, and native Windows interaction blocked by `snapshot_id_required`. No commit, push, tag, cleanup, or destructive storage action was performed. The next concrete step is to audit `145.26 Environment / Location Core`.
+
+## Update 2026-09-01 (cron f: quick-reference propagation)
+
+- Gap "Quick reference across Story/Scene/AI context" ditutup pada tiga
+  lapisan dengan TDD (RED terverifikasi sebelum implementasi):
+  1. **Domain**: `lib/features/character/domain/character_quick_ref.dart`
+     — `CharacterQuickRef` (characterId, name, alias, compactDescription,
+     role, summary getter). Murni domain, tanpa DB/UI.
+  2. **Repository**: `StoryRepositoryImpl.quickReferenceForScene(sceneId)`
+     — untuk tiap anggota scene (SceneCharacters), baca profil canon
+     `Characters` (biography, personality, gender, age, heightCm, hair,
+     eyes, skin), notes `CharacterIdentityProfiles`, lalu rangkai baris
+     non-kosong menjadi `compactDescription`; role dari keanggotaan
+     scene. Karakter yang barisnya hilang di `Characters` dilewati.
+  3. **AI context**: `AiCharacterContext.quickRef` (field opsional baru)
+     diisi `AiContextResolver.resolveScene` dari daftar quick reference
+     per scene (firstOrNull per karakter) sehingga prompt composer punya
+     akses kartu ringkas tanpa membaca Drift langsung.
+  4. **UI**: panel `CHARACTER QUICK REF` di `StoryWorkspaceScreen`
+     ditempatkan SETELAH panel SCENE SNAPSHOTS (geometri tap test
+     existing tidak bergeser), memuat kartu via
+     `_loadQuickRefsFor(sceneId)` pada pemilihan scene (CHAPTERS dan
+     hasil NOVEL SEARCH), hint eksplisit saat belum ada scene, tanpa
+     dialog/input manual.
+- RED: `quickReferenceForScene isn't defined`, `quickRef isn't defined
+  for AiCharacterContext`, UI `Bad state: No element` pada
+  `find.text('CHARACTER QUICK REF')`.
+- GREEN: `test/features/story/character_quick_reference_test.dart`
+  1 PASS (journey: character canon + identity notes + addCharacter ->
+  quickReferenceForScene baris eksak -> AiContextResolver.resolveScene
+  membawa quickRef); `test/features/story/story_workspace_quick_ref_ui_test.dart`
+  1 PASS (journey UI fake-repository: hint -> pilih scene -> kartu
+  Qowner + role participant + baris Hair/Eyes tampil).
+- Regression fix additive: fake repository di
+  `novel_workspace_search_snapshot_ui_test.dart` di-override
+  `quickReferenceForScene` (return const []) karena tap path scene baru
+  memuat quick reference; asersi 145.24 tidak diubah.
+- Bukti: story+relations+ai_context+inspector 153 PASS; `flutter
+  analyze` No issues found; `dart format` scoped 8 file (4 changed,
+  format-only); `git diff --check` PASS; full suite + windows debug
+  build direkam di update ledger berikutnya.
+- Sisa gap 145.25: full shared resolver journey (clean-device route
+  journey) dan native Windows interaction (UNVERIFIABLE dari cron).

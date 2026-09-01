@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.25+quick-reference-propagation-closed-partial",
+  "last_verified_step": "145.28+screen-focus-integration-closed-partial",
   "next_step": "145.24",
   "stability_gate": {
     "status": "PASS",
@@ -39,8 +39,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-01T13:05:00+07:00",
-  "updated_by": "nephthys cron g: 145.25 resolver journey + 145.24/145.25 native render proof closed; native interaction UNVERIFIABLE from cron; next_step stays 145.24 (recovery candidate per guard)",
+  "updated_at": "2026-09-01T14:45:00+07:00",
+  "updated_by": "nephthys cron h: 145.28 screen focus integration closed (commit 7d9b0f4: FocusWritingSession wired ke StoryWorkspaceScreen, autosave label dinamis, focus toggle menyembunyikan chrome; writing_room_focus_test 2 PASS, full suite 3241 PASS, windows debug build PASS); next_step stays 145.24 (recovery candidate per guard)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

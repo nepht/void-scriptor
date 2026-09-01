@@ -1,26 +1,36 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
+import '../../../database/project/project_database.dart';
+import '../../project_resilience/application/project_session_manager.dart';
+import '../../projects/presentation/project_persistence_providers.dart';
+import '../application/create_faction_service.dart';
+import '../application/faction_repository.dart';
+import '../domain/faction.dart';
 
 const _projectBibleSections = <String>[
   'Universe Overview',
   'Canon Rules',
   'Worldbuilding',
+  'Factions',
   'Timeline / Eras',
   'Canon Conflicts',
 ];
 
-class ProjectBibleWorkspaceScreen extends StatefulWidget {
+class ProjectBibleWorkspaceScreen extends ConsumerStatefulWidget {
   const ProjectBibleWorkspaceScreen({super.key});
 
   @override
-  State<ProjectBibleWorkspaceScreen> createState() =>
+  ConsumerState<ProjectBibleWorkspaceScreen> createState() =>
       _ProjectBibleWorkspaceScreenState();
 }
 
 class _ProjectBibleWorkspaceScreenState
-    extends State<ProjectBibleWorkspaceScreen> {
+    extends ConsumerState<ProjectBibleWorkspaceScreen> {
   int _selectedSection = 0;
 
   @override
@@ -61,6 +71,8 @@ class _ProjectBibleWorkspaceScreenState
                         ),
                       const SizedBox(height: 20),
                       _OverviewGrid(narrow: narrow),
+                      const SizedBox(height: 16),
+                      const _FactionsSection(),
                       const SizedBox(height: 16),
                       if (narrow)
                         const Column(
@@ -327,6 +339,259 @@ class _TimelineCard extends StatelessWidget {
       ],
     ),
   );
+}
+
+class _FactionsSection extends ConsumerStatefulWidget {
+  const _FactionsSection();
+
+  @override
+  ConsumerState<_FactionsSection> createState() => _FactionsSectionState();
+}
+
+class _FactionsSectionState extends ConsumerState<_FactionsSection> {
+  List<FactionModel>? _factions;
+
+  @override
+  void initState() {
+    super.initState();
+    _reload();
+  }
+
+  Future<void> _reload() async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null) return;
+    final factions = await FactionRepository(
+      session.database,
+    ).listForProject(session.manifest.id);
+    if (!mounted) return;
+    setState(() => _factions = factions);
+  }
+
+  Future<void> _createFaction() async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null) return;
+    final created = await showDialog<FactionModel>(
+      context: context,
+      builder: (_) => _CreateFactionDialog(
+        db: session.database,
+        projectId: session.manifest.id,
+      ),
+    );
+    if (created == null) return;
+    await _reload();
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Faksi "${created.name}" dibuat')));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // The session provider resolves asynchronously; reload once it appears so
+    // the first frame never permanently shows the loading state.
+    ref.listen<AsyncValue<ProjectSession?>>(projectSessionProvider, (
+      previous,
+      next,
+    ) {
+      if (previous?.valueOrNull == null && next.valueOrNull != null) {
+        _reload();
+      }
+    });
+    final narrow = MediaQuery.sizeOf(context).width < 760;
+    final factions = _factions;
+    return _BibleCard(
+      title: 'FACTIONS',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (factions == null)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Text('Memuat faksi...'),
+            )
+          else if (factions.isEmpty)
+            const Text('Belum ada faksi')
+          else ...[
+            for (final faction in factions)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _FactionCard(faction: faction, narrow: narrow),
+              ),
+          ],
+          const SizedBox(height: 12),
+          Align(
+            alignment: narrow ? Alignment.centerLeft : Alignment.centerRight,
+            child: OutlinedButton.icon(
+              onPressed: _createFaction,
+              icon: const Icon(Icons.add),
+              label: const Text('Faksi Baru'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FactionCard extends StatelessWidget {
+  const _FactionCard({required this.faction, required this.narrow});
+
+  final FactionModel faction;
+  final bool narrow;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = context.palette;
+    final details = <String>[
+      if (faction.ideology.isNotEmpty) faction.ideology,
+      if (faction.status.isNotEmpty) 'Status: ${faction.status}',
+      if (faction.headquarters.isNotEmpty) faction.headquarters,
+    ];
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: palette.borderSoft),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.groups_outlined, color: palette.primaryBright),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  faction.name,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: palette.textPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                if (details.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    details.join('  |  '),
+                    overflow: narrow ? TextOverflow.ellipsis : null,
+                    maxLines: narrow ? 1 : 3,
+                    style: TextStyle(
+                      color: palette.textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CreateFactionDialog extends StatefulWidget {
+  const _CreateFactionDialog({required this.db, required this.projectId});
+
+  final ProjectDatabase db;
+  final String projectId;
+
+  @override
+  State<_CreateFactionDialog> createState() => _CreateFactionDialogState();
+}
+
+class _CreateFactionDialogState extends State<_CreateFactionDialog> {
+  final _nameController = TextEditingController();
+  final _ideologyController = TextEditingController();
+  String? _error;
+  bool _busy = false;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _ideologyController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    if (_busy) return;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      final created = await const CreateFactionService().create(
+        widget.db,
+        projectId: widget.projectId,
+        name: _nameController.text,
+        ideology: _ideologyController.text,
+      );
+      if (!mounted) return;
+      Navigator.of(context).pop(created);
+    } on ArgumentError {
+      if (!mounted) return;
+      setState(() {
+        _busy = false;
+        _error = 'Nama tidak boleh kosong.';
+      });
+    } on StateError catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _busy = false;
+        _error = e.message;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _busy = false;
+        _error = 'Gagal membuat faksi.';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = context.palette;
+    return AlertDialog(
+      backgroundColor: palette.panelSecondary,
+      title: Text('Faksi Baru', style: TextStyle(color: palette.textPrimary)),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            key: const ValueKey('faction_name'),
+            controller: _nameController,
+            autofocus: true,
+            decoration: InputDecoration(
+              labelText: 'Nama Faksi',
+              errorText: _error,
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            key: const ValueKey('faction_ideology'),
+            controller: _ideologyController,
+            decoration: const InputDecoration(labelText: 'Ideologi'),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: _busy ? null : () => Navigator.of(context).pop(),
+          child: const Text('Batal'),
+        ),
+        FilledButton(
+          onPressed: _busy ? null : _submit,
+          child: const Text('Simpan'),
+        ),
+      ],
+    );
+  }
 }
 
 class _BibleCard extends StatelessWidget {

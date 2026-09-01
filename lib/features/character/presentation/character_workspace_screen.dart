@@ -10,6 +10,7 @@ import 'widgets/character_empty_state.dart';
 import 'widgets/character_header.dart';
 import 'widgets/character_identity_card.dart';
 import 'widgets/character_portrait_card.dart';
+import 'widgets/character_private_notes_card.dart';
 import 'widgets/color_palette_card.dart';
 import 'widgets/identity_preservation_card.dart';
 import 'widgets/references_card.dart';
@@ -88,6 +89,7 @@ class _CharacterWorkspaceScreenState
       height: character.heightCm == null ? '—' : '${character.heightCm} cm',
       hair: character.hair,
       eyes: character.eyes,
+      voice: character.voice,
     );
     final top = desktop
         ? Row(
@@ -141,58 +143,31 @@ class _CharacterWorkspaceScreenState
           outfitLock: identity.outfitLock,
           onFaceChanged: (value) => _updateIdentity(
             identity,
-            (profile) => CharacterIdentityProfile(
-              characterId: profile.characterId,
-              faceLock: value,
-              hairLock: profile.hairLock,
-              bodyLock: profile.bodyLock,
-              colorLock: profile.colorLock,
-              outfitLock: profile.outfitLock,
-            ),
+            (profile) => profile.copyWith(faceLock: value),
           ),
           onHairChanged: (value) => _updateIdentity(
             identity,
-            (profile) => CharacterIdentityProfile(
-              characterId: profile.characterId,
-              faceLock: profile.faceLock,
-              hairLock: value,
-              bodyLock: profile.bodyLock,
-              colorLock: profile.colorLock,
-              outfitLock: profile.outfitLock,
-            ),
+            (profile) => profile.copyWith(hairLock: value),
           ),
           onBodyChanged: (value) => _updateIdentity(
             identity,
-            (profile) => CharacterIdentityProfile(
-              characterId: profile.characterId,
-              faceLock: profile.faceLock,
-              hairLock: profile.hairLock,
-              bodyLock: value,
-              colorLock: profile.colorLock,
-              outfitLock: profile.outfitLock,
-            ),
+            (profile) => profile.copyWith(bodyLock: value),
           ),
           onColorChanged: (value) => _updateIdentity(
             identity,
-            (profile) => CharacterIdentityProfile(
-              characterId: profile.characterId,
-              faceLock: profile.faceLock,
-              hairLock: profile.hairLock,
-              bodyLock: profile.bodyLock,
-              colorLock: value,
-              outfitLock: profile.outfitLock,
-            ),
+            (profile) => profile.copyWith(colorLock: value),
           ),
           onOutfitChanged: (value) => _updateIdentity(
             identity,
-            (profile) => CharacterIdentityProfile(
-              characterId: profile.characterId,
-              faceLock: profile.faceLock,
-              hairLock: profile.hairLock,
-              bodyLock: profile.bodyLock,
-              colorLock: profile.colorLock,
-              outfitLock: value,
-            ),
+            (profile) => profile.copyWith(outfitLock: value),
+          ),
+        ),
+        const SizedBox(height: 16),
+        CharacterPrivateNotesCard(
+          initialNotes: identity.notes,
+          onSave: (value) => _updateIdentity(
+            identity,
+            (profile) => profile.copyWith(notes: value),
           ),
         ),
         const SizedBox(height: 16),

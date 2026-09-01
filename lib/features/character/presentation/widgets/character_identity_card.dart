@@ -11,8 +11,9 @@ class CharacterIdentityCard extends StatelessWidget {
     required this.hair,
     required this.eyes,
     required this.age,
+    this.voice = '',
   });
-  final String name, alias, height, hair, eyes, age;
+  final String name, alias, height, hair, eyes, age, voice;
   @override
   Widget build(BuildContext context) => VoidCard(
     child: Column(
@@ -27,6 +28,7 @@ class CharacterIdentityCard extends StatelessWidget {
           ('Height', height),
           ('Hair', hair),
           ('Eyes', eyes),
+          ('Voice', voice),
         ])
           _IdentityRow(label: row.$1, value: row.$2),
       ],

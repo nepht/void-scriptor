@@ -210,3 +210,32 @@ Next: `145.25 Character Workspace Core`.
   `flutter build windows --debug` PASS.
 - Sisa gap 145.24: native interaction proof (cron tidak punya
   computer_use driver), snapshot retention UI (minor).
+
+## Update 2026-09-01 (cron d: snapshot retention UI)
+
+- Gap snapshot retention UI ditutup (commit slice ini): panel SCENE
+  SNAPSHOTS di StoryWorkspaceScreen kini punya tombol 'Atur Retensi'
+  (ikon Icons.tune) di samping 'Snapshot'. Dialog 'Atur Batas Retensi'
+  mengumpulkan input angka (keyboardType number, onSubmitted/submit
+  'Terapkan'), mem-validasi int > 0, lalu memanggil
+  `StoryRepositoryImpl.setDraftSnapshotRetention(sceneId,
+  maxSnapshots: limit)` dan memuat ulang daftar snapshot — pemangkasan
+  pelanggaran tetap di repository (_enforceRetention), bukan di UI.
+  Pola dialog-based input dipertahankan (kontrak satu TextField di main
+  tree tetap aman; pelajaran cron c).
+- RED terverifikasi: `snapshot retention UI sets limit and trims
+  visible list` gagal `Bad state: No element` di `find.text('Atur
+  Retensi')` (UI belum ada), 2 test existing tetap PASS -> GREEN setelah
+  implementasi: test baru menekan tombol, mengisi '1', menekan
+  'Terapkan', lalu meng-assert `lastRetentionSceneId == 'scene-a'`,
+  `lastRetentionLimit == 1`, dan snapshot tertua ('checkpoint 1')
+  hilang dari daftar (fake mensimulasikan _enforceRetention).
+- Batas retensi tetap session-scoped sesuai kontrak domain 109.22
+  (DraftSnapshotStore.retentionLimit in-memory); persistensi limit
+  lintas restart bukan scope slice ini dan tidak diklaim.
+- Bukti: focused 3 PASS (2 existing + 1 retention baru), story suite
+  135 PASS (naik dari 134), `flutter analyze` No issues, format scoped
+  2 file 0 changed, `git diff --check` PASS; full suite + windows debug
+  build direkam di update ledger berikutnya.
+- Sisa gap 145.24: native interaction proof (cron tidak punya
+  computer_use driver).

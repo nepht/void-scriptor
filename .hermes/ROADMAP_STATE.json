@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.27 Core Worldbuilding Reduction PARTIAL with Factions editor UI closed (2026-09-02 cron, commit 3374abe). Factions row of the Core worldbuilding objective is now VERIFIED end-to-end: create/list/persistence (e286ca9) + editor UI (Project Bible FACTIONS section, ConsumerStatefulWidget over projectSessionProvider, create dialog via CreateFactionService, duplicate visible error, ref.listen session settle reload). Evidence: factions_editor_ui_test 4 PASS (RED verified), bible 36 PASS, route+bible 37 PASS, analyze No issues, full suite 3301 PASS / 1 FAIL (app_bootstrap_test concurrent 145.20, untouched), windows debug build PASS 29.1s, diff --check PASS, guard PASS pre+post. Remaining 145.27: Relationship Map contract, Lore Notes full contract (145.29), uniform route gating (concurrent-owned app_router.dart), user validation. Native interaction UNVERIFIABLE (cron).",
+  "last_verified_step": "145.27 Core Worldbuilding Reduction PARTIAL with Factions editor UI + Relationship Map contract closed (2026-09-02 cron, commit 93470b3). Relationship Map row VERIFIED end-to-end: CharacterRelationMapService.mapForProject resolves project relations into named character-endpoint rows (non-character endpoints keep raw ids), RelationDao.getProjectRelations additive query (no schema change), Project Bible RELATIONSHIP MAP section (live session via projectSessionProvider, ref.listen settle reload, empty hint, narrow-safe layout). Evidence: character_relation_map_service_test 2 PASS + relationship_map_ui_test 2 PASS (RED verified), focused relations+bible 49 PASS, analyze No issues, full suite 3305 PASS / 1 FAIL (app_bootstrap_test concurrent 145.20, untouched), windows debug build PASS 34.2s, diff --check PASS, guard PASS pre+post. Remaining 145.27: Lore Notes full contract (145.29), uniform route gating (concurrent-owned app_router.dart), user validation. Native interaction UNVERIFIABLE (cron).",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-02T21:45:00+07:00",
-  "updated_by": "nephthys cron (next run): 145.27 Factions editor UI landed (commit 3374abe, 4 UI PASS); 145.27 remains PARTIAL, pointer unchanged",
+  "updated_at": "2026-09-02T05:55:00+07:00",
+  "updated_by": "nephthys cron: 145.27 Relationship Map contract landed (commit 93470b3, service 2 PASS + UI 2 PASS RED-verified); 145.27 remains PARTIAL, pointer unchanged",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

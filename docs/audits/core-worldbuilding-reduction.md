@@ -141,3 +141,32 @@ Remaining 145.27 rows: Relationship Map contract, Lore Notes full contract
 (145.29), uniform route gating (concurrently-owned app_router.dart must not
 be touched from cron), user validation evidence. The step remains PARTIAL;
 the pointer stays 145.27.
+
+
+## Update 2026-09-02 (nephthys cron, Relationship Map contract)
+
+Step 145.27 Core Worldbuilding Reduction - the Relationship Map contract row
+is closed with an executable vertical slice (commit 93470b3):
+
+- Service layer: `CharacterRelationMapService.mapForProject` resolves every
+  project relation whose endpoints include characters into
+  `CharacterRelationMapEntry` rows with real names; non-character endpoints
+  keep their asset id so the map stays honest. Backed by an additive
+  `RelationDao.getProjectRelations` query (no schema change, no codegen).
+- UI layer: Project Bible workspace gains a RELATIONSHIP MAP section
+  (ConsumerStatefulWidget over `projectSessionProvider`, ref.listen session
+  settle reload, empty hint, narrow-safe card layout) placed after the
+  FACTIONS section.
+- RED verified first: `CharacterRelationMapService` undefined (service test
+  load failure), then "RELATIONSHIP MAP" 0 widgets in the UI test, before
+  each GREEN.
+
+Evidence: focused relations+bible 49 PASS, character_relation_map_service_test
+2 PASS, relationship_map_ui_test 2 PASS, `flutter analyze` No issues (after
+removing one unused import), full suite 3305 PASS / 1 FAIL
+(app_bootstrap_test, concurrent-owned 145.20, untouched), windows debug build
+PASS 34.2s, `git diff --check` PASS, roadmap guard PASS pre+post.
+
+Remaining 145.27 rows: Lore Notes full contract (145.29), uniform route
+gating (concurrently-owned app_router.dart must not be touched from cron),
+user validation evidence. The step remains PARTIAL; the pointer stays 145.27.

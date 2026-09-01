@@ -11,6 +11,7 @@ import '../../projects/presentation/project_persistence_providers.dart';
 import '../application/create_faction_service.dart';
 import '../application/faction_repository.dart';
 import '../domain/faction.dart';
+import '../../relations/application/character_relation_map_service.dart';
 
 const _projectBibleSections = <String>[
   'Universe Overview',
@@ -73,6 +74,8 @@ class _ProjectBibleWorkspaceScreenState
                       _OverviewGrid(narrow: narrow),
                       const SizedBox(height: 16),
                       const _FactionsSection(),
+                      const SizedBox(height: 16),
+                      const _RelationMapSection(),
                       const SizedBox(height: 16),
                       if (narrow)
                         const Column(
@@ -590,6 +593,136 @@ class _CreateFactionDialogState extends State<_CreateFactionDialog> {
           child: const Text('Simpan'),
         ),
       ],
+    );
+  }
+}
+
+class _RelationMapSection extends ConsumerStatefulWidget {
+  const _RelationMapSection();
+
+  @override
+  ConsumerState<_RelationMapSection> createState() => _RelationMapSectionState();
+}
+
+class _RelationMapSectionState extends ConsumerState<_RelationMapSection> {
+  List<CharacterRelationMapEntry>? _entries;
+
+  @override
+  void initState() {
+    super.initState();
+    _reload();
+  }
+
+  Future<void> _reload() async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null) return;
+    final entries = await const CharacterRelationMapService().mapForProject(
+      session.database,
+      projectId: session.manifest.id,
+    );
+    if (!mounted) return;
+    setState(() => _entries = entries);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // The session provider resolves asynchronously; reload once it appears so
+    // the first frame never permanently shows the loading state.
+    ref.listen<AsyncValue<ProjectSession?>>(projectSessionProvider, (
+      previous,
+      next,
+    ) {
+      if (previous?.valueOrNull == null && next.valueOrNull != null) {
+        _reload();
+      }
+    });
+    final narrow = MediaQuery.sizeOf(context).width < 760;
+    final entries = _entries;
+    return _BibleCard(
+      title: 'RELATIONSHIP MAP',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (entries == null)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Text('Memuat relasi...'),
+            )
+          else if (entries.isEmpty)
+            const Text('Belum ada relasi karakter')
+          else ...[
+            for (final entry in entries)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _RelationMapCard(entry: entry, narrow: narrow),
+              ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _RelationMapCard extends StatelessWidget {
+  const _RelationMapCard({required this.entry, required this.narrow});
+
+  final CharacterRelationMapEntry entry;
+  final bool narrow;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = context.palette;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: palette.borderSoft),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.hub_outlined, color: palette.primaryBright),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  entry.sourceName,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: palette.textPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  entry.typeLabel,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: palette.primaryBright,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  entry.targetName,
+                  overflow: narrow ? TextOverflow.ellipsis : null,
+                  maxLines: narrow ? 1 : 3,
+                  style: TextStyle(
+                    color: palette.textSecondary,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

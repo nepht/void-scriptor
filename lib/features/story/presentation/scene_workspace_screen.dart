@@ -83,24 +83,26 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
     if (!mounted) return;
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => TimelineWorkspaceScreen(
-          sceneId: widget.sceneId,
-          sceneTitle: widget.title,
-          durationSeconds: timeline?.durationSeconds ?? 10,
-          clips: clips,
-          onClipTimingChanged: (previous, clip) {
-            return session.mutationRuntime.bus.execute(
-              MoveTimelineClipCommand(
-                id: const Uuid().v4(),
-                projectId: session.manifest.id,
-                timelineService: service,
-                clipId: clip.id,
-                oldStartSeconds: previous.startSeconds,
-                newStartSeconds: clip.startSeconds,
-                durationSeconds: clip.durationSeconds,
-              ),
-            );
-          },
+        builder: (_) => Scaffold(
+          body: TimelineWorkspaceScreen(
+            sceneId: widget.sceneId,
+            sceneTitle: widget.title,
+            durationSeconds: timeline?.durationSeconds ?? 10,
+            clips: clips,
+            onClipTimingChanged: (previous, clip) {
+              return session.mutationRuntime.bus.execute(
+                MoveTimelineClipCommand(
+                  id: const Uuid().v4(),
+                  projectId: session.manifest.id,
+                  timelineService: service,
+                  clipId: clip.id,
+                  oldStartSeconds: previous.startSeconds,
+                  newStartSeconds: clip.startSeconds,
+                  durationSeconds: clip.durationSeconds,
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

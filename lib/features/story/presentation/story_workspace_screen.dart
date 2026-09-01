@@ -11,6 +11,8 @@ import '../application/story_markdown_exporter.dart';
 import '../domain/lore_link_suggester.dart';
 
 import '../data/story_repository_impl.dart';
+import 'package:void_scriptor/database/project/project_database.dart'
+    show SceneDraftSnapshot;
 import '../../workspaces/application/workspace_projection_cache.dart';
 import '../../workspaces/presentation/workspace_export_actions.dart';
 import '../../workspaces/presentation/workspace_export_options_dialog.dart';
@@ -86,6 +88,17 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   /// parallel archive write (ux rule: disable + loading state, never allow
   /// multiple submissions during processing).
   bool _novelIoBusy = false;
+
+  /// Step 145.24 Novel Workspace Core: state pencarian novel lintas scene.
+  /// Semua data diambil lewat repository.searchNovel — UI tidak pernah
+  /// membaca Drift atau menulis query ad-hoc.
+  List<NovelSearchResult>? _searchResults;
+
+  /// Step 145.24 Novel Workspace Core: state snapshot draft per scene
+  /// terpilih. Label snapshot manual diisi lewat field terpisah; restore
+  /// selalu lewat repository.restoreSceneDraftSnapshot.
+  List<SceneDraftSnapshot> _sceneSnapshots = const [];
+  String _restoringSnapshotId = '';
 
   @override
   void initState() {
@@ -545,6 +558,58 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     ],
   );
 
+  /// Step 145.24: panel snapshot scene terpilih — capture manual berlabel,
+  /// daftar snapshot, dan restore per baris (backup otomatis di repository).
+  Widget _buildSnapshots(VoidPalette p) {
+    final repository = widget.repository;
+    final sceneId = _selectedSceneId;
+    if (repository == null) {
+      return const Text('Belum ada session project aktif.');
+    }
+    if (sceneId == null) {
+      return const Text('Pilih scene untuk mengelola snapshot.');
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            onPressed: _showSnapshotDialog,
+            icon: const Icon(Icons.camera_alt_outlined),
+            label: const Text('Snapshot'),
+          ),
+        ),
+        const SizedBox(height: 8),
+        if (_sceneSnapshots.isEmpty)
+          Text(
+            'Belum ada snapshot untuk scene ini.',
+            style: TextStyle(color: p.textSecondary),
+          )
+        else
+          for (final snapshot in _sceneSnapshots)
+            ListTile(
+              dense: true,
+              leading: const Icon(Icons.history),
+              title: Text(
+                snapshot.label,
+                style: TextStyle(color: p.textPrimary),
+              ),
+              subtitle: Text(
+                '${snapshot.kind} · ${snapshot.createdAt.toIso8601String()}',
+                style: TextStyle(color: p.textSecondary),
+              ),
+              trailing: TextButton(
+                onPressed: _restoringSnapshotId.isEmpty
+                    ? () => _restoreSnapshot(snapshot.id)
+                    : null,
+                child: const Text('Restore'),
+              ),
+            ),
+      ],
+    );
+  }
+
   Widget _buildLiveChapters(VoidPalette p) {
     final repository = widget.repository;
     if (repository == null) {
@@ -577,8 +642,10 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                   setState(() {
                     _selectedSceneId = scene.id;
                     _selectedSceneTitle = scene.title;
+                    _sceneSnapshots = const [];
                   });
                   _loadDraftFor(scene.id);
+                  _loadSnapshotsFor(scene.id);
                 },
               ),
             );
@@ -591,11 +658,125 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     );
   }
 
+  /// Memuat draft + daftar snapshot scene terpilih (Step 145.24).
   Future<void> _loadDraftFor(String sceneId) async {
     final content = await widget.repository?.getSceneDraft(sceneId);
     if (!mounted) return;
     _draft.value = TextEditingValue(text: content ?? '');
     setState(() => _updateWordCount(content ?? ''));
+  }
+
+  /// Step 145.24: muat ulang daftar snapshot scene terpilih.
+  Future<void> _loadSnapshotsFor(String sceneId) async {
+    final repository = widget.repository;
+    if (repository == null) return;
+    final snapshots = await repository.getSceneDraftSnapshots(sceneId);
+    if (!mounted) return;
+    setState(() => _sceneSnapshots = snapshots);
+  }
+
+  /// Step 145.24: jalankan pencarian novel lintas scene lewat repository.
+  Future<void> _runNovelSearch(String query) async {
+    final repository = widget.repository;
+    if (repository == null) return;
+    final results = await repository.searchNovel(query);
+    if (!mounted) return;
+    setState(() => _searchResults = results);
+  }
+
+  /// Step 145.24: dialog pencarian. Query dikumpulkan di dialog agar tree
+  /// utama tetap memuat tepat satu TextField (kontrak editor draft).
+  Future<void> _showNovelSearchDialog() async {
+    final repository = widget.repository;
+    if (repository == null) return;
+    final queryController = TextEditingController();
+    final query = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Cari Novel'),
+        content: TextField(
+          controller: queryController,
+          autofocus: true,
+          decoration: const InputDecoration(
+            hintText: 'Query novel...',
+            border: OutlineInputBorder(),
+          ),
+          onSubmitted: (value) => Navigator.of(dialogContext).pop(value),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            onPressed: () =>
+                Navigator.of(dialogContext).pop(queryController.text),
+            child: const Text('Cari'),
+          ),
+        ],
+      ),
+    );
+    if (query == null || !mounted) return;
+    await _runNovelSearch(query);
+  }
+
+  /// Step 145.24: rekam snapshot manual berlabel untuk scene terpilih.
+  /// Label dikumpulkan lewat dialog supaya tree utama tetap satu TextField.
+  Future<void> _showSnapshotDialog() async {
+    final repository = widget.repository;
+    final sceneId = _selectedSceneId;
+    if (repository == null || sceneId == null) return;
+    final labelController = TextEditingController();
+    final label = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Rekam Snapshot'),
+        content: TextField(
+          controller: labelController,
+          autofocus: true,
+          decoration: const InputDecoration(
+            hintText: 'Label snapshot',
+            border: OutlineInputBorder(),
+          ),
+          onSubmitted: (value) => Navigator.of(dialogContext).pop(value),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            onPressed: () =>
+                Navigator.of(dialogContext).pop(labelController.text),
+            child: const Text('Rekam'),
+          ),
+        ],
+      ),
+    );
+    if (label == null || label.trim().isEmpty || !mounted) return;
+    await repository.captureSceneDraftSnapshot(sceneId, label: label.trim());
+    await _loadSnapshotsFor(sceneId);
+  }
+
+  /// Step 145.24: pulihkan snapshot terpilih; repository membuat backup
+  /// otomatis teks kini sebelum restore (kontrak 109.22).
+  Future<void> _restoreSnapshot(String snapshotId) async {
+    final repository = widget.repository;
+    final sceneId = _selectedSceneId;
+    if (repository == null || sceneId == null) return;
+    _restoringSnapshotId = snapshotId;
+    try {
+      final content = await repository.restoreSceneDraftSnapshot(
+        sceneId,
+        snapshotId: snapshotId,
+      );
+      if (!mounted) return;
+      _draft.value = TextEditingValue(text: content);
+      setState(() => _updateWordCount(content));
+    } finally {
+      _restoringSnapshotId = '';
+      await _loadSnapshotsFor(sceneId);
+    }
   }
 
   @override
@@ -708,6 +889,59 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                   style: TextStyle(color: p.textSecondary, height: 1.6),
                 ),
               ),
+              const SizedBox(height: 12),
+              _Panel(
+                title: 'NOVEL SEARCH',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton.icon(
+                        onPressed: widget.repository == null
+                            ? null
+                            : _showNovelSearchDialog,
+                        icon: const Icon(Icons.search),
+                        label: const Text('Cari Novel'),
+                      ),
+                    ),
+                    if (_searchResults != null) ...[
+                      const SizedBox(height: 8),
+                      if (_searchResults!.isEmpty)
+                        Text(
+                          'Tidak ada hasil.',
+                          style: TextStyle(color: p.textSecondary),
+                        )
+                      else
+                        for (final result in _searchResults!)
+                          ListTile(
+                            dense: true,
+                            leading: Badge(label: Text('${result.matchCount}')),
+                            title: Text(
+                              result.sceneTitle,
+                              style: TextStyle(color: p.textPrimary),
+                            ),
+                            subtitle: Text(
+                              result.chapterTitle,
+                              style: TextStyle(color: p.textSecondary),
+                            ),
+                            onTap: () {
+                              setState(() {
+                                _selectedSceneId = result.sceneId;
+                                _selectedSceneTitle = result.sceneTitle;
+                                _sceneSnapshots = const [];
+                              });
+                              _loadDraftFor(result.sceneId);
+                              _loadSnapshotsFor(result.sceneId);
+                            },
+                          ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              _Panel(title: 'SCENE SNAPSHOTS', child: _buildSnapshots(p)),
+              const SizedBox(height: 12),
             ],
           ),
         ),

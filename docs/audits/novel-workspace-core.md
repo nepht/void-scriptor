@@ -151,3 +151,35 @@ Next: `145.25 Character Workspace Core`.
 - Status gap diperbarui: snapshot persistence TERSEDIA di repository layer
   (UI journey snapshot/search, matriks fidelity export, native interaction
   proof masih terbuka).
+
+## Update 2026-09-01 (cron 145.24 snapshot + search UI journeys)
+
+- `StoryWorkspaceScreen` (lib/features/story/presentation/story_workspace_screen.dart)
+  kini memuat dua panel baru di akhir kolom (setelah STORY BIBLE, sehingga
+  geometri tap widget existing tidak bergeser):
+  1. **NOVEL SEARCH** — tombol 'Cari Novel' membuka dialog query;
+     submit menjalankan `repository.searchNovel` dan merender daftar hasil
+     lintas scene (judul scene + bab, badge jumlah match, tap hasil =
+     pilih scene + muat draft + snapshot).
+  2. **SCENE SNAPSHOTS** — untuk scene terpilih: tombol 'Snapshot' membuka
+     dialog label → `captureSceneDraftSnapshot` (manual berlabel); daftar
+     snapshot (label, kind, timestamp) dirender dari
+     `getSceneDraftSnapshots`; per baris tombol 'Restore' memanggil
+     `restoreSceneDraftSnapshot` dan menuliskan kembali isi snapshot ke
+     editor (backup otomatis teks kini di repository, kontrak 109.22).
+- Kontrak test existing dijaga: tree utama tetap TEPAT SATU TextField
+  (editor draft) — input query/label dikumpulkan lewat AlertDialog, bukan
+  TextField inline. Ini menjaga lore_link_autocomplete_test (single-TextField
+  assumption) dan novel_authoring_flow_test (find.byType(TextField) satu).
+- RED terverifikasi sebelum implementasi: 'Cari Novel' Found 0 (tanpa tombol
+  search UI), TextFormField/TextField kedua tidak ada (tanpa snapshot UI).
+- Bukti: `flutter test
+  test/features/story/novel_workspace_search_snapshot_ui_test.dart` 2 PASS
+  (search journey + snapshot journey, fake repository deterministik
+  extends StoryRepositoryImpl; persistensi lintas close/reopen tetap
+  dibuktikan draft_snapshot_persistence_test.dart); story suite 133 PASS
+  (regresi 9 gagal saat TextField inline ditemukan, lalu 0 setelah
+  redesign dialog); `flutter analyze` No issues; `git diff --check` PASS;
+  full suite 3233 PASS; `flutter build windows --debug` PASS.
+- Sisa gap 145.24: matriks fidelity export, native interaction proof
+  (cron tidak punya computer_use driver), snapshot retention UI.

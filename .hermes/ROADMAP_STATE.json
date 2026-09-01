@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.25 Character Workspace Core VERIFIED (evidence-closure reconciliation per RESOLUTION_GUIDANCE_145_24_145_26: semua item objective eksak terbukti bukti eksekusi live; genealogy if-present = N/A-DEFERRED; native interaction UNVERIFIABLE dari cron, bukan acceptance item)",
+  "last_verified_step": "145.26 Character Scope Layers PARTIAL (2026-09-02 cron, commit 681023e): contract-first domain slice landed dari kontrak eksplisit core_mvp_scope_reset_spec.json character_model (3 layers, ownership per layer, quick_edit_requires_scope_choice, override_never_silently_mutates_canonical); CharacterScopeLayer/FieldOwnership/ScopeState/EffectiveResolver/UpdateCharacterScopeCommand; RED terverifikasi, focused 14/14 PASS, char suite 53 PASS, analyze No issues, windows debug build PASS, diff --check PASS. Sisa: persistence scoped/migration preserving canonical, repository integration, Workspace source-scope display; next_step tetap 145.26",
   "next_step": "145.26",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-01T23:59:00+07:00",
-  "updated_by": "nephthys cron: 145.25 Character Workspace Core VERIFIED via evidence-closure reconciliation (genealogy N/A-DEFERRED; native interaction UNVERIFIABLE); next_step 145.26 Character Scope Layers (contract-first per guidance item 2)",
+  "updated_at": "2026-09-02T04:10:00+07:00",
+  "updated_by": "nephthys cron: 145.26 contract-first slice (681023e); next_step tetap 145.26 sampai persistence+integration+source-scope display terbukti",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

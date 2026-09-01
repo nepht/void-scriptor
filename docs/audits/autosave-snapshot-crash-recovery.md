@@ -166,3 +166,29 @@ Langkah lanjutan yang diperlukan bila kontrak failure-injection disetujui:
 - Sisa gap 145.30: failure-injection disk-full/permission, process-kill
   harness native, integrasi SaveCoordinator/AutosaveJournal lama dengan
   journal durable ini, native interaction proof (butuh sesi interaktif).
+
+
+## Update 2026-09-01 (cron j: failure injection)
+
+- Gap failure-injection disk-full/permission untuk DurableDraftJournal
+  ditutup sebagai evidence-first: `test/features/project_resilience/durable_draft_journal_failure_injection_test.dart`
+  (2 test) menutup dua boundary TANPA kode produksi baru.
+  (1) Orphan .tmp dari stage() yang terputus (crash setelah flush,
+  sebelum rename) TIDAK menutupi draf valid terakhir: pendingEntries
+  tetap memulihkan konten dari file .json utama (filter endsWith
+  '.json' mengabaikan .tmp dan file non-JSON).
+  (2) Kegagalan tulis di-propagasi dari stage(): path .tmp dijadikan
+  direktori sehingga openWrite melempar FileSystemException — teknik
+  deterministik lintas platform menggantikan chmod a-w yang terbukti
+  tidak efektif pada direktori Windows (pertama kali dicoba, stage
+  malah sukses = setup injection salah, bukan bug kode).
+- Pola PASS-first (seperti journey 145.25g): implementasi journal
+  sudah benar di boundary ini; tidak ada kode produksi yang ditulis
+  tanpa RED nyata.
+- Bukti: focused 6 PASS (4 journal + 2 failure-injection); regression
+  story+resilience 52 PASS; flutter analyze No issues (18.3s); full
+  suite 3250 PASS (= 3248 + 2, cocok eksak, ~12 mnt); flutter build
+  windows --debug PASS (21.9s); git diff --check PASS.
+- Sisa gap 145.30: native process-kill harness, integrasi
+  SaveCoordinator/AutosaveJournal lama dengan journal durable ini,
+  native interaction proof (butuh sesi interaktif).

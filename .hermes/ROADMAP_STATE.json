@@ -8,19 +8,19 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.25 Character Workspace Core (voice display + private notes editor UI closed on top of cron k BASE_VOICE/notes wiring; silent-drop identity bug fixed via copyWith; commit 01000fe; native interaction UNVERIFIABLE from cron)",
-  "next_step": "145.25",
+  "last_verified_step": "145.25 Character Workspace Core VERIFIED (evidence-closure reconciliation per RESOLUTION_GUIDANCE_145_24_145_26: semua item objective eksak terbukti bukti eksekusi live; genealogy if-present = N/A-DEFERRED; native interaction UNVERIFIABLE dari cron, bukan acceptance item)",
+  "next_step": "145.26",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
     "previous_result": {
-      "verified_at": "2026-09-01 (voice/notes UI cron)",
-      "roadmap_guard": "PASS pre-run; PASS post-state (pointer 145.25)",
-      "flutter_analyze": "PASS (No issues found!)",
-      "focused_core_regression": "PASS (test/features/character 39 PASS incl. character_voice_notes_ui_test live-session journey)",
-      "full_flutter_test": "PASS (3267 PASS / 1 FAIL concurrent-owned 145.20: app_bootstrap_test vs uncommitted main.dart/app_router sibling changes; root-caused, not touched)",
-      "windows_debug_build": "PASS (35.7s)",
-      "head_at_verification": "01000fe",
+      "verified_at": "2026-09-01 (145.25 evidence-closure cron)",
+      "roadmap_guard": "PASS pre-run; post-state check follows state update (pointer 145.26)",
+      "flutter_analyze": "PASS (No issues found!, 14.8s)",
+      "focused_core_regression": "PASS (test/features/character + test/features/relations + lore links + workspace resolver journey = 98 PASS)",
+      "full_flutter_test": "PASS (3267 PASS / 1 FAIL concurrent-owned 145.20: app_bootstrap_test vs uncommitted main.dart/app_router sibling; root-caused, not touched)",
+      "windows_debug_build": "PASS (26.4s)",
+      "head_at_verification": "abdc6b8",
       "note": "145.25 voice/notes UI+editor gap closed via TDD; screen file staged mine-only to preserve concurrent deletion-review slice on disk"
     },
     "required_checks": [
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-01T21:20:00+07:00",
-  "updated_by": "nephthys cron h: 145.24 Novel Workspace Core VERIFIED (evidence-closure reconciliation); next_step 145.25 Character Workspace Core; full suite 3262 PASS + 2 concurrent-owned fails (145.20 bootstrap/splash) reported untouched; build+analyze clean",
+  "updated_at": "2026-09-01T23:59:00+07:00",
+  "updated_by": "nephthys cron: 145.25 Character Workspace Core VERIFIED via evidence-closure reconciliation (genealogy N/A-DEFERRED; native interaction UNVERIFIABLE); next_step 145.26 Character Scope Layers (contract-first per guidance item 2)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

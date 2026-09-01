@@ -282,3 +282,41 @@ butuh sesi interaktif/computer_use).
 - Sisa gap 145.25: native interaction (UNVERIFIABLE dari cron, butuh
   computer_use/attended session); full Core vertical journey PENDING
   (depends 145.30-145.35, 145.41-145.44).
+
+
+## Rekonsiliasi evidence-closure 2026-09-01 (cron, per RESOLUTION_GUIDANCE_145_24_145_26)
+
+Sama seperti pola 145.24: objektif eksak `sprint_145.json` 145.25 adalah
+"Memverifikasi canonical identities, aliases, voice, visual notes,
+relationships, genealogy if present, private notes, linking, history, and
+quick reference." Setiap item kini terpetakan ke bukti eksekusi live di
+HEAD abdc6b8:
+
+| Objective item | Bukti eksekusi | Status |
+|---|---|---|
+| canonical identities | `test/features/character` 39 PASS (model, identity profile, command, repository) | VERIFIED |
+| aliases | `character_workspace_test.dart` (alias + long alias overflow), `character_repository_impl.dart` search case-insensitive menyertakan `alias` | VERIFIED |
+| voice | schema 58 BASE_VOICE + `character_voice_notes_test.dart` 5 PASS + UI voice row (commit 01000fe) | VERIFIED |
+| visual notes | `visual_continuity_test.dart` (canon, mismatch deterministic, scoped override) | VERIFIED |
+| relationships | live-session journey `test/features/relations/character_relations_journey_test.dart` 1 PASS (commit 1ce0f81) | VERIFIED |
+| genealogy (if present) | KONDISIONAL — tidak present di Core character scope: grep lib/test Character tidak ada genealogy; domain genealogy hanya di `world_logic` (stream sequential 110, SUSPENDED); family bond di Core dapat direpresentasikan via `AssetRelationType.relatedTo` (tersedia, tested via RelationCommand paths) | N/A-DEFERRED |
+| private notes | notes roundtrip dua arah (`getIdentity`/`updateIdentity`, commit a271c67) + editor UI Save eksplisit (commit 01000fe) | VERIFIED |
+| linking | lore links: `lore_backlinks_test.dart` (16 test), `inline_lore_links_test.dart`, `lore_link_autocomplete_test.dart` | VERIFIED |
+| history | `character_version_service_test.dart` capture/compare/restore/undo | VERIFIED |
+| quick reference | `CharacterQuickRef` domain + `StoryRepositoryImpl.quickReferenceForScene` + `AiContextResolver` + panel Story Workspace (commit 59ff338) | VERIFIED |
+
+Bukti fresh pada run ini (HEAD abdc6b8): focused character+relations+lore+resolver
+98 PASS; flutter analyze No issues 14.8s; full suite 3267 PASS / 1 FAIL
+(app_bootstrap_test — surface concurrent 145.20, root-caused run sebelumnya,
+bukan milik slice ini); windows debug build PASS 26.4s; git diff --check PASS.
+Native Windows interaction (klik/typing foreground) tetap UNVERIFIABLE dari
+cron tanpa computer_use — bukan acceptance item objective, hanya bukti
+tambahan bila tool tersedia (guidance item 1). Full Core vertical journey
+tetap PENDING (depends 145.30-145.35, 145.41-145.44), bukan acceptance
+tambahan 145.25.
+
+**Decision (revisi):** `145.25 Character Workspace Core` naik ke **VERIFIED**
+sebagai evidence-closure; seluruh item objective eksak terbukti bukti
+eksekusi. Verdict development-ready; bukan production-ready (native
+interaction proof deferred ke attended session; vertical journey Core
+menunggu langkah tersisa).

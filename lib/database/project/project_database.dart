@@ -362,8 +362,12 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(assetRelations);
       }
       if (from >= 2 && from < 3) {
-        await m.addColumn(assetRelations, assetRelations.projectId);
-        await m.addColumn(assetRelations, assetRelations.createdAt);
+        if (!await _columnExists('asset_relations', 'project_id')) {
+          await m.addColumn(assetRelations, assetRelations.projectId);
+        }
+        if (!await _columnExists('asset_relations', 'created_at')) {
+          await m.addColumn(assetRelations, assetRelations.createdAt);
+        }
       }
       if (from < 4) {
         await m.createTable(wardrobes);
@@ -389,21 +393,34 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(characterModeReferences);
       }
       if (from >= 6 && from < 7) {
-        await m.addColumn(
-          characterLoadoutEntries,
-          characterLoadoutEntries.quantity,
-        );
-        await m.addColumn(
-          characterIdentityProfiles,
-          characterIdentityProfiles.weaponLock,
-        );
+        if (!await _columnExists('character_loadout_entries', 'quantity')) {
+          await m.addColumn(
+            characterLoadoutEntries,
+            characterLoadoutEntries.quantity,
+          );
+        }
+        if (!await _columnExists(
+          'character_identity_profiles',
+          'weapon_lock',
+        )) {
+          await m.addColumn(
+            characterIdentityProfiles,
+            characterIdentityProfiles.weaponLock,
+          );
+        }
       }
       if (from >= 7 && from < 8) {
-        await m.addColumn(assetRelations, assetRelations.relationOrigin);
+        if (!await _columnExists('asset_relations', 'relation_origin')) {
+          await m.addColumn(assetRelations, assetRelations.relationOrigin);
+        }
       }
       if (from >= 8 && from < 9) {
-        await m.addColumn(characterModes, characterModes.accentColor);
-        await m.addColumn(characterModes, characterModes.tagsJson);
+        if (!await _columnExists('character_modes', 'accent_color')) {
+          await m.addColumn(characterModes, characterModes.accentColor);
+        }
+        if (!await _columnExists('character_modes', 'tags_json')) {
+          await m.addColumn(characterModes, characterModes.tagsJson);
+        }
       }
       if (from < 10) {
         await m.createTable(environments);
@@ -445,8 +462,12 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(aiGenerationInputs);
       }
       if (from < 15) {
-        await m.addColumn(assets, assets.favorite);
-        await m.addColumn(assets, assets.lastOpenedAt);
+        if (!await _columnExists('assets', 'favorite')) {
+          await m.addColumn(assets, assets.favorite);
+        }
+        if (!await _columnExists('assets', 'last_opened_at')) {
+          await m.addColumn(assets, assets.lastOpenedAt);
+        }
         await m.createTable(tags);
         await m.createTable(assetTagLinks);
         await m.createTable(assetCollections);
@@ -467,17 +488,26 @@ class ProjectDatabase extends _$ProjectDatabase {
       }
       if (from < 16) {
         if (from >= 2) {
-          await customStatement(
-            'ALTER TABLE character_identity_profiles ADD COLUMN accessory_lock BOOLEAN NOT NULL DEFAULT 0',
-          );
-          await customStatement(
-            "ALTER TABLE character_identity_profiles ADD COLUMN notes TEXT NOT NULL DEFAULT ''",
-          );
+          if (!await _columnExists(
+            'character_identity_profiles',
+            'accessory_lock',
+          )) {
+            await customStatement(
+              'ALTER TABLE character_identity_profiles ADD COLUMN accessory_lock BOOLEAN NOT NULL DEFAULT 0',
+            );
+          }
+          if (!await _columnExists('character_identity_profiles', 'notes')) {
+            await customStatement(
+              "ALTER TABLE character_identity_profiles ADD COLUMN notes TEXT NOT NULL DEFAULT ''",
+            );
+          }
         }
         if (from >= 6) {
-          await customStatement(
-            'ALTER TABLE character_modes ADD COLUMN reference_set_id TEXT',
-          );
+          if (!await _columnExists('character_modes', 'reference_set_id')) {
+            await customStatement(
+              'ALTER TABLE character_modes ADD COLUMN reference_set_id TEXT',
+            );
+          }
         }
         await m.createTable(references);
         await m.createTable(referenceSets);
@@ -489,7 +519,9 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(consistencyReviewItems);
       }
       if (from < 17 && from >= 11) {
-        await m.addColumn(storyScenes, storyScenes.referenceSetId);
+        if (!await _columnExists('story_scenes', 'reference_set_id')) {
+          await m.addColumn(storyScenes, storyScenes.referenceSetId);
+        }
       }
       if (from < 18) {
         await m.createTable(bibleEntries);
@@ -668,18 +700,7 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(sceneDraftSnapshots);
       }
       if (from < 58) {
-        // Forward recovery guard: a process crash mid-migration can leave
-        // the column already in place while user_version is still behind.
-        // Re-adding would abort the whole wave with "duplicate column name",
-        // so probe the live schema before altering (drift createTable waves
-        // are already idempotent via CREATE TABLE IF NOT EXISTS).
-        var voicePresent = true;
-        try {
-          await customStatement('SELECT voice FROM characters LIMIT 1');
-        } catch (_) {
-          voicePresent = false;
-        }
-        if (!voicePresent) {
+        if (!await _columnExists('characters', 'voice')) {
           await m.addColumn(characters, characters.voice);
         }
       }
@@ -690,6 +711,19 @@ class ProjectDatabase extends _$ProjectDatabase {
       }
     },
   );
+
+  /// Forward-recovery probe: ALTER TABLE ... ADD COLUMN is not idempotent,
+  /// and drift only bumps user_version after the whole onUpgrade wave
+  /// completes. A process crash mid-wave therefore leaves the column in
+  /// place with a stale user_version, and the next open would abort the
+  /// wave with "duplicate column name" (Sprint 145.40 forward-recovery
+  /// contract). Every addColumn wave is guarded with this probe; drift
+  /// create-table waves are already idempotent via CREATE TABLE IF NOT
+  /// EXISTS.
+  Future<bool> _columnExists(String table, String column) async {
+    final rows = await customSelect('PRAGMA table_info($table)').get();
+    return rows.any((row) => row.data['name'] == column);
+  }
 
   Future<void> _createIndexes() async {
     const indexStatements = [

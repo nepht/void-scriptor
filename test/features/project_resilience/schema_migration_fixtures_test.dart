@@ -266,4 +266,73 @@ void main() {
       },
     );
   });
+  group('145.40 exhaustive invariants gate', () {
+    // Exhaustive forward-recovery gate: every historical entry version
+    // 1..58 must migrate forward to v59 with the Core row intact.  A fresh
+    // v59 database is seeded with one Core asset row, user_version is
+    // rewound to the entry version (the exact state a process crash
+    // mid-migration leaves behind, because drift only bumps user_version
+    // after onUpgrade completes), and the next open must re-run every wave
+    // v..59 without crashing.
+    //
+    // createTable waves are idempotent (CREATE TABLE IF NOT EXISTS).
+    // addColumn waves are NOT idempotent, so every one of them is guarded
+    // with a _columnExists probe in ProjectDatabase (same pattern as the
+    // original v58 voice guard).  A crash here means a wave lost its
+    // guard - a real regression, not an artifact.
+    for (var entry = 1; entry <= 58; entry++) {
+      test(
+        'entry v$entry: forward recovery to v59 preserves schema and data',
+        () async {
+          final service = ProjectDatabaseService();
+          await service.create(dbFile().path);
+          // Seed one Core row so the gate also proves no silent data
+          // discard across the full migration chain.
+          final seeder = ProjectDatabase(NativeDatabase(dbFile()));
+          await seeder
+              .into(seeder.assets)
+              .insert(
+                AssetsCompanion.insert(
+                  id: 'asset-1',
+                  projectId: 'project-1',
+                  name: 'Qowner',
+                  type: 'character',
+                  createdAt: DateTime(2026),
+                  updatedAt: DateTime(2026),
+                ),
+              );
+          await seeder.close();
+          // Rewind user_version only (no structural changes): the exact
+          // state a process crash mid-wave leaves behind.
+          {
+            final rewound = ProjectDatabase(NativeDatabase(dbFile()));
+            await rewound.customStatement('PRAGMA user_version = $entry');
+            await rewound.close();
+          }
+
+          // Migration: may fail for addColumn-vulnerable entry versions.
+          // We catch the expected SqliteException addColumn crash and report
+          // the version so the guard can be added later.
+          try {
+            final database = await service.open(dbFile().path);
+            final version = await database
+                .customSelect('PRAGMA user_version')
+                .getSingle();
+            expect(version.data['user_version'], 59);
+            // If migration succeeded, verify Core data intact
+            final assets = await database.select(database.assets).get();
+            expect(assets, hasLength(1));
+            expect(assets.single.name, 'Qowner');
+            await database.close();
+          } on Exception catch (e) {
+            fail(
+              'entry v$entry: migration crashed mid-wave. An addColumn '
+              'wave lost its _columnExists forward-recovery guard. '
+              'Error: ${e.toString().length > 100 ? e.toString().substring(0, 100) : e.toString()}',
+            );
+          }
+        },
+      );
+    }
+  });
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
+import '../../export/domain/export_profiles.dart';
 import '../data/story_repository_impl.dart';
 
 /// Plain-text manuscript writer (Sprint 145.35).
@@ -15,22 +16,34 @@ class StoryTxtExporter {
 
   Future<String> exportStory(
     StoryRepositoryImpl repository,
-    String storyId,
-  ) async {
+    String storyId, {
+    ExportProfile? profile,
+  }) async {
     final hierarchy = await repository.getStoryHierarchy(storyId);
     final buffer = StringBuffer();
-    buffer.writeln(hierarchy.story.title);
-    buffer.writeln();
+    final fm = profile?.frontMatter;
+    if (fm != null) {
+      buffer.writeln(fm.title);
+      buffer.writeln(fm.author);
+      buffer.writeln();
+    } else {
+      buffer.writeln(hierarchy.story.title);
+      buffer.writeln();
+    }
     final chapterBreak = '=' * 40;
     var firstChapter = true;
-    for (final chapter in hierarchy.chapters) {
+    for (final (chapterIndex, chapter) in hierarchy.chapters.indexed) {
       if (!firstChapter) {
         buffer.writeln();
         buffer.writeln(chapterBreak);
         buffer.writeln();
       }
       firstChapter = false;
-      buffer.writeln(chapter.title);
+      final chapterRules = profile?.chapterRules;
+      final displayTitle = chapterRules == null
+          ? chapter.title
+          : chapterRules.title(chapterIndex + chapterRules.numberingStart);
+      buffer.writeln(displayTitle);
       buffer.writeln();
       for (final scene in chapter.scenes) {
         final draft = await repository.getSceneDraft(scene.id);
@@ -48,6 +61,7 @@ class StoryTxtExporter {
     String storyId, {
     required Directory exportDirectory,
     String fileName = 'story.txt',
+    ExportProfile? profile,
   }) async {
     final safeName = p.basename(fileName);
     if (safeName != fileName || !safeName.endsWith('.txt')) {
@@ -59,7 +73,7 @@ class StoryTxtExporter {
     }
     await exportDirectory.create(recursive: true);
     final file = File(p.join(exportDirectory.path, safeName));
-    final text = await exportStory(repository, storyId);
+    final text = await exportStory(repository, storyId, profile: profile);
     await file.writeAsString('$text\n');
     return file;
   }

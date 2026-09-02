@@ -21,11 +21,16 @@ class DurableAutosaveCoordinator {
     this.debounceDelay = const Duration(milliseconds: 1500),
     required this._persist,
     this._journal,
+    this.onSaved,
   });
 
   final Duration debounceDelay;
   final Future<void> Function(String sceneId, String content) _persist;
   final DurableDraftJournal? _journal;
+
+  /// Dipanggil SETELAH persist + acknowledge berhasil (bukan saat
+  /// dijadwalkan). Dipakai layar untuk meng-update label "Tersimpan HH:MM".
+  final void Function(String sceneId, String content)? onSaved;
 
   Timer? _timer;
   String? _pendingSceneId;
@@ -71,6 +76,7 @@ class DurableAutosaveCoordinator {
       await _persist(savedSceneId, savedContent);
       // Acknowledge hanya setelah persist sukses (no silent loss).
       await _journal?.acknowledge(savedSceneId);
+      onSaved?.call(savedSceneId, savedContent);
       // Hanya clear jika sceneId masih sama — draf yang di-set oleh
       // onDraftChanged saat save berjalan TIDAK dihapus (no silent loss).
       if (_pendingSceneId == savedSceneId) {

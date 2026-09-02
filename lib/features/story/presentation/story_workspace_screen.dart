@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 import 'package:void_scriptor/design_system/theme/void_palette.dart';
-import '../application/debounced_autosave.dart';
 import '../../project_resilience/application/durable_draft_journal.dart';
+import '../application/durable_autosave_coordinator.dart';
 import '../application/story_docx_exporter.dart';
 import 'package:flutter/services.dart';
 
@@ -74,7 +74,7 @@ class StoryWorkspaceScreen extends StatefulWidget {
 
 class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   final _draft = TextEditingController();
-  final _autosave = DebouncedAutosave();
+  late final DurableAutosaveCoordinator _autosave;
 
   /// Step 145.30 Autosave Snapshot and Crash Recovery: journal draf
   /// yang belum tersimpan durable. Null berarti tidak ada directory
@@ -140,6 +140,22 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     super.initState();
     _selectedSceneId = widget.sceneId;
     _draftJournal = widget.draftJournal;
+    // Step 145.30: koordinator autosave yang menyatukan debounce, journal
+    // durable, dan persist dengan urutan no-silent-loss. Acknowledge hanya
+    // setelah persist sukses; dispose mem-flush draf yang masih menunggu.
+    _autosave = DurableAutosaveCoordinator(
+      debounceDelay: const Duration(milliseconds: 1500),
+      persist: (sceneId, content) async {
+        final repository = widget.repository;
+        if (repository == null) return;
+        await repository.saveSceneDraft(sceneId, content);
+      },
+      journal: _draftJournal,
+      onSaved: (sceneId, content) {
+        if (!mounted) return;
+        setState(() => _lastSavedAt = DateTime.now());
+      },
+    );
     _loadDraft();
     _loadPendingRecovery();
     _prefetchLoreCatalog();
@@ -164,6 +180,8 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   @override
   void dispose() {
     _teardownLoreMenu();
+    // Step 145.30: flush draf yang masih menunggu debounce (no silent loss)
+    // alih-alih hanya membatalkan timer.
     _autosave.dispose();
     _draft.dispose();
     super.dispose();
@@ -178,18 +196,11 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     }
     final repository = widget.repository;
     final sceneId = _selectedSceneId;
-    final journal = _draftJournal;
     if (repository != null && sceneId != null) {
-      // Step 145.30: draf di-journal secara durable SEBELUM autosave
-      // jalan, sehingga crash/power-loss tidak pernah kehilangan suntingan
-      // yang belum sempat tersimpan (no silent loss).
-      journal?.stage(sceneId: sceneId, content: value);
-      _autosave.schedule(() async {
-        await repository.saveSceneDraft(sceneId, value);
-        await journal?.acknowledge(sceneId);
-        if (!mounted) return;
-        setState(() => _lastSavedAt = DateTime.now());
-      });
+      // Step 145.30: koordinator menyatukan stage journal durable, debounce,
+      // persist, dan acknowledge — urutan no-silent-loss dijaga di satu
+      // tempat (crash/power-loss tidak pernah kehilangan suntingan).
+      _autosave.onDraftChanged(sceneId: sceneId, content: value);
     }
   }
 

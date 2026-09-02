@@ -224,3 +224,23 @@ Langkah lanjutan yang diperlukan bila kontrak failure-injection disetujui:
   koordinator (story_workspace_screen.dart milik concurrent agen lain di
   worktree — wiring ditunda sampai file bebas), native interaction proof
   (butuh sesi interaktif).
+
+### Update 2026-09-02b - wiring screen produksi (commit 291a871)
+
+- Gap "wiring screen produksi ke koordinator" CLOSED. `StoryWorkspaceScreen`
+  kini meng-instansiasi `DurableAutosaveCoordinator` di `initState`
+  (debounce 1500ms, persist via `StoryRepositoryImpl.saveSceneDraft`,
+  journal = `DurableDraftJournal` dari binding, `onSaved` meng-update
+  `_lastSavedAt` untuk label autosave) dan `_count` hanya memanggil
+  `onDraftChanged`. Import `debounced_autosave.dart` dihapus dari screen.
+- Bukti behavioral baru: flush-on-dispose. RED terverifikasi pada wiring
+  lama: `test/features/story/durable_autosave_wiring_test.dart` gagal
+  (Expected 'draf baru sebelum debounce' / Actual 'teks awal') -
+  `DebouncedAutosave.dispose()` membuang timer dan draf hilang; setelah
+  wiring, draf yang belum ter-debounce tersimpan saat dispose (no silent
+  loss). GREEN: focused 12 PASS; story suite 149 PASS; analyze No issues;
+  full suite 3324 PASS + 1 FAIL (app_bootstrap_test concurrent 145.20,
+  untouched); windows debug build PASS 29.1s; git diff --check PASS.
+- Sisa gap 145.30: native process-kill harness + native interaction proof
+  (butuh sesi interaktif).
+

@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.29 Lore Linking and Search VERIFIED evidence-closure 2026-09-02 cron (mapping objective exact ke bukti eksekusi: fast link/reference 4 domain via loadCatalog 054e274 + GlobalSearchLauncher 295f528 + suggester, broken-link classifier/scanIntegrity, rename safety via RenameCharacterCommand loreRetarget 14e1ae8 - satu-satunya rename command produksi di tree, scope project-scoped, keyboard flow; DAN 145.28 Writing Room Focus VERIFIED evidence-closure (canvas/nav/save-state/word-count/focus/Esc-exit/chrome-hiding/search-ref seluruh punya test eksekusi: 7d9b0f4, ea42539, ef82042, 295f528); bukti fresh HEAD e926cdd: focused 42 PASS, analyze No issues, full 3323 PASS + 1 FAIL concurrent 145.20 untouched, build windows debug PASS 39.6s, diff --check PASS. Sisa 145.27 PARTIAL: uniform route gating (app_router.dart concurrent 145.20), user validation, native UNVERIFIABLE; 145.30 PARTIAL: native process-kill harness + wiring screen produksi (story_workspace_screen.dart concurrent); 145.42 IN_PROGRESS milik eksekutor lain.",
+  "last_verified_step": "145.30 wiring screen produksi CLOSED 2026-09-02 cron b (commit 291a871): StoryWorkspaceScreen memakai DurableAutosaveCoordinator menggantikan blok inline DebouncedAutosave+journal; dispose mem-flush draf yang menunggu debounce; onSaved update label Tersimpan. RED terverifikasi (flush-on-dispose: draf hilang pada wiring lama). Bukti fresh: focused 12 PASS, story suite 149 PASS, analyze No issues, full suite 3324 PASS + 1 FAIL (app_bootstrap_test concurrent 145.20 untouched, delta +1 eksak), windows debug build PASS 29.1s, diff --check PASS. Sisa 145.30 PARTIAL: native process-kill harness + native interaction proof (UNVERIFIABLE dari cron). 145.29 Lore Linking and Search VERIFIED evidence-closure 2026-09-02 cron",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-02T15:35:00+07:00",
-  "updated_by": "nephthys cron: evidence-closure 145.28 + 145.29 -> VERIFIED (docs commit e12a496), pointer stays 145.27 (sisa 145.27 non-actionable dari cron: app_router.dart concurrent, user validation, native UNVERIFIABLE)",
+  "updated_at": "2026-09-02T19:55:00+07:00",
+  "updated_by": "nephthys cron b: 145.30 wiring screen produksi CLOSED (feat commit 291a871 + docs commit berikut), pointer stays 145.27 (sisa 145.27 non-actionable dari cron: app_router.dart concurrent, user validation, native UNVERIFIABLE)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

@@ -21,7 +21,7 @@ Mendukung fast discoverable link/reference ke characters, locations, factions, d
 | Project scope | Catalog and backlink collection filter by project; retarget now filters beats through project-owned stories/scenes | VERIFIED after regression fix |
 | Lore creation | `CreateLoreEntityService` creates scoped Bible lore entries, trims names, rejects blank/duplicate names | VERIFIED |
 | Characters/locations/factions catalog | `CreateLoreEntityService.loadCatalog` unifies project-scoped Characters (displayName), Environments/Locations (name), Factions (name) with Species, Technologies, PowerSystems, BibleEntries (`test/features/bible/lore_catalog_core_entities_test.dart` 3 PASS: unified kinds/ids/details, project scoping, duplicate lore creation blocked by character name) | VERIFIED (2026-09-02 cron, commit 054e274) |
-| Global search UI | Domain/search seams exist, but complete cross-workspace search UI and navigation journey is not proven in this step | PARTIAL |
+| Global search UI | VERIFIED (2026-09-02 cron d: `GlobalSearchLauncher` + `showGlobalSearchSheet` + tombol 'Cari di Proyek' di `ProjectOverview` wired ke resolver; journey live-session `test/features/workspace/global_search_journey_test.dart` 2 PASS — pilih karakter menulis SelectionModel ter-typed ke shared selectionProvider dan membuka Character Workspace, pilih faksi memicu callback navigasi; launcher test 1 PASS; RED wiring terverifikasi via stash round-trip) | VERIFIED |
 | Native Windows interaction | Driver previously returned `snapshot_id_required` | UNVERIFIABLE |
 
 ## TDD regression
@@ -87,14 +87,14 @@ Result: PASS.
 ## Open gaps
 
 1. (Closed 2026-09-02, commit 054e274) Unified catalog now covers Character, Location/Environment, Faction, species/tech/power, and bible lore in one project-scoped application contract.
-2. Global search UI, result navigation, and source-to-target reference opening are not fully proven here.
+2. (Closed 2026-09-02 cron d) Cross-workspace search UI journey closed via GlobalSearchLauncher + showGlobalSearchSheet; result selection writes typed SelectionModel (asset) or invokes nav callback (faction).
 3. Rename safety is proven for link retargeting, but not yet wired to every entity rename command and every persisted source type.
 4. Native Windows interaction remains unverified.
 5. Full project gates were not rerun after this focused change; prior full gates are historical evidence only.
 
 ## Decision
 
-`145.29 Lore Linking and Search` berstatus **PARTIAL**. Link syntax, deterministic suggestions, keyboard flow, broken/ambiguous reporting, lore creation, rename-safe segment editing, and project-scoped retargeting are live and covered by 31 passing focused tests. The project-scope mutation bug was fixed through a RED → GREEN regression. The unified cross-domain catalog is now proven (2026-09-02, commit 054e274: Characters/Environments/Factions joined the live catalog with 3 new RED-verified tests). Cross-workspace search UI, universal rename wiring, and native proof remain open.
+`145.29 Lore Linking and Search` berstatus **PARTIAL**. Link syntax, deterministic suggestions, keyboard flow, broken/ambiguous reporting, lore creation, rename-safe segment editing, and project-scoped retargeting are live and covered by 31 passing focused tests. The project-scope mutation bug was fixed through a RED → GREEN regression. The unified cross-domain catalog is now proven (2026-09-02, commit 054e274: Characters/Environments/Factions joined the live catalog with 3 new RED-verified tests). Universal rename wiring is closed (14e1ae8 lineage); cross-workspace search UI is closed (2026-09-02 cron d). Native proof remains open.
 
 Next canonical step: `145.30 Autosave Snapshot and Crash Recovery`.
 

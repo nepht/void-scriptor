@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.27 Core Worldbuilding Reduction PARTIAL dengan slices 2026-09-02: Factions editor UI (3374abe), Relationship Map contract + evidence closure (93470b3/b4ac516), Timeline Core journey (f7a77bd), lore-link unified catalog (054e274), DAN universal rename wiring closed (2026-09-02 cron, commits 14e1ae8 feat + be78052 docs: RenameCharacterCommand menerima LoreBacklinkService opsional default-aktif; _rename retarget segmen [[Nama]] via retargetOccurrences pada execute/undo/redo, arah dari nama lain menuju nama diterapkan, teks polos + escape literal utuh; site produksi CharacterController.rename dan CommandTypeRegistry replay mendapat rename safety tanpa edit file concurrent; RED terverifikasi 2x - No named parameter 'loreRetarget' + konten tak berubah saat wiring di-stash; rename_character_command_lore_retarget_test 2 PASS, focused rename/backlinks 18 PASS, character+project_resilience+commands 120 PASS, analyze No issues, windows debug build PASS 27.7s, diff --check PASS, full suite 3314 PASS / 1 FAIL (app_bootstrap_test concurrent 145.20, untouched). Sisa 145.27: cross-workspace search UI journey (145.29), uniform route gating (app_router.dart concurrent), native interaction UNVERIFIABLE (cron), user validation.",
+  "last_verified_step": "145.27 Core Worldbuilding Reduction PARTIAL dengan slices 2026-09-02: Factions editor UI (3374abe), Relationship Map contract + evidence closure (93470b3/b4ac516), Timeline Core journey (f7a77bd), lore-link unified catalog (054e274), universal rename wiring (14e1ae8), DAN cross-workspace search UI journey (2026-09-02 cron d: GlobalSearchLauncher lib/features/workspace/application/global_search_launcher.dart menyatukan 4 domain Core - Assets rows utk character/environment/story + Factions table - dgn ranking exact>prefix>substring, scope per proyek, filter tipe, empty query; showGlobalSearchSheet dipanggil dari tombol 'Cari di Proyek' ProjectOverview wired ke resolver; pilih asset menulis SelectionModel ter-typed ke shared selectionProvider lalu resolver membuka workspace; pilih faksi memicu callback nav; global_search_journey_test 2 PASS live-session dgn RED wiring via stash round-trip, global_search_launcher_test 1 PASS RED-terverifikasi, workspace+assets 30 PASS, story+bible+character 249 PASS, analyze workspace No issues, diff --check PASS. Sisa 145.27: uniform route gating (app_router.dart concurrent 145.20), native interaction UNVERIFIABLE (cron), user validation.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-02T08:35:00+07:00",
-  "updated_by": "nephthys cron: 145.27 universal rename wiring landed, commits 14e1ae8 (feat slice) + be78052 (ledger/audit); 145.27 remains PARTIAL, pointer unchanged 145.27",
+  "updated_at": "2026-09-02T09:24:14+07:00",
+  "updated_by": "nephthys cron d: 145.27 cross-workspace search UI journey landed (GlobalSearchLauncher + sheet + resolver wiring); 145.27 remains PARTIAL, pointer unchanged 145.27",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

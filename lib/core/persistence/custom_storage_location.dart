@@ -121,11 +121,80 @@ class CustomStorageLocation {
   }
 }
 
+/// Reads the number of free bytes reported by the host for the volume
+/// backing [location]. Implementations return -1 when the host cannot be
+/// queried; callers treat that as an unknown-budget signal.
+abstract interface class HostDriveSpaceReader {
+  Future<int> freeBytes(String location);
+}
+
+/// Queries the live host for accurate free-space numbers. On Windows it
+/// shells out to PowerShell's Get-PSDrive; on other platforms (and on any
+/// host-query failure) it reports an unknown budget so the probe keeps its
+/// conservative standing offer instead of lying about free bytes.
+class PlatformDriveSpaceReader implements HostDriveSpaceReader {
+  const PlatformDriveSpaceReader();
+
+  @override
+  Future<int> freeBytes(String location) async {
+    final root = p.rootPrefix(location);
+    if (root.isEmpty) return -1;
+    if (Platform.isWindows) {
+      const uncPrefix = '\\\\?\\';
+      final driveLetter = root.startsWith(uncPrefix)
+          ? root.substring(uncPrefix.length)
+          : root;
+      final drive = driveLetter.endsWith(p.separator)
+          ? driveLetter.substring(0, driveLetter.length - 1)
+          : driveLetter;
+      if (drive.isEmpty || drive.length > 2) return -1;
+      try {
+        final result = Process.runSync('powershell.exe', [
+          '-NoProfile',
+          '-NonInteractive',
+          '-Command',
+          '(Get-PSDrive -Name '
+              '${drive[0]} -ErrorAction Stop).Free',
+        ]);
+        final out = result.stdout.toString().trim();
+        final negative = result.exitCode != 0 || out.isEmpty;
+        if (negative) return -1;
+        return int.tryParse(out) ?? -1;
+      } on ProcessException {
+        return -1;
+      }
+    }
+    return -1;
+  }
+}
+
+/// Default writable-probe used by [CustomStorageLocation.probe] when no
+/// health seam is injected. Writes a probe file, then reports the host
+/// free-space budget for the location.
+class DefaultStorageProbe implements StorageHealthProbe {
+  const DefaultStorageProbe({this.spaceReader});
+
+  final HostDriveSpaceReader? spaceReader;
+
+  @override
+  Future<StorageHealth> check(String location) async {
+    final reader = spaceReader ?? const PlatformDriveSpaceReader();
+    final free = await reader.freeBytes(location);
+    return _Probe.checkWith(location, free);
+  }
+}
+
 class _Probe implements StorageHealthProbe {
   const _Probe();
 
   @override
-  Future<StorageHealth> check(String location) async {
+  Future<StorageHealth> check(String location) =>
+      const DefaultStorageProbe().check(location);
+
+  /// Shared writable-check + host budget interpretation. An unknown budget
+  /// (-1) keeps the conservative 1 GiB standing offer so the minFreeBytes
+  /// guard only trips on a real reported shortage.
+  static Future<StorageHealth> checkWith(String location, int freeBytes) async {
     var writable = true;
     try {
       final probeFile = File(p.join(location, '.vs_write_probe'));
@@ -134,26 +203,19 @@ class _Probe implements StorageHealthProbe {
     } on FileSystemException {
       writable = false;
     }
-    return StorageHealth(
-      writable: writable,
-      freeBytes: writable ? await _freeSpace(location) : 0,
-      reason: writable
-          ? StorageProbeReason.ok
-          : StorageProbeReason.permissionDenied,
-    );
-  }
-
-  // Free-space measurement is host-dependent. The probe returns a
-  // conservative 1 GiB standing offer so the minFreeBytes guard only
-  // trips when an injected probe reports a real shortage.
-  static Future<int> _freeSpace(String location) async {
-    try {
-      final stat = await FileStat.stat(location);
-      if (stat.size < 0) return 1 << 30;
-      return 1 << 30;
-    } catch (_) {
-      return 0;
+    if (!writable) {
+      return const StorageHealth(
+        writable: false,
+        freeBytes: 0,
+        reason: StorageProbeReason.permissionDenied,
+      );
     }
+    final effective = freeBytes < 0 ? 1 << 30 : freeBytes;
+    return StorageHealth(
+      writable: true,
+      freeBytes: effective,
+      reason: StorageProbeReason.ok,
+    );
   }
 }
 

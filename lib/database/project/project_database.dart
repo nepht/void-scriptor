@@ -668,7 +668,20 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(sceneDraftSnapshots);
       }
       if (from < 58) {
-        await m.addColumn(characters, characters.voice);
+        // Forward recovery guard: a process crash mid-migration can leave
+        // the column already in place while user_version is still behind.
+        // Re-adding would abort the whole wave with "duplicate column name",
+        // so probe the live schema before altering (drift createTable waves
+        // are already idempotent via CREATE TABLE IF NOT EXISTS).
+        var voicePresent = true;
+        try {
+          await customStatement('SELECT voice FROM characters LIMIT 1');
+        } catch (_) {
+          voicePresent = false;
+        }
+        if (!voicePresent) {
+          await m.addColumn(characters, characters.voice);
+        }
       }
       if (from < 59) {
         await m.createTable(characterCanonicalScopes);

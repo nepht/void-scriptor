@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
+import 'package:sqlite3/sqlite3.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/persistence/project_manifest.dart';
 import 'package:void_scriptor/core/persistence/project_manifest_service.dart';
@@ -88,29 +89,34 @@ void main() {
     await rewound.customStatement(
       'DROP TABLE IF EXISTS character_universe_timeline_overrides',
     );
-    await rewound.customStatement('DROP TABLE IF EXISTS character_novel_states');
+    await rewound.customStatement(
+      'DROP TABLE IF EXISTS character_novel_states',
+    );
     await rewound.customStatement('PRAGMA user_version = 53');
     await rewound.close();
   }
 
   group('145.40 fixture matrix', () {
-    test('CURRENT: fresh create opens at v59 and reopens as a stable no-op', () async {
-      final service = ProjectDatabaseService();
-      await service.create(dbFile().path);
+    test(
+      'CURRENT: fresh create opens at v59 and reopens as a stable no-op',
+      () async {
+        final service = ProjectDatabaseService();
+        await service.create(dbFile().path);
 
-      expect(await service.schemaVersion(dbFile().path), 59);
+        expect(await service.schemaVersion(dbFile().path), 59);
 
-      var database = await service.open(dbFile().path);
-      await database.customSelect('SELECT 1').get();
-      await database.close();
+        var database = await service.open(dbFile().path);
+        await database.customSelect('SELECT 1').get();
+        await database.close();
 
-      database = await service.open(dbFile().path);
-      final version = await database
-          .customSelect('PRAGMA user_version')
-          .getSingle();
-      expect(version.data['user_version'], 59);
-      await database.close();
-    });
+        database = await service.open(dbFile().path);
+        final version = await database
+            .customSelect('PRAGMA user_version')
+            .getSingle();
+        expect(version.data['user_version'], 59);
+        await database.close();
+      },
+    );
 
     test(
       'OLD v53: migration to v59 preserves Core rows (no silent discard)',
@@ -158,10 +164,7 @@ void main() {
 
       expect(await service.schemaVersion(dbFile().path), isNull);
 
-      await expectLater(
-        service.open(dbFile().path),
-        throwsA(anything),
-      );
+      await expectLater(service.open(dbFile().path), throwsA(anything));
     });
 
     test('FUTURE manifest: unsupported schema version is rejected', () async {
@@ -183,5 +186,84 @@ void main() {
         throwsA(isA<FormatException>()),
       );
     });
+  });
+
+  group('145.40 interrupted migration forward recovery', () {
+    test(
+      'HALF-APPLIED wave objects with stale user_version still reopen cleanly',
+      () async {
+        // Simulate the crash state a process death mid-migration leaves
+        // behind: wave 54..59 object changes already applied by hand, but
+        // user_version still at 53 (drift only bumps it after onUpgrade
+        // completes, so a crash inside the wave leaves this exact state).
+        await seedV53WithCoreRow();
+        // Apply the 54..59 object changes by hand through a raw sqlite3
+        // connection (no drift migrator -> no automatic user_version bump),
+        // leaving the database in the exact half-applied crash state.
+        final raw = sqlite3.open(dbFile().path);
+        raw.execute(
+          'CREATE TABLE IF NOT EXISTS creature_ecology_states '
+          '(id TEXT NOT NULL PRIMARY KEY, asset_id TEXT NOT NULL, '
+          'project_id TEXT NOT NULL, payload TEXT)',
+        );
+        raw.execute(
+          'CREATE TABLE IF NOT EXISTS novel_character_links '
+          '(id TEXT NOT NULL PRIMARY KEY, project_id TEXT NOT NULL, '
+          'asset_id TEXT NOT NULL, role TEXT)',
+        );
+        raw.execute(
+          'CREATE TABLE IF NOT EXISTS workflow_definitions '
+          '(id TEXT NOT NULL PRIMARY KEY, project_id TEXT NOT NULL, '
+          'name TEXT NOT NULL)',
+        );
+        raw.execute(
+          'CREATE TABLE IF NOT EXISTS workflow_run_records '
+          '(id TEXT NOT NULL PRIMARY KEY, project_id TEXT NOT NULL, '
+          'definition_id TEXT NOT NULL)',
+        );
+        raw.execute(
+          'CREATE TABLE IF NOT EXISTS scene_draft_snapshots '
+          '(id TEXT NOT NULL PRIMARY KEY, project_id TEXT NOT NULL, '
+          'scene_id TEXT NOT NULL, label TEXT NOT NULL, payload TEXT)',
+        );
+        raw.execute(
+          "ALTER TABLE characters ADD COLUMN \"voice\" TEXT NOT NULL DEFAULT ''",
+        );
+        raw.execute(
+          'CREATE TABLE IF NOT EXISTS character_canonical_scopes '
+          '(id TEXT NOT NULL PRIMARY KEY, character_asset_id TEXT NOT NULL, '
+          'project_id TEXT NOT NULL)',
+        );
+        raw.execute(
+          'CREATE TABLE IF NOT EXISTS character_universe_timeline_overrides '
+          '(id TEXT NOT NULL PRIMARY KEY, character_asset_id TEXT NOT NULL, '
+          'project_id TEXT NOT NULL)',
+        );
+        raw.execute(
+          'CREATE TABLE IF NOT EXISTS character_novel_states '
+          '(id TEXT NOT NULL PRIMARY KEY, character_asset_id TEXT NOT NULL, '
+          'project_id TEXT NOT NULL)',
+        );
+        raw.execute('PRAGMA user_version = 53');
+        raw.close();
+
+        // Forward recovery: opening the half-applied database must succeed
+        // (the create-table waves are CREATE TABLE IF NOT EXISTS idempotent,
+        // the voice add-column wave is guarded to tolerate an existing
+        // column) and must preserve the Core character row.
+        final opened = ProjectDatabase(NativeDatabase(dbFile()));
+        await opened.customSelect('SELECT 1').get();
+        final versionRow = await opened
+            .customSelect('PRAGMA user_version')
+            .get();
+        expect(versionRow.first.data['user_version'], 59);
+        final coreRows = await opened.select(opened.characters).get();
+        expect(coreRows, hasLength(1));
+        expect(coreRows.first.displayName, 'Qowner');
+        final assetRows = await opened.select(opened.assets).get();
+        expect(assetRows, hasLength(1));
+        await opened.close();
+      },
+    );
   });
 }

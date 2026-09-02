@@ -192,3 +192,35 @@ Langkah lanjutan yang diperlukan bila kontrak failure-injection disetujui:
 - Sisa gap 145.30: native process-kill harness, integrasi
   SaveCoordinator/AutosaveJournal lama dengan journal durable ini,
   native interaction proof (butuh sesi interaktif).
+
+## Update 2026-09-02 (cron: durable autosave coordinator slice)
+
+- Gap integrasi SaveCoordinator/AutosaveJournal lama dengan journal durable
+  ditutup lewat koordinator tunggal baru (commit ef82042):
+  `lib/features/story/application/durable_autosave_coordinator.dart`
+  (`DurableAutosaveCoordinator`) menyatukan debounce + journal durable +
+  persist dalam satu urutan no-silent-loss: (1) setiap perubahan draf
+  di-stage atomic ke journal SEBELUM debounce dijadwalkan; (2) setelah
+  debounce, konten di-persist; (3) entri journal di-acknowledge hanya
+  SETELAH persist sukses; (4) `dispose()` mem-flush draf yang masih
+  menunggu debounce alih-alih membuangnya (perbaikan terhadap
+  `DebouncedAutosave.dispose()` yang hanya membatalkan timer); (5) saveNow
+  yang dipanggil saat save in-flight menandai retry sehingga draf yang
+  berubah di tengah save tidak pernah dibuang (conditional clear hanya
+  bila sceneId masih sama).
+- RED terverifikasi dua lapis: (a) `DurableAutosaveCoordinator` Method not
+  found sebelum implementasi; (b) test race 'a change arriving while a save
+  is in flight' gagal dengan `['scene-a']` tanpa `scene-b` sebelum fix
+  retry/conditional-clear.
+- Bukti: `test/features/story/durable_autosave_coordinator_test.dart` 5 PASS
+  (stage sebelum debounce, urutan persist-then-acknowledge, dispose flush,
+  retry mid-flight, no-op tanpa perubahan); regression story+resilience 189
+  PASS; flutter analyze No issues (2 lint prefer_initializing_formals di file
+  slice diperbaiki mengikuti pola SaveCoordinator legacy); git diff --check
+  PASS; flutter build windows --debug PASS (37.9s); full suite 3323 PASS +
+  1 FAIL (app_bootstrap_test, concurrent 145.20, untouched; delta +5 eksak
+  dari 5 test koordinator).
+- Sisa gap 145.30: native process-kill harness, wiring screen produksi ke
+  koordinator (story_workspace_screen.dart milik concurrent agen lain di
+  worktree — wiring ditunda sampai file bebas), native interaction proof
+  (butuh sesi interaktif).

@@ -50,7 +50,7 @@ Observed safeguards include:
 | Timeline has live implementation/test evidence | VERIFIED (2026-09-02 cron: scene-to-timeline journey closed; production Material fix + drag-to-command-to-DB journey + move persistence restart) |
 | Factions have a complete Core editor/persistence journey | VERIFIED (2026-09-02 cron: editor UI closed, commit 3374abe); create/list/persistence (e286ca9) + editor UI journey (Project Bible FACTIONS section: live list, create dialog through CreateFactionService, duplicate-name visible error, narrow render) proven by 4 UI tests + 4 service tests |
 | Relationship Map has complete Core editor/persistence journey | VERIFIED (2026-09-02 cron: contract 93470b3 + evidence closure 2026-09-02b; map service resolved-name rows, live-session Bible RELATIONSHIP MAP section, restart persistence via close/reopen, empty state, narrow 390px render, non-character endpoints keep raw ids; relation core/delete/display/journey suites) |
-| Lore Notes have complete rename/broken-link/keyboard journey | PARTIAL; domain/link seams live; unified Core catalog closed (2026-09-02 cron, commit 054e274: `CreateLoreEntityService.loadCatalog` menyatukan project-scoped Characters/Environments/Factions dengan species/tech/power/bible, `test/features/bible/lore_catalog_core_entities_test.dart` 3 PASS RED-terverifikasi; lore+backlinks 31 PASS, bible 42 PASS, full 3312 PASS / 1 FAIL concurrent); cross-workspace search UI dan universal rename wiring tetap milik kontrak 145.29 |
+| Lore Notes have complete rename/broken-link/keyboard journey | PARTIAL; domain/link seams live; unified Core catalog closed (2026-09-02 cron, commit 054e274); universal rename wiring closed (2026-09-02 cron, commit 14e1ae8: `RenameCharacterCommand` kini default mengeksekusi `LoreBacklinkService.retargetOccurrences` pada execute/undo/redo sehingga rename karakter memindahkan segmen `[[Nama]]` di draft scene proyek yang sama, teks polos dan escape literal utuh; `test/features/character/rename_character_command_lore_retarget_test.dart` 2 PASS RED-terverifikasi); sisa gap milik kontrak 145.29: cross-workspace search UI journey, rename wiring untuk entitas non-character bila menambah rename command, native proof |
 | Non-Core capabilities are source-preserved | VERIFIED by live source inventory |
 | Non-Core capabilities are uniformly hidden/gated from primary navigation | PARTIAL; deferred labels/flags exist, router still exposes optional routes |
 | User evidence justifying advanced scope | MISSING in this repository-only audit |
@@ -226,3 +226,30 @@ Remaining 14527 rows: Lore Notes full contract (14529), uniform route
 gating (concurrently-owned app_router.dart must not be touched from cron),
 user validation evidence. The step remains PARTIAL; the pointer stays
 14527.
+
+## Update 2026-09-02 (nephthys cron, universal rename wiring)
+
+The remaining actionable 145.27 row was Lore Notes rename wiring. Slice
+landed in `RenameCharacterCommand`
+(`lib/features/character/application/rename_character_command.dart`): an
+optional `loreRetarget` parameter now defaults to `const
+LoreBacklinkService()`, so every production construction site
+(`CharacterController.rename`, `CommandTypeRegistry` replay in
+`project_session_manager.dart`) gains rename-safe lore links without
+touching concurrently-owned files. `_rename` retargets link segments from
+the other name toward the applied name: execute/redo move `[[oldName]]` to
+`[[newName]]`, undo moves them back; plain text and escaped `\[[name]]`
+literals are untouched (verified by assertion). RED was verified twice:
+`No named parameter with the name 'loreRetarget'` (test 1) and unchanged
+content without the default wiring, staged via stash round-trip (test 2).
+Evidence: `test/features/character/rename_character_command_lore_retarget_test.dart`
+2 PASS; rename/backlinks focused suites 18 PASS; character +
+project_resilience + commands regression 120 PASS; flutter analyze No
+issues; windows debug build PASS 27.7s (final HEAD); git diff --check
+PASS. Commit 14e1ae8. Full suite: 3314 PASS / 1 FAIL
+(app_bootstrap_test, concurrent-owned 145.20, untouched).
+
+The step remains PARTIAL: cross-workspace search UI journey (145.29),
+uniform route gating (concurrently-owned app_router.dart), native
+interaction, and user validation evidence stay open. The pointer stays
+145.27.

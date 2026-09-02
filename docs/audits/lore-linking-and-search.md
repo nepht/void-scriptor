@@ -106,3 +106,26 @@ Next canonical step: `145.30 Autosave Snapshot and Crash Recovery`.
 - `docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md`
 
 No schema, migration, route, credential, or destructive storage operation was performed.
+
+## Update 2026-09-02 (nephthys cron, universal rename wiring slice)
+
+Gap 3 of the open-gaps list narrowed for characters: `RenameCharacterCommand`
+(`lib/features/character/application/rename_character_command.dart`) now
+carries an optional `loreRetarget` service that defaults to `const
+LoreBacklinkService()`, so renames issued through `CharacterController.rename`
+and command replay (`project_session_manager.dart`) retarget `[[Old Name]]`
+link segments in same-project scene drafts while undo/redo keep plain text
+and escaped literals intact. RED was verified twice (missing parameter
+compile error, then unchanged content with the parameter omitted via stash
+round-trip). Evidence: `test/features/character/
+rename_character_command_lore_retarget_test.dart` 2 PASS; focused
+rename/backlinks 18 PASS; character + project_resilience + commands
+regression 120 PASS; flutter analyze No issues; git diff --check PASS.
+Commit 14e1ae8. Rename wiring for other entity types remains scoped to
+whatever future rename commands exist; no speculative rename commands were
+created for Environment/Faction/Story in this slice.
+
+## Update 2026-09-02 (nephthys cron, catalog closure recap)
+
+(Existing 2026-09-02 note above records commit 054e274; retained unchanged
+for provenance.)

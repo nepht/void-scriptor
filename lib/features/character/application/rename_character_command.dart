@@ -1,4 +1,6 @@
 import '../../../core/commands/app_command.dart';
+
+import '../../bible/application/lore_backlink_service.dart';
 import '../data/character_repository_impl.dart';
 
 class RenameCharacterCommand extends BaseCommand {
@@ -9,12 +11,18 @@ class RenameCharacterCommand extends BaseCommand {
     required this.characterId,
     required this.oldName,
     required this.newName,
+    this.loreRetarget = const LoreBacklinkService(),
   }) : super(label: 'Rename $oldName');
 
   final CharacterRepositoryImpl repository;
   final String characterId;
   final String oldName;
   final String newName;
+
+  /// Default aktif: setiap
+  /// eksekusi/undo/redo rename juga memindahkan segmen `[[oldName]]` di
+  /// draft scene proyek yang sama ke `[[newName]]` (rename safety 145.29).
+  final LoreBacklinkService? loreRetarget;
 
   @override
   String get commandType => 'character.rename';
@@ -47,5 +55,17 @@ class RenameCharacterCommand extends BaseCommand {
       throw StateError('Character is not available in the active project');
     }
     await repository.updateCharacter(current.copyWithName(name));
+    final lore = loreRetarget;
+    if (lore != null && oldName.trim() != newName.trim()) {
+      // Arah retarget selalu dari nama lain menuju [name]: execute/redo
+      // memindahkan [[oldName]] -> [[newName]], undo memindahkan balik.
+      final from = name == oldName ? newName : oldName;
+      await lore.retargetOccurrences(
+        repository.database,
+        projectId: projectId,
+        from: from,
+        to: name,
+      );
+    }
   }
 }

@@ -13,8 +13,9 @@ import 'bible_repository.dart';
 class CreateLoreEntityService {
   const CreateLoreEntityService();
 
-  /// Memuat seluruh entitas lore proyek dari Species, Technologies,
-  /// PowerSystems, dan BibleEntries.
+  /// Memuat seluruh entitas lore proyek dari entitas prioritas Core
+  /// (Characters, Environments/Locations, Factions), worldbuilding
+  /// (Species, Technologies, PowerSystems), dan BibleEntries.
   Future<List<LoreEntityRef>> loadCatalog(
     ProjectDatabase db,
     String projectId,
@@ -29,10 +30,44 @@ class CreateLoreEntityService {
       db.powerSystems,
     )..where((row) => row.projectId.equals(projectId))).get();
 
+    final characters = await (db.select(
+      db.characters,
+    )..where((row) => row.projectId.equals(projectId))).get();
+    final environments = await (db.select(
+      db.environments,
+    )..where((row) => row.projectId.equals(projectId))).get();
+    final factions = await (db.select(
+      db.factions,
+    )..where((row) => row.projectId.equals(projectId))).get();
+
     final bibleRepo = BibleRepository(db);
     final entries = await bibleRepo.listEntries(projectId);
 
     return [
+      ...characters.map(
+        (row) => LoreEntityRef(
+          id: row.assetId,
+          name: row.displayName,
+          kind: 'character',
+          detail: row.biography.trim(),
+        ),
+      ),
+      ...environments.map(
+        (row) => LoreEntityRef(
+          id: row.assetId,
+          name: row.name,
+          kind: 'environment',
+          detail: row.description.trim(),
+        ),
+      ),
+      ...factions.map(
+        (row) => LoreEntityRef(
+          id: row.assetId,
+          name: row.name,
+          kind: 'faction',
+          detail: row.ideology.trim(),
+        ),
+      ),
       ...species.map(
         (row) => LoreEntityRef(
           id: row.assetId,

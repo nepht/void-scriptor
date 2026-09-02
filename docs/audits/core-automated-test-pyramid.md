@@ -94,3 +94,22 @@ nephthys — 2026-08-27
 - Sisa gap 145.41: `integration_test/` native-driver tree dan native
   interaction proof (butuh sesi interaktif, UNVERIFIABLE dari cron);
   inventory pyramid belum diperbarui ulang setelah slice ini.
+
+## Update 2026-09-03 (nephthys cron: inventory pyramid refresh)
+
+Gap 'inventory pyramid refresh' di baris 145.41 ledger CLOSED via live
+re-count of test/ (scan *_test.dart, klasifikasi testWidgets vs test,
+nama file contract/integration):
+
+- Total file test: 792 (naik dari 294 baseline audit 2026-08-27;
+  sejak itu Core vertical slices 145.x menambah banyak test eksekusi).
+- Widget-layer (testWidgets): 179 file (features 139, app 20, core 15,
+  design_system 2, shared 2, release 1).
+- Unit/domain-layer (test()): 613 file.
+- Contract-named: 15 file; integration-named: 5 file (in-process).
+- integration_test/ native-driver tree: 0 file (tetap kosong).
+
+Pembacaan pyramid: dominasi unit/domain + widget terbukti live;
+lapisan native-driver integration_test/ tetap 0 -> gap 'integration_test/
+native-driver tree' TIDAK berubah (tetap open). Native interaction proof
+tetap UNVERIFIABLE dari cron (butuh sesi interaktif).

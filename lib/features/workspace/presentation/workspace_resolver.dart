@@ -16,7 +16,9 @@ import '../../story/data/story_repository_impl.dart';
 import '../../project_resilience/application/durable_draft_journal.dart';
 import '../../story/presentation/story_workspace_screen.dart';
 import '../../workspaces/presentation/workspace_export_actions.dart';
+import 'global_search_sheet.dart';
 import '../../workspaces/presentation/workspace_import_actions.dart';
+import '../application/global_search_launcher.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 import '../../../design_system/typography/void_typography.dart';
 
@@ -60,6 +62,15 @@ class WorkspaceResolver extends ConsumerWidget {
                         projectId: session.manifest.id,
                       ),
                     );
+              },
+        onOpenGlobalSearch: session == null
+            ? null
+            : (sheetContext) {
+                showGlobalSearchSheet(
+                  sheetContext,
+                  launcher: GlobalSearchLauncher(database: session.database),
+                  projectId: session.manifest.id,
+                );
               },
       );
     }
@@ -131,9 +142,14 @@ class WorkspaceResolver extends ConsumerWidget {
 }
 
 class ProjectOverview extends StatelessWidget {
-  const ProjectOverview({super.key, this.onCreateNovel});
+  const ProjectOverview({
+    super.key,
+    this.onCreateNovel,
+    this.onOpenGlobalSearch,
+  });
 
   final Future<void> Function(String title)? onCreateNovel;
+  final void Function(BuildContext context)? onOpenGlobalSearch;
 
   Future<void> _createNovel(BuildContext context) async {
     var title = '';
@@ -185,6 +201,14 @@ class ProjectOverview extends StatelessWidget {
             onPressed: () => _createNovel(context),
             icon: const Icon(Icons.auto_stories_outlined),
             label: const Text('Create Novel'),
+          ),
+        ],
+        if (onOpenGlobalSearch != null) ...[
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: () => onOpenGlobalSearch!(context),
+            icon: const Icon(Icons.search),
+            label: const Text('Cari di Proyek'),
           ),
         ],
       ],

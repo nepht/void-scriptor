@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.31 Custom Local Storage domain slice (commit c9da6dc): lib/core/persistence/custom_storage_location.dart + test/core/persistence/custom_storage_location_test.dart 8 PASS - normalizeLocation, probe (driveMissing/notADirectory/permissionDenied via injectable StorageHealthProbe/notEnoughSpace minFreeBytes), nearestExistingAncestor (leaf-dir adoptable vs missing drive), persisted schema-v1 store (atomic tmp rename), setActiveLocation validate-before-persist, bindProject, relinkLocation guard no-empty-replacement-project. Bukti: persistence+portable regression 36 PASS, analyze No issues, build windows debug PASS 20.1s, diff --check PASS, guard PASS pre+post. 145.31 tetap PARTIAL: UI pemilihan lokasi, free-space host-akurat, relink flow end-to-end, wiring ProjectPaths/PackageService.",
+  "last_verified_step": "145.40 exhaustive invariants gate (commit 34a84bb): test/features/project_resilience/schema_migration_fixtures_test.dart group '145.40 exhaustive invariants gate' 58 PASS (entry v1..v58: fresh v59 seeded 1 Core asset row, rewind PRAGMA user_version, reopen tanpa crash + baris Core utuh) + lib/database/project/project_database.dart _columnExists guard pada SEMUA wave addColumn (v3/v7/v8/v9/v15/v16/v17; v58 voice digeneralisasi). RED terverifikasi: entry v1..v16 crash SqliteException(1) duplicate column name sebelum guard. Bukti: focused 63 PASS, regresi resilience+release+database 150 PASS, analyze No issues, full suite 3411 PASS, windows debug build PASS 28.1s, diff --check PASS. Docs commit 6620ad3 (audit+ledger). 145.40 tetap PARTIAL: clean-Windows E2E execution open; D-SCHEMA-01 tetap OPEN (tanpa schema bump). Pointer tetap 145.27.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-02T21:05:00+07:00",
-  "updated_by": "nephthys cron: 145.41 clean-environment E2E journey slice, pointer stays 145.27",
+  "updated_at": "2026-09-03T04:30:00+07:00",
+  "updated_by": "nephthys cron: 145.40 exhaustive invariants gate slice, pointer stays 145.27",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

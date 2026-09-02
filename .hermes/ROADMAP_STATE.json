@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.41 inventory pyramid refresh (commit 49871bd): live re-count test/ via python scan = 792 file test (179 widget testWidgets / 613 unit-domain test() / 15 contract-named / 5 integration-named; widget by area: features 139, app 20, core 15, design_system 2, shared 2, release 1); integration_test/ native-driver tree tetap 0 file; full suite 3422 PASS / 0 FAIL (app_bootstrap_test concurrent kini hijau), windows debug build PASS (Built void_scriptor.exe), analyze No issues, scoped git diff --check PASS; audit docs/audits/core-automated-test-pyramid.md + ledger row 145.41 updated; pointer stays 145.27 (uniform route gating app_router.dart concurrent, user validation Choi, native interaction UNVERIFIABLE dari cron).",
+  "last_verified_step": "145.34 backup retention enforcement engine (commit 5ce2c93): BackupRetentionService (Step 24.26) wired into ProjectResilienceController.createBackup - injectable BackupRetentionPolicy default 20/50, per-category prune-oldest via selectForPrune menghapus direktori backup on-disk + row ProjectBackups via removeBackup baru; backup_retention_enforcement_test 2 PASS RED-terverifikasi, project_resilience suite 108 PASS, scoped analyze No issues, diff --check PASS, full suite + windows build digate di run ini; audit docs/audits/local-backup-restore.md retention row VERIFIED(engine) + ledger 145.34 updated; pointer stays 145.27 (uniform route gating app_router.dart concurrent, user validation Choi, native interaction UNVERIFIABLE dari cron); sisa 145.34 engine-scope: configurable location, restore preview, alternate destination, migration-aware restore, full failure injection, Free-access proof.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-03 (cron) 145.31 wiring ProjectPaths/PackageService",
-  "updated_by": "nephthys cron: 145.31 wiring slice, pointer stays 145.27",
+  "updated_at": "2026-09-03 (cron) 145.34 backup retention enforcement",
+  "updated_by": "nephthys cron: 145.34 retention engine slice, pointer stays 145.27",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

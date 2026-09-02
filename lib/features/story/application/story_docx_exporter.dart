@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:path/path.dart' as p;
 
+import '../../export/domain/export_profiles.dart';
 import '../data/story_repository_impl.dart';
 
 class StoryDocxExporter {
@@ -14,6 +15,7 @@ class StoryDocxExporter {
     String storyId, {
     required Directory exportDirectory,
     String fileName = 'story.docx',
+    ExportProfile? profile,
   }) async {
     final safeName = p.basename(fileName);
     if (safeName != fileName || !safeName.endsWith('.docx')) {
@@ -24,14 +26,21 @@ class StoryDocxExporter {
       );
     }
     final hierarchy = await repository.getStoryHierarchy(storyId);
-    final paragraphs = <String>[
-      _paragraph(hierarchy.story.title, style: 'Title'),
-    ];
+    final fm = profile?.frontMatter;
+    final docTitle = fm?.title ?? hierarchy.story.title;
+    final paragraphs = <String>[_paragraph(docTitle, style: 'Title')];
+    if (fm != null) {
+      paragraphs.add(_paragraph(fm.author));
+    }
     if (hierarchy.story.synopsis.isNotEmpty) {
       paragraphs.add(_paragraph(hierarchy.story.synopsis));
     }
-    for (final chapter in hierarchy.chapters) {
-      paragraphs.add(_paragraph(chapter.title, style: 'Heading1'));
+    final chapterRules = profile?.chapterRules;
+    for (final (chapterIndex, chapter) in hierarchy.chapters.indexed) {
+      final displayTitle = chapterRules == null
+          ? chapter.title
+          : chapterRules.title(chapterIndex + chapterRules.numberingStart);
+      paragraphs.add(_paragraph(displayTitle, style: 'Heading1'));
       for (final scene in chapter.scenes) {
         paragraphs.add(_paragraph(scene.title, style: 'Heading2'));
         final draft = await repository.getSceneDraft(scene.id);
@@ -50,8 +59,11 @@ class StoryDocxExporter {
       archive.addFile(ArchiveFile(name, bytes.length, bytes));
     }
 
+    final creator = fm?.author ?? '';
+    final coreXml = _coreProperties(title: docTitle, creator: creator);
     add('[Content_Types].xml', _contentTypes);
     add('_rels/.rels', _rootRels);
+    add('docProps/core.xml', coreXml);
     add('word/_rels/document.xml.rels', _documentRels);
     add('word/document.xml', document);
     add('word/styles.xml', _styles);
@@ -59,6 +71,19 @@ class StoryDocxExporter {
     final output = File(p.join(exportDirectory.path, safeName));
     await output.writeAsBytes(ZipEncoder().encode(archive));
     return output;
+  }
+
+  String _coreProperties({required String title, required String creator}) {
+    final creatorXml = creator.isEmpty
+        ? ''
+        : '<dc:creator>${_escape(creator)}</dc:creator>';
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<cp:coreProperties '
+        'xmlns:cp="http://schemas.openxmlformats.org/package/2006/'
+        'metadata/core-properties" '
+        'xmlns:dc="http://purl.org/dc/elements/1.1/">'
+        '<dc:title>${_escape(title)}</dc:title>$creatorXml'
+        '</cp:coreProperties>';
   }
 
   String _paragraph(String text, {String? style}) {
@@ -78,9 +103,9 @@ class StoryDocxExporter {
 }
 
 const _contentTypes =
-    '''<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>''';
+    '''<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>''';
 const _rootRels =
-    '''<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>''';
+    '''<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/></Relationships>''';
 const _documentRels =
     '''<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>''';
 const _styles =

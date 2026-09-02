@@ -16,7 +16,7 @@ Editor harus memprioritaskan writing canvas, chapter navigation, save state, wor
 | Chapter/scene navigation | Hierarchy repository dirender; scene selection memuat draft scene terkait | VERIFIED |
 | Save state | `DebouncedAutosave` menyimpan draft; round-trip close/reopen diuji | PARTIAL; UI hanya menampilkan teks statis `Autosave aktif` |
 | Word count | `_updateWordCount` menghitung token whitespace dan UI merender `N kata` | VERIFIED; belum ada persistence/target semantics |
-| Focus mode | `FocusWritingSession` memiliki chrome state, keyboard/manual exit, tema, announcement, dan autosave label | PARTIAL; belum dipakai oleh `StoryWorkspaceScreen` |
+| Focus mode | `FocusWritingSession` memiliki chrome state, keyboard/manual exit, tema, announcement, dan autosave label | VERIFIED (screen integration commit 7d9b0f4; keyboard exit via Esc commit ea42539 — CallbackShortcuts + Focus(autofocus), FocusExitReason.keyboard diteruskan, no-op di luar sesi) |
 | Search/lore reference | Lore catalog binding dan inline `[[...` autocomplete tersedia bila binding disediakan | PARTIAL; global search/reference journey bukan bagian layar ini |
 | Minimal distraction | Canvas dan structure sections tersedia dalam satu workspace; responsive narrow test lulus | PARTIAL; side chrome tidak dapat disembunyikan melalui FocusWritingSession |
 
@@ -95,3 +95,20 @@ Next canonical step: `145.29 Lore Linking and Search`.
   evidence untuk preferensi distraction-free, focus shortcut keyboard
   global (belum di-wire), dan theme connection dari fokus ke tema
   workspace (FocusTheme system/paper/dark belum memengaruhi tema layar).
+
+## Update 2026-09-02b (nephthys cron b, focus keyboard exit)
+
+- Baris "Focus mode" naik PARTIAL -> VERIFIED: keyboard exit kini ter-wire di
+  layar. `StoryWorkspaceScreen` membungkus konten dengan `CallbackShortcuts`
+  (`SingleActivator(LogicalKeyboardKey.escape)` -> `_handleFocusEscape`) plus
+  `Focus(autofocus: true)` internal sehingga Esc bekerja termasuk saat chrome
+  panel hilang (fokus tidak pernah jatuh ke scope induk). Handler meneruskan
+  `FocusExitReason.keyboard` ke `FocusWritingSession.exit(viaKeyboard: true)`
+  dan menjadi no-op di luar sesi aktif.
+- RED terverifikasi: test escape baru gagal pre-wire (chrome tidak kembali);
+  GREEN pasca-wire. Bukti: writing_room_focus_test 3 PASS, focused 19 PASS,
+  story suite 143 PASS, analyze No issues, diff --check PASS, windows debug
+  build PASS 26.7s, full suite 3318 PASS + 1 FAIL concurrent 145.20
+  (app_bootstrap_test, tidak disentuh). Commit ea42539.
+- Sisa gap 145.28: native interaction proof (UNVERIFIABLE dari cron) dan user
+  validation evidence. Step tetap PARTIAL karena dua boundary itu.

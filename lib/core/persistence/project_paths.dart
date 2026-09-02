@@ -3,24 +3,61 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import 'custom_storage_location.dart';
+
 final class ProjectPaths {
   ProjectPaths({
     Directory? rootDirectory,
     Future<String> Function()? documentsPath,
     Future<String?> Function()? supportPath,
+    CustomStorageLocationStore? customStorageStore,
+    Directory? fallbackRootDirectory,
   }) : _rootOverride = rootDirectory,
        _documentsPathOverride = documentsPath,
-       _supportPathOverride = supportPath;
+       _supportPathOverride = supportPath,
+       _storageStore = customStorageStore,
+       _fallbackRoot = fallbackRootDirectory;
 
   final Directory? _rootOverride;
   final Future<String> Function()? _documentsPathOverride;
   final Future<String?> Function()? _supportPathOverride;
+  final CustomStorageLocationStore? _storageStore;
+  final Directory? _fallbackRoot;
+
+  /// Exposes the effective custom storage root (healthy active location) or
+  /// null when no custom location is configured. Used by wiring tests and the
+  /// settings surface to show the active storage home.
+  String? get rootOverride {
+    final store = _storageStore;
+    if (store == null) return null;
+    final state = store.cachedState;
+    if (state == null) return null;
+    if (state.status != StorageLocationStatus.healthy) return null;
+    return state.activeLocation;
+  }
 
   Future<Directory> root() async {
     final override = _rootOverride;
     if (override != null) {
       await override.create(recursive: true);
       return override;
+    }
+
+    final store = _storageStore;
+    if (store != null) {
+      final state = await store.load();
+      final active = state.activeLocation;
+      if (active != null && state.status == StorageLocationStatus.healthy) {
+        final custom = Directory(active);
+        await custom.create(recursive: true);
+        return custom;
+      }
+    }
+
+    final fallback = _fallbackRoot;
+    if (fallback != null) {
+      await fallback.create(recursive: true);
+      return fallback;
     }
 
     final candidates = <String?>[
@@ -66,6 +103,25 @@ final class ProjectPaths {
 
   Future<Directory> project(String projectId) async =>
       Directory(p.join((await root()).path, '$projectId.voidproject'));
+
+  /// Host file next to the effective root: beside the custom storage
+  /// location when active, otherwise beside the default Projects folder.
+  /// Used for machine-local wiring records such as storage_locations.json.
+  Future<File> rootDirectoryFile(String fileName) async {
+    final store = _storageStore;
+    if (store != null) {
+      final state = await store.load();
+      final active = state.activeLocation;
+      if (active != null && state.status == StorageLocationStatus.healthy) {
+        return File(p.join(active, fileName));
+      }
+    }
+    final override = _rootOverride;
+    if (override != null) {
+      return File(p.join(override.path, fileName));
+    }
+    return File(p.join((await root()).parent.path, fileName));
+  }
 
   Future<File> manifest(String projectId) async =>
       File(p.join((await project(projectId)).path, 'manifest', 'project.json'));

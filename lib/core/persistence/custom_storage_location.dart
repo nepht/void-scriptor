@@ -237,8 +237,18 @@ class CustomStorageLocationStore {
   CustomStorageLocationStore({required this.registryFile});
 
   final File registryFile;
+  CustomStorageLocationState? _cachedState;
+
+  /// Last state observed by [load], or null before the first load. Lets
+  /// path wiring answer synchronously without an async registry read.
+  CustomStorageLocationState? get cachedState => _cachedState;
 
   Future<CustomStorageLocationState> load() async {
+    _cachedState = await _read();
+    return _cachedState!;
+  }
+
+  Future<CustomStorageLocationState> _read() async {
     if (!await registryFile.exists()) {
       return const CustomStorageLocationState(
         schemaVersion: 1,

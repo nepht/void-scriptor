@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/persistence/custom_storage_location.dart';
 import '../../../core/persistence/project_paths.dart';
 import '../../../core/persistence/project_registry_service.dart';
 import '../../../core/project_package/project_package.dart';
@@ -7,7 +8,22 @@ import '../../project_resilience/application/project_session_manager.dart';
 import '../data/project_local_data_source.dart';
 import '../data/project_repository_impl.dart';
 
-final projectPathsProvider = Provider<ProjectPaths>((ref) => ProjectPaths());
+/// Custom storage location store backed by a JSON file next to the default
+/// project registry root. The paths provider consults this store so an
+/// activated custom location (C:/D:/USB) becomes the project home.
+final customStorageStoreProvider = FutureProvider<CustomStorageLocationStore>((
+  ref,
+) async {
+  final registryFile = await ProjectPaths().rootDirectoryFile(
+    'storage_locations.json',
+  );
+  return CustomStorageLocationStore(registryFile: registryFile);
+});
+
+final projectPathsProvider = Provider<ProjectPaths>((ref) {
+  final store = ref.watch(customStorageStoreProvider).valueOrNull;
+  return ProjectPaths(customStorageStore: store);
+});
 
 final projectRegistryServiceProvider = Provider<ProjectRegistryService>(
   (ref) => ProjectRegistryService(paths: ref.watch(projectPathsProvider)),

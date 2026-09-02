@@ -96,3 +96,39 @@ Next canonical step: `145.36 AI Optional Boundary`.
   27.5s.
 - 145.35 tetap PARTIAL: publishing fidelity, encoding matrix, metadata
   propagation, dan cross-format no-watermark proof masih terbuka.
+
+## Update 2026-09-02 run2 (nephthys cron, encoding + metadata + no-watermark)
+
+- Encoding matrix CLOSED: `test/features/export/story_export_encoding_matrix_test.dart`
+  3 PASS. Fixture Unicode publishing (CJK, emoji U+1F4D6/U+1F327, Arabic,
+  musical symbol U+1D11E, tanda kutip, em-dash) round-trip byte-exact:
+  TXT tanpa BOM, Markdown heading `#`/`##`/`###`, DOCX ZIP+XML dengan
+  `ZipDecoder verify:true`. Nol U+FFFD; escape XML hanya menyentuh lima
+  karakter XML, Unicode tetap literal.
+- Metadata propagation CLOSED: `StoryTxtExporter.exportStory/writeExport`
+  kini menerima `ExportProfile?`. Front matter (title+author) menjadi
+  halaman muka di puncak dokumen menggantikan header judul story saat
+  profil menyediakannya (selaras `renderFrontMatter()`); chapter rules
+  `titlePrefix` + `numberingStart` dirender ke body page-break
+  (`Chapter 1` menggantikan judul bab asli saat prefix dipakai).
+  `test/features/export/story_export_metadata_propagation_test.dart`
+  3 PASS; RED terverifikasi (`No named parameter with the name 'profile'`).
+  Test tanpa profil membeku output lama (backward compatible).
+- Cross-format no-watermark proof CLOSED:
+  `test/features/export/story_export_no_watermark_test.dart` 4 PASS.
+  TXT/MD/DOCX yang direncanakan sebagai `privateMaster` tetap bersih
+  bahkan pada `WatermarkMode.always`: `applyWatermark` false, overlay
+  null, `manifest.watermarkApplied` false, teks watermark absen dari
+  bytes artefak. Kontras `publicPreview` + `previewOnly` menghasilkan
+  `applyWatermark` true dengan overlay eksplisit - membuktikan planner
+  aktif (test tidak vacuous) dan artefak master tidak pernah ditimpa.
+- Bukti gerbang: export suite 40 PASS; `flutter analyze` No issues
+  (12.0s); full suite 3336 PASS + 1 FAIL (app_bootstrap_test concurrent
+  145.20, untouched; delta +10 eksak dari 3+3+4 test baru);
+  `flutter build windows --debug` PASS (20.3s); `git diff --check` PASS;
+  commit 27712d8 (feat) lalu docs commit ini.
+- 145.35 tetap PARTIAL: publishing fidelity DOCX render-compat,
+  encoding matrix non-UTF-8 (latin-1 shift target) di luar kontrak
+  writer UTF-8, metadata propagation untuk Markdown/DOCX writer
+  (parameter `profile` baru terpasang di TXT writer), dan native
+  interaction proof tetap terbuka.

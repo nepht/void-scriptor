@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.35 plain TXT writer CLOSED 2026-09-02 cron c (commit a51a68a): StoryTxtExporter chapter-order page-break TXT tanpa markup Markdown/watermark, RED terverifikasi, focused 2 PASS, export suite 30 PASS, full suite 3326 PASS + 1 FAIL (app_bootstrap_test concurrent 145.20 untouched), analyze No issues, windows debug build PASS 27.5s, diff --check PASS. 145.35 tetap PARTIAL (publishing fidelity, encoding matrix, metadata propagation, cross-format no-watermark proof terbuka). Sebelumnya: 145.30 wiring screen produksi CLOSED 2026-09-02 cron b (commit 291a871): StoryWorkspaceScreen memakai DurableAutosaveCoordinator menggantikan blok inline DebouncedAutosave+journal; dispose mem-flush draf yang menunggu debounce; onSaved update label Tersimpan. RED terverifikasi (flush-on-dispose: draf hilang pada wiring lama). Bukti fresh: focused 12 PASS, story suite 149 PASS, analyze No issues, full suite 3324 PASS + 1 FAIL (app_bootstrap_test concurrent 145.20 untouched, delta +1 eksak), windows debug build PASS 29.1s, diff --check PASS. Sisa 145.30 PARTIAL: native process-kill harness + native interaction proof (UNVERIFIABLE dari cron). 145.29 Lore Linking and Search VERIFIED evidence-closure 2026-09-02 cron",
+  "last_verified_step": "145.35 export slice (commit 27712d8): encoding matrix + metadata propagation + cross-format no-watermark CLOSED. Bukti: export suite 40 PASS (eksekusi standalone), analyze No issues 12.0s, full suite 3336 PASS + 1 FAIL (app_bootstrap_test concurrent 145.20, untouched, delta +10 eksak), windows debug build PASS 20.3s, diff --check PASS. Sebelumnya: 145.35 plain TXT writer CLOSED (a51a68a). 145.35 tetap PARTIAL: publishing fidelity DOCX render-compat, encoding non-UTF-8, metadata propagation MD/DOCX writer, native proof terbuka. Pointer tetap 145.27 (sisa non-actionable dari cron: app_router.dart concurrent, user validation, native UNVERIFIABLE).",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-02T19:55:00+07:00",
-  "updated_by": "nephthys cron b: 145.30 wiring screen produksi CLOSED (feat commit 291a871 + docs commit berikut), pointer stays 145.27 (sisa 145.27 non-actionable dari cron: app_router.dart concurrent, user validation, native UNVERIFIABLE)",
+  "updated_at": "2026-09-02T17:05:00+07:00",
+  "updated_by": "nephthys cron run2: 145.35 export encoding matrix + metadata propagation + no-watermark proof (commit 27712d8), pointer stays 145.27",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

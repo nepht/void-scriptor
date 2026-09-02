@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.31 free-space host-akurat + relink end-to-end (commit 95fee4a): HostDriveSpaceReader + PlatformDriveSpaceReader membaca free bytes host nyata di Windows via PowerShell Get-PSDrive (unknown budget -1 menjaga standing offer 1 GiB konservatif); DefaultStorageProbe seam injectable melalui CustomStorageLocation.probe; host_drive_space_reader_test.dart 4 PASS RED-terverifikasi termasuk relink flow end-to-end bind -> hapus lokasi -> relink ke target berisi paket terikat -> healthy; focused 4 PASS, persistence 38 PASS, analyze No issues, full suite 3417 PASS / 0 FAIL, build windows debug PASS 21.8s, guard PASS pre+post; pointer tetap 145.27 (non-actionable dari cron).",
+  "last_verified_step": "145.31 wiring ProjectPaths/PackageService ke lokasi kustom (commit b826cec): ProjectPaths menerima customStorageStore + fallbackRootDirectory; root() memilih lokasi custom healthy sebagai project home, fallback default saat missingDrive (tanpa crash), perilaku lama utuh tanpa store; rootOverride + rootDirectoryFile() untuk file mesin-lokal; customStorageStoreProvider (FutureProvider, storage_locations.json di samping root efektif) + projectPathsProvider membaca store sehingga ProjectPackageService create/open + session manager otomatis mengikuti lokasi custom tanpa perubahan callsite; customStorageLocationStore kini cache state (cachedState); project_paths_custom_location_wiring_test.dart 5 PASS RED-terverifikasi (customStorageStore/fallbackRootDirectory/rootOverride/customStorageStoreProvider undefined); regresi persistence+projects 59 PASS; analyze No issues; git diff --check PASS; full suite 3422 PASS / 0 FAIL (~12 menit); build windows debug PASS; guard PASS pre; pointer tetap 145.27 (non-actionable dari cron: uniform route gating app_router.dart concurrent 145.20, user validation Choi, native interaction UNVERIFIABLE). Sisa 145.31: UI pemilihan lokasi (butuh keputusan UI Choi).",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-03 (cron) 145.31b free-space + relink evidence",
-  "updated_by": "nephthys cron: 145.40 exhaustive invariants gate slice, pointer stays 145.27",
+  "updated_at": "2026-09-03 (cron) 145.31 wiring ProjectPaths/PackageService",
+  "updated_by": "nephthys cron: 145.31 wiring slice, pointer stays 145.27",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

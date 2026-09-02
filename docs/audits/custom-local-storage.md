@@ -151,3 +151,39 @@ Commit 95fee4a menutup dua gap 145.31 di level domain:
 Bukti gerbang: focused 4 PASS; regression test/core/persistence 38 PASS; analyze No issues; `dart format` 0 changed; `git diff --check` PASS; full suite 3417 PASS / 0 FAIL (12:20); `flutter build windows --debug` PASS 21.8s; roadmap guard PASS pre+post (pointer tetap 145.27).
 
 Status boundary 145.31 terbaru: Free-space test PARTIAL -> VERIFIED (domain, host-akurat di Windows; matrix multi-drive belum); Relink PARTIAL -> VERIFIED (domain end-to-end; relink UI pemindahan data tetap open). Sisa 145.31: UI pemilihan lokasi, wiring ProjectPaths/PackageService ke lokasi kustom.
+
+
+## Update 2026-09-03 (nephthys cron, 145.31 wiring ProjectPaths/PackageService)
+
+- Gap 145.31 "wiring ProjectPaths/PackageService ke lokasi kustom" ditutup
+  (commit slice ini). RED terverifikasi: `flutter test
+  test/core/persistence/project_paths_custom_location_wiring_test.dart` gagal
+  kompilasi - `customStorageStore`, `fallbackRootDirectory`,
+  `customStorageStoreProvider`, `rootOverride` undefined.
+- Implementasi minimal:
+  - `lib/core/persistence/project_paths.dart`: `ProjectPaths` kini menerima
+    `customStorageStore` + `fallbackRootDirectory`. `root()` konsultasi store
+    lebih dulu: lokasi custom aktif + healthy -> jadi project home; lokasi
+    missing (`missingDrive`) -> fallback default (Documents chain), tanpa
+    crash; tanpa store -> perilaku lama utuh. Getter `rootOverride` +
+    `rootDirectoryFile()` (file mesin-lokal di samping root efektif).
+  - `lib/core/persistence/custom_storage_location.dart`: store kini cache
+    state hasil `load()` (`cachedState`), dipakai wiring path sinkron.
+  - `lib/features/projects/presentation/project_persistence_providers.dart`:
+    `customStorageStoreProvider` (FutureProvider; registry file
+    `storage_locations.json` di samping root efektif) + `projectPathsProvider`
+    mem-baca store, sehingga seluruh konsumen `projectPathsProvider`
+    (ProjectPackageService create/open, session manager, controller) otomatis
+    mengikuti lokasi custom aktif tanpa perubahan callsite.
+- Bukti: test/core/persistence/project_paths_custom_location_wiring_test.dart
+  5 PASS (root custom; package service + registry mengikuti custom root tanpa
+  folder Projects default; missing drive fallback + status missingDrive; tanpa
+  custom location tetap Documents chain; round-trip schema/binding).
+- Status boundary 145.31 terbaru: Wiring ProjectPaths/PackageService
+  PARTIAL -> VERIFIED (domain/storage-level; ProjectPackageService menerima
+  rootDirectory dari paths provider). Sisa 145.31: UI pemilihan lokasi
+  (butuh keputusan UI Choi; screen projects concurrent).
+- Bukti gerbang: focused 5 PASS; regresi core/persistence + features/projects
+  59 PASS; analyze No issues; format 1 file (test) 0 issue; `git diff --check`
+  PASS; full suite 3422 PASS / 0 FAIL (~12 menit); `flutter build windows
+  --debug` PASS; roadmap guard PASS pre (exit 0, pointer 145.27).

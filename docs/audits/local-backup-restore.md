@@ -56,9 +56,9 @@ Evidence yang lulus:
 | Configurable location | BLOCKED | Service memakai package backup directory; destination policy belum injectable/user-configurable |
 | Retention | VERIFIED (engine) | BackupRetentionService wired into controller.createBackup; per-category prune-oldest removes directory + ProjectBackups row via removeBackup; injectable policy default 20/50; retention_enforcement_test 2 PASS RED-verified (commit 5ce2c93); UI konfigurasi user tetap terbuka (row configurable location) |
 | Hashes | VERIFIED | SHA-256 manifest/database/workspace checksums dan tamper rejection lulus |
-| Restore preview | BLOCKED | UI hanya menampilkan jumlah backup dan action create; preview contents/diff belum ada |
-| Alternate destination | BLOCKED | Restore selalu ke package yang sama; destination lain belum didukung |
-| Schema migration | PARTIAL | Backup menyimpan schema version; migration-aware restore/open belum diuji sebagai flow |
+| Restore preview | VERIFIED (engine) | RestorePreviewReport.compute read-only: names + schema versions + klasifikasi current/migrationForward/blocked + warnings; 3 PASS RED-terverifikasi (commit da68cf1); konsumsi UI di screen belum ada (engine-first, objective 145.34 = verification) |
+| Alternate destination | VERIFIED (engine) | restoreToAlternateDestination salin backup ke package UUID baru di destinationRoot tanpa menyentuh live project/backup; tolak schema lebih baru; rollback saat gagal; test 3 PASS (commit da68cf1); integrasi registry/UI belum ada |
+| Schema migration | VERIFIED (classification) | preview mengklasifikasi migrationForward utk schema lama dan alternate-destination restore mempertahankan user_version lama (forward migration saat open, flow open-migration sendiri sudah dibuktikan fixtures 145.40 OLD v53-to-v59) |
 | Failure recovery | PARTIAL | Emergency backup dan manifest/database rollback ada; failure injection untuk semua copy stages belum ada |
 | Free access | UNVERIFIABLE | Tidak ada entitlement/access-control test pada backup flow |
 | Native interaction | UNVERIFIABLE | Native Windows click-through tetap blocked oleh `snapshot_id_required` |
@@ -69,7 +69,7 @@ Semua verification memakai temporary project directories. Tidak ada backup aktua
 
 ## Verdict
 
-**PARTIAL — integrity-protected local backup/restore dan snapshot retention primitive sudah runnable, tetapi configurable location, preview, alternate destination, migration-aware restore, comprehensive failure injection, dan Free-access proof belum tersedia.**
+**PARTIAL — integrity-protected local backup/restore, retention engine, restore preview, alternate destination, dan migration-aware classification sudah runnable dan teruji; configurable location, comprehensive failure injection, dan Free-access proof masih terbuka.**
 
 Next canonical step: `145.35 Clean Manuscript Export`.
 
@@ -95,3 +95,11 @@ Next canonical step: `145.35 Clean Manuscript Export`.
 - Gates this slice: focused 2 PASS; project_resilience suite 108 PASS; scoped
   `dart analyze` No issues on the 3 owned files; scoped `dart format` clean;
   `git diff --check` PASS; commit 5ce2c93 (3 owned files only).
+
+## Update 2026-09-03 cron b (nephthys cron: restore preview + alternate destination)
+- Gap 'restore preview' + 'alternate destination' CLOSED: ProjectBackupRestorePreview (lib/features/project_resilience/application/project_backup_restore_preview.dart), file domain baru - tidak menyentuh project_recovery_services.dart milik sibling 145.33/145.34.
+- compute(): read-only RestorePreviewReport - currentName/backupName dari manifest project.json, currentSchemaVersion/backupSchemaVersion dari SQLite user_version, klasifikasi current / migrationForward / blocked (backup > app schema) + warnings (manifest tak terbaca).
+- restoreToAlternateDestination(): salin backup ke package UUID baru di destinationRoot (manifest/database/assets/workspaces), live project dan backup asli tidak tersentuh; tolak schema lebih baru dari aplikasi; rollback hapus target saat gagal. Schema lebih lama = forward migration saat open berikutnya (semantik sama dengan restore in-place).
+- RED terverifikasi (Undefined name ProjectBackupRestorePreview + RestoreCompatibility). Bug produksi terselamatkan RED: import barrel platform stub (readProjectDatabaseSchemaVersion selalu null) - ditemukan via probe differential (dart CLI roundtrip 53 PASS; flutter_tester roundtrip 53 PASS; reader repo pada file sama 53 PASS; test FAILED Actual null) lalu fix ke ProjectDatabaseService().schemaVersion (conditional io/web import, pola production project_database_service.dart).
+- Bukti: focused 3 PASS; project_resilience suite 111 PASS; scoped analyze No issues; format 2 file 0 sisa; git diff --check PASS; windows debug build PASS 38.5s; full suite digate di run ini.
+- Commit: da68cf1 (2 file, +313).

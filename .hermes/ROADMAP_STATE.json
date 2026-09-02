@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.34 backup retention enforcement engine (commit 5ce2c93): BackupRetentionService (Step 24.26) wired into ProjectResilienceController.createBackup - injectable BackupRetentionPolicy default 20/50, per-category prune-oldest via selectForPrune menghapus direktori backup on-disk + row ProjectBackups via removeBackup baru; backup_retention_enforcement_test 2 PASS RED-terverifikasi, project_resilience suite 108 PASS, scoped analyze No issues, diff --check PASS, full suite + windows build digate di run ini; audit docs/audits/local-backup-restore.md retention row VERIFIED(engine) + ledger 145.34 updated; pointer stays 145.27 (uniform route gating app_router.dart concurrent, user validation Choi, native interaction UNVERIFIABLE dari cron); sisa 145.34 engine-scope: configurable location, restore preview, alternate destination, migration-aware restore, full failure injection, Free-access proof.",
+  "last_verified_step": "145.34 restore preview + alternate destination (commit da68cf1): ProjectBackupRestorePreview compute (read-only names/schema/current|migrationForward|blocked classification + warnings) dan restoreToAlternateDestination (copy backup ke package UUID baru di destinationRoot, live+backup untouched, reject schema>app, rollback on failure) di file domain baru project_backup_restore_preview.dart - project_recovery_services.dart sibling TIDAK disentuh; RED terverifikasi (Undefined name) dan menangkap bug import stub platform barrel (readProjectDatabaseSchemaVersion selalu null) -> fix ke ProjectDatabaseService conditional io/web import; audit local-backup-restore.md rows preview/alternate/schema-migration naik VERIFIED(engine), ledger 145.34 updated, pointer stays 145.27 (uniform route gating app_router.dart concurrent, user validation Choi, native UNVERIFIABLE dari cron); sisa 145.34: configurable location, full failure injection, Free-access proof.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-03 (cron) 145.34 backup retention enforcement",
-  "updated_by": "nephthys cron: 145.34 retention engine slice, pointer stays 145.27",
+  "updated_at": "2026-09-03 (cron b) 145.34 restore preview + alternate destination",
+  "updated_by": "nephthys cron: 145.34 restore preview + alternate destination slice, pointer stays 145.27",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

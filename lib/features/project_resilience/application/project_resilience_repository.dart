@@ -68,6 +68,8 @@ class ProjectResilienceRepository extends DatabaseAccessor<ProjectDatabase>
       );
   Future<void> addBackup(ProjectBackupsCompanion value) =>
       into(projectBackups).insert(value);
+  Future<void> removeBackup(String id) =>
+      (delete(projectBackups)..where((t) => t.id.equals(id))).go();
   Future<List<ProjectBackup>> backupsFor(String projectId) =>
       (select(projectBackups)
             ..where((t) => t.projectId.equals(projectId))

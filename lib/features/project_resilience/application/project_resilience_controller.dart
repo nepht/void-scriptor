@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 import 'package:path/path.dart' as p;
 
 import '../../../database/project/project_database.dart';
+import '../application/backup_retention_service.dart';
 import '../application/portable_project_service.dart';
 import 'project_integrity_service.dart';
 import 'project_recovery_services.dart';
@@ -29,9 +30,16 @@ class ProjectResilienceSnapshot {
 }
 
 class ProjectResilienceController {
-  ProjectResilienceController(this.session);
+  ProjectResilienceController(
+    this.session, {
+    this.retentionPolicy = const BackupRetentionPolicy(),
+  });
 
   final ProjectSession session;
+
+  /// Retention budgets enforced after each backup is recorded
+  /// (Step 24.26 service wired for Step 145.34).
+  final BackupRetentionPolicy retentionPolicy;
 
   Future<ProjectResilienceSnapshot> scan() async {
     final referencedPaths = await _referencedAssetPaths(session.database);
@@ -94,6 +102,7 @@ class ProjectResilienceController {
         note: Value(note),
       ),
     );
+    await _enforceBackupRetention();
     return backup;
   }
 
@@ -198,6 +207,32 @@ class ProjectResilienceController {
       }
     }
     return references;
+  }
+
+  /// Prunes oldest backups beyond retention budgets via
+  /// BackupRetentionService (Step 24.26): removes both the on-disk
+  /// backup directory and its ProjectBackups row. Manual and
+  /// automatic categories are budgeted independently.
+  Future<void> _enforceBackupRetention() async {
+    final repository = session.database.projectResilienceRepository;
+    final rows = await repository.backupsFor(session.package.projectId);
+    final candidates = rows
+        .map(
+          (row) =>
+              BackupInfo(id: row.id, type: row.type, createdAt: row.createdAt),
+        )
+        .toList();
+    final toPrune = BackupRetentionService(
+      policy: retentionPolicy,
+    ).selectForPrune(candidates);
+    for (final victim in toPrune) {
+      final row = rows.firstWhere((r) => r.id == victim.id);
+      final directory = Directory(session.package.resolve(row.relativePath));
+      if (await directory.exists()) {
+        await directory.delete(recursive: true);
+      }
+      await repository.removeBackup(victim.id);
+    }
   }
 
   Future<List<Directory>> _backupDirectories() async {

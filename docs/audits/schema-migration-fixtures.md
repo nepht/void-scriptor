@@ -92,3 +92,44 @@ nephthys — 2026-08-27
   berubah (tidak ada schema bump; v59 adalah state kanonik live).
 
 nephthys - 2026-09-02
+
+---
+
+## Update 2026-09-02 (run 2) - interrupted migration forward recovery (nephthys cron)
+
+**Status tetap `PARTIAL`; gap "forward recovery setelah interrupted migration"
+sebagai workflow teruji ditutup.**
+
+- Bukti sumber drift 2.34.3: `user_version` di-set hanya SETELAH `onUpgrade`
+  selesai (`_BaseExecutor` -> `versionDelegate.setSchemaVersion(currentVersion)`
+  setelah `beforeOpen`), dan `Migrator.createTable` menghasilkan
+  `CREATE TABLE IF NOT EXISTS` (idempotent), sedangkan `Migrator.addColumn`
+  menghasilkan `ALTER TABLE ... ADD COLUMN` (tidak idempotent). Artinya crash
+  di tengah wave meninggalkan state setengah-jadi yang membuat open berikutnya
+  gagal "duplicate column name".
+- RED terverifikasi: fixture HALF-APPLIED (wave objects 54..59 dibuat manual
+  via raw sqlite3, `user_version` tetap 53) membuat open crash dengan
+  `SqliteException(1): duplicate column name: voice` pada wave v58.
+- GREEN: guard forward recovery di wave `from < 58`
+  (`lib/database/project/project_database.dart`) mem-probe kolom live dengan
+  `SELECT voice FROM characters LIMIT 1` sebelum `m.addColumn`; create-table
+  waves sudah idempotent sejak awal.
+- Test baru:
+  `test/features/project_resilience/schema_migration_fixtures_test.dart`
+  "HALF-APPLIED wave objects with stale user_version still reopen cleanly" -
+  simulasi crash state via koneksi sqlite3 mentah (tanpa migrator drift,
+  definisi kolom eksak hasil `m.addColumn`: `TEXT NOT NULL DEFAULT ''`),
+  lalu membuktikan open sukses ke v59 dengan baris Character Core utuh
+  (no silent discard).
+- Bukti eksekusi: focused 5/5 PASS; regresi
+  project_resilience+release+database 92 PASS (0 test failure; satu-satunya
+  entri [E] adalah path suite salah `test/features/project_package` yang
+  tidak ada di tree, bukan kegagalan test); `flutter analyze` No issues;
+  `flutter build windows --debug` PASS 28.2s; `git diff --check` PASS;
+  full suite 3343 PASS / 1 FAIL (`app_bootstrap_test`, root-caused konkuren
+  145.20, untouched, konsisten sepanjang sejarah run).
+- Commit: ed0f35f (fix + test slice). Sisa gap 145.40: exhaustive invariants
+  gate lintas seluruh ordered migrations, clean-Windows E2E execution;
+  provenance D-SCHEMA-01 tidak berubah (tidak ada schema bump).
+
+nephthys - 2026-09-02 (run 2)

@@ -63,7 +63,7 @@ baseline lama.
 | 145.37 | Navigation Reduction | PARTIAL (nephthys, 2026-08-27) | `docs/audits/navigation-reduction.md`; desktop/mobile shells, routes, adaptive layouts, and 11 navigation tests pass; target Core primary destinations and hiding/feature-gating unready modules remain open |
 | 145.38 | Settings Reduction | PARTIAL (nephthys, 2026-08-27) | `docs/audits/settings-reduction.md`; theme, security, language, plugin settings and persistence pass 23 tests; unified Core-first settings surface, settings route, and feature-gated cloud/AI/community/publishing/payment/developer sections remain open |
 | 145.39 | Non-Core Preservation and Disablement | PARTIAL (nephthys, 2026-08-27) | `docs/audits/non-core-preservation-disablement.md`; 13 feature flags default OFF, audited workflow override, plugin enable/disable persistence, and 20 regression tests pass; primary-navigation removal, route gating, reactivation dependency map, and disabled-module data proof remain open |
-| 145.40 | Schema and Migration Fixtures | PARTIAL (nephthys, 2026-08-27) | `docs/audits/schema-migration-fixtures.md`; manifest/registry version guards, RC migration matrix, corrupt package detection, backup/rollback, and restart persistence pass 32 tests; dedicated fixture matrix CLOSED (commit 58d57b5: test/features/project_resilience/schema_migration_fixtures_test.dart 4 PASS - CURRENT v59 fresh create + reopen no-op; OLD v53 forward migration preserves Core rows no-silent-discard incl. voice default + v59 scope tables; CORRUPT database detected without crashing: schemaVersion null + open throws after SqliteException catch in readProjectDatabaseSchemaVersion; FUTURE manifest schemaVersion 99 rejected FormatException; RED terverifikasi SqliteException(26) sebelum catch; persistence+resilience+release+package regression 113 PASS, analyze No issues, build windows debug PASS 62.0s, diff --check PASS); exhaustive invariants gate, interrupted-migration forward recovery workflow, dan clean-Windows E2E execution remain open |
+| 145.40 | Schema and Migration Fixtures | PARTIAL (nephthys, 2026-08-27) | `docs/audits/schema-migration-fixtures.md`; manifest/registry version guards, RC migration matrix, corrupt package detection, backup/rollback, and restart persistence pass 32 tests; dedicated fixture matrix CLOSED (commit 58d57b5: test/features/project_resilience/schema_migration_fixtures_test.dart 4 PASS - CURRENT v59 fresh create + reopen no-op; OLD v53 forward migration preserves Core rows no-silent-discard incl. voice default + v59 scope tables; CORRUPT database detected without crashing: schemaVersion null + open throws after SqliteException catch in readProjectDatabaseSchemaVersion; FUTURE manifest schemaVersion 99 rejected FormatException; RED terverifikasi SqliteException(26) sebelum catch; persistence+resilience+release+package regression 113 PASS, analyze No issues, build windows debug PASS 62.0s, diff --check PASS); exhaustive invariants gate dan clean-Windows E2E execution remain open; AND 2026-09-02 run2 interrupted-migration forward recovery CLOSED (commit ed0f35f: guard idempoten di wave v58 voice add-column - probe SELECT voice sebelum m.addColumn krn createTable waves sudah IF NOT EXISTS idempotent tapi addColumn tidak; RED terverifikasi SqliteException(1) duplicate column name: voice pada fixture HALF-APPLIED user_version 53 dgn wave objects 54..59 manual via raw sqlite3; test HALF-APPLIED reopen cleanly 5/5 PASS, regresi 92 PASS, analyze No issues, build windows debug PASS 28.2s, full suite 3343 PASS / 1 FAIL konkuren 145.20 untouched, diff --check PASS) |
 | 145.41 | Core Automated Test Pyramid | PARTIAL (nephthys, 2026-08-27) | `docs/audits/core-automated-test-pyramid.md`; live inventory finds 124 domain-oriented, 4 integration-named, 14 contract, and 152 widget-test files; Core vertical matrix passes 78 tests; clean-Windows E2E/integration_test tree/native interaction remain unverified |
 | 145.42 | Data Safety Failure Matrix | IN_PROGRESS (milik eksekutor lain — JANGAN digandakan) | Tercakup historis: concurrent-open ditolak, isolasi DB antar proyek, regresi 1.279 @d4c3b8a; sisa kontrak: process_kill, power_loss, disk_full, permission_loss, drive_removal, interrupted move/import/export/restore, device validation |
 | 145.43–145.50 | (UX, sertifikasi, pilot, keputusan penutupan) | PENDING | — |
@@ -415,3 +415,21 @@ production-ready. Full Core vertical journey tetap PENDING
   migrations sebagai gate terpisah, forward recovery setelah interrupted
   migration sebagai workflow mandiri, dan clean-Windows E2E execution
   belum dibuktikan.
+
+## Update 2026-09-02d (nephthys cron run 2, 145.40 interrupted-migration recovery)
+
+- Gap 145.40 "interrupted-migration forward recovery workflow" ditutup
+  (commit ed0f35f): wave v58 `voice` add-column kini idempotent terhadap
+  state setengah-jadi (probe kolom live sebelum ALTER). Root cause: drift
+  men-set user_version setelah onUpgrade selesai, sehingga crash mid-wave
+  meninggalkan objek wave tanpa bump versi; open berikutnya menjalankan wave
+  ulang dan `ALTER TABLE ADD COLUMN` gagal "duplicate column name" -
+  `createTable` aman karena `IF NOT EXISTS`, `addColumn` tidak.
+- Test: HALF-APPLIED fixture (raw sqlite3, tanpa migrator, definisi kolom
+  eksak `TEXT NOT NULL DEFAULT ''`) -> open sukses, user_version 59, baris
+  Character Core utuh. RED terverifikasi sebelum guard.
+- Bukti: focused 5/5 PASS, regresi 92 PASS, analyze No issues, build windows
+  debug PASS 28.2s, full suite 3343 PASS / 1 FAIL (app_bootstrap_test
+  konkuren 145.20, untouched), diff --check PASS.
+- 145.40 tetap PARTIAL: exhaustive invariants gate lintas ordered migrations,
+  clean-Windows E2E execution.

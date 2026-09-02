@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.40 schema fixture matrix (commit 58d57b5): test/features/project_resilience/schema_migration_fixtures_test.dart 4 PASS (CURRENT v59 create+reopen no-op; OLD v53->v59 migration preserves Core rows no-silent-discard; CORRUPT db detected without crashing via SqliteException catch in readProjectDatabaseSchemaVersion; FUTURE manifest schemaVersion 99 rejected). Bukti: RED terverifikasi SqliteException(26), regression 113 PASS, analyze No issues, build windows debug PASS 62.0s, diff --check PASS. 145.40 tetap PARTIAL: exhaustive invariants gate, interrupted-migration forward recovery workflow, clean-Windows E2E. Pointer tetap 145.27.",
+  "last_verified_step": "145.40 interrupted-migration forward recovery (commit ed0f35f): guard idempoten wave v58 voice add-column (probe SELECT voice sebelum m.addColumn; drift user_version hanya di-set setelah onUpgrade selesai -> crash mid-wave meninggalkan state setengah-jadi; createTable waves sudah IF NOT EXISTS idempotent). RED terverifikasi SqliteException(1) duplicate column name: voice. Test HALF-APPLIED via raw sqlite3 dgn definisi kolom eksak drift NOT NULL DEFAULT '': open sukses v59, Core rows utuh. Bukti: focused 5/5 PASS, regresi 92 PASS, analyze No issues, build windows debug PASS 28.2s, full suite 3343 PASS / 1 FAIL (app_bootstrap_test konkuren 145.20, untouched), diff --check PASS. 145.40 tetap PARTIAL: exhaustive invariants gate, clean-Windows E2E. Pointer tetap 145.27.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",

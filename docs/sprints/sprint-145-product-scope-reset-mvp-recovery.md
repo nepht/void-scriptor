@@ -379,3 +379,19 @@ production-ready. Full Core vertical journey tetap PENDING
   propagation, cross-format no-watermark proof terbuka). Pointer tetap
   145.27 (sisa 145.27 non-actionable dari cron: app_router concurrent,
   user validation butuh Choi).
+
+## Update 2026-09-02 (nephthys cron, metadata propagation MD/DOCX 145.35)
+
+- Gap 145.35 "metadata propagation MD/DOCX writer" ditutup: StoryMarkdownExporter
+  dan StoryDocxExporter kini menerima ExportProfile (front matter title/author,
+  chapter rules penomoran bab), dan DOCX menyertakan metadata OOXML
+  docProps/core.xml (dc:title, dc:creator) yang terdaftar di [Content_Types].xml
+  dan _rels/.rels. Writer tanpa profile tetap byte-identik perilaku lama
+  (kompatibilitas fallback, konsisten dengan fidelity matrix 145.24).
+- RED terverifikasi: "No named parameter with the name 'profile'" pada kedua
+  writer (test/features/export/story_export_md_docx_profile_test.dart, 4 test).
+- Bukti: export suite 44 PASS, analyze No issues (10.3s), full suite 3340 PASS +
+  1 FAIL (app_bootstrap_test concurrent 145.20, untouched), windows debug build
+  PASS 29.6s, git diff --check PASS, roadmap guard PASS pre-run.
+- Commit: b6363d2 (3 file: 2 exporter + 1 test). 145.35 tetap PARTIAL: encoding
+  non-UTF-8, publishing fidelity render-compat eksternal, native proof.

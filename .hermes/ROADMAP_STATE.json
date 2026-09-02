@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.40 interrupted-migration forward recovery (commit ed0f35f): guard idempoten wave v58 voice add-column (probe SELECT voice sebelum m.addColumn; drift user_version hanya di-set setelah onUpgrade selesai -> crash mid-wave meninggalkan state setengah-jadi; createTable waves sudah IF NOT EXISTS idempotent). RED terverifikasi SqliteException(1) duplicate column name: voice. Test HALF-APPLIED via raw sqlite3 dgn definisi kolom eksak drift NOT NULL DEFAULT '': open sukses v59, Core rows utuh. Bukti: focused 5/5 PASS, regresi 92 PASS, analyze No issues, build windows debug PASS 28.2s, full suite 3343 PASS / 1 FAIL (app_bootstrap_test konkuren 145.20, untouched), diff --check PASS. 145.40 tetap PARTIAL: exhaustive invariants gate, clean-Windows E2E. Pointer tetap 145.27.",
+  "last_verified_step": "145.41 Core Automated Test Pyramid slice (clean-environment E2E journey, commit berikutnya): test/features/story/core_e2e_journey_test.dart 1 PASS - create package+session -> character+identity+voice -> story/arc/chapter/scene -> draft -> searchNovel -> quickReferenceForScene -> StoryTxtExporter -> ProjectBackupService SHA-256 -> restore checksum rollback (DIRTY hilang) -> reopen session hierarchy+draft intact, temp-root terisolasi tanpa data user. Bukti: story suite 150 PASS, analyze No issues, build windows debug PASS 22.3s, diff --check PASS. 145.41 tetap PARTIAL: integration_test/ native-driver tree, native interaction, inventory pyramid refresh.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-02T19:05:00+07:00",
-  "updated_by": "nephthys cron: 145.40 fixture matrix proof (commit 58d57b5), pointer stays 145.27",
+  "updated_at": "2026-09-02T21:05:00+07:00",
+  "updated_by": "nephthys cron: 145.41 clean-environment E2E journey slice, pointer stays 145.27",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

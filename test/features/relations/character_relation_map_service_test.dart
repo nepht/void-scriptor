@@ -44,31 +44,62 @@ void main() {
     expect(map, isEmpty);
   });
 
-  test('character-to-character relation resolves both endpoint names', () async {
-    final root = await Directory.systemTemp.createTemp('relmap-resolve-');
+  test(
+    'character-to-character relation resolves both endpoint names',
+    () async {
+      final root = await Directory.systemTemp.createTemp('relmap-resolve-');
+      addTearDown(() => root.delete(recursive: true));
+      final (db, paths) = await openDb(root);
+      addTearDown(db.close);
+
+      final raka = await seedCharacter(db, paths, 'project-1', 'Raka');
+      final sinta = await seedCharacter(db, paths, 'project-1', 'Sinta');
+      await CreateRelationService(RelationRepositoryImpl(database: db)).call(
+        projectId: 'project-1',
+        sourceId: raka,
+        targetId: sinta,
+        type: AssetRelationType.companionOf,
+      );
+
+      final map = await const CharacterRelationMapService().mapForProject(
+        db,
+        projectId: 'project-1',
+      );
+      expect(map, hasLength(1));
+      expect(map.first.sourceName, 'Raka');
+      expect(map.first.targetName, 'Sinta');
+      expect(map.first.typeLabel, 'companion_of');
+      expect(map.first.sourceAssetId, raka);
+      expect(map.first.targetAssetId, sinta);
+      expect(map.first.relationId, isNotEmpty);
+    },
+  );
+
+  test('map rows survive project database close and reopen', () async {
+    final root = await Directory.systemTemp.createTemp('relmap-restart-');
     addTearDown(() => root.delete(recursive: true));
     final (db, paths) = await openDb(root);
-    addTearDown(db.close);
-
     final raka = await seedCharacter(db, paths, 'project-1', 'Raka');
     final sinta = await seedCharacter(db, paths, 'project-1', 'Sinta');
     await CreateRelationService(RelationRepositoryImpl(database: db)).call(
       projectId: 'project-1',
       sourceId: raka,
       targetId: sinta,
-      type: AssetRelationType.companionOf,
+      type: AssetRelationType.enemyOf,
     );
+    await db.close();
+
+    final service = ProjectDatabaseService();
+    final reopened = await service.open('${root.path}/project.db');
+    addTearDown(reopened.close);
 
     final map = await const CharacterRelationMapService().mapForProject(
-      db,
+      reopened,
       projectId: 'project-1',
     );
     expect(map, hasLength(1));
     expect(map.first.sourceName, 'Raka');
     expect(map.first.targetName, 'Sinta');
-    expect(map.first.typeLabel, 'companion_of');
-    expect(map.first.sourceAssetId, raka);
-    expect(map.first.targetAssetId, sinta);
-    expect(map.first.relationId, isNotEmpty);
+    expect(map.first.typeLabel, 'enemy_of');
   });
 }

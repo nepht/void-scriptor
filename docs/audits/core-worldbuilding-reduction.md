@@ -49,7 +49,7 @@ Observed safeguards include:
 | Story/Lore has live implementation/test evidence | VERIFIED |
 | Timeline has live implementation/test evidence | VERIFIED (2026-09-02 cron: scene-to-timeline journey closed; production Material fix + drag-to-command-to-DB journey + move persistence restart) |
 | Factions have a complete Core editor/persistence journey | VERIFIED (2026-09-02 cron: editor UI closed, commit 3374abe); create/list/persistence (e286ca9) + editor UI journey (Project Bible FACTIONS section: live list, create dialog through CreateFactionService, duplicate-name visible error, narrow render) proven by 4 UI tests + 4 service tests |
-| Relationship Map has complete Core editor/persistence journey | PARTIAL; graph/relation seams exist, full UX contract remains open |
+| Relationship Map has complete Core editor/persistence journey | VERIFIED (2026-09-02 cron: contract 93470b3 + evidence closure 2026-09-02b; map service resolved-name rows, live-session Bible RELATIONSHIP MAP section, restart persistence via close/reopen, empty state, narrow 390px render, non-character endpoints keep raw ids; relation core/delete/display/journey suites) |
 | Lore Notes have complete rename/broken-link/keyboard journey | PARTIAL; domain/link seams exist, complete 145.29 contract remains open |
 | Non-Core capabilities are source-preserved | VERIFIED by live source inventory |
 | Non-Core capabilities are uniformly hidden/gated from primary navigation | PARTIAL; deferred labels/flags exist, router still exposes optional routes |
@@ -193,6 +193,34 @@ with an executable vertical slice:
 
 Evidence: timeline suite 13 PASS, story+workspaces 197 PASS, flutter
 analyze No issues, git diff --check PASS, windows debug build PASS 26.9s.
+
+Remaining 14527 rows: Lore Notes full contract (14529), uniform route
+gating (concurrently-owned app_router.dart must not be touched from cron),
+user validation evidence. The step remains PARTIAL; the pointer stays
+14527.
+
+
+## Update 2026-09-02b (nephthys cron, Relationship Map evidence closure)
+
+Step 14527 Core Worldbuilding Reduction - the Relationship Map row is closed
+as VERIFIED by completing the missing execution boundaries of the landed
+contract (commit 93470b3) without new production code:
+
+- Restart persistence: character_relation_map_service_test now proves a
+  character-to-character relation created through CreateRelationService is
+  re-resolved by CharacterRelationMapService.mapForProject after the project
+  database is closed and reopened (schema 59, real SQLite on disk).
+- Narrow layout: relationship_map_ui_test now renders the RELATIONSHIP MAP
+  section with resolved names at 390x844 and asserts
+  tester.takeException() is null (no RenderFlex overflow).
+- Existing boundaries re-confirmed live this run: live-session UI with
+  resolved names, empty-state hint, focused relations+bible suites.
+
+Evidence: focused relationship_map tests 6 PASS (3 UI + 3 service, RED
+attempt not applicable - PASS-first evidence on landed contract, same pattern
+as 145.25g), bible+relations suites 51 PASS, flutter analyze No issues
+(9.7s), git diff --check PASS, full flutter test and windows debug build
+executed in this run (see ledger entry for final counts).
 
 Remaining 14527 rows: Lore Notes full contract (14529), uniform route
 gating (concurrently-owned app_router.dart must not be touched from cron),

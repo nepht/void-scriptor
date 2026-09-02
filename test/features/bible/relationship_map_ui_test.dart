@@ -64,11 +64,58 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('RELATIONSHIP MAP renders resolved relation rows from the live session', (tester) async {
-    final session = await seed(tester, 'resolve');
-    late ProjectDatabase db;
+  testWidgets(
+    'RELATIONSHIP MAP renders resolved relation rows from the live session',
+    (tester) async {
+      final session = await seed(tester, 'resolve');
+      late ProjectDatabase db;
+      await tester.runAsync(() async {
+        db = session.database;
+        final paths = ProjectPaths(rootDirectory: session.package.root);
+        final raka = await CreateCharacterService(
+          database: db,
+          paths: paths,
+        ).create(projectId: session.manifest.id, name: 'Raka');
+        final sinta = await CreateCharacterService(
+          database: db,
+          paths: paths,
+        ).create(projectId: session.manifest.id, name: 'Sinta');
+        await CreateRelationService(RelationRepositoryImpl(database: db)).call(
+          projectId: session.manifest.id,
+          sourceId: raka,
+          targetId: sinta,
+          type: AssetRelationType.enemyOf,
+        );
+      });
+
+      await pumpBible(tester, session);
+
+      expect(find.text('RELATIONSHIP MAP'), findsOneWidget);
+      expect(find.text('Raka'), findsOneWidget);
+      expect(find.text('Sinta'), findsOneWidget);
+      expect(find.text('enemy_of'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('RELATIONSHIP MAP shows an empty hint when no relations exist', (
+    tester,
+  ) async {
+    final session = await seed(tester, 'empty');
+
+    await pumpBible(tester, session);
+
+    expect(find.text('RELATIONSHIP MAP'), findsOneWidget);
+    expect(find.text('Belum ada relasi karakter'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('RELATIONSHIP MAP renders at narrow width without overflow', (
+    tester,
+  ) async {
+    final session = await seed(tester, 'narrow');
     await tester.runAsync(() async {
-      db = session.database;
+      final db = session.database;
       final paths = ProjectPaths(rootDirectory: session.package.root);
       final raka = await CreateCharacterService(
         database: db,
@@ -78,32 +125,20 @@ void main() {
         database: db,
         paths: paths,
       ).create(projectId: session.manifest.id, name: 'Sinta');
-      await CreateRelationService(
-        RelationRepositoryImpl(database: db),
-      ).call(
+      await CreateRelationService(RelationRepositoryImpl(database: db)).call(
         projectId: session.manifest.id,
         sourceId: raka,
         targetId: sinta,
-        type: AssetRelationType.enemyOf,
+        type: AssetRelationType.allyOf,
       );
     });
 
-    await pumpBible(tester, session);
+    await pumpBible(tester, session, size: const Size(390, 844));
 
     expect(find.text('RELATIONSHIP MAP'), findsOneWidget);
     expect(find.text('Raka'), findsOneWidget);
     expect(find.text('Sinta'), findsOneWidget);
-    expect(find.text('enemy_of'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
-
-  testWidgets('RELATIONSHIP MAP shows an empty hint when no relations exist', (tester) async {
-    final session = await seed(tester, 'empty');
-
-    await pumpBible(tester, session);
-
-    expect(find.text('RELATIONSHIP MAP'), findsOneWidget);
-    expect(find.text('Belum ada relasi karakter'), findsOneWidget);
+    expect(find.text('ally_of'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

@@ -244,3 +244,29 @@ Langkah lanjutan yang diperlukan bila kontrak failure-injection disetujui:
 - Sisa gap 145.30: native process-kill harness + native interaction proof
   (butuh sesi interaktif).
 
+
+### Update 2026-09-03 - native process-kill harness (commit b191d53)
+
+- Gap "native process-kill harness" CLOSED. Harness mengeksekusi child
+  process Dart nyata (`test/features/project_resilience/fixtures/draft_journal_hard_kill_child.dart`)
+  yang men-stage draf ke DurableDraftJournal, mencetak sinyal READY, lalu
+  hang tanpa exit/flush/close. Parent meng-hard-kill proses di level OS
+  (`Process.kill` -> Windows TerminateProcess) dan membaca journal yang
+  ditinggalkan: konten staged dipulihkan penuh (no silent loss), lalu
+  di-acknowledge sesuai alur pemulihan yang dikendalikan pengguna.
+- Bukti tambahan no-silent-loss: .tmp setengah jadi (`scene-tmp.json.tmp`)
+  ditanam manual tidak pernah dianggap sumber pemulihan oleh
+  `pendingEntries()` - crash di tengah penulisan tidak merusak entri valid.
+- RED terverifikasi dua lapis: (a) child fixture belum ada -> asersi
+  "child script fixture must exist for the kill harness" Expected true /
+  Actual false; (b) setelah fixture ada, spawn pertama gagal
+  "Could not prepare isolate" karena Platform.resolvedExecutable di
+  `flutter test` adalah flutter_tester.exe; fix resolve dart.exe via
+  env FLUTTER_ROOT dengan fallback resolvedExecutable (dart test).
+- Bukti: test/features/project_resilience/durable_draft_journal_process_kill_test.dart
+  2 PASS; regression story+resilience 256 PASS; flutter analyze No issues
+  (8.7s); git diff --check PASS; full suite 3413 PASS / All tests passed
+  (11:21, termasuk app_bootstrap_test konkuren kini hijau; delta +2 eksak
+  dari 2 test harness); windows debug build PASS (20.6s).
+- Sisa gap 145.30: native interaction proof (butuh sesi interaktif dengan
+  computer_use) - harness kill-process bukan interaksi UI native.

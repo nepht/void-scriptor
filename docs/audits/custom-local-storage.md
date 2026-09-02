@@ -139,3 +139,15 @@ Status boundary:
 | Registry persistence | VERIFIED | Atomic `.tmp` rename + reload lulus |
 
 145.31 tetap PARTIAL: UI pemilihan lokasi, pengukuran free-space host-akurat, alur relink end-to-end, dan integrasi `ProjectPaths`/`ProjectPackageService` ke lokasi kustom belum ada.
+
+## Update 2026-09-03 (cron): free-space host-akurat + relink end-to-end
+
+Commit 95fee4a menutup dua gap 145.31 di level domain:
+
+- `HostDriveSpaceReader` (interface) + `PlatformDriveSpaceReader`: Windows membaca free bytes host-nyata via PowerShell `Get-PSDrive -Name <drive>.Free`; budget tidak diketahui (-1) mempertahankan standing offer 1 GiB konservatif; non-Windows melaporkan unknown (tidak berbohong soal free space).
+- `DefaultStorageProbe` (seam publik, `spaceReader` injectable) dibungkus `probe()`; `_Probe.checkWith` memisahkan writable-check dari interpretasi budget. `probe` kini melaporkan `freeBytes` host sungguhan dan memicu `notEnoughSpace` saat shortage nyata (sebelumnya selalu 1 GiB).
+- Test baru `test/core/persistence/host_drive_space_reader_test.dart` 4 PASS (RED terverifikasi: `HostDriveSpaceReader`/`DefaultStorageProbe` undefined): reader host-nyata >= 0 (demonstrasi C: free ~57 GB), notEnoughSpace pada 512 KiB terinjeksi, ok pada 5 MiB terinjeksi, dan alur relink end-to-end: bind project -> hapus lokasi lama -> relink ke target yang memuat paket terikat -> status `healthy` + `boundProjectId` utuh.
+
+Bukti gerbang: focused 4 PASS; regression test/core/persistence 38 PASS; analyze No issues; `dart format` 0 changed; `git diff --check` PASS; full suite 3417 PASS / 0 FAIL (12:20); `flutter build windows --debug` PASS 21.8s; roadmap guard PASS pre+post (pointer tetap 145.27).
+
+Status boundary 145.31 terbaru: Free-space test PARTIAL -> VERIFIED (domain, host-akurat di Windows; matrix multi-drive belum); Relink PARTIAL -> VERIFIED (domain end-to-end; relink UI pemindahan data tetap open). Sisa 145.31: UI pemilihan lokasi, wiring ProjectPaths/PackageService ke lokasi kustom.

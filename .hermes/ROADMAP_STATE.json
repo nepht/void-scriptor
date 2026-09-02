@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.27 Core Worldbuilding Reduction PARTIAL with Factions editor UI + Relationship Map contract + Timeline Core journey closed (2026-09-02 cron). Timeline row VERIFIED: production Material fix (SceneWorkspaceScreen._openTimeline route now wraps TimelineWorkspaceScreen in Scaffold; InkWell in TimelineClip previously crashed No Material widget found), timeline_scene_journey_test proves production path SceneWorkspaceScreen Open Timeline -> ensureTimelineForScene -> live clip drag -> MoveTimelineClipCommand via mutation bus -> timing persisted in live SQLite, timeline_move_persistence_test proves moved timing survives close/reopen. Evidence: timeline suite 13 PASS, story+workspaces 197 PASS, analyze No issues, windows debug build PASS 26.9s, diff --check PASS. Remaining 145.27: Lore Notes full contract (145.29), uniform route gating (concurrent-owned app_router.dart), user validation. Native interaction UNVERIFIABLE (cron).",
+  "last_verified_step": "145.27 Core Worldbuilding Reduction PARTIAL with Factions editor UI + Relationship Map contract + evidence closure + Timeline Core journey closed (2026-09-02 cron). Relationship Map evidence closure (commit b4ac516): character_relation_map_service_test proves map rows survive project database close/reopen via CharacterRelationMapService.mapForProject on real SQLite; relationship_map_ui_test proves RELATIONSHIP MAP renders resolved names at 390x844 with tester.takeException() null; audit row Relationship Map PARTIAL -> VERIFIED on landed contract 93470b3 without new production code. Evidence: focused 6 PASS, bible+relations 51 PASS, analyze No issues (9.7s), full suite 3309 PASS / 1 FAIL (app_bootstrap_test, concurrent-owned 145.20, untouched), windows debug build PASS, diff --check PASS, roadmap guard PASS pre+post. Remaining 145.27: Lore Notes full contract (145.29), uniform route gating (concurrent-owned app_router.dart), user validation. Native interaction UNVERIFIABLE (cron).",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-02T09:30:00+07:00",
-  "updated_by": "nephthys cron: 145.27 Timeline Core journey closed (commits pending in this run); 145.27 remains PARTIAL, pointer unchanged",
+  "updated_at": "2026-09-02T13:55:00+07:00",
+  "updated_by": "nephthys cron: 145.27 Relationship Map evidence closure committed b4ac516; 145.27 remains PARTIAL, pointer unchanged 145.27",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

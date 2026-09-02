@@ -63,7 +63,7 @@ baseline lama.
 | 145.37 | Navigation Reduction | PARTIAL (nephthys, 2026-08-27) | `docs/audits/navigation-reduction.md`; desktop/mobile shells, routes, adaptive layouts, and 11 navigation tests pass; target Core primary destinations and hiding/feature-gating unready modules remain open |
 | 145.38 | Settings Reduction | PARTIAL (nephthys, 2026-08-27) | `docs/audits/settings-reduction.md`; theme, security, language, plugin settings and persistence pass 23 tests; unified Core-first settings surface, settings route, and feature-gated cloud/AI/community/publishing/payment/developer sections remain open |
 | 145.39 | Non-Core Preservation and Disablement | PARTIAL (nephthys, 2026-08-27) | `docs/audits/non-core-preservation-disablement.md`; 13 feature flags default OFF, audited workflow override, plugin enable/disable persistence, and 20 regression tests pass; primary-navigation removal, route gating, reactivation dependency map, and disabled-module data proof remain open |
-| 145.40 | Schema and Migration Fixtures | PARTIAL (nephthys, 2026-08-27) | `docs/audits/schema-migration-fixtures.md`; manifest/registry version guards, RC migration matrix, corrupt package detection, backup/rollback, and restart persistence pass 32 tests; dedicated old/current/future/corrupt fixture matrix, exhaustive invariants, forward recovery, no-silent-discard, and clean-Windows execution remain open |
+| 145.40 | Schema and Migration Fixtures | PARTIAL (nephthys, 2026-08-27) | `docs/audits/schema-migration-fixtures.md`; manifest/registry version guards, RC migration matrix, corrupt package detection, backup/rollback, and restart persistence pass 32 tests; dedicated fixture matrix CLOSED (commit 58d57b5: test/features/project_resilience/schema_migration_fixtures_test.dart 4 PASS - CURRENT v59 fresh create + reopen no-op; OLD v53 forward migration preserves Core rows no-silent-discard incl. voice default + v59 scope tables; CORRUPT database detected without crashing: schemaVersion null + open throws after SqliteException catch in readProjectDatabaseSchemaVersion; FUTURE manifest schemaVersion 99 rejected FormatException; RED terverifikasi SqliteException(26) sebelum catch; persistence+resilience+release+package regression 113 PASS, analyze No issues, build windows debug PASS 62.0s, diff --check PASS); exhaustive invariants gate, interrupted-migration forward recovery workflow, dan clean-Windows E2E execution remain open |
 | 145.41 | Core Automated Test Pyramid | PARTIAL (nephthys, 2026-08-27) | `docs/audits/core-automated-test-pyramid.md`; live inventory finds 124 domain-oriented, 4 integration-named, 14 contract, and 152 widget-test files; Core vertical matrix passes 78 tests; clean-Windows E2E/integration_test tree/native interaction remain unverified |
 | 145.42 | Data Safety Failure Matrix | IN_PROGRESS (milik eksekutor lain — JANGAN digandakan) | Tercakup historis: concurrent-open ditolak, isolasi DB antar proyek, regresi 1.279 @d4c3b8a; sisa kontrak: process_kill, power_loss, disk_full, permission_loss, drive_removal, interrupted move/import/export/restore, device validation |
 | 145.43–145.50 | (UX, sertifikasi, pilot, keputusan penutupan) | PENDING | — |
@@ -395,3 +395,23 @@ production-ready. Full Core vertical journey tetap PENDING
   PASS 29.6s, git diff --check PASS, roadmap guard PASS pre-run.
 - Commit: b6363d2 (3 file: 2 exporter + 1 test). 145.35 tetap PARTIAL: encoding
   non-UTF-8, publishing fidelity render-compat eksternal, native proof.
+## Update 2026-09-02 (nephthys cron, 145.40 fixture matrix)
+
+- Gap 145.40 "dedicated old/current/future/corrupt fixture matrix" ditutup:
+  `test/features/project_resilience/schema_migration_fixtures_test.dart` 4 PASS
+  (commit 58d57b5). CURRENT v59 fresh create + reopen no-op; OLD v53 -> v59
+  forward migration membuktikan no-silent-discard (baris Character Core utuh,
+  kolom voice v58 kembali sebagai default, tiga tabel scope layer v59 hadir);
+  CORRUPT database terdeteksi tanpa crash; FUTURE manifest (schemaVersion 99)
+  ditolak dengan FormatException.
+- Perbaikan produksi minimal: readProjectDatabaseSchemaVersion menangkap
+  SqliteException dan melaporkan null (file korup = tidak terbaca), bukan
+  melempar ke pemanggil probe. RED terverifikasi: SqliteException(26) "file
+  is not a database" sebelum patch.
+- Bukti: focused 4 PASS; regression persistence+resilience+release+package
+  113 PASS; flutter analyze No issues found!; git diff --check PASS;
+  flutter build windows --debug PASS 62.0s.
+- 145.40 tetap PARTIAL: exhaustive invariants lintas seluruh ordered
+  migrations sebagai gate terpisah, forward recovery setelah interrupted
+  migration sebagai workflow mandiri, dan clean-Windows E2E execution
+  belum dibuktikan.

@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.35 metadata propagation MD/DOCX (commit b6363d2): StoryMarkdownExporter + StoryDocxExporter menerima ExportProfile (front matter, chapter rules) dan DOCX menyertakan docProps/core.xml (dc:title/dc:creator). Bukti: RED terverifikasi (No named parameter 'profile' x2), focused 4 PASS, export suite 44 PASS, analyze No issues 10.3s, full suite 3340 PASS + 1 FAIL (app_bootstrap_test concurrent 145.20, untouched), windows debug build PASS 29.6s, diff --check PASS. 145.35 tetap PARTIAL: encoding non-UTF-8, publishing fidelity render-compat eksternal, native proof. Pointer tetap 145.27 (sisa non-actionable dari cron: uniform route gating app_router.dart concurrent, user validation, native UNVERIFIABLE).",
+  "last_verified_step": "145.40 schema fixture matrix (commit 58d57b5): test/features/project_resilience/schema_migration_fixtures_test.dart 4 PASS (CURRENT v59 create+reopen no-op; OLD v53->v59 migration preserves Core rows no-silent-discard; CORRUPT db detected without crashing via SqliteException catch in readProjectDatabaseSchemaVersion; FUTURE manifest schemaVersion 99 rejected). Bukti: RED terverifikasi SqliteException(26), regression 113 PASS, analyze No issues, build windows debug PASS 62.0s, diff --check PASS. 145.40 tetap PARTIAL: exhaustive invariants gate, interrupted-migration forward recovery workflow, clean-Windows E2E. Pointer tetap 145.27.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-02T18:20:00+07:00",
-  "updated_by": "nephthys cron: 145.35 metadata propagation MD/DOCX proof (commit b6363d2), pointer stays 145.27",
+  "updated_at": "2026-09-02T19:05:00+07:00",
+  "updated_by": "nephthys cron: 145.40 fixture matrix proof (commit 58d57b5), pointer stays 145.27",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

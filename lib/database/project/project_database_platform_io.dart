@@ -44,6 +44,11 @@ Future<int?> readProjectDatabaseSchemaVersion(String databasePath) async {
   try {
     return database.select('PRAGMA user_version').single['user_version']
         as int?;
+  } on sqlite.SqliteException {
+    // Sprint 145.40: a corrupt database is reported as unreadable
+    // (null) instead of crashing the caller that only probes the
+    // schema version.
+    return null;
   } finally {
     database.close();
   }

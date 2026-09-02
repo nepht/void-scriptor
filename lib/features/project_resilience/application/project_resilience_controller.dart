@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 import 'package:path/path.dart' as p;
 
 import '../../../database/project/project_database.dart';
+import '../application/backup_location_policy.dart';
 import '../application/backup_retention_service.dart';
 import '../application/portable_project_service.dart';
 import 'project_integrity_service.dart';
@@ -33,13 +34,22 @@ class ProjectResilienceController {
   ProjectResilienceController(
     this.session, {
     this.retentionPolicy = const BackupRetentionPolicy(),
-  });
+    BackupLocationPolicy? backupLocationPolicy,
+  }) : backupLocationPolicy = backupLocationPolicy ?? BackupLocationPolicy();
 
   final ProjectSession session;
 
   /// Retention budgets enforced after each backup is recorded
   /// (Step 24.26 service wired for Step 145.34).
   final BackupRetentionPolicy retentionPolicy;
+
+  /// Destination policy for local backups (Step 145.34 configurable
+  /// location). Defaults to the package-internal backups directory.
+  final BackupLocationPolicy backupLocationPolicy;
+
+  /// Attaches (or clears with `null`) a custom backup root at runtime.
+  void configureCustomBackupRoot(Directory? root) =>
+      backupLocationPolicy.configureCustomBackupRoot(root);
 
   Future<ProjectResilienceSnapshot> scan() async {
     final referencedPaths = await _referencedAssetPaths(session.database);
@@ -82,6 +92,7 @@ class ProjectResilienceController {
       package: session.package,
       type: 'manual',
       note: note,
+      destinationRoot: backupLocationPolicy.resolveBackupRoot(session.package),
     );
     final metadata =
         jsonDecode(
@@ -93,9 +104,12 @@ class ProjectResilienceController {
         id: metadata['id'] as String,
         projectId: session.package.projectId,
         type: 'manual',
-        relativePath: p
-            .relative(backup.path, from: session.package.root.path)
-            .replaceAll('\\', '/'),
+        relativePath:
+            BackupLocationPolicy.isExternalBackup(session.package, backup.path)
+            ? backup.path
+            : p
+                  .relative(backup.path, from: session.package.root.path)
+                  .replaceAll('\\', '/'),
         schemaVersion: metadata['schemaVersion'] as int,
         sizeBytes: await _directorySize(backup),
         createdAt: DateTime.parse(metadata['createdAt'] as String),
@@ -227,12 +241,19 @@ class ProjectResilienceController {
     ).selectForPrune(candidates);
     for (final victim in toPrune) {
       final row = rows.firstWhere((r) => r.id == victim.id);
-      final directory = Directory(session.package.resolve(row.relativePath));
+      final directory = _resolveBackupDirectory(row.relativePath);
       if (await directory.exists()) {
         await directory.delete(recursive: true);
       }
       await repository.removeBackup(victim.id);
     }
+  }
+
+  /// Resolves a stored backup path: absolute paths are custom-location
+  /// backups (read/written as-is), relative paths live inside the package.
+  Directory _resolveBackupDirectory(String storedPath) {
+    if (p.isAbsolute(storedPath)) return Directory(storedPath);
+    return Directory(session.package.resolve(storedPath));
   }
 
   Future<List<Directory>> _backupDirectories() async {

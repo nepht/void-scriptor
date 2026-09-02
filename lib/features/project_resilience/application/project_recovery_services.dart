@@ -35,9 +35,11 @@ class ProjectBackupService {
     required ProjectPackage package,
     required String type,
     String note = '',
+    Directory? destinationRoot,
   }) async {
     final id = const Uuid().v4();
-    final target = Directory(p.join(package.backupDirectory.path, id));
+    final root = destinationRoot ?? package.backupDirectory;
+    final target = Directory(p.join(root.path, id));
     await target.create(recursive: true);
     await File(
       p.join(target.path, 'project.json'),

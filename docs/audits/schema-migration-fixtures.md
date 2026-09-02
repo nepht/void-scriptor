@@ -133,3 +133,44 @@ sebagai workflow teruji ditutup.**
   provenance D-SCHEMA-01 tidak berubah (tidak ada schema bump).
 
 nephthys - 2026-09-02 (run 2)
+
+---
+
+## Update 2026-09-03 (nephthys cron) - exhaustive invariants gate CLOSED
+
+**Status tetap `PARTIAL` (clean-Windows E2E execution masih open); gap
+"exhaustive invariants gate lintas seluruh ordered migrations sebagai gate
+terpisah" ditutup.**
+
+- Gate exhaustif baru:
+  `test/features/project_resilience/schema_migration_fixtures_test.dart`
+  group "145.40 exhaustive invariants gate" - 58 test (entry v1..v58).
+  Setiap test: fresh v59 create -> seed 1 baris Core asset -> rewind
+  `PRAGMA user_version` ke entry version (state eksak yang ditinggalkan
+  proses crash mid-wave, karena drift hanya menaikkan user_version setelah
+  onUpgrade selesai) -> reopen -> asersi user_version 59, baris Core utuh
+  (no silent data discard), tanpa crash.
+- RED terverifikasi sebelum guard produksi: tanpa guard, entry v1..v16
+  crash `SqliteException(1)` (duplicate column name: favorite / project_id,
+  dst.) - addColumn waves v3/v7/v8/v9/v15/v16/v17 tidak idempotent
+  terhadap schema yang sudah memuat kolomnya. Crash mid-wave yang nyata
+  akan meninggalkan database yang tidak bisa dibuka ulang.
+- GREEN (produksi, `lib/database/project/project_database.dart`): helper
+  `_columnExists(table, column)` (PRAGMA table_info probe) dan guard
+  forward-recovery pada SEMUA wave addColumn: asset_relations
+  (project_id/created_at/relation_origin), character_loadout_entries
+  (quantity), character_identity_profiles (weapon_lock), character_modes
+  (accent_color/tags_json), assets (favorite/last_opened_at),
+  character_identity_profiles (accessory_lock/notes),
+  character_modes (reference_set_id), story_scenes (reference_set_id),
+  characters (voice - guard v58 lama digeneralisasi ke helper yang sama).
+  Drift createTable waves sudah idempotent (CREATE TABLE IF NOT EXISTS).
+- Bukti eksekusi: focused 63 PASS (4 fixture matrix + 1 half-applied
+  recovery + 58 gate); regresi project_resilience + release + database
+  150 PASS; `flutter analyze` No issues found! (8.2s); `git diff --check`
+  PASS; full suite dan windows debug build dieksekusi di run ini
+  (lihat ledger).
+- Sisa gap 145.40: clean-Windows E2E execution; D-SCHEMA-01 tetap OPEN
+  (tidak ada schema bump; v59 tetap state kanonik live).
+
+nephthys - 2026-09-03

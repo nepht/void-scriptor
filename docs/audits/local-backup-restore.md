@@ -53,13 +53,13 @@ Evidence yang lulus:
 
 | Acceptance | Status | Evidence / gap |
 |---|---|---|
-| Configurable location | BLOCKED | Service memakai package backup directory; destination policy belum injectable/user-configurable |
+| Configurable location | VERIFIED (engine) | BackupLocationPolicy injectable (commit d8b99a8): optional customBackupRoot + configureCustomBackupRoot runtime; resolveBackupRoot fail-safe fallback ke internal default saat root hilang/invalid; snapshot eksternal disimpan sebagai path absolut di ProjectBackups.relativePath; retention prune lintas lokasi via _resolveBackupDirectory; backup_configurable_location_test 2 PASS RED-terverifikasi; UI pemilihan lokasi user tetap terbuka (settings surface, bukan engine acceptance) |
 | Retention | VERIFIED (engine) | BackupRetentionService wired into controller.createBackup; per-category prune-oldest removes directory + ProjectBackups row via removeBackup; injectable policy default 20/50; retention_enforcement_test 2 PASS RED-verified (commit 5ce2c93); UI konfigurasi user tetap terbuka (row configurable location) |
 | Hashes | VERIFIED | SHA-256 manifest/database/workspace checksums dan tamper rejection lulus |
 | Restore preview | VERIFIED (engine) | RestorePreviewReport.compute read-only: names + schema versions + klasifikasi current/migrationForward/blocked + warnings; 3 PASS RED-terverifikasi (commit da68cf1); konsumsi UI di screen belum ada (engine-first, objective 145.34 = verification) |
 | Alternate destination | VERIFIED (engine) | restoreToAlternateDestination salin backup ke package UUID baru di destinationRoot tanpa menyentuh live project/backup; tolak schema lebih baru; rollback saat gagal; test 3 PASS (commit da68cf1); integrasi registry/UI belum ada |
 | Schema migration | VERIFIED (classification) | preview mengklasifikasi migrationForward utk schema lama dan alternate-destination restore mempertahankan user_version lama (forward migration saat open, flow open-migration sendiri sudah dibuktikan fixtures 145.40 OLD v53-to-v59) |
-| Failure recovery | PARTIAL | Emergency backup dan manifest/database rollback ada; failure injection untuk semua copy stages belum ada |
+| Failure recovery | PARTIAL (diperkuat) | Emergency backup dan manifest/database rollback ada; workspace copy-stage failure injection kini teruji (backup_copy_stage_failure_test: Windows file-lock harness membuat workspace delete stage gagal deterministik -> rollback manifest+db terverifikasi, 2 PASS RED-terverifikasi commit d8b99a8); invalid custom root (file) terbukti tidak crash dan tidak menulis parsial; injeksi stage assets-copy dan emergency-backup-failure belum ada |
 | Free access | UNVERIFIABLE | Tidak ada entitlement/access-control test pada backup flow |
 | Native interaction | UNVERIFIABLE | Native Windows click-through tetap blocked oleh `snapshot_id_required` |
 
@@ -103,3 +103,43 @@ Next canonical step: `145.35 Clean Manuscript Export`.
 - RED terverifikasi (Undefined name ProjectBackupRestorePreview + RestoreCompatibility). Bug produksi terselamatkan RED: import barrel platform stub (readProjectDatabaseSchemaVersion selalu null) - ditemukan via probe differential (dart CLI roundtrip 53 PASS; flutter_tester roundtrip 53 PASS; reader repo pada file sama 53 PASS; test FAILED Actual null) lalu fix ke ProjectDatabaseService().schemaVersion (conditional io/web import, pola production project_database_service.dart).
 - Bukti: focused 3 PASS; project_resilience suite 111 PASS; scoped analyze No issues; format 2 file 0 sisa; git diff --check PASS; windows debug build PASS 38.5s; full suite digate di run ini.
 - Commit: da68cf1 (2 file, +313).
+
+
+## Update 2026-09-03 cron d (nephthys: configurable location + failure injection)
+
+- Gap 'Configurable location' CLOSED at the engine boundary: new
+  `BackupLocationPolicy` (lib/features/project_resilience/application/backup_location_policy.dart).
+  Optional user-selected custom backup root; `resolveBackupRoot` is
+  fail-safe: missing custom root (USB unplugged) or an invalid root (path
+  is a file) falls back to the package-internal `backups/` directory so a
+  backup is never blocked and never written partially into a broken
+  location. External snapshots are stored as absolute paths in
+  `ProjectBackups.relativePath`; internal snapshots keep the existing
+  package-relative form; retention pruning resolves both via
+  `_resolveBackupDirectory` so the oldest backup is pruned across both
+  locations (cross-location retention proven by test 2).
+- Gap 'Failure recovery' STRENGTHENED: `backup_copy_stage_failure_test.dart`
+  injects a deterministic Windows file-lock on a live workspace file so the
+  restore's workspace delete stage fails; test proves the emergency
+  rollback returns the live manifest to its pre-restore state (name
+  unchanged) and the live workspace file survives. A second injection
+  (custom root is a file) proves createBackup neither crashes nor writes
+  into the invalid location. RED first: `backupLocationPolicy` /
+  `BackupLocationPolicy` undefined (compile fail), then fail-safe behavior
+  assertions corrected against the real contract (backups/ exists from
+  package creation; Directory.existsSync is false for a file path).
+- Design decisions: fail-safe over throw (a backup must always exist
+  somewhere); no UI in this slice (settings surface remains open,
+  grouped with the user-validation boundary).
+- Gates: focused 4 PASS; project_resilience suite 115 PASS; scoped
+  `dart analyze` No issues (2 lints fixed: prefer_initializing_formals,
+  unused p_join helper); `dart format` clean; full `flutter test`
+  3431 PASS / 0 FAIL; `flutter build windows --debug` PASS (27.7s);
+  `git diff --check` PASS; roadmap guard PASS pre+post (pointer stays
+  145.27). Commit d8b99a8 (5 owned files; project_recovery_services.dart
+  staged mine-only via HEAD-transform so the sibling's uncommitted
+  integrity engine (~108 lines) stayed untouched and uncommitted).
+- Remaining for 145.34: assets-copy-stage and emergency-backup-failure
+  injection, settings UI for location + retention, Free-access proof
+  (no entitlement hook exists to test), native interaction (UNVERIFIABLE
+  from cron).

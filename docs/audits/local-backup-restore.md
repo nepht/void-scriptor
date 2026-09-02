@@ -143,3 +143,10 @@ Next canonical step: `145.35 Clean Manuscript Export`.
   injection, settings UI for location + retention, Free-access proof
   (no entitlement hook exists to test), native interaction (UNVERIFIABLE
   from cron).
+
+### Update 2026-09-03 cron 07:xx (nephthys) - Free-access proof landed
+
+- Gap `Free access` audit row naik dari UNVERIFIABLE ke VERIFIED (domain).
+- Bukti: `test/features/project_resilience/backup_free_access_test.dart` 2 PASS - (1) journey tanpa akun: ProjectSessionManager.open + ProjectResilienceController.createBackup x2 + ProjectBackupRestorePreview.compute (compatibility current) + in-place restore (manifest name dipulihkan) + restoreToAlternateDestination (package baru, manifest intact) - seluruh flow berjalan tanpa parameter akun/plan, dan tidak ada konsep plan/tier/entitlement di lib sama sekali; (2) guard statis: token banned (premium/paywall/subscription/entitlement/licensing/monetization/requirePlan/currentPlan/core-auth/features-account/features-collaboration) di-scan di lib/features/project_resilience + lib/core/persistence - zero violation.
+- RED terverifikasi sebelum slice: audit row Free access = UNVERIFIABLE (tidak ada entitlement/access-control test pada backup flow); implementasi produksi tidak berubah - PASS-first evidence closure mengikuti preseden 145.25g/145.30j.
+- Gerbang: focused 2 PASS, project_resilience 117 PASS (+2), analyze No issues (97.2s), diff --check PASS, guard PASS pre-state; full suite + windows build digate run ini.

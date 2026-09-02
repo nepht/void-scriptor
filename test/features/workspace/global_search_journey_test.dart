@@ -11,7 +11,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/persistence/project_paths.dart';
 import 'package:void_scriptor/core/project_package/project_package_service.dart';
 import 'package:void_scriptor/core/selection/selection_controller.dart';
-import 'package:void_scriptor/core/selection/selection_model.dart';
 import 'package:void_scriptor/features/bible/application/create_faction_service.dart';
 import 'package:void_scriptor/features/character/data/character_repository_impl.dart';
 import 'package:void_scriptor/features/character/presentation/character_workspace_screen.dart';
@@ -35,7 +34,6 @@ void main() {
     late final Directory root;
     late final ProjectSession session;
     late final String characterId;
-    late final String characterName;
 
     await tester.runAsync(() async {
       root = await Directory.systemTemp.createTemp('s27-gs-journey-');
@@ -50,7 +48,6 @@ void main() {
       );
       final character = await repo.createCharacter(name: 'Qowner');
       characterId = character.assetId;
-      characterName = character.displayName;
     });
     addTearDown(() => root.delete(recursive: true));
     addTearDown(session.close);

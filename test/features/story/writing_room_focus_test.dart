@@ -14,6 +14,7 @@
 //    tombol "Keluar Fokus" mengembalikannya.
 import 'package:drift/drift.dart' show QueryExecutor;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/database/project/project_database.dart';
 import 'package:void_scriptor/features/character/domain/character_quick_ref.dart';
@@ -114,6 +115,50 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('CHAPTERS'), findsOneWidget);
     expect(find.text('STORY BIBLE'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('escape key exits active focus session via keyboard reason', (
+    tester,
+  ) async {
+    final repository = _FakeStoryRepository()..hierarchy = _hierarchy();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: SizedBox(
+              width: 1200,
+              child: StoryWorkspaceScreen(
+                storyId: 'story-1',
+                repository: repository,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Masuk mode fokus lewat tombol terlebih dahulu.
+    await tester.ensureVisible(find.text('Mode Fokus'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Mode Fokus'));
+    await tester.pumpAndSettle();
+    expect(find.text('CHAPTERS'), findsNothing);
+
+    // Pintasan hanya memeriksa key event yang naik dari subtree di bawah
+    // CallbackShortcuts layar; permintaan fokus dari root scope juga
+    // berakhir di node scope layar (aturan modifikasi fokus).
+    FocusManager.instance.rootScope.requestFocus();
+    await tester.pump();
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+
+    // Sesudah wire: chrome kembali dan sesi keluar.
+    expect(find.text('CHAPTERS'), findsOneWidget);
+    expect(find.text('Keluar Fokus'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 }

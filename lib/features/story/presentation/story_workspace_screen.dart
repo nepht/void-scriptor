@@ -1088,189 +1088,215 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    return ColoredBox(
-      color: p.background,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1100),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
+    return CallbackShortcuts(
+      // Step 145.28: keyboard exit untuk sesi fokus (domain 109.20
+      // keyboard_exit). Esc hanya menutup sesi yang memang aktif; di luar
+      // mode fokus pintasan ini no-op agar navigasi rutin tak terganggu.
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.escape): _handleFocusEscape,
+      },
+      child: Focus(
+        autofocus: true,
+        child: ColoredBox(
+          color: p.background,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1100),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Story Bible — ${widget.storyId}',
-                    style: TextStyle(
-                      color: p.textPrimary,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  _exportActions(),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _focusToggle(),
-              const SizedBox(height: 4),
-              const Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  Chip(label: Text('Bible')),
-                  Chip(label: Text('Arcs')),
-                  Chip(label: Text('Chapters')),
-                  Chip(label: Text('Scenes')),
-                  Chip(label: Text('Timeline')),
-                ],
-              ),
-              const SizedBox(height: 20),
-              // Step 145.30: recovery prompt di dekat puncak layar agar
-              // terlihat langsung saat startup (visible status, no silent
-              // loss) tanpa bergantung pada scroll.
-              if (_pendingRecovery.isNotEmpty) ...[
-                _Panel(title: 'DRAFT RECOVERY', child: _buildRecoveryPanel(p)),
-                const SizedBox(height: 12),
-              ],
-              if (widget.workspaceProjection != null) ...[
-                WorkspaceProjectionCard(
-                  projectionFuture: widget.workspaceProjection!,
-                ),
-                const SizedBox(height: 12),
-              ],
-              if (!_isFocusActive) ...[
-                _Panel(
-                  title: 'STORY STRUCTURE',
-                  child: Text(
-                    'Story → Arc 1 → Chapter 1 → Scene',
-                    style: TextStyle(color: p.textSecondary),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                _Panel(title: 'CHAPTERS', child: _buildLiveChapters(p)),
-                const SizedBox(height: 12),
-                _Panel(
-                  title: 'SCENE EDITOR',
-                  child: Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _selectedSceneTitle == null
-                            ? 'Select a scene to start writing'
-                            : 'Editing — $_selectedSceneTitle',
+                        'Story Bible — ${widget.storyId}',
                         style: TextStyle(
                           color: p.textPrimary,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       const SizedBox(height: 10),
-                      CompositedTransformTarget(
-                        link: _layerLink,
-                        child: TextField(
-                          controller: _draft,
-                          minLines: 7,
-                          maxLines: 14,
-                          onChanged: _onDraftChanged,
-                          decoration: const InputDecoration(
-                            hintText: 'Tulis draft scene di sini...',
-                            border: OutlineInputBorder(),
-                            alignLabelWithHint: true,
-                          ),
-                        ),
+                      _exportActions(),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  _focusToggle(),
+                  const SizedBox(height: 4),
+                  const Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      Chip(label: Text('Bible')),
+                      Chip(label: Text('Arcs')),
+                      Chip(label: Text('Chapters')),
+                      Chip(label: Text('Scenes')),
+                      Chip(label: Text('Timeline')),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  // Step 145.30: recovery prompt di dekat puncak layar agar
+                  // terlihat langsung saat startup (visible status, no silent
+                  // loss) tanpa bergantung pada scroll.
+                  if (_pendingRecovery.isNotEmpty) ...[
+                    _Panel(
+                      title: 'DRAFT RECOVERY',
+                      child: _buildRecoveryPanel(p),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  if (widget.workspaceProjection != null) ...[
+                    WorkspaceProjectionCard(
+                      projectionFuture: widget.workspaceProjection!,
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  if (!_isFocusActive) ...[
+                    _Panel(
+                      title: 'STORY STRUCTURE',
+                      child: Text(
+                        'Story → Arc 1 → Chapter 1 → Scene',
+                        style: TextStyle(color: p.textSecondary),
                       ),
-                      const SizedBox(height: 8),
-                      Row(
+                    ),
+                    const SizedBox(height: 12),
+                    _Panel(title: 'CHAPTERS', child: _buildLiveChapters(p)),
+                    const SizedBox(height: 12),
+                    _Panel(
+                      title: 'SCENE EDITOR',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '$_words kata',
-                            style: TextStyle(color: p.textSecondary),
+                            _selectedSceneTitle == null
+                                ? 'Select a scene to start writing'
+                                : 'Editing — $_selectedSceneTitle',
+                            style: TextStyle(
+                              color: p.textPrimary,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                          const Spacer(),
-                          Text(
-                            _autosaveLabel,
-                            key: const ValueKey('autosave_label'),
-                            style: TextStyle(color: p.textSecondary),
+                          const SizedBox(height: 10),
+                          CompositedTransformTarget(
+                            link: _layerLink,
+                            child: TextField(
+                              controller: _draft,
+                              minLines: 7,
+                              maxLines: 14,
+                              onChanged: _onDraftChanged,
+                              decoration: const InputDecoration(
+                                hintText: 'Tulis draft scene di sini...',
+                                border: OutlineInputBorder(),
+                                alignLabelWithHint: true,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                '$_words kata',
+                                style: TextStyle(color: p.textSecondary),
+                              ),
+                              const Spacer(),
+                              Text(
+                                _autosaveLabel,
+                                key: const ValueKey('autosave_label'),
+                                style: TextStyle(color: p.textSecondary),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                _Panel(
-                  title: 'STORY BIBLE',
-                  child: Text(
-                    'Premise\nThemes\nTone\nWorld Rules\nCanon Rules',
-                    style: TextStyle(color: p.textSecondary, height: 1.6),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                _Panel(
-                  title: 'NOVEL SEARCH',
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: TextButton.icon(
-                          onPressed: widget.repository == null
-                              ? null
-                              : _showNovelSearchDialog,
-                          icon: const Icon(Icons.search),
-                          label: const Text('Cari Novel'),
-                        ),
+                    ),
+                    const SizedBox(height: 12),
+                    _Panel(
+                      title: 'STORY BIBLE',
+                      child: Text(
+                        'Premise\nThemes\nTone\nWorld Rules\nCanon Rules',
+                        style: TextStyle(color: p.textSecondary, height: 1.6),
                       ),
-                      if (_searchResults != null) ...[
-                        const SizedBox(height: 8),
-                        if (_searchResults!.isEmpty)
-                          Text(
-                            'Tidak ada hasil.',
-                            style: TextStyle(color: p.textSecondary),
-                          )
-                        else
-                          for (final result in _searchResults!)
-                            ListTile(
-                              dense: true,
-                              leading: Badge(
-                                label: Text('${result.matchCount}'),
-                              ),
-                              title: Text(
-                                result.sceneTitle,
-                                style: TextStyle(color: p.textPrimary),
-                              ),
-                              subtitle: Text(
-                                result.chapterTitle,
-                                style: TextStyle(color: p.textSecondary),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  _selectedSceneId = result.sceneId;
-                                  _selectedSceneTitle = result.sceneTitle;
-                                  _sceneSnapshots = const [];
-                                  _sceneQuickRefs = const [];
-                                });
-                                _loadDraftFor(result.sceneId);
-                                _loadSnapshotsFor(result.sceneId);
-                                _loadQuickRefsFor(result.sceneId);
-                              },
+                    ),
+                    const SizedBox(height: 12),
+                    _Panel(
+                      title: 'NOVEL SEARCH',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: TextButton.icon(
+                              onPressed: widget.repository == null
+                                  ? null
+                                  : _showNovelSearchDialog,
+                              icon: const Icon(Icons.search),
+                              label: const Text('Cari Novel'),
                             ),
-                      ],
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                _Panel(title: 'SCENE SNAPSHOTS', child: _buildSnapshots(p)),
-                const SizedBox(height: 12),
-                _Panel(title: 'CHARACTER QUICK REF', child: _buildQuickRefs(p)),
-                const SizedBox(height: 12),
-              ],
-            ],
+                          ),
+                          if (_searchResults != null) ...[
+                            const SizedBox(height: 8),
+                            if (_searchResults!.isEmpty)
+                              Text(
+                                'Tidak ada hasil.',
+                                style: TextStyle(color: p.textSecondary),
+                              )
+                            else
+                              for (final result in _searchResults!)
+                                ListTile(
+                                  dense: true,
+                                  leading: Badge(
+                                    label: Text('${result.matchCount}'),
+                                  ),
+                                  title: Text(
+                                    result.sceneTitle,
+                                    style: TextStyle(color: p.textPrimary),
+                                  ),
+                                  subtitle: Text(
+                                    result.chapterTitle,
+                                    style: TextStyle(color: p.textSecondary),
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedSceneId = result.sceneId;
+                                      _selectedSceneTitle = result.sceneTitle;
+                                      _sceneSnapshots = const [];
+                                      _sceneQuickRefs = const [];
+                                    });
+                                    _loadDraftFor(result.sceneId);
+                                    _loadSnapshotsFor(result.sceneId);
+                                    _loadQuickRefsFor(result.sceneId);
+                                  },
+                                ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _Panel(title: 'SCENE SNAPSHOTS', child: _buildSnapshots(p)),
+                    const SizedBox(height: 12),
+                    _Panel(
+                      title: 'CHARACTER QUICK REF',
+                      child: _buildQuickRefs(p),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ],
+              ),
+            ),
           ),
         ),
       ),
     );
+  }
+
+  /// Step 145.28: pintasan keyboard keluar fokus — hanya aktif saat sesi
+  /// fokus berjalan; meneruskan alasannya sebagai keyboard exit.
+  void _handleFocusEscape() {
+    if (_isFocusActive) {
+      _focusSession?.exit(viaKeyboard: true);
+      setState(() {});
+    }
   }
 }
 

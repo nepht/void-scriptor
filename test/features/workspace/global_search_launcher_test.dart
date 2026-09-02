@@ -9,7 +9,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/domain/asset_type.dart';
 import 'package:void_scriptor/core/persistence/project_paths.dart';
 import 'package:void_scriptor/core/project_package/project_package_service.dart';
-import 'package:void_scriptor/database/project/project_database.dart';
 import 'package:void_scriptor/features/bible/application/create_faction_service.dart';
 import 'package:void_scriptor/features/character/data/character_repository_impl.dart';
 import 'package:void_scriptor/features/environment/application/create_environment_service.dart';

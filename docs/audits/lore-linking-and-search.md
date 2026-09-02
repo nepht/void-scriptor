@@ -129,3 +129,35 @@ created for Environment/Faction/Story in this slice.
 
 (Existing 2026-09-02 note above records commit 054e274; retained unchanged
 for provenance.)
+
+## Update 2026-09-02 (nephthys cron, evidence-closure reconciliation -> VERIFIED)
+
+Mapping objective exact `sprint_145.json` ("fast discoverable link/reference
+to characters/locations/factions/lore with broken-link handling, rename
+safety, scope, and keyboard flow") ke bukti eksekusi live:
+
+- Fast discoverable link/reference lintas 4 domain: loadCatalog unified
+  (054e274: Characters/Environments/Factions + species/tech/power/bible) +
+  GlobalSearchLauncher/showGlobalSearchSheet (295f528) + LoreLinkSuggester
+  ranking + autocomplete Story Workspace -> VERIFIED.
+- Broken-link handling: LoreLinkClassifier + scanIntegrity + ambiguous
+  candidates dengan daftar kandidat -> VERIFIED.
+- Rename safety: ProjectLoreLinkEditor segment edits + RenameCharacterCommand
+  loreRetarget default (14e1ae8). Penelusuran live tree run ini membuktikan
+  RenameCharacterCommand adalah SATU-SATUNYA rename command produksi di lib/
+  (grep "class Rename" hanya satu hasil), sehingga kontrak "wired to every
+  entity rename command" terpenuhi; tanpa rename command lain untuk entity
+  non-character, tidak ada command spekulatif yang dibuat -> VERIFIED.
+- Scope: retarget project-scoped regression fix + katalog per proyek +
+  launcher per proyek -> VERIFIED.
+- Keyboard flow: arrow/Enter/Esc tested -> VERIFIED.
+
+Bukti fresh HEAD e926cdd (run cron ini): focused lore/backlinks 31 + rename
+retarget 2 + global search journey 2 + launcher 1 + catalog 3 = 39 PASS,
+flutter analyze No issues, full flutter test 3323 PASS + 1 FAIL concurrent
+145.20 (untouched), windows debug build PASS 39.6s, git diff --check PASS,
+roadmap guard PASS pre-run.
+
+Native Windows interaction tetap UNVERIFIABLE dari cron (tanpa
+computer_use) - bukan item objective. Status step: **VERIFIED** (ledger row
+145.29).

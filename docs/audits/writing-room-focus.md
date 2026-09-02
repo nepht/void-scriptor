@@ -112,3 +112,36 @@ Next canonical step: `145.29 Lore Linking and Search`.
   (app_bootstrap_test, tidak disentuh). Commit ea42539.
 - Sisa gap 145.28: native interaction proof (UNVERIFIABLE dari cron) dan user
   validation evidence. Step tetap PARTIAL karena dua boundary itu.
+
+## Update 2026-09-02 (nephthys cron, evidence-closure reconciliation -> VERIFIED)
+
+Mapping objective exact `sprint_145.json` ("editor prioritizes writing canvas,
+chapter navigation, save state, word count, focus mode, search/lore reference,
+minimal distraction") ke bukti eksekusi live:
+
+- Writing canvas: multiline scene-draft TextField + editor tests -> VERIFIED.
+- Chapter/scene navigation: hierarchy repository, scene selection memuat
+  draft, tap path chapters panel -> VERIFIED.
+- Save state: DebouncedAutosave round-trip persistence + label dinamis
+  "Tersimpan HH:MM"/"Belum tersimpan" (commit 7d9b0f4) + DurableAutosaveCoordinator
+  (ef82042, debounce + journal durable no-silent-loss) -> VERIFIED.
+- Word count: "N kata" wired dan tested; catatan audit awal yang masih
+  menandai ini belum ter-wire sudah stale -> VERIFIED.
+- Focus mode: FocusWritingSession (domain 109.20) + tombol Mode Fokus/Keluar
+  Fokus (7d9b0f4) + Esc keyboard exit (ea42539, RED terverifikasi) -> VERIFIED.
+- Search/lore reference: lore autocomplete + binding "[[..." + NOVEL SEARCH +
+  GLOBAL SEARCH sheet (295f528) -> VERIFIED.
+- Minimal distraction: panel chrome disembunyikan saat fokus aktif via
+  if(!_isFocusActive) dengan SCENE EDITOR tetap tampil; narrow render tanpa
+  overflow -> VERIFIED.
+
+Bukti fresh HEAD e926cdd (run cron ini): focused writing_room_focus +
+lore/backlinks/rename/global-search/catalog = 42 PASS, flutter analyze
+No issues, full flutter test 3323 PASS + 1 FAIL concurrent 145.20
+(app_bootstrap_test, untouched), windows debug build PASS 39.6s,
+git diff --check PASS, roadmap guard PASS pre-run.
+
+Boundary tersisa yang TIDAK termasuk objective: native interaction
+klik/typing (UNVERIFIABLE dari cron, tanpa computer_use) dan user validation
+evidence (menunggu Choi). Keduanya direkam jujur dan tidak menghalangi
+closure objective. Status step: **VERIFIED** (ledger row 145.28).

@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.35 metadata encoding-aware MD/DOCX: paritas MD writer (StoryMarkdownExporter.writeExport Encoding encoding = utf8 + bool bom = false, paritas StoryTxtExporter 0b3d34e; default tetap UTF-8 tanpa BOM; RED terverifikasi simbol encoding/bom; test/features/export/story_markdown_encoding_options_test.dart 3 PASS) + bukti encoding-aware DOCX PASS-first (OOXML melarang BOM di part XML; story_docx_encoding_evidence_test 1 PASS: 4 part XML prolog UTF-8 tanpa BOM, Unicode byte-exact); export suite 53 PASS; windows debug build PASS 24.0s; pointer next_step tetap 145.27",
+  "last_verified_step": "145.36 AI Optional Boundary slice: unified BYOK/context/consent policy CLOSED (AiPolicy.byDefault() lib/features/ai/domain/ai_policy.dart - byokReady false / contextSummary kosong / externalTransfer tanpa consent -> PolicyResultDenied fail-closed; test/features/ai/domain/ai_policy_test.dart 6 PASS RED-terverifikasi) + no-startup-dependency proof CLOSED (test/features/ai/ai_no_startup_dependency_test.dart 4 PASS - 7 file bootstrap inti zero AI import + policy fail-closed tanpa runtime/credential/network); focused AI suite 125 PASS, analyze No issues, windows debug build PASS, diff --check PASS; sisa 145.36: BYOK UX, redaction property-test, native interaction; pointer next_step tetap 145.27",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-03 (cron 145.35 MD/DOCX encoding-aware metadata)",
-  "updated_by": "nephthys cron: 145.35 metadata encoding-aware MD/DOCX parity + DOCX evidence, pointer stays 145.27",
+  "updated_at": "2026-09-03 (cron 145.36 AI policy + no-startup proof)",
+  "updated_by": "nephthys cron: 145.36 unified AI policy + no-startup-dependency proof, pointer stays 145.27",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

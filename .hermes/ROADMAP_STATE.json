@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.35 encoding non-UTF-8 pada TXT writer: StoryTxtExporter.writeExport menerima Encoding encoding = utf8 + bool bom = false, writeAsBytes dgn prefix EF BB BF saat bom=true, default tetap UTF-8 tanpa BOM (kontrak encoding matrix 27712d8 utuh); RED terverifikasi (No named parameter encoding/bom); test/features/export/story_txt_encoding_options_test.dart 3 PASS (latin1+BOM byte-exact, utf8+BOM round-trip, default tanpa BOM); export suite 49 PASS, focused TXT 7 PASS, analyze No issues, windows debug build PASS 33.1s exit 0, diff --check PASS, commit 0b3d34e; pointer next_step tetap 145.27",
+  "last_verified_step": "145.33 archive integrity checksum: ArchiveIntegrity computeDirectoryChecksum SHA-256 sorted POSIX-separator entry names di staging dir sebelum zip tunggal, meta voidproject.archive.json mengecualikan dirinya dari payload hash; exporter menulis checksum nyata; importer verify SEBELUM ekstraksi, kosong/hilang/tamper = FormatException; RED terverifikasi (Undefined name ArchiveIntegrity); test/features/project_resilience/archive_integrity_test.dart 4 PASS; project_resilience suite 121 PASS; full suite 3460 PASS / 0 FAIL; analyze No issues; windows debug build PASS 32.6s; diff --check PASS; pointer next_step tetap 145.27",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-03 (cron 145.35 TXT encoding options)",
-  "updated_by": "nephthys cron: 145.35 encoding non-UTF-8 TXT writer, pointer stays 145.27",
+  "updated_at": "2026-09-03 (cron 145.33 archive integrity checksum)",
+  "updated_by": "nephthys cron: 145.33 portable archive integrity checksum, pointer stays 145.27",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

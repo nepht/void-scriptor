@@ -478,6 +478,29 @@ production-ready. Full Core vertical journey tetap PENDING
 - 145.30 tetap PARTIAL: sisa native interaction proof (butuh sesi
   interaktif). Pointer tetap 145.27.
 
+## Update 2026-09-03 cron d2 (nephthys, archive integrity checksum 145.33)
+
+- Gap terpilih: 145.33 Portable Import Export, acceptance "archive integrity
+  checksum" (canonical: .vscriptor manifest/checksums/secret exclusion) -
+  archive metadata checksum sebelumnya string kosong. File 145.27/145.31/
+  145.34/145.35 sisanya non-actionable dari cron (app_router.dart concurrent
+  63 ins, settings UI butuh keputusan Choi, publish fidelity eksternal),
+  145.42 milik eksekutor lain.
+- RED terverifikasi: Undefined name ArchiveIntegrity (test baru
+  test/features/project_resilience/archive_integrity_test.dart).
+- GREEN: ArchiveIntegrity.computeDirectoryChecksum - SHA-256 atas staging
+  directory sebelum zip, sorted entry names, separator POSIX (backslash
+  Windows dikonversi), meta entry dikecualikan; exporter menulis checksum
+  nyata ke voidproject.archive.json; importer verify SEBELUM ekstraksi,
+  kosong/hilang/tamper = FormatException Archive checksum mismatch.
+- Bukti: archive_integrity_test 4 PASS, project_resilience suite 121 PASS,
+  analyze scoped No issues, format scoped 1 changed, build windows debug
+  PASS 32.6s, diff --check PASS. Full suite: see commit message + state.
+- Sisa 145.33: secret exclusion (BLOCKED: portable_project_service.dart
+  sibling workspaces slice uncommitted di region sama), compatibility/
+  migration policy, rollback lengkap, large-project evidence.
+- 145.27 tetap PARTIAL (route gating concurrent); pointer tetap 145.27.
+
 ## Update 2026-09-03 cron 10:xx (nephthys, Free-access proof 145.34)
 
 - Gap: baris audit `Free access` masih UNVERIFIABLE (tidak ada

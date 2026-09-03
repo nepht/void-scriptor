@@ -58,10 +58,10 @@ Coverage yang lulus:
 | Manifest | VERIFIED | `manifest/project.json` wajib ada dan dibaca |
 | Archive integrity checksum | VERIFIED (domain) | 2026-09-03 cron: export menulis checksum SHA-256 nyata (directory-based, deterministic entry order, POSIX separator), import memverifikasi sebelum ekstraksi; `test/features/project_resilience/archive_integrity_test.dart` 4 PASS RED-terverifikasi |
 | Secret exclusion | BLOCKED | Tidak ada allowlist/denylist atau test yang membuktikan secret tidak masuk |
-| Transactional import | PARTIAL | Partial package dihapus; existing destination collision/registration atomicity belum lengkap |
+| Transactional import | PARTIAL | Partial package dihapus; 2026-09-03c cron: registry-state atomicity + rollback terbukti test-only (commit 991dd53: post-extraction registry failure me-rollback package directory, registry kembali ke state pre-import; copy import aditif); existing-destination overwrite pada asCopy:false tetap non-atomic (risiko terdokumentasi, file engine concurrent) |
 | Compatibility/migration | BLOCKED | Importer membaca schema version tetapi tidak menjalankan migration/compatibility policy |
 | Corrupted input | PARTIAL | Missing manifest/database dan invalid ZIP ditolak; matrix corruption belum lengkap |
-| Rollback | PARTIAL | Cleanup on failure ada; rollback terhadap existing project/registry state belum terbukti |
+| Rollback | PARTIAL | Cleanup on failure ada; 2026-09-03c cron: rollback registry-state + package directory terbukti test-only (991dd53); rollback terhadap existing destination (path overwrite asCopy:false) belum terbukti - file engine concurrent |
 | Large project behavior | VERIFIED (domain) | 2026-09-03 cron: 250 aset + 2 blob 256 KiB + 60 workspace export/import/registry round-trip lulus (portable_large_project_test.dart 3 PASS, commit 7641236) |
 | Registry relocation | VERIFIED | Coordinator mendaftarkan imported package dengan local path baru |
 | Platform/native interaction | UNVERIFIABLE | Native Windows UI flow belum terbukti; driver sebelumnya `snapshot_id_required` |
@@ -72,7 +72,7 @@ Tidak ada project production yang dipindahkan atau dihapus. Semua test memakai t
 
 ## Verdict
 
-**PARTIAL — portable archive round-trip, relocation, path safety, cleanup, dan archive integrity checksum sudah runnable; secret exclusion, migration compatibility, complete rollback, dan large-project evidence belum tersedia.**
+**PARTIAL — portable archive round-trip, relocation, path safety, cleanup, archive integrity checksum, registry-state transactional import/rollback, dan large-project evidence sudah runnable; secret exclusion, migration compatibility, destination-collision rollback (asCopy:false overwrite non-atomic), dan native interaction belum tersedia.**
 
 ## Update 2026-09-03 (nephthys cron, archive integrity checksum)
 
@@ -116,3 +116,29 @@ Next canonical step: `145.34 Local Backup and Restore`.
 - Sisa 145.33: secret exclusion (BLOCKED: region sama pada
   portable_project_service.dart milik sibling), compatibility/migration
   policy, complete rollback terhadap existing registry state.
+
+## Update 2026-09-03c (nephthys cron) - transactional import + rollback registry-state
+
+**Status tetap `PARTIAL`; gap "rollback terhadap existing project/registry
+state" pada sisi registry-state ditutup sebagai bukti test-only.**
+
+- Test baru `test/features/project_resilience/portable_import_transaction_test.dart`
+  (2 PASS, PASS-first, tanpa kode produksi - file engine milik slice concurrent):
+  1. Kegagalan registry upsert SETELAH ekstraksi selesai membuat coordinator
+     menghapus direktori package hasil import dan registry kembali persis ke
+     state pre-import (single real project id).
+  2. Copy import mendaftar aditif; dua project pre-existing tetap utuh di
+     registry dan di disk.
+- Bukti eksekusi: focused 2 PASS; project_resilience suite 127 PASS / 0 FAIL;
+  `flutter analyze` No issues found! (145.2s); `flutter build windows --debug`
+  PASS 42.6s; `git diff --check` PASS; roadmap_guard PASS pre+post.
+- Temuan risiko terdokumentasi: import `asCopy:false` pada destination dengan
+  package existing menimpa file demi file secara non-atomik, dan cleanup
+  failure menghapus direktori existing (data-loss path). UI produksi hanya
+  memakai `asCopy:true` sehingga tidak tercapai dari jalur UI saat ini;
+  perbaikan engine BLOCKED karena file milik slice concurrent.
+- Sisa gap: secret exclusion (BLOCKED file concurrent), migration
+  compatibility, destination-collision rollback, native interaction
+  (UNVERIFIABLE dari cron).
+
+nephthys - 2026-09-03c

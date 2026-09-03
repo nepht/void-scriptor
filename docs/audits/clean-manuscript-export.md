@@ -176,3 +176,33 @@ Next canonical step: `145.36 AI Optional Boundary`.
 - Sisa 145.35: publishing fidelity DOCX render-compat eksternal,
   metadata encoding-aware utk MD/DOCX (opsi kini hanya di TXT writer),
   native interaction UNVERIFIABLE (cron).
+## Update 2026-09-03 cron mdenc (nephthys, 145.35 Markdown encoding + DOCX evidence)
+
+- Sisa gap 145.35 "metadata encoding-aware utk MD/DOCX (opsi kini hanya di
+  TXT writer)" ditutup dua arah:
+  1. Paritas MD writer: `StoryMarkdownExporter.writeExport` kini menerima
+     `Encoding encoding = utf8` dan `bool bom = false` (paritas
+     StoryTxtExporter commit 0b3d34e); penulisan via `writeAsBytes` dengan
+     prefix BOM EF BB BF saat `bom=true`. Default TETAP UTF-8 tanpa BOM
+     sehingga kontrak encoding matrix Unicode (27712d8) tidak berubah.
+     RED terverifikasi: "No named parameter with the name 'encoding'" dan
+     "'bom'" (kompilasi gagal hanya pada dua simbol itu).
+     test/features/export/story_markdown_encoding_options_test.dart 3 PASS:
+     latin1+BOM byte-exact (prefix EF BB BF + body latin1, bukan urutan
+     utf8-2-byte), utf8+BOM round-trip, default tetap tanpa BOM.
+  2. Bukti encoding-aware DOCX: format OOXML mempersyaratkan part XML
+     dienkode UTF-8 TANPA BOM (Word menolak file bila prolog XML tidak
+     persis di awal part), sehingga opsi encoding tidak berlaku pada
+     writer ini. test/features/export/story_docx_encoding_evidence_test.dart
+     1 PASS PASS-first (tanpa perubahan produksi): keempat part XML
+     (word/document.xml, docProps/core.xml, [Content_Types].xml,
+     word/styles.xml) diawali prolog `<?xml version="1.0" encoding="UTF-8"`
+     tanpa prefix BOM, dan Unicode publishing fixture tetap byte-exact di
+     document.xml.
+- Bukti gerbang: export suite 53 PASS (50 lama + 3 MD baru + 1 DOCX baru,
+  delta +4 eksak vs 49); flutter analyze scoped (lib/features/story/
+  application + test/features/export) No issues; dart format 2 test files;
+  git diff --check PASS; flutter build windows --debug PASS 24.0s
+  (build/windows/x64/runner/Debug/void_scriptor.exe); commit 5bcf275.
+- Sisa 145.35: publishing fidelity DOCX render-compat eksternal (perlu
+  Word/LibreOffice nyata), native interaction UNVERIFIABLE (cron).

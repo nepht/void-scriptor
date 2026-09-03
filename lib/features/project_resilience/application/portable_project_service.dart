@@ -10,6 +10,7 @@ import '../../../core/persistence/project_manifest.dart';
 import '../../../core/persistence/project_registry_service.dart';
 import '../../../database/project/project_database_service.dart';
 import '../../projects/domain/project_model.dart';
+import 'archive_secret_policy.dart';
 
 class ArchiveManifest {
   const ArchiveManifest({
@@ -117,6 +118,11 @@ class PortableProjectExporter {
         package.assetsDirectory,
         Directory(p.join(temp.path, 'assets')),
       );
+      final workspaces = Directory(p.join(package.root.path, 'workspaces'));
+      if (await workspaces.exists()) {
+        await _copy(workspaces, Directory(p.join(temp.path, 'workspaces')));
+      }
+      await ArchiveSecretPolicy.assertNoSecrets(temp);
       final checksum = await ArchiveIntegrity.computeDirectoryChecksum(temp);
       final archiveMeta = File(p.join(temp.path, 'voidproject.archive.json'));
       await archiveMeta.writeAsString(
@@ -134,12 +140,12 @@ class PortableProjectExporter {
         p.join(outDir.path, '${package.projectId}.voidproject'),
       );
       await ZipFileEncoder().zipDirectory(temp, filename: output.path);
-      final decoded = ZipDecoder().decodeBytes(
+      final encoded = ZipDecoder().decodeBytes(
         await output.readAsBytes(),
         verify: true,
       );
-      if (decoded.find('manifest/project.json') == null ||
-          decoded.find('database/project.db') == null) {
+      if (encoded.find('manifest/project.json') == null ||
+          encoded.find('database/project.db') == null) {
         throw StateError('Portable archive verification failed');
       }
       return output;
@@ -154,6 +160,8 @@ class PortableProjectExporter {
     await target.create(recursive: true);
     await for (final entity in source.list(recursive: true)) {
       final relative = p.relative(entity.path, from: source.path);
+      final entryName = relative.replaceAll(String.fromCharCode(92), '/');
+      if (ArchiveSecretPolicy.isSecretPath(entryName)) continue;
       final destination = p.join(target.path, relative);
       if (entity is Directory) {
         await Directory(destination).create(recursive: true);
@@ -183,6 +191,7 @@ class PortableProjectImporter {
     if (!ArchiveIntegrity.verify(decoded)) {
       throw const FormatException('Archive checksum mismatch');
     }
+    ArchiveSecretPolicy.assertArchiveHasNoSecrets(decoded);
     final manifest = ProjectManifest.fromJson(
       jsonDecode(utf8.decode(manifestEntry.readBytes()!))
           as Map<String, dynamic>,
@@ -198,7 +207,9 @@ class PortableProjectImporter {
           continue;
         }
         final relative = p.posix.normalize(entry.name);
-        if (relative == '..' || relative.startsWith('../')) {
+        if (p.isAbsolute(relative) ||
+            relative == '..' ||
+            relative.startsWith('../')) {
           throw const FormatException('Archive path escapes package');
         }
         final output = File(package.resolve(relative));

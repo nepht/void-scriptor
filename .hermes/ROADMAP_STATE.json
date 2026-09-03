@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.35 TXT export UI vertical wiring (commit 761323a): tombol Export TXT wired ke Story Workspace (handler _exportTxt + guard binding parity MD/DOCX + snackbar), RED terverifikasi (0 widgets Export TXT), test/features/export/story_txt_export_ui_test.dart 2 PASS (journey tap -> story.txt nyata berisi judul+draft via tester.runAsync utk dart:io async; guard disabled tanpa binding), focused 57 PASS, full suite 3435 PASS / 0 FAIL, analyze No issues 10.4s, windows debug build PASS, diff --check PASS, guard PASS pre+post (pointer stays 145.27; sisa 145.35: DOCX render-compat eksternal, native UNVERIFIABLE).",
+  "last_verified_step": "145.39 reactivation dependency map: ReactivationDependencyMap.entries di lib/core/capabilities/reactivation_dependency_map.dart mengikat 10 capability deferred kanonik (core_mvp_scope_reset_spec.json deferred_until_evidence) ke layer/owningFlag/modul-tree/entry-evidence 145.17; test arsitektur 6 PASS RED-terverifikasi; focused 6 PASS, regresi 17 PASS, analyze No issues, full suite 3441 PASS / 0 FAIL, windows debug build PASS 28.0s, diff --check PASS; pointer next_step tetap 145.27",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",

@@ -83,16 +83,16 @@ Covered behavior:
 
 | Acceptance | Status | Reason |
 |---|---|---|
-| Autosave state | PARTIAL | Debounce/flush terbukti; status durable belum terbukti |
-| Atomic save | BLOCKED | Tidak ditemukan temp→flush→rename contract untuk project save |
-| Durable journal | BLOCKED | `AutosaveJournal` hanya in-memory |
-| Snapshots | PARTIAL | JSON snapshots terbukti; full-project crash-consistent snapshot belum terbukti |
-| Process-kill recovery | UNVERIFIABLE | Belum ada controlled process-kill harness |
-| Power-loss recovery | UNVERIFIABLE | Tidak diuji pada filesystem live |
-| Disk-full recovery | BLOCKED | Belum ada injectable failure seam; tidak aman memenuhi ini dengan mengisi disk |
-| Visible save/recovery status | PARTIAL | Resilience/recovery UI ada; autosave dirty/saved/recovery status end-to-end belum terhubung |
-| No silent loss | BLOCKED | Tidak ada restart test untuk durable pending journal/draft recovery |
-| User-controlled restore | PARTIAL | Service/UI restore action ada; autosave recovery selection flow belum terbukti |
+| Autosave state | VERIFIED | Debounce+flush+status durable terbukti live (DurableAutosaveCoordinator, ef82042/291a871) |
+| Atomic save | VERIFIED | DurableDraftJournal menulis `<scene>.json.tmp`, flush, lalu rename atomik; .tmp setengah jadi tidak dianggap pemulihan (durable_draft_journal.dart) |
+| Durable journal | VERIFIED | DurableDraftJournal on-disk, survive close/reopen; replacement untuk AutosaveJournal in-memory lama |
+| Snapshots | PARTIAL | JSON snapshot terbukti (ProjectVersionControlService); full-project crash-consistent snapshot tetap di luar slice ini |
+| Process-kill recovery | VERIFIED | Harness OS kill child nyata (b191d53): konten staged dipulihkan penuh, .tmp setengah jadi diabaikan |
+| Power-loss recovery | UNVERIFIABLE | Tidak diuji pada filesystem live (bukan objective cron-actionable) |
+| Disk-full recovery | BLOCKED | Failure-injection seam ada (durable_draft_journal_failure_injection_test), tapi penuh-nyata terhadap disk tidak diuji |
+| Visible save/recovery status | VERIFIED | Recovery startup prompt UI + label Tersimpan/Belum tersimpan (cron i / 291a871) |
+| No silent loss | VERIFIED | Restart + close/reopen + flush-on-dispose test membuktikan draf belum-ter-debounce tidak hilang |
+| User-controlled restore | PARTIAL | Service/UI restore action ada; autosave recovery selection flow tetap perlu bukti lanjutan |
 
 ## Ownership and safety boundary
 
@@ -270,3 +270,29 @@ Langkah lanjutan yang diperlukan bila kontrak failure-injection disetujui:
   dari 2 test harness); windows debug build PASS (20.6s).
 - Sisa gap 145.30: native interaction proof (butuh sesi interaktif dengan
   computer_use) - harness kill-process bukan interaksi UI native.
+
+## Update 2026-09-03 (nephthys cron: evidence-closure tabel Gap stale)
+
+- Tabel "Gap terhadap acceptance" ternyata STALE terhadap bukti live:
+  slice ef82042/291a871/b191d53/cron-i sudah menutup sebagian besar baris
+  tetapi tabel tidak pernah di-update. Koreksi berbasis bukti executable
+  (tanpa kode produksi):
+  - Atomic save BLOCKED -> VERIFIED (DurableDraftJournal tmp+flush+rename);
+  - Durable journal BLOCKED -> VERIFIED (journal on-disk survive
+    close/reopen, replacement AutosaveJournal in-memory lama);
+  - Process-kill recovery UNVERIFIABLE -> VERIFIED (harness OS kill b191d53);
+  - No silent loss BLOCKED -> VERIFIED (restart/crash/flush-on-dispose tests);
+  - Autosave state, Visible save/recovery status -> VERIFIED
+    (koordinator + recovery prompt UI + label Tersimpan);
+  - Disk-full recovery tetap BLOCKED (seam injection ada, disk penuh nyata
+    tidak diuji); Power-loss tetap UNVERIFIABLE; Snapshots + User-controlled
+    restore tetap PARTIAL.
+- Bukti fresh run ini (HEAD b4b35d5): focused suite resilience inti
+  test/features/project_resilience/durable_draft_journal_test.dart +
+  durable_draft_journal_failure_injection_test.dart +
+  durable_draft_journal_process_kill_test.dart +
+  test/features/story/durable_autosave_coordinator_test.dart +
+  novel_recovery_prompt_ui_test.dart = 16 PASS ("All tests passed!").
+- Status step 145.30 tetap PARTIAL (Snapshots full-project, power-loss,
+  disk-full nyata, user restore selection, native interaction), namun
+  bukan lagi karena baris yang sudah terbukti tersebut.

@@ -62,7 +62,7 @@ Evidence yang lulus:
 | Chapter order | VERIFIED | Story hierarchy exporter loops ordered chapters/scenes |
 | Encoding | PARTIAL | Dart string/file path lulus fixture; explicit encoding matrix/Unicode publishing fixture belum |
 | Metadata options | PARTIAL | Front matter/profile metadata ada; export option-to-artifact assertions terbatas |
-| No watermark | PARTIAL | TXT kini punya negative assertion eksplisit (tanpa `#`, tanpa penanda lain); cross-format (DOCX/Markdown) negative proof masih terbuka |
+| No watermark | VERIFIED | Private master TXT/Markdown/DOCX bersih dari watermark di semua format (story_export_no_watermark_test.dart, 27712d8); kontras publicPreview membuktikan planner aktif |
 | Preflight/preview | VERIFIED | Blocking/warning checks, cleaned preview, manifest, and fingerprint tested |
 | Native interaction | UNVERIFIABLE | Native Windows click-through tetap blocked oleh `snapshot_id_required` |
 
@@ -206,3 +206,19 @@ Next canonical step: `145.36 AI Optional Boundary`.
   (build/windows/x64/runner/Debug/void_scriptor.exe); commit 5bcf275.
 - Sisa 145.35: publishing fidelity DOCX render-compat eksternal (perlu
   Word/LibreOffice nyata), native interaction UNVERIFIABLE (cron).
+
+## Update 2026-09-03 (nephthys cron: evidence-closure row No watermark)
+
+- Row "No watermark" di tabel Gap ternyata STALE: kontrak no-watermark
+  cross-format sudah terbukti sejak commit 27712d8 lewat
+  `test/features/export/story_export_no_watermark_test.dart` (4 test):
+  TXT/Markdown/DOCX sebagai private master tetap bersih dari watermark
+  meski WatermarkPolicy mode `always`, manifest `watermarkApplied false`,
+  dan kontras publicPreview pada policy `previewOnly` menerima watermark
+  (membuktikan planner tidak vacuous).
+- Bukti fresh run ini (HEAD b4b35d5): file test tersebut
+  + export_protection_test.dart = 12 PASS ("All tests passed!");
+  export suite penuh (test/features/export/) = 53 PASS.
+- Row diperbaiki PARTIAL -> VERIFIED. Sisa 145.35 tetap: publishing
+  fidelity DOCX render-compat eksternal (butuh Word/LibreOffice nyata),
+  native interaction UNVERIFIABLE (cron).

@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.33 large-project behavior evidence CLOSED (commit 7641236: portable_large_project_test.dart 3 PASS - 250 aset + 2 blob 256 KiB + 60 workspace export/import/registry round-trip, checksum SHA-256 valid, delta +3 eksak; docs commit d701c1b)",
+  "last_verified_step": "145.30/145.32/145.35 evidence-closure tabel Gap stale CLOSED (doc-only commits: autosave-snapshot-crash-recovery Gap table -> Atomic save/Durable journal/No silent loss/Process-kill/Autosave state/Visible status VERIFIED per bukti live ef82042/291a871/b191d53 + focused resilience 16 PASS; single-sync-authority Persisted authority BLOCKED -> VERIFIED 00a9041 + sync_authority_store_test 6 PASS; clean-manuscript-export No watermark PARTIAL -> VERIFIED 27712d8 + no-watermark 12 PASS + export suite 53 PASS). Pointer tetap 145.27.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",

@@ -535,3 +535,28 @@ production-ready. Full Core vertical journey tetap PENDING
 - 145.32 tetap PARTIAL: runtime service wiring (cloud_sync_service.dart
   concurrent milik sibling), conflict flow integration, UI denied state,
   native interaction. Pointer tetap 145.27.
+
+## Update 2026-09-03 (nephthys cron, evidence-closure tabel Gap stale 145.30/145.32/145.35)
+
+- Temuan: tiga tabel/row audit tidak pernah di-update setelah slice
+  ditutup, sehingga status di audit lebih rendah daripada bukti live.
+  Koreksi evidence-closure murni (tanpa kode produksi, tanpa file
+  concurrent), diikat bukti executable fresh HEAD b4b35d5:
+  1. 145.30 Autosave Snapshot and Crash Recovery - tabel Gap stale:
+     Atomic save/Durable journal/No silent loss BLOCKED -> VERIFIED
+     (DurableDraftJournal tmp+flush+rename, close/reopen, flush-on-dispose);
+     Process-kill UNVERIFIABLE -> VERIFIED (harness OS kill b191d53);
+     Autosave state + Visible status -> VERIFIED. Snapshots/User restore
+     tetap PARTIAL; power-loss UNVERIFIABLE; disk-full BLOCKED.
+     Bukti fresh: focused resilience inti 16 PASS (journal + failure
+     injection + process-kill + coordinator + recovery prompt UI).
+  2. 145.32 Single Sync Authority - row Persisted authority across
+     restart BLOCKED -> VERIFIED (SyncAuthorityStore + PersistedSyncAuthority
+     00a9041); bukti fresh sync_authority_store_test 6 PASS.
+  3. 145.35 Clean Manuscript Export - row No watermark PARTIAL -> VERIFIED
+     (story_export_no_watermark_test 27712d8: TXT/MD/DOCX private master
+     bersih + kontras publicPreview); bukti fresh 12 PASS no-watermark +
+     export_protection, export suite penuh 53 PASS.
+- Status step tetap PARTIAL untuk 145.30/145.32/145.35 (sisa gap
+  non-actionable dari cron: native interaction, file concurrent, keputusan
+  produk Choi). Pointer tetap 145.27.

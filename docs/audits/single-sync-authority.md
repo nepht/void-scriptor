@@ -85,11 +85,11 @@ No issues found!
 | Acceptance | Status | Reason |
 |---|---|---|
 | Authority model | VERIFIED | Cloud/external-folder enum dan policy arbitration lulus test |
-| Concurrent ownership prevention | PARTIAL | Policy menolak claim kedua, tetapi belum dipasang pada service runtime |
+| Concurrent ownership prevention | VERIFIED (persistence) | Policy menolak claim kedua + persisted owner meresist owner lain lintas proses (00a9041); runtime service wiring tetap terbuka |
 | Cloud + external folder integration | BLOCKED | Kedua service existing belum menerima/inject policy |
 | Conflict behavior | PARTIAL | `SyncChangeSet` dan conflict repository ada; conflict flow antar authority belum terhubung |
 | Clear warning/state | VERIFIED (domain) | Denial message eksplisit dan tested |
-| Persisted authority across restart | BLOCKED | Belum ada persistence contract atau schema untuk active authority |
+| Persisted authority across restart | VERIFIED | SyncAuthorityStore JSON v1 atomic tmp+rename per proyek; PersistedSyncAuthority claim/restore/release lintas proses (00a9041) |
 | UI sync status | PARTIAL | `SyncStatusIndicator` ada; authority-denied state belum terbukti di UI |
 
 ## Safety boundary
@@ -132,3 +132,17 @@ implementasi. Bukti: `flutter test test/features/collaboration/application/sync_
 
 Sisa 145.32: runtime service wiring (cloud_sync_service.dart concurrent),
 conflict flow integration, UI denied state, native interaction.
+
+## Update 2026-09-03 (nephthys cron: evidence-closure row stale)
+
+- Row "Persisted authority across restart" di tabel Gap ternyata STALE:
+  slice 00a9041 sudah menutupnya dengan `SyncAuthorityStore` (JSON v1
+  atomic tmp+rename per proyek) + `PersistedSyncAuthority` (claim/restore/
+  release). Baris BLOCKED diperbaiki menjadi VERIFIED.
+- Bukti fresh run ini (HEAD b4b35d5):
+  `flutter test test/features/collaboration/application/sync_authority_store_test.dart`
+  = 6 PASS ("All tests passed!"), mencakup persisted authority denies
+  concurrent owner after restore dan release clears ownership.
+- Boundary tetap: runtime service wiring (cloud_sync_service.dart
+  concurrent), conflict flow integration, UI denied state, native
+  interaction tetap terbuka -> step 145.32 tetap PARTIAL.

@@ -863,3 +863,20 @@ nephthys - 2026-09-04 run3
 ## Update 2026-09-04 cron run10 (nephthys, data-ownership-map stale rows)
 
 Doc-only evidence reconciliation for 145.11: schema row v56 -> v59, `Backup and export artifacts` PARTIAL -> VERIFIED(domain), migration `fixture coverage` PARTIAL -> CERTIFIED. Fresh execution 2026-09-04 @cc656a3: focused resilience backup quartet + archive integrity 13 PASS / 0 FAIL, schema_migration_fixtures 64 PASS / 0 FAIL. No code/schema/data change; audit file docs/audits/data-ownership-map.md adopted into the slice (previously untracked audit artifact cited by this ledger row since 2026-08-27). Pointer stays 145.27.
+
+## Update 2026-09-04 cron run12 (nephthys, adoption of cited corrective audits 145.13/145.15-145.18)
+
+Doc-only adoption, same approved pattern as 7746f80/e32af68/0f47564: the active ledger has cited five
+audit files by exact path since 2026-08-27, but those files were never committed (untracked). Adopted
+into this commit, byte-identical from disk:
+- docs/audits/product-promise-lock.md (145.13 Product Promise Lock)
+- docs/audits/core-cloud-network-roadmap-split.md (145.15 Core/Cloud/Network Roadmap Split)
+- docs/audits/explicit-deferred-scope.md (145.17 Explicit Deferred Scope)
+- docs/audits/core-mvp-scope-lock.md (145.16 Core MVP Scope Lock)
+- docs/audits/core-mvp-vertical-slice-contract.md (145.18 Core MVP Vertical Slice Contract)
+
+Not adopted, left to their owning sibling stream (settings/ untracked work still active):
+docs/audits/settings-reduction.md (145.38) and docs/audits/navigation-reduction.md (145.37).
+
+Remaining cited-untracked after this commit: 2 (145.37/145.38, sibling-owned).
+Status rows unchanged; no code/test/schema change. Pointer stays 145.27.

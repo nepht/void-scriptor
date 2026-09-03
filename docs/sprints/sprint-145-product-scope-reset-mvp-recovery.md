@@ -732,3 +732,42 @@ nephthys - 2026-09-04
   dari 3511); guard PASS pre+post, pointer tetap 145.27.
 - 145.33 tetap PARTIAL: destination-collision rollback (asCopy:false
   overwrite non-atomic) dan native interaction (UNVERIFIABLE dari cron).
+
+## Update 2026-09-04 run3 (nephthys cron, 145.33 destination-collision rollback)
+
+- Gap "destination-collision rollback (asCopy:false overwrite non-atomic)"
+  (audit row PARTIAL sejak 2026-09-03c) ditutup pada engine boundary. Blocker
+  hilang: pasca-merge bcd2087, portable_project_service.dart sudah clean di
+  git status (slice sibling workspaces/path-guard ter-merge), sehingga slice
+  ini dieksekusi langsung di atas HEAD tanpa teknik mixed-file.
+- Fit (feat, portable_project_service.dart): PortableProjectImportCoordinator
+  .importAndRegister kini stash existing <projectId>.voidproject ke sibling
+  hidden .import-backup-<uuid> (O(1) same-volume rename) SEBELUM ekstraksi
+  asCopy:false; failure import (path-escape guard, corrupt input) maupun
+  failure registry post-extraction me-restore rename-back paket asli; stash
+  dibuang hanya setelah seluruh flow sukses. Copy import (jalur produksi UI)
+  tidak berubah; helper stash/restore/discard sebagai top-level private
+  functions di file engine yang sama.
+- RED terverifikasi: 3 FAIL portable_collision_rollback_test.dart di atas
+  engine lama - (1) extraction failure merusak sentinel (paket asli sudah
+  ter-overwrite sebelum guard path-escape melempar), (2) registry failure
+  menghilangkan paket asli, (3) import sukses meninggalkan file tearing
+  (sentinel.txt lama tersisa campur manifest baru).
+- Bukti gerbang: portable_collision_rollback_test 3 PASS; portable group 8
+  file 26 PASS / 0 FAIL; scoped analyze (engine+test) No issues found!
+  (4 lint test diperbaiki: unused local diubah jadi pre-condition assertion,
+  cascade, underscore, const); FULL SUITE 3598 PASS / 0 FAIL EXIT=0 (~14
+  mnt Windows host, delta dari 3516 berasal dari merge bcd2087); windows
+  debug build PASS; git diff --check PASS; roadmap_guard PASS pre+post;
+  pointer tetap 145.27.
+- Audit row diperbarui: Transactional import + Rollback PARTIAL -> VERIFIED
+  (domain); Verdict audit tidak lagi menyebut destination-collision.
+- 145.33 tetap PARTIAL: native interaction UNVERIFIABLE dari cron.
+- Ownership drift: sibling menjalankan flutter_tester saat pra-cek (dijaga,
+  tidak ada edit bersamaan); file sibling M/untracked di
+  project_resilience (backup_configurable_location_test,
+  project_recovery_services_test, schema_migration_fixtures_test,
+  portable_archive_security_test, project_session_workspace_link_test)
+  dipreservasi, tidak tersentuh.
+
+nephthys - 2026-09-04 run3

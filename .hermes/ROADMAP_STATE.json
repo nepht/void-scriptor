@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.30/145.32/145.35 evidence-closure tabel Gap stale CLOSED (doc-only commits: autosave-snapshot-crash-recovery Gap table -> Atomic save/Durable journal/No silent loss/Process-kill/Autosave state/Visible status VERIFIED per bukti live ef82042/291a871/b191d53 + focused resilience 16 PASS; single-sync-authority Persisted authority BLOCKED -> VERIFIED 00a9041 + sync_authority_store_test 6 PASS; clean-manuscript-export No watermark PARTIAL -> VERIFIED 27712d8 + no-watermark 12 PASS + export suite 53 PASS). Pointer tetap 145.27.",
+  "last_verified_step": "145.30/145.32/145.35 evidence-closure tabel Gap stale CLOSED (doc-only commits: autosave-snapshot-crash-recovery Gap table -> Atomic save/Durable journal/No silent loss/Process-kill/Autosave state/Visible status VERIFIED per bukti live ef82042/291a871/b191d53 + focused resilience 16 PASS; single-sync-authority Persisted authority BLOCKED -> VERIFIED 00a9041 + sync_authority_store_test 6 PASS; clean-manuscript-export No watermark PARTIAL -> VERIFIED 27712d8 + no-watermark 12 PASS + export suite 53 PASS). Pointer tetap 145.27. || 2026-09-03b cron: evidence-closure tabel Gap 145.31 CLOSED (doc-only commit: custom-local-storage.md Gap tabel stale 2026-08-27 + status 2026-09-02 direkonsiliasi dgn slice landed c9da6dc/95fee4a/b826cec; fresh 17 PASS persistence trio @7c61688; pointer tetap 145.27)",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",

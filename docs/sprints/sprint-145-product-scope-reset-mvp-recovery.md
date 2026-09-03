@@ -560,3 +560,20 @@ production-ready. Full Core vertical journey tetap PENDING
 - Status step tetap PARTIAL untuk 145.30/145.32/145.35 (sisa gap
   non-actionable dari cron: native interaction, file concurrent, keputusan
   produk Choi). Pointer tetap 145.27.
+
+## Update 2026-09-03b (nephthys cron, evidence-closure tabel Gap 145.31)
+
+- Tabel Gap audit 2026-08-27 + tabel status 2026-09-02 di
+  docs/audits/custom-local-storage.md direkonsiliasi dengan slice landed
+  milik sendiri: c9da6dc (store domain + probe seam), 95fee4a (free-space
+  host-akurat + relink end-to-end), b826cec (wiring ProjectPaths/PackageService).
+  Enam baris naik: User-selected BLOCKED->PARTIAL, Permission PARTIAL->VERIFIED
+  (seam), Free-space BLOCKED/PARTIAL->VERIFIED (host), Missing-drive
+  BLOCKED->VERIFIED (domain+wiring), Relink PARTIAL->VERIFIED (storage-level),
+  No-empty-replacement PARTIAL->VERIFIED (domain). Doc-only; tanpa kode produksi.
+- Bukti fresh HEAD 7c61688: flutter test custom_storage_location_test +
+  host_drive_space_reader_test + project_paths_custom_location_wiring_test =
+  17 PASS / All tests passed! (exit 0); git diff --check PASS.
+- Sisa 145.31 tidak berubah: UI pemilihan lokasi (keputusan UI Choi),
+  drive removal fisik + native interaction (UNVERIFIABLE dari cron).
+- Pointer tetap 145.27; step 145.31 tetap PARTIAL.

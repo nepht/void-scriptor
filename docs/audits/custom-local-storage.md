@@ -83,13 +83,13 @@ Covered behavior:
 
 | Acceptance | Status | Reason |
 |---|---|---|
-| User-selected C:/D:/USB | BLOCKED | Tidak ada API/manager explicit untuk memilih dan menyimpan custom location |
-| Permission test | PARTIAL | Fallback non-writable root terbukti; Windows permission-denied path belum diuji |
-| Free-space test | BLOCKED | Tidak ada free-space policy/check atau failure-injection seam |
+| User-selected C:/D:/USB | PARTIAL | `CustomStorageLocationStore` persisted schema-v1 (c9da6dc) + wiring ProjectPaths/PackageService (b826cec) landed; UI folder picker belum |
+| Permission test | VERIFIED (seam) | `StorageHealthProbe` injectable: driveMissing/notADirectory/permissionDenied/notEnoughSpace (c9da6dc) |
+| Free-space test | VERIFIED (host) | `HostDriveSpaceReader` + `PlatformDriveSpaceReader` via PowerShell Get-PSDrive; shortage nyata terukur (95fee4a) |
 | Drive removal | UNVERIFIABLE | Tidak ada removable-drive harness; tidak menyentuh drive aktual |
-| Missing-drive state | BLOCKED | Tidak ada persisted state khusus untuk lokasi hilang |
-| Relink | PARTIAL | Root override dan relocated import/open seam ada; user-facing relink flow belum terbukti |
-| No empty replacement project | PARTIAL | Stable UUID package dan registry path ada; missing-location guard belum terbukti end-to-end |
+| Missing-drive state | VERIFIED (domain+wiring) | `load()` melaporkan `missingDrive`; `ProjectPaths.root()` fallback default tanpa crash (c9da6dc/b826cec) |
+| Relink | VERIFIED (storage-level) | relink flow end-to-end bind-hapus-relink-healthy (95fee4a); guard no-empty-replacement (c9da6dc); UI flow belum |
+| No empty replacement project | VERIFIED (domain) | Relink tanpa paket proyek terikat ditolak `StateError` (c9da6dc); fallback missing drive tidak membuat proyek kosong (b826cec) |
 | Registry persistence | VERIFIED | Atomic `.tmp`/`.bak` replacement dan reload lulus |
 | Package persistence | VERIFIED | Package structure, manifest, database, health, open, dan import evidence lulus |
 
@@ -129,12 +129,12 @@ Status boundary:
 
 | Acceptance | Status | Evidence |
 |---|---|---|
-| User-selected C:/D:/USB | PARTIAL | Domain location model + probe + persisted store ada; UI pemilihan lokasi (folder picker + wiring ke ProjectPaths/PackageService) belum |
+| User-selected C:/D:/USB | PARTIAL | Domain model + probe + persisted store + wiring ProjectPaths/PackageService landed (c9da6dc/95fee4a/b826cec); UI folder picker belum |
 | Permission test | VERIFIED (seam) | `StorageHealthProbe` injectable teruji; probe default menulis `.vs_write_probe` lalu hapus |
-| Free-space test | PARTIAL | `minFreeBytes` guard teruji via kontrak; pengukuran free-space host-akurat belum (probe default mengembalikan standing offer) |
+| Free-space test | VERIFIED (host) | `HostDriveSpaceReader`/`PlatformDriveSpaceReader` (PowerShell Get-PSDrive): freeBytes host nyata + shortage nyata (95fee4a) |
 | Drive removal | UNVERIFIABLE | Tidak menyentuh drive fisik; missing-drive disimulasikan via penghapusan direktori |
 | Missing-drive state | VERIFIED (domain) | `load()` melaporkan `missingDrive` saat lokasi aktif hilang |
-| Relink | PARTIAL | `relinkLocation` menolak target tanpa paket terikat dan memulihkan status; alur relink UI/pemindahan data belum |
+| Relink | VERIFIED (storage-level) | relink flow end-to-end bind-hapus-relink-healthy (95fee4a); alur relink UI/pemindahan data belum |
 | No empty replacement project | VERIFIED (domain) | Relink tanpa paket proyek terikat ditolak dengan StateError |
 | Registry persistence | VERIFIED | Atomic `.tmp` rename + reload lulus |
 
@@ -187,3 +187,27 @@ Status boundary 145.31 terbaru: Free-space test PARTIAL -> VERIFIED (domain, hos
   59 PASS; analyze No issues; format 1 file (test) 0 issue; `git diff --check`
   PASS; full suite 3422 PASS / 0 FAIL (~12 menit); `flutter build windows
   --debug` PASS; roadmap guard PASS pre (exit 0, pointer 145.27).
+## Update 2026-09-03b (nephthys cron, evidence-closure tabel Gap 145.31)
+
+Tabel Gap audit 2026-08-27 dan tabel status 2026-09-02 direkonsiliasi dengan
+slice yang sudah landed (semua komit milik sendiri): c9da6dc (store domain +
+probe seam), 95fee4a (free-space host-akurat + relink end-to-end), b826cec
+(wiring ProjectPaths/PackageService). Baris yang berubah:
+
+- User-selected C:/D:/USB: BLOCKED -> PARTIAL (engine + wiring ada; UI folder
+  picker tetap open).
+- Permission test: PARTIAL -> VERIFIED (seam `StorageHealthProbe`).
+- Free-space test: BLOCKED/PARTIAL -> VERIFIED (host-akurat).
+- Missing-drive state: BLOCKED -> VERIFIED (domain + wiring fallback).
+- Relink: PARTIAL -> VERIFIED (storage-level end-to-end); UI flow tetap open.
+- No empty replacement project: PARTIAL -> VERIFIED (domain guard).
+
+Bukti fresh HEAD 7c61688 (run ini): `flutter test
+test/core/persistence/custom_storage_location_test.dart
+test/core/persistence/host_drive_space_reader_test.dart
+test/core/persistence/project_paths_custom_location_wiring_test.dart` =
+17 PASS / All tests passed! (exit 0).
+
+Sisa 145.31 (tidak berubah): UI pemilihan lokasi (keputusan UI Choi),
+drive removal pada perangkat fisik (UNVERIFIABLE dari cron), native
+interaction (UNVERIFIABLE dari cron). Pointer tetap 145.27.

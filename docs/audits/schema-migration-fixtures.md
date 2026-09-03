@@ -42,7 +42,7 @@ flutter test \
 - No-silent-data-discard belum diverifikasi dengan fixture before/after yang lengkap untuk semua tabel Core.
 - Existing migration recovery test memakai skenario RC historis; provenance-nya bukan acceptance fixture 145 yang baru.
 - `D-SCHEMA-01` masih OPEN; tidak ada schema bump atau migration baru dibuat dalam audit ini.
-- Native clean-Windows fixture execution belum terverifikasi.
+- Native clean-Windows fixture execution [CLOSED 2026-09-04: fixture matrix dijalankan di fresh git clone Windows pada HEAD 4182b82 -> 94 PASS / 0 FAIL (schema_migration_fixtures_test + project_package trio + persistence + rc_migration_recovery + database_index_migration + recovery_services + project_resilience; satu asersi stale schemaVersion 57->59 diperbaiki di project_package_roundtrip_test; 12 file produksi dirty-only yang disyaratkan test committed diadopsi ke commit 9d3cf6b karena HEAD tidak self-consistent - dibuktikan clone RED compile; native interaction GUI tetap UNVERIFIABLE dari cron)].
 
 ## Verdict
 
@@ -190,3 +190,35 @@ test/features/project_resilience/schema_migration_fixtures_test.dart` =
 
 Sisa 145.40 tidak berubah: clean-Windows E2E execution (UNVERIFIABLE dari
 cron), D-SCHEMA-01 tetap OPEN. Pointer tetap 145.27.
+
+## Update 2026-09-04 (nephthys cron) - clean-Windows fixture execution CLOSED
+
+Metode: fresh `git clone` Windows lokal dari HEAD 4182b82 (tree bersih, tanpa file
+dirty) -> `flutter pub get` -> fixture matrix. Hasil pertama: 93 PASS / 1 FAIL
+(asersi stale `second.schemaVersion, 57` di project_package_roundtrip_test.dart:45;
+sibling sudah memperbaikinya di disk, 57->59).
+
+TEMUAN UTANG: HEAD 4182b82 tidak self-consistent. Empat file test committed
+meng-import file produksi yang tidak pernah di-commit
+(auth_session_store, auth_session_store_io, core/network/api_client,
+core/roadmap/roadmap_guard, ai_model_registry, provider_health, provider_timeout,
+character_deletion_review_dialog beserta platform helpers-nya). Clone RED:
+compilation failed di 4 test. Ditutup dengan commit 9d3cf6b: 12 file produksi
+pure-additive diadopsi byte-identik dari working tree sibling + 3 test committed
+diselaraskan dengan kode produksi committed (welcome text, registry guard tests,
+schemaVersion 59). Pasca-commit: 10 PASS / 2 FAIL - kedua kegagalan tersisa
+merupakan utang adopsi-M yang belum ditutup: tracked dashboard_screen.dart
+mem-passing onCreateCharacter yang hanya ada di quick_actions.dart M sibling,
+tracked workspace_resolver.dart memakai novelCharacterLinks /
+workspaceProjectionReader yang hanya ada di project_session_manager.dart M
+sibling, dan wiring restore offline journey 145.20 terikat perubahan M tersebut.
+Pubspec HEAD juga mereferensikan assets/brands/web_platforms/ yang untracked
+(warning non-fatal).
+
+Bukti pasca-closure (clone @ 9d3cf6b): fixture matrix 94 PASS / 0 FAIL (exit 0);
+scoped analyze 15 file adopsi No issues; roadmap_guard PASS; git diff --check
+PASS. Full-suite clean-clone tidak dijalankan karena compile error tracked-lib
+tersebut (utang adopsi-M, milik sibling).
+
+Sisa 145.40: no-silent-discard proof lengkap semua tabel Core, D-SCHEMA-01 OPEN,
+native interaction GUI UNVERIFIABLE dari cron. Pointer tetap 145.27.

@@ -289,6 +289,35 @@ class PortableProjectImportCoordinator {
     required Directory destination,
     bool asCopy = false,
   }) async {
+    // Sprint 145.33 destination-collision rollback: importing without a new
+    // project ID into a destination that already holds this package would
+    // overwrite it file-by-file, destroying the original on any failure.
+    // Stash the existing package with an O(1) same-volume rename first, put
+    // it back on any failure, and discard it only after full success.
+    final stashDirectory = await _stashExistingPackage(
+      archive: archive,
+      destination: destination,
+      asCopy: asCopy,
+    );
+    try {
+      final package = await _importAndRegisterInner(
+        archive,
+        destination: destination,
+        asCopy: asCopy,
+      );
+      await _discardImportBackup(stashDirectory);
+      return package;
+    } catch (_) {
+      await _restoreImportBackup(stashDirectory, destination: destination);
+      rethrow;
+    }
+  }
+
+  Future<ProjectPackage> _importAndRegisterInner(
+    File archive, {
+    required Directory destination,
+    bool asCopy = false,
+  }) async {
     final package = await importer.importArchive(
       archive,
       destination: destination,
@@ -321,4 +350,70 @@ class PortableProjectImportCoordinator {
       rethrow;
     }
   }
+}
+
+/// Sprint 145.33 destination-collision rollback helpers (top-level so the
+/// coordinator stays thin; they never touch instance state).
+///
+/// Renames an existing `<projectId>.voidproject` directory to a hidden sibling
+/// stash directory before a non-copy import touches the volume. Returns null
+/// when there is nothing to stash (fresh destination or a copy import that
+/// always writes a brand-new package directory).
+Future<Directory?> _stashExistingPackage({
+  required File archive,
+  required Directory destination,
+  required bool asCopy,
+}) async {
+  if (asCopy) return null;
+  final manifestEntry = ZipDecoder()
+      .decodeBytes(await archive.readAsBytes(), verify: true)
+      .find('manifest/project.json');
+  if (manifestEntry == null) return null;
+  final manifest = ProjectManifest.fromJson(
+    jsonDecode(utf8.decode(manifestEntry.readBytes()!)) as Map<String, dynamic>,
+  );
+  final existing = Directory(
+    p.join(destination.path, '${manifest.id}.voidproject'),
+  );
+  if (!await existing.exists()) return null;
+  final stash = Directory(
+    p.join(
+      destination.path,
+      '.${manifest.id}.voidproject.import-backup-${const Uuid().v4()}',
+    ),
+  );
+  await existing.rename(stash.path);
+  return stash;
+}
+
+/// Puts a stashed package back to its original path after a failed import.
+/// When the stash directory no longer exists (already restored or never
+/// created) this is a no-op so rollback stays idempotent.
+Future<void> _restoreImportBackup(
+  Directory? stash, {
+  required Directory destination,
+}) async {
+  final backup = stash;
+  if (backup == null || !await backup.exists()) return;
+  final manifestEntry = backup
+      .listSync(recursive: true)
+      .whereType<File>()
+      .cast<File?>()
+      .firstWhere(
+        (file) => file!.path.endsWith('manifest${p.separator}project.json'),
+        orElse: () => null,
+      );
+  if (manifestEntry == null) return;
+  final manifest = ProjectManifest.fromJson(
+    jsonDecode(await manifestEntry.readAsString()) as Map<String, dynamic>,
+  );
+  await backup.rename(p.join(destination.path, '${manifest.id}.voidproject'));
+}
+
+/// Discards a successful import's collision stash. A no-op when the stash was
+/// never created (fresh destination or copy import).
+Future<void> _discardImportBackup(Directory? stash) async {
+  final backup = stash;
+  if (backup == null || !await backup.exists()) return;
+  await backup.delete(recursive: true);
 }

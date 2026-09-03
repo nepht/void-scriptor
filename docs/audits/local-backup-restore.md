@@ -60,7 +60,7 @@ Evidence yang lulus:
 | Alternate destination | VERIFIED (engine) | restoreToAlternateDestination salin backup ke package UUID baru di destinationRoot tanpa menyentuh live project/backup; tolak schema lebih baru; rollback saat gagal; test 3 PASS (commit da68cf1); integrasi registry/UI belum ada |
 | Schema migration | VERIFIED (classification) | preview mengklasifikasi migrationForward utk schema lama dan alternate-destination restore mempertahankan user_version lama (forward migration saat open, flow open-migration sendiri sudah dibuktikan fixtures 145.40 OLD v53-to-v59) |
 | Failure recovery | PARTIAL (diperkuat) | Emergency backup dan manifest/database rollback ada; workspace copy-stage failure injection kini teruji (backup_copy_stage_failure_test: Windows file-lock harness membuat workspace delete stage gagal deterministik -> rollback manifest+db terverifikasi, 2 PASS RED-terverifikasi commit d8b99a8); invalid custom root (file) terbukti tidak crash dan tidak menulis parsial; injeksi stage assets-copy dan emergency-backup-failure belum ada |
-| Free access | UNVERIFIABLE | Tidak ada entitlement/access-control test pada backup flow |
+| Free access | VERIFIED (domain) | backup_free_access_test 2 PASS (commit 51e1610): journey tanpa akun (open + createBackup x2 + preview current + in-place restore + restoreToAlternateDestination) tanpa parameter akun/plan; guard statis token premium/paywall/subscription/entitlement/licensing/monetization/requirePlan/currentPlan/core-auth/features-account/features-collaboration zero violation di lib/features/project_resilience + lib/core/persistence; re-verified fresh 2026-09-03 cron (8 PASS backup quartet) |
 | Native interaction | UNVERIFIABLE | Native Windows click-through tetap blocked oleh `snapshot_id_required` |
 
 ## Safety boundary
@@ -69,7 +69,7 @@ Semua verification memakai temporary project directories. Tidak ada backup aktua
 
 ## Verdict
 
-**PARTIAL — integrity-protected local backup/restore, retention engine, restore preview, alternate destination, dan migration-aware classification sudah runnable dan teruji; configurable location, comprehensive failure injection, dan Free-access proof masih terbuka.**
+**PARTIAL — integrity-protected local backup/restore, retention engine, restore preview, alternate destination, migration-aware classification, configurable location, dan Free access sudah runnable dan teruji; sisa: assets-copy-stage + emergency-backup-failure injection (blocker: project_recovery_services.dart sibling integrity slice uncommitted), settings UI location/retention, native interaction UNVERIFIABLE.**
 
 Next canonical step: `145.35 Clean Manuscript Export`.
 

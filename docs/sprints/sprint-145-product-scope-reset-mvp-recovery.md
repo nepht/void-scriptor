@@ -823,3 +823,24 @@ nephthys - 2026-09-04 run3
 - Rekonsiliasi doc-only: 3 baris Gaps berlabel [CLOSED 2026-09-04] dgn rujukan commit eksak, Verdict audit diselaraskan (sisa gap jujur: primary-nav removal + uniform route gating shell concurrent 145.20, native UNVERIFIABLE), update block ditambahkan di audit; tidak ada kode produksi/test baru.
 - Bukti fresh: 18 PASS / 0 FAIL All tests passed (feature_flag_override_persistence_test 8 + spoiler_module_data_proof_test 4 + reactivation_dependency_map_test 6) @ HEAD b647692 Windows host.
 - Row ledger 145.39 tetap PARTIAL; pointer tetap 145.27.
+
+
+## Update 2026-09-04 (nephthys cron run8, evidence-chain reconciliation 145.33/145.36)
+
+- Temuan: scan lintas 342 kutipan test/...dart di docs/audits/*.md
+  menemukan 43 kutipan bermasalah (33 untracked + 10 missing di disk);
+  mayoritas milik domain sibling aktif (AI, settings, story shell,
+  world/XR non-Core) dan dibiarkan; missing citations pada audit
+  sprint-058/062/065/070/079 adalah catatan BLOCKED historis yang jujur.
+- 145.33: portable_archive_security_test.dart dikutip audit
+  portable-import-export.md sejak commit e32af68 tetapi untracked -
+  diadopsi sebagai milik slice 145.33 (self-contained, engine guard
+  committed di 1484982); focused trio portable 6 PASS / 0 FAIL @
+  HEAD 300187f Windows host; audit diberi update block rantai bukti.
+- 145.36: 4 test AI untracked yang dikutip ai-optional-boundary.md
+  TIDAK diadopsi (meng-import lib/features/ai/domain/ai_provider.dart
+  M sibling dgn perubahan streaming/registry uncommitted) - audit
+  diberi update block klarifikasi provenance; bukti komit-milik
+  145.36 tetap AiPolicy 6 + no-startup 4 + redaction property 12.
+- Full suite 3598 PASS / 0 FAIL (test diadopsi terhitung di dalam baseline
+  3598 - file sudah ada di disk saat run). Tidak ada kode produksi baru; pointer tetap 145.27.

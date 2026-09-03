@@ -274,4 +274,25 @@ dengan slice archive integrity b805ffe), sibling changes dipreservasi.**
   non-atomic, terdokumentasi sebagai risiko dengan UI produksi asCopy:true),
   native interaction (UNVERIFIABLE dari cron).
 
+## Update 2026-09-04 (cron run8, rantai bukti archive-security)
+
+- Temuan konsistensi rantai bukti: verification block di atas mengutip
+  test/features/project_resilience/portable_archive_security_test.dart,
+  tetapi file test itu berstatus untracked di working tree (provenance
+  snapshot WIP e969205 "pre-reconciliation snapshot of uncommitted work",
+  512 file) dan tidak pernah masuk commit manapun - kutipan bukti 145.33
+  "security" tidak self-consistent di HEAD bersih.
+- Tindakan: file test diadopsi apa adanya sebagai milik slice 145.33
+  (self-contained, hanya meng-import engine committed
+  portable_project_service.dart, tanpa dependensi file sibling);
+  guard path traversal engine (absolute + ../) diverifikasi berada di
+  HEAD pada commit 1484982.
+- Bukti fresh: focused trio persis verification block di atas
+  (portable_project_service_test + portable_archive_security_test +
+  project_recovery_services_test) = 6 PASS / 0 FAIL All tests passed
+  @ HEAD 300187f Windows host; full suite 3598 PASS / 0 FAIL dijalankan
+  sebagai regresi pada pohon yang sama (file test masuk ke dalam hitungan 3598 baseline itu).
+- Status row "Path traversal guard" tidak berubah (VERIFIED(domain));
+  yang diperbaiki hanya rantai bukti agar kutipan test ter-commit.
+
 nephthys - 2026-09-04

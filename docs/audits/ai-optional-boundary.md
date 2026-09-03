@@ -166,3 +166,25 @@ produksi sudah memenuhi kontrak. Tidak ada perubahan production code.
 Bukti: focused 12 PASS + security suite 42 PASS + ai policy 10 PASS =
 52 PASS; `flutter analyze` full No issues found! (113.7s); `git diff --check`
 PASS. Pointer tetap 145.27.
+
+
+## Update 2026-09-04 (cron run8, klarifikasi provenance kutipan test AI)
+
+- Temuan konsistensi: verification block focused AI suite di audit ini
+  menyebut 4 file test yang berstatus untracked di working tree dan
+  milik slice AI sibling aktif (ai_model_registry_test,
+  provider_registry_lifecycle_test, text_provider_contract_test,
+  image_provider_execution_contract_test). Bukti tersebut valid pada
+  pohon sibling saat audit ditulis, tetapi tidak dapat direproduksi
+  dari HEAD bersih karena file tidak ter-commit.
+- Keputusan ownership: TIDAK diadopsi oleh nephthys pada run ini;
+  keempat test meng-import lib/features/ai/domain/ai_provider.dart yang
+  sedang dimodifikasi sibling (streaming chunk types + registry
+  uniqueness uncommitted) sehingga adopsi sekarang berisiko
+  mematahkan full suite. Status: pending-adoption milik slice AI.
+- Bukti 145.36 yang komit-milik dan self-contained tetap berdiri:
+  AiPolicy 6 PASS (f79b8e4), no-startup-dependency 4 PASS, redaction
+  property 12 PASS (9bf7362). Baris bukti 4 test untracked di
+  verification block dibaca sebagai evidence sibling
+  pending-adoption, bukan bukti self-contained. Sisa open 145.36
+  tidak berubah.

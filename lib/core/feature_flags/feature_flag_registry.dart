@@ -13,6 +13,8 @@
 /// future explicit enables remain honored.
 library;
 
+import 'feature_flag_override_store.dart';
+
 /// The 13 wave-1 capability flags, canonical order follows
 /// docs/planning/v1.2/feature_contracts.md (F1..F25).
 const List<String> kVs12FeatureFlags = <String>[
@@ -36,6 +38,8 @@ const List<String> kVs12FeatureFlags = <String>[
 /// Instances are independent; persistence of overrides is deliberately out of
 /// scope for the registry itself and belongs to the step that wires settings.
 final class FeatureFlagRegistry {
+  FeatureFlagRegistry();
+
   final Set<String> _enabled = <String>{};
   bool _killSwitchActive = false;
 
@@ -63,11 +67,13 @@ final class FeatureFlagRegistry {
     // Explicit enable is treated as writer intent to leave kill-switch state.
     _killSwitchActive = false;
     _enabled.add(flag);
+    _onChange?.call();
   }
 
   void disable(String flag) {
     _ensureKnown(flag);
     _enabled.remove(flag);
+    _onChange?.call();
   }
 
   /// Engages the emergency kill-switch. Disables every currently enabled
@@ -97,4 +103,23 @@ final class FeatureFlagRegistry {
       throw ArgumentError.value(flag, "flag", "Unknown v1.2 feature flag");
     }
   }
+
+  /// Sprint 145.39 persistence wiring: builds a registry pre-loaded with the
+  /// durable override set from [store] (empty set = clean defaults). The
+  /// returned instance keeps writing overrides back to the store on every
+  /// enable/disable so restarts observe the user's choices.
+  factory FeatureFlagRegistry.restoreOverrides({
+    required FeatureFlagOverrideStore store,
+  }) {
+    final registry = FeatureFlagRegistry();
+    final overrides = store.enabledOverrides;
+    if (overrides.isNotEmpty) {
+      registry._enabled.addAll(overrides);
+    }
+    registry._onChange = () => store.saveOverrides(registry._enabled);
+    return registry;
+  }
+
+  /// Durable projection callback (set by [restoreOverrides]).
+  void Function()? _onChange;
 }

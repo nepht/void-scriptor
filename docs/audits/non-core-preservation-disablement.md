@@ -33,14 +33,14 @@ flutter test \
 - `FeatureFlagRegistry` belum diwiring ke primary navigation atau route visibility.
 - Desktop shell masih mengekspos menu non-reduced seperti Marketplace pada kondisi wide.
 - Desktop/mobile shell masih memiliki Story, Characters, dan Assets sebagai menu/surface lama; test saat ini mengunci sebagian layout tersebut.
-- Tidak ada inventory/dependency document khusus yang memetakan cara mengaktifkan kembali setiap non-Core module.
-- Tidak ada proof bahwa non-Core data tetap readable setelah module di-disable melalui user-facing settings.
-- Persistence override untuk `FeatureFlagRegistry` bukan bagian dari registry; wiring settings belum ada.
+- [CLOSED 2026-09-04] Reactivation dependency map kontrak Dart + test arsitektur landed (commit d3e8dd1): ReactivationDependencyMap.entries mengikat 10 capability deferred kanonik (layer/owningFlag/featureModules/entryEvidence), test reactivation_dependency_map_test.dart 6 PASS.
+- [CLOSED 2026-09-04] Disabled-module data proof landed (commit 20f1562): spoiler_module_data_proof_test.dart 4 PASS - gate OFF body tak dieksekusi, data sumber utuh readable pasca-disable, preview terserialisasi bebas teks spoiler + bebas metadata internal, restart menetap disabled default OFF.
+- [CLOSED 2026-09-04] Persistence override flag landed (commit 20f1562): FeatureFlagOverrideStore JSON v1 atomik tmp+rename + FeatureFlagRegistry.restoreOverrides preload/write-back, feature_flag_override_persistence_test.dart 8 PASS.
 - Native Windows interaction tetap `UNVERIFIABLE` karena `snapshot_id_required`.
 
 ## Verdict
 
-`PARTIAL`: preservation dan safe default flags teruji pada domain/plugin boundary, tetapi disablement belum terhubung ke primary navigation dan reactivation dependencies belum terdokumentasi secara lengkap. Source/data non-Core tidak dihapus.
+`PARTIAL`: preservation dan safe default flags teruji pada domain/plugin boundary; persistence override flag + disabled-module data proof (commit 20f1562) dan reactivation dependency map (commit d3e8dd1) terverifikasi. Sisa gap: disablement belum terhubung ke primary navigation / uniform route gating (shell concurrent 145.20, jangan disentuh dari cron) dan native interaction UNVERIFIABLE dari cron. Source/data non-Core tidak dihapus.
 
 ## Non-actions
 
@@ -75,3 +75,10 @@ nephthys — 2026-08-27
 - RED terverifikasi: Method not found FeatureFlagOverrideStore + Member not found FeatureFlagRegistry.restoreOverrides (kompilasi gagal sebelum implementasi).
 - Bukti gerbang: focused 12 PASS; regresi feature_flags+capabilities+workflow+plugin 57 PASS; full suite 3453 PASS / 0 FAIL (delta +12 eksak dari 3441); flutter analyze No issues; flutter build windows --debug PASS; git diff --check PASS. Commit 20f1562 (4 file, 391 insertions).
 - Status 145.39 tetap PARTIAL: sisa gap = primary-nav removal + uniform route gating (shell concurrent 145.20, jangan disentuh dari cron), native interaction UNVERIFIABLE dari cron.
+
+## Update 2026-09-04 cron (nephthys, evidence-closure Gaps stale)
+
+- Rekonsiliasi doc-only: tiga baris Gaps yang sudah tertutup oleh bukti landed tetap berlabel terbuka - persistence override flag, disabled-module data proof (commit 20f1562, ledger update 2026-09-03), dan reactivation dependency map (commit d3e8dd1, update 2026-09-03). Ketiganya kini berlabel [CLOSED 2026-09-04] dan Verdict diselaraskan.
+- Bukti fresh (bukan klaim historis): flutter test test/core/feature_flags/feature_flag_override_persistence_test.dart + test/features/spoiler/spoiler_module_data_proof_test.dart + test/core/capabilities/reactivation_dependency_map_test.dart = 18 PASS / 0 FAIL, All tests passed @ HEAD b647692 Windows host.
+- Tidak ada kode produksi/test baru; sisa 145.39 tetap primary-nav removal + uniform route gating (app_router.dart + shell concurrent 145.20, milik sibling) dan native interaction UNVERIFIABLE dari cron.
+- Status 145.39 tetap PARTIAL; pointer tetap 145.27.

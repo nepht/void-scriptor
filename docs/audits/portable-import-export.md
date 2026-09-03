@@ -62,7 +62,7 @@ Coverage yang lulus:
 | Compatibility/migration | BLOCKED | Importer membaca schema version tetapi tidak menjalankan migration/compatibility policy |
 | Corrupted input | PARTIAL | Missing manifest/database dan invalid ZIP ditolak; matrix corruption belum lengkap |
 | Rollback | PARTIAL | Cleanup on failure ada; rollback terhadap existing project/registry state belum terbukti |
-| Large project behavior | BLOCKED | Tidak ada benchmark/large archive stress evidence |
+| Large project behavior | VERIFIED (domain) | 2026-09-03 cron: 250 aset + 2 blob 256 KiB + 60 workspace export/import/registry round-trip lulus (portable_large_project_test.dart 3 PASS, commit 7641236) |
 | Registry relocation | VERIFIED | Coordinator mendaftarkan imported package dengan local path baru |
 | Platform/native interaction | UNVERIFIABLE | Native Windows UI flow belum terbukti; driver sebelumnya `snapshot_id_required` |
 
@@ -93,3 +93,26 @@ Bukti (HEAD saat slice, full suite dirun terpisah):
 Next canonical step: `145.34 Local Backup and Restore`.
 
 145.42 tetap tidak disentuh karena milik eksekutor lain.
+## Update 2026-09-03 (nephthys cron, large project behavior evidence)
+
+- Gap audit "Large project behavior" ditutup dengan bukti executable
+  (test-only, PASS-first, tanpa perubahan produksi):
+  `test/features/project_resilience/portable_large_project_test.dart` 3 PASS.
+- Fixture: 250 file aset kecil tersebar 5 subdirektori + 2 blob 256 KiB
+  + 60 file workspace lintas novel + manifest + database.
+- Bukti:
+  1. Export arsip besar: semua 250 aset + 2 blob + 60 workspace hadir di
+     entry ZIP, checksum SHA-256 valid (meta == computeContentChecksum),
+     verifikasi ZipDecoder PASS.
+  2. Import arsip besar as-copy: struktur lengkap, blob 256 KiB
+     round-trip byte-exact, konten workspace terpilih utuh, jumlah file
+     hasil ekstraksi >= 314.
+  3. Coordinator importAndRegister proyek besar: registry berisi satu
+     project id baru (relocated copy), localPath benar, konten aset
+     spot-check utuh.
+- Bukti gerbang: focused 3 PASS; project_resilience suite 124 PASS
+  (121 lama + 3 baru, delta +3 eksak); analyzer scoped No issues;
+  git diff --check PASS; commit 7641236 (test only).
+- Sisa 145.33: secret exclusion (BLOCKED: region sama pada
+  portable_project_service.dart milik sibling), compatibility/migration
+  policy, complete rollback terhadap existing registry state.

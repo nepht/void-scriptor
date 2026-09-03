@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:archive/archive_io.dart';
+import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 import '../../../core/project_package/project_package.dart';
@@ -27,6 +29,71 @@ class ArchiveManifest {
   };
 }
 
+/// Canonical SHA-256 integrity contract for .voidproject archives.
+///
+/// The checksum covers every archive entry except the archive metadata file
+/// itself, ordered by entry name so the value is deterministic across
+/// platforms. Import verifies this value before extracting anything.
+class ArchiveIntegrity {
+  static const String manifestEntryName = 'voidproject.archive.json';
+
+  static String computeContentChecksum(Archive archive) {
+    final builder = BytesBuilder(copy: false);
+    final entries = archive.where((f) => f.isFile).toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
+    for (final entry in entries) {
+      if (entry.name == manifestEntryName) continue;
+      final bytes = entry.readBytes();
+      if (bytes == null) continue;
+      builder.add(utf8.encode(entry.name));
+      builder.add(bytes);
+    }
+    return sha256.convert(builder.toBytes()).toString();
+  }
+
+  /// Computes the same content checksum directly over an on-disk directory,
+  /// using POSIX-relative entry names. Used by the exporter before zipping so
+  /// no re-encode round-trip can change the byte content.
+  static Future<String> computeDirectoryChecksum(Directory root) async {
+    final builder = BytesBuilder(copy: false);
+    final backslash = String.fromCharCodes([92]);
+    final files = <String>[];
+    await for (final entity in root.list(recursive: true)) {
+      if (entity is File) {
+        files.add(
+          p.relative(entity.path, from: root.path).replaceAll(backslash, '/'),
+        );
+      }
+    }
+    files.sort();
+    for (final relative in files) {
+      if (relative == manifestEntryName) continue;
+      final bytes = await File(p.join(root.path, relative)).readAsBytes();
+      builder.add(utf8.encode(relative));
+      builder.add(bytes);
+    }
+    return sha256.convert(builder.toBytes()).toString();
+  }
+
+  static bool verify(Archive archive) {
+    final metaEntry = archive.find(manifestEntryName);
+    if (metaEntry == null) return false;
+    final metaBytes = metaEntry.readBytes();
+    if (metaBytes == null) return false;
+    final Map<String, dynamic> meta;
+    try {
+      meta = jsonDecode(utf8.decode(metaBytes)) as Map<String, dynamic>;
+    } on FormatException {
+      return false;
+    }
+    final declared = meta['checksum'];
+    if (declared is! String || declared.isEmpty) return false;
+    return computeContentChecksum(archive) == declared;
+  }
+
+  static String empty() => '';
+}
+
 class PortableProjectExporter {
   Future<File> exportPortable(
     ProjectPackage package, {
@@ -50,13 +117,14 @@ class PortableProjectExporter {
         package.assetsDirectory,
         Directory(p.join(temp.path, 'assets')),
       );
+      final checksum = await ArchiveIntegrity.computeDirectoryChecksum(temp);
       final archiveMeta = File(p.join(temp.path, 'voidproject.archive.json'));
       await archiveMeta.writeAsString(
         jsonEncode(
           ArchiveManifest(
             projectId: package.projectId,
             sourceSchemaVersion: manifest.schemaVersion,
-            checksum: '',
+            checksum: checksum,
           ).toJson(),
         ),
       );
@@ -111,6 +179,9 @@ class PortableProjectImporter {
     final dbEntry = decoded.find('database/project.db');
     if (manifestEntry == null || dbEntry == null) {
       throw const FormatException('Invalid voidproject archive');
+    }
+    if (!ArchiveIntegrity.verify(decoded)) {
+      throw const FormatException('Archive checksum mismatch');
     }
     final manifest = ProjectManifest.fromJson(
       jsonDecode(utf8.decode(manifestEntry.readBytes()!))

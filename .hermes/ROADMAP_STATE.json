@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.33 archive integrity checksum: ArchiveIntegrity computeDirectoryChecksum SHA-256 sorted POSIX-separator entry names di staging dir sebelum zip tunggal, meta voidproject.archive.json mengecualikan dirinya dari payload hash; exporter menulis checksum nyata; importer verify SEBELUM ekstraksi, kosong/hilang/tamper = FormatException; RED terverifikasi (Undefined name ArchiveIntegrity); test/features/project_resilience/archive_integrity_test.dart 4 PASS; project_resilience suite 121 PASS; full suite 3460 PASS / 0 FAIL; analyze No issues; windows debug build PASS 32.6s; diff --check PASS; pointer next_step tetap 145.27",
+  "last_verified_step": "145.32 persisted sync authority: SyncAuthorityStore JSON v1 atomic tmp+rename per proyek, corrupt/missing = no-ownership, PersistedSyncAuthority claim/restore/release lintas proses, restored ownership menolak authority kedua dgn warning cloud+external folder; RED terverifikasi (Method not found PersistedSyncAuthority); test/features/collaboration/application/sync_authority_store_test.dart 6 PASS; collaboration suite 38 PASS; scoped analyze No issues; diff --check PASS; windows debug build PASS 31,0s; pointer next_step tetap 145.27",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",

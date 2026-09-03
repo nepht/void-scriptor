@@ -35,7 +35,7 @@ baseline lama.
 | 145.9 | Working Feature Protection List | VERIFIED (nephthys, 2026-08-27) | `docs/audits/working-feature-protection-list.md`; live feature owners, user paths, no-break contracts, evidence boundaries, and known gaps recorded read-only |
 | 145.10 | Dependency and Coupling Map | VERIFIED (nephthys, 2026-08-27) | `docs/audits/dependency-coupling-map.md`; router/shell orchestration, startup/save seams, three direct core→features imports, and no-break rules recorded read-only |
 | 145.11 | Data Ownership Map | VERIFIED (nephthys, 2026-08-27) | `docs/audits/data-ownership-map.md`; registry/manifest, per-project DB, filesystem artifacts, feature repositories, optional systems, and no-break ownership rules recorded read-only |
-| 145.12 | Existing User Data Compatibility | VERIFIED (nephthys, 2026-08-31 cron: fixture matrix 8/8 PASS; sisa scope terdelegasi eksplisit, bukan gap langkah ini) | `docs/audits/existing-user-data-compatibility.md` + `test/core/persistence/project_compatibility_fixtures_test.dart` (manifest legacy/future/missing/id-mismatch, registry missing/corrupt/future-schema, open ID-mismatch/future-schema); re-verify segar run ini @878c62e: focused 8/8 PASS, analyze no issues, full suite 3200/3200 PASS, build windows debug PASS; sisa milik langkah lain: DB old/current/future/corrupt migration matrix ->145.40, process/power/disk/permission/drive failure matrix ->145.42, sample-data user nyata ->butuh data user, native UI proof ->gate terpisah |
+| 145.12 | Existing User Data Compatibility | VERIFIED (nephthys, 2026-08-31 cron: fixture matrix 8/8 PASS; sisa scope terdelegasi eksplisit, bukan gap langkah ini) | `docs/audits/existing-user-data-compatibility.md` + `test/core/persistence/project_compatibility_fixtures_test.dart` (manifest legacy/future/missing/id-mismatch, registry missing/corrupt/future-schema, open ID-mismatch/future-schema); re-verify segar run ini @878c62e: focused 8/8 PASS, analyze no issues, full suite 3200/3200 PASS, build windows debug PASS; sisa milik langkah lain: DB old/current/future/corrupt migration matrix ->145.40, process/power/disk/permission/drive failure matrix ->145.42, sample-data user nyata ->butuh data user, native UI proof ->gate terpisah; baris tabel audit direkonsiliasi 2026-09-04 dgn bukti landed 145.40/145.33, fresh 8-file suite 93 PASS |
 | 145.13 | Product Promise Lock | VERIFIED (nephthys, 2026-08-27) | `docs/audits/product-promise-lock.md`; canonical local-first promise, Core inclusion/exclusion, and acceptance guardrails recorded without expanding scope |
 | 145.14 | Primary User and Job | VERIFIED (nephthys, 2026-08-31 cron: keputusan pengguna direkam dari otorisasi eksplisit Choirudin @9c4fd199) | `docs/audits/primary-user-and-job.md` + `test/core/roadmap/roadmap_guard_test.dart` (live-ledger test); primary user = novelis long-form mandiri di Windows, job = plan-write-continuity-export local-first, pain/constraints/success direkam tanpa asumsi; bukti: focused test RED (BLOCKED) -> GREEN (VERIFIED), doc audit primary-user-and-job.md, analyze no issues, roadmap guard PASS |
 | 145.15 | Core / Cloud / Network Roadmap Split | VERIFIED (nephthys, 2026-08-27) | `docs/audits/core-cloud-network-roadmap-split.md`; canonical layer mapping, dependency direction, release eligibility, and startup guards recorded without changing features |
@@ -797,3 +797,22 @@ nephthys - 2026-09-04 run3
   project_session_manager/workspace_resolver) di-commit; pubspec mereferensikan
   assets/brands/web_platforms/ untracked.
 - Pointer tetap 145.27; commit scoped 15 path, tanpa git add -A, tanpa push.
+
+
+## Update 2026-09-04 (nephthys cron, audit reconciliation 145.12)
+
+- Temuan: baris tabel docs/audits/existing-user-data-compatibility.md stale
+  terhadap bukti landed: schema masih 56 (live 59), manifest/registry/DB/
+  portable matrix masih berlabel PARTIAL / not certified padahal 145.40
+  (schema+migration fixtures, invariants v1..v58, HALF-APPLIED) dan 145.33
+  (integrity/corrupt/collision/transaction/secret/security) tersertifikasi.
+- Rekonsiliasi doc-only: 21 anchor di audit diperbarui (row manifest,
+  registry, Project database, Migration history, Portable; 8 baris required
+  fixture matrix; 3 bullet PARTIAL; Decision) plus rewrite bullet version
+  inventory; update block ditambahkan di audit; tidak ada kode
+  produksi/test baru.
+- Bukti fresh: 8 file test (project_compatibility_fixtures + schema_migration
+  + portable corrupt/collision/transaction/schema_compat/secret/security)
+  93 PASS / 0 FAIL @ HEAD 49a1173; roadmap_guard PASS pre-run; git diff
+  --check diverifikasi pasca-commit.
+- Row ledger 145.12 tetap VERIFIED; pointer tetap 145.27.

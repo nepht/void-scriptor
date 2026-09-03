@@ -880,3 +880,27 @@ docs/audits/settings-reduction.md (145.38) and docs/audits/navigation-reduction.
 
 Remaining cited-untracked after this commit: 2 (145.37/145.38, sibling-owned).
 Status rows unchanged; no code/test/schema change. Pointer stays 145.27.
+
+## Update 2026-09-04 cron run13 (nephthys, evidence reconciliation of adopted audits 145.13/145.15/145.17/145.18)
+
+Doc-only evidence reconciliation, no code/schema/data change, pointer stays 145.27. The four audits adopted
+in run12 still carried pre-decision statuses from their 2026-08-27 writing date. Reconciled by appending a
+dated update block to each file (original text preserved; historical rows were not rewritten):
+- product-promise-lock.md (145.13): `Next blocker` section claimed 145.14 BLOCKED pending user decision -
+  145.14 is VERIFIED since 2026-08-31 via explicit Choirudin decision (docs/audits/primary-user-and-job.md,
+  DOCUMENT_REGISTRY EVIDENCE/IMMUTABLE entry, ledger row 145.14).
+- core-cloud-network-roadmap-split.md (145.15): `Unresolved boundaries` still listed primary-user/job as
+  needing validation and existing-data compatibility as partial - both CLOSED (145.14 VERIFIED 2026-08-31;
+  145.12 VERIFIED with audit rows reconciled 2026-09-04 in b647692).
+- explicit-deferred-scope.md (145.17): `Known separate blockers` items for 145.14 and 145.12 marked CLOSED
+  with their landed evidence; native click-through and 145.42 ownership unchanged.
+- core-mvp-vertical-slice-contract.md (145.18): provenance correction - the closing N.B. still named WSL
+  `/home/nepht/Projects/void_scriptor_multiplatform` as source of truth, superseded by the canonical-location
+  override 2026-08-30 (D:\VoidScriptoroid_scriptor_multiplatform + Windows Flutter toolchain); historical
+  2014-test regression figure labeled as provenance against the current 3598 PASS baseline.
+
+Evidence fresh @732a9fa Windows host: test/core/roadmap/roadmap_guard_test.dart = 7 PASS / 0 FAIL including
+`live ledger resolves 145.14 with user decision evidence`; roadmap guard PASS pre-edit (pointer 145.27,
+canonical_sha 86af6a5); git diff --check PASS on the 4 owned files (+38 lines). Not adopted and untouched:
+core-mvp-scope-lock.md (145.16) holds no stale cross-step status; settings-reduction.md /
+navigation-reduction.md remain sibling-owned (145.37/145.38 active).

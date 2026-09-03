@@ -122,3 +122,12 @@ Langkah berikutnya yang aman: `145.16 Core MVP Scope`, menggunakan daftar Core d
 - `docs/audits/data-ownership-map.md`
 - `docs/audits/existing-user-data-compatibility.md`
 - `docs/IMPLEMENTATION_GOAL.md`
+
+## Update 2026-09-04 (nephthys cron run13) — evidence reconciliation
+
+- `Unresolved boundaries`: butir primary-user/job (145.14) **CLOSED** — keputusan pengguna VERIFIED 2026-08-31
+  (`docs/audits/primary-user-and-job.md`, ledger 145.14, guard test live-ledger 7 PASS @732a9fa).
+- Butir `Existing-data compatibility` (145.12) **CLOSED** sebagai langkah: fixture matrix 8/8 VERIFIED 2026-08-31;
+  baris tabel audit `existing-user-data-compatibility.md` direkonsiliasi 2026-09-04 (commit b647692, 93 PASS segar).
+- Butir 145.42 (failure matrix, eksekutor lain) dan native click-through tetap terbuka — tidak berubah.
+- Status langkah `145.15` tidak berubah (VERIFIED sebagai audit scope lokal).

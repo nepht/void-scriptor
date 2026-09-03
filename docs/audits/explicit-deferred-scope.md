@@ -88,3 +88,13 @@ Langkah berikutnya: `145.18 Core MVP Vertical Slice Definition`.
 - `docs/audits/existing-user-data-compatibility.md`
 - `docs/audits/working-feature-protection-list.md`
 - `docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md`
+
+## Update 2026-09-04 (nephthys cron run13) — evidence reconciliation
+
+- `Known separate blockers`: dua butir terakhir sudah CLOSED dan tidak lagi memblokir:
+  - `Primary-user validation remains blocked under 145.14` → **VERIFIED 2026-08-31**
+    (`docs/audits/primary-user-and-job.md`; keputusan Choirudin; guard test live-ledger 7 PASS @732a9fa).
+  - `Existing-data compatibility matrix remains partial under 145.12` → langkah **VERIFIED 2026-08-31**
+    (fixture matrix 8/8); baris tabel audit direkonsiliasi penuh 2026-09-04 (commit b647692, 93 PASS segar).
+- Native `snapshot_id_required` dan ownership 145.42 oleh eksekutor lain tetap berlaku.
+- Status langkah `145.17` tidak berubah (VERIFIED sebagai registry scope).

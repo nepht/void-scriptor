@@ -132,3 +132,12 @@ Langkah berikutnya: `145.19 Core Dependency Direction`.
 - `docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md`
 
 N.B. Path `C:/Users/nepht/...` di atas adalah sumber export Windows; source-of-truth aplikasi tetap WSL `/home/nepht/Projects/void_scriptor_multiplatform`.
+
+## Update 2026-09-04 (nephthys cron run13) — provenance correction
+
+- N.B. terakhir file ini (source-of-truth WSL) **superseded**: canonical-location override 2026-08-30
+  menetapkan `D:\VoidScriptoroid_scriptor_multiplatform` sebagai source-of-truth aktif dengan toolchain
+  Flutter Windows `D:\DevTools\Flutter SDK`; checkout WSL dan mirror `D:\VoidScriptor_Windows` hanya safety copy historis.
+- Baris `Full regression` historis (2014 tests) adalah provenance; baseline suite live saat ini 3598 PASS / 0 FAIL
+  (bukti run8 @300187f). `Data safety` 145.42, native journey, dan user validation tetap terbuka — tidak berubah.
+- Status langkah `145.18` tidak berubah (VERIFIED sebagai contract definition).

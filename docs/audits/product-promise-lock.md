@@ -83,3 +83,13 @@ Non-Core source/data dipertahankan dan dapat diberi flag/deferred boundary; prom
 - `docs/audits/working-feature-protection-list.md`
 - `docs/audits/data-ownership-map.md`
 - `docs/audits/existing-user-data-compatibility.md`
+
+## Update 2026-09-04 (nephthys cron run13) — evidence reconciliation
+
+- `Next blocker` di atas tidak lagi berlaku: `145.14 Primary User and Job` berstatus **VERIFIED** sejak 2026-08-31
+  (keputusan Choirudin direkam via otorisasi eksplisit, lihat `docs/audits/primary-user-and-job.md` dan baris ledger
+  `145.14`). Fresh bukti @732a9fa: `test/core/roadmap/roadmap_guard_test.dart` 7 PASS termasuk
+  `live ledger resolves 145.14 with user decision evidence`.
+- `Evidence and limitations` angka lama (full test 2014, Linux build) adalah provenance historis 2026-08-27;
+  baseline suite live saat ini 3598 PASS / 0 FAIL dan Windows debug build hijau pada slice-slice setelahnya.
+- Status langkah `145.13` tidak berubah (VERIFIED sebagai promise lock dokumenter).

@@ -59,7 +59,7 @@ Coverage yang lulus:
 | Archive integrity checksum | VERIFIED (domain) | 2026-09-03 cron: export menulis checksum SHA-256 nyata (directory-based, deterministic entry order, POSIX separator), import memverifikasi sebelum ekstraksi; `test/features/project_resilience/archive_integrity_test.dart` 4 PASS RED-terverifikasi |
 | Secret exclusion | BLOCKED | Tidak ada allowlist/denylist atau test yang membuktikan secret tidak masuk |
 | Transactional import | PARTIAL | Partial package dihapus; 2026-09-03c cron: registry-state atomicity + rollback terbukti test-only (commit 991dd53: post-extraction registry failure me-rollback package directory, registry kembali ke state pre-import; copy import aditif); existing-destination overwrite pada asCopy:false tetap non-atomic (risiko terdokumentasi, file engine concurrent) |
-| Compatibility/migration | VERIFIED (domain) | 2026-09-03e cron: dua sumbu versi terbukti - manifest format (> 16 ditolak FormatException, portable_corrupt_input_test) dan database user_version (arsip DB v53 diimpor lalu dibuka lewat jalur produksi ProjectDatabaseService.open yang menjalankan migrasi maju 53->59 tanpa kehilangan baris Core; manifest lama schemaVersion 15 diterima; arsip v59 saat ini round-trip tanpa migrasi; portable_schema_compatibility_test.dart 3 PASS PASS-first) |
+| Compatibility/migration | VERIFIED (domain+prod) | 2026-09-03 cron malam run2: guard future-schema DB CLOSED - ProjectDatabaseService.open memprobe PRAGMA user_version via platform schema-version reader; DB lebih baru dari v59 ditolak SchemaVersionTooNewException tanpa menyentuh file (probe corrupt = null = no-op; web null = no-op; openReadOnly sengaja tidak diguard agar diagnostics tetap bisa membaca DB future tanpa memigrasinya); project_database_future_schema_guard_test.dart 3 PASS RED-terverifikasi (commit d76d596). || 2026-09-03e cron: dua sumbu versi terbukti - manifest format (> 16 ditolak FormatException, portable_corrupt_input_test) dan database user_version (arsip DB v53 diimpor lalu dibuka lewat jalur produksi ProjectDatabaseService.open yang menjalankan migrasi maju 53->59 tanpa kehilangan baris Core; manifest lama schemaVersion 15 diterima; arsip v59 saat ini round-trip tanpa migrasi; portable_schema_compatibility_test.dart 3 PASS PASS-first) |
 | Corrupted input | VERIFIED (domain) | Matrix 6 korupsi + kontrol positif lulus: missing manifest, missing database, truncated zip, non-zip, manifest malformed (checksum cocok dengan kontennya), manifest future schema 99 > 16 semua ditolak FormatException (portable_corrupt_input_test.dart 7 PASS, 2026-09-03d cron) |
 | Rollback | PARTIAL | Cleanup on failure ada; 2026-09-03c cron: rollback registry-state + package directory terbukti test-only (991dd53); rollback terhadap existing destination (path overwrite asCopy:false) belum terbukti - file engine concurrent |
 | Large project behavior | VERIFIED (domain) | 2026-09-03 cron: 250 aset + 2 blob 256 KiB + 60 workspace export/import/registry round-trip lulus (portable_large_project_test.dart 3 PASS, commit 7641236) |
@@ -72,7 +72,7 @@ Tidak ada project production yang dipindahkan atau dihapus. Semua test memakai t
 
 ## Verdict
 
-**PARTIAL — portable archive round-trip, relocation, path safety, cleanup, archive integrity checksum, registry-state transactional import/rollback, large-project evidence, dan compatibility/migration (dua sumbu versi) sudah runnable; secret exclusion, destination-collision rollback (asCopy:false overwrite non-atomic), guard future-schema database (temuan risiko 2026-09-03e), dan native interaction belum tersedia.**
+**PARTIAL — portable archive round-trip, relocation, path safety, cleanup, archive integrity checksum, registry-state transactional import/rollback, large-project evidence, compatibility/migration (dua sumbu versi), dan guard future-schema database sudah runnable; secret exclusion, destination-collision rollback (asCopy:false overwrite non-atomic), dan native interaction belum tersedia.**
 
 ## Update 2026-09-03 (nephthys cron, archive integrity checksum)
 
@@ -209,3 +209,31 @@ dan tidak disentuh.**
   native interaction (UNVERIFIABLE dari cron).
 
 nephthys - 2026-09-03e
+
+## Update 2026-09-03 cron malam run2 (nephthys, future-schema DB guard 145.33)
+
+Slice: `lib/database/project/project_database_service.dart` (feat) +
+`test/database/project/project_database_future_schema_guard_test.dart` (test)
+- `ProjectDatabaseService.open` kini memprobe `PRAGMA user_version` lewat
+  `readProjectDatabaseSchemaVersion` (platform dispatcher) SEBELUM membuka
+  database produksi. DB dengan `user_version` lebih baru dari
+  `ProjectDatabase.currentSchemaVersion` (59) ditolak dengan
+  `SchemaVersionTooNewException` tanpa menyentuh file - tidak ada lagi
+  penurunan diam-diam oleh gelombang migrasi drift.
+- Keputusan desain: `openReadOnly` sengaja TIDAK diguard - diagnostics
+  harus tetap bisa memeriksa DB future tanpa memigrasikannya; probe
+  corrupt membaca null sehingga guard menjadi no-op di jalur CORRUPT;
+  web reader mengembalikan null sehingga guard no-op di web.
+- Risiko palung lain di `ProjectSessionManager.open` (lock release +
+  lock file delete + close DB parsial + rethrow) sudah ditinjau dan tetap
+  utuh ketika open gagal karena guard.
+- Bukti: RED terverifikasi (`SchemaVersionTooNewException isn't a type`);
+  focused 3 PASS; regresi project_resilience + database 148 PASS; FULL
+  SUITE 3511 PASS / 0 FAIL (delta +3 eksak dari 3508); flutter analyze
+  No issues found! (9.4s); windows debug build PASS (72.7s);
+  git diff --check PASS.
+- Sisa 145.33: secret exclusion (BLOCKED file concurrent),
+  destination-collision rollback (asCopy:false), native interaction
+  UNVERIFIABLE dari cron.
+
+nephthys - 2026-09-03 cron malam run2

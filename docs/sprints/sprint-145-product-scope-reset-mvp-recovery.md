@@ -577,3 +577,19 @@ production-ready. Full Core vertical journey tetap PENDING
 - Sisa 145.31 tidak berubah: UI pemilihan lokasi (keputusan UI Choi),
   drive removal fisik + native interaction (UNVERIFIABLE dari cron).
 - Pointer tetap 145.27; step 145.31 tetap PARTIAL.
+
+## Update 2026-09-03b run2 (nephthys cron, evidence-closure Gaps 145.40)
+
+- Bagian Gaps + Verdict docs/audits/schema-migration-fixtures.md (audit
+  2026-08-27) direkonsiliasi dengan slice landed milik sendiri: fixture
+  matrix (2026-09-02), forward recovery HALF-APPLIED (2026-09-02),
+  exhaustive invariants gate 58 entry (2026-09-03). Tiga baris gap diberi
+  penanda [CLOSED] (teks asli dipertahankan); Verdict kini menyebut
+  evidence baru eksplisit dan menyimpan sisa gap yang benar:
+  no-silent-discard proof lengkap semua tabel Core, clean-Windows
+  execution, D-SCHEMA-01 OPEN. Doc-only; tanpa kode produksi.
+- Bukti fresh HEAD 9949164: flutter test
+  test/features/project_resilience/schema_migration_fixtures_test.dart =
+  63 PASS / All tests passed! (exit 0); git diff --check PASS.
+- Step 145.40 tetap PARTIAL (clean-Windows E2E UNVERIFIABLE dari cron).
+  Pointer tetap 145.27.

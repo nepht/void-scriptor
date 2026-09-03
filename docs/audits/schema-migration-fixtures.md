@@ -36,9 +36,9 @@ flutter test \
 
 ## Gaps
 
-- Tidak ada fixture directory terstruktur yang secara eksplisit memuat old/current/future/corrupt untuk kontrak Sprint 145.
-- Invariant checks lintas seluruh ordered migrations belum menjadi satu gate terpisah.
-- Forward recovery setelah interrupted migration belum dibuktikan sebagai workflow mandiri.
+- [CLOSED 2026-09-02] Fixture matrix old/current/future/corrupt kini ada di `test/features/project_resilience/schema_migration_fixtures_test.dart` (lihat update di bawah).
+- [CLOSED 2026-09-03] Exhaustive invariants gate 58 entry (v1..v58) menjadi gate terpisah di `schema_migration_fixtures_test.dart` (lihat update di bawah).
+- [CLOSED 2026-09-02] Forward recovery HALF-APPLIED terbukti sebagai workflow mandiri (lihat update di bawah).
 - No-silent-data-discard belum diverifikasi dengan fixture before/after yang lengkap untuk semua tabel Core.
 - Existing migration recovery test memakai skenario RC historis; provenance-nya bukan acceptance fixture 145 yang baru.
 - `D-SCHEMA-01` masih OPEN; tidak ada schema bump atau migration baru dibuat dalam audit ini.
@@ -46,7 +46,7 @@ flutter test \
 
 ## Verdict
 
-`PARTIAL`: schema versioning, unsupported-version rejection, migration waves, corruption detection, backup, dan rollback memiliki evidence nyata. Fixture matrix Sprint 145, exhaustive invariants, forward recovery, no-silent-discard proof, dan clean-Windows execution belum lengkap.
+`PARTIAL`: schema versioning, unsupported-version rejection, migration waves, corruption detection, backup, rollback, fixture matrix, exhaustive invariants gate, dan forward recovery interrupted migration memiliki evidence nyata. Sisa gap: no-silent-discard proof lengkap untuk semua tabel Core, clean-Windows execution, dan D-SCHEMA-01.
 
 ## Non-actions
 
@@ -174,3 +174,19 @@ terpisah" ditutup.**
   (tidak ada schema bump; v59 tetap state kanonik live).
 
 nephthys - 2026-09-03
+## Update 2026-09-03b (nephthys cron, evidence-closure daftar Gaps + Verdict)
+
+Bagian Gaps dan Verdict di atas (audit 2026-08-27) direkonsiliasi dengan slice
+landed milik sendiri: fixture matrix slice (2026-09-02), interrupted-migration
+forward recovery (2026-09-02, RED `SqliteException(1)` duplicate column pada
+HALF-APPLIED state), exhaustive invariants gate 58 entry (2026-09-03). Tiga
+baris gap diberi penanda [CLOSED] tanpa menghapus teks asli; Verdict diperbarui
+menyebutkan evidence baru secara eksplisit dan menyimpan sisa gap yang benar
+(no-silent-discard lengkap, clean-Windows execution, D-SCHEMA-01 OPEN).
+
+Bukti fresh HEAD 9949164 (run ini): `flutter test
+test/features/project_resilience/schema_migration_fixtures_test.dart` =
+63 PASS / All tests passed! (exit 0).
+
+Sisa 145.40 tidak berubah: clean-Windows E2E execution (UNVERIFIABLE dari
+cron), D-SCHEMA-01 tetap OPEN. Pointer tetap 145.27.

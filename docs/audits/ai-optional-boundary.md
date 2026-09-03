@@ -69,14 +69,14 @@ Evidence yang lulus:
 
 | Acceptance | Status | Evidence / gap |
 |---|---|---|
-| Optional BYOK provider | PARTIAL | CredentialStore dan provider adapters ada; satu explicit BYOK policy/UX belum |
-| Explicit context | PARTIAL | Prompt history/target/runtime ada; boundary context yang wajib sebelum provider call belum satu contract universal |
-| Consent | PARTIAL | External transfer check dan confirmation contracts ada; consent state belum menjadi shared AI runtime policy |
+| Optional BYOK provider | VERIFIED (policy) | CredentialStore + provider adapters; explicit unified policy landed (AiPolicy.byDefault(), lib/features/ai/domain/ai_policy.dart, commit f79b8e4): byokReady=false -> denied; ai_policy_test 6 PASS RED-terverifikasi; BYOK UX/flow tetap open (keputusan UI Choirudin) |
+| Explicit context | VERIFIED (domain) | Prompt history/target/runtime + universal pre-call contract landed: AiPolicy menolak request tanpa contextSummary (kosong/whitespace -> denied); ai_policy_test 6 PASS RED-terverifikasi (commit f79b8e4) |
+| Consent | VERIFIED (domain) | External transfer check + shared runtime policy landed: AiPolicy fail-closed (externalTransfer tanpa explicit consent -> denied; byDefault local-only); ai_policy_test 6 PASS RED-terverifikasi (commit f79b8e4) |
 | Cost | VERIFIED (local) | Budget/cost integration contracts pass; live billing/provider cost tidak dipanggil |
 | Cancellation | VERIFIED (local) | Queue/executor/provider cancellation tests pass |
-| Redaction | VERIFIED (local) | SecretRedactor/SecretScanner/encrypted store tests pass; all provider payloads belum property-tested |
+| Redaction | VERIFIED (local + property) | SecretRedactor/SecretScanner/encrypted store tests pass; property-test menyeluruh landed (test/core/security/secret_redaction_property_test.dart 12 PASS: mask exhaustive 1..64, redact replace-all/idempoten/overlap longer-wins, scanner 4 format credential + zero false-positive; commit 9bf7362); wiring ke jalur produksi payload/logging tetap open (file AI concurrent) |
 | Failure fallback | VERIFIED (local) | Provider failure, cached model fallback, retry, and interrupted job recovery pass |
-| No startup dependency | PARTIAL | Runtime opens after database/package; dedicated bootstrap test proving Core starts with unavailable AI services belum |
+| No startup dependency | VERIFIED (domain) | Runtime opens after database/package; dedicated proof landed (ai_no_startup_dependency_test 4 PASS: 7 file bootstrap inti tanpa import modul AI + fail-closed tanpa exception + request tak pernah sampai provider eksternal tanpa consent + policy pure contract; commit f79b8e4) |
 | Credential isolation | VERIFIED (local) | Credentials go through secure store; no project-database API-key field evidence |
 | Native/provider live execution | DEFERRED | No live third-party credential or network call used; native UI remains `UNVERIFIABLE` (`snapshot_id_required`) |
 
@@ -86,7 +86,7 @@ Tidak ada API key yang dibaca atau ditampilkan, tidak ada provider eksternal yan
 
 ## Verdict
 
-**PARTIAL — AI sudah optional secara arsitektur lokal dengan secure credentials, routing, budget, cancellation, redaction, dan fallback primitives; explicit unified BYOK/context/consent policy dan proof bahwa Core startup tidak bergantung pada AI masih terbuka.**
+**PARTIAL — AI sudah optional secara arsitektur lokal dengan secure credentials, routing, budget, cancellation, redaction (property-tested), fallback primitives, unified BYOK/context/consent policy, dan proof Core startup bebas ketergantungan AI; sisa: BYOK UX (keputusan UI Choirudin), redaction wiring produksi, native interaction UNVERIFIABLE.**
 
 Next canonical step: `145.37 Navigation Reduction`.
 

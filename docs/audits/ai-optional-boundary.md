@@ -134,3 +134,35 @@ interaction UNVERIFIABLE dari cron.
 Status ledger 145.36 dinaikkan menjadi PARTIAL dengan gap BYOK/context/consent
 policy + no-startup-dependency proof TERTUTUP (lihat update di atas); sisa
 open: BYOK UX, redaction property-test menyeluruh, native interaction.
+## Update 2026-09-03c (nephthys cron, redaction property-test menyeluruh)
+
+Gap audit "all provider payloads belum property-tested" ditutup sebagai bukti
+property-level atas primitif redaction yang menjadi sandaran seluruh jalur
+payload/credential (SecretRedactor + SecretScanner). Slice test-only:
+
+- `test/core/security/secret_redaction_property_test.dart` 12 PASS:
+  - `mask`: exhaustive lengths 1..64 (setiap nilai pendek 1..4 -> `****`,
+    nilai >= 5 -> `3-char + ****` length 7, deterministik, tidak pernah
+    memuat full secret, `mask(mask(x))` stabil);
+  - `redact`: replace SEMUA kemunculan setiap secret (10 secret acak x2),
+    daftar kosong = identity, idempoten (token `[REDACTED]` tidak pernah
+    di-rescan menjadi `[REDACTED][REDACTED]`), overlapping secret lebih
+    panjang menang tanpa residue parsial;
+  - `scanner`: deteksi 4 format credential nyata (OpenAI `sk-`, AWS
+    `AKIA`, GitHub `ghp_`, Slack `xoxb`) di dalam free text + zero
+    false-positive pada prosa/teks pendek.
+- Temuan investigasi: `SecretRedactor`/`SecretScanner` saat ini TIDAK
+  dipanggil dari kode produksi mana pun di luar definisinya - primitif
+  tersedia dan benar, tapi belum ter-wire ke jalur logging/ekspor payload.
+  Wiring ke jalur produksi adalah pekerjaan terpisah (file AI concurrent)
+  dan tetap tercatat sebagai gap.
+
+RED terverifikasi dua lapis: (1) test baru awalnya gagal karena test-bug
+(harapan startsWith salah + generator body memuat '-'/'_' yang mematahkan
+regex format, + body AKIA harus uppercase) - diperbaiki di test, bukan di
+produksi; (2) setelah koreksi, seluruh property PASS menunjukkan primitives
+produksi sudah memenuhi kontrak. Tidak ada perubahan production code.
+
+Bukti: focused 12 PASS + security suite 42 PASS + ai policy 10 PASS =
+52 PASS; `flutter analyze` full No issues found! (113.7s); `git diff --check`
+PASS. Pointer tetap 145.27.

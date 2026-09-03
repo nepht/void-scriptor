@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-03 (cron 145.36 AI policy + no-startup proof)",
-  "updated_by": "nephthys cron: 145.36 unified AI policy + no-startup-dependency proof, pointer stays 145.27",
+  "updated_at": "2026-09-03 (cron 145.36 redaction property-test closure)",
+  "updated_by": "nephthys cron: 145.36 redaction property-test evidence closure, pointer stays 145.27",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

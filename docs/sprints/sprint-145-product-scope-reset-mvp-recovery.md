@@ -844,3 +844,18 @@ nephthys - 2026-09-04 run3
   145.36 tetap AiPolicy 6 + no-startup 4 + redaction property 12.
 - Full suite 3598 PASS / 0 FAIL (test diadopsi terhitung di dalam baseline
   3598 - file sudah ada di disk saat run). Tidak ada kode produksi baru; pointer tetap 145.27.
+
+
+## Update 2026-09-04 (nephthys cron run9, evidence refresh di HEAD pasca-adopsi)
+
+- Konteks: 6 commit landed sejak core_e2e_journey_test terakhir dibuktikan (2b703cf), termasuk dua adopsi test (9d3cf6b, 332e9ee) dan engine collision-rollback (1484982). Jalur vertical Core divalidasi ulang di HEAD 332e9ee.
+- Bukti fresh: test/features/story/core_e2e_journey_test.dart 1 PASS / 0 FAIL All tests passed (create package+session -> character+identity+voice -> story/arc/chapter/scene -> draft -> search -> quick reference -> export -> backup SHA-256 -> dirty mutation -> restore rollback -> reopen intact) @ HEAD 332e9ee Windows host.
+- Bukti fresh 2: test/features/project/... portable_archive_security_test.dart 1 PASS (path-escape guard) dan flutter analyze No issues found! (8.3s) @ HEAD yang sama; guard PASS pre-run (pointer 145.27, canonical_sha 86af6a5).
+- Tidak ada kode produksi/test baru; doc-only. Sisa sengketa sibling dipertahankan (recovery_services +108, cloud_sync +17, session_manager +37, backup_location_policy +1, settings/ untracked, pubspec+assets brand sibling). Pointer tetap 145.27; 145.41 tetap PARTIAL (pyramid inventory + native-driver tree tetap terbuka).
+
+## Update 2026-09-04 (nephthys cron run9, evidence refresh di HEAD pasca-adopsi)
+
+- Konteks: 6 commit landed sejak core_e2e_journey_test terakhir dibuktikan (2b703cf), termasuk dua adopsi test (9d3cf6b, 332e9ee) dan engine collision-rollback (1484982). Jalur vertical Core divalidasi ulang di HEAD 332e9ee.
+- Bukti fresh: test/features/story/core_e2e_journey_test.dart 1 PASS / 0 FAIL All tests passed (create package+session -> character+identity+voice -> story/arc/chapter/scene -> draft -> search -> quick reference -> export -> backup SHA-256 -> dirty mutation -> restore rollback -> reopen intact) @ HEAD 332e9ee Windows host.
+- Bukti fresh 2: portable_archive_security_test.dart 1 PASS (path-escape guard) dan flutter analyze No issues found! (8.3s) @ HEAD yang sama; guard PASS pre-run (pointer 145.27, canonical_sha 86af6a5).
+- Tidak ada kode produksi/test baru; doc-only. Sisa sengketa sibling dipertahankan (recovery_services +108, cloud_sync +17, session_manager +37, backup_location_policy +1, settings/ untracked, pubspec+assets brand sibling). Pointer tetap 145.27; 145.41 tetap PARTIAL (pyramid inventory + native-driver tree tetap terbuka).

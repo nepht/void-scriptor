@@ -155,3 +155,24 @@ Next canonical step: `145.36 AI Optional Boundary`.
   roadmap guard PASS pre+post (pointer tetap 145.27).
 - 145.35 tetap PARTIAL: publishing fidelity DOCX render-compat eksternal,
   native interaction proof (butuh sesi interaktif).
+
+## Update 2026-09-03 cron enc (nephthys, 145.35 TXT encoding options)
+
+- Sisa gap 145.35 "encoding non-UTF-8" ditutup pada level TXT writer:
+  `StoryTxtExporter.writeExport` kini menerima `Encoding encoding = utf8`
+  dan `bool bom = false`; penulisan via `writeAsBytes` dengan prefix BOM
+  EF BB BF saat `bom=true`. Default TETAP UTF-8 tanpa BOM sehingga
+  kontrak encoding matrix Unicode (commit 27712d8) tidak berubah.
+- RED terverifikasi: "No named parameter with the name 'encoding'" dan
+  "'bom'" (kompilasi gagal hanya pada dua simbol itu; fixture memakai
+  createScene storyId+chapterId+sceneNumber eksak sesuai API live).
+- Bukti: test/features/export/story_txt_encoding_options_test.dart 3 PASS
+  (latin1+BOM byte-exact: prefix EF BB BF + body dekodabel latin1 dan
+  BUKAN urutan utf8-2-byte; utf8+BOM round-trip; default tetap tanpa
+  BOM); export suite 49 PASS; focused TXT 7 PASS; analyzer scoped
+  No issues; windows debug build PASS 33.1s exit 0.
+- Konsumen publishing lawas yang butuh BOM/encoding single-byte kini
+  terlayani tanpa mengubah perilaku default UI Export TXT.
+- Sisa 145.35: publishing fidelity DOCX render-compat eksternal,
+  metadata encoding-aware utk MD/DOCX (opsi kini hanya di TXT writer),
+  native interaction UNVERIFIABLE (cron).

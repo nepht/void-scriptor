@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
@@ -62,6 +63,8 @@ class StoryTxtExporter {
     required Directory exportDirectory,
     String fileName = 'story.txt',
     ExportProfile? profile,
+    Encoding encoding = utf8,
+    bool bom = false,
   }) async {
     final safeName = p.basename(fileName);
     if (safeName != fileName || !safeName.endsWith('.txt')) {
@@ -74,7 +77,9 @@ class StoryTxtExporter {
     await exportDirectory.create(recursive: true);
     final file = File(p.join(exportDirectory.path, safeName));
     final text = await exportStory(repository, storyId, profile: profile);
-    await file.writeAsString('$text\n');
+    final eolChar = String.fromCharCode(10);
+    final bomPrefix = bom ? const [0xEF, 0xBB, 0xBF] : const <int>[];
+    await file.writeAsBytes([...bomPrefix, ...encoding.encode(text + eolChar)]);
     return file;
   }
 }

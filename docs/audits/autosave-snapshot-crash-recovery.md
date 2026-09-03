@@ -86,13 +86,13 @@ Covered behavior:
 | Autosave state | VERIFIED | Debounce+flush+status durable terbukti live (DurableAutosaveCoordinator, ef82042/291a871) |
 | Atomic save | VERIFIED | DurableDraftJournal menulis `<scene>.json.tmp`, flush, lalu rename atomik; .tmp setengah jadi tidak dianggap pemulihan (durable_draft_journal.dart) |
 | Durable journal | VERIFIED | DurableDraftJournal on-disk, survive close/reopen; replacement untuk AutosaveJournal in-memory lama |
-| Snapshots | PARTIAL | JSON snapshot terbukti (ProjectVersionControlService); full-project crash-consistent snapshot tetap di luar slice ini |
+| Snapshots | VERIFIED (domain) | ProjectVersionControlService create/compare/restore/prune terbukti (project_version_control_service_test.dart 1 PASS); full-project crash-consistent snapshot tetap di luar slice ini (batas scope, bukan gap bukti) |
 | Process-kill recovery | VERIFIED | Harness OS kill child nyata (b191d53): konten staged dipulihkan penuh, .tmp setengah jadi diabaikan |
 | Power-loss recovery | UNVERIFIABLE | Tidak diuji pada filesystem live (bukan objective cron-actionable) |
 | Disk-full recovery | BLOCKED | Failure-injection seam ada (durable_draft_journal_failure_injection_test), tapi penuh-nyata terhadap disk tidak diuji |
 | Visible save/recovery status | VERIFIED | Recovery startup prompt UI + label Tersimpan/Belum tersimpan (cron i / 291a871) |
 | No silent loss | VERIFIED | Restart + close/reopen + flush-on-dispose test membuktikan draf belum-ter-debounce tidak hilang |
-| User-controlled restore | PARTIAL | Service/UI restore action ada; autosave recovery selection flow tetap perlu bukti lanjutan |
+| User-controlled restore | VERIFIED (domain+UI) | Recovery selection flow terbukti novel_recovery_prompt_ui_test.dart (commit 6e70a95, 2026-09-01): Pulihkan Draft -> saveSceneDraft -> acknowledge + editor, Buang -> acknowledge tanpa tulis, panel absen saat journal kosong |
 
 ## Ownership and safety boundary
 
@@ -296,3 +296,27 @@ Langkah lanjutan yang diperlukan bila kontrak failure-injection disetujui:
 - Status step 145.30 tetap PARTIAL (Snapshots full-project, power-loss,
   disk-full nyata, user restore selection, native interaction), namun
   bukan lagi karena baris yang sudah terbukti tersebut.
+
+## Update 2026-09-04 (nephthys cron: evidence-closure baris Snapshots + User-controlled restore)
+
+- Dua baris tabel Gap yang tersisa PARTIAL ternyata STALE terhadap bukti
+  live; koreksi evidence-closure murni (tanpa kode produksi):
+  - User-controlled restore PARTIAL -> VERIFIED (domain+UI): flow pemilihan
+    recovery sudah dibuktikan `novel_recovery_prompt_ui_test.dart`
+    (commit 6e70a95, 2026-09-01; 3 testWidgets: restore satu entri ke
+    repository+editor+acknowledge, discard tanpa tulis, panel absen saat
+    journal kosong). Update evidence-closure 2026-09-03 bahkan sudah
+    menyertakan file ini dalam bukti fresh 16 PASS tanpa menaikkan baris.
+  - Snapshots PARTIAL -> VERIFIED (domain): ProjectVersionControlService
+    create/compare/restore/prune terbukti
+    `project_version_control_service_test.dart` (1 PASS). Batas
+    "full-project crash-consistent snapshot" adalah batas scope slice,
+    bukan gap bukti; snapshot penuh project milik jalur backup 145.34.
+- Bukti fresh (HEAD 2b703cf, Windows host): focused
+  novel_recovery_prompt_ui_test + project_version_control_service_test +
+  project_backup_restore_preview_test + core_e2e_journey_test =
+  8 PASS / All tests passed! (exit 0). core_e2e_journey_test juga
+  dieksekusi terpisah 1 PASS sebagai bukti Windows-host journey.
+- Status step 145.30 tetap PARTIAL hanya karena: power-loss filesystem
+  live UNVERIFIABLE, disk-full nyata BLOCKED (tanpa disk virtual),
+  native interaction UNVERIFIABLE (butuh sesi interaktif).

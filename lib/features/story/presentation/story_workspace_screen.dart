@@ -9,6 +9,7 @@ import '../application/story_docx_exporter.dart';
 import 'package:flutter/services.dart';
 
 import '../application/story_markdown_exporter.dart';
+import '../application/story_txt_exporter.dart';
 import '../domain/lore_link_suggester.dart';
 
 import '../data/story_repository_impl.dart';
@@ -519,6 +520,21 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     ).showSnackBar(SnackBar(content: Text('DOCX diekspor: ${file.path}')));
   }
 
+  Future<void> _exportTxt() async {
+    final repository = widget.repository;
+    final directory = widget.exportDirectory;
+    if (repository == null || directory == null) return;
+    final file = await const StoryTxtExporter().writeExport(
+      repository,
+      widget.storyId,
+      exportDirectory: directory,
+    );
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('TXT diekspor: ${file.path}')));
+  }
+
   Future<void> _exportNovelWorkspace() async {
     final actions = widget.novelExportActions;
     final directory = widget.exportDirectory;
@@ -636,6 +652,13 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
             : _exportMarkdown,
         icon: const Icon(Icons.download_outlined),
         label: const Text('Export Markdown'),
+      ),
+      OutlinedButton.icon(
+        onPressed: widget.repository == null || widget.exportDirectory == null
+            ? null
+            : _exportTxt,
+        icon: const Icon(Icons.description_outlined),
+        label: const Text('Export TXT'),
       ),
       OutlinedButton.icon(
         onPressed: widget.repository == null || widget.exportDirectory == null

@@ -60,7 +60,7 @@ Coverage yang lulus:
 | Secret exclusion | BLOCKED | Tidak ada allowlist/denylist atau test yang membuktikan secret tidak masuk |
 | Transactional import | PARTIAL | Partial package dihapus; 2026-09-03c cron: registry-state atomicity + rollback terbukti test-only (commit 991dd53: post-extraction registry failure me-rollback package directory, registry kembali ke state pre-import; copy import aditif); existing-destination overwrite pada asCopy:false tetap non-atomic (risiko terdokumentasi, file engine concurrent) |
 | Compatibility/migration | BLOCKED | Importer membaca schema version tetapi tidak menjalankan migration/compatibility policy |
-| Corrupted input | PARTIAL | Missing manifest/database dan invalid ZIP ditolak; matrix corruption belum lengkap |
+| Corrupted input | VERIFIED (domain) | Matrix 6 korupsi + kontrol positif lulus: missing manifest, missing database, truncated zip, non-zip, manifest malformed (checksum cocok dengan kontennya), manifest future schema 99 > 16 semua ditolak FormatException (portable_corrupt_input_test.dart 7 PASS, 2026-09-03d cron) |
 | Rollback | PARTIAL | Cleanup on failure ada; 2026-09-03c cron: rollback registry-state + package directory terbukti test-only (991dd53); rollback terhadap existing destination (path overwrite asCopy:false) belum terbukti - file engine concurrent |
 | Large project behavior | VERIFIED (domain) | 2026-09-03 cron: 250 aset + 2 blob 256 KiB + 60 workspace export/import/registry round-trip lulus (portable_large_project_test.dart 3 PASS, commit 7641236) |
 | Registry relocation | VERIFIED | Coordinator mendaftarkan imported package dengan local path baru |
@@ -142,3 +142,36 @@ state" pada sisi registry-state ditutup sebagai bukti test-only.**
   (UNVERIFIABLE dari cron).
 
 nephthys - 2026-09-03c
+
+## Update 2026-09-03d (nephthys cron) - corrupted-input matrix evidence closure
+
+**Baris "Corrupted input: PARTIAL" dinaikkan menjadi VERIFIED (domain) sebagai
+bukti test-only PASS-first; file engine tetap milik slice concurrent dan tidak
+disentuh.**
+
+- Test baru `test/features/project_resilience/portable_corrupt_input_test.dart`
+  (7 PASS, tanpa kode produksi):
+  1. Missing `manifest/project.json` -> FormatException "Invalid voidproject
+     archive".
+  2. Missing `database/project.db` -> FormatException "Invalid voidproject
+     archive".
+  3. Truncated zip container (60% byte pertama) -> FormatException.
+  4. Input bukan zip sama sekali -> FormatException.
+  5. Manifest JSON malformed dengan checksum SHA-256 yang cocok dengan
+     kontennya -> tetap ditolak FormatException (checksum bukan bypass
+     validasi manifest).
+  6. Manifest `schemaVersion: 99 > 16` -> FormatException "Unsupported
+     project manifest schema version: 99".
+  7. Positive control: arsip valid hasil exporter dengan checksum terhitung
+     diimpor bersih (membuktikan harness checksum pada kasus 3/5/6 benar).
+- Perilaku diprobe live lebih dulu (test probe sekali pakai, sudah dihapus):
+  keenam bentuk korupsi memang sudah ditolak importer sebelum test ini ada -
+  slice ini mengunci perilaku, bukan menambalnya.
+- Bukti gerbang: focused 7 PASS; project_resilience suite 134 PASS / 0 FAIL;
+  flutter analyze No issues found! (8.9s); git diff --check PASS (lihat
+  ledger); full suite + windows build dieksekusi pada run yang sama.
+- Sisa 145.33: secret exclusion (BLOCKED file concurrent), migration
+  compatibility, destination-collision rollback (asCopy:false), native
+  interaction (UNVERIFIABLE dari cron).
+
+nephthys - 2026-09-03d

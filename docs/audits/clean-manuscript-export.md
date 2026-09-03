@@ -60,8 +60,8 @@ Evidence yang lulus:
 | Publishing-friendly format | PARTIAL | DOCX writer ada dan ZIP valid; fidelity/render compatibility belum diverifikasi |
 | Output fidelity | VERIFIED (domain) | Clean transform preserves surrounding text structure; full DOCX semantic fidelity belum |
 | Chapter order | VERIFIED | Story hierarchy exporter loops ordered chapters/scenes |
-| Encoding | PARTIAL | Dart string/file path lulus fixture; explicit encoding matrix/Unicode publishing fixture belum |
-| Metadata options | PARTIAL | Front matter/profile metadata ada; export option-to-artifact assertions terbatas |
+| Encoding | VERIFIED (domain) | Unicode publishing matrix round-trip byte-exact TXT/Markdown/DOCX tanpa U+FFFD (story_export_encoding_matrix_test.dart 3 PASS, commit 27712d8); opsi non-UTF-8 Encoding+BOM di TXT writer (0b3d34e) dan paritas Markdown (5bcf275) dgn default tetap UTF-8 tanpa BOM (story_txt_encoding_options_test.dart 3 PASS + story_markdown_encoding_options_test.dart 3 PASS); DOCX OOXML menuntut part XML UTF-8 tanpa BOM, dibuktikan PASS-first (story_docx_encoding_evidence_test.dart 1 PASS); bukti fresh 2026-09-04: export suite 53 PASS / 0 FAIL @ HEAD 8de0c73 |
+| Metadata options | VERIFIED (domain) | ExportProfile front matter + chapter rules terpropagasi ke artefak ketiga writer: TXT (story_export_metadata_propagation_test.dart 3 PASS, 27712d8), Markdown dan DOCX termasuk metadata OOXML docProps/core.xml dc:title/dc:creator (story_export_md_docx_profile_test.dart 4 PASS, b6363d2); output tanpa profile tetap identik legacy (backward compatible); bukti fresh 2026-09-04: export suite 53 PASS / 0 FAIL @ HEAD 8de0c73 |
 | No watermark | VERIFIED | Private master TXT/Markdown/DOCX bersih dari watermark di semua format (story_export_no_watermark_test.dart, 27712d8); kontras publicPreview membuktikan planner aktif |
 | Preflight/preview | VERIFIED | Blocking/warning checks, cleaned preview, manifest, and fingerprint tested |
 | Native interaction | UNVERIFIABLE | Native Windows click-through tetap blocked oleh `snapshot_id_required` |
@@ -72,7 +72,7 @@ Export tests menggunakan temporary directories dan test database. Naskah canonic
 
 ## Verdict
 
-**PARTIAL — clean Markdown/story export, deterministic cleaning, chapter ordering, preflight, profile controls, dan DOCX artifact primitive teruji; plain TXT writer, full publishing fidelity, explicit encoding matrix, complete metadata-option propagation, dan no-watermark proof lintas format masih terbuka.**
+**PARTIAL — clean Markdown/story export, deterministic cleaning, chapter ordering, preflight, profile controls, DOCX artifact primitive, plain TXT writer, explicit encoding matrix (Unicode round-trip + opsi encoding/BOM), complete metadata-option propagation, dan no-watermark proof lintas format semuanya teruji. Sisa terbuka: publishing fidelity DOCX render-compat eksternal (butuh Word/LibreOffice nyata) dan native interaction UNVERIFIABLE dari cron.**
 
 Next canonical step: `145.36 AI Optional Boundary`.
 
@@ -222,3 +222,25 @@ Next canonical step: `145.36 AI Optional Boundary`.
 - Row diperbaiki PARTIAL -> VERIFIED. Sisa 145.35 tetap: publishing
   fidelity DOCX render-compat eksternal (butuh Word/LibreOffice nyata),
   native interaction UNVERIFIABLE (cron).
+
+## Update 2026-09-04 (nephthys cron: evidence-closure rows Encoding + Metadata options)
+
+- Dua row tabel Gap ternyata STALE terhadap bukti yang sudah landed:
+  1. Encoding: matrix Unicode publishing (27712d8) + opsi non-UTF-8
+     Encoding/BOM di TXT (0b3d34e) dan paritas Markdown (5bcf275) +
+     bukti OOXML DOCX tanpa BOM (PASS-first) sudah terbukti, tetapi row
+     masih memuat narasi pra-27712d8.
+  2. Metadata options: propagation ExportProfile ke artefak bukan lagi
+     asersi terbatas; commit b6363d2 (2026-09-02) menambah
+     test/features/export/story_export_md_docx_profile_test.dart 4 PASS
+     (front matter + chapter prefix pada Markdown DAN DOCX termasuk
+     docProps/core.xml dc:title/dc:creator; output tanpa profile tetap
+     identik legacy).
+- Rekonsiliasi doc-only: row Encoding PARTIAL -> VERIFIED (domain),
+  row Metadata options PARTIAL -> VERIFIED (domain), Verdict aligned
+  dengan bukti landed. Blok riwayat tanggal dipertahankan apa adanya.
+- Bukti fresh run ini (HEAD 8de0c73, Windows host): flutter test
+  test/features/export = 53 PASS / 0 FAIL exit 0, mencakup encoding
+  matrix 3 + TXT encoding options 3 + MD encoding options 3 + DOCX
+  encoding evidence 1 + md/docx profile 4 + metadata propagation 3 +
+  no-watermark 4 + TXT UI 2. Tanpa perubahan kode produksi/test.

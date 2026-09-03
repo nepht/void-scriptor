@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
@@ -54,8 +55,12 @@ class StoryMarkdownExporter {
     required Directory exportDirectory,
     String fileName = 'story.md',
     ExportProfile? profile,
+    Encoding encoding = utf8,
+    bool bom = false,
   }) async {
     final safeName = p.basename(fileName);
+    // Encoding aware (Sprint 145.35): parity with StoryTxtExporter -
+    // BOM EF BB BF prefix saat diminta, default UTF-8 tanpa BOM.
     if (safeName != fileName || !safeName.endsWith('.md')) {
       throw ArgumentError.value(
         fileName,
@@ -65,9 +70,9 @@ class StoryMarkdownExporter {
     }
     await exportDirectory.create(recursive: true);
     final file = File(p.join(exportDirectory.path, safeName));
-    await file.writeAsString(
-      await exportStory(repository, storyId, profile: profile),
-    );
+    final text = await exportStory(repository, storyId, profile: profile);
+    final bomPrefix = bom ? const [0xEF, 0xBB, 0xBF] : const <int>[];
+    await file.writeAsBytes([...bomPrefix, ...encoding.encode(text)]);
     return file;
   }
 }

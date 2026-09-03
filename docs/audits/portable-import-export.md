@@ -57,7 +57,7 @@ Coverage yang lulus:
 |---|---|---|
 | Manifest | VERIFIED | `manifest/project.json` wajib ada dan dibaca |
 | Archive integrity checksum | VERIFIED (domain) | 2026-09-03 cron: export menulis checksum SHA-256 nyata (directory-based, deterministic entry order, POSIX separator), import memverifikasi sebelum ekstraksi; `test/features/project_resilience/archive_integrity_test.dart` 4 PASS RED-terverifikasi |
-| Secret exclusion | BLOCKED | Tidak ada allowlist/denylist atau test yang membuktikan secret tidak masuk |
+| Secret exclusion | VERIFIED (domain) | 2026-09-04 cron: `ArchiveSecretPolicy` (commit fb57534) - exporter melewatkan file secret saat staging (dotfiles `.env*` kecuali template `.example/.sample/.template`, basename `credentials*`/`secrets*`, extension kunci `.pem/.key/.p12/.pfx/.kdbx/.keystore/.jks`, basename kunci ssh) + scan konten teks via SecretScanner, `assertNoSecrets` fail-closed sebelum checksum; importer menolak arsip ber-entri secret walau checksum valid; `portable_secret_exclusion_test.dart` 5 PASS RED-terverifikasi |
 | Transactional import | PARTIAL | Partial package dihapus; 2026-09-03c cron: registry-state atomicity + rollback terbukti test-only (commit 991dd53: post-extraction registry failure me-rollback package directory, registry kembali ke state pre-import; copy import aditif); existing-destination overwrite pada asCopy:false tetap non-atomic (risiko terdokumentasi, file engine concurrent) |
 | Compatibility/migration | VERIFIED (domain+prod) | 2026-09-03 cron malam run2: guard future-schema DB CLOSED - ProjectDatabaseService.open memprobe PRAGMA user_version via platform schema-version reader; DB lebih baru dari v59 ditolak SchemaVersionTooNewException tanpa menyentuh file (probe corrupt = null = no-op; web null = no-op; openReadOnly sengaja tidak diguard agar diagnostics tetap bisa membaca DB future tanpa memigrasinya); project_database_future_schema_guard_test.dart 3 PASS RED-terverifikasi (commit d76d596). || 2026-09-03e cron: dua sumbu versi terbukti - manifest format (> 16 ditolak FormatException, portable_corrupt_input_test) dan database user_version (arsip DB v53 diimpor lalu dibuka lewat jalur produksi ProjectDatabaseService.open yang menjalankan migrasi maju 53->59 tanpa kehilangan baris Core; manifest lama schemaVersion 15 diterima; arsip v59 saat ini round-trip tanpa migrasi; portable_schema_compatibility_test.dart 3 PASS PASS-first) |
 | Corrupted input | VERIFIED (domain) | Matrix 6 korupsi + kontrol positif lulus: missing manifest, missing database, truncated zip, non-zip, manifest malformed (checksum cocok dengan kontennya), manifest future schema 99 > 16 semua ditolak FormatException (portable_corrupt_input_test.dart 7 PASS, 2026-09-03d cron) |
@@ -72,7 +72,7 @@ Tidak ada project production yang dipindahkan atau dihapus. Semua test memakai t
 
 ## Verdict
 
-**PARTIAL — portable archive round-trip, relocation, path safety, cleanup, archive integrity checksum, registry-state transactional import/rollback, large-project evidence, compatibility/migration (dua sumbu versi), dan guard future-schema database sudah runnable; secret exclusion, destination-collision rollback (asCopy:false overwrite non-atomic), dan native interaction belum tersedia.**
+**PARTIAL — portable archive round-trip, relocation, path safety, cleanup, archive integrity checksum, registry-state transactional import/rollback, large-project evidence, compatibility/migration (dua sumbu versi), guard future-schema database, dan secret exclusion (ekspor melewatkan + impor menolak, RED terverifikasi) sudah runnable; destination-collision rollback (asCopy:false overwrite non-atomic) dan native interaction belum tersedia.**
 
 ## Update 2026-09-03 (nephthys cron, archive integrity checksum)
 
@@ -237,3 +237,41 @@ Slice: `lib/database/project/project_database_service.dart` (feat) +
   UNVERIFIABLE dari cron.
 
 nephthys - 2026-09-03 cron malam run2
+
+## Update 2026-09-04 (nephthys cron) - secret exclusion evidence closure
+
+**Baris "Secret exclusion: BLOCKED" dinaikkan menjadi VERIFIED (domain); file engine
+tetap milik slice concurrent, ditransformasi mine-only di atas HEAD (teknik yang sama
+dengan slice archive integrity b805ffe), sibling changes dipreservasi.**
+
+- Feat commit fb57534: `ArchiveSecretPolicy`
+  (`lib/features/project_resilience/application/archive_secret_policy.dart`) +
+  wiring di `portable_project_service.dart`:
+  1. Exporter: `_copy` staging melewatkan file secret (filename-based policy);
+     `assertNoSecrets` fail-closed sebagai backstop sebelum checksum dihitung
+     (scan konten SecretScanner hanya untuk file teks, biner sqlite/gambar
+     tidak diskan agar export sah tidak gagal false-positive).
+  2. Importer: `assertArchiveHasNoSecrets(decoded)` menolak arsip ber-entri
+     secret SEBELUM ekstraksi, terlepas dari validitas checksum.
+- Policy filename-based: dotfile `.env` dan `.env.<x>` kecuali template
+  `.example/.sample/.template`; basename `credentials`/`secrets` (+.json/.yaml);
+  extension `.pem .key .p12 .pfx .kdbx .keystore .jks`; basename kunci ssh
+  `id_rsa/id_dsa/id_ecdsa/id_ed25519`; folder dot `.aws/.ssh/.gcloud/.kube`.
+  Aturan folder generik `keys/` sengaja TIDAK dipakai (terlalu luas, terbukti
+  menelan `assets/keys/notes.txt` yang sah).
+- Test `test/features/project_resilience/portable_secret_exclusion_test.dart`
+  5 PASS (RED terverifikasi: `Undefined name 'ArchiveSecretPolicy'`):
+  policy positif/negatif, export menghilangkan secret tapi menyimpan file
+  sah, arsip bebas-secret tetap terimpor, arsip checksum-valid ber-entri
+  `.env` ditolak FormatException (membuktikan rejection dari policy, bukan
+  integrity check) tanpa meninggalkan direktori destination.
+- Bukti gerbang: focused portable group 24 PASS; project_resilience suite
+  142 PASS / 0 FAIL; scoped analyze No issues found!; windows debug build
+  PASS 24.7s; `git diff --check` PASS; FULL SUITE 3516 PASS / 0 FAIL
+  (delta +5 eksak dari 3511); roadmap_guard PASS pre+post (pointer tetap
+  145.27).
+- Sisa 145.33: destination-collision rollback (asCopy:false overwrite
+  non-atomic, terdokumentasi sebagai risiko dengan UI produksi asCopy:true),
+  native interaction (UNVERIFIABLE dari cron).
+
+nephthys - 2026-09-04

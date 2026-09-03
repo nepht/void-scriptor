@@ -809,3 +809,48 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
   2026-08-27); roadmap guard PASS exit 0 setelah rekonsiliasi.
 - Tidak ada source code, schema, migration, atau data user yang diubah dalam
   run ini; hanya bookkeeping ledger + runtime state.
+## Sprint 110.17 Genealogy Relationship Rules (nephthys, 2026-08-29 03:30 WIB)
+
+- Step 110.17 dieksekusi TDD penuh (RED: undefined GenealogyRelation/
+  GenealogyRegistry/ValidityRange -> GREEN 13/13).
+- Modul BARU: lib/features/world_logic/domain/genealogy_relationship_rules.dart
+  (236 baris) + test/features/world_logic/genealogy_relationship_rules_test.dart
+  (160 baris).
+- Acceptance sprint_110.json baris 110.17 (parent_child, adoption,
+  partnership, guardian, clan, validity_ranges) tercakup 1:1:
+  - parent_child: terarah, biologis, anti-siklus via DFS ancestor check,
+    konflik dengan adoption untuk node yang sama
+  - adoption: non-biologis, single adoption per child
+  - partnership: bidirectional, anti self-loop
+  - guardian: non-biologis, coexist dengan parent_child
+  - clan: membership klan dari klanId ke nodeId
+  - ValidityRange: fromTick/toTick opsional, isActiveAt dengan asOfTick escape
+    hatch untuk tick besar
+- Domain-only, tanpa persistence, UI, wall clock, locale, atau random;
+  konstruktor const untuk semua relation opsional validity.
+- Regression test/features/world_logic = 117/117 PASS (13 baru + 104 existing).
+- Scoped dart format + dart analyze: No issues found.
+
+## Sprint 110.23-110.25 Faction Diplomacy Grid (nephthys, 2026-08-29 11:35 WIB)
+
+- Langkah kanonik 110.23-110.25 (F13 Faction Diplomacy Grid) dieksekusi TDD
+  penuh (file untracked di working tree, RED test dieksekusi -> GREEN 11/11).
+- Modul BARU: lib/features/world_logic/domain/faction_diplomacy_core.dart
+  (255 baris) + test/features/world_logic/faction_diplomacy_core_test.dart
+  (11 tests, 227 baris).
+- Acceptance sprint_110.json baris 110.23-110.25 tercakup 1:1 oleh 11 test:
+  - 110.23 directed_relation/relationship_type/intensity/validity_ranges/
+    matrix_view (FactionRelation + ValidityRange.overlaps + FactionRelationOverlap
+    + historyOf).
+  - 110.24 public_stance/secret_stance/perceived_stance/knowledge_access/
+    spoiler_integration (DiplomacyRelationKind + attachProvenance 110.7).
+  - 110.25 treaties/conflicts/trade_links/change_events/timeline_view
+    (FactionTreaty + FactionConflict + FactionTrade + eventsForFaction +
+    historyOf).
+- Konsumsi ValidityRange (110.17) dan ResultOrigin (110.7).
+- Domain-only, deterministic, no persistence/UI/wall clock/locale/random.
+- Full regression test/features/world_logic + test/features/simulation +
+  test/core/feature_flags 215/215 green (naik dari 204/204, +11 dari 110.23).
+- Scoped dart format + dart analyze: No issues found.
+- Commit: 99e4800 (nephthys, 2026-08-29 11:35 WIB, cron remediation).
+- Catatan jujur: push mengikuti kontrak push butuh izin; tidak push otomatis.

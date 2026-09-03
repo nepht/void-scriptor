@@ -38,7 +38,7 @@ void main() {
         findsNothing,
         reason: 'login screen must be skipped for a restored session',
       );
-      expect(find.text('Welcome Guest'), findsOneWidget);
+      expect(find.text('Welcome back, Guest'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );

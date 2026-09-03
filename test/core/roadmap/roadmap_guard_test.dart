@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/roadmap/roadmap_guard.dart';
 
@@ -32,6 +33,7 @@ void main() {
 | 145.2 | Compatibility | PARTIAL | gap |
 ''');
     _writePolicy(root, archive, references);
+    _writeDocumentRegistry(root);
   });
 
   tearDown(() async {
@@ -96,13 +98,70 @@ void main() {
     );
   });
 
+  test(
+    'rejects an unregistered document inside a strict authority root',
+    () async {
+      File(
+        '${archive.path}/sprint_145.json',
+      ).copySync('${references.path}/sprint_145.json');
+      _writeRuntime(root, references, sprint: 145, nextStep: '145.2');
+      File(
+        '${root.path}/docs/roadmap/rogue-plan.md',
+      ).writeAsStringSync('# Unapproved plan\nBuild a new network feature.\n');
+
+      final result = await RoadmapGuard.inspect(repository: root);
+
+      expect(result.ok, isFalse);
+      expect(result.issues, contains(contains('tidak terdaftar')));
+      expect(result.issues, contains(contains('rogue-plan.md')));
+    },
+  );
+
+  test('rejects checksum drift in an immutable registered document', () async {
+    File(
+      '${archive.path}/sprint_145.json',
+    ).copySync('${references.path}/sprint_145.json');
+    _writeRuntime(root, references, sprint: 145, nextStep: '145.2');
+    File('${root.path}/docs/roadmap/ROADMAP_POLICY.json').writeAsStringSync(
+      '${File('${root.path}/docs/roadmap/ROADMAP_POLICY.json').readAsStringSync()}\n',
+    );
+
+    final result = await RoadmapGuard.inspect(repository: root);
+
+    expect(result.ok, isFalse);
+    expect(result.issues, contains(contains('checksum tidak cocok')));
+  });
+
+  test('rejects scope creation authority for a non-sprint document', () async {
+    File(
+      '${archive.path}/sprint_145.json',
+    ).copySync('${references.path}/sprint_145.json');
+    _writeRuntime(root, references, sprint: 145, nextStep: '145.2');
+    final registryFile = File(
+      '${root.path}/docs/roadmap/DOCUMENT_REGISTRY.json',
+    );
+    final registry =
+        jsonDecode(registryFile.readAsStringSync()) as Map<String, dynamic>;
+    final documents = registry['documents'] as List<dynamic>;
+    (documents.first as Map<String, dynamic>)['may_create_scope'] = true;
+    _writeJson(registryFile, registry);
+
+    final result = await RoadmapGuard.inspect(repository: root);
+
+    expect(result.ok, isFalse);
+    expect(result.issues, contains(contains('tidak boleh membuat scope')));
+  });
+
   test('live ledger resolves 145.14 with user decision evidence', () {
     final repo = Directory.current;
     final ledger = File(
       '${repo.path}/docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md',
     );
-    expect(ledger.existsSync(), isTrue,
-        reason: 'Ledger aktif Sprint 145 harus tersedia');
+    expect(
+      ledger.existsSync(),
+      isTrue,
+      reason: 'Ledger aktif Sprint 145 harus tersedia',
+    );
     final cells = ledger
         .readAsLinesSync()
         .map((line) => line.split('|').map((c) => c.trim()).toList())
@@ -114,12 +173,16 @@ void main() {
     expect(
       cells[3],
       contains('VERIFIED'),
-      reason: '145.14 harus resolved (VERIFIED) di ledger setelah keputusan '
+      reason:
+          '145.14 harus resolved (VERIFIED) di ledger setelah keputusan '
           'primary user direkam, bukan lagi BLOCKED',
     );
     final audit = File('${repo.path}/docs/audits/primary-user-and-job.md');
-    expect(audit.existsSync(), isTrue,
-        reason: 'Dokumen audit keputusan primary user harus ada');
+    expect(
+      audit.existsSync(),
+      isTrue,
+      reason: 'Dokumen audit keputusan primary user harus ada',
+    );
     final auditText = audit.readAsStringSync().toLowerCase();
     expect(auditText, contains('primary user'));
     expect(auditText, contains('primary job'));
@@ -137,6 +200,7 @@ void _writePolicy(Directory root, Directory archive, Directory references) {
     'schema_version': 1,
     'canonical_archive_root': archive.path,
     'hermes_reference_root': references.path,
+    'document_registry': 'docs/roadmap/DOCUMENT_REGISTRY.json',
     'runtime_state': '.hermes/ROADMAP_STATE.json',
     'active_stream': 'corrective_core_mvp',
     'streams': {
@@ -148,6 +212,34 @@ void _writePolicy(Directory root, Directory archive, Directory references) {
       },
       'sequential_expansion': {'status': 'SUSPENDED', 'sprint': 111},
     },
+  });
+}
+
+void _writeDocumentRegistry(Directory root) {
+  final policy = File('${root.path}/docs/roadmap/ROADMAP_POLICY.json');
+  _writeJson(File('${root.path}/docs/roadmap/DOCUMENT_REGISTRY.json'), {
+    'schema_version': 1,
+    'defaults': {
+      'unregistered_authority': 'NON_BINDING',
+      'may_create_scope': false,
+    },
+    'strict_authority_roots': ['docs/roadmap'],
+    'discovery_exclusions': ['docs/roadmap/DOCUMENT_REGISTRY.json'],
+    'documents': [
+      {
+        'path': 'docs/roadmap/ROADMAP_POLICY.json',
+        'role': 'POLICY',
+        'authority': 'BINDING',
+        'status': 'ACTIVE',
+        'integrity': 'IMMUTABLE',
+        'sha256': sha256.convert(policy.readAsBytesSync()).toString(),
+        'owner': 'product-governance',
+        'linked_sprints': [145, 111],
+        'may_create_scope': false,
+        'may_mark_implementation_complete': false,
+        'may_change_runtime_pointer': true,
+      },
+    ],
   });
 }
 

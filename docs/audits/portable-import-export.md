@@ -59,7 +59,7 @@ Coverage yang lulus:
 | Archive integrity checksum | VERIFIED (domain) | 2026-09-03 cron: export menulis checksum SHA-256 nyata (directory-based, deterministic entry order, POSIX separator), import memverifikasi sebelum ekstraksi; `test/features/project_resilience/archive_integrity_test.dart` 4 PASS RED-terverifikasi |
 | Secret exclusion | BLOCKED | Tidak ada allowlist/denylist atau test yang membuktikan secret tidak masuk |
 | Transactional import | PARTIAL | Partial package dihapus; 2026-09-03c cron: registry-state atomicity + rollback terbukti test-only (commit 991dd53: post-extraction registry failure me-rollback package directory, registry kembali ke state pre-import; copy import aditif); existing-destination overwrite pada asCopy:false tetap non-atomic (risiko terdokumentasi, file engine concurrent) |
-| Compatibility/migration | BLOCKED | Importer membaca schema version tetapi tidak menjalankan migration/compatibility policy |
+| Compatibility/migration | VERIFIED (domain) | 2026-09-03e cron: dua sumbu versi terbukti - manifest format (> 16 ditolak FormatException, portable_corrupt_input_test) dan database user_version (arsip DB v53 diimpor lalu dibuka lewat jalur produksi ProjectDatabaseService.open yang menjalankan migrasi maju 53->59 tanpa kehilangan baris Core; manifest lama schemaVersion 15 diterima; arsip v59 saat ini round-trip tanpa migrasi; portable_schema_compatibility_test.dart 3 PASS PASS-first) |
 | Corrupted input | VERIFIED (domain) | Matrix 6 korupsi + kontrol positif lulus: missing manifest, missing database, truncated zip, non-zip, manifest malformed (checksum cocok dengan kontennya), manifest future schema 99 > 16 semua ditolak FormatException (portable_corrupt_input_test.dart 7 PASS, 2026-09-03d cron) |
 | Rollback | PARTIAL | Cleanup on failure ada; 2026-09-03c cron: rollback registry-state + package directory terbukti test-only (991dd53); rollback terhadap existing destination (path overwrite asCopy:false) belum terbukti - file engine concurrent |
 | Large project behavior | VERIFIED (domain) | 2026-09-03 cron: 250 aset + 2 blob 256 KiB + 60 workspace export/import/registry round-trip lulus (portable_large_project_test.dart 3 PASS, commit 7641236) |
@@ -72,7 +72,7 @@ Tidak ada project production yang dipindahkan atau dihapus. Semua test memakai t
 
 ## Verdict
 
-**PARTIAL — portable archive round-trip, relocation, path safety, cleanup, archive integrity checksum, registry-state transactional import/rollback, dan large-project evidence sudah runnable; secret exclusion, migration compatibility, destination-collision rollback (asCopy:false overwrite non-atomic), dan native interaction belum tersedia.**
+**PARTIAL — portable archive round-trip, relocation, path safety, cleanup, archive integrity checksum, registry-state transactional import/rollback, large-project evidence, dan compatibility/migration (dua sumbu versi) sudah runnable; secret exclusion, destination-collision rollback (asCopy:false overwrite non-atomic), guard future-schema database (temuan risiko 2026-09-03e), dan native interaction belum tersedia.**
 
 ## Update 2026-09-03 (nephthys cron, archive integrity checksum)
 
@@ -175,3 +175,37 @@ disentuh.**
   interaction (UNVERIFIABLE dari cron).
 
 nephthys - 2026-09-03d
+
+## Update 2026-09-03e (nephthys cron) - compatibility/migration evidence closure
+
+**Baris "Compatibility/migration: BLOCKED" dinaikkan menjadi VERIFIED (domain)
+sebagai bukti test-only PASS-first; file engine tetap milik slice concurrent
+dan tidak disentuh.**
+
+- Test baru `test/features/project_resilience/portable_schema_compatibility_test.dart`
+  (3 PASS, tanpa kode produksi), membuktikan DUA sumbu versi arsip:
+  1. Database user_version: arsip berisi DB v53 (fixture seedV53 setia,
+     mirror schema_migration_fixtures_test.dart) diekspor, diimpor, lalu
+     dibuka lewat jalur produksi `ProjectDatabaseService().open` yang
+     menjalankan migrasi maju 53->59; baris Core (assets + characters,
+     biography utuh) selamat tanpa silent discard.
+  2. Manifest format version: manifest lama `schemaVersion: 15` diterima
+     dan tetap bermigrasi; versi > 16 sudah ditolak FormatException
+     (tercakup portable_corrupt_input_test.dart).
+  3. Positive control CURRENT: arsip v59 round-trip tanpa migrasi.
+- Perilaku diprobe live lebih dulu (probe sekali pakai, dihapus):
+  import v53 -> open -> user_version 59, baris Core utuh.
+- TEMUAN RISIKO (terdokumentasi, bukan regresi): DB dengan `user_version`
+  60 (> app 59) diterima saat open produksi dan user_version diam-diam
+  diturunkan ke 59 - tidak ada guard future-schema database. Guard
+  produksi BLOCKED: `project_database_platform_io.dart` milik region
+  concurrent. Manifest future (> 16) sudah aman.
+- Bukti gerbang: focused 3 PASS; portable group 18 PASS;
+  project_resilience suite 137 PASS / 0 FAIL; flutter analyze No issues
+  found! (9.7s); git diff --check PASS (full suite + windows build pada
+  run yang sama, lihat ledger).
+- Sisa 145.33: secret exclusion (BLOCKED file concurrent),
+  destination-collision rollback (asCopy:false), guard future-schema DB,
+  native interaction (UNVERIFIABLE dari cron).
+
+nephthys - 2026-09-03e

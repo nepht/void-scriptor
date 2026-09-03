@@ -8,7 +8,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.34 Free-access proof (commit 51e1610): backup_free_access_test.dart 2 PASS - journey tanpa akun (session open, createBackup x2, preview current, in-place restore manifest dipulihkan, restoreToAlternateDestination package baru intact; tidak ada konsep plan/tier/entitlement di lib) + guard statis token paywall/entitlement zero violation di lib/features/project_resilience + lib/core/persistence; focused 2 PASS, project_resilience 117 PASS, analyze No issues 97.2s, diff --check PASS, full suite 3433 PASS / 0 FAIL, build windows debug PASS 26.0s, guard PASS pre+post (pointer stays 145.27; sisa 145.34: assets/emergency failure injection - blocker project_recovery_services.dart sibling uncommitted, settings UI, native UNVERIFIABLE).",
+  "last_verified_step": "145.35 TXT export UI vertical wiring (commit 761323a): tombol Export TXT wired ke Story Workspace (handler _exportTxt + guard binding parity MD/DOCX + snackbar), RED terverifikasi (0 widgets Export TXT), test/features/export/story_txt_export_ui_test.dart 2 PASS (journey tap -> story.txt nyata berisi judul+draft via tester.runAsync utk dart:io async; guard disabled tanpa binding), focused 57 PASS, full suite 3435 PASS / 0 FAIL, analyze No issues 10.4s, windows debug build PASS, diff --check PASS, guard PASS pre+post (pointer stays 145.27; sisa 145.35: DOCX render-compat eksternal, native UNVERIFIABLE).",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -38,8 +38,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-03 (cron b) 145.34 restore preview + alternate destination",
-  "updated_by": "nephthys cron: 145.34 restore preview + alternate destination slice, pointer stays 145.27",
+  "updated_at": "2026-09-03 (cron txt-ui) 145.35 TXT export UI wiring",
+  "updated_by": "nephthys cron: 145.35 TXT export UI wiring slice, pointer stays 145.27",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

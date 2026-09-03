@@ -132,3 +132,26 @@ Next canonical step: `145.36 AI Optional Boundary`.
   writer UTF-8, metadata propagation untuk Markdown/DOCX writer
   (parameter `profile` baru terpasang di TXT writer), dan native
   interaction proof tetap terbuka.
+
+## Update 2026-09-03 (nephthys cron, TXT export UI vertical wiring)
+
+- Gap 145.35 "TXT writer tidak reachable dari UI" ditutup: commit 761323a
+  menambahkan tombol `Export TXT` di `_exportActions()` Story Workspace
+  (antara Export Markdown dan Export DOCX), handler `_exportTxt()` memanggil
+  `StoryTxtExporter.writeExport` dengan guard binding sama seperti MD/DOCX
+  (disabled saat repository/exportDirectory null), feedback snackbar
+  `TXT diekspor: <path>`.
+- RED terverifikasi: `Found 0 widgets with text "Export TXT"` (2 FAIL) sebelum
+  implementasi.
+- Test: `test/features/export/story_txt_export_ui_test.dart` 2 PASS:
+  (1) journey tap Export TXT -> file story.txt nyata berisi judul story +
+  draft scene + snackbar konfirmasi; (2) guard: tombol hadir tapi onPressed
+  null tanpa binding repository. Root cause terdokumentasi: handler menulis
+  via dart:io async yang beku di fake-async zone widget test; tap dijalankan
+  di real-async zone via `tester.runAsync` sehingga IO selesai.
+- Bukti gerbang: focused export+story 57 PASS; full suite 3435 PASS / 0 FAIL
+  (delta +2 eksak dari 3433); flutter analyze No issues (10.4s);
+  flutter build windows --debug PASS; git diff --check PASS;
+  roadmap guard PASS pre+post (pointer tetap 145.27).
+- 145.35 tetap PARTIAL: publishing fidelity DOCX render-compat eksternal,
+  native interaction proof (butuh sesi interaktif).

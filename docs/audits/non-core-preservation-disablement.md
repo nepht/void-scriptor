@@ -40,7 +40,7 @@ flutter test \
 
 ## Verdict
 
-`PARTIAL`: preservation dan safe default flags teruji pada domain/plugin boundary; persistence override flag + disabled-module data proof (commit 20f1562) dan reactivation dependency map (commit d3e8dd1) terverifikasi. Sisa gap: disablement belum terhubung ke primary navigation / uniform route gating (shell concurrent 145.20, jangan disentuh dari cron) dan native interaction UNVERIFIABLE dari cron. Source/data non-Core tidak dihapus.
+`PARTIAL`: preservation dan safe default flags teruji pada domain/plugin boundary; persistence override flag + disabled-module data proof (commit 20f1562) dan reactivation dependency map (commit d3e8dd1) terverifikasi. EVIDENCE-CLOSURE 2026-09-04 run33: uniform route gating CLOSED-as-mechanism - RouteCapabilityGuard (6895bdd) ter-wire ke kedua site GoRouter (2be322c, authorized by Choi), /publishing dan /plugins redirect ke /dashboard selama capability deferred; fresh focused 21 PASS / 0 FAIL (guard 12 + routing integration 3 + reactivation map 6) @ HEAD 85d6297 Windows host. Sisa gap: shell primary-nav removal (145.37/145.38 sibling concurrent), user validation, native interaction UNVERIFIABLE dari cron. Source/data non-Core tidak dihapus.
 
 ## Non-actions
 
@@ -82,3 +82,9 @@ nephthys — 2026-08-27
 - Bukti fresh (bukan klaim historis): flutter test test/core/feature_flags/feature_flag_override_persistence_test.dart + test/features/spoiler/spoiler_module_data_proof_test.dart + test/core/capabilities/reactivation_dependency_map_test.dart = 18 PASS / 0 FAIL, All tests passed @ HEAD b647692 Windows host.
 - Tidak ada kode produksi/test baru; sisa 145.39 tetap primary-nav removal + uniform route gating (app_router.dart + shell concurrent 145.20, milik sibling) dan native interaction UNVERIFIABLE dari cron.
 - Status 145.39 tetap PARTIAL; pointer tetap 145.27.
+
+## Update 2026-09-04 (run33, evidence-closure uniform route gating)
+- Uniform route gating CLOSED-as-mechanism: RouteCapabilityGuard lib/core/capabilities/route_capability_guard.dart (commit 6895bdd: canonical rules /publishing->PUBLIC_PUBLISHING, /plugins->CONNECTOR_MARKETPLACE, fallback /dashboard, flag-aware vs12_spoiler_sharing, kill-switch aware, duplicate/unknown validation) ter-wire ke createAppRouter top-level redirect + appRouterProvider capability redirect (commit 2be322c, authorized by Choi; disclosure: WIP app_router sibling diadopsi whole dan diverifikasi test/app 119/119 + routing 21/21).
+- Bukti segar run33: focused 21 PASS / 0 FAIL (route_capability_guard_test 12 + route_capability_guard_integration_test 3 + reactivation_dependency_map_test 6) @ HEAD 85d6297 Windows host.
+- Status 145.39 tetap PARTIAL: sisa gap = shell primary-nav removal (145.37/145.38 sibling concurrent), user validation, native interaction UNVERIFIABLE dari cron.
+- Doc-only; tanpa kode produksi atau test baru.

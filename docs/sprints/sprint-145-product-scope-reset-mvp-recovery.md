@@ -1111,3 +1111,37 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   UNVERIFIABLE dari cron; restore sukses masih merge assets (exact-snapshot
   restore sukses = acceptance terpisah); settings UI = keputusan Choi.
   Pointer tetap 145.27.
+
+## Update 2026-09-04 (nephthys run54: stale session-lock recovery, keluarga 145.30/145.42)
+
+- Prioritas run: rekonsiliasi bukti handoff pengguna (Windows exit fix +
+  unlock manual proyek Tes Novel) dengan checklist 145.27. Exit guard
+  terekonsiliasi fresh: test/app/project_exit_guard_test.dart 3 PASS exit 0
+  (bukan step canonical tersendiri; penguat keluarga 145.16/145.20/145.23
+  yang sudah VERIFIED).
+- Temuan live read-only: root proyek pengguna di OneDrive Documents
+  (.../Projects/3c30ca9c-eb79-4dbe-9855-34281bbffe78.voidproject) memuat
+  session.lock (sessionId 1829f9c5) + .project.lock (sessionId 64fd7172),
+  openedAt 2026-09-04T14:46:22Z, TANPA proses void_scriptor hidup
+  (tasklist 0) - pola stale-lock kedua yang teramati. Akar:
+  ProjectSessionLock.acquire memblokir setiap marker tanpa cek liveness
+  (project_recovery_services.dart:17); marker tanpa PID/heartbeat; shell
+  hanya menawarkan retry manual (void_app_shell.dart:77).
+- RED terverifikasi: session_lock_stale_recovery_test.dart 0 PASS / 3 FAIL
+  (Bad state: Project has an active or stale session).
+- GREEN commit ab27fc4: acquire memindahkan marker kedaluwarsa (mtime >
+  60 dtk, fail-safe: error/ragu = tetap memblokir) ke
+  recovery/stale-session-<epochMs>/ berisi session.lock + recovered.json
+  (markerAgeSeconds + marker asli); marker segar tetap memblokir
+  (proteksi concurrent-open); heartbeat mtime 30 dtk dimulai di acquire,
+  dihentikan di release - satu titik wiring tanpa menyentuh
+  project_session_manager.dart (WIP sibling).
+- Bukti segar: focused 3 PASS / 0 FAIL exit 0; regression
+  project_resilience + project_exit_guard + project_open_error 162 PASS /
+  0 FAIL exit 0; flutter analyze No issues found! (15.8s); flutter build
+  windows --debug PASS 27.4s; git diff --check PASS; guard PASS pre
+  (pointer 145.27, canonical_sha 86af6a5) dan post.
+- Sisa 145.27: uniform route gating (app_router.dart concurrent 145.20),
+  user validation, native interaction proof. Full suite stability refresh
+  menyusul (pola run53/run53b); pool bertambah +3 test. Pointer tetap
+  145.27.

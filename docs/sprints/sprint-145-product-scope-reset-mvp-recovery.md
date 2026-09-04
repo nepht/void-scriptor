@@ -1183,3 +1183,42 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - GREEN: focused lock-safety + ownership + exit-guard 10 PASS. Dua proses Flutter test terpisah terhadap direktori sementara menghasilkan OWNED lalu BLOCKED sesudah pemilik keluar tanpa release. Ini bukan uji dua jendela GUI bersamaan atau suspend OS sungguhan.
 - Regresi: project_exit_guard + project_resilience + projects + app/shell: 193 PASS, 1 helper SKIP (helper diuji terpisah), exit 0. Analyzer No issues found (14.7s). Roadmap guard PASS, pointer tetap 145.27.
 - Full suite, sleep/crash native, dan keseluruhan acceptance 145.27 tetap belum ditutup. Jangan memajukan stream hanya karena koreksi ini. Bukti ini menggantikan klaim keselamatan run54, bukan menghapus catatan historisnya.
+
+## Restart selection-memory persistence run57 - nephthys, 2026-09-05
+
+- Prioritas #4 (pemulihan setelah restart) dikerjakan di atas HEAD efcc49a
+  (run56); sibling idle terbukti (tidak ada .dart bergerak sejak commit
+  run56, hanya file-file slice run56 sendiri di daftar -newermt).
+- Gap RED terverifikasi: ingatan per-workspace seleksi masih session-local
+  (map privat di SelectionController) - setelah restart aplikasi pengguna
+  kembali ke ProjectOverview dan ingatan workspace hilang.
+- GREEN: SelectionMemorySnapshot (kontrak file cache/selection_memory.json
+  per paket proyek; missing/corrupt/unknown version = empty tanpa throw;
+  tulis atomik tmp+rename dengan antrean per-file) + hydrateWorkspaceMemory
+  (sekali per sesi, tidak pernah menimpa pilihan pengguna) +
+  selectionMemoryPersistenceProvider ter-mount di ExplorerPanel dan
+  WorkspaceResolver (tulis sinkron per perubahan seleksi: file kecil,
+  frekuensi tap, aman fake-async; Timer debounce tertinggal pending saat
+  tree disposed dan versi async menggantung di zona fake-async - keduanya
+  dibuktikan lalu dihapus).
+- Temuan blocker yang diperbaiki (region terotorisasi Choi 2026-09-04):
+  ProjectSessionLock.release melempar PathNotFoundException saat marker
+  owned terhapus konkuren (double-release / teardown vs cleanup) - akar
+  riil error zona pada tearDown widget test recovery run56; guard
+  PathNotFoundException ditambahkan; RED deterministik
+  session_lock_release_race_test (Future.wait dua release = threw) ->
+  GREEN both-ok.
+- Commit c1f469a (7 file, +452/-1): 4 lib + 2 test baru + hunk guard lock
+  di-stage parsial via blob (index = HEAD + hunk; rewrite lock run54 milik
+  sibling tetap unstaged di worktree, tidak diadopsi).
+- Bukti: snapshot contract 2 PASS; hydration 3 PASS; restart journey 1
+  PASS (container baru atas file proyek yang sama, ingest novel-2, bukan
+  entri pertama katalog); lock race 1 PASS; explorer+selection+workspace+
+  project_resilience 184 PASS / 0 FAIL / 1 SKIP exit 0 @ c1f469a; analyze
+  No issues found! (6.5s); build windows debug PASS 19.5s; diff --check
+  PASS; guard PASS pre+post (pointer 145.27, canonical_sha 86af6a5).
+- 145.27 tetap PARTIAL: validasi pengguna, native interaction proof, route
+  gating seragam (run56) belum ditutup. Cakupan jujur slice ini: memori
+  hidrasi hanya dipulihkan otomatis untuk katalog character/story/
+  environment (cakupan recovery provider run56); posisi kursor/panel tidak
+  diimplementasikan. Pointer tetap 145.27.

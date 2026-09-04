@@ -1145,3 +1145,41 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   user validation, native interaction proof. Full suite stability refresh
   menyusul (pola run53/run53b); pool bertambah +3 test. Pointer tetap
   145.27.
+
+## Explorer catalog recovery run56 - nephthys, 2026-09-05
+
+- Prioritas #2 (pemulihan pilihan saat katalog loading) dikerjakan di atas
+  state worktree sibling (selection_controller +57, explorer_panel +308,
+  test selection memory untracked, idle sejak 20:15, snapshot backup
+  Temp/run56_sibling_backup sebelum edit).
+- Gap RED terverifikasi: tidak ada mekanisme pemulihan saat katalog selesai
+  loading - focusExplorerAsset hanya one-shot; ingatan tidak pernah
+  direstore bila katalog pending saat navigasi; hasil katalog dapat
+  menimpa pilihan pengguna.
+- GREEN: explorerCatalogRecoveryProvider reaktif (watch intent + seleksi +
+  katalog terfokus; loading/kosong/gagal = tahan tanpa menulis - kosong
+  tidak menulis untuk mencegah loop intent; data + seleksi kosong + intent
+  masih sama = restore ingatan via microtask dengan re-guard; seleksi
+  pengguna tidak pernah ditimpa). Di-mount di ExplorerPanel dan
+  WorkspaceResolver.
+- Commit 81755fa (8 file, +804/-22): 4 file slice sibling diadopsi
+  utuh (selection_controller, explorer_panel, story/environment group,
+  test memory), 2 file patch minimal (resolver mount, panel provider),
+  2 test baru (unit 2 PASS, widget 2 PASS).
+- Bukti: workspace_selection_memory 3 PASS; unit recovery 2 PASS;
+  widget recovery 2 PASS; regression explorer+selection+workspace 18 PASS
+  / 0 FAIL exit 0 (termasuk empty_workspace_navigation sibling); analyze
+  No issues found!; git diff --check PASS; guard PASS pre+post (pointer
+  145.27, canonical_sha 86af6a5).
+- 145.27 tetap PARTIAL: uniform route gating, user validation, native
+  interaction proof belum ditutup; pemulihan setelah restart (prioritas
+  #4) belum ada bukti persistence. Pointer tetap 145.27.
+
+## Koreksi keselamatan run54 — Codex, 2026-09-04
+
+- Status PARTIAL untuk keseluruhan gerbang; klaim run54 bahwa takeover berbasis mtime 60 detik aman DIBATALKAN. Jangan mengadopsi kembali heuristik tersebut.
+- RED aktual: 1 PASS / 3 FAIL. Marker berumur 30 hari diambil alih tanpa bukti pemilik mati; marker pemilik yang tertunda juga diambil alih; 12 acquire bersamaan semuanya berhasil.
+- Koreksi: create(exclusive: true) menjadi gerbang atomik kepemilikan, heartbeat dan pemulihan berdasarkan waktu dihapus. Marker tidak dikenal, kosong, atau sisa crash tetap memblokir sampai pemulihan offline eksplisit dengan cadangan. Tidak ada proyek pengguna/marker pengguna diubah.
+- GREEN: focused lock-safety + ownership + exit-guard 10 PASS. Dua proses Flutter test terpisah terhadap direktori sementara menghasilkan OWNED lalu BLOCKED sesudah pemilik keluar tanpa release. Ini bukan uji dua jendela GUI bersamaan atau suspend OS sungguhan.
+- Regresi: project_exit_guard + project_resilience + projects + app/shell: 193 PASS, 1 helper SKIP (helper diuji terpisah), exit 0. Analyzer No issues found (14.7s). Roadmap guard PASS, pointer tetap 145.27.
+- Full suite, sleep/crash native, dan keseluruhan acceptance 145.27 tetap belum ditutup. Jangan memajukan stream hanya karena koreksi ini. Bukti ini menggantikan klaim keselamatan run54, bukan menghapus catatan historisnya.

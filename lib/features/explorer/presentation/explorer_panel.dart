@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/routing/app_routes.dart';
 
+import '../../../core/selection/selection_memory_snapshot.dart';
 import '../../../core/selection/selection_controller.dart';
 import '../../../core/selection/selection_model.dart';
 import '../../assets/domain/asset_type.dart';
@@ -102,6 +103,37 @@ void focusExplorerAsset(WidgetRef ref, AssetType type) {
 /// (or the first asset) is restored without another user tap. A selection
 /// the user makes while waiting is never overridden, and stale intents for
 /// other projects are ignored.
+/// Persists per-workspace selection memory into the active project package
+/// (cache/selection_memory.json) so the remembered workspace selection
+/// survives an application restart. Hydration happens exactly once per
+/// session, as soon as a project session exists, and never overwrites
+/// selections the user has already made. Writes are debounced to one file
+/// write per burst; disk failures are swallowed by contract (memory is a
+/// convenience, never a blocker) but are observable via debugPrint.
+final selectionMemoryPersistenceProvider = Provider<void>((ref) {
+  final session = ref.watch(projectSessionProvider).valueOrNull;
+  if (session == null) return;
+
+  ref
+      .read(selectionProvider.notifier)
+      .hydrateWorkspaceMemory(
+        loadSelectionMemorySnapshotSync(
+          selectionMemoryFileFor(session.package),
+        ),
+      );
+
+  // Synchronous write on each selection change: the snapshot is a tiny JSON
+  // file, selection changes are tap-frequency, and a sync write inside the
+  // single isolate is inherently serialized. A debounced Timer here would
+  // dangle across widget-tree teardowns in fake-async test zones.
+  ref.listen(selectionProvider, (_, __) {
+    persistSelectionMemorySnapshotSync(
+      selectionMemoryFileFor(session.package),
+      ref.read(selectionProvider.notifier).workspaceMemorySnapshot(),
+    );
+  });
+});
+
 final explorerCatalogRecoveryProvider = Provider<void>((ref) {
   final intent = ref.watch(workspaceIntentProvider);
   final selection = ref.watch(selectionProvider);
@@ -206,6 +238,7 @@ class ExplorerPanel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Keep the reactive catalog recovery mounted with the panel.
     ref.watch(explorerCatalogRecoveryProvider);
+    ref.watch(selectionMemoryPersistenceProvider);
     final projectId = ref
         .watch(projectSessionProvider)
         .valueOrNull

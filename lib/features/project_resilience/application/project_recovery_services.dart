@@ -106,7 +106,14 @@ class ProjectSessionLock {
     if (await package.sessionFile.exists()) {
       final marker = jsonDecode(await package.sessionFile.readAsString());
       if (marker is! Map || marker['sessionId'] != owned) return;
-      await package.sessionFile.delete();
+      try {
+        await package.sessionFile.delete();
+      } on PathNotFoundException {
+        // A concurrent close already deleted the owned marker: the release
+        // is complete either way. Retrying here would only widen the
+        // exists->delete race window.
+        return;
+      }
     }
     _ownedSessionId = null;
   }

@@ -34,6 +34,7 @@ class WorkspaceResolver extends ConsumerWidget {
     // Mount the catalog-recovery provider so pending typed navigation
     // restores its remembered selection once the catalog finishes loading.
     ref.watch(explorerCatalogRecoveryProvider);
+    ref.watch(selectionMemoryPersistenceProvider);
     if (selection == null ||
         (session != null && selection.projectId != session.manifest.id)) {
       final type = intent?.$1 == session?.manifest.id ? intent?.$2 : null;

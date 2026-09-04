@@ -86,11 +86,11 @@ No issues found!
 |---|---|---|
 | Authority model | VERIFIED | Cloud/external-folder enum dan policy arbitration lulus test |
 | Concurrent ownership prevention | VERIFIED (persistence) | Policy menolak claim kedua + persisted owner meresist owner lain lintas proses (00a9041); runtime service wiring tetap terbuka |
-| Cloud + external folder integration | BLOCKED | Kedua service existing belum menerima/inject policy |
+| Cloud + external folder integration | VERIFIED (domain) | AuthorityGuardedCloudSyncService (ab6e14a) decorator di atas PersistedSyncAuthority menggate push/sync untuk claim cloud maupun externalFolder; denied push = SyncAuthorityDeniedException, denied sync = SyncState.error/conflict, pull read-only |
 | Conflict behavior | VERIFIED (domain) | Authority-conflict journal 2da4498 memarkir perubahan lokal yang ditolak, tahan restart, karantina korup, drain merge tiga-arah (5 PASS) + wiring decorator (2 PASS baru, guard total 8 PASS) |
 | Clear warning/state | VERIFIED (domain) | Denial message eksplisit dan tested |
 | Persisted authority across restart | VERIFIED | SyncAuthorityStore JSON v1 atomic tmp+rename per proyek; PersistedSyncAuthority claim/restore/release lintas proses (00a9041) |
-| UI sync status | PARTIAL | `SyncStatusIndicator` ada; authority-denied state belum terbukti di UI |
+| UI sync status | VERIFIED (domain+UI) | sync_status_denied_ui_test.dart (4581cdb, 2 testWidgets) menjalankan guard asli + store + journal nyata; denial runtime dirender SyncStatusIndicator dengan ikon error/warning dan tooltip pesan denial |
 
 ## Safety boundary
 
@@ -98,14 +98,17 @@ Tidak ada cloud call, external folder mutation, file synchronization, atau perub
 
 ## Verdict
 
-**PARTIAL — authority policy dan warning domain sudah terbukti, tetapi belum menjadi single runtime authority untuk cloud/folder sync.**
+**PARTIAL — authority model, persisted ownership (00a9041), runtime wiring (ab6e14a), conflict journal (2da4498), dan UI denied state (4581cdb) semuanya terbukti domain; sisa gap hanya native interaction (UNVERIFIABLE dari cron) dan wiring indicator ke shell produksi (permukaan shell milik sibling 145.37/145.38 - keputusan Choi).**
 
 Next implementation slice:
 
-1. tetapkan owner lifecycle per project/session;
-2. inject policy ke cloud dan external-folder sync entry points;
-3. expose denied/conflict status ke `SyncStatus` dan UI;
-4. tambahkan restart persistence hanya setelah contract authority storage disepakati.
+Slice original 1-4 sudah tereksekusi dan terbukti: owner lifecycle +
+persistence via PersistedSyncAuthority (00a9041), inject policy ke
+kedua jalur sync via AuthorityGuardedCloudSyncService (ab6e14a),
+expose denied/conflict ke SyncStatus + UI (2da4498 + 4581cdb).
+Sisa: wiring indicator ke shell produksi (permukaan shell milik
+sibling 145.37/145.38 - keputusan Choi) dan native interaction
+(UNVERIFIABLE dari cron).
 
 145.42 tetap tidak disentuh karena berada di bawah eksekutor lain.
 
@@ -220,3 +223,26 @@ produksi baru; implementasi runtime denied -> `SyncState.error` /
 - Sisa gap 145.32: native interaction (UNVERIFIABLE dari cron) dan
   wiring indicator ke shell produksi (permukaan UI milik sibling
   145.37/145.38 - keputusan Choi).
+
+## Update 2026-09-04 (nephthys cron run32: tabel Gap + Verdict diselaraskan bukti landed)
+
+Rekonsiliasi evidence-closure doc-only (pola run7): baris tabel Gap dan
+Verdict yang masih mencerminkan kondisi pra-run28 diselaraskan dengan
+bukti yang sudah landed dan diverifikasi segar run32.
+
+- Baris "Cloud + external folder integration": BLOCKED -> VERIFIED
+  (domain) per runtime wiring ab6e14a (decorator di atas
+  PersistedSyncAuthority; denied push = SyncAuthorityDeniedException,
+  denied sync = SyncState.error/conflict, pull read-only).
+- Baris "UI sync status": PARTIAL -> VERIFIED (domain+UI) per 4581cdb
+  (2 testWidgets: guard asli + store + journal nyata, denial dirender
+  SyncStatusIndicator, tooltip berisi pesan denial).
+- Verdict + Next implementation slice diselaraskan: sisa gap 145.32
+  hanya native interaction (UNVERIFIABLE dari cron) dan wiring
+  indicator ke shell produksi (milik sibling 145.37/145.38 - keputusan
+  Choi). Status header L5 tetap PARTIAL (akurat untuk step).
+- Bukti segar run32 @927d02a Windows host: flutter test
+  test/features/collaboration = 53 PASS / 0 FAIL exit 0 (guard 8,
+  journal 5, store 6, denied UI 2, policy, models, services, repos,
+  presentation semua hijau). Roadmap guard PASS pre+post (pointer
+  tetap 145.27, canonical_sha 86af6a5). git diff --check PASS.

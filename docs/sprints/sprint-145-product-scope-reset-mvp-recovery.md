@@ -1059,3 +1059,19 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   (pointer tetap 145.27). Commit 2be322c (router + test integrasi).
 - 145.27 masih PARTIAL: user validation evidence dan native Windows
   interaction remain open. Pointer tetap 145.27.
+
+## Update 2026-09-04 (nephthys cron run32: audit single-sync-authority 145.32 diselaraskan bukti landed)
+
+- Gap yang dikerjakan: baris tabel Gap + Verdict stale di
+  docs/audits/single-sync-authority.md (pola evidence-closure run7) -
+  baris "Cloud + external folder integration" BLOCKED -> VERIFIED
+  (domain) per ab6e14a, baris "UI sync status" PARTIAL -> VERIFIED
+  (domain+UI) per 4581cdb, Verdict + Next implementation slice
+  diselaraskan (sisa: native interaction UNVERIFIABLE dari cron +
+  wiring indicator ke shell produksi milik sibling 145.37/145.38).
+- Bukti segar run32 @927d02a Windows host: flutter test
+  test/features/collaboration 53 PASS / 0 FAIL exit 0; roadmap guard
+  PASS pre+post (pointer tetap 145.27, canonical_sha 86af6a5);
+  git diff --check PASS.
+- 145.32 tetap PARTIAL dengan sisa gap yang sama: native interaction
+  dan shell wiring (keputusan Choi). Pointer tetap 145.27.

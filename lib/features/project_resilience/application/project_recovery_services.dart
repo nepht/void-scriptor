@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -12,9 +13,21 @@ class ProjectSessionLock {
   ProjectSessionLock(this.package);
   final ProjectPackage package;
   String? _ownedSessionId;
+  Timer? _heartbeat;
+
+  /// A session marker older than [staleAfter] is treated as evidence that the
+  /// previous process died without closing. A live Void Scriptor refreshes
+  /// the marker mtime via [startHeartbeat], so staleness implies the process
+  /// is gone (a suspended machine re-touches on its next heartbeat).
+  static const Duration staleAfter = Duration(seconds: 60);
+  static const Duration heartbeatInterval = Duration(seconds: 30);
+
   Future<void> acquire({String? appVersion}) async {
     if (await package.sessionFile.exists()) {
-      throw StateError('Project has an active or stale session');
+      final recovered = await _recoverStaleMarker();
+      if (!recovered) {
+        throw StateError('Project has an active or stale session');
+      }
     }
     final sessionId = const Uuid().v4();
     await package.sessionFile.writeAsString(
@@ -26,9 +39,68 @@ class ProjectSessionLock {
       }),
     );
     _ownedSessionId = sessionId;
+    startHeartbeat();
+  }
+
+  /// Moves an expired session marker into the project recovery directory so a
+  /// crashed previous run cannot wedge the project shut. Fail-safe: any error
+  /// leaves the marker in place and keeps the project closed.
+  Future<bool> _recoverStaleMarker() async {
+    try {
+      final marker = package.sessionFile;
+      final modified = await marker.lastModified();
+      final age = DateTime.now().difference(modified);
+      if (age < staleAfter) return false;
+      final snapshotDir = Directory(
+        p.join(
+          package.recoveryDirectory.path,
+          'stale-session-${DateTime.now().toUtc().millisecondsSinceEpoch}',
+        ),
+      );
+      await snapshotDir.create(recursive: true);
+      await marker.copy(p.join(snapshotDir.path, 'session.lock'));
+      await File(
+        p.join(snapshotDir.path, 'recovered.json'),
+      ).writeAsString(
+        jsonEncode(<String, Object?>{
+          'recoveredAt': DateTime.now().toUtc().toIso8601String(),
+          'markerAgeSeconds': age.inSeconds,
+          'marker': jsonDecode(await marker.readAsString()),
+        }),
+      );
+      await marker.delete();
+      return true;
+    } on Object {
+      return false;
+    }
+  }
+
+  /// Keeps the owned marker mtime fresh so concurrent-open detection can
+  /// distinguish a live session from a crashed one. Started only while a
+  /// project session is open.
+  void startHeartbeat() {
+    _heartbeat ??= Timer.periodic(heartbeatInterval, (_) {
+      _touchMarker();
+    });
+  }
+
+  void stopHeartbeat() {
+    _heartbeat?.cancel();
+    _heartbeat = null;
+  }
+
+  Future<void> _touchMarker() async {
+    try {
+      if (await package.sessionFile.exists()) {
+        await package.sessionFile.setLastModified(DateTime.now());
+      }
+    } on Object {
+      // A missed heartbeat only lets the marker age toward recovery.
+    }
   }
 
   Future<void> release() async {
+    stopHeartbeat();
     final owned = _ownedSessionId;
     if (owned == null) return;
     if (await package.sessionFile.exists()) {

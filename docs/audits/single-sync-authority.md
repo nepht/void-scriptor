@@ -146,3 +146,21 @@ conflict flow integration, UI denied state, native interaction.
 - Boundary tetap: runtime service wiring (cloud_sync_service.dart
   concurrent), conflict flow integration, UI denied state, native
   interaction tetap terbuka -> step 145.32 tetap PARTIAL.
+
+## Update 2026-09-04 (nephthys cron run28): runtime service wiring CLOSED
+
+- `AuthorityGuardedCloudSyncService`
+  (`lib/features/collaboration/application/authority_guarded_cloud_sync_service.dart`,
+  commit ab6e14a) menjadi jalur runtime yang menghormati single sync
+  authority rule: `push`/`sync` di-gate lewat klaim `PersistedSyncAuthority`;
+  denial push melempar `SyncAuthorityDeniedException` (pesan menyebut cloud
+  dan external folder); denial sync mengembalikan `SyncState.error` dengan
+  warning user-readable; `pull` tetap read-only selama ownership ditolak.
+- Bukti: RED compile failure (simbol undefined) -> GREEN 6 PASS; regression
+  collaboration+capabilities 56 PASS; scoped analyze No issues; full suite
+  3604 PASS exit 0; windows debug build PASS 20,6s.
+- Klarifikasi blocker: `lib/core/network/cloud_sync_service.dart` tidak
+  pernah ada di repo; service runtime ada di
+  `lib/features/collaboration/application/`.
+- Sisa gap 145.32: conflict flow integration, UI denied state, native
+  interaction.

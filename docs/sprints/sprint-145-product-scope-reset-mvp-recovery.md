@@ -904,3 +904,21 @@ Evidence fresh @732a9fa Windows host: test/core/roadmap/roadmap_guard_test.dart 
 canonical_sha 86af6a5); git diff --check PASS on the 4 owned files (+38 lines). Not adopted and untouched:
 core-mvp-scope-lock.md (145.16) holds no stale cross-step status; settings-reduction.md /
 navigation-reduction.md remain sibling-owned (145.37/145.38 active).
+## Update 2026-09-04 cron run24 (nephthys, adoption of 4 cited story tests)
+
+Adopted 4 untracked story test files cited by tracked, clean audits as provenance (pattern of runs
+12/23: adoption of cited-ledger artifacts, byte-identical, pure-additive):
+- test/features/story/debounced_autosave_test.dart (cited by novel-workspace-core.md, writing-room-focus.md)
+- test/features/story/novel_authoring_flow_test.dart (cited by core-automated-test-pyramid.md, novel-workspace-core.md, writing-room-focus.md)
+- test/features/story/story_workspace_novel_io_test.dart (cited by core-automated-test-pyramid.md, novel-workspace-core.md, pre-release-stabilization-gate.md)
+- test/features/story/story_workspace_resolver_test.dart (cited by novel-workspace-core.md, clean-manuscript-export.md)
+
+Safety screen: each file imports only tracked, clean lib paths (no import of sibling-modified files:
+ai_provider.dart, project_session_manager.dart, void_top_bar.dart, void_mobile_shell.dart,
+explorer_panel.dart, app_routes.dart, project_recovery_services.dart, ollama_provider.dart); no
+relative imports; no overlap with the live-ledger 145.27 shard (core_e2e_journey_test.dart).
+
+Evidence fresh @684531f Windows host: flutter test on the 4 files = 9 PASS / 0 FAIL, All tests
+passed, exit 0. Remaining cited-untracked after this commit: 9, all importing sibling-modified lib
+files (AI domain 4, shell/explorer 2, session-manager pairs 2, live_cutover 1) - deferred to their
+owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.

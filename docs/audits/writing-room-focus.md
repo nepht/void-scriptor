@@ -145,3 +145,8 @@ Boundary tersisa yang TIDAK termasuk objective: native interaction
 klik/typing (UNVERIFIABLE dari cron, tanpa computer_use) dan user validation
 evidence (menunggu Choi). Keduanya direkam jujur dan tidak menghalangi
 closure objective. Status step: **VERIFIED** (ledger row 145.28).
+## Update 2026-09-04 cron run24 (nephthys, cited-test provenance adopted)
+
+The story test files this audit cites as provenance were still untracked at audit time; they are
+now adopted into the repository byte-identical (commit of run24, pattern of run12/run23). Cited-test
+provenance no longer resolves to untracked files. No status rows rewritten; Verdict unchanged.

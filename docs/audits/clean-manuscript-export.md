@@ -244,3 +244,8 @@ Next canonical step: `145.36 AI Optional Boundary`.
   matrix 3 + TXT encoding options 3 + MD encoding options 3 + DOCX
   encoding evidence 1 + md/docx profile 4 + metadata propagation 3 +
   no-watermark 4 + TXT UI 2. Tanpa perubahan kode produksi/test.
+## Update 2026-09-04 cron run24 (nephthys, cited-test provenance adopted)
+
+The story test files this audit cites as provenance were still untracked at audit time; they are
+now adopted into the repository byte-identical (commit of run24, pattern of run12/run23). Cited-test
+provenance no longer resolves to untracked files. No status rows rewritten; Verdict unchanged.

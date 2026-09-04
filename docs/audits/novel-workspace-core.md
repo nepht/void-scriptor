@@ -281,3 +281,8 @@ interaktif pengguna). Cron tidak boleh mengklaimnya.
   root cause-nya dan dilaporkan, tidak disentuh; `git diff --check` PASS;
   `flutter build windows --debug` PASS (22.9s). Tidak ada commit source baru;
   perubahan hanya ledger/audit/state.
+## Update 2026-09-04 cron run24 (nephthys, cited-test provenance adopted)
+
+The story test files this audit cites as provenance were still untracked at audit time; they are
+now adopted into the repository byte-identical (commit of run24, pattern of run12/run23). Cited-test
+provenance no longer resolves to untracked files. No status rows rewritten; Verdict unchanged.

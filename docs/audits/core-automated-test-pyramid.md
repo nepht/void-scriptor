@@ -113,3 +113,8 @@ Pembacaan pyramid: dominasi unit/domain + widget terbukti live;
 lapisan native-driver integration_test/ tetap 0 -> gap 'integration_test/
 native-driver tree' TIDAK berubah (tetap open). Native interaction proof
 tetap UNVERIFIABLE dari cron (butuh sesi interaktif).
+## Update 2026-09-04 cron run24 (nephthys, cited-test provenance adopted)
+
+The story test files this audit cites as provenance were still untracked at audit time; they are
+now adopted into the repository byte-identical (commit of run24, pattern of run12/run23). Cited-test
+provenance no longer resolves to untracked files. No status rows rewritten; Verdict unchanged.

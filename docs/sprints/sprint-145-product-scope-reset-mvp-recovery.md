@@ -1080,3 +1080,34 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Uniform route gating 145.39 CLOSED-as-mechanism: RouteCapabilityGuard 6895bdd + wiring kedua GoRouter site 2be322c (authorized by Choi, run30b).
 - Bukti segar: focused 21 PASS / 0 FAIL (guard 12 + routing integration 3 + reactivation map 6) @ HEAD 85d6297 Windows host.
 - Row 145.39 tetap PARTIAL; pointer tetap 145.27; doc-only tanpa kode baru.
+
+## Update 2026-09-04 (nephthys cron run53: rollback-failure injection 145.34 CLOSED)
+
+- Gap yang dikerjakan: kegagalan rollback itu sendiri (sisa handoff 145.34) -
+  bukti sebelumnya hanya membuktikan rollback BERHASIL; belum ada bukti error
+  melaporkan area gagal, area lain tetap dicoba, emergency backup dipertahankan.
+- RED terverifikasi: test/features/project_resilience/backup_rollback_failure_test.dart
+  gagal compile - rollbackPayloadAreas / restoreWithRollback /
+  lastEmergencyBackupPath tidak ada (injection seam belum tersedia).
+- GREEN: refactor ekstraksi perilaku-identik pada
+  project_recovery_services.dart - rollbackPayloadAreas (per-area attempt,
+  mengembalikan Map failures, @visibleForTesting), restoreWithRollback
+  (emergency bisa di-inject), field lastEmergencyBackupPath; restore() tetap
+  wrapper yang sama. Perilaku rollback engine tidak berubah (155/155 suite).
+- Kontrak terbukti: kegagalan rollback satu area = BackupRollbackException
+  dengan rollbackErrors eksak ['manifest']; area lain (database/assets/
+  workspaces) dipulihkan ke pre-restore state; emergency backup dipertahankan
+  (path terekspos utk pemulihan pengguna). Kegagalan seluruh 4 area teragregasi.
+- Bukti segar: focused 2 PASS / 0 FAIL exit 0; project_resilience
+  155 PASS / 0 FAIL exit 0 (termasuk test rollback Codex); flutter analyze
+  No issues found! (8.6s); flutter build windows --debug PASS 17.6s;
+  git diff --check PASS; roadmap guard PASS pre+post (pointer tetap 145.27,
+  canonical_sha 86af6a5).
+- DISCLOSURE: commit ini mengadopsi engine rollback per-area + test
+  backup_full_payload_rollback_test.dart milik sesi Codex (working tree
+  18:40, otorisasi pengguna 2026-09-04 - PENANGANAN REGION SIBLING), ditulis
+  utuh di atas refactor ekstraksi milik run53. File sibling lain tidak disentuh.
+- Sisa 145.34: fault injection OS-native saat rollback (disk-full/power-loss)
+  UNVERIFIABLE dari cron; restore sukses masih merge assets (exact-snapshot
+  restore sukses = acceptance terpisah); settings UI = keputusan Choi.
+  Pointer tetap 145.27.

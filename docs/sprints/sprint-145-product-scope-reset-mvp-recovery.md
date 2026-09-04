@@ -1035,3 +1035,27 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - 145.32 tetap PARTIAL: native interaction UNVERIFIABLE dari cron dan
   wiring `SyncStatusIndicator` ke shell produksi menunggu permukaan
   shell/settings milik sibling 145.37/145.38 (keputusan Choi).
+
+## Update 2026-09-04 (nephthys, router wiring 145.27 atas izin eksplisit Choi "Integrasikan")
+
+- Gap yang dikerjakan: integrasi `RouteCapabilityGuard` (6895bdd) ke router
+  atas izin eksplisit Choirudin menyentuh file sibling `app_router.dart`.
+- Wiring di KEDUA titik konstruksi GoRouter: `createAppRouter()` mendapat
+  top-level `redirect` guard; `appRouterProvider` (produksi) menggabungkan
+  capability redirect di depan redirect auth. Registry flag dibuat per
+  router (independen, default OFF semua).
+- Efek produksi: `/publishing` dan `/plugins` kini dialihkan ke fallback
+  Core `/dashboard` selama PUBLIC_PUBLISHING/CONNECTOR_MARKETPLACE belum
+  direaktivasi (approval 145.17); flag-aware (vs12_spoiler_sharing) dan
+  kill-switch aware. Route Core tidak pernah dialihkan.
+- DISCLOSURE: commit ini mengadopsi WIP sibling yang sudah ada di
+  app_router.dart (route accountCloud/theme/contentCapabilities, splash->
+  dashboard handoff, auth flow from=account-cloud, onLogout shell wiring) -
+  diikutkan utuh agar file koheren, dan TERVERIFIKASI oleh suite: test/app
+  119/119 PASS (termasuk test routing baru sibling) dan routing 21/21 PASS.
+- RED terverifikasi: 2 test gagal (PublishingPanel/PluginManagerScreen
+  masih dirender sebelum wiring) -> GREEN 3/3 sesudah wiring. Analyzer
+  clean, format 0 changed, `git diff --check` PASS, roadmap guard PASS
+  (pointer tetap 145.27). Commit 2be322c (router + test integrasi).
+- 145.27 masih PARTIAL: user validation evidence dan native Windows
+  interaction remain open. Pointer tetap 145.27.

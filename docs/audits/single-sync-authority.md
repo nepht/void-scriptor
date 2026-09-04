@@ -87,7 +87,7 @@ No issues found!
 | Authority model | VERIFIED | Cloud/external-folder enum dan policy arbitration lulus test |
 | Concurrent ownership prevention | VERIFIED (persistence) | Policy menolak claim kedua + persisted owner meresist owner lain lintas proses (00a9041); runtime service wiring tetap terbuka |
 | Cloud + external folder integration | BLOCKED | Kedua service existing belum menerima/inject policy |
-| Conflict behavior | PARTIAL | `SyncChangeSet` dan conflict repository ada; conflict flow antar authority belum terhubung |
+| Conflict behavior | VERIFIED (domain) | Authority-conflict journal 2da4498 memarkir perubahan lokal yang ditolak, tahan restart, karantina korup, drain merge tiga-arah (5 PASS) + wiring decorator (2 PASS baru, guard total 8 PASS) |
 | Clear warning/state | VERIFIED (domain) | Denial message eksplisit dan tested |
 | Persisted authority across restart | VERIFIED | SyncAuthorityStore JSON v1 atomic tmp+rename per proyek; PersistedSyncAuthority claim/restore/release lintas proses (00a9041) |
 | UI sync status | PARTIAL | `SyncStatusIndicator` ada; authority-denied state belum terbukti di UI |
@@ -164,3 +164,28 @@ conflict flow integration, UI denied state, native interaction.
   `lib/features/collaboration/application/`.
 - Sisa gap 145.32: conflict flow integration, UI denied state, native
   interaction.
+
+## Update 2026-09-04 (nephthys cron run29: conflict flow integration CLOSED)
+
+- `SyncAuthorityConflictJournal`
+  (`lib/features/collaboration/application/sync_authority_conflict_journal.dart`,
+  commit 2da4498) menutup gap "conflict flow integration": perubahan
+  lokal yang ditolak authority diparkir sebagai entri JSONL atomik
+  (tmp+rename), bertahan lintas restart, baris korup dikarantina ke
+  `.quarantine.jsonl` tanpa pernah dibuang diam-diam, dan `drain()`
+  melakukan merge tiga-arah terhadap base yang terekam - key divergen
+  tetap pending, entri bersih diterapkan via callback dan dihapus dari
+  jurnal hanya setelah apply selesai. `park()` mengembalikan
+  `SyncResult` (`SyncState.conflict`, applied 0, pesan user-readable).
+- `AuthorityGuardedCloudSyncService` menerima `conflictJournal`
+  opsional (commit yang sama): sync yang ditolak kini menghasilkan
+  `SyncState.conflict` dengan perubahan lokal terpreservasi; denial
+  push tetap melempar `SyncAuthorityDeniedException`; `pull` tetap
+  read-only.
+- Bukti: RED terverifikasi dua lapis (undefined symbol journal, lalu
+  undefined named parameter `conflictJournal`); journal 5 PASS + guard
+  8 PASS; collaboration suite 51 PASS; FULL SUITE 3611 PASS / 0 FAIL
+  exit 0 (delta +7 eksak dari baseline 3604); scoped analyze No issues;
+  windows debug build PASS; `git diff --check` PASS; roadmap guard PASS
+  pre+post (pointer tetap 145.27).
+- Sisa gap 145.32: UI denied state, native interaction.

@@ -1305,3 +1305,47 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   interaction, route gating demo routes, pemisahan body worldbuilding).
   Setelah fix ini kegagalan full-suite run58 tidak lagi ada di
   working tree; verifikasi full-suite menyusul pada run stability refresh.
+
+## Update 2026-09-05 (nephthys cron run60, worldbuilding body 145.27 prio #3)
+
+- Kondisi awal: guard PASS (pointer 145.27, canonical_sha 86af6a5), HEAD
+  38b3304 (run59). Baseline dirty 170 M + 318 untracked. Sibling idle
+  (region presentasi terakhir di-edit 20:15-20:27 2026-09-04).
+- STABILITY GATE DITUTUP: full suite 3668 PASS / 0 FAIL / 1 SKIP exit 0
+  (~10,5 mnt) pada working tree pasca-fix run59 62e4d1c - kegagalan
+  concurrent-owned run58 tidak ada lagi; sekaligus membuktikan fix
+  resilience-navigation pada working tree, bukan hanya HEAD.
+- SLICE PRIORITAS #3 (pemisahan body worldbuilding) CLOSED: commit
+  8a4d538 feat(workspace) 2 file +514 (workspace_resolver.dart +337
+  murni aditif; test baru workspace_resolver_worldbuilding_body_test).
+  Sebelumnya intent Worldbuilding tanpa selection dan tipe
+  faction/timeline/creature/species/technology/powerSystem terpilih
+  jatuh ke case '_' => ProjectOverview ber-heading 'Novel Workspace'.
+  Kini menampilkan WorldbuildingBody nyata: katalog Factions
+  (FactionRepository), Timeline eras (BibleTimelineRepository), Lore
+  Notes (CreateLoreEntityService.loadCatalog), tombol Create Faction
+  via CreateFactionService yang menulis SelectionModel bertipe faction.
+  Error state dengan retry 'Muat ulang'.
+- Bug produksi ikut ditutup: WorldbuildingBody bisa ter-mount saat
+  projectSessionProvider masih loading (selection tersedia lebih dulu)
+  sehingga data tidak pernah dimuat; fix = ref.listenManual
+  (fireImmediately) + ValueKey per proyek (anti data stale lintas
+  proyek). Found via RED/GREEN cycle, bukan spekulasi.
+- TDD: RED terverifikasi (undefined WorldbuildingBody; plus 2 kegagalan
+  perilaku nyata saat GREEN: polling IO async 5 dtk, ListTile tanpa
+  Material ancestor). Perbaikan test expectation findsNWidgets(2) karena
+  nama faksi memang tampil di 2 section (Factions + katalog lore).
+- Bukti: focused 2 PASS; regresi test/features/workspace + test/app =
+  132 PASS / 0 FAIL; analyze No issues found! (7.1s); diff --check
+  PASS; build windows debug PASS 21.2s; FULL SUITE 3670 PASS / 0 FAIL /
+  1 SKIP exit 0 (+2 vs pre-slice); guard PASS pre + post-commit
+  (pointer tetap 145.27, canonical_sha 86af6a5).
+- Backup sibling: Temp/vs_run60_backup/workspace_resolver.dart (file
+  tracked bersih, diff aditif diverifikasi vs backup).
+- Tidak push (HEAD 8a4d538, ahead 44, remote bcd2087 tetap).
+- Status 145.27 tetap PARTIAL; gap tersisa: user validation, native
+  interaction (UNVERIFIABLE - cron tanpa computer-use), route gating
+  11 demo routes (dicatat utk pemilik 145.39), pemisahan workspace
+  Novel/Character body lanjutan, 145.43-145.50 keputusan Choi.
+- Next: re-check sibling commit; Novel/Character body pemisahan lanjut
+  bila region bebas; engine 145.34/145.32 sisa bila region bebas.

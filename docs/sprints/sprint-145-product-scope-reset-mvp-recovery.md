@@ -1222,3 +1222,43 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   hidrasi hanya dipulihkan otomatis untuk katalog character/story/
   environment (cakupan recovery provider run56); posisi kursor/panel tidak
   diimplementasikan. Pointer tetap 145.27.
+
+## Update 2026-09-05 (nephthys cron run58, stability refresh + audit gating)
+
+- Full suite stability refresh @ HEAD 320f4f5 (Windows host, satu proses
+  Flutter): `flutter test` selesai dengan 3667 PASS / 1 FAIL / 1 SKIP,
+  output "Some tests failed" (exit runner tidak diklaim 0 karena pipe tail).
+  Delta vs run53 baseline 3645 PASS / 0 FAIL / 1 SKIP: +22 PASS dari slice
+  run55/run56/run57; 1 FAIL baru terisolasi concurrent-owned (rincian di
+  bawah), bukan regresi kode committed.
+- `flutter analyze` = No issues found! (6.7s). `flutter build windows
+  --debug` = PASS 20.0s (void_scriptor.exe). `git diff --check` = PASS.
+- Akar 1 FAIL (systematic-debugging, tanpa fix - file milik sibling):
+  test/app/project_resilience_navigation_test.dart (M) mengharapkan
+  'Backup & Export' di menu overflow 'More navigation' pada 1280px, padahal
+  lib/app/shell/desktop/void_top_bar.dart (M) menaruhnya di visible row
+  take(4) (overflow hanya Settings) dengan registry untracked sibling.
+  Bukti: warning tap "would not hit test on the specified widget", tap
+  men-trigger 'settings' != 'backup-export'. Verifikasi HEAD: top_bar HEAD
+  tanpa 'More navigation' dan tanpa take(4); test HEAD menguji 'resilience'
+  dan PASS di run53. Kegagalan = WIP internal sibling 145.37/145.38.
+- Audit prioritas #5 (read-only, tanpa edit): registry core menu (7
+  destination) + optional tools konsisten dengan AppRoutes; mobile shell
+  tidak menavigasi /publishing atau /plugins; tidak ada caller push/go ke
+  route gated di luar router; RouteCapabilityGuard ter-wire di kedua
+  GoRouter site (createAppRouter + appRouterProvider). Temuan lapangan:
+  11 route demo non-Core (render, animation, audio, virtual-production,
+  enterprise-studio, knowledge, agents, studio-command-center, creative-os,
+  xr-studio, metaverse) tanpa entri menu dan tanpa rule capability - hanya
+  terjangkau deep-link manual, di luar kontrak guard kanonik saat ini;
+  tidak diubah, dicatat untuk pemilik 145.39.
+- Prioritas #3 (pemisahan workspace nyata) TIDAK dikerjakan run ini: region
+  presentasi (workspace_panel.dart M, void_top_bar.dart M,
+  void_desktop_shell.dart M, test workspace M/untracked) adalah WIP aktif
+  sibling 145.37/145.38. Gap terdokumentasi: body worldbuilding masih
+  environment-per-aset (EnvironmentWorkspaceScreen) + overview ber-heading
+  'Novel Workspace' saat intent worldbuilding; sections Locations/Factions/
+  Timeline/Lore Notes baru chrome, belum panel nyata.
+- Guard PASS pre-run (pointer 145.27, canonical_sha 86af6a5). Pointer tetap
+  145.27. Tidak ada commit kode run ini; tidak push (ahead 41, remote
+  bcd2087).

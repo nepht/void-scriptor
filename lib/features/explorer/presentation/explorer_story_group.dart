@@ -10,13 +10,21 @@ class StoryGroup extends StatelessWidget {
     required this.stories,
     required this.selectedId,
     required this.onSelected,
+    this.focused = false,
+    this.onFocused,
   });
   final AsyncValue<List<Asset>> stories;
+  final bool focused;
+  final VoidCallback? onFocused;
   final String? selectedId;
   final ValueChanged<Asset> onSelected;
   @override
   Widget build(BuildContext context) => ExpansionTile(
+    onExpansionChanged: (_) => onFocused?.call(),
     initiallyExpanded: true,
+    backgroundColor: focused
+        ? context.palette.primary.withValues(alpha: 0.08)
+        : null,
     tilePadding: const EdgeInsets.symmetric(horizontal: 9),
     childrenPadding: const EdgeInsets.only(left: 28),
     leading: Icon(

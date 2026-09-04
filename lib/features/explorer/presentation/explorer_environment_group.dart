@@ -10,14 +10,17 @@ class EnvironmentGroup extends StatelessWidget {
     required this.environments,
     required this.selectedId,
     required this.onSelected,
+    this.onFocused,
   });
 
   final AsyncValue<List<EnvironmentModel>> environments;
   final String? selectedId;
   final ValueChanged<EnvironmentModel> onSelected;
+  final VoidCallback? onFocused;
 
   @override
   Widget build(BuildContext context) => ExpansionTile(
+    onExpansionChanged: (_) => onFocused?.call(),
     initiallyExpanded: true,
     tilePadding: const EdgeInsets.symmetric(horizontal: 9),
     childrenPadding: const EdgeInsets.only(left: 28),

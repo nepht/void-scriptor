@@ -17,6 +17,7 @@ import '../../project_resilience/application/durable_draft_journal.dart';
 import '../../story/presentation/story_workspace_screen.dart';
 import '../../workspaces/presentation/workspace_export_actions.dart';
 import 'global_search_sheet.dart';
+import '../../explorer/presentation/explorer_panel.dart';
 import '../../workspaces/presentation/workspace_import_actions.dart';
 import '../application/global_search_launcher.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
@@ -29,7 +30,49 @@ class WorkspaceResolver extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selection = ref.watch(selectionProvider);
     final session = ref.watch(projectSessionProvider).valueOrNull;
-    if (selection == null) {
+    final intent = ref.watch(workspaceIntentProvider);
+    // Mount the catalog-recovery provider so pending typed navigation
+    // restores its remembered selection once the catalog finishes loading.
+    ref.watch(explorerCatalogRecoveryProvider);
+    if (selection == null ||
+        (session != null && selection.projectId != session.manifest.id)) {
+      final type = intent?.$1 == session?.manifest.id ? intent?.$2 : null;
+      if (session != null &&
+          (type == AssetType.character || type == AssetType.environment)) {
+        final character = type == AssetType.character;
+        return Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  character ? 'Character Workspace' : 'Worldbuilding Workspace',
+                  style: VoidTypography.headingMedium,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  character
+                      ? 'Pilih karakter dari Explorer atau buat karakter pertama.'
+                      : 'Pilih lokasi dari Explorer atau buat lokasi pertama.',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                FilledButton.icon(
+                  onPressed: () =>
+                      createExplorerAsset(context, ref, fixedType: type),
+                  icon: Icon(
+                    character
+                        ? Icons.person_add_outlined
+                        : Icons.add_location_alt_outlined,
+                  ),
+                  label: Text(character ? 'Buat Karakter' : 'Buat Lokasi'),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
       return ProjectOverview(
         onCreateNovel: session == null
             ? null

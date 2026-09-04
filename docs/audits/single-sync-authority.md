@@ -189,3 +189,34 @@ conflict flow integration, UI denied state, native interaction.
   windows debug build PASS; `git diff --check` PASS; roadmap guard PASS
   pre+post (pointer tetap 145.27).
 - Sisa gap 145.32: UI denied state, native interaction.
+
+## Update 2026-09-04 (nephthys cron run30: UI denied state)
+
+Slice: bukti UI denied state (baris "UI sync status") - melengkapi runtime
+wiring ab6e14a dan conflict flow 2da4498. PASS-first: tidak ada kode
+produksi baru; implementasi runtime denied -> `SyncState.error` /
+`SyncState.conflict` sudah ada, yang hilang adalah bukti rendering UI-nya.
+
+- `test/features/collaboration/presentation/sync_status_denied_ui_test.dart`
+  (commit `4581cdb`, 2 testWidgets) menjalankan guard asli:
+  `PersistedSyncAuthority` di-claim `externalFolder` lebih dulu, lalu
+  `AuthorityGuardedCloudSyncService` kind `cloud` melakukan `sync` nyata
+  (journal `SyncAuthorityConflictJournal` di systemTemp untuk skenario
+  park). Hasil `SyncResult` runtime dirender sebagai
+  `SyncStatus(state, message)` ke `SyncStatusIndicator`; asersi: ikon
+  `error_outline` / `warning_amber` muncul dan
+  `find.byTooltip(<pesan denial>)` menemukan tooltip-nya - bukti pesan
+  user-readable benar-benar tampil di UI.
+- Teknik: semua I/O file nyata (store claim, sync guard, journal park)
+  dieksekusi via `tester.runAsync` - zona fake-async `testWidgets`
+  menggantung future I/O file nyata tanpa error (terbukti: dua run
+  bergantung >6 menit sebelum root cause ditemukan). `runAsync`
+  mengembalikan nullable, wajib null-check.
+- Bukti: presentation suite 8 PASS / 0 FAIL exit 0; collaboration suite
+  53 PASS / 0 FAIL exit 0; `flutter analyze` No issues found! (9.9s);
+  `flutter build windows --debug` PASS (19,9s, void_scriptor.exe);
+  format 0 changed; `git diff --check` PASS; roadmap guard PASS
+  pre+post-commit (pointer tetap 145.27, canonical_sha 86af6a5).
+- Sisa gap 145.32: native interaction (UNVERIFIABLE dari cron) dan
+  wiring indicator ke shell produksi (permukaan UI milik sibling
+  145.37/145.38 - keputusan Choi).

@@ -979,3 +979,31 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   145.27). Commit scoped 4 file milik slice (journal + decorator + 2 test).
 - 145.32 tetap PARTIAL: UI denied state dan native interaction remain
   open. Pointer tetap 145.27.
+
+## Update 2026-09-04 (nephthys cron run30, uniform non-Core route gating boundary 145.27)
+
+- Gap yang dikerjakan: boundary "uniform gating of non-Core routes" dari row
+  145.27 - mekanisme gating seragam kini ada di layer Core dan siap
+  dikonsumsi router/shell tanpa menebak daftar capability.
+- `RouteCapabilityGuard` (`lib/core/capabilities/route_capability_guard.dart`,
+  commit 6895bdd): redirect decision terpusat untuk route non-Core deferred
+  kanonik - `/publishing` -> PUBLIC_PUBLISHING dan `/plugins` ->
+  CONNECTOR_MARKETPLACE (keduanya terverifikasi terdaftar di router live),
+  fallback Core `/dashboard`. Flag-aware (vs12_spoiler_sharing) dan
+  kill-switch aware; `allowCapability()` memodelkan jalur approval
+  reaktivasi 145.17 per capability. Validasi constructor: duplicate route
+  ditolak, fallback ke route gated ditolak, capability di luar peta
+  reaktivasi kanonik ditolak. Tanpa import lib/features, tanpa side effect
+  runtime.
+- Router wiring sengaja DEFERRED: `app_router.dart` M milik sibling aktif
+  (diff menambah route accountCloud/contentCapabilities/theme, belum ada
+  gating) - integrasi `redirect:` menunggu file landing agar tidak terjadi
+  konflik.
+- RED terverifikasi: `Method not found: 'RouteCapabilityGuard'` sebelum
+  implementasi. Bukti: focused 12/12 PASS; capabilities suite 24/24;
+  routing + core_mvp_navigation 21/21; feature_flags 18/18; scoped analyze
+  No issues; format 0 changed; `git diff --check` PASS; roadmap guard PASS
+  pre-commit. Commit scoped 2 file baru milik slice (307 insertions).
+- 145.27 tetap PARTIAL: router/shell wiring (sibling), user validation
+  evidence, dan native Windows interaction remain open. Pointer tetap
+  145.27.

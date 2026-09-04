@@ -4,9 +4,14 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/auth/auth_controller.dart';
 import '../../core/auth/auth_status.dart';
+import '../../core/capabilities/route_capability_guard.dart';
+import '../../core/feature_flags/feature_flag_registry.dart';
 import '../../features/authentication/presentation/forgot_password_screen.dart';
 import '../../features/authentication/presentation/login_screen.dart';
 import '../../features/authentication/presentation/register_screen.dart';
+import '../../features/account/presentation/account_cloud_center_screen.dart';
+import '../../features/platform/presentation/theme_settings_screen.dart';
+import '../../features/content_capabilities/presentation/content_capability_matrix_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/projects/presentation/create_project_screen.dart';
 import '../../features/projects/presentation/project_list_screen.dart';
@@ -54,7 +59,9 @@ import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
 GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
+  final guard = RouteCapabilityGuard(flags: FeatureFlagRegistry());
   return GoRouter(
+    redirect: (context, state) => guard.redirectFor(state.uri.path),
     initialLocation: initialLocation,
     routes: [
       for (final route in AppRoutes.foundationRoutes.entries)
@@ -65,6 +72,7 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
             AppRoutes.aiStudio => const AdvancedAiStudioScreen(),
             AppRoutes.collaborationComments =>
               const CollaborationCommentsScreen(),
+            AppRoutes.accountCloud => const AccountCloudCenterScreen(),
             AppRoutes.security => const SecuritySettingsScreen(),
             AppRoutes.securityLock => const ProjectLockScreen(
               projectName: 'Proyek',
@@ -83,6 +91,10 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
       GoRoute(
         path: AppRoutes.bible,
         builder: (_, __) => const ProjectBibleWorkspaceScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.contentCapabilities,
+        builder: (_, __) => const ContentCapabilityMatrixScreen(),
       ),
       ..._productionAssetRoutes(),
       _cinematicProductionRoute(),
@@ -198,27 +210,50 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
 
 List<RouteBase> _routes({VoidCallback? onLogout}) {
   return [
-    GoRoute(path: AppRoutes.splash, builder: (_, __) => const SplashScreen()),
+    GoRoute(
+      path: AppRoutes.splash,
+      builder: (context, _) =>
+          SplashScreen(onComplete: () => context.go(AppRoutes.dashboard)),
+    ),
     GoRoute(
       path: AppRoutes.login,
       builder: (context, state) => LoginScreen(
-        onRegister: () => context.go(AppRoutes.register),
-        onForgotPassword: () => context.go(AppRoutes.forgotPassword),
+        onRegister: () => context.go(
+          state.uri.queryParameters['from'] == 'account-cloud'
+              ? '${AppRoutes.register}?from=account-cloud'
+              : AppRoutes.register,
+        ),
+        onForgotPassword: () => context.go(
+          state.uri.queryParameters['from'] == 'account-cloud'
+              ? '${AppRoutes.forgotPassword}?from=account-cloud'
+              : AppRoutes.forgotPassword,
+        ),
       ),
     ),
     GoRoute(
       path: AppRoutes.register,
-      builder: (context, state) =>
-          RegisterScreen(onBackToLogin: () => context.go(AppRoutes.login)),
+      builder: (context, state) => RegisterScreen(
+        onBackToLogin: () => context.go(
+          state.uri.queryParameters['from'] == 'account-cloud'
+              ? '${AppRoutes.login}?from=account-cloud'
+              : AppRoutes.login,
+        ),
+      ),
     ),
     GoRoute(
       path: AppRoutes.forgotPassword,
-      builder: (context, state) =>
-          ForgotPasswordScreen(onBack: () => context.go(AppRoutes.login)),
+      builder: (context, state) => ForgotPasswordScreen(
+        onBack: () => context.go(
+          state.uri.queryParameters['from'] == 'account-cloud'
+              ? '${AppRoutes.login}?from=account-cloud'
+              : AppRoutes.login,
+        ),
+      ),
     ),
     GoRoute(
       path: AppRoutes.dashboard,
-      builder: (_, __) => const VoidAppShell(content: DashboardScreen()),
+      builder: (_, __) =>
+          VoidAppShell(content: const DashboardScreen(), onLogout: onLogout),
     ),
     GoRoute(
       path: AppRoutes.projects,
@@ -284,6 +319,7 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
           route.value != AppRoutes.workspace &&
           route.value != AppRoutes.aiStudio &&
           route.value != AppRoutes.collaborationComments &&
+          route.value != AppRoutes.accountCloud &&
           route.value != AppRoutes.security &&
           route.value != AppRoutes.securityLock)
         GoRoute(
@@ -297,6 +333,14 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     GoRoute(
       path: AppRoutes.collaborationComments,
       builder: (_, __) => const CollaborationCommentsScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.accountCloud,
+      builder: (_, __) => const AccountCloudCenterScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.settings,
+      builder: (_, __) => const ThemeSettingsScreen(),
     ),
     GoRoute(
       path: AppRoutes.security,
@@ -341,6 +385,10 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     GoRoute(
       path: AppRoutes.bible,
       builder: (_, __) => const ProjectBibleWorkspaceScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.contentCapabilities,
+      builder: (_, __) => const ContentCapabilityMatrixScreen(),
     ),
     ..._productionAssetRoutes(),
     _cinematicProductionRoute(),
@@ -486,13 +534,20 @@ class _FoundationScreen extends StatelessWidget {
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final auth = ref.watch(authControllerProvider);
+  final routeGuard = RouteCapabilityGuard(flags: FeatureFlagRegistry());
 
   return GoRouter(
-    initialLocation: AppRoutes.splash,
+    initialLocation: '${AppRoutes.splash}?intro=1',
     refreshListenable: _AuthRefresh(ref),
     redirect: (context, state) {
       final path = state.uri.path;
-      if (auth.isLoading || auth.valueOrNull?.status == AuthStatus.checking) {
+      final capabilityRedirect = routeGuard.redirectFor(path);
+      if (capabilityRedirect != null) return capabilityRedirect;
+      final startupIntro =
+          path == AppRoutes.splash && state.uri.queryParameters['intro'] == '1';
+      if (startupIntro) return null;
+      if ((auth.isLoading && auth.valueOrNull == null) ||
+          auth.valueOrNull?.status == AuthStatus.checking) {
         return path == AppRoutes.splash ? null : AppRoutes.splash;
       }
 
@@ -507,11 +562,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           path == AppRoutes.login ||
           path == AppRoutes.register ||
           path == AppRoutes.forgotPassword;
+      final accountAuthFlow =
+          authPage && state.uri.queryParameters['from'] == 'account-cloud';
 
       if (session.status == AuthStatus.unauthenticated) {
         return authPage ? null : AppRoutes.login;
       }
       if (isAuthenticated && (authPage || path == AppRoutes.splash)) {
+        if (accountAuthFlow && session.status != AuthStatus.authenticated) {
+          return null;
+        }
         return AppRoutes.dashboard;
       }
       return null;

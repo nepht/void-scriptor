@@ -124,6 +124,11 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   /// ini (label jujur 'Belum tersimpan').
   DateTime? _lastSavedAt;
 
+  /// Pesan kegagalan persist autosave yang TERLIHAT (bukan silent).
+  /// Di-set oleh onPersistError koordinator; dihapus saat simpan berikutnya
+  /// berhasil. Draf tetap aman di journal durable selama error aktif.
+  String? _autosaveError;
+
   /// Step 145.30 Autosave Snapshot and Crash Recovery: draf yang belum
   /// tersimpan dan menunggu keputusan pengguna saat startup. Sumber data
   /// tunggal = DurableDraftJournal.pendingEntries(); kosong berarti tidak
@@ -154,7 +159,19 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
       journal: _draftJournal,
       onSaved: (sceneId, content) {
         if (!mounted) return;
-        setState(() => _lastSavedAt = DateTime.now());
+        setState(() {
+          _lastSavedAt = DateTime.now();
+          _autosaveError = null;
+        });
+      },
+      onPersistError: (sceneId, content, error) {
+        // Kontrak no-silent-loss: kegagalan persist ditampilkan, draf tetap
+        // pending + entri journal durable dipertahankan (dapat di-retry atau
+        // dipulihkan lewat panel DRAFT RECOVERY saat layar dibuka ulang).
+        if (!mounted) return;
+        setState(() {
+          _autosaveError = 'Gagal menyimpan draf: $error';
+        });
       },
     );
     _loadDraft();
@@ -1241,6 +1258,35 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                               ),
                             ],
                           ),
+                          if (_autosaveError != null) ...[
+                            const SizedBox(height: 8),
+                            Container(
+                              key: const ValueKey('autosave_error_banner'),
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: p.danger.withValues(alpha: 0.12),
+                                border: Border.all(color: p.danger),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _autosaveError!,
+                                      style: TextStyle(color: p.danger),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    key: const ValueKey(
+                                      'autosave_retry_button',
+                                    ),
+                                    onPressed: () => _autosave.saveNow(),
+                                    child: const Text('Simpan ulang'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),

@@ -22,11 +22,22 @@ class DurableAutosaveCoordinator {
     required this._persist,
     this._journal,
     this.onSaved,
+    this.onPersistError,
   });
 
   final Duration debounceDelay;
   final Future<void> Function(String sceneId, String content) _persist;
   final DurableDraftJournal? _journal;
+
+  /// Dipanggil saat persist autosave GAGAL (debounce maupun flush dispose).
+  /// Kontrak no-silent-loss: draf tetap pending dan entri journal durable
+  /// tidak di-acknowledge sehingga konten terbaru tidak pernah hilang;
+  /// lapisan UI memakai callback ini untuk menampilkan status gagal yang
+  /// terlihat dan menyediakan retry eksplisit. Koordinator TIDAK melakukan
+  /// retry otomatis tanpa batas: retry terjadi saat draf baru disunting
+  /// atau lewat pemanggilan [saveNow] berikutnya.
+  final void Function(String sceneId, String content, Object error)?
+  onPersistError;
 
   /// Dipanggil SETELAH persist + acknowledge berhasil (bukan saat
   /// dijadwalkan). Dipakai layar untuk meng-update label "Tersimpan HH:MM".
@@ -73,15 +84,23 @@ class DurableAutosaveCoordinator {
     if (savedSceneId == null || savedContent == null) return;
     _saving = true;
     try {
-      await _persist(savedSceneId, savedContent);
-      // Acknowledge hanya setelah persist sukses (no silent loss).
-      await _journal?.acknowledge(savedSceneId);
-      onSaved?.call(savedSceneId, savedContent);
-      // Hanya clear jika sceneId masih sama — draf yang di-set oleh
-      // onDraftChanged saat save berjalan TIDAK dihapus (no silent loss).
-      if (_pendingSceneId == savedSceneId) {
-        _pendingSceneId = null;
-        _pendingContent = null;
+      try {
+        await _persist(savedSceneId, savedContent);
+        // Acknowledge hanya setelah persist sukses (no silent loss).
+        await _journal?.acknowledge(savedSceneId);
+        onSaved?.call(savedSceneId, savedContent);
+        // Hanya clear jika sceneId masih sama — draf yang di-set oleh
+        // onDraftChanged saat save berjalan TIDAK dihapus (no silent loss).
+        if (_pendingSceneId == savedSceneId) {
+          _pendingSceneId = null;
+          _pendingContent = null;
+        }
+      } catch (error) {
+        // Kegagalan persist tidak boleh silent: laporkan ke lapisan UI,
+        // pertahankan draf pending + entri journal (dapat di-retry atau
+        // dipulihkan dari journal durable), lalu selesai tanpa melempar
+        // ulang agar flush dispose tidak menjadi uncaught async error.
+        onPersistError?.call(savedSceneId, savedContent, error);
       }
     } finally {
       _saving = false;

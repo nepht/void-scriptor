@@ -1,6 +1,7 @@
 import '../domain/sync_authority_policy.dart';
 import '../domain/sync_models.dart';
 import 'cloud_sync_service.dart';
+import 'sync_authority_conflict_journal.dart';
 import 'sync_authority_store.dart';
 
 /// Thrown when a sync write path is denied by the single sync authority rule
@@ -19,18 +20,22 @@ class SyncAuthorityDeniedException implements Exception {
 /// through a [PersistedSyncAuthority] claim so cloud and external folder
 /// cannot concurrently own one live project. Denied writes never reach the
 /// delegate: `push` throws [SyncAuthorityDeniedException] and `sync`
-/// surfaces [SyncState.error] with a user-readable warning. `pull` stays
+/// surfaces [SyncState.error] with a user-readable warning, or parks the
+/// denied change in [conflictJournal] as [SyncState.conflict] when provided
+/// (no silent loss). `pull` stays
 /// read-only so project state remains inspectable while ownership is denied.
 class AuthorityGuardedCloudSyncService implements CloudSyncService {
   AuthorityGuardedCloudSyncService({
     required this.delegate,
     required this.authority,
     required this.kind,
+    this.conflictJournal,
   });
 
   final CloudSyncService delegate;
   final PersistedSyncAuthority authority;
   final SyncAuthority kind;
+  final SyncAuthorityConflictJournal? conflictJournal;
 
   @override
   Future<Map<String, Object?>> pull(String projectId) =>
@@ -55,6 +60,15 @@ class AuthorityGuardedCloudSyncService implements CloudSyncService {
   }) async {
     final decision = await authority.claim(projectId, kind);
     if (!decision.allowed) {
+      final journal = conflictJournal;
+      if (journal != null) {
+        return journal.park(
+          projectId: projectId,
+          authority: kind,
+          reason: decision.message,
+          local: local,
+        );
+      }
       return SyncResult(
         state: SyncState.error,
         applied: 0,

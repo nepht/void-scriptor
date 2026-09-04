@@ -1262,3 +1262,46 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Guard PASS pre-run (pointer 145.27, canonical_sha 86af6a5). Pointer tetap
   145.27. Tidak ada commit kode run ini; tidak push (ahead 41, remote
   bcd2087).
+
+## Update 2026-09-05 (nephthys cron run59, stability-gate repair 145.37/145.38)
+
+- Kondisi awal: guard PASS (pointer 145.27, canonical_sha 86af6a5), HEAD
+  8a3c69c (run58), remote bcd2087 tetap. Tidak ada proses Flutter/Dart
+  lain, 0 unmerged, 0 conflict marker. Baseline dirty 171 M + 318
+  untracked - identik dengan baseline run58; sibling idle sejak commit
+  run57/58 (file terbaru sebelum run ini: recovery_services 02:45 = koreksi
+  session-lock milik sibling sendiri, terdokumentasi di ROADMAP_STATE).
+- Stability gate tidak PASS (1 FAIL concurrent-owned run58) maka run ini
+  mengerjakan tepat kegagalan yang dapat direproduksi itu, di region
+  ber-otorisasi 145.37/145.38 (void_top_bar + test app shell).
+- RED tereproduksi: `flutter test test/app/project_resilience_navigation_test.dart`
+  = 1 FAIL ("top bar exposes Backup & Export as a Core destination",
+  Actual: settings). Siklus systematic-debugging: baca test (M sibling,
+  mtime 00:41) + diff top_bar (M sibling, rewrite 20:27) + registry untracked
+  sibling + test sibling terbaru (void_top_bar_command_test 1600/1280,
+  core_mvp_navigation_test 1400).
+- Root cause: test ditulis SEBELUM redesign top-bar jam 20:27 dan berasumsi
+  Backup & Export berada di dalam overflow "More navigation" pada 1280px.
+  Kontrak pasca-redesign (dari test sibling sendiri): visible row take(4) =
+  Dashboard, Novels, Search, Backup & Export; hanya Settings yang masuk
+  More. Alur lama tap More lalu tap-by-text Backup & Export mendarat di
+  item popup Settings yang menimpa area yang sama - jadi bukan bug produksi,
+  melainkan test stale terhadap redesign sibling sendiri. Fix = selaraskan
+  test ke kontrak terbaru tanpa menyentuh kode produksi.
+- Patch test (mem pertahankan rename + viewport sizing milik sibling):
+  tap visible Backup & Export (expect backup-export), lalu More
+  navigation -> Settings (expect settings). Backup sibling disimpan di
+  Temp/vs_run59_backup/ sebelum edit.
+- Bukti GREEN + regresi: focused test 1 PASS; regresi region
+  test/app/shell/void_top_bar_command_test.dart +
+  core_mvp_navigation_test.dart + routing/back_navigation_test.dart
+  = 7 PASS / 0 FAIL. `dart format` 1 file (0 changed), `git diff --check`
+  PASS, `flutter analyze` No issues found! (9.5s), `flutter build windows
+  --debug` PASS 16.6s, guard PASS pre + post-commit (pointer tetap 145.27).
+- Commit scoped: 62e4d1c fix(test) 1 file +22/-7 (hanya
+  test/app/project_resilience_navigation_test.dart). Tidak ada file sibling
+  lain yang disentuh. Tidak push (HEAD 62e4d1c, ahead 43, remote bcd2087).
+- Status 145.27 tetap PARTIAL (gap unchanged: user validation, native
+  interaction, route gating demo routes, pemisahan body worldbuilding).
+  Setelah fix ini kegagalan full-suite run58 tidak lagi ada di
+  working tree; verifikasi full-suite menyusul pada run stability refresh.

@@ -13,6 +13,9 @@ import '../../environment/presentation/environment_workspace_screen.dart';
 import '../../bible/application/bible_timeline_repository.dart';
 import '../../bible/application/create_faction_service.dart';
 import '../../bible/application/create_lore_entity_service.dart';
+import '../../environment/data/environment_repository_impl.dart';
+import '../../environment/domain/environment_model.dart';
+import '../../relations/application/character_relation_map_service.dart';
 import '../../bible/application/faction_repository.dart';
 import '../../bible/domain/faction.dart' as domain;
 import '../../bible/domain/timeline_era.dart' as era;
@@ -309,6 +312,8 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
   List<domain.FactionModel>? _factions;
   List<era.TimelineEraModel>? _eras;
   List<LoreEntityRef>? _lore;
+  List<EnvironmentModel>? _locations;
+  List<CharacterRelationMapEntry>? _relations;
   bool _loading = false;
   Object? _error;
 
@@ -340,11 +345,19 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
         db,
         projectId,
       );
+      final environments = await EnvironmentRepositoryImpl(
+        database: db,
+        projectId: projectId,
+      ).getEnvironments();
+      final relations = await const CharacterRelationMapService()
+          .mapForProject(db, projectId: projectId);
       if (!mounted) return;
       setState(() {
         _factions = factions;
         _eras = eras;
         _lore = lore;
+        _locations = environments;
+        _relations = relations;
         _loading = false;
       });
     } catch (error) {
@@ -496,6 +509,33 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
                       ),
                   ],
                 ),
+                const SizedBox(height: 16),
+                _WorldSection(
+                  title: 'Locations',
+                  emptyLabel: 'Belum ada lokasi pada proyek ini.',
+                  items: [
+                    for (final location in _locations ?? const [])
+                      _WorldItem(
+                        id: location.assetId,
+                        title: location.name,
+                        subtitle: location.environmentType,
+                        selected: selectedId == location.assetId,
+                        onTap: () => _selectAsset(
+                          location.assetId,
+                          AssetType.environment,
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                _WorldSection(
+                  title: 'Relationship Map',
+                  emptyLabel: 'Belum ada relasi antar karakter \u0027\u0027+pada proyek ini.',
+                  items: [
+                    for (final relation in _relations ?? const [])
+                      _RelationItem(entry: relation),
+                  ],
+                ),
               ],
             ],
           ),
@@ -528,7 +568,7 @@ class _WorldSection extends StatelessWidget {
 
   final String title;
   final String emptyLabel;
-  final List<_WorldItem> items;
+  final List<Widget> items;
 
   @override
   Widget build(BuildContext context) {
@@ -592,6 +632,55 @@ class _WorldItem extends StatelessWidget {
                 style: TextStyle(color: palette.textMuted, fontSize: 12),
               ),
         onTap: onTap,
+      ),
+    );
+  }
+}
+
+/// Baris relasi karakter pada section Relationship Map: sumber -> target
+/// dengan label tipe relasi di tengah (Step 145.27 Relationship Map).
+class _RelationItem extends StatelessWidget {
+  const _RelationItem({required this.entry});
+
+  final CharacterRelationMapEntry entry;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = context.palette;
+    return Material(
+      type: MaterialType.transparency,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                entry.sourceName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                border: Border.all(color: palette.borderSoft),
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                entry.typeLabel,
+                style: const TextStyle(fontSize: 11),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                entry.targetName,
+                textAlign: TextAlign.right,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

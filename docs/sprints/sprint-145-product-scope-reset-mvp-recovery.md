@@ -1349,3 +1349,40 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   Novel/Character body lanjutan, 145.43-145.50 keputusan Choi.
 - Next: re-check sibling commit; Novel/Character body pemisahan lanjut
   bila region bebas; engine 145.34/145.32 sisa bila region bebas.
+
+## Update 2026-09-05 (nephthys cron run61, locations + relationship map 145.27 prio #3)
+
+- Kondisi awal: guard PASS (pointer 145.27, canonical_sha 86af6a5), HEAD
+  6533c51 (run60). Baseline dirty 170 M + 318 untracked = eksak run60;
+  sibling idle (edit terakhir 20:15-20:27 2026-09-04, mtim diverifikasi
+  full-iso). Flutter/dart process: tidak ada.
+- Audit acceptance 145.27: run56-60 sudah menutup intent empty state,
+  catalog recovery, selection memory restart, worldbuilding body dasar.
+  Gap slice ini: objective canonical menyebut ENAM prioritas
+  (Characters, Locations, Factions, Timeline, Relationship Map, Lore
+  Notes) tetapi WorldbuildingBody run60 hanya menampilkan Factions,
+  Timeline, dan Lore Notes - Locations dan Relationship Map masih
+  absen dari body.
+- SLICE CLOSED (TDD): WorldbuildingBody kini memuat section Locations
+  (EnvironmentRepositoryImpl.getEnvironments, tap menulis
+  SelectionModel AssetType.environment via _selectAsset) dan section
+  Relationship Map (CharacterRelationMapService.mapForProject; baris
+  _RelationItem source -> badge tipe -> target). _WorldSection.items
+  dilebarkan dari List<_WorldItem> ke List<Widget> (netral bagi caller
+  lain karena hanya WorldbuildingBody yang memakainya).
+- TDD: RED terverifikasi (0 widget "Locations" padahal WorldbuildingBody
+  sudah dirender; fase kompilasi RED lebih awal = import kurang +
+  AssetRelationsCompanion.insert butuh Value(projectId) karena kolom
+  bertanda default). GREEN: 1 PASS. Koreksi ekspektasi: nama lokasi
+  tampil 2x (section Locations + katalog lore) - findsWidgets, preseden
+  nama faksi run60.
+- Bukti: focused 1 PASS; regresi test/features/workspace 10 PASS /
+  0 FAIL; analyze No issues found! (9.4s); diff --check PASS; build
+  windows debug PASS 21,0s; full suite hasil di bawah (post-slice).
+- Backup sibling: Temp/vs_run61_backup/workspace_resolver.dart (tracked
+  bersih sebelum patch; diff berjalan +90/-1).
+- Tidak push. Native interaction tetap UNVERIFIABLE (cron tanpa
+  computer-use). Status 145.27 tetap PARTIAL: user validation, native
+  proof, route gating 11 demo routes (pemilik 145.39), 145.43-145.50.
+- Next: re-check sibling commit; engine 145.34/145.32 sisa bila region
+  bebas; 145.43-145.50 keputusan Choi (145.48/145.49 kandidat ADR).

@@ -1771,3 +1771,35 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   TERTUTUP; delta vs run83 3739/3 FAIL = +8 net (3 slice + test sibling
   ter-load). STABILITY GATE full-green pertama sejak trio dimulai.
 - Tidak push (HEAD ec6df4e, remote bcd2087 tetap).
+
+
+### 2026-09-06 - run86 nephthys - drive-removal typed classification (145.42 drive removal layer)
+- Gap: ProjectDatabaseService.open() pada drive yang dilepas / jalur storage
+  hilang membocorkan PathNotFoundException mentah (errno 3) dari pembuatan
+  direktori drift sebelum sqlite3 sempat membuka file, dan SQLITE_CANTOPEN
+  (extended 14) jatuh ke ProjectDatabaseUnreadableException - database yang
+  bisa saja sehat salah dilaporkan korut (preseden salah klasifikasi run68).
+- Bukti empiris probe (host Windows ini): drive Q:/ tidak ada -> open()
+  melempar PathNotFoundException mentah; parent directory hilang ->
+  NativeDatabase drift diam-diam auto-create DB baru (dicatat sebagai Gap
+  keputusan pemilik session/open, bukan slice ini); directory-as-target ->
+  SqliteException CANTOPEN.
+- Slice: commit 937298c (2 file +93) - ProjectDatabaseUnavailableException
+  (databasePath, cause) baru; open() menangkap FileSystemException dari drift
+  initialization dan mengklasifikasi extendedResultCode==14 sebagai
+  Unavailable. Klasifikasi murni: BUSY tetap Locked, korut tetap Unreadable,
+  future schema tetap TooNew.
+- TDD: RED terverifikasi (simbol undefined, 2 test gagal kompilasi); GREEN
+  2/2 (drive hilang typed unavailable; directory-as-target unavailable bukan
+  unreadable). Pitfall patch: anchor doc-comment menyentuh blok
+  UnreadableException lama -> rekonstruksi eksplisit dua kelas; import
+  dart:io wajib ditambah eksplisit; brace ganda dari anchor 4 dibersihkan.
+- Bukti: focused 2/2 PASS; regresi test/database + test/core/persistence
+  82/82 PASS exit 0; flutter analyze No issues found! 10.1s (full); dart
+  format scoped clean; git diff --check PASS scoped; roadmap guard PASS
+  (pointer 145.27, canonical_sha 86af6a5). Full suite dijalankan background
+  pada commit time; hasil dicatat di blok state bila selesai dalam run.
+- Region sibling dijaga: test/database/project/job_dependencies_migration_test
+  (M) + project_database_process_kill_test (untracked, WAL layer sibling) +
+  fixtures/ tidak disentuh; .hermes/* reorganisasi ledger sibling tidak
+  di-commit. Tidak push (HEAD 937298c, remote bcd2087 tetap).

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 import 'project_database.dart';
@@ -29,6 +31,9 @@ class SchemaVersionTooNewException implements Exception {
 /// result code 5). File sehat, hanya terkunci - bukan corruption. Probe
 /// readOnly untuk schema version masih berhasil sehingga guard
 /// [SchemaVersionTooNewException] tidak berlaku.
+/// Storage proyek ada tetapi sedang tidak dapat dibuka untuk menulis:
+/// writer lain memegang lock (SQLITE_BUSY). Database sendiri bisa saja
+/// sehat.
 class ProjectDatabaseLockedException implements Exception {
   ProjectDatabaseLockedException(this.databasePath, this.cause);
 
@@ -63,6 +68,24 @@ class ProjectDatabaseUnreadableException implements Exception {
       'is not a readable SQLite database ($cause)';
 }
 
+/// Storage yang berisi database tidak lagi terjangkau: drive dilepas,
+/// jalur storage hilang, atau target bukan file yang bisa dipakai
+/// sebagai database (SQLITE_CANTOPEN / path error). Database pada
+/// storage yang terjangkau bisa saja sehat - ini bukan klasifikasi
+/// korup.
+class ProjectDatabaseUnavailableException implements Exception {
+  ProjectDatabaseUnavailableException(this.databasePath, this.cause);
+
+  final String databasePath;
+
+  final Object cause;
+
+  @override
+  String toString() =>
+      'ProjectDatabaseUnavailableException: storage at $databasePath '
+      'is not reachable ($cause)';
+}
+
 class ProjectDatabaseService {
   Future<void> create(String databasePath) =>
       createProjectDatabase(databasePath);
@@ -77,12 +100,22 @@ class ProjectDatabaseService {
     }
     try {
       return await openProjectDatabase(databasePath);
+    } on FileSystemException catch (error) {
+      // Drive dilepas / jalur storage hilang: drift membocorkan
+      // PathNotFoundException mentah sebelum sqlite3 sempat membuka
+      // file. Ini keadaan storage tak terjangkau, bukan korupsi.
+      throw ProjectDatabaseUnavailableException(databasePath, error);
     } on sqlite.SqliteException catch (error) {
       // SQLITE_BUSY (extended result code 5) berarti file sehat tetapi
       // writer lain sedang memegang SHARED+RESERVED. Probe schema
       // readOnly berhasil, jadi bukan future-schema dan bukan korup.
       if ((error.extendedResultCode & 0xFF) == 5) {
         throw ProjectDatabaseLockedException(databasePath, error);
+      }
+      if ((error.extendedResultCode & 0xFF) == 14) {
+        // SQLITE_CANTOPEN: file tidak bisa dibuka/dibuat - storage
+        // tidak terjangkau, bukan bukti database korut.
+        throw ProjectDatabaseUnavailableException(databasePath, error);
       }
       throw ProjectDatabaseUnreadableException(databasePath, error);
     }

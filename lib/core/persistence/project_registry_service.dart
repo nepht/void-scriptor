@@ -25,6 +25,9 @@ class ProjectRegistryService {
 
   Future<List<ProjectModel>> load() async {
     final file = await _registryFile;
+    // 145.42 power-loss window: pulihkan registry dari .bak sebelum
+    // melaporkan daftar proyek kosong.
+    await _recovery.recoverIfInterrupted(file);
     if (!await file.exists()) return const [];
     final decoded =
         jsonDecode(await file.readAsString()) as Map<String, dynamic>;

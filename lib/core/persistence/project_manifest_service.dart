@@ -25,6 +25,9 @@ class ProjectManifestService {
 
   Future<ProjectManifest> read(String projectId) async {
     final file = await _paths.manifest(projectId);
+    // 145.42 power-loss window: pulihkan manifest dari .bak sebelum
+    // melempar PathNotFound seolah proyek hilang.
+    await _recovery.recoverIfInterrupted(file);
     return ProjectManifest.fromJson(
       jsonDecode(await file.readAsString()) as Map<String, dynamic>,
     );

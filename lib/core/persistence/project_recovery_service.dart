@@ -27,6 +27,23 @@ class ProjectRecoveryService {
     }
   }
 
+  /// Recovers a target left behind by an interrupted [atomicWrite].
+  ///
+  /// A process crash (power loss, kill, permission failure) between the
+  /// `target -> .bak` rename and the `.tmp -> target` rename leaves the
+  /// target missing while `.bak` (last durable content) and `.tmp` (new
+  /// content, possibly truncated) still exist. The `.tmp` file is never
+  /// trusted because it was never renamed into place; restoring `.bak`
+  /// preserves the caller's previous durable state instead of silently
+  /// reporting the record missing.
+  Future<void> recoverIfInterrupted(File target) async {
+    if (await target.exists()) return;
+    final backup = File('${target.path}.bak');
+    if (await backup.exists()) {
+      await backup.rename(target.path);
+    }
+  }
+
   Future<bool> restoreBackup(File target) async {
     final backup = File('${target.path}.bak');
     if (!await backup.exists()) return false;

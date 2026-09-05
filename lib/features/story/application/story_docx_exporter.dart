@@ -69,8 +69,34 @@ class StoryDocxExporter {
     add('word/styles.xml', _styles);
     await exportDirectory.create(recursive: true);
     final output = File(p.join(exportDirectory.path, safeName));
-    await output.writeAsBytes(ZipEncoder().encode(archive));
-    return output;
+    // 145.42 interrupted-export safety: stage as `<final>.tmp`, flush, then
+    // rename so an interrupted write never corrupts the previous export.
+    final staging = File('${output.path}.tmp');
+    IOSink? sink;
+    try {
+      sink = staging.openWrite();
+      sink.add(ZipEncoder().encode(archive));
+      await sink.flush();
+      await sink.close();
+      sink = null;
+      await staging.rename(output.path);
+      return output;
+    } on Exception {
+      final pending = sink;
+      if (pending != null) {
+        try {
+          await pending.close();
+        } on Exception {
+          // keep the original failure
+        }
+      }
+      try {
+        staging.deleteSync();
+      } on FileSystemException {
+        // keep the original failure
+      }
+      rethrow;
+    }
   }
 
   String _coreProperties({required String title, required String creator}) {

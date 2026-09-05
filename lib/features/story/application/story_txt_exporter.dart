@@ -79,7 +79,35 @@ class StoryTxtExporter {
     final text = await exportStory(repository, storyId, profile: profile);
     final eolChar = String.fromCharCode(10);
     final bomPrefix = bom ? const [0xEF, 0xBB, 0xBF] : const <int>[];
-    await file.writeAsBytes([...bomPrefix, ...encoding.encode(text + eolChar)]);
-    return file;
+    // 145.42 interrupted-export safety: stage atomically as `<final>.tmp`
+    // (journal/registry convention), flush, then rename. A write failure mid-
+    // stream must never leave a truncated final export behind, and a previous
+    // valid export must survive.
+    final staging = File('${file.path}.tmp');
+    IOSink? sink;
+    try {
+      sink = staging.openWrite();
+      sink.add([...bomPrefix, ...encoding.encode(text + eolChar)]);
+      await sink.flush();
+      await sink.close();
+      sink = null;
+      await staging.rename(file.path);
+      return file;
+    } on Exception {
+      final pending = sink;
+      if (pending != null) {
+        try {
+          await pending.close();
+        } on Exception {
+          // keep the original failure
+        }
+      }
+      try {
+        staging.deleteSync();
+      } on FileSystemException {
+        // keep the original failure
+      }
+      rethrow;
+    }
   }
 }

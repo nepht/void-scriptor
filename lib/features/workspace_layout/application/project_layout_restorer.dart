@@ -8,8 +8,8 @@ import '../application/layout_preset_repository.dart';
 /// The repository is injected via `layoutPresetRepositoryProvider`; on failure
 /// the default layout is kept.
 Future<void> restoreProjectLayout(WidgetRef ref, String projectId) async {
-  final repo = ref.read(layoutPresetRepositoryProvider);
   try {
+    final repo = ref.read(layoutPresetRepositoryProvider);
     final layout = await repo.restore(projectId);
     if (layout != null) {
       ref.read(layoutProvider.notifier).applyLayout(layout);
@@ -21,9 +21,9 @@ Future<void> restoreProjectLayout(WidgetRef ref, String projectId) async {
 
 /// Persists the current layout for a project (fire-and-forget).
 Future<void> persistProjectLayout(WidgetRef ref, String projectId) async {
-  final repo = ref.read(layoutPresetRepositoryProvider);
-  final layout = ref.read(layoutProvider);
   try {
+    final repo = ref.read(layoutPresetRepositoryProvider);
+    final layout = ref.read(layoutProvider);
     await repo.persist(projectId, layout);
   } catch (_) {
     // Best-effort persistence.

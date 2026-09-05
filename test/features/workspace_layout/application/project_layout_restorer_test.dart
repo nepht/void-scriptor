@@ -68,6 +68,52 @@ void main() {
     expect(container.read(layoutProvider).leftCollapsed, isTrue);
   });
 
+  testWidgets(
+    'restoreProjectLayout keeps defaults when repository is not wired',
+    (tester) async {
+      WidgetRef? capturedRef;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: Consumer(
+              builder: (context, ref, _) {
+                capturedRef = ref;
+                return const SizedBox();
+              },
+            ),
+          ),
+        ),
+      );
+
+      await expectLater(restoreProjectLayout(capturedRef!, 'p1'), completes);
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(Consumer)),
+      );
+      expect(container.read(layoutProvider), PanelLayout.defaults);
+    },
+  );
+
+  testWidgets('persistProjectLayout ignores an unwired repository', (
+    tester,
+  ) async {
+    WidgetRef? capturedRef;
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: Consumer(
+            builder: (context, ref, _) {
+              capturedRef = ref;
+              return const SizedBox();
+            },
+          ),
+        ),
+      ),
+    );
+
+    await expectLater(persistProjectLayout(capturedRef!, 'p1'), completes);
+  });
+
   testWidgets('detachable window button shows honest not-yet message', (
     tester,
   ) async {

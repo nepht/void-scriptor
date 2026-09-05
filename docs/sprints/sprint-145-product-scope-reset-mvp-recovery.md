@@ -1435,3 +1435,35 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   gating 11 demo routes (pemilik 145.39), 145.43-145.50.
 - Next: re-check sibling commit; engine 145.34/145.32 sisa bila region
   bebas; 145.43-145.50 keputusan Choi (145.48/145.49 kandidat ADR).
+
+## Update 2026-09-05 (nephthys cron run63, ADR draft 145.48)
+- Kondisi awal: guard PASS (pointer 145.27, canonical_sha 86af6a5), HEAD
+  33aef69 (commit run62), remote bcd2087 TETAP, baseline dirty 170 M + 318
+  untracked. Sibling idle sejak 03:57 (test capability route terakhir);
+  ledger di-touch 07:58 TANPA delta konten (git diff vs HEAD kosong).
+- Prioritas #1-#5 terblokir overlap region sibling aktif: selection
+  memory/restart (selection_controller/explorer M + test untracked
+  02:36-02:53), session-link story (recovery/session_manager M), top_bar +
+  settings (145.37/145.38), route gating capability (3 test untracked
+  03:57). Engine 145.34/145.32 sisa tetap region M milik sibling.
+- Slice dipilih: objective 145.48 (ADR) - pekerjaan teknis tercakup
+  otorisasi pengguna 145.43-145.50, bukan keputusan produk/pilot/release.
+  docs/adr/ADR-0002-architecture-and-delivery-decisions.md (baru, 8698
+  bytes, Status: Proposed) merekam 7 keputusan yang SUDAH dipilih dan
+  ter-enforce di tree (stack Flutter Windows-first; storage local-first
+  per-project package schema v59; boundary core->features + 13 flag
+  default-OFF + kill-switch; sync authority claim/deny/journal; schema
+  exact-next guarded + future-DB reject; testing domain-first pyramid;
+  CI matrix + windows debug tanpa release pipeline) masing-masing dengan
+  alternatives/tradeoffs/consequences/review triggers. Fakta live
+  diverifikasi saat draft @ HEAD 33aef69 (currentSchemaVersion 59, 13 flag,
+  NativeDatabase, CI flutter 3.44.9); tanpa keputusan baru. 145.43-145.47
+  dan 145.49-145.50 tetap milik Choi.
+- Bukti: doc-only (0 file kode), git diff --check PASS, guard PASS
+  post-commit (pointer 145.27, canonical_sha 86af6a5). Full suite tidak
+  diulang (bukti terakhir run62: 3673 PASS / 1 FAIL concurrent-owned /
+  1 SKIP; slice ini tidak menyentuh kode).
+- Status 145.27 tetap PARTIAL; 145.48 kini punya DRAFT ADR menunggu review
+  Choi (ratify/amend) dan TIDAK dinyatakan VERIFIED.
+- Next: keputusan Choi atas ADR-0002; re-check sibling commit; engine
+  145.34/145.32 sisa bila region bebas; NO-OP jika nihil.

@@ -22,6 +22,7 @@ class DurableAutosaveCoordinator {
     required this._persist,
     this._journal,
     this.onSaved,
+    this.onSaveStarted,
     this.onPersistError,
   });
 
@@ -42,6 +43,12 @@ class DurableAutosaveCoordinator {
   /// Dipanggil SETELAH persist + acknowledge berhasil (bukan saat
   /// dijadwalkan). Dipakai layar untuk meng-update label "Tersimpan HH:MM".
   final void Function(String sceneId, String content)? onSaved;
+
+  /// Dipanggil TEPAT SEBELUM persist autosave dimulai (save in-flight).
+  /// Dipakai layar untuk menampilkan indikator 'Menyimpan...' sehingga
+  /// jendela antara debounce selesai dan persist selesai terlihat oleh
+  /// pengguna (friksi UX 145.43 #3: save-state indicator).
+  final void Function(String sceneId, String content)? onSaveStarted;
 
   Timer? _timer;
   String? _pendingSceneId;
@@ -83,6 +90,7 @@ class DurableAutosaveCoordinator {
     final savedContent = _pendingContent;
     if (savedSceneId == null || savedContent == null) return;
     _saving = true;
+    onSaveStarted?.call(savedSceneId, savedContent);
     try {
       try {
         await _persist(savedSceneId, savedContent);

@@ -124,6 +124,15 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   /// ini (label jujur 'Belum tersimpan').
   DateTime? _lastSavedAt;
 
+  /// True saat persist autosave sedang berjalan (save in-flight).
+  bool _isSaving = false;
+
+  /// True sejak State.dispose dimulai. Callback autosave sinkron
+  /// (onSaveStarted) bisa menembak dari flush dispose ketika element
+  /// sudah defunct namun mounted masih true - setState pada kondisi
+  /// itu ilegal, jadi dinyatakan lewat flag ini.
+  bool _disposeStarted = false;
+
   /// Pesan kegagalan persist autosave yang TERLIHAT (bukan silent).
   /// Di-set oleh onPersistError koordinator; dihapus saat simpan berikutnya
   /// berhasil. Draf tetap aman di journal durable selama error aktif.
@@ -162,7 +171,12 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
         setState(() {
           _lastSavedAt = DateTime.now();
           _autosaveError = null;
+          _isSaving = false;
         });
+      },
+      onSaveStarted: (sceneId, content) {
+        if (!mounted || _disposeStarted) return;
+        setState(() => _isSaving = true);
       },
       onPersistError: (sceneId, content, error) {
         // Kontrak no-silent-loss: kegagalan persist ditampilkan, draf tetap
@@ -171,6 +185,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
         if (!mounted) return;
         setState(() {
           _autosaveError = 'Gagal menyimpan draf: $error';
+          _isSaving = false;
         });
       },
     );
@@ -197,6 +212,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
 
   @override
   void dispose() {
+    _disposeStarted = true;
     _teardownLoreMenu();
     // Step 145.30: flush draf yang masih menunggu debounce (no silent loss)
     // alih-alih hanya membatalkan timer.
@@ -623,6 +639,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     if (session != null && session.isActive) {
       return session.autosaveLabel;
     }
+    if (_isSaving) return 'Menyimpan...';
     final savedAt = _lastSavedAt;
     if (savedAt == null) return 'Belum tersimpan';
     final hh = savedAt.hour.toString().padLeft(2, '0');

@@ -257,6 +257,10 @@ class ProjectBackupService {
     required ProjectPackage package,
     required Directory backup,
   }) async {
+    // A previous restore killed inside the crash window leaves staging
+    // artifacts behind. Heal them before touching the live payload so a
+    // partial write can never be mistaken for restore output.
+    await RestoreCrashRecovery.recover(package);
     final metadata = File(p.join(backup.path, 'backup.json'));
     final manifest = File(p.join(backup.path, 'project.json'));
     final database = File(p.join(backup.path, 'project.db'));
@@ -417,6 +421,47 @@ class ProjectBackupService {
     await attempt('assets', assets);
     await attempt('workspaces', workspaces);
     return failures;
+  }
+}
+
+/// Crash-window recovery for interrupted backup restores. A restore that
+/// is killed between the emergency snapshot and the final area write leaves
+/// staging files (*.tmp) or half-written areas behind. On the next session
+/// open the recovery hook removes every staging artifact so the package
+/// surfaces its on-disk payload; the emergency pre-restore snapshot is
+/// deliberately preserved for user-driven recovery decisions.
+class RestoreCrashRecovery {
+  RestoreCrashRecovery(this.package);
+  final ProjectPackage package;
+
+  /// Removes staging artifacts from an interrupted [ProjectBackupService]
+  /// restore. Staging files follow the '<final>.tmp' convention used by
+  /// the registry, manifest, exporter, and importer journal. Returns the
+  /// number of staging artifacts that were removed.
+  static Future<int> recover(ProjectPackage package) async {
+    var removed = 0;
+    final manifestTmp = File('${package.manifestFile.path}.tmp');
+    if (await manifestTmp.exists()) {
+      await manifestTmp.delete();
+      removed++;
+    }
+    final databaseTmp = File('${package.databaseFile.path}.tmp');
+    if (await databaseTmp.exists()) {
+      await databaseTmp.delete();
+      removed++;
+    }
+    final assetsTmp = Directory('${package.assetsDirectory.path}.tmp');
+    if (await assetsTmp.exists()) {
+      await assetsTmp.delete(recursive: true);
+      removed++;
+    }
+    final workspacesDir = Directory(p.join(package.root.path, 'workspaces'));
+    final workspacesTmp = Directory('${workspacesDir.path}.tmp');
+    if (await workspacesTmp.exists()) {
+      await workspacesTmp.delete(recursive: true);
+      removed++;
+    }
+    return removed;
   }
 }
 

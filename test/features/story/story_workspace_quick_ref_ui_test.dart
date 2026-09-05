@@ -49,18 +49,10 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Sebelum scene dipilih: hint eksplisit, bukan kartu kosong.
+    // Run62: hierarchy termuat langsung memilih scene pertama, sehingga
+    // kartu quick reference scene-a otomatis dimuat (jalur yang sama dengan
+    // tap eksplisit pada scene).
     await tester.ensureVisible(find.text('CHARACTER QUICK REF'));
-    await tester.pumpAndSettle();
-    expect(
-      find.text('Pilih scene untuk melihat quick reference karakter.'),
-      findsOneWidget,
-    );
-
-    // Pilih scene A -> kartu quick reference Qowner tampil.
-    await tester.ensureVisible(find.text('Kedatangan Void'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Kedatangan Void'));
     await tester.pumpAndSettle();
 
     expect(repository.quickRefSceneIds, ['scene-a']);
@@ -70,7 +62,46 @@ void main() {
     expect(find.text('participant'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('empty hierarchy keeps the explicit quick-ref hint', (
+    tester,
+  ) async {
+    final repository = _FakeStoryRepository()..hierarchy = _emptyHierarchy();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: SizedBox(
+              width: 1200,
+              child: StoryWorkspaceScreen(
+                storyId: 'story-1',
+                repository: repository,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('CHARACTER QUICK REF'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Pilih scene untuk melihat quick reference karakter.'),
+      findsOneWidget,
+    );
+    expect(repository.quickRefSceneIds, isEmpty);
+    expect(tester.takeException(), isNull);
+  });
 }
+
+StoryHierarchy _emptyHierarchy() => const StoryHierarchy(
+  story: StoryModel(assetId: 'story-1', projectId: 'p1', title: 'Quick Ref'),
+  arcs: [],
+  chapters: [],
+  scenes: [],
+);
 
 StoryHierarchy _hierarchy() => const StoryHierarchy(
   story: StoryModel(assetId: 'story-1', projectId: 'p1', title: 'Quick Ref'),

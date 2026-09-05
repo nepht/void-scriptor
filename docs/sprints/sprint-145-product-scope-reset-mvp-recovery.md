@@ -1386,3 +1386,52 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   proof, route gating 11 demo routes (pemilik 145.39), 145.43-145.50.
 - Next: re-check sibling commit; engine 145.34/145.32 sisa bila region
   bebas; 145.43-145.50 keputusan Choi (145.48/145.49 kandidat ADR).
+
+## Update 2026-09-05 (nephthys cron run62, draft-safety switch journey 145.27 prio #1)
+
+- Kondisi awal: guard PASS (pointer 145.27, canonical_sha 86af6a5), HEAD
+  aa65a8d (run61). Baseline dirty 488 (170 M + 318 untracked). Sibling
+  idle (mtim terakhir 04 Sep 20:27; satu file M project_recovery_services
+  net -61 = session_lock_safety_review yang sudah ada sejak run55, TIDAK
+  disentuh). Flutter/dart process: tidak ada.
+- Slice prioritas #1 CLOSED (TDD): keamanan draf saat berpindah workspace
+  melalui jalur produksi (WorkspaceResolver + selectionProvider, bukan
+  screen mandiri). RED terverifikasi: T1 gagal "journal harus menahan
+  draf segera" (journal tidak pernah ter-stage) - akar: _count() hanya
+  memanggil autosave bila _selectedSceneId != null, padahal Novel yang
+  dibuka tanpa scene eksplisit tidak pernah memilih scene -> draf awal
+  hilang diam-diam saat dispose (silent loss di jalur produksi).
+- GREEN: StoryWorkspaceScreen kini memilih scene pertama secara otomatis
+  saat hierarchy termuat (guard _selectedSceneId == null; pengguna yang
+  sudah mengetik sebelum hierarchy termuat dipertahankan via post-frame
+  _count(_draft.text), tidak ditimpa muatan ulang draf).
+- Bukti baru T1: ketik tanpa tap scene -> journal durable ter-stage ->
+  switch ke Character -> kembali ke Novel -> draf tersimpan di repository
+  proyek nyata (getSceneDraft == konten ketikan).
+- Bukti baru T2 (path kegagalan persist jalur nyata): session ditutup
+  (database tertutup) -> banner autosave_error_banner terlihat, tanpa
+  uncaught exception -> buka ulang project (sesi baru) -> panel DRAFT
+  RECOVERY muncul -> 'Pulihkan Draft' menulis ke database sesi baru dan
+  meng-acknowledge journal (file journal kosong, getSceneDraft ==
+  konten).
+- Regression: test/features/workspace_quick_ref assertion "Pilih scene"
+  diperbarui secara deliberat (auto-select memilih scene pertama, kartu
+  quick ref kini auto-load; ditambah kasus baru hierarchy kosong tetap
+  menampilkan hint). Focused story+workspace: 167 PASS / 0 FAIL.
+- Pitfall baru: pumpWidget kedua dengan runtimeType identik TANPA key
+  MEREUSE State (initState tidak jalan ulang) - simulasi restart butuh
+  unmount eksplisit (pumpWidget(const SizedBox())) sebelum mount sesi
+  baru. Untuk IO nyata di test widget, poll pump+runAsync interleave
+  (runAsync murni tidak memicu rebuild frame).
+- Bukti: focused 2 PASS; regresi story+workspace 167 PASS / 0 FAIL;
+  analyze No issues found! (6,9s); diff --check PASS; build windows
+  debug PASS (20,5s); full suite 3673 PASS / 1 FAIL concurrent-owned /
+  1 SKIP (~12 mnt) - FAIL explorer_catalog_recovery_test (PathNotFound
+  di ProjectSessionLock.release, region M sibling session_lock_safety_
+  review; race dispose container vs temp dir; 3x focused retry PASS,
+  kategori concurrent-owned seperti preseden run58).
+- Native interaction tetap UNVERIFIABLE (cron tanpa computer-use).
+  Status 145.27 tetap PARTIAL: user validation, native proof, route
+  gating 11 demo routes (pemilik 145.39), 145.43-145.50.
+- Next: re-check sibling commit; engine 145.34/145.32 sisa bila region
+  bebas; 145.43-145.50 keputusan Choi (145.48/145.49 kandidat ADR).

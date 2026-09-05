@@ -869,6 +869,33 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
           );
         }
         final hierarchy = snapshot.data!;
+        // Run62 (145.27 prioritas #1): layar Novel yang dibuka tanpa
+        // scene eksplisit tetap harus punya scene aktif sejak hierarchy
+        // termuat, agar suntingan pertama pengguna langsung masuk jalur
+        // autosave + journal durable (no silent loss saat pindah workspace).
+        StorySceneNode? firstScene;
+        for (final chapter in hierarchy.chapters) {
+          if (chapter.scenes.isNotEmpty) {
+            firstScene = chapter.scenes.first;
+            break;
+          }
+        }
+        if (_selectedSceneId == null && firstScene != null) {
+          _selectedSceneId = firstScene.id;
+          _selectedSceneTitle = firstScene.title;
+          if (_draft.text.isEmpty) {
+            _loadDraftFor(firstScene.id);
+            _loadSnapshotsFor(firstScene.id);
+            _loadQuickRefsFor(firstScene.id);
+          } else {
+            // Pengguna sempat mengetik sebelum hierarchy termuat:
+            // ketikan dipertahankan lewat jalur autosave (journal
+            // durable + debounce), bukan ditimpa muatan ulang draf.
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) _count(_draft.text);
+            });
+          }
+        }
         final rows = <Widget>[];
         for (final chapter in hierarchy.chapters) {
           rows.add(_Row(label: chapter.title));

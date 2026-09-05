@@ -1803,3 +1803,40 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   (M) + project_database_process_kill_test (untracked, WAL layer sibling) +
   fixtures/ tidak disentuh; .hermes/* reorganisasi ledger sibling tidak
   di-commit. Tidak push (HEAD 937298c, remote bcd2087 tetap).
+### 2026-09-06 - run87 nephthys - save-state indicator autosave (friksi UX 145.43 #3)
+- Gap: friksi #3 native journey 117f157 - status scene "Belum tersimpan" tampil
+  tanpa aksi edit; label dua-state menyembunyikan jendela save in-flight
+  (antara debounce selesai dan persist selesai tidak terlihat pengguna).
+- Slice: 2 file lib + 1 test: DurableAutosaveCoordinator menambah callback
+  onSaveStarted (dipanggil tepat sebelum persist, setelah _saving=true);
+  StoryWorkspaceScreen menambah state _isSaving (reset di onSaved/
+  onPersistError) dan label tiga-state: Menyimpan... / Tersimpan HH:MM /
+  Belum tersimpan. Guard _disposeStarted: callback sinkron onSaveStarted
+  dari flush dispose menembak saat element defunct namun mounted masih
+  true - setState ilegal (assert _lifecycleState), fix dengan flag dispose
+  di State.dispose.
+- TDD: RED terverifikasi - test story_save_state_indicator_test gagal
+  "Found 0 widgets with text Menyimpan..." (label tidak pernah in-flight);
+  GREEN 1/1. Dua iterasi RED salah diperbaiki sebelum GREEN: (1) gate
+  persist tidak pernah di-arm di test (sukses instan menyembunyikan
+  window); (2) deklarasi field onSaveStarted belum terbentuk (anchor
+  doc-comment onSaved salah tempat).
+- Pitfall patch: heredoc bash mengirim "$error" dalam python single-quote
+  sebagai literal backslash-dollar - pakai chr(36); file ledger CRLF-MIXED
+  (71 CRLF + 1772 LF) menimbulkan churn EOL pada append pertama -
+  direkonstruksi dari blob HEAD (LF) + blok run87 LF murni.
+- Bukti: focused 1/1 PASS; suite autosave/focus/wiring/banner 19/19 PASS;
+  regresi test/features/story 165 PASS / 0 FAIL (delta +1 test slice);
+  regresi test/features/project_resilience 178 PASS / 1 SKIP / 0 FAIL;
+  story_draft_switch_journey 2/2 PASS; analyze No issues found! 10.0s;
+  format scoped clean; git diff --check PASS scoped; build windows debug
+  PASS 25.7s; FULL SUITE background pada commit time, hasil di-append
+  blok state bila selesai dalam run.
+- Mapping: friksi #3 native journey (input 145.43); koordinator tetap
+  kontrak 145.30. Friksi #1 (link-creation) dan #4 (empty-state Outline)
+  tetap terbuka; 145.43 tetap PENDING di canonical.
+- Region sibling dijaga: section controller sibling di
+  story_workspace_screen tetap tidak disentuh; ROADMAP_STATE blok
+  sibling uncommitted TIDAK di-commit (preseden run66+).
+- Tidak push (remote bcd2087). Native journey UNVERIFIABLE (cua-driver
+  tidak tersedia di cron; preseden run83/86).

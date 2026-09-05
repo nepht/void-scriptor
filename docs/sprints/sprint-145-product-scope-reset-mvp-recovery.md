@@ -1642,3 +1642,30 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - KOREKSI KEPATUHAN (dilaporkan, tidak diterapkan diam-diam): komponen "reward cash bagi pemenang novel terbaik / banyak peminat" TIDAK diimplement. Alasan: (a) validitas usability - hadiah kompetitif mendorong peserta "tampil baik", bukan bekerja seperti biasa, sehingga merusak data observasi yang jadi input prioritas 145.47; (b) etis - kontes berhadiah bertentangan dengan kontrak sesi "boleh berhenti kapan saja tanpa konsekuensi" dan "kamu tidak dinilai" yang tertulis di brief; (c) operasional - menilai "novel terbaik" dan "peminat terbanyak" butuh metrik publikasi yang tidak ada dalam lingkup sesi 60-90 menit.
 - Yang diimplement: akun Pro lifetime untuk SEMUA peserta yang menyelesaikan sesi, dicantumkan terbuka di pos. Opsi apresiasi tunai SETARA untuk semua peserta tetap terbuka - Choi tinggal isi nominal di slot dokumen.
 - Tersisa untuk Choi (tindakan manusia, bukan agen): posting versi panjang di Threads, pantau balasan ke nephthyssilentz@gmail.com, jalankan screening dengan rubrik, jadwalkan 8-12 sesi dalam jendela 1-2 minggu.
+
+### 2026-09-06 - run82 nephthys - corrupt-manifest recovery dari .bak (145.42, corrupt package layer)
+
+- Gap: manifest korut (isi rusak, bukan power-loss window) membuat
+  ProjectManifestService.read() melempar FormatException/TypeError mentah
+  tanpa mencoba salinan durable terakhir di project.json.bak.
+- Slice: read() memanggil restoreBackup(.bak) saat konten korut, re-parse
+  dan mengembalikan manifest pulihan; tanpa .bak, berkas korut dipertahankan
+  dan kegagalan dilaporkan sebagai ProjectManifestUnreadableException
+  (manifestPath + cause), preseden ProjectDatabaseUnreadableException.
+  Kontrak raw dipertahankan: I/O file-level tetap FileSystemException,
+  future schema tetap FormatException (test canonical sibling 145.40/145.12
+  tidak diubah); restore .bak tetap terjadi sebelum rejection itu.
+- RED terverifikasi: ProjectManifestUnreadableException undefined (4 test
+  gagal kompilasi); GREEN 4/4 setelah implementasi.
+- Bukti: regresi test/core/persistence + project_resilience 236 PASS /
+  1 SKIP / 0 FAIL; analyze No issues 12.1s; build windows debug PASS 26.9s;
+  FULL SUITE 3737 PASS / 1 SKIP / 3 FAIL concurrent-owned trio sibling
+  145.37/145.38 (eksak preseden run78-80); guard PASS pre+post+postcommit
+  (pointer 145.27, canonical_sha 86af6a5). Commit 697279a (2 file, +229/-3).
+- PITFALL: ProjectFileService.createStructure tidak membangun manifest/
+  (wajib file.parent.create sebelum menulis fixture); wrapper on Object
+  tanpa rethrow on FileSystemException memutus kontrak missing-manifest.
+- Region: lib/core/persistence bersih milik slice; shell/void_app_shell
+  + providers AKTIF ditulis sibling (layar error 'Coba lagi' masih
+  uncommitted) - recovery tombol tidak disentuh. Native UNVERIFIABLE.
+- Tidak push (HEAD 697279a, remote bcd2087 tetap).

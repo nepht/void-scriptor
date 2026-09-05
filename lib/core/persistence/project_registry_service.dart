@@ -35,6 +35,9 @@ class ProjectRegistryService {
     // dilaporkan.
     await _recoverImportStashes();
     final registered = await _decodeProjects(file);
+    // 145.42 interrupted-move window: consume move journals that
+    // landed inside this listing root before the marker delete ran.
+    await _consumeLandedMoveMarkers(registered);
     // 145.42 crash window: a finished package whose registry entry never
     // landed (process kill / power loss between create() and upsert) is
     // admitted so a complete project never becomes invisible. Only an
@@ -119,6 +122,24 @@ class ProjectRegistryService {
 
   Future<void> remove(String projectId) async {
     await save((await load()).where((item) => item.id != projectId).toList());
+  }
+
+  /// Best-effort consumption of landed move journals (145.42): a
+  /// `move-pending.marker` inside the directory of a registered
+  /// project means its move completed but the marker delete never
+  /// ran. The marker is stale state; consuming it must never block
+  /// project listing.
+  Future<void> _consumeLandedMoveMarkers(List<ProjectModel> projects) async {
+    for (final project in projects) {
+      final marker = File(
+        p.join(project.localPath, ProjectRecoveryService.movePendingMarkerName),
+      );
+      try {
+        if (await marker.exists()) await marker.delete();
+      } on FileSystemException {
+        continue;
+      }
+    }
   }
 
   /// Best-effort recovery of interrupted-import stashes. Only

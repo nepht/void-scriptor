@@ -9,6 +9,12 @@ import '../domain/project_model.dart';
 class ProjectRecoveryService {
   const ProjectRecoveryService();
 
+  /// Journal for an interrupted package move (145.42). Written and
+  /// flushed by [ProjectMoveService.movePackage] BEFORE the rename opens
+  /// the crash window; see [recoverInterruptedMoves] for the recovery
+  /// contract.
+  static const String movePendingMarkerName = 'move-pending.marker';
+
   /// Marker file written by package creation BEFORE the crash window opens
   /// (between a finished package on disk and its registry registration).
   /// Its presence is the only explicit admission signal: folders without it
@@ -136,6 +142,76 @@ class ProjectRecoveryService {
     if (await target.exists()) await target.delete();
     await backup.rename(target.path);
     return true;
+  }
+
+  /// Recovers a package move interrupted inside the rename crash window.
+  ///
+  /// [ProjectMoveService.movePackage] journals a `move-pending.marker`
+  /// (source, destination) before renaming the package. When the process
+  /// dies before the rename, the package and its journal stay at the
+  /// source root while the destination never materializes: roll the
+  /// package forward to the recorded destination. When the package is
+  /// already gone from the source, the move had completed and a landed
+  /// marker at the destination is consumed as stale journal state. A
+  /// journal whose destination is occupied or whose source package is
+  /// missing without a landed destination is never guessed around and is
+  /// left untouched for inspection. Returns the number of rolled-forward
+  /// packages.
+  Future<int> recoverInterruptedMoves(Directory sourceRoot) async {
+    if (!await sourceRoot.exists()) return 0;
+    var rolledForward = 0;
+    await for (final entity in sourceRoot.list(followLinks: false)) {
+      if (entity is! Directory) continue;
+      final marker = File(p.join(entity.path, movePendingMarkerName));
+      if (!await marker.exists()) continue;
+      final Object? decoded;
+      try {
+        decoded = jsonDecode(await marker.readAsString());
+      } on Object {
+        continue;
+      }
+      if (decoded is! Map<String, dynamic>) continue;
+      final destination = decoded['destination'];
+      final source = decoded['source'];
+      if (destination is! String || destination.isEmpty) continue;
+      if (source is! String || source.isEmpty) continue;
+      // The journal must describe THIS package: identity matches when the
+      // scanned directory is the recorded source (crash before the rename)
+      // or the recorded destination (marker landed with the package after
+      // the rename completed). Any other payload is not trusted.
+      final matchesSource =
+          Directory(source).absolute.path ==
+          Directory(entity.path).absolute.path;
+      final matchesDestination =
+          Directory(destination).absolute.path ==
+          Directory(entity.path).absolute.path;
+      if (matchesDestination) {
+        // The move landed; this marker is stale journal state.
+        await marker.delete();
+        continue;
+      }
+      final target = Directory(destination);
+      if (!matchesSource || await target.exists()) {
+        // Destination occupied or unavailable: leave the journal and the
+        // package untouched rather than guessing.
+        continue;
+      }
+      try {
+        await entity.rename(destination);
+      } on FileSystemException {
+        continue;
+      }
+      rolledForward++;
+      // The marker travelled with the package; consume it at the
+      // destination so the landed journal never survives recovery.
+      final travelledMarker = File(p.join(destination, movePendingMarkerName));
+      try {
+        if (await travelledMarker.exists()) await travelledMarker.delete();
+      } on FileSystemException {
+        // The registry load also consumes landed markers (best effort).
+      }
+    }
+    return rolledForward;
   }
 
   /// Recovers the destination-collision stash of an interrupted import.

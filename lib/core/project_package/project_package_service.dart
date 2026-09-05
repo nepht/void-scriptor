@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 import '../persistence/project_manifest.dart';
+import '../persistence/project_recovery_service.dart';
 
 import '../../database/project/project_database_service.dart';
 import 'project_package.dart';
@@ -28,20 +29,32 @@ class ProjectPackageService {
       root: Directory(p.join(rootDirectory.path, '$id.voidproject')),
     );
     final now = DateTime.now().toUtc();
+    final manifest = ProjectManifest(
+      schemaVersion: VoidProjectFormat.currentSchema,
+      id: id,
+      name: name,
+      description: description,
+      projectVersion: appVersion,
+      createdAt: now,
+      updatedAt: now,
+      appVersion: appVersion,
+    );
     try {
       await _createDirectories(package);
+      // 145.42 crash-window marker: staged BEFORE the database so a
+      // process kill / power loss between a finished package and its
+      // registry registration leaves an explicit admission signal. A
+      // package without this marker is deliberately unregistered state
+      // (e.g. a deleted project's folder) and is never resurrected.
+      await File(
+        p.join(package.root.path, ProjectRecoveryService.creationMarkerName),
+      ).writeAsString(_encode(manifest), flush: true);
       await ProjectDatabaseService().create(package.databaseFile.path);
-      final manifest = ProjectManifest(
-        schemaVersion: VoidProjectFormat.currentSchema,
-        id: id,
-        name: name,
-        description: description,
-        projectVersion: appVersion,
-        createdAt: now,
-        updatedAt: now,
-        appVersion: appVersion,
-      );
       await package.manifestFile.writeAsString(_encode(manifest));
+      // The marker intentionally SURVIVES create(): the real crash window is
+      // between this return and the caller's registry registration. A kill
+      // there is recovered from the marker by ProjectRegistryService.load()
+      // / upsert(); the folder cleanup below only runs on thrown errors.
       return package;
     } catch (_) {
       if (await package.root.exists()) {

@@ -4,9 +4,90 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 import 'project_manifest.dart';
+import '../domain/project_model.dart';
 
 class ProjectRecoveryService {
   const ProjectRecoveryService();
+
+  /// Marker file written by package creation BEFORE the crash window opens
+  /// (between a finished package on disk and its registry registration).
+  /// Its presence is the only explicit admission signal: folders without it
+  /// are deliberately unregistered state (deleted projects) and are never
+  /// touched. The marker payload is the project manifest JSON.
+  static const String creationMarkerName = 'creation-in-progress.marker';
+
+  /// Admits interrupted package creations found under [ownerDirectory].
+  ///
+  /// A process kill / power loss between a finished
+  /// `<projectId>.voidproject` package and its registry registration would
+  /// otherwise orphan a complete, intact project forever: the registry is
+  /// the only discovery mechanism. A folder carrying a parseable creation
+  /// marker whose schema is supported and whose manifest id matches the
+  /// folder name is therefore admitted as a [ProjectModel]. Ids already
+  /// known to the caller are treated as registered: their stale marker is
+  /// consumed and no duplicate is produced. Unsupported or corrupt markers
+  /// are left untouched for manual inspection.
+  Future<List<ProjectModel>> admitMarkedCreations(
+    Directory ownerDirectory,
+    Set<String> knownProjectIds,
+  ) async {
+    final admitted = <ProjectModel>[];
+    if (!await ownerDirectory.exists()) return admitted;
+    await for (final entity in ownerDirectory.list(followLinks: false)) {
+      if (entity is! Directory) continue;
+      final name = p.basename(entity.path);
+      if (!name.endsWith('.voidproject')) continue;
+      final marker = File(p.join(entity.path, creationMarkerName));
+      if (!await marker.exists()) continue;
+      Object? decoded;
+      try {
+        decoded = jsonDecode(await marker.readAsString());
+      } on Object {
+        continue;
+      }
+      if (decoded is! Map<String, dynamic>) continue;
+      ProjectManifest manifest;
+      try {
+        manifest = ProjectManifest.fromJson(decoded);
+      } on FormatException {
+        continue;
+      }
+      final id = name.substring(0, name.length - '.voidproject'.length);
+      if (id != manifest.id) continue;
+      if (knownProjectIds.contains(id)) {
+        await _consumeQuietly(marker);
+        continue;
+      }
+      final now = DateTime.now().toUtc();
+      admitted.add(
+        ProjectModel(
+          id: id,
+          name: manifest.name,
+          description: manifest.description,
+          createdAt: manifest.createdAt,
+          updatedAt: now,
+          lastOpenedAt: now,
+          localPath: entity.path,
+          version: manifest.projectVersion,
+        ),
+      );
+    }
+    return admitted;
+  }
+
+  /// Consumes the marker once the admission is durable in the registry.
+  Future<void> consumeCreationMarker(File marker) async {
+    if (await marker.exists()) await marker.delete();
+  }
+
+  Future<void> _consumeQuietly(File marker) async {
+    try {
+      await consumeCreationMarker(marker);
+    } on FileSystemException {
+      // A marker that cannot be removed must not break project listing;
+      // registry membership already prevents duplicate admission.
+    }
+  }
 
   Future<void> atomicWrite({
     required File target,
@@ -85,9 +166,7 @@ class ProjectRecoveryService {
     }
     var restored = 0;
     for (final stash in stashes) {
-      final manifestFile = File(
-        p.join(stash.path, 'manifest', 'project.json'),
-      );
+      final manifestFile = File(p.join(stash.path, 'manifest', 'project.json'));
       if (!await manifestFile.exists()) continue;
       final Object? decoded;
       try {

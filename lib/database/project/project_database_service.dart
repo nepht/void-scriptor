@@ -23,6 +23,26 @@ class SchemaVersionTooNewException implements Exception {
       'application before opening this project';
 }
 
+/// Sprint 145.42 (Data Safety Failure Matrix) - concurrent open pada layer
+/// database. Sebuah writer lain sedang menahan file (SHARED+RESERVED)
+/// sehingga drift `BEGIN IMMEDIATE` gagal dengan SQLITE_BUSY (extended
+/// result code 5). File sehat, hanya terkunci - bukan corruption. Probe
+/// readOnly untuk schema version masih berhasil sehingga guard
+/// [SchemaVersionTooNewException] tidak berlaku.
+class ProjectDatabaseLockedException implements Exception {
+  ProjectDatabaseLockedException(this.databasePath, this.cause);
+
+  final String databasePath;
+
+  /// The underlying engine failure (e.g. SQLITE_BUSY).
+  final Object cause;
+
+  @override
+  String toString() =>
+      'ProjectDatabaseLockedException: database at $databasePath is '
+      'locked by another writer ($cause)';
+}
+
 /// Sprint 145.42 (Data Safety Failure Matrix) - corrupt database on the
 /// production open path. A database file that exists but cannot be opened
 /// as SQLite (truncated write, disk corruption, bad device) must surface a
@@ -58,6 +78,12 @@ class ProjectDatabaseService {
     try {
       return await openProjectDatabase(databasePath);
     } on sqlite.SqliteException catch (error) {
+      // SQLITE_BUSY (extended result code 5) berarti file sehat tetapi
+      // writer lain sedang memegang SHARED+RESERVED. Probe schema
+      // readOnly berhasil, jadi bukan future-schema dan bukan korup.
+      if ((error.extendedResultCode & 0xFF) == 5) {
+        throw ProjectDatabaseLockedException(databasePath, error);
+      }
       throw ProjectDatabaseUnreadableException(databasePath, error);
     }
   }

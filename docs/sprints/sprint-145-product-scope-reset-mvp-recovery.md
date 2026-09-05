@@ -1671,6 +1671,40 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Tidak push (HEAD 697279a, remote bcd2087 tetap).
 
 ### 2026-09-06 - run83 nephthys - concurrent-open typed lock classification (145.42, concurrent open layer)
+### 2026-09-06 - run84 nephthys - interrupted-move journal recovery (145.42, move layer)
+- Gap: acceptance 145.42 "interrupted move" belum berbukti. Tidak ada
+  fitur moveProject; namun recovery harus mampu merakit ulang
+  paket yang rename-nya mati di crash window (kill / power-loss).
+- Slice: ProjectMoveService baru (1 file) + recovery hook di
+  ProjectRecoveryService + konsumsi landed-marker di
+  ProjectRegistryService.load (3 file) + test/project_move_recovery_test
+  (1 file, 5 test). Journal = `move-pending.marker` (flush sebelum
+  rename); rename gagal = hapus journal, paket tetap di source.
+- RED: kompilasi gagal (ProjectMoveService, recoverInterruptedMoves,
+  movePendingMarkerName undefined).
+- Bukti @HEAD ba8bd8d (Windows host): focused 5/5 PASS; regresi
+  test/core/persistence + test/features/project_resilience + test/database
+  195 PASS/0 FAIL/1 SKIP; analyze No issues 142.4s; diff --check PASS;
+  build windows debug PASS 38.7s; full suite 3744 PASS/1 SKIP/3 FAIL
+  concurrent-owned (eksak trio shell/nav 145.37/145.38 preseden
+  run78-83) exit 1 ~15 mnt; guard PASS pre+post-commit+poststate
+  (pointer 145.27, canonical_sha 86af6a5).
+- PITFALL: --name dengan spasi merusak quoting -> pakai kata
+  tunggal; fixture test harus createSync manifest/ sebelum tulis
+  project.json (preseden run82); komparasi path absolut wajib
+  Directory(.).absolute.path untuk menangani trailing separator
+  beda OS.
+- Sisa 145.42: drive_removal + installed_device_validation (keduanya
+  butuh hardware, UNVERIFIABLE dari cron); region file slice
+  project_recovery_services.dll + project_session_manager.dll masih
+  M+untracked milik sibling (sweep run79 + 145.40 schedule).
+- Native UNVERIFIABLE: cua-driver 14240 yatim tidak dapat dihentikan
+  (Access denied), list_apps timeout 30s (preseden run83).
+- Kandidat berikut: (1) drive_removal 145.42 -> bukti simulasi
+  permission_loss + retry bersih saat path kembali; (2) re-check
+  sibling commit (region storage-location + shell/nav trio);
+  (3) 145.43-145.50 keputusan Choi (ADR-0002/0003 ACCEPTED).
+
 
 - Gap: acceptance 145.42 "concurrent open" belum berbukti. Dua koneksi
   penulis pada file database yang sama membuat drift `BEGIN IMMEDIATE`

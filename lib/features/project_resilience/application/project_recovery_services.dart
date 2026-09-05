@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -13,23 +12,21 @@ class ProjectSessionLock {
   ProjectSessionLock(this.package);
   final ProjectPackage package;
   String? _ownedSessionId;
-  Timer? _heartbeat;
-
-  /// A session marker older than [staleAfter] is treated as evidence that the
-  /// previous process died without closing. A live Void Scriptor refreshes
-  /// the marker mtime via [startHeartbeat], so staleness implies the process
-  /// is gone (a suspended machine re-touches on its next heartbeat).
-  static const Duration staleAfter = Duration(seconds: 60);
-  static const Duration heartbeatInterval = Duration(seconds: 30);
 
   Future<void> acquire({String? appVersion}) async {
-    if (await package.sessionFile.exists()) {
-      final recovered = await _recoverStaleMarker();
-      if (!recovered) {
+    // Atomic create: checking exists before writing allows concurrent writers.
+    // Age, heartbeat delays, and sleep are not evidence that an owner died.
+    // Unknown/legacy/crash markers require explicit offline recovery.
+    try {
+      await package.sessionFile.create(exclusive: true);
+    } on FileSystemException {
+      if (await package.sessionFile.exists()) {
         throw StateError('Project has an active or stale session');
       }
+      rethrow;
     }
     final sessionId = const Uuid().v4();
+    // If metadata writing fails, preserve the marker and fail closed.
     await package.sessionFile.writeAsString(
       jsonEncode({
         'sessionId': sessionId,
@@ -37,85 +34,53 @@ class ProjectSessionLock {
         'openedAt': DateTime.now().toUtc().toIso8601String(),
         'appVersion': appVersion ?? VoidProjectFormat.applicationVersion,
       }),
+      flush: true,
     );
     _ownedSessionId = sessionId;
-    startHeartbeat();
-  }
-
-  /// Moves an expired session marker into the project recovery directory so a
-  /// crashed previous run cannot wedge the project shut. Fail-safe: any error
-  /// leaves the marker in place and keeps the project closed.
-  Future<bool> _recoverStaleMarker() async {
-    try {
-      final marker = package.sessionFile;
-      final modified = await marker.lastModified();
-      final age = DateTime.now().difference(modified);
-      if (age < staleAfter) return false;
-      final snapshotDir = Directory(
-        p.join(
-          package.recoveryDirectory.path,
-          'stale-session-${DateTime.now().toUtc().millisecondsSinceEpoch}',
-        ),
-      );
-      await snapshotDir.create(recursive: true);
-      await marker.copy(p.join(snapshotDir.path, 'session.lock'));
-      await File(
-        p.join(snapshotDir.path, 'recovered.json'),
-      ).writeAsString(
-        jsonEncode(<String, Object?>{
-          'recoveredAt': DateTime.now().toUtc().toIso8601String(),
-          'markerAgeSeconds': age.inSeconds,
-          'marker': jsonDecode(await marker.readAsString()),
-        }),
-      );
-      await marker.delete();
-      return true;
-    } on Object {
-      return false;
-    }
-  }
-
-  /// Keeps the owned marker mtime fresh so concurrent-open detection can
-  /// distinguish a live session from a crashed one. Started only while a
-  /// project session is open.
-  void startHeartbeat() {
-    _heartbeat ??= Timer.periodic(heartbeatInterval, (_) {
-      _touchMarker();
-    });
-  }
-
-  void stopHeartbeat() {
-    _heartbeat?.cancel();
-    _heartbeat = null;
-  }
-
-  Future<void> _touchMarker() async {
-    try {
-      if (await package.sessionFile.exists()) {
-        await package.sessionFile.setLastModified(DateTime.now());
-      }
-    } on Object {
-      // A missed heartbeat only lets the marker age toward recovery.
-    }
   }
 
   Future<void> release() async {
-    stopHeartbeat();
     final owned = _ownedSessionId;
     if (owned == null) return;
-    if (await package.sessionFile.exists()) {
-      final marker = jsonDecode(await package.sessionFile.readAsString());
-      if (marker is! Map || marker['sessionId'] != owned) return;
-      try {
-        await package.sessionFile.delete();
-      } on PathNotFoundException {
-        // A concurrent close already deleted the owned marker: the release
-        // is complete either way. Retrying here would only widen the
-        // exists->delete race window.
-        return;
+    try {
+      if (await package.sessionFile.exists()) {
+        final marker = jsonDecode(await package.sessionFile.readAsString());
+        if (marker is! Map || marker['sessionId'] != owned) return;
+        await _deleteWithTransientRetry(package.sessionFile);
       }
+    } on PathNotFoundException {
+      // A concurrent teardown can remove the package before exists, read, or
+      // delete completes. In every case the owned marker is already absent.
     }
     _ownedSessionId = null;
+  }
+
+  /// Windows can transiently refuse a marker delete with a sharing
+  /// violation (errno 32) while another closer, antivirus scan, or
+  /// indexer still holds a read handle. The competing delete usually
+  /// wins an instant later, so existence is re-checked between bounded
+  /// retries; a hold that outlives the window is rethrown so release
+  /// stays fail-closed instead of silently leaking the marker.
+  Future<void> _deleteWithTransientRetry(File marker) async {
+    const attempts = 5;
+    const delays = [
+      Duration(milliseconds: 10),
+      Duration(milliseconds: 25),
+      Duration(milliseconds: 50),
+      Duration(milliseconds: 100),
+    ];
+    for (var attempt = 0; ; attempt++) {
+      try {
+        await marker.delete();
+        return;
+      } on PathNotFoundException {
+        return;
+      } on FileSystemException {
+        if (attempt >= attempts - 1) rethrow;
+        if (!await marker.exists()) return;
+        await Future<void>.delayed(delays[attempt]);
+      }
+    }
   }
 
   Future<bool> get hasCrashMarker async => package.sessionFile.exists();

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:path/path.dart' as p;
+
 import '../domain/project_model.dart';
 import 'project_recovery_service.dart';
 import 'project_paths.dart';
@@ -28,6 +30,10 @@ class ProjectRegistryService {
     // 145.42 power-loss window: pulihkan registry dari .bak sebelum
     // melaporkan daftar proyek kosong.
     await _recovery.recoverIfInterrupted(file);
+    // 145.42 interrupted-import window: pulihkan package asli yang
+    // terkubur di stash `.import-backup-*` sebelum daftar proyek
+    // dilaporkan.
+    await _recoverImportStashes();
     if (!await file.exists()) return const [];
     final decoded =
         jsonDecode(await file.readAsString()) as Map<String, dynamic>;
@@ -69,5 +75,33 @@ class ProjectRegistryService {
 
   Future<void> remove(String projectId) async {
     await save((await load()).where((item) => item.id != projectId).toList());
+  }
+  /// Best-effort recovery of interrupted-import stashes. Only
+  /// [FileSystemException] is swallowed so an unavailable storage root
+  /// never blocks listing projects; programming errors still surface.
+  Future<void> _recoverImportStashes() async {
+    final configuredPaths = paths;
+    if (configuredPaths != null) {
+      try {
+        await _recovery.recoverInterruptedImportStashes(
+          await configuredPaths.root(),
+        );
+      } on FileSystemException {
+        return;
+      }
+      return;
+    }
+    final configuredFile = file;
+    if (configuredFile == null) return;
+    for (final owner in [
+      configuredFile.parent,
+      Directory(p.join(configuredFile.parent.path, 'Projects')),
+    ]) {
+      try {
+        await _recovery.recoverInterruptedImportStashes(owner);
+      } on FileSystemException {
+        continue;
+      }
+    }
   }
 }

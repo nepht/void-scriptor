@@ -1,4 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
+
+import 'package:path/path.dart' as p;
+
+import 'project_manifest.dart';
 
 class ProjectRecoveryService {
   const ProjectRecoveryService();
@@ -50,5 +55,60 @@ class ProjectRecoveryService {
     if (await target.exists()) await target.delete();
     await backup.rename(target.path);
     return true;
+  }
+
+  /// Recovers the destination-collision stash of an interrupted import.
+  ///
+  /// [PortableProjectImportCoordinator] renames an existing
+  /// `<projectId>.voidproject` package into a hidden
+  /// `.<projectId>.voidproject.import-backup-<uuid>` stash before an import
+  /// reuses that project ID. A process death inside that window (kill /
+  /// power loss) never runs the Dart rollback: the user's original package
+  /// stays buried under the stash while the registry still points at the
+  /// final path. For every stash in [ownerDirectory] whose canonical
+  /// package directory no longer exists, this restores the stash to
+  /// `<projectId>.voidproject`. When the canonical directory exists again
+  /// (the import had already completed) the stash is left untouched:
+  /// recovery must not guess between two complete copies. Returns the
+  /// number of restored packages.
+  Future<int> recoverInterruptedImportStashes(Directory ownerDirectory) async {
+    if (!await ownerDirectory.exists()) return 0;
+    final stashes = <Directory>[];
+    await for (final entity in ownerDirectory.list(followLinks: false)) {
+      if (entity is! Directory) continue;
+      final name = p.basename(entity.path);
+      if (!name.startsWith('.') ||
+          !name.contains('.voidproject.import-backup-')) {
+        continue;
+      }
+      stashes.add(entity);
+    }
+    var restored = 0;
+    for (final stash in stashes) {
+      final manifestFile = File(
+        p.join(stash.path, 'manifest', 'project.json'),
+      );
+      if (!await manifestFile.exists()) continue;
+      final Object? decoded;
+      try {
+        decoded = jsonDecode(await manifestFile.readAsString());
+      } on Object {
+        continue;
+      }
+      if (decoded is! Map<String, dynamic>) continue;
+      final ProjectManifest manifest;
+      try {
+        manifest = ProjectManifest.fromJson(decoded);
+      } on Object {
+        continue;
+      }
+      final canonical = Directory(
+        p.join(ownerDirectory.path, '${manifest.id}.voidproject'),
+      );
+      if (await canonical.exists()) continue;
+      await stash.rename(canonical.path);
+      restored++;
+    }
+    return restored;
   }
 }

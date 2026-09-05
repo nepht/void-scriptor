@@ -1736,3 +1736,38 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   process_manage); tidak memalsukan struktur Hunter/Skeptic/Referee.
   Dicatat di notepad job agar tidak diulang otomatis.
 - Tidak push (HEAD 5cdfb75, remote bcd2087 tetap).
+
+### 2026-09-06 - run85 nephthys - trio shell/nav stabilization 145.37/145.38 (region sibling diadopsi terotorisasi)
+- Gap: 3 FAIL full-suite concurrent-owned trio 145.37/145.38 persisten
+  sejak run78 (app_navigation_registry_test untracked: core registry
+  8 item termasuk aiStudio; project_resilience_navigation_test:
+  "Backup & Export" tak tampak di top bar 1280; void_mobile_shell_test:
+  tile "Optional tools" tak terjangkau 800x600). Sibling idle sejak
+  2026-09-05 21:13 (mtimes dieksplorasi); region void_top_bar/settings
+  eksplisit dalam otorisasi penanganan region sibling 2026-09-04.
+- Kontrak dibaca dari test executable sibling (untracked, TIDAK
+  disentuh): core registry = 7 tanpa aiStudio; AI Studio tetap
+  aksesibel (menu desktop + baris di sheet More mobile); tile
+  "Optional tools" di dalam sheet tanpa aiStudio row, isi tile
+  lazy-built (Diagnostics findsNothing sebelum expand).
+- Slice: commit ec6df4e (3 file lib): registry pindahkan aiStudio
+  core->optional; top_bar hapus cabang khusus di core row, pin
+  _AiStudioMenu di kanan core row; mobile shell tambahkan baris AI
+  Studio sebelum Divider + filter aiStudio dari ExpansionTile +
+  visualDensity compact utk sheet rows (tile center sebelumnya 29.5px
+  di bawah fold 800x600).
+- RED terverifikasi pre-patch: trio 1+3-0 exit 1 (log Temp; registry
+  expect 7 -> actual 8; "Backup & Export" 0 widgets; tap
+  would-not-hit-test y=629.5). GREEN: registry+resilience+mobile
+  4/4 PASS; regresi shell+navigation+routing+explorer-nav 40/40 PASS
+  exit 0 (termasuk core_mvp, top_bar_command, back_navigation AI
+  generator).
+- Bukti: dart format scoped clean; analyze full No issues (1 info
+  unnecessary_import dibereskan; scoped re-check No issues);
+  git diff --check PASS; build windows debug PASS 25.5s; guard PASS
+  pre+post-commit (pointer 145.27, canonical_sha 86af6a5).
+- FULL SUITE post-slice: 3747 PASS / 0 FAIL / 1 SKIP exit 0 (~12.5
+  mnt) - trio FAIL concurrent-owned 145.37/145.38 (preseden run78-84)
+  TERTUTUP; delta vs run83 3739/3 FAIL = +8 net (3 slice + test sibling
+  ter-load). STABILITY GATE full-green pertama sejak trio dimulai.
+- Tidak push (HEAD ec6df4e, remote bcd2087 tetap).

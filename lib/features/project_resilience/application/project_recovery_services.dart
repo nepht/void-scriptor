@@ -348,10 +348,21 @@ class ProjectBackupService {
       await package.databaseFile.writeAsBytes(
         await File(p.join(backup.path, 'project.db')).readAsBytes(),
       );
-      await _copyDirectory(
-        Directory(p.join(backup.path, 'assets')),
-        package.assetsDirectory,
-      );
+      // Sprint 145.42 exact-snapshot restore: a successful restore is a
+      // snapshot switch, not a merge. Files created after the backup
+      // must not silently survive a rollback to a known-good snapshot.
+      // Only when the backup actually carries an assets payload (its
+      // assets directory exists) does the live assets directory get
+      // replaced wholesale; legacy backups without one keep their
+      // live assets untouched because the snapshot cannot represent
+      // content it never stored.
+      final backupAssets = Directory(p.join(backup.path, 'assets'));
+      if (await backupAssets.exists()) {
+        if (await package.assetsDirectory.exists()) {
+          await package.assetsDirectory.delete(recursive: true);
+        }
+        await _copyDirectory(backupAssets, package.assetsDirectory);
+      }
       final workspaceTarget = Directory(
         p.join(package.root.path, 'workspaces'),
       );

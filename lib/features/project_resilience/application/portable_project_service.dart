@@ -139,14 +139,32 @@ class PortableProjectExporter {
       final output = File(
         p.join(outDir.path, '${package.projectId}.voidproject'),
       );
-      await ZipFileEncoder().zipDirectory(temp, filename: output.path);
-      final encoded = ZipDecoder().decodeBytes(
-        await output.readAsBytes(),
-        verify: true,
-      );
-      if (encoded.find('manifest/project.json') == null ||
-          encoded.find('database/project.db') == null) {
-        throw StateError('Portable archive verification failed');
+      // 145.42 interrupted-export safety: stage the zip as
+      // `<final>.tmp` (journal/registry convention), verify the staged
+      // archive, then rename. A kill/disk-full mid-zip must never leave
+      // a partial `.voidproject` at the final path, and a previously
+      // valid archive survives a failed re-export untouched.
+      final staging = File('${output.path}.tmp');
+      try {
+        await ZipFileEncoder().zipDirectory(temp, filename: staging.path);
+        final encoded = ZipDecoder().decodeBytes(
+          await staging.readAsBytes(),
+          verify: true,
+        );
+        if (encoded.find('manifest/project.json') == null ||
+            encoded.find('database/project.db') == null) {
+          throw StateError('Portable archive verification failed');
+        }
+        await staging.rename(output.path);
+      } on Object {
+        if (await staging.exists()) {
+          try {
+            await staging.delete();
+          } on FileSystemException {
+            // Keep the original failure.
+          }
+        }
+        rethrow;
       }
       return output;
     } finally {

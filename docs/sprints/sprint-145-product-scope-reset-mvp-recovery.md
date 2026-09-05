@@ -1184,6 +1184,13 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Regresi: project_exit_guard + project_resilience + projects + app/shell: 193 PASS, 1 helper SKIP (helper diuji terpisah), exit 0. Analyzer No issues found (14.7s). Roadmap guard PASS, pointer tetap 145.27.
 - Full suite, sleep/crash native, dan keseluruhan acceptance 145.27 tetap belum ditutup. Jangan memajukan stream hanya karena koreksi ini. Bukti ini menggantikan klaim keselamatan run54, bukan menghapus catatan historisnya.
 
+##### Close-race follow-up — Codex, 2026-09-05
+
+- Full suite run62 pernah mereproduksi `PathNotFoundException` ketika package sementara hilang saat `ProjectSessionLock.release`; patch run57 hanya menangkap race pada `delete`, bukan pada `readAsString`.
+- Minimal follow-up memperluas penanganan `PathNotFoundException` ke keseluruhan urutan `exists -> read -> delete`, tetap memeriksa `sessionId` sebelum menghapus dan tidak mengambil alih marker asing.
+- Bukti aktual: focused release/ownership/stale-safety/Explorer/exit-guard **13 PASS**; regresi project_resilience + Explorer + projects + exit-guard **193 PASS / 1 helper SKIP**; analyzer No issues found (23.0s); Windows debug build PASS (29.5s); diff-check dan roadmap guard PASS. Full suite Hermes run64 terpisah pada baseline terkait: **3674 PASS / 0 FAIL / 1 SKIP**.
+- Status keseluruhan tetap PARTIAL: native close/crash/sleep dan acceptance lain 145.27 belum seluruhnya dibuktikan. Tidak ada data proyek pengguna, cron, atau remote yang diubah.
+
 ## Restart selection-memory persistence run57 - nephthys, 2026-09-05
 
 - Prioritas #4 (pemulihan setelah restart) dikerjakan di atas HEAD efcc49a
@@ -1477,3 +1484,154 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Slice route-gating 11 demo route (app_routes.dart:44-55) BLOCKED pada pemetaan kanonik: RouteCapabilityGuard menolak capabilityId di luar ReactivationDependencyMap.entries (10 ID: COMMUNITY_CHAT, READER_PLATFORM, PUBLIC_PUBLISHING, AUTHOR_PAYMENT_AND_PAYOUT, CONNECTOR_MARKETPLACE, DEVELOPER_PLATFORM, MULTI_REGION, MOBILE_FULL_EDITOR, MACOS_RELEASE, DOZENS_OF_AI_AND_CLOUD_PROVIDERS), tidak ada ID yang mencakup render/animation/audio/virtual-production/enterprise-studio/knowledge/agents/studio-command-center/creative-os/xr-studio/metaverse; core_mvp_scope_reset_spec.json (sumber kanonik yang dikutip doc-header guard) TIDAK ditemukan di tree (find + grep). Menambah ID baru = perluasan scope tanpa otoritas dokumen (document_authority_policy). Butuh: pemetaan kanonik resmi (Choi/Codex) atau checksum spec ke registry.
 - Tidak push (HEAD e4f069e, ahead 51, remote bcd2087). Native interaction UNVERIFIABLE (cron tanpa computer-use). Worktree sibling dipreservasi.
 - Next: keputusan Choi atas ADR-0003 (ratify/amend); sumber kanonik pemetaan 11 route demo; engine 145.34/145.32 sisa bila region bebas.
+
+### 2026-09-05 — Route-gating demo engine selesai (prasyarat 145.39) + contoh novel teridentifikasi (145.43)
+- Choi memberi otorisasi eksplisit: (1) bekukan pemetaan 11 demo route → capabilityId, (2) gunakan contoh novel yang diberikan untuk 145.43.
+- Commit `117f157` feat(capabilities): 11 route demo (render, animation, audio, virtual-production, enterprise-studio, knowledge, agents, studio-command-center, creative-os, xr-studio, metaverse) digate via `RouteCapabilityGuard` + 11 capabilityId kanonik baru di `ReactivationDependencyMap` (layer ENGINE FOLLOW-UP; modul demo di `lib/core/<domain>/`). `createAppRouter` menerima `allowedCapabilities` untuk integrasi/test. Bukti: RED 5 fail → GREEN 53/53 (`test/app/routing/` + `test/core/capabilities/`), analyzer CLEAN region. Test sibling `metaverse_xr_route_integration_test.dart` diadaptasi mempertahankan intent (panel render saat capability di-allow + redirect saat deferred) atas otorisasi rekonsiliasi.
+- Contoh novel (145.43): proyek **Void-Cube-Saga — UJI SALINAN (Copy)** `d53c8787-eb9f-4037-a001-528125764900` di `D:\VoidScriptor_Data\Projects` (storage aktif app). Arsip sumber lengkap `assets/attachments/source/` — Novel_Qowner.md (62,5 KB), Master Story Bible, 11 dossier karakter, Void Cube Arsenal + ARC progression, 72 Crowns, 18 side stories, timeline, power system. DB proyek terstruktur: 124 bible_entries, 20 chapter/scene/beats, 10 karakter+identity/modes/overrides, 4 environment; relasi/timeline/faksi belum terpetakan (per manifest).
+- Status prasyarat 145.43: route-gating ✅ DONE (`117f157`); exact-snapshot restore tetap milik sibling 145.42; langkah berikutnya = native journey + UX review internal memakai proyek salinan Saga (computer-use, otorisasi standing).
+- GAP (2026-09-05, dari sesi utama): full suite 3717 pass / 1 skip / 1 fail — `test/features/project_resilience/session_lock_release_race_test.dart` ("concurrent releases of the owned marker never throw a zone error") gagal hanya di bawah beban full suite; lulus saat isolasi (diverifikasi re-run). Region berisi perubahan uncommitted sibling 145.42 (`project_session_manager.dart` dkk.) — OWNERSHIP: sibling, tidak disentuh. Kandidat cron: verifikasi ulang flake setelah sibling commit, baru eskalasi fix (RED→GREEN) bila persisten.
+
+### 2026-09-05 - run75 nephthys - session-lock release flake fix + verifikasi independen test Codex [145.42]
+
+- Flake ledger sesi utama ("gagal hanya di bawah beban full suite") TERKONFIRMASI
+  persisten: insiden kedua di HEAD 117f157 - full suite 3717 PASS / 1 FAIL
+  (session_lock_release_race_test), lulus isolasi 5/5 termasuk di bawah beban CPU.
+- Root cause dibuktikan via probe dart terpisah: delete marker Windows mengenai
+  handle read terbuka = PathAccessException errno 32 (sharing violation), BUKAN
+  subclass PathNotFoundException, sehingga catch release() lolos dan
+  Future.wait([release(), release()]) melempar di beban penuh.
+- Fix commit a4d7f1d: _deleteWithTransientRetry (retry 10/25/50/100 ms +
+  re-check existence; hold melebihi window tetap rethrow = fail-closed).
+  Test baru session_lock_release_transient_block_test 2 test (RED errno 32
+  terverifikasi; GREEN setelah fix).
+- Commit ini MEMBAWA rewrite session-lock atomik uncommitted Codex
+  (ROADMAP_STATE session_lock_safety_review, evidence-complete) - atribusi
+  di pesan commit; tidak ada perubahan Codex lain yang diadopsi.
+- Verifikasi independen klaim uncommitted Codex (read-only, tanpa edit):
+  project_database_process_kill_test 2/2 PASS (WAL committed-survives-kill +
+  torn-DB reject) dan backup_asset_integrity_test 3/3 PASS (restore menolak
+  asset tampered/missing/extra sebelum sentuh data live).
+- Gate @a4d7f1d: region session-lock 10 PASS/1 SKIP; analyze No issues 10.8s;
+  build windows debug PASS 26.6s; FULL SUITE 3720 PASS / 0 FAIL / 1 SKIP
+  exit 0 (flake hilang); diff --check PASS; guard PASS pre+post (pointer
+  145.27, canonical_sha 86af6a5). Route-gating 145.43 terverifikasi mendarat
+  di 117f157 (keputusan Choi). Native interaction UNVERIFIABLE (cron tanpa
+  computer-use). Tidak push (remote bcd2087 tetap).
+
+
+### 2026-09-05 - run78 nephthys - interrupted-restore staging heal (145.42)
+
+- Gap: 145.42 interrupted-restore (sisa run74 yang BLOCKED - producer
+  project_recovery_services.dart kini committed di a4d7f1d, region clean).
+- Slice: RestoreCrashRecovery.recover(package) menghapus artefak staging
+  <final>.tmp (manifest/database/assets/workspaces) yang tertinggal saat
+  backup restore mati di crash-window (kill/power-loss). Tidak ada yang
+  mempercayai staging: area final di disk yang tetap utuh adalah sumber
+  kebenaran. ProjectBackupService.restore() memanggil heal sebelum
+  menyentuh payload live sehingga sisa crash tidak pernah dianggap output
+  restore. Emergency pre-restore snapshot sengaja dipertahankan untuk
+  keputusan recovery pengguna. Belum staging dua-fase penuh (rename per
+  area) - exact-snapshot restore sukses tetap acceptance terpisah.
+- Test baru test/features/project_resilience/restore_interrupted_crash_test.dart
+  3 test: recover menghapus 4 artefak staging + menghitung; package bersih
+  no-op 0; restore berikutnya heal sisa staging lama lalu sukses restore.
+  RED terverifikasi simbol RestoreCrashRecovery undefined.
+- Bukti: focused 3/3 PASS; regresi test/features/project_resilience
+  176 PASS / 0 FAIL / 1 SKIP exit 0; analyze No issues found! 8.7s;
+  git diff --check PASS scoped; build windows --debug PASS 25.4s;
+  guard PASS pre+post (pointer 145.27, canonical_sha 86af6a5).
+- Commit: 5cbe9e2 feat(resilience) 2 file +118 (file slice saja; ledger
+  + state uncommitted mengikuti preseden run66-75 - blok sibling
+  uncommitted di kedua file).
+- Sisa 145.42: interrupted-move, drive_removal, installed device
+  validation, exact-snapshot restore sukses (masih merge assets), marker
+  restore eksplisit; native UNVERIFIABLE (cron tanpa computer-use).
+- Tidak push (HEAD 5cbe9e2 ahead 66, remote bcd2087 tetap).
+
+### 2026-09-05 — Native journey UX #1 memakai contoh novel (input 145.43), build `117f157`
+- Journey computer-use (otorisasi standing): Dashboard → Novels/Projects → buka kartu "Void-Cube-Saga — UJI SALINAN (Copy)" → Project Explorer (10 karakter saga tampil: Azrael Noctis, BYTE, Dinoq, Eclipsia, Father Qowner, Lumi, Neo Lynx, Neo Lyra, Qowner, Reika Kokuen; Wardrobe: Earth, Eclipsia, Neo X) → Character Workspace Father Qowner (Inspector ID `446281fb-05eb-4b8f-af0b-63b26b5b9f55`; tabs Profile/Identity/Relationships/Visuals/Notes; MODE Base Mode + 6 identity override locks) → Character Workspace Qowner (Inspector ID `4a27d4e5-276d-41da-b259-b5ebebd14508`) → Novel Workspace (SCENE EDITOR "Bab 1: Genesis — Saat Kegelapan Datang" 970 kata; Inspector "Qowner — The Quiz Maker Of Void", Story `4cbbc987-36d7-44bb-a6e8-4c1608a65a25`, status draft; segmented Bible/Arcs/Chapters/Scenes/Timeline; Export Markdown/TXT/DOCX/Novel + Import; Mode Fokus; Snapshot/Atur Retensi).
+- Bukti visual: `docs/evidence/journey-145-43-2026-09-05-{dashboard,projects,workspace-saga,character-father-qowner,character-qowner,novel-workspace}-117f157.png`.
+- Friksi UX tercatat (kandidat prioritas 145.47): (1) Novel Workspace menampilkan "Linked Characters — No linked characters" padahal DB punya 10 karakter + `novel_character_links` ada — pemetaan relasi belum jalan (konsisten manifest salinan); (2) heading Story Bible memakai UUID `4cbbc987…` alih-alih judul cerita "Void Cube Saga" — keterbacaan buruk; (3) status scene "Belum tersimpan" tampil tanpa aksi edit (save-state indicator perlu diperjelas); (4) tab Outline default kosong sampai asset dipilih — perlu empty-state yang mengarahkan.
+- Mekanika computer-use terverifikasi ulang: klik foreground `SendInput` + offset driver konsisten +18/+11 (kirim screenshot-coords −(18,11)); background coordinate route TIDAK berpengaruh pada window Flutter ini; bounds UIA elemen viewport-panjang (native space) TIDAK boleh dipakai langsung sebagai koordinat klik.
+
+### 2026-09-05 — Native journey UX #2 (Outline/Chapters) + insiden stale session.lock (input 145.43 dan 145.42)
+- Journey computer-use build `117f157`: buka ulang proyek Saga → Novel Workspace → tab Outline → **CHAPTERS tampil 5 bab native**: Bab 1 "Genesis — Saat Kegelapan Datang", Bab 2 "Anak Pegunungan", Bab 3 "Ranting yang Berbunga", Bab 4 "Sarapan Pertama dan Senjata yang Lahir dari Kebiasaan", Bab 5 "Malam Terakhir" (masing-masing dengan sub-entry scene); STORY STRUCTURE "Story → Arc 1 → Chapter 1 → Scene"; klik scene → selection highlight berpindah (Bab 1 terpilih). Bukti: `docs/evidence/journey-145-43-2026-09-05-{outline-chapters,chapter-bab1-selected}-117f157.png`.
+- **Insiden resiliensi (area 145.42, dilaporkan sesuai protokol):** percobaan buka proyek pertama gagal — error screen "Proyek memiliki sesi aktif atau penanda sesi lama" (screenshot: `…-stale-session-lock-screen-117f157.png`). Akar: journey #1 ditutup `taskkill /F` → `session.lock` yatim (openedAt 15:56:10Z, sessionId `e3abe1bd…`) tertinggal di proyek Saga DAN Tes Novel. Tombol "Coba lagi" TIDAK membersihkan lock yatim. Remediasi manual terbukti: backup `session.lock` → `session.lock.stale-backup-20260905` → hapus → proyek terbuka normal. Chips Bible/Arcs/Chapters/Scenes/Timeline berperilaku sebagai filter section CHAPTERS (konten di bawah fold; scroll diperlukan) — UX minor tercatat.
+- Kandidat cron: (a) recovery otomatis stale `session.lock` saat startup bila PID pemilik sudah mati (deteksi liveness); (b) "Coba lagi" sebaiknya mencoba membersihkan lock yatim, bukan sekadar re-check.
+
+### 2026-09-05 - run79 nephthys - exact-snapshot restore (145.42) [blok ditulis ulang run80; bukti asli = commit 9c42fc9]
+
+- Blok ledger run79 hilang saat recovery CRLF-mixed (pitfall tercatat);
+  bukti lengkap ada di pesan commit 9c42fc9 + entry ROADMAP_STATE run79.
+  Ringkasan: successful restore kini snapshot switch (hapus live assets,
+  salin payload backup utuh), RED 'a file created after the backup must
+  not survive a restore' terverifikasi, focused 2/2, regresi resilience
+  178/0/1, analyze bersih, build windows debug PASS 27.3s, FULL SUITE
+  3727 PASS / 3 FAIL concurrent-owned trio 145.37/145.38 / 1 SKIP.
+
+### 2026-09-06 - run80 nephthys - heading Story Bible menampilkan judul cerita (input 145.43)
+
+- Gap: friksi UX native journey (ledger build 117f157, friksi #2): heading
+  "Story Bible" memakai UUID `4cbbc987...` alih-alih judul cerita -
+  keterbacaan buruk di jalur new-novel-to-writing (objective 145.43).
+- Friksi #1 dklarifikasi read-only: tabel novel_character_links kosong
+  (0 baris, kedua proyek live) dan tidak ada jalur UI pembuat link
+  (create service hanya dipakai test) - render "No linked characters"
+  BENAR utk data kosong; gap sebenarnya = fitur link-creation (145.47).
+- Slice: StoryRepositoryImpl.getStoryTitle (query ringan terpisah, null
+  saat story tidak ada) + heading StoryWorkspaceScreen FutureBuilder
+  judul dgn fallback UUID hanya saat judul belum diketahui. V1 state
+  field di builder hierarchy DITOLAK (FutureBuilder tidak me-rebuild
+  heading di luar subtree-nya); RED terverifikasi 2x (hang I/O FakeAsync
+  lalu Found 0 widgets), GREEN via poll pump+runAsync interleave.
+- RED: test/features/story/story_bible_heading_title_test.dart gagal
+  'Found 0 widgets with text "Story Bible - Judul Cerita Uji"'.
+- Bukti: focused 1/1 PASS; story_workspace_resolver_test 3/3 PASS (test
+  tanpa repository memakai fallback UUID - kontrak terjaga); regresi
+  test/features/story 163 PASS / 0 FAIL (162+1); analyze No issues
+  13.1s; diff --check scoped PASS; build windows debug PASS 25.8s;
+  FULL SUITE 3731 PASS / 3 FAIL concurrent-owned trio sibling
+  145.37/145.38 (app_navigation_registry untracked,
+  project_resilience_navigation untracked, void_mobile_shell M; eksak
+  preseden run78/79) / 1 SKIP exit 1 (~13 mnt).
+- Kepemilikan: story_workspace_screen.dart membawa perubahan sibling
+  pre-existing+aktif (activeSection/onSectionRequested,
+  _buildDedicatedSection ~120 baris, mtime terus bergerak) - commit
+  partial-stage hanya hunk heading; file layar tetap M setelah commit.
+- Native UNVERIFIABLE (cron tanpa computer-use); verifikasi GUI judul
+  pada journey native berikutnya.
+- Tidak push (remote bcd2087 tetap).
+
+### 2026-09-06 - run81 nephthys - artefak persiapan pilot 145.45/145.46 (doc-only, input tanpa keputusan)
+
+- Slice: docs/user/pilot-recruitment-brief.md (kriteria, informed expectations,
+  privasi, support path, larangan insentif paksaan, rentang 5-20 novelis,
+  proses screening) + docs/user/task-validation-script.md (enam kelompok tugas
+  create novel/character, write+reopen, lore finding, export, backup/restore;
+  prinsip tanpa memandu; lembar catatan friksi/error/confidence/terminology/
+  context per tugas; penyamaran P01-P20).
+- TDD: test/docs/pilot_artifacts_contract_test.dart ditulis DULU, RED
+  terverifikasi (2/2 FAIL - kedua dokumen belum ada), lalu GREEN 2/2 PASS
+  setelah artefak dibuat. Kontrak test mengikat konten minimum dokumen.
+- Otorisasi: cron 145.43-145.50 - "jalankan pekerjaan teknis yang tercakup
+  otorisasi; pisahkan keputusan produk/pilot/release yang butuh Choi".
+  Pemakaian artefak utk rekrutmen nyata = keputusan Choi; dokumen berstatus
+  DRAFT dgn pernyataan eksplisit.
+- Region pemilihan: sisa 145.42 (interrupted move - fitur tak ada;
+  drive_removal/device validation - butuh hardware; UNVERIFIABLE) dan friksi
+  145.43 #3/#4 berada di story_workspace_screen.dart yang AKTIF ditulis
+  sibling (mtime 00:09-00:13, workspace_section_controller.dart baru 23:58,
+  4 file workspace/story M + test untracked) - dihindari anti-overlap.
+- Bukti: focused 2/2 PASS; analyze No issues found! 9.0s; diff --check scoped
+  PASS exit 0; build windows debug PASS 18.2s; commit d5524e3 (3 file,
+  +239/-0, path eksplisit, tanpa git add -A).
+- Native UNVERIFIABLE (cron tanpa computer-use). Tidak push.
+
+### 2026-09-06 - nephthys sesi utama - kit operasional pilot 145.45/145.46 (doc-only, menerapkan artefak d5524e3)
+- Choi bertanya makna poin 3 (145.45-145.50 = keputusan Choi) dan meminta bantuan penerapan; dijelaskan: artefak sibling = dokumen, penerapan = keputusan manusia + alat operasional.
+- Tiga dokumen BARU dibuat (semuanya menerinci artefak sibling, tidak mengubah kontrak sprint/pointer/acceptance):
+  - `docs/user/pilot-recruitment-post.md` — pos rekrutmen siap-tempel (versi panjang + versi pendek Threads) yang membawa informed expectations, privasi, support path, tanpa insentif paksaan dari brief; slot `[ISI: ...]` untuk kontak/apresiasi Choi.
+  - `docs/user/pilot-screening-form.md` — formulir screening 5 pertanyaan + rubrik seleksi (variasi 2+2+2 pengalaman, variasi proyek/perangkat, eksklusi) + templat balasan lolos/tidak lolos.
+  - `docs/user/pilot-session-runbook.md` — runbook fasilitator hari-H: checklist H-1 (termasuk peringatan jangan force-kill app karena session.lock yatim - pelajaran journey 5 Sep), skrip pembukaan verbatim, aturan tanpa memandu (without leading), format lembar sesi T1-T6, penutup + arsip P01-P20.
+- Bukti: git diff --check PASS (commit ini); tanpa perubahan kode; publikasi pos dan penjadwalan tetap keputusan Choi.

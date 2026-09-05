@@ -1,3 +1,5 @@
+import 'package:sqlite3/sqlite3.dart' as sqlite;
+
 import 'project_database.dart';
 import 'project_database_platform.dart'
     if (dart.library.io) 'project_database_platform_io.dart'
@@ -21,6 +23,26 @@ class SchemaVersionTooNewException implements Exception {
       'application before opening this project';
 }
 
+/// Sprint 145.42 (Data Safety Failure Matrix) - corrupt database on the
+/// production open path. A database file that exists but cannot be opened
+/// as SQLite (truncated write, disk corruption, bad device) must surface a
+/// typed domain failure - the same contract family as
+/// [SchemaVersionTooNewException] - instead of leaking a raw
+/// [sqlite.SqliteException] out of drift initialization.
+class ProjectDatabaseUnreadableException implements Exception {
+  ProjectDatabaseUnreadableException(this.databasePath, this.cause);
+
+  final String databasePath;
+
+  /// The underlying engine failure (e.g. SQLITE_NOTADB).
+  final Object cause;
+
+  @override
+  String toString() =>
+      'ProjectDatabaseUnreadableException: database at $databasePath '
+      'is not a readable SQLite database ($cause)';
+}
+
 class ProjectDatabaseService {
   Future<void> create(String databasePath) =>
       createProjectDatabase(databasePath);
@@ -33,7 +55,11 @@ class ProjectDatabaseService {
         ProjectDatabase.currentSchemaVersion,
       );
     }
-    return openProjectDatabase(databasePath);
+    try {
+      return await openProjectDatabase(databasePath);
+    } on sqlite.SqliteException catch (error) {
+      throw ProjectDatabaseUnreadableException(databasePath, error);
+    }
   }
 
   Future<ProjectDatabase> openReadOnly(String databasePath) =>

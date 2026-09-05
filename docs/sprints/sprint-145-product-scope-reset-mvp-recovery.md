@@ -1467,3 +1467,13 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   Choi (ratify/amend) dan TIDAK dinyatakan VERIFIED.
 - Next: keputusan Choi atas ADR-0002; re-check sibling commit; engine
   145.34/145.32 sisa bila region bebas; NO-OP jika nihil.
+
+## Update 2026-09-05 (nephthys cron run64, ADR-0003 recovery decision draft + route-gating blocker)
+
+- Guard PASS pre-run (pointer 145.27, canonical_sha 86af6a5, last_resolved 145.26); HEAD start 961eeb1 (run63), dirty 488 = baseline run63, 0 unmerged, no Flutter process, remote bcd2087 TETAP.
+- Prioritas #2 (selection recovery, commit 81755fa) dan #4 (restart selection memory, commit c1f469a) terverifikasi CLOSED oleh run57 - atribusi dicek via git show --date + ledger lines 1155/1205; awalnya terbaca sebagai commit baru sibling karena git log -- path memunculkan commit lama, dikonfirmasi TIDAK ada commit sibling baru hari ini.
+- Full suite stability refresh @ HEAD 961eeb1 (Windows host): 3674 PASS / 0 FAIL / 1 SKIP, exit 0 (~12,5 mnt) - suite live sedikit lebih besar dari run62 (3673) karena worktree sibling.
+- Slice prioritas ADR draft 145.49 CLOSED: commit e4f069e docs(adr) ADR-0003-core-mvp-recovery-decision.md BARU 101 baris Status Proposed - bukti audit live (analyzer No issues 7.4s @ HEAD; full suite 3674/0), empat opsi (Implement/Stabilize/Refactor/Re-scope) + konsekuensi, rekomendasi Option B Stabilize existing Core dengan urutan kerja (route-gating demo 11 route, landing region sibling, exact-snapshot restore, native journey user-assisted, baru pilot 145.43-145.47). Keputusan final tetap Choi; pointer TIDAK bergerak.
+- Slice route-gating 11 demo route (app_routes.dart:44-55) BLOCKED pada pemetaan kanonik: RouteCapabilityGuard menolak capabilityId di luar ReactivationDependencyMap.entries (10 ID: COMMUNITY_CHAT, READER_PLATFORM, PUBLIC_PUBLISHING, AUTHOR_PAYMENT_AND_PAYOUT, CONNECTOR_MARKETPLACE, DEVELOPER_PLATFORM, MULTI_REGION, MOBILE_FULL_EDITOR, MACOS_RELEASE, DOZENS_OF_AI_AND_CLOUD_PROVIDERS), tidak ada ID yang mencakup render/animation/audio/virtual-production/enterprise-studio/knowledge/agents/studio-command-center/creative-os/xr-studio/metaverse; core_mvp_scope_reset_spec.json (sumber kanonik yang dikutip doc-header guard) TIDAK ditemukan di tree (find + grep). Menambah ID baru = perluasan scope tanpa otoritas dokumen (document_authority_policy). Butuh: pemetaan kanonik resmi (Choi/Codex) atau checksum spec ke registry.
+- Tidak push (HEAD e4f069e, ahead 51, remote bcd2087). Native interaction UNVERIFIABLE (cron tanpa computer-use). Worktree sibling dipreservasi.
+- Next: keputusan Choi atas ADR-0003 (ratify/amend); sumber kanonik pemetaan 11 route demo; engine 145.34/145.32 sisa bila region bebas.

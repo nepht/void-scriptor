@@ -1187,13 +1187,27 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Story Bible — ${widget.storyId}',
-                        style: TextStyle(
-                          color: p.textPrimary,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
+                      FutureBuilder<String?>(
+                        future: widget.repository?.getStoryTitle(
+                          widget.storyId,
                         ),
+                        builder: (context, titleSnapshot) {
+                          final title = titleSnapshot.data;
+                          // Friksi UX journey native (ledger 117f157, input
+                          // 145.43): tampilkan judul cerita, fallback UUID
+                          // hanya saat judul belum diketahui.
+                          final label = (title == null || title.isEmpty)
+                              ? 'Story Bible — ${widget.storyId}'
+                              : 'Story Bible — $title';
+                          return Text(
+                            label,
+                            style: TextStyle(
+                              color: p.textPrimary,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(height: 10),
                       _exportActions(),

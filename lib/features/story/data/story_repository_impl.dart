@@ -116,6 +116,16 @@ class StoryRepositoryImpl {
     );
   }
 
+  /// Judul cerita untuk heading workspace (input 145.43). Query ringan
+  /// terpisah dari hierarchy penuh; null saat story tidak ditemukan.
+  Future<String?> getStoryTitle(String storyId) async {
+    final story = await database.storyDao.getStory(storyId);
+    if (story == null || story.projectId != projectId) {
+      return null;
+    }
+    return story.title;
+  }
+
   Future<StoryHierarchy> getStoryHierarchy(String storyId) async {
     final story = await database.storyDao.getStory(storyId);
     if (story == null || story.projectId != projectId) {

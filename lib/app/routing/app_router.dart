@@ -58,8 +58,14 @@ import '../../core/metaverse/builtin/demo_metaverse.dart';
 import 'app_routes.dart';
 import 'foundation_route_screen.dart';
 
-GoRouter createAppRouter({String initialLocation = AppRoutes.splash}) {
+GoRouter createAppRouter({
+  String initialLocation = AppRoutes.splash,
+  Set<String> allowedCapabilities = const <String>{},
+}) {
   final guard = RouteCapabilityGuard(flags: FeatureFlagRegistry());
+  for (final capability in allowedCapabilities) {
+    guard.allowCapability(capability);
+  }
   return GoRouter(
     redirect: (context, state) => guard.redirectFor(state.uri.path),
     initialLocation: initialLocation,

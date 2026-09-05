@@ -132,8 +132,26 @@ void main() {
         if (entry.featureModules.isEmpty) {
           expect(
             entry.capabilityId,
-            anyOf('MOBILE_FULL_EDITOR', 'MACOS_RELEASE', 'MULTI_REGION'),
-            reason: 'hanya platform follow-up yang boleh tanpa modul tree',
+            isIn(<String>[
+              // Platform follow-up tanpa modul tree, plus demo engine
+              // capabilities (dibekukan Choi 2026-09-05) yang modul demonya
+              // hidup di lib/core/<domain>/, bukan lib/features/.
+              'MOBILE_FULL_EDITOR',
+              'MACOS_RELEASE',
+              'MULTI_REGION',
+              'RENDER_ENGINE',
+              'ANIMATION_ENGINE',
+              'VIRTUAL_PRODUCTION',
+              'ENTERPRISE_STUDIO',
+              'KNOWLEDGE_ENGINE',
+              'AGENT_RUNTIME',
+              'STUDIO_COMMAND_CENTER',
+              'CREATIVE_OS',
+              'XR_STUDIO',
+              'METAVERSE_STUDIO',
+            ]),
+            reason: 'hanya platform follow-up dan demo engine yang boleh '
+                'tanpa modul lib/features',
           );
         }
       }

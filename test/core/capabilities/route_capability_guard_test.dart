@@ -19,8 +19,8 @@ void main() {
       final routes = RouteCapabilityGuard.canonicalRules
           .map((rule) => rule.route)
           .toSet();
-      expect(routes, <String>{'/publishing', '/plugins'});
-      expect(RouteCapabilityGuard.canonicalRules.length, 2);
+      expect(routes, containsAll(<String>{'/publishing', '/plugins'}));
+      expect(RouteCapabilityGuard.canonicalRules.length, 13);
     });
 
     test('canonical capability ids exist in the reactivation map', () {

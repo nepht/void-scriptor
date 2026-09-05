@@ -65,6 +65,64 @@ class RouteCapabilityGuard {
       capabilityId: 'CONNECTOR_MARKETPLACE',
       fallbackRoute: '/dashboard',
     ),
+    // ---- Demo engine routes (dibekukan Choi 2026-09-05, prasyarat 145.43):
+    // ---- selama capability belum di-allow (145.17), route demo dialihkan
+    // ---- ke Dashboard agar Core MVP tetap bebas surface non-Core.
+    RouteCapabilityRule(
+      route: '/render',
+      capabilityId: 'RENDER_ENGINE',
+      fallbackRoute: '/dashboard',
+    ),
+    RouteCapabilityRule(
+      route: '/animation',
+      capabilityId: 'ANIMATION_ENGINE',
+      fallbackRoute: '/dashboard',
+    ),
+    RouteCapabilityRule(
+      route: '/audio',
+      capabilityId: 'AUDIO_ENGINE',
+      fallbackRoute: '/dashboard',
+    ),
+    RouteCapabilityRule(
+      route: '/virtual-production',
+      capabilityId: 'VIRTUAL_PRODUCTION',
+      fallbackRoute: '/dashboard',
+    ),
+    RouteCapabilityRule(
+      route: '/enterprise-studio',
+      capabilityId: 'ENTERPRISE_STUDIO',
+      fallbackRoute: '/dashboard',
+    ),
+    RouteCapabilityRule(
+      route: '/knowledge',
+      capabilityId: 'KNOWLEDGE_ENGINE',
+      fallbackRoute: '/dashboard',
+    ),
+    RouteCapabilityRule(
+      route: '/agents',
+      capabilityId: 'AGENT_RUNTIME',
+      fallbackRoute: '/dashboard',
+    ),
+    RouteCapabilityRule(
+      route: '/studio-command-center',
+      capabilityId: 'STUDIO_COMMAND_CENTER',
+      fallbackRoute: '/dashboard',
+    ),
+    RouteCapabilityRule(
+      route: '/creative-os',
+      capabilityId: 'CREATIVE_OS',
+      fallbackRoute: '/dashboard',
+    ),
+    RouteCapabilityRule(
+      route: '/xr-studio',
+      capabilityId: 'XR_STUDIO',
+      fallbackRoute: '/dashboard',
+    ),
+    RouteCapabilityRule(
+      route: '/metaverse',
+      capabilityId: 'METAVERSE_STUDIO',
+      fallbackRoute: '/dashboard',
+    ),
   ];
 
   RouteCapabilityGuard({

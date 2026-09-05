@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_flutter/lucide_flutter.dart';
 
+import '../../navigation/app_navigation_registry.dart';
 import '../../../core/theme/theme_mode_menu.dart';
 import '../../../design_system/widgets/branding/brand_assets.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
-import '../../../features/collaboration/domain/sync_models.dart';
-import '../../../features/collaboration/presentation/sync_status_indicator.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class VoidTopBar extends StatelessWidget {
@@ -16,7 +16,6 @@ class VoidTopBar extends StatelessWidget {
     this.onRedo,
     this.canUndo = false,
     this.canRedo = false,
-    this.syncStatus = const SyncStatus(),
   });
 
   final ValueChanged<String> onMenuSelected;
@@ -25,8 +24,6 @@ class VoidTopBar extends StatelessWidget {
   final VoidCallback? onRedo;
   final bool canUndo;
   final bool canRedo;
-  final SyncStatus syncStatus;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -38,113 +35,73 @@ class VoidTopBar extends StatelessWidget {
       ),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final wide = constraints.maxWidth >= 1200;
+          final showAllCore = constraints.maxWidth >= 1320;
+          final showFullBrand = constraints.maxWidth >= 1500;
+          // Project workspaces belong in the Explorer sidebar, not global
+          // desktop navigation. Keep the shared registry intact for mobile.
+          final desktopDestinations = coreNavigationDestinations
+              .where(
+                (destination) =>
+                    destination.id != AppNavigationId.characters &&
+                    destination.id != AppNavigationId.world,
+              )
+              .toList(growable: false);
+          final visibleCore = showAllCore
+              ? desktopDestinations
+              : desktopDestinations.take(4).toList(growable: false);
+          final hiddenCore = showAllCore
+              ? const <AppNavigationDestination>[]
+              : desktopDestinations.skip(4).toList(growable: false);
           return Row(
             children: [
-              const SizedBox(width: 230, child: VoidLogo()),
-              const SizedBox(width: 12),
+              SizedBox(
+                width: showFullBrand ? 230 : 40,
+                child: VoidLogo(compact: !showFullBrand),
+              ),
+              const SizedBox(width: 8),
               Expanded(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      _TopMenuButton(
-                        label: 'Workspace',
-                        onTap: () => onMenuSelected('workspace'),
-                      ),
-                      _TopMenuButton(
-                        label: 'Projects',
-                        onTap: () => onMenuSelected('projects'),
-                      ),
-                      _TopMenuButton(
-                        label: 'AI Tools',
-                        onTap: () => onMenuSelected('ai'),
-                      ),
-                      _TopMenuButton(
-                        label: 'Assets',
-                        onTap: () => onMenuSelected('assets'),
-                      ),
-                      _TopMenuButton(
-                        label: 'Bible',
-                        onTap: () => onMenuSelected('bible'),
-                      ),
-                      if (wide) ...[
+                      for (final destination in visibleCore)
                         _TopMenuButton(
-                          label: 'Marketplace',
-                          onTap: () => onMenuSelected('marketplace'),
+                          label: destination.label,
+                          icon: destination.icon,
+                          onTap: () => onMenuSelected(destination.key),
                         ),
-                        _TopMenuButton(
-                          label: 'Donate',
-                          onTap: () => onMenuSelected('donate'),
+                      if (hiddenCore.isNotEmpty)
+                        _NavigationOverflow(
+                          tooltip: 'More navigation',
+                          destinations: hiddenCore,
+                          onSelected: onMenuSelected,
                         ),
-                      ],
                     ],
                   ),
                 ),
               ),
-              if (wide) ...[
-                const SizedBox(width: 12),
-                SizedBox(
-                  width: 240,
-                  height: 34,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search',
-                      prefixIcon: const Icon(Icons.search, size: 17),
-                      contentPadding: EdgeInsets.zero,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
               const SizedBox(width: 8),
-              _TopIconButton(
-                icon: Icons.undo_rounded,
-                tooltip: 'Undo',
-                onPressed: canUndo ? onUndo : null,
-              ),
-              _TopIconButton(
-                icon: Icons.redo_rounded,
-                tooltip: 'Redo',
-                onPressed: canRedo ? onRedo : null,
-              ),
-              _TopIconButton(
-                icon: Icons.health_and_safety_outlined,
-                tooltip: 'Project resilience',
-                onPressed: () => onMenuSelected('resilience'),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: SyncStatusIndicator(status: syncStatus),
-              ),
-              const _TopIconButton(
-                icon: Icons.notifications_none_rounded,
-                tooltip: 'Notifications',
-              ),
-              _TopIconButton(
-                icon: Icons.favorite_border_rounded,
-                tooltip: 'Donate / Support',
-                onPressed: () {
-                  _showDonationDialog(context);
-                },
-              ),
-              const ThemeModeMenu(),
-              IconButton(
-                tooltip: 'Logout',
-                onPressed: onLogout,
-                icon: const Icon(Icons.logout_rounded, size: 18),
-              ),
-              const SizedBox(width: 6),
-              CircleAvatar(
-                radius: 16,
-                backgroundColor: context.palette.primary,
-                child: const Icon(
-                  Icons.person_outline,
-                  size: 18,
-                  color: Colors.white,
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _TopIconButton(
+                    icon: LucideIcons.undo2,
+                    tooltip: 'Undo',
+                    onPressed: canUndo ? onUndo : null,
+                  ),
+                  _TopIconButton(
+                    icon: LucideIcons.redo2,
+                    tooltip: 'Redo',
+                    onPressed: canRedo ? onRedo : null,
+                  ),
+                  _AiStudioMenu(onMenuSelected: onMenuSelected),
+                  _OptionalToolsMenu(onMenuSelected: onMenuSelected),
+                  const ThemeModeMenu(),
+                  _AccountMenu(
+                    onMenuSelected: onMenuSelected,
+                    onLogout: onLogout,
+                  ),
+                ],
               ),
             ],
           );
@@ -155,9 +112,14 @@ class VoidTopBar extends StatelessWidget {
 }
 
 class _TopMenuButton extends StatelessWidget {
-  const _TopMenuButton({required this.label, required this.onTap});
+  const _TopMenuButton({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
 
   final String label;
+  final IconData icon;
   final VoidCallback onTap;
 
   @override
@@ -167,7 +129,114 @@ class _TopMenuButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(6),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
-        child: Text(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: context.palette.textMuted),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: context.palette.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NavigationOverflow extends StatelessWidget {
+  const _NavigationOverflow({
+    required this.tooltip,
+    required this.destinations,
+    required this.onSelected,
+  });
+
+  final String tooltip;
+  final List<AppNavigationDestination> destinations;
+  final ValueChanged<String> onSelected;
+
+  @override
+  Widget build(BuildContext context) => PopupMenuButton<String>(
+    tooltip: tooltip,
+    onSelected: onSelected,
+    itemBuilder: (context) => [
+      for (final destination in destinations)
+        PopupMenuItem(
+          value: destination.key,
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(destination.icon, size: 19),
+            title: Text(destination.label),
+          ),
+        ),
+    ],
+    icon: const Icon(Icons.more_horiz_rounded),
+  );
+}
+
+class _AiStudioMenu extends StatelessWidget {
+  const _AiStudioMenu({required this.onMenuSelected});
+
+  final ValueChanged<String> onMenuSelected;
+
+  @override
+  Widget build(BuildContext context) => PopupMenuButton<String>(
+    tooltip: 'AI Studio',
+    onSelected: onMenuSelected,
+    itemBuilder: (context) => const [
+      PopupMenuItem(
+        value: 'ai',
+        child: ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: Icon(Icons.auto_awesome_outlined, size: 19),
+          title: Text('Open AI Studio'),
+        ),
+      ),
+      PopupMenuDivider(),
+      PopupMenuItem(
+        value: 'ai-image-generator',
+        child: ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: Icon(Icons.image_outlined, size: 19),
+          title: Text('Image Generator'),
+        ),
+      ),
+      PopupMenuItem(
+        value: 'ai-video-generator',
+        child: ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: Icon(Icons.movie_creation_outlined, size: 19),
+          title: Text('Video Generator'),
+        ),
+      ),
+    ],
+    child: const _TopMenuButtonContent(
+      label: 'AI Studio',
+      icon: Icons.auto_awesome_outlined,
+    ),
+  );
+}
+
+class _TopMenuButtonContent extends StatelessWidget {
+  const _TopMenuButtonContent({required this.label, required this.icon});
+
+  final String label;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 16, color: context.palette.textMuted),
+        const SizedBox(width: 6),
+        Text(
           label,
           style: TextStyle(
             fontSize: 12,
@@ -175,9 +244,78 @@ class _TopMenuButton extends StatelessWidget {
             color: context.palette.textSecondary,
           ),
         ),
-      ),
-    );
-  }
+        const SizedBox(width: 3),
+        Icon(
+          Icons.arrow_drop_down_rounded,
+          size: 16,
+          color: context.palette.textMuted,
+        ),
+      ],
+    ),
+  );
+}
+
+class _OptionalToolsMenu extends StatelessWidget {
+  const _OptionalToolsMenu({required this.onMenuSelected});
+
+  final ValueChanged<String> onMenuSelected;
+
+  @override
+  Widget build(BuildContext context) => PopupMenuButton<String>(
+    tooltip: 'Optional tools',
+    onSelected: (key) {
+      if (key == 'donate') {
+        _showDonationDialog(context);
+      } else {
+        onMenuSelected(key);
+      }
+    },
+    itemBuilder: (context) => [
+      const PopupMenuItem(enabled: false, child: Text('Optional tools')),
+      for (final destination in optionalNavigationDestinations)
+        PopupMenuItem(
+          value: destination.key,
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(destination.icon, size: 19),
+            title: Text(destination.label),
+          ),
+        ),
+    ],
+    icon: const Icon(Icons.extension_outlined),
+  );
+}
+
+class _AccountMenu extends StatelessWidget {
+  const _AccountMenu({required this.onMenuSelected, this.onLogout});
+
+  final ValueChanged<String> onMenuSelected;
+  final VoidCallback? onLogout;
+
+  @override
+  Widget build(BuildContext context) => PopupMenuButton<String>(
+    tooltip: 'Account menu',
+    onSelected: (key) {
+      if (key == 'logout') {
+        onLogout?.call();
+      } else if (key == 'donate') {
+        _showDonationDialog(context);
+      } else {
+        onMenuSelected(key);
+      }
+    },
+    itemBuilder: (context) => const [
+      PopupMenuItem(value: 'account-cloud', child: Text('Account & Cloud')),
+      PopupMenuItem(value: 'donate', child: Text('Support Void Scriptor')),
+      PopupMenuDivider(),
+      PopupMenuItem(value: 'logout', child: Text('Log out')),
+    ],
+    icon: CircleAvatar(
+      radius: 16,
+      backgroundColor: context.palette.primary,
+      child: const Icon(Icons.person_outline, size: 18, color: Colors.white),
+    ),
+  );
 }
 
 class _TopIconButton extends StatelessWidget {

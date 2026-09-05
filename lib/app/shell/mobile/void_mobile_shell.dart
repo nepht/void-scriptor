@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../navigation/app_navigation_registry.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
+import '../../../features/assets/domain/asset_type.dart';
 import '../../../features/explorer/presentation/explorer_panel.dart';
 import '../../../features/workspace/presentation/workspace_panel.dart';
 import '../../routing/app_routes.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
-class VoidMobileShell extends StatefulWidget {
+class VoidMobileShell extends ConsumerStatefulWidget {
   const VoidMobileShell({
     super.key,
     this.content,
@@ -20,64 +23,97 @@ class VoidMobileShell extends StatefulWidget {
   final String? projectId;
 
   @override
-  State<VoidMobileShell> createState() => _VoidMobileShellState();
+  ConsumerState<VoidMobileShell> createState() => _VoidMobileShellState();
 }
 
-class _VoidMobileShellState extends State<VoidMobileShell> {
+class _VoidMobileShellState extends ConsumerState<VoidMobileShell> {
   int _selectedIndex = 0;
 
   void _selectDestination(int index) {
-    if (index == 4) {
+    if (index == mobilePrimaryDestinations.length) {
       _showMoreActions();
       return;
     }
     setState(() => _selectedIndex = index);
-    final route = switch (index) {
-      0 when widget.projectId != null => AppRoutes.studioProject.replaceFirst(
-        ':projectId',
-        widget.projectId!,
-      ),
-      0 => AppRoutes.workspace,
-      1 => AppRoutes.projects,
-      2 => AppRoutes.aiStudio,
-      3 => AppRoutes.assets,
-      _ => AppRoutes.workspace,
-    };
-    context.push(route);
+    _goToDestination(mobilePrimaryDestinations[index]);
   }
 
   Future<void> _showMoreActions() {
     return showModalBottomSheet<void>(
       context: context,
       backgroundColor: context.palette.panel,
-      builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _MoreDestination(
-              icon: Icons.collections_bookmark_outlined,
-              label: 'References',
-              onTap: () => _goFromSheet(sheetContext, AppRoutes.references),
+      builder: (sheetContext) => Theme(
+        data: Theme.of(sheetContext).copyWith(
+          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 6),
+                  child: Text('Navigate'),
+                ),
+                for (final destination in coreNavigationDestinations.skip(3))
+                  _MoreDestination(
+                    icon: destination.icon,
+                    label: destination.label,
+                    onTap: () => _goFromSheet(sheetContext, destination),
+                  ),
+                for (final destination in optionalNavigationDestinations)
+                  if (destination.id == AppNavigationId.aiStudio)
+                    _MoreDestination(
+                      icon: destination.icon,
+                      label: destination.label,
+                      onTap: () => _goFromSheet(sheetContext, destination),
+                    ),
+                const Divider(),
+                ExpansionTile(
+                  leading: const Icon(Icons.extension_outlined),
+                  title: const Text('Optional tools'),
+                  children: [
+                    for (final destination in optionalNavigationDestinations)
+                      if (destination.id != AppNavigationId.aiStudio)
+                        _MoreDestination(
+                          icon: destination.icon,
+                          label: destination.label,
+                          onTap: () => _goFromSheet(sheetContext, destination),
+                        ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
             ),
-            _MoreDestination(
-              icon: Icons.menu_book_outlined,
-              label: 'Project Bible',
-              onTap: () => _goFromSheet(sheetContext, AppRoutes.bible),
-            ),
-            _MoreDestination(
-              icon: Icons.health_and_safety_outlined,
-              label: 'Diagnostics',
-              onTap: () =>
-                  _goFromSheet(sheetContext, AppRoutes.projectDiagnostics),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  void _goFromSheet(BuildContext sheetContext, String route) {
+  void _goFromSheet(
+    BuildContext sheetContext,
+    AppNavigationDestination destination,
+  ) {
     Navigator.of(sheetContext).pop();
+    _goToDestination(destination);
+  }
+
+  void _goToDestination(AppNavigationDestination destination) {
+    if (destination.requiresProject && widget.projectId == null) {
+      context.push(AppRoutes.projects);
+      return;
+    }
+    if (destination.id == AppNavigationId.characters) {
+      focusExplorerAsset(ref, AssetType.character);
+    } else if (destination.id == AppNavigationId.world) {
+      focusExplorerAsset(ref, AssetType.environment);
+    }
+    final route =
+        destination.id == AppNavigationId.write && widget.projectId != null
+        ? AppRoutes.studioProject.replaceFirst(':projectId', widget.projectId!)
+        : destination.route;
     context.push(route);
   }
 
@@ -90,20 +126,21 @@ class _VoidMobileShellState extends State<VoidMobileShell> {
         titleSpacing: 12,
         title: const VoidLogo(),
         actions: [
-          IconButton(
-            tooltip: 'Search assets',
-            onPressed: () => context.push(AppRoutes.assets),
-            icon: const Icon(Icons.search),
-          ),
-          IconButton(
-            tooltip: 'Profile',
-            onPressed: () => context.push(AppRoutes.dashboard),
+          PopupMenuButton<String>(
+            tooltip: 'Account menu',
+            onSelected: (value) {
+              if (value == 'account') {
+                context.push(AppRoutes.accountCloud);
+              } else {
+                widget.onLogout?.call();
+              }
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(value: 'account', child: Text('Account & Cloud')),
+              PopupMenuDivider(),
+              PopupMenuItem(value: 'logout', child: Text('Log out')),
+            ],
             icon: const Icon(Icons.person_outline),
-          ),
-          IconButton(
-            tooltip: 'Logout',
-            onPressed: widget.onLogout,
-            icon: const Icon(Icons.logout_rounded),
           ),
         ],
       ),
@@ -115,21 +152,13 @@ class _VoidMobileShellState extends State<VoidMobileShell> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: _selectDestination,
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home'),
-          NavigationDestination(
-            icon: Icon(Icons.folder_outlined),
-            label: 'Projects',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.auto_awesome_outlined),
-            label: 'AI',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.grid_view_outlined),
-            label: 'Assets',
-          ),
-          NavigationDestination(
+        destinations: [
+          for (final destination in mobilePrimaryDestinations)
+            NavigationDestination(
+              icon: Icon(destination.icon),
+              label: destination.label,
+            ),
+          const NavigationDestination(
             icon: Icon(Icons.more_horiz_rounded),
             label: 'More',
           ),
@@ -151,9 +180,13 @@ class _MoreDestination extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => ListTile(
-    leading: Icon(icon, color: context.palette.textSecondary),
-    title: Text(label, style: TextStyle(color: context.palette.textPrimary)),
-    onTap: onTap,
-  );
+  Widget build(BuildContext context) {
+    final density = Theme.of(context).visualDensity;
+    return ListTile(
+      visualDensity: density,
+      leading: Icon(icon, color: context.palette.textSecondary),
+      title: Text(label, style: TextStyle(color: context.palette.textPrimary)),
+      onTap: onTap,
+    );
+  }
 }

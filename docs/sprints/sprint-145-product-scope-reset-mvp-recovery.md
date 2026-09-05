@@ -1669,3 +1669,36 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   + providers AKTIF ditulis sibling (layar error 'Coba lagi' masih
   uncommitted) - recovery tombol tidak disentuh. Native UNVERIFIABLE.
 - Tidak push (HEAD 697279a, remote bcd2087 tetap).
+
+### 2026-09-06 - run83 nephthys - concurrent-open typed lock classification (145.42, concurrent open layer)
+
+- Gap: acceptance 145.42 "concurrent open" belum berbukti. Dua koneksi
+  penulis pada file database yang sama membuat drift `BEGIN IMMEDIATE`
+  gagal SQLITE_BUSY, dan `ProjectDatabaseService.open()` (catch
+  SqliteException run68) salah melaporkan database sehat sebagai
+  ProjectDatabaseUnreadableException (korup).
+- Slice: klasifikasi extendedResultCode==5 menjadi
+  ProjectDatabaseLockedException(databasePath, cause); jalur unreadable/
+  future-schema/corrupt tidak berubah.
+- RED terverifikasi: simbol ProjectDatabaseLockedException undefined
+  (2 test gagal kompilasi). Pitfall attempt pertama: koneksi sqlite3 idle
+  TIDAK memegang lock (SHARED dilepas setelah statement selesai) -
+  harness diperbaiki dengan BEGIN IMMEDIATE eksplisit; bukti kegagalan
+  attempt pertama berupa PathAccessException tearDown (file masih
+  dipegang writer), bukan assertion.
+- Bukti: focused 2/2 PASS; regresi test/database + test/core/persistence
+  + test/features/project_resilience 253 PASS/1 SKIP/0 FAIL; analyze
+  No issues found! 9.5s; diff --check PASS; build windows debug PASS
+  22.1s; FULL SUITE 3739 PASS/1 SKIP/3 FAIL concurrent-owned trio sibling
+  145.37/145.38 (eksak preseden run78-82). Commit 5cdfb75 (2 file +105).
+- Native journey (computer_use) UNVERIFIABLE run ini: backend cua-driver
+  gagal 3x "session never reached ready"; doctor PASS via CLI (binary
+  0.23.2, session active, UIAutomation+capture OK); proses yatim
+  cua-driver PID 14240 menolak taskkill (Access denied) dan tidak
+  di-force kill. Exe debug diluncurkan dan terverifikasi hidup (PID
+  8572) lalu dihentikan bersih; build ulang 17,4s sebelum percobaan.
+- Permintaan one-shot adversarial-bug-hunt: BLOCKED - delegate_task tidak
+  tersedia pada sesi cron ini (katalog tool hanya todo/computer_use/
+  process_manage); tidak memalsukan struktur Hunter/Skeptic/Referee.
+  Dicatat di notepad job agar tidak diulang otomatis.
+- Tidak push (HEAD 5cdfb75, remote bcd2087 tetap).

@@ -58,3 +58,9 @@ Catat waktu mulai, status persetujuan rekaman, suasana awal (context).
 | Confidence | 1-5 + alasan |
 | Terminology salah paham | |
 | Context | kelelahan / distraksi / gangguan teknis |
+
+## Konteks (kondisi peserta saat sesi — dicatat di penutup)
+
+- Catat kelelahan, distraksi, gangguan teknis, atau kejadian lain yang memengaruhi sesi.
+- Bukan penilaian peserta; ini membantu 145.47 membedakan friksi konsisten vs situasional.
+- Keputusan apresiasi Choi 2026-09-06: **Pro lifetime untuk SEMUA peserta** saat rilis; tanpa hadiah berbasis pemenang (koreksi kepatuhan — lihat ledger sprint-145).

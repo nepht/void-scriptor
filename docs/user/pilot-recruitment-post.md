@@ -1,7 +1,7 @@
-# Post Rekrutmen Pilot (siap-tempel) — operasional 145.45
+# Post Rekrutmen Pilot Novelis (siap-tempel) — operasional 145.45
 
-**Status:** DRAFT siap-pakai — memerinci `pilot-recruitment-brief.md` (d5524e3).
-Ganti semua bagian `[ISI: ...]` sebelum dipublikasikan. Publikasi = keputusan Choi.
+**Status:** FINAL menunggu posting — keputusan Choi 2026-09-06 sudah diisi.
+Publikasi dilakukan Choi dari akunnya sendiri.
 
 ---
 
@@ -26,14 +26,19 @@ awalnya dan memberi masukan jujur.
 - Sesi direkam layar hanya jika kamu setuju; rekaman hanya untuk evaluasi,
   bisa kamu minta hapus kapan saja.
 - Bug dan hal membingungkan justru data berharga — kamu tidak dinilai.
-- Tidak ada hadiah berbasis penyelesaian tugas. [ISI: bila ada apresiasi
-  tetap, sebutkan di sini; bila tidak ada, hapus baris ini]
+- Apresiasi untuk **semua peserta** yang menyelesaikan sesi: **akun Pro
+  lifetime saat produk dirilis ke publik** [ISI: bila ingin menambah
+  apresiasi uang tetap untuk semua peserta, tulis nominalnya di sini —
+  tetap untuk semua, tanpa pemenang].
+- Tidak ada hadiah berbasis hasil, ranking, atau penilaian — sesi ini
+  pengujian usability, bukan kompetisi, jadi semua peserta diperlakukan sama.
 - Nama kamu disamarkan (P01, P02, ...) di semua catatan.
 
 **Syarat:** rutin menulis (novel panjang maupun cerpen), punya laptop Windows,
 belum pernah memakai Void Scriptor sebelumnya.
 
-**Tertarik?** Isi 5 pertanyaan singkat ini ke `[ISI: kontak — DM/email/form]`:
+**Tertarik?** Isi 5 pertanyaan singkat ini ke **DM Threads** atau
+**email nephthyssilentz@gmail.com**:
 1. Seberapa rutin kamu menulis, dan biasanya menulis apa?
 2. Spesifikasi ringkas laptop kamu (RAM + Windows berapa)?
 3. Kapan waktu luang untuk sesi 60-90 menit (minggu ini/berikutnya)?
@@ -46,15 +51,19 @@ belum pernah memakai Void Scriptor sebelumnya.
 
 Mencari 5-20 novelis: coba aplikasi menulis novel lokal untuk Windows
 (60-90 menit, dibimbing, naskah pribadi tidak disentuh, boleh berhenti kapan
-saja). Versi alpha — masukanmu ikut menentukan prioritas fitur. Minat?
-DM `[ISI: kontak]` untuk 5 pertanyaan singkat.
+saja). Versi alpha — masukanmu ikut menentukan prioritas fitur. Semua peserta
+menerima akun Pro lifetime saat rilis. Minat? **DM Threads** atau email
+**nephthyssilentz@gmail.com** untuk 5 pertanyaan singkat.
 
 ---
 
-## Checklist publikasi (untuk Choi)
+## Checklist publikasi (untuk Choi) — keputusan Choi 2026-09-06
 
-- [ ] Tentukan kanal: Threads / grup WhatsApp menulis / Discord / komunitas lain
-- [ ] Isi kontak + keputusan apresiasi (ada/tidak)
-- [ ] Tentukan jendela rekrutmen (disarankan: 1-2 minggu)
+- [x] Kanal: **Threads + email nephthyssilentz@gmail.com**
+- [x] Apresiasi: **akun Pro lifetime untuk semua peserta saat rilis**;
+      tanpa hadiah berbasis pemenang (koreksi kepatuhan — lihat ledger
+      sprint-145)
+- [x] Jendela rekrutmen: **1-2 minggu**, target **8-12 responden**
+- [ ] Choi isi slot apresiasi uang tetap bila diaktifkan, lalu posting
+      versi panjang di Threads
 - [ ] Pantau respons harian; teruskan responden ke `pilot-screening-form.md`
-- [ ] Target awal: 8-12 responden (cukup untuk variasi 2+2+2 dari tiap kelompok pengalaman)

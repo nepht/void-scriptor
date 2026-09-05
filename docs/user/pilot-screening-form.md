@@ -41,6 +41,16 @@ butuh 3 menit. Jawabanmu hanya untuk seleksi peserta dan akan disamarkan.
 **Eksklusi:** anggota tim pengembangan; pernah memakai Void Scriptor;
 jawaban #4 atau #5 = tidak.
 
+## Catatan kompensasi (keputusan Choi 2026-09-06, terkunci)
+
+- **Semua peserta yang menyelesaikan sesi** menerima **akun Pro lifetime**
+  saat produk rilis ke publik. Dicantumkan di pos rekrutmen, sama untuk semua.
+- **Tidak ada hadiah berbasis pemenang atau ranking.** Usulan "hadiah cash
+  untuk novel terbaik / banyak peminat" diubah ke model setara-semua
+  peserta (koreksi kepatuhan; lihat ledger sprint-145).
+- Bila di kemudian hari Anda ingin menambah apresiasi tunai setara untuk
+  semua peserta, sampaikan nominalnya dan tambahkan di sini + di pos.
+
 ---
 
 ## Templat balasan lolos screening

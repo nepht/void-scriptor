@@ -117,18 +117,20 @@ class ProjectSessionManager {
       ),
     );
     final lock = ProjectSessionLock(package);
-    if (mode == ProjectOpenMode.readWrite) {
-      await lock.acquire();
-      await package.lockFile.writeAsString(
-        jsonEncode({
-          'sessionId': const Uuid().v4(),
-          'projectId': package.projectId,
-          'openedAt': DateTime.now().toUtc().toIso8601String(),
-        }),
-      );
-    }
     ProjectDatabase? database;
+    var companionWritten = false;
     try {
+      if (mode == ProjectOpenMode.readWrite) {
+        await lock.acquire();
+        await package.lockFile.writeAsString(
+          jsonEncode({
+            'sessionId': const Uuid().v4(),
+            'projectId': package.projectId,
+            'openedAt': DateTime.now().toUtc().toIso8601String(),
+          }),
+        );
+        companionWritten = true;
+      }
       final existingVersion = await _schemaVersionReader(
         package.databaseFile.path,
       );
@@ -238,6 +240,7 @@ class ProjectSessionManager {
     } catch (_) {
       if (mode == ProjectOpenMode.readWrite) await lock.release();
       if (mode == ProjectOpenMode.readWrite &&
+          companionWritten &&
           await package.lockFile.exists()) {
         await package.lockFile.delete();
       }

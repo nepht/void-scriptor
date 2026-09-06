@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 import '../domain/project_model.dart';
+import 'async_mutex.dart';
 import 'project_recovery_service.dart';
 import 'project_paths.dart';
 
@@ -34,6 +35,7 @@ class ProjectRegistryService {
   final File? file;
   final ProjectPaths? paths;
   final ProjectRecoveryService _recovery = const ProjectRecoveryService();
+  final AsyncMutex _mutex = AsyncMutex();
 
   Future<File> get _registryFile async {
     final configuredPaths = paths;
@@ -43,7 +45,9 @@ class ProjectRegistryService {
     throw StateError('ProjectRegistryService requires rootDirectory or paths');
   }
 
-  Future<List<ProjectModel>> load() async {
+  Future<List<ProjectModel>> load() => _mutex.run(_loadUnlocked);
+
+  Future<List<ProjectModel>> _loadUnlocked() async {
     final file = await _registryFile;
     // 145.42 power-loss window: pulihkan registry dari .bak sebelum
     // melaporkan daftar proyek kosong.
@@ -71,7 +75,7 @@ class ProjectRegistryService {
     // Durability first: persist the admission, then consume the markers.
     // A crash in between leaves the marker in place, but the id is now
     // registered so the next load consumes it without duplicating.
-    await save(merged);
+    await _saveUnlocked(merged);
     for (final project in admitted) {
       await _recovery.consumeCreationMarker(
         File(
@@ -166,7 +170,10 @@ class ProjectRegistryService {
     throw StateError('ProjectRegistryService requires rootDirectory or paths');
   }
 
-  Future<void> save(List<ProjectModel> projects) async {
+  Future<void> save(List<ProjectModel> projects) =>
+      _mutex.run(() => _saveUnlocked(projects));
+
+  Future<void> _saveUnlocked(List<ProjectModel> projects) async {
     final file = await _registryFile;
     await file.parent.create(recursive: true);
     final json = {
@@ -179,15 +186,15 @@ class ProjectRegistryService {
     );
   }
 
-  Future<void> upsert(ProjectModel project) async {
-    final projects = [...await load()];
+  Future<void> upsert(ProjectModel project) => _mutex.run(() async {
+    final projects = [...await _loadUnlocked()];
     final index = projects.indexWhere((item) => item.id == project.id);
     if (index == -1) {
       projects.add(project);
     } else {
       projects[index] = project;
     }
-    await save(projects);
+    await _saveUnlocked(projects);
     // The crash window (package finished, registration pending) closes
     // here: only after the registration is durable is the creation
     // marker consumed. A crash before the save leaves the marker for
@@ -197,11 +204,13 @@ class ProjectRegistryService {
         p.join(project.localPath, ProjectRecoveryService.creationMarkerName),
       ),
     );
-  }
+  });
 
-  Future<void> remove(String projectId) async {
-    await save((await load()).where((item) => item.id != projectId).toList());
-  }
+  Future<void> remove(String projectId) => _mutex.run(() async {
+    await _saveUnlocked(
+      (await _loadUnlocked()).where((item) => item.id != projectId).toList(),
+    );
+  });
 
   /// Best-effort consumption of landed move journals (145.42): a
   /// `move-pending.marker` inside the directory of a registered

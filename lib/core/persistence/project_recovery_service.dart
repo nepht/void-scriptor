@@ -3,11 +3,20 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
+import 'async_mutex.dart';
+
 import 'project_manifest.dart';
 import '../domain/project_model.dart';
 
 class ProjectRecoveryService {
   const ProjectRecoveryService();
+
+  /// Bug-hunt run94 BUG-02: concurrent writers on one target shared a
+  /// single `.tmp` name with no serialization, so the loser failed with
+  /// a spurious exception and could transiently roll the winner back.
+  /// Writes to the same target path are serialized (case-insensitive on
+  /// Windows via canonicalize); different targets stay parallel.
+  static final Map<String, AsyncMutex> _writeLocks = <String, AsyncMutex>{};
 
   /// Journal for an interrupted package move (145.42). Written and
   /// flushed by [ProjectMoveService.movePackage] BEFORE the rename opens
@@ -95,7 +104,15 @@ class ProjectRecoveryService {
     }
   }
 
-  Future<void> atomicWrite({
+  Future<void> atomicWrite({required File target, required String content}) {
+    final lock = _writeLocks.putIfAbsent(
+      p.canonicalize(target.path),
+      AsyncMutex.new,
+    );
+    return lock.run(() => _atomicWriteLocked(target: target, content: content));
+  }
+
+  Future<void> _atomicWriteLocked({
     required File target,
     required String content,
   }) async {

@@ -28,7 +28,9 @@ void main() {
   }) {
     final database = db!;
     final now = DateTime.fromMillisecondsSinceEpoch(0);
-    return database.into(database.assets).insert(
+    return database
+        .into(database.assets)
+        .insert(
           AssetsCompanion.insert(
             id: id,
             projectId: 'p_test',
@@ -41,15 +43,15 @@ void main() {
   }
 
   Future<void> pumpBrowser(WidgetTester tester) => tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            projectAssetsProvider.overrideWith(
-              (ref) => db!.assetDao.getAllAssets(),
-            ),
-          ],
-          child: const MaterialApp(home: AssetBrowserScreen()),
+    ProviderScope(
+      overrides: [
+        projectAssetsProvider.overrideWith(
+          (ref) => db!.assetDao.getAllAssets(),
         ),
-      );
+      ],
+      child: const MaterialApp(home: AssetBrowserScreen()),
+    ),
+  );
 
   testWidgets('asset browser falls back to live project session assets', (
     tester,
@@ -60,6 +62,11 @@ void main() {
       name: 'Test Story Item — Native Journey',
       type: 'prop',
     );
+    await seedAsset(
+      id: 'a-armor',
+      name: 'Test Armor — Native Journey',
+      type: 'armor',
+    );
     await seedAsset(id: 'a-unknown', name: 'Legacy Row', type: 'mystery');
 
     await pumpBrowser(tester);
@@ -67,6 +74,7 @@ void main() {
 
     expect(find.text('Qowner'), findsOneWidget);
     expect(find.text('Test Story Item — Native Journey'), findsOneWidget);
+    expect(find.text('Test Armor — Native Journey'), findsOneWidget);
     // Rows whose stored type is not in AssetType are skipped, not faked.
     expect(find.text('Legacy Row'), findsNothing);
     expect(find.text('No assets found'), findsNothing);

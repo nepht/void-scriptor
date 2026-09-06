@@ -57,22 +57,18 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
   }
 
   void _listenLiveAssets() {
-    _liveAssetsSub = ref.listenManual(
-      projectAssetsProvider,
-      (previous, next) {
-        next.whenData((rows) {
-          final mapped = <SearchableAsset>[];
-          for (final row in rows) {
-            final asset = _searchableFromDb(row);
-            if (asset != null) mapped.add(asset);
-          }
-          if (!mounted) return;
-          setState(() => _liveAssets = mapped);
-          _syncPagination();
-        });
-      },
-      fireImmediately: true,
-    );
+    _liveAssetsSub = ref.listenManual(projectAssetsProvider, (previous, next) {
+      next.whenData((rows) {
+        final mapped = <SearchableAsset>[];
+        for (final row in rows) {
+          final asset = _searchableFromDb(row);
+          if (asset != null) mapped.add(asset);
+        }
+        if (!mounted) return;
+        setState(() => _liveAssets = mapped);
+        _syncPagination();
+      });
+    }, fireImmediately: true);
   }
 
   SearchableAsset? _searchableFromDb(db.Asset row) {
@@ -522,6 +518,8 @@ class AssetThumbnail extends StatelessWidget {
     AssetType.character => Icons.person,
     AssetType.wardrobe => Icons.checkroom,
     AssetType.weapon => Icons.shield,
+    AssetType.armor => Icons.shield_moon,
+    AssetType.accessory => Icons.diamond,
     AssetType.environment => Icons.landscape,
     AssetType.story => Icons.menu_book,
     AssetType.scene => Icons.movie,

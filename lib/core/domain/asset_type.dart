@@ -7,6 +7,8 @@ enum AssetType {
   character,
   wardrobe,
   weapon,
+  armor,
+  accessory,
   creature,
   vehicle,
   prop,

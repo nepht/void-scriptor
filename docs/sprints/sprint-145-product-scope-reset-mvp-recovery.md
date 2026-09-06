@@ -2400,3 +2400,36 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   HEAD start 4becd49; 0 proses flutter/dart; tidak push (keputusan Choi).
 - Next: keputusan Choi push + ROADMAP_STATE; native journey 145.42/145.44 dari sesi interaktif
   Choi; NO-OP jika tidak ada region bebas berikutnya.
+
+### 2026-09-07 - run119 nephthys - Frontier 2 top bar hierarchy CLOSED (queue Choi 5b6e11a)
+
+- Queue Choi 5b6e11a (11:23) Frontier 1 Settings Hub CLOSED run116 (e30a844); Frontier 2
+  syarat region ter-commit - terpenuhi via adopsi 5efa2bd (run117); worktree == HEAD saat
+  run dimulai. Guard PASS pre (pointer 145.27, canonical_sha 86af6a5).
+- Commit 6d0a480 feat(shell) 7 file +402/-24: VoidTopBar parameter baru projectContext
+  (ProjectContextSummary -> menu Backup & Export), saveState (chip Tersimpan/Belum
+  tersimpan dari ProjectMutationState.isDirty), onOpenSearch (tombol palette membuka
+  showGlobalSearchSheet yang sama dgn ProjectOverview); baris navigasi global tinggal
+  Dashboard/Projects/Search (Backup & Export keluar, Characters/World tetap tertutup);
+  ThemeModeMenu dikeluarkan dr top bar (Theme tetap ada di Settings Hub > Appearance);
+  Account menu menukar duplikasi Support dgn Settings. void_desktop_shell: state +
+  onOpenSearch ter-wiring; case settings sudah ada sebelumnya.
+- RED terverifikasi: test baru kompilasi gagal (projectContext/saveState/onOpenSearch
+  No named parameter); GREEN 10/10 test frontier2.
+- Adaptasi intent-preserving 4 test kontrak lama (pola skill route-gating):
+  project_resilience_navigation (Backup & Export kini via project-context; Settings via
+  Account menu), core_mvp_navigation (row global 3 destinasi), void_top_bar_command
+  (lebar 1280 tak lagi butuh More navigation), settings_hub_navigation (Settings kini
+  dalam Account menu).
+- Bukti: shell+nav+workspace regresi 171 PASS/0 FAIL; format 2 file owned; analyze
+  global No issues 8.9s; git diff --check exit 0; build windows debug PASS 44.9s;
+  FULL SUITE 3844 PASS/0 FAIL/1 SKIP exit 0 ~13.5 mnt (delta +10 eksak = 10 test baru).
+- Batas jujur: native journey top bar baru UNVERIFIABLE dari cron (preseden cua-driver);
+  save-state chip menampilkan state runtime dgn label statis Tersimpan/Belum tersimpan
+  (timestamp per-save milik autosave coordinator 145.43). Project-context belum memuat
+  nama project live - wiring session -> ProjectContextSummary ditunda ke slice berikut
+  agar tidak melebar (shell kini punya session di scope yang sama).
+- Tidak push (HEAD 6d0a480, ahead 43; keputusan Choi).
+- Next: (1) wiring session -> ProjectContextSummary (1 slice kecil, region sama);
+  (2) native journey 145.42/145.44 dr sesi interaktif Choi; (3) keputusan Choi push +
+  ROADMAP_STATE; (4) NO-OP bila region shell/routing kembali live-edit.

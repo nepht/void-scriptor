@@ -8,22 +8,28 @@ import '../../../core/project_package/project_package.dart';
 import '../../../core/project_package/void_project_format.dart';
 import '../../../database/project/project_database.dart';
 
+typedef ProcessLivenessProbe = Future<bool> Function(int processId);
+
 class ProjectSessionLock {
-  ProjectSessionLock(this.package);
+  ProjectSessionLock(this.package, {ProcessLivenessProbe? isProcessAlive})
+    : _isProcessAlive = isProcessAlive ?? _platformProcessIsAlive;
+
   final ProjectPackage package;
+  final ProcessLivenessProbe _isProcessAlive;
   String? _ownedSessionId;
 
   Future<void> acquire({String? appVersion}) async {
     // Atomic create: checking exists before writing allows concurrent writers.
-    // Age, heartbeat delays, and sleep are not evidence that an owner died.
-    // Unknown/legacy/crash markers require explicit offline recovery.
+    // Age alone is never evidence that an owner died. A marker may only be
+    // recovered automatically when it carries a PID that the OS proves dead.
     try {
       await package.sessionFile.create(exclusive: true);
     } on FileSystemException {
-      if (await package.sessionFile.exists()) {
+      if (!await package.sessionFile.exists()) rethrow;
+      if (!await _recoverDeadOwnerMarker()) {
         throw StateError('Project has an active or stale session');
       }
-      rethrow;
+      await package.sessionFile.create(exclusive: true);
     }
     final sessionId = const Uuid().v4();
     // If metadata writing fails, preserve the marker and fail closed.
@@ -31,12 +37,64 @@ class ProjectSessionLock {
       jsonEncode({
         'sessionId': sessionId,
         'projectId': package.projectId,
+        'processId': pid,
         'openedAt': DateTime.now().toUtc().toIso8601String(),
         'appVersion': appVersion ?? VoidProjectFormat.applicationVersion,
       }),
       flush: true,
     );
     _ownedSessionId = sessionId;
+  }
+
+  Future<bool> _recoverDeadOwnerMarker() async {
+    Map<String, dynamic> marker;
+    try {
+      marker =
+          jsonDecode(await package.sessionFile.readAsString())
+              as Map<String, dynamic>;
+    } on Object {
+      return false;
+    }
+    final ownerPid = marker['processId'];
+    if (ownerPid is! int || ownerPid <= 0 || await _isProcessAlive(ownerPid)) {
+      return false;
+    }
+
+    final snapshot = Directory(
+      p.join(
+        package.recoveryDirectory.path,
+        'stale-session-${DateTime.now().toUtc().microsecondsSinceEpoch}',
+      ),
+    );
+    await snapshot.create(recursive: true);
+    await package.sessionFile.copy(p.join(snapshot.path, 'session.lock'));
+    await package.sessionFile.delete();
+    return true;
+  }
+
+  static Future<bool> _platformProcessIsAlive(int processId) async {
+    try {
+      if (Platform.isWindows) {
+        final result = await Process.run('tasklist', [
+          '/FI',
+          'PID eq $processId',
+          '/NH',
+        ]);
+        if (result.exitCode != 0) return true;
+        return result.stdout.toString().contains(RegExp('\\s$processId\\s'));
+      }
+      final result = await Process.run('ps', [
+        '-p',
+        '$processId',
+        '-o',
+        'pid=',
+      ]);
+      if (result.exitCode != 0) return false;
+      return result.stdout.toString().trim() == '$processId';
+    } on Object {
+      // Probe failure must never displace an owner.
+      return true;
+    }
   }
 
   Future<void> release() async {

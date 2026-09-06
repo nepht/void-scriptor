@@ -1896,3 +1896,45 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Pitfall: probe awal `BEGIN IMMEDIATE + ROLLBACK` tidak benar-benar menyentuh file (journal mode DELETE) - diganti COMMIT INSERT/DELETE + DROP sentinel + VACUUM reclaim agar ukuran file utama kembali; obstacle DIRECTORY untuk WAL sidecar ternyata tidak deterministik (sqlite3 fallback ke mode DELETE) - test 3 dihapus dengan komentar kontrak. Slice ini cukup membuktikan dua permukaan: open() classify write-failure + probeWrite sukses tanpa residu.
 - Sisa 145.42: drive-removal live + installed-device validation hardware-bound UNVERIFIABLE dari cron. Native journey UNVERIFIABLE (cua-driver session never ready preseden run83/86/88/89). Pointer tetap 145.27 (PARTIAL).
 - ROADMAP_STATE run89 entry akan di-update dengan tangan setelah ledger ter-commit (preseden run66+). Tidak push (HEAD fdd9970, remote bcd2087 tetap).
+
+### 2026-09-06 - run91 nephthys - empty-state Outline mengarahkan (friksi UX 145.43 #4)
+
+- Gap: friksi #4 native journey 117f157 (input 145.43): tab Outline tanpa
+  aset terpilih jatuh ke ProjectOverview generik tanpa arahan ke jalur
+  menulis - pengguna tidak tahu langkah berikutnya (objective 145.43
+  shortest path ke menulis).
+- Slice: ProjectOverview menerima activeSection; saat Outline aktif tanpa
+  selection, empty-state menampilkan panel STORY STRUCTURE
+  (Story - Arc - Chapter - Scene) + arahan memilih novel atau membuat
+  novel pertama lewat aksi Create Novel yang SAMA (CreateStoryService,
+  bab+adegan awal dibuat otomatis) - tanpa aksi baru/terpisah.
+- Commit 44ab7fa (2 file +80/-1): lib/features/workspace/presentation/
+  workspace_resolver.dart + test/features/workspace/
+  workspace_outline_empty_state_test.dart (2 test). Termasuk hunk enabling
+  sibling (WorkspaceResolver activeSection/onSectionRequested konstruktor +
+  fields, milik WIP section-controller sibling) yang disebut pesan commit
+  dgn atribusi - preseden run87; hunks sibling WorldbuildingBody lainnya
+  tetap uncommitted (file masih M).
+- Klarifikasi data: run80 pernah mencatat friksi #4 "tab Outline default
+  kosong"; verifikasi live menunjukkan Outline DENGAN story terpilih
+  sudah render STORY STRUCTURE + CHAPTERS (journey 117f157 membuktikan
+  5 bab tampil native) - gap sebenarnya hanya kondisi TANPA selection.
+- TDD: RED terverifikasi dulu (Found 0 widgets with text Story - Arc -
+  Chapter - Scene), GREEN 2/2 setelah patch minimal.
+- Bukti: focused 2/2 PASS; regresi story_workspace_resolver 3/3 +
+  novel_creation_action 1/1; regresi scoped test/features/workspace +
+  test/features/story 181 PASS / 0 FAIL (1 log deprecation framework,
+  bukan failure); analyze No issues found! 11.9s; diff --check PASS
+  scoped; build windows debug PASS 27.0s; FULL SUITE 3756 PASS / 0 FAIL /
+  1 SKIP exit 0 ~19.6 mnt (delta +2 eksak = 2 test slice); guard PASS
+  pre + post-commit (pointer 145.27, canonical_sha 86af6a5).
+- PITFALL BARU: HEAD blob workspace_resolver ternyata LF-only sementara
+  salinan kerjanya CRLF penuh (autocrlf) - partial-stage dari string yang
+  dibaca via sed menyalin terminator CRLF palsu ke blob dan anchor d1
+  gagal count=0; WAJIB probe git show HEAD:<path> dulu, bangun blob
+  dari bentuk byte HEAD (LF), bukan tampilan worktree.
+- Native journey tetap UNVERIFIABLE dari cron (cua-driver session never
+  ready, preseden run83/86/88); verifikasi GUI empty-state Outline pada
+  journey native berikutnya.
+- Tidak push (HEAD 44ab7fa, remote bcd2087 tetap). Region sibling
+  workspace/story tidak tersentuh selain hunk enabling yang di-commit.

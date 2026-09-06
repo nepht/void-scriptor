@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "product": "Void Scriptor",
+  "purpose": "Authority allowlist for roadmap-relevant documents without a sprint number.",
+  "defaults": {
+    "unregistered_authority": "NON_BINDING",
+    "may_create_scope": false,
+    "may_mark_implementation_complete": false,
+    "may_change_runtime_pointer": false
+  },
+  "strict_authority_roots": [
+    "docs/roadmap"
+  ],
+  "discovery_exclusions": [
+    "docs/roadmap/DOCUMENT_REGISTRY.json"
+  ],
+  "role_rules": {
+    "POLICY": "May choose or suspend an already-defined sprint stream; cannot invent feature scope.",
+    "EXECUTOR_POLICY": "May constrain Hermes execution; cannot invent feature scope or acceptance criteria.",
+    "GOVERNANCE_GUIDE": "Human-readable explanation only.",
+    "EXECUTION_SUMMARY": "Derived status summary; never an execution pointer.",
+    "HISTORICAL_LEDGER": "Historical evidence summary; never an execution pointer.",
+    "EVIDENCE": "May support a status classification but cannot prove completion by itself.",
+    "REFERENCE": "Context only and non-binding.",
+    "BACKLOG": "Candidate work only; requires a canonical sprint contract before execution.",
+    "GENERATED": "Tool output only and non-binding."
+  },
+  "documents": [
+    {
+      "path": "docs/roadmap/ROADMAP_POLICY.json",
+      "role": "POLICY",
+      "authority": "BINDING",
+      "status": "ACTIVE",
+      "integrity": "IMMUTABLE",
+      "sha256": "143c25d73ee65339f97feb9d52241d3c8d21e1144e84d357f82edbc56bbf44dd",
+      "owner": "product-governance",
+      "effective_date": "2026-09-01",
+      "linked_sprints": [145, 111],
+      "may_create_scope": false,
+      "may_mark_implementation_complete": false,
+      "may_change_runtime_pointer": true
+    },
+    {
+      "path": "docs/roadmap/README.md",
+      "role": "GOVERNANCE_GUIDE",
+      "authority": "ADVISORY",
+      "status": "ACTIVE",
+      "integrity": "IMMUTABLE",
+      "sha256": "bc9acb4ad31aeff00600a8dd522ccfe2f6d1dd7871301fb8b9ce90ac6ecc0594",
+      "owner": "product-governance",
+      "effective_date": "2026-09-01",
+      "linked_sprints": [145, 111],
+      "may_create_scope": false,
+      "may_mark_implementation_complete": false,
+      "may_change_runtime_pointer": false
+    },
+    {
+      "path": ".hermes/AUTONOMOUS_ROADMAP_PROMPT.md",
+      "role": "EXECUTOR_POLICY",
+      "authority": "BINDING",
+      "status": "ACTIVE",
+      "integrity": "IMMUTABLE",
+      "sha256": "921bf597fe246e9a0bf366d5db35dc247aaba3b5c586dac8dd1c36be87b849ac",
+      "owner": "automation-governance",
+      "effective_date": "2026-09-01",
+      "linked_sprints": [145, 111],
+      "may_create_scope": false,
+      "may_mark_implementation_complete": false,
+      "may_change_runtime_pointer": false
+    },
+    {
+      "path": "docs/IMPLEMENTATION_GOAL.md",
+      "role": "EXECUTION_SUMMARY",
+      "authority": "DERIVED",
+      "status": "ACTIVE",
+      "integrity": "MUTABLE",
+      "owner": "roadmap-executor",
+      "effective_date": "2026-08-31",
+      "linked_sprints": [145, 111],
+      "may_create_scope": false,
+      "may_mark_implementation_complete": false,
+      "may_change_runtime_pointer": false
+    },
+    {
+      "path": "docs/IMPLEMENTATION_LEDGER.md",
+      "role": "HISTORICAL_LEDGER",
+      "authority": "DERIVED",
+      "status": "ACTIVE",
+      "integrity": "MUTABLE",
+      "owner": "evidence-maintainers",
+      "effective_date": "2026-08-31",
+      "linked_sprints": [],
+      "may_create_scope": false,
+      "may_mark_implementation_complete": false,
+      "may_change_runtime_pointer": false
+    },
+    {
+      "path": "docs/audits/official-json-source.md",
+      "role": "EVIDENCE",
+      "authority": "EVIDENCE_ONLY",
+      "status": "ACTIVE",
+      "integrity": "MUTABLE",
+      "owner": "roadmap-audit",
+      "effective_date": "2026-08-31",
+      "linked_sprints": [],
+      "may_create_scope": false,
+      "may_mark_implementation_complete": false,
+      "may_change_runtime_pointer": false
+    },
+    {
+      "path": "docs/audits/primary-user-and-job.md",
+      "role": "EVIDENCE",
+      "authority": "EVIDENCE_ONLY",
+      "status": "ACTIVE",
+      "integrity": "IMMUTABLE",
+      "sha256": "c90930d85db73c67f474e808f6e5a448d5776bff0b4819465989d59975629376",
+      "owner": "product-research",
+      "effective_date": "2026-08-31",
+      "linked_sprints": [145],
+      "may_create_scope": false,
+      "may_mark_implementation_complete": false,
+      "may_change_runtime_pointer": false
+    }
+  ]
+}

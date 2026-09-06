@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "product": "Void Scriptor",
+  "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
+  "validated_history_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs\\MASTER_SPRINT_VOID_SCRIPTOR_JSON_VALIDATED",
+  "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
+  "document_registry": "docs/roadmap/DOCUMENT_REGISTRY.json",
+  "executor_policy": ".hermes/AUTONOMOUS_ROADMAP_PROMPT.md",
+  "runtime_state": ".hermes/ROADMAP_STATE.json",
+  "active_stream": "corrective_core_mvp",
+  "streams": {
+    "corrective_core_mvp": {
+      "status": "ACTIVE",
+      "priority": 1,
+      "sprint": 145,
+      "contract": "sprint_145.json",
+      "ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
+      "exit_gate": "All 145.1-145.50 steps resolved or explicitly blocked/deferred with evidence; Core MVP vertical slice and data-safety gates green."
+    },
+    "sequential_expansion": {
+      "status": "SUSPENDED",
+      "priority": 2,
+      "sprint": 111,
+      "resume_step": "111.21",
+      "contract": "sprint_111.json",
+      "ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
+      "resume_condition": "corrective_core_mvp exit_gate is satisfied and recorded."
+    }
+  },
+  "precedence": [
+    "A corrective sprint overrides feature expansion until its exit gate passes.",
+    "Exactly one mutation stream may be ACTIVE.",
+    "External sprint JSON defines requirements; repository ledger defines implementation evidence.",
+    "Runtime state is a disposable cache and may be repaired only from policy, canonical JSON, and ledger consensus.",
+    "Missing or conflicting evidence blocks mutation; it never authorizes invented scope.",
+    "A document without a sprint number cannot create scope; its role and authority must come from DOCUMENT_REGISTRY.json."
+  ],
+  "protected_core": [
+    "project registry and per-project database",
+    "novel, chapter, scene, character, and core lore data",
+    "autosave, snapshots, backup, restore, import, and export",
+    "Windows local-first startup and workspace",
+    "user-owned files and existing migrations"
+  ],
+  "deferred_until_core_gate": [
+    "community network",
+    "reader publishing network",
+    "payments and payouts",
+    "marketplace",
+    "provider and connector expansion",
+    "XR, metaverse, and non-Core production expansion"
+  ]
+}

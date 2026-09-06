@@ -35,11 +35,11 @@ class VoidDesktopShell extends ConsumerWidget {
     final session = ref.watch(projectSessionProvider).valueOrNull;
     final runtime = session?.mutationRuntime;
     final renderedContent = runtime == null
-        ? _buildContent(context, null, null, content)
+        ? _buildContent(context, ref, null, null, content)
         : ValueListenableBuilder<ProjectMutationState>(
             valueListenable: runtime.stateNotifier,
             builder: (context, state, child) =>
-                _buildContent(context, runtime, state, content),
+                _buildContent(context, ref, runtime, state, content),
           );
     return Shortcuts(
       shortcuts: {
@@ -92,21 +92,52 @@ class VoidDesktopShell extends ConsumerWidget {
 
   Widget _buildContent(
     BuildContext context,
+    WidgetRef ref,
     ProjectMutationRuntime? runtime,
     ProjectMutationState? state,
     Widget? suppliedContent,
   ) {
+    final session = ref.watch(projectSessionProvider).valueOrNull;
     return Scaffold(
       body: Column(
         children: [
           VoidTopBar(
             onMenuSelected: (menu) {
-              if (menu == 'assets') context.push('/assets');
-              if (menu == 'bible') context.push('/bible');
-              if (menu == 'ai') context.push(AppRoutes.aiStudio);
-              if (menu == 'resilience') {
-                context.push(AppRoutes.projectDiagnostics);
+              final assetType = explorerAssetTypeForMenu(menu);
+              if (assetType != null) {
+                if (session == null) {
+                  context.go(AppRoutes.projects);
+                  return;
+                }
+                focusExplorerAsset(ref, assetType);
+                context.push(AppRoutes.workspace);
+                return;
               }
+              final route = switch (menu) {
+                'dashboard' => AppRoutes.dashboard,
+                'novels' => AppRoutes.projects,
+                'write' => AppRoutes.workspace,
+                'search' => AppRoutes.assets,
+                'backup-export' =>
+                  session == null
+                      ? AppRoutes.projects
+                      : AppRoutes.projectBackups,
+                'settings' => AppRoutes.settings,
+                'assets' => AppRoutes.assets,
+                'bible' =>
+                  session == null ? AppRoutes.projects : AppRoutes.bible,
+                'ai' => AppRoutes.aiStudio,
+                'ai-image-generator' => AppRoutes.aiImageGenerator,
+                'ai-video-generator' => AppRoutes.aiVideoGenerator,
+                'content-capabilities' => AppRoutes.contentCapabilities,
+                'resilience' =>
+                  session == null
+                      ? AppRoutes.projects
+                      : AppRoutes.projectDiagnostics,
+                'account-cloud' => AppRoutes.accountCloud,
+                _ => null,
+              };
+              if (route != null) context.push(route);
             },
             onLogout: onLogout,
             canUndo: runtime?.bus.canUndo ?? false,

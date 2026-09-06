@@ -9,7 +9,9 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 ///
 /// 3 panel: Assets (kiri), 3D World (tengah), Inspector (kanan) + Play.
 class LevelEditorScreen extends ConsumerWidget {
-  const LevelEditorScreen({super.key});
+  const LevelEditorScreen({super.key, this.onPlay});
+
+  final VoidCallback? onPlay;
 
   static const _assets = <(String, IconData)>[
     ('Character', Icons.person_outline),
@@ -29,7 +31,7 @@ class LevelEditorScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(right: VoidSpacing.md),
             child: FilledButton.icon(
-              onPressed: () {},
+              onPressed: onPlay,
               icon: const Icon(Icons.play_arrow, size: 18),
               label: const Text('Play'),
             ),

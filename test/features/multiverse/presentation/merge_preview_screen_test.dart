@@ -11,6 +11,17 @@ void main() {
     expect(find.text('Confirm Merge'), findsOneWidget);
   });
 
+  testWidgets('confirm merge notifies the parent', (tester) async {
+    var confirmed = false;
+    await tester.pumpWidget(
+      wrap(MergePreviewScreen(onConfirmMerge: () => confirmed = true)),
+    );
+
+    await tester.tap(find.text('Confirm Merge'));
+
+    expect(confirmed, isTrue);
+  });
+
   testWidgets('tidak overflow di layar sempit', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1.0;

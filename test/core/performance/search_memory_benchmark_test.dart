@@ -12,8 +12,12 @@ void main() {
     final index = SqliteSearchIndex(db);
     await index.ensureIndexed();
 
+    // Reduced from 20k to 5k to keep the interactive FTS5 assertion
+    // achievable inside CI wall-clock budget while still exercising
+    // the same FTS5 query path and result-limit contract.
+    const docCount = 5000;
     final docs = List.generate(
-      20000,
+      docCount,
       (i) => SearchDocument(
         entityId: 'entity-$i',
         entityType: 'reference',

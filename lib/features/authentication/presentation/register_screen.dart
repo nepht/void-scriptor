@@ -174,6 +174,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       setState(() => _feedback = 'Passwords do not match.');
       return;
     }
-    setState(() => _feedback = 'Account creation is available in local mode.');
+    setState(() => _feedback = 'Account creation is not connected yet.');
   }
 }

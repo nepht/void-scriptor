@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:void_scriptor/core/theme/app_theme_mode.dart';
+import 'package:void_scriptor/core/theme/theme_controller.dart';
 import 'package:void_scriptor/features/platform/application/platform_controller.dart';
 
 import '../../../design_system/spacing/void_spacing.dart';
@@ -19,11 +21,16 @@ class ThemeSettingsScreen extends ConsumerStatefulWidget {
 
 class _ThemeSettingsScreenState extends ConsumerState<ThemeSettingsScreen> {
   static const _themes = <String>['Dark', 'Light', 'System'];
-  String _selected = 'Dark';
-
   @override
   Widget build(BuildContext context) {
     ref.watch(platformProvider);
+    final theme = ref.watch(themeControllerProvider);
+    final selected = theme.valueOrNull ?? AppThemeMode.system;
+    final selectedLabel = switch (selected) {
+      AppThemeMode.dark => 'Dark',
+      AppThemeMode.light => 'Light',
+      AppThemeMode.system => 'System',
+    };
     return Scaffold(
       appBar: AppBar(
         title: const Text('Theme'),
@@ -43,8 +50,16 @@ class _ThemeSettingsScreenState extends ConsumerState<ThemeSettingsScreen> {
               ),
               const SizedBox(height: VoidSpacing.md),
               RadioGroup<String>(
-                groupValue: _selected,
-                onChanged: (v) => setState(() => _selected = v!),
+                groupValue: selectedLabel,
+                onChanged: (value) {
+                  if (value == null) return;
+                  final mode = switch (value) {
+                    'Dark' => AppThemeMode.dark,
+                    'Light' => AppThemeMode.light,
+                    _ => AppThemeMode.system,
+                  };
+                  ref.read(themeControllerProvider.notifier).setMode(mode);
+                },
                 child: Column(
                   children: [
                     for (final t in _themes)

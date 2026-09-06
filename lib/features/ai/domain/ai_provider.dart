@@ -118,18 +118,43 @@ mixin AiStreamingFallback implements AiProvider {
       yield const AiStreamingChunk.done();
       return;
     }
-    final text = result.outputs.map((o) => o.text ?? '').join();
-    if (text.isNotEmpty) {
-      yield AiStreamingChunk.text(text);
+    for (final output in result.outputs) {
+      if (output.type == AiOutputType.text && output.text != null) {
+        yield AiStreamingChunk.text(output.text!);
+        continue;
+      }
+      final chunkType = switch (output.type) {
+        AiOutputType.image => AiStreamChunkType.image,
+        AiOutputType.video => AiStreamChunkType.video,
+        AiOutputType.audio => AiStreamChunkType.audio,
+        AiOutputType.file => AiStreamChunkType.file,
+        AiOutputType.text => AiStreamChunkType.text,
+      };
+      yield AiStreamingChunk(
+        type: chunkType,
+        remoteUrl: output.remoteUrl,
+        localPath: output.localPath,
+        mimeType: output.mimeType,
+      );
     }
     yield const AiStreamingChunk.done();
   }
 }
 
 class AiProviderRegistry {
-  AiProviderRegistry(Iterable<AiProvider> providers)
-    : _providers = {for (final provider in providers) provider.id: provider};
-  final Map<String, AiProvider> _providers;
+  AiProviderRegistry(Iterable<AiProvider> providers) {
+    for (final provider in providers) {
+      if (_providers.containsKey(provider.id)) {
+        throw ArgumentError.value(
+          provider.id,
+          'providers',
+          'Provider ids must be unique.',
+        );
+      }
+      _providers[provider.id] = provider;
+    }
+  }
+  final Map<String, AiProvider> _providers = {};
   AiProvider require(String id) =>
       _providers[id] ??
       (throw StateError('AI provider "$id" is not registered.'));
@@ -151,22 +176,35 @@ class MockAiProvider with AiStreamingFallback implements AiProvider {
   @override
   Future<List<AiModelInfo>> listModels() async => const [
     AiModelInfo(
+      id: 'mock-text',
+      displayName: 'Mock Text',
+      capabilities: {AiCapability.textGeneration},
+    ),
+    AiModelInfo(
       id: 'mock-image',
       displayName: 'Mock Image',
       capabilities: {AiCapability.imageGeneration},
     ),
   ];
   @override
-  Future<AiGenerationResult> generate(AiGenerationRequest request) async =>
-      const AiGenerationResult(
-        providerRequestId: 'mock-request',
-        outputs: [
-          AiGeneratedOutput(
+  Future<AiGenerationResult> generate(AiGenerationRequest request) async {
+    validateTarget(request.target);
+    final output = request.target == PromptTarget.image
+        ? const AiGeneratedOutput(
+            type: AiOutputType.image,
+            remoteUrl: 'mock://image-output',
+            mimeType: 'image/png',
+          )
+        : const AiGeneratedOutput(
             type: AiOutputType.text,
             text: 'Mock generation complete.',
-          ),
-        ],
-      );
+          );
+    return AiGenerationResult(
+      providerRequestId: 'mock-request',
+      outputs: [output],
+    );
+  }
+
   @override
   Future<void> cancel(String requestId) async {}
   @override

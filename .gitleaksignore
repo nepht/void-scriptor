@@ -1,0 +1,3 @@
+# Synthetic credential fixture used to verify SecretRedactor.
+# Exact historical fingerprint only; new findings remain blocking.
+f52c70c56503840c8a6fb36a4d5e68884330df1b:test/core/security/secret_vault_test.dart:generic-api-key:56

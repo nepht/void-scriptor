@@ -234,4 +234,40 @@ void main() {
       await dir.delete(recursive: true);
     },
   );
+
+  test('serializes concurrent checkpoint replacements on Windows', () async {
+    final dir = await Directory.systemTemp.createTemp('wf-checkpoint-race');
+    addTearDown(() async {
+      if (await dir.exists()) await dir.delete(recursive: true);
+    });
+    final stores = List.generate(20, (_) => WorkflowCheckpointStore(dir));
+
+    await Future.wait([
+      for (var index = 0; index < stores.length; index++)
+        stores[index].writeAtomic(
+          WorkflowCheckpoint(
+            executionId: 'shared-execution',
+            workflowId: 'wf',
+            workflowVersion: 1,
+            completedSteps: ['step-$index'],
+            currentState: 'running',
+            outputReferences: const {},
+            timestamp: DateTime.utc(2026, 8, 31, 0, 0, index),
+          ),
+        ),
+    ]);
+
+    final restored = await stores.last.read('shared-execution');
+    expect(restored?.completedSteps, ['step-19']);
+    expect(
+      await dir
+          .list()
+          .where(
+            (entry) =>
+                entry.path.endsWith('.tmp') || entry.path.endsWith('.backup'),
+          )
+          .toList(),
+      isEmpty,
+    );
+  });
 }

@@ -8,7 +8,7 @@ import 'package:void_scriptor/features/workspace_layout/domain/layout_preset.dar
 
 void main() {
   test('schema version is 57', () {
-    expect(ProjectDatabase.currentSchemaVersion, 58);
+    expect(ProjectDatabase.currentSchemaVersion, 59);
   });
 
   test('layout_presets and project_layout_states roundtrip', () async {

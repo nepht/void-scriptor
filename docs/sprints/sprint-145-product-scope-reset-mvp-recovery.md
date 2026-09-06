@@ -2122,6 +2122,13 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Evidence: `docs/evidence/asset-browser-live-data-20260906/01-assets-live-data.png`, `02-filter-story-live.png`. Graceful close verified (process exited, no session locks).
 - 145.44 "Search indexing" investigation status: INVESTIGATION → ROOT-CAUSED + FIXED (widget-level); minimum-device matrix and repeat run for 145.44 remain MISSING.
 
+### 2026-09-06 — armor/accessory as first-class AssetType (contract follow-through)
+- Product contract (Choirudin): Armor and Accessory are stand-alone project assets. Added `armor` and `accessory` to the core `AssetType` enum (RED→GREEN; consumers verified defensive: name-map, firstWhere, wildcard switch — no exhaustive breaks).
+- TDD: new `asset_type_armor_accessory_test.dart`; extended `asset_browser_live_project_test.dart` to require an `armor`-typed row to render (previously skipped). Focused assets suite 30/30 PASS; cross-module type-consumer regression (workspace/ai/inspector/core) 737/737 PASS; focused analyzer CLEAN; Windows debug build PASS 67.5s.
+- Native Windows journey on `Tes Novel`: Assets page now lists 5 live assets including `Test Armor — Native Journey` with a dedicated shield icon (`shield_moon`); accessory mapped to `Icons.diamond` (no accessory asset exists yet — honest empty state preserved). Graceful close verified (process exited, no session locks).
+- Evidence: `docs/evidence/asset-type-armor-accessory-20260906/01-assets-with-armor.png`.
+- Still MISSING (deferred, tracked): accessory/armor asset creation flows beyond the loadout picker; alpha-channel isolated-visual pipeline; minimum-device matrix + repeat run for 145.44.
+
 ### 2026-09-06 - run104 cron nephthys - rekonsiliasi 145.34 rollback self-failure (VERIFIED, tanpa mutasi kode)
 
 - Input job: sisa gap handoff 2026-09-04 region 145.34 = uji kegagalan rollback
@@ -2152,187 +2159,30 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Guard: PASS pre-run (pointer 145.27, canonical_sha 86af6a5). Post-ledger guard
   dijalankan setelah commit ini. ROADMAP_STATE tidak disentuh. Tidak push
   (keputusan push milik Choi).
-- DISCLOSURE AMEND: percobaan commit pertama (c30b582) keliru mengadopsi blok ledger armor/accessory milik sibling karena pitfall git commit -- <path> memakai isi worktree pathspec, bukan blob index hasil rekonstruksi; di-amend menjadi blob murni HEAD+run104 dan blok sibling dikembalikan uncommitted di worktree (preseden run87/91/95/96).
-### 2026-09-06 - run105 cron nephthys - durability of decision/state records (2 commit, tanpa mutasi kode)
 
-- Guard PASS pre-run (pointer 145.27, canonical_sha 86af6a5, last_resolved 145.26). HEAD start 746a7bf (run104), ahead 21, origin/master terbaca 6bd377e. Conflict scan lib+test bersih, 0 proses flutter/dart (void_scriptor.exe PID 13988 milik pengguna, tidak disentuh).
-- Settings Hub queue 5b6e11a TIDAK dieksekusi: gate eksplisit Choi di blok queue-nya sendiri ('BLOCKED concurrent - cron WAJIB skip sampai seluruh region target bersih/committed') masih berlaku - app_router.dart M (21:20), void_top_bar.dart M, void_app_shell.dart M, lib/features/settings/ untracked. Dihormati, tanpa adopsi/timpa.
-- Region assets terbukti AKTIF live mid-run: commit 2de2476 22:07:33 (feat assets: create stand-alone assets; asset_dao +29, asset_browser_screen +158, 2 test baru, 4 PNG) mendarat di antara langkah run ini - region assets/routing/shell tidak disentuh sama sekali.
-- computer_use/native journey tidak diulang (anti-berputar: session never ready preseden run83/86/90/94; butuh sesi interaktif Choi).
-- Slice terpilih: durability of decision records. Commit b1dde07 docs(adr) 2 file +64/-8: ratifikasi ADR-0002 (Status: Accepted 2026-09-05, D1-D7 Windows-first local-first) + ADR-0003 (Status: Accepted Option B stabilize existing core, urutan eksekutor 1-5) yang sejak 2026-09-05 hanya ada di worktree - satu reset worktree akan menghapus rekamannya. Isi sibling-authored (Codex atas otorisasi Choi); diverifikasi run ini: tanpa conflict marker/rahasia, git diff --check PASS, konsisten dgn blok architecture_recovery_decision ROADMAP_STATE dan kode ter-commit (flag registry, guarded migration).
-- Commit 7e41dac state: .hermes/ROADMAP_STATE.json +37/-3 via hash-object+update-index (tanpa pathspec adoption): blok architecture_recovery_decision + last_verified_step run71-92 - SEMUA entri merujuk commit yang sudah ada di history (3b55687, dace1a1, 15c61d6, 7a03f3d, a4d7f1d, 5cbe9e2, 9c42fc9, 5cdfb75, 697279a, fdd9970, f55d059, c248d87, 937298c, ec6df4e, 44ab7fa, 6fea4f8, d47c046) = rekonsiliasi bukti, bukan klaim baru. Pointer tetap 145.27.
-- Bukti: guard PASS pre-commit; diff --check PASS per commit; status docs/adr + .hermes/ROADMAP_STATE.json bersih pasca-commit; TANPA perubahan lib/test. Full suite tidak diulang (kode tidak berubah sejak fdd9970 hijau run89/101; anti-berputar).
-- Status 145.27 tetap PARTIAL (user validation + native proof + route gating demo + keputusan 145.44-145.50 milik Choi). Tidak push (HEAD 7e41dac, keputusan push Choi).
-- Next: Settings Hub 5b6e11a bila region routing/shell/settings bersih; native journey 145.42/145.44 dari sesi utama Choi; keputusan Choi 145.47/145.49/145.50 + push; NO-OP jika nihil.
+### 2026-09-06 — Stand-alone asset creation from Asset Library (VERIFIED)
+- Generalized `AssetDao.createStandaloneAsset` (wardrobe/weapon/armor/accessory/prop, blank-name rejected); `createStandaloneCharacterAsset` kept as a thin delegate for the existing loadout-picker call path. No schema change (table `assets`, schema 59).
+- Asset Browser now offers a `Create asset` FAB → dialog (Name/Description/Type for the five stand-alone types, Create disabled while the name is blank) → `onCreateAsset` hook with a session-backed production default (`projectSessionProvider` + UUID) → `projectAssetsProvider` invalidated so the new card appears without restart. Explicit injection still wins for tests.
+- TDD: RED confirmed (missing DAO method + missing widget parameter) → GREEN. Assets + character_mode suites 56/56 PASS; focused analyzer CLEAN; Windows debug build PASS 31.0s.
+- Native Windows journey on `Tes Novel`: FAB → dialog → typed "Signet of the Void Choir" + description "Stand-alone accessory untuk verifikasi create-flow; bukan canon." → type switched armor→accessory → Create → sixth card appeared live with the diamond icon. DB readback: 6 assets ordered by created_at, new row type `accessory`, `integrity_check ok`. Graceful close verified (process exited, `ACTIVE_LOCKS []`).
+- Evidence: `docs/evidence/asset-browser-create-flow-20260906/01-fab-create-asset.png` … `04-signet-created-live.png`.
+- Remaining (tracked): full Armor/Accessory specification UI; alpha-channel isolated-visual pipeline; minimum-device matrix + repeat run for 145.44.
 
-## Update 2026-09-06 (nephthys cron run107, 145.42 process_kill DB-layer evidence closure via adoption)
+### 2026-09-06 — Create-flow restart persistence (VERIFIED, evidence only)
+- Relaunched the debug app after the creating process had fully exited; opened Tes Novel -> Assets: all six assets reappear from disk including "Signet of the Void Choir" (created in the earlier process). Confirms the session-backed create path writes durable rows, not session-local state.
+- Evidence: docs/evidence/asset-browser-create-flow-20260906/05-restart-persistence-signet.png. Graceful close verified again (process exited, ACTIVE_LOCKS []). No code change in this block.
+### 2026-09-06 — Creature/vehicle creation, companion→creature mapping, quantity editor (nephthys, interactive run107)
 
-- Gap: the 145.42 DB-layer process_kill acceptance had no committed artifact -
-  the sibling-authored untracked test
-  test/database/project/project_database_process_kill_test.dart + fixture
-  test/database/project/fixtures/db_process_kill_child.dart (2026-09-05
-  16:45-16:50, cited in this ledger, proven 2/2 at HEAD in run75) stayed
-  untracked across runs 75-106.
-- Action: adoption commit 76248c2 (2 files +173, explicit scoped paths, sibling
-  attribution in the commit message). No production code changed; the wide
-  sibling tracked-M wave (167 files incl. ai/world/shell/CI) remains untouched
-  and unadopted; ROADMAP_STATE pointer stays 145.27.
-- Fresh evidence @ HEAD 76248c2 (dirty worktree): focused
-  project_database_process_kill_test 2/2 PASS exit 0 - OS-native harness
-  (child dart.exe stages a committed row, holds an open transaction, is
-  hard-killed via Process.kill; the production open path recovers the hot
-  journal, committed data survives, the open transaction rolls back, and the
-  recovered DB accepts new writes; non-vacuousness control: a torn DB file is
-  rejected as ProjectDatabaseUnreadableException); regression test/database +
-  test/core/persistence 114 PASS / 0 FAIL exit 0; flutter analyze full tree
-  No issues found! (109.6s, pre-adoption); git diff --check PASS;
-  flutter build windows --debug PASS (21.8s); roadmap guard PASS pre-commit
-  and post-commit (pointer 145.27, canonical_sha 86af6a5).
-- 145.42 DB-layer failure matrix is now fully committed evidence: BUSY
-  (5cdfb75), corrupt (5cd2589), missing-file (f55d059), drive-absent
-  (937298c), write-failure (fdd9970), process-kill/WAL (76248c2). Remaining
-  145.42 boundaries: drive-removal live probe + installed-device validation
-  (hardware-bound, UNVERIFIABLE from cron); interrupted move/import/export/
-  restore carry committed slices (move-recovery journal, import crash-window,
-  export atomic staging, restore staging heal) with their own native gaps.
-- Pointer stays 145.27 (PARTIAL). Not pushed (HEAD 76248c2, ahead 27 over
-  origin/master).
+- Keputusan produk (Choirudin): creature + vehicle masuk set create stand-alone; slot companion dipetakan ke tipe `creature`; slot hair_variant ditunda (tanpa jalur create, by design); quantity editor diminta.
+- RED→GREEN: `standalone_asset_types_creation_test.dart` (DAO creature/vehicle, mapping slot, validasi quantity), `loadout_quantity_and_types_test.dart` (create hook picker creature/vehicle), `loadout_quantity_repository_test.dart` (updateQuantity in-place tanpa duplikasi baris, tolak quantity invalid, error untuk entry hilang). Suite character_mode+assets **61/61 PASS**, analyzer CLEAN, build Windows debug PASS (32,1 s; rebuild 62,1 s).
+- Impl: `AssetDao.createStandaloneAsset` 5→7 tipe; `LoadoutSlot.companion→'creature'` (+ komentar keputusan); stepper quantity di Edit Loadout (hanya slot multi/weapon); `setSlot` pass `quantity`; jalur unchanged+Δqty → `CharacterLoadoutRepository.updateQuantity` (baru, interface+impl); browser create-dialog dropdown + creature/vehicle.
+- Native (computer-use): stepper tampil hanya di slot quantity; picker Companion menampilkan "+ Create creature"; buat "Void Wolf — Fixture (bukan canon)" dari picker → auto-assign → Save → CURRENT MODE `companion: Void Wolf — Fixture (bukan canon)`; DB: 7 aset, loadout (armor; companion→Void Wolf qty 1), integrity ok. Bug tertangkap gate native: dropdown browser create belum punya creature/vehicle → difix → re-verify 7 tipe (evidence 02 bug, 08 fixed). Aplikasi tutup bersih (tasklist kosong).
+- Evidence: `docs/evidence/creature-vehicle-loadout-20260906/01–08`.
+- Sisa jujur: aset vehicle belum dibuat native hari ini (jalur create terverifikasi widget test + dialog 7 tipe); slot hair_variant tetap tanpa jalur create (deferred).
+### 2026-09-06 — Asset detail dialog (isolated visual reference), vehicle native, unknown-label fix (nephthys, interactive run109)
 
-### 2026-09-06 - run108 nephthys - stability gate refresh at HEAD bb1bc04; 2 concurrent-owned FAIL recorded
-
-- Scope: zero-mutation stability run. No production or test file touched.
-  Guard PASS pre-run (pointer 145.27, canonical_sha 86af6a5); no conflict
-  markers; no flutter/dart process at start.
-- Full suite at HEAD bb1bc04 (dirty sibling worktree):
-  flutter test --no-pub -> +3814 ~1 SKIP -2 FAIL, exit 1 (~19.5 min).
-  Baseline run101 3805/1/0 @ 8b50621; delta +9 PASS from sibling commits
-  (76248c2 process-kill harness + sibling feature commits).
-- FAIL 1 (compile, concurrent-owned live edit):
-  test/features/assets/standalone_asset_types_creation_test.dart M sibling,
-  mtime 23:07:36 mid-run (edited DURING this run): syntax error at line 45
-  (stray `});`) + LoadoutSlot.creature member not found (production enum not
-  extended yet). Sibling is actively writing this file; not touched.
-- FAIL 2 (deterministic, sibling-region refactor):
-  test/features/export/story_txt_export_ui_test.dart "Export TXT menulis
-  naskah teks polos ke export directory" - expect(find.textContaining
-  ('TXT diekspor')) finds 0 widgets (test line 99). Clean test file (2026-09-03,
-  not modified); production lib/features/story/presentation/story_workspace_screen.dart
-  carries a wide uncommitted sibling refactor (+126/-30, _buildDedicatedSection/
-  activeSection section splitting) that changed the export surface the test
-  exercises. Isolation rerun: +1 -1 exit 1 -> deterministic, not a flake.
-  Root cause hypothesis (unverified, sibling to confirm): export snackbar or
-  action path moved under the section refactor.
-- Both FAILs are concurrent-owned sibling WIP (assets creation test mid-edit;
-  story workspace screen refactor). Not patched per sibling-region discipline;
-  recorded here so the next cron run re-checks only these two regions.
-- Not pushed (HEAD bb1bc04, ahead 30 over origin/master - push is Choi's call).
-- Next: (1) re-run suite / the two failing regions once sibling commits or
-  reverts; (2) Settings Hub 5b6e11a only if routing/shell/settings region
-  committed; (3) native journey 145.42/145.44 needs Choi's interactive session;
-  (4) NO-OP if regions still dirty.
-### 2026-09-07 - run111 nephthys - stability refresh at HEAD 9c8ec8e; quality gate FULL GREEN; run108/110 FAIL regions owner-resolved (0 code mutation)
-- Context: run108/run110 recorded 2 sibling-region FAILs and 5 env-flake FAILs;
-  this run re-checked both owned regions after sibling commits landed.
-- Pre-run facts: HEAD 9c8ec8e (sibling 'feat(assets): extend stand-alone types to
-  creature and vehicle' landed 00:16); roadmap guard PASS (pointer 145.27,
-  canonical sha 86af6a5); 5 orphan flutter_tester.exe processes (00:10-00:32
-  window, CPU ~0) found and terminated via PowerShell before any gate run -
-  environment hygiene, no project processes were running.
-- Focused region re-verification (the two run108 concurrent-owned FAIL regions):
-  (1) test/features/assets/standalone_asset_types_creation_test.dart - GREEN
-  inside the full suite (syntax error gone; LoadoutSlot companion->creature
-  decision landed in production 9c8ec8e).
-  (2) test/features/export/story_export_fidelity_test.dart - owner replacement
-  of the deleted story_txt_export_ui_test, GREEN inside the full suite.
-- Gates (all fresh this run, --no-pub, run from the canonical Windows repo):
-  flutter analyze: 'No issues found!' (10.8s).
-  flutter test (full suite, background): +3824 ~1 (1 skip) - All tests passed!
-  exit 0, ~16.3 min. Delta vs run101 full-green baseline 3805: +19 (sibling
-  commits since). vs run110 3817/6 FAIL: +7 pass, 0 FAIL.
-  flutter build windows --debug: Built build/windows/x64/runner/Debug/
-  void_scriptor.exe, PASS 43.5s.
-  git diff --check: exit 0.
-- CONCLUSION: both run108 concurrent-owned FAILs are owner-resolved (assets
-  creation test by 9c8ec8e; story export by the owner's fidelity test); the
-  run110 5x SqliteException(14) open-contention flakes did not reproduce after
-  orphan tester cleanup. Quality gate is FULL GREEN at 9c8ec8e. No code files
-  were mutated by this run.
-- Ledger hygiene: this block appended to the HEAD blob (hash-object +
-  update-index, LF-only); the 51-line net-smaller sibling restructure of this
-  file in the worktree was NOT adopted (preserved uncommitted).
-- Not pushed (push is Choi's call).
-- Next: (1) Settings Hub 5b6e11a only when routing/shell/settings region is
-  committed; (2) native journey 145.42/145.44 needs Choi's interactive session
-  (cua-driver ready only there; 5x cron failures on record); (3) NO-OP if
-  regions stay dirty.
-
-### 2026-09-07 - run112 cron nephthys - hard-kill handoff evidence reconciled to canonical acceptance (VERIFIED, no code mutation)
-
-- Input job: HANDOFF HARD-KILL WINDOWS VERIFIED (2026-09-07) asks the next run
-  to reconcile those working-tree patches to canonical Sprint 145.27/145.42
-  acceptance, then pick the next incomplete step. No re-implementation.
-- Live environment: interactive native session ACTIVE during this run
-  (void_scriptor.exe PID 15352, Debug exe from the canonical repo, started
-  01:24, CPU 2.3 -> 5.3 while observed = likely the native journey executor).
-  Cron honored it: no UI/build interference, no region touched.
-- Fresh re-run at live tree (flutter test --no-pub, canonical Windows toolchain):
-  test/database/project/project_database_process_kill_test.dart = 4/4 PASS,
-  exit 0 (committed-before-kill survives + open tx rolls back + production open
-  recovers; torn-file rejected = failure matrix not vacuous).
-  test/features/project_resilience/durable_draft_journal_process_kill_test.dart
-  = 2/2 PASS, exit 0 (journal content of a hard-killed real process fully
-  recoverable; half-written tmp never treated as recoverable source).
-- Evidence sources read: test/support/real_dart_executable.dart (untracked;
-  resolves real dart.exe independent of FLUTTER_ROOT fallback), harness edits in
-  test/database/project/project_database_process_kill_test.dart,
-  test/features/project_resilience/durable_draft_journal_process_kill_test.dart
-  (+ fixtures) - matches handoff claim exactly.
-- Acceptance mapping: canonical 145.42 remaining[] item process_kill now has
-  DB-layer (this evidence) and draft-journal-layer (this evidence) coverage.
-  145.27 non-mutating workspaces priority is a product decision (Choi) and
-  stays PARTIAL. Other 145.42 remaining items unchanged: power_loss,
-  disk_full, permission_loss, drive_removal live, interrupted move/import/
-  export/restore, installed_device_validation (hardware/OS-bound or owner
-  decisions - UNVERIFIABLE from cron).
-- Guard PASS pre-run (pointer 145.27, canonical_sha 86af6a5). git diff --check
-  exit 0 pre-run. Roadmap pointer not moved (145.27 remains next_step).
-- No code files mutated, no commits adopted, no push (push is Choi's call).
-- Next: (1) after the interactive native session ends, re-verify its journey
-  evidence for 145.42/145.44 if artifacts land in the ledger; (2) Settings Hub
-  queue 5b6e11a only when routing/shell/settings region is committed; (3) NO-OP
-  if regions stay dirty.
-
-### 2026-09-07 - run113 cron nephthys - native journey evidence 145.44 landed and reconciled (read-only, VERIFIED)
-
-- Input job: run112 next-action #1 - re-verify journey evidence for 145.42/145.44 once artifacts land in the ledger. Artifacts DID land: docs/evidence/145.44/ (untracked, 9 PNG + 4 JSON, JSON timestamps 2026-09-06 11:38-14:51 WIB).
-- Live environment: interactive native session ACTIVE at run start (void_scriptor.exe PID 3328, canonical Debug exe, tasklist capture) and exited during the run (Get-Process -Id 3328 = not found). Cron honored it: read-only run, no build, no UI interference, no region touched.
-- Read-only verification performed this run:
-  - roadmap guard PASS pre-run (pointer 145.27, canonical_sha 86af6a5, last_resolved 145.26).
-  - Conflict-marker scan of the full worktree diff: 0 markers; git diff --check exit 0.
-  - PNG validity: 9/9 files in docs/evidence/145.44/ carry the PNG magic header (01,02,03,05,06,07,08,09,10 windows-recommended; honest note: no 04-* capture exists - numbering gap).
-  - JSON readback: saga-baseline.json (11:38 WIB) vs saga-post-backup.json (14:48 WIB): manifest sha unchanged, project.db sha changed as expected after use, backup row 6a8881e9 (manual, note Manual UI backup, schema_version 59, size 3,541,500) matches baseline hashes for project.json+project.db, active_session_lock false, sqlite_integrity ok. tes-novel-baseline vs tes-novel-post-journey (14:51 WIB): both files unchanged, no session lock, integrity ok.
-- Canonical acceptance (sprint_145.json 145.44): run complete journey REPEATEDLY across MINIMUM/RECOMMENDED devices and sample projects with logs, screenshots, hashes, failures, fixes, and regression evidence.
-- Classification (honest boundaries): recommended-Windows-device journey across 2 sample projects (Void-Cube-Saga copy d53c8787, Tes Novel 3c30ca9c) with screenshots + hashes + integrity/lock checks + a search-empty-index finding = VERIFIED as landed evidence. Still MISSING for 145.44: minimum-device matrix, repeat runs, dedicated log files (no *.log artifact in the evidence dir). 145.44 stays PENDING; pointer stays 145.27 (next_step unchanged).
-- Ledger hygiene: this block appended to the HEAD blob (hash-object + update-index, LF-only, commit without pathspec); the sibling restructure of this file in the worktree (27+/149-, incl. armor/accessory + asset-browser blocks and compressed run105/107 blocks) was NOT adopted and stays uncommitted.
-- ROADMAP_STATE.json not touched (approval gate; uncommitted sibling blocks precedent). Nothing pushed (push is Choi call).
-- Next: (1) minimum-device matrix + repeat journey for 145.44 needs Choi interactive session (cron cua-driver blocked 5x on record); (2) Settings Hub 5b6e11a only when routing/shell/settings region is committed; (3) NO-OP if regions stay dirty.
-
-### 2026-09-07 - run115 nephthys - stability refresh at 55515a7: sibling assets lib change (a2a3f93) covered FULL GREEN (0 code mutation)
-
-- Window: sibling commit a2a3f93 01:54 (detail dialog + instant loadout labels), gap edit 32+ min, 0 dart/flutter processes at run start (02:10); wave WIP 510 dirty files untouched.
-- Cron-run114 closeout FAILED after commit (510 dirty files snapshotted, AD_HOC script under 100/1000); classification unchanged: evidence-only run, no code mutation. Notepad continuity restored this run.
-- Gates fresh @HEAD 55515a7, Windows toolchain: flutter analyze No issues 12.5s; FULL SUITE 3827 PASS / 0 FAIL / 1 SKIP "All tests passed!" ~21min (delta vs run111 3824 = +3, exactly the sibling a2a3f93/9c8ec8e new tests: asset_detail_dialog 2 + loadout quantity 1); flutter build windows --debug PASS 27.4s; git diff --check exit 0.
-- Roadmap guard PASS pre-run (pointer 145.27, canonical_sha 86af6a5); HEAD unchanged through run (no mid-run sibling commit); ROADMAP_STATE clean; 145.27 stays PARTIAL (unchanged blockers: user validation, native journey, route gating 11 demo routes - all outside cron).
-- This block is the sole change of the run (append-only, blob from HEAD + LF block); no push (decision Choi); no ROADMAP_STATE change (pointer rules).
-### 2026-09-07 - run116 nephthys - Settings Hub minimum (queue 5b6e11a) CLOSED: commit e30a844
-
-- Window: guard PASS pre& post (pointer 145.27, canonical_sha 86af6a5); HEAD start 365820d (run115 ledger); sibling live-edit SELESAI (mtime lib/test terbaru 01:39 vs run start 02:40; 0 dart/flutter process sepanjang run; routing/shell mtimes 09-04/09-05 = idle 21-29 jam).
-- Gap (queue Choi 5b6e11a Frontier 1): /settings sebelumnya membangun bare ThemeSettingsScreen dan TIDAK TERDAFTAR sama sekali di daftar eksplisit createAppRouter (tempat shell push route - deep link unmatched); destination Settings di desktop top bar MATI di HEAD (handler shell hanya dispatch assets/bible/ai/resilience); Settings user-facing praktis hanya theme.
-- Slice: SettingsHubScreen (file baru lib/features/settings/presentation/settings_hub_screen.dart) dengan 4 destination fungsional: General (status bahasa jujur - LanguageSwitcher sibling untracked TIDAK diadopsi karena tanpa persistence/controller = kontrol palsu), Appearance (push /theme-settings = ThemeSettingsScreen nyata ter-persist), Sidebar & Workspace (session-guarded: null session = arah ke Projects + Configure sidebar modules; session aktif = status ProjectSidebarModulePreferences nyata per proyek), About & Diagnostics (versi nyata VoidProjectFormat.applicationVersion 1.2.0-alpha.1, label platform, BootstrapDirectories.resolve() storage path, link project diagnostics saat session terbuka). Router: /settings -> SettingsHubScreen di _routes produksi (dipakai appRouterProvider) DAN daftar eksplisit createAppRouter; /theme-settings dipertahankan sebagai alias legacy via AppRoutes.foundationAliases (deep link theme lama tetap ke kontrol theme nyata).
-- TIDAK diadopsi (direview per otorisasi 09-04): WIP sibling void_app_shell open-project error/retry UX, switch besar desktop shell (dispatch settings di WIP sudah ada - patch saya no-op), key aiImageGenerator/aiVideoGenerator/account-cloud di app_routes, fix theme_settings_screen radio->themeControllerProvider milik sibling (terverifikasi ter-load dalam flow hub), language_switcher.dart. Semua tetap uncommitted di worktree.
-- TDD: RED dulu (SettingsHubScreen isn't a class; route /settings hilang dr createAppRouter; 3 fail) -> implementasi minimal -> GREEN focused 7/7. Satu bug desain tertangkap RED: ternary alias awalnya terbalik (alias membangun Hub alih-alih ThemeSettings) - diperbaiki sebelum commit. Dua test disesuaikan expand-first karena ExpansionTile children mount saat expand (desain test, bukan produk).
-- Bukti: focused 7/7 PASS; regresi theme 2 file + mobile shell 4/4 PASS; flutter analyze --no-pub No issues found (13.3s); git diff --check PASS; flutter build windows --debug --no-pub PASS 31.4s; FULL SUITE 3834 PASS / 0 FAIL / 1 SKIP All tests passed ~20.6 mnt (+7 eksak vs run115 3827 = test slice ini).
-- Commit e30a844 (5 files +368/-1): staging via hash-object -w + update-index dengan blob commit dibangun dr byte HEAD (LF) + hunk saya saja; salinan worktree (CRLF + hunk sibling) TIDAK diadopsi; commit TANPA pathspec. Verifikasi pasca-commit: hunk sibling utuh di worktree (4x aiImageGenerator), konten saya di HEAD (4x SettingsHubScreen, 1x foundationAliases), routing tetap M sbg WIP sibling.
-- Native UI journey Hub: TIDAK diklaim (cua-driver blocked 5x di cron, preseden run83-90; butuh sesi interaktif Choi); widget test + integrasi router produksi membuktikan route + label + kontrol pada level test.
-- ROADMAP_STATE.json tidak disentuh (approval gate). Tidak push (keputusan Choi). Snapshot pemulihan di C:/Users/nepht/AppData/Local/Temp/vs-cron-run116-snapshot (otorisasi 09-04) - boleh dihapus run berikut.
-- Status: queue 5b6e11a Frontier 1 CLOSED (development-ready; native journey defer ke sesi Choi). 145.27 tetap PARTIAL. Next: (1) keputusan Choi Frontier 2 (restrukturisasi top bar) bila region ter-commit; (2) native journey 145.42/145.44 dr sesi interaktif; (3) hapus snapshot dir.
+- Eksekusi antrian (user: "ok terapkan"): A) wiring IsolatedAssetReferenceCard ke detail dialog browser (file non-sibling, aman); B) aset vehicle nyata via UI; C) fix "Unknown asset" label.
+- RED→GREEN: `asset_detail_dialog_test.dart` (2 test: tap kartu → dialog dengan checkerboard area + deskripsi; Close kembali ke browser), perluasan `loadout_quantity_and_types_test.dart` (round-trip label via DAO). Fix overflow RenderFlex 8 px dengan SingleChildScrollView di dialog. Suite assets+character_mode **65/65 PASS**, analyzer CLEAN, build Windows debug PASS 31,0 s (2×: sebelum & sesudah fix C).
+- Impl: `AssetBrowserScreen._showAssetDetail` (AlertDialog + IsolatedAssetReferenceCard: thumbnail bila ada, checkerboard, description; key `asset-detail-dialog`/`asset-detail-close`); `_handleAssetTap` → detail + select. Fix C: `createdAssets` list di `_editLoadout` — hasil `onCreate` di-merge ke daftar picker DAN ke lookup `loadoutAssetLabel` (subtitle) sehingga nama aset tampil seketika tanpa menunggu refresh provider.
+- Native (computer-use, evidence docs/evidence/visual-card-wiring-20260906/01–07): detail dialog Test Armor VERIFIED (checkerboard + "Add isolated reference" + deskripsi); "Void Skiff — Fixture (bukan canon)" type vehicle dibuat via browser dialog → kartu ke-8 live; relaunch → Edit Loadout → picker Companion menampilkan Void Wolf; buat "Sky Manta — Fixture (bukan canon)" dari picker → subtitle langsung nama (bukan "Unknown asset") → Save → CURRENT MODE `companion: Sky Manta`; DB readback: 9 aset (creature×2, vehicle×1), loadout 2 baris, integrity ok. Void Wolf tetap ada di library (Clear ≠ delete). App tutup bersih.
+- Catatan jujur: pengukuran koordinat SOM native-space (skala ~2,87×) digunakan untuk Edit Loadout pada layout sibling baru; layout Character Workspace kini punya tab "Companions & Carry" & grup "Creatures & Companions" (kerja sibling) — tidak disentuh.

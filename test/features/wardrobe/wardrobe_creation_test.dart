@@ -28,5 +28,11 @@ void main() {
       ).exists(),
       isTrue,
     );
+
+    await database.close();
+    final reopened = await ProjectDatabaseService().open(databasePath);
+    addTearDown(reopened.close);
+    expect((await reopened.wardrobeDao.getWardrobe(id))?.name, 'Void Coat');
+    expect((await reopened.wardrobeDao.getDefaultVariant(id))?.name, 'Normal');
   });
 }

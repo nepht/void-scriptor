@@ -11,18 +11,12 @@ import 'package:void_scriptor/features/workspaces/application/workspace_import_s
 import 'package:void_scriptor/features/workspaces/domain/novel_character_link.dart';
 
 void main() {
-  final openClosers = <Future<void> Function()>[];
-
   void registerDb(Future<void> Function() close) {
-    openClosers.add(close);
+    // Registered after the root-directory cleanup in each test. flutter_test
+    // runs addTearDown callbacks in LIFO order, so database handles close
+    // before Windows is asked to remove their SQLite files.
+    addTearDown(close);
   }
-
-  tearDown(() async {
-    for (final close in openClosers.reversed) {
-      await close();
-    }
-    openClosers.clear();
-  });
 
   Future<({ProjectPackage package, NovelCharacterLinkRepository links})>
   makePackage(Directory root, String name) async {

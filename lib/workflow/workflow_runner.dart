@@ -275,24 +275,98 @@ class WorkflowCheckpointStore {
   WorkflowCheckpointStore(this.directory);
 
   final Directory directory;
+  static final Map<String, Future<void>> _pendingWrites = {};
+  static int _temporaryFileSequence = 0;
 
   File fileFor(String executionId) => File(
     '${directory.path}${Platform.pathSeparator}'
     'workflow-checkpoint-$executionId.json',
   );
 
-  Future<void> writeAtomic(WorkflowCheckpoint checkpoint) async {
-    await directory.create(recursive: true);
+  Future<void> writeAtomic(WorkflowCheckpoint checkpoint) {
     final target = fileFor(checkpoint.executionId);
-    // Unique tmp name per write: two executions of the same workflow id must
-    // never steal each other's rename target.
-    final tmp = File(
-      '${target.path}.${DateTime.now().microsecondsSinceEpoch}.tmp',
-    );
-    await tmp.writeAsString(
-      const JsonEncoder.withIndent('  ').convert(checkpoint.toJson()),
-    );
-    await tmp.rename(target.path);
+    final key = target.absolute.path;
+    final previous = _pendingWrites[key] ?? Future<void>.value();
+    late final Future<void> current;
+    current = previous
+        .catchError((Object _, StackTrace __) {})
+        .then((_) => _writeAtomicUnlocked(target, checkpoint));
+    _pendingWrites[key] = current;
+    return current.whenComplete(() {
+      if (identical(_pendingWrites[key], current)) {
+        _pendingWrites.remove(key);
+      }
+    });
+  }
+
+  Future<void> _writeAtomicUnlocked(
+    File target,
+    WorkflowCheckpoint checkpoint,
+  ) async {
+    await directory.create(recursive: true);
+    final suffix =
+        '${pid}_${DateTime.now().microsecondsSinceEpoch}_${_temporaryFileSequence++}';
+    final tmp = File('${target.path}.$suffix.tmp');
+    final backup = File('${target.path}.$suffix.backup');
+    var previousTargetMoved = false;
+    var replacementInstalled = false;
+
+    try {
+      await tmp.writeAsString(
+        const JsonEncoder.withIndent('  ').convert(checkpoint.toJson()),
+        flush: true,
+      );
+
+      // Windows cannot rename over an existing file. Moving the old target to
+      // a same-directory backup preserves rollback while the new checkpoint
+      // is installed with a single rename.
+      if (await target.exists()) {
+        await _renameWithWindowsSharingRetry(target, backup.path);
+        previousTargetMoved = true;
+      }
+      await _renameWithWindowsSharingRetry(tmp, target.path);
+      replacementInstalled = true;
+      if (await backup.exists()) await backup.delete();
+    } catch (_) {
+      if (previousTargetMoved &&
+          !await target.exists() &&
+          await backup.exists()) {
+        await _renameWithWindowsSharingRetry(backup, target.path);
+      }
+      rethrow;
+    } finally {
+      if (await tmp.exists()) await tmp.delete();
+      if (replacementInstalled && await backup.exists()) {
+        await backup.delete();
+      }
+    }
+  }
+
+  Future<File> _renameWithWindowsSharingRetry(
+    File source,
+    String destination,
+  ) async {
+    const retryDelays = <Duration>[
+      Duration(milliseconds: 10),
+      Duration(milliseconds: 20),
+      Duration(milliseconds: 40),
+      Duration(milliseconds: 80),
+      Duration(milliseconds: 160),
+      Duration(milliseconds: 320),
+    ];
+    for (var attempt = 0; ; attempt++) {
+      try {
+        return await source.rename(destination);
+      } on FileSystemException catch (error) {
+        final errorCode = error.osError?.errorCode;
+        final isTransientWindowsSharingError =
+            Platform.isWindows && (errorCode == 5 || errorCode == 32);
+        if (!isTransientWindowsSharingError || attempt >= retryDelays.length) {
+          rethrow;
+        }
+        await Future<void>.delayed(retryDelays[attempt]);
+      }
+    }
   }
 
   Future<WorkflowCheckpoint?> read(String executionId) async {
@@ -330,6 +404,7 @@ class WorkflowExecutionHandle {
   final Set<String> successes = {};
   bool paused = false;
   bool cancelRequested = false;
+  bool finishing = false;
   final Map<String, WorkflowStepTask> tasks = {};
 
   Future<WorkflowExecutionResult> get result => _done.future;
@@ -616,6 +691,10 @@ class WorkflowRunner {
     WorkflowExecutionState state, {
     String? error,
   }) async {
+    // Independent steps may complete in the same event-loop turn. Only one
+    // terminal path may write the final checkpoint and complete the handle.
+    if (handle.finishing || handle._done.isCompleted) return;
+    handle.finishing = true;
     handle.state = state;
     _live.remove(handle.executionId);
     // Rewrite the checkpoint with the TERMINAL state so a later crash

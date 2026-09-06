@@ -21,12 +21,14 @@ import 'package:void_scriptor/features/workspaces/domain/novel_character_link.da
 void main() {
   final openClosers = <Future<void> Function()>[];
 
-  tearDown(() async {
+  Future<void> closeOpenDatabases() async {
     for (final close in openClosers.reversed) {
       await close();
     }
     openClosers.clear();
-  });
+  }
+
+  tearDown(closeOpenDatabases);
 
   Future<
     ({
@@ -118,6 +120,7 @@ void main() {
         // Embedded files travel under the workspace/ namespace.
         expect(decoded.find('workspace/characters/char-1.json'), isNotNull);
       } finally {
+        await closeOpenDatabases();
         if (await temp.exists()) await temp.delete(recursive: true);
       }
     },
@@ -129,7 +132,6 @@ void main() {
       final temp = await Directory.systemTemp.createTemp('ws-actions-import-');
       try {
         final source = await makePackage(temp, 'source-project');
-        final target = await makePackage(temp, 'target-project');
 
         await WorkspaceFileNamespace(
           source.package,
@@ -138,6 +140,14 @@ void main() {
           package: source.package,
           links: source.links,
         ).exportNovel('novel-9', destination: temp);
+
+        // Import only needs the completed archive. Release the source
+        // connection before opening the target so two ProjectDatabase
+        // instances never overlap in this single-project runtime fixture.
+        await source.db.close();
+        openClosers.removeLast();
+
+        final target = await makePackage(temp, 'target-project');
 
         final actions = WorkspaceImportActions(
           package: target.package,
@@ -159,6 +169,7 @@ void main() {
         expect(result.restoredLinkCount, 0);
         expect(result.skipped, isFalse);
       } finally {
+        await closeOpenDatabases();
         if (await temp.exists()) await temp.delete(recursive: true);
       }
     },

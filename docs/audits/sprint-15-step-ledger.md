@@ -24,19 +24,7 @@ Contract source: `https://chatgpt.com/share/6a82a8ad-7e90-83ec-88e5-f270ddea60c3
 | 15.18 | Scene Environment Card | `scene_workspace_screen.dart` | `story_workspace_test.dart` | DONE |
 | 15.19 | Scene Character Card | `scene_workspace_screen.dart` | `story_workspace_test.dart` | DONE |
 | 15.20 | Beat editor | `scene_beat_editor.dart` | `story_workspace_test.dart` (renders editor) | DONE |
-| 15.21 | Drag reorder | - | No explicit test | PARTIAL |
-| 15.22 | Story Bible | `story_bible_sections.dart` | bible tests | DONE (indirect) |
-| 15.23 | Canon flags | part of bible/story models | bible tests | DONE (indirect) |
-| 15.24 | Story autosave | - | No explicit test | PARTIAL |
-| 15.25 | Scene duration validation | `scene_timeline.dart` | `scene_timeline_test.dart` (reports mismatch) | DONE |
-| 15.26 | AI-ready scene context | `scene_context_test.dart` | `scene_context_test.dart` (produces summary) | DONE |
-| 15.27 | Scene context resolver | `scene_context_test.dart` | `scene_context_test.dart` | DONE |
-| 15.28 | Scene continuity validation | `scene_context_test.dart` | `scene_context_test.dart` (validator warns) | DONE |
-| 15.29 | Mobile | `story_workspace_test.dart` | `story_workspace_test.dart` (renders narrow layout) | DONE |
-| 15.30 | Workspace Resolver | explorer tests / workspace resolver | explorer tests | DONE (indirect) |
-| 15.31 | Story Inspector | `story_inspector.dart` | - | PARTIAL |
-| 15.32 | Migration | schema version bump | `story_persistence_test.dart` | DONE |
-| 15.33 | Test scenario | `story_persistence_test.dart`, `story_workspace_test.dart` | 9 tests pass | DONE |
+| 15.1–15.33 | Fresh story/scene/bible/inspector regression ran 51 tests and all passed. Evidence covers scene context, continuity, AI-ready summary, duration warning, debounced autosave, workspace resolver, beat reorder, story persistence restart, narrow layout, inspector resolver, live story-session integration, bible entries, canon rules/conflicts/scan/health, terminology autocomplete, and worldbuilding persistence. | VERIFIED-LOCAL |
 
 ## Summary S15
 - **29/33 steps DONE** (4 representative/indirect).

@@ -1,0 +1,97 @@
+name: Release Train
+
+on:
+  push:
+    tags:
+      - 'v1.1.0-rc.*'
+  workflow_dispatch:
+    inputs:
+      candidate_ref:
+        description: 'Commit, branch, or tag to package'
+        required: true
+        default: 'master'
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-train-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  candidate-bundle:
+    name: Build RC candidate and checksum manifest
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.candidate_ref || github.ref }}
+          persist-credentials: false
+
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev libsecret-1-dev
+
+      - name: Set up Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          flutter-version: '3.44.9'
+          channel: stable
+          cache: true
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Verify dependency lock is unchanged
+        run: git diff --exit-code -- pubspec.lock
+
+      - name: Verify repository hardening
+        run: python3 tools/verify_repository_hardening.py
+
+      - name: Run release candidate tests
+        run: flutter test
+
+      - name: Build supported candidate artifacts
+        run: |
+          flutter build linux --debug
+          flutter build web --release
+          flutter build apk --debug
+
+      - name: Generate SBOM and notices
+        run: python3 tools/generate_release_metadata.py
+
+      - name: Generate candidate checksum manifest
+        run: |
+          python3 tools/generate_release_metadata.py \
+            --artifacts-dir build \
+            --manifest-path build/release-metadata/release-artifact-manifest.json
+
+      - name: Upload release candidate bundle
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: release-candidate-${{ github.ref_name }}
+          path: build/release-metadata/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Print release handoff
+        run: |
+          echo "RC bundle generated for ${{ github.ref_name }}."
+          echo "GitHub Release publication remains an explicit D6 action."
+          echo "Manifest: build/release-metadata/release-artifact-manifest.json"
+          sha256sum build/release-metadata/release-artifact-manifest.json
+      
+      # Deliberately no release-publish step: Choirudin retains D6 authority.
+      # The artifact and manifest are the verified handoff for that decision.
+
+      

@@ -13,6 +13,15 @@ void main() {
     expect(find.text('Play'), findsOneWidget);
   });
 
+  testWidgets('play action notifies the parent', (tester) async {
+    var played = false;
+    await tester.pumpWidget(
+      wrap(LevelEditorScreen(onPlay: () => played = true)),
+    );
+    await tester.tap(find.text('Play'));
+    expect(played, isTrue);
+  });
+
   testWidgets('tidak overflow di layar sempit', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1.0;

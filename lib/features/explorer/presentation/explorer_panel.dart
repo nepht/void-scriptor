@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 import '../../../core/selection/selection_memory_snapshot.dart';
 import '../../../core/selection/selection_controller.dart';
 import '../../../core/selection/selection_model.dart';
@@ -16,6 +17,10 @@ import '../../weapon/data/weapon_repository_impl.dart';
 import '../../weapon/domain/weapon_model.dart';
 import '../../props/data/prop_repository.dart';
 import '../../props/domain/prop_model.dart';
+import '../../props/application/create_prop_service.dart';
+import '../../creatures/application/create_creature_service.dart';
+import '../../creatures/data/creature_repository.dart';
+import '../../creatures/domain/creature_model.dart';
 import 'explorer_environment_group.dart';
 import '../../environment/data/environment_repository_impl.dart';
 import '../../environment/domain/environment_model.dart';
@@ -70,6 +75,25 @@ final propExplorerProvider = FutureProvider.family<List<PropModel>, String>((
   if (session == null || session.manifest.id != projectId) return const [];
   return PropRepository(session.database).listForProject(projectId);
 });
+
+final creatureExplorerProvider =
+    FutureProvider.family<List<CreatureModel>, String>((ref, projectId) async {
+      final session = ref.watch(projectSessionProvider).valueOrNull;
+      if (session == null || session.manifest.id != projectId) return const [];
+      return CreatureRepository(session.database).listForProject(projectId);
+    });
+
+final supportingAssetExplorerProvider =
+    FutureProvider.family<List<Asset>, (String, AssetType)>((ref, key) async {
+      final session = ref.watch(projectSessionProvider).valueOrNull;
+      if (session == null || session.manifest.id != key.$1) return const [];
+      return (await session.database.assetDao.getAllAssets())
+          .where(
+            (asset) => asset.projectId == key.$1 && asset.type == key.$2.name,
+          )
+          .toList(growable: false)
+        ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    });
 
 final storyExplorerProvider = FutureProvider.family<List<Asset>, String>((
   ref,
@@ -336,6 +360,19 @@ class ExplorerPanel extends ConsumerWidget {
     final storyItems = projectId == null
         ? const AsyncValue<List<PropModel>>.data([])
         : ref.watch(propExplorerProvider(projectId));
+    final creatures = projectId == null
+        ? const AsyncValue<List<CreatureModel>>.data([])
+        : ref.watch(creatureExplorerProvider(projectId));
+    final armors = projectId == null
+        ? const AsyncValue<List<Asset>>.data([])
+        : ref.watch(
+            supportingAssetExplorerProvider((projectId, AssetType.armor)),
+          );
+    final accessories = projectId == null
+        ? const AsyncValue<List<Asset>>.data([])
+        : ref.watch(
+            supportingAssetExplorerProvider((projectId, AssetType.accessory)),
+          );
 
     final environments = projectId == null
         ? const AsyncValue<List<EnvironmentModel>>.data([])
@@ -409,11 +446,28 @@ class ExplorerPanel extends ConsumerWidget {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 children: [
+                  const _ExplorerSectionLabel('NOVEL & STORY'),
                   _ExplorerItem(
                     icon: Icons.auto_stories_outlined,
                     label: 'Novel Workspace',
                     onTap: () => focusExplorerAsset(ref, AssetType.story),
                   ),
+                  StoryGroup(
+                    onFocused: () => focusExplorerAsset(ref, AssetType.story),
+                    stories: stories,
+                    focused: focusedType == AssetType.story,
+                    selectedId: ref.watch(selectionProvider)?.assetId,
+                    onSelected: (story) => ref
+                        .read(selectionProvider.notifier)
+                        .select(
+                          SelectionModel(
+                            assetId: story.id,
+                            assetType: AssetType.story,
+                            projectId: story.projectId,
+                          ),
+                        ),
+                  ),
+                  const _ExplorerSectionLabel('CAST & CHARACTERS'),
                   _CharacterGroup(
                     onFocused: () =>
                         focusExplorerAsset(ref, AssetType.character),
@@ -431,6 +485,44 @@ class ExplorerPanel extends ConsumerWidget {
                           ),
                         ),
                   ),
+                  const _ExplorerSectionLabel('WORLD & CREATURES'),
+                  _CreatureGroup(
+                    creatures: creatures,
+                    selectedId: ref.watch(selectionProvider)?.assetId,
+                    onSelected: (creature) => ref
+                        .read(selectionProvider.notifier)
+                        .select(
+                          SelectionModel(
+                            assetId: creature.assetId,
+                            assetType: AssetType.creature,
+                            projectId: creature.projectId,
+                          ),
+                        ),
+                  ),
+                  EnvironmentGroup(
+                    onFocused: () =>
+                        focusExplorerAsset(ref, AssetType.environment),
+                    environments: environments,
+                    selectedId: ref.watch(selectionProvider)?.assetId,
+
+                    onSelected: (environment) => ref
+                        .read(selectionProvider.notifier)
+                        .select(
+                          SelectionModel(
+                            assetId: environment.assetId,
+                            assetType: AssetType.environment,
+                            projectId: environment.projectId,
+                          ),
+                        ),
+                  ),
+                  _ExplorerItem(
+                    icon: Icons.timeline_outlined,
+                    label: 'Timeline',
+                    onTap:
+                        onTimelineSelected ??
+                        () => focusExplorerAsset(ref, AssetType.timeline),
+                  ),
+                  const _ExplorerSectionLabel('OBJECTS & LOADOUT'),
                   if (modulePreferences.wardrobe)
                     _WardrobeGroup(
                       wardrobes: wardrobes,
@@ -446,6 +538,22 @@ class ExplorerPanel extends ConsumerWidget {
                             ),
                           ),
                     ),
+                  _AssetGroup(
+                    label: 'Armor',
+                    icon: Icons.shield_outlined,
+                    assets: armors,
+                    selectedId: ref.watch(selectionProvider)?.assetId,
+                    onSelected: (asset) =>
+                        _selectDatabaseAsset(ref, asset, AssetType.armor),
+                  ),
+                  _AssetGroup(
+                    label: 'Accessories',
+                    icon: Icons.watch_outlined,
+                    assets: accessories,
+                    selectedId: ref.watch(selectionProvider)?.assetId,
+                    onSelected: (asset) =>
+                        _selectDatabaseAsset(ref, asset, AssetType.accessory),
+                  ),
                   if (modulePreferences.weapons)
                     _WeaponGroup(
                       weapons: weapons,
@@ -465,47 +573,16 @@ class ExplorerPanel extends ConsumerWidget {
                     _StoryItemGroup(
                       items: storyItems,
                       selectedId: ref.watch(selectionProvider)?.assetId,
-                      onSelected: (item) => _showStoryItem(context, item),
+                      onSelected: (item) => ref
+                          .read(selectionProvider.notifier)
+                          .select(
+                            SelectionModel(
+                              assetId: item.assetId,
+                              assetType: AssetType.prop,
+                              projectId: item.projectId,
+                            ),
+                          ),
                     ),
-                  EnvironmentGroup(
-                    onFocused: () =>
-                        focusExplorerAsset(ref, AssetType.environment),
-                    environments: environments,
-                    selectedId: ref.watch(selectionProvider)?.assetId,
-
-                    onSelected: (environment) => ref
-                        .read(selectionProvider.notifier)
-                        .select(
-                          SelectionModel(
-                            assetId: environment.assetId,
-                            assetType: AssetType.environment,
-                            projectId: environment.projectId,
-                          ),
-                        ),
-                  ),
-                  StoryGroup(
-                    onFocused: () => focusExplorerAsset(ref, AssetType.story),
-                    stories: stories,
-                    focused: focusedType == AssetType.story,
-                    selectedId: ref.watch(selectionProvider)?.assetId,
-
-                    onSelected: (story) => ref
-                        .read(selectionProvider.notifier)
-                        .select(
-                          SelectionModel(
-                            assetId: story.id,
-                            assetType: AssetType.story,
-                            projectId: story.projectId,
-                          ),
-                        ),
-                  ),
-                  _ExplorerItem(
-                    icon: Icons.timeline_outlined,
-                    label: 'Timeline',
-                    onTap:
-                        onTimelineSelected ??
-                        () => focusExplorerAsset(ref, AssetType.timeline),
-                  ),
                 ],
               ),
             ),
@@ -516,41 +593,139 @@ class ExplorerPanel extends ConsumerWidget {
   }
 }
 
-Future<void> _showStoryItem(
-  BuildContext context,
-  PropModel item,
-) => showDialog<void>(
-  context: context,
-  builder: (context) => AlertDialog(
-    title: Text(item.name),
-    content: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 460),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Category: ${item.category.name}'),
-          const SizedBox(height: 12),
-          Text(
-            item.description.isEmpty ? 'No description yet.' : item.description,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            item.function.isEmpty ? 'No story function yet.' : item.function,
-          ),
-          const SizedBox(height: 12),
-          Text(item.storyCritical ? 'Story-critical item' : 'Supporting item'),
-        ],
+void _selectDatabaseAsset(WidgetRef ref, Asset asset, AssetType type) => ref
+    .read(selectionProvider.notifier)
+    .select(
+      SelectionModel(
+        assetId: asset.id,
+        assetType: type,
+        projectId: asset.projectId,
+      ),
+    );
+
+class _ExplorerSectionLabel extends StatelessWidget {
+  const _ExplorerSectionLabel(this.label);
+  final String label;
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(10, 16, 10, 6),
+    child: Text(
+      label,
+      style: TextStyle(
+        color: context.palette.textMuted,
+        fontSize: 9,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 1.1,
       ),
     ),
-    actions: [
-      TextButton(
-        onPressed: () => Navigator.pop(context),
-        child: const Text('Close'),
-      ),
-    ],
-  ),
-);
+  );
+}
+
+class _CreatureGroup extends StatelessWidget {
+  const _CreatureGroup({
+    required this.creatures,
+    required this.selectedId,
+    required this.onSelected,
+  });
+  final AsyncValue<List<CreatureModel>> creatures;
+  final String? selectedId;
+  final ValueChanged<CreatureModel> onSelected;
+  @override
+  Widget build(BuildContext context) => ExpansionTile(
+    initiallyExpanded: true,
+    tilePadding: const EdgeInsets.symmetric(horizontal: 9),
+    childrenPadding: const EdgeInsets.only(left: 28),
+    leading: Icon(
+      Icons.pets_outlined,
+      size: 16,
+      color: context.palette.textMuted,
+    ),
+    title: Text(
+      'Creatures & Companions',
+      style: TextStyle(color: context.palette.textSecondary, fontSize: 12),
+    ),
+    children: creatures.when(
+      loading: () => const [ListTile(dense: true, title: Text('Loading...'))],
+      error: (error, _) => [ListTile(dense: true, title: Text('$error'))],
+      data: (items) => items.isEmpty
+          ? const [ListTile(dense: true, title: Text('No creatures yet'))]
+          : [
+              for (final item in items)
+                ListTile(
+                  dense: true,
+                  minTileHeight: 36,
+                  leading: Icon(
+                    item.category == CreatureCategory.companion
+                        ? Icons.favorite_outline
+                        : Icons.cruelty_free_outlined,
+                    size: 15,
+                  ),
+                  title: Text(
+                    item.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: item.category == CreatureCategory.companion
+                      ? const Text('Companion')
+                      : null,
+                  selected: selectedId == item.assetId,
+                  onTap: () => onSelected(item),
+                ),
+            ],
+    ),
+  );
+}
+
+class _AssetGroup extends StatelessWidget {
+  const _AssetGroup({
+    required this.label,
+    required this.icon,
+    required this.assets,
+    required this.selectedId,
+    required this.onSelected,
+  });
+  final String label;
+  final IconData icon;
+  final AsyncValue<List<Asset>> assets;
+  final String? selectedId;
+  final ValueChanged<Asset> onSelected;
+  @override
+  Widget build(BuildContext context) => ExpansionTile(
+    initiallyExpanded: true,
+    tilePadding: const EdgeInsets.symmetric(horizontal: 9),
+    childrenPadding: const EdgeInsets.only(left: 28),
+    leading: Icon(icon, size: 16, color: context.palette.textMuted),
+    title: Text(
+      label,
+      style: TextStyle(color: context.palette.textSecondary, fontSize: 12),
+    ),
+    children: assets.when(
+      loading: () => const [ListTile(dense: true, title: Text('Loading...'))],
+      error: (error, _) => [ListTile(dense: true, title: Text('$error'))],
+      data: (items) => items.isEmpty
+          ? [
+              ListTile(
+                dense: true,
+                title: Text('No ${label.toLowerCase()} yet'),
+              ),
+            ]
+          : [
+              for (final item in items)
+                ListTile(
+                  dense: true,
+                  minTileHeight: 36,
+                  title: Text(
+                    item.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  selected: selectedId == item.id,
+                  onTap: () => onSelected(item),
+                ),
+            ],
+    ),
+  );
+}
 
 Future<void> _configureSidebarModules(
   BuildContext context,
@@ -663,8 +838,9 @@ Future<void> createExplorerAsset(
   final session = ref.read(projectSessionProvider).valueOrNull;
   if (session == null) return;
   var type = fixedType ?? AssetType.character;
+  var creatureCategory = CreatureCategory.animal;
   var assetName = '';
-  final result = await showDialog<(AssetType, String)>(
+  final result = await showDialog<(AssetType, String, CreatureCategory)>(
     context: context,
     builder: (dialogContext) => StatefulBuilder(
       builder: (context, setState) => AlertDialog(
@@ -694,11 +870,46 @@ Future<void> createExplorerAsset(
                     child: Text('Weapon'),
                   ),
                   DropdownMenuItem(
+                    value: AssetType.armor,
+                    child: Text('Armor'),
+                  ),
+                  DropdownMenuItem(
+                    value: AssetType.accessory,
+                    child: Text('Accessory'),
+                  ),
+                  DropdownMenuItem(
+                    value: AssetType.prop,
+                    child: Text('Item / Prop'),
+                  ),
+                  DropdownMenuItem(
+                    value: AssetType.creature,
+                    child: Text('Creature / Companion'),
+                  ),
+                  DropdownMenuItem(
                     value: AssetType.environment,
                     child: Text('Environment'),
                   ),
                 ],
                 onChanged: (value) => setState(() => type = value ?? type),
+              ),
+            if (type == AssetType.creature)
+              DropdownButtonFormField<CreatureCategory>(
+                initialValue: creatureCategory,
+                decoration: const InputDecoration(labelText: 'Creature role'),
+                items: CreatureCategory.values
+                    .map(
+                      (category) => DropdownMenuItem(
+                        value: category,
+                        child: Text(
+                          category.name[0].toUpperCase() +
+                              category.name.substring(1),
+                        ),
+                      ),
+                    )
+                    .toList(growable: false),
+                onChanged: (value) => setState(
+                  () => creatureCategory = value ?? creatureCategory,
+                ),
               ),
             TextField(
               onChanged: (value) => assetName = value,
@@ -715,7 +926,9 @@ Future<void> createExplorerAsset(
           FilledButton(
             onPressed: () {
               final name = assetName.trim();
-              if (name.isNotEmpty) Navigator.pop(dialogContext, (type, name));
+              if (name.isNotEmpty) {
+                Navigator.pop(dialogContext, (type, name, creatureCategory));
+              }
             },
             child: const Text('Create'),
           ),
@@ -724,7 +937,7 @@ Future<void> createExplorerAsset(
     ),
   );
   if (result == null) return;
-  final (assetType, name) = result;
+  final (assetType, name, selectedCreatureCategory) = result;
   final projectId = session.manifest.id;
   final paths = ref.read(projectPathsProvider);
   if (ref.read(projectSessionProvider).valueOrNull != session) return;
@@ -778,6 +991,38 @@ Future<void> createExplorerAsset(
               type: EnvironmentType.custom,
             );
         ref.invalidate(environmentExplorerProvider(projectId));
+      case AssetType.armor || AssetType.accessory:
+        assetId = const Uuid().v4();
+        await session.database.assetDao.createStandaloneAsset(
+          id: assetId,
+          projectId: projectId,
+          name: name,
+          type: assetType.name,
+          now: DateTime.now().toUtc(),
+        );
+        ref.invalidate(supportingAssetExplorerProvider((projectId, assetType)));
+      case AssetType.prop:
+        assetId =
+            await CreatePropService(
+              database: session.database,
+              paths: paths,
+            ).create(
+              projectId: projectId,
+              name: name,
+              category: PropCategory.other,
+            );
+        ref.invalidate(propExplorerProvider(projectId));
+      case AssetType.creature:
+        assetId =
+            await CreateCreatureService(
+              database: session.database,
+              paths: paths,
+            ).create(
+              projectId: projectId,
+              name: name,
+              category: selectedCreatureCategory,
+            );
+        ref.invalidate(creatureExplorerProvider(projectId));
       default:
         return;
     }

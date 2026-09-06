@@ -14,10 +14,23 @@ void main() {
     expect(find.text('Reviews'), findsOneWidget);
   });
 
-  testWidgets('menampilkan CTA', (tester) async {
-    await tester.pumpWidget(wrap(const ProductDetailScreen()));
-    expect(find.text('Install'), findsOneWidget);
-    expect(find.text('Buy'), findsOneWidget);
+  testWidgets('CTA actions notify the parent', (tester) async {
+    var installed = false;
+    var bought = false;
+    await tester.pumpWidget(
+      wrap(
+        ProductDetailScreen(
+          onInstall: () => installed = true,
+          onBuy: () => bought = true,
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Install'));
+    await tester.tap(find.text('Buy'));
+
+    expect(installed, isTrue);
+    expect(bought, isTrue);
   });
 
   testWidgets('tidak overflow di layar sempit', (tester) async {

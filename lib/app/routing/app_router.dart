@@ -10,8 +10,8 @@ import '../../features/authentication/presentation/forgot_password_screen.dart';
 import '../../features/authentication/presentation/login_screen.dart';
 import '../../features/authentication/presentation/register_screen.dart';
 import '../../features/account/presentation/account_cloud_center_screen.dart';
-import '../../features/platform/presentation/theme_settings_screen.dart';
 import '../../features/settings/presentation/settings_hub_screen.dart';
+import '../../features/platform/presentation/theme_settings_screen.dart';
 import '../../features/content_capabilities/presentation/content_capability_matrix_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/projects/presentation/create_project_screen.dart';
@@ -22,6 +22,7 @@ import '../../features/ai/presentation/ai_provider_workspace_screen.dart';
 import '../../features/ai/presentation/ai_generation_queue_screen.dart';
 import '../../features/ai/presentation/project_ai_generation_gallery_screen.dart';
 import '../../features/ai/presentation/advanced_ai_studio_screen.dart';
+import '../../features/ai/domain/prompt_target.dart';
 import '../../features/assets/presentation/asset_browser_screen.dart';
 import '../../features/references/presentation/project_reference_library_screen.dart';
 import '../../features/references/presentation/reference_comparison_screen.dart';
@@ -74,9 +75,14 @@ GoRouter createAppRouter({
       for (final route in AppRoutes.foundationRoutes.entries)
         GoRoute(
           path: route.value,
-          builder: (_, __) => switch (route.value) {
+          builder: (context, __) => switch (route.value) {
             AppRoutes.workspace => const ProviderScope(child: VoidAppShell()),
-            AppRoutes.aiStudio => const AdvancedAiStudioScreen(),
+            AppRoutes.aiStudio => AdvancedAiStudioScreen(
+              onOpenImageGenerator: () =>
+                  context.push(AppRoutes.aiImageGenerator),
+              onOpenVideoGenerator: () =>
+                  context.push(AppRoutes.aiVideoGenerator),
+            ),
             AppRoutes.collaborationComments =>
               const CollaborationCommentsScreen(),
             AppRoutes.accountCloud => const AccountCloudCenterScreen(),
@@ -87,6 +93,15 @@ GoRouter createAppRouter({
             _ => FoundationRouteScreen(label: route.key),
           },
         ),
+      GoRoute(
+        path: AppRoutes.aiImageGenerator,
+        builder: (_, __) => const AiGenerationQueueScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.aiVideoGenerator,
+        builder: (_, __) =>
+            const AiGenerationQueueScreen(mediaTarget: PromptTarget.video),
+      ),
       GoRoute(
         path: AppRoutes.settings,
         builder: (_, __) => const SettingsHubScreen(),
@@ -346,7 +361,19 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
         ),
     GoRoute(
       path: AppRoutes.aiStudio,
-      builder: (_, __) => const AdvancedAiStudioScreen(),
+      builder: (context, __) => AdvancedAiStudioScreen(
+        onOpenImageGenerator: () => context.push(AppRoutes.aiImageGenerator),
+        onOpenVideoGenerator: () => context.push(AppRoutes.aiVideoGenerator),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.aiImageGenerator,
+      builder: (_, __) => const AiGenerationQueueScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.aiVideoGenerator,
+      builder: (_, __) =>
+          const AiGenerationQueueScreen(mediaTarget: PromptTarget.video),
     ),
     GoRoute(
       path: AppRoutes.collaborationComments,

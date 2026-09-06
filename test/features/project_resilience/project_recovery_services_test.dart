@@ -33,14 +33,29 @@ void main() {
       final source = File('${package.assetsDirectory.path}/images/file.txt')
         ..parent.createSync(recursive: true);
       await source.writeAsString('before');
+      final workspaceSource = File(
+        '${package.root.path}/workspaces/novels/novel-1/drafts/chapter.md',
+      )..parent.createSync(recursive: true);
+      await workspaceSource.writeAsString('workspace-before');
       final backup = await ProjectBackupService().create(
         package: package,
         type: 'manual',
       );
       await source.writeAsString('after');
+      await workspaceSource.writeAsString('workspace-after');
       await ProjectBackupService().restore(package: package, backup: backup);
-      expect(await source.readAsString(), 'after');
+      expect(await source.readAsString(), 'before');
+      expect(await workspaceSource.readAsString(), 'workspace-before');
+
+      final backupDatabase = File(p.join(backup.path, 'project.db'));
+      await backupDatabase.writeAsBytes(<int>[0, 1, 2, 3]);
+      expect(
+        () => ProjectBackupService().restore(package: package, backup: backup),
+        throwsA(isA<BackupIntegrityException>()),
+      );
+
       await File('${package.cacheDirectory.path}/temp').writeAsString('cache');
+
       await ProjectCacheService(package).clear();
       expect(
         await Directory('${package.cacheDirectory.path}/temp').exists(),
@@ -64,4 +79,47 @@ void main() {
       expect(await source.exists(), isTrue);
     },
   );
+
+  test('backup integrity rejects a tampered workspace file', () async {
+    final package = await ProjectPackageService(
+      rootDirectory: root,
+    ).create(name: 'Workspace Integrity');
+    final source = File(
+      p.join(
+        package.root.path,
+        'workspaces',
+        'novels',
+        'novel-1',
+        'drafts',
+        'chapter.md',
+      ),
+    );
+    await source.parent.create(recursive: true);
+    await source.writeAsString('trusted');
+    final backup = await ProjectBackupService().create(
+      package: package,
+      type: 'migration',
+    );
+    await File(
+      p.join(
+        backup.path,
+        'workspaces',
+        'novels',
+        'novel-1',
+        'drafts',
+        'chapter.md',
+      ),
+    ).writeAsString('tampered');
+
+    await expectLater(
+      ProjectBackupService().restore(package: package, backup: backup),
+      throwsA(
+        isA<BackupIntegrityException>().having(
+          (error) => error.message,
+          'message',
+          'Workspace backup checksum mismatch',
+        ),
+      ),
+    );
+  });
 }

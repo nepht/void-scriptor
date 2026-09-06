@@ -41,6 +41,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/logos/
+    - assets/mascot/
+    - assets/models/
     - assets/backgrounds/
     - assets/brands/ai_tech/
     - assets/brands/apps/

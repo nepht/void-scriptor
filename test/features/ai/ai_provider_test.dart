@@ -3,6 +3,13 @@ import 'package:void_scriptor/core/security/credential_store.dart';
 import 'package:void_scriptor/features/ai/domain/ai_provider.dart';
 
 void main() {
+  test('provider registry rejects duplicate provider ids', () {
+    expect(
+      () => AiProviderRegistry(const [MockAiProvider(), MockAiProvider()]),
+      throwsArgumentError,
+    );
+  });
+
   test(
     'memory credential store writes reads and deletes without exposing secrets in config',
     () async {
@@ -41,6 +48,6 @@ void main() {
       ),
     );
     expect(result.providerRequestId, 'mock-request');
-    expect(result.outputs.single.type, AiOutputType.text);
+    expect(result.outputs.single.type, AiOutputType.image);
   });
 }

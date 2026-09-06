@@ -9,7 +9,10 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 /// Setiap produk mempunyai: nama, deskripsi, versi, rating, review.
 /// CTA sesuai jenis produk (Install / Buy).
 class ProductDetailScreen extends StatelessWidget {
-  const ProductDetailScreen({super.key});
+  const ProductDetailScreen({super.key, this.onInstall, this.onBuy});
+
+  final VoidCallback? onInstall;
+  final VoidCallback? onBuy;
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +46,14 @@ class ProductDetailScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: FilledButton(
-                      onPressed: () {},
+                      onPressed: onInstall,
                       child: const Text('Install'),
                     ),
                   ),
                   const SizedBox(width: VoidSpacing.md),
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: onBuy,
                       child: const Text('Buy'),
                     ),
                   ),

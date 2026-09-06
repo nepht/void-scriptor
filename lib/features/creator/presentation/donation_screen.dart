@@ -47,18 +47,12 @@ class DonationScreen extends StatelessWidget {
                       const SizedBox(height: VoidSpacing.md),
                     ],
                   const SizedBox(height: 28),
-                  const _SectionTitle('Recent Donations'),
+                  const _SectionTitle('Payment status'),
                   const SizedBox(height: 12),
                   const _InfoRow(
-                    label: 'Last Donation',
-                    value: 'Rp 150.000',
-                    icon: Icons.history_outlined,
-                  ),
-                  const SizedBox(height: VoidSpacing.sm),
-                  const _InfoRow(
-                    label: 'Total Received',
-                    value: 'Rp 2.450.000',
-                    icon: Icons.account_balance_wallet_outlined,
+                    label: 'Payments not connected',
+                    value: 'No verified donations yet.',
+                    icon: Icons.link_off_outlined,
                   ),
                 ],
               ),
@@ -135,7 +129,13 @@ class _InfoRow extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(child: Text(label, style: VoidTypography.body)),
           const SizedBox(width: 16),
-          Text(value, style: VoidTypography.title),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: VoidTypography.title,
+            ),
+          ),
         ],
       ),
     );

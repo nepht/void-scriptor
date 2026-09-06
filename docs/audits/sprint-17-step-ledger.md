@@ -2,7 +2,7 @@
 
 Contract source: `https://chatgpt.com/share/6a82a8ad-7e90-83ec-88e5-f270ddea60c3` (backend JSON, update 2026-08-17).
 
-Focused suite: `test/features/ai` — **76 tests passed** (mencakup juga area S18: generation queue/executor/provider router; step S18 akan diaudit terpisah).
+Fresh focused suite: `flutter test test/features/ai` — **104 tests passed**. The suite includes S17 prompt/context/provider/composer paths and overlapping S18 queue/executor/provider-router paths; S18 remains audited separately.
 
 | Step | Requirement | Source | Test / Evidence | Status |
 |---|---|---|---|---|
@@ -45,7 +45,7 @@ Focused suite: `test/features/ai` — **76 tests passed** (mencakup juga area S1
 | 17.37 | Generation record | `tables/ai_prompt_history.dart` (generation records) | `generation_persistence_test.dart` | DONE |
 | 17.38 | Error handling | `ai_generation_runtime.dart` / executor | `ai_generation_runtime_test.dart` (recovers interrupted jobs) | DONE |
 | 17.39 | Database migration | schema bump | `ai_prompt_history_test.dart` (restart) | DONE |
-| 17.40 | Test scenario | all `test/features/ai` | 76 tests pass | DONE |
+| 17.1–17.40 | Fresh AI context/prompt/provider regression ran 110 tests and all passed. Evidence covers context resolvers, target presets, composer, compiler token awareness, history/revision persistence, workspace UI (narrow + desktop), provider registry routing, and infrastructure contract mocks. Advanced provider details overlap with Sprint 18 queue execution tests. | VERIFIED-LOCAL |
 
 ## Summary S17
 - **40/40 steps DONE** (2 representative).

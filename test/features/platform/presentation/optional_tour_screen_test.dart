@@ -15,6 +15,15 @@ void main() {
     expect(find.text('Publish'), findsOneWidget);
   });
 
+  testWidgets('start tour notifies the parent', (tester) async {
+    var started = false;
+    await tester.pumpWidget(
+      wrap(OptionalTourScreen(onStartTour: () => started = true)),
+    );
+    await tester.tap(find.text('Start Tour'));
+    expect(started, isTrue);
+  });
+
   testWidgets('tidak overflow di layar sempit', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1.0;

@@ -15,6 +15,18 @@ void main() {
     expect(find.text('My Library'), findsOneWidget);
   });
 
+  testWidgets('menu marketplace notifies parent when selected', (tester) async {
+    String? selected;
+    await tester.pumpWidget(
+      wrap(
+        MarketplaceWorkspaceScreen(onMenuSelected: (value) => selected = value),
+      ),
+    );
+
+    await tester.tap(find.text('Discover'));
+    expect(selected, 'Discover');
+  });
+
   testWidgets('tidak overflow di layar sempit', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1.0;

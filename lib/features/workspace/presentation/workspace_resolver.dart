@@ -6,7 +6,9 @@ import '../../../core/selection/selection_controller.dart';
 import '../../../core/selection/selection_model.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 import '../../assets/domain/asset_type.dart';
+import '../../assets/presentation/supporting_asset_workspace_screen.dart';
 import '../../character/presentation/character_workspace_screen.dart';
+import '../../creatures/presentation/creature_workspace_screen.dart';
 import '../../wardrobe/presentation/wardrobe_workspace_screen.dart';
 import '../../weapon/presentation/weapon_workspace_screen.dart';
 import '../../environment/presentation/environment_workspace_screen.dart';
@@ -97,6 +99,7 @@ class WorkspaceResolver extends ConsumerWidget {
         return WorldbuildingBody(
           key: ValueKey('wb-${session.manifest.id}'),
           assetType: type,
+          activeSection: activeSection,
         );
       }
       return ProjectOverview(
@@ -147,23 +150,40 @@ class WorkspaceResolver extends ConsumerWidget {
     return switch (selection.assetType) {
       AssetType.character => CharacterWorkspaceScreen(
         characterId: selection.assetId,
+        activeSection: activeSection,
       ),
       AssetType.wardrobe => WardrobeWorkspaceScreen(
         wardrobeId: selection.assetId,
       ),
       AssetType.weapon => WeaponWorkspaceScreen(weaponId: selection.assetId),
-      AssetType.environment => EnvironmentWorkspaceScreen(
-        environmentId: selection.assetId,
+      AssetType.armor ||
+      AssetType.accessory ||
+      AssetType.prop => SupportingAssetWorkspaceScreen(
+        assetId: selection.assetId,
+        activeSection: activeSection,
+      ),
+      AssetType.environment =>
+        _opensWorldbuildingCollection(activeSection)
+            ? WorldbuildingBody(
+                key: ValueKey('wb-${selection.projectId ?? ''}'),
+                assetId: selection.assetId,
+                assetType: selection.assetType,
+                activeSection: activeSection,
+              )
+            : EnvironmentWorkspaceScreen(environmentId: selection.assetId),
+      AssetType.creature => CreatureWorkspaceScreen(
+        creatureId: selection.assetId,
+        activeSection: activeSection,
       ),
       AssetType.faction ||
       AssetType.timeline ||
-      AssetType.creature ||
       AssetType.species ||
       AssetType.technology ||
       AssetType.powerSystem => WorldbuildingBody(
         key: ValueKey('wb-${selection.projectId ?? ''}'),
         assetId: selection.assetId,
         assetType: selection.assetType,
+        activeSection: activeSection,
       ),
       AssetType.story => StoryWorkspaceScreen(
         storyId: selection.assetId,
@@ -217,16 +237,20 @@ class WorkspaceResolver extends ConsumerWidget {
         ),
         onTapAddCharacter: session == null
             ? null
-            : (novelWorkspaceId) => _linkCharacterToNovel(
-                context,
-                session,
-                novelWorkspaceId,
-              ),
+            : (novelWorkspaceId) =>
+                  _linkCharacterToNovel(context, session, novelWorkspaceId),
+        activeSection: activeSection,
+        onSectionRequested: onSectionRequested,
       ),
       _ => const ProjectOverview(),
     };
   }
 }
+
+bool _opensWorldbuildingCollection(String? section) => switch (section) {
+  'Factions' || 'Relationships' || 'Timeline' || 'Lore Notes' => true,
+  _ => false,
+};
 
 class ProjectOverview extends StatelessWidget {
   const ProjectOverview({
@@ -285,6 +309,9 @@ class ProjectOverview extends StatelessWidget {
           'Select an asset from Explorer to open its workspace.',
           style: TextStyle(color: context.palette.textMuted),
         ),
+        // Friksi #4 native journey 145.43: tab Outline tanpa aset terpilih
+        // tidak boleh mati total - tunjukkan struktur yang akan dibuat dan
+        // arahkan ke novel pertama lewat aksi Create Novel yang sama.
         if (activeSection == 'Outline') ...[
           const SizedBox(height: 16),
           Container(
@@ -347,10 +374,16 @@ bool _isWorldbuildingIntent(AssetType? type) => switch (type) {
 /// Body workspace worldbuilding nyata: menampilkan data proyek
 /// (faksi, era timeline, entri lore) alih-alih fallback Novel.
 class WorldbuildingBody extends ConsumerStatefulWidget {
-  const WorldbuildingBody({super.key, this.assetId, this.assetType});
+  const WorldbuildingBody({
+    super.key,
+    this.assetId,
+    this.assetType,
+    this.activeSection,
+  });
 
   final String? assetId;
   final AssetType? assetType;
+  final String? activeSection;
 
   @override
   ConsumerState<WorldbuildingBody> createState() => _WorldbuildingBodyState();
@@ -397,8 +430,10 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
         database: db,
         projectId: projectId,
       ).getEnvironments();
-      final relations = await const CharacterRelationMapService()
-          .mapForProject(db, projectId: projectId);
+      final relations = await const CharacterRelationMapService().mapForProject(
+        db,
+        projectId: projectId,
+      );
       if (!mounted) return;
       setState(() {
         _factions = factions;
@@ -473,6 +508,26 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
   Widget build(BuildContext context) {
     final palette = context.palette;
     final selectedId = ref.watch(selectionProvider)?.assetId;
+    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final sectionIntent = ref.watch(worldbuildingSectionIntentProvider);
+    final focusedSection = sectionIntent?.$1 == session?.manifest.id
+        ? sectionIntent?.$2
+        : null;
+    final requestedSection =
+        widget.activeSection ??
+        switch (focusedSection) {
+          WorldbuildingExplorerSection.factions => 'Factions',
+          WorldbuildingExplorerSection.relationshipMap => 'Relationships',
+          null => null,
+        };
+    final showOverview =
+        requestedSection == null || requestedSection == 'Overview';
+    final showFactions = showOverview || requestedSection == 'Factions';
+    final showRelationships =
+        showOverview || requestedSection == 'Relationships';
+    final showTimeline = showOverview || requestedSection == 'Timeline';
+    final showLore = showOverview || requestedSection == 'Lore Notes';
+    final showLocations = showOverview || requestedSection == 'Locations';
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -484,17 +539,20 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
             children: [
               Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Worldbuilding Workspace',
+                      showOverview
+                          ? 'Worldbuilding Workspace'
+                          : requestedSection,
                       style: VoidTypography.headingMedium,
                     ),
                   ),
-                  FilledButton.icon(
-                    onPressed: _createFaction,
-                    icon: const Icon(Icons.flag_outlined),
-                    label: const Text('Create Faction'),
-                  ),
+                  if (showFactions)
+                    FilledButton.icon(
+                      onPressed: _createFaction,
+                      icon: const Icon(Icons.flag_outlined),
+                      label: const Text('Create Faction'),
+                    ),
                 ],
               ),
               const SizedBox(height: 12),
@@ -514,76 +572,86 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
                   child: const Text('Muat ulang'),
                 ),
               ] else ...[
-                _WorldSection(
-                  title: 'Factions',
-                  emptyLabel: 'Belum ada faksi. Buat faksi pertama.',
-                  items: [
-                    for (final faction in _factions ?? const [])
-                      _WorldItem(
-                        id: faction.assetId,
-                        title: faction.name,
-                        subtitle: faction.ideology.trim(),
-                        selected: selectedId == faction.assetId,
-                        onTap: () =>
-                            _selectAsset(faction.assetId, AssetType.faction),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                _WorldSection(
-                  title: 'Timeline',
-                  emptyLabel: 'Belum ada era pada timeline proyek ini.',
-                  items: [
-                    for (final eraItem in _eras ?? const [])
-                      _WorldItem(
-                        id: eraItem.id,
-                        title: eraItem.name,
-                        subtitle: eraItem.description.trim(),
-                        selected: selectedId == eraItem.id,
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                _WorldSection(
-                  title: 'Lore Notes',
-                  emptyLabel: 'Belum ada entri lore pada proyek ini.',
-                  items: [
-                    for (final entry in _lore ?? const [])
-                      _WorldItem(
-                        id: entry.id,
-                        title: entry.name,
-                        subtitle: entry.kind,
-                        selected: selectedId == entry.id,
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                _WorldSection(
-                  title: 'Locations',
-                  emptyLabel: 'Belum ada lokasi pada proyek ini.',
-                  items: [
-                    for (final location in _locations ?? const [])
-                      _WorldItem(
-                        id: location.assetId,
-                        title: location.name,
-                        subtitle: location.environmentType,
-                        selected: selectedId == location.assetId,
-                        onTap: () => _selectAsset(
-                          location.assetId,
-                          AssetType.environment,
+                if (showFactions)
+                  _WorldSection(
+                    title: 'Factions',
+                    emptyLabel: 'Belum ada faksi. Buat faksi pertama.',
+                    items: [
+                      for (final faction in _factions ?? const [])
+                        _WorldItem(
+                          id: faction.assetId,
+                          title: faction.name,
+                          subtitle: faction.ideology.trim(),
+                          selected: selectedId == faction.assetId,
+                          onTap: () =>
+                              _selectAsset(faction.assetId, AssetType.faction),
                         ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                _WorldSection(
-                  title: 'Relationship Map',
-                  emptyLabel: 'Belum ada relasi antar karakter \u0027\u0027+pada proyek ini.',
-                  items: [
-                    for (final relation in _relations ?? const [])
-                      _RelationItem(entry: relation),
-                  ],
-                ),
+                    ],
+                  ),
+                if (showTimeline) ...[
+                  const SizedBox(height: 16),
+                  _WorldSection(
+                    title: 'Timeline',
+                    emptyLabel: 'Belum ada era pada timeline proyek ini.',
+                    items: [
+                      for (final eraItem in _eras ?? const [])
+                        _WorldItem(
+                          id: eraItem.id,
+                          title: eraItem.name,
+                          subtitle: eraItem.description.trim(),
+                          selected: selectedId == eraItem.id,
+                        ),
+                    ],
+                  ),
+                ],
+                if (showLore) ...[
+                  const SizedBox(height: 16),
+                  _WorldSection(
+                    title: 'Lore Notes',
+                    emptyLabel: 'Belum ada entri lore pada proyek ini.',
+                    items: [
+                      for (final entry in _lore ?? const [])
+                        _WorldItem(
+                          id: entry.id,
+                          title: entry.name,
+                          subtitle: entry.kind,
+                          selected: selectedId == entry.id,
+                        ),
+                    ],
+                  ),
+                ],
+                if (showLocations) ...[
+                  const SizedBox(height: 16),
+                  _WorldSection(
+                    title: 'Locations',
+                    emptyLabel: 'Belum ada lokasi pada proyek ini.',
+                    items: [
+                      for (final location in _locations ?? const [])
+                        _WorldItem(
+                          id: location.assetId,
+                          title: location.name,
+                          subtitle: location.environmentType,
+                          selected: selectedId == location.assetId,
+                          onTap: () => _selectAsset(
+                            location.assetId,
+                            AssetType.environment,
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+                if (showRelationships) ...[
+                  const SizedBox(height: 16),
+                  _WorldSection(
+                    title: 'Relationship Map',
+                    emptyLabel:
+                        'Belum ada relasi antar karakter pada proyek ini.',
+                    items: [
+                      for (final relation in _relations ?? const [])
+                        _RelationItem(entry: relation),
+                    ],
+                  ),
+                ],
               ],
             ],
           ),
@@ -738,7 +806,6 @@ void selectAsset(WidgetRef ref, SelectionModel selection) {
   ref.read(selectionProvider.notifier).select(selection);
 }
 
-
 /// Step 145.43 friksi #1: aksi link karakter ke novel dari kartu Linked
 /// Characters. Satu pintu lewat [CreateNovelCharacterLinkService]; picker
 /// karakter dari katalog proyek; katalog kosong = snackbar jujur, bukan
@@ -794,10 +861,7 @@ Future<WorkspaceProjection?> _linkCharacterToNovel(
     await CreateNovelCharacterLinkService(
       links: session.novelCharacterLinks,
       projections: session.workspaceProjections,
-    ).create(
-      novelWorkspaceId: novelWorkspaceId,
-      characterAssetId: characterId,
-    );
+    ).create(novelWorkspaceId: novelWorkspaceId, characterAssetId: characterId);
     return session.workspaceProjectionReader.forNovel(novelWorkspaceId);
   } catch (_) {
     if (!context.mounted) return null;

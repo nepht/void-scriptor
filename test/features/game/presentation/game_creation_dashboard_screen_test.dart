@@ -15,6 +15,25 @@ void main() {
     expect(find.text('Build'), findsOneWidget);
   });
 
+  testWidgets('play and build actions notify the parent', (tester) async {
+    var played = false;
+    var built = false;
+    await tester.pumpWidget(
+      wrap(
+        GameCreationDashboardScreen(
+          onPlay: () => played = true,
+          onBuild: () => built = true,
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Play'));
+    await tester.tap(find.text('Build'));
+
+    expect(played, isTrue);
+    expect(built, isTrue);
+  });
+
   testWidgets('tidak overflow di layar sempit', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1.0;

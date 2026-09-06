@@ -1,5 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 
 import '../../../core/project_package/project_package.dart';
 import '../../../core/security/credential_store.dart';
@@ -27,6 +28,8 @@ class AiGenerationRuntime {
     required this.repository,
     required this.executor,
     required this.queue,
+    required this._promptHistory,
+    required this._outputService,
     this._ownedHttpClient,
   });
 
@@ -34,6 +37,8 @@ class AiGenerationRuntime {
   final GenerationRepository repository;
   final GenerationJobExecutor executor;
   final GenerationQueue queue;
+  final AiPromptHistoryService _promptHistory;
+  final ProjectAiOutputService _outputService;
   final http.Client? _ownedHttpClient;
 
   static Future<AiGenerationRuntime> open({
@@ -55,10 +60,11 @@ class AiGenerationRuntime {
         );
     final repository = GenerationRepository(database);
     final promptHistory = AiPromptHistoryService(database);
+    final outputService = ProjectAiOutputService(package: package);
     final executor = GenerationJobExecutor(
       registry: resolvedRegistry,
       repository: _ExecutorRepositoryAdapter(repository),
-      outputService: ProjectAiOutputService(package: package),
+      outputService: outputService,
       promptLoader: (id) async {
         final row = await promptHistory.getHistory(id);
         if (row == null) {
@@ -80,6 +86,8 @@ class AiGenerationRuntime {
       repository: repository,
       executor: executor,
       queue: queue,
+      promptHistory: promptHistory,
+      outputService: outputService,
       ownedHttpClient: ownedClient,
     );
     await runtime._recoverInterruptedJobs();
@@ -132,6 +140,65 @@ class AiGenerationRuntime {
   }
 
   Future<void> runQueue() => queue.drain();
+
+  Future<String> submitImagePrompt({
+    required String prompt,
+    required String providerId,
+    String? modelId,
+    String negativePrompt = '',
+  }) => submitPrompt(
+    target: PromptTarget.image,
+    prompt: prompt,
+    providerId: providerId,
+    modelId: modelId,
+    negativePrompt: negativePrompt,
+  );
+
+  Future<String> submitVideoPrompt({
+    required String prompt,
+    required String providerId,
+    String? modelId,
+    String negativePrompt = '',
+  }) => submitPrompt(
+    target: PromptTarget.video,
+    prompt: prompt,
+    providerId: providerId,
+    modelId: modelId,
+    negativePrompt: negativePrompt,
+  );
+
+  Future<String> submitPrompt({
+    required PromptTarget target,
+    required String prompt,
+    required String providerId,
+    String? modelId,
+    String negativePrompt = '',
+  }) async {
+    final normalizedPrompt = prompt.trim();
+    if (normalizedPrompt.isEmpty) {
+      throw ArgumentError.value(prompt, 'prompt', 'Prompt must not be empty.');
+    }
+    final promptHistoryId = await _promptHistory.savePrompt(
+      projectId: projectId,
+      target: target.name,
+      prompt: normalizedPrompt,
+      negativePrompt: negativePrompt,
+      provider: providerId,
+      model: modelId,
+    );
+    final job = GenerationJob(
+      id: const Uuid().v4(),
+      projectId: projectId,
+      providerId: providerId,
+      modelId: modelId,
+      promptHistoryId: promptHistoryId,
+      status: GenerationJobStatus.queued,
+      createdAt: DateTime.now(),
+    );
+    await enqueue(job);
+    await runQueue();
+    return job.id;
+  }
 
   Future<bool> cancel(String jobId) async {
     final job = await repository.getJob(jobId);
@@ -200,7 +267,10 @@ class AiGenerationRuntime {
     }
   }
 
-  void dispose() => _ownedHttpClient?.close();
+  void dispose() {
+    _outputService.dispose();
+    _ownedHttpClient?.close();
+  }
 }
 
 class _ExecutorRepositoryAdapter implements GenerationJobRepository {

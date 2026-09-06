@@ -20,7 +20,7 @@ void main() {
       NativeDatabase(File('${dir.path}/project.db')),
     );
     await database.customSelect('SELECT 1').get();
-    expect(db.ProjectDatabase.currentSchemaVersion, 58);
+    expect(db.ProjectDatabase.currentSchemaVersion, 59);
     final tables = await database
         .customSelect("SELECT name FROM sqlite_master WHERE type='table'")
         .get();

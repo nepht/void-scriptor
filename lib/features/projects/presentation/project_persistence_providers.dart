@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../../core/persistence/custom_storage_location.dart';
 import '../../../core/persistence/project_paths.dart';
 import '../../../core/persistence/project_registry_service.dart';
+import '../../../core/persistence/storage_location_registry_resolver.dart';
 import '../../../core/project_package/project_package.dart';
 import '../../project_resilience/application/project_session_manager.dart';
 import '../data/project_local_data_source.dart';
@@ -14,8 +16,12 @@ import '../data/project_repository_impl.dart';
 final customStorageStoreProvider = FutureProvider<CustomStorageLocationStore>((
   ref,
 ) async {
-  final registryFile = await ProjectPaths().rootDirectoryFile(
-    'storage_locations.json',
+  final legacyFile = await ProjectPaths().rootDirectoryFile(
+    StorageLocationRegistryResolver.fileName,
+  );
+  final registryFile = await const StorageLocationRegistryResolver().resolve(
+    applicationSupportDirectory: await getApplicationSupportDirectory(),
+    legacyFile: legacyFile,
   );
   return CustomStorageLocationStore(registryFile: registryFile);
 });
@@ -48,6 +54,8 @@ final currentProjectSessionProvider = projectSessionProvider;
 
 class ProjectSessionController extends AsyncNotifier<ProjectSession?> {
   ProjectSession? _session;
+  Future<ProjectSession>? _pendingOpen;
+  String? _pendingProjectId;
   final ProjectSessionManager _manager = ProjectSessionManager();
 
   @override
@@ -65,16 +73,56 @@ class ProjectSessionController extends AsyncNotifier<ProjectSession?> {
     String projectId, {
     ProjectOpenMode mode = ProjectOpenMode.readWrite,
   }) async {
+    final pending = _pendingOpen;
+    if (pending != null) {
+      if (_pendingProjectId == projectId) {
+        final session = await pending;
+        if (session.mode == mode) return session;
+      } else {
+        // Serialize project switches; never open two writers concurrently.
+        try {
+          await pending;
+        } catch (_) {
+          /* The caller receives its error. */
+        }
+      }
+      return openProject(projectId, mode: mode);
+    }
+    final active = _session;
+    if (active?.package.projectId == projectId && active?.mode == mode) {
+      return active!;
+    }
+    _pendingProjectId = projectId;
+    final operation = _openProject(projectId, mode);
+    _pendingOpen = operation;
+    try {
+      return await operation;
+    } finally {
+      _pendingOpen = null;
+      _pendingProjectId = null;
+    }
+  }
+
+  Future<ProjectSession> _openProject(
+    String projectId,
+    ProjectOpenMode mode,
+  ) async {
     state = const AsyncLoading();
-    await _session?.close();
-    final root = await ref.read(projectPathsProvider).project(projectId);
-    final session = await _manager.open(
-      ProjectPackage(projectId: projectId, root: root),
-      mode: mode,
-    );
-    _session = session;
-    state = AsyncData(session);
-    return session;
+    try {
+      await _session?.close();
+      _session = null;
+      final root = await ref.read(projectPathsProvider).project(projectId);
+      final session = await _manager.open(
+        ProjectPackage(projectId: projectId, root: root),
+        mode: mode,
+      );
+      _session = session;
+      state = AsyncData(session);
+      return session;
+    } catch (error, stack) {
+      state = AsyncError(error, stack);
+      rethrow;
+    }
   }
 
   Future<ProjectSession> open(
@@ -90,6 +138,14 @@ class ProjectSessionController extends AsyncNotifier<ProjectSession?> {
   }
 
   Future<void> closeProject() async {
+    final pending = _pendingOpen;
+    if (pending != null) {
+      try {
+        await pending;
+      } catch (_) {
+        /* Failed opens have no session. */
+      }
+    }
     await _session?.close();
     _session = null;
     state = const AsyncData(null);

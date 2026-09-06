@@ -9,7 +9,17 @@ class BrandAssets {
   // ── Kategori ─────────────────────────────────────────────
   static const String aiTech = 'assets/brands/ai_tech';
   static const String apps = 'assets/brands/apps';
+  static const String brandCanva = 'assets/brands/apps/canva.svg';
   static const String designTools = 'assets/brands/design_tools';
+  static const String webPlatforms = 'assets/brands/web_platforms';
+  static const String designAutodesk =
+      'assets/brands/design_tools/autodesk_logo.webp';
+
+  // -- Web publishing platforms (untuk website Void Scriptor) --
+  static const String webWix = 'assets/brands/web_platforms/wix.webp';
+  static const String webSquarespace =
+      'assets/brands/web_platforms/squarespace.webp';
+  static const String webWeebly = 'assets/brands/web_platforms/weebly.webp';
   static const String ecommerce = 'assets/brands/ecommerce';
   static const String fileFormats = 'assets/brands/file_formats';
   static const String flags = 'assets/brands/flags';
@@ -36,6 +46,45 @@ class BrandAssets {
   static const String paymentJago = '$paymentMethods/bank_jago.webp';
   static const String paymentBni = '$paymentMethods/bni.svg';
   static const String paymentVisa = '$paymentMethods/visa.svg';
+
+  // ── Void Scriptor ──
+  static const String voidScriptorEmblem =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_emblem_transparent.png';
+  static const String voidScriptorEmblemPurple =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_emblem_purple.png';
+  static const String voidScriptorEmblemWhite =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_emblem_white.png';
+  static const String voidScriptorInk =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_emblem_ink.png';
+  static const String voidScriptorIcon16 =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_icon_16.png';
+  static const String voidScriptorIcon32 =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_icon_32.png';
+  static const String voidScriptorIcon64 =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_icon_64.png';
+  static const String voidScriptorIcon128 =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_icon_128.png';
+  static const String voidScriptorIcon256 =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_icon_256.png';
+  static const String voidScriptorIcon512 =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_icon_512.png';
+  static const String voidScriptorLockupDark =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_lockup_dark.png';
+  // ── Void Scriptor SVG ──
+  // ── Void Scriptor SVG (vector traces) ──
+  static const String voidScriptorLockupLight =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_lockup_light.png';
+  // -- Void Scriptor SVG (scalable, from vtracer) --
+  static const String voidScriptorSvg =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_emblem.svg';
+  static const String voidScriptorSvgColor =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_emblem_color.svg';
+  static const String voidScriptorSvgPurple =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_emblem_purple.svg';
+  static const String voidScriptorSvgWhite =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_emblem_white.svg';
+  static const String voidScriptorSvgInk =
+      'assets/brands/own_brands/void_scriptor/void_scriptor_emblem_ink.svg';
   static const String paymentShopeepay = '$paymentMethods/shopeepay.webp';
 
   // AI & Teknologi

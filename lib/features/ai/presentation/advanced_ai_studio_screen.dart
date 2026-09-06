@@ -8,7 +8,14 @@ import 'output_review_panel.dart';
 /// one workspace. Full wiring to provider/router/queue happens in the app
 /// shell; this screen is the presentation host.
 class AdvancedAiStudioScreen extends StatefulWidget {
-  const AdvancedAiStudioScreen({super.key});
+  const AdvancedAiStudioScreen({
+    super.key,
+    this.onOpenImageGenerator,
+    this.onOpenVideoGenerator,
+  });
+
+  final VoidCallback? onOpenImageGenerator;
+  final VoidCallback? onOpenVideoGenerator;
 
   @override
   State<AdvancedAiStudioScreen> createState() => _AdvancedAiStudioScreenState();
@@ -29,6 +36,28 @@ class _AdvancedAiStudioScreenState extends State<AdvancedAiStudioScreen> {
       appBar: AppBar(title: const Text('Advanced AI Studio')),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: widget.onOpenImageGenerator,
+                    icon: const Icon(Icons.image_outlined),
+                    label: const Text('Image Generator'),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: widget.onOpenVideoGenerator,
+                    icon: const Icon(Icons.movie_creation_outlined),
+                    label: const Text('Video Generator'),
+                  ),
+                ],
+              ),
+            ),
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(12),

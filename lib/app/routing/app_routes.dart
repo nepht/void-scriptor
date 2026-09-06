@@ -11,11 +11,16 @@ abstract final class AppRoutes {
   static const createProject = '/projects/create';
   static const studioProject = '/studio/:projectId';
   static const aiStudio = '/ai-studio';
+  static const aiImageGenerator = '/ai/image-generator';
+  static const aiVideoGenerator = '/ai/video-generator';
   static const aiComposer = '/ai/composer';
   static const aiHistory = '/ai/history';
   static const aiGallery = '/ai/gallery';
   static const aiProviders = '/ai/providers';
   static const donation = '/donation';
+  static const accountCloud = '/account-cloud';
+  static const settings = '/settings';
+  static const contentCapabilities = '/content-capabilities';
   static const workspace = '/workspace';
   static const studio = '/studio';
   static const assets = '/assets';
@@ -59,6 +64,7 @@ abstract final class AppRoutes {
     'PROJECTS': projects,
     'AI STUDIO': aiStudio,
     'DONATION': donation,
+    'ACCOUNT & CLOUD CENTER': accountCloud,
     'WORKSPACE': workspace,
     'COLLABORATION COMMENTS': collaborationComments,
   };

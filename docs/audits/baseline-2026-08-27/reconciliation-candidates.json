@@ -1,0 +1,26 @@
+{
+  "changed_paths": 470,
+  "top_level_counts": {
+    ".github": 6,
+    ".gitleaksignore": 1,
+    ".hermes": 1,
+    "CHANGELOG.md": 1,
+    "CONTRIBUTING.md": 1,
+    "README.md": 1,
+    "SECURITY.md": 1,
+    "assets": 44,
+    "docs": 241,
+    "lib": 74,
+    "test": 97,
+    "tools": 2
+  },
+  "exact_duplicate_groups": 0,
+  "exact_duplicate_files": 0,
+  "duplicate_groups": [],
+  "candidate_temp_files": [
+    ".github/pull_request_template.md",
+    "docs/audits/baseline-2026-08-27/worktree-baseline.json",
+    "docs/audits/local-backup-restore.md",
+    "docs/audits/pre-release-baseline-inventory.md"
+  ]
+}

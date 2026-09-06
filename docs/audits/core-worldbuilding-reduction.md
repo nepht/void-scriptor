@@ -67,9 +67,9 @@ Observed safeguards include:
 
 ## Decision
 
-`145.27 Core Worldbuilding Reduction` berstatus **PARTIAL**. The canonical priority list is recorded and the live repository contains meaningful evidence for Characters, Environment/Locations, Story/Lore, and Timeline. Factions, Relationship Map, and Lore Notes still need dedicated vertical contracts; optional modules are not uniformly gated out of every router path; and no user-validation evidence is present in this audit. No production code or source data was deleted.
+`145.27 Core Worldbuilding Reduction` berstatus **PARTIAL**. The evidence table above records landed verification for Characters, Environment/Locations, Timeline, Factions, Relationship Map, and the Lore Notes journey. Those completed slices must not be selected again solely from the older narrative updates below. Remaining boundaries are uniform gating of non-Core routes, user-validation evidence, and native Windows interaction proof. A passing analyzer, test suite, or build does not by itself close those boundaries. No production code or source data was deleted.
 
-Next canonical step: `145.28 Writing Room Focus`.
+Current unresolved canonical step: `145.27`, consistent with `.hermes/ROADMAP_STATE.json` and the roadmap guard. Do not advance the pointer from this audit alone. The dated updates below preserve historical evidence and may describe gaps subsequently closed in the evidence table.
 
 ## Evidence paths
 
@@ -83,6 +83,26 @@ Next canonical step: `145.28 Writing Room Focus`.
 - `lib/workflow/workflow_feature_flag.dart`
 - `lib/app/routing/app_router.dart`
 - `test/features/character/`
+
+## Update 2026-09-04 — workspace domain separation
+
+The workspace chrome now follows the selected Core domain instead of showing
+the same static Character tabs for every asset:
+
+- Novel Workspace: Outline, Manuscript, Lore Links, Versions, Export;
+- Character Workspace: Profile, Identity, Relationships, Visuals, Notes;
+- Worldbuilding Workspace: Overview, Locations, Factions, Timeline, Lore Notes;
+- supporting media/tools remain in a neutral Asset Workspace rather than being
+  presented as Novel, Character, or Worldbuilding data.
+
+The labels are descriptive structure, not dead controls. The live editor below
+continues to resolve through the existing typed selection path. Narrow-width
+widget coverage switches Novel → Character → Worldbuilding at 390×844 without
+overflow. The workspace suite also closes a test-harness database overlap that
+previously emitted Drift multiple-database warnings during project-scope search
+verification. This slice improves domain separation but does not close 145.27:
+uniform non-Core route gating, user validation, and native Windows interaction
+proof remain open.
 - `test/features/environment/`
 - `test/features/story/`
 - `test/features/timeline/`

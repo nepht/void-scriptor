@@ -2,11 +2,11 @@
 
 Contract source: `https://chatgpt.com/share/6a82a8ad-7e90-83ec-88e5-f270ddea60c3` (backend JSON, update 2026-08-17).
 
-## Verified suite evidence (2026-08-18)
+## Fresh suite evidence
 
-- Batch 1: `test/core/xr` + `test/core/metaverse` + `test/features/creator` + `test/features/multiverse` + `test/features/simulation` → **160 tests passed**
-- Batch 2: `test/features/game` + `test/features/cinema` + `test/features/cinematic_production` + `test/features/release` + `test/features/platform` → **154 tests passed**
-- Full UI reference: `references/sprint43-50-ui-integration.md` mencatat 32 feature screens + 89 widget tests, baseline full suite **1106 PASS** (2026-08-17).
+- Available live feature batch: `flutter test test/features/creator test/features/multiverse test/features/cinema test/features/cinematic_production test/features/release test/features/platform` → **225 tests passed**.
+- Historical paths `test/core/xr`, `test/core/metaverse`, `test/features/simulation`, and `test/features/game` are not present in the live tree; their prior evidence is therefore not re-verified and is not treated as current proof.
+- Full UI reference counts and the historical 160/154 figures are retained only as historical context, not current gate evidence.
 
 ## Sprint 41 — XR Studio (37 steps)
 

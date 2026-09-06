@@ -4,8 +4,8 @@ Contract source: `https://chatgpt.com/share/6a82a8ad-7e90-83ec-88e5-f270ddea60c3
 
 ## Verified suite evidence (2026-08-18)
 
-- `test/features/assets` + `test/features/references` + `test/features/bible`: **66 tests passed**
-- `test/core/jobs` + `test/core/performance` + `test/core/commands` + `test/features/project_resilience` + `test/features/scene_assets`: **137 tests passed**
+- Fresh `flutter test test/features/assets test/features/references test/features/bible`: **67 tests passed**
+- Fresh `flutter test test/core/jobs test/core/performance test/core/commands test/features/project_resilience test/features/scene_assets`: **138 tests passed**
 
 ## Sprint 19 — Asset Discovery (42 steps)
 

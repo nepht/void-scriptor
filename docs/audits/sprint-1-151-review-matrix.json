@@ -1,0 +1,1664 @@
+{
+  "method": "conservative_inventory",
+  "source_preference": "latest corrective archive -2",
+  "rows": [
+    {
+      "sprint": 1,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "final-evidence-report-s1-s50.md",
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "official-json-source.md",
+        "pre-release-baseline-inventory.md",
+        "pre-release-stabilization-gate.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-001-official-json-step-ledger.md",
+        "sprint-1-25-audit-2026-08-14.md",
+        "sprint-1-3-step-ledger.md",
+        "sprint-1-50-completion-ledger.md",
+        "sprint-41-50-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 2,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "FINAL-GATE-EVIDENCE.md",
+        "final-evidence-report-s1-s50.md",
+        "master-sprint-normalized.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-002-reconciled-provenance.md",
+        "sprint-41-50-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 3,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "FINAL-GATE-EVIDENCE.md",
+        "final-evidence-report-s1-s50.md",
+        "pre-release-stabilization-gate.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-003-official-json-step-ledger.md",
+        "sprint-003-reconciled-provenance.md",
+        "sprint-1-25-audit-2026-08-14.md",
+        "sprint-1-3-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 4,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "official-json-source.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-004-official-json-step-ledger.md",
+        "sprint-004-reconciled-provenance.md",
+        "sprint-4-12-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 5,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "sprint-005-official-json-step-ledger.md",
+        "sprint-005-reconciled-provenance.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 6,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "sprint-001-100-final-readiness.md",
+        "sprint-006-official-json-step-ledger.md",
+        "sprint-006-reconciled-provenance.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 7,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "official-json-source.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-007-official-json-step-ledger.md",
+        "sprint-007-reconciled-provenance.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 8,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "FINAL-GATE-EVIDENCE.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-008-official-json-step-ledger.md",
+        "sprint-008-reconciled-provenance.md",
+        "sprint-1-25-audit-2026-08-14.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 9,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "pre-release-stabilization-gate.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-009-official-json-step-ledger.md",
+        "sprint-009-reconciled-provenance.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 10,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-010-official-json-step-ledger.md",
+        "sprint-010-reconciled-provenance.md",
+        "sprint-1-25-audit-2026-08-14.md",
+        "sprint-1-3-step-ledger.md",
+        "sprint-4-12-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 11,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-011-official-json-step-ledger.md",
+        "sprint-011-reconciled-provenance.md",
+        "sprint-1-3-step-ledger.md",
+        "sprint-4-12-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 12,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-012-official-json-step-ledger.md",
+        "sprint-012-reconciled-provenance.md",
+        "sprint-1-3-step-ledger.md",
+        "sprint-4-12-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 13,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-013-official-json-step-ledger.md",
+        "sprint-013-reconciled-provenance.md",
+        "sprint-13-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 14,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-014-official-json-step-ledger.md",
+        "sprint-014-reconciled-provenance.md",
+        "sprint-14-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 15,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-015-official-json-step-ledger.md",
+        "sprint-015-reconciled-provenance.md",
+        "sprint-15-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 16,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-016-official-json-step-ledger.md",
+        "sprint-016-reconciled-provenance.md",
+        "sprint-16-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 17,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-017-official-json-step-ledger.md",
+        "sprint-017-reconciled-provenance.md",
+        "sprint-17-step-ledger.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 18,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-018-official-json-step-ledger.md",
+        "sprint-1-25-audit-2026-08-14.md",
+        "sprint-17-step-ledger.md",
+        "sprint-18-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 19,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-019-official-json-step-ledger.md",
+        "sprint-019-reconciled-provenance.md",
+        "sprint-19-26-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 20,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-020-official-json-step-ledger.md",
+        "sprint-19-26-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 21,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-021-official-json-step-ledger.md",
+        "sprint-1-25-audit-2026-08-14.md",
+        "sprint-19-26-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 22,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-022-official-json-step-ledger.md",
+        "sprint-19-26-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 23,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-023-official-json-step-ledger.md",
+        "sprint-17-step-ledger.md",
+        "sprint-19-26-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 24,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-024-official-json-step-ledger.md",
+        "sprint-19-26-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 25,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-025-official-json-step-ledger.md",
+        "sprint-19-26-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 26,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-026-official-json-step-ledger.md",
+        "sprint-1-25-audit-2026-08-14.md",
+        "sprint-19-26-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 27,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-027-official-json-step-ledger.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 28,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-028-official-json-step-ledger.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 29,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-029-official-json-step-ledger.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 30,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-030-official-json-step-ledger.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 31,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-031-official-json-step-ledger.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 32,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-032-official-json-step-ledger.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 33,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-033-official-json-step-ledger.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 34,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-034-official-json-step-ledger.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 35,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-035-official-json-step-ledger.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 36,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-036-official-json-step-ledger.md",
+        "sprint-1-25-audit-2026-08-14.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 37,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-037-official-json-step-ledger.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 38,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-038-official-json-step-ledger.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 39,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-039-official-json-step-ledger.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 40,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-040-official-json-step-ledger.md",
+        "sprint-27-40-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 41,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-041-official-json-step-ledger.md",
+        "sprint-41-50-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 42,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-042-official-json-step-ledger.md",
+        "sprint-41-50-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 43,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-043-official-json-step-ledger.md",
+        "sprint-043-reconciled-provenance.md",
+        "sprint-41-50-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 44,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-044-official-json-step-ledger.md",
+        "sprint-1-25-audit-2026-08-14.md",
+        "sprint-1-3-step-ledger.md",
+        "sprint-41-50-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 45,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-045-official-json-step-ledger.md",
+        "sprint-41-50-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 46,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-046-official-json-step-ledger.md",
+        "sprint-41-50-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 47,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-047-official-json-step-ledger.md",
+        "sprint-41-50-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 48,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-048-official-json-step-ledger.md",
+        "sprint-41-50-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 49,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-049-official-json-step-ledger.md",
+        "sprint-41-50-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 50,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "pre-release-baseline-inventory.md",
+        "sprint-050-official-json-step-ledger.md",
+        "sprint-41-50-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 51,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-051-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 52,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-052-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 53,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-053-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 54,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-054-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 55,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-055-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 56,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-056-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 57,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-057-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 58,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-058-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 59,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-059-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 60,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-060-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 61,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-061-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 62,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-062-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 63,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-063-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 64,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-064-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 65,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-065-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 66,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-066-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 67,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-067-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 68,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-068-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 69,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-069-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 70,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-070-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 71,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-071-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 72,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-072-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 73,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-073-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 74,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-074-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 75,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-075-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 76,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-076-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 77,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "master-sprint-source-reconciliation.md",
+        "sprint-077-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 78,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-source-reconciliation.md",
+        "sprint-078-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 79,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "sprint-079-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 80,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "sprint-080-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 81,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "sprint-081-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 82,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "sprint-082-official-json-step-ledger.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 83,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 84,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 85,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 86,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 87,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 88,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 89,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 90,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 91,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 92,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 93,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 94,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 95,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 96,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 97,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 98,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 99,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 100,
+      "source": null,
+      "title": "",
+      "objective": null,
+      "audit_files": [
+        "master-sprint-normalized.md",
+        "sprint-001-100-final-readiness.md",
+        "sprint-099-reconciled-provenance.md",
+        "sprint-100-reconciled-provenance.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 101,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_101.json",
+      "title": "Post-Release Stabilization & Hotfix",
+      "objective": "",
+      "audit_files": [
+        "pre-release-baseline-inventory.md",
+        "pre-release-stabilization-gate.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 102,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_102.json",
+      "title": "VOID SCRIPTOR v1.1 Planning & Release Train Foundation",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 103,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_103.json",
+      "title": "VOID SCRIPTOR v1.1 Implementation Wave 1 \u2014 Workflow Intelligence",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 104,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_104.json",
+      "title": "VOID SCRIPTOR v1.1 Implementation Wave 2 \u2014 Workflow Automation & Integration",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 105,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_105.json",
+      "title": "VOID SCRIPTOR v1.1 Hardening & Release Candidate",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 106,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_106.json",
+      "title": "VOID SCRIPTOR v1.1 Final Release & Stable Promotion",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 107,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_107.json",
+      "title": "VOID SCRIPTOR v1.1 Post-Release Stabilization & Hotfix",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 108,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_108.json",
+      "title": "VOID SCRIPTOR v1.2 Discovery & Product Direction",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 109,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_109.json",
+      "title": "VOID SCRIPTOR v1.2 Writer, Story & Lore Productivity",
+      "objective": "",
+      "audit_files": [
+        "pre-release-stabilization-gate.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 110,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_110.json",
+      "title": "VOID SCRIPTOR v1.2 World Logic & Simulation Tools",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 111,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_111.json",
+      "title": "VOID SCRIPTOR v1.2 Lore Encyclopedias, Bestiary & Cultural Generators",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 112,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_112.json",
+      "title": "VOID SCRIPTOR v1.2 Worldbuilding Integration, Validation & Release Candidate",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 113,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_113.json",
+      "title": "VOID SCRIPTOR v1.2 Release Validation & General Availability",
+      "objective": "",
+      "audit_files": [
+        "official-json-source.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 114,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_114.json",
+      "title": "VOID SCRIPTOR v1.2 Post-Release Stability & Adoption",
+      "objective": "",
+      "audit_files": [
+        "official-json-source.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 115,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_115.json",
+      "title": "VOID SCRIPTOR Account & Cloud Center",
+      "objective": "",
+      "audit_files": [
+        "official-json-source.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 116,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_116.json",
+      "title": "VOID SCRIPTOR Connector Certification & Account Center Beta",
+      "objective": "",
+      "audit_files": [
+        "official-json-source.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 117,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_117.json",
+      "title": "VOID SCRIPTOR Account & Cloud Center Beta Validation & GA",
+      "objective": "",
+      "audit_files": [
+        "official-json-source.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 118,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_118.json",
+      "title": "VOID SCRIPTOR Account & Cloud Center Stability & Provider Expansion",
+      "objective": "",
+      "audit_files": [
+        "official-json-source.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 119,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_119.json",
+      "title": "VOID SCRIPTOR Provider Ecosystem & Connector SDK",
+      "objective": "",
+      "audit_files": [
+        "official-json-source.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 120,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_120.json",
+      "title": "VOID SCRIPTOR Connector Marketplace & Ecosystem Beta",
+      "objective": "",
+      "audit_files": [
+        "official-json-source.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 121,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_121.json",
+      "title": "VOID SCRIPTOR Connector Marketplace GA & Trust Operations",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 122,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_122.json",
+      "title": "VOID SCRIPTOR Marketplace Stability, Trust Maturity & Ecosystem Growth",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 123,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_123.json",
+      "title": "VOID SCRIPTOR Marketplace Intelligence, Discovery Quality & Sustainable Scale",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 124,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_124.json",
+      "title": "VOID SCRIPTOR Marketplace Intelligence Beta & Ecosystem Automation",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 125,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_125.json",
+      "title": "VOID SCRIPTOR Marketplace Intelligence GA & Governed Automation Operations",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 126,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_126.json",
+      "title": "VOID SCRIPTOR Intelligence Stability, Automation Maturity & Marketplace Optimization",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 127,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_127.json",
+      "title": "VOID SCRIPTOR Ecosystem Scale, Developer Platform Maturity & Global Readiness",
+      "objective": "",
+      "audit_files": [
+        "pre-release-stabilization-gate.md",
+        "sprint-001-100-final-readiness.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 128,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_128.json",
+      "title": "VOID SCRIPTOR Developer Platform Beta & Multi-Region Ecosystem Validation",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 129,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_129.json",
+      "title": "VOID SCRIPTOR Developer Platform GA & Regional Expansion Operations",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 130,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_130.json",
+      "title": "VOID SCRIPTOR Developer Platform Stability & Regional Operations Maturity",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 131,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_131.json",
+      "title": "VOID SCRIPTOR Startup, Dashboard & Optional Authentication Experience",
+      "objective": "",
+      "audit_files": [
+        "official-json-source.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 132,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_132.json",
+      "title": "VOID SCRIPTOR Sustainable Regional Expansion & Partner Ecosystem Operations",
+      "objective": "",
+      "audit_files": [
+        "official-json-source.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 133,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_133.json",
+      "title": "VOID SCRIPTOR Navigation Architecture & Adaptive Workspace Shell",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 134,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_134.json",
+      "title": "VOID SCRIPTOR Partner Ecosystem GA & Continuous Regional Governance",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 135,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_135.json",
+      "title": "VOID SCRIPTOR Reader & Creator Adaptive Shell, Publishing & Reader Foundation",
+      "objective": "",
+      "audit_files": [
+        "official-json-source.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 136,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_136.json",
+      "title": "VOID SCRIPTOR Ecosystem Stability, Partner Governance Maturity & Regional Optimization",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 137,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_137.json",
+      "title": "VOID SCRIPTOR Settings, Preferences, Entitlements, Donation, Payment & Chat Foundation",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 138,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_138.json",
+      "title": "VOID SCRIPTOR Community Identity, Channels, Messaging & Moderation Beta",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 139,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_139.json",
+      "title": "VOID SCRIPTOR Publishing, Reader Discovery & Author Support Beta",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 140,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_140.json",
+      "title": "VOID SCRIPTOR Creator Revenue, Payouts, Rights & Publishing Operations Beta",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 141,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_141.json",
+      "title": "VOID SCRIPTOR Public Beta Release, Reliability, Support & Governance Readiness",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 142,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_142.json",
+      "title": "VOID SCRIPTOR Public Beta Pilot, Feedback, Quality & Launch Operations",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 143,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_143.json",
+      "title": "VOID SCRIPTOR Public Beta Stabilization & Release Candidate Readiness",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 144,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_144.json",
+      "title": "VOID SCRIPTOR General Availability Readiness, Store Submission & Production Operations",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 145,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_145.json",
+      "title": "VOID SCRIPTOR Product Scope Reset & Core MVP Recovery",
+      "objective": "",
+      "audit_files": [
+        "ai-optional-boundary.md",
+        "autosave-snapshot-crash-recovery.md",
+        "character-scope-layers.md",
+        "character-workspace-core.md",
+        "clean-manuscript-export.md",
+        "core-automated-test-pyramid.md",
+        "core-cloud-network-roadmap-split.md",
+        "core-dependency-direction.md",
+        "core-mvp-scope-lock.md",
+        "core-mvp-vertical-slice-contract.md",
+        "core-without-account.md",
+        "core-without-internet-providers.md",
+        "core-worldbuilding-reduction.md",
+        "custom-local-storage.md",
+        "data-ownership-map.md",
+        "dependency-coupling-map.md",
+        "environment-location-core.md",
+        "existing-user-data-compatibility.md",
+        "explicit-deferred-scope.md",
+        "local-backup-restore.md",
+        "lore-linking-and-search.md",
+        "module-boundary-feature-flags.md",
+        "navigation-reduction.md",
+        "non-core-preservation-disablement.md",
+        "novel-workspace-core.md",
+        "portable-import-export.md",
+        "product-promise-lock.md",
+        "schema-migration-fixtures.md",
+        "settings-reduction.md",
+        "single-sync-authority.md",
+        "startup-path-simplification.md",
+        "working-feature-protection-list.md",
+        "writing-room-focus.md"
+      ],
+      "provisional_status": "AUDITED_OR_MENTIONED"
+    },
+    {
+      "sprint": 146,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_146.json",
+      "title": "VOID SCRIPTOR Website, App Trust, Identity & Secure Integration Foundation",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 147,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_147.json",
+      "title": "VOID SCRIPTOR Community, Publishing, Reader & Social Distribution Pilot",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 148,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_148.json",
+      "title": "VOID SCRIPTOR Community Pilot Evaluation, Creator Growth & Safe Scale",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 149,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_149.json",
+      "title": "VOID SCRIPTOR Public Beta Governance, Reliability & Sustainable Operations",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 150,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_150.json",
+      "title": "VOID SCRIPTOR General Availability Readiness, Launch Control & Long-term Stewardship",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    },
+    {
+      "sprint": 151,
+      "source": "/mnt/c/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/sprint_151.json",
+      "title": "VOID SCRIPTOR Post-GA Stabilization, Trust Review & Continuous Improvement",
+      "objective": "",
+      "audit_files": [],
+      "provisional_status": "UNKNOWN"
+    }
+  ]
+}

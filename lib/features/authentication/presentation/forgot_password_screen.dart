@@ -51,7 +51,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   const SizedBox(height: 8),
 
                   const Text(
-                    'Enter your email and we will send a password reset link.',
+                    'Account recovery requires a connected identity provider.',
                     style: VoidTypography.body,
                   ),
 
@@ -94,7 +94,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     setState(() {
       _feedback = email.isEmpty
           ? 'Enter an email address.'
-          : 'Reset link request recorded in local mode.';
+          : 'Password reset is not connected; no email was sent.';
     });
   }
 }

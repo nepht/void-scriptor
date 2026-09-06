@@ -15,8 +15,7 @@ import '../../../core/project_package/project_package.dart';
 /// backup; creation falls back to the internal default so the most recent
 /// backup always exists somewhere safe.
 class BackupLocationPolicy {
-  BackupLocationPolicy({Directory? customBackupRoot})
-    : customBackupRoot = customBackupRoot;
+  BackupLocationPolicy({this.customBackupRoot});
 
   /// Optional user-selected backup root (e.g. `D:\VoidScriptorBackups`
   /// or a USB drive). `null` keeps the package-internal default.

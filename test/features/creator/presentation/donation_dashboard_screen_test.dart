@@ -13,6 +13,10 @@ void main() {
     expect(find.text('DONATION DASHBOARD'), findsOneWidget);
     expect(find.text('Monthly Goal'), findsOneWidget);
     expect(find.text('Top Supporters'), findsOneWidget);
+    expect(find.text('Payments not connected'), findsOneWidget);
+    expect(find.text('No verified supporters yet.'), findsOneWidget);
+    expect(find.text('Rp 2.450.000 / Rp 5.000.000'), findsNothing);
+    expect(find.text('VoidKnight'), findsNothing);
   });
 
   testWidgets('no overflow at narrow width', (tester) async {

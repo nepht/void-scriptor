@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../database/project/project_database.dart' hide LayoutPreset;
+import '../../projects/presentation/project_persistence_providers.dart';
 import '../domain/layout_model.dart';
 import '../domain/layout_preset.dart';
 
@@ -94,10 +95,30 @@ class DriftLayoutPresetRepository implements LayoutPresetRepository {
   }
 }
 
-/// Injects the layout preset repository (Step 27.20). Overridden in tests and
-/// wired to the active `ProjectDatabase` at app startup.
-final layoutPresetRepositoryProvider = Provider<LayoutPresetRepository>(
-  (ref) => throw UnimplementedError(
-    'layoutPresetRepositoryProvider must be overridden at app startup',
-  ),
-);
+class UnavailableLayoutPresetRepository implements LayoutPresetRepository {
+  const UnavailableLayoutPresetRepository();
+
+  @override
+  Future<void> delete(String projectId, String name) async {}
+
+  @override
+  Future<List<LayoutPreset>> list(String projectId) async => const [];
+
+  @override
+  Future<void> persist(String projectId, PanelLayout layout) async {}
+
+  @override
+  Future<PanelLayout?> restore(String projectId) async => null;
+
+  @override
+  Future<void> save(String projectId, LayoutPreset preset) async {}
+}
+
+/// Follows the active project session and exposes its database-backed layout
+/// repository. Before a project opens, callers receive a safe empty repository
+/// so startup and non-project routes never fail on layout persistence.
+final layoutPresetRepositoryProvider = Provider<LayoutPresetRepository>((ref) {
+  final session = ref.watch(projectSessionProvider).valueOrNull;
+  if (session == null) return const UnavailableLayoutPresetRepository();
+  return DriftLayoutPresetRepository(session.database);
+});

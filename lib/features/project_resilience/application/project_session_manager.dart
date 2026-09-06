@@ -17,6 +17,12 @@ import '../../character/application/update_character_identity_command.dart';
 import '../../character/data/character_repository_impl.dart';
 import '../../timeline/application/create_timeline_service.dart';
 import '../../timeline/application/move_timeline_clip_command.dart';
+import '../../workspaces/application/novel_character_link_repository.dart';
+import '../../workspaces/application/authorized_workspace_projection_reader.dart';
+import '../../workspaces/application/workspace_permission_policy.dart';
+import '../../workspaces/application/workspace_file_namespace.dart';
+import '../../workspaces/application/workspace_character_deletion_service.dart';
+import '../../workspaces/application/workspace_projection_cache.dart';
 import '../../relations/application/relation_command.dart';
 import '../../relations/data/relation_repository_impl.dart';
 import 'project_integrity_service.dart';
@@ -40,6 +46,11 @@ class ProjectSession {
     required this.versionControl,
     required this.jobs,
     required this.openMetrics,
+    required this.novelCharacterLinks,
+    required this.workspaceFiles,
+    required this.workspaceProjections,
+    required this.workspaceProjectionReader,
+    required this.characterDeletion,
   });
 
   final ProjectPackage package;
@@ -52,6 +63,11 @@ class ProjectSession {
   final ProjectVersionControlService versionControl;
   final BackgroundJobQueue jobs;
   final PerformanceMetrics openMetrics;
+  final NovelCharacterLinkRepository novelCharacterLinks;
+  final WorkspaceFileNamespace workspaceFiles;
+  final WorkspaceProjectionCache workspaceProjections;
+  final AuthorizedWorkspaceProjectionReader workspaceProjectionReader;
+  final WorkspaceCharacterDeletionService characterDeletion;
 
   Future<void> save() async {
     if (mode == ProjectOpenMode.readOnly) {
@@ -74,7 +90,14 @@ class ProjectSession {
     await mutationRuntime.markSaved();
   }
 
-  Future<void> close() async {
+  Future<void>? _closing;
+
+  // All callers share shutdown, including its failure; disposed resources must
+  // never be disposed again by a concurrent exit or provider teardown.
+  Future<void> close() => _closing ??= _close();
+
+  Future<void> _close() async {
+    workspaceProjections.clear();
     await mutationRuntime.dispose();
     for (final task in jobs.jobs) {
       if (task.persistence == JobPersistence.transient) {
@@ -83,9 +106,11 @@ class ProjectSession {
     }
     await jobs.dispose();
     await database.close();
-    await lock.release();
-    if (await package.lockFile.exists()) {
-      await package.lockFile.delete();
+    if (mode == ProjectOpenMode.readWrite) {
+      await lock.release();
+      if (await package.lockFile.exists()) {
+        await package.lockFile.delete();
+      }
     }
   }
 }
@@ -141,7 +166,7 @@ class ProjectSessionManager {
           'Read-only open cannot migrate database v$existingVersion',
         );
       }
-      if (mode == ProjectOpenMode.readWrite &&
+      if (companionWritten &&
           existingVersion != null &&
           existingVersion < ProjectDatabase.currentSchemaVersion) {
         await ProjectBackupService().create(
@@ -225,6 +250,14 @@ class ProjectSessionManager {
         readOnly: mode == ProjectOpenMode.readOnly,
         registry: commandRegistry,
       );
+      final novelCharacterLinks = NovelCharacterLinkRepository(
+        database: database,
+        projectId: package.projectId,
+      );
+      final workspaceProjections = WorkspaceProjectionCache(
+        loader: (novelWorkspaceId) =>
+            novelCharacterLinks.listForNovel(novelWorkspaceId),
+      );
       return ProjectSession(
         package: package,
         manifest: manifest,
@@ -236,6 +269,18 @@ class ProjectSessionManager {
         versionControl: ProjectVersionControlService(package),
         jobs: BackgroundJobQueue(),
         openMetrics: metrics,
+        novelCharacterLinks: novelCharacterLinks,
+        workspaceFiles: WorkspaceFileNamespace(package),
+        workspaceProjections: workspaceProjections,
+        workspaceProjectionReader: AuthorizedWorkspaceProjectionReader(
+          cache: workspaceProjections,
+          access: const WorkspaceAccess(isLocalProjectOwner: true),
+        ),
+        characterDeletion: WorkspaceCharacterDeletionService(
+          links: novelCharacterLinks,
+          projections: workspaceProjections,
+          deleteCharacterSource: characterRepository.deleteCharacter,
+        ),
       );
     } catch (_) {
       if (mode == ProjectOpenMode.readWrite) await lock.release();

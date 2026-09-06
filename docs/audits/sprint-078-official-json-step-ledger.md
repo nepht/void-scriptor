@@ -25,7 +25,7 @@ Result: `71 tests passed`.
 | 78.43–78.49 | `PARTIAL` | Panel ordering/versioning, detailed shot state tracks, camera blocking, action/audio/VFX cue orchestration and handoff are incomplete as one system. |
 | 78.50–78.56 | `PARTIAL` | Production task generation, storyboard image generation/review, video generation integration, temporary audio and batch foundation lack complete evidence. |
 | 78.57–78.63 | `UNVERIFIABLE` | Source is truncated at the archive boundary; missing step content is not inferred. |
-| 78.81 | `VERIFIED-LOCAL` | BAGIAN LXXIII - Animatic Definition. AnimaticComponent enum + AnimaticDefinition class lock the blueprint formula (Storyboard Images + Timing + Camera simulation foundation + Temporary Audio = ANIMATIC). Focused suite: 5 tests pass; scoped dart analyze reports No issues found. Source reconciled from curated_sprint_sources/SPRINT_078.md (canonical JSON snapshot skipped the section; closing the gap with a thin descriptive model). |
+| 78.81 | `VERIFIED-LOCAL` | BAGIAN LXXIII - Animatic Definition. AnimaticComponent enum + AnimaticDefinition class lock the blueprint formula (Storyboard Images + Timing + Camera simulation foundation + Temporary Audio = ANIMATIC). Focused suite: 5 tests pass; scoped dart analyze reports No issues found. The pre-reconciliation JSON snapshot skipped the step label; the validated archive now restores it from the intact `curated_sprint_sources/SPRINT_078.md` section without invented content. |
 | 78.64–78.117 | `UNVERIFIABLE` | Declared steps remain provenance-preserved but unavailable in the partial source fragment. |
 
 ## Boundary

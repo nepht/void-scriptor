@@ -56,7 +56,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
-          'Google login belum tersedia. Silakan pakai email/password.',
+          'Google login belum tersedia. Gunakan mode Guest atau Offline.',
         ),
       ),
     );
@@ -72,7 +72,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
-          'GitHub login belum tersedia. Silakan pakai email/password.',
+          'GitHub login belum tersedia. Gunakan mode Guest atau Offline.',
         ),
       ),
     );
@@ -257,6 +257,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           onPressed: loading ? null : _login,
                         ),
                       ),
+
+                      if (authState.hasError) ...[
+                        const SizedBox(height: 12),
+                        Text(
+                          'Account sign-in is not connected. '
+                          'Use Guest or Offline mode.',
+                          textAlign: TextAlign.center,
+                          style: VoidTypography.caption.copyWith(
+                            color: scheme.error,
+                          ),
+                        ),
+                      ],
 
                       const SizedBox(height: 18),
 

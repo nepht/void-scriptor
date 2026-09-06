@@ -9,7 +9,14 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 /// Daftar permission agent (File Access, Network, AI Provider).
 /// User harus dapat menolak optional permission.
 class AgentPermissionScreen extends StatelessWidget {
-  const AgentPermissionScreen({super.key});
+  const AgentPermissionScreen({
+    super.key,
+    this.onAllowAll,
+    this.onDenyOptional,
+  });
+
+  final VoidCallback? onAllowAll;
+  final VoidCallback? onDenyOptional;
 
   static const _permissions = <(String, String, bool)>[
     ('File Access', 'Read project files', true),
@@ -44,14 +51,14 @@ class AgentPermissionScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: FilledButton(
-                      onPressed: () {},
+                      onPressed: onAllowAll,
                       child: const Text('Allow All'),
                     ),
                   ),
                   const SizedBox(width: VoidSpacing.md),
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: onDenyOptional,
                       child: const Text('Deny Optional'),
                     ),
                   ),

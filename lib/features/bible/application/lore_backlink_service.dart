@@ -116,7 +116,18 @@ class LoreBacklinkService {
     required String from,
     required String to,
   }) async {
-    final beats = await (db.select(db.sceneBeats)).get();
+    final stories = await (db.select(
+      db.stories,
+    )..where((row) => row.projectId.equals(projectId))).get();
+    if (stories.isEmpty) return 0;
+    final scenes = await (db.select(
+      db.storyScenes,
+    )..where((row) => row.storyId.isIn(stories.map((s) => s.assetId)))).get();
+    if (scenes.isEmpty) return 0;
+    final sceneIds = scenes.map((scene) => scene.id).toSet();
+    final beats = await (db.select(
+      db.sceneBeats,
+    )..where((row) => row.sceneId.isIn(sceneIds))).get();
     const editor = ProjectLoreLinkEditor();
     var changed = 0;
 

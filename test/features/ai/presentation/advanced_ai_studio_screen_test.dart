@@ -14,4 +14,20 @@ void main() {
     expect(find.text('Review'), findsOneWidget);
     expect(find.text('Usage'), findsOneWidget);
   });
+
+  testWidgets('opens image and video generator workspaces', (tester) async {
+    final opened = <String>[];
+    await tester.pumpWidget(
+      MaterialApp(
+        home: AdvancedAiStudioScreen(
+          onOpenImageGenerator: () => opened.add('image'),
+          onOpenVideoGenerator: () => opened.add('video'),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Image Generator'));
+    await tester.tap(find.text('Video Generator'));
+    expect(opened, ['image', 'video']);
+  });
 }

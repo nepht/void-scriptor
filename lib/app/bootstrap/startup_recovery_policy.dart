@@ -98,10 +98,10 @@ class StartupFailureStore {
 
   /// File-backed backend (desktop/mobile default).
   StartupFailureStore({required this.file})
-      : _exists = null,
-        _readText = null,
-        _writeText = null,
-        _delete = null;
+    : _exists = null,
+      _readText = null,
+      _writeText = null,
+      _delete = null;
 
   /// In-memory backend for web boots: identical semantics, no filesystem.
   factory StartupFailureStore.inMemory() {

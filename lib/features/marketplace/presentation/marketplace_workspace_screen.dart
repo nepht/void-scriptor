@@ -9,7 +9,9 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 /// Menu utama marketplace: Discover, AI Agents, Workflows, Prompts,
 /// Templates, My Library. Layout desktop: sidebar + konten.
 class MarketplaceWorkspaceScreen extends StatelessWidget {
-  const MarketplaceWorkspaceScreen({super.key});
+  const MarketplaceWorkspaceScreen({super.key, this.onMenuSelected});
+
+  final ValueChanged<String>? onMenuSelected;
 
   static const _menuItems = <(String, IconData)>[
     ('Discover', Icons.explore_outlined),
@@ -33,7 +35,11 @@ class MarketplaceWorkspaceScreen extends StatelessWidget {
             final wide = constraints.maxWidth >= 900;
             final items = [
               for (final (label, icon) in _menuItems)
-                _MenuRow(label: label, icon: icon),
+                _MenuRow(
+                  label: label,
+                  icon: icon,
+                  onTap: () => onMenuSelected?.call(label),
+                ),
             ];
             if (wide) {
               return Row(
@@ -64,26 +70,30 @@ class MarketplaceWorkspaceScreen extends StatelessWidget {
 }
 
 class _MenuRow extends StatelessWidget {
-  const _MenuRow({required this.label, required this.icon});
+  const _MenuRow({required this.label, required this.icon, this.onTap});
 
   final String label;
   final IconData icon;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: VoidSpacing.sm),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: context.palette.primary),
-          const SizedBox(width: VoidSpacing.sm),
-          Text(
-            label,
-            style: VoidTypography.body.copyWith(
-              color: context.palette.textPrimary,
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: VoidSpacing.sm),
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: context.palette.primary),
+            const SizedBox(width: VoidSpacing.sm),
+            Text(
+              label,
+              style: VoidTypography.body.copyWith(
+                color: context.palette.textPrimary,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

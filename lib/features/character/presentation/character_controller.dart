@@ -8,6 +8,7 @@ import '../data/character_repository_impl.dart';
 import '../domain/character_model.dart';
 import '../application/create_character_service.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
+import '../../workspaces/application/workspace_character_deletion_service.dart';
 import '../application/rename_character_command.dart';
 
 final selectedCharacterIdProvider = Provider<String?>(
@@ -82,12 +83,26 @@ class CharacterActions {
     ref.invalidate(characterControllerProvider(projectId));
   }
 
-  Future<void> delete(String id) async {
-    await CharacterRepositoryImpl(
-      database: database,
-      projectId: projectId,
-      paths: ref.read(projectPathsProvider),
-    ).deleteCharacter(id);
+  Future<CharacterDeletionReview> reviewDeletion(String id) async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null || session.manifest.id != projectId) {
+      throw StateError('No active project session');
+    }
+    return session.characterDeletion.review(id);
+  }
+
+  Future<void> delete(
+    String id, {
+    required CharacterDeletionDecision decision,
+  }) async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null || session.manifest.id != projectId) {
+      throw StateError('No active project session');
+    }
+    await session.characterDeletion.deleteCharacterWorkspace(
+      id,
+      decision: decision,
+    );
     ref.invalidate(characterControllerProvider(projectId));
     if (ref.read(selectionProvider)?.assetId == id) {
       ref.read(selectionProvider.notifier).clear();

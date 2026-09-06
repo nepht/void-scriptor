@@ -10,6 +10,7 @@ class _Provider with AiStreamingFallback implements AiProvider {
   @override
   final Set<AiCapability> capabilities;
   int failTimes;
+  int generateCalls = 0;
 
   @override
   String get displayName => id;
@@ -17,6 +18,7 @@ class _Provider with AiStreamingFallback implements AiProvider {
   Future<List<AiModelInfo>> listModels() async => const [];
   @override
   Future<AiGenerationResult> generate(AiGenerationRequest request) async {
+    generateCalls++;
     if (failTimes > 0) {
       failTimes--;
       throw StateError('transient failure');
@@ -65,6 +67,32 @@ void main() {
     expect(router.resolve(PromptTarget.video), isNull);
   });
 
+  test(
+    'preferred provider is attempted before registry-order providers',
+    () async {
+      final registryFirst = _Provider(
+        id: 'registry-first',
+        capabilities: {AiCapability.textGeneration},
+      );
+      final preferred = _Provider(
+        id: 'preferred',
+        capabilities: {AiCapability.textGeneration},
+      );
+      final router = ProviderRouter([registryFirst, preferred]);
+
+      final result = await router.generateWithFallback(
+        const AiGenerationRequest(
+          jobId: 'j',
+          prompt: 'p',
+          target: PromptTarget.story,
+        ),
+        preferred: 'preferred',
+      );
+
+      expect(result.providerRequestId, 'preferred-r');
+    },
+  );
+
   test('falls back to next provider on failure', () async {
     final primary = _Provider(
       id: 'primary',
@@ -85,6 +113,31 @@ void main() {
       preferred: 'primary',
     );
     expect(result.providerRequestId, 'fallback-r');
+  });
+
+  test('skips providers that cannot serve the requested target', () async {
+    final unsupported = _Provider(
+      id: 'unsupported',
+      capabilities: {AiCapability.imageGeneration},
+    );
+    final text = _Provider(
+      id: 'text',
+      capabilities: {AiCapability.textGeneration},
+    );
+    final router = ProviderRouter([unsupported, text]);
+
+    final result = await router.generateWithFallback(
+      const AiGenerationRequest(
+        jobId: 'j',
+        prompt: 'p',
+        target: PromptTarget.story,
+      ),
+      preferred: 'unsupported',
+    );
+
+    expect(result.providerRequestId, 'text-r');
+    expect(unsupported.generateCalls, 0);
+    expect(text.generateCalls, 1);
   });
 
   test('throws when all providers fail', () async {

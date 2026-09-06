@@ -24,7 +24,7 @@ Contract source: `https://chatgpt.com/share/6a82a8ad-7e90-83ec-88e5-f270ddea60c3
 | 16.18 | Resize clip | — | No explicit test | PARTIAL |
 | 16.19 | Snap system | `timeline_model.dart` | model test (snap modes snap) | DONE |
 | 16.20 | Frame support | `timeline_model.dart` | model test (frame helpers round-trip) | DONE |
-| 16.21 | Track lock/mute/visibility | — | No explicit test | PARTIAL |
+| 16.21 | Track lock/mute/visibility | No live domain/table/UI state found | Live inspection found `TimelineTracks` only has id/timeline/type/name/sortOrder; no lock, mute, or visibility lifecycle/acceptance contract exists. | CONTRACT UNDEFINED — NOT IMPLEMENTED |
 | 16.22 | Character Track | track types | workspace test | DONE (representative) |
 | 16.23 | Camera Track | track types | workspace test | DONE (representative) |
 | 16.24 | VFX Track | track types | workspace test | DONE (representative) |
@@ -35,7 +35,7 @@ Contract source: `https://chatgpt.com/share/6a82a8ad-7e90-83ec-88e5-f270ddea60c3
 | 16.29 | Timeline validation | `timeline_model.dart` | model test (validator reports invalid clips) | DONE |
 | 16.30 | Scene Preview panel | — | No explicit test | PARTIAL |
 | 16.31 | Resolved Timeline Context | `timeline_context_service.dart` | `timeline_context_test.dart` (active clips at playhead) | DONE |
-| 16.32 | Cinematic Preview mode | — | No explicit test | PARTIAL |
+| 16.32 | Cinematic Preview mode | `TimelineWorkspaceScreen` preview/edit state | Added preview transition coverage to `timeline_workspace_test.dart`; Edit → Preview → Back to Edit passed, including no rendering exception: 3 timeline workspace tests passed. This is preview UI state, not real media playback/render export. | VERIFIED-LOCAL |
 | 16.33 | Timeline keyboard shortcuts | — | No explicit test | PARTIAL |
 | 16.34 | Undo/Redo | `move_timeline_clip_command.dart` | command test (undoable) | DONE |
 | 16.35 | Android layout | `timeline_workspace_screen.dart` | workspace test (mobile controls) | DONE |

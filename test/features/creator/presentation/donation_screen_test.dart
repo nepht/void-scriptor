@@ -14,6 +14,10 @@ void main() {
     expect(find.text('Support the Creator'), findsOneWidget);
     expect(find.text('One-time'), findsOneWidget);
     expect(find.text('Subscription'), findsOneWidget);
+    expect(find.text('Payments not connected'), findsOneWidget);
+    expect(find.text('No verified donations yet.'), findsOneWidget);
+    expect(find.text('Rp 150.000'), findsNothing);
+    expect(find.text('Rp 2.450.000'), findsNothing);
   });
 
   testWidgets('no overflow at narrow width', (tester) async {

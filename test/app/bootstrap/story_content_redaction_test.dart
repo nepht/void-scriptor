@@ -118,8 +118,7 @@ void main() {
     expect(raw, contains('[REDACTED]'));
   });
 
-  test('terms can be updated after construction and apply to next capture',
-      () {
+  test('terms can be updated after construction and apply to next capture', () {
     final diag = CrashDiagnostics(directory: dir);
 
     diag.handleFlutterError(
@@ -139,9 +138,7 @@ void main() {
 
     final files = dir.listSync().whereType<File>().toList()
       ..sort((a, b) => a.path.compareTo(b.path));
-    final newest = CrashLogEntry.fromJsonString(
-      files.last.readAsStringSync(),
-    );
+    final newest = CrashLogEntry.fromJsonString(files.last.readAsStringSync());
     expect(newest.message, isNot(contains('Mira')));
   });
 }

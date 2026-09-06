@@ -4,9 +4,15 @@ import '../../../../design_system/typography/void_typography.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class CharacterHeader extends StatelessWidget {
-  const CharacterHeader({super.key, required this.name, required this.alias});
+  const CharacterHeader({
+    super.key,
+    required this.name,
+    required this.alias,
+    this.onDelete,
+  });
   final String name;
   final String alias;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -58,6 +64,16 @@ class CharacterHeader extends StatelessWidget {
           onPressed: () =>
               _feedback(context, 'Character history is not persisted yet.'),
           icon: const Icon(Icons.history),
+        ),
+        IconButton(
+          tooltip: 'Delete',
+          onPressed:
+              onDelete ??
+              () => _feedback(
+                context,
+                'Character deletion is not available in this context.',
+              ),
+          icon: const Icon(Icons.delete_outline),
         ),
         IconButton(
           tooltip: 'More',

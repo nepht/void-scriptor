@@ -33,7 +33,11 @@ class OllamaProvider with AiStreamingFallback implements AiProvider {
   Future<void> cancel(String requestId) async {}
   @override
   bool validateTarget(PromptTarget target) {
-    if (target != PromptTarget.story) {
+    final isTextTarget = switch (target) {
+      PromptTarget.image || PromptTarget.video || PromptTarget.audio => false,
+      _ => true,
+    };
+    if (!isTextTarget) {
       throw UnsupportedError('Ollama supports text generation only.');
     }
     return true;

@@ -27,7 +27,10 @@ void main() {
         rootDirectory: root,
       ).create(name: 'Global Search Journey');
       final session = await ProjectSessionManager().open(package);
-      addTearDown(session.close);
+      var sessionClosed = false;
+      addTearDown(() async {
+        if (!sessionClosed) await session.close();
+      });
       final db = session.database;
       final projectId = package.projectId;
 
@@ -79,6 +82,16 @@ void main() {
       expect(characters, hasLength(1));
       expect(characters.single.title, 'Qowner');
 
+      // Empty query yields nothing: the sheet must not render a firehose.
+      final empty = await launcher.search('', projectId: projectId, limit: 10);
+      expect(empty, isEmpty);
+
+      // Drift's debug registry intentionally warns whenever two generated
+      // databases coexist. Project scoping does not require concurrent opens,
+      // so close the first session before opening the isolated control project.
+      await session.close();
+      sessionClosed = true;
+
       // Project scoping: a second project must not leak rows.
       final otherPackage = await ProjectPackageService(
         rootDirectory: root,
@@ -94,10 +107,6 @@ void main() {
         database: otherSession.database,
       ).search('polar', projectId: otherPackage.projectId, limit: 10);
       expect(otherHits.map((hit) => hit.title), ['Polar Council Rival']);
-
-      // Empty query yields nothing: the sheet must not render a firehose.
-      final empty = await launcher.search('', projectId: projectId, limit: 10);
-      expect(empty, isEmpty);
     },
   );
 }

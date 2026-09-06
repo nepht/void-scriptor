@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../platform/domain/platform_capability.dart';
+import '../../platform/platform_capability_providers.dart';
 import '../../../core/project_package/project_package_service.dart';
 import '../domain/project_model.dart';
 import 'project_persistence_providers.dart';
@@ -16,6 +19,12 @@ class ProjectController extends AsyncNotifier<List<ProjectModel>> {
     required String description,
     required String localPath,
   }) async {
+    ref
+        .read(platformCapabilitiesProvider)
+        .require(
+          PlatformCapability.localFileSystem,
+          action: 'Membuat proyek baru',
+        );
     final repository = ref.read(projectRepositoryProvider);
     final paths = ref.read(projectPathsProvider);
     final now = DateTime.now();
@@ -50,8 +59,15 @@ class ProjectController extends AsyncNotifier<List<ProjectModel>> {
   }
 
   Future<void> deleteProject(String projectId) async {
+    final activeSession = ref.read(projectSessionProvider).valueOrNull;
+    if (activeSession?.package.projectId == projectId) {
+      await ref.read(projectSessionProvider.notifier).closeProject();
+    }
     final repository = ref.read(projectRepositoryProvider);
     await repository.deleteProject(projectId);
+    if (ref.read(currentProjectProvider)?.id == projectId) {
+      ref.read(currentProjectProvider.notifier).state = null;
+    }
     state = AsyncData(await repository.getProjects());
   }
 }

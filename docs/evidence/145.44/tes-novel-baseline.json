@@ -1,0 +1,17 @@
+{
+  "capturedAt": "2026-09-06T07:49:09.798182+00:00",
+  "files": [
+    {
+      "path": "D:\\VoidScriptor_Data\\Projects\\3c30ca9c-eb79-4dbe-9855-34281bbffe78.voidproject\\manifest\\project.json",
+      "exists": true,
+      "size": 483,
+      "sha256": "bdcfde1e5e3bc84c86741cb509002dfa00efed99bebcf37d69c4afaee4825257"
+    },
+    {
+      "path": "D:\\VoidScriptor_Data\\Projects\\3c30ca9c-eb79-4dbe-9855-34281bbffe78.voidproject\\database\\project.db",
+      "exists": true,
+      "size": 1462272,
+      "sha256": "1caf3cead67d5cf4aec1c1865b19f0c2298639e812d2254837a6b571e88f06cc"
+    }
+  ]
+}

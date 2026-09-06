@@ -40,6 +40,19 @@ void main() {
         ).exists(),
         isTrue,
       );
+
+      await database.close();
+      final reopened = await ProjectDatabaseService().open(databasePath);
+      addTearDown(reopened.close);
+      expect(
+        (await reopened.weaponDao.getWeapon(id))?.name,
+        'Void Dual Dagger',
+      );
+      expect((await reopened.weaponDao.getDefaultVariant(id))?.name, 'Normal');
+      expect(
+        (await reopened.weaponDao.getPreservationProfile(id))?.geometryLock,
+        isTrue,
+      );
     },
   );
 }

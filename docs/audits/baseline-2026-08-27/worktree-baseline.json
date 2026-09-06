@@ -1,0 +1,2357 @@
+{
+  "captured_at_utc": "2026-08-27T16:18:41.751286+00:00",
+  "repository": "/home/nepht/Projects/void_scriptor_multiplatform",
+  "head": "483ec1b9e542f61d3b0293640bdec4cbc039e1d3",
+  "branch": "master",
+  "status_lines": 461,
+  "modified_or_untracked_files": 469,
+  "status": "## master...origin/master [ahead 88]\n M .github/workflows/ci.yml\n M README.md\n M docs/audits/sprint-1-3-step-ledger.md\n M docs/audits/sprint-13-step-ledger.md\n M docs/audits/sprint-14-step-ledger.md\n M docs/audits/sprint-15-step-ledger.md\n M docs/audits/sprint-16-step-ledger.md\n M docs/audits/sprint-17-step-ledger.md\n M docs/audits/sprint-18-step-ledger.md\n M docs/audits/sprint-19-26-step-ledger.md\n M docs/audits/sprint-27-40-step-ledger.md\n M docs/audits/sprint-4-12-step-ledger.md\n M docs/audits/sprint-41-50-step-ledger.md\n M docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md\n M lib/app/bootstrap/app_diagnostics.dart\n M lib/app/bootstrap/startup_recovery_policy.dart\n M lib/app/routing/app_router.dart\n M lib/app/routing/app_routes.dart\n M lib/app/shell/desktop/void_desktop_shell.dart\n M lib/app/shell/desktop/void_top_bar.dart\n M lib/app/shell/mobile/void_mobile_shell.dart\n M lib/core/agent/tool/agent_tool.dart\n M lib/core/agent/tool/tool_registry.dart\n M lib/core/security/presentation/security_settings_screen.dart\n M lib/design_system/widgets/branding/brand_assets.dart\n M lib/features/ai/application/ai_generation_runtime.dart\n M lib/features/ai/application/provider_router.dart\n M lib/features/ai/domain/ai_provider.dart\n M lib/features/ai/infrastructure/project_ai_output_service.dart\n M lib/features/ai/infrastructure/providers/comfyui/comfyui_http_client.dart\n M lib/features/ai/infrastructure/providers/ollama/ollama_provider.dart\n M lib/features/ai/presentation/ai_generation_queue_screen.dart\n M lib/features/bible/application/lore_backlink_service.dart\n M lib/features/character/presentation/character_controller.dart\n M lib/features/character/presentation/character_workspace_screen.dart\n M lib/features/character/presentation/widgets/character_header.dart\n M lib/features/dashboard/presentation/dashboard_screen.dart\n M lib/features/dashboard/presentation/widgets/brand_gallery.dart\n M lib/features/dashboard/presentation/widgets/quick_actions.dart\n M lib/features/explorer/presentation/explorer_panel.dart\n M lib/features/explorer/presentation/explorer_story_group.dart\n M lib/features/game/presentation/game_creation_dashboard_screen.dart\n M lib/features/game/presentation/level_editor_screen.dart\n M lib/features/marketplace/presentation/agent_permission_screen.dart\n M lib/features/marketplace/presentation/marketplace_workspace_screen.dart\n M lib/features/marketplace/presentation/product_detail_screen.dart\n M lib/features/multiverse/presentation/merge_preview_screen.dart\n M lib/features/platform/presentation/optional_tour_screen.dart\n M lib/features/platform/presentation/theme_settings_screen.dart\n M lib/features/platform/presentation/update_screen.dart\n M lib/features/project_resilience/application/portable_project_service.dart\n M lib/features/project_resilience/application/project_recovery_services.dart\n M lib/features/project_resilience/application/project_session_manager.dart\n M lib/features/projects/presentation/create_project_screen.dart\n M lib/features/projects/presentation/project_controller.dart\n M lib/features/story/presentation/story_inspector.dart\n M lib/features/studio/domain/organization_agent.dart\n M lib/features/timeline/presentation/timeline_workspace_screen.dart\n M lib/features/workspace/presentation/workspace_resolver.dart\n M test/app/bootstrap/story_content_redaction_test.dart\n M test/app/bootstrap/web_bootstrap_test.dart\n M test/app/routing/back_navigation_test.dart\n M test/app/shell/void_top_bar_command_test.dart\n M test/core/project_package/project_package_roundtrip_test.dart\n M test/core/security/security_ui_test.dart\n M test/features/ai/ai_provider_test.dart\n M test/features/ai/application/provider_router_test.dart\n M test/features/ai/domain/ai_streaming_provider_test.dart\n M test/features/character/character_repository_test.dart\n M test/features/character_mode/character_mode_model_test.dart\n M test/features/game/presentation/game_creation_dashboard_screen_test.dart\n M test/features/game/presentation/level_editor_screen_test.dart\n M test/features/inspector/inspector_resolver_test.dart\n M test/features/marketplace/presentation/agent_permission_screen_test.dart\n M test/features/marketplace/presentation/marketplace_workspace_screen_test.dart\n M test/features/marketplace/presentation/product_detail_screen_test.dart\n M test/features/multiverse/presentation/merge_preview_screen_test.dart\n M test/features/platform/presentation/optional_tour_screen_test.dart\n M test/features/platform/presentation/update_screen_test.dart\n M test/features/platform/presentation/welcome_screen_test.dart\n M test/features/project_resilience/portable_project_service_test.dart\n M test/features/project_resilience/project_recovery_services_test.dart\n M test/features/story/lore_backlinks_test.dart\n M test/features/story/scene_beat_persistence_test.dart\n M test/features/story/story_workspace_test.dart\n M test/features/timeline/timeline_workspace_test.dart\n M test/features/wardrobe/wardrobe_creation_test.dart\n M test/features/weapon/weapon_creation_test.dart\n?? .github/CODEOWNERS\n?? .github/dependabot.yml\n?? .github/pull_request_template.md\n?? .github/workflows/release-train.yml\n?? .github/workflows/security.yml\n?? .gitleaksignore\n?? .hermes/\n?? CHANGELOG.md\n?? CONTRIBUTING.md\n?? SECURITY.md\n?? assets/brands/ai_tech/elevenlabs.svg\n?? assets/brands/ai_tech/googlecolab.svg\n?? assets/brands/ai_tech/heygen_5005.zonalogo.webp\n?? assets/brands/ai_tech/lmstudio.svg\n?? assets/brands/ai_tech/modal.svg\n?? assets/brands/ai_tech/ollama.svg\n?? assets/brands/ai_tech/perplexity_1069.zonalogo.webp\n?? assets/brands/ai_tech/qwen.svg\n?? assets/brands/ai_tech/replicate.svg\n?? assets/brands/ai_tech/suno.svg\n?? assets/brands/apps/arc.svg\n?? assets/brands/apps/brave.svg\n?? assets/brands/apps/free-fire_2148.zonalogo.webp\n?? assets/brands/apps/hyundai_4938.zonalogo.webp\n?? assets/brands/apps/logo-garuda-indonesia_5268.zonalogo.webp\n?? assets/brands/apps/logo-honda_4907.zonalogo.webp\n?? assets/brands/apps/logo-igrs_1794.zonalogo.webp\n?? assets/brands/apps/logo-institut-teknologi-sepuluh-nopember-its_4149.zonalogo.webp\n?? assets/brands/apps/logo-sap-express_1822.zonalogo.webp\n?? assets/brands/apps/obsstudio.svg\n?? assets/brands/apps/opera_4586.zonalogo.webp\n?? assets/brands/apps/proton.svg\n?? assets/brands/apps/raycast.svg\n?? assets/brands/apps/tesla_4874.zonalogo.webp\n?? assets/brands/apps/toyota_4924.zonalogo.webp\n?? assets/brands/design_tools/autodesk_logo.webp\n?? assets/brands/design_tools/framer.svg\n?? assets/brands/design_tools/krita.svg\n?? assets/brands/design_tools/miro.svg\n?? assets/brands/payment_methods/logo-bareksa_4429.zonalogo.webp\n?? assets/brands/payment_methods/western-union_1904.zonalogo.webp\n?? assets/brands/social_media/tiktok_1740.zonalogo.webp\n?? assets/brands/social_media/whatsapp_1684.zonalogo.webp\n?? assets/brands/tech/cursor.svg\n?? assets/brands/tech/flutter_2931.zonalogo.webp\n?? assets/brands/tech/linear.svg\n?? assets/brands/tech/logo-biznet_1210.zonalogo.webp\n?? assets/brands/tech/logo-telkom-indonesia_1085.zonalogo.webp\n?? assets/brands/tech/sentry.svg\n?? assets/brands/tech/windsurf.svg\n?? assets/brands/tech/wordpress_4118.zonalogo.webp\n?? assets/brands/web_platforms/\n?? docs/IMPLEMENTATION_GOAL.md\n?? docs/IMPLEMENTATION_LEDGER.md\n?? docs/MASTER_SPRINT.md\n?? docs/audits/ai-optional-boundary.md\n?? docs/audits/autosave-snapshot-crash-recovery.md\n?? docs/audits/character-scope-layers.md\n?? docs/audits/character-workspace-core.md\n?? docs/audits/clean-manuscript-export.md\n?? docs/audits/core-automated-test-pyramid.md\n?? docs/audits/core-cloud-network-roadmap-split.md\n?? docs/audits/core-dependency-direction.md\n?? docs/audits/core-mvp-scope-lock.md\n?? docs/audits/core-mvp-vertical-slice-contract.md\n?? docs/audits/core-without-account.md\n?? docs/audits/core-without-internet-providers.md\n?? docs/audits/core-worldbuilding-reduction.md\n?? docs/audits/custom-local-storage.md\n?? docs/audits/data-ownership-map.md\n?? docs/audits/dependency-coupling-map.md\n?? docs/audits/environment-location-core.md\n?? docs/audits/existing-user-data-compatibility.md\n?? docs/audits/explicit-deferred-scope.md\n?? docs/audits/local-backup-restore.md\n?? docs/audits/lore-linking-and-search.md\n?? docs/audits/master-sprint-normalized.json\n?? docs/audits/master-sprint-normalized.md\n?? docs/audits/master-sprint-source-reconciliation.md\n?? docs/audits/module-boundary-feature-flags.md\n?? docs/audits/navigation-reduction.md\n?? docs/audits/non-core-preservation-disablement.md\n?? docs/audits/novel-workspace-core.md\n?? docs/audits/official-json-source.md\n?? docs/audits/portable-import-export.md\n?? docs/audits/pre-release-baseline-inventory.md\n?? docs/audits/product-promise-lock.md\n?? docs/audits/schema-migration-fixtures.md\n?? docs/audits/settings-reduction.md\n?? docs/audits/single-sync-authority.md\n?? docs/audits/sprint-001-054-decision-gate.md\n?? docs/audits/sprint-001-100-final-readiness.md\n?? docs/audits/sprint-001-official-json-step-ledger.md\n?? docs/audits/sprint-001-reconciled-provenance.md\n?? docs/audits/sprint-002-official-json-section-ledger.md\n?? docs/audits/sprint-002-reconciled-provenance.md\n?? docs/audits/sprint-003-official-json-step-ledger.md\n?? docs/audits/sprint-003-reconciled-provenance.md\n?? docs/audits/sprint-004-official-json-step-ledger.md\n?? docs/audits/sprint-004-reconciled-provenance.md\n?? docs/audits/sprint-005-official-json-step-ledger.md\n?? docs/audits/sprint-005-reconciled-provenance.md\n?? docs/audits/sprint-006-official-json-step-ledger.md\n?? docs/audits/sprint-006-reconciled-provenance.md\n?? docs/audits/sprint-007-official-json-step-ledger.md\n?? docs/audits/sprint-007-reconciled-provenance.md\n?? docs/audits/sprint-008-official-json-step-ledger.md\n?? docs/audits/sprint-008-reconciled-provenance.md\n?? docs/audits/sprint-009-official-json-step-ledger.md\n?? docs/audits/sprint-009-reconciled-provenance.md\n?? docs/audits/sprint-010-official-json-step-ledger.md\n?? docs/audits/sprint-010-reconciled-provenance.md\n?? docs/audits/sprint-011-official-json-step-ledger.md\n?? docs/audits/sprint-011-reconciled-provenance.md\n?? docs/audits/sprint-012-official-json-step-ledger.md\n?? docs/audits/sprint-012-reconciled-provenance.md\n?? docs/audits/sprint-013-official-json-step-ledger.md\n?? docs/audits/sprint-013-reconciled-provenance.md\n?? docs/audits/sprint-014-official-json-step-ledger.md\n?? docs/audits/sprint-014-reconciled-provenance.md\n?? docs/audits/sprint-015-official-json-step-ledger.md\n?? docs/audits/sprint-015-reconciled-provenance.md\n?? docs/audits/sprint-016-official-json-step-ledger.md\n?? docs/audits/sprint-016-reconciled-provenance.md\n?? docs/audits/sprint-017-official-json-step-ledger.md\n?? docs/audits/sprint-017-reconciled-provenance.md\n?? docs/audits/sprint-018-official-json-step-ledger.md\n?? docs/audits/sprint-018-reconciled-provenance.md\n?? docs/audits/sprint-019-official-json-step-ledger.md\n?? docs/audits/sprint-019-reconciled-provenance.md\n?? docs/audits/sprint-020-official-json-step-ledger.md\n?? docs/audits/sprint-020-reconciled-provenance.md\n?? docs/audits/sprint-021-official-json-step-ledger.md\n?? docs/audits/sprint-021-reconciled-provenance.md\n?? docs/audits/sprint-022-official-json-step-ledger.md\n?? docs/audits/sprint-022-reconciled-provenance.md\n?? docs/audits/sprint-023-official-json-step-ledger.md\n?? docs/audits/sprint-023-reconciled-provenance.md\n?? docs/audits/sprint-024-official-json-step-ledger.md\n?? docs/audits/sprint-024-reconciled-provenance.md\n?? docs/audits/sprint-025-official-json-step-ledger.md\n?? docs/audits/sprint-025-reconciled-provenance.md\n?? docs/audits/sprint-026-official-json-step-ledger.md\n?? docs/audits/sprint-026-reconciled-provenance.md\n?? docs/audits/sprint-027-official-json-step-ledger.md\n?? docs/audits/sprint-027-reconciled-provenance.md\n?? docs/audits/sprint-028-official-json-step-ledger.md\n?? docs/audits/sprint-028-reconciled-provenance.md\n?? docs/audits/sprint-029-official-json-step-ledger.md\n?? docs/audits/sprint-029-reconciled-provenance.md\n?? docs/audits/sprint-030-official-json-step-ledger.md\n?? docs/audits/sprint-030-reconciled-provenance.md\n?? docs/audits/sprint-031-official-json-step-ledger.md\n?? docs/audits/sprint-031-reconciled-provenance.md\n?? docs/audits/sprint-032-official-json-step-ledger.md\n?? docs/audits/sprint-032-reconciled-provenance.md\n?? docs/audits/sprint-033-official-json-step-ledger.md\n?? docs/audits/sprint-033-reconciled-provenance.md\n?? docs/audits/sprint-034-official-json-step-ledger.md\n?? docs/audits/sprint-034-reconciled-provenance.md\n?? docs/audits/sprint-035-official-json-step-ledger.md\n?? docs/audits/sprint-035-reconciled-provenance.md\n?? docs/audits/sprint-036-official-json-step-ledger.md\n?? docs/audits/sprint-036-reconciled-provenance.md\n?? docs/audits/sprint-037-official-json-step-ledger.md\n?? docs/audits/sprint-037-reconciled-provenance.md\n?? docs/audits/sprint-038-official-json-step-ledger.md\n?? docs/audits/sprint-038-reconciled-provenance.md\n?? docs/audits/sprint-039-official-json-step-ledger.md\n?? docs/audits/sprint-039-reconciled-provenance.md\n?? docs/audits/sprint-040-official-json-step-ledger.md\n?? docs/audits/sprint-040-reconciled-provenance.md\n?? docs/audits/sprint-041-official-json-step-ledger.md\n?? docs/audits/sprint-041-reconciled-provenance.md\n?? docs/audits/sprint-042-official-json-step-ledger.md\n?? docs/audits/sprint-042-reconciled-provenance.md\n?? docs/audits/sprint-043-official-json-step-ledger.md\n?? docs/audits/sprint-043-reconciled-provenance.md\n?? docs/audits/sprint-044-official-json-step-ledger.md\n?? docs/audits/sprint-044-reconciled-provenance.md\n?? docs/audits/sprint-045-official-json-step-ledger.md\n?? docs/audits/sprint-045-reconciled-provenance.md\n?? docs/audits/sprint-046-official-json-step-ledger.md\n?? docs/audits/sprint-046-reconciled-provenance.md\n?? docs/audits/sprint-047-official-json-step-ledger.md\n?? docs/audits/sprint-047-reconciled-provenance.md\n?? docs/audits/sprint-048-official-json-step-ledger.md\n?? docs/audits/sprint-048-reconciled-provenance.md\n?? docs/audits/sprint-049-official-json-step-ledger.md\n?? docs/audits/sprint-049-reconciled-provenance.md\n?? docs/audits/sprint-050-official-json-step-ledger.md\n?? docs/audits/sprint-050-reconciled-provenance.md\n?? docs/audits/sprint-051-official-json-step-ledger.md\n?? docs/audits/sprint-051-reconciled-provenance.md\n?? docs/audits/sprint-052-official-json-step-ledger.md\n?? docs/audits/sprint-052-reconciled-provenance.md\n?? docs/audits/sprint-053-official-json-step-ledger.md\n?? docs/audits/sprint-053-reconciled-provenance.md\n?? docs/audits/sprint-054-official-json-step-ledger.md\n?? docs/audits/sprint-054-reconciled-provenance.md\n?? docs/audits/sprint-055-official-json-step-ledger.md\n?? docs/audits/sprint-055-reconciled-provenance.md\n?? docs/audits/sprint-056-official-json-step-ledger.md\n?? docs/audits/sprint-056-reconciled-provenance.md\n?? docs/audits/sprint-057-official-json-step-ledger.md\n?? docs/audits/sprint-057-reconciled-provenance.md\n?? docs/audits/sprint-058-official-json-step-ledger.md\n?? docs/audits/sprint-058-reconciled-provenance.md\n?? docs/audits/sprint-059-official-json-step-ledger.md\n?? docs/audits/sprint-059-reconciled-provenance.md\n?? docs/audits/sprint-060-official-json-step-ledger.md\n?? docs/audits/sprint-060-reconciled-provenance.md\n?? docs/audits/sprint-061-official-json-step-ledger.md\n?? docs/audits/sprint-061-reconciled-provenance.md\n?? docs/audits/sprint-062-official-json-step-ledger.md\n?? docs/audits/sprint-062-reconciled-provenance.md\n?? docs/audits/sprint-063-official-json-step-ledger.md\n?? docs/audits/sprint-063-reconciled-provenance.md\n?? docs/audits/sprint-064-official-json-step-ledger.md\n?? docs/audits/sprint-064-reconciled-provenance.md\n?? docs/audits/sprint-065-official-json-step-ledger.md\n?? docs/audits/sprint-065-reconciled-provenance.md\n?? docs/audits/sprint-066-official-json-step-ledger.md\n?? docs/audits/sprint-066-reconciled-provenance.md\n?? docs/audits/sprint-067-official-json-step-ledger.md\n?? docs/audits/sprint-067-reconciled-provenance.md\n?? docs/audits/sprint-068-official-json-step-ledger.md\n?? docs/audits/sprint-068-reconciled-provenance.md\n?? docs/audits/sprint-069-official-json-step-ledger.md\n?? docs/audits/sprint-069-reconciled-provenance.md\n?? docs/audits/sprint-070-official-json-step-ledger.md\n?? docs/audits/sprint-070-reconciled-provenance.md\n?? docs/audits/sprint-071-official-json-step-ledger.md\n?? docs/audits/sprint-071-reconciled-provenance.md\n?? docs/audits/sprint-072-official-json-step-ledger.md\n?? docs/audits/sprint-072-reconciled-provenance.md\n?? docs/audits/sprint-073-official-json-step-ledger.md\n?? docs/audits/sprint-073-reconciled-provenance.md\n?? docs/audits/sprint-074-official-json-step-ledger.md\n?? docs/audits/sprint-074-reconciled-provenance.md\n?? docs/audits/sprint-075-official-json-step-ledger.md\n?? docs/audits/sprint-075-reconciled-provenance.md\n?? docs/audits/sprint-076-official-json-step-ledger.md\n?? docs/audits/sprint-076-reconciled-provenance.md\n?? docs/audits/sprint-077-official-json-step-ledger.md\n?? docs/audits/sprint-077-reconciled-provenance.md\n?? docs/audits/sprint-078-official-json-step-ledger.md\n?? docs/audits/sprint-078-reconciled-provenance.md\n?? docs/audits/sprint-079-official-json-step-ledger.md\n?? docs/audits/sprint-079-reconciled-provenance.md\n?? docs/audits/sprint-080-official-json-step-ledger.md\n?? docs/audits/sprint-080-reconciled-provenance.md\n?? docs/audits/sprint-081-reconciled-provenance.md\n?? docs/audits/sprint-082-reconciled-provenance.md\n?? docs/audits/sprint-083-reconciled-provenance.md\n?? docs/audits/sprint-084-reconciled-provenance.md\n?? docs/audits/sprint-085-reconciled-provenance.md\n?? docs/audits/sprint-086-reconciled-provenance.md\n?? docs/audits/sprint-087-reconciled-provenance.md\n?? docs/audits/sprint-088-reconciled-provenance.md\n?? docs/audits/sprint-089-reconciled-provenance.md\n?? docs/audits/sprint-090-reconciled-provenance.md\n?? docs/audits/sprint-091-reconciled-provenance.md\n?? docs/audits/sprint-092-reconciled-provenance.md\n?? docs/audits/sprint-093-reconciled-provenance.md\n?? docs/audits/sprint-094-reconciled-provenance.md\n?? docs/audits/sprint-095-reconciled-provenance.md\n?? docs/audits/sprint-096-reconciled-provenance.md\n?? docs/audits/sprint-097-reconciled-provenance.md\n?? docs/audits/sprint-098-reconciled-provenance.md\n?? docs/audits/sprint-099-reconciled-provenance.md\n?? docs/audits/sprint-1-151-review-matrix.json\n?? docs/audits/sprint-1-151-review/\n?? docs/audits/sprint-1-151-source-inventory.json\n?? docs/audits/sprint-100-reconciled-provenance.md\n?? docs/audits/startup-path-simplification.md\n?? docs/audits/working-feature-protection-list.md\n?? docs/audits/writing-room-focus.md\n?? docs/release/RELEASE_CHECKLIST.md\n?? lib/core/network/\n?? lib/features/ai/application/ai_model_registry.dart\n?? lib/features/ai/application/provider_cost_policy.dart\n?? lib/features/ai/application/provider_diagnostics.dart\n?? lib/features/ai/application/provider_health.dart\n?? lib/features/ai/application/provider_rate_limiter.dart\n?? lib/features/ai/application/provider_timeout.dart\n?? lib/features/character/presentation/widgets/character_deletion_review_dialog.dart\n?? lib/features/collaboration/domain/sync_authority_policy.dart\n?? lib/features/creatures/data/creature_ecology_repository.dart\n?? lib/features/creatures/domain/creature_ecology_state.dart\n?? lib/features/platform/domain/platform_capability.dart\n?? lib/features/platform/platform_capability_providers.dart\n?? lib/features/settings/\n?? lib/features/studio/presentation/\n?? lib/features/world/domain/camera_capture.dart\n?? lib/features/world/domain/depth_capture.dart\n?? lib/features/world/domain/digital_twin.dart\n?? lib/features/world/domain/emergent_behavior.dart\n?? lib/features/world/domain/environment_reconstruction.dart\n?? lib/features/world/domain/geospatial_coordinates.dart\n?? lib/features/world/domain/lidar_adapter.dart\n?? lib/features/world/domain/lighting_estimation.dart\n?? lib/features/world/domain/object_scanning.dart\n?? lib/features/world/domain/photogrammetry.dart\n?? lib/features/world/domain/privacy_zones.dart\n?? lib/features/world/domain/reality_occlusion.dart\n?? lib/features/world/domain/sensor_integration.dart\n?? lib/features/world/domain/spatial_mapping.dart\n?? test/app/assets/\n?? test/app/routing/metaverse_xr_route_integration_test.dart\n?? test/app/shell/core_mvp_navigation_test.dart\n?? test/app/shell/void_status_bar_test.dart\n?? test/core/agent/tool/\n?? test/core/network/\n?? test/core/selection/selection_controller_test.dart\n?? test/database/project/project_database_metadata_test.dart\n?? test/design_system/branding/\n?? test/features/ai/application/ai_model_registry_test.dart\n?? test/features/ai/application/provider_cost_policy_test.dart\n?? test/features/ai/application/provider_diagnostics_test.dart\n?? test/features/ai/application/provider_health_test.dart\n?? test/features/ai/application/provider_rate_limiter_test.dart\n?? test/features/ai/application/provider_timeout_test.dart\n?? test/features/ai/comfyui_generation_lifecycle_test.dart\n?? test/features/ai/domain/mock_ai_provider_contract_test.dart\n?? test/features/ai/domain/provider_registry_lifecycle_test.dart\n?? test/features/ai/image_generation_queue_submission_widget_test.dart\n?? test/features/ai/image_generation_submission_test.dart\n?? test/features/ai/infrastructure/\n?? test/features/ai/remote_image_output_persistence_test.dart\n?? test/features/character_mode/character_mode_selector_event_test.dart\n?? test/features/collaboration/domain/sync_authority_policy_test.dart\n?? test/features/creator/presentation/dashboard_metrics_screen_test.dart\n?? test/features/creatures/creature_ecology_persistence_test.dart\n?? test/features/explorer/\n?? test/features/inspector/story_inspector_session_integration_test.dart\n?? test/features/platform/platform_capability_test.dart\n?? test/features/platform/theme_settings_persistence_test.dart\n?? test/features/project_resilience/portable_archive_security_test.dart\n?? test/features/project_resilience/project_session_workspace_link_test.dart\n?? test/features/projects/create_project_screen_failure_test.dart\n?? test/features/projects/create_project_screen_platform_guard_test.dart\n?? test/features/projects/presentation/\n?? test/features/settings/\n?? test/features/story/debounced_autosave_test.dart\n?? test/features/story/novel_authoring_flow_test.dart\n?? test/features/story/novel_creation_action_test.dart\n?? test/features/story/scene_duration_warning_test.dart\n?? test/features/story/story_session_repository_integration_test.dart\n?? test/features/story/story_workspace_novel_io_test.dart\n?? test/features/story/story_workspace_resolver_test.dart\n?? test/features/studio/domain/department_lead_test.dart\n?? test/features/studio/presentation/\n?? test/features/workspace/workspace_resolver_wiring_test.dart\n?? test/features/world/domain/camera_capture_test.dart\n?? test/features/world/domain/depth_capture_test.dart\n?? test/features/world/domain/digital_twin_test.dart\n?? test/features/world/domain/emergent_behavior_test.dart\n?? test/features/world/domain/environment_reconstruction_test.dart\n?? test/features/world/domain/geospatial_coordinates_test.dart\n?? test/features/world/domain/lidar_adapter_test.dart\n?? test/features/world/domain/lighting_estimation_test.dart\n?? test/features/world/domain/object_scanning_test.dart\n?? test/features/world/domain/photogrammetry_test.dart\n?? test/features/world/domain/privacy_zones_test.dart\n?? test/features/world/domain/reality_occlusion_test.dart\n?? test/features/world/domain/sensor_integration_test.dart\n?? test/features/world/domain/spatial_mapping_test.dart\n?? test/live_cutover_test.dart\n?? test/tools/\n?? tools/generate_release_metadata.py\n?? tools/verify_repository_hardening.py\n",
+  "file_hashes": [
+    {
+      "path": ".github/CODEOWNERS",
+      "size": 199,
+      "sha256": "37e832e28fb230e2e40e5a40a65fedae978578f4222c8154867b0da3eb1da70e"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "size": 544,
+      "sha256": "1c3fc4176f52e8d13e371d8d0d95aa4c670c81e6677963e767b3820b6c53e55d"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "size": 895,
+      "sha256": "8f033238b8866786e329c5fb306fc63b352b1388f0eb7fa99719216ca4554326"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "size": 4019,
+      "sha256": "02ecde79b7fdeb0666c979c91c9737a7e7fba9e12d3a5b81e4bd30971ada072b"
+    },
+    {
+      "path": ".github/workflows/release-train.yml",
+      "size": 2985,
+      "sha256": "4d74758d612e684dd34852e5178e4ff5c1ca0cbed4c48e67c5e9c528ad592262"
+    },
+    {
+      "path": ".github/workflows/security.yml",
+      "size": 776,
+      "sha256": "c084a364d491cee59183c01181b4a2a972ada906cca6d474b023c48b2eb6a1b8"
+    },
+    {
+      "path": ".gitleaksignore",
+      "size": 231,
+      "sha256": "0f92df7bbcad270a57ad09bf638441b4bccb39596702023819eb5c288a2744e8"
+    },
+    {
+      "path": ".hermes/SPRINT_PROGRESS.md",
+      "size": 4896,
+      "sha256": "37be9f99f3cde69367de0edcbe465626dae166e458f5b3862300016eacffb54e"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "size": 787,
+      "sha256": "44b3489be64567a94a6eff1001c912befcde58f2814976c09eff5a7280b7ca4c"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "size": 1948,
+      "sha256": "b553861b23b27ff91c678bef53a77504aa33105b159b77b2160b566d39dbbf52"
+    },
+    {
+      "path": "README.md",
+      "size": 6199,
+      "sha256": "4a0aaafc79008ef85c9bb131bf622e6f42a3f2266986c3d496b5cbce79310c30"
+    },
+    {
+      "path": "SECURITY.md",
+      "size": 1487,
+      "sha256": "e3a163e65952fd1bf57b9595f45c56b2183caaac699fe790991d011e1390df93"
+    },
+    {
+      "path": "assets/brands/ai_tech/elevenlabs.svg",
+      "size": 173,
+      "sha256": "24e2fe318bc1ed54a29ceb867e4ecead952355cda4241b07402d1ff6510dc133"
+    },
+    {
+      "path": "assets/brands/ai_tech/googlecolab.svg",
+      "size": 766,
+      "sha256": "fd36cfe527544db549783ee05b0d5035337f7deb45c6c3fa9ef3ce5b04149b89"
+    },
+    {
+      "path": "assets/brands/ai_tech/heygen_5005.zonalogo.webp",
+      "size": 28278,
+      "sha256": "5b644ca8631d668fab521b6bb546d7233513a17b8457d7a206e224597117c592"
+    },
+    {
+      "path": "assets/brands/ai_tech/lmstudio.svg",
+      "size": 750,
+      "sha256": "501fcb310c5c680883d204aed53741af1b96cf0751017b39cf4f728e36e219af"
+    },
+    {
+      "path": "assets/brands/ai_tech/modal.svg",
+      "size": 497,
+      "sha256": "a55c5490f248e612e3d5095488093494f088e32c42b274ce7dd4f4dfc7cee993"
+    },
+    {
+      "path": "assets/brands/ai_tech/ollama.svg",
+      "size": 4784,
+      "sha256": "8d113044ac7b6a4bea46c335f8410a04976c2e6ae5beaf9fc6b823d90f8b05a0"
+    },
+    {
+      "path": "assets/brands/ai_tech/perplexity_1069.zonalogo.webp",
+      "size": 29406,
+      "sha256": "d945f8ad3036f53fa74a64a897775a8657a8955169bdbc9ae9c7b0627d185ecf"
+    },
+    {
+      "path": "assets/brands/ai_tech/qwen.svg",
+      "size": 820,
+      "sha256": "189f77fb476f0a399e22ec968b05f6d24ceb9cad258c5cb3355b114f443757d2"
+    },
+    {
+      "path": "assets/brands/ai_tech/replicate.svg",
+      "size": 230,
+      "sha256": "2b56b6a5c34ab91d2382a769b6d81bbb5b6152df6c474a4f798b73ce45560e33"
+    },
+    {
+      "path": "assets/brands/ai_tech/suno.svg",
+      "size": 231,
+      "sha256": "e6e22de9074aa7eef08f186c111ee8db5f3ecc664e46387c8bdca675ebe6a254"
+    },
+    {
+      "path": "assets/brands/apps/arc.svg",
+      "size": 2643,
+      "sha256": "cdfb460c9d2aafe734aea33e641c020def4a1d2403e8607b9985f1fb2c55c361"
+    },
+    {
+      "path": "assets/brands/apps/brave.svg",
+      "size": 2129,
+      "sha256": "ab03dbd270ceb53def63a0587f41d74b286056fdbe523cfcb8e3bfe88763b02b"
+    },
+    {
+      "path": "assets/brands/apps/free-fire_2148.zonalogo.webp",
+      "size": 21390,
+      "sha256": "c75098774e1c0288abef30a0149bcd4fe7f1a047fa06f7c209524816234d75cf"
+    },
+    {
+      "path": "assets/brands/apps/hyundai_4938.zonalogo.webp",
+      "size": 30554,
+      "sha256": "1e74e685b64f4d94b904079064ec868d0ebbbd48b11ea3c92f3252b61244dfb7"
+    },
+    {
+      "path": "assets/brands/apps/logo-garuda-indonesia_5268.zonalogo.webp",
+      "size": 40622,
+      "sha256": "5b95dd83a8b0a11773d5b363d2c25bad84594505a06487e28851bf576c3625c0"
+    },
+    {
+      "path": "assets/brands/apps/logo-honda_4907.zonalogo.webp",
+      "size": 39472,
+      "sha256": "31665503d6e11630fc21467ecd60aa86a5a2cf7776a91efd75fd1744e18429ea"
+    },
+    {
+      "path": "assets/brands/apps/logo-igrs_1794.zonalogo.webp",
+      "size": 34516,
+      "sha256": "726d9935ec9a17cf270c17b7229dafdc5858d372969b548770848e7e6c8007ba"
+    },
+    {
+      "path": "assets/brands/apps/logo-institut-teknologi-sepuluh-nopember-its_4149.zonalogo.webp",
+      "size": 63862,
+      "sha256": "8f55e3b6ef5b9d17462f3d9bbf4b11011c05d4cfbf7fa4fbf253d22fdd8071c8"
+    },
+    {
+      "path": "assets/brands/apps/logo-sap-express_1822.zonalogo.webp",
+      "size": 35436,
+      "sha256": "7dcaf5c6fff71a9c1cb531f505ffc263ea4e252cdb72e413821e2308ec015662"
+    },
+    {
+      "path": "assets/brands/apps/obsstudio.svg",
+      "size": 1042,
+      "sha256": "c23e9449e2e469f4068de3da9819e977decf410f60e3a582248a9d0e6499ce57"
+    },
+    {
+      "path": "assets/brands/apps/opera_4586.zonalogo.webp",
+      "size": 32120,
+      "sha256": "f1864b60058bf9e93c8a333897bd81ec56c4b6c1c98eecee29ec5565199185bf"
+    },
+    {
+      "path": "assets/brands/apps/proton.svg",
+      "size": 543,
+      "sha256": "f6d6a59e9080c39df77a7a02ce781c42615f934612a7f52fa4199d66ded67fd9"
+    },
+    {
+      "path": "assets/brands/apps/raycast.svg",
+      "size": 546,
+      "sha256": "ebee285df6996de4de69365b7d754eb4300bb83b201d4186f1b3d8d911f4d91d"
+    },
+    {
+      "path": "assets/brands/apps/tesla_4874.zonalogo.webp",
+      "size": 32536,
+      "sha256": "09176aaec658e80b2e444b9b519aaaee0deeb72243447e1a7192caa118396b9e"
+    },
+    {
+      "path": "assets/brands/apps/toyota_4924.zonalogo.webp",
+      "size": 33650,
+      "sha256": "f4dc3734db1362d871f41330a58241dd7a2316c43285757e1001a9da5a9c99ce"
+    },
+    {
+      "path": "assets/brands/design_tools/autodesk_logo.webp",
+      "size": 25630,
+      "sha256": "f6243e1c4004b222b957208aa93b5ed6223fba9c995b68b7021c696685225d3a"
+    },
+    {
+      "path": "assets/brands/design_tools/framer.svg",
+      "size": 161,
+      "sha256": "a4e3c4d0edab0a63056ac0a46a27f914a9d58bdd1db169e0c91d9a293c70468b"
+    },
+    {
+      "path": "assets/brands/design_tools/krita.svg",
+      "size": 1162,
+      "sha256": "fa71c3c86fc2ed991fc52e14d01af71768679dda522795c3a9d3a196ed42cc38"
+    },
+    {
+      "path": "assets/brands/design_tools/miro.svg",
+      "size": 274,
+      "sha256": "bd0810bca2ba457c9642b9b1580c627820ee623f1989f80feba629994c44fda1"
+    },
+    {
+      "path": "assets/brands/payment_methods/logo-bareksa_4429.zonalogo.webp",
+      "size": 34762,
+      "sha256": "d9a875535d5c7c58ba91ab55c5815025482b9c555f34ac55ee58e7df3a1f249a"
+    },
+    {
+      "path": "assets/brands/payment_methods/western-union_1904.zonalogo.webp",
+      "size": 26644,
+      "sha256": "dcbf4ff818d2fe736c402b98f1f6986a2913f85f06eb033debbf25a55ebd684b"
+    },
+    {
+      "path": "assets/brands/social_media/tiktok_1740.zonalogo.webp",
+      "size": 29418,
+      "sha256": "2b49f07b082d3c56aee20aa71badbcc6ade267655ca63a9400f8628413ded266"
+    },
+    {
+      "path": "assets/brands/social_media/whatsapp_1684.zonalogo.webp",
+      "size": 32882,
+      "sha256": "b35ed52a017a7b44e6de53ec0faf8aae56c3608ddf0cbdf136dd6833c98603a0"
+    },
+    {
+      "path": "assets/brands/tech/cursor.svg",
+      "size": 469,
+      "sha256": "68c88e317a03fefb7d8ed68b9fe86ef33c0a002765fa6bfc84cdc43d7bb9f4fe"
+    },
+    {
+      "path": "assets/brands/tech/flutter_2931.zonalogo.webp",
+      "size": 24294,
+      "sha256": "edae1094fe27b8fd42aea108c77d04724ce6194d66d3c5a0ba4f7d4e4e520de9"
+    },
+    {
+      "path": "assets/brands/tech/linear.svg",
+      "size": 468,
+      "sha256": "3700486fede168b1fbaf0987eda06621d0e54dd30968578b857fd7360cb2029e"
+    },
+    {
+      "path": "assets/brands/tech/logo-biznet_1210.zonalogo.webp",
+      "size": 36770,
+      "sha256": "90ccec83ea80d248970cbd61b543fc9d81e03ac0cc546f3e6e5f9203d8217d0f"
+    },
+    {
+      "path": "assets/brands/tech/logo-telkom-indonesia_1085.zonalogo.webp",
+      "size": 31760,
+      "sha256": "e2b9f3087c60a637ebd8de0badec64d8de6c502715a1a0c0ac7edd8f35ef75f0"
+    },
+    {
+      "path": "assets/brands/tech/sentry.svg",
+      "size": 701,
+      "sha256": "24ac56868a3b5dd440c4de2a3cf8f6864591ba81067eedd8d6be0b0690b136eb"
+    },
+    {
+      "path": "assets/brands/tech/windsurf.svg",
+      "size": 828,
+      "sha256": "de4c144d96970d2ea6c26975e8a26264490a33f5adcb226fe8edaa0ba02d57e7"
+    },
+    {
+      "path": "assets/brands/tech/wordpress_4118.zonalogo.webp",
+      "size": 35630,
+      "sha256": "6ceaebad8717a932de52a0082a16d2a9ae5d7864d828af188b86363449cd3038"
+    },
+    {
+      "path": "assets/brands/web_platforms/squarespace.webp",
+      "size": 29350,
+      "sha256": "5703d384d0f7917bb9fb03618b8f8973c7f6df7f650bb1a38532429942980713"
+    },
+    {
+      "path": "assets/brands/web_platforms/weebly.webp",
+      "size": 32718,
+      "sha256": "928fd116f7a66a93f6bbb3f538787ba94f1dac6e6dd30c271b2b28b7ace9638c"
+    },
+    {
+      "path": "assets/brands/web_platforms/wix.webp",
+      "size": 28428,
+      "sha256": "998ea1f281108573b463527a80621606dc333bf6cd145266d24aed06bae6e399"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_GOAL.md",
+      "size": 20211,
+      "sha256": "c039a977125201b68c80d44a92cfb9795e4817d16b7c226bf2ad9462364c7755"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_LEDGER.md",
+      "size": 19430,
+      "sha256": "085dbd8def01c39c6d4c1657bf757e9dce82b00697d535db359e5e95785712b2"
+    },
+    {
+      "path": "docs/MASTER_SPRINT.md",
+      "size": 2113893,
+      "sha256": "b1826f4423db18f928e5e367e81225ce07c27be23b2fd402b74a373380bffc10"
+    },
+    {
+      "path": "docs/audits/ai-optional-boundary.md",
+      "size": 4623,
+      "sha256": "644bfb42605cd52d0d15605d4c26503fa62f39a4ca22cf8ed38aa75ce7d9a35e"
+    },
+    {
+      "path": "docs/audits/autosave-snapshot-crash-recovery.md",
+      "size": 4529,
+      "sha256": "adaddae8d67f43c79146acf0d197171ccb36e6f825f2fde2036bf3518465b7f9"
+    },
+    {
+      "path": "docs/audits/character-scope-layers.md",
+      "size": 4990,
+      "sha256": "01547a6bd14ab342746531992b077f56524d6f7fb6854b1faf7b0aba407f158f"
+    },
+    {
+      "path": "docs/audits/character-workspace-core.md",
+      "size": 8514,
+      "sha256": "37dc9fc8610e6eaa3383ccf855e093f82fd35aa6f086a085b1e229fefc680d8a"
+    },
+    {
+      "path": "docs/audits/clean-manuscript-export.md",
+      "size": 3881,
+      "sha256": "41b296e5450bb593756040d18bf51df6d78781159e3f56b8016ffed12e8d757d"
+    },
+    {
+      "path": "docs/audits/core-automated-test-pyramid.md",
+      "size": 2698,
+      "sha256": "6ad486bb1fcd73bc2271ab633ffdcf8e7daf177bb50b44db112219c58e81c124"
+    },
+    {
+      "path": "docs/audits/core-cloud-network-roadmap-split.md",
+      "size": 6960,
+      "sha256": "751e7caa53e14cc214e9405168bc4575b6b5781ebc7567ff3d3603a37e2930a1"
+    },
+    {
+      "path": "docs/audits/core-dependency-direction.md",
+      "size": 3909,
+      "sha256": "b1d7bf3e950db95c696f599218df6473f228633a649b1740c5e587f84f77affa"
+    },
+    {
+      "path": "docs/audits/core-mvp-scope-lock.md",
+      "size": 4853,
+      "sha256": "1eed1ae9270f6f11e6eb9c83c260bc466ad664f4298ee8b2a0b821494cef8a9d"
+    },
+    {
+      "path": "docs/audits/core-mvp-vertical-slice-contract.md",
+      "size": 8034,
+      "sha256": "c5c33ea59f431427f854f2d0863ca9f356a7a03f2dcf85600bd7f5f976434412"
+    },
+    {
+      "path": "docs/audits/core-without-account.md",
+      "size": 2626,
+      "sha256": "b0a3afc02a752d1664166ba7225726d47fc8e66c87966118b1aed21ab5411cc1"
+    },
+    {
+      "path": "docs/audits/core-without-internet-providers.md",
+      "size": 3785,
+      "sha256": "a1a4d9899c3662c64b17bd286a081bbe84eef6de634b6a382519c7fd3249ab61"
+    },
+    {
+      "path": "docs/audits/core-worldbuilding-reduction.md",
+      "size": 5681,
+      "sha256": "77587aea0743a551ebcf83eec1f9ca170d914cb2a101e9133a2918384d55f6bb"
+    },
+    {
+      "path": "docs/audits/custom-local-storage.md",
+      "size": 4607,
+      "sha256": "cf6c4ed18f9006858e0451bddec391d0ddea89ba0c8925ad3c1ae499d26f074f"
+    },
+    {
+      "path": "docs/audits/data-ownership-map.md",
+      "size": 10573,
+      "sha256": "a2c61a10e3043906e0127ed0f2941c85495f1621ccd6bdbd543805fb8e283216"
+    },
+    {
+      "path": "docs/audits/dependency-coupling-map.md",
+      "size": 8576,
+      "sha256": "2f1d99bdf4e1cff5096e0b48b749ef680fb7da94c51a4be1411d29551841e600"
+    },
+    {
+      "path": "docs/audits/environment-location-core.md",
+      "size": 6214,
+      "sha256": "f123f31667b31e626b008c3cd358fc8645d0e2f467d1523d694b58d86027d93b"
+    },
+    {
+      "path": "docs/audits/existing-user-data-compatibility.md",
+      "size": 8485,
+      "sha256": "1706cb0d9040d345f143e10ab0ff4d1d84e1553c9a4738e1103039f38dd5f44f"
+    },
+    {
+      "path": "docs/audits/explicit-deferred-scope.md",
+      "size": 7185,
+      "sha256": "a4a71b6a07e8991db2dfcb86d3383fe4089b2a6bbce46790bb6f9169ae710fcd"
+    },
+    {
+      "path": "docs/audits/local-backup-restore.md",
+      "size": 3616,
+      "sha256": "34076dfa1f2dfb7b2da8b68803eb0cdd0b500c6d0ba96b400ee3fc0b59e39c46"
+    },
+    {
+      "path": "docs/audits/lore-linking-and-search.md",
+      "size": 4600,
+      "sha256": "d45264e020ac087e3619889aa5916adb67fe620a051c9baed2d18de3485ac2d7"
+    },
+    {
+      "path": "docs/audits/master-sprint-normalized.json",
+      "size": 496537,
+      "sha256": "19569c6f7bbfbff78cfb6248245481af1c66e95267f24be940eea5a330cd4891"
+    },
+    {
+      "path": "docs/audits/master-sprint-normalized.md",
+      "size": 116268,
+      "sha256": "9bd4c1bce7a9fecead08e0caf63e99ca95544dec7b2c83a34d07848c5cc559a3"
+    },
+    {
+      "path": "docs/audits/master-sprint-source-reconciliation.md",
+      "size": 5769,
+      "sha256": "82ba40c414fc254c195b3ecd829e8d2d92fde5cabc2929aeeb7f9e4a11c2771f"
+    },
+    {
+      "path": "docs/audits/module-boundary-feature-flags.md",
+      "size": 5264,
+      "sha256": "57291feb07e6009d119eeb9daad889d2441ebf2d66cac79740ad3e86217e2df2"
+    },
+    {
+      "path": "docs/audits/navigation-reduction.md",
+      "size": 2704,
+      "sha256": "8259187afde7ef836a9a8b24b56a137994ec82cb8aa75cf4820c321e6b33a06e"
+    },
+    {
+      "path": "docs/audits/non-core-preservation-disablement.md",
+      "size": 2621,
+      "sha256": "ec4bd1c39d9db3357ec38639b61927b964e642c9788d3c7a00ce55d5e6665d95"
+    },
+    {
+      "path": "docs/audits/novel-workspace-core.md",
+      "size": 6314,
+      "sha256": "5472d53df242fb7360ddde666c6c53abf62ea921e96054a4e17d85350fc55efc"
+    },
+    {
+      "path": "docs/audits/official-json-source.md",
+      "size": 11408,
+      "sha256": "ea9d3fc25ddaca0a0abc3f69c9e18e7d918e0ceda42bf91e92cfdad37c51828f"
+    },
+    {
+      "path": "docs/audits/portable-import-export.md",
+      "size": 3510,
+      "sha256": "9e639f94fb2f85cba4c3709cb9a26b9dc1e6e9270e6ae2199ed224655c523654"
+    },
+    {
+      "path": "docs/audits/pre-release-baseline-inventory.md",
+      "size": 3961,
+      "sha256": "0ef9d68609d66fa4e8e71fe2c1e16c5cd5136288af3ce611465aa78cb4a1faea"
+    },
+    {
+      "path": "docs/audits/product-promise-lock.md",
+      "size": 5326,
+      "sha256": "924fb2fafcf651c71766f14d9363b45c2054e246963e6dc4116143161cef2774"
+    },
+    {
+      "path": "docs/audits/schema-migration-fixtures.md",
+      "size": 3112,
+      "sha256": "09e45d9a27ecf68c369a2436ae591562a3b9c63e41ced2a872f1615b99090a18"
+    },
+    {
+      "path": "docs/audits/settings-reduction.md",
+      "size": 2545,
+      "sha256": "bd26811903f7009f9fdb19e78fb34b5d7accac222335310c3b474f125091d3b2"
+    },
+    {
+      "path": "docs/audits/single-sync-authority.md",
+      "size": 3774,
+      "sha256": "16d809365715e85ef1bcfe07649e1dcc2db8d694db325bd9dd7fe2899b3b882a"
+    },
+    {
+      "path": "docs/audits/sprint-001-054-decision-gate.md",
+      "size": 2382,
+      "sha256": "0edde09cf417ab5cd399c91bef1cbc8fedaa34cf40bf1851d5a57534947ddf59"
+    },
+    {
+      "path": "docs/audits/sprint-001-100-final-readiness.md",
+      "size": 26409,
+      "sha256": "d5608144df839f536e0994c62c2be02891d339180c06c6679179360efbcf5248"
+    },
+    {
+      "path": "docs/audits/sprint-001-official-json-step-ledger.md",
+      "size": 4486,
+      "sha256": "9c2d4ed45afb26054a7432833bfdae10a5cd6b5c59866a06dc4a51cd69287877"
+    },
+    {
+      "path": "docs/audits/sprint-001-reconciled-provenance.md",
+      "size": 1268,
+      "sha256": "57acde72e3d7980f58dad33982e9c78b7b16a2e7b77370d6fd49aa41af674a0f"
+    },
+    {
+      "path": "docs/audits/sprint-002-official-json-section-ledger.md",
+      "size": 2076,
+      "sha256": "3a70cf5580f63d9cdc8435915121f53ace1c6c1d19e111de4901b72d5eb95afe"
+    },
+    {
+      "path": "docs/audits/sprint-002-reconciled-provenance.md",
+      "size": 3188,
+      "sha256": "27fecac4a9664bc2f158d6621674ba26022d524fe385399ea02789d57b9319d2"
+    },
+    {
+      "path": "docs/audits/sprint-003-official-json-step-ledger.md",
+      "size": 2064,
+      "sha256": "46a7effc7d27733497ccee2ecda91a66e73ca830255752f8ca585d627dc8b0d5"
+    },
+    {
+      "path": "docs/audits/sprint-003-reconciled-provenance.md",
+      "size": 2645,
+      "sha256": "5c3dc1977bf85f70f45fec759ab88fa263acbed9e2f1ce49a9aabab0dd50fe78"
+    },
+    {
+      "path": "docs/audits/sprint-004-official-json-step-ledger.md",
+      "size": 2505,
+      "sha256": "67c8a50961638172e8b01bdbc3f56de725932a8ddc086436cc7ff5507491181f"
+    },
+    {
+      "path": "docs/audits/sprint-004-reconciled-provenance.md",
+      "size": 2692,
+      "sha256": "ba9e13110f8595572b2897278bcaf61b52f1a83645f9d67f701f004fc988791d"
+    },
+    {
+      "path": "docs/audits/sprint-005-official-json-step-ledger.md",
+      "size": 2148,
+      "sha256": "3dcf2c8fc479f92a49854dcf29982b7a4b8d6a86c5b545e964943f34b0dd2910"
+    },
+    {
+      "path": "docs/audits/sprint-005-reconciled-provenance.md",
+      "size": 2142,
+      "sha256": "cb2eff83d4bae0477ac9569272388585a540c954a970dcb3ff1293edf191e6bd"
+    },
+    {
+      "path": "docs/audits/sprint-006-official-json-step-ledger.md",
+      "size": 2537,
+      "sha256": "25a7237d4f11b29a300e295e84ff1be6cfdca2198ea97a556d45db8ce96cba1d"
+    },
+    {
+      "path": "docs/audits/sprint-006-reconciled-provenance.md",
+      "size": 2693,
+      "sha256": "17703fa02c4249b0084437baae5ce9ca5225f28f9dc3a2bdfe1ce6e5861be205"
+    },
+    {
+      "path": "docs/audits/sprint-007-official-json-step-ledger.md",
+      "size": 3535,
+      "sha256": "8f5c7b3fc13f730958b0fc99b487a50e8a65ffe772b65f8397d788560a74fe3b"
+    },
+    {
+      "path": "docs/audits/sprint-007-reconciled-provenance.md",
+      "size": 1611,
+      "sha256": "3b339bd1741e8980611917b811d0695e274c27a6d1f5495a8a2aa4948afd8c98"
+    },
+    {
+      "path": "docs/audits/sprint-008-official-json-step-ledger.md",
+      "size": 2482,
+      "sha256": "f1ad021a6f41681a1375a4dfe7b2d415cd2dba43669b51a03b6eb36e96e34659"
+    },
+    {
+      "path": "docs/audits/sprint-008-reconciled-provenance.md",
+      "size": 1882,
+      "sha256": "c40c93c835214cef05d604a37a7d88c9175ab5ff5234fe12debdee2fa9babd69"
+    },
+    {
+      "path": "docs/audits/sprint-009-official-json-step-ledger.md",
+      "size": 2431,
+      "sha256": "fc14dadc7ab41f6fbc40011967d0a849753dbe555076aedff897ce88b5f11d46"
+    },
+    {
+      "path": "docs/audits/sprint-009-reconciled-provenance.md",
+      "size": 1913,
+      "sha256": "2ce0362281a031e5020d888736f87c54d789b77b2d39d24e617dbfcaa8f6946a"
+    },
+    {
+      "path": "docs/audits/sprint-010-official-json-step-ledger.md",
+      "size": 3809,
+      "sha256": "9b6114eb6cab884a449ac1a389b03eeef89ee455f4d5a1909f348f58548dc743"
+    },
+    {
+      "path": "docs/audits/sprint-010-reconciled-provenance.md",
+      "size": 2775,
+      "sha256": "0c31964b61e572bedcae0d30a2781b4b5505b6552417d34352e5129712c2671f"
+    },
+    {
+      "path": "docs/audits/sprint-011-official-json-step-ledger.md",
+      "size": 3524,
+      "sha256": "1ddd069d9015fb156c30584d342fa7dde746ce47912d20cd399af37265ef2966"
+    },
+    {
+      "path": "docs/audits/sprint-011-reconciled-provenance.md",
+      "size": 1743,
+      "sha256": "55bf2d2a51954212c6f02ed0a48e96876d9021d95f361bbf8d85e0a3500f56a0"
+    },
+    {
+      "path": "docs/audits/sprint-012-official-json-step-ledger.md",
+      "size": 2991,
+      "sha256": "2ebfa71509dce157001d69e4f53db9bffb727249ff01b3476d2e8584baf27dbd"
+    },
+    {
+      "path": "docs/audits/sprint-012-reconciled-provenance.md",
+      "size": 2061,
+      "sha256": "5ea0fa044770e9ea0a1817dc05901945c5de7ef69a96762144325d5828ee2e56"
+    },
+    {
+      "path": "docs/audits/sprint-013-official-json-step-ledger.md",
+      "size": 3487,
+      "sha256": "9fe10d16cacff966daef690edcf71b230e373087df718067c85b5ca918ab0828"
+    },
+    {
+      "path": "docs/audits/sprint-013-reconciled-provenance.md",
+      "size": 1892,
+      "sha256": "043ce19b079b3d8974ae2dfdd2a03fb940b4917e0851621f92442cede654fc41"
+    },
+    {
+      "path": "docs/audits/sprint-014-official-json-step-ledger.md",
+      "size": 2236,
+      "sha256": "9fe20d714167a9d510a2ec923bcddebcdf1504a9a8de4d924842f2c40556ec2a"
+    },
+    {
+      "path": "docs/audits/sprint-014-reconciled-provenance.md",
+      "size": 2104,
+      "sha256": "7b035e5f409c47effe2a5f7b144c93afc54db7f836c371c42fb56b9f68e007e1"
+    },
+    {
+      "path": "docs/audits/sprint-015-official-json-step-ledger.md",
+      "size": 2510,
+      "sha256": "47e64fd73688f267eca34a729e0c6208bca3042e966f83d04e843f63c954cfd5"
+    },
+    {
+      "path": "docs/audits/sprint-015-reconciled-provenance.md",
+      "size": 1916,
+      "sha256": "893bf39894bed1a054a39dedeee883e49bbb73fc1f053146e219810efcf64e0c"
+    },
+    {
+      "path": "docs/audits/sprint-016-official-json-step-ledger.md",
+      "size": 1847,
+      "sha256": "4b446ff90d5c89ab6fe4cec728a14949a2dd63533e05f2eec4d85fe7c0c89c5a"
+    },
+    {
+      "path": "docs/audits/sprint-016-reconciled-provenance.md",
+      "size": 1922,
+      "sha256": "ff0a7e802357291bd6e19f7f18c4875019cbf192ec511f4e15268bff8c2ed755"
+    },
+    {
+      "path": "docs/audits/sprint-017-official-json-step-ledger.md",
+      "size": 2588,
+      "sha256": "cfe6a8789d0103f545117346d0975f2e7fd4ad5401336195e99315cee13c878b"
+    },
+    {
+      "path": "docs/audits/sprint-017-reconciled-provenance.md",
+      "size": 2958,
+      "sha256": "f3904efac3ee4ed0039b47f7ad4b5c263dcf8a0e1d1249220e5dc3ec7d0b485a"
+    },
+    {
+      "path": "docs/audits/sprint-018-official-json-step-ledger.md",
+      "size": 2455,
+      "sha256": "892a2106557acf685581fbfdf4659ee46ed7fa04d86b3e8ea448a2c7a611bd0a"
+    },
+    {
+      "path": "docs/audits/sprint-018-reconciled-provenance.md",
+      "size": 1544,
+      "sha256": "18611971de0a5aa90dc1adfe7f8a55468f9c2960c69ba0e7832bb70abf4a9e83"
+    },
+    {
+      "path": "docs/audits/sprint-019-official-json-step-ledger.md",
+      "size": 2046,
+      "sha256": "6b5428c4a9d7a73827b06c85acd8d0c7ff64e1c2606704c898c1d53502c158d2"
+    },
+    {
+      "path": "docs/audits/sprint-019-reconciled-provenance.md",
+      "size": 1885,
+      "sha256": "d49deef13e400e14b4ab74e67c90e3c1d080ee9d2851484b58437a6499c53ba6"
+    },
+    {
+      "path": "docs/audits/sprint-020-official-json-step-ledger.md",
+      "size": 2183,
+      "sha256": "e3d3d53840b60554fdcccdb7c09c6e3032cb1789e8a0e24c3d8f8b5a13d0be08"
+    },
+    {
+      "path": "docs/audits/sprint-020-reconciled-provenance.md",
+      "size": 2308,
+      "sha256": "05a2b8f610e11bf76293b05aaa2436b32bf00e0a0fdc2b35dae495f7824b5469"
+    },
+    {
+      "path": "docs/audits/sprint-021-official-json-step-ledger.md",
+      "size": 2099,
+      "sha256": "2aacf0e1d0b61e95122a0b00d8269465f03e889b7400a64345352d0d7718a73b"
+    },
+    {
+      "path": "docs/audits/sprint-021-reconciled-provenance.md",
+      "size": 2129,
+      "sha256": "1a334c00c05dbf53bb642c7ae82340750d0e5d6e6bd9be90d4bac961bf877606"
+    },
+    {
+      "path": "docs/audits/sprint-022-official-json-step-ledger.md",
+      "size": 2082,
+      "sha256": "cf6c41f7f6935b024f7548f333650def5bcc4b0d197fe9ec8480aa01c786bcde"
+    },
+    {
+      "path": "docs/audits/sprint-022-reconciled-provenance.md",
+      "size": 1987,
+      "sha256": "0e185bccdb330275ee3e9b6cd28a9832af40e51e7d2a8c7d75da38354af168fa"
+    },
+    {
+      "path": "docs/audits/sprint-023-official-json-step-ledger.md",
+      "size": 2300,
+      "sha256": "3761ab08fbc5a79b0f81d3e55fcf988512ba4ae0c817416254b5b513ead63eea"
+    },
+    {
+      "path": "docs/audits/sprint-023-reconciled-provenance.md",
+      "size": 1862,
+      "sha256": "9c69d63efc72fb40c740b8cf6b49a9a0daf80aaf5c951ec510dde999dfd7342b"
+    },
+    {
+      "path": "docs/audits/sprint-024-official-json-step-ledger.md",
+      "size": 2304,
+      "sha256": "57ee38455659d0f1a502f7f8b1748108a3ae6c8ff1a922d116c9f82a60cb0023"
+    },
+    {
+      "path": "docs/audits/sprint-024-reconciled-provenance.md",
+      "size": 1898,
+      "sha256": "b45dc6ebe33f99c6d913d978bb5cf6bd40468e3857a23189427a62b4b551cc93"
+    },
+    {
+      "path": "docs/audits/sprint-025-official-json-step-ledger.md",
+      "size": 2524,
+      "sha256": "47c57c2048dfdbf9a01c5fdcf3e7f6fa47e660dcf701fab1c21db547045f6b37"
+    },
+    {
+      "path": "docs/audits/sprint-025-reconciled-provenance.md",
+      "size": 2219,
+      "sha256": "b18aa975b366f545a786cc7db6d1d712479338fd412e5bfa13414c14caf1bd96"
+    },
+    {
+      "path": "docs/audits/sprint-026-official-json-step-ledger.md",
+      "size": 2162,
+      "sha256": "71c8a2c37e72b755e1ed9f2c2e58a2835d540a05d5a19d1d688bec9b0235d52a"
+    },
+    {
+      "path": "docs/audits/sprint-026-reconciled-provenance.md",
+      "size": 1993,
+      "sha256": "b4f41440e8961b502bda2a0e320b6313860d26947d0e6cd636e61193a51aaffc"
+    },
+    {
+      "path": "docs/audits/sprint-027-official-json-step-ledger.md",
+      "size": 1878,
+      "sha256": "7f09e568de7190f14d32b94b2de792a3f4f0f9d343f5471e08b03a5bc2f665a4"
+    },
+    {
+      "path": "docs/audits/sprint-027-reconciled-provenance.md",
+      "size": 1823,
+      "sha256": "6adabbc4da740c75a12f48d18de5906380df3dbe5bb966c22c8a81fa5036057c"
+    },
+    {
+      "path": "docs/audits/sprint-028-official-json-step-ledger.md",
+      "size": 1918,
+      "sha256": "630d7a17dd71b9ad6c61de83a1ee5750396a25fd5470c89b9badec6fe44c3c5c"
+    },
+    {
+      "path": "docs/audits/sprint-028-reconciled-provenance.md",
+      "size": 1910,
+      "sha256": "d65bc04b4bd36d3ef46158e7fdf1e2aae150a3a3f71b83fe79bad2cbada9378c"
+    },
+    {
+      "path": "docs/audits/sprint-029-official-json-step-ledger.md",
+      "size": 2275,
+      "sha256": "4c8d912c7e0cebe63187b67ba5328b93c255c7f11559f296856be551bd4ea260"
+    },
+    {
+      "path": "docs/audits/sprint-029-reconciled-provenance.md",
+      "size": 2358,
+      "sha256": "5ef42435e4c0fa096181ee2ab6550193bfeeffe0bf4a20ec3d23e4cbbc6b3637"
+    },
+    {
+      "path": "docs/audits/sprint-030-official-json-step-ledger.md",
+      "size": 2402,
+      "sha256": "8b977cf727110f0ec5c522a5c3e94e4d5a4650169eb0d85d704ae01d7ca6a80f"
+    },
+    {
+      "path": "docs/audits/sprint-030-reconciled-provenance.md",
+      "size": 2234,
+      "sha256": "d71c5a4293a1bbb337c63a0109dad690f8bd33f8c9528c4ee4b4a7101cf0879d"
+    },
+    {
+      "path": "docs/audits/sprint-031-official-json-step-ledger.md",
+      "size": 2101,
+      "sha256": "5ceebc8c4ce23e31e579b60e923fc1a883117c544ac54761087e90246d7167b2"
+    },
+    {
+      "path": "docs/audits/sprint-031-reconciled-provenance.md",
+      "size": 2109,
+      "sha256": "efe22773a6ce14e3559b150107043fd26aeb685f517814433320bdfd5e10a342"
+    },
+    {
+      "path": "docs/audits/sprint-032-official-json-step-ledger.md",
+      "size": 1996,
+      "sha256": "3a676bbf0c6992bfb5af34e8c0f9e16481ffd283be6f759dbb376a6b900b21e1"
+    },
+    {
+      "path": "docs/audits/sprint-032-reconciled-provenance.md",
+      "size": 2300,
+      "sha256": "76c30a4ce293fa76f7afca8878aa37820c4c758a746f6823c279fdd2095789de"
+    },
+    {
+      "path": "docs/audits/sprint-033-official-json-step-ledger.md",
+      "size": 1984,
+      "sha256": "101cd8a69f71dc913af1ec8efde0e2db25bcbd3d6a83aa327c6c626490ccdb5d"
+    },
+    {
+      "path": "docs/audits/sprint-033-reconciled-provenance.md",
+      "size": 2044,
+      "sha256": "cbd0e7eb5e4a4302808c6a7de36404ef0b6a5301247223ff9547020c02660e6d"
+    },
+    {
+      "path": "docs/audits/sprint-034-official-json-step-ledger.md",
+      "size": 2083,
+      "sha256": "7ccd484130456438f326985b4cc117e06a3f5d5d137ffb1a559b806b1947d836"
+    },
+    {
+      "path": "docs/audits/sprint-034-reconciled-provenance.md",
+      "size": 2185,
+      "sha256": "709fc104005efff12f27cf047b21a79333edd8c76deefec1c121b01d11a1ecdb"
+    },
+    {
+      "path": "docs/audits/sprint-035-official-json-step-ledger.md",
+      "size": 1901,
+      "sha256": "4ba2cbcc81190367d323fe3ea228f4b33b6c0d52b587d7d298f0e99db67d8a95"
+    },
+    {
+      "path": "docs/audits/sprint-035-reconciled-provenance.md",
+      "size": 2104,
+      "sha256": "b7e61f50f65c04eb6f9fde4baae1ec48d47d1a38370b169eaefd0c8d77294df0"
+    },
+    {
+      "path": "docs/audits/sprint-036-official-json-step-ledger.md",
+      "size": 1874,
+      "sha256": "0ec770a8340183e69f57283e3a925d9e727f3780e6c9e9eeec30870563d60d49"
+    },
+    {
+      "path": "docs/audits/sprint-036-reconciled-provenance.md",
+      "size": 2132,
+      "sha256": "a25ca0e3ff49b655fa790fa6ddbbf3b957e8fbbc4a15677de4deeed22df35319"
+    },
+    {
+      "path": "docs/audits/sprint-037-official-json-step-ledger.md",
+      "size": 2198,
+      "sha256": "35191361bc68719facea11905440c6378a58deed01b97dab513a5547625bde8d"
+    },
+    {
+      "path": "docs/audits/sprint-037-reconciled-provenance.md",
+      "size": 1967,
+      "sha256": "8bbaa663080d585257ab1306ce64119ffe6fdd7fa844037e6fd028cf82a33a79"
+    },
+    {
+      "path": "docs/audits/sprint-038-official-json-step-ledger.md",
+      "size": 2293,
+      "sha256": "04a58928b38dfd39fd87f04921af0f0d6170d13eefe2c5b706374da9b29801fe"
+    },
+    {
+      "path": "docs/audits/sprint-038-reconciled-provenance.md",
+      "size": 2529,
+      "sha256": "55e8b1c257e61b956e6db5ce928e4b1d3814d8fe80a652ef36afc13f64666c95"
+    },
+    {
+      "path": "docs/audits/sprint-039-official-json-step-ledger.md",
+      "size": 2332,
+      "sha256": "ec2b9ef23f18eabb363df3793fa1af39b4db195bd10ef68c3a9401bc22b15d04"
+    },
+    {
+      "path": "docs/audits/sprint-039-reconciled-provenance.md",
+      "size": 2343,
+      "sha256": "c3da173bec1455bdf405dd8e3c46792d7cabab3ca8230f74f1ab138ab4ddb245"
+    },
+    {
+      "path": "docs/audits/sprint-040-official-json-step-ledger.md",
+      "size": 2062,
+      "sha256": "5eab7ab51b7601c3dac1e380f9507c89b14bf03411e610c9cd27cca9c4647b07"
+    },
+    {
+      "path": "docs/audits/sprint-040-reconciled-provenance.md",
+      "size": 1989,
+      "sha256": "feb681e0b668614ac624a4e9da0667d3674bd2d901a469fc76c89bad75f271f0"
+    },
+    {
+      "path": "docs/audits/sprint-041-official-json-step-ledger.md",
+      "size": 1851,
+      "sha256": "a4b6c162b5fee99d6610f1e575c2ec167eeec7d7490574aaf5e1d137f2c7ef10"
+    },
+    {
+      "path": "docs/audits/sprint-041-reconciled-provenance.md",
+      "size": 1885,
+      "sha256": "cab6fb1c4c8bca79408998dca62f0750a065ec5513ab0dded7f1ac08244bd0b9"
+    },
+    {
+      "path": "docs/audits/sprint-042-official-json-step-ledger.md",
+      "size": 2178,
+      "sha256": "36574a17dce6ce8acebfeff8d162b86883e089b0a2cd76ee0e88ea0004208e6e"
+    },
+    {
+      "path": "docs/audits/sprint-042-reconciled-provenance.md",
+      "size": 1856,
+      "sha256": "c83ed1ad71b655741f7346bb0ddddca66dbbcbaab3b49bd59edb42323332cfe8"
+    },
+    {
+      "path": "docs/audits/sprint-043-official-json-step-ledger.md",
+      "size": 2336,
+      "sha256": "576c4c38bd58d990891866be8d547deb26c9c06d09ec113fd6dd41f4822c7a1b"
+    },
+    {
+      "path": "docs/audits/sprint-043-reconciled-provenance.md",
+      "size": 2348,
+      "sha256": "42a469196599a3373181ff957979207b3af6933a2891d6ecaad7eb52882d90d6"
+    },
+    {
+      "path": "docs/audits/sprint-044-official-json-step-ledger.md",
+      "size": 2348,
+      "sha256": "c46cda1cef980ba4634a1b441c1647139e984e8505b961a9ac9f17d22aa381b7"
+    },
+    {
+      "path": "docs/audits/sprint-044-reconciled-provenance.md",
+      "size": 2265,
+      "sha256": "9a37cc85d6d9ef96f819f9cd7cca6af6fd8f3425b5de1b0caf5f8b80fa378e4a"
+    },
+    {
+      "path": "docs/audits/sprint-045-official-json-step-ledger.md",
+      "size": 2022,
+      "sha256": "837be87f6e3d48193a35ca295278d71c1bb98854d1aabbd1f0948dc7e67e2b57"
+    },
+    {
+      "path": "docs/audits/sprint-045-reconciled-provenance.md",
+      "size": 2293,
+      "sha256": "db32d1ec408ea5adde88922d03942ff47361803c62be13f009e2588cb19d047b"
+    },
+    {
+      "path": "docs/audits/sprint-046-official-json-step-ledger.md",
+      "size": 2608,
+      "sha256": "7e252da8b03c33c8c909e0c6b8982e0b97e019dfb7c6bbd696fe99574611470c"
+    },
+    {
+      "path": "docs/audits/sprint-046-reconciled-provenance.md",
+      "size": 2282,
+      "sha256": "85bde86ee2e15ad19382d93584a6f88c74f101b2135201283c188dec6d056772"
+    },
+    {
+      "path": "docs/audits/sprint-047-official-json-step-ledger.md",
+      "size": 2356,
+      "sha256": "2b7a755fd30482444cfeae9b06896386ab4e6cd2b5ae500f77192b1c8196a736"
+    },
+    {
+      "path": "docs/audits/sprint-047-reconciled-provenance.md",
+      "size": 2363,
+      "sha256": "6650e4485d52d44180f5711e4a4464cfb54ec35bb5594168e60b61905432444c"
+    },
+    {
+      "path": "docs/audits/sprint-048-official-json-step-ledger.md",
+      "size": 2347,
+      "sha256": "2c5450123603dac65505bf0c0b8f51f9c7e2526eb1d2a2c7f8ceccd756b3ae11"
+    },
+    {
+      "path": "docs/audits/sprint-048-reconciled-provenance.md",
+      "size": 2293,
+      "sha256": "a9f6b7f8d0f211708589f8e1e0fc9ef23204469a58220e742cb29bd5fe578575"
+    },
+    {
+      "path": "docs/audits/sprint-049-official-json-step-ledger.md",
+      "size": 2426,
+      "sha256": "79aad059982d9063a6c0d53bf489505073cc22918389b9c7bbef65e7fbeb0766"
+    },
+    {
+      "path": "docs/audits/sprint-049-reconciled-provenance.md",
+      "size": 2280,
+      "sha256": "c08a87cff03cc1fde53980b47e0b0324ec727df4432f43ee9c8df1d91a0799b6"
+    },
+    {
+      "path": "docs/audits/sprint-050-official-json-step-ledger.md",
+      "size": 3139,
+      "sha256": "97209db5f5df8c7b3080a5b97bf368873e1da9abc128e5f8591a1596f32be118"
+    },
+    {
+      "path": "docs/audits/sprint-050-reconciled-provenance.md",
+      "size": 2466,
+      "sha256": "4668458edc8f56eddff4b52e143bf3e5b1a47848bc563b56fec70c8ff4c2817a"
+    },
+    {
+      "path": "docs/audits/sprint-051-official-json-step-ledger.md",
+      "size": 2608,
+      "sha256": "0338b20339e46141df01a1cbe54558226b394948005f4e757e368655fb3e87ad"
+    },
+    {
+      "path": "docs/audits/sprint-051-reconciled-provenance.md",
+      "size": 2197,
+      "sha256": "4f761081a21470f75677b1240010869865760154348cdd33db3101f51bb26408"
+    },
+    {
+      "path": "docs/audits/sprint-052-official-json-step-ledger.md",
+      "size": 2960,
+      "sha256": "2656ab3cdee0ce701c61a1b8b5f375fecccfc564b5ffca8549d46a38734325a1"
+    },
+    {
+      "path": "docs/audits/sprint-052-reconciled-provenance.md",
+      "size": 2189,
+      "sha256": "44249a1b39b36b03b98c10c5555b7e4401ad2b8dfd2abc535cec8d51e2e49aa5"
+    },
+    {
+      "path": "docs/audits/sprint-053-official-json-step-ledger.md",
+      "size": 3004,
+      "sha256": "e8ee10da0e3b77b15bd09d5a0adba92dfe655c904d9ab0642abb6e0a98ada95e"
+    },
+    {
+      "path": "docs/audits/sprint-053-reconciled-provenance.md",
+      "size": 2341,
+      "sha256": "a83d6b85f015e3f95e7dd94563831995e14d56f2cdedfbc1fea8ba818bbaa58c"
+    },
+    {
+      "path": "docs/audits/sprint-054-official-json-step-ledger.md",
+      "size": 3267,
+      "sha256": "18008bf8370f8c08fb0dc009df62c092371b300fe2fad43fab210fb99831c3d6"
+    },
+    {
+      "path": "docs/audits/sprint-054-reconciled-provenance.md",
+      "size": 2255,
+      "sha256": "77dcffbb6869083936192c4ebdebec02c3d771bd5fd08fd046dda1fd9a22929b"
+    },
+    {
+      "path": "docs/audits/sprint-055-official-json-step-ledger.md",
+      "size": 3315,
+      "sha256": "e66a3d198378fd48fe0c035910ec0f5f92faf10d6bca3b513c06c2aa5b01e5e7"
+    },
+    {
+      "path": "docs/audits/sprint-055-reconciled-provenance.md",
+      "size": 2106,
+      "sha256": "0a9a72f23c6640fb3b860e2a73ca36aec6af3f4e903314a1517f8a45d2eff72e"
+    },
+    {
+      "path": "docs/audits/sprint-056-official-json-step-ledger.md",
+      "size": 2580,
+      "sha256": "cb2ad69838bcdc28aefd07c57ec889ab215911ad6b9f90e70710771577d2b3ef"
+    },
+    {
+      "path": "docs/audits/sprint-056-reconciled-provenance.md",
+      "size": 2166,
+      "sha256": "e88b78ecb779d668ecf37ddcfd3dfd1818dc8486a274f0f341c728fa88027558"
+    },
+    {
+      "path": "docs/audits/sprint-057-official-json-step-ledger.md",
+      "size": 2988,
+      "sha256": "b14913e9f8db5acb4cd00ce63fbe1af70cb0925e376ec86a8a38db76bb0f4cf0"
+    },
+    {
+      "path": "docs/audits/sprint-057-reconciled-provenance.md",
+      "size": 2188,
+      "sha256": "cec4b090918203da9275997446163860da58dd665515c995a3bc803cf06d072f"
+    },
+    {
+      "path": "docs/audits/sprint-058-official-json-step-ledger.md",
+      "size": 3320,
+      "sha256": "fb9ecfdbf24ba8e7ff2350f6a2371c40e9ea993b27fc06141bad3e86b498c8dc"
+    },
+    {
+      "path": "docs/audits/sprint-058-reconciled-provenance.md",
+      "size": 2045,
+      "sha256": "2ef0c2f20e3f77f5c9835f41a3bc688ebc3fec547f9deb6a5e22b5c6a0cf26ae"
+    },
+    {
+      "path": "docs/audits/sprint-059-official-json-step-ledger.md",
+      "size": 2980,
+      "sha256": "6e780c9fa550f835877b68e81ee2aa984933b45f9b2f2589bfe425c0d6320a8c"
+    },
+    {
+      "path": "docs/audits/sprint-059-reconciled-provenance.md",
+      "size": 1951,
+      "sha256": "b52b61e86fadcb60a4ba5892920195dbf2f7add268b396f4ad54e8a92b258b35"
+    },
+    {
+      "path": "docs/audits/sprint-060-official-json-step-ledger.md",
+      "size": 2936,
+      "sha256": "3e348c4b647bf1e1bcab1d4a463dc95c9277e1ff246dea3ba7f9050635c27b62"
+    },
+    {
+      "path": "docs/audits/sprint-060-reconciled-provenance.md",
+      "size": 2155,
+      "sha256": "abccdd46ca5bf4eb24d4ee1659169dbff958f4922d8ef0ed090a701e5cb985bd"
+    },
+    {
+      "path": "docs/audits/sprint-061-official-json-step-ledger.md",
+      "size": 3118,
+      "sha256": "f4b186383006fc3aec674efb8702ce9825f2f3c9c3239de86403dd05ba2d2155"
+    },
+    {
+      "path": "docs/audits/sprint-061-reconciled-provenance.md",
+      "size": 1316,
+      "sha256": "f33f35a74850b29dc9b6635f8af62010d592561bbe9cbdb5dbd90c72cd1cead4"
+    },
+    {
+      "path": "docs/audits/sprint-062-official-json-step-ledger.md",
+      "size": 3565,
+      "sha256": "6d775bd97358d22c5e695c73f569c77cee06c8472111d04af2221db68779d66d"
+    },
+    {
+      "path": "docs/audits/sprint-062-reconciled-provenance.md",
+      "size": 1951,
+      "sha256": "de1f1372e357e41520e0fc151c0aa558546c691c1b17c883784c841cfb4a2c0a"
+    },
+    {
+      "path": "docs/audits/sprint-063-official-json-step-ledger.md",
+      "size": 3069,
+      "sha256": "c56e7182c6391744d43799ebf558aba25da7dff228552e8567c7eb8fdec78b1c"
+    },
+    {
+      "path": "docs/audits/sprint-063-reconciled-provenance.md",
+      "size": 1792,
+      "sha256": "9f241787a7059faba38f4dce2800311e1d8d84691f15816a8076caeac0ef6f73"
+    },
+    {
+      "path": "docs/audits/sprint-064-official-json-step-ledger.md",
+      "size": 3233,
+      "sha256": "3443b1c0559391a33c77e9dc8c24264b68342c6c20e829d9f5c1f0a2f2e1b9ba"
+    },
+    {
+      "path": "docs/audits/sprint-064-reconciled-provenance.md",
+      "size": 1889,
+      "sha256": "20d89bdd19d3f968eb6bb6dfd2e739fd78a9fec3089381dba5bdbccb29f4635a"
+    },
+    {
+      "path": "docs/audits/sprint-065-official-json-step-ledger.md",
+      "size": 3185,
+      "sha256": "ca082dc1238a78107bfea56ec198ffea042d8fff724b71fde8ec3a2c45a5a632"
+    },
+    {
+      "path": "docs/audits/sprint-065-reconciled-provenance.md",
+      "size": 1863,
+      "sha256": "e14a58dbe3c9992211526ec1a2bbb5628b6eda488918bef347ce256f23563a53"
+    },
+    {
+      "path": "docs/audits/sprint-066-official-json-step-ledger.md",
+      "size": 3266,
+      "sha256": "e8f99ac8262f01441d9c0b8ac838914c7747ee711b137899b2d7591df15b2c17"
+    },
+    {
+      "path": "docs/audits/sprint-066-reconciled-provenance.md",
+      "size": 2051,
+      "sha256": "8fd83ff6379f8e0c4d5ff9034092ac3ce7eb651380a83e45888477e45607b1c9"
+    },
+    {
+      "path": "docs/audits/sprint-067-official-json-step-ledger.md",
+      "size": 3354,
+      "sha256": "8da31e64b9e48de7498728a87bede0ac5a8075d71d7127f4483c2b4a5f2ee8f1"
+    },
+    {
+      "path": "docs/audits/sprint-067-reconciled-provenance.md",
+      "size": 2071,
+      "sha256": "6b6b2fbf24e4556e2799133bae1b2b9e9009e9f82279f3ef3090ecaa0b6c440d"
+    },
+    {
+      "path": "docs/audits/sprint-068-official-json-step-ledger.md",
+      "size": 3057,
+      "sha256": "6f47ddb05615206a9ec4e44d339e89f3f9dd04d277ef50348ee9ccf4ded8057f"
+    },
+    {
+      "path": "docs/audits/sprint-068-reconciled-provenance.md",
+      "size": 2004,
+      "sha256": "4b68fc74a0b42567a5b4d8488192e22f260fa38e8866c8e60b43d1f5e95e8647"
+    },
+    {
+      "path": "docs/audits/sprint-069-official-json-step-ledger.md",
+      "size": 3169,
+      "sha256": "4f862d94c417226c4f7ca482054cc9e3c06a2b936fd62e71ede7342e89030c3f"
+    },
+    {
+      "path": "docs/audits/sprint-069-reconciled-provenance.md",
+      "size": 2081,
+      "sha256": "107a23dcd6c7fc486a3602be580bb90c162666895b8d227e0acba78e682fab30"
+    },
+    {
+      "path": "docs/audits/sprint-070-official-json-step-ledger.md",
+      "size": 4051,
+      "sha256": "3cd0ab07edde4e1f1034fd047e574bbb7b838547aeb4525d5079c9e9568fdc29"
+    },
+    {
+      "path": "docs/audits/sprint-070-reconciled-provenance.md",
+      "size": 2113,
+      "sha256": "0ab36fc56d72dc4808b8a8339cbb4989366104e5260def7bb7f131c7e7f5bdec"
+    },
+    {
+      "path": "docs/audits/sprint-071-official-json-step-ledger.md",
+      "size": 3196,
+      "sha256": "0072c0e07b5eeba9141bafed27525f943112ea193160bb10217b403ade7ba672"
+    },
+    {
+      "path": "docs/audits/sprint-071-reconciled-provenance.md",
+      "size": 2133,
+      "sha256": "9a48df0b9f83988f3b326ba3c3a42a16c8204422bca55ac8d8f01d665fa9dba1"
+    },
+    {
+      "path": "docs/audits/sprint-072-official-json-step-ledger.md",
+      "size": 3405,
+      "sha256": "d2d563229c63730ebc721cf920f9c906692e8a003adbe4f59ef619d77727ab4f"
+    },
+    {
+      "path": "docs/audits/sprint-072-reconciled-provenance.md",
+      "size": 2390,
+      "sha256": "38fa5241b24be6cc6737550fdd7178db7468dc6229e234e50f8921faff70d793"
+    },
+    {
+      "path": "docs/audits/sprint-073-official-json-step-ledger.md",
+      "size": 3707,
+      "sha256": "b8945335dc7e48945edf2321be0f639b514f75b8f16e8027a698103fc9acae31"
+    },
+    {
+      "path": "docs/audits/sprint-073-reconciled-provenance.md",
+      "size": 2152,
+      "sha256": "7d95b178dfea919cd8fdb585d3f8e70ecd771ba4c81d26b06b89314e634af3e9"
+    },
+    {
+      "path": "docs/audits/sprint-074-official-json-step-ledger.md",
+      "size": 2601,
+      "sha256": "dfc5f2947a0e69947f5375c479ad4cee44b76afca312aa20a50fb09d0f50dfa4"
+    },
+    {
+      "path": "docs/audits/sprint-074-reconciled-provenance.md",
+      "size": 2063,
+      "sha256": "f5e7c38f8c76ed53b89f6fb2c845dc52f8b9e8ac5465d2e9c362bc4a17a226fd"
+    },
+    {
+      "path": "docs/audits/sprint-075-official-json-step-ledger.md",
+      "size": 3086,
+      "sha256": "90f804502f2fb4658e89d37095252ba31f0dcccb8631e06ad79e3b291983104e"
+    },
+    {
+      "path": "docs/audits/sprint-075-reconciled-provenance.md",
+      "size": 2152,
+      "sha256": "b3a8ede2894ba15d4ef907f7a49b29d57e574fa3aed7a42e33274b17bc5f5548"
+    },
+    {
+      "path": "docs/audits/sprint-076-official-json-step-ledger.md",
+      "size": 3161,
+      "sha256": "b12b719d0408525f0beb11f5ab5d94b8776b3997fd5405613c9fca736d5586ff"
+    },
+    {
+      "path": "docs/audits/sprint-076-reconciled-provenance.md",
+      "size": 2513,
+      "sha256": "65ec1d1a0db088cc2931005f04f232f74f31d5655d02f8de1e82f509a1c230bc"
+    },
+    {
+      "path": "docs/audits/sprint-077-official-json-step-ledger.md",
+      "size": 3410,
+      "sha256": "025e520b08b58b4779940f2b8f0fbb1d34229f9744e45d590f616454813b1473"
+    },
+    {
+      "path": "docs/audits/sprint-077-reconciled-provenance.md",
+      "size": 2144,
+      "sha256": "45dc247a6cd00874b242badb9f85acec0032e2286f407e1ffcc81782095c1b0d"
+    },
+    {
+      "path": "docs/audits/sprint-078-official-json-step-ledger.md",
+      "size": 2777,
+      "sha256": "16c70ff5eafb4a51503cc6a3a06d223ced4c519b626adcf4bb6182df5c6759d4"
+    },
+    {
+      "path": "docs/audits/sprint-078-reconciled-provenance.md",
+      "size": 2316,
+      "sha256": "8ca4b3158f1266f1efa607878d7c9d35c2750b13ea107f0a4dbf42290998ffda"
+    },
+    {
+      "path": "docs/audits/sprint-079-official-json-step-ledger.md",
+      "size": 3179,
+      "sha256": "7e1d66cb948c23677825042a1bcbcefac4b7b956c1bbee684c6a411c690cb1b4"
+    },
+    {
+      "path": "docs/audits/sprint-079-reconciled-provenance.md",
+      "size": 2297,
+      "sha256": "f888aafae301f7f7a9494f9f13758df9da8c607a5d84bfc2dafc836d9bb525a3"
+    },
+    {
+      "path": "docs/audits/sprint-080-official-json-step-ledger.md",
+      "size": 4294,
+      "sha256": "ecab7759613122ba9d95de86539edeb4d5971cf40a284c1d6ad347fc3aa672e6"
+    },
+    {
+      "path": "docs/audits/sprint-080-reconciled-provenance.md",
+      "size": 2268,
+      "sha256": "122ff4e5d0697142e909b30094326e0c63ff91b36db9623cb39b4351110865e1"
+    },
+    {
+      "path": "docs/audits/sprint-081-reconciled-provenance.md",
+      "size": 2211,
+      "sha256": "d9d042fae7eab9c732971a655f44b1b3ac3d1abdc25d2f2dad67e7f43512e295"
+    },
+    {
+      "path": "docs/audits/sprint-082-reconciled-provenance.md",
+      "size": 2188,
+      "sha256": "d0a2e786ce5dc250766b0cd9875e9f91b2bf979fa9f5b308f19cf63b167f8c0e"
+    },
+    {
+      "path": "docs/audits/sprint-083-reconciled-provenance.md",
+      "size": 2274,
+      "sha256": "784bf5a506320c6482e85d788ab4b47a51b479478c41c92f6c558b5fb98012ab"
+    },
+    {
+      "path": "docs/audits/sprint-084-reconciled-provenance.md",
+      "size": 2325,
+      "sha256": "cf7c8f2a1ae3211a01d0cffe8f8096b32bcf551985456349d5a0336c23c4737b"
+    },
+    {
+      "path": "docs/audits/sprint-085-reconciled-provenance.md",
+      "size": 2290,
+      "sha256": "71cbfa80171f5f26e1455cc8ec395fa356b9b44352642489f286393cf6917f44"
+    },
+    {
+      "path": "docs/audits/sprint-086-reconciled-provenance.md",
+      "size": 2561,
+      "sha256": "9ecbda3e1be443e30f2fac41988edc0c19486dce9268b8fdac8a8765d5f9958a"
+    },
+    {
+      "path": "docs/audits/sprint-087-reconciled-provenance.md",
+      "size": 2120,
+      "sha256": "458f8b29c4b851244f15386b54a2a7fb25c3ff639b7d413b8f196feb6a98c84d"
+    },
+    {
+      "path": "docs/audits/sprint-088-reconciled-provenance.md",
+      "size": 2265,
+      "sha256": "41a26535aa67aff47ba7996524556b37a970997e16ffc3d4c51c3ec23820aee8"
+    },
+    {
+      "path": "docs/audits/sprint-089-reconciled-provenance.md",
+      "size": 2249,
+      "sha256": "2de7febab72d294c08d35d0c6927f99db2d36aac39885173400760ed8413d59f"
+    },
+    {
+      "path": "docs/audits/sprint-090-reconciled-provenance.md",
+      "size": 2166,
+      "sha256": "47a82e8c3073786d0b1e63bd5ef909eae8843f3a341c0ff32266065715005ba5"
+    },
+    {
+      "path": "docs/audits/sprint-091-reconciled-provenance.md",
+      "size": 2245,
+      "sha256": "b3d103c7d7131f0d517155d6e3c899fd53faf2e7938d8e06a69821de2efa7bf4"
+    },
+    {
+      "path": "docs/audits/sprint-092-reconciled-provenance.md",
+      "size": 2195,
+      "sha256": "0f7269d2d3648f9ef1100b734846978097b005d3399b9b195a4e39944c299f5e"
+    },
+    {
+      "path": "docs/audits/sprint-093-reconciled-provenance.md",
+      "size": 2257,
+      "sha256": "a6e7a406add1e7950e7eb4815bb0448ac8bf38d83cad29a05fa547283660e44c"
+    },
+    {
+      "path": "docs/audits/sprint-094-reconciled-provenance.md",
+      "size": 2401,
+      "sha256": "417531e4600af8af157883cad721b14ce53f07e3f7b58f4b59eb334587133e78"
+    },
+    {
+      "path": "docs/audits/sprint-095-reconciled-provenance.md",
+      "size": 2376,
+      "sha256": "9d258e8ae0b02245ab6099125d5875832c278ec33f7f2b744f6bd8c595eaa3a9"
+    },
+    {
+      "path": "docs/audits/sprint-096-reconciled-provenance.md",
+      "size": 2515,
+      "sha256": "38885dfa3039c7cefd12c0047f0af9c019d9a033533f3e36684012ebcdd8a743"
+    },
+    {
+      "path": "docs/audits/sprint-097-reconciled-provenance.md",
+      "size": 2640,
+      "sha256": "fd016c26cca61c17255e038531a61c94352f2be0cabf0d63f88de06f7298c15a"
+    },
+    {
+      "path": "docs/audits/sprint-098-reconciled-provenance.md",
+      "size": 2304,
+      "sha256": "82930ba30c2a8958ed5db62ff07ef1a3679c50f24e2070665aad981c14acb8dd"
+    },
+    {
+      "path": "docs/audits/sprint-099-reconciled-provenance.md",
+      "size": 2304,
+      "sha256": "4c76dfd979e78b20b5db28060810bfb080b24c66018b2548eed914cb8631152e"
+    },
+    {
+      "path": "docs/audits/sprint-1-151-review-matrix.json",
+      "size": 50842,
+      "sha256": "b3c9c8d7a0f98533b0a10af46ad4fbd94060834fe02ebe40513edeec1a556e15"
+    },
+    {
+      "path": "docs/audits/sprint-1-151-review/README.md",
+      "size": 322,
+      "sha256": "ecee099150dfd498824cdf35ecac453e862f73c83f0e50002f587cec01e4ae87"
+    },
+    {
+      "path": "docs/audits/sprint-1-151-review/source-inventory.json",
+      "size": 183393,
+      "sha256": "6a4fc4e328aca03344d3ce4f4ff5aaab531606e7c2ca620a4260e7ad81cce312"
+    },
+    {
+      "path": "docs/audits/sprint-1-151-source-inventory.json",
+      "size": 615398,
+      "sha256": "dadbe99f77070f5b983142065cb5d16a2f84870723c4d31c41cc840aee2e8009"
+    },
+    {
+      "path": "docs/audits/sprint-1-3-step-ledger.md",
+      "size": 13741,
+      "sha256": "433da59168b117f8b84912768e2c768f8781e889cf6e75e7f0b2764a765bec17"
+    },
+    {
+      "path": "docs/audits/sprint-100-reconciled-provenance.md",
+      "size": 2367,
+      "sha256": "4a20c48f4dfef07e8fddb1df7bc4354b51e20bba2c92e581152530dfb6d0c9ff"
+    },
+    {
+      "path": "docs/audits/sprint-13-step-ledger.md",
+      "size": 4704,
+      "sha256": "dd081c45b49d46a05e696c73c9e3aff1bebb1f63ee8d7e35aa56605a58a61d98"
+    },
+    {
+      "path": "docs/audits/sprint-14-step-ledger.md",
+      "size": 3897,
+      "sha256": "48ebae7a63b185d26d007f92d7f0054dd689a3051ae727445ec03f77fd22885b"
+    },
+    {
+      "path": "docs/audits/sprint-15-step-ledger.md",
+      "size": 2971,
+      "sha256": "a4e688c5e2a93486e8158d418cdec050960ad585a84c0998a17734626192bddf"
+    },
+    {
+      "path": "docs/audits/sprint-16-step-ledger.md",
+      "size": 4797,
+      "sha256": "3b9ae4b8c37b9ea319a6cc795baacaeb96fb4c2ead92c2907380d2fe621757de"
+    },
+    {
+      "path": "docs/audits/sprint-17-step-ledger.md",
+      "size": 5623,
+      "sha256": "01b6e7820fa52a7173cf432af96bb9f3bcc4f34548d52314b3868c4bc4e38b1a"
+    },
+    {
+      "path": "docs/audits/sprint-18-step-ledger.md",
+      "size": 6092,
+      "sha256": "8f4c579b6e05387045b5af25342a20cf856c4363713c86b15df802559dd49ed0"
+    },
+    {
+      "path": "docs/audits/sprint-19-26-step-ledger.md",
+      "size": 16714,
+      "sha256": "be733fbe78f91eae8593e843b1461816b9fd5c9b604860d9a802b577e2d152a8"
+    },
+    {
+      "path": "docs/audits/sprint-27-40-step-ledger.md",
+      "size": 18239,
+      "sha256": "df265cdf3f2d7d14d890bf8f90d9348b976bb088c2931fc400e7a680da623747"
+    },
+    {
+      "path": "docs/audits/sprint-4-12-step-ledger.md",
+      "size": 17367,
+      "sha256": "acfdd1522d60537a6ebb54dbb12c4901edb0142f104b16f6dd597d8fffbc02a5"
+    },
+    {
+      "path": "docs/audits/sprint-41-50-step-ledger.md",
+      "size": 22351,
+      "sha256": "8d7cfc908b58a785a14ff9ab934d25fe71efce53fac9e7d0e79852b369ec130b"
+    },
+    {
+      "path": "docs/audits/startup-path-simplification.md",
+      "size": 4209,
+      "sha256": "8bc35674ce6046998672cbdc069e255bd2a8f003a394c9920396031cfe9ffaad"
+    },
+    {
+      "path": "docs/audits/working-feature-protection-list.md",
+      "size": 7797,
+      "sha256": "37e21fbaf07b699a139c03775b12a89874515e9c523d40a1638d921e618a409b"
+    },
+    {
+      "path": "docs/audits/writing-room-focus.md",
+      "size": 3587,
+      "sha256": "5bf8f77adfd29ec8b8d7a25659d035564aeca02baf919ccd9801dbd930dc807d"
+    },
+    {
+      "path": "docs/release/RELEASE_CHECKLIST.md",
+      "size": 2747,
+      "sha256": "3e75b78819f14623b6f001ca9bb03b0ed2cb786195d8061f840e9a2ef79fec20"
+    },
+    {
+      "path": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
+      "size": 20917,
+      "sha256": "84812455f5bbade2c6a72d6a568e357aa51cb9e359171f25372a872a29cfa7e4"
+    },
+    {
+      "path": "lib/app/bootstrap/app_diagnostics.dart",
+      "size": 4463,
+      "sha256": "8d6eac77d877e542fef535ce7430ec84b2d42217ed41a34fd73516633e757dcb"
+    },
+    {
+      "path": "lib/app/bootstrap/startup_recovery_policy.dart",
+      "size": 5205,
+      "sha256": "bd717931aa164e440a0d4b0f91a90973efaec93158488f6811e21438358c1ef0"
+    },
+    {
+      "path": "lib/app/routing/app_router.dart",
+      "size": 18495,
+      "sha256": "bcb02e8dfa9eca297a3291087eb88824fcdb985ede2642b80f63e95d400f6895"
+    },
+    {
+      "path": "lib/app/routing/app_routes.dart",
+      "size": 2618,
+      "sha256": "445e73ea5e4e9c4023e281db270402b53fa8c35bceac7d0e21ed66828bd2b0f1"
+    },
+    {
+      "path": "lib/app/shell/desktop/void_desktop_shell.dart",
+      "size": 6087,
+      "sha256": "56d743107a56becff2230a8999d7b6f5aac442009d87fb110cd0f17bf7ddd0f2"
+    },
+    {
+      "path": "lib/app/shell/desktop/void_top_bar.dart",
+      "size": 10709,
+      "sha256": "08f630f876d4fd76a805829416dfba8815739e5d020820e41a86ac15c4bdf262"
+    },
+    {
+      "path": "lib/app/shell/mobile/void_mobile_shell.dart",
+      "size": 5062,
+      "sha256": "cc0061f40bb2cb645f5edd2cad28362270ca0795448a74a6a9ad94dbe5949320"
+    },
+    {
+      "path": "lib/core/agent/tool/agent_tool.dart",
+      "size": 1163,
+      "sha256": "fe5b512dbd676ad4e481f19832891667f34b9a73e31d8239529c7a27f54a0a30"
+    },
+    {
+      "path": "lib/core/agent/tool/tool_registry.dart",
+      "size": 1877,
+      "sha256": "9969128ef77be03430f8514fb580774ed9421d975930cc934d50b0814474bcb1"
+    },
+    {
+      "path": "lib/core/network/api_client.dart",
+      "size": 909,
+      "sha256": "59de9fbb02ef0937b239ffd7189b7cdea6a2c7e7d5a3c58ca0ff878fc96e5e5a"
+    },
+    {
+      "path": "lib/core/security/presentation/security_settings_screen.dart",
+      "size": 1279,
+      "sha256": "116a05c7f7b9e1b4880a04f042e43e42f91a2d2d3f8a713a5f616f5dfef698f2"
+    },
+    {
+      "path": "lib/design_system/widgets/branding/brand_assets.dart",
+      "size": 6784,
+      "sha256": "9e31f3963d9da510b33a9be4750eaf6adf5b2a069c945a64d232dd6e890108e2"
+    },
+    {
+      "path": "lib/features/ai/application/ai_generation_runtime.dart",
+      "size": 8476,
+      "sha256": "a2b3ce58405190cc0c0158e15f10453aecf17d1a8feb2ddb5567349db3f9526e"
+    },
+    {
+      "path": "lib/features/ai/application/ai_model_registry.dart",
+      "size": 952,
+      "sha256": "48b0f4e02bb799fb0b5a1b3f9a4cc712065d35bca14bd47a786e25e7fc924999"
+    },
+    {
+      "path": "lib/features/ai/application/provider_cost_policy.dart",
+      "size": 987,
+      "sha256": "8e6808bac8ce242d51ffa974073fe5cae8c8f4ca172baecb14109387807c047c"
+    },
+    {
+      "path": "lib/features/ai/application/provider_diagnostics.dart",
+      "size": 1316,
+      "sha256": "1c32c9a743bcf4c5d451b489a29b92da9650ec7838a1b07f182bdd887c202eef"
+    },
+    {
+      "path": "lib/features/ai/application/provider_health.dart",
+      "size": 1578,
+      "sha256": "38526f763a41bcb01039edf30526b53aaaafdfc8fb3e59215d758542d4aa42dc"
+    },
+    {
+      "path": "lib/features/ai/application/provider_rate_limiter.dart",
+      "size": 1694,
+      "sha256": "7dce4457c51a28a850666f69391e2a9c4e27c58771dad10207b84c0fa4e9ef84"
+    },
+    {
+      "path": "lib/features/ai/application/provider_router.dart",
+      "size": 2363,
+      "sha256": "7fb42891a9220eb9f52f6251a0eefd3eb3f056d5564289e23758b382c941e0d9"
+    },
+    {
+      "path": "lib/features/ai/application/provider_timeout.dart",
+      "size": 1736,
+      "sha256": "7c556b083c234e2443a2417cd66ef4f950b0597d233b88b96cc18874590076bc"
+    },
+    {
+      "path": "lib/features/ai/domain/ai_provider.dart",
+      "size": 6564,
+      "sha256": "51d667a64565d8da49270108b0be72d83ac4e02cdb84467a89a7b4bfe3d61b2c"
+    },
+    {
+      "path": "lib/features/ai/infrastructure/project_ai_output_service.dart",
+      "size": 3321,
+      "sha256": "7d9838e6f7a4f9403391275eb0970a32da503f7be9e7db8e77f590398894016c"
+    },
+    {
+      "path": "lib/features/ai/infrastructure/providers/comfyui/comfyui_http_client.dart",
+      "size": 7218,
+      "sha256": "ad1c74674503797233877aa1b57318d8e46fe2daa1991ae2c46c516239c74749"
+    },
+    {
+      "path": "lib/features/ai/infrastructure/providers/ollama/ollama_provider.dart",
+      "size": 1332,
+      "sha256": "fdeca867f085e891934ccb03ba291b202b546eac641196c799202866434cf078"
+    },
+    {
+      "path": "lib/features/ai/presentation/ai_generation_queue_screen.dart",
+      "size": 10215,
+      "sha256": "eece293696b598713118beb88deea7d78b33eefae62ad04dfbf68b947d0661e5"
+    },
+    {
+      "path": "lib/features/bible/application/lore_backlink_service.dart",
+      "size": 5202,
+      "sha256": "0a8392efc0f7d81b8696982616b6401bf247010e12b2416a7b60dcd9c825b9b3"
+    },
+    {
+      "path": "lib/features/character/presentation/character_controller.dart",
+      "size": 3923,
+      "sha256": "bf0faf8b9c61816e4e832d93748edbcee53710a566cae6064fe0407b9d609645"
+    },
+    {
+      "path": "lib/features/character/presentation/character_workspace_screen.dart",
+      "size": 8126,
+      "sha256": "c2fc75bcd13c833fe16ff69213511f23fbfd4310d7f6cc6251c63146d314a4d7"
+    },
+    {
+      "path": "lib/features/character/presentation/widgets/character_deletion_review_dialog.dart",
+      "size": 4973,
+      "sha256": "8b405e61103389cd48ee325c3d5abb97a3f42bfe2e959d5c992e97c1f6b01430"
+    },
+    {
+      "path": "lib/features/character/presentation/widgets/character_header.dart",
+      "size": 2723,
+      "sha256": "dea0c8ab2b6743012f81d0adaeee7c9d2a9a71204f25a14add0f2836776caae0"
+    },
+    {
+      "path": "lib/features/collaboration/domain/sync_authority_policy.dart",
+      "size": 1229,
+      "sha256": "f9944cbc7b888eea6078f57bb6a986ac5d8cc2da3134bb47b75d0af31c3390d7"
+    },
+    {
+      "path": "lib/features/creatures/data/creature_ecology_repository.dart",
+      "size": 1428,
+      "sha256": "40b69d3a1f8ca43865b32cbc122aa9a6ac0ee9720537678c3dd3459263261c90"
+    },
+    {
+      "path": "lib/features/creatures/domain/creature_ecology_state.dart",
+      "size": 460,
+      "sha256": "c9e235f307e48c24fdef0c33946bc44800a3c37364e5071a19300d48c1a4da9b"
+    },
+    {
+      "path": "lib/features/dashboard/presentation/dashboard_screen.dart",
+      "size": 6811,
+      "sha256": "04f8cb51ca9fed9fca6e7c2772c830368b1b8518171da54decf416765f6385b2"
+    },
+    {
+      "path": "lib/features/dashboard/presentation/widgets/brand_gallery.dart",
+      "size": 2844,
+      "sha256": "e0c659500a3895007081371258bb6cc48447c3bfcc227fa036d21257237d2fec"
+    },
+    {
+      "path": "lib/features/dashboard/presentation/widgets/quick_actions.dart",
+      "size": 1786,
+      "sha256": "49382804c5cd061975608477ea627894fe280b8e093a067b7e62767bce866580"
+    },
+    {
+      "path": "lib/features/explorer/presentation/explorer_panel.dart",
+      "size": 22113,
+      "sha256": "6fa4195ab8e21e9cff837677615233845f1a9ea65ceb093cd9ccf55112b7e613"
+    },
+    {
+      "path": "lib/features/explorer/presentation/explorer_story_group.dart",
+      "size": 1980,
+      "sha256": "95cd4d52337c24229c55f9d46cd3a195c1bdf0cbc7240b5b0ce186dcd34e40a6"
+    },
+    {
+      "path": "lib/features/game/presentation/game_creation_dashboard_screen.dart",
+      "size": 6602,
+      "sha256": "dd2b7a395c913c2f9bd7b7026fddbcdb393f063436e037aeeb64bd607c34192a"
+    },
+    {
+      "path": "lib/features/game/presentation/level_editor_screen.dart",
+      "size": 6328,
+      "sha256": "306b16aa8d1e3c8341e59b374934187a03a2d27ce7e5ce1dc53f9a4bf99bb479"
+    },
+    {
+      "path": "lib/features/marketplace/presentation/agent_permission_screen.dart",
+      "size": 3425,
+      "sha256": "d5da79e4af2ea63f33462d3c2e07bc7beb2fb859c70b0ca9e06aa3c929647eb6"
+    },
+    {
+      "path": "lib/features/marketplace/presentation/marketplace_workspace_screen.dart",
+      "size": 3373,
+      "sha256": "b729cc877c5babb9c653606d9d727261022788c3aed9ce13a2423a7e07481152"
+    },
+    {
+      "path": "lib/features/marketplace/presentation/product_detail_screen.dart",
+      "size": 3123,
+      "sha256": "cb1548f3251c266f8d3f7f6a2e3688122dfc83960cdf32665f494cb9da4e8e6b"
+    },
+    {
+      "path": "lib/features/multiverse/presentation/merge_preview_screen.dart",
+      "size": 2336,
+      "sha256": "fc6993ddeec82735ace6364ea036a161cc1b08d483ee866b41f6eb3ebd55c8b5"
+    },
+    {
+      "path": "lib/features/platform/domain/platform_capability.dart",
+      "size": 3597,
+      "sha256": "8f203791e0680546e479392f8bd875b9042b996a9a2258b6750b6efba00ac6d9"
+    },
+    {
+      "path": "lib/features/platform/platform_capability_providers.dart",
+      "size": 342,
+      "sha256": "4bdd3d252929778cc1db868ec3812b1693f1a8be83194134e15f124860a7e9c0"
+    },
+    {
+      "path": "lib/features/platform/presentation/optional_tour_screen.dart",
+      "size": 2585,
+      "sha256": "ffa58608b2a3393201515ce759e7c7a0ed7b19cc537a6e2c147b96318e79794c"
+    },
+    {
+      "path": "lib/features/platform/presentation/theme_settings_screen.dart",
+      "size": 2682,
+      "sha256": "1886cf3e3ddd61c2883a369773f8172c498eb65cecfde6f9131b6daf27d333c2"
+    },
+    {
+      "path": "lib/features/platform/presentation/update_screen.dart",
+      "size": 3661,
+      "sha256": "b8de963fd60ac38f59ad339706624d2511fcb901cfb686ab3b8c0c876f5344f9"
+    },
+    {
+      "path": "lib/features/project_resilience/application/portable_project_service.dart",
+      "size": 7943,
+      "sha256": "0be443d0cc8dd9168e3a4eda9115bf5b8661de244f3f35268bad6bf88d421894"
+    },
+    {
+      "path": "lib/features/project_resilience/application/project_recovery_services.dart",
+      "size": 8550,
+      "sha256": "699c65e87708cd64698ad344d444aaa97582ea2eefec1fc505e1893131daa0f4"
+    },
+    {
+      "path": "lib/features/project_resilience/application/project_session_manager.dart",
+      "size": 11008,
+      "sha256": "43e8206caefe55506eb19dbb5e657c7f01f262a99b85293b53d09bd8385c4057"
+    },
+    {
+      "path": "lib/features/projects/presentation/create_project_screen.dart",
+      "size": 6330,
+      "sha256": "04d52bc9f31055d653e11249978799aba3a451e5362a38574abf10d5d7435193"
+    },
+    {
+      "path": "lib/features/projects/presentation/project_controller.dart",
+      "size": 2228,
+      "sha256": "847fef249e7d79184813e42a46f9d6f13490c6ceef29db4faabfb2837eaa90bf"
+    },
+    {
+      "path": "lib/features/settings/presentation/language_switcher.dart",
+      "size": 2679,
+      "sha256": "fe5d24f480394f064e4efdf7ba38cff81229b747df9874746305813548d702a1"
+    },
+    {
+      "path": "lib/features/story/presentation/story_inspector.dart",
+      "size": 2446,
+      "sha256": "35ea6016f911c98f371d5e590e3731a1d26d01b1040e89d07524733602d2c13f"
+    },
+    {
+      "path": "lib/features/studio/domain/organization_agent.dart",
+      "size": 3835,
+      "sha256": "6a1261658bd116ea26ed5df8a77f061b617967d8e30d56e570260d8f1c1f9acd"
+    },
+    {
+      "path": "lib/features/studio/presentation/studio_command_center.dart",
+      "size": 1536,
+      "sha256": "7b62ba86f8946015db985792a5c999c453ffc8555889466700ecaa9baf8951f5"
+    },
+    {
+      "path": "lib/features/timeline/presentation/timeline_workspace_screen.dart",
+      "size": 14031,
+      "sha256": "b2f9f3d9db6b49ecf68f4d45c6ecce3272a5699374e15de6be8398982b4d29fd"
+    },
+    {
+      "path": "lib/features/workspace/presentation/workspace_resolver.dart",
+      "size": 6694,
+      "sha256": "ddbbf3bdce947b977fcc978e7b0d8b89a1698209ec87872d173e23947503e2a0"
+    },
+    {
+      "path": "lib/features/world/domain/camera_capture.dart",
+      "size": 1570,
+      "sha256": "c757b6c6662d7d5e2e6137a6809b2fea231e2fbfa67d320b84f23d373aad3dbf"
+    },
+    {
+      "path": "lib/features/world/domain/depth_capture.dart",
+      "size": 1368,
+      "sha256": "b4acd062785cd7af43656e411b2b98d6ec672899734e1f1351b86267d710e27b"
+    },
+    {
+      "path": "lib/features/world/domain/digital_twin.dart",
+      "size": 558,
+      "sha256": "e57dfa62269aa6c39f2a9dcd187978be638d5a8157428069143a9c7dcac481b6"
+    },
+    {
+      "path": "lib/features/world/domain/emergent_behavior.dart",
+      "size": 2960,
+      "sha256": "18a32808fe0a74c669471f235a13621a2275664530ae199845985ac5ed5fa507"
+    },
+    {
+      "path": "lib/features/world/domain/environment_reconstruction.dart",
+      "size": 1066,
+      "sha256": "914a54a09191f069a0434edcbf163b2270893c8287398daa173b2de52181e2fe"
+    },
+    {
+      "path": "lib/features/world/domain/geospatial_coordinates.dart",
+      "size": 1481,
+      "sha256": "b259d7de8232a6fff8f7ca31a11cc2f614f1056b0df2d1112a99193ea56ed84f"
+    },
+    {
+      "path": "lib/features/world/domain/lidar_adapter.dart",
+      "size": 2357,
+      "sha256": "780f9e2678a252d1c7fadf78504728b801598e9f3cb674ceccc37c6c3ae0c58b"
+    },
+    {
+      "path": "lib/features/world/domain/lighting_estimation.dart",
+      "size": 943,
+      "sha256": "7df7741fd5d6e96f57e899facd832f8572210b2502978a77389173e7be948e05"
+    },
+    {
+      "path": "lib/features/world/domain/object_scanning.dart",
+      "size": 1225,
+      "sha256": "dc0fd79d1aee2c5fd1b1bdccd206fc1a8c7d342cb852740c78ad2cc38144c992"
+    },
+    {
+      "path": "lib/features/world/domain/photogrammetry.dart",
+      "size": 1635,
+      "sha256": "60ca97d255a041c05eab7a6513f41b3cb06851bd695d4bb9b7d82185c8acd7d3"
+    },
+    {
+      "path": "lib/features/world/domain/privacy_zones.dart",
+      "size": 898,
+      "sha256": "5b6cad7d53023ad2612b5b7cfe6fc2ca815e6720adde260a64979f542bfd2f26"
+    },
+    {
+      "path": "lib/features/world/domain/reality_occlusion.dart",
+      "size": 941,
+      "sha256": "db875044a1a68d6305c52fe5c755ca876964c78c23499f8e292659bd05de213e"
+    },
+    {
+      "path": "lib/features/world/domain/sensor_integration.dart",
+      "size": 624,
+      "sha256": "6537f4902d0eab8589545bda87689050758961dd4deb1b1e8a161866be16cc76"
+    },
+    {
+      "path": "lib/features/world/domain/spatial_mapping.dart",
+      "size": 1788,
+      "sha256": "73313898c7dce20e25363c608af2afa3cbdb8b099eb4a141d5e46ebcc6bf3402"
+    },
+    {
+      "path": "test/app/assets/asset_decode_test.dart",
+      "size": 715,
+      "sha256": "b1d5ba95f11be0c01e9fdd802ca2ec72b162b5f82fab0b4608879f12f3b6c7d3"
+    },
+    {
+      "path": "test/app/bootstrap/story_content_redaction_test.dart",
+      "size": 4442,
+      "sha256": "ce58f7ce5dde5deae7224d23608e10324746191e85ad831665ee77e6192364c3"
+    },
+    {
+      "path": "test/app/bootstrap/web_bootstrap_test.dart",
+      "size": 2043,
+      "sha256": "8e6e9c399a07f6d7f12ac7fd20ce9597f685e0cf9ce3756799f362837f8c506e"
+    },
+    {
+      "path": "test/app/routing/back_navigation_test.dart",
+      "size": 2288,
+      "sha256": "37e754dea30d1eb618474819985ea5dc61c2cb0e59d730be4689048dd1d6c84d"
+    },
+    {
+      "path": "test/app/routing/metaverse_xr_route_integration_test.dart",
+      "size": 1142,
+      "sha256": "bf96c88cf13900e84187c767fc6b42bdd102c94031c68338957c3dbafd3e92ec"
+    },
+    {
+      "path": "test/app/shell/core_mvp_navigation_test.dart",
+      "size": 2046,
+      "sha256": "f9efed6e88199dc7644c31746725603b2a707524edc25100977f2bec1351592c"
+    },
+    {
+      "path": "test/app/shell/void_status_bar_test.dart",
+      "size": 1215,
+      "sha256": "34d0cd472b5e06618b72dc7e2701199fbf044301bd9046b465fd7d57e9a4b318"
+    },
+    {
+      "path": "test/app/shell/void_top_bar_command_test.dart",
+      "size": 2737,
+      "sha256": "6fbb594ba09c72627f4d0941b8b8b6375dc52f733ddf230c302538adcab2ae57"
+    },
+    {
+      "path": "test/core/agent/tool/tool_registry_test.dart",
+      "size": 1943,
+      "sha256": "d5a33606d4a893db0d37e3ca9a67a796c2b0edd1101941831a2927a0cd160b8a"
+    },
+    {
+      "path": "test/core/network/api_client_test.dart",
+      "size": 1595,
+      "sha256": "fed9af8e62ebd67787fdd88f33e8153fe8996ae0979d17412b511c0bd7820d59"
+    },
+    {
+      "path": "test/core/project_package/project_package_roundtrip_test.dart",
+      "size": 1490,
+      "sha256": "fa5c2796d0b89bc98d21c90cc89f685025f2bf617f0581e5704fbdd82a9e7232"
+    },
+    {
+      "path": "test/core/security/security_ui_test.dart",
+      "size": 2544,
+      "sha256": "da21ddd90e6e256dd43ab04c0a1b19e32ffd83ecff72119449efcddf0a2ed1ad"
+    },
+    {
+      "path": "test/core/selection/selection_controller_test.dart",
+      "size": 1135,
+      "sha256": "b9fdbcfb872a83b068b94c04b6fa802e27af4e211e891e17cd6aa63eb214833d"
+    },
+    {
+      "path": "test/database/project/project_database_metadata_test.dart",
+      "size": 852,
+      "sha256": "96af9871f753e083355f8df3b2cbe328478dbe9903bb7d112fd87201a485ee3c"
+    },
+    {
+      "path": "test/design_system/branding/void_scriptor_brand_assets_test.dart",
+      "size": 2010,
+      "sha256": "783ded21d560abf98448005d4fc4cc3bc411ea2aebdd16d56e702a23ecadf9fe"
+    },
+    {
+      "path": "test/features/ai/ai_provider_test.dart",
+      "size": 1764,
+      "sha256": "4cc223da63cf36cb14d0db749eae2ecc66aacc3f30e02daf5b510b2e5438dd07"
+    },
+    {
+      "path": "test/features/ai/application/ai_model_registry_test.dart",
+      "size": 2650,
+      "sha256": "57b91c3a05baea5606aa23b5defa9adbb7f18db1961653ad3903fb896299db54"
+    },
+    {
+      "path": "test/features/ai/application/provider_cost_policy_test.dart",
+      "size": 1550,
+      "sha256": "f90d13deecfa02b0a1b1915ac641bf47dd5167835ec69eb5f421c015865d3878"
+    },
+    {
+      "path": "test/features/ai/application/provider_diagnostics_test.dart",
+      "size": 1910,
+      "sha256": "eda40ce87df69cab5347b8b2bbe1069cb96a131015c29bace092e30a0f1bd630"
+    },
+    {
+      "path": "test/features/ai/application/provider_health_test.dart",
+      "size": 2291,
+      "sha256": "a9edfc2ec232942b3b901ee180acf6d8d4c642a534b3cdfd846fb5e540ded8ad"
+    },
+    {
+      "path": "test/features/ai/application/provider_rate_limiter_test.dart",
+      "size": 1570,
+      "sha256": "3e8f16a0c882314bb4651b2a2385c9cac1423428c81d1bc02d248171e915712e"
+    },
+    {
+      "path": "test/features/ai/application/provider_router_test.dart",
+      "size": 4848,
+      "sha256": "ec687e5955cf2e4bd35265bea48c35e5593542b77dd39807dac50ea02a8b96e1"
+    },
+    {
+      "path": "test/features/ai/application/provider_timeout_test.dart",
+      "size": 1786,
+      "sha256": "06c71101cfbe890d259b5b69a7fed6c84b20d40b5287545bddeb110d5bcf9663"
+    },
+    {
+      "path": "test/features/ai/comfyui_generation_lifecycle_test.dart",
+      "size": 4088,
+      "sha256": "93c1e91d595d275b377f04ea23f2970a72babdecbc14f6e17bae4799f2d5ee92"
+    },
+    {
+      "path": "test/features/ai/domain/ai_streaming_provider_test.dart",
+      "size": 3497,
+      "sha256": "ac2a836275939055fcc5650ea320d0ee99f6a136777a978fb5e21d121fc7f3a1"
+    },
+    {
+      "path": "test/features/ai/domain/mock_ai_provider_contract_test.dart",
+      "size": 1133,
+      "sha256": "e5e0bdae17f5d1699111c1c2a0a2921769cdaaab29ef565efae1e942c28b98f1"
+    },
+    {
+      "path": "test/features/ai/domain/provider_registry_lifecycle_test.dart",
+      "size": 1266,
+      "sha256": "384d4ae005940156fa675a13a53fa7e8a840a193bcd47ec940e94e8ffa7a866a"
+    },
+    {
+      "path": "test/features/ai/image_generation_queue_submission_widget_test.dart",
+      "size": 2197,
+      "sha256": "5c125864f34627a7f5f8e16480102c259e6f6cc521fb733a6124d60125b1452c"
+    },
+    {
+      "path": "test/features/ai/image_generation_submission_test.dart",
+      "size": 3202,
+      "sha256": "f34bfa7abf69b9dd934ab9a255f6727c94ee7b57e06a0d56655820e3a1551916"
+    },
+    {
+      "path": "test/features/ai/infrastructure/comfyui_provider_contract_test.dart",
+      "size": 2051,
+      "sha256": "7f5be6f8b35d166ebc5153313cd53cd243d9f55f908674fbc4ada0ff7ba7f627"
+    },
+    {
+      "path": "test/features/ai/infrastructure/image_provider_execution_contract_test.dart",
+      "size": 2848,
+      "sha256": "d35ed034e0e3c49d3944995ffe37f7f711aaa92daa45e3d9610f93d4d8fcabbb"
+    },
+    {
+      "path": "test/features/ai/infrastructure/ollama_provider_contract_test.dart",
+      "size": 1136,
+      "sha256": "8b88a55f283382acb436c2850e8213ca62ce69f8e84645cb5ba93df3cdbe11a5"
+    },
+    {
+      "path": "test/features/ai/infrastructure/text_provider_contract_test.dart",
+      "size": 2813,
+      "sha256": "8da08717dbf6186c9e03666109a34d2846d6e819c63b9f7d5ee254f2bee1162f"
+    },
+    {
+      "path": "test/features/ai/infrastructure/text_provider_execution_contract_test.dart",
+      "size": 3789,
+      "sha256": "41db9be33ced2c611cdd832d8bb4e868b0a6ff42c7764f2eb190963b1952461f"
+    },
+    {
+      "path": "test/features/ai/infrastructure/vision_provider_contract_test.dart",
+      "size": 2020,
+      "sha256": "6f3c78a6686db02f39e3c8cea69e197a6330e579334fdfe55687a2b7d99cefb8"
+    },
+    {
+      "path": "test/features/ai/remote_image_output_persistence_test.dart",
+      "size": 1994,
+      "sha256": "006b4e178f6facf47cd3920a8c47e506e63b0f5d6b3eb3c93dacbd03e019cce7"
+    },
+    {
+      "path": "test/features/character/character_repository_test.dart",
+      "size": 8275,
+      "sha256": "005024f7539155fec8dda903b4263781dbfafa08684afc4da3132a01d04cd541"
+    },
+    {
+      "path": "test/features/character_mode/character_mode_model_test.dart",
+      "size": 2511,
+      "sha256": "b1df47b0a0a9ab754fc55e8b43d1b5807d130361988e01c7bf19d3bf319661e2"
+    },
+    {
+      "path": "test/features/character_mode/character_mode_selector_event_test.dart",
+      "size": 1757,
+      "sha256": "820258664a1b485374ee403b2344a61d3beaf2364c436a8c8e3c8d899affad26"
+    },
+    {
+      "path": "test/features/collaboration/domain/sync_authority_policy_test.dart",
+      "size": 614,
+      "sha256": "9f7cafbc5ffa9499892c34f874ae0c1c0e127704c1248b238fc81d26f19a1b2a"
+    },
+    {
+      "path": "test/features/creator/presentation/dashboard_metrics_screen_test.dart",
+      "size": 2781,
+      "sha256": "b000b9aa9af140a39ac1c69dc42016bb05a8079e5d68947540cc34ce34f5a622"
+    },
+    {
+      "path": "test/features/creatures/creature_ecology_persistence_test.dart",
+      "size": 1615,
+      "sha256": "8fb7b8a6dc6ac8c9afb7e4a22943d0686155b11de06eb9bc4720f0827cf15cf9"
+    },
+    {
+      "path": "test/features/explorer/explorer_panel_navigation_test.dart",
+      "size": 2113,
+      "sha256": "c9e536e8529498b04a5a1b3b058ffcea381beec68cf45cc1d06936fc77033836"
+    },
+    {
+      "path": "test/features/game/presentation/game_creation_dashboard_screen_test.dart",
+      "size": 1468,
+      "sha256": "7543fbea9d1f3685c6604c32de1582d166402217c3ff4d04dc6b223c75dfa0b9"
+    },
+    {
+      "path": "test/features/game/presentation/level_editor_screen_test.dart",
+      "size": 1155,
+      "sha256": "56f30a898c1951ae49be5da0d9c4f5e10780dabfa181eaf5237c3986f0a65108"
+    },
+    {
+      "path": "test/features/inspector/inspector_resolver_test.dart",
+      "size": 2860,
+      "sha256": "889b40369b2658eda08e6a9d1d5775718638666c31b76dc45f15477ce0baa6fc"
+    },
+    {
+      "path": "test/features/inspector/story_inspector_session_integration_test.dart",
+      "size": 3032,
+      "sha256": "965b1a69715a20970d3215bf78c3b99c56290f72555b0a33460a312b56853e75"
+    },
+    {
+      "path": "test/features/marketplace/presentation/agent_permission_screen_test.dart",
+      "size": 1336,
+      "sha256": "09cf58622ca740313cb27c2ffc925b899c4cf23d6c2e3a706639c8f05e56a15a"
+    },
+    {
+      "path": "test/features/marketplace/presentation/marketplace_workspace_screen_test.dart",
+      "size": 1364,
+      "sha256": "3bcc3e387485abf00c7a4c9740e5e0df53d49b80b5b5eea45377875d9668c2d5"
+    },
+    {
+      "path": "test/features/marketplace/presentation/product_detail_screen_test.dart",
+      "size": 1396,
+      "sha256": "dd6f741f7ebe94c8f32bb8f19d0f70a8226f85f400fae571be1722d60d79bd7f"
+    },
+    {
+      "path": "test/features/multiverse/presentation/merge_preview_screen_test.dart",
+      "size": 1097,
+      "sha256": "fa11a73df73655af8ae955721d15845ea59d0bee1b127fd730377c6188392a8f"
+    },
+    {
+      "path": "test/features/platform/platform_capability_test.dart",
+      "size": 2215,
+      "sha256": "e654a0dc552938dfa2312fceeb647b1f4266a3fab6d6d92665edfd3ac7cf035f"
+    },
+    {
+      "path": "test/features/platform/presentation/optional_tour_screen_test.dart",
+      "size": 1302,
+      "sha256": "d8669ad0d12c388b57dd3b265822d9e4b71f4ed71db8714a98f6c7ac8afc890d"
+    },
+    {
+      "path": "test/features/platform/presentation/update_screen_test.dart",
+      "size": 1359,
+      "sha256": "3e476d501814fc0b868bb6e6bc64476aa4f6cdcfa2964dbaa92725f65cc70d93"
+    },
+    {
+      "path": "test/features/platform/presentation/welcome_screen_test.dart",
+      "size": 2440,
+      "sha256": "415b36c40eb07be87a0845a80cbc5ba7beb68a16096c9a04196310851d0410ad"
+    },
+    {
+      "path": "test/features/platform/theme_settings_persistence_test.dart",
+      "size": 1156,
+      "sha256": "9090dca27b985d8f8d1b5f7c467ec0a3dc4798b30e686a9735ff54375d487ac4"
+    },
+    {
+      "path": "test/features/project_resilience/portable_archive_security_test.dart",
+      "size": 1555,
+      "sha256": "3133d6d4018aa654bc4e72d2a8c18ab91634e4f2ead5e3c0d63a5762c463b0e6"
+    },
+    {
+      "path": "test/features/project_resilience/portable_project_service_test.dart",
+      "size": 2981,
+      "sha256": "8c762e8b6b3a55a13a6e673dbcd6bf48b0ac5826708e2bab93fccc515dc930e4"
+    },
+    {
+      "path": "test/features/project_resilience/project_recovery_services_test.dart",
+      "size": 4230,
+      "sha256": "15cdc8d7490ba43ee7eb0d789a538b7542efa35771c4eaafdf0f80d4eeedbc2d"
+    },
+    {
+      "path": "test/features/project_resilience/project_session_workspace_link_test.dart",
+      "size": 3788,
+      "sha256": "b51d6aa9dc02f35466486e67b86cb3aa9f3d961d32777a4cd4e312726848d3ec"
+    },
+    {
+      "path": "test/features/projects/create_project_screen_failure_test.dart",
+      "size": 1271,
+      "sha256": "b3fc5e69164bc56cf2b90bc6f18ee9a846a5659e52bb0fedb06b5b1e6b30d3cc"
+    },
+    {
+      "path": "test/features/projects/create_project_screen_platform_guard_test.dart",
+      "size": 1828,
+      "sha256": "1aca811e4677935d4c1c704100dd564cf00a10485348f3e8fe95e7107e774d27"
+    },
+    {
+      "path": "test/features/projects/presentation/project_web_guard_test.dart",
+      "size": 3145,
+      "sha256": "9803b7875387473fca862cc5d5fe9a1e4131cf782d5cfa4276f58bcd635190b9"
+    },
+    {
+      "path": "test/features/settings/language_switcher_test.dart",
+      "size": 2860,
+      "sha256": "2404b6e380fd00aa1a17c86d0f4b3ee6b0eda56c675e1b5386843347420299eb"
+    },
+    {
+      "path": "test/features/story/debounced_autosave_test.dart",
+      "size": 585,
+      "sha256": "e45052fceab28d2b8654bfb252d8fb04c4e0c27c928c0939cfe16959981b77b8"
+    },
+    {
+      "path": "test/features/story/lore_backlinks_test.dart",
+      "size": 12972,
+      "sha256": "4708072f11c6bb4411735d795509918a35f59f2fbef380304df4ed8a370744f7"
+    },
+    {
+      "path": "test/features/story/novel_authoring_flow_test.dart",
+      "size": 4113,
+      "sha256": "05044987f3f5c686ab60a2ba56b148232b286f5d9377dca3048b8a5a72fdaf75"
+    },
+    {
+      "path": "test/features/story/novel_creation_action_test.dart",
+      "size": 972,
+      "sha256": "44cc2ceacb8eff65b7c3b8a176620620734dff35e82adb2c3f42bf057568e943"
+    },
+    {
+      "path": "test/features/story/scene_beat_persistence_test.dart",
+      "size": 3040,
+      "sha256": "30fe146927be9bffee12947408424a1b254d62faee3d170ab362e7c1e669f50b"
+    },
+    {
+      "path": "test/features/story/scene_duration_warning_test.dart",
+      "size": 2098,
+      "sha256": "8f459c22b5d7a137f83059dc1015d1d5ed6a4c4f8f90c9d0257194537e94520a"
+    },
+    {
+      "path": "test/features/story/story_session_repository_integration_test.dart",
+      "size": 2355,
+      "sha256": "fb89604d138fbcff9f2be520fff871a38b10afcec3494f6af2aefb223e823ec4"
+    },
+    {
+      "path": "test/features/story/story_workspace_novel_io_test.dart",
+      "size": 11008,
+      "sha256": "2aa367aafbe5018edac42cd58f62425dc90e3e44039d26f57b5bc53dedbd4f4d"
+    },
+    {
+      "path": "test/features/story/story_workspace_resolver_test.dart",
+      "size": 2714,
+      "sha256": "6ed4b247d89a95d8f30ed5ca6534b4ccde49dd5fa0c726bec5c226eb1b5cdb88"
+    },
+    {
+      "path": "test/features/story/story_workspace_test.dart",
+      "size": 5423,
+      "sha256": "baa056b4d3abc9a771bd13199cde26cf28cf501d4982a573b21a410fea7c1983"
+    },
+    {
+      "path": "test/features/studio/domain/department_lead_test.dart",
+      "size": 1533,
+      "sha256": "75e8bbbeda19170166af9e765b401264cd556b0bde7096076cae43ea87b7dffc"
+    },
+    {
+      "path": "test/features/studio/presentation/studio_command_center_test.dart",
+      "size": 1168,
+      "sha256": "3d0318bf268a269b03a43f8330a435259c92b42ed386427935bdc6e69449203f"
+    },
+    {
+      "path": "test/features/timeline/timeline_workspace_test.dart",
+      "size": 3156,
+      "sha256": "fb0674f3bc6fbe3f5185a415ac3c1c8500f878de5105dcfc5416d579e24b4296"
+    },
+    {
+      "path": "test/features/wardrobe/wardrobe_creation_test.dart",
+      "size": 1671,
+      "sha256": "ae605dc754cd300b2a5352c2b408e6a5adee649bca5951f03c9046dcdbb55bdb"
+    },
+    {
+      "path": "test/features/weapon/weapon_creation_test.dart",
+      "size": 2189,
+      "sha256": "11dd71185c2e36db300c476e2adaf9e70c2da59b9d71a1323b981b4039275a78"
+    },
+    {
+      "path": "test/features/workspace/workspace_resolver_wiring_test.dart",
+      "size": 4098,
+      "sha256": "4c1a9e769d7f378a5e0b188f76169f02b307f5fffc3892cba882fc886cdd5206"
+    },
+    {
+      "path": "test/features/world/domain/camera_capture_test.dart",
+      "size": 1080,
+      "sha256": "8e8fd16af892ccc4c8e6b5e8a313fc6a27589953af1648277b718b97008b99a8"
+    },
+    {
+      "path": "test/features/world/domain/depth_capture_test.dart",
+      "size": 829,
+      "sha256": "582edfb7e9e628ad858586370f63148690cff80a58636c5085c9ed4367e05c4e"
+    },
+    {
+      "path": "test/features/world/domain/digital_twin_test.dart",
+      "size": 822,
+      "sha256": "f573b139888700dcb7e231a6b67a4f3ac3604af7380e05907b8c88720c4c4865"
+    },
+    {
+      "path": "test/features/world/domain/emergent_behavior_test.dart",
+      "size": 1996,
+      "sha256": "d6d428c9a907baed10318c31e7b1866d02a1430ce88a1cf6ecea3a52ccba7529"
+    },
+    {
+      "path": "test/features/world/domain/environment_reconstruction_test.dart",
+      "size": 783,
+      "sha256": "7fd401bdd77bc0f14d355185e888735e17a944e739a84496a10aa31212088a99"
+    },
+    {
+      "path": "test/features/world/domain/geospatial_coordinates_test.dart",
+      "size": 747,
+      "sha256": "bba83647b1be5f81c292fd16db14d1ab322f2b71b0c66adf677824b7105ee6c7"
+    },
+    {
+      "path": "test/features/world/domain/lidar_adapter_test.dart",
+      "size": 891,
+      "sha256": "140c1b8acb4af939588914650b6e19d3234a411da03d2a55c37d4022c2d378ff"
+    },
+    {
+      "path": "test/features/world/domain/lighting_estimation_test.dart",
+      "size": 679,
+      "sha256": "85eed386fea2a3065a310c12907990e6962df0f129c0a05c4b927d6e837341de"
+    },
+    {
+      "path": "test/features/world/domain/object_scanning_test.dart",
+      "size": 749,
+      "sha256": "47600067668088ed8340e8090493a666e0b02df37c59dd20fbe2ebd46bc48a3e"
+    },
+    {
+      "path": "test/features/world/domain/photogrammetry_test.dart",
+      "size": 1041,
+      "sha256": "acfd54044b2e449ee5c6a1d38dab5d25340e243ad446b0b2d0e291470fa82529"
+    },
+    {
+      "path": "test/features/world/domain/privacy_zones_test.dart",
+      "size": 994,
+      "sha256": "a1c5b50b89aea01765628b935ef7229cc5b99284bbf898474be91875297a2487"
+    },
+    {
+      "path": "test/features/world/domain/reality_occlusion_test.dart",
+      "size": 697,
+      "sha256": "13312586cc3cdff5f6f7132688d6c751ddbd5bfb15894ff0d08103044a01c5a0"
+    },
+    {
+      "path": "test/features/world/domain/sensor_integration_test.dart",
+      "size": 626,
+      "sha256": "229eb2d99b4f4404d1ed22355f88361a5207c9f871d2e306360c3e2504808f2f"
+    },
+    {
+      "path": "test/features/world/domain/spatial_mapping_test.dart",
+      "size": 834,
+      "sha256": "881784e6799bbf2acabff17b52032c81a20452b4ce58a80b0d256c343f0beafa"
+    },
+    {
+      "path": "test/live_cutover_test.dart",
+      "size": 3541,
+      "sha256": "0b314f033afd08b7739110d7ec6f5f1bba0ebbbd43509b3163311da4fdec627a"
+    },
+    {
+      "path": "test/tools/test_generate_release_metadata.py",
+      "size": 4346,
+      "sha256": "a821bcdac698202169864c9e03bdb5c438339cbcd5544d1c002f774c0df21d6f"
+    },
+    {
+      "path": "test/tools/test_verify_repository_hardening.py",
+      "size": 4346,
+      "sha256": "2e7efcfdecaa6a8f1503924687c42a67e2538c81e9450e7c17ddb350467e6488"
+    },
+    {
+      "path": "tools/generate_release_metadata.py",
+      "size": 5321,
+      "sha256": "b173d767a266f5b0f713c7dff4b9068a7b946cdec82e2943ff7ace05dd6d9121"
+    },
+    {
+      "path": "tools/verify_repository_hardening.py",
+      "size": 4466,
+      "sha256": "c96fb0802afad6ad9b806c3f76d385a924b55cf20660bcdc3fb4e56c06f8b282"
+    }
+  ],
+  "scope": "metadata-only baseline; no file content, credentials, or secrets included"
+}

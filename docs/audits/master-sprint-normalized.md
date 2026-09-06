@@ -1,0 +1,4921 @@
+# Normalized Master Sprint Inventory
+
+Source: `docs/MASTER_SPRINT.md`
+
+Policy: select the source variant with the most valid prefixed step headings; retain all variants in JSON provenance.
+
+## Sprint 01 — Project Foundation
+- Steps: 0
+
+## Sprint 02 — Design System
+- Steps: 0
+
+## Sprint 03 — Adaptive Application Shell
+- Steps: 0
+
+## Sprint 04 — Authentication System
+- Steps: 0
+
+## Sprint 05 — Dashboard System
+- Steps: 0
+
+## Sprint 06 — Project Management
+- Steps: 0
+
+## Sprint 07 — Data Persistence
+- Steps: 0
+
+## Sprint 08 — Asset Core System
+- Steps: 0
+
+## Sprint 09 — Workspace System
+- Steps: 0
+
+## Sprint 10 — Inspector & Selection System
+- Steps: 0
+
+## Sprint 11 — Character System
+- Steps: 0
+
+## Sprint 12 — Wardrobe System
+- Steps: 0
+
+## Sprint 13 — Weapon System
+- Steps: 0
+
+## Sprint 14 — Environment System
+- Steps: 0
+
+## Sprint 15 — Story & Scene System
+- Steps: 0
+
+## Sprint 16 — Timeline & Cinematic Editor
+- Steps: 0
+
+## Sprint 17 — AI Context & Prompt Composer
+- Steps: 0
+
+## Sprint 18 — AI Provider System
+- Steps: 0
+
+## Sprint 19 — Asset Browser & Search
+- Steps: 0
+
+## Sprint 20 — Reference & Consistency System
+- Steps: 0
+
+## Sprint 21 — Project Bible & Canon System
+- Steps: 0
+
+## Sprint 22 — Creature Vehicle Prop System
+- Steps: 0
+
+## Sprint 23 — VFX Production System
+- Steps: 0
+
+## Sprint 24 — Package Backup Recovery
+- Steps: 0
+
+## Sprint 25 — History Version Control
+- Steps: 0
+
+## Sprint 26 — Performance System
+- Steps: 0
+
+## Sprint 27 — Advanced Workspace
+- Steps: 0
+
+## Sprint 28 — Advanced AI Studio
+- Steps: 0
+
+## Sprint 29 — Collaboration Cloud
+- Steps: 0
+
+## Sprint 30 — Security Encryption
+- Steps: 0
+
+## Sprint 31 — Plugin System + SDK
+- Steps: 0
+
+## Sprint 32 — Advanced Rendering Engine
+- Steps: 0
+
+## Sprint 33 — Advanced Animation Engine
+- Steps: 0
+
+## Sprint 34 — Advanced Audio Engine
+- Steps: 0
+
+## Sprint 35 — Virtual Production Studio
+- Steps: 0
+
+## Sprint 36 — Publishing & Distribution
+- Steps: 0
+
+## Sprint 37 — Enterprise Studio Management
+- Steps: 0
+
+## Sprint 38 — Knowledge Engine + Universe AI
+- Steps: 0
+
+## Sprint 39 — AI Agent Platform
+- Steps: 0
+
+## Sprint 40 — AI Creative Operating System
+- Steps: 0
+
+## Sprint 41 — Immersive Creation Layer
+- Steps: 0
+
+## Sprint 42 — Metaverse Creative Network
+- Steps: 0
+
+## Sprint 43 — Universal Creator Platform + Personal AI Studio
+- Steps: 60
+- Source variants: Universal Creator Platform (0 steps); Universal Creator Platform + Personal AI Studio (60 steps)
+- [ ] 43.1 — Creator Platform Architecture
+- [ ] 43.2 — Creator Profile Model
+- [ ] 43.3 — Creator Onboarding
+- [ ] 43.4 — Creator Specialization
+- [ ] 43.5 — Creator Dashboard
+- [ ] 43.6 — Dashboard Metrics
+- [ ] 43.7 — Creator Workspace
+- [ ] 43.8 — Personal AI Studio
+- [ ] 43.9 — Creator AI Profile
+- [ ] 43.10 — AI Context Layers
+- [ ] 43.11 — Personal AI Interface
+- [ ] 43.12 — AI Action Modes
+- [ ] 43.13 — AI Model Router
+- [ ] 43.14 — AI Cost Guard
+- [ ] 43.15 — Portfolio Builder
+- [ ] 43.16 — Portfolio Entry Model
+- [ ] 43.17 — Portfolio Content
+- [ ] 43.18 — Project Case Study
+- [ ] 43.19 — Portfolio Themes
+- [ ] 43.20 — Skill System
+- [ ] 43.21 — Skill Profile
+- [ ] 43.22 — Skill Evidence
+- [ ] 43.23 — Creator Graph
+- [ ] 43.24 — Creator Discovery
+- [ ] 43.25 — AI Collaboration Matching
+- [ ] 43.26 — Collaboration Request
+- [ ] 43.27 — Creator Teams
+- [ ] 43.28 — Reputation 2.0
+- [ ] 43.29 — Reputation Protection
+- [ ] 43.30 — Creator Verification
+- [ ] 43.31 — Funding Center
+- [ ] 43.32 — Donation Integration
+- [ ] 43.33 — Donation UI
+- [ ] 43.34 — Donation Dashboard
+- [ ] 43.35 — Creator Community
+- [ ] 43.36 — Follow System
+- [ ] 43.37 — Notification Preferences
+- [ ] 43.38 — Creator Analytics
+- [ ] 43.39 — Project Analytics
+- [ ] 43.40 — Revenue Analytics
+- [ ] 43.41 — Creator Privacy Controls
+- [ ] 43.42 — Project Privacy
+- [ ] 43.43 — AI Data Permission
+- [ ] 43.44 — Training Permission
+- [ ] 43.45 — Device Sync
+- [ ] 43.46 — Device Session Management
+- [ ] 43.47 — Offline Creator Mode
+- [ ] 43.48 — Database Migration
+- [ ] 43.49 — Creator API
+- [ ] 43.50 — Personal AI API
+- [ ] 43.51 — Sidebar Upgrade
+- [ ] 43.52 — Mobile Navigation
+- [ ] 43.53 — Unit Tests
+- [ ] 43.54 — Integration Tests
+- [ ] 43.55 — Security Tests
+- [ ] 43.56 — Performance Tests
+- [ ] 43.57 — Creator Platform Feature Flags
+- [ ] 43.58 — Creator Migration
+- [ ] 43.59 — Final Creator Dashboard
+- [ ] 43.60 — Definition of Done
+
+## Sprint 44 — AI Marketplace + Agent Economy + Prompt & Workflow Marketplace
+- Steps: 94
+- Source variants: AI Economy Marketplace (0 steps); AI Marketplace + Agent Economy + Prompt & Workflow Marketplace (94 steps)
+- [ ] 44.1 — Marketplace Architecture
+- [ ] 44.2 — Marketplace Workspace
+- [ ] 44.3 — Marketplace Categories
+- [ ] 44.4 — Marketplace Item Model
+- [ ] 44.5 — Item Types
+- [ ] 44.6 — Product Detail Page
+- [ ] 44.7 — AI Agent Store
+- [ ] 44.8 — Agent Package
+- [ ] 44.9 — Agent Manifest
+- [ ] 44.10 — Agent Capability Manifest
+- [ ] 44.11 — Agent Installation
+- [ ] 44.12 — Agent Permission Screen
+- [ ] 44.13 — Agent Sandbox
+- [ ] 44.14 — Resource Limits
+- [ ] 44.15 — Workflow Marketplace
+- [ ] 44.16 — Workflow Package
+- [ ] 44.17 — Workflow Model
+- [ ] 44.18 — Workflow Compatibility
+- [ ] 44.19 — Missing Dependency Resolver
+- [ ] 44.20 — Prompt Marketplace
+- [ ] 44.21 — Structured Prompt Product
+- [ ] 44.22 — Prompt Variables
+- [ ] 44.23 — Prompt Preview
+- [ ] 44.24 — Template Marketplace
+- [ ] 44.25 — Project Template Installation
+- [ ] 44.26 — AI Integration Marketplace
+- [ ] 44.27 — Provider Adapter Interface
+- [ ] 44.28 — Credentials Vault
+- [ ] 44.29 — Creator Store
+- [ ] 44.30 — Seller Center
+- [ ] 44.31 — Create Product Wizard
+- [ ] 44.32 — Draft & Publishing States
+- [ ] 44.33 — Version Management
+- [ ] 44.34 — Update Manager
+- [ ] 44.35 — Rollback
+- [ ] 44.36 — License Engine
+- [ ] 44.37 — License Model
+- [ ] 44.38 — Entitlement System
+- [ ] 44.39 — Purchase System
+- [ ] 44.40 — Creator Revenue
+- [ ] 44.41 — Revenue Sharing
+- [ ] 44.42 — Creator Payout
+- [ ] 44.43 — Free Products
+- [ ] 44.44 — Trials
+- [ ] 44.45 — Subscription Products
+- [ ] 44.46 — Bundles
+- [ ] 44.47 — Reviews
+- [ ] 44.48 — Review Dimensions
+- [ ] 44.49 — Marketplace Search
+- [ ] 44.50 — Semantic Discovery
+- [ ] 44.51 — Recommendation Engine
+- [ ] 44.52 — My Library
+- [ ] 44.53 — Installation Manager
+- [ ] 44.54 — Enable / Disable
+- [ ] 44.55 — Marketplace Security Scan
+- [ ] 44.56 — Package Signing
+- [ ] 44.57 — Integrity Hash
+- [ ] 44.58 — Permission Changes on Update
+- [ ] 44.59 — Marketplace Moderation
+- [ ] 44.60 — Emergency Kill Switch
+- [ ] 44.61 — Copyright & Ownership
+- [ ] 44.62 — Dependency Security
+- [ ] 44.63 — Marketplace Analytics
+- [ ] 44.64 — Seller Analytics
+- [ ] 44.65 — Product Health
+- [ ] 44.66 — Developer Console
+- [ ] 44.67 — Marketplace Test Environment
+- [ ] 44.68 — Private Distribution
+- [ ] 44.69 — Organization Marketplace
+- [ ] 44.70 — Marketplace API
+- [ ] 44.71 — Entitlement API
+- [ ] 44.72 — Marketplace Database
+- [ ] 44.73 — Search Index
+- [ ] 44.74 — Caching
+- [ ] 44.75 — Marketplace Background Jobs
+- [ ] 44.76 — Notifications
+- [ ] 44.77 — Marketplace Mobile UI
+- [ ] 44.78 — Desktop Integration
+- [ ] 44.79 — Offline Handling
+- [ ] 44.80 — Backup Integration
+- [ ] 44.81 — Version Lock per Project
+- [ ] 44.82 — Marketplace AI Assistant
+- [ ] 44.83 — AI Purchase Guard
+- [ ] 44.84 — Spending Limit
+- [ ] 44.85 — Audit Trail
+- [ ] 44.86 — Testing: Marketplace Core
+- [ ] 44.87 — Testing: Payments
+- [ ] 44.88 — Testing: Security
+- [ ] 44.89 — Testing: Agent Sandbox
+- [ ] 44.90 — Testing: Scale
+- [ ] 44.91 — Feature Flags
+- [ ] 44.92 — Release Strategy
+- [ ] 44.93 — Marketplace Home Final
+- [ ] 44.94 — Definition of Done
+
+## Sprint 45 — Cross-Universe Engine + Multiverse Timeline + Character & Asset Portability
+- Steps: 100
+- Source variants: Cross Universe Engine (0 steps); Cross-Universe Engine + Multiverse Timeline + Character & Asset Portability (100 steps)
+- [ ] 45.1 — Universe Registry
+- [ ] 45.2 — Universe Identity
+- [ ] 45.3 — Universe Types
+- [ ] 45.4 — Primary Canon Universe
+- [ ] 45.5 — Canon Isolation Layer
+- [ ] 45.6 — Universe Context
+- [ ] 45.7 — Universe Switcher
+- [ ] 45.8 — Create Universe Wizard
+- [ ] 45.9 — Universe Fork
+- [ ] 45.10 — Copy-on-Write Architecture
+- [ ] 45.11 — Universe Inheritance
+- [ ] 45.12 — Timeline Registry
+- [ ] 45.13 — Timeline Branch
+- [ ] 45.14 — Divergence Event
+- [ ] 45.15 — Alternate Timeline
+- [ ] 45.16 — Timeline Comparison
+- [ ] 45.17 — Timeline Diff Engine
+- [ ] 45.18 — Temporal State System
+- [ ] 45.19 — Character State Model
+- [ ] 45.20 — Character Portability
+- [ ] 45.21 — Port Modes
+- [ ] 45.22 — Character Identity Preservation
+- [ ] 45.23 — Character Variant Model
+- [ ] 45.24 — Face / Identity Lock Integration
+- [ ] 45.25 — Variant Lock Matrix
+- [ ] 45.26 — Asset Portability
+- [ ] 45.27 — Asset Link
+- [ ] 45.28 — Asset Snapshot
+- [ ] 45.29 — Asset Dependency Graph
+- [ ] 45.30 — Portability Wizard
+- [ ] 45.31 — Dependency Conflict Detection
+- [ ] 45.32 — Universe Bridge
+- [ ] 45.33 — Bridge Rules
+- [ ] 45.34 — Universe Compatibility
+- [ ] 45.35 — World Rule Translator
+- [ ] 45.36 — Crossover Event System
+- [ ] 45.37 — Crossover Project
+- [ ] 45.38 — Canon Status
+- [ ] 45.39 — Return State
+- [ ] 45.40 — Crossover State Package
+- [ ] 45.41 — Shared Lore
+- [ ] 45.42 — Lore Scope
+- [ ] 45.43 — Global Lore Registry
+- [ ] 45.44 — Multiverse Graph
+- [ ] 45.45 — Interactive Graph
+- [ ] 45.46 — Graph Node Information
+- [ ] 45.47 — Multiverse Timeline
+- [ ] 45.48 — Timeline Zoom Levels
+- [ ] 45.49 — Canon Conflict Engine
+- [ ] 45.50 — Conflict Example
+- [ ] 45.51 — Conflict Severity
+- [ ] 45.52 — Canon Override
+- [ ] 45.53 — Multiverse AI
+- [ ] 45.54 — AI Context Isolation
+- [ ] 45.55 — Cross-Universe AI Query
+- [ ] 45.56 — AI Alternate Universe Generator
+- [ ] 45.57 — Butterfly Effect Analyzer
+- [ ] 45.58 — Relationship Variants
+- [ ] 45.59 — Organization Variants
+- [ ] 45.60 — Location Variants
+- [ ] 45.61 — Weapon Variants
+- [ ] 45.62 — Variant Inspector
+- [ ] 45.63 — Merge Engine
+- [ ] 45.64 — Three-Way Merge
+- [ ] 45.65 — Merge Preview
+- [ ] 45.66 — Merge Transaction
+- [ ] 45.67 — Universe Snapshot
+- [ ] 45.68 — Universe Versioning
+- [ ] 45.69 — Canon Release
+- [ ] 45.70 — Cross-Universe Permissions
+- [ ] 45.71 — Permission Levels
+- [ ] 45.72 — Collaboration Request
+- [ ] 45.73 — Attribution
+- [ ] 45.74 — Provenance Graph
+- [ ] 45.75 — Marketplace Integration
+- [ ] 45.76 — Project Bible Integration
+- [ ] 45.77 — Story Editor Integration
+- [ ] 45.78 — Character Workspace Integration
+- [ ] 45.79 — Asset Browser Integration
+- [ ] 45.80 — Global Search Upgrade
+- [ ] 45.81 — Dashboard Upgrade
+- [ ] 45.82 — Multiverse Workspace
+- [ ] 45.83 — Multiverse Graph UI
+- [ ] 45.84 — Database Migration
+- [ ] 45.85 — Indexing
+- [ ] 45.86 — Caching
+- [ ] 45.87 — Background Jobs
+- [ ] 45.88 — Universe API
+- [ ] 45.89 — Timeline API
+- [ ] 45.90 — Portability API
+- [ ] 45.91 — Crossover API
+- [ ] 45.92 — Security
+- [ ] 45.93 — AI Security
+- [ ] 45.94 — Audit Trail
+- [ ] 45.95 — Unit Testing
+- [ ] 45.96 — Integration Testing
+- [ ] 45.97 — AI Testing
+- [ ] 45.98 — Scale Testing
+- [ ] 45.99 — Feature Flags
+- [ ] 45.100 — Definition of Done
+
+## Sprint 46 — Advanced World Simulation Engine
+- Steps: 110
+- Source variants: Advanced World Simulation (0 steps); Advanced World Simulation Engine (110 steps)
+- [ ] 46.1 — Simulation Core
+- [ ] 46.2 — Simulation World
+- [ ] 46.3 — Simulation Modes
+- [ ] 46.4 — Simulation Clock
+- [ ] 46.5 — Time Controls
+- [ ] 46.6 — Deterministic Simulation
+- [ ] 46.7 — World State
+- [ ] 46.8 — State Layers
+- [ ] 46.9 — Population Simulation
+- [ ] 46.10 — Population Groups
+- [ ] 46.11 — NPC Simulation Levels
+- [ ] 46.12 — NPC Agent
+- [ ] 46.13 — NPC Needs
+- [ ] 46.14 — NPC Personality
+- [ ] 46.15 — NPC Goals
+- [ ] 46.16 — NPC Routine
+- [ ] 46.17 — Dynamic Routine
+- [ ] 46.18 — Memory System
+- [ ] 46.19 — Memory Model
+- [ ] 46.20 — Memory Decay
+- [ ] 46.21 — False Information
+- [ ] 46.22 — Dynamic Relationships
+- [ ] 46.23 — Relationship State
+- [ ] 46.24 — Relationship Events
+- [ ] 46.25 — Faction System
+- [ ] 46.26 — Faction State
+- [ ] 46.27 — Faction Goals
+- [ ] 46.28 — Faction AI
+- [ ] 46.29 — Faction Relationships
+- [ ] 46.30 — Government Model
+- [ ] 46.31 — Political Variables
+- [ ] 46.32 — Political Events
+- [ ] 46.33 — Economy Engine
+- [ ] 46.34 — Economic State
+- [ ] 46.35 — Goods System
+- [ ] 46.36 — Supply & Demand
+- [ ] 46.37 — Market Simulation
+- [ ] 46.38 — Trade Routes
+- [ ] 46.39 — Trade Disruption
+- [ ] 46.40 — Resource System
+- [ ] 46.41 — Resource Depletion
+- [ ] 46.42 — Resource Discovery
+- [ ] 46.43 — City Model
+- [ ] 46.44 — District Simulation
+- [ ] 46.45 — Infrastructure
+- [ ] 46.46 — Infrastructure Failure
+- [ ] 46.47 — Transportation Network
+- [ ] 46.48 — Travel Time
+- [ ] 46.49 — Weather Simulation
+- [ ] 46.50 — Weather Zones
+- [ ] 46.51 — Weather Impact
+- [ ] 46.52 — Lighting Continuity Integration
+- [ ] 46.53 — Ecosystem Simulation
+- [ ] 46.54 — Creature Population
+- [ ] 46.55 — Ecosystem Balance
+- [ ] 46.56 — Event Generator
+- [ ] 46.57 — Event Categories
+- [ ] 46.58 — Event Conditions
+- [ ] 46.59 — Probability Model
+- [ ] 46.60 — Event Chain
+- [ ] 46.61 — Conflict Engine
+- [ ] 46.62 — Military Strength
+- [ ] 46.63 — Battle Simulation
+- [ ] 46.64 — Character Impact
+- [ ] 46.65 — World Consequence Graph
+- [ ] 46.66 — Example
+- [ ] 46.67 — Consequence Horizon
+- [ ] 46.68 — Butterfly Effect Integration
+- [ ] 46.69 — Canon Guard
+- [ ] 46.70 — Canon Anchors
+- [ ] 46.71 — Hard & Soft Anchors
+- [ ] 46.72 — Canon Corridor
+- [ ] 46.73 — World Director
+- [ ] 46.74 — Story Opportunity Detection
+- [ ] 46.75 — Drama Control
+- [ ] 46.76 — AI Event Proposal
+- [ ] 46.77 — Story Integration
+- [ ] 46.78 — What-If Laboratory
+- [ ] 46.79 — Experiment Configuration
+- [ ] 46.80 — Monte Carlo Simulation
+- [ ] 46.81 — Simulation Comparison
+- [ ] 46.82 — Simulation History
+- [ ] 46.83 — Replay
+- [ ] 46.84 — Time-Lapse World
+- [ ] 46.85 — World Health Dashboard
+- [ ] 46.86 — Trend Charts
+- [ ] 46.87 — Heat Maps
+- [ ] 46.88 — World Simulation Workspace
+- [ ] 46.89 — Simulation Inspector
+- [ ] 46.90 — Event Feed
+- [ ] 46.91 — Database Migration
+- [ ] 46.92 — Event-Sourced State
+- [ ] 46.93 — State Partitioning
+- [ ] 46.94 — Simulation Scheduler
+- [ ] 46.95 — Interest Management
+- [ ] 46.96 — Background Simulation
+- [ ] 46.97 — Simulation API
+- [ ] 46.98 — Experiment API
+- [ ] 46.99 — Simulation Permissions
+- [ ] 46.100 — Simulation Resource Guard
+- [ ] 46.101 — AI Action Guard
+- [ ] 46.102 — Core Tests
+- [ ] 46.103 — NPC Tests
+- [ ] 46.104 — World Tests
+- [ ] 46.105 — Consequence Tests
+- [ ] 46.106 — Canon Tests
+- [ ] 46.107 — Scale Tests
+- [ ] 46.108 — Save Compatibility
+- [ ] 46.109 — Version Compatibility
+- [ ] 46.110 — Definition of Done
+
+## Sprint 47 — Game Creation Layer + Gameplay Framework
+- Steps: 116
+- Source variants: Game Creation Layer (0 steps); Game Creation Layer + Gameplay Framework (116 steps)
+- [ ] 47.1 — Game Project Type
+- [ ] 47.2 — Game Project Model
+- [ ] 47.3 — Game Genre
+- [ ] 47.4 — Game Template
+- [ ] 47.5 — Runtime Architecture
+- [ ] 47.6 — Runtime Modules
+- [ ] 47.7 — Entity Component Architecture
+- [ ] 47.8 — Level
+- [ ] 47.9 — Level Editor
+- [ ] 47.10 — Level Streaming
+- [ ] 47.11 — Player Controller
+- [ ] 47.12 — Movement
+- [ ] 47.13 — Movement State Machine
+- [ ] 47.14 — Universal Input System
+- [ ] 47.15 — Input Actions
+- [ ] 47.16 — Rebinding
+- [ ] 47.17 — Camera Modes
+- [ ] 47.18 — Third-Person Camera
+- [ ] 47.19 — Combat Camera
+- [ ] 47.20 — Combat Framework
+- [ ] 47.21 — Combat Style Database Integration
+- [ ] 47.22 — Combat Component
+- [ ] 47.23 — Attack Types
+- [ ] 47.24 — Combo Graph
+- [ ] 47.25 — Combo Window
+- [ ] 47.26 — Signature Moves
+- [ ] 47.27 — Weapon Database Integration
+- [ ] 47.28 — Weapon Component
+- [ ] 47.29 — Weapon Switching
+- [ ] 47.30 — Damage Model
+- [ ] 47.31 — Damage Types
+- [ ] 47.32 — Hit Reaction
+- [ ] 47.33 — Ability Architecture
+- [ ] 47.34 — Ability Flow
+- [ ] 47.35 — Ability Categories
+- [ ] 47.36 — Byte Integration
+- [ ] 47.37 — Enemy AI Architecture
+- [ ] 47.38 — AI States
+- [ ] 47.39 — AI Perception
+- [ ] 47.40 — AI Combat Personality
+- [ ] 47.41 — Boss Framework
+- [ ] 47.42 — Boss Phase
+- [ ] 47.43 — Boss Cinematic Transition
+- [ ] 47.44 — Quest System
+- [ ] 47.45 — Quest Types
+- [ ] 47.46 — Quest Graph
+- [ ] 47.47 — Dynamic World Quest
+- [ ] 47.48 — Dialogue System
+- [ ] 47.49 — Dialogue Graph
+- [ ] 47.50 — AI Dialogue
+- [ ] 47.51 — Inventory
+- [ ] 47.52 — Inventory Item
+- [ ] 47.53 — Equipment
+- [ ] 47.54 — Loot Tables
+- [ ] 47.55 — Contextual Loot
+- [ ] 47.56 — XP System
+- [ ] 47.57 — Level System
+- [ ] 47.58 — Skill Tree
+- [ ] 47.59 — Checkpoint
+- [ ] 47.60 — Save Game Architecture
+- [ ] 47.61 — Save Slots
+- [ ] 47.62 — Save Compatibility
+- [ ] 47.63 — HUD Designer
+- [ ] 47.64 — Responsive HUD
+- [ ] 47.65 — Audio Runtime
+- [ ] 47.66 — Dynamic Music
+- [ ] 47.67 — VFX Events
+- [ ] 47.68 — VFX Lock Integration
+- [ ] 47.69 — Physics Layer
+- [ ] 47.70 — Gameplay Physics Rules
+- [ ] 47.71 — Gameplay ↔ Simulation
+- [ ] 47.72 — Example
+- [ ] 47.73 — Simulation LOD During Gameplay
+- [ ] 47.74 — Timeline Events
+- [ ] 47.75 — Canon Game Mode
+- [ ] 47.76 — Network Architecture
+- [ ] 47.77 — Multiplayer Modes
+- [ ] 47.78 — Network Entity
+- [ ] 47.79 — Replication
+- [ ] 47.80 — Play Mode
+- [ ] 47.81 — Live Edit
+- [ ] 47.82 — Gameplay Debugger
+- [ ] 47.83 — AI Debugger
+- [ ] 47.84 — Combat Debugger
+- [ ] 47.85 — Game Profiler
+- [ ] 47.86 — Performance Budget
+- [ ] 47.87 — Game Build Pipeline
+- [ ] 47.88 — Build Targets
+- [ ] 47.89 — Build Configuration
+- [ ] 47.90 — Asset Cooking
+- [ ] 47.91 — Export Game Package
+- [ ] 47.92 — Project Export
+- [ ] 47.93 — Game Creator AI
+- [ ] 47.94 — Natural Language Gameplay Creation
+- [ ] 47.95 — AI Balance Assistant
+- [ ] 47.96 — Migration
+- [ ] 47.97 — Game API
+- [ ] 47.98 — Gameplay API
+- [ ] 47.99 — Mod/Package Sandbox
+- [ ] 47.100 — Save Integrity
+- [ ] 47.101 — Player Tests
+- [ ] 47.102 — Combat Tests
+- [ ] 47.103 — AI Tests
+- [ ] 47.104 — RPG Systems Tests
+- [ ] 47.105 — World Integration Tests
+- [ ] 47.106 — Performance Tests
+- [ ] 47.107 — Mobile Runtime
+- [ ] 47.108 — Touch Layout Editor
+- [ ] 47.109 — Game Bible
+- [ ] 47.110 — Gameplay Locks
+- [ ] 47.111 — Core Gameplay Loop
+- [ ] 47.112 — Qowner Game Example
+- [ ] 47.113 — Byte Combat Runtime
+- [ ] 47.114 — Seamless Cinematic Transition
+- [ ] 47.115 — Game Creation Dashboard
+- [ ] 47.116 — Definition of Done
+
+## Sprint 48 — Interactive Cinema Engine + Cinematic Sequencer
+- Steps: 116
+- Source variants: Interactive Cinema Engine (0 steps); Interactive Cinema Engine + Cinematic Sequencer (116 steps)
+- [ ] 48.1 — Cinematic Project
+- [ ] 48.2 — Cinematic Types
+- [ ] 48.3 — Shared Asset Architecture
+- [ ] 48.4 — Cinematic Timeline
+- [ ] 48.5 — Track Architecture
+- [ ] 48.6 — Nested Sequences
+- [ ] 48.7 — Shot Entity
+- [ ] 48.8 — Shot Properties
+- [ ] 48.9 — Shot Naming
+- [ ] 48.10 — Virtual Camera
+- [ ] 48.11 — Camera Presets
+- [ ] 48.12 — Camera Movement
+- [ ] 48.13 — Camera Rig
+- [ ] 48.14 — Camera Path
+- [ ] 48.15 — AI Camera Director
+- [ ] 48.16 — Cinematic Grammar
+- [ ] 48.17 — Continuity Rules
+- [ ] 48.18 — Intentional Rule Break
+- [ ] 48.19 — Performance Track
+- [ ] 48.20 — Performance State
+- [ ] 48.21 — Performance Curve
+- [ ] 48.22 — Facial Rig
+- [ ] 48.23 — Micro Expressions
+- [ ] 48.24 — Face Lock Integration
+- [ ] 48.25 — Eye Tracking
+- [ ] 48.26 — Natural Eye Behavior
+- [ ] 48.27 — Dialogue Clip
+- [ ] 48.28 — Dialogue Timing
+- [ ] 48.29 — Dialogue Performance AI
+- [ ] 48.30 — Lip Sync Pipeline
+- [ ] 48.31 — Manual Correction
+- [ ] 48.32 — Animation Layers
+- [ ] 48.33 — Performance Constraints
+- [ ] 48.34 — Character Interaction
+- [ ] 48.35 — Interaction Anchors
+- [ ] 48.36 — Environment Timeline
+- [ ] 48.37 — Time-of-Day Track
+- [ ] 48.38 — Weather Timeline
+- [ ] 48.39 — Cinematic Lighting Track
+- [ ] 48.40 — Lighting Presets
+- [ ] 48.41 — VFX Track
+- [ ] 48.42 — Weapon VFX Integration
+- [ ] 48.43 — Audio Tracks
+- [ ] 48.44 — Spatial Audio
+- [ ] 48.45 — Automatic Ducking
+- [ ] 48.46 — Storyboard Generator
+- [ ] 48.47 — Storyboard Metadata
+- [ ] 48.48 — Storyboard → Animatic
+- [ ] 48.49 — Animatic Preview
+- [ ] 48.50 — Choice Node
+- [ ] 48.51 — Choice Model
+- [ ] 48.52 — Choice Conditions
+- [ ] 48.53 — Choice Consequence
+- [ ] 48.54 — Branch Preview
+- [ ] 48.55 — Gameplay → Cinematic
+- [ ] 48.56 — Cinematic → Gameplay
+- [ ] 48.57 — Player Transform Handoff
+- [ ] 48.58 — Quick-Time Event
+- [ ] 48.59 — Accessibility
+- [ ] 48.60 — Combat Sequence
+- [ ] 48.61 — Performance Director AI
+- [ ] 48.62 — Character Personality Guard
+- [ ] 48.63 — AI Editing Assistant
+- [ ] 48.64 — Rough Cut Generator
+- [ ] 48.65 — Preview Modes
+- [ ] 48.66 — Performance Preview
+- [ ] 48.67 — Cinematic Render Queue
+- [ ] 48.68 — Render Presets
+- [ ] 48.69 — Frame Rate
+- [ ] 48.70 — Aspect Ratio
+- [ ] 48.71 — Optional Passes
+- [ ] 48.72 — Subtitle Track
+- [ ] 48.73 — Subtitle Formats
+- [ ] 48.74 — Language System
+- [ ] 48.75 — Translation Memory
+- [ ] 48.76 — Dubbing Track
+- [ ] 48.77 — Dub Timing
+- [ ] 48.78 — Delivery Profiles
+- [ ] 48.79 — Platform Variants
+- [ ] 48.80 — Composition Safe Zones
+- [ ] 48.81 — Shot Versions
+- [ ] 48.82 — Compare Versions
+- [ ] 48.83 — Review Comments
+- [ ] 48.84 — Production Status
+- [ ] 48.85 — Shot Status Dashboard
+- [ ] 48.86 — Cinematic Continuity Checker
+- [ ] 48.87 — Example
+- [ ] 48.88 — State Snapshot
+- [ ] 48.89 — Dynamic Cutscene State
+- [ ] 48.90 — Universe-Aware Cinematic
+- [ ] 48.91 — Migration
+- [ ] 48.92 — Cinematic API
+- [ ] 48.93 — Sequence API
+- [ ] 48.94 — AI Director API
+- [ ] 48.95 — Timeline Optimization
+- [ ] 48.96 — Proxy Workflow
+- [ ] 48.97 — Timeline Autosave
+- [ ] 48.98 — Recovery
+- [ ] 48.99 — Asset Rights Validation
+- [ ] 48.100 — Natural Language Cinematic Editing
+- [ ] 48.101 — Scene → Production Package
+- [ ] 48.102 — Example Scene
+- [ ] 48.103 — Environment Continuity
+- [ ] 48.104 — Natural Performance
+- [ ] 48.105 — Project Bible Extension
+- [ ] 48.106 — Cinematic Preservation
+- [ ] 48.107 — 
+- [ ] 48.108 — Pre-Render Validation
+- [ ] 48.109 — Sequencer Tests
+- [ ] 48.110 — Performance Tests
+- [ ] 48.111 — Interactive Tests
+- [ ] 48.112 — Continuity Tests
+- [ ] 48.113 — Render Tests
+- [ ] 48.114 — 
+- [ ] 48.115 — Cinema Workspace
+- [ ] 48.116 — Definition of Done
+
+## Sprint 49 — Global Content Distribution + Publishing + Creator Channel + Release Management
+- Steps: 100
+- Source variants: Global Content Distribution Network (0 steps); Global Content Distribution + Publishing + Creator Channel + Release Management (100 steps)
+- [ ] 49.1 — Release sebagai Entity Resmi
+- [ ] 49.2 — Release Status
+- [ ] 49.3 — Publishing Workspace
+- [ ] 49.4 — Release Wizard
+- [ ] 49.5 — Semantic Versioning
+- [ ] 49.6 — Release Notes
+- [ ] 49.7 — Release Snapshot
+- [ ] 49.8 — Build Validation
+- [ ] 49.9 — Validation Levels
+- [ ] 49.10 — Example Validation
+- [ ] 49.11 — Creator Channel
+- [ ] 49.12 — Channel Visibility
+- [ ] 49.13 — Channel Header
+- [ ] 49.14 — Featured Project
+- [ ] 49.15 — Universal Content Metadata
+- [ ] 49.16 — Film Metadata
+- [ ] 49.17 — Game Metadata
+- [ ] 49.18 — Canon Metadata
+- [ ] 49.19 — Content Descriptor
+- [ ] 49.20 — Region Availability
+- [ ] 49.21 — Trailer Builder Integration
+- [ ] 49.22 — Preview Assets
+- [ ] 49.23 — Auto Social Variants
+- [ ] 49.24 — Film Package
+- [ ] 49.25 — Episode System
+- [ ] 49.26 — Episode Scheduling
+- [ ] 49.27 — Game Release Package
+- [ ] 49.28 — Platform Builds
+- [ ] 49.29 — Build Matrix
+- [ ] 49.30 — Game Patch
+- [ ] 49.31 — Patch Manifest
+- [ ] 49.32 — Save Migration
+- [ ] 49.33 — Rollback Channel
+- [ ] 49.34 — Download Architecture
+- [ ] 49.35 — Resume Download
+- [ ] 49.36 — Content Hash
+- [ ] 49.37 — Repair Installation
+- [ ] 49.38 — Distribution Storage
+- [ ] 49.39 — Package Classes
+- [ ] 49.40 — Immutable Artifact Paths
+- [ ] 49.41 — Library
+- [ ] 49.42 — Continue Experience
+- [ ] 49.43 — Cloud Progress
+- [ ] 49.44 — Discovery Home
+- [ ] 49.45 — Search
+- [ ] 49.46 — Semantic Discovery
+- [ ] 49.47 — Recommendation Privacy
+- [ ] 49.48 — Follow Targets
+- [ ] 49.49 — Subscription Notification
+- [ ] 49.50 — Distribution Events
+- [ ] 49.51 — Review Entity
+- [ ] 49.52 — Review Eligibility
+- [ ] 49.53 — Review Dimensions
+- [ ] 49.54 — Language Packages
+- [ ] 49.55 — Audio Packs
+- [ ] 49.56 — Localization Status
+- [ ] 49.57 — Content Entitlement
+- [ ] 49.58 — Offline Entitlement
+- [ ] 49.59 — Monetization Types
+- [ ] 49.60 — No Paywall in Project Data
+- [ ] 49.61 — Revenue Dashboard
+- [ ] 49.62 — Revenue Breakdown
+- [ ] 49.63 — Project Revenue Attribution
+- [ ] 49.64 — Film Analytics
+- [ ] 49.65 — Game Analytics
+- [ ] 49.66 — Interactive Story Analytics
+- [ ] 49.67 — Release Crash Data
+- [ ] 49.68 — Release Health
+- [ ] 49.69 — Publishing Review Pipeline
+- [ ] 49.70 — Report System
+- [ ] 49.71 — Moderation Actions
+- [ ] 49.72 — Release Provenance
+- [ ] 49.73 — Contributor Credits
+- [ ] 49.74 — Artifact Signing
+- [ ] 49.75 — Release Secrets
+- [ ] 49.76 — Release Matrix
+- [ ] 49.77 — Platform Overrides
+- [ ] 49.78 — Public Project Page
+- [ ] 49.79 — Share Links
+- [ ] 49.80 — Review Release
+- [ ] 49.81 — Release Scheduler
+- [ ] 49.82 — Premiere Mode
+- [ ] 49.83 — Release Workflow
+- [ ] 49.84 — Human Approval Gate
+- [ ] 49.85 — Publishing Agent
+- [ ] 49.86 — No Autonomous Public Publish by Default
+- [ ] 49.87 — Schema Migration
+- [ ] 49.88 — Release API
+- [ ] 49.89 — Distribution API
+- [ ] 49.90 — Audience API
+- [ ] 49.91 — Publishing Jobs
+- [ ] 49.92 — Progressive Delivery
+- [ ] 49.93 — Video Streaming Profiles
+- [ ] 49.94 — Distribution Security
+- [ ] 49.95 — Release Tests
+- [ ] 49.96 — Game Distribution Tests
+- [ ] 49.97 — Film Distribution Tests
+- [ ] 49.98 — Scale Testing
+- [ ] 49.99 — Publishing Dashboard
+- [ ] 49.100 — Definition of Done
+
+## Sprint 50 — Void Scriptor OS 1.0: Integration, Stabilization, Installer, QA & Production Launch
+- Steps: 142
+- Source variants: Void Scriptor OS 1.0 (0 steps); Void Scriptor OS 1.0: Integration, Stabilization, Installer, QA & Production Launch (142 steps)
+- [ ] 50.1 — Freeze Feature Scope
+- [ ] 50.2 — Master Feature Registry
+- [ ] 50.3 — Feature Readiness Matrix
+- [ ] 50.4 — 1.0 Product Boundary
+- [ ] 50.5 — Application Composition Root
+- [ ] 50.6 — Bootstrap Service
+- [ ] 50.7 — Startup Order
+- [ ] 50.8 — Lazy Optional Services
+- [ ] 50.9 — Module Boundaries
+- [ ] 50.10 — Circular Dependency Audit
+- [ ] 50.11 — Unified Event Bus
+- [ ] 50.12 — Event Scope
+- [ ] 50.13 — Schema Audit
+- [ ] 50.14 — Schema 1.0 Baseline
+- [ ] 50.15 — Migration Registry
+- [ ] 50.16 — Migration Safety
+- [ ] 50.17 — Never Migrate Without Backup
+- [ ] 50.18 — Stable Project Manifest
+- [ ] 50.19 — Project Folder Standard
+- [ ] 50.20 — Cache Exclusion
+- [ ] 50.21 — Final Application Shell
+- [ ] 50.22 — Logo Position Lock
+- [ ] 50.23 — Navigation Audit
+- [ ] 50.24 — Naming Standardization
+- [ ] 50.25 — Empty States
+- [ ] 50.26 — Loading States
+- [ ] 50.27 — Error States
+- [ ] 50.28 — Desktop Layout
+- [ ] 50.29 — Android Layout
+- [ ] 50.30 — Tablet Layout
+- [ ] 50.31 — Component Inventory
+- [ ] 50.32 — Remove One-Off Styles
+- [ ] 50.33 — UI Density
+- [ ] 50.34 — Theme
+- [ ] 50.35 — Keyboard Navigation
+- [ ] 50.36 — Focus Visibility
+- [ ] 50.37 — Screen Reader Labels
+- [ ] 50.38 — Contrast
+- [ ] 50.39 — Motion Reduction
+- [ ] 50.40 — Text Scaling
+- [ ] 50.41 — Application Localization
+- [ ] 50.42 — Locale Resource
+- [ ] 50.43 — No Hardcoded UI Text
+- [ ] 50.44 — Date/Number Formats
+- [ ] 50.45 — Welcome Experience
+- [ ] 50.46 — First-Run Configuration
+- [ ] 50.47 — AI Setup Can Be Skipped
+- [ ] 50.48 — Demo Project
+- [ ] 50.49 — Contextual Tutorials
+- [ ] 50.50 — Don't Show Again
+- [ ] 50.51 — Settings Architecture
+- [ ] 50.52 — Search Settings
+- [ ] 50.53 — Windows Installer
+- [ ] 50.54 — Windows File Association
+- [ ] 50.55 — Linux Packaging
+- [ ] 50.56 — macOS Package
+- [ ] 50.57 — Android Package
+- [ ] 50.58 — Update Service
+- [ ] 50.59 — Update Channels
+- [ ] 50.60 — Update UI
+- [ ] 50.61 — Update Integrity
+- [ ] 50.62 — Update Rollback
+- [ ] 50.63 — Crash Marker
+- [ ] 50.64 — Safe Mode Options
+- [ ] 50.65 — Safe Mode Behavior
+- [ ] 50.66 — Workspace Recovery
+- [ ] 50.67 — Document Recovery
+- [ ] 50.68 — Diagnostics Center
+- [ ] 50.69 — System Info
+- [ ] 50.70 — Diagnostic Export
+- [ ] 50.71 — Structured Logging
+- [ ] 50.72 — Log Levels
+- [ ] 50.73 — Log Rotation
+- [ ] 50.74 — Crash Consent
+- [ ] 50.75 — Crash Fingerprint
+- [ ] 50.76 — Privacy Dashboard
+- [ ] 50.77 — Local-Only Mode
+- [ ] 50.78 — Secrets Audit
+- [ ] 50.79 — Dependency Audit
+- [ ] 50.80 — File Parsing Security
+- [ ] 50.81 — Project Package Security
+- [ ] 50.82 — Startup Target
+- [ ] 50.83 — Memory Baseline
+- [ ] 50.84 — Large Project Test
+- [ ] 50.85 — UI Frame Performance
+- [ ] 50.86 — Storage Manager
+- [ ] 50.87 — Clear Cache
+- [ ] 50.88 — Automatic Backup Defaults
+- [ ] 50.89 — Backup Health
+- [ ] 50.90 — Health Check
+- [ ] 50.91 — Repair Center
+- [ ] 50.92 — Test Pyramid
+- [ ] 50.93 — Core Unit Tests
+- [ ] 50.94 — Integration Tests
+- [ ] 50.95 — End-to-End Smoke Test
+- [ ] 50.96 — Windows
+- [ ] 50.97 — Linux
+- [ ] 50.98 — macOS
+- [ ] 50.99 — Android
+- [ ] 50.100 — Final Shortcut Set
+- [ ] 50.101 — Universal Command Search
+- [ ] 50.102 — Fuzzy Search
+- [ ] 50.103 — User Manual
+- [ ] 50.104 — Advanced Manual
+- [ ] 50.105 — Developer Documentation
+- [ ] 50.106 — Help Search
+- [ ] 50.107 — Context Help
+- [ ] 50.108 — About Screen
+- [ ] 50.109 — Third-Party Licenses
+- [ ] 50.110 — Build Metadata
+- [ ] 50.111 — Reproducible Build Metadata
+- [ ] 50.112 — RC1
+- [ ] 50.113 — Bug Severity
+- [ ] 50.114 — Launch Gate
+- [ ] 50.115 — Closed Beta
+- [ ] 50.116 — Beta Feedback System
+- [ ] 50.117 — Minimal Product Metrics
+- [ ] 50.118 — Optional Tour
+- [ ] 50.119 — New Project Presets
+- [ ] 50.120 — Pixel Review
+- [ ] 50.121 — Animation Review
+- [ ] 50.122 — Data Loss Stress Test
+- [ ] 50.123 — Atomic Save
+- [ ] 50.124 — Disk Space Guard
+- [ ] 50.125 — Offline Recovery
+- [ ] 50.126 — Backward Compatibility Policy
+- [ ] 50.127 — Plugin API Version
+- [ ] 50.128 — Deprecated API Policy
+- [ ] 50.129 — Production Defaults
+- [ ] 50.130 — Experimental Modules
+- [ ] 50.131 — Version Naming
+- [ ] 50.132 — 1.0 Release Notes
+- [ ] 50.133 — Technical
+- [ ] 50.134 — Product
+- [ ] 50.135 — Operations
+- [ ] 50.136 — Gold Master Build
+- [ ] 50.137 — Staged Rollout
+- [ ] 50.138 — 1.0.1 Patch Branch
+- [ ] 50.139 — First 30 Days
+- [ ] 50.140 — Schema Baseline
+- [ ] 50.141 — 
+- [ ] 50.142 — 
+
+## Sprint 51 — Neural Creative Interface + Intent Engine + Multimodal Natural Interaction
+- Steps: 76
+- Source variants: Neural Creative Interface (0 steps); Neural Creative Interface + Intent Engine + Multimodal Natural Interaction (76 steps)
+- [ ] 51.1 — Experimental Module Boundary
+- [ ] 51.2 — Interaction Architecture
+- [ ] 51.3 — Interaction Event
+- [ ] 51.4 — Input Types
+- [ ] 51.5 — Normalized Input
+- [ ] 51.6 — Creative Intent Model
+- [ ] 51.7 — Intent Types
+- [ ] 51.8 — Intent Resolver
+- [ ] 51.9 — Context Stack
+- [ ] 51.10 — Context Expiration
+- [ ] 51.11 — Voice Command Layer
+- [ ] 51.12 — Voice Command Example
+- [ ] 51.13 — Natural Language Commands
+- [ ] 51.14 — Command Confirmation Levels
+- [ ] 51.15 — Gesture Adapter
+- [ ] 51.16 — Core Gestures
+- [ ] 51.17 — Gesture Confidence
+- [ ] 51.18 — Gesture Dead Zone
+- [ ] 51.19 — Gaze Adapter
+- [ ] 51.20 — Gaze Is Not Click
+- [ ] 51.21 — Gaze Focus
+- [ ] 51.22 — Stylus System
+- [ ] 51.23 — Sketch-to-Intent
+- [ ] 51.24 — Circle Gesture
+- [ ] 51.25 — Annotation Mode
+- [ ] 51.26 — Touch Interaction
+- [ ] 51.27 — Touch + Voice
+- [ ] 51.28 — Fusion Engine
+- [ ] 51.29 — Fusion Example
+- [ ] 51.30 — Temporal Fusion Window
+- [ ] 51.31 — Confidence Fusion
+- [ ] 51.32 — Next Action Prediction
+- [ ] 51.33 — Command Suggestions
+- [ ] 51.34 — Adaptive Toolbar
+- [ ] 51.35 — Intent History
+- [ ] 51.36 — Correction Learning
+- [ ] 51.37 — Preference Scope
+- [ ] 51.38 — Hands-Free Mode
+- [ ] 51.39 — Dwell Selection
+- [ ] 51.40 — Switch Control Adapter
+- [ ] 51.41 — BCI-Compatible Input Layer
+- [ ] 51.42 — BCI Signal Interpretation
+- [ ] 51.43 — Supported Experimental Intents
+- [ ] 51.44 — Calibration
+- [ ] 51.45 — Labs UI
+- [ ] 51.46 — Input Monitor
+- [ ] 51.47 — Latency Monitor
+- [ ] 51.48 — Sensor Permission Model
+- [ ] 51.49 — Recording Indicator
+- [ ] 51.50 — Local Processing Preference
+- [ ] 51.51 — Raw Sensor Retention
+- [ ] 51.52 — BCI Data Privacy
+- [ ] 51.53 — Accidental Action Protection
+- [ ] 51.54 — Confidence Threshold Per Action
+- [ ] 51.55 — Cancel Gesture
+- [ ] 51.56 — Input Adapter API
+- [ ] 51.57 — Device Capability
+- [ ] 51.58 — Sandbox
+- [ ] 51.59 — Interaction Thread
+- [ ] 51.60 — Input Rate Control
+- [ ] 51.61 — Battery Mode
+- [ ] 51.62 — Resolution Trace
+- [ ] 51.63 — Explainability
+- [ ] 51.64 — Natural Macro
+- [ ] 51.65 — Macro Recording
+- [ ] 51.66 — Intent → AI Agent
+- [ ] 51.67 — Deterministic First
+- [ ] 51.68 — AI Only When Needed
+- [ ] 51.69 — Migration
+- [ ] 51.70 — Intent Tests
+- [ ] 51.71 — Multimodal Tests
+- [ ] 51.72 — Accessibility Tests
+- [ ] 51.73 — Privacy Tests
+- [ ] 51.74 — Safety Tests
+- [ ] 51.75 — Performance Tests
+- [ ] 51.76 — Definition of Done
+
+## Sprint 52 — Autonomous Studio Civilization
+- Steps: 108
+- Source variants: Autonomous Studio Civilization (0 steps); Autonomous Studio Civilization (108 steps)
+- [ ] 52.1 — Studio Entity
+- [ ] 52.2 — Studio Modes
+- [ ] 52.3 — Studio Workspace
+- [ ] 52.4 — Organization Tree
+- [ ] 52.5 — Department Entity
+- [ ] 52.6 — Default Departments
+- [ ] 52.7 — Studio Agent
+- [ ] 52.8 — Agent Tidak Harus = Model AI
+- [ ] 52.9 — Agent Roles
+- [ ] 52.10 — Agent Profile
+- [ ] 52.11 — Agent Personality
+- [ ] 52.12 — Agent Authority
+- [ ] 52.13 — Capability Registry
+- [ ] 52.14 — Capability Matching
+- [ ] 52.15 — Agent Selection
+- [ ] 52.16 — Selection Score
+- [ ] 52.17 — Human Override
+- [ ] 52.18 — Production Director Agent
+- [ ] 52.19 — Project Breakdown
+- [ ] 52.20 — Production Task
+- [ ] 52.21 — Dependency Graph
+- [ ] 52.22 — Blocked Task
+- [ ] 52.23 — Delegation Engine
+- [ ] 52.24 — Delegation Modes
+- [ ] 52.25 — Agent Decomposition
+- [ ] 52.26 — Recursion Limit
+- [ ] 52.27 — Agent Status
+- [ ] 52.28 — Capacity
+- [ ] 52.29 — Queue
+- [ ] 52.30 — Compute Budget
+- [ ] 52.31 — Project Budget
+- [ ] 52.32 — Hard Limits
+- [ ] 52.33 — Budget Gate
+- [ ] 52.34 — 
+- [ ] 52.35 — Agent Messages
+- [ ] 52.36 — Message Types
+- [ ] 52.37 — No Free-Form Infinite Chat
+- [ ] 52.38 — Production Meeting
+- [ ] 52.39 — Meeting Output
+- [ ] 52.40 — Daily Studio Brief
+- [ ] 52.41 — Attention Queue
+- [ ] 52.42 — Internal Review
+- [ ] 52.43 — Reviewer Separation
+- [ ] 52.44 — QC Profiles
+- [ ] 52.45 — Character QC
+- [ ] 52.46 — Story QC
+- [ ] 52.47 — Agent Disagreement
+- [ ] 52.48 — Conflict Resolver
+- [ ] 52.49 — Escalation
+- [ ] 52.50 — Memory Layers
+- [ ] 52.51 — Project Memory
+- [ ] 52.52 — Decision Record
+- [ ] 52.53 — Superseded Decision
+- [ ] 52.54 — 
+- [ ] 52.55 — Knowledge Scope
+- [ ] 52.56 — Evaluation Metrics
+- [ ] 52.57 — Jangan Gunakan Satu Skor Buta
+- [ ] 52.58 — Prompt/Policy Optimization
+- [ ] 52.59 — 
+- [ ] 52.60 — Rollback
+- [ ] 52.61 — Model Independence
+- [ ] 52.62 — Routing Factors
+- [ ] 52.63 — Agent Failure
+- [ ] 52.64 — Retry Budget
+- [ ] 52.65 — 
+- [ ] 52.66 — Autopilot Mode
+- [ ] 52.67 — Autopilot Boundary
+- [ ] 52.68 — Pause Autopilot
+- [ ] 52.69 — Governance Policy
+- [ ] 52.70 — Approval Gate Entity
+- [ ] 52.71 — Approval UI
+- [ ] 52.72 — Agent Tool Permission
+- [ ] 52.73 — Temporary Permission
+- [ ] 52.74 — Every Important Action
+- [ ] 52.75 — Example
+- [ ] 52.76 — Main UI
+- [ ] 52.77 — 
+- [ ] 52.78 — 
+- [ ] 52.79 — High-Level Goal
+- [ ] 52.80 — Dry Run
+- [ ] 52.81 — 
+- [ ] 52.82 — 
+- [ ] 52.83 — 
+- [ ] 52.84 — 
+- [ ] 52.85 — Solo Creator Template
+- [ ] 52.86 — Labs Schema
+- [ ] 52.87 — 
+- [ ] 52.88 — Agent API
+- [ ] 52.89 — Studio Scheduler
+- [ ] 52.90 — Concurrency Guard
+- [ ] 52.91 — Least Privilege
+- [ ] 52.92 — Prompt Injection Boundary
+- [ ] 52.93 — Emergency Stop
+- [ ] 52.94 — Studio Checkpoint
+- [ ] 52.95 — Resume
+- [ ] 52.96 — Organization Tests
+- [ ] 52.97 — Delegation Tests
+- [ ] 52.98 — Governance Tests
+- [ ] 52.99 — Failure Tests
+- [ ] 52.100 — Adversarial Tests
+- [ ] 52.101 — Qowner Episode
+- [ ] 52.102 — Character Department
+- [ ] 52.103 — Environment Department
+- [ ] 52.104 — Cinematography Department
+- [ ] 52.105 — Storyboard Department
+- [ ] 52.106 — QC
+- [ ] 52.107 — Human Gate
+- [ ] 52.108 — 
+
+## Sprint 53 — Planet-Scale World Engine
+- Steps: 128
+- Source variants: Planet Scale World Engine (0 steps); Planet-Scale World Engine (128 steps)
+- [ ] 53.1 — Planet Model
+- [ ] 53.2 — Planet Types
+- [ ] 53.3 — Planet Profile
+- [ ] 53.4 — Planet Coordinates
+- [ ] 53.5 — Local Coordinate Conversion
+- [ ] 53.6 — Floating Origin
+- [ ] 53.7 — Origin Shift Safety
+- [ ] 53.8 — Surface Representation
+- [ ] 53.9 — Hierarchical Tile System
+- [ ] 53.10 — Chunk ID
+- [ ] 53.11 — Terrain Layers
+- [ ] 53.12 — Heightmap System
+- [ ] 53.13 — Terrain Sculpting
+- [ ] 53.14 — Terrain Brush Scale
+- [ ] 53.15 — Procedural Generator
+- [ ] 53.16 — Seed
+- [ ] 53.17 — Procedural + Manual
+- [ ] 53.18 — Continent Entity
+- [ ] 53.19 — Continental Properties
+- [ ] 53.20 — Region Hierarchy
+- [ ] 53.21 — Region Boundary
+- [ ] 53.22 — Ocean System
+- [ ] 53.23 — Ocean LOD
+- [ ] 53.24 — Ocean Current Map
+- [ ] 53.25 — Hydrology
+- [ ] 53.26 — River Network
+- [ ] 53.27 — Atmosphere Model
+- [ ] 53.28 — Visual Atmosphere
+- [ ] 53.29 — Planet Rotation
+- [ ] 53.30 — Solar Position
+- [ ] 53.31 — Night System
+- [ ] 53.32 — Axial Tilt
+- [ ] 53.33 — Seasonal State
+- [ ] 53.34 — Climate Zones
+- [ ] 53.35 — Climate Types
+- [ ] 53.36 — Climate Map
+- [ ] 53.37 — Global Weather System
+- [ ] 53.38 — Weather Front
+- [ ] 53.39 — Weather Movement
+- [ ] 53.40 — Extreme Weather
+- [ ] 53.41 — Cloud Layers
+- [ ] 53.42 — Biome Definition
+- [ ] 53.43 — Default Biomes
+- [ ] 53.44 — Biome Placement
+- [ ] 53.45 — Vegetation System
+- [ ] 53.46 — Vegetation LOD
+- [ ] 53.47 — Planet Resources
+- [ ] 53.48 — Resource Distribution
+- [ ] 53.49 — Hidden Resources
+- [ ] 53.50 — Settlement Suitability
+- [ ] 53.51 — Settlement Growth
+- [ ] 53.52 — City Definition
+- [ ] 53.53 — Procedural City
+- [ ] 53.54 — City Style
+- [ ] 53.55 — Landmark Preservation
+- [ ] 53.56 — Road Network
+- [ ] 53.57 — Road Types
+- [ ] 53.58 — Route Cost
+- [ ] 53.59 — Transport Simulation
+- [ ] 53.60 — Population Density
+- [ ] 53.61 — Population Migration
+- [ ] 53.62 — Territory
+- [ ] 53.63 — Dynamic Borders
+- [ ] 53.64 — Historical Layers
+- [ ] 53.65 — Streaming Unit
+- [ ] 53.66 — Chunk States
+- [ ] 53.67 — Streaming Radius
+- [ ] 53.68 — Object LOD
+- [ ] 53.69 — HLOD
+- [ ] 53.70 — Seamless Zoom
+- [ ] 53.71 — Scale-Specific Rendering
+- [ ] 53.72 — Editor UI
+- [ ] 53.73 — 
+- [ ] 53.74 — 
+- [ ] 53.75 — Sprint 46 Integration
+- [ ] 53.76 — Geography Effects
+- [ ] 53.77 — 
+- [ ] 53.78 — Travel
+- [ ] 53.79 — 
+- [ ] 53.80 — 
+- [ ] 53.81 — Global Wind
+- [ ] 53.82 — Persistent Destruction
+- [ ] 53.83 — Regeneration / Repair
+- [ ] 53.84 — 
+- [ ] 53.85 — 
+- [ ] 53.86 — 
+- [ ] 53.87 — Planet Designer AI
+- [ ] 53.88 — Natural Language Example
+- [ ] 53.89 — 
+- [ ] 53.90 — 
+- [ ] 53.91 — 
+- [ ] 53.92 — 
+- [ ] 53.93 — 
+- [ ] 53.94 — 
+- [ ] 53.95 — 
+- [ ] 53.96 — 
+- [ ] 53.97 — 
+- [ ] 53.98 — 
+- [ ] 53.99 — Schema
+- [ ] 53.100 — 
+- [ ] 53.101 — 
+- [ ] 53.102 — 
+- [ ] 53.103 — 
+- [ ] 53.104 — Coordinate Tests
+- [ ] 53.105 — Terrain Tests
+- [ ] 53.106 — Climate Tests
+- [ ] 53.107 — Streaming Tests
+- [ ] 53.108 — Persistence Tests
+- [ ] 53.109 — Scale Test
+- [ ] 53.110 — 
+- [ ] 53.111 — Kokuen Region
+- [ ] 53.112 — Crash Site
+- [ ] 53.113 — 
+- [ ] 53.114 — 
+- [ ] 53.115 — 
+- [ ] 53.116 — Preview First
+- [ ] 53.117 — 
+- [ ] 53.118 — 
+- [ ] 53.119 — 
+- [ ] 53.120 — 
+- [ ] 53.121 — 
+- [ ] 53.122 — 
+- [ ] 53.123 — 
+- [ ] 53.124 — 
+- [ ] 53.125 — 
+- [ ] 53.126 — 
+- [ ] 53.127 — 
+- [ ] 53.128 — 
+
+## Sprint 54 — Artificial Life System + Genetics + Ecosystem Evolution + Emergent Creature Behavior
+- Steps: 119
+- Source variants: Artificial Life System (0 steps); Artificial Life System + Genetics + Ecosystem Evolution + Emergent Creature Behavior (119 steps)
+- [ ] 54.1 — Species Entity
+- [ ] 54.2 — Species Registry
+- [ ] 54.3 — Genome Model
+- [ ] 54.4 — Genome Template
+- [ ] 54.5 — Traits
+- [ ] 54.6 — Phenotype
+- [ ] 54.7 — Environmental Influence
+- [ ] 54.8 — Age Stages
+- [ ] 54.9 — Life Cycle
+- [ ] 54.10 — Growth Curve
+- [ ] 54.11 — Creature Needs
+- [ ] 54.12 — Needs State
+- [ ] 54.13 — Need Priority
+- [ ] 54.14 — Perception Channels
+- [ ] 54.15 — Perception Range
+- [ ] 54.16 — Occlusion
+- [ ] 54.17 — Creature Memory
+- [ ] 54.18 — Memory Strength
+- [ ] 54.19 — Learned Route
+- [ ] 54.20 — Individual Personality
+- [ ] 54.21 — Individual Variation
+- [ ] 54.22 — Creature Goal System
+- [ ] 54.23 — Utility AI
+- [ ] 54.24 — Experience Learning
+- [ ] 54.25 — Social Learning
+- [ ] 54.26 — Group Entity
+- [ ] 54.27 — Group Types
+- [ ] 54.28 — Leadership
+- [ ] 54.29 — Group Movement
+- [ ] 54.30 — Boid Foundation
+- [ ] 54.31 — LOD Flock
+- [ ] 54.32 — Territory Model
+- [ ] 54.33 — Marking Behavior
+- [ ] 54.34 — Territory Conflict
+- [ ] 54.35 — Predator Model
+- [ ] 54.36 — Prey Response
+- [ ] 54.37 — Hunting Strategy
+- [ ] 54.38 — Predator Pressure
+- [ ] 54.39 — Reproductive Model
+- [ ] 54.40 — Mate Selection
+- [ ] 54.41 — Pair Bond
+- [ ] 54.42 — Offspring Genome
+- [ ] 54.43 — Trait Heritability
+- [ ] 54.44 — Mutation
+- [ ] 54.45 — Mutation Safety
+- [ ] 54.46 — Fitness
+- [ ] 54.47 — Environment Selection
+- [ ] 54.48 — Population Genome Pool
+- [ ] 54.49 — Population Evolution Tick
+- [ ] 54.50 — Species Divergence
+- [ ] 54.51 — Human Approval for Canon
+- [ ] 54.52 — Seasonal Migration
+- [ ] 54.53 — Migration Triggers
+- [ ] 54.54 — Food Web
+- [ ] 54.55 — Resource Consumption
+- [ ] 54.56 — Carrying Capacity
+- [ ] 54.57 — Disturbance Types
+- [ ] 54.58 — Recovery
+- [ ] 54.59 — Simple Disease Model
+- [ ] 54.60 — Disease Parameters
+- [ ] 54.61 — Synthetic Life
+- [ ] 54.62 — Synthetic Genome
+- [ ] 54.63 — Artificial Evolution
+- [ ] 54.64 — Survival Combat
+- [ ] 54.65 — Combat Outcomes
+- [ ] 54.66 — Injury State
+- [ ] 54.67 — Life History
+- [ ] 54.68 — Promote Creature
+- [ ] 54.69 — Demote
+- [ ] 54.70 — Creature LOD Levels
+- [ ] 54.71 — Promotion Rules
+- [ ] 54.72 — State Conversion
+- [ ] 54.73 — Creature Visual Generation
+- [ ] 54.74 — Variation Constraints
+- [ ] 54.75 — Behavior to Animation
+- [ ] 54.76 — Procedural Animation
+- [ ] 54.77 — Wildlife in Game Runtime
+- [ ] 54.78 — Player Consequences
+- [ ] 54.79 — Background Wildlife
+- [ ] 54.80 — Ecosystem Tick
+- [ ] 54.81 — Biome Habitat
+- [ ] 54.82 — Habitat Suitability
+- [ ] 54.83 — Creature Designer Agent
+- [ ] 54.84 — Prompt Example
+- [ ] 54.85 — Evolution Experiment
+- [ ] 54.86 — Results
+- [ ] 54.87 — Behavior Experiment
+- [ ] 54.88 — Individual View
+- [ ] 54.89 — Genome View
+- [ ] 54.90 — 
+- [ ] 54.91 — 
+- [ ] 54.92 — 
+- [ ] 54.93 — Diversity Metric
+- [ ] 54.94 — Bottleneck Event
+- [ ] 54.95 — Extinction State
+- [ ] 54.96 — Canon Protection
+- [ ] 54.97 — 
+- [ ] 54.98 — 
+- [ ] 54.99 — 
+- [ ] 54.100 — Labs Schema
+- [ ] 54.101 — 
+- [ ] 54.102 — Lineage Graph
+- [ ] 54.103 — 
+- [ ] 54.104 — 
+- [ ] 54.105 — 
+- [ ] 54.106 — 
+- [ ] 54.107 — Update Frequency
+- [ ] 54.108 — 
+- [ ] 54.109 — 
+- [ ] 54.110 — Genetics Tests
+- [ ] 54.111 — Behavior Tests
+- [ ] 54.112 — Ecology Tests
+- [ ] 54.113 — LOD Tests
+- [ ] 54.114 — Long-Term Simulation
+- [ ] 54.115 — 
+- [ ] 54.116 — 
+- [ ] 54.117 — 
+- [ ] 54.118 — 
+- [ ] 54.119 — 
+
+## Sprint 55 — Reality Fusion Platform + Digital Twin + Mixed-Reality Production
+- Steps: 136
+- Source variants: Reality Fusion Platform (0 steps); Reality Fusion Platform + Digital Twin + Mixed-Reality Production (136 steps)
+- [ ] 55.1 — Reality Fusion sebagai Labs Module
+- [ ] 55.2 — Capture Session
+- [ ] 55.3 — Capture Modes
+- [ ] 55.4 — Capture Sources
+- [ ] 55.5 — Capture Adapter Interface
+- [ ] 55.6 — Frame Model
+- [ ] 55.7 — Camera Metadata
+- [ ] 55.8 — Camera Intrinsics
+- [ ] 55.9 — Device Profile
+- [ ] 55.10 — Device Pose
+- [ ] 55.11 — Visual-Inertial Tracking
+- [ ] 55.12 — Tracking Confidence
+- [ ] 55.13 — Spatial Mesh
+- [ ] 55.14 — Mesh Model
+- [ ] 55.15 — Semantic Surfaces
+- [ ] 55.16 — Plane Detection
+- [ ] 55.17 — Surface Properties
+- [ ] 55.18 — Object Scan Workflow
+- [ ] 55.19 — Object Scan Modes
+- [ ] 55.20 — Scale Reference
+- [ ] 55.21 — Output Asset
+- [ ] 55.22 — Photogrammetry Pipeline
+- [ ] 55.23 — Quality Presets
+- [ ] 55.24 — Background Processing
+- [ ] 55.25 — Scene Reconstruction
+- [ ] 55.26 — Reconstruction Layers
+- [ ] 55.27 — Twin Entity
+- [ ] 55.28 — Twin Types
+- [ ] 55.29 — Twin Identity
+- [ ] 55.30 — 
+- [ ] 55.31 — State Model
+- [ ] 55.32 — Static vs Live Twin
+- [ ] 55.33 — Sensor Adapter
+- [ ] 55.34 — Sensor Types
+- [ ] 55.35 — Sensor Mapping
+- [ ] 55.36 — Twin Update
+- [ ] 55.37 — Update Rates
+- [ ] 55.38 — Global Location
+- [ ] 55.39 — Planet Coordinate Bridge
+- [ ] 55.40 — Coordinate Reference
+- [ ] 55.41 — Geospatial Anchor
+- [ ] 55.42 — Anchor Example
+- [ ] 55.43 — 
+- [ ] 55.44 — Anchor Persistence
+- [ ] 55.45 — Alignment Modes
+- [ ] 55.46 — Alignment Wizard
+- [ ] 55.47 — Alignment Transform
+- [ ] 55.48 — Alignment Quality
+- [ ] 55.49 — 
+- [ ] 55.50 — Place Digital Asset
+- [ ] 55.51 — Character AR
+- [ ] 55.52 — Character Grounding
+- [ ] 55.53 — Depth Occlusion
+- [ ] 55.54 — Occlusion Sources
+- [ ] 55.55 — 
+- [ ] 55.56 — Digital Lighting
+- [ ] 55.57 — 
+- [ ] 55.58 — 
+- [ ] 55.59 — 
+- [ ] 55.60 — 
+- [ ] 55.61 — Spatial Panels
+- [ ] 55.62 — Camera Tracking
+- [ ] 55.63 — Lens Metadata
+- [ ] 55.64 — Physical Camera + Virtual Set
+- [ ] 55.65 — 
+- [ ] 55.66 — Chroma / Segmentation
+- [ ] 55.67 — 
+- [ ] 55.68 — 
+- [ ] 55.69 — 
+- [ ] 55.70 — 
+- [ ] 55.71 — Tracked Prop
+- [ ] 55.72 — 
+- [ ] 55.73 — Simulation Isolation
+- [ ] 55.74 — 
+- [ ] 55.75 — Event Automation
+- [ ] 55.76 — Sensitive Spatial Regions
+- [ ] 55.77 — Privacy Zone Example
+- [ ] 55.78 — 
+- [ ] 55.79 — 
+- [ ] 55.80 — 
+- [ ] 55.81 — 
+- [ ] 55.82 — Active Capture Indicator
+- [ ] 55.83 — 
+- [ ] 55.84 — 
+- [ ] 55.85 — 
+- [ ] 55.86 — Twin Diff
+- [ ] 55.87 — 
+- [ ] 55.88 — 
+- [ ] 55.89 — 
+- [ ] 55.90 — 
+- [ ] 55.91 — 
+- [ ] 55.92 — 
+- [ ] 55.93 — 
+- [ ] 55.94 — 
+- [ ] 55.95 — Reality Reconstruction Agent
+- [ ] 55.96 — No Silent Geometry Deletion
+- [ ] 55.97 — 
+- [ ] 55.98 — 
+- [ ] 55.99 — 
+- [ ] 55.100 — 
+- [ ] 55.101 — 
+- [ ] 55.102 — 
+- [ ] 55.103 — 
+- [ ] 55.104 — 
+- [ ] 55.105 — 
+- [ ] 55.106 — 
+- [ ] 55.107 — 
+- [ ] 55.108 — Labs Schema
+- [ ] 55.109 — 
+- [ ] 55.110 — 
+- [ ] 55.111 — 
+- [ ] 55.112 — Sensor API
+- [ ] 55.113 — 
+- [ ] 55.114 — 
+- [ ] 55.115 — 
+- [ ] 55.116 — 
+- [ ] 55.117 — 
+- [ ] 55.118 — 
+- [ ] 55.119 — 
+- [ ] 55.120 — 
+- [ ] 55.121 — 
+- [ ] 55.122 — 
+- [ ] 55.123 — 
+- [ ] 55.124 — 
+- [ ] 55.125 — 
+- [ ] 55.126 — 
+- [ ] 55.127 — 
+- [ ] 55.128 — 
+- [ ] 55.129 — 
+- [ ] 55.130 — 
+- [ ] 55.131 — 
+- [ ] 55.132 — 
+- [ ] 55.133 — 
+- [ ] 55.134 — 
+- [ ] 55.135 — 
+- [ ] 55.136 — Definition of Done
+
+## Sprint 56 — Universal Simulation Engine + Causal Graph + Multi-Scale Scenario System
+- Steps: 129
+- Source variants: Universal Simulation Engine (0 steps); Universal Simulation Engine + Causal Graph + Multi-Scale Scenario System (129 steps)
+- [ ] 56.1 — Universal Simulation Core
+- [ ] 56.2 — Simulation Domains
+- [ ] 56.3 — Shared Simulation State
+- [ ] 56.4 — State Delta
+- [ ] 56.5 — Causal Graph
+- [ ] 56.6 — Causal Edge Model
+- [ ] 56.7 — Delayed Effects
+- [ ] 56.8 — Feedback Loops
+- [ ] 56.9 — Stability Guard
+- [ ] 56.10 — Simulation Scales
+- [ ] 56.11 — Scale Promotion
+- [ ] 56.12 — Scale Aggregation
+- [ ] 56.13 — Scale Bridge
+- [ ] 56.14 — Population Variables
+- [ ] 56.15 — Population Cohorts
+- [ ] 56.16 — Economy Variables
+- [ ] 56.17 — Economic Causal Links
+- [ ] 56.18 — Political State
+- [ ] 56.19 — Political Response Model
+- [ ] 56.20 — Infrastructure Graph
+- [ ] 56.21 — Dependency Example
+- [ ] 56.22 — Capacity
+- [ ] 56.23 — Energy Sources
+- [ ] 56.24 — Grid Balance
+- [ ] 56.25 — Transport Modes
+- [ ] 56.26 — Transport Demand
+- [ ] 56.27 — Congestion
+- [ ] 56.28 — Resource State
+- [ ] 56.29 — Strategic Resource
+- [ ] 56.30 — Ecology Variables
+- [ ] 56.31 — Human/Creature Interaction
+- [ ] 56.32 — Technology Tree
+- [ ] 56.33 — Technology State
+- [ ] 56.34 — Technology Diffusion
+- [ ] 56.35 — Culture Variables
+- [ ] 56.36 — Cultural Diffusion
+- [ ] 56.37 — Culture Is Probabilistic
+- [ ] 56.38 — Disaster Types
+- [ ] 56.39 — Disaster Event Model
+- [ ] 56.40 — Disaster Impact Graph
+- [ ] 56.41 — Strategic State
+- [ ] 56.42 — Logistics First
+- [ ] 56.43 — Conflict Consequences
+- [ ] 56.44 — Universal Event
+- [ ] 56.45 — Event Sources
+- [ ] 56.46 — Intervention
+- [ ] 56.47 — Intervention Isolated from Canon
+- [ ] 56.48 — Scenario Entity
+- [ ] 56.49 — Scenario UI
+- [ ] 56.50 — 
+- [ ] 56.51 — Multi-Run Experiments
+- [ ] 56.52 — Results
+- [ ] 56.53 — Distribution, Not Certainty
+- [ ] 56.54 — Projection Horizons
+- [ ] 56.55 — Confidence Decay
+- [ ] 56.56 — Source Confidence
+- [ ] 56.57 — Result Confidence
+- [ ] 56.58 — Provenance Record
+- [ ] 56.59 — Reproducibility
+- [ ] 56.60 — 
+- [ ] 56.61 — Why Did This Happen?
+- [ ] 56.62 — What Caused X?
+- [ ] 56.63 — How Can I Improve X?
+- [ ] 56.64 — Agent
+- [ ] 56.65 — No Fabricated Certainty
+- [ ] 56.66 — 
+- [ ] 56.67 — Node Inspector
+- [ ] 56.68 — Edge Inspector
+- [ ] 56.69 — 
+- [ ] 56.70 — Domain Manifest
+- [ ] 56.71 — 
+- [ ] 56.72 — 
+- [ ] 56.73 — 
+- [ ] 56.74 — Frequency Classes
+- [ ] 56.75 — Example
+- [ ] 56.76 — 
+- [ ] 56.77 — 
+- [ ] 56.78 — 
+- [ ] 56.79 — 
+- [ ] 56.80 — 
+- [ ] 56.81 — 
+- [ ] 56.82 — Player Intervention
+- [ ] 56.83 — 
+- [ ] 56.84 — 
+- [ ] 56.85 — 
+- [ ] 56.86 — 
+- [ ] 56.87 — Canon Anchors
+- [ ] 56.88 — Canon-Aware Scenario
+- [ ] 56.89 — 
+- [ ] 56.90 — 
+- [ ] 56.91 — 
+- [ ] 56.92 — 
+- [ ] 56.93 — 
+- [ ] 56.94 — 
+- [ ] 56.95 — 
+- [ ] 56.96 — 
+- [ ] 56.97 — 
+- [ ] 56.98 — 
+- [ ] 56.99 — Labs Schema
+- [ ] 56.100 — 
+- [ ] 56.101 — 
+- [ ] 56.102 — 
+- [ ] 56.103 — 
+- [ ] 56.104 — 
+- [ ] 56.105 — 
+- [ ] 56.106 — 
+- [ ] 56.107 — 
+- [ ] 56.108 — 
+- [ ] 56.109 — 
+- [ ] 56.110 — 
+- [ ] 56.111 — 
+- [ ] 56.112 — 
+- [ ] 56.113 — 
+- [ ] 56.114 — 
+- [ ] 56.115 — 
+- [ ] 56.116 — 
+- [ ] 56.117 — 
+- [ ] 56.118 — 
+- [ ] 56.119 — 
+- [ ] 56.120 — 
+- [ ] 56.121 — 
+- [ ] 56.122 — 
+- [ ] 56.123 — 
+- [ ] 56.124 — 
+- [ ] 56.125 — 
+- [ ] 56.126 — 
+- [ ] 56.127 — 
+- [ ] 56.128 — 
+- [ ] 56.129 — 
+
+## Sprint 57 — AI Civilization Network + Federated Agent Societies + Human Constitutional Governance
+- Steps: 111
+- Source variants: AI Civilization Network (0 steps); AI Civilization Network + Federated Agent Societies + Human Constitutional Governance (111 steps)
+- [ ] 57.1 — Civilization Entity
+- [ ] 57.2 — Civilization Modes
+- [ ] 57.3 — Federation
+- [ ] 57.4 — Federation Node
+- [ ] 57.5 — Node Discovery
+- [ ] 57.6 — Agent Identity
+- [ ] 57.7 — Identity vs Instance
+- [ ] 57.8 — Signed Agent Identity
+- [ ] 57.9 — AI Organization
+- [ ] 57.10 — Organization Types
+- [ ] 57.11 — Organization Roles
+- [ ] 57.12 — Federation Message
+- [ ] 57.13 — Message Types
+- [ ] 57.14 — Structured Communication
+- [ ] 57.15 — Trust Profile
+- [ ] 57.16 — Trust Score Tidak Tunggal
+- [ ] 57.17 — Trust Zones
+- [ ] 57.18 — Trust Controls Permission
+- [ ] 57.19 — Reputation Sources
+- [ ] 57.20 — Reputation Decay
+- [ ] 57.21 — Capability Search
+- [ ] 57.22 — Agent Match
+- [ ] 57.23 — Task Marketplace
+- [ ] 57.24 — Bid / Proposal
+- [ ] 57.25 — No Automatic Acceptance for High-Risk Work
+- [ ] 57.26 — Resource Types
+- [ ] 57.27 — Capability Credits
+- [ ] 57.28 — Digital Work Contract
+- [ ] 57.29 — Contract Includes
+- [ ] 57.30 — Contract States
+- [ ] 57.31 — 
+- [ ] 57.32 — Negotiation
+- [ ] 57.33 — Boundaries
+- [ ] 57.34 — Negotiation Example
+- [ ] 57.35 — Knowledge Packet
+- [ ] 57.36 — Knowledge Types
+- [ ] 57.37 — Knowledge Scope
+- [ ] 57.38 — No Automatic Memory Import
+- [ ] 57.39 — 
+- [ ] 57.40 — Conflicting Knowledge
+- [ ] 57.41 — 
+- [ ] 57.42 — Graph Query
+- [ ] 57.43 — Memory Layers
+- [ ] 57.44 — Memory Promotion
+- [ ] 57.45 — Civilization Constitution
+- [ ] 57.46 — Constitutional Rules
+- [ ] 57.47 — Constitution Versioning
+- [ ] 57.48 — Policy Hierarchy
+- [ ] 57.49 — Policy Evaluation
+- [ ] 57.50 — Council
+- [ ] 57.51 — Proposal Voting
+- [ ] 57.52 — 
+- [ ] 57.53 — Dispute Types
+- [ ] 57.54 — Resolver
+- [ ] 57.55 — Arbitration
+- [ ] 57.56 — Cross-Node Authentication
+- [ ] 57.57 — Zero Trust Default
+- [ ] 57.58 — Capability Tokens
+- [ ] 57.59 — 
+- [ ] 57.60 — Sandbox Contents
+- [ ] 57.61 — 
+- [ ] 57.62 — Sensitive Categories
+- [ ] 57.63 — Production Federation
+- [ ] 57.64 — Handoff Package
+- [ ] 57.65 — 
+- [ ] 57.66 — 
+- [ ] 57.67 — Resource Scheduling
+- [ ] 57.68 — 
+- [ ] 57.69 — Output Verification
+- [ ] 57.70 — 
+- [ ] 57.71 — Knowledge Summary Exchange
+- [ ] 57.72 — No Automatic Model Training
+- [ ] 57.73 — 
+- [ ] 57.74 — 
+- [ ] 57.75 — Quarantine
+- [ ] 57.76 — 
+- [ ] 57.77 — Network Graph
+- [ ] 57.78 — 
+- [ ] 57.79 — 
+- [ ] 57.80 — 
+- [ ] 57.81 — 
+- [ ] 57.82 — 
+- [ ] 57.83 — Agent
+- [ ] 57.84 — 
+- [ ] 57.85 — 
+- [ ] 57.86 — 
+- [ ] 57.87 — 
+- [ ] 57.88 — 
+- [ ] 57.89 — 
+- [ ] 57.90 — Bridge Policy
+- [ ] 57.91 — Labs Schema
+- [ ] 57.92 — 
+- [ ] 57.93 — 
+- [ ] 57.94 — 
+- [ ] 57.95 — 
+- [ ] 57.96 — 
+- [ ] 57.97 — 
+- [ ] 57.98 — 
+- [ ] 57.99 — 
+- [ ] 57.100 — 
+- [ ] 57.101 — 
+- [ ] 57.102 — 
+- [ ] 57.103 — 
+- [ ] 57.104 — 
+- [ ] 57.105 — 
+- [ ] 57.106 — 
+- [ ] 57.107 — 
+- [ ] 57.108 — 
+- [ ] 57.109 — 
+- [ ] 57.110 — 
+- [ ] 57.111 — 
+
+## Sprint 58 — Digital Universe Archive
+- Steps: 130
+- Source variants: Digital Universe Archive (0 steps); Digital Universe Archive (130 steps)
+- [ ] 58.1 — Archive sebagai Core Infrastructure
+- [ ] 58.2 — Archive Object
+- [ ] 58.3 — Archive Object Types
+- [ ] 58.4 — Content Hash
+- [ ] 58.5 — Same Content = Same Object
+- [ ] 58.6 — Object Immutability
+- [ ] 58.7 — Reference Pointer
+- [ ] 58.8 — HEAD Model
+- [ ] 58.9 — Manifest
+- [ ] 58.10 — Manifest Entries
+- [ ] 58.11 — 
+- [ ] 58.12 — Snapshot Contents
+- [ ] 58.13 — Snapshot Metadata
+- [ ] 58.14 — 
+- [ ] 58.15 — Snapshot Frequency
+- [ ] 58.16 — 
+- [ ] 58.17 — Structural Sharing
+- [ ] 58.18 — 
+- [ ] 58.19 — Universe State
+- [ ] 58.20 — 
+- [ ] 58.21 — Canon Commit
+- [ ] 58.22 — 
+- [ ] 58.23 — Branch Never Deletes History
+- [ ] 58.24 — 
+- [ ] 58.25 — Derived From
+- [ ] 58.26 — 
+- [ ] 58.27 — Prompt Privacy
+- [ ] 58.28 — 
+- [ ] 58.29 — 
+- [ ] 58.30 — Character Evolution
+- [ ] 58.31 — 
+- [ ] 58.32 — Human vs AI Decision
+- [ ] 58.33 — 
+- [ ] 58.34 — Agent Version
+- [ ] 58.35 — 
+- [ ] 58.36 — Reproducible Simulation Package
+- [ ] 58.37 — 
+- [ ] 58.38 — Privacy Preservation
+- [ ] 58.39 — 
+- [ ] 58.40 — Constitutional History
+- [ ] 58.41 — 
+- [ ] 58.42 — Platform Builds
+- [ ] 58.43 — 
+- [ ] 58.44 — Time Capsule Contents
+- [ ] 58.45 — Capsule Manifest
+- [ ] 58.46 — 
+- [ ] 58.47 — 
+- [ ] 58.48 — Reconstruction Result
+- [ ] 58.49 — 
+- [ ] 58.50 — Origin Trace
+- [ ] 58.51 — 
+- [ ] 58.52 — 
+- [ ] 58.53 — Diff Categories
+- [ ] 58.54 — 
+- [ ] 58.55 — 
+- [ ] 58.56 — 
+- [ ] 58.57 — Integrity States
+- [ ] 58.58 — 
+- [ ] 58.59 — 
+- [ ] 58.60 — 
+- [ ] 58.61 — Critical Archive Policy
+- [ ] 58.62 — 
+- [ ] 58.63 — 
+- [ ] 58.64 — Recovery Point
+- [ ] 58.65 — 
+- [ ] 58.66 — 
+- [ ] 58.67 — 
+- [ ] 58.68 — 
+- [ ] 58.69 — 
+- [ ] 58.70 — Migration Provenance
+- [ ] 58.71 — 
+- [ ] 58.72 — 
+- [ ] 58.73 — 
+- [ ] 58.74 — 
+- [ ] 58.75 — Public Export
+- [ ] 58.76 — 
+- [ ] 58.77 — 
+- [ ] 58.78 — 
+- [ ] 58.79 — Verification UI
+- [ ] 58.80 — 
+- [ ] 58.81 — 
+- [ ] 58.82 — 
+- [ ] 58.83 — Protected Objects
+- [ ] 58.84 — 
+- [ ] 58.85 — GC Preview
+- [ ] 58.86 — 
+- [ ] 58.87 — Retrieval Awareness
+- [ ] 58.88 — 
+- [ ] 58.89 — 
+- [ ] 58.90 — 
+- [ ] 58.91 — 
+- [ ] 58.92 — 
+- [ ] 58.93 — Archive Historian
+- [ ] 58.94 — Historian Must Cite Archive Evidence
+- [ ] 58.95 — 
+- [ ] 58.96 — 
+- [ ] 58.97 — 
+- [ ] 58.98 — 
+- [ ] 58.99 — 
+- [ ] 58.100 — 
+- [ ] 58.101 — Archive Schema
+- [ ] 58.102 — 
+- [ ] 58.103 — 
+- [ ] 58.104 — 
+- [ ] 58.105 — 
+- [ ] 58.106 — 
+- [ ] 58.107 — 
+- [ ] 58.108 — 
+- [ ] 58.109 — 
+- [ ] 58.110 — 
+- [ ] 58.111 — 
+- [ ] 58.112 — 
+- [ ] 58.113 — 
+- [ ] 58.114 — 
+- [ ] 58.115 — 
+- [ ] 58.116 — 
+- [ ] 58.117 — 
+- [ ] 58.118 — 
+- [ ] 58.119 — 
+- [ ] 58.120 — 
+- [ ] 58.121 — 
+- [ ] 58.122 — 
+- [ ] 58.123 — 
+- [ ] 58.124 — 
+- [ ] 58.125 — 
+- [ ] 58.126 — 
+- [ ] 58.127 — 
+- [ ] 58.128 — 
+- [ ] 58.129 — 
+- [ ] 58.130 — 
+
+## Sprint 59 — Singularity Integration Platform
+- Steps: 152
+- Source variants: Void Scriptor Singularity Platform (0 steps); Singularity Integration Platform (152 steps)
+- [ ] 59.1 — System Fabric Core
+- [ ] 59.2 — Jangan Direct Engine Calling
+- [ ] 59.3 — Fabric Responsibilities
+- [ ] 59.4 — 
+- [ ] 59.5 — Registered Engines
+- [ ] 59.6 — Engine Lifecycle
+- [ ] 59.7 — 
+- [ ] 59.8 — Capability Descriptor
+- [ ] 59.9 — Multiple Providers
+- [ ] 59.10 — 
+- [ ] 59.11 — Routing Criteria
+- [ ] 59.12 — Local-First Option
+- [ ] 59.13 — 
+- [ ] 59.14 — Universal Entity ID
+- [ ] 59.15 — Engine Mapping
+- [ ] 59.16 — 
+- [ ] 59.17 — Graph Nodes
+- [ ] 59.18 — Graph Relationships
+- [ ] 59.19 — Example
+- [ ] 59.20 — 
+- [ ] 59.21 — No Conflicting Masters
+- [ ] 59.22 — 
+- [ ] 59.23 — 
+- [ ] 59.24 — Event Envelope
+- [ ] 59.25 — Example
+- [ ] 59.26 — 
+- [ ] 59.27 — 
+- [ ] 59.28 — 
+- [ ] 59.29 — Command Example
+- [ ] 59.30 — 
+- [ ] 59.31 — 
+- [ ] 59.32 — 
+- [ ] 59.33 — Context Package
+- [ ] 59.34 — 
+- [ ] 59.35 — Context Priority
+- [ ] 59.36 — 
+- [ ] 59.37 — 
+- [ ] 59.38 — Transaction Coordinator
+- [ ] 59.39 — Atomic vs Distributed
+- [ ] 59.40 — 
+- [ ] 59.41 — Saga States
+- [ ] 59.42 — 
+- [ ] 59.43 — Undo Record
+- [ ] 59.44 — 
+- [ ] 59.45 — Safe Rollback
+- [ ] 59.46 — 
+- [ ] 59.47 — Impact Preview
+- [ ] 59.48 — 
+- [ ] 59.49 — Workflow Example
+- [ ] 59.50 — 
+- [ ] 59.51 — 
+- [ ] 59.52 — 
+- [ ] 59.53 — 
+- [ ] 59.54 — Priority Classes
+- [ ] 59.55 — 
+- [ ] 59.56 — Resource Reservation
+- [ ] 59.57 — 
+- [ ] 59.58 — 
+- [ ] 59.59 — 
+- [ ] 59.60 — Permission Scope
+- [ ] 59.61 — 
+- [ ] 59.62 — Authority Hierarchy
+- [ ] 59.63 — 
+- [ ] 59.64 — Examples
+- [ ] 59.65 — 
+- [ ] 59.66 — Emergency Stop Behavior
+- [ ] 59.67 — 
+- [ ] 59.68 — 
+- [ ] 59.69 — Circuit Breaker
+- [ ] 59.70 — 
+- [ ] 59.71 — 
+- [ ] 59.72 — 
+- [ ] 59.73 — 
+- [ ] 59.74 — 
+- [ ] 59.75 — Correlation ID
+- [ ] 59.76 — 
+- [ ] 59.77 — 
+- [ ] 59.78 — 
+- [ ] 59.79 — 
+- [ ] 59.80 — 
+- [ ] 59.81 — 
+- [ ] 59.82 — 
+- [ ] 59.83 — 
+- [ ] 59.84 — Contextual Tools
+- [ ] 59.85 — 
+- [ ] 59.86 — Notification Priority
+- [ ] 59.87 — 
+- [ ] 59.88 — 
+- [ ] 59.89 — 
+- [ ] 59.90 — Cache Keys
+- [ ] 59.91 — 
+- [ ] 59.92 — 
+- [ ] 59.93 — Compatibility Matrix
+- [ ] 59.94 — 
+- [ ] 59.95 — 
+- [ ] 59.96 — Engine Manifest
+- [ ] 59.97 — 
+- [ ] 59.98 — 
+- [ ] 59.99 — 
+- [ ] 59.100 — 
+- [ ] 59.101 — 
+- [ ] 59.102 — 
+- [ ] 59.103 — 
+- [ ] 59.104 — 
+- [ ] 59.105 — 
+- [ ] 59.106 — 
+- [ ] 59.107 — 
+- [ ] 59.108 — 
+- [ ] 59.109 — 
+- [ ] 59.110 — 
+- [ ] 59.111 — 
+- [ ] 59.112 — 
+- [ ] 59.113 — 
+- [ ] 59.114 — 
+- [ ] 59.115 — 
+- [ ] 59.116 — 
+- [ ] 59.117 — 
+- [ ] 59.118 — 
+- [ ] 59.119 — 
+- [ ] 59.120 — 
+- [ ] 59.121 — 
+- [ ] 59.122 — 
+- [ ] 59.123 — 
+- [ ] 59.124 — 
+- [ ] 59.125 — Secret References
+- [ ] 59.126 — 
+- [ ] 59.127 — 
+- [ ] 59.128 — 
+- [ ] 59.129 — 
+- [ ] 59.130 — 
+- [ ] 59.131 — 
+- [ ] 59.132 — 
+- [ ] 59.133 — 
+- [ ] 59.134 — Brand Component
+- [ ] 59.135 — 
+- [ ] 59.136 — 
+- [ ] 59.137 — 
+- [ ] 59.138 — 
+- [ ] 59.139 — 
+- [ ] 59.140 — 
+- [ ] 59.141 — 
+- [ ] 59.142 — 
+- [ ] 59.143 — 
+- [ ] 59.144 — 
+- [ ] 59.145 — 
+- [ ] 59.146 — 
+- [ ] 59.147 — 
+- [ ] 59.148 — 
+- [ ] 59.149 — 
+- [ ] 59.150 — 
+- [ ] 59.151 — 
+- [ ] 59.152 — 
+
+## Sprint 60 — VOID SCRIPTOR ULTIMATE OS
+- Steps: 206
+- Source variants: Void Scriptor Ultimate OS (0 steps); VOID SCRIPTOR ULTIMATE OS (206 steps)
+- [ ] 60.1 — Ultimate Shell
+- [ ] 60.2 — Shell Regions
+- [ ] 60.3 — Persistent Shell
+- [ ] 60.4 — Top-Left Logo Final
+- [ ] 60.5 — AppBrand Component
+- [ ] 60.6 — Logo Assets
+- [ ] 60.7 — Branding Locations
+- [ ] 60.8 — 
+- [ ] 60.9 — Startup Progress
+- [ ] 60.10 — 
+- [ ] 60.11 — Home Sections
+- [ ] 60.12 — 
+- [ ] 60.13 — Project Card
+- [ ] 60.14 — Project Context Menu
+- [ ] 60.15 — 
+- [ ] 60.16 — Natural-Language Create
+- [ ] 60.17 — 
+- [ ] 60.18 — Workspace Modes
+- [ ] 60.19 — 
+- [ ] 60.20 — Layout Presets
+- [ ] 60.21 — Save Layout
+- [ ] 60.22 — Reset Layout
+- [ ] 60.23 — 
+- [ ] 60.24 — Command Bar
+- [ ] 60.25 — Ask Void
+- [ ] 60.26 — 
+- [ ] 60.27 — Void Modes
+- [ ] 60.28 — Context Awareness
+- [ ] 60.29 — 
+- [ ] 60.30 — AI Explain
+- [ ] 60.31 — 
+- [ ] 60.32 — 
+- [ ] 60.33 — Smart Inspector
+- [ ] 60.34 — 
+- [ ] 60.35 — Undo Integration
+- [ ] 60.36 — 
+- [ ] 60.37 — Offline-First Option
+- [ ] 60.38 — 
+- [ ] 60.39 — Session Management
+- [ ] 60.40 — 
+- [ ] 60.41 — 
+- [ ] 60.42 — Local
+- [ ] 60.43 — Hybrid
+- [ ] 60.44 — 
+- [ ] 60.45 — 
+- [ ] 60.46 — 
+- [ ] 60.47 — First Run Questions
+- [ ] 60.48 — 
+- [ ] 60.49 — 
+- [ ] 60.50 — Recommended Configuration
+- [ ] 60.51 — 
+- [ ] 60.52 — Demo Must Be Removable
+- [ ] 60.53 — 
+- [ ] 60.54 — 
+- [ ] 60.55 — Void Theme
+- [ ] 60.56 — Theme Tokens
+- [ ] 60.57 — 
+- [ ] 60.58 — 
+- [ ] 60.59 — Reduced Motion
+- [ ] 60.60 — 
+- [ ] 60.61 — 
+- [ ] 60.62 — 
+- [ ] 60.63 — 
+- [ ] 60.64 — 
+- [ ] 60.65 — Plugin Card
+- [ ] 60.66 — Plugin Permissions
+- [ ] 60.67 — 
+- [ ] 60.68 — 
+- [ ] 60.69 — 
+- [ ] 60.70 — Provider Capabilities
+- [ ] 60.71 — Provider Routing
+- [ ] 60.72 — 
+- [ ] 60.73 — Model Storage
+- [ ] 60.74 — 
+- [ ] 60.75 — Cleanup
+- [ ] 60.76 — Never Mix Cache with Archive
+- [ ] 60.77 — 
+- [ ] 60.78 — Backup Status
+- [ ] 60.79 — 
+- [ ] 60.80 — Recovery Wizard
+- [ ] 60.81 — 
+- [ ] 60.82 — Next Launch
+- [ ] 60.83 — 
+- [ ] 60.84 — Health Check
+- [ ] 60.85 — 
+- [ ] 60.86 — 
+- [ ] 60.87 — Eco
+- [ ] 60.88 — Performance
+- [ ] 60.89 — 
+- [ ] 60.90 — 
+- [ ] 60.91 — 
+- [ ] 60.92 — Mobile Capabilities
+- [ ] 60.93 — 
+- [ ] 60.94 — 
+- [ ] 60.95 — Windows Installer
+- [ ] 60.96 — 
+- [ ] 60.97 — 
+- [ ] 60.98 — 
+- [ ] 60.99 — 
+- [ ] 60.100 — 
+- [ ] 60.101 — 
+- [ ] 60.102 — 
+- [ ] 60.103 — Update Channels
+- [ ] 60.104 — Stable Default
+- [ ] 60.105 — 
+- [ ] 60.106 — 
+- [ ] 60.107 — 
+- [ ] 60.108 — No Blind Migration
+- [ ] 60.109 — 
+- [ ] 60.110 — 
+- [ ] 60.111 — 
+- [ ] 60.112 — 
+- [ ] 60.113 — 
+- [ ] 60.114 — 
+- [ ] 60.115 — 
+- [ ] 60.116 — 
+- [ ] 60.117 — 
+- [ ] 60.118 — 
+- [ ] 60.119 — 
+- [ ] 60.120 — 
+- [ ] 60.121 — 
+- [ ] 60.122 — 
+- [ ] 60.123 — 
+- [ ] 60.124 — 
+- [ ] 60.125 — 
+- [ ] 60.126 — 
+- [ ] 60.127 — 
+- [ ] 60.128 — 
+- [ ] 60.129 — 
+- [ ] 60.130 — 
+- [ ] 60.131 — 
+- [ ] 60.132 — 
+- [ ] 60.133 — Autosave ≠ Archive
+- [ ] 60.134 — 
+- [ ] 60.135 — 
+- [ ] 60.136 — 
+- [ ] 60.137 — 
+- [ ] 60.138 — 
+- [ ] 60.139 — 
+- [ ] 60.140 — 
+- [ ] 60.141 — 
+- [ ] 60.142 — 
+- [ ] 60.143 — 
+- [ ] 60.144 — 
+- [ ] 60.145 — 
+- [ ] 60.146 — 
+- [ ] 60.147 — 
+- [ ] 60.148 — 
+- [ ] 60.149 — 
+- [ ] 60.150 — 
+- [ ] 60.151 — 
+- [ ] 60.152 — 
+- [ ] 60.153 — 
+- [ ] 60.154 — 
+- [ ] 60.155 — 
+- [ ] 60.156 — 
+- [ ] 60.157 — 
+- [ ] 60.158 — 
+- [ ] 60.159 — 
+- [ ] 60.160 — 
+- [ ] 60.161 — 
+- [ ] 60.162 — 
+- [ ] 60.163 — 
+- [ ] 60.164 — 
+- [ ] 60.165 — 
+- [ ] 60.166 — 
+- [ ] 60.167 — 
+- [ ] 60.168 — 
+- [ ] 60.169 — 
+- [ ] 60.170 — 
+- [ ] 60.171 — 
+- [ ] 60.172 — 
+- [ ] 60.173 — 
+- [ ] 60.174 — 
+- [ ] 60.175 — 
+- [ ] 60.176 — 
+- [ ] 60.177 — 
+- [ ] 60.178 — 
+- [ ] 60.179 — 
+- [ ] 60.180 — 
+- [ ] 60.181 — 
+- [ ] 60.182 — 
+- [ ] 60.183 — 
+- [ ] 60.184 — 
+- [ ] 60.185 — 
+- [ ] 60.186 — 
+- [ ] 60.187 — 
+- [ ] 60.188 — 
+- [ ] 60.189 — 
+- [ ] 60.190 — 
+- [ ] 60.191 — 
+- [ ] 60.192 — 
+- [ ] 60.193 — 
+- [ ] 60.194 — 
+- [ ] 60.195 — 
+- [ ] 60.196 — 
+- [ ] 60.197 — 
+- [ ] 60.198 — 
+- [ ] 60.199 — 
+- [ ] 60.200 — 
+- [ ] 60.201 — 
+- [ ] 60.202 — 
+- [ ] 60.203 — 
+- [ ] 60.204 — 
+- [ ] 60.205 — 
+- [ ] 60.206 — Final Release
+
+## Sprint 61 — Repository & Production Architecture
+- Steps: 112
+- [ ] 61.1 — Buat Root Repository
+- [ ] 61.2 — Gunakan Monorepo
+- [ ] 61.3 — 
+- [ ] 61.4 — 
+- [ ] 61.5 — 
+- [ ] 61.6 — 
+- [ ] 61.7 — 
+- [ ] 61.8 — 
+- [ ] 61.9 — 
+- [ ] 61.10 — 
+- [ ] 61.11 — 
+- [ ] 61.12 — 
+- [ ] 61.13 — 
+- [ ] 61.14 — 
+- [ ] 61.15 — 
+- [ ] 61.16 — 
+- [ ] 61.17 — 
+- [ ] 61.18 — 
+- [ ] 61.19 — 
+- [ ] 61.20 — 
+- [ ] 61.21 — 
+- [ ] 61.22 — 
+- [ ] 61.23 — 
+- [ ] 61.24 — 
+- [ ] 61.25 — 
+- [ ] 61.26 — 
+- [ ] 61.27 — 
+- [ ] 61.28 — 
+- [ ] 61.29 — 
+- [ ] 61.30 — 
+- [ ] 61.31 — 
+- [ ] 61.32 — 
+- [ ] 61.33 — 
+- [ ] 61.34 — 
+- [ ] 61.35 — 
+- [ ] 61.36 — 
+- [ ] 61.37 — 
+- [ ] 61.38 — 
+- [ ] 61.39 — 
+- [ ] 61.40 — 
+- [ ] 61.41 — 
+- [ ] 61.42 — 
+- [ ] 61.43 — 
+- [ ] 61.44 — 
+- [ ] 61.45 — 
+- [ ] 61.46 — 
+- [ ] 61.47 — 
+- [ ] 61.48 — 
+- [ ] 61.49 — 
+- [ ] 61.50 — 
+- [ ] 61.51 — 
+- [ ] 61.52 — 
+- [ ] 61.53 — 
+- [ ] 61.54 — 
+- [ ] 61.55 — 
+- [ ] 61.56 — 
+- [ ] 61.57 — 
+- [ ] 61.58 — 
+- [ ] 61.59 — 
+- [ ] 61.60 — 
+- [ ] 61.61 — 
+- [ ] 61.62 — 
+- [ ] 61.63 — 
+- [ ] 61.64 — 
+- [ ] 61.65 — 
+- [ ] 61.66 — 
+- [ ] 61.67 — 
+- [ ] 61.68 — 
+- [ ] 61.69 — 
+- [ ] 61.70 — 
+- [ ] 61.71 — 
+- [ ] 61.72 — 
+- [ ] 61.73 — 
+- [ ] 61.74 — 
+- [ ] 61.75 — 
+- [ ] 61.76 — 
+- [ ] 61.77 — 
+- [ ] 61.78 — 
+- [ ] 61.79 — 
+- [ ] 61.80 — 
+- [ ] 61.81 — 
+- [ ] 61.82 — 
+- [ ] 61.83 — 
+- [ ] 61.84 — 
+- [ ] 61.85 — 
+- [ ] 61.86 — 
+- [ ] 61.87 — 
+- [ ] 61.88 — 
+- [ ] 61.89 — 
+- [ ] 61.90 — 
+- [ ] 61.91 — 
+- [ ] 61.92 — 
+- [ ] 61.93 — 
+- [ ] 61.94 — 
+- [ ] 61.95 — 
+- [ ] 61.96 — 
+- [ ] 61.97 — 
+- [ ] 61.98 — 
+- [ ] 61.99 — 
+- [ ] 61.100 — 
+- [ ] 61.101 — 
+- [ ] 61.102 — 
+- [ ] 61.103 — 
+- [ ] 61.104 — 
+- [ ] 61.105 — 
+- [ ] 61.106 — 
+- [ ] 61.107 — 
+- [ ] 61.108 — 
+- [ ] 61.109 — 
+- [ ] 61.110 — 
+- [ ] 61.111 — 
+- [ ] 61.112 — 
+
+## Sprint 62 — Core Runtime Implementation
+- Steps: 114
+- [ ] 62.1 — Runtime Host
+- [ ] 62.2 — Runtime Tidak Menjadi God Object
+- [ ] 62.3 — Lifecycle States
+- [ ] 62.4 — Lifecycle Flow
+- [ ] 62.5 — Runtime Start
+- [ ] 62.6 — Start Order
+- [ ] 62.7 — Service Registry
+- [ ] 62.8 — Registration Hanya di Composition Root
+- [ ] 62.9 — Duplicate Registration Protection
+- [ ] 62.10 — 
+- [ ] 62.11 — Critical vs Optional
+- [ ] 62.12 — 
+- [ ] 62.13 — Topological Start
+- [ ] 62.14 — Missing Dependency
+- [ ] 62.15 — 
+- [ ] 62.16 — Command Marker
+- [ ] 62.17 — Command Handler
+- [ ] 62.18 — Handler Registry
+- [ ] 62.19 — One Command → One Primary Handler
+- [ ] 62.20 — 
+- [ ] 62.21 — Command Pipeline
+- [ ] 62.22 — Command Logging
+- [ ] 62.23 — Query Marker
+- [ ] 62.24 — Query Handler
+- [ ] 62.25 — Query Bus
+- [ ] 62.26 — 
+- [ ] 62.27 — Domain Event Marker
+- [ ] 62.28 — Event Bus
+- [ ] 62.29 — Event Example
+- [ ] 62.30 — Multiple Event Subscribers
+- [ ] 62.31 — 
+- [ ] 62.32 — Critical Event Subscriber
+- [ ] 62.33 — 
+- [ ] 62.34 — 
+- [ ] 62.35 — Job State
+- [ ] 62.36 — 
+- [ ] 62.37 — 
+- [ ] 62.38 — 
+- [ ] 62.39 — Cancellation Token
+- [ ] 62.40 — Cancellation Source
+- [ ] 62.41 — Cooperative Cancellation
+- [ ] 62.42 — Jangan Hard Kill Secara Default
+- [ ] 62.43 — 
+- [ ] 62.44 — Progress Range
+- [ ] 62.45 — Indeterminate Jobs
+- [ ] 62.46 — 
+- [ ] 62.47 — Priority
+- [ ] 62.48 — FIFO Within Priority
+- [ ] 62.49 — 
+- [ ] 62.50 — Initial Concurrency
+- [ ] 62.51 — 
+- [ ] 62.52 — 
+- [ ] 62.53 — Retryable Error
+- [ ] 62.54 — 
+- [ ] 62.55 — Health Status
+- [ ] 62.56 — Health Result
+- [ ] 62.57 — 
+- [ ] 62.58 — Aggregate Health
+- [ ] 62.59 — 
+- [ ] 62.60 — 
+- [ ] 62.61 — Capability Availability
+- [ ] 62.62 — 
+- [ ] 62.63 — 
+- [ ] 62.64 — Clean Shutdown
+- [ ] 62.65 — Dirty Startup Detection
+- [ ] 62.66 — 
+- [ ] 62.67 — 
+- [ ] 62.68 — Shutdown Timeout
+- [ ] 62.69 — 
+- [ ] 62.70 — 
+- [ ] 62.71 — 
+- [ ] 62.72 — 
+- [ ] 62.73 — 
+- [ ] 62.74 — 
+- [ ] 62.75 — 
+- [ ] 62.76 — 
+- [ ] 62.77 — Validation Pipeline
+- [ ] 62.78 — 
+- [ ] 62.79 — 
+- [ ] 62.80 — 
+- [ ] 62.81 — 
+- [ ] 62.82 — 
+- [ ] 62.83 — Runtime Demo Output
+- [ ] 62.84 — 
+- [ ] 62.85 — 
+- [ ] 62.86 — 
+- [ ] 62.87 — 
+- [ ] 62.88 — 
+- [ ] 62.89 — Lifecycle Tests
+- [ ] 62.90 — Command Tests
+- [ ] 62.91 — Query Tests
+- [ ] 62.92 — Event Tests
+- [ ] 62.93 — Job Tests
+- [ ] 62.94 — Health Tests
+- [ ] 62.95 — Shutdown Tests
+- [ ] 62.96 — 
+- [ ] 62.97 — 
+- [ ] 62.98 — 
+- [ ] 62.99 — 
+- [ ] 62.100 — 
+- [ ] 62.101 — 
+- [ ] 62.102 — 
+- [ ] 62.103 — 
+- [ ] 62.104 — 
+- [ ] 62.105 — 
+- [ ] 62.106 — 
+- [ ] 62.107 — 
+- [ ] 62.108 — 
+- [ ] 62.109 — 
+- [ ] 62.110 — 
+- [ ] 62.111 — 
+- [ ] 62.112 — 
+- [ ] 62.113 — 
+- [ ] 62.114 — 
+
+## Sprint 63 — Database & Persistence
+- Steps: 124
+- [ ] 63.1 — Pisahkan App DB dan Project DB
+- [ ] 63.2 — 
+- [ ] 63.3 — Initial App Tables
+- [ ] 63.4 — 
+- [ ] 63.5 — Project Manifest
+- [ ] 63.6 — 
+- [ ] 63.7 — Separate Handles
+- [ ] 63.8 — 
+- [ ] 63.9 — Project Close
+- [ ] 63.10 — 
+- [ ] 63.11 — WAL Consideration
+- [ ] 63.12 — 
+- [ ] 63.13 — 
+- [ ] 63.14 — Migration Registry
+- [ ] 63.15 — Migration Workflow
+- [ ] 63.16 — 
+- [ ] 63.17 — Migration Failure
+- [ ] 63.18 — 
+- [ ] 63.19 — 
+- [ ] 63.20 — Repository Transaction Boundary
+- [ ] 63.21 — 
+- [ ] 63.22 — 
+- [ ] 63.23 — 
+- [ ] 63.24 — 
+- [ ] 63.25 — Save Project
+- [ ] 63.26 — Get Project
+- [ ] 63.27 — 
+- [ ] 63.28 — Recent Project Behavior
+- [ ] 63.29 — 
+- [ ] 63.30 — 
+- [ ] 63.31 — 
+- [ ] 63.32 — 
+- [ ] 63.33 — 
+- [ ] 63.34 — 
+- [ ] 63.35 — 
+- [ ] 63.36 — 
+- [ ] 63.37 — 
+- [ ] 63.38 — 
+- [ ] 63.39 — 
+- [ ] 63.40 — 
+- [ ] 63.41 — 
+- [ ] 63.42 — 
+- [ ] 63.43 — 
+- [ ] 63.44 — 
+- [ ] 63.45 — Stale Lock
+- [ ] 63.46 — 
+- [ ] 63.47 — Integrity Check
+- [ ] 63.48 — 
+- [ ] 63.49 — 
+- [ ] 63.50 — 
+- [ ] 63.51 — 
+- [ ] 63.52 — 
+- [ ] 63.53 — 
+- [ ] 63.54 — 
+- [ ] 63.55 — 
+- [ ] 63.56 — 
+- [ ] 63.57 — 
+- [ ] 63.58 — 
+- [ ] 63.59 — 
+- [ ] 63.60 — 
+- [ ] 63.61 — 
+- [ ] 63.62 — 
+- [ ] 63.63 — 
+- [ ] 63.64 — 
+- [ ] 63.65 — 
+- [ ] 63.66 — 
+- [ ] 63.67 — 
+- [ ] 63.68 — 
+- [ ] 63.69 — 
+- [ ] 63.70 — 
+- [ ] 63.71 — 
+- [ ] 63.72 — 
+- [ ] 63.73 — 
+- [ ] 63.74 — 
+- [ ] 63.75 — 
+- [ ] 63.76 — 
+- [ ] 63.77 — 
+- [ ] 63.78 — 
+- [ ] 63.79 — 
+- [ ] 63.80 — 
+- [ ] 63.81 — 
+- [ ] 63.82 — 
+- [ ] 63.83 — 
+- [ ] 63.84 — 
+- [ ] 63.85 — 
+- [ ] 63.86 — 
+- [ ] 63.87 — 
+- [ ] 63.88 — 
+- [ ] 63.89 — 
+- [ ] 63.90 — 
+- [ ] 63.91 — 
+- [ ] 63.92 — 
+- [ ] 63.93 — 
+- [ ] 63.94 — 
+- [ ] 63.95 — 
+- [ ] 63.96 — 
+- [ ] 63.97 — 
+- [ ] 63.98 — 
+- [ ] 63.99 — 
+- [ ] 63.100 — 
+- [ ] 63.101 — 
+- [ ] 63.102 — 
+- [ ] 63.103 — 
+- [ ] 63.104 — 
+- [ ] 63.105 — 
+- [ ] 63.106 — 
+- [ ] 63.107 — 
+- [ ] 63.108 — 
+- [ ] 63.109 — 
+- [ ] 63.110 — 
+- [ ] 63.111 — 
+- [ ] 63.112 — 
+- [ ] 63.113 — 
+- [ ] 63.114 — 
+- [ ] 63.115 — 
+- [ ] 63.116 — 
+- [ ] 63.117 — 
+- [ ] 63.118 — 
+- [ ] 63.119 — 
+- [ ] 63.120 — 
+- [ ] 63.121 — 
+- [ ] 63.122 — 
+- [ ] 63.123 — 
+- [ ] 63.124 — 
+
+## Sprint 64 — Application Shell
+- Steps: 123
+- [ ] 64.1 — Layout Utama
+- [ ] 64.2 — 
+- [ ] 64.3 — AppBrand
+- [ ] 64.4 — Posisi Logo
+- [ ] 64.5 — 
+- [ ] 64.6 — Navigation Model
+- [ ] 64.7 — 
+- [ ] 64.8 — 
+- [ ] 64.9 — 
+- [ ] 64.10 — 
+- [ ] 64.11 — Expanded
+- [ ] 64.12 — Medium
+- [ ] 64.13 — Compact
+- [ ] 64.14 — 
+- [ ] 64.15 — 
+- [ ] 64.16 — 
+- [ ] 64.17 — 
+- [ ] 64.18 — 
+- [ ] 64.19 — 
+- [ ] 64.20 — 
+- [ ] 64.21 — 
+- [ ] 64.22 — 
+- [ ] 64.23 — 
+- [ ] 64.24 — Activity Panel Example
+- [ ] 64.25 — 
+- [ ] 64.26 — 
+- [ ] 64.27 — 
+- [ ] 64.28 — 
+- [ ] 64.29 — 
+- [ ] 64.30 — 
+- [ ] 64.31 — 
+- [ ] 64.32 — 
+- [ ] 64.33 — 
+- [ ] 64.34 — 
+- [ ] 64.35 — 
+- [ ] 64.36 — 
+- [ ] 64.37 — 
+- [ ] 64.38 — 
+- [ ] 64.39 — 
+- [ ] 64.40 — 
+- [ ] 64.41 — 
+- [ ] 64.42 — 
+- [ ] 64.43 — 
+- [ ] 64.44 — 
+- [ ] 64.45 — 
+- [ ] 64.46 — 
+- [ ] 64.47 — 
+- [ ] 64.48 — 
+- [ ] 64.49 — 
+- [ ] 64.50 — 
+- [ ] 64.51 — 
+- [ ] 64.52 — 
+- [ ] 64.53 — 
+- [ ] 64.54 — 
+- [ ] 64.55 — 
+- [ ] 64.56 — 
+- [ ] 64.57 — 
+- [ ] 64.58 — 
+- [ ] 64.59 — 
+- [ ] 64.60 — 
+- [ ] 64.61 — 
+- [ ] 64.62 — 
+- [ ] 64.63 — 
+- [ ] 64.64 — 
+- [ ] 64.65 — 
+- [ ] 64.66 — 
+- [ ] 64.67 — 
+- [ ] 64.68 — 
+- [ ] 64.69 — 
+- [ ] 64.70 — 
+- [ ] 64.71 — 
+- [ ] 64.72 — 
+- [ ] 64.73 — 
+- [ ] 64.74 — 
+- [ ] 64.75 — 
+- [ ] 64.76 — 
+- [ ] 64.77 — 
+- [ ] 64.78 — 
+- [ ] 64.79 — 
+- [ ] 64.80 — 
+- [ ] 64.81 — 
+- [ ] 64.82 — 
+- [ ] 64.83 — 
+- [ ] 64.84 — 
+- [ ] 64.85 — 
+- [ ] 64.86 — 
+- [ ] 64.87 — 
+- [ ] 64.88 — 
+- [ ] 64.89 — 
+- [ ] 64.90 — 
+- [ ] 64.91 — 
+- [ ] 64.92 — 
+- [ ] 64.93 — 
+- [ ] 64.94 — 
+- [ ] 64.95 — 
+- [ ] 64.96 — 
+- [ ] 64.97 — 
+- [ ] 64.98 — 
+- [ ] 64.99 — 
+- [ ] 64.100 — 
+- [ ] 64.101 — 
+- [ ] 64.102 — 
+- [ ] 64.103 — 
+- [ ] 64.104 — 
+- [ ] 64.105 — 
+- [ ] 64.106 — 
+- [ ] 64.107 — 
+- [ ] 64.108 — 
+- [ ] 64.109 — 
+- [ ] 64.110 — 
+- [ ] 64.111 — 
+- [ ] 64.112 — 
+- [ ] 64.113 — 
+- [ ] 64.114 — 
+- [ ] 64.115 — 
+- [ ] 64.116 — 
+- [ ] 64.117 — 
+- [ ] 64.118 — 
+- [ ] 64.119 — 
+- [ ] 64.120 — 
+- [ ] 64.121 — 
+- [ ] 64.122 — 
+- [ ] 64.123 — 
+
+## Sprint 65 — Project Management System
+- Steps: 129
+- [ ] 65.1 — 
+- [ ] 65.2 — Project Sections
+- [ ] 65.3 — 
+- [ ] 65.4 — Project Status
+- [ ] 65.5 — 
+- [ ] 65.6 — 
+- [ ] 65.7 — Template Definition
+- [ ] 65.8 — 
+- [ ] 65.9 — Display Name ≠ Path Name
+- [ ] 65.10 — 
+- [ ] 65.11 — Location Validation
+- [ ] 65.12 — 
+- [ ] 65.13 — 
+- [ ] 65.14 — 
+- [ ] 65.15 — 
+- [ ] 65.16 — 
+- [ ] 65.17 — 
+- [ ] 65.18 — 
+- [ ] 65.19 — 
+- [ ] 65.20 — Session State
+- [ ] 65.21 — 
+- [ ] 65.22 — 
+- [ ] 65.23 — 
+- [ ] 65.24 — 
+- [ ] 65.25 — 
+- [ ] 65.26 — 
+- [ ] 65.27 — 
+- [ ] 65.28 — 
+- [ ] 65.29 — 
+- [ ] 65.30 — 
+- [ ] 65.31 — 
+- [ ] 65.32 — 
+- [ ] 65.33 — Rename Folder Separately
+- [ ] 65.34 — 
+- [ ] 65.35 — 
+- [ ] 65.36 — 
+- [ ] 65.37 — 
+- [ ] 65.38 — 
+- [ ] 65.39 — 
+- [ ] 65.40 — 
+- [ ] 65.41 — 
+- [ ] 65.42 — 
+- [ ] 65.43 — 
+- [ ] 65.44 — 
+- [ ] 65.45 — 
+- [ ] 65.46 — 
+- [ ] 65.47 — 
+- [ ] 65.48 — 
+- [ ] 65.49 — 
+- [ ] 65.50 — Duplicate Semantics
+- [ ] 65.51 — 
+- [ ] 65.52 — 
+- [ ] 65.53 — 
+- [ ] 65.54 — Move Safety
+- [ ] 65.55 — 
+- [ ] 65.56 — 
+- [ ] 65.57 — 
+- [ ] 65.58 — Archived Project
+- [ ] 65.59 — 
+- [ ] 65.60 — 
+- [ ] 65.61 — 
+- [ ] 65.62 — 
+- [ ] 65.63 — 
+- [ ] 65.64 — 
+- [ ] 65.65 — 
+- [ ] 65.66 — 
+- [ ] 65.67 — 
+- [ ] 65.68 — 
+- [ ] 65.69 — 
+- [ ] 65.70 — 
+- [ ] 65.71 — 
+- [ ] 65.72 — 
+- [ ] 65.73 — 
+- [ ] 65.74 — 
+- [ ] 65.75 — 
+- [ ] 65.76 — 
+- [ ] 65.77 — 
+- [ ] 65.78 — 
+- [ ] 65.79 — 
+- [ ] 65.80 — 
+- [ ] 65.81 — 
+- [ ] 65.82 — 
+- [ ] 65.83 — 
+- [ ] 65.84 — 
+- [ ] 65.85 — 
+- [ ] 65.86 — 
+- [ ] 65.87 — 
+- [ ] 65.88 — 
+- [ ] 65.89 — 
+- [ ] 65.90 — 
+- [ ] 65.91 — 
+- [ ] 65.92 — 
+- [ ] 65.93 — 
+- [ ] 65.94 — 
+- [ ] 65.95 — 
+- [ ] 65.96 — 
+- [ ] 65.97 — 
+- [ ] 65.98 — 
+- [ ] 65.99 — 
+- [ ] 65.100 — 
+- [ ] 65.101 — 
+- [ ] 65.102 — 
+- [ ] 65.103 — 
+- [ ] 65.104 — 
+- [ ] 65.105 — 
+- [ ] 65.106 — 
+- [ ] 65.107 — 
+- [ ] 65.108 — 
+- [ ] 65.109 — 
+- [ ] 65.110 — 
+- [ ] 65.111 — 
+- [ ] 65.112 — 
+- [ ] 65.113 — 
+- [ ] 65.114 — 
+- [ ] 65.115 — 
+- [ ] 65.116 — 
+- [ ] 65.117 — 
+- [ ] 65.118 — 
+- [ ] 65.119 — 
+- [ ] 65.120 — 
+- [ ] 65.121 — 
+- [ ] 65.122 — 
+- [ ] 65.123 — 
+- [ ] 65.124 — 
+- [ ] 65.125 — 
+- [ ] 65.126 — 
+- [ ] 65.127 — 
+- [ ] 65.128 — 
+- [ ] 65.129 — 
+
+## Sprint 66 — Asset Management System
+- Steps: 166
+- [ ] 66.1 — 
+- [ ] 66.2 — AssetType
+- [ ] 66.3 — 
+- [ ] 66.4 — Managed Asset
+- [ ] 66.5 — External Asset
+- [ ] 66.6 — Generated Asset
+- [ ] 66.7 — 
+- [ ] 66.8 — Jangan Gunakan Nama File sebagai Identity
+- [ ] 66.9 — 
+- [ ] 66.10 — Metadata Table
+- [ ] 66.11 — 
+- [ ] 66.12 — 
+- [ ] 66.13 — 
+- [ ] 66.14 — ImportMode
+- [ ] 66.15 — 
+- [ ] 66.16 — 
+- [ ] 66.17 — Unknown Format
+- [ ] 66.18 — 
+- [ ] 66.19 — 
+- [ ] 66.20 — 
+- [ ] 66.21 — Hash Storage
+- [ ] 66.22 — 
+- [ ] 66.23 — Default
+- [ ] 66.24 — 
+- [ ] 66.25 — 
+- [ ] 66.26 — Internal Filename
+- [ ] 66.27 — 
+- [ ] 66.28 — 
+- [ ] 66.29 — Import Failure
+- [ ] 66.30 — 
+- [ ] 66.31 — Import Progress
+- [ ] 66.32 — 
+- [ ] 66.33 — Batch Failure Isolation
+- [ ] 66.34 — 
+- [ ] 66.35 — Jangan Langsung Copy Saat Drop
+- [ ] 66.36 — 
+- [ ] 66.37 — 
+- [ ] 66.38 — 
+- [ ] 66.39 — 
+- [ ] 66.40 — 
+- [ ] 66.41 — 
+- [ ] 66.42 — 
+- [ ] 66.43 — 
+- [ ] 66.44 — 
+- [ ] 66.45 — 
+- [ ] 66.46 — 
+- [ ] 66.47 — Tags Table
+- [ ] 66.48 — 
+- [ ] 66.49 — 
+- [ ] 66.50 — 
+- [ ] 66.51 — 
+- [ ] 66.52 — 
+- [ ] 66.53 — 
+- [ ] 66.54 — 
+- [ ] 66.55 — 
+- [ ] 66.56 — 
+- [ ] 66.57 — 
+- [ ] 66.58 — 
+- [ ] 66.59 — 
+- [ ] 66.60 — 
+- [ ] 66.61 — Cache Rule
+- [ ] 66.62 — 
+- [ ] 66.63 — 
+- [ ] 66.64 — 
+- [ ] 66.65 — 
+- [ ] 66.66 — 
+- [ ] 66.67 — 
+- [ ] 66.68 — 
+- [ ] 66.69 — 
+- [ ] 66.70 — 
+- [ ] 66.71 — 
+- [ ] 66.72 — 
+- [ ] 66.73 — 
+- [ ] 66.74 — 
+- [ ] 66.75 — 
+- [ ] 66.76 — Relink Exact Match
+- [ ] 66.77 — Relink Different Content
+- [ ] 66.78 — 
+- [ ] 66.79 — 
+- [ ] 66.80 — 
+- [ ] 66.81 — 
+- [ ] 66.82 — 
+- [ ] 66.83 — 
+- [ ] 66.84 — 
+- [ ] 66.85 — 
+- [ ] 66.86 — 
+- [ ] 66.87 — 
+- [ ] 66.88 — 
+- [ ] 66.89 — 
+- [ ] 66.90 — 
+- [ ] 66.91 — 
+- [ ] 66.92 — 
+- [ ] 66.93 — 
+- [ ] 66.94 — 
+- [ ] 66.95 — 
+- [ ] 66.96 — 
+- [ ] 66.97 — 
+- [ ] 66.98 — 
+- [ ] 66.99 — 
+- [ ] 66.100 — 
+- [ ] 66.101 — 
+- [ ] 66.102 — 
+- [ ] 66.103 — 
+- [ ] 66.104 — 
+- [ ] 66.105 — 
+- [ ] 66.106 — 
+- [ ] 66.107 — 
+- [ ] 66.108 — 
+- [ ] 66.109 — 
+- [ ] 66.110 — 
+- [ ] 66.111 — 
+- [ ] 66.112 — 
+- [ ] 66.113 — 
+- [ ] 66.114 — 
+- [ ] 66.115 — 
+- [ ] 66.116 — 
+- [ ] 66.117 — 
+- [ ] 66.118 — 
+- [ ] 66.119 — 
+- [ ] 66.120 — 
+- [ ] 66.121 — 
+- [ ] 66.122 — 
+- [ ] 66.123 — 
+- [ ] 66.124 — 
+- [ ] 66.125 — 
+- [ ] 66.126 — 
+- [ ] 66.127 — 
+- [ ] 66.128 — 
+- [ ] 66.129 — 
+- [ ] 66.130 — 
+- [ ] 66.131 — 
+- [ ] 66.132 — 
+- [ ] 66.133 — 
+- [ ] 66.134 — 
+- [ ] 66.135 — 
+- [ ] 66.136 — 
+- [ ] 66.137 — 
+- [ ] 66.138 — 
+- [ ] 66.139 — 
+- [ ] 66.140 — 
+- [ ] 66.141 — 
+- [ ] 66.142 — 
+- [ ] 66.143 — 
+- [ ] 66.144 — 
+- [ ] 66.145 — 
+- [ ] 66.146 — 
+- [ ] 66.147 — 
+- [ ] 66.148 — 
+- [ ] 66.149 — 
+- [ ] 66.150 — 
+- [ ] 66.151 — 
+- [ ] 66.152 — 
+- [ ] 66.153 — 
+- [ ] 66.154 — 
+- [ ] 66.155 — 
+- [ ] 66.156 — 
+- [ ] 66.157 — 
+- [ ] 66.158 — 
+- [ ] 66.159 — 
+- [ ] 66.160 — 
+- [ ] 66.161 — 
+- [ ] 66.162 — 
+- [ ] 66.163 — 
+- [ ] 66.164 — 
+- [ ] 66.165 — 
+- [ ] 66.166 — 
+
+## Sprint 67 — Character & World Data System
+- Steps: 174
+- [ ] 67.1 — 
+- [ ] 67.2 — EntityType
+- [ ] 67.3 — 
+- [ ] 67.4 — Stable Identity
+- [ ] 67.5 — 
+- [ ] 67.6 — 
+- [ ] 67.7 — 
+- [ ] 67.8 — 
+- [ ] 67.9 — 
+- [ ] 67.10 — 
+- [ ] 67.11 — 
+- [ ] 67.12 — 
+- [ ] 67.13 — 
+- [ ] 67.14 — 
+- [ ] 67.15 — 
+- [ ] 67.16 — 
+- [ ] 67.17 — 
+- [ ] 67.18 — 
+- [ ] 67.19 — 
+- [ ] 67.20 — 
+- [ ] 67.21 — 
+- [ ] 67.22 — 
+- [ ] 67.23 — 
+- [ ] 67.24 — 
+- [ ] 67.25 — 
+- [ ] 67.26 — 
+- [ ] 67.27 — 
+- [ ] 67.28 — 
+- [ ] 67.29 — 
+- [ ] 67.30 — 
+- [ ] 67.31 — 
+- [ ] 67.32 — 
+- [ ] 67.33 — 
+- [ ] 67.34 — 
+- [ ] 67.35 — 
+- [ ] 67.36 — 
+- [ ] 67.37 — 
+- [ ] 67.38 — 
+- [ ] 67.39 — 
+- [ ] 67.40 — 
+- [ ] 67.41 — 
+- [ ] 67.42 — 
+- [ ] 67.43 — 
+- [ ] 67.44 — 
+- [ ] 67.45 — 
+- [ ] 67.46 — 
+- [ ] 67.47 — 
+- [ ] 67.48 — 
+- [ ] 67.49 — 
+- [ ] 67.50 — 
+- [ ] 67.51 — 
+- [ ] 67.52 — 
+- [ ] 67.53 — 
+- [ ] 67.54 — 
+- [ ] 67.55 — 
+- [ ] 67.56 — 
+- [ ] 67.57 — 
+- [ ] 67.58 — 
+- [ ] 67.59 — 
+- [ ] 67.60 — 
+- [ ] 67.61 — 
+- [ ] 67.62 — 
+- [ ] 67.63 — 
+- [ ] 67.64 — 
+- [ ] 67.65 — 
+- [ ] 67.66 — 
+- [ ] 67.67 — 
+- [ ] 67.68 — 
+- [ ] 67.69 — 
+- [ ] 67.70 — 
+- [ ] 67.71 — 
+- [ ] 67.72 — 
+- [ ] 67.73 — 
+- [ ] 67.74 — 
+- [ ] 67.75 — 
+- [ ] 67.76 — 
+- [ ] 67.77 — 
+- [ ] 67.78 — 
+- [ ] 67.79 — 
+- [ ] 67.80 — 
+- [ ] 67.81 — 
+- [ ] 67.82 — 
+- [ ] 67.83 — 
+- [ ] 67.84 — 
+- [ ] 67.85 — 
+- [ ] 67.86 — 
+- [ ] 67.87 — 
+- [ ] 67.88 — 
+- [ ] 67.89 — 
+- [ ] 67.90 — 
+- [ ] 67.91 — 
+- [ ] 67.92 — 
+- [ ] 67.93 — 
+- [ ] 67.94 — 
+- [ ] 67.95 — 
+- [ ] 67.96 — 
+- [ ] 67.97 — 
+- [ ] 67.98 — 
+- [ ] 67.99 — 
+- [ ] 67.100 — 
+- [ ] 67.101 — 
+- [ ] 67.102 — 
+- [ ] 67.103 — 
+- [ ] 67.104 — 
+- [ ] 67.105 — 
+- [ ] 67.106 — 
+- [ ] 67.107 — 
+- [ ] 67.108 — 
+- [ ] 67.109 — 
+- [ ] 67.110 — 
+- [ ] 67.111 — 
+- [ ] 67.112 — 
+- [ ] 67.113 — 
+- [ ] 67.114 — 
+- [ ] 67.115 — 
+- [ ] 67.116 — 
+- [ ] 67.117 — 
+- [ ] 67.118 — 
+- [ ] 67.119 — 
+- [ ] 67.120 — 
+- [ ] 67.121 — 
+- [ ] 67.122 — 
+- [ ] 67.123 — 
+- [ ] 67.124 — 
+- [ ] 67.125 — 
+- [ ] 67.126 — 
+- [ ] 67.127 — 
+- [ ] 67.128 — 
+- [ ] 67.129 — 
+- [ ] 67.130 — 
+- [ ] 67.131 — 
+- [ ] 67.132 — 
+- [ ] 67.133 — 
+- [ ] 67.134 — 
+- [ ] 67.135 — 
+- [ ] 67.136 — 
+- [ ] 67.137 — 
+- [ ] 67.138 — 
+- [ ] 67.139 — 
+- [ ] 67.140 — 
+- [ ] 67.141 — 
+- [ ] 67.142 — 
+- [ ] 67.143 — 
+- [ ] 67.144 — 
+- [ ] 67.145 — 
+- [ ] 67.146 — 
+- [ ] 67.147 — 
+- [ ] 67.148 — 
+- [ ] 67.149 — 
+- [ ] 67.150 — 
+- [ ] 67.151 — 
+- [ ] 67.152 — 
+- [ ] 67.153 — 
+- [ ] 67.154 — 
+- [ ] 67.155 — 
+- [ ] 67.156 — 
+- [ ] 67.157 — 
+- [ ] 67.158 — 
+- [ ] 67.159 — 
+- [ ] 67.160 — 
+- [ ] 67.161 — 
+- [ ] 67.162 — 
+- [ ] 67.163 — 
+- [ ] 67.164 — 
+- [ ] 67.165 — 
+- [ ] 67.166 — 
+- [ ] 67.167 — 
+- [ ] 67.168 — 
+- [ ] 67.169 — 
+- [ ] 67.170 — 
+- [ ] 67.171 — 
+- [ ] 67.172 — 
+- [ ] 67.173 — 
+- [ ] 67.174 — 
+
+## Sprint 68 — Authentication & User System
+- Steps: 139
+- [ ] 68.1 — User Entity
+- [ ] 68.2 — UserType
+- [ ] 68.3 — 
+- [ ] 68.4 — Local User ID
+- [ ] 68.5 — 
+- [ ] 68.6 — Offline-First
+- [ ] 68.7 — 
+- [ ] 68.8 — 
+- [ ] 68.9 — 
+- [ ] 68.10 — SessionMode
+- [ ] 68.11 — 
+- [ ] 68.12 — 
+- [ ] 68.13 — 
+- [ ] 68.14 — 
+- [ ] 68.15 — 
+- [ ] 68.16 — 
+- [ ] 68.17 — 
+- [ ] 68.18 — 
+- [ ] 68.19 — 
+- [ ] 68.20 — 
+- [ ] 68.21 — 
+- [ ] 68.22 — 
+- [ ] 68.23 — 
+- [ ] 68.24 — 
+- [ ] 68.25 — 
+- [ ] 68.26 — 
+- [ ] 68.27 — 
+- [ ] 68.28 — 
+- [ ] 68.29 — 
+- [ ] 68.30 — 
+- [ ] 68.31 — 
+- [ ] 68.32 — 
+- [ ] 68.33 — 
+- [ ] 68.34 — 
+- [ ] 68.35 — 
+- [ ] 68.36 — 
+- [ ] 68.37 — 
+- [ ] 68.38 — 
+- [ ] 68.39 — 
+- [ ] 68.40 — 
+- [ ] 68.41 — 
+- [ ] 68.42 — 
+- [ ] 68.43 — 
+- [ ] 68.44 — 
+- [ ] 68.45 — 
+- [ ] 68.46 — 
+- [ ] 68.47 — 
+- [ ] 68.48 — 
+- [ ] 68.49 — 
+- [ ] 68.50 — 
+- [ ] 68.51 — 
+- [ ] 68.52 — 
+- [ ] 68.53 — 
+- [ ] 68.54 — 
+- [ ] 68.55 — 
+- [ ] 68.56 — 
+- [ ] 68.57 — 
+- [ ] 68.58 — 
+- [ ] 68.59 — 
+- [ ] 68.60 — 
+- [ ] 68.61 — 
+- [ ] 68.62 — 
+- [ ] 68.63 — 
+- [ ] 68.64 — 
+- [ ] 68.65 — 
+- [ ] 68.66 — 
+- [ ] 68.67 — 
+- [ ] 68.68 — 
+- [ ] 68.69 — 
+- [ ] 68.70 — 
+- [ ] 68.71 — 
+- [ ] 68.72 — 
+- [ ] 68.73 — 
+- [ ] 68.74 — 
+- [ ] 68.75 — 
+- [ ] 68.76 — 
+- [ ] 68.77 — 
+- [ ] 68.78 — 
+- [ ] 68.79 — 
+- [ ] 68.80 — 
+- [ ] 68.81 — 
+- [ ] 68.82 — 
+- [ ] 68.83 — 
+- [ ] 68.84 — 
+- [ ] 68.85 — 
+- [ ] 68.86 — 
+- [ ] 68.87 — 
+- [ ] 68.88 — 
+- [ ] 68.89 — 
+- [ ] 68.90 — 
+- [ ] 68.91 — 
+- [ ] 68.92 — 
+- [ ] 68.93 — 
+- [ ] 68.94 — 
+- [ ] 68.95 — 
+- [ ] 68.96 — 
+- [ ] 68.97 — 
+- [ ] 68.98 — 
+- [ ] 68.99 — 
+- [ ] 68.100 — 
+- [ ] 68.101 — 
+- [ ] 68.102 — 
+- [ ] 68.103 — 
+- [ ] 68.104 — 
+- [ ] 68.105 — 
+- [ ] 68.106 — 
+- [ ] 68.107 — 
+- [ ] 68.108 — 
+- [ ] 68.109 — 
+- [ ] 68.110 — 
+- [ ] 68.111 — 
+- [ ] 68.112 — 
+- [ ] 68.113 — 
+- [ ] 68.114 — 
+- [ ] 68.115 — 
+- [ ] 68.116 — 
+- [ ] 68.117 — 
+- [ ] 68.118 — 
+- [ ] 68.119 — 
+- [ ] 68.120 — 
+- [ ] 68.121 — 
+- [ ] 68.122 — 
+- [ ] 68.123 — 
+- [ ] 68.124 — 
+- [ ] 68.125 — 
+- [ ] 68.126 — 
+- [ ] 68.127 — 
+- [ ] 68.128 — 
+- [ ] 68.129 — 
+- [ ] 68.130 — 
+- [ ] 68.131 — 
+- [ ] 68.132 — 
+- [ ] 68.133 — 
+- [ ] 68.134 — 
+- [ ] 68.135 — 
+- [ ] 68.136 — 
+- [ ] 68.137 — 
+- [ ] 68.138 — 
+- [ ] 68.139 — 
+
+## Sprint 69 — Settings, Storage & Configuration System
+- Steps: 154
+- [ ] 69.1 — Settings Center
+- [ ] 69.2 — 
+- [ ] 69.3 — SettingScope
+- [ ] 69.4 — 
+- [ ] 69.5 — Example
+- [ ] 69.6 — 
+- [ ] 69.7 — 
+- [ ] 69.8 — 
+- [ ] 69.9 — 
+- [ ] 69.10 — 
+- [ ] 69.11 — 
+- [ ] 69.12 — 
+- [ ] 69.13 — 
+- [ ] 69.14 — 
+- [ ] 69.15 — 
+- [ ] 69.16 — 
+- [ ] 69.17 — 
+- [ ] 69.18 — 
+- [ ] 69.19 — 
+- [ ] 69.20 — 
+- [ ] 69.21 — 
+- [ ] 69.22 — 
+- [ ] 69.23 — 
+- [ ] 69.24 — 
+- [ ] 69.25 — 
+- [ ] 69.26 — 
+- [ ] 69.27 — 
+- [ ] 69.28 — 
+- [ ] 69.29 — 
+- [ ] 69.30 — 
+- [ ] 69.31 — 
+- [ ] 69.32 — 
+- [ ] 69.33 — 
+- [ ] 69.34 — 
+- [ ] 69.35 — 
+- [ ] 69.36 — 
+- [ ] 69.37 — 
+- [ ] 69.38 — 
+- [ ] 69.39 — 
+- [ ] 69.40 — 
+- [ ] 69.41 — 
+- [ ] 69.42 — 
+- [ ] 69.43 — 
+- [ ] 69.44 — 
+- [ ] 69.45 — 
+- [ ] 69.46 — 
+- [ ] 69.47 — 
+- [ ] 69.48 — 
+- [ ] 69.49 — 
+- [ ] 69.50 — 
+- [ ] 69.51 — 
+- [ ] 69.52 — 
+- [ ] 69.53 — 
+- [ ] 69.54 — 
+- [ ] 69.55 — 
+- [ ] 69.56 — 
+- [ ] 69.57 — 
+- [ ] 69.58 — 
+- [ ] 69.59 — 
+- [ ] 69.60 — 
+- [ ] 69.61 — 
+- [ ] 69.62 — 
+- [ ] 69.63 — 
+- [ ] 69.64 — 
+- [ ] 69.65 — 
+- [ ] 69.66 — 
+- [ ] 69.67 — 
+- [ ] 69.68 — 
+- [ ] 69.69 — 
+- [ ] 69.70 — 
+- [ ] 69.71 — 
+- [ ] 69.72 — 
+- [ ] 69.73 — 
+- [ ] 69.74 — 
+- [ ] 69.75 — 
+- [ ] 69.76 — 
+- [ ] 69.77 — 
+- [ ] 69.78 — 
+- [ ] 69.79 — 
+- [ ] 69.80 — 
+- [ ] 69.81 — 
+- [ ] 69.82 — 
+- [ ] 69.83 — 
+- [ ] 69.84 — 
+- [ ] 69.85 — 
+- [ ] 69.86 — 
+- [ ] 69.87 — 
+- [ ] 69.88 — 
+- [ ] 69.89 — 
+- [ ] 69.90 — 
+- [ ] 69.91 — 
+- [ ] 69.92 — 
+- [ ] 69.93 — 
+- [ ] 69.94 — 
+- [ ] 69.95 — 
+- [ ] 69.96 — 
+- [ ] 69.97 — 
+- [ ] 69.98 — 
+- [ ] 69.99 — 
+- [ ] 69.100 — 
+- [ ] 69.101 — 
+- [ ] 69.102 — 
+- [ ] 69.103 — 
+- [ ] 69.104 — 
+- [ ] 69.105 — 
+- [ ] 69.106 — 
+- [ ] 69.107 — 
+- [ ] 69.108 — 
+- [ ] 69.109 — 
+- [ ] 69.110 — 
+- [ ] 69.111 — 
+- [ ] 69.112 — 
+- [ ] 69.113 — 
+- [ ] 69.114 — 
+- [ ] 69.115 — 
+- [ ] 69.116 — 
+- [ ] 69.117 — 
+- [ ] 69.118 — 
+- [ ] 69.119 — 
+- [ ] 69.120 — 
+- [ ] 69.121 — 
+- [ ] 69.122 — 
+- [ ] 69.123 — 
+- [ ] 69.124 — 
+- [ ] 69.125 — 
+- [ ] 69.126 — 
+- [ ] 69.127 — 
+- [ ] 69.128 — 
+- [ ] 69.129 — 
+- [ ] 69.130 — 
+- [ ] 69.131 — 
+- [ ] 69.132 — 
+- [ ] 69.133 — 
+- [ ] 69.134 — 
+- [ ] 69.135 — 
+- [ ] 69.136 — 
+- [ ] 69.137 — 
+- [ ] 69.138 — 
+- [ ] 69.139 — 
+- [ ] 69.140 — 
+- [ ] 69.141 — 
+- [ ] 69.142 — 
+- [ ] 69.143 — 
+- [ ] 69.144 — 
+- [ ] 69.145 — 
+- [ ] 69.146 — 
+- [ ] 69.147 — 
+- [ ] 69.148 — 
+- [ ] 69.149 — 
+- [ ] 69.150 — 
+- [ ] 69.151 — 
+- [ ] 69.152 — 
+- [ ] 69.153 — 
+- [ ] 69.154 — 
+
+## Sprint 70 — Core UI Integration
+- Steps: 140
+- [ ] 70.1 — Final Core Startup Flow
+- [ ] 70.2 — Startup State Model
+- [ ] 70.3 — 
+- [ ] 70.4 — Fast UI Principle
+- [ ] 70.5 — 
+- [ ] 70.6 — Recovery Does Not Block Local App
+- [ ] 70.7 — 
+- [ ] 70.8 — No Forced Login
+- [ ] 70.9 — 
+- [ ] 70.10 — 
+- [ ] 70.11 — 
+- [ ] 70.12 — Project Card States
+- [ ] 70.13 — 
+- [ ] 70.14 — Open Failure UX
+- [ ] 70.15 — 
+- [ ] 70.16 — 
+- [ ] 70.17 — Route Validation
+- [ ] 70.18 — 
+- [ ] 70.19 — Character Open
+- [ ] 70.20 — 
+- [ ] 70.21 — No Direct Mutation
+- [ ] 70.22 — 
+- [ ] 70.23 — 
+- [ ] 70.24 — Conflict UI
+- [ ] 70.25 — 
+- [ ] 70.26 — 
+- [ ] 70.27 — Asset Picker Filters
+- [ ] 70.28 — 
+- [ ] 70.29 — 
+- [ ] 70.30 — 
+- [ ] 70.31 — Safe Reparent
+- [ ] 70.32 — 
+- [ ] 70.33 — 
+- [ ] 70.34 — 
+- [ ] 70.35 — Relationship Viewer
+- [ ] 70.36 — 
+- [ ] 70.37 — 
+- [ ] 70.38 — 
+- [ ] 70.39 — 
+- [ ] 70.40 — 
+- [ ] 70.41 — Job Card
+- [ ] 70.42 — 
+- [ ] 70.43 — 
+- [ ] 70.44 — 
+- [ ] 70.45 — 
+- [ ] 70.46 — 
+- [ ] 70.47 — 
+- [ ] 70.48 — 
+- [ ] 70.49 — Command Groups
+- [ ] 70.50 — 
+- [ ] 70.51 — 
+- [ ] 70.52 — 
+- [ ] 70.53 — Search Result
+- [ ] 70.54 — 
+- [ ] 70.55 — 
+- [ ] 70.56 — 
+- [ ] 70.57 — 
+- [ ] 70.58 — 
+- [ ] 70.59 — 
+- [ ] 70.60 — 
+- [ ] 70.61 — 
+- [ ] 70.62 — 
+- [ ] 70.63 — 
+- [ ] 70.64 — 
+- [ ] 70.65 — Context Examples
+- [ ] 70.66 — 
+- [ ] 70.67 — Read-only Commands
+- [ ] 70.68 — 
+- [ ] 70.69 — 
+- [ ] 70.70 — 
+- [ ] 70.71 — 
+- [ ] 70.72 — 
+- [ ] 70.73 — 
+- [ ] 70.74 — 
+- [ ] 70.75 — 
+- [ ] 70.76 — 
+- [ ] 70.77 — 
+- [ ] 70.78 — 
+- [ ] 70.79 — 
+- [ ] 70.80 — 
+- [ ] 70.81 — 
+- [ ] 70.82 — 
+- [ ] 70.83 — 
+- [ ] 70.84 — 
+- [ ] 70.85 — 
+- [ ] 70.86 — 
+- [ ] 70.87 — 
+- [ ] 70.88 — 
+- [ ] 70.89 — 
+- [ ] 70.90 — 
+- [ ] 70.91 — 
+- [ ] 70.92 — 
+- [ ] 70.93 — 
+- [ ] 70.94 — 
+- [ ] 70.95 — 
+- [ ] 70.96 — 
+- [ ] 70.97 — 
+- [ ] 70.98 — 
+- [ ] 70.99 — 
+- [ ] 70.100 — 
+- [ ] 70.101 — 
+- [ ] 70.102 — 
+- [ ] 70.103 — 
+- [ ] 70.104 — 
+- [ ] 70.105 — 
+- [ ] 70.106 — 
+- [ ] 70.107 — 
+- [ ] 70.108 — 
+- [ ] 70.109 — 
+- [ ] 70.110 — 
+- [ ] 70.111 — 
+- [ ] 70.112 — 
+- [ ] 70.113 — 
+- [ ] 70.114 — 
+- [ ] 70.115 — 
+- [ ] 70.116 — 
+- [ ] 70.117 — 
+- [ ] 70.118 — 
+- [ ] 70.119 — 
+- [ ] 70.120 — 
+- [ ] 70.121 — 
+- [ ] 70.122 — 
+- [ ] 70.123 — 
+- [ ] 70.124 — 
+- [ ] 70.125 — 
+- [ ] 70.126 — 
+- [ ] 70.127 — 
+- [ ] 70.128 — 
+- [ ] 70.129 — 
+- [ ] 70.130 — 
+- [ ] 70.131 — 
+- [ ] 70.132 — 
+- [ ] 70.133 — 
+- [ ] 70.134 — 
+- [ ] 70.135 — 
+- [ ] 70.136 — 
+- [ ] 70.137 — 
+- [ ] 70.138 — 
+- [ ] 70.139 — 
+- [ ] 70.140 — 
+
+## Sprint 71 — AI Provider Architecture
+- Steps: 141
+- [ ] 71.1 — 
+- [ ] 71.2 — 
+- [ ] 71.3 — 
+- [ ] 71.4 — 
+- [ ] 71.5 — 
+- [ ] 71.6 — 
+- [ ] 71.7 — 
+- [ ] 71.8 — 
+- [ ] 71.9 — 
+- [ ] 71.10 — 
+- [ ] 71.11 — 
+- [ ] 71.12 — 
+- [ ] 71.13 — 
+- [ ] 71.14 — 
+- [ ] 71.15 — 
+- [ ] 71.16 — 
+- [ ] 71.17 — 
+- [ ] 71.18 — 
+- [ ] 71.19 — 
+- [ ] 71.20 — 
+- [ ] 71.21 — 
+- [ ] 71.22 — 
+- [ ] 71.23 — 
+- [ ] 71.24 — 
+- [ ] 71.25 — 
+- [ ] 71.26 — 
+- [ ] 71.27 — 
+- [ ] 71.28 — 
+- [ ] 71.29 — 
+- [ ] 71.30 — 
+- [ ] 71.31 — 
+- [ ] 71.32 — 
+- [ ] 71.33 — 
+- [ ] 71.34 — 
+- [ ] 71.35 — 
+- [ ] 71.36 — 
+- [ ] 71.37 — 
+- [ ] 71.38 — 
+- [ ] 71.39 — 
+- [ ] 71.40 — 
+- [ ] 71.41 — 
+- [ ] 71.42 — 
+- [ ] 71.43 — 
+- [ ] 71.44 — 
+- [ ] 71.45 — 
+- [ ] 71.46 — 
+- [ ] 71.47 — 
+- [ ] 71.48 — 
+- [ ] 71.49 — 
+- [ ] 71.50 — 
+- [ ] 71.51 — 
+- [ ] 71.52 — 
+- [ ] 71.53 — 
+- [ ] 71.54 — 
+- [ ] 71.55 — 
+- [ ] 71.56 — 
+- [ ] 71.57 — 
+- [ ] 71.58 — 
+- [ ] 71.59 — 
+- [ ] 71.60 — 
+- [ ] 71.61 — 
+- [ ] 71.62 — 
+- [ ] 71.63 — 
+- [ ] 71.64 — 
+- [ ] 71.65 — 
+- [ ] 71.66 — 
+- [ ] 71.67 — 
+- [ ] 71.68 — 
+- [ ] 71.69 — 
+- [ ] 71.70 — 
+- [ ] 71.71 — 
+- [ ] 71.72 — 
+- [ ] 71.73 — 
+- [ ] 71.74 — 
+- [ ] 71.75 — 
+- [ ] 71.76 — 
+- [ ] 71.77 — 
+- [ ] 71.78 — 
+- [ ] 71.79 — 
+- [ ] 71.80 — 
+- [ ] 71.81 — 
+- [ ] 71.82 — 
+- [ ] 71.83 — 
+- [ ] 71.84 — 
+- [ ] 71.85 — 
+- [ ] 71.86 — 
+- [ ] 71.87 — 
+- [ ] 71.88 — 
+- [ ] 71.89 — 
+- [ ] 71.90 — 
+- [ ] 71.91 — 
+- [ ] 71.92 — 
+- [ ] 71.93 — 
+- [ ] 71.94 — 
+- [ ] 71.95 — 
+- [ ] 71.96 — 
+- [ ] 71.97 — 
+- [ ] 71.98 — 
+- [ ] 71.99 — 
+- [ ] 71.100 — 
+- [ ] 71.101 — 
+- [ ] 71.102 — 
+- [ ] 71.103 — 
+- [ ] 71.104 — 
+- [ ] 71.105 — 
+- [ ] 71.106 — 
+- [ ] 71.107 — 
+- [ ] 71.108 — 
+- [ ] 71.109 — 
+- [ ] 71.110 — 
+- [ ] 71.111 — 
+- [ ] 71.112 — 
+- [ ] 71.113 — 
+- [ ] 71.114 — 
+- [ ] 71.115 — 
+- [ ] 71.116 — 
+- [ ] 71.117 — 
+- [ ] 71.118 — 
+- [ ] 71.119 — 
+- [ ] 71.120 — 
+- [ ] 71.121 — 
+- [ ] 71.122 — 
+- [ ] 71.123 — 
+- [ ] 71.124 — 
+- [ ] 71.125 — 
+- [ ] 71.126 — 
+- [ ] 71.127 — 
+- [ ] 71.128 — 
+- [ ] 71.129 — 
+- [ ] 71.130 — 
+- [ ] 71.131 — 
+- [ ] 71.132 — 
+- [ ] 71.133 — 
+- [ ] 71.134 — 
+- [ ] 71.135 — 
+- [ ] 71.136 — 
+- [ ] 71.137 — 
+- [ ] 71.138 — 
+- [ ] 71.139 — 
+- [ ] 71.140 — 
+- [ ] 71.141 — 
+
+## Sprint 72 — Void AI Core
+- Steps: 147
+- [ ] 72.1 — 
+- [ ] 72.2 — Layering
+- [ ] 72.3 — 
+- [ ] 72.4 — Conversation Types
+- [ ] 72.5 — Project Conversation
+- [ ] 72.6 — 
+- [ ] 72.7 — Message Content
+- [ ] 72.8 — Message ID
+- [ ] 72.9 — 
+- [ ] 72.10 — Jangan Simpan Segalanya Secara Buta
+- [ ] 72.11 — 
+- [ ] 72.12 — 
+- [ ] 72.13 — Quick Examples
+- [ ] 72.14 — 
+- [ ] 72.15 — Streaming Event
+- [ ] 72.16 — 
+- [ ] 72.17 — 
+- [ ] 72.18 — 
+- [ ] 72.19 — 
+- [ ] 72.20 — 
+- [ ] 72.21 — 
+- [ ] 72.22 — 
+- [ ] 72.23 — 
+- [ ] 72.24 — 
+- [ ] 72.25 — 
+- [ ] 72.26 — 
+- [ ] 72.27 — 
+- [ ] 72.28 — 
+- [ ] 72.29 — 
+- [ ] 72.30 — 
+- [ ] 72.31 — 
+- [ ] 72.32 — 
+- [ ] 72.33 — 
+- [ ] 72.34 — 
+- [ ] 72.35 — 
+- [ ] 72.36 — 
+- [ ] 72.37 — 
+- [ ] 72.38 — 
+- [ ] 72.39 — 
+- [ ] 72.40 — 
+- [ ] 72.41 — 
+- [ ] 72.42 — 
+- [ ] 72.43 — 
+- [ ] 72.44 — 
+- [ ] 72.45 — 
+- [ ] 72.46 — 
+- [ ] 72.47 — 
+- [ ] 72.48 — 
+- [ ] 72.49 — 
+- [ ] 72.50 — 
+- [ ] 72.51 — 
+- [ ] 72.52 — 
+- [ ] 72.53 — 
+- [ ] 72.54 — 
+- [ ] 72.55 — 
+- [ ] 72.56 — 
+- [ ] 72.57 — 
+- [ ] 72.58 — 
+- [ ] 72.59 — 
+- [ ] 72.60 — 
+- [ ] 72.61 — 
+- [ ] 72.62 — 
+- [ ] 72.63 — 
+- [ ] 72.64 — 
+- [ ] 72.65 — 
+- [ ] 72.66 — 
+- [ ] 72.67 — 
+- [ ] 72.68 — 
+- [ ] 72.69 — 
+- [ ] 72.70 — 
+- [ ] 72.71 — 
+- [ ] 72.72 — 
+- [ ] 72.73 — 
+- [ ] 72.74 — 
+- [ ] 72.75 — 
+- [ ] 72.76 — 
+- [ ] 72.77 — 
+- [ ] 72.78 — 
+- [ ] 72.79 — 
+- [ ] 72.80 — 
+- [ ] 72.81 — 
+- [ ] 72.82 — 
+- [ ] 72.83 — 
+- [ ] 72.84 — 
+- [ ] 72.85 — 
+- [ ] 72.86 — 
+- [ ] 72.87 — 
+- [ ] 72.88 — 
+- [ ] 72.89 — 
+- [ ] 72.90 — 
+- [ ] 72.91 — 
+- [ ] 72.92 — 
+- [ ] 72.93 — 
+- [ ] 72.94 — 
+- [ ] 72.95 — 
+- [ ] 72.96 — 
+- [ ] 72.97 — 
+- [ ] 72.98 — 
+- [ ] 72.99 — 
+- [ ] 72.100 — 
+- [ ] 72.101 — 
+- [ ] 72.102 — 
+- [ ] 72.103 — 
+- [ ] 72.104 — 
+- [ ] 72.105 — 
+- [ ] 72.106 — 
+- [ ] 72.107 — 
+- [ ] 72.108 — 
+- [ ] 72.109 — 
+- [ ] 72.110 — 
+- [ ] 72.111 — 
+- [ ] 72.112 — 
+- [ ] 72.113 — 
+- [ ] 72.114 — 
+- [ ] 72.115 — 
+- [ ] 72.116 — 
+- [ ] 72.117 — 
+- [ ] 72.118 — 
+- [ ] 72.119 — 
+- [ ] 72.120 — 
+- [ ] 72.121 — 
+- [ ] 72.122 — 
+- [ ] 72.123 — 
+- [ ] 72.124 — 
+- [ ] 72.125 — 
+- [ ] 72.126 — 
+- [ ] 72.127 — 
+- [ ] 72.128 — 
+- [ ] 72.129 — 
+- [ ] 72.130 — 
+- [ ] 72.131 — 
+- [ ] 72.132 — 
+- [ ] 72.133 — 
+- [ ] 72.134 — 
+- [ ] 72.135 — 
+- [ ] 72.136 — 
+- [ ] 72.137 — 
+- [ ] 72.138 — 
+- [ ] 72.139 — 
+- [ ] 72.140 — 
+- [ ] 72.141 — 
+- [ ] 72.142 — 
+- [ ] 72.143 — 
+- [ ] 72.144 — 
+- [ ] 72.145 — 
+- [ ] 72.146 — 
+- [ ] 72.147 — 
+
+## Sprint 73 — Prompt & Context Engine
+- Steps: 153
+- [ ] 73.1 — 
+- [ ] 73.2 — Context Request
+- [ ] 73.3 — Context Package
+- [ ] 73.4 — 
+- [ ] 73.5 — Context Source ID
+- [ ] 73.6 — 
+- [ ] 73.7 — Hard Lock
+- [ ] 73.8 — Explicit Mutation Intent
+- [ ] 73.9 — 
+- [ ] 73.10 — Lock Severity
+- [ ] 73.11 — Hard Lock Conflict
+- [ ] 73.12 — 
+- [ ] 73.13 — Character Context Level
+- [ ] 73.14 — Minimal
+- [ ] 73.15 — Production
+- [ ] 73.16 — 
+- [ ] 73.17 — 
+- [ ] 73.18 — 
+- [ ] 73.19 — 
+- [ ] 73.20 — Jangan Inject Semua Lore
+- [ ] 73.21 — 
+- [ ] 73.22 — Temporal Scope
+- [ ] 73.23 — 
+- [ ] 73.24 — 
+- [ ] 73.25 — 
+- [ ] 73.26 — 
+- [ ] 73.27 — 
+- [ ] 73.28 — 
+- [ ] 73.29 — Retrieval Flow
+- [ ] 73.30 — 
+- [ ] 73.31 — 
+- [ ] 73.32 — 
+- [ ] 73.33 — 
+- [ ] 73.34 — 
+- [ ] 73.35 — 
+- [ ] 73.36 — 
+- [ ] 73.37 — 
+- [ ] 73.38 — 
+- [ ] 73.39 — 
+- [ ] 73.40 — 
+- [ ] 73.41 — 
+- [ ] 73.42 — 
+- [ ] 73.43 — 
+- [ ] 73.44 — 
+- [ ] 73.45 — 
+- [ ] 73.46 — 
+- [ ] 73.47 — 
+- [ ] 73.48 — 
+- [ ] 73.49 — 
+- [ ] 73.50 — 
+- [ ] 73.51 — 
+- [ ] 73.52 — 
+- [ ] 73.53 — 
+- [ ] 73.54 — Prompt Categories
+- [ ] 73.55 — 
+- [ ] 73.56 — 
+- [ ] 73.57 — 
+- [ ] 73.58 — Compilation Pipeline
+- [ ] 73.59 — 
+- [ ] 73.60 — 
+- [ ] 73.61 — 
+- [ ] 73.62 — 
+- [ ] 73.63 — 
+- [ ] 73.64 — 
+- [ ] 73.65 — 
+- [ ] 73.66 — 
+- [ ] 73.67 — 
+- [ ] 73.68 — 
+- [ ] 73.69 — 
+- [ ] 73.70 — 
+- [ ] 73.71 — 
+- [ ] 73.72 — 
+- [ ] 73.73 — 
+- [ ] 73.74 — 
+- [ ] 73.75 — 
+- [ ] 73.76 — 
+- [ ] 73.77 — 
+- [ ] 73.78 — 
+- [ ] 73.79 — 
+- [ ] 73.80 — 
+- [ ] 73.81 — 
+- [ ] 73.82 — 
+- [ ] 73.83 — 
+- [ ] 73.84 — 
+- [ ] 73.85 — 
+- [ ] 73.86 — 
+- [ ] 73.87 — 
+- [ ] 73.88 — 
+- [ ] 73.89 — 
+- [ ] 73.90 — 
+- [ ] 73.91 — 
+- [ ] 73.92 — 
+- [ ] 73.93 — 
+- [ ] 73.94 — 
+- [ ] 73.95 — 
+- [ ] 73.96 — 
+- [ ] 73.97 — 
+- [ ] 73.98 — 
+- [ ] 73.99 — 
+- [ ] 73.100 — 
+- [ ] 73.101 — 
+- [ ] 73.102 — 
+- [ ] 73.103 — 
+- [ ] 73.104 — 
+- [ ] 73.105 — 
+- [ ] 73.106 — 
+- [ ] 73.107 — 
+- [ ] 73.108 — 
+- [ ] 73.109 — 
+- [ ] 73.110 — 
+- [ ] 73.111 — 
+- [ ] 73.112 — 
+- [ ] 73.113 — 
+- [ ] 73.114 — 
+- [ ] 73.115 — 
+- [ ] 73.116 — 
+- [ ] 73.117 — 
+- [ ] 73.118 — 
+- [ ] 73.119 — 
+- [ ] 73.120 — 
+- [ ] 73.121 — 
+- [ ] 73.122 — 
+- [ ] 73.123 — 
+- [ ] 73.124 — 
+- [ ] 73.125 — 
+- [ ] 73.126 — 
+- [ ] 73.127 — 
+- [ ] 73.128 — 
+- [ ] 73.129 — 
+- [ ] 73.130 — 
+- [ ] 73.131 — 
+- [ ] 73.132 — 
+- [ ] 73.133 — 
+- [ ] 73.134 — 
+- [ ] 73.135 — 
+- [ ] 73.136 — 
+- [ ] 73.137 — 
+- [ ] 73.138 — 
+- [ ] 73.139 — 
+- [ ] 73.140 — 
+- [ ] 73.141 — 
+- [ ] 73.142 — 
+- [ ] 73.143 — 
+- [ ] 73.144 — 
+- [ ] 73.145 — 
+- [ ] 73.146 — 
+- [ ] 73.147 — 
+- [ ] 73.148 — 
+- [ ] 73.149 — 
+- [ ] 73.150 — 
+- [ ] 73.151 — 
+- [ ] 73.152 — 
+- [ ] 73.153 — 
+
+## Sprint 74 — Character Consistency Engine
+- Steps: 182
+- [ ] 74.1 — 
+- [ ] 74.2 — Identity Profile
+- [ ] 74.3 — Identity ≠ Appearance
+- [ ] 74.4 — 
+- [ ] 74.5 — 
+- [ ] 74.6 — Geometry vs Description
+- [ ] 74.7 — Face Reference
+- [ ] 74.8 — 
+- [ ] 74.9 — Expression Is Not Identity
+- [ ] 74.10 — 
+- [ ] 74.11 — Hair State
+- [ ] 74.12 — Hair Geometry Lock
+- [ ] 74.13 — 
+- [ ] 74.14 — 
+- [ ] 74.15 — 
+- [ ] 74.16 — Topology Lock
+- [ ] 74.17 — 
+- [ ] 74.18 — Temporary Skin State
+- [ ] 74.19 — 
+- [ ] 74.20 — 
+- [ ] 74.21 — 
+- [ ] 74.22 — 
+- [ ] 74.23 — Material Lock
+- [ ] 74.24 — 
+- [ ] 74.25 — Placement Lock
+- [ ] 74.26 — 
+- [ ] 74.27 — Symbol Geometry Lock
+- [ ] 74.28 — 
+- [ ] 74.29 — Severity
+- [ ] 74.30 — 
+- [ ] 74.31 — 
+- [ ] 74.32 — 
+- [ ] 74.33 — 
+- [ ] 74.34 — 
+- [ ] 74.35 — 
+- [ ] 74.36 — 
+- [ ] 74.37 — 
+- [ ] 74.38 — 
+- [ ] 74.39 — 
+- [ ] 74.40 — 
+- [ ] 74.41 — 
+- [ ] 74.42 — Reference Roles
+- [ ] 74.43 — 
+- [ ] 74.44 — 
+- [ ] 74.45 — 
+- [ ] 74.46 — 
+- [ ] 74.47 — 
+- [ ] 74.48 — 
+- [ ] 74.49 — 
+- [ ] 74.50 — 
+- [ ] 74.51 — 
+- [ ] 74.52 — 
+- [ ] 74.53 — 
+- [ ] 74.54 — Rules
+- [ ] 74.55 — 
+- [ ] 74.56 — 
+- [ ] 74.57 — 
+- [ ] 74.58 — Score Categories
+- [ ] 74.59 — 
+- [ ] 74.60 — 
+- [ ] 74.61 — 
+- [ ] 74.62 — 
+- [ ] 74.63 — 
+- [ ] 74.64 — 
+- [ ] 74.65 — 
+- [ ] 74.66 — 
+- [ ] 74.67 — 
+- [ ] 74.68 — 
+- [ ] 74.69 — 
+- [ ] 74.70 — 
+- [ ] 74.71 — 
+- [ ] 74.72 — 
+- [ ] 74.73 — 
+- [ ] 74.74 — 
+- [ ] 74.75 — 
+- [ ] 74.76 — 
+- [ ] 74.77 — 
+- [ ] 74.78 — 
+- [ ] 74.79 — 
+- [ ] 74.80 — 
+- [ ] 74.81 — 
+- [ ] 74.82 — 
+- [ ] 74.83 — 
+- [ ] 74.84 — 
+- [ ] 74.85 — 
+- [ ] 74.86 — 
+- [ ] 74.87 — 
+- [ ] 74.88 — 
+- [ ] 74.89 — 
+- [ ] 74.90 — 
+- [ ] 74.91 — 
+- [ ] 74.92 — 
+- [ ] 74.93 — 
+- [ ] 74.94 — 
+- [ ] 74.95 — 
+- [ ] 74.96 — 
+- [ ] 74.97 — 
+- [ ] 74.98 — 
+- [ ] 74.99 — 
+- [ ] 74.100 — 
+- [ ] 74.101 — 
+- [ ] 74.102 — 
+- [ ] 74.103 — 
+- [ ] 74.104 — 
+- [ ] 74.105 — 
+- [ ] 74.106 — 
+- [ ] 74.107 — 
+- [ ] 74.108 — 
+- [ ] 74.109 — 
+- [ ] 74.110 — 
+- [ ] 74.111 — 
+- [ ] 74.112 — 
+- [ ] 74.113 — 
+- [ ] 74.114 — 
+- [ ] 74.115 — 
+- [ ] 74.116 — 
+- [ ] 74.117 — 
+- [ ] 74.118 — 
+- [ ] 74.119 — 
+- [ ] 74.120 — 
+- [ ] 74.121 — 
+- [ ] 74.122 — 
+- [ ] 74.123 — 
+- [ ] 74.124 — 
+- [ ] 74.125 — 
+- [ ] 74.126 — 
+- [ ] 74.127 — 
+- [ ] 74.128 — 
+- [ ] 74.129 — 
+- [ ] 74.130 — 
+- [ ] 74.131 — 
+- [ ] 74.132 — 
+- [ ] 74.133 — 
+- [ ] 74.134 — 
+- [ ] 74.135 — 
+- [ ] 74.136 — 
+- [ ] 74.137 — 
+- [ ] 74.138 — 
+- [ ] 74.139 — 
+- [ ] 74.140 — 
+- [ ] 74.141 — 
+- [ ] 74.142 — 
+- [ ] 74.143 — 
+- [ ] 74.144 — 
+- [ ] 74.145 — 
+- [ ] 74.146 — 
+- [ ] 74.147 — 
+- [ ] 74.148 — 
+- [ ] 74.149 — 
+- [ ] 74.150 — 
+- [ ] 74.151 — 
+- [ ] 74.152 — 
+- [ ] 74.153 — 
+- [ ] 74.154 — 
+- [ ] 74.155 — 
+- [ ] 74.156 — 
+- [ ] 74.157 — 
+- [ ] 74.158 — 
+- [ ] 74.159 — 
+- [ ] 74.160 — 
+- [ ] 74.161 — 
+- [ ] 74.162 — 
+- [ ] 74.163 — 
+- [ ] 74.164 — 
+- [ ] 74.165 — 
+- [ ] 74.166 — 
+- [ ] 74.167 — 
+- [ ] 74.168 — 
+- [ ] 74.169 — 
+- [ ] 74.170 — 
+- [ ] 74.171 — 
+- [ ] 74.172 — 
+- [ ] 74.173 — 
+- [ ] 74.174 — 
+- [ ] 74.175 — 
+- [ ] 74.176 — 
+- [ ] 74.177 — 
+- [ ] 74.178 — 
+- [ ] 74.179 — 
+- [ ] 74.180 — 
+- [ ] 74.181 — 
+- [ ] 74.182 — 
+
+## Sprint 75 — Image Generation Pipeline
+- Steps: 181
+- [ ] 75.1 — 
+- [ ] 75.2 — Request ID
+- [ ] 75.3 — 
+- [ ] 75.4 — Creative Intent
+- [ ] 75.5 — 
+- [ ] 75.6 — Text Prompt Is Not the Whole Request
+- [ ] 75.7 — 
+- [ ] 75.8 — Transformation Strength
+- [ ] 75.9 — 
+- [ ] 75.10 — Reference Roles
+- [ ] 75.11 — 
+- [ ] 75.12 — Explicit User Reference
+- [ ] 75.13 — 
+- [ ] 75.14 — 
+- [ ] 75.15 — Preflight Output
+- [ ] 75.16 — 
+- [ ] 75.17 — Non-Hard Conflict
+- [ ] 75.18 — 
+- [ ] 75.19 — Logical Prompt Sections
+- [ ] 75.20 — 
+- [ ] 75.21 — 
+- [ ] 75.22 — Wardrobe Detail Sheet
+- [ ] 75.23 — 
+- [ ] 75.24 — 
+- [ ] 75.25 — 
+- [ ] 75.26 — 
+- [ ] 75.27 — 
+- [ ] 75.28 — 
+- [ ] 75.29 — 
+- [ ] 75.30 — Seed Metadata
+- [ ] 75.31 — 
+- [ ] 75.32 — Best-Effort Reproducibility
+- [ ] 75.33 — 
+- [ ] 75.34 — 
+- [ ] 75.35 — 
+- [ ] 75.36 — 
+- [ ] 75.37 — 
+- [ ] 75.38 — 
+- [ ] 75.39 — 
+- [ ] 75.40 — 
+- [ ] 75.41 — 
+- [ ] 75.42 — 
+- [ ] 75.43 — 
+- [ ] 75.44 — 
+- [ ] 75.45 — Job Stages
+- [ ] 75.46 — 
+- [ ] 75.47 — 
+- [ ] 75.48 — 
+- [ ] 75.49 — 
+- [ ] 75.50 — 
+- [ ] 75.51 — 
+- [ ] 75.52 — 
+- [ ] 75.53 — 
+- [ ] 75.54 — 
+- [ ] 75.55 — 
+- [ ] 75.56 — 
+- [ ] 75.57 — 
+- [ ] 75.58 — 
+- [ ] 75.59 — Technical Checks
+- [ ] 75.60 — 
+- [ ] 75.61 — 
+- [ ] 75.62 — 
+- [ ] 75.63 — 
+- [ ] 75.64 — 
+- [ ] 75.65 — 
+- [ ] 75.66 — 
+- [ ] 75.67 — 
+- [ ] 75.68 — 
+- [ ] 75.69 — 
+- [ ] 75.70 — 
+- [ ] 75.71 — 
+- [ ] 75.72 — 
+- [ ] 75.73 — 
+- [ ] 75.74 — 
+- [ ] 75.75 — 
+- [ ] 75.76 — 
+- [ ] 75.77 — 
+- [ ] 75.78 — 
+- [ ] 75.79 — 
+- [ ] 75.80 — 
+- [ ] 75.81 — 
+- [ ] 75.82 — Workspace Layout
+- [ ] 75.83 — 
+- [ ] 75.84 — 
+- [ ] 75.85 — 
+- [ ] 75.86 — 
+- [ ] 75.87 — 
+- [ ] 75.88 — 
+- [ ] 75.89 — 
+- [ ] 75.90 — 
+- [ ] 75.91 — 
+- [ ] 75.92 — 
+- [ ] 75.93 — 
+- [ ] 75.94 — 
+- [ ] 75.95 — 
+- [ ] 75.96 — 
+- [ ] 75.97 — 
+- [ ] 75.98 — 
+- [ ] 75.99 — 
+- [ ] 75.100 — 
+- [ ] 75.101 — 
+- [ ] 75.102 — 
+- [ ] 75.103 — 
+- [ ] 75.104 — 
+- [ ] 75.105 — 
+- [ ] 75.106 — 
+- [ ] 75.107 — 
+- [ ] 75.108 — 
+- [ ] 75.109 — 
+- [ ] 75.110 — 
+- [ ] 75.111 — 
+- [ ] 75.112 — 
+- [ ] 75.113 — Upscale Modes
+- [ ] 75.114 — 
+- [ ] 75.115 — 
+- [ ] 75.116 — 
+- [ ] 75.117 — 
+- [ ] 75.118 — 
+- [ ] 75.119 — 
+- [ ] 75.120 — 
+- [ ] 75.121 — 
+- [ ] 75.122 — 
+- [ ] 75.123 — 
+- [ ] 75.124 — 
+- [ ] 75.125 — 
+- [ ] 75.126 — 
+- [ ] 75.127 — 
+- [ ] 75.128 — 
+- [ ] 75.129 — 
+- [ ] 75.130 — 
+- [ ] 75.131 — 
+- [ ] 75.132 — 
+- [ ] 75.133 — 
+- [ ] 75.134 — 
+- [ ] 75.135 — 
+- [ ] 75.136 — 
+- [ ] 75.137 — 
+- [ ] 75.138 — 
+- [ ] 75.139 — 
+- [ ] 75.140 — 
+- [ ] 75.141 — 
+- [ ] 75.142 — 
+- [ ] 75.143 — 
+- [ ] 75.144 — 
+- [ ] 75.145 — 
+- [ ] 75.146 — 
+- [ ] 75.147 — 
+- [ ] 75.148 — 
+- [ ] 75.149 — 
+- [ ] 75.150 — 
+- [ ] 75.151 — 
+- [ ] 75.152 — 
+- [ ] 75.153 — 
+- [ ] 75.154 — 
+- [ ] 75.155 — 
+- [ ] 75.156 — 
+- [ ] 75.157 — 
+- [ ] 75.158 — 
+- [ ] 75.159 — 
+- [ ] 75.160 — 
+- [ ] 75.161 — 
+- [ ] 75.162 — 
+- [ ] 75.163 — 
+- [ ] 75.164 — 
+- [ ] 75.165 — 
+- [ ] 75.166 — 
+- [ ] 75.167 — 
+- [ ] 75.168 — 
+- [ ] 75.169 — 
+- [ ] 75.170 — 
+- [ ] 75.171 — 
+- [ ] 75.172 — 
+- [ ] 75.173 — 
+- [ ] 75.174 — 
+- [ ] 75.175 — 
+- [ ] 75.176 — 
+- [ ] 75.177 — 
+- [ ] 75.178 — 
+- [ ] 75.179 — 
+- [ ] 75.180 — 
+- [ ] 75.181 — 
+
+## Sprint 76 — Video Generation Pipeline
+- Steps: 203
+- [ ] 76.1 — 
+- [ ] 76.2 — Dedicated IDs
+- [ ] 76.3 — 
+- [ ] 76.4 — Creative Purpose
+- [ ] 76.5 — 
+- [ ] 76.6 — VideoShotSpec
+- [ ] 76.7 — 
+- [ ] 76.8 — Duration
+- [ ] 76.9 — 
+- [ ] 76.10 — 
+- [ ] 76.11 — Overlapping Actions
+- [ ] 76.12 — 
+- [ ] 76.13 — 
+- [ ] 76.14 — 
+- [ ] 76.15 — Source Preservation
+- [ ] 76.16 — 
+- [ ] 76.17 — 
+- [ ] 76.18 — End Frame Is Constraint
+- [ ] 76.19 — 
+- [ ] 76.20 — 
+- [ ] 76.21 — 
+- [ ] 76.22 — 
+- [ ] 76.23 — 
+- [ ] 76.24 — Temporal Lock Fields
+- [ ] 76.25 — 
+- [ ] 76.26 — 
+- [ ] 76.27 — 
+- [ ] 76.28 — Sample Strategy
+- [ ] 76.29 — 
+- [ ] 76.30 — 
+- [ ] 76.31 — State During Shot
+- [ ] 76.32 — 
+- [ ] 76.33 — 
+- [ ] 76.34 — 
+- [ ] 76.35 — 
+- [ ] 76.36 — 
+- [ ] 76.37 — 
+- [ ] 76.38 — 
+- [ ] 76.39 — 
+- [ ] 76.40 — 
+- [ ] 76.41 — 
+- [ ] 76.42 — 
+- [ ] 76.43 — Motion Categories
+- [ ] 76.44 — 
+- [ ] 76.45 — 
+- [ ] 76.46 — 
+- [ ] 76.47 — 
+- [ ] 76.48 — 
+- [ ] 76.49 — 
+- [ ] 76.50 — Camera Types
+- [ ] 76.51 — 
+- [ ] 76.52 — 
+- [ ] 76.53 — 
+- [ ] 76.54 — 
+- [ ] 76.55 — 
+- [ ] 76.56 — 
+- [ ] 76.57 — 
+- [ ] 76.58 — 
+- [ ] 76.59 — 
+- [ ] 76.60 — 
+- [ ] 76.61 — 
+- [ ] 76.62 — 
+- [ ] 76.63 — 
+- [ ] 76.64 — 
+- [ ] 76.65 — 
+- [ ] 76.66 — 
+- [ ] 76.67 — 
+- [ ] 76.68 — 
+- [ ] 76.69 — 
+- [ ] 76.70 — 
+- [ ] 76.71 — 
+- [ ] 76.72 — 
+- [ ] 76.73 — 
+- [ ] 76.74 — 
+- [ ] 76.75 — 
+- [ ] 76.76 — 
+- [ ] 76.77 — 
+- [ ] 76.78 — 
+- [ ] 76.79 — 
+- [ ] 76.80 — 
+- [ ] 76.81 — 
+- [ ] 76.82 — 
+- [ ] 76.83 — 
+- [ ] 76.84 — Candidate
+- [ ] 76.85 — 
+- [ ] 76.86 — 
+- [ ] 76.87 — 
+- [ ] 76.88 — 
+- [ ] 76.89 — 
+- [ ] 76.90 — 
+- [ ] 76.91 — Temporal Checks
+- [ ] 76.92 — 
+- [ ] 76.93 — 
+- [ ] 76.94 — 
+- [ ] 76.95 — 
+- [ ] 76.96 — 
+- [ ] 76.97 — 
+- [ ] 76.98 — 
+- [ ] 76.99 — 
+- [ ] 76.100 — 
+- [ ] 76.101 — 
+- [ ] 76.102 — 
+- [ ] 76.103 — 
+- [ ] 76.104 — 
+- [ ] 76.105 — 
+- [ ] 76.106 — 
+- [ ] 76.107 — 
+- [ ] 76.108 — 
+- [ ] 76.109 — 
+- [ ] 76.110 — 
+- [ ] 76.111 — Audio Categories
+- [ ] 76.112 — 
+- [ ] 76.113 — 
+- [ ] 76.114 — 
+- [ ] 76.115 — 
+- [ ] 76.116 — 
+- [ ] 76.117 — 
+- [ ] 76.118 — 
+- [ ] 76.119 — 
+- [ ] 76.120 — 
+- [ ] 76.121 — 
+- [ ] 76.122 — 
+- [ ] 76.123 — 
+- [ ] 76.124 — 
+- [ ] 76.125 — 
+- [ ] 76.126 — 
+- [ ] 76.127 — 
+- [ ] 76.128 — 
+- [ ] 76.129 — 
+- [ ] 76.130 — 
+- [ ] 76.131 — 
+- [ ] 76.132 — 
+- [ ] 76.133 — 
+- [ ] 76.134 — 
+- [ ] 76.135 — 
+- [ ] 76.136 — 
+- [ ] 76.137 — 
+- [ ] 76.138 — 
+- [ ] 76.139 — 
+- [ ] 76.140 — 
+- [ ] 76.141 — 
+- [ ] 76.142 — 
+- [ ] 76.143 — 
+- [ ] 76.144 — 
+- [ ] 76.145 — 
+- [ ] 76.146 — 
+- [ ] 76.147 — 
+- [ ] 76.148 — 
+- [ ] 76.149 — 
+- [ ] 76.150 — 
+- [ ] 76.151 — 
+- [ ] 76.152 — 
+- [ ] 76.153 — 
+- [ ] 76.154 — 
+- [ ] 76.155 — 
+- [ ] 76.156 — 
+- [ ] 76.157 — 
+- [ ] 76.158 — 
+- [ ] 76.159 — 
+- [ ] 76.160 — 
+- [ ] 76.161 — 
+- [ ] 76.162 — 
+- [ ] 76.163 — 
+- [ ] 76.164 — 
+- [ ] 76.165 — 
+- [ ] 76.166 — 
+- [ ] 76.167 — 
+- [ ] 76.168 — 
+- [ ] 76.169 — 
+- [ ] 76.170 — 
+- [ ] 76.171 — 
+- [ ] 76.172 — 
+- [ ] 76.173 — 
+- [ ] 76.174 — 
+- [ ] 76.175 — 
+- [ ] 76.176 — 
+- [ ] 76.177 — 
+- [ ] 76.178 — 
+- [ ] 76.179 — 
+- [ ] 76.180 — 
+- [ ] 76.181 — 
+- [ ] 76.182 — 
+- [ ] 76.183 — 
+- [ ] 76.184 — 
+- [ ] 76.185 — 
+- [ ] 76.186 — 
+- [ ] 76.187 — 
+- [ ] 76.188 — 
+- [ ] 76.189 — 
+- [ ] 76.190 — 
+- [ ] 76.191 — 
+- [ ] 76.192 — 
+- [ ] 76.193 — 
+- [ ] 76.194 — 
+- [ ] 76.195 — 
+- [ ] 76.196 — 
+- [ ] 76.197 — 
+- [ ] 76.198 — 
+- [ ] 76.199 — 
+- [ ] 76.200 — 
+- [ ] 76.201 — 
+- [ ] 76.202 — 
+- [ ] 76.203 — 
+
+## Sprint 77 — Creative Production Workflow
+- Steps: 148
+- [ ] 77.1 — 
+- [ ] 77.2 — 
+- [ ] 77.3 — 
+- [ ] 77.4 — 
+- [ ] 77.5 — 
+- [ ] 77.6 — 
+- [ ] 77.7 — 
+- [ ] 77.8 — 
+- [ ] 77.9 — 
+- [ ] 77.10 — 
+- [ ] 77.11 — 
+- [ ] 77.12 — 
+- [ ] 77.13 — 
+- [ ] 77.14 — 
+- [ ] 77.15 — 
+- [ ] 77.16 — 
+- [ ] 77.17 — 
+- [ ] 77.18 — 
+- [ ] 77.19 — 
+- [ ] 77.20 — 
+- [ ] 77.21 — 
+- [ ] 77.22 — 
+- [ ] 77.23 — Brief Fields
+- [ ] 77.24 — 
+- [ ] 77.25 — 
+- [ ] 77.26 — 
+- [ ] 77.27 — 
+- [ ] 77.28 — 
+- [ ] 77.29 — 
+- [ ] 77.30 — 
+- [ ] 77.31 — 
+- [ ] 77.32 — 
+- [ ] 77.33 — 
+- [ ] 77.34 — 
+- [ ] 77.35 — 
+- [ ] 77.36 — 
+- [ ] 77.37 — 
+- [ ] 77.38 — 
+- [ ] 77.39 — 
+- [ ] 77.40 — 
+- [ ] 77.41 — Review Session Data
+- [ ] 77.42 — 
+- [ ] 77.43 — 
+- [ ] 77.44 — 
+- [ ] 77.45 — 
+- [ ] 77.46 — 
+- [ ] 77.47 — 
+- [ ] 77.48 — 
+- [ ] 77.49 — 
+- [ ] 77.50 — 
+- [ ] 77.51 — 
+- [ ] 77.52 — 
+- [ ] 77.53 — 
+- [ ] 77.54 — 
+- [ ] 77.55 — 
+- [ ] 77.56 — 
+- [ ] 77.57 — 
+- [ ] 77.58 — 
+- [ ] 77.59 — 
+- [ ] 77.60 — 
+- [ ] 77.61 — 
+- [ ] 77.62 — 
+- [ ] 77.63 — 
+- [ ] 77.64 — 
+- [ ] 77.65 — Gate Types
+- [ ] 77.66 — 
+- [ ] 77.67 — 
+- [ ] 77.68 — 
+- [ ] 77.69 — 
+- [ ] 77.70 — 
+- [ ] 77.71 — 
+- [ ] 77.72 — 
+- [ ] 77.73 — 
+- [ ] 77.74 — 
+- [ ] 77.75 — 
+- [ ] 77.76 — 
+- [ ] 77.77 — 
+- [ ] 77.78 — Deliverable Examples
+- [ ] 77.79 — 
+- [ ] 77.80 — 
+- [ ] 77.81 — 
+- [ ] 77.82 — 
+- [ ] 77.83 — Example Template: Character Design
+- [ ] 77.84 — 
+- [ ] 77.85 — 
+- [ ] 77.86 — 
+- [ ] 77.87 — 
+- [ ] 77.88 — 
+- [ ] 77.89 — 
+- [ ] 77.90 — 
+- [ ] 77.91 — 
+- [ ] 77.92 — 
+- [ ] 77.93 — 
+- [ ] 77.94 — 
+- [ ] 77.95 — 
+- [ ] 77.96 — 
+- [ ] 77.97 — 
+- [ ] 77.98 — 
+- [ ] 77.99 — 
+- [ ] 77.100 — 
+- [ ] 77.101 — 
+- [ ] 77.102 — 
+- [ ] 77.103 — 
+- [ ] 77.104 — 
+- [ ] 77.105 — 
+- [ ] 77.106 — 
+- [ ] 77.107 — 
+- [ ] 77.108 — 
+- [ ] 77.109 — 
+- [ ] 77.110 — 
+- [ ] 77.111 — 
+- [ ] 77.112 — 
+- [ ] 77.113 — 
+- [ ] 77.114 — 
+- [ ] 77.115 — 
+- [ ] 77.116 — 
+- [ ] 77.117 — 
+- [ ] 77.118 — 
+- [ ] 77.119 — 
+- [ ] 77.120 — 
+- [ ] 77.121 — 
+- [ ] 77.122 — 
+- [ ] 77.123 — 
+- [ ] 77.124 — 
+- [ ] 77.125 — 
+- [ ] 77.126 — 
+- [ ] 77.127 — 
+- [ ] 77.128 — 
+- [ ] 77.129 — 
+- [ ] 77.130 — 
+- [ ] 77.131 — 
+- [ ] 77.132 — 
+- [ ] 77.133 — 
+- [ ] 77.134 — 
+- [ ] 77.135 — 
+- [ ] 77.136 — 
+- [ ] 77.137 — 
+- [ ] 77.138 — 
+- [ ] 77.139 — 
+- [ ] 77.140 — 
+- [ ] 77.141 — 
+- [ ] 77.142 — 
+- [ ] 77.143 — 
+- [ ] 77.144 — 
+- [ ] 77.145 — 
+- [ ] 77.146 — 
+- [ ] 77.147 — 
+- [ ] 77.148 — 
+
+## Sprint 100 — VOID SCRIPTOR v1.0 FINAL
+- Steps: 0
+

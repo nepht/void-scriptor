@@ -56,9 +56,24 @@ class InMemoryCloudSyncService implements CloudSyncService {
 class FolderCloudSyncService implements CloudSyncService {
   FolderCloudSyncService(this.root);
 
+  static final RegExp _safeProjectId = RegExp(
+    r'^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$',
+  );
+
   final Directory root;
 
-  File _file(String projectId) => File(p.join(root.path, '$projectId.json'));
+  File _file(String projectId) {
+    if (!_safeProjectId.hasMatch(projectId) ||
+        projectId == '.' ||
+        projectId == '..') {
+      throw ArgumentError.value(
+        projectId,
+        'projectId',
+        'must be a safe local project identifier',
+      );
+    }
+    return File(p.join(root.path, '$projectId.json'));
+  }
 
   @override
   Future<Map<String, Object?>> pull(String projectId) async {

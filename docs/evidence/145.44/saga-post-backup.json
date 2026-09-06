@@ -1,0 +1,51 @@
+{
+  "checked_at": "2026-09-06T14:48:54.893149+07:00",
+  "active_session_lock": false,
+  "sqlite_integrity": "ok",
+  "source_checks": [
+    {
+      "path": "manifest/project.json",
+      "size": 604,
+      "sha256": "1f101a3a10eb7af16f3aee5604bd1f33f4b4329e8e124ab5d4881a9f26d40a42",
+      "baseline_sha256": "1f101a3a10eb7af16f3aee5604bd1f33f4b4329e8e124ab5d4881a9f26d40a42",
+      "unchanged": true
+    },
+    {
+      "path": "database/project.db",
+      "size": 2445312,
+      "sha256": "cfbaac9a149ca66d672cb6371db9a786777db77c3f0a6b86020717fb601a9df3",
+      "baseline_sha256": "7614643a7f67024c26e036a9313a20d5a38d20a8f78bbf0b1a3c0408198d59ac",
+      "unchanged": false
+    }
+  ],
+  "backup_checks": [
+    {
+      "path": "D:\\VoidScriptor_Data\\Projects\\d53c8787-eb9f-4037-a001-528125764900.voidproject\\backups\\6a8881e9-f713-4480-ae12-314c5535dbdf\\project.json",
+      "size": 604,
+      "sha256": "1f101a3a10eb7af16f3aee5604bd1f33f4b4329e8e124ab5d4881a9f26d40a42",
+      "matches_baseline": true
+    },
+    {
+      "path": "D:\\VoidScriptor_Data\\Projects\\d53c8787-eb9f-4037-a001-528125764900.voidproject\\backups\\6a8881e9-f713-4480-ae12-314c5535dbdf\\project.db",
+      "size": 2445312,
+      "sha256": "7614643a7f67024c26e036a9313a20d5a38d20a8f78bbf0b1a3c0408198d59ac",
+      "matches_baseline": true
+    },
+    {
+      "path": "D:\\VoidScriptor_Data\\Projects\\d53c8787-eb9f-4037-a001-528125764900.voidproject\\backups\\6a8881e9-f713-4480-ae12-314c5535dbdf\\backup.json",
+      "size": 18293,
+      "sha256": "a70f9916eaae4b8d4ea923c0cba7e30b2d3295aeecbdc319b4fecd6df03422a5",
+      "matches_baseline": null
+    }
+  ],
+  "project_backup_rows": [
+    {
+      "id": "6a8881e9-f713-4480-ae12-314c5535dbdf",
+      "type": "manual",
+      "relative_path": "backups/6a8881e9-f713-4480-ae12-314c5535dbdf",
+      "schema_version": 59,
+      "size_bytes": 3541500,
+      "note": "Manual UI backup"
+    }
+  ]
+}

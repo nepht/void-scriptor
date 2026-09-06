@@ -1,5 +1,6 @@
 import 'dart:io' show exit;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app/bootstrap/app_diagnostics.dart';
 import 'app/bootstrap/bootstrap_gate.dart';
 import 'app/void_app.dart';
+import 'core/auth/auth_controller.dart';
+import 'core/auth/auth_session.dart';
+import 'core/auth/auth_session_platform.dart'
+    if (dart.library.io) 'core/auth/auth_session_platform_io.dart'
+    if (dart.library.js_interop) 'core/auth/auth_session_platform_web.dart';
+import 'core/auth/auth_session_store.dart';
 import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
@@ -16,12 +23,33 @@ Future<void> main() async {
   // before anything else can fail.
   final handle = await prepareBootstrap();
 
+  // Sprint 145.20: install the disk-backed session store at the composition
+  // root so Guest/Offline sessions survive restarts on desktop. Web keeps
+  // the in-memory provider default; a store failure must never block boot.
+  AuthSessionStore? sessionStore;
+  AuthSession? initialSession;
+  if (!kIsWeb) {
+    try {
+      sessionStore = await createDiskAuthSessionStore();
+      initialSession = await loadLocalFirstAuthSession(sessionStore);
+    } on Object {
+      sessionStore = null;
+      initialSession = const AuthSession.offline();
+    }
+  }
+
   // Sprint 101.9: honor the persisted decision — an escalated mode boots
   // into the dependency-free recovery surface instead of the full app.
   // The streak still clears once a frame renders: a degraded shell that
   // renders IS a healthy boot of the recovery path.
   runApp(
     ProviderScope(
+      overrides: [
+        if (sessionStore != null)
+          authSessionStoreProvider.overrideWithValue(sessionStore),
+        if (initialSession != null)
+          initialAuthSessionProvider.overrideWithValue(initialSession),
+      ],
       // BootstrapGate must always have the minimum Material environment.
       // RecoveryShell can be the first rendered surface, before the full
       // VoidScriptorApp (and its own app shell) is safe to construct.

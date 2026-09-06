@@ -19,16 +19,13 @@ void main() {
   group('AnimaticTrackType (Step 78.82)', () {
     test('canonical list has exactly five kinds in blueprint order', () {
       expect(AnimaticTrackType.canonical, hasLength(5));
-      expect(
-        AnimaticTrackType.canonical.map((t) => t.label).toList(),
-        <String>[
-          'Video Track',
-          'Dialogue Track',
-          'SFX Track',
-          'Music Track',
-          'Notes Track',
-        ],
-      );
+      expect(AnimaticTrackType.canonical.map((t) => t.label).toList(), <String>[
+        'Video Track',
+        'Dialogue Track',
+        'SFX Track',
+        'Music Track',
+        'Notes Track',
+      ]);
     });
 
     test('every kind exposes its blueprint display label', () {

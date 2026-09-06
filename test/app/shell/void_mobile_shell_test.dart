@@ -18,9 +18,11 @@ void main() {
         ),
         for (final entry in {
           AppRoutes.projects: 'Projects Page',
-          AppRoutes.aiStudio: 'AI Page',
+          AppRoutes.workspace: 'Workspace Page',
           AppRoutes.assets: 'Assets Page',
           AppRoutes.dashboard: 'Dashboard Page',
+          AppRoutes.projectBackups: 'Backup Page',
+          AppRoutes.settings: 'Settings Page',
         }.entries)
           GoRoute(
             path: entry.key,
@@ -35,7 +37,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(NavigationDestination), findsNWidgets(5));
-    await tester.tap(find.text('Projects'));
+    await tester.tap(find.text('Novels'));
     await tester.pumpAndSettle();
     expect(find.text('Projects Page'), findsOneWidget);
 
@@ -45,13 +47,32 @@ void main() {
     await tester.pumpAndSettle();
     final sheet = find.byType(BottomSheet);
     expect(
-      find.descendant(of: sheet, matching: find.text('References')),
+      find.descendant(of: sheet, matching: find.text('World')),
       findsOneWidget,
     );
     expect(
-      find.descendant(of: sheet, matching: find.text('Project Bible')),
+      find.descendant(of: sheet, matching: find.text('Search')),
       findsOneWidget,
     );
+    expect(
+      find.descendant(of: sheet, matching: find.text('Backup & Export')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: sheet, matching: find.text('Settings')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: sheet, matching: find.text('Optional tools')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: sheet, matching: find.text('Diagnostics')),
+      findsNothing,
+    );
+
+    await tester.tap(find.text('Optional tools'));
+    await tester.pumpAndSettle();
     expect(
       find.descendant(of: sheet, matching: find.text('Diagnostics')),
       findsOneWidget,

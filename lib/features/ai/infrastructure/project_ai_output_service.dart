@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 import '../../../core/project_package/project_package.dart';
 import '../domain/ai_provider.dart';
@@ -7,8 +8,12 @@ import '../domain/generation_job.dart';
 import '../application/generation_job_executor.dart';
 
 class ProjectAiOutputService implements AiOutputService {
-  ProjectAiOutputService({required this.package});
+  ProjectAiOutputService({required this.package, http.Client? client})
+    : _client = client ?? http.Client(),
+      _ownsClient = client == null;
   final ProjectPackage package;
+  final http.Client _client;
+  final bool _ownsClient;
 
   @override
   Future<SavedGenerationOutput> persist({
@@ -37,9 +42,13 @@ class ProjectAiOutputService implements AiOutputService {
           : package.resolve(output.localPath!);
       await File(sourcePath).copy(file.path);
     } else if (output.remoteUrl != null) {
-      throw StateError(
-        'Remote output download requires an injected HTTP downloader.',
-      );
+      final response = await _client.get(Uri.parse(output.remoteUrl!));
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw StateError(
+          'Remote output download failed with HTTP ${response.statusCode}.',
+        );
+      }
+      await file.writeAsBytes(response.bodyBytes, flush: true);
     } else if (output.text != null) {
       await file.writeAsString(output.text!);
     } else {
@@ -84,5 +93,9 @@ class ProjectAiOutputService implements AiOutputService {
       AiOutputType.text => 'txt',
       AiOutputType.file => 'bin',
     };
+  }
+
+  void dispose() {
+    if (_ownsClient) _client.close();
   }
 }

@@ -50,7 +50,7 @@ const coreNavigationDestinations = <AppNavigationDestination>[
   AppNavigationDestination(
     id: AppNavigationId.novels,
     key: 'novels',
-    label: 'Novels',
+    label: 'Projects',
     icon: Icons.auto_stories_outlined,
     route: AppRoutes.projects,
   ),

@@ -1,26 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
+import '../../application/dashboard_snapshot_provider.dart';
+import '../../domain/dashboard_snapshot.dart';
 
-class StatisticsPanel extends StatelessWidget {
+class StatisticsPanel extends ConsumerWidget {
   const StatisticsPanel({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const VoidCard(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final snapshot = ref.watch(dashboardSnapshotProvider);
+    return VoidCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Statistics', style: VoidTypography.headingMedium),
-          SizedBox(height: 14),
-          _StatRow(label: 'Characters', value: '12'),
-          _StatRow(label: 'Wardrobes', value: '27'),
-          _StatRow(label: 'Weapons', value: '14'),
-          _StatRow(label: 'Environments', value: '8'),
-          _StatRow(label: 'Assets', value: '324'),
+          const Text('Statistics', style: VoidTypography.headingMedium),
+          const SizedBox(height: 14),
+          snapshot.when(
+            data: (value) => value == null
+                ? const Text(
+                    'Open a project to calculate statistics.',
+                    style: VoidTypography.body,
+                  )
+                : _MeasuredStatistics(snapshot: value),
+            loading: () => const Text(
+              'Calculating project statistics...',
+              style: VoidTypography.body,
+            ),
+            error: (error, stack) => const Text(
+              'Project statistics are unavailable.',
+              style: VoidTypography.body,
+            ),
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _MeasuredStatistics extends StatelessWidget {
+  const _MeasuredStatistics({required this.snapshot});
+
+  final DashboardSnapshot snapshot;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _StatRow(label: 'Characters', value: '${snapshot.characters}'),
+        _StatRow(label: 'Wardrobes', value: '${snapshot.wardrobes}'),
+        _StatRow(label: 'Weapons', value: '${snapshot.weapons}'),
+        _StatRow(label: 'Environments', value: '${snapshot.environments}'),
+        _StatRow(label: 'Assets', value: '${snapshot.assets}'),
+      ],
     );
   }
 }

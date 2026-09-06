@@ -4,8 +4,8 @@
 // sinyal READY (stage atomic + rename sudah selesai), lalu HANG tanpa exit,
 // tanpa flush/close eksplisit. Parent meng-hard-kill proses ini di level OS
 // (Windows: TerminateProcess) untuk mensimulasikan crash/power-loss nyata.
-import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:void_scriptor/features/project_resilience/application/durable_draft_journal.dart';
 
@@ -19,5 +19,10 @@ Future<void> main(List<String> args) async {
   stdout.writeln('READY');
   await stdout.flush();
   // Tidak pernah keluar dengan sendirinya - parent HARUS kill.
-  await Completer<void>().future;
+  final keepAlive = ReceivePort();
+  try {
+    await keepAlive.first;
+  } finally {
+    keepAlive.close();
+  }
 }

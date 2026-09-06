@@ -28,6 +28,6 @@ void main() {
   });
 
   test('schema version is 57', () {
-    expect(ProjectDatabase.currentSchemaVersion, 58);
+    expect(ProjectDatabase.currentSchemaVersion, 59);
   });
 }

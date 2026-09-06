@@ -20,6 +20,7 @@ Contract source: `https://chatgpt.com/share/6a82a8ad-7e90-83ec-88e5-f270ddea60c3
 | 14.14 | Reference images | `environment_references.dart` | persistence test | DONE |
 | 14.15 | Environment directory | `create_environment_service.dart` (folder tree) | persistence test (creates folders) | DONE |
 | 14.16 | Create Environment | `create_environment_service.dart` | persistence test (creates env asset + profiles + folders) | DONE |
+| 14.16a | Delete safety | `environment_repository_impl.dart` | Extended `environment_persistence_test.dart`; delete removes universal asset, environment row, weather/lighting/physics child rows, and project folder; environment suite passed 6 tests, analyzer/format/diff clean. | VERIFIED-LOCAL |
 | 14.17 | Environment Workspace | `environment_workspace_screen.dart` | `environment_workspace_test.dart` | DONE |
 | 14.18 | Environment Header | workspace screen | workspace test (renders overview) | DONE |
 | 14.19 | Location Preview Card | workspace screen | workspace test | DONE |

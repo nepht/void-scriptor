@@ -96,7 +96,328 @@ void main() {
     await rewound.close();
   }
 
+  /// Full-Core fixture: seeds one row in EVERY Core family at the
+  /// fresh v59 layout, then rewinds the structural waves back to v53
+  /// so the 53 to 59 migration re-applies on open. None of the
+  /// rewound objects differ between v53 and v59, so the rewind is
+  /// faithful.
+  Future<void> seedV53WithFullCoreData() async {
+    final now = DateTime(2026);
+    final database = ProjectDatabase(NativeDatabase(dbFile()));
+    await database.customSelect('SELECT 1').get();
+    await database.transaction(() async {
+      await database
+          .into(database.assets)
+          .insert(
+            AssetsCompanion.insert(
+              id: 'char-1',
+              projectId: 'project-1',
+              name: 'Qowner',
+              type: 'character',
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await database
+          .into(database.characters)
+          .insert(
+            CharactersCompanion.insert(
+              assetId: 'char-1',
+              projectId: 'project-1',
+              displayName: 'Qowner',
+              biography: const Value('born in the Void'),
+              voice: const Value('low hum'),
+            ),
+          );
+      await database
+          .into(database.characterIdentityProfiles)
+          .insert(
+            CharacterIdentityProfilesCompanion.insert(characterId: 'char-1'),
+          );
+      await database
+          .into(database.assets)
+          .insert(
+            AssetsCompanion.insert(
+              id: 'story-1',
+              projectId: 'project-1',
+              name: 'Void Cube Saga',
+              type: 'story',
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await database
+          .into(database.stories)
+          .insert(
+            StoriesCompanion.insert(
+              assetId: 'story-1',
+              projectId: 'project-1',
+              title: 'Void Cube Saga',
+            ),
+          );
+      await database
+          .into(database.storyArcs)
+          .insert(
+            StoryArcsCompanion.insert(
+              id: 'arc-1',
+              storyId: 'story-1',
+              title: 'Arc Satu',
+            ),
+          );
+      await database
+          .into(database.storyChapters)
+          .insert(
+            StoryChaptersCompanion.insert(
+              id: 'chap-1',
+              storyId: 'story-1',
+              title: 'Bab Satu',
+              chapterNumber: 1,
+            ),
+          );
+      await database
+          .into(database.storyScenes)
+          .insert(
+            StoryScenesCompanion.insert(
+              id: 'scene-1',
+              storyId: 'story-1',
+              chapterId: 'chap-1',
+              title: 'Adegan Pembuka',
+              sceneNumber: 1,
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await database
+          .into(database.sceneBeats)
+          .insert(
+            SceneBeatsCompanion.insert(
+              id: 'beat-1',
+              sceneId: 'scene-1',
+              content: 'Qowner menyentuh kubus.',
+            ),
+          );
+      await database
+          .into(database.sceneCharacters)
+          .insert(
+            SceneCharactersCompanion.insert(
+              id: 'sc-1',
+              sceneId: 'scene-1',
+              characterId: 'char-1',
+            ),
+          );
+      await database
+          .into(database.assets)
+          .insert(
+            AssetsCompanion.insert(
+              id: 'env-1',
+              projectId: 'project-1',
+              name: 'Kutub',
+              type: 'environment',
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await database
+          .into(database.environments)
+          .insert(
+            EnvironmentsCompanion.insert(
+              assetId: 'env-1',
+              projectId: 'project-1',
+              name: 'Kutub',
+            ),
+          );
+      await database
+          .into(database.environmentZones)
+          .insert(
+            EnvironmentZonesCompanion.insert(
+              id: 'zone-1',
+              environmentId: 'env-1',
+              name: 'Dataran Es',
+            ),
+          );
+      await database
+          .into(database.sceneEnvironmentContexts)
+          .insert(
+            SceneEnvironmentContextsCompanion.insert(
+              sceneId: 'scene-1',
+              environmentId: 'env-1',
+              zoneId: const Value('zone-1'),
+            ),
+          );
+      await database
+          .into(database.assets)
+          .insert(
+            AssetsCompanion.insert(
+              id: 'faction-1',
+              projectId: 'project-1',
+              name: 'Penjaga Kutub',
+              type: 'faction',
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await database
+          .into(database.factions)
+          .insert(
+            FactionsCompanion.insert(
+              assetId: 'faction-1',
+              projectId: 'project-1',
+              name: 'Penjaga Kutub',
+            ),
+          );
+      await database
+          .into(database.bibleEntries)
+          .insert(
+            BibleEntriesCompanion.insert(
+              id: 'bible-1',
+              projectId: 'project-1',
+              type: 'terminology',
+              title: 'Kubus Kekosongan',
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await database
+          .into(database.storyBibleSections)
+          .insert(
+            StoryBibleSectionsCompanion.insert(
+              id: 'section-1',
+              storyId: 'story-1',
+              sectionType: 'theme',
+              title: 'Tema Utama',
+            ),
+          );
+      await database
+          .into(database.timelines)
+          .insert(
+            TimelinesCompanion.insert(
+              id: 'timeline-1',
+              projectId: 'project-1',
+              sceneId: 'scene-1',
+              durationSeconds: 120,
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await database
+          .into(database.timelineTracks)
+          .insert(
+            TimelineTracksCompanion.insert(
+              id: 'track-1',
+              timelineId: 'timeline-1',
+              trackType: 'video',
+              name: 'Video',
+            ),
+          );
+      await database
+          .into(database.assetRelations)
+          .insert(
+            AssetRelationsCompanion.insert(
+              id: 'rel-1',
+              sourceAssetId: 'char-1',
+              targetAssetId: 'faction-1',
+              relationType: 'member of',
+            ),
+          );
+    });
+    await database.close();
+
+    // Rewind structural waves to v53: drop objects created in waves
+    // 54 to 59 (they did not exist at v53) and the voice column added
+    // at v58. Everything seeded above existed verbatim at v53, so the
+    // rewind is faithful and the forward migration must reproduce
+    // every Core family without data loss.
+    final rewound = ProjectDatabase(NativeDatabase(dbFile()));
+    await rewound.customStatement('PRAGMA foreign_keys = OFF');
+    await rewound.customStatement(
+      'DROP TABLE IF EXISTS creature_ecology_states',
+    );
+    await rewound.customStatement('DROP TABLE IF EXISTS novel_character_links');
+    await rewound.customStatement('DROP TABLE IF EXISTS workflow_definitions');
+    await rewound.customStatement('DROP TABLE IF EXISTS workflow_run_records');
+    await rewound.customStatement('DROP TABLE IF EXISTS scene_draft_snapshots');
+    await rewound.customStatement(
+      'DROP TABLE IF EXISTS character_canonical_scopes',
+    );
+    await rewound.customStatement(
+      'DROP TABLE IF EXISTS character_universe_timeline_overrides',
+    );
+    await rewound.customStatement(
+      'DROP TABLE IF EXISTS character_novel_states',
+    );
+    await rewound.customStatement('ALTER TABLE characters DROP COLUMN voice');
+    await rewound.customStatement('PRAGMA user_version = 53');
+    await rewound.close();
+  }
+
   group('145.40 fixture matrix', () {
+    test(
+      'OLD v53 full Core families: migration preserves every Core family row',
+      () async {
+        await seedV53WithFullCoreData();
+        final service = ProjectDatabaseService();
+        final database = await service.open(dbFile().path);
+
+        final version = await database
+            .customSelect('PRAGMA user_version')
+            .getSingle();
+        expect(version.data['user_version'], 59);
+
+        // No silent discard across EVERY Core family, not just characters.
+        expect(await database.select(database.stories).get(), hasLength(1));
+        expect(await database.select(database.storyArcs).get(), hasLength(1));
+        expect(
+          await database.select(database.storyChapters).get(),
+          hasLength(1),
+        );
+        expect(await database.select(database.storyScenes).get(), hasLength(1));
+        expect(await database.select(database.sceneBeats).get(), hasLength(1));
+        expect(
+          await database.select(database.sceneCharacters).get(),
+          hasLength(1),
+        );
+        expect(
+          await database.select(database.sceneEnvironmentContexts).get(),
+          hasLength(1),
+        );
+        expect(
+          await database.select(database.environments).get(),
+          hasLength(1),
+        );
+        expect(
+          await database.select(database.environmentZones).get(),
+          hasLength(1),
+        );
+        expect(await database.select(database.factions).get(), hasLength(1));
+        expect(
+          await database.select(database.bibleEntries).get(),
+          hasLength(1),
+        );
+        expect(
+          await database.select(database.storyBibleSections).get(),
+          hasLength(1),
+        );
+        expect(await database.select(database.timelines).get(), hasLength(1));
+        expect(
+          await database.select(database.timelineTracks).get(),
+          hasLength(1),
+        );
+        expect(
+          await database.select(database.assetRelations).get(),
+          hasLength(1),
+        );
+        expect(
+          await database.select(database.characterIdentityProfiles).get(),
+          hasLength(1),
+        );
+        expect(
+          (await database.select(database.characters).get()).single.displayName,
+          'Qowner',
+        );
+        await database.close();
+      },
+    );
+
     test(
       'CURRENT: fresh create opens at v59 and reopens as a stable no-op',
       () async {

@@ -39,6 +39,8 @@ class StoryWorkspaceScreen extends StatefulWidget {
     this.loadLoreCatalog,
     this.onCreateLoreEntity,
     this.draftJournal,
+    this.activeSection,
+    this.onSectionRequested,
   });
   final String storyId;
   final StoryRepositoryImpl? repository;
@@ -75,6 +77,11 @@ class StoryWorkspaceScreen extends StatefulWidget {
   /// untuk draf yang belum tersimpan. Null (mis. layar test tanpa paket)
   /// berarti journal tidak aktif; autosave utama tetap berjalan.
   final DurableDraftJournal? draftJournal;
+
+  /// Optional workspace-level section selected by the surrounding shell.
+  /// Null preserves the legacy all-in-one screen for standalone embeddings.
+  final String? activeSection;
+  final ValueChanged<String>? onSectionRequested;
 
   @override
   State<StoryWorkspaceScreen> createState() => _StoryWorkspaceScreenState();
@@ -1187,9 +1194,86 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     }
   }
 
+  Widget _buildDedicatedSection(VoidPalette palette, String section) {
+    final content = <Widget>[
+      Text(
+        section,
+        style: TextStyle(
+          color: palette.textPrimary,
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      const SizedBox(height: 16),
+      if (section == 'Outline') ...[
+        if (widget.workspaceProjection != null) ...[
+          WorkspaceProjectionCard(
+            projectionFuture: widget.workspaceProjection!,
+            onTapAddCharacter: widget.onTapAddCharacter,
+          ),
+          const SizedBox(height: 12),
+        ],
+        _Panel(
+          title: 'STORY STRUCTURE',
+          child: Text(
+            'Story → Arc → Chapter → Scene',
+            style: TextStyle(color: palette.textSecondary),
+          ),
+        ),
+        const SizedBox(height: 12),
+        _Panel(title: 'CHAPTERS', child: _buildLiveChapters(palette)),
+      ] else if (section == 'Lore Links') ...[
+        _Panel(
+          title: 'LORE LINKS',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Lore links are attached from the manuscript with [[name]]. '
+                'Suggestions use the live project lore catalog.',
+                style: TextStyle(color: palette.textSecondary),
+              ),
+              if (widget.onSectionRequested != null) ...[
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: () => widget.onSectionRequested!('Manuscript'),
+                  icon: const Icon(Icons.edit_outlined),
+                  label: const Text('Open Manuscript'),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ] else if (section == 'Versions') ...[
+        _Panel(title: 'SCENE SNAPSHOTS', child: _buildSnapshots(palette)),
+      ] else if (section == 'Export') ...[
+        _Panel(title: 'EXPORT NOVEL', child: _exportActions()),
+      ],
+    ];
+    return ColoredBox(
+      color: palette.background,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1100),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: content,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    final section = widget.activeSection;
+    if (section != null && section != 'Manuscript') {
+      return _buildDedicatedSection(p, section);
+    }
     return CallbackShortcuts(
       // Step 145.28: keyboard exit untuk sesi fokus (domain 109.20
       // keyboard_exit). Esc hanya menutup sesi yang memang aktif; di luar
@@ -1234,24 +1318,26 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                         },
                       ),
                       const SizedBox(height: 10),
-                      _exportActions(),
+                      if (section == null) _exportActions(),
                     ],
                   ),
                   const SizedBox(height: 16),
                   _focusToggle(),
                   const SizedBox(height: 4),
-                  const Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      Chip(label: Text('Bible')),
-                      Chip(label: Text('Arcs')),
-                      Chip(label: Text('Chapters')),
-                      Chip(label: Text('Scenes')),
-                      Chip(label: Text('Timeline')),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
+                  if (section == null) ...[
+                    const Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        Chip(label: Text('Bible')),
+                        Chip(label: Text('Arcs')),
+                        Chip(label: Text('Chapters')),
+                        Chip(label: Text('Scenes')),
+                        Chip(label: Text('Timeline')),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                   // Step 145.30: recovery prompt di dekat puncak layar agar
                   // terlihat langsung saat startup (visible status, no silent
                   // loss) tanpa bergantung pada scroll.
@@ -1262,7 +1348,8 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                     ),
                     const SizedBox(height: 12),
                   ],
-                  if (widget.workspaceProjection != null) ...[
+                  if (section == null &&
+                      widget.workspaceProjection != null) ...[
                     WorkspaceProjectionCard(
                       projectionFuture: widget.workspaceProjection!,
                       onTapAddCharacter: widget.onTapAddCharacter,
@@ -1270,14 +1357,16 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                     const SizedBox(height: 12),
                   ],
                   if (!_isFocusActive) ...[
-                    _Panel(
-                      title: 'STORY STRUCTURE',
-                      child: Text(
-                        'Story → Arc 1 → Chapter 1 → Scene',
-                        style: TextStyle(color: p.textSecondary),
+                    if (section == null) ...[
+                      _Panel(
+                        title: 'STORY STRUCTURE',
+                        child: Text(
+                          'Story → Arc 1 → Chapter 1 → Scene',
+                          style: TextStyle(color: p.textSecondary),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
+                      const SizedBox(height: 12),
+                    ],
                     _Panel(title: 'CHAPTERS', child: _buildLiveChapters(p)),
                     const SizedBox(height: 12),
                     _Panel(
@@ -1357,14 +1446,16 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    _Panel(
-                      title: 'STORY BIBLE',
-                      child: Text(
-                        'Premise\nThemes\nTone\nWorld Rules\nCanon Rules',
-                        style: TextStyle(color: p.textSecondary, height: 1.6),
+                    if (section == null) ...[
+                      _Panel(
+                        title: 'STORY BIBLE',
+                        child: Text(
+                          'Premise\nThemes\nTone\nWorld Rules\nCanon Rules',
+                          style: TextStyle(color: p.textSecondary, height: 1.6),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
+                      const SizedBox(height: 12),
+                    ],
                     _Panel(
                       title: 'NOVEL SEARCH',
                       child: Column(
@@ -1419,8 +1510,13 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    _Panel(title: 'SCENE SNAPSHOTS', child: _buildSnapshots(p)),
-                    const SizedBox(height: 12),
+                    if (section == null) ...[
+                      _Panel(
+                        title: 'SCENE SNAPSHOTS',
+                        child: _buildSnapshots(p),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
                     _Panel(
                       title: 'CHARACTER QUICK REF',
                       child: _buildQuickRefs(p),

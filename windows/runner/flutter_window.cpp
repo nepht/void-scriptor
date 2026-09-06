@@ -3,11 +3,15 @@
 #include <optional>
 
 #include "flutter/generated_plugin_registrant.h"
+#include "native_brand_window.h"
 
-FlutterWindow::FlutterWindow(const flutter::DartProject& project)
-    : project_(project) {}
+FlutterWindow::FlutterWindow(const flutter::DartProject& project,
+                             HWND brand_window)
+    : project_(project), brand_window_(brand_window) {}
 
-FlutterWindow::~FlutterWindow() {}
+FlutterWindow::~FlutterWindow() {
+  DestroyNativeBrandWindow(brand_window_);
+}
 
 bool FlutterWindow::OnCreate() {
   if (!Win32Window::OnCreate()) {
@@ -27,7 +31,9 @@ bool FlutterWindow::OnCreate() {
   RegisterPlugins(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
-  flutter_controller_->engine()->SetNextFrameCallback([&]() {
+  flutter_controller_->engine()->SetNextFrameCallback([this]() {
+    DestroyNativeBrandWindow(brand_window_);
+    brand_window_ = nullptr;
     this->Show();
   });
 

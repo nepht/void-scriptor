@@ -11,8 +11,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('prepareBootstrap (in-memory / web mode)', () {
-    test('returns a working handle without touching the filesystem',
-        () async {
+    test('returns a working handle without touching the filesystem', () async {
       final handle = await prepareBootstrap(forceInMemory: true);
 
       expect(handle.lastOutcome.mode, StartupMode.normal);
@@ -36,16 +35,17 @@ void main() {
     });
 
     test(
-        'web mode leaves global error handlers untouched and restore is safe',
-        () async {
-      final before = FlutterError.onError;
-      final handle = await prepareBootstrap(forceInMemory: true);
+      'web mode leaves global error handlers untouched and restore is safe',
+      () async {
+        final before = FlutterError.onError;
+        final handle = await prepareBootstrap(forceInMemory: true);
 
-      expect(FlutterError.onError, same(before));
+        expect(FlutterError.onError, same(before));
 
-      handle.restoreDiagnostics();
-      expect(FlutterError.onError, same(before));
-    });
+        handle.restoreDiagnostics();
+        expect(FlutterError.onError, same(before));
+      },
+    );
 
     test('file mode remains the default outside web', () async {
       expect(prepareBootstrapUsesFilesByDefault, isTrue);

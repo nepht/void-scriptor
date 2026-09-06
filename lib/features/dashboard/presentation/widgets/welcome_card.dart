@@ -18,7 +18,7 @@ class WelcomeCard extends StatelessWidget {
             radius: 28,
             backgroundColor: context.palette.primary,
             child: const Icon(
-              Icons.person_outline,
+              Icons.auto_stories_outlined,
               color: Colors.white,
               size: 26,
             ),
@@ -34,16 +34,13 @@ class WelcomeCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 const Text(
-                  'Continue building your universe.',
+                  'Continue your latest novel or open another project.',
                   style: VoidTypography.body,
                 ),
               ],
             ),
           ),
-          Icon(
-            Icons.auto_awesome_outlined,
-            color: context.palette.primaryBright,
-          ),
+          Icon(Icons.edit_outlined, color: context.palette.primaryBright),
         ],
       ),
     );

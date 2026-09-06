@@ -108,9 +108,7 @@ Future<BootstrapHandle> prepareBootstrap({
 
   final restore = inMemory
       ? () {}
-      : CrashDiagnostics.attach(
-          CrashDiagnostics(directory: dirs!.crash),
-        );
+      : CrashDiagnostics.attach(CrashDiagnostics(directory: dirs!.crash));
 
   final store = inMemory
       ? StartupFailureStore.inMemory()
@@ -126,8 +124,7 @@ Future<BootstrapHandle> prepareBootstrap({
   if (!inMemory) {
     try {
       dirs!.state.createSync(recursive: true);
-      File(p.join(dirs.state.path, 'startup-decision.json'))
-          .writeAsStringSync(
+      File(p.join(dirs.state.path, 'startup-decision.json')).writeAsStringSync(
         jsonEncode(
           _StartupDecision(
             outcome.mode.name,

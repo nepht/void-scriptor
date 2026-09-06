@@ -12,7 +12,10 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 /// Download: 124 MB — Includes: Crash fixes, Timeline performance.
 /// [Later] [Download].
 class UpdateScreen extends ConsumerWidget {
-  const UpdateScreen({super.key});
+  const UpdateScreen({super.key, this.onLater, this.onDownload});
+
+  final VoidCallback? onLater;
+  final VoidCallback? onDownload;
 
   static const _notes = <String>[
     'Crash fixes',
@@ -61,14 +64,14 @@ class UpdateScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: onLater,
                       child: const Text('Later'),
                     ),
                   ),
                   const SizedBox(width: VoidSpacing.md),
                   Expanded(
                     child: FilledButton(
-                      onPressed: () {},
+                      onPressed: onDownload,
                       child: const Text('Download'),
                     ),
                   ),

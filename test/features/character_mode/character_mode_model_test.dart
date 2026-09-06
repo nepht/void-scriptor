@@ -19,6 +19,20 @@ void main() {
     expect(mode.thumbnailPath, 'thumbs/combat.png');
   });
 
+  test('character mode preserves accent color and semantic tags', () {
+    const mode = CharacterMode(
+      id: 'mode-2',
+      projectId: 'project-1',
+      characterId: 'character-1',
+      name: 'Ceremonial Mode',
+      accentColor: '#D4AF37',
+      tags: ['formal', 'ceremony'],
+    );
+
+    expect(mode.accentColor, '#D4AF37');
+    expect(mode.tags, ['formal', 'ceremony']);
+  });
+
   test('loadout slots serialize to stable database values', () {
     expect(LoadoutSlot.wardrobe.value, 'wardrobe');
     expect(LoadoutSlot.primaryWeapon.value, 'primary_weapon');

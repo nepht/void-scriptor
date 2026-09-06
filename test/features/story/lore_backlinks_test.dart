@@ -348,6 +348,54 @@ void main() {
       expect(changed, 0);
     });
 
+    test('retarget does not mutate another project', () async {
+      await database
+          .into(database.stories)
+          .insert(
+            StoriesCompanion.insert(
+              assetId: 'story-2',
+              projectId: 'project-2',
+              title: 'Saga Lain',
+            ),
+          );
+      await database
+          .into(database.storyScenes)
+          .insert(
+            StoryScenesCompanion.insert(
+              id: 'scene-other-project',
+              storyId: 'story-2',
+              chapterId: 'ch-other',
+              title: 'Scene lain',
+              sceneNumber: 1,
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+            ),
+          );
+      await database
+          .into(database.sceneBeats)
+          .insert(
+            SceneBeatsCompanion.insert(
+              id: 'beat-other-project',
+              sceneId: 'scene-other-project',
+              content: '[[Naga Hilang]]',
+            ),
+          );
+
+      const service = LoreBacklinkService();
+      final changed = await service.retargetOccurrences(
+        database,
+        projectId: 'project-1',
+        from: 'Naga Hilang',
+        to: 'Naga Baru',
+      );
+
+      expect(changed, 1);
+      final other = await (database.select(
+        database.sceneBeats,
+      )..where((row) => row.id.equals('beat-other-project'))).getSingle();
+      expect(other.content, '[[Naga Hilang]]');
+    });
+
     test(
       'scan -> retarget -> rescan closes the broken link end to end',
       () async {

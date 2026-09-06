@@ -6,6 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:void_scriptor/database/project/project_database_service.dart';
 
+import '../../support/real_dart_executable.dart';
+
 /// Sprint 145.42 (Data Safety Failure Matrix) - process kill / power loss
 /// pada layer database SQLite melalui harness OS-native (pola yang sudah
 /// tervalidasi oleh durable_draft_journal_process_kill_test.dart di
@@ -25,21 +27,9 @@ void main() {
     addTearDown(() => root.delete(recursive: true));
     final databasePath = p.join(root.path, 'project.db');
 
-    // Di dalam `flutter test`, Platform.resolvedExecutable =
-    // flutter_tester.exe (tidak bisa menjalankan script Dart biasa).
-    // Resolve dart VM nyata dari FLUTTER_ROOT; fallback ke
-    // resolvedExecutable untuk eksekusi `dart test` langsung.
-    final flutterRoot = Platform.environment['FLUTTER_ROOT'];
-    final dartExe = (flutterRoot == null || flutterRoot.isEmpty)
-        ? Platform.resolvedExecutable
-        : <String>[
-            flutterRoot,
-            'bin',
-            'cache',
-            'dart-sdk',
-            'bin',
-            Platform.isWindows ? 'dart.exe' : 'dart',
-          ].join(Platform.pathSeparator);
+    // `flutter test` tidak selalu mengekspor FLUTTER_ROOT dan
+    // Platform.resolvedExecutable menunjuk ke flutter_tester, bukan Dart VM.
+    final dartExe = await resolveRealDartExecutable();
     final childScript = File(
       'test/database/project/fixtures/db_process_kill_child.dart',
     );

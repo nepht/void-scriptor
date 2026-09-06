@@ -10,7 +10,10 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 /// Layout: sidebar WORLD (Levels, Characters) + GAME WORLD + INSPECTOR,
 /// dengan tombol Play dan Build.
 class GameCreationDashboardScreen extends ConsumerWidget {
-  const GameCreationDashboardScreen({super.key});
+  const GameCreationDashboardScreen({super.key, this.onPlay, this.onBuild});
+
+  final VoidCallback? onPlay;
+  final VoidCallback? onBuild;
 
   static const _worldItems = <(String, IconData)>[
     ('Levels', Icons.layers_outlined),
@@ -29,7 +32,7 @@ class GameCreationDashboardScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(right: VoidSpacing.sm),
             child: TextButton.icon(
-              onPressed: () {},
+              onPressed: onPlay,
               icon: const Icon(Icons.play_arrow, size: 18),
               label: const Text('Play'),
             ),
@@ -37,7 +40,7 @@ class GameCreationDashboardScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(right: VoidSpacing.md),
             child: FilledButton.icon(
-              onPressed: () {},
+              onPressed: onBuild,
               icon: const Icon(Icons.build_outlined, size: 18),
               label: const Text('Build'),
             ),

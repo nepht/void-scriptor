@@ -31,28 +31,37 @@ void main() {
     final secondPath = (await paths.database('project-2')).path;
     await service.create(firstPath);
     await service.create(secondPath);
-    final firstDatabase = await service.open(firstPath);
     final secondDatabase = await service.open(secondPath);
-    addTearDown(firstDatabase.close);
-    addTearDown(secondDatabase.close);
-    final first = CharacterRepositoryImpl(
-      database: firstDatabase,
-      projectId: 'project-1',
-      paths: paths,
-    );
-    final second = CharacterRepositoryImpl(
-      database: secondDatabase,
-      projectId: 'project-2',
-      paths: paths,
-    );
-    await first.createCharacter(name: 'Qowner Prime');
-    await first.createCharacter(name: 'Lyra');
-    await second.createCharacter(name: 'Qowner Other Project');
+    try {
+      final second = CharacterRepositoryImpl(
+        database: secondDatabase,
+        projectId: 'project-2',
+        paths: paths,
+      );
+      await second.createCharacter(name: 'Qowner Other Project');
+    } finally {
+      await secondDatabase.close();
+    }
 
-    final matches = await first.searchCharacters('qOwNeR');
+    final firstDatabase = await service.open(firstPath);
+    try {
+      final first = CharacterRepositoryImpl(
+        database: firstDatabase,
+        projectId: 'project-1',
+        paths: paths,
+      );
+      await first.createCharacter(name: 'Qowner Prime');
+      await first.createCharacter(name: 'Lyra');
 
-    expect(matches.map((character) => character.displayName), ['Qowner Prime']);
-    expect(await first.searchCharacters('   '), hasLength(2));
+      final matches = await first.searchCharacters('qOwNeR');
+
+      expect(matches.map((character) => character.displayName), [
+        'Qowner Prime',
+      ]);
+      expect(await first.searchCharacters('   '), hasLength(2));
+    } finally {
+      await firstDatabase.close();
+    }
   });
 
   test('characters stay isolated across project databases', () async {
@@ -65,24 +74,29 @@ void main() {
     await service.create(firstPath);
     await service.create(secondPath);
     final firstDatabase = await service.open(firstPath);
+    try {
+      final first = CharacterRepositoryImpl(
+        database: firstDatabase,
+        projectId: 'project-1',
+        paths: paths,
+      );
+      await first.createCharacter(name: 'First Only');
+      expect(await first.getCharacters(), hasLength(1));
+    } finally {
+      await firstDatabase.close();
+    }
+
     final secondDatabase = await service.open(secondPath);
-    addTearDown(firstDatabase.close);
-    addTearDown(secondDatabase.close);
-    final first = CharacterRepositoryImpl(
-      database: firstDatabase,
-      projectId: 'project-1',
-      paths: paths,
-    );
-    final second = CharacterRepositoryImpl(
-      database: secondDatabase,
-      projectId: 'project-2',
-      paths: paths,
-    );
-
-    await first.createCharacter(name: 'First Only');
-
-    expect(await first.getCharacters(), hasLength(1));
-    expect(await second.getCharacters(), isEmpty);
+    try {
+      final second = CharacterRepositoryImpl(
+        database: secondDatabase,
+        projectId: 'project-2',
+        paths: paths,
+      );
+      expect(await second.getCharacters(), isEmpty);
+    } finally {
+      await secondDatabase.close();
+    }
   });
 
   test(

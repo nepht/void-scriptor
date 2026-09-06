@@ -44,6 +44,22 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('SecuritySettingsScreen notifies parent to change passphrase', (
+    tester,
+  ) async {
+    var requested = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SecuritySettingsScreen(
+          onChangePassphrase: () => requested = true,
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Ubah Passphrase'));
+    expect(requested, isTrue);
+  });
+
   testWidgets('SecretVisibilityToggle masks and reveals', (tester) async {
     bool hidden = true;
     await tester.pumpWidget(

@@ -8,11 +8,15 @@ class VoidStatusBar extends StatelessWidget {
     this.dirty = false,
     this.canUndo = false,
     this.canRedo = false,
+    this.cloudConnected = false,
+    this.aiConnected = false,
   });
 
   final bool dirty;
   final bool canUndo;
   final bool canRedo;
+  final bool cloudConnected;
+  final bool aiConnected;
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +30,8 @@ class VoidStatusBar extends StatelessWidget {
       child: Row(
         children: [
           const _Status(label: 'Local', active: true),
-          const _Status(label: 'Cloud'),
-          const _Status(label: 'AI', active: true),
+          _Status(label: 'Cloud', active: cloudConnected),
+          _Status(label: 'AI', active: aiConnected),
           _Status(label: 'Undo', active: canUndo),
           _Status(label: 'Redo', active: canRedo),
           _Status(label: 'Dirty', active: dirty),
@@ -50,23 +54,27 @@ class _Status extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 16),
-      child: Row(
-        children: [
-          Icon(
-            Icons.circle,
-            size: 6,
-            color: active
-                ? context.palette.success
-                : context.palette.textDisabled,
-          ),
-          const SizedBox(width: 5),
-          Text(
-            label,
-            style: TextStyle(fontSize: 10, color: context.palette.textMuted),
-          ),
-        ],
+    return Semantics(
+      label: '$label: ${active ? 'Active' : 'Inactive'}',
+      excludeSemantics: true,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 16),
+        child: Row(
+          children: [
+            Icon(
+              Icons.circle,
+              size: 6,
+              color: active
+                  ? context.palette.success
+                  : context.palette.textDisabled,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              label,
+              style: TextStyle(fontSize: 10, color: context.palette.textMuted),
+            ),
+          ],
+        ),
       ),
     );
   }

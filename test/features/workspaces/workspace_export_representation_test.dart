@@ -14,18 +14,9 @@ import 'package:void_scriptor/features/workspaces/application/workspace_file_nam
 import 'package:void_scriptor/features/workspaces/domain/novel_character_link.dart';
 
 void main() {
-  final openClosers = <Future<void> Function()>[];
-
   void registerDb(Future<void> Function() close) {
-    openClosers.add(close);
+    addTearDown(close);
   }
-
-  tearDown(() async {
-    for (final close in openClosers.reversed) {
-      await close();
-    }
-    openClosers.clear();
-  });
 
   Future<
     ({

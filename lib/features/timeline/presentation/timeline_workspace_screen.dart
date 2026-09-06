@@ -135,31 +135,33 @@ class _TimelineWorkspaceScreenState extends State<TimelineWorkspaceScreen> {
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: SizedBox(
-                width: 280 + scale.secondsToPixels(widget.durationSeconds),
-                child: Column(
-                  children: [
-                    TimelineRuler(
-                      duration: widget.durationSeconds,
-                      pixelsPerSecond: _pixelsPerSecond,
-                      currentTime: _currentTime,
-                      onSeek: (value) => setState(() => _currentTime = value),
-                    ),
-                    ..._tracks.map(
-                      (track) => _TrackRow(
-                        track: track,
-                        width: scale.secondsToPixels(widget.durationSeconds),
-                        clips: _clips
-                            .where((clip) => clip.trackId == track.name)
-                            .toList(),
-                        scale: scale,
-                        selectedClipId: _selectedClipId,
-                        onClipMoved: _moveClip,
-                        onClipSelected: (clip) =>
-                            setState(() => _selectedClipId = clip.id),
+              child: SingleChildScrollView(
+                child: SizedBox(
+                  width: 280 + scale.secondsToPixels(widget.durationSeconds),
+                  child: Column(
+                    children: [
+                      TimelineRuler(
+                        duration: widget.durationSeconds,
+                        pixelsPerSecond: _pixelsPerSecond,
+                        currentTime: _currentTime,
+                        onSeek: (value) => setState(() => _currentTime = value),
                       ),
-                    ),
-                  ],
+                      ..._tracks.map(
+                        (track) => _TrackRow(
+                          track: track,
+                          width: scale.secondsToPixels(widget.durationSeconds),
+                          clips: _clips
+                              .where((clip) => clip.trackId == track.name)
+                              .toList(),
+                          scale: scale,
+                          selectedClipId: _selectedClipId,
+                          onClipMoved: _moveClip,
+                          onClipSelected: (clip) =>
+                              setState(() => _selectedClipId = clip.id),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

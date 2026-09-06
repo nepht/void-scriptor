@@ -20,7 +20,7 @@ AssetType.weapon    -> Weapon Workspace / Weapon Inspector
 
 ## Weapon vertical slice
 
-Weapon data lives in the active project's `project.db` with schema version 5. A Weapon creation transaction creates:
+Weapon persistence was introduced in schema version 5. The live project database is currently schema version 54, and Weapon data remains in the active project's `project.db`. A Weapon creation transaction creates:
 
 1. the universal `Assets` row;
 2. the technical `Weapons` row;
@@ -40,13 +40,23 @@ The Weapon Workspace is responsive: wide layouts show technical view/specificati
 
 Canonical commands run from the WSL source tree:
 
+### Verified toolchain
+
+- Flutter `3.44.9` stable, revision `6b182d2c75`
+- Dart `3.12.2`
+- Java `17`
+- Linux desktop prerequisites: CMake, Ninja, GTK 3, and libsecret development packages
+
+The canonical source tree lives in WSL. Windows native builds require a Windows-hosted Flutter SDK plus Visual Studio Build Tools and must be verified separately; a Linux build does not prove Windows compilation.
+
 ```bash
-dart format --set-exit-if-changed lib test
-dart run build_runner build
-flutter analyze
-flutter test
-flutter build linux --debug
-flutter build web --release
+/home/nepht/toolchain/flutter/bin/dart format --output=none --set-exit-if-changed lib test
+/home/nepht/toolchain/flutter/bin/dart run build_runner build
+/home/nepht/toolchain/flutter/bin/flutter analyze
+/home/nepht/toolchain/flutter/bin/flutter test
+/home/nepht/toolchain/flutter/bin/flutter build linux --debug
+/home/nepht/toolchain/flutter/bin/flutter build web --release
+/home/nepht/toolchain/flutter/bin/flutter build apk --debug
 git diff --check
 ```
 

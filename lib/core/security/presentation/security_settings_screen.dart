@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 /// Security settings with encryption enable + passphrase change (Step 30.17).
 class SecuritySettingsScreen extends StatefulWidget {
-  const SecuritySettingsScreen({super.key});
+  const SecuritySettingsScreen({super.key, this.onChangePassphrase});
+
+  final VoidCallback? onChangePassphrase;
 
   @override
   State<SecuritySettingsScreen> createState() => _SecuritySettingsScreenState();
@@ -29,7 +31,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
             leading: const Icon(Icons.password),
             title: const Text('Ubah Passphrase'),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () {},
+            onTap: widget.onChangePassphrase,
           ),
         ],
       ),

@@ -18,6 +18,31 @@ class CreatureRepository extends DatabaseAccessor<ProjectDatabase>
     with _$CreatureRepositoryMixin {
   CreatureRepository(super.db);
 
+  Future<List<domain.CreatureModel>> listForProject(String projectId) async {
+    final rows =
+        await (select(creatures)
+              ..where((item) => item.projectId.equals(projectId))
+              ..orderBy([(item) => OrderingTerm.asc(item.name)]))
+            .get();
+    return [
+      for (final row in rows)
+        domain.CreatureModel(
+          assetId: row.assetId,
+          projectId: row.projectId,
+          name: row.name,
+          category: domain.CreatureCategory.values.firstWhere(
+            (item) => item.name == row.category,
+            orElse: () => domain.CreatureCategory.unknown,
+          ),
+          speciesId: row.speciesId,
+          description: row.description,
+          behavior: row.behavior,
+          abilities: row.abilities,
+          origin: row.origin,
+        ),
+    ];
+  }
+
   Future<domain.CreatureModel?> getCreature(String id) async {
     final row = await (select(
       creatures,

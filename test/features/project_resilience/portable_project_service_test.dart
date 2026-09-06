@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/persistence/project_registry_service.dart';
 import 'package:void_scriptor/core/project_package/project_package_service.dart';
 import 'package:void_scriptor/features/project_resilience/application/portable_project_service.dart';
+import 'package:void_scriptor/features/workspaces/application/workspace_file_namespace.dart';
 
 void main() {
   late Directory root;
@@ -21,6 +22,10 @@ void main() {
       await File(
         '${package.assetsDirectory.path}/images/hero.txt',
       ).writeAsString('asset');
+      final workspaceFile = await WorkspaceFileNamespace(
+        package,
+      ).createFile('novel-1', 'exports/novel.json');
+      await workspaceFile.writeAsString('{"id":"novel-1"}');
       await File(
         '${package.cacheDirectory.path}/waveforms/disposable',
       ).writeAsString('cache');
@@ -45,6 +50,13 @@ void main() {
         ).readAsString(),
         'asset',
       );
+      expect(
+        await File(
+          '${imported.root.path}/workspaces/novel-1/exports/novel.json',
+        ).readAsString(),
+        '{"id":"novel-1"}',
+      );
+      expect(await Directory('${imported.root.path}/cache').exists(), isFalse);
       expect(imported.projectId, isNot(package.projectId));
     },
   );

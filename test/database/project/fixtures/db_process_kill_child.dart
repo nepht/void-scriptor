@@ -1,5 +1,5 @@
-import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
@@ -14,6 +14,7 @@ import 'package:sqlite3/sqlite3.dart' as sqlite;
 Future<void> main(List<String> args) async {
   final databasePath = args[0];
   final db = sqlite.sqlite3.open(databasePath);
+  final keepAlive = ReceivePort();
   try {
     db.execute('CREATE TABLE IF NOT EXISTS t (x TEXT)');
     db.execute("INSERT INTO t VALUES ('committed-before-kill')");
@@ -22,8 +23,9 @@ Future<void> main(List<String> args) async {
     stdout.writeln('READY');
     await stdout.flush();
     // Tidak pernah keluar dengan sendirinya - parent HARUS meng-kill.
-    await Completer<void>().future;
+    await keepAlive.first;
   } finally {
+    keepAlive.close();
     db.close();
   }
 }

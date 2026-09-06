@@ -2,7 +2,7 @@
 
 Contract source: `https://chatgpt.com/share/6a82a8ad-7e90-83ec-88e5-f270ddea60c3` (backend JSON, update 2026-08-17).
 
-Focused suite: **17 tests passed** (generation_persistence, generation_queue, generation_job_executor, ai_provider_adapters, ai_provider, ai_generation_runtime, ai_generation_gallery_screen; plus the broader `test/features/ai` 76-test suite).
+Fresh focused boundary suite: `flutter test` over provider, infrastructure, router, persistence, queue, executor, runtime, provider-settings, model-browser, batch, reference, studio, review, and gallery tests — **49 tests passed**. The broader `flutter test test/features/ai` suite separately passed 110 tests. Combined security/AI/layout/search regression passed **186 tests**.
 
 | Step | Requirement | Source | Test / Evidence | Status |
 |---|---|---|---|---|

@@ -1,0 +1,8 @@
+# Default ownership. Branch protection must separately require code-owner review.
+* @nepht
+
+# Security and release controls.
+/.github/ @nepht
+/SECURITY.md @nepht
+/docs/release/ @nepht
+/tools/ @nepht

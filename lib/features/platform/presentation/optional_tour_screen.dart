@@ -10,7 +10,9 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 ///
 /// Tour: Dashboard, Projects, Character, AI Studio, Publish.
 class OptionalTourScreen extends ConsumerWidget {
-  const OptionalTourScreen({super.key});
+  const OptionalTourScreen({super.key, this.onStartTour});
+
+  final VoidCallback? onStartTour;
 
   static const _stops = <(String, IconData)>[
     ('Dashboard', Icons.dashboard_outlined),
@@ -47,7 +49,7 @@ class OptionalTourScreen extends ConsumerWidget {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: () {},
+                  onPressed: onStartTour,
                   child: const Text('Start Tour'),
                 ),
               ),

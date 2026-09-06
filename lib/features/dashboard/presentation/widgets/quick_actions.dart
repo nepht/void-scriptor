@@ -6,9 +6,9 @@ import '../../../../design_system/widgets/void_button.dart';
 import '../../../../design_system/widgets/void_card.dart';
 
 class QuickActions extends StatelessWidget {
-  const QuickActions({super.key, required this.onOpenStudio});
+  const QuickActions({super.key, this.onCreateCharacter});
 
-  final VoidCallback onOpenStudio;
+  final VoidCallback? onCreateCharacter;
 
   @override
   Widget build(BuildContext context) {
@@ -18,41 +18,22 @@ class QuickActions extends StatelessWidget {
         runSpacing: 10,
         children: [
           VoidButton(
-            label: 'New Project',
+            label: 'New Novel',
             icon: Icons.add,
             onPressed: () => context.go(AppRoutes.createProject),
           ),
           VoidButton(
-            label: 'Open Project',
+            label: 'Open Novel',
             icon: Icons.folder_open_outlined,
             onPressed: () => context.go(AppRoutes.projects),
           ),
           VoidButton(
             label: 'Create Character',
             icon: Icons.person_add_alt_1_outlined,
-            onPressed: onOpenStudio,
-          ),
-          VoidButton(
-            label: 'Import Asset',
-            icon: Icons.upload_file_outlined,
-            onPressed: () => _showLocalFeedback(
-              context,
-              'Asset import is available from the project workspace.',
-            ),
-          ),
-          VoidButton(
-            label: 'AI Studio',
-            icon: Icons.auto_awesome_outlined,
-            onPressed: onOpenStudio,
+            onPressed: onCreateCharacter,
           ),
         ],
       ),
     );
-  }
-
-  void _showLocalFeedback(BuildContext context, String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
   }
 }

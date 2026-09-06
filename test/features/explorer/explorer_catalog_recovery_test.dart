@@ -52,10 +52,9 @@ void main() {
   });
 
   tearDown(() async {
+    await container.read(projectSessionProvider.notifier).closeProject();
     container.dispose();
-    try {
-      await root.delete(recursive: true);
-    } catch (_) {}
+    await root.delete(recursive: true);
   });
 
   Future<void> pumpShell(WidgetTester tester) async {

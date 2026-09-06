@@ -7,6 +7,7 @@ import '../core/theme/theme_controller.dart';
 import '../design_system/theme/void_theme.dart';
 import '../l10n/app_localizations.dart';
 import 'routing/app_router.dart';
+import 'project_exit_guard.dart';
 
 class VoidScriptorApp extends ConsumerWidget {
   const VoidScriptorApp({super.key, this.routerConfig});
@@ -19,6 +20,8 @@ class VoidScriptorApp extends ConsumerWidget {
     final themeMode = ref.watch(themeControllerProvider).value;
 
     return MaterialApp.router(
+      builder: (context, child) =>
+          ProjectExitGuard(child: child ?? const SizedBox.shrink()),
       title: 'Void Scriptor',
       debugShowCheckedModeBanner: false,
       themeMode: themeMode?.themeMode ?? ThemeMode.system,

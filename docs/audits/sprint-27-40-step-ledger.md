@@ -4,8 +4,8 @@ Contract source: `https://chatgpt.com/share/6a82a8ad-7e90-83ec-88e5-f270ddea60c3
 
 ## Verified suite evidence (2026-08-18)
 
-- Batch 1: `test/features/workspace_layout` + `test/features/collaboration` + `test/core/plugin` + `test/core/security` → **123 tests passed**
-- Batch 2: `test/core/render` + `test/core/animation` + `test/core/audio_engine` + `test/core/virtual_production` + `test/core/publishing` + `test/core/enterprise` + `test/core/knowledge` + `test/core/agent` + `test/features/marketplace` → **183 tests passed**
+- Fresh Batch 1: `flutter test test/features/workspace_layout test/features/collaboration test/core/plugin test/core/security` → **124 tests passed**
+- Fresh Batch 2: `flutter test test/core/render test/core/animation test/core/audio_engine test/core/virtual_production test/core/publishing test/core/enterprise test/core/knowledge test/core/agent test/features/marketplace` → **184 tests passed**
 
 ## Sprint 27 — Workspace Layout Manager (65 steps)
 

@@ -27,7 +27,9 @@ Widget _dashboardApp({required Size size}) {
 }
 
 void main() {
-  testWidgets('dashboard renders all Sprint 05 modules', (tester) async {
+  testWidgets('dashboard prioritizes the Core novelist journey', (
+    tester,
+  ) async {
     tester.view
       ..physicalSize = const Size(1440, 1200)
       ..devicePixelRatio = 1;
@@ -40,13 +42,12 @@ void main() {
     expect(find.text('Dashboard'), findsOneWidget);
     expect(find.text('Welcome back, Guest'), findsOneWidget);
     expect(find.text('Recent Projects'), findsOneWidget);
-    expect(find.text('Recent Assets'), findsOneWidget);
     expect(find.text('Statistics'), findsOneWidget);
-    expect(find.text('AI Activity'), findsOneWidget);
     expect(find.text('Storage'), findsOneWidget);
-    expect(find.text('Notifications'), findsOneWidget);
-    expect(find.text('Marketplace'), findsOneWidget);
-    expect(find.text('Support Void Scriptor'), findsOneWidget);
+    expect(find.text('AI Activity'), findsNothing);
+    expect(find.text('Marketplace'), findsNothing);
+    expect(find.text('Support Void Scriptor'), findsNothing);
+    expect(find.text('Open Studio'), findsNothing);
   });
 
   testWidgets('dashboard keeps modules usable on narrow Android viewport', (

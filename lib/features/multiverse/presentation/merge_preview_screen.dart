@@ -8,7 +8,9 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 ///
 /// Sebelum merge: tampilkan diff antar universe + tombol Confirm Merge.
 class MergePreviewScreen extends StatelessWidget {
-  const MergePreviewScreen({super.key});
+  const MergePreviewScreen({super.key, this.onConfirmMerge});
+
+  final VoidCallback? onConfirmMerge;
 
   static const _diffs = <(String, String, String)>[
     ('Character', 'Kael (base)', 'Kael (variant)'),
@@ -41,7 +43,7 @@ class MergePreviewScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: () {},
+                  onPressed: onConfirmMerge,
                   child: const Text('Confirm Merge'),
                 ),
               ),

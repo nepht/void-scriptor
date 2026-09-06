@@ -29,6 +29,37 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('timeline preview mode returns to edit mode', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: TimelineWorkspaceScreen(
+            sceneId: 'scene-1',
+            sceneTitle: 'Preview Scene',
+            durationSeconds: 10,
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text('Edit'), findsOneWidget);
+    expect(find.text('Preview'), findsOneWidget);
+
+    await tester.tap(find.text('Preview'));
+    await tester.pump();
+
+    expect(find.text('Preview · 0.0 sec'), findsOneWidget);
+    expect(find.text('Back to Edit'), findsOneWidget);
+
+    await tester.tap(find.text('Back to Edit'));
+    await tester.pump();
+
+    expect(find.text('Fit Scene'), findsOneWidget);
+    expect(find.text('Back to Edit'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('timeline drag commits one position delta command', (
     tester,
   ) async {

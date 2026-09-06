@@ -56,12 +56,13 @@ class ProviderRouter {
     if (primary == null) {
       throw StateError('No provider can serve target ${request.target.name}.');
     }
+    final candidates = <AiProvider>[
+      primary,
+      ..._providers.where((provider) => provider.id != primary.id),
+    ];
     Object? lastError;
-    for (final provider in _providers) {
+    for (final provider in candidates) {
       if (!_supports(provider, request.target)) continue;
-      if (provider.id == primary.id && lastError == null) {
-        // Primary first attempt.
-      }
       try {
         return await provider.generate(request);
       } catch (error) {

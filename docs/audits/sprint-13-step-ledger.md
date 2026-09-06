@@ -22,14 +22,14 @@ Contract source: `https://chatgpt.com/share/6a82a8ad-7e90-83ec-88e5-f270ddea60c3
 | 13.16 | Character Loadout Repository | `character_loadout_repository_impl.dart` | `character_mode_repository_test.dart` | DONE |
 | 13.17 | Relation synchronization | `character_mode_repository_impl.dart` | `character_mode_repository_test.dart` (derived relations) | DONE |
 | 13.18 | Derived relations | `character_mode_repository_impl.dart` | `character_mode_repository_test.dart` (derived relations are removable) | DONE |
-| 13.19 | Mode change event | `character_mode_changed.dart` | UI test needed | PARTIAL |
+| 13.19 | Mode change event | `lib/features/character_mode/domain/character_mode_changed.dart` + `characterModeChangedProvider` + `CharacterModeSelector` | Added `character_mode_selector_event_test.dart`; selecting a mode publishes `CharacterModeChanged` with current mode ID: 1 test passed. Historical application path was corrected to the live feature path. | VERIFIED-LOCAL |
 | 13.20 | Mode selection provider | `character_mode_controller.dart` | `character_mode_picker_test.dart` | DONE |
 | 13.21 | Default mode resolver | `character_mode_repository_impl.dart` | `character_mode_repository_test.dart` (keeps one default) | DONE |
 | 13.22 | Base Mode | `character_mode_repository_impl.dart` | `character_mode_repository_test.dart` (create mode) | DONE |
 | 13.23 | Mode Inspector | - | Missing explicit test | PARTIAL |
-| 13.24 | Mode thumbnail | - | Missing explicit test | PARTIAL |
+| 13.24 | Mode thumbnail | `CharacterMode.thumbnailPath` | Extended `character_mode_model_test.dart`; thumbnail path round-trip remains covered in the model test. | VERIFIED-LOCAL |
 | 13.25 | Mode color | `character_mode.dart` | `character_mode_model_test.dart` | DONE |
-| 13.26 | Mode tags | - | Missing explicit test | PARTIAL |
+| 13.26 | Mode tags | `CharacterMode.tags` | Extended `character_mode_model_test.dart`; semantic tag list preservation passed in the model test. | VERIFIED-LOCAL |
 | 13.27 | Transformation concept | - | Not implemented | MISSING |
 | 13.28 | Mode difference viewer | - | Not implemented | MISSING |
 | 13.29 | Android | - | No specific evidence | PARTIAL (unverified) |

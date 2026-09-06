@@ -10,12 +10,7 @@ import '../../projects/presentation/project_persistence_providers.dart';
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
 import 'widgets/local_only_status.dart';
-import 'widgets/ai_activity_card.dart';
-import 'widgets/donation_card.dart';
-import 'widgets/marketplace_card.dart';
-import 'widgets/notifications_card.dart';
 import 'widgets/quick_actions.dart';
-import 'widgets/recent_assets.dart';
 import 'widgets/recent_projects.dart';
 import 'widgets/statistics_panel.dart';
 import 'widgets/storage_card.dart';
@@ -86,92 +81,55 @@ class DashboardScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Dashboard',
-                      style: VoidTypography.displayMedium,
+                    Wrap(
+                      spacing: 16,
+                      runSpacing: 10,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        const Text(
+                          'Dashboard',
+                          style: VoidTypography.displayMedium,
+                        ),
+                        LocalOnlyStatusBadge(
+                          isLocalOnly:
+                              authSession.status == AuthStatus.guest ||
+                              authSession.status == AuthStatus.offline,
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Welcome ${authSession.displayName ?? 'Creator'}',
-                      style: VoidTypography.body,
-                    ),
-                    const SizedBox(height: 6),
-                    const Text(
-                      'Your creative universe at a glance.',
-                      style: VoidTypography.body,
-                    ),
-                    const SizedBox(height: 10),
-                    LocalOnlyStatusBadge(
-                      isLocalOnly:
-                          authSession.status == AuthStatus.guest ||
-                          authSession.status == AuthStatus.offline,
-                    ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 20),
                     WelcomeCard(
                       displayName: authSession.displayName ?? 'Creator',
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     QuickActions(
-                      onOpenStudio: () => context.go(AppRoutes.studio),
                       onCreateCharacter: () => _createCharacter(context, ref),
                     ),
-                    const SizedBox(height: 20),
-                    FilledButton.icon(
-                      onPressed: () => context.go(AppRoutes.studio),
-                      icon: const Icon(Icons.open_in_new),
-                      label: const Text('Open Studio'),
-                    ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
                     if (desktop)
                       const Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(flex: 2, child: RecentProjects()),
                           SizedBox(width: 16),
-                          Expanded(child: StatisticsPanel()),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                StatisticsPanel(),
+                                SizedBox(height: 16),
+                                StorageCard(),
+                              ],
+                            ),
+                          ),
                         ],
                       )
                     else ...[
                       const RecentProjects(),
                       const SizedBox(height: 16),
                       const StatisticsPanel(),
-                    ],
-                    const SizedBox(height: 20),
-                    if (desktop)
-                      const Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(flex: 2, child: RecentAssets()),
-                          SizedBox(width: 16),
-                          Expanded(child: AiActivityCard()),
-                        ],
-                      )
-                    else ...[
-                      const RecentAssets(),
                       const SizedBox(height: 16),
-                      const AiActivityCard(),
-                    ],
-                    const SizedBox(height: 20),
-                    if (desktop)
-                      const Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(child: StorageCard()),
-                          SizedBox(width: 16),
-                          Expanded(child: NotificationsCard()),
-                          SizedBox(width: 16),
-                          Expanded(child: MarketplaceCard()),
-                        ],
-                      )
-                    else ...[
                       const StorageCard(),
-                      const SizedBox(height: 16),
-                      const NotificationsCard(),
-                      const SizedBox(height: 16),
-                      const MarketplaceCard(),
                     ],
-                    const SizedBox(height: 20),
-                    const DonationCard(),
                   ],
                 ),
               );

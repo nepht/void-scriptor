@@ -9,9 +9,10 @@ import '../project_controller.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class ProjectCard extends ConsumerWidget {
-  const ProjectCard({super.key, required this.project});
+  const ProjectCard({super.key, required this.project, required this.onDelete});
 
   final ProjectModel project;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,12 +33,38 @@ class ProjectCard extends ConsumerWidget {
                   top: Radius.circular(12),
                 ),
               ),
-              child: Center(
-                child: Icon(
-                  Icons.auto_awesome_mosaic_outlined,
-                  size: 38,
-                  color: context.palette.textMuted,
-                ),
+              child: Stack(
+                children: [
+                  Center(
+                    child: Icon(
+                      Icons.auto_awesome_mosaic_outlined,
+                      size: 38,
+                      color: context.palette.textMuted,
+                    ),
+                  ),
+                  Positioned(
+                    top: 6,
+                    right: 6,
+                    child: PopupMenuButton<String>(
+                      tooltip: 'Project actions for ${project.name}',
+                      onSelected: (value) {
+                        if (value == 'delete') onDelete();
+                      },
+                      itemBuilder: (context) => const [
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete_outline, color: Colors.red),
+                              SizedBox(width: 10),
+                              Text('Delete Project'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

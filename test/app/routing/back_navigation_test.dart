@@ -29,17 +29,12 @@ void main() {
 
     await tester.pumpWidget(_app(router));
     await tester.pumpAndSettle();
-
     expect(find.byType(BackButton), findsNothing);
 
-    // Buka fitur Assets dari menu top bar.
-    final assetsMenu = find.ancestor(
-      of: find.text('Assets'),
-      matching: find.byType(InkWell),
-    );
-    expect(assetsMenu, findsOneWidget);
-    await tester.ensureVisible(assetsMenu);
-    await tester.tap(assetsMenu);
+    // Buka fitur Assets dari kelompok Optional tools.
+    await tester.tap(find.byTooltip('Optional tools'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Assets'));
     await tester.pumpAndSettle();
 
     // Verifikasi lokasi router berubah ke Assets.
@@ -66,5 +61,27 @@ void main() {
     expect(router.canPop(), isTrue);
     expect(find.byType(BackButton), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('AI generator dari top bar memiliki tombol back', (tester) async {
+    tester.view.physicalSize = const Size(1600, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final router = createAppRouter(initialLocation: AppRoutes.workspace);
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(_app(router));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('AI Studio'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Image Generator'));
+    await tester.pumpAndSettle();
+
+    expect(router.state.uri.path, AppRoutes.aiImageGenerator);
+    expect(find.byType(BackButton), findsOneWidget);
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    expect(router.state.uri.path, AppRoutes.workspace);
   });
 }

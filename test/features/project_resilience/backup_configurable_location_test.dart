@@ -1,15 +1,11 @@
 import 'dart:io';
 
-export 'dart:io' show Platform;
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/project_package/project_package_service.dart';
 import 'package:void_scriptor/features/project_resilience/application/backup_location_policy.dart';
 import 'package:void_scriptor/features/project_resilience/application/project_resilience_controller.dart';
 import 'package:void_scriptor/features/project_resilience/application/project_resilience_repository.dart';
 import 'package:void_scriptor/features/project_resilience/application/project_session_manager.dart';
-
-String p_join(String path) => path.replaceAll('/', Platform.pathSeparator);
 
 void main() {
   test(

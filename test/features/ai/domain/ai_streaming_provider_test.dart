@@ -53,6 +53,21 @@ class _StreamingProvider implements AiProvider {
   }
 }
 
+class _NonStreamingArtifactProvider extends _NonStreamingProvider {
+  @override
+  Future<AiGenerationResult> generate(AiGenerationRequest request) async =>
+      const AiGenerationResult(
+        providerRequestId: 'r3',
+        outputs: [
+          AiGeneratedOutput(
+            type: AiOutputType.image,
+            remoteUrl: 'mock://image',
+            mimeType: 'image/png',
+          ),
+        ],
+      );
+}
+
 AiGenerationRequest _request(String jobId) => AiGenerationRequest(
   jobId: jobId,
   prompt: 'test',
@@ -66,6 +81,15 @@ void main() {
     expect(chunks, hasLength(2));
     expect(chunks.first.type, AiStreamChunkType.text);
     expect(chunks.first.text, 'full');
+    expect(chunks.last.type, AiStreamChunkType.done);
+  });
+
+  test('fallback preserves non-text output metadata', () async {
+    final provider = _NonStreamingArtifactProvider();
+    final chunks = await provider.streamGenerate(_request('j3')).toList();
+    expect(chunks.first.type, AiStreamChunkType.image);
+    expect(chunks.first.remoteUrl, 'mock://image');
+    expect(chunks.first.mimeType, 'image/png');
     expect(chunks.last.type, AiStreamChunkType.done);
   });
 

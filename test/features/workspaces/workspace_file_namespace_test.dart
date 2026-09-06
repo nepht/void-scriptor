@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
 import 'package:void_scriptor/core/project_package/project_package.dart';
 import 'package:void_scriptor/features/workspaces/application/workspace_file_namespace.dart';
 
@@ -21,7 +22,7 @@ void main() {
       );
       expect(
         workspace.path,
-        '${package.root.path}/workspaces/character-workspace-1',
+        p.join(package.root.path, 'workspaces', 'character-workspace-1'),
       );
       expect(await workspace.exists(), isTrue);
       expect(
@@ -78,7 +79,7 @@ void main() {
     expect(await file.exists(), isTrue);
     expect(await file.readAsString(), contains('novel-1'));
     expect(
-      file.path.startsWith('${package.root.path}/workspaces/novel-1/'),
+      p.isWithin(p.join(package.root.path, 'workspaces', 'novel-1'), file.path),
       isTrue,
     );
   });
@@ -106,15 +107,33 @@ void main() {
       );
 
       expect(
-        novel.path,
-        contains('/workspaces/novels/novel-1/drafts/chapter-1.md'),
+        p.normalize(novel.path),
+        p.normalize(
+          p.join(
+            package.root.path,
+            'workspaces',
+            'novels',
+            'novel-1',
+            'drafts',
+            'chapter-1.md',
+          ),
+        ),
       );
       expect(
-        character.path,
-        contains('/workspaces/characters/character-1/profile/identity.json'),
+        p.normalize(character.path),
+        p.normalize(
+          p.join(
+            package.root.path,
+            'workspaces',
+            'characters',
+            'character-1',
+            'profile',
+            'identity.json',
+          ),
+        ),
       );
-      expect(novel.path, isNot(startsWith(namespace.characterRoot.path)));
-      expect(character.path, isNot(startsWith(namespace.novelRoot.path)));
+      expect(p.isWithin(namespace.characterRoot.path, novel.path), isFalse);
+      expect(p.isWithin(namespace.novelRoot.path, character.path), isFalse);
     },
   );
 }

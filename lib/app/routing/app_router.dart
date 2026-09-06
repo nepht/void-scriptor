@@ -11,6 +11,7 @@ import '../../features/authentication/presentation/login_screen.dart';
 import '../../features/authentication/presentation/register_screen.dart';
 import '../../features/account/presentation/account_cloud_center_screen.dart';
 import '../../features/platform/presentation/theme_settings_screen.dart';
+import '../../features/settings/presentation/settings_hub_screen.dart';
 import '../../features/content_capabilities/presentation/content_capability_matrix_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/projects/presentation/create_project_screen.dart';
@@ -85,6 +86,17 @@ GoRouter createAppRouter({
             ),
             _ => FoundationRouteScreen(label: route.key),
           },
+        ),
+      GoRoute(
+        path: AppRoutes.settings,
+        builder: (_, __) => const SettingsHubScreen(),
+      ),
+      for (final alias in AppRoutes.foundationAliases.entries)
+        GoRoute(
+          path: alias.key,
+          builder: (_, __) => AppRoutes.settings == alias.value
+              ? const ThemeSettingsScreen()
+              : const SettingsHubScreen(),
         ),
       GoRoute(
         path: AppRoutes.assets,
@@ -346,8 +358,15 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
     GoRoute(
       path: AppRoutes.settings,
-      builder: (_, __) => const ThemeSettingsScreen(),
+      builder: (_, __) => const SettingsHubScreen(),
     ),
+    for (final alias in AppRoutes.foundationAliases.entries)
+      GoRoute(
+        path: alias.key,
+        builder: (_, __) => AppRoutes.settings == alias.value
+            ? const ThemeSettingsScreen()
+            : const SettingsHubScreen(),
+      ),
     GoRoute(
       path: AppRoutes.security,
       builder: (_, __) => const SecuritySettingsScreen(),

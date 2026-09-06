@@ -62,4 +62,9 @@ abstract final class AppRoutes {
     'WORKSPACE': workspace,
     'COLLABORATION COMMENTS': collaborationComments,
   };
+
+  /// Legacy aliases kept as thin redirects to their canonical Settings routes.
+  static const foundationAliases = <String, String>{
+    '/theme-settings': settings,
+  };
 }

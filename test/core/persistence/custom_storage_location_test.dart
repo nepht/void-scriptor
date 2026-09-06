@@ -145,4 +145,30 @@ void main() {
       },
     );
   });
+
+  group('PlatformDriveSpaceReader (bug-hunt run94 BUG-09)', () {
+    test('freeBytes call returns before the host probe completes', () async {
+      const reader = PlatformDriveSpaceReader();
+      final sw = Stopwatch()..start();
+      final pending = reader.freeBytes(tempRoot.path);
+      final callLatencyMs = sw.elapsedMilliseconds;
+      await pending;
+      // Process.runSync blocked the caller for the whole PowerShell spawn
+      // (~500 ms on this host). Process.run yields a pending future fast.
+      expect(callLatencyMs, lessThan(200));
+    });
+
+    test(
+      'freeBytes still resolves a live budget or the unknown signal',
+      () async {
+        const reader = PlatformDriveSpaceReader();
+        final free = await reader.freeBytes(tempRoot.path);
+        if (Platform.isWindows) {
+          expect(free, greaterThan(0));
+        } else {
+          expect(free, -1);
+        }
+      },
+    );
+  });
 }

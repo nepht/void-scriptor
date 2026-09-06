@@ -149,7 +149,7 @@ class PlatformDriveSpaceReader implements HostDriveSpaceReader {
           : driveLetter;
       if (drive.isEmpty || drive.length > 2) return -1;
       try {
-        final result = Process.runSync('powershell.exe', [
+        final result = await Process.run('powershell.exe', [
           '-NoProfile',
           '-NonInteractive',
           '-Command',

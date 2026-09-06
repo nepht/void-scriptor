@@ -1966,3 +1966,32 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Canonical 145.44-145.50 dibaca langsung dari sprint_145.json (guard canonical_archive_root): 145.44 certification butuh multi-device + native journey; 145.45/145.46 pilot/user validation = keputusan+partisipasi Choi (artefak d5524e3 siap); 145.47 prioritization butuh data 145.46; 145.48/145.49 ADR sudah ACCEPTED Choi (utk verifikasi status, bukan penulisan ulang); 145.50 closure menunggu semuanya. Tidak ada yang aman dieksekusi cron tanpa overlap.
 - Aksi: tanpa commit source, tanpa commit ledger (file ledger bersih di HEAD, blok sibling uncommitted berisiko teradopsi bila di-commit; preseden run92 commit d47c046 lewat sibling). Blok ini di-append ke ledger worktree (preseden blok sibling run66+, Choi commit berkala - 5b6e11a memuat blok run85-91). Tidak push. ROADMAP_STATE tidak disentuh.
 - Next: (1) native journey 145.42/145.44 dari sesi utama Choi (cua-driver sehat di sesi interaktif); (2) Settings Hub queue 5b6e11a setelah region routing/shell/settings bersih; (3) keputusan Choi: commit ROADMAP_STATE (run66-93), 145.47/145.49 langkah nyata; NO-OP lagi bila region masih aktif.
+
+### 2026-09-06 - run94 nephthys - resizable panel content geometry (hit-target layer 145.44 gap #1/#2)
+- Gap: native journey 145.44 (input Choi) menemukan dua klik Explorer gagal:
+  icon Configure sidebar modules + row Novel Workspace tidak bereaksi,
+  padahal row character di surface sama berhasil dan widget test GREEN.
+- Investigasi statis: kedua callback benar (_configureSidebarModules showDialog,
+  focusExplorerAsset -> recovery provider lengkap + teruji); workspace tab strip
+  kosong tidak memengaruhi konten; sisa jalur: geometri shell.
+  ResizablePanel menyusun Row[chevron flex1, SizedBox(width-48), handle] sehingga
+  konten hanya width-48 (197px saat default 245) - ExplorerPanel mendeklarasikan
+  width 245, semua test explorer menguji panel direct-mount tanpa shell.
+- TDD: RED test kontrak lebar konten (0 widgets '245.0' pada layout lama),
+  GREEN 3/3 setelah overlay layout (Positioned.fill child, handle overlay kanan,
+  chevron 24x24 overlay kiri-bawah, key collapse-toggle/resize-handle dipertahankan).
+- Bukti @HEAD b222f0f (Windows host): focused 3/3 PASS; regresi layout presentation
+  22/22 + explorer/workspace 35/35; analyze scoped No issues; format scoped clean;
+  diff --check PASS; build windows debug PASS 28.6s; FULL SUITE 3770 PASS/0 FAIL/
+  1 SKIP exit 0 ~14.2mnt; guard PASS pre (pointer 145.27, canonical_sha 86af6a5).
+- Pitfall baru: file test baru 90 baris ditulis via beberapa printf - blok pertama
+  pernah korup saat satu-panggil (parser blocklist, lalu truncation); tulis per-bagian
+  kecil + verifikasi tiap append; const-closure lint (prefer_const/unnecessary_const)
+  diselesaikan dengan menata const per blok, bukan bulk-replace.
+- Native journey tetap UNVERIFIABLE dari cron (cua-driver session never ready,
+  identik run83/86/90; capture screen gagal 30s). Gap 145.44 #1/#2 butuh re-run native
+  dari sesi utama Choi setelah region Explorer/Workspace sibling committed.
+- Region: lib/features/workspace_layout/presentation bersih (sibling hanya M di
+  application/ layout_preset_repository). Blok 145.44 milik Choi di ledger tetap
+  uncommitted dan dipertahankan; commit hanya 2 file slice.
+- Tidak push (HEAD b222f0f, ahead 97, remote bcd2087 tetap).

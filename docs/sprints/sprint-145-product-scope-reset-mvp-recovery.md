@@ -2007,3 +2007,40 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - REAL BUG (kandidat patch via RED→GREEN run berikutnya, bukan bagian child hunt): BUG-08 probeWrite hapus -wal/-shm (dead code, Medium), BUG-13 `code == 778` tak terjangkau pasca-mask & 0xFF → SQLITE_IOERR_WRITE salah dilaporkan korut (jalur open produksi, Medium), BUG-02 atomicWrite shared .tmp tanpa serialisasi, BUG-05 admission registry tak terserialisasi, BUG-04 decode projects.json error mentah tanpa fallback .bak, BUG-09 Process.runSync PowerShell membekukan isolate, BUG-07 probeWrite COMMIT sebelum DROP (Low), BUG-10 normalizeLocation relatif (Low), BUG-16 admission vs stash-recovery beda direktori (Low), BUG-18 catch menghapus lockFile owner tanpa cek companionWritten (Low).
 - Sisa risiko: BUG-02/05 konfirmasinya struktural (interleaving code-proven, frekuensi runtime tidak dibuktikan); tidak ada patch diterapkan run ini (scan-only).
 - Next: pilih BUG-13 (produksi, deterministic, jalur open 145.42) sebagai RED pertama; seri BUG-07+08 menunggu keputusan hapus probeWrite; BUG-02/05 butuh design mutex registry.
+
+### 2026-09-06 - run95 nephthys - open-error classification BUG-13 (bug-hunt run94 patch)
+- Konteks: bug-hunt one-shot (otorisasi 2026-09-06) selesai penuh; sesi cron
+  sebelumnya menutup trio Hunter->Skeptic->Referee dan meng-commit laporan
+  20bc6cf (10 REAL BUG / 10 NOT A BUG; 0 Critical, 6 Medium, 4 Low). Patch
+  pertama dari verdict: BUG-13 (Medium) di jalur open produksi 145.42.
+- Root cause: open() membandingkan `error.extendedResultCode & 0xFF` dengan
+  literal 778 (SQLITE_IOERR_WRITE); 778 & 0xFF = 10 sehingga cabang tak
+  pernah match dan seluruh keluarga SQLITE_IOERR (10/266/522/778/1034)
+  jatuh ke ProjectDatabaseUnreadableException (korut) padahal database
+  bisa saja sehat.
+- Patch: klasifikasi diekstrak ke fungsi murni
+  `classifyProjectDatabaseOpenError` (lib/database/project/
+  project_database_service.dart); keputusan memakai kode extended tanpa
+  mask (5/8/13/778/14) plus primary 10 untuk keluarga IOERR -> write-
+  failure; korut (NOTADB 26 / CORRUPT 11) tetap Unreadable; kontrak BUSY/
+  CANTOPEN/READONLY/FULL tidak berubah. open() mendelegasikan ke fungsi
+  tersebut.
+- TDD: RED terverifikasi `Method not found: classifyProjectDatabaseOpenError`
+  (kompilasi test gagal); GREEN 5/5
+  test/database/project/project_database_open_error_classification_test.dart
+  (778 -> WriteFailed; 10/266/522/778/1034 -> WriteFailed; NOTADB 26 dan
+  CORRUPT 11 -> Unreadable; BUSY 5 -> Locked, READONLY 8/FULL 13 ->
+  WriteFailed, CANTOPEN 14 -> Unavailable).
+- Bukti (Windows host, toolchain D:/DevTools Flutter):
+  regresi test/database/project 28/28 PASS; test/core/persistence 63/63
+  PASS; suite open-path 8/8 (write_failure/corrupt/unavailable/concurrent);
+  `flutter analyze --no-pub` No issues found! (10.0s); dart format 2 file;
+  `git diff --check` scoped PASS; `flutter build windows --debug --no-pub`
+  PASS 23.2s. Guard PASS pre-patch (pointer 145.27, canonical_sha 86af6a5).
+- Region: hanya 2 file milik slice; test process_kill_test.dart (?? sibling
+  run86) dan fixtures/ tidak disentuh. WORKTREE: hunk ledger sibling
+  (blok native-journey Choi + hapus blok run94) dipreservasi di salinan
+  kerja; commit ledger direkonstruksi dari blob HEAD + blok run95
+  (pola run91/run93) agar tidak mengadopsi hunk sibling.
+- Tidak push (HEAD 20bc6cf, remote bcd2087; keputusan push tetap milik
+  Choi).

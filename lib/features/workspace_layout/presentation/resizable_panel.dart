@@ -21,24 +21,37 @@ class ResizablePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Overlay layout: the child receives the full declared width. The
+    // previous Row layout squeezed content to width - 48, so fixed-width
+    // panels (ExplorerPanel is designed for 245) rendered narrower and
+    // native hit targets shifted relative to their painted positions.
     return SizedBox(
       width: width,
-      child: Row(
+      child: Stack(
         children: [
-          Expanded(
+          Positioned.fill(child: child),
+          Positioned(
+            top: 0,
+            bottom: 0,
+            right: 0,
+            width: 6,
+            child: _ResizeHandle(onResize: onResize, initialWidth: width),
+          ),
+          Positioned(
+            left: 0,
+            bottom: 0,
+            width: 24,
+            height: 24,
             child: IconButton(
               key: const Key('collapse-toggle'),
-              iconSize: 16,
+              iconSize: 14,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints.tightFor(width: 24, height: 24),
               icon: const Icon(Icons.chevron_left),
               tooltip: 'Collapse panel',
               onPressed: onToggleCollapse,
             ),
           ),
-          Expanded(
-            flex: 8,
-            child: SizedBox(width: width - 48, child: child),
-          ),
-          _ResizeHandle(onResize: onResize, initialWidth: width),
         ],
       ),
     );

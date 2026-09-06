@@ -52,11 +52,31 @@ class CustomStorageLocation {
       throw ArgumentError.value(raw, 'raw', 'Storage location cannot be empty');
     }
     var cleaned = p.normalize(trimmed);
-    while (cleaned.endsWith(p.separator)) {
+    if (!p.isAbsolute(cleaned)) {
+      throw ArgumentError.value(
+        raw,
+        'raw',
+        'Storage location must be an absolute path (got: $cleaned)',
+      );
+    }
+    final root = p.rootPrefix(cleaned);
+    while (cleaned.length > root.length && cleaned.endsWith(p.separator)) {
       cleaned = cleaned.substring(0, cleaned.length - p.separator.length);
     }
     if (cleaned.isEmpty) {
       throw ArgumentError.value(raw, 'raw', 'Storage location cannot be empty');
+    }
+    return cleaned;
+  }
+
+  /// Lenient normalization for registry reads: entries written by older
+  /// builds may predate the absolute-path gate. Loading keeps them readable
+  /// (the user can relink) instead of failing the whole registry read.
+  static String _normalizeStoredLocation(String raw) {
+    var cleaned = p.normalize(raw.trim());
+    final root = p.rootPrefix(cleaned);
+    while (cleaned.length > root.length && cleaned.endsWith(p.separator)) {
+      cleaned = cleaned.substring(0, cleaned.length - p.separator.length);
     }
     return cleaned;
   }
@@ -269,7 +289,7 @@ class CustomStorageLocationStore {
       schemaVersion: schemaVersion,
       activeLocation: active == null
           ? null
-          : CustomStorageLocation.normalizeLocation(active),
+          : CustomStorageLocation._normalizeStoredLocation(active),
       boundProjectId: bound,
       status: status,
     );

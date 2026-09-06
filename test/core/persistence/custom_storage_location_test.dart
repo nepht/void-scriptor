@@ -17,6 +17,16 @@ class _TightHealth implements StorageHealthProbe {
   }
 }
 
+/// Writes a legacy registry file with a relative activeLocation (test-only
+/// seam): simulates registry content produced by an older build so tests
+/// can prove the load path stays readable without round-tripping through
+/// the store write API.
+void _writeLegacyRegistrySync(Directory root) {
+  File(p.join(root.path, 'storage_locations.json')).writeAsStringSync(
+    '{"schemaVersion":1,"activeLocation":"legacy-relative-store","boundProjectId":null}\n',
+  );
+}
+
 void main() {
   late Directory tempRoot;
   setUp(() async {
@@ -168,6 +178,78 @@ void main() {
         } else {
           expect(free, -1);
         }
+      },
+    );
+  });
+
+  group(
+    'normalizeLocation absolute-path rejection (bug-hunt run94 BUG-10)',
+    () {
+      test('rejects relative paths instead of CWD-anchoring storage', () {
+        expect(
+          () => CustomStorageLocation.normalizeLocation('relative-store'),
+          throwsArgumentError,
+        );
+        expect(
+          () => CustomStorageLocation.normalizeLocation('./relative-store'),
+          throwsArgumentError,
+        );
+      });
+
+      test('rejects drive-relative Windows paths that shift with the CWD', () {
+        expect(
+          () => CustomStorageLocation.normalizeLocation('C:relative-store'),
+          throwsArgumentError,
+        );
+      });
+
+      test(
+        'still accepts absolute roots including a bare drive root unstripped',
+        () {
+          final driveRoot = p.rootPrefix(tempRoot.path);
+          expect(CustomStorageLocation.normalizeLocation(driveRoot), driveRoot);
+          expect(
+            CustomStorageLocation.normalizeLocation(tempRoot.path),
+            tempRoot.path,
+          );
+        },
+      );
+
+      test(
+        'setActiveLocation rejects a relative location without touching state',
+        () async {
+          final registryFile = File(
+            p.join(tempRoot.path, 'storage_locations.json'),
+          );
+          final store = CustomStorageLocationStore(registryFile: registryFile);
+          // The buggy path creates the CWD-relative directory before failing;
+          // the teardown keeps the repo worktree clean either way.
+          final stray = Directory('relative-store');
+          addTearDown(() {
+            if (stray.existsSync()) stray.deleteSync();
+          });
+          await expectLater(
+            store.setActiveLocation('relative-store'),
+            throwsArgumentError,
+          );
+          expect(registryFile.existsSync(), isFalse);
+          final loaded = await store.load();
+          expect(loaded.activeLocation, isNull);
+        },
+      );
+    },
+  );
+
+  group('legacy registry compatibility (bug-hunt run94 BUG-10 follow-up)', () {
+    test(
+      'load keeps a legacy relative activeLocation readable without throwing',
+      () async {
+        _writeLegacyRegistrySync(tempRoot);
+        final store = CustomStorageLocationStore(
+          registryFile: File(p.join(tempRoot.path, 'storage_locations.json')),
+        );
+        final loaded = await store.load();
+        expect(loaded.activeLocation, 'legacy-relative-store');
       },
     );
   });

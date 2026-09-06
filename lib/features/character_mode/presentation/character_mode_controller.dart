@@ -92,6 +92,19 @@ class CharacterModeActions {
     ref.invalidate(characterModeLoadoutProvider(modeId));
   }
 
+  Future<void> removeSlot({
+    required String modeId,
+    required LoadoutSlot slot,
+    required String assetId,
+  }) async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null) return;
+    await CharacterLoadoutRepositoryImpl(
+      session.database,
+    ).removeSlot(modeId: modeId, slot: slot, assetId: assetId);
+    ref.invalidate(characterModeLoadoutProvider(modeId));
+  }
+
   Future<db.Asset?> createStandaloneAsset({
     required String name,
     required String description,

@@ -22,6 +22,26 @@ const characterLoadoutEditorSlots = <LoadoutSlot>[
   LoadoutSlot.vehicle,
 ];
 
+enum LoadoutSlotChange { unchanged, remove, replace }
+
+String loadoutAssetLabel(String? assetId, List<db.Asset> assets) {
+  if (assetId == null) return 'None';
+  for (final asset in assets) {
+    if (asset.id == assetId) return asset.name;
+  }
+  return 'Unknown asset';
+}
+
+LoadoutSlotChange loadoutSlotChange({
+  required LoadoutSlot slot,
+  required String? originalAssetId,
+  required String? selectedAssetId,
+}) {
+  if (originalAssetId == selectedAssetId) return LoadoutSlotChange.unchanged;
+  if (selectedAssetId == null) return LoadoutSlotChange.remove;
+  return LoadoutSlotChange.replace;
+}
+
 class CharacterModeSection extends ConsumerWidget {
   const CharacterModeSection({super.key, required this.characterId});
 
@@ -114,6 +134,8 @@ class _ModeLoadoutCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loadout = ref.watch(characterModeLoadoutProvider(mode.id));
+    final assets =
+        ref.watch(projectAssetsProvider).valueOrNull ?? const <db.Asset>[];
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(14),
@@ -133,7 +155,7 @@ class _ModeLoadoutCard extends ConsumerWidget {
                     dense: true,
                     contentPadding: EdgeInsets.zero,
                     title: Text(_slotLabel(entry.slot)),
-                    subtitle: Text(entry.assetId),
+                    subtitle: Text(loadoutAssetLabel(entry.assetId, assets)),
                     trailing: entry.enabled
                         ? const Icon(Icons.check_circle_outline)
                         : const Icon(Icons.visibility_off_outlined),
@@ -166,6 +188,7 @@ class _ModeLoadoutCard extends ConsumerWidget {
       for (final slot in characterLoadoutEditorSlots)
         slot: _entryAssetId(entries, slot),
     };
+    final original = Map<LoadoutSlot, String?>.from(selected);
     await showDialog<void>(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
@@ -179,31 +202,42 @@ class _ModeLoadoutCard extends ConsumerWidget {
                 for (final slot in selected.keys)
                   ListTile(
                     title: Text(_slotLabel(slot.value)),
-                    subtitle: Text(selected[slot] ?? 'None'),
-                    trailing: TextButton(
-                      onPressed: () async {
-                        final type = slot.assetType;
-                        final asset = await showDialog<dynamic>(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text('Choose ${_slotLabel(slot.value)}'),
-                            content: AssetPicker(
-                              assets: assets,
-                              assetType: type,
-                              initialAssetId: selected[slot],
-                              onCreate: type == 'armor' || type == 'prop'
-                                  ? () => _createAsset(context, ref, type)
-                                  : null,
-                              onSelected: (asset) =>
-                                  Navigator.pop(context, asset),
-                            ),
+                    subtitle: Text(loadoutAssetLabel(selected[slot], assets)),
+                    trailing: Wrap(
+                      spacing: 4,
+                      children: [
+                        if (selected[slot] != null)
+                          TextButton(
+                            onPressed: () =>
+                                setState(() => selected[slot] = null),
+                            child: const Text('Clear'),
                           ),
-                        );
-                        if (asset != null) {
-                          setState(() => selected[slot] = asset.id);
-                        }
-                      },
-                      child: const Text('Choose'),
+                        TextButton(
+                          onPressed: () async {
+                            final type = slot.assetType;
+                            final asset = await showDialog<dynamic>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text('Choose ${_slotLabel(slot.value)}'),
+                                content: AssetPicker(
+                                  assets: assets,
+                                  assetType: type,
+                                  initialAssetId: selected[slot],
+                                  onCreate: type == 'armor' || type == 'prop'
+                                      ? () => _createAsset(context, ref, type)
+                                      : null,
+                                  onSelected: (asset) =>
+                                      Navigator.pop(context, asset),
+                                ),
+                              ),
+                            );
+                            if (asset != null) {
+                              setState(() => selected[slot] = asset.id);
+                            }
+                          },
+                          child: const Text('Choose'),
+                        ),
+                      ],
                     ),
                   ),
               ],
@@ -219,7 +253,21 @@ class _ModeLoadoutCard extends ConsumerWidget {
                 final actions = CharacterModeActions(ref);
                 for (final entry in selected.entries) {
                   final assetId = entry.value;
-                  if (assetId != null) {
+                  final originalAssetId = original[entry.key];
+                  final change = loadoutSlotChange(
+                    slot: entry.key,
+                    originalAssetId: originalAssetId,
+                    selectedAssetId: assetId,
+                  );
+                  if (change == LoadoutSlotChange.remove &&
+                      originalAssetId != null) {
+                    await actions.removeSlot(
+                      modeId: mode.id,
+                      slot: entry.key,
+                      assetId: originalAssetId,
+                    );
+                  } else if (change == LoadoutSlotChange.replace &&
+                      assetId != null) {
                     await actions.setSlot(
                       modeId: mode.id,
                       slot: entry.key,

@@ -61,10 +61,11 @@ class ProjectRegistryService {
     // admitted so a complete project never becomes invisible. Only an
     // explicit creation marker admits; folders without one are
     // deliberately unregistered state and are never touched.
-    final admitted = await _recovery.admitMarkedCreations(
-      await _listingOwnerDirectory(),
-      registered.map((project) => project.id).toSet(),
-    );
+    final knownIds = registered.map((project) => project.id).toSet();
+    final admitted = <ProjectModel>[];
+    for (final owner in await _ownerDirectories()) {
+      admitted.addAll(await _recovery.admitMarkedCreations(owner, knownIds));
+    }
     if (admitted.isEmpty) return registered;
     final merged = [...registered, ...admitted];
     // Durability first: persist the admission, then consume the markers.
@@ -147,11 +148,21 @@ class ProjectRegistryService {
     }
   }
 
-  Future<Directory> _listingOwnerDirectory() async {
+  /// Bug-hunt run94 BUG-16: admission and stash recovery must iterate the
+  /// SAME owner-directory set. The rootDirectory (file-branch) wiring
+  /// scans the registry directory plus its legacy `Projects`
+  /// subdirectory, so a creation-marked package one level down is found
+  /// by stash recovery but was never admitted.
+  Future<List<Directory>> _ownerDirectories() async {
     final configuredPaths = paths;
-    if (configuredPaths != null) return configuredPaths.root();
+    if (configuredPaths != null) return [await configuredPaths.root()];
     final configuredFile = file;
-    if (configuredFile != null) return configuredFile.parent;
+    if (configuredFile != null) {
+      return [
+        configuredFile.parent,
+        Directory(p.join(configuredFile.parent.path, 'Projects')),
+      ];
+    }
     throw StateError('ProjectRegistryService requires rootDirectory or paths');
   }
 
@@ -214,23 +225,7 @@ class ProjectRegistryService {
   /// [FileSystemException] is swallowed so an unavailable storage root
   /// never blocks listing projects; programming errors still surface.
   Future<void> _recoverImportStashes() async {
-    final configuredPaths = paths;
-    if (configuredPaths != null) {
-      try {
-        await _recovery.recoverInterruptedImportStashes(
-          await configuredPaths.root(),
-        );
-      } on FileSystemException {
-        return;
-      }
-      return;
-    }
-    final configuredFile = file;
-    if (configuredFile == null) return;
-    for (final owner in [
-      configuredFile.parent,
-      Directory(p.join(configuredFile.parent.path, 'Projects')),
-    ]) {
+    for (final owner in await _ownerDirectories()) {
       try {
         await _recovery.recoverInterruptedImportStashes(owner);
       } on FileSystemException {

@@ -27,6 +27,32 @@ class AssetDao extends DatabaseAccessor<ProjectDatabase> with _$AssetDaoMixin {
   Future<Asset?> getById(String id) =>
       (select(assets)..where((row) => row.id.equals(id))).getSingleOrNull();
 
+  Future<void> createStandaloneCharacterAsset({
+    required String id,
+    required String projectId,
+    required String name,
+    required String type,
+    String description = '',
+    required DateTime now,
+  }) async {
+    final normalizedName = name.trim();
+    if (normalizedName.isEmpty) throw ArgumentError('Name must not be empty');
+    if (type != 'armor' && type != 'prop') {
+      throw ArgumentError('Only armor and prop assets are supported');
+    }
+    await into(assets).insert(
+      AssetsCompanion.insert(
+        id: id,
+        projectId: projectId,
+        name: normalizedName,
+        description: Value(description.trim()),
+        type: type,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+  }
+
   Future<List<String>> getTags(String assetId) async {
     final normalized = await (select(
       assetTagLinks,

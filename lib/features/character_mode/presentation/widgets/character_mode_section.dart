@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../database/project/project_database.dart' as db;
 import '../../domain/character_mode.dart';
 import '../../domain/loadout_slot.dart';
 import '../character_mode_controller.dart';
@@ -190,6 +191,9 @@ class _ModeLoadoutCard extends ConsumerWidget {
                               assets: assets,
                               assetType: type,
                               initialAssetId: selected[slot],
+                              onCreate: type == 'armor' || type == 'prop'
+                                  ? () => _createAsset(context, ref, type)
+                                  : null,
                               onSelected: (asset) =>
                                   Navigator.pop(context, asset),
                             ),
@@ -238,6 +242,49 @@ class _ModeLoadoutCard extends ConsumerWidget {
       if (entry.slot == slot.value) return entry.assetId as String;
     }
     return null;
+  }
+
+  Future<db.Asset?> _createAsset(
+    BuildContext context,
+    WidgetRef ref,
+    String type,
+  ) async {
+    var name = '';
+    var description = '';
+    final shouldCreate = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(type == 'prop' ? 'Create Story Item' : 'Create Armor'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              autofocus: true,
+              decoration: const InputDecoration(labelText: 'Name'),
+              onChanged: (value) => name = value,
+            ),
+            TextField(
+              decoration: const InputDecoration(labelText: 'Description'),
+              onChanged: (value) => description = value,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Create'),
+          ),
+        ],
+      ),
+    );
+    if (shouldCreate != true || name.trim().isEmpty) return null;
+    return CharacterModeActions(
+      ref,
+    ).createStandaloneAsset(name: name, description: description, type: type);
   }
 }
 

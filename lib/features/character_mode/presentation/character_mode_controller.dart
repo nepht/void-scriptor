@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../projects/presentation/project_persistence_providers.dart';
 import '../data/character_loadout_repository_impl.dart';
@@ -89,5 +90,25 @@ class CharacterModeActions {
       session.database,
     ).setSlot(modeId: modeId, slot: slot, assetId: assetId);
     ref.invalidate(characterModeLoadoutProvider(modeId));
+  }
+
+  Future<db.Asset?> createStandaloneAsset({
+    required String name,
+    required String description,
+    required String type,
+  }) async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null) return null;
+    final id = const Uuid().v4();
+    await session.database.assetDao.createStandaloneCharacterAsset(
+      id: id,
+      projectId: session.manifest.id,
+      name: name,
+      description: description,
+      type: type,
+      now: DateTime.now().toUtc(),
+    );
+    ref.invalidate(projectAssetsProvider);
+    return session.database.assetDao.getById(id);
   }
 }

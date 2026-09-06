@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 
 import '../../../core/selection/selection_controller.dart';
 import '../../../core/selection/selection_model.dart';
+import '../../../database/project/project_database.dart' as db;
+import '../../character_mode/presentation/character_mode_controller.dart';
 import '../application/asset_pagination.dart';
 import '../application/asset_repository.dart';
 import '../application/asset_view_preference_store.dart';
@@ -33,6 +35,8 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
   AssetType? _type;
   bool _favoriteOnly = false;
   final Set<String> _selectedAssetIds = {};
+  ProviderSubscription<AsyncValue<List<db.Asset>>>? _liveAssetsSub;
+  List<SearchableAsset>? _liveAssets;
   late final AssetViewPreferenceStore _viewPreferenceStore;
   late final AssetPaginationController _pagination;
 
@@ -47,6 +51,49 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
     _pagination.addListener(_onPaginationChanged);
     _restoreViewMode();
     _syncPagination();
+    if (widget.assets.isEmpty) {
+      _listenLiveAssets();
+    }
+  }
+
+  void _listenLiveAssets() {
+    _liveAssetsSub = ref.listenManual(
+      projectAssetsProvider,
+      (previous, next) {
+        next.whenData((rows) {
+          final mapped = <SearchableAsset>[];
+          for (final row in rows) {
+            final asset = _searchableFromDb(row);
+            if (asset != null) mapped.add(asset);
+          }
+          if (!mounted) return;
+          setState(() => _liveAssets = mapped);
+          _syncPagination();
+        });
+      },
+      fireImmediately: true,
+    );
+  }
+
+  SearchableAsset? _searchableFromDb(db.Asset row) {
+    AssetType? type;
+    for (final candidate in AssetType.values) {
+      if (candidate.name == row.type) {
+        type = candidate;
+        break;
+      }
+    }
+    if (type == null) return null;
+    return SearchableAsset(
+      id: row.id,
+      projectId: row.projectId,
+      name: row.name,
+      type: type,
+      description: row.description,
+      favorite: row.favorite,
+      lastOpenedAt: row.lastOpenedAt,
+      thumbnailPath: row.thumbnailPath,
+    );
   }
 
   void _onPaginationChanged() {
@@ -73,6 +120,7 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
 
   @override
   void dispose() {
+    _liveAssetsSub?.close();
     _scrollController.dispose();
     _pagination.removeListener(_onPaginationChanged);
     _pagination.dispose();
@@ -84,7 +132,7 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
   List<SearchableAsset> get _filteredAll {
     final parsed = const SearchQueryParser().parse(_searchController.text);
     final needle = parsed.text.trim().toLowerCase();
-    return widget.assets
+    return _sourceAssets
         .where((asset) {
           if (_type != null && asset.type != _type) return false;
           if (parsed.types.isNotEmpty && !parsed.types.contains(asset.type)) {
@@ -103,6 +151,11 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
               asset.tags.any((tag) => tag.contains(needle));
         })
         .toList(growable: false);
+  }
+
+  List<SearchableAsset> get _sourceAssets {
+    if (widget.assets.isNotEmpty) return widget.assets;
+    return _liveAssets ?? const [];
   }
 
   List<SearchableAsset> get _filtered => _pagination.items;

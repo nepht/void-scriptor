@@ -63,4 +63,4 @@ Catat waktu mulai, status persetujuan rekaman, suasana awal (context).
 
 - Catat kelelahan, distraksi, gangguan teknis, atau kejadian lain yang memengaruhi sesi.
 - Bukan penilaian peserta; ini membantu 145.47 membedakan friksi konsisten vs situasional.
-- Keputusan apresiasi Choi 2026-09-06: **Pro lifetime untuk SEMUA peserta** saat rilis; tanpa hadiah berbasis pemenang (koreksi kepatuhan — lihat ledger sprint-145).
+- Keputusan apresiasi Choi 2026-09-06: **Pro lifetime untuk SEMUA peserta** saat rilis, **jalur A terkunci** (tanpa tambahan cash, tanpa kontes pemenang).

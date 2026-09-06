@@ -1840,3 +1840,48 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   sibling uncommitted TIDAK di-commit (preseden run66+).
 - Tidak push (remote bcd2087). Native journey UNVERIFIABLE (cua-driver
   tidak tersedia di cron; preseden run83/86).
+
+## Run 88 (2026-09-06, cron nephthys) - 145.42: missing-DB open no longer auto-creates
+
+- Gap: temuan run86 - ProjectDatabaseService.open() pada storage terjangkau
+  dengan file database HILANG melakukan silent auto-create: probe schema
+  mengembalikan null (file tidak ada), lalu NativeDatabase(File(path))
+  membuat file kosong + menjalankan migration tanpa jejak. Satu-satunya
+  pembuat produksi yang sah adalah ProjectDatabaseService.create().
+- Slice: guard eksplisit di open() - file tidak ada =>
+  ProjectDatabaseUnavailableException (databasePath, StateError) SEBELUM
+  openProjectDatabase; kontrak run68 (korut => Unreadable) dan run83
+  (BUSY => Locked) tidak berubah. Pitfall probe: probe null ambigu
+  (file-missing ATAU korut) - guard wajib cek eksistensi file, bukan
+  mengandalkan null probe.
+- RED terverifikasi: test baru gagal karena open() auto-create diam-diam
+  (stacktrace drift membuktikan pembuatan file); GREEN 2/2 setelah guard.
+- Bukti @HEAD 448fd7a (Windows host): focused 2/2 PASS; regresi
+  test/database + test/core/persistence + test/features/project_resilience
+  262 PASS / 1 SKIP / 0 FAIL; flutter analyze No issues found! 9.8s;
+  dart format scoped clean (12 file); git diff --check PASS; build windows
+  debug PASS 24.8s; FULL SUITE 3752 PASS / 1 SKIP / 0 FAIL exit 0
+  ~12.6 mnt (+2 eksak vs run87 3750 = 2 test slice).
+- Dampak nyata ditemukan gate: 11 test restart-persistence di 9 file
+  (ai/reference/audio/audio_import/audio_timeline/dialogue/vfx) ternyata
+  KONSUMEN auto-create - membuat struktur proyek tanpa create() lalu
+  open() langsung; kini dipindah ke lifecycle produksi (create() eksplisit
+  sebelum open() pertama), isi assertion tidak diubah. Ditambah
+  project_resilience_test 'resilience metadata persists after database
+  restart' yang selama ini kehilangan data metadata ke silent recreation
+  (path db tidak ada saat open kedua - terbukti exception, bukan data).
+- Lima file test membawa 1-baris sibling (schemaVersion 57->59, batch
+  2026-09-04 00:41, disjoint dari baris slice) ter-commit dengan atribusi
+  di pesan f55d059 (preseden run75/85).
+- Commit: f55d059 (12 file, +93/-5). ROADMAP_STATE run88 entry ditulis
+  tapi TIDAK di-commit (blok sibling uncommitted - preseden run66+).
+- Sisa 145.42: drive-removal live + installed-device validation
+  (hardware-bound UNVERIFIABLE dari cron). Native journey UNVERIFIABLE
+  (cua-driver session never ready, run83/86/88 identik). Pointer tetap
+  145.27.
+
+### 2026-09-06 - nephthys sesi utama - jalur A dikunci permanen (parameter apresiasi pilot)
+- Choi mengonfirmasi jalur A: Pro lifetime untuk semua peserta, tanpa tambahan cash, tanpa kontes pemenang.
+- Tiga dokumen diperbarui: `pilot-recruitment-post.md` (checklist: jalur A terkunci, slot cash dihapus), `pilot-screening-form.md` (catatan kompensasi: jalur A terkunci, slot cash dihapus untuk mencegah reopen tanpa keputusan baru), `pilot-session-runbook.md` (catatan konteks penutup mengikuti keputusan).
+- Pelajaran dipromosikan ke skill: keputusan "diubah/dihapus" (bukan "ditambahkan") rentan ditimpa balik di kemudian hari - kunci dengan frasa eksplisit "jalur X terkunci" dan catat dalam ledger sehingga cron/maintainer tidak perlu menebak niat awal.
+- Status pilot: 145.45 parameter final; menunggu aksi Choi (posting Threads, screening, jadwal sesi).

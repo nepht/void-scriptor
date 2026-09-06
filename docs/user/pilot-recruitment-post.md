@@ -60,10 +60,8 @@ menerima akun Pro lifetime saat rilis. Minat? **DM Threads** atau email
 ## Checklist publikasi (untuk Choi) — keputusan Choi 2026-09-06
 
 - [x] Kanal: **Threads + email nephthyssilentz@gmail.com**
-- [x] Apresiasi: **akun Pro lifetime untuk semua peserta saat rilis**;
-      tanpa hadiah berbasis pemenang (koreksi kepatuhan — lihat ledger
-      sprint-145)
+- [x] Apresiasi: **akun Pro lifetime untuk semua peserta saat rilis**
+      **(jalur A terkunci 2026-09-06) — tanpa tambahan cash, tanpa kontes**
 - [x] Jendela rekrutmen: **1-2 minggu**, target **8-12 responden**
-- [ ] Choi isi slot apresiasi uang tetap bila diaktifkan, lalu posting
-      versi panjang di Threads
+- [ ] Choi posting versi panjang di Threads
 - [ ] Pantau respons harian; teruskan responden ke `pilot-screening-form.md`

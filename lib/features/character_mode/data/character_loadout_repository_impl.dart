@@ -17,6 +17,14 @@ abstract interface class CharacterLoadoutRepository {
     required LoadoutSlot slot,
     required String assetId,
   });
+
+  /// Rewrites the quantity of one existing entry in place (no duplicates).
+  Future<void> updateQuantity({
+    required String modeId,
+    required String slotValue,
+    required String assetId,
+    required int quantity,
+  });
 }
 
 class CharacterLoadoutRepositoryImpl implements CharacterLoadoutRepository {
@@ -128,5 +136,32 @@ class CharacterLoadoutRepositoryImpl implements CharacterLoadoutRepository {
               row.relationOrigin.equals('derived'),
         ))
         .go();
+  }
+
+  @override
+  Future<void> updateQuantity({
+    required String modeId,
+    required String slotValue,
+    required String assetId,
+    required int quantity,
+  }) async {
+    final slot = slotValue.loadoutSlot;
+    if (slot == null) {
+      throw ArgumentError('Unknown loadout slot: $slotValue');
+    }
+    final quantityError = validateLoadoutQuantity(slot, quantity);
+    if (quantityError != null) throw ArgumentError(quantityError);
+    final updated = await (database.update(
+      database.characterLoadoutEntries,
+    )..where(
+          (row) =>
+              row.modeId.equals(modeId) &
+              row.assetId.equals(assetId) &
+              row.slot.equals(slotValue),
+        ))
+        .write(db.CharacterLoadoutEntriesCompanion(quantity: Value(quantity)));
+    if (updated == 0) {
+      throw ArgumentError('Loadout entry not found for quantity update');
+    }
   }
 }

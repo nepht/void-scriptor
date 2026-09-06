@@ -43,8 +43,8 @@ class AssetDao extends DatabaseAccessor<ProjectDatabase> with _$AssetDaoMixin {
     now: now,
   );
 
-  /// Creates a stand-alone catalog asset. Stand-alone types per product
-  /// contract (2026-09-06): wardrobe, weapon, armor, accessory, prop.
+  /// Stand-alone types per product contract (2026-09-06): wardrobe, weapon,
+  /// armor, accessory, prop, creature, vehicle.
   Future<void> createStandaloneAsset({
     required String id,
     required String projectId,
@@ -58,7 +58,10 @@ class AssetDao extends DatabaseAccessor<ProjectDatabase> with _$AssetDaoMixin {
       'weapon',
       'armor',
       'accessory',
+      'hair_variant',
       'prop',
+      'creature',
+      'vehicle',
     };
     final normalizedName = name.trim();
     if (normalizedName.isEmpty) throw ArgumentError('Name must not be empty');

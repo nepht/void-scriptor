@@ -32,7 +32,8 @@ extension LoadoutSlotValue on LoadoutSlot {
     LoadoutSlot.accessory => 'accessory',
     LoadoutSlot.carriedItem => 'prop',
     LoadoutSlot.hairVariant => 'hair_variant',
-    LoadoutSlot.companion => 'companion',
+    // Product decision (Choirudin, 2026-09-06): a companion is a creature.
+    LoadoutSlot.companion => 'creature',
     LoadoutSlot.vehicle => 'vehicle',
   };
 

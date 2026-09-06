@@ -26,7 +26,8 @@ class AssetBrowserScreen extends ConsumerStatefulWidget {
   final AssetRepository? repository;
   final AssetViewPreferenceStore? viewPreferenceStore;
 
-  /// Persists a stand-alone asset (wardrobe/weapon/armor/accessory/prop).
+  /// Persists a stand-alone asset (wardrobe/weapon/armor/accessory/prop/
+  /// creature/vehicle).
   /// Returns the new asset id, or null when the session is unavailable.
   final Future<String?> Function({
     required String name,
@@ -531,6 +532,8 @@ class _CreateAssetDialogState extends State<_CreateAssetDialog> {
                 DropdownMenuItem(value: 'wardrobe', child: Text('wardrobe')),
                 DropdownMenuItem(value: 'weapon', child: Text('weapon')),
                 DropdownMenuItem(value: 'prop', child: Text('story item')),
+                DropdownMenuItem(value: 'creature', child: Text('creature')),
+                DropdownMenuItem(value: 'vehicle', child: Text('vehicle')),
               ],
               onChanged: (value) => setState(() => _type = value ?? _type),
             ),

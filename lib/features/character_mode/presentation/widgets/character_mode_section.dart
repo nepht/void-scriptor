@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../database/project/project_database.dart' as db;
+import '../../../../features/projects/presentation/project_persistence_providers.dart';
+import '../../data/character_loadout_repository_impl.dart';
 import '../../domain/character_mode.dart';
 import '../../domain/loadout_slot.dart';
 import '../character_mode_controller.dart';
@@ -43,9 +45,18 @@ LoadoutSlotChange loadoutSlotChange({
 }
 
 class CharacterModeSection extends ConsumerWidget {
-  const CharacterModeSection({super.key, required this.characterId});
+  const CharacterModeSection({
+    super.key,
+    required this.characterId,
+    this.title,
+    this.slots = characterLoadoutEditorSlots,
+    this.showModeDetails = true,
+  });
 
   final String characterId;
+  final String? title;
+  final List<LoadoutSlot> slots;
+  final bool showModeDetails;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -74,11 +85,13 @@ class CharacterModeSection extends ConsumerWidget {
               onCreateMode: () => _createMode(context, ref),
             ),
             const SizedBox(height: 10),
-            _ModeLoadoutCard(mode: mode),
-            const SizedBox(height: 10),
-            CharacterModeIdentityEditor(modeId: mode.id),
-            const SizedBox(height: 10),
-            CharacterModeReferencesCard(modeId: mode.id),
+            _ModeLoadoutCard(mode: mode, title: title, slots: slots),
+            if (showModeDetails) ...[
+              const SizedBox(height: 10),
+              CharacterModeIdentityEditor(modeId: mode.id),
+              const SizedBox(height: 10),
+              CharacterModeReferencesCard(modeId: mode.id),
+            ],
           ],
         );
       },
@@ -128,8 +141,10 @@ class CharacterModeSection extends ConsumerWidget {
 }
 
 class _ModeLoadoutCard extends ConsumerWidget {
-  const _ModeLoadoutCard({required this.mode});
+  const _ModeLoadoutCard({required this.mode, required this.slots, this.title});
   final CharacterMode mode;
+  final String? title;
+  final List<LoadoutSlot> slots;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -145,22 +160,28 @@ class _ModeLoadoutCard extends ConsumerWidget {
           data: (entries) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('CURRENT MODE: ${mode.name}'),
+              Text('${title?.toUpperCase() ?? 'CURRENT MODE'}: ${mode.name}'),
               const SizedBox(height: 8),
               if (entries.isEmpty)
                 const Text('No loadout entries')
               else
-                ...entries.map(
-                  (entry) => ListTile(
-                    dense: true,
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(_slotLabel(entry.slot)),
-                    subtitle: Text(loadoutAssetLabel(entry.assetId, assets)),
-                    trailing: entry.enabled
-                        ? const Icon(Icons.check_circle_outline)
-                        : const Icon(Icons.visibility_off_outlined),
-                  ),
-                ),
+                ...entries
+                    .where(
+                      (entry) => slots.any((slot) => slot.value == entry.slot),
+                    )
+                    .map(
+                      (entry) => ListTile(
+                        dense: true,
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(_slotLabel(entry.slot)),
+                        subtitle: Text(
+                          loadoutAssetLabel(entry.assetId, assets),
+                        ),
+                        trailing: entry.enabled
+                            ? const Icon(Icons.check_circle_outline)
+                            : const Icon(Icons.visibility_off_outlined),
+                      ),
+                    ),
               Align(
                 alignment: Alignment.centerRight,
                 child: OutlinedButton(
@@ -185,10 +206,13 @@ class _ModeLoadoutCard extends ConsumerWidget {
     final assets = await ref.read(projectAssetsProvider.future);
     if (!context.mounted) return;
     final selected = <LoadoutSlot, String?>{
-      for (final slot in characterLoadoutEditorSlots)
-        slot: _entryAssetId(entries, slot),
+      for (final slot in slots) slot: _entryAssetId(entries, slot),
     };
     final original = Map<LoadoutSlot, String?>.from(selected);
+    final selectedQuantity = <LoadoutSlot, int>{
+      for (final slot in slots) slot: _entryQuantity(entries, slot),
+    };
+    final originalQuantity = Map<LoadoutSlot, int>.from(selectedQuantity);
     await showDialog<void>(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
@@ -206,6 +230,13 @@ class _ModeLoadoutCard extends ConsumerWidget {
                     trailing: Wrap(
                       spacing: 4,
                       children: [
+                        if (_slotSupportsQuantity(slot))
+                          _QuantityStepper(
+                            key: Key('quantity-stepper-${slot.value}'),
+                            quantity: selectedQuantity[slot] ?? 1,
+                            onChanged: (value) =>
+                                setState(() => selectedQuantity[slot] = value),
+                          ),
                         if (selected[slot] != null)
                           TextButton(
                             onPressed: () =>
@@ -223,7 +254,13 @@ class _ModeLoadoutCard extends ConsumerWidget {
                                   assets: assets,
                                   assetType: type,
                                   initialAssetId: selected[slot],
-                                  onCreate: type == 'armor' || type == 'prop'
+                                  onCreate:
+                                      type == 'armor' ||
+                                          type == 'accessory' ||
+                                          type == 'hair_variant' ||
+                                          type == 'prop' ||
+                                          type == 'creature' ||
+                                          type == 'vehicle'
                                       ? () => _createAsset(context, ref, type)
                                       : null,
                                   onSelected: (asset) =>
@@ -252,10 +289,11 @@ class _ModeLoadoutCard extends ConsumerWidget {
               onPressed: () async {
                 final actions = CharacterModeActions(ref);
                 for (final entry in selected.entries) {
+                  final slot = entry.key;
                   final assetId = entry.value;
-                  final originalAssetId = original[entry.key];
+                  final originalAssetId = original[slot];
                   final change = loadoutSlotChange(
-                    slot: entry.key,
+                    slot: slot,
                     originalAssetId: originalAssetId,
                     selectedAssetId: assetId,
                   );
@@ -263,16 +301,34 @@ class _ModeLoadoutCard extends ConsumerWidget {
                       originalAssetId != null) {
                     await actions.removeSlot(
                       modeId: mode.id,
-                      slot: entry.key,
+                      slot: slot,
                       assetId: originalAssetId,
                     );
                   } else if (change == LoadoutSlotChange.replace &&
                       assetId != null) {
                     await actions.setSlot(
                       modeId: mode.id,
-                      slot: entry.key,
+                      slot: slot,
                       assetId: assetId,
+                      quantity: selectedQuantity[slot] ?? 1,
                     );
+                  } else if (change == LoadoutSlotChange.unchanged &&
+                      originalAssetId != null &&
+                      (selectedQuantity[slot] ?? 1) !=
+                          (originalQuantity[slot] ?? 1)) {
+                    final session = ref
+                        .read(projectSessionProvider)
+                        .valueOrNull;
+                    if (session != null) {
+                      await CharacterLoadoutRepositoryImpl(
+                        session.database,
+                      ).updateQuantity(
+                        modeId: mode.id,
+                        slotValue: slot.value,
+                        assetId: originalAssetId,
+                        quantity: selectedQuantity[slot] ?? 1,
+                      );
+                    }
                   }
                 }
                 if (dialogContext.mounted) Navigator.pop(dialogContext);
@@ -292,6 +348,18 @@ class _ModeLoadoutCard extends ConsumerWidget {
     return null;
   }
 
+  int _entryQuantity(List<dynamic> entries, LoadoutSlot slot) {
+    for (final entry in entries) {
+      if (entry.slot == slot.value) return (entry.quantity as int?) ?? 1;
+    }
+    return 1;
+  }
+
+  bool _slotSupportsQuantity(LoadoutSlot slot) =>
+      slot.multiplicity == LoadoutSlotMultiplicity.multiple ||
+      slot == LoadoutSlot.primaryWeapon ||
+      slot == LoadoutSlot.secondaryWeapon;
+
   Future<db.Asset?> _createAsset(
     BuildContext context,
     WidgetRef ref,
@@ -302,7 +370,13 @@ class _ModeLoadoutCard extends ConsumerWidget {
     final shouldCreate = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(type == 'prop' ? 'Create Story Item' : 'Create Armor'),
+        title: Text(switch (type) {
+          'prop' => 'Create Story Item',
+          'armor' => 'Create Armor',
+          'creature' => 'Create Creature',
+          'vehicle' => 'Create Vehicle',
+          _ => 'Create Asset',
+        }),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -334,6 +408,37 @@ class _ModeLoadoutCard extends ConsumerWidget {
       ref,
     ).createStandaloneAsset(name: name, description: description, type: type);
   }
+}
+
+class _QuantityStepper extends StatelessWidget {
+  const _QuantityStepper({
+    super.key,
+    required this.quantity,
+    required this.onChanged,
+  });
+
+  final int quantity;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      IconButton(
+        visualDensity: VisualDensity.compact,
+        tooltip: 'Decrease quantity',
+        onPressed: quantity > 1 ? () => onChanged(quantity - 1) : null,
+        icon: const Icon(Icons.remove_circle_outline, size: 20),
+      ),
+      Text('$quantity'),
+      IconButton(
+        visualDensity: VisualDensity.compact,
+        tooltip: 'Increase quantity',
+        onPressed: quantity < 99 ? () => onChanged(quantity + 1) : null,
+        icon: const Icon(Icons.add_circle_outline, size: 20),
+      ),
+    ],
+  );
 }
 
 class _EmptyModeState extends StatelessWidget {

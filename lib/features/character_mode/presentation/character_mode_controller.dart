@@ -83,12 +83,13 @@ class CharacterModeActions {
     required String modeId,
     required LoadoutSlot slot,
     required String assetId,
+    int quantity = 1,
   }) async {
     final session = ref.read(projectSessionProvider).valueOrNull;
     if (session == null) return;
     await CharacterLoadoutRepositoryImpl(
       session.database,
-    ).setSlot(modeId: modeId, slot: slot, assetId: assetId);
+    ).setSlot(modeId: modeId, slot: slot, assetId: assetId, quantity: quantity);
     ref.invalidate(characterModeLoadoutProvider(modeId));
   }
 

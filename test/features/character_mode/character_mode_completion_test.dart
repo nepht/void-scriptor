@@ -8,7 +8,8 @@ void main() {
     expect(LoadoutSlot.secondaryWeapon.assetType, 'weapon');
     expect(LoadoutSlot.accessory.assetType, 'accessory');
     expect(LoadoutSlot.hairVariant.assetType, 'hair_variant');
-    expect(LoadoutSlot.companion.assetType, 'companion');
+    // Product decision (Choirudin, 2026-09-06): a companion is a creature.
+    expect(LoadoutSlot.companion.assetType, 'creature');
     expect(LoadoutSlot.vehicle.assetType, 'vehicle');
   });
 

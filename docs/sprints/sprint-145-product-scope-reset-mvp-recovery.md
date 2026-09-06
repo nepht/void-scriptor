@@ -2230,3 +2230,38 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   reverts; (2) Settings Hub 5b6e11a only if routing/shell/settings region
   committed; (3) native journey 145.42/145.44 needs Choi's interactive session;
   (4) NO-OP if regions still dirty.
+### 2026-09-07 - run111 nephthys - stability refresh at HEAD 9c8ec8e; quality gate FULL GREEN; run108/110 FAIL regions owner-resolved (0 code mutation)
+- Context: run108/run110 recorded 2 sibling-region FAILs and 5 env-flake FAILs;
+  this run re-checked both owned regions after sibling commits landed.
+- Pre-run facts: HEAD 9c8ec8e (sibling 'feat(assets): extend stand-alone types to
+  creature and vehicle' landed 00:16); roadmap guard PASS (pointer 145.27,
+  canonical sha 86af6a5); 5 orphan flutter_tester.exe processes (00:10-00:32
+  window, CPU ~0) found and terminated via PowerShell before any gate run -
+  environment hygiene, no project processes were running.
+- Focused region re-verification (the two run108 concurrent-owned FAIL regions):
+  (1) test/features/assets/standalone_asset_types_creation_test.dart - GREEN
+  inside the full suite (syntax error gone; LoadoutSlot companion->creature
+  decision landed in production 9c8ec8e).
+  (2) test/features/export/story_export_fidelity_test.dart - owner replacement
+  of the deleted story_txt_export_ui_test, GREEN inside the full suite.
+- Gates (all fresh this run, --no-pub, run from the canonical Windows repo):
+  flutter analyze: 'No issues found!' (10.8s).
+  flutter test (full suite, background): +3824 ~1 (1 skip) - All tests passed!
+  exit 0, ~16.3 min. Delta vs run101 full-green baseline 3805: +19 (sibling
+  commits since). vs run110 3817/6 FAIL: +7 pass, 0 FAIL.
+  flutter build windows --debug: Built build/windows/x64/runner/Debug/
+  void_scriptor.exe, PASS 43.5s.
+  git diff --check: exit 0.
+- CONCLUSION: both run108 concurrent-owned FAILs are owner-resolved (assets
+  creation test by 9c8ec8e; story export by the owner's fidelity test); the
+  run110 5x SqliteException(14) open-contention flakes did not reproduce after
+  orphan tester cleanup. Quality gate is FULL GREEN at 9c8ec8e. No code files
+  were mutated by this run.
+- Ledger hygiene: this block appended to the HEAD blob (hash-object +
+  update-index, LF-only); the 51-line net-smaller sibling restructure of this
+  file in the worktree was NOT adopted (preserved uncommitted).
+- Not pushed (push is Choi's call).
+- Next: (1) Settings Hub 5b6e11a only when routing/shell/settings region is
+  committed; (2) native journey 145.42/145.44 needs Choi's interactive session
+  (cua-driver ready only there; 5x cron failures on record); (3) NO-OP if
+  regions stay dirty.

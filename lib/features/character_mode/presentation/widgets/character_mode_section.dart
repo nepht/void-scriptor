@@ -9,6 +9,18 @@ import 'character_mode_selector.dart';
 import 'character_mode_identity_editor.dart';
 import 'character_mode_references_card.dart';
 
+const characterLoadoutEditorSlots = <LoadoutSlot>[
+  LoadoutSlot.wardrobe,
+  LoadoutSlot.armor,
+  LoadoutSlot.primaryWeapon,
+  LoadoutSlot.secondaryWeapon,
+  LoadoutSlot.accessory,
+  LoadoutSlot.carriedItem,
+  LoadoutSlot.hairVariant,
+  LoadoutSlot.companion,
+  LoadoutSlot.vehicle,
+];
+
 class CharacterModeSection extends ConsumerWidget {
   const CharacterModeSection({super.key, required this.characterId});
 
@@ -150,15 +162,7 @@ class _ModeLoadoutCard extends ConsumerWidget {
     final assets = await ref.read(projectAssetsProvider.future);
     if (!context.mounted) return;
     final selected = <LoadoutSlot, String?>{
-      for (final slot in [
-        LoadoutSlot.wardrobe,
-        LoadoutSlot.primaryWeapon,
-        LoadoutSlot.secondaryWeapon,
-        LoadoutSlot.accessory,
-        LoadoutSlot.hairVariant,
-        LoadoutSlot.companion,
-        LoadoutSlot.vehicle,
-      ])
+      for (final slot in characterLoadoutEditorSlots)
         slot: _entryAssetId(entries, slot),
     };
     await showDialog<void>(
@@ -168,8 +172,8 @@ class _ModeLoadoutCard extends ConsumerWidget {
           title: Text('EDIT LOADOUT — ${mode.name}'),
           content: SizedBox(
             width: 440,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+            height: 460,
+            child: ListView(
               children: [
                 for (final slot in selected.keys)
                   ListTile(

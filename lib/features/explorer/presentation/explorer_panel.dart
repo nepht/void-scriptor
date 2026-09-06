@@ -1,11 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
-import '../../../app/routing/app_routes.dart';
-
 import '../../../core/selection/selection_memory_snapshot.dart';
 import '../../../core/selection/selection_controller.dart';
 import '../../../core/selection/selection_model.dart';
@@ -29,6 +26,39 @@ import '../../environment/domain/environment_type.dart';
 import '../../story/application/create_story_service.dart';
 import '../../wardrobe/application/create_wardrobe_service.dart';
 import '../../weapon/application/create_weapon_service.dart';
+import '../application/project_sidebar_module_preferences.dart';
+import '../../workspace/application/workspace_section_controller.dart';
+
+enum WorldbuildingExplorerSection { factions, relationshipMap }
+
+final worldbuildingSectionIntentProvider =
+    StateProvider<(String, WorldbuildingExplorerSection)?>((ref) => null);
+
+final projectSidebarModulePreferencesServiceProvider =
+    Provider<ProjectSidebarModulePreferencesService>(
+      (ref) => const ProjectSidebarModulePreferencesService(),
+    );
+
+final projectSidebarModulePreferencesProvider =
+    FutureProvider.family<ProjectSidebarModulePreferences, String>((
+      ref,
+      projectId,
+    ) async {
+      final session = ref.watch(projectSessionProvider).valueOrNull;
+      if (session == null || session.manifest.id != projectId) {
+        return const ProjectSidebarModulePreferences(
+          factions: false,
+          relationshipMap: true,
+        );
+      }
+      return ref
+          .watch(projectSidebarModulePreferencesServiceProvider)
+          .load(
+            package: session.package,
+            database: session.database,
+            projectId: projectId,
+          );
+    });
 
 final storyExplorerProvider = FutureProvider.family<List<Asset>, String>((
   ref,
@@ -52,7 +82,22 @@ AssetType? explorerAssetTypeForMenu(String menu) => switch (menu) {
 };
 
 void focusExplorerAsset(WidgetRef ref, AssetType type) {
+  if (type != AssetType.faction) {
+    ref.read(worldbuildingSectionIntentProvider.notifier).state = null;
+  }
   ref.read(explorerAssetFocusProvider.notifier).state = type;
+  final sectionTarget = switch (type) {
+    AssetType.story || AssetType.scene => (WorkspaceKind.novel, 'Outline'),
+    AssetType.character => (WorkspaceKind.character, 'Profile'),
+    AssetType.environment => (WorkspaceKind.worldbuilding, 'Locations'),
+    AssetType.timeline => (WorkspaceKind.worldbuilding, 'Timeline'),
+    _ => null,
+  };
+  if (sectionTarget != null) {
+    ref
+        .read(workspaceSectionProvider.notifier)
+        .activate(sectionTarget.$1, sectionTarget.$2);
+  }
   final session = ref.read(projectSessionProvider).valueOrNull;
   if (session == null) return;
   final projectId = session.manifest.id;
@@ -93,6 +138,30 @@ void focusExplorerAsset(WidgetRef ref, AssetType type) {
         ref.read(selectionProvider.notifier).clear();
       }
   }
+}
+
+void focusWorldbuildingSection(
+  WidgetRef ref,
+  WorldbuildingExplorerSection section,
+) {
+  final session = ref.read(projectSessionProvider).valueOrNull;
+  if (session == null) return;
+  final projectId = session.manifest.id;
+  ref.read(worldbuildingSectionIntentProvider.notifier).state = (
+    projectId,
+    section,
+  );
+  ref
+      .read(workspaceSectionProvider.notifier)
+      .activate(
+        WorkspaceKind.worldbuilding,
+        section == WorldbuildingExplorerSection.factions
+            ? 'Factions'
+            : 'Relationships',
+      );
+  final controller = ref.read(selectionProvider.notifier);
+  controller.focusWorkspace(projectId: projectId, type: AssetType.faction);
+  controller.clear();
 }
 
 /// Reactive catalog recovery for typed workspace navigation.
@@ -261,6 +330,18 @@ class ExplorerPanel extends ConsumerWidget {
         ? const AsyncValue<List<Asset>>.data([])
         : ref.watch(storyExplorerProvider(projectId));
     final focusedType = ref.watch(explorerAssetFocusProvider);
+    final modulePreferences = projectId == null
+        ? const ProjectSidebarModulePreferences(
+            factions: false,
+            relationshipMap: true,
+          )
+        : ref
+                  .watch(projectSidebarModulePreferencesProvider(projectId))
+                  .valueOrNull ??
+              const ProjectSidebarModulePreferences(
+                factions: false,
+                relationshipMap: true,
+              );
 
     return Container(
       width: 245,
@@ -289,6 +370,18 @@ class ExplorerPanel extends ConsumerWidget {
                     ),
                   ),
                   IconButton(
+                    tooltip: 'Configure sidebar modules',
+                    onPressed: projectId == null
+                        ? null
+                        : () => _configureSidebarModules(
+                            context,
+                            ref,
+                            projectId,
+                            modulePreferences,
+                          ),
+                    icon: const Icon(Icons.tune_outlined, size: 18),
+                  ),
+                  IconButton(
                     tooltip: 'Create Asset',
                     onPressed: projectId == null
                         ? null
@@ -302,16 +395,6 @@ class ExplorerPanel extends ConsumerWidget {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 children: [
-                  _ExplorerItem(
-                    icon: Icons.dashboard_outlined,
-                    label: 'Dashboard',
-                    onTap: () => context.go(AppRoutes.dashboard),
-                  ),
-                  _ExplorerItem(
-                    icon: Icons.folder_outlined,
-                    label: 'Projects',
-                    onTap: () => context.go(AppRoutes.projects),
-                  ),
                   _ExplorerItem(
                     icon: Icons.auto_stories_outlined,
                     label: 'Novel Workspace',
@@ -348,20 +431,21 @@ class ExplorerPanel extends ConsumerWidget {
                           ),
                         ),
                   ),
-                  _WeaponGroup(
-                    weapons: weapons,
-                    selectedId: ref.watch(selectionProvider)?.assetId,
+                  if (modulePreferences.weapons)
+                    _WeaponGroup(
+                      weapons: weapons,
+                      selectedId: ref.watch(selectionProvider)?.assetId,
 
-                    onSelected: (weapon) => ref
-                        .read(selectionProvider.notifier)
-                        .select(
-                          SelectionModel(
-                            assetId: weapon.assetId,
-                            assetType: AssetType.weapon,
-                            projectId: weapon.projectId,
+                      onSelected: (weapon) => ref
+                          .read(selectionProvider.notifier)
+                          .select(
+                            SelectionModel(
+                              assetId: weapon.assetId,
+                              assetType: AssetType.weapon,
+                              projectId: weapon.projectId,
+                            ),
                           ),
-                        ),
-                  ),
+                    ),
                   EnvironmentGroup(
                     onFocused: () =>
                         focusExplorerAsset(ref, AssetType.environment),
@@ -397,17 +481,90 @@ class ExplorerPanel extends ConsumerWidget {
                   _ExplorerItem(
                     icon: Icons.timeline_outlined,
                     label: 'Timeline',
-                    onTap: onTimelineSelected,
-                  ),
-                  _ExplorerItem(
-                    icon: Icons.auto_awesome_outlined,
-                    label: 'AI Studio',
-                    onTap: () => context.go(AppRoutes.aiStudio),
+                    onTap:
+                        onTimelineSelected ??
+                        () => focusExplorerAsset(ref, AssetType.timeline),
                   ),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> _configureSidebarModules(
+  BuildContext context,
+  WidgetRef ref,
+  String projectId,
+  ProjectSidebarModulePreferences current,
+) async {
+  var weapons = current.weapons;
+  final result = await showDialog<ProjectSidebarModulePreferences>(
+    context: context,
+    builder: (dialogContext) => StatefulBuilder(
+      builder: (context, setState) => AlertDialog(
+        title: const Text('Sidebar modules'),
+        content: SizedBox(
+          width: 420,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Suggested by genre; you remain in control.',
+                style: TextStyle(color: context.palette.textMuted),
+              ),
+              const SizedBox(height: 8),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Weapons'),
+                subtitle: const Text(
+                  'Useful for action, fantasy, war, and adventure stories',
+                ),
+                value: weapons,
+                onChanged: (value) =>
+                    setState(() => weapons = value ?? weapons),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(
+              dialogContext,
+              ProjectSidebarModulePreferences(
+                factions: false,
+                relationshipMap: false,
+                weapons: weapons,
+              ),
+            ),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    ),
+  );
+  if (result == null) return;
+  final session = ref.read(projectSessionProvider).valueOrNull;
+  if (session == null || session.manifest.id != projectId) return;
+  try {
+    await ref
+        .read(projectSidebarModulePreferencesServiceProvider)
+        .save(session.package, result);
+    ref.invalidate(projectSidebarModulePreferencesProvider(projectId));
+  } on FileSystemException {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Sidebar settings could not be saved. Check storage access.',
         ),
       ),
     );

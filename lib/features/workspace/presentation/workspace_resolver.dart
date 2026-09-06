@@ -24,6 +24,9 @@ import '../../story/application/create_story_service.dart';
 import '../../story/data/story_repository_impl.dart';
 import '../../project_resilience/application/durable_draft_journal.dart';
 import '../../story/presentation/story_workspace_screen.dart';
+import '../../project_resilience/application/project_session_manager.dart';
+import '../../workspaces/application/create_novel_character_link_service.dart';
+import '../../workspaces/application/workspace_projection_cache.dart';
 import '../../workspaces/presentation/workspace_export_actions.dart';
 import 'global_search_sheet.dart';
 import '../../explorer/presentation/explorer_panel.dart';
@@ -212,6 +215,13 @@ class WorkspaceResolver extends ConsumerWidget {
         workspaceProjection: session?.workspaceProjectionReader.forNovel(
           selection.assetId,
         ),
+        onTapAddCharacter: session == null
+            ? null
+            : (novelWorkspaceId) => _linkCharacterToNovel(
+                context,
+                session,
+                novelWorkspaceId,
+              ),
       ),
       _ => const ProjectOverview(),
     };
@@ -726,4 +736,74 @@ class _RelationItem extends StatelessWidget {
 
 void selectAsset(WidgetRef ref, SelectionModel selection) {
   ref.read(selectionProvider.notifier).select(selection);
+}
+
+
+/// Step 145.43 friksi #1: aksi link karakter ke novel dari kartu Linked
+/// Characters. Satu pintu lewat [CreateNovelCharacterLinkService]; picker
+/// karakter dari katalog proyek; katalog kosong = snackbar jujur, bukan
+/// dialog mati; kegagalan persist = snackbar, kartu tetap valid.
+Future<WorkspaceProjection?> _linkCharacterToNovel(
+  BuildContext context,
+  ProjectSession session,
+  String novelWorkspaceId,
+) async {
+  final characters = await session.database.characterDao.getAllCharacters(
+    session.manifest.id,
+  );
+  if (characters.isEmpty) {
+    if (!context.mounted) return null;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Belum ada karakter. Buat karakter dulu dari Explorer.'),
+      ),
+    );
+    return null;
+  }
+  if (!context.mounted) return null;
+  final characterId = await showDialog<String>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: const Text('Link character to novel'),
+      content: SizedBox(
+        width: 360,
+        child: ListView.separated(
+          shrinkWrap: true,
+          itemCount: characters.length,
+          separatorBuilder: (_, _) => const Divider(height: 1),
+          itemBuilder: (context, index) {
+            final character = characters[index];
+            return ListTile(
+              leading: const Icon(Icons.person_outline),
+              title: Text(character.displayName),
+              onTap: () => Navigator.pop(dialogContext, character.assetId),
+            );
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(dialogContext),
+          child: const Text('Cancel'),
+        ),
+      ],
+    ),
+  );
+  if (characterId == null) return null;
+  try {
+    await CreateNovelCharacterLinkService(
+      links: session.novelCharacterLinks,
+      projections: session.workspaceProjections,
+    ).create(
+      novelWorkspaceId: novelWorkspaceId,
+      characterAssetId: characterId,
+    );
+    return session.workspaceProjectionReader.forNovel(novelWorkspaceId);
+  } catch (_) {
+    if (!context.mounted) return null;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Link gagal dibuat. Coba lagi.')),
+    );
+    return null;
+  }
 }

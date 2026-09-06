@@ -35,6 +35,7 @@ class StoryWorkspaceScreen extends StatefulWidget {
     this.novelExportActions,
     this.novelImportActions,
     this.pickImportArchive,
+    this.onTapAddCharacter,
     this.loadLoreCatalog,
     this.onCreateLoreEntity,
     this.draftJournal,
@@ -44,6 +45,12 @@ class StoryWorkspaceScreen extends StatefulWidget {
   final String? sceneId;
   final Directory? exportDirectory;
   final Future<WorkspaceProjection>? workspaceProjection;
+  /// Optional link-creation binding (145.43 friksi #1): membuka picker
+  /// karakter dan mengembalikan projection segar saat link dibuat. Null
+  /// menjaga aksi absen dari kartu Linked Characters.
+  final Future<WorkspaceProjection?> Function(String novelWorkspaceId)?
+  onTapAddCharacter;
+
 
   /// Optional Novel workspace export binding. Null keeps the button absent —
   /// the screen never fabricates an export path without an explicit binding.
@@ -1258,6 +1265,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                   if (widget.workspaceProjection != null) ...[
                     WorkspaceProjectionCard(
                       projectionFuture: widget.workspaceProjection!,
+                      onTapAddCharacter: widget.onTapAddCharacter,
                     ),
                     const SizedBox(height: 12),
                   ],

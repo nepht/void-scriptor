@@ -55,7 +55,12 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('No linked characters'), findsOneWidget);
+    // 145.43 friksi #1: empty state kini menuntun (pilih/buat karakter)
+    // alih-alih label statis tanpa arah.
+    expect(
+      find.text('Select or create a character to link it here.'),
+      findsOneWidget,
+    );
     expect(tester.takeException(), isNull);
   });
 }

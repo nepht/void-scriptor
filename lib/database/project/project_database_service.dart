@@ -111,6 +111,49 @@ class ProjectDatabaseWriteFailedException implements Exception {
       'rejected a write ($cause)';
 }
 
+/// Pure classification of sqlite result codes on the project open path
+/// (bug-hunt run94 BUG-13: never compare extended codes after masking
+/// with 0xFF).
+///
+/// Family decisions use the **unmasked** extended result code (SQLITE_BUSY
+/// 5, SQLITE_READONLY 8, SQLITE_FULL 13, SQLITE_IOERR_WRITE 778,
+/// SQLITE_CANTOPEN 14); the **primary** code is consulted only for the one
+/// contract that loses meaning under masking: SQLITE_IOERR (primary 10).
+/// 778 & 0xFF = 10, so the previous `code == 778` comparison against the
+/// masked value could never match and the whole IOERR family
+/// (10/266/522/778/1034/...) fell through to the corruption
+/// classification even though the database itself may be healthy.
+Exception classifyProjectDatabaseOpenError(
+  String databasePath,
+  sqlite.SqliteException error,
+) {
+  // SQLITE_BUSY (extended result code 5): the file is healthy but another
+  // writer holds SHARED+RESERVED. The read-only schema probe succeeded,
+  // so this is neither future-schema nor corruption.
+  if (error.extendedResultCode == 5) {
+    return ProjectDatabaseLockedException(databasePath, error);
+  }
+  // SQLITE_READONLY (8) / SQLITE_FULL (13): the file is schema-valid but
+  // drift initialization writes project_metadata on first open - the same
+  // surface as media-level permission loss and a full storage volume.
+  if (error.extendedResultCode == 8 || error.extendedResultCode == 13) {
+    return ProjectDatabaseWriteFailedException(databasePath, error);
+  }
+  // SQLITE_IOERR_WRITE (778) and the whole SQLITE_IOERR family
+  // (primary 10): media-level I/O failure while opening or writing -
+  // a write failure, not proof of corruption.
+  if (error.extendedResultCode == 778 ||
+      error.resultCode == 10 /* SQLITE_IOERR */ ) {
+    return ProjectDatabaseWriteFailedException(databasePath, error);
+  }
+  // SQLITE_CANTOPEN (14): the file cannot be opened/created - storage is
+  // unreachable, not proof of corruption.
+  if (error.extendedResultCode == 14) {
+    return ProjectDatabaseUnavailableException(databasePath, error);
+  }
+  return ProjectDatabaseUnreadableException(databasePath, error);
+}
+
 class ProjectDatabaseService {
   Future<void> create(String databasePath) =>
       createProjectDatabase(databasePath);
@@ -141,28 +184,7 @@ class ProjectDatabaseService {
       // file. Ini keadaan storage tak terjangkau, bukan korupsi.
       throw ProjectDatabaseUnavailableException(databasePath, error);
     } on sqlite.SqliteException catch (error) {
-      final code = error.extendedResultCode & 0xFF;
-      // SQLITE_BUSY (extended result code 5) berarti file sehat tetapi
-      // writer lain sedang memegang SHARED+RESERVED. Probe schema
-      // readOnly berhasil, jadi bukan future-schema dan bukan korup.
-      if (code == 5) {
-        throw ProjectDatabaseLockedException(databasePath, error);
-      }
-      // SQLITE_READONLY (8): file atau direktori write-protected.
-      // File masih schema-valid (probe readOnly berhasil), namun drift
-      // initialize() menulis project_metadata saat pertama kali
-      // membuka koneksi - permukaan yang sama dengan permission loss
-      // tingkat media dan storage penuh (SQLITE_FULL). Buka harus
-      // gagal dengan klasifikasi write-failure, bukan dikira korut.
-      if (code == 8 || code == 13 || code == 778) {
-        throw ProjectDatabaseWriteFailedException(databasePath, error);
-      }
-      // SQLITE_CANTOPEN (14): file tidak bisa dibuka/dibuat - storage
-      // tidak terjangkau, bukan bukti database korut.
-      if (code == 14) {
-        throw ProjectDatabaseUnavailableException(databasePath, error);
-      }
-      throw ProjectDatabaseUnreadableException(databasePath, error);
+      throw classifyProjectDatabaseOpenError(databasePath, error);
     }
   }
 

@@ -1,6 +1,6 @@
 # ADR-0002 - Architecture and Delivery Decision Record
 
-- Status: Proposed (draft awaiting architect review)
+- Status: Accepted (2026-09-05, Choirudin-authorized decision recorded by Codex)
 - Date: 2026-09-05
 - Step: Sprint 145.48 Architecture and Delivery Decision Records
 - Driver: Choirudin (product/architecture authority), drafted by nephthys cron
@@ -10,6 +10,19 @@
   and release decisions (Sprint 145.43-145.47, 145.49-145.50) remain with the
   architect. Facts cited below were re-verified against the live tree at
   drafting time (HEAD 33aef69); commit SHAs are quoted from the sprint ledger.
+
+## Ratification — 2026-09-05
+
+Choirudin requested help selecting the current direction and applying it.
+Codex records acceptance of the existing D1-D7 foundation: Windows-first
+Flutter, local-first isolated project storage, protected module boundaries,
+single-owner sync, guarded migrations, evidence-based testing, and staged
+delivery. This accepts the architecture, not every historical proof claim.
+No new feature expansion, architecture rewrite, release, push, or pilot
+recruitment is authorized by this record. Future platforms remain deferred,
+not deleted. Native tests and failure-matrix acceptance remain outstanding.
+ADR-0003 now supplies the selected recovery direction; the older scope note
+above describes this document at drafting time.
 
 ## Decisions
 
@@ -47,7 +60,7 @@
 - Review trigger: any proposal to move Core data behind a server or a shared
   global database.
 
-### D3. Module boundaries: core -> features direction, enforced by test
+### D3. Module boundaries: features depend on core, never core on features
 - Choice: lib/core must not import lib/features; shared value types live in
   lib/core/domain (ADR-0001). Deferred capabilities reactivate only through
   FeatureFlagRegistry (13 flags, all default OFF, kill-switch) with

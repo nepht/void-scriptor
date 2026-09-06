@@ -1,14 +1,57 @@
 # ADR-0003 - Core MVP Recovery Decision (Sprint 145.49)
 
-- Status: Proposed (draft awaiting architect decision)
+- Status: Accepted — Option B, safety-first sequencing (2026-09-05)
 - Date: 2026-09-05
 - Step: Sprint 145.49 Core MVP Recovery Decision
 - Driver: Choirudin (product authority), drafted by nephthys cron
-- Scope note: this document PROPOSES a recovery direction with options and
-  consequences. It is not a decision until the architect ratifies it. It does
-  not move the roadmap pointer, close Sprint 145.49, or authorize stream
-  transition. Evidence cited is re-verified against the live tree at drafting
-  time (HEAD 961eeb1) unless explicitly quoted from the sprint ledger.
+- Scope note: Choirudin authorized Codex to select and apply the current
+  direction on 2026-09-05. Option B is accepted with the execution order below.
+  This decision does not move the roadmap pointer, certify unfinished tests,
+  close Sprint 145, or authorize expansion/release. Evidence below is a
+  historical drafting snapshot (HEAD 961eeb1), not a current test run.
+
+## Adopted decision and executor order — 2026-09-05
+
+Stabilize existing Core. Preserve the approved product structure and deferred
+implementations; do not add modules or broadly rewrite architecture.
+This section supersedes the original recommendation order and decision gate.
+
+1. Continue the outstanding 145.42 safety matrix on disposable projects:
+   explicit disk-full and permission-loss failures, interrupted move/import/
+   restore, then SQLite WAL process-crash recovery. Assert old data preservation,
+   visible failure, and safe retry/recovery. Never fill the user's actual drive,
+   change broad permissions, remove a real drive, or kill unrelated processes.
+   Fault injection and process termination are simulations, not physical
+   power-loss/device-certification evidence.
+2. Complete exact-snapshot restore and reconcile existing edits in bounded,
+   test-first slices. Preserve unrelated edits; dirty files alone are not proof
+   of an active competing writer. Verify ownership before overlapping changes.
+3. Complete deferred demo-route gating with explicit capability mapping and
+   tests. Do not infer a missing canonical mapping or enable deferred features;
+   document a bounded mapping decision if required. A blocked mapping must not
+   prevent independent safety work in step 1.
+4. Run focused tests, analyzer, relevant regression, a full suite on an
+   identified consistent revision, and the Windows build. Arrange user-assisted
+   native create/write/switch/close/reopen/export/backup/restore tests and separate
+   device/removable-drive validation. Do not claim these from compilation alone.
+5. Only after these gates: prepare pilot tasks and collect real-user evidence.
+   Recruitment, publishing, release, payments, and sprint closure are not
+   authorized automatically by this decision.
+
+Hermes should read this decision and the current ledger/state at its next run.
+Each run should choose an unfinished safe slice, record actual evidence, and
+leave hardware/user-dependent checks explicitly pending. Do not keep reporting
+"awaiting ADR-0002/0003 choice" as a blocker. If no safe slice remains, report
+the exact input/device needed rather than fabricate progress.
+
+Acceptance boundaries: 145.27 stays PARTIAL; 145.42 stays IN_PROGRESS until
+its matrix is evidenced. The 145.49 direction is decided, but any other canonical
+acceptance requirements remain open. 145.43-145.47 and 145.50 are not closed.
+
+Historical evidence caution: the original run62 paragraph below contains
+contradictory full-suite counts. It is not usable as a green gate; consult the
+dated sprint ledger and original run output. This decision creates no new
+runtime test evidence and does not resolve that historical discrepancy.
 
 ## Evidence Base (source/runtime audit + vertical slice + user evidence)
 

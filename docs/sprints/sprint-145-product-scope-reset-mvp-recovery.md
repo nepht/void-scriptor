@@ -2301,3 +2301,18 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   evidence for 145.42/145.44 if artifacts land in the ledger; (2) Settings Hub
   queue 5b6e11a only when routing/shell/settings region is committed; (3) NO-OP
   if regions stay dirty.
+
+### 2026-09-07 - run113 cron nephthys - native journey evidence 145.44 landed and reconciled (read-only, VERIFIED)
+
+- Input job: run112 next-action #1 - re-verify journey evidence for 145.42/145.44 once artifacts land in the ledger. Artifacts DID land: docs/evidence/145.44/ (untracked, 9 PNG + 4 JSON, JSON timestamps 2026-09-06 11:38-14:51 WIB).
+- Live environment: interactive native session ACTIVE at run start (void_scriptor.exe PID 3328, canonical Debug exe, tasklist capture) and exited during the run (Get-Process -Id 3328 = not found). Cron honored it: read-only run, no build, no UI interference, no region touched.
+- Read-only verification performed this run:
+  - roadmap guard PASS pre-run (pointer 145.27, canonical_sha 86af6a5, last_resolved 145.26).
+  - Conflict-marker scan of the full worktree diff: 0 markers; git diff --check exit 0.
+  - PNG validity: 9/9 files in docs/evidence/145.44/ carry the PNG magic header (01,02,03,05,06,07,08,09,10 windows-recommended; honest note: no 04-* capture exists - numbering gap).
+  - JSON readback: saga-baseline.json (11:38 WIB) vs saga-post-backup.json (14:48 WIB): manifest sha unchanged, project.db sha changed as expected after use, backup row 6a8881e9 (manual, note Manual UI backup, schema_version 59, size 3,541,500) matches baseline hashes for project.json+project.db, active_session_lock false, sqlite_integrity ok. tes-novel-baseline vs tes-novel-post-journey (14:51 WIB): both files unchanged, no session lock, integrity ok.
+- Canonical acceptance (sprint_145.json 145.44): run complete journey REPEATEDLY across MINIMUM/RECOMMENDED devices and sample projects with logs, screenshots, hashes, failures, fixes, and regression evidence.
+- Classification (honest boundaries): recommended-Windows-device journey across 2 sample projects (Void-Cube-Saga copy d53c8787, Tes Novel 3c30ca9c) with screenshots + hashes + integrity/lock checks + a search-empty-index finding = VERIFIED as landed evidence. Still MISSING for 145.44: minimum-device matrix, repeat runs, dedicated log files (no *.log artifact in the evidence dir). 145.44 stays PENDING; pointer stays 145.27 (next_step unchanged).
+- Ledger hygiene: this block appended to the HEAD blob (hash-object + update-index, LF-only, commit without pathspec); the sibling restructure of this file in the worktree (27+/149-, incl. armor/accessory + asset-browser blocks and compressed run105/107 blocks) was NOT adopted and stays uncommitted.
+- ROADMAP_STATE.json not touched (approval gate; uncommitted sibling blocks precedent). Nothing pushed (push is Choi call).
+- Next: (1) minimum-device matrix + repeat journey for 145.44 needs Choi interactive session (cron cua-driver blocked 5x on record); (2) Settings Hub 5b6e11a only when routing/shell/settings region is committed; (3) NO-OP if regions stay dirty.

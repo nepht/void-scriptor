@@ -10,6 +10,8 @@ import '../../../features/explorer/presentation/explorer_panel.dart';
 import '../../../features/inspector/presentation/inspector_panel.dart';
 import '../../../features/project_resilience/application/project_mutation_runtime.dart';
 import '../../../features/projects/presentation/project_persistence_providers.dart';
+import '../../../features/workspace/presentation/global_search_sheet.dart';
+import '../../../features/workspace/application/global_search_launcher.dart';
 import '../../../features/workspace/presentation/workspace_panel.dart';
 import '../../../features/workspace_layout/application/workspace_tab_controller.dart';
 import '../../../features/workspace_layout/presentation/workspace_layout_shell.dart';
@@ -102,6 +104,7 @@ class VoidDesktopShell extends ConsumerWidget {
       body: Column(
         children: [
           VoidTopBar(
+            saveState: state,
             onMenuSelected: (menu) {
               final assetType = explorerAssetTypeForMenu(menu);
               if (assetType != null) {
@@ -139,6 +142,17 @@ class VoidDesktopShell extends ConsumerWidget {
               };
               if (route != null) context.push(route);
             },
+            onOpenSearch: session == null
+                ? null
+                : () {
+                    showGlobalSearchSheet(
+                      context,
+                      launcher: GlobalSearchLauncher(
+                        database: session.database,
+                      ),
+                      projectId: session.manifest.id,
+                    );
+                  },
             onLogout: onLogout,
             canUndo: runtime?.bus.canUndo ?? false,
             canRedo: runtime?.bus.canRedo ?? false,

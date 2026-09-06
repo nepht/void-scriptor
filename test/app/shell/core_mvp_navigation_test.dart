@@ -30,7 +30,9 @@ void main() {
     expect(find.text('World'), findsNothing);
     expect(find.text('Search'), findsOneWidget);
     expect(find.text('AI Studio'), findsOneWidget);
-    expect(find.text('Backup & Export'), findsOneWidget);
+    // Frontier 2: Backup & Export pindah ke menu project-context; baris
+    // navigasi global hanya Dashboard/Projects/Search.
+    expect(find.text('Backup & Export'), findsNothing);
 
     final selected = <String>[];
     await tester.pumpWidget(

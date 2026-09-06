@@ -52,9 +52,11 @@ void main() {
         findsNothing,
         reason: 'Belum di Settings Hub.',
       );
+      // Frontier 2: Settings pindah dari row navigasi ke Account menu top bar.
+      await tester.tap(find.byTooltip('Account menu'));
+      await tester.pumpAndSettle();
       final settingsItem = find.text('Settings');
       expect(settingsItem, findsWidgets);
-      await tester.ensureVisible(settingsItem.first);
       await tester.tap(settingsItem.first);
       await tester.pumpAndSettle();
       expect(

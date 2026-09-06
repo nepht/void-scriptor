@@ -33,15 +33,11 @@ void main() {
     );
     expect(find.text('Dashboard'), findsOneWidget);
     expect(find.text('Projects'), findsOneWidget);
-    expect(find.byTooltip('More navigation'), findsOneWidget);
+    // Frontier 2: baris Core tinggal 3 destinasi, jadi lebar 1280 sudah
+    // memuat semuanya dan tidak ada yang perlu masuk More navigation.
+    expect(find.byTooltip('More navigation'), findsNothing);
     expect(find.text('Characters'), findsNothing);
     expect(find.text('World'), findsNothing);
-    await tester.tap(find.byTooltip('More navigation'));
-    await tester.pumpAndSettle();
-    expect(find.text('Characters'), findsNothing);
-    expect(find.text('World'), findsNothing);
-    await tester.tapAt(const Offset(10, 500));
-    await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
 
     await tester.pumpWidget(
@@ -58,7 +54,7 @@ void main() {
       ),
     );
     expect(find.text('Search'), findsOneWidget);
-    expect(find.text('Backup & Export'), findsOneWidget);
+    expect(find.text('Backup & Export'), findsNothing);
     expect(find.byType(TextField), findsNothing);
   });
 

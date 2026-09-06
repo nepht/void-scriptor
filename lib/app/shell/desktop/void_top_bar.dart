@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_flutter/lucide_flutter.dart';
 
+import '../../../core/commands/project_mutation_state.dart';
 import '../../navigation/app_navigation_registry.dart';
-import '../../../core/theme/theme_mode_menu.dart';
 import '../../../design_system/widgets/branding/brand_assets.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
@@ -16,6 +16,9 @@ class VoidTopBar extends StatelessWidget {
     this.onRedo,
     this.canUndo = false,
     this.canRedo = false,
+    this.saveState,
+    this.onOpenSearch,
+    this.projectContext,
   });
 
   final ValueChanged<String> onMenuSelected;
@@ -24,8 +27,19 @@ class VoidTopBar extends StatelessWidget {
   final VoidCallback? onRedo;
   final bool canUndo;
   final bool canRedo;
+
+  /// Null when no project session is open (no save-status chip rendered).
+  final ProjectMutationState? saveState;
+
+  /// Opens the global project search sheet (command-palette entry point).
+  final VoidCallback? onOpenSearch;
+
+  /// Null when no project session is open (no project-context button).
+  final ProjectContextSummary? projectContext;
   @override
   Widget build(BuildContext context) {
+    final saveState = this.saveState;
+    final projectContext = this.projectContext;
     return Container(
       height: 58,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -39,19 +53,23 @@ class VoidTopBar extends StatelessWidget {
           final showFullBrand = constraints.maxWidth >= 1500;
           // Project workspaces belong in the Explorer sidebar, not global
           // desktop navigation. Keep the shared registry intact for mobile.
+          // Frontier 2: project workspaces live in the Explorer sidebar and
+          // Backup & Export moved into the project-context menu. Global
+          // desktop navigation keeps only Dashboard, Projects, Search.
           final desktopDestinations = coreNavigationDestinations
               .where(
                 (destination) =>
-                    destination.id != AppNavigationId.characters &&
-                    destination.id != AppNavigationId.world,
+                    destination.id == AppNavigationId.dashboard ||
+                    destination.id == AppNavigationId.novels ||
+                    destination.id == AppNavigationId.search,
               )
               .toList(growable: false);
           final visibleCore = showAllCore
               ? desktopDestinations
-              : desktopDestinations.take(4).toList(growable: false);
+              : desktopDestinations.take(3).toList(growable: false);
           final hiddenCore = showAllCore
               ? const <AppNavigationDestination>[]
-              : desktopDestinations.skip(4).toList(growable: false);
+              : desktopDestinations.skip(3).toList(growable: false);
           return Row(
             children: [
               SizedBox(
@@ -59,6 +77,11 @@ class VoidTopBar extends StatelessWidget {
                 child: VoidLogo(compact: !showFullBrand),
               ),
               const SizedBox(width: 8),
+              if (projectContext != null)
+                _ProjectContextButton(
+                  summary: projectContext,
+                  onMenuSelected: onMenuSelected,
+                ),
               Expanded(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -84,6 +107,8 @@ class VoidTopBar extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (saveState != null)
+                    _SaveStateChip(dirty: saveState.isDirty),
                   _TopIconButton(
                     icon: LucideIcons.undo2,
                     tooltip: 'Undo',
@@ -94,9 +119,14 @@ class VoidTopBar extends StatelessWidget {
                     tooltip: 'Redo',
                     onPressed: canRedo ? onRedo : null,
                   ),
+                  if (onOpenSearch != null)
+                    _TopIconButton(
+                      icon: LucideIcons.command,
+                      tooltip: 'Search across the project',
+                      onPressed: onOpenSearch,
+                    ),
                   _AiStudioMenu(onMenuSelected: onMenuSelected),
                   _OptionalToolsMenu(onMenuSelected: onMenuSelected),
-                  const ThemeModeMenu(),
                   _AccountMenu(
                     onMenuSelected: onMenuSelected,
                     onLogout: onLogout,
@@ -109,6 +139,95 @@ class VoidTopBar extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Summary of the active project session rendered as the project-context
+/// entry point in the top bar. Null when no session is open.
+class ProjectContextSummary {
+  const ProjectContextSummary({
+    required this.projectId,
+    required this.projectName,
+  });
+
+  final String projectId;
+  final String projectName;
+}
+
+class _ProjectContextButton extends StatelessWidget {
+  const _ProjectContextButton({
+    required this.summary,
+    required this.onMenuSelected,
+  });
+
+  final ProjectContextSummary summary;
+  final ValueChanged<String> onMenuSelected;
+
+  @override
+  Widget build(BuildContext context) => PopupMenuButton<String>(
+    tooltip: 'Project context',
+    onSelected: onMenuSelected,
+    itemBuilder: (context) => const [
+      PopupMenuItem(value: 'backup-export', child: Text('Backup & Export')),
+    ],
+    child: Container(
+      height: 34,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: context.palette.panel,
+        border: Border.all(color: context.palette.borderSoft),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.auto_stories_outlined, size: 15),
+          const SizedBox(width: 6),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 160),
+            child: Text(
+              summary.projectName,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            ),
+          ),
+          const Icon(Icons.arrow_drop_down, size: 18),
+        ],
+      ),
+    ),
+  );
+}
+
+class _SaveStateChip extends StatelessWidget {
+  const _SaveStateChip({required this.dirty});
+
+  final bool dirty;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(right: 4),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          dirty ? Icons.circle : Icons.check_circle_outline,
+          size: 12,
+          color: dirty
+              ? (Theme.of(context).brightness == Brightness.dark
+                    ? Colors.amberAccent
+                    : Colors.amber.shade800)
+              : Colors.green,
+        ),
+        const SizedBox(width: 6),
+        Text(
+          dirty ? 'Belum tersimpan' : 'Tersimpan',
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: context.palette.textMuted),
+        ),
+      ],
+    ),
+  );
 }
 
 class _TopMenuButton extends StatelessWidget {
@@ -298,15 +417,13 @@ class _AccountMenu extends StatelessWidget {
     onSelected: (key) {
       if (key == 'logout') {
         onLogout?.call();
-      } else if (key == 'donate') {
-        _showDonationDialog(context);
       } else {
         onMenuSelected(key);
       }
     },
     itemBuilder: (context) => const [
+      PopupMenuItem(value: 'settings', child: Text('Settings')),
       PopupMenuItem(value: 'account-cloud', child: Text('Account & Cloud')),
-      PopupMenuItem(value: 'donate', child: Text('Support Void Scriptor')),
       PopupMenuDivider(),
       PopupMenuItem(value: 'logout', child: Text('Log out')),
     ],

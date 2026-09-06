@@ -1,0 +1,23 @@
+# Bug-hunt run94 scope manifest
+repo: D:\VoidScriptor\void_scriptor_multiplatform
+branch: master
+HEAD at hunt start: 074c5a18983898983c9a78f9a29c9a083ddc71cc
+mode: scan-only static analysis (branch-diff: none)
+working-tree note: uncommitted changes exist on 2 scope files (project_session_manager.dart modified; storage_location_registry_resolver.dart untracked) - report on the current working tree as-is
+
+## Files in scope (15)
+D:\VoidScriptor\void_scriptor_multiplatform\lib\core\persistence\custom_storage_location.dart
+D:\VoidScriptor\void_scriptor_multiplatform\lib\core\persistence\project_file_service.dart
+D:\VoidScriptor\void_scriptor_multiplatform\lib\core\persistence\project_health_service.dart
+D:\VoidScriptor\void_scriptor_multiplatform\lib\core\persistence\project_manifest.dart
+D:\VoidScriptor\void_scriptor_multiplatform\lib\core\persistence\project_manifest_service.dart
+D:\VoidScriptor\void_scriptor_multiplatform\lib\core\persistence\project_move_service.dart
+D:\VoidScriptor\void_scriptor_multiplatform\lib\core\persistence\project_open_service.dart
+D:\VoidScriptor\void_scriptor_multiplatform\lib\core\persistence\project_paths.dart
+D:\VoidScriptor\void_scriptor_multiplatform\lib\core\persistence\project_recovery_service.dart
+D:\VoidScriptor\void_scriptor_multiplatform\lib\core\persistence\project_registry_service.dart
+D:\VoidScriptor\void_scriptor_multiplatform\lib\core\persistence\storage_location_registry_resolver.dart
+D:\VoidScriptor\void_scriptor_multiplatform\lib\database\project\project_database.dart
+D:\VoidScriptor\void_scriptor_multiplatform\lib\database\project\project_database_service.dart
+D:\VoidScriptor\void_scriptor_multiplatform\lib\database\project\project_database_platform_io.dart
+D:\VoidScriptor\void_scriptor_multiplatform\lib\features\project_resilience\application\project_session_manager.dart

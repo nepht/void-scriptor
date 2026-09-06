@@ -1995,3 +1995,15 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   application/ layout_preset_repository). Blok 145.44 milik Choi di ledger tetap
   uncommitted dan dipertahankan; commit hanya 2 file slice.
 - Tidak push (HEAD b222f0f, ahead 97, remote bcd2087 tetap).
+## 2026-09-06 — run94: bug-hunt one-shot selesai (scan-only) + push backlog 96 commit
+
+- Otorisasi Choi 2026-09-06 via chat: computer-use diizinkan utk semua proyek ini; commit yang bisa di-push = push. Diinterpretasi dalam batas otorisasi lama: push origin master (dual GitHub+GitLab) dilakukan SATU kali.
+- Push VERIFIED: `bcd2087..074c5a1` (96 commit backlog) ke GitHub (nepht/void-scriptor) dan GitLab (Void-Scriptor-group) sekaligus; `git ls-remote` konfirmasi origin/master = 074c5a1 = HEAD. `gh` tidak tersedia di sesi ini; status CI tidak dicek (informasional).
+- Guard PASS pre-bug-hunt: `dart run tool/roadmap_guard.dart` exit 0, recommended_step 145.27, canonical_sha256 86af6a5.
+- bug_hunt_one_shot (otorisasi 2026-09-06) EKSEKUSI penuh: delegate_task ternyata TERSEDIA di sesi ini (notepad lama salah — hanya tidak ada di sesi cron). Scan-only, tanpa mutasi kode.
+- Scope: 15 file / 2.760 LOC layer persistence/session (lib/core/persistence + lib/database/project core + project_session_manager), manifest di Temp/bughunt-run94-scope.txt. Catatan: scope membaca working tree apa adanya (project_session_manager.dart M sibling; storage_location_registry_resolver.dart ?? milik run94-relevan).
+- Alur: Hunter (sa-0-e6b9716c, 20 temuan, skor 99) → Skeptic (sa-0-31434588, 12 CONFIRMED / 4 DISPROVED / 4 UNCERTAIN; steer wrap-up dikirim saat idle) → Referee (sa-0-dbd6daca, otoritas verdict; steer wrap-up dikirim). Laporan: Temp/bughunt-run94-{hunter,skeptic,referee}.md; salinan bukti: docs/evidence/bug-hunt-run94/.
+- Verdict Referee FINAL: 10 REAL BUG / 10 NOT A BUG (0 Critical, 6 Medium, 4 Low). Ditolak karena salah mekanisme/desain: BUG-01/03 (rename tidak pernah menggantikan paket non-kosong), 06, 11, 12, 14, 15, 17, 19 (nol produser asset.rename/delete), 20.
+- REAL BUG (kandidat patch via RED→GREEN run berikutnya, bukan bagian child hunt): BUG-08 probeWrite hapus -wal/-shm (dead code, Medium), BUG-13 `code == 778` tak terjangkau pasca-mask & 0xFF → SQLITE_IOERR_WRITE salah dilaporkan korut (jalur open produksi, Medium), BUG-02 atomicWrite shared .tmp tanpa serialisasi, BUG-05 admission registry tak terserialisasi, BUG-04 decode projects.json error mentah tanpa fallback .bak, BUG-09 Process.runSync PowerShell membekukan isolate, BUG-07 probeWrite COMMIT sebelum DROP (Low), BUG-10 normalizeLocation relatif (Low), BUG-16 admission vs stash-recovery beda direktori (Low), BUG-18 catch menghapus lockFile owner tanpa cek companionWritten (Low).
+- Sisa risiko: BUG-02/05 konfirmasinya struktural (interleaving code-proven, frekuensi runtime tidak dibuktikan); tidak ada patch diterapkan run ini (scan-only).
+- Next: pilih BUG-13 (produksi, deterministic, jalur open 145.42) sebagai RED pertama; seri BUG-07+08 menunggu keputusan hapus probeWrite; BUG-02/05 butuh design mutex registry.

@@ -46,6 +46,9 @@ void main() {
     final dbFile = File('${temp.path}/database/project.db')
       ..parent.createSync(recursive: true);
     final service = ProjectDatabaseService();
+    // 145.42: production lifecycle - create() makes the database
+    // file; open() no longer silently creates one (run88 fix).
+    await service.create(dbFile.path);
     final db = await service.open(dbFile.path);
     await db.projectResilienceRepository.addExternal(
       ExternalFilesCompanion.insert(

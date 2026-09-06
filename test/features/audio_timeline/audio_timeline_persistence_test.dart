@@ -14,6 +14,8 @@ void main() {
     await (await paths.project('project-timeline')).create(recursive: true);
     final dbPath = (await paths.database('project-timeline')).path;
     final service = ProjectDatabaseService();
+    // 145.42: open() no longer silently creates the database file.
+    await service.create(dbPath);
     final database = await service.open(dbPath);
     final repository = AudioTimelineRepository(database);
 
@@ -53,7 +55,7 @@ void main() {
     final second = await service.open(dbPath);
     addTearDown(second.close);
     final restored = AudioTimelineRepository(second);
-    expect(second.schemaVersion, 57);
+    expect(second.schemaVersion, 59);
     expect(
       (await restored.clipsForTimeline(
         'timeline-scene-8',

@@ -16,6 +16,8 @@ void main() {
       await (await paths.project('project-dialogue')).create(recursive: true);
       final dbPath = (await paths.database('project-dialogue')).path;
       final service = ProjectDatabaseService();
+      // 145.42: open() no longer silently creates the database file.
+      await service.create(dbPath);
       final database = await service.open(dbPath);
       final repository = DialogueRepository(database);
 
@@ -77,7 +79,7 @@ void main() {
       final second = await service.open(dbPath);
       addTearDown(second.close);
       final restored = DialogueRepository(second);
-      expect(second.schemaVersion, 57);
+      expect(second.schemaVersion, 59);
       expect((await restored.getVoiceProfile('qowner'))?.language, 'id-ID');
       expect(
         (await restored.primaryVoiceReference('qowner'))?.audioFileId,

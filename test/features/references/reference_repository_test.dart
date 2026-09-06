@@ -20,6 +20,8 @@ void main() {
       final source = File('${root.path}/source.png')
         ..writeAsBytesSync([1, 2, 3, 4]);
       final databasePath = await paths.database('p');
+      // 145.42: open() no longer silently creates the database file.
+      await ProjectDatabaseService().create(databasePath.path);
       final database = await ProjectDatabaseService().open(databasePath.path);
       addTearDown(database.close);
       final importer = ReferenceImportService(database: database, paths: paths);
@@ -74,6 +76,8 @@ void main() {
       addTearDown(() => root.delete(recursive: true));
       final paths = ProjectPaths(rootDirectory: root);
       await ProjectFileService(paths: paths).createStructure('p');
+      // 145.42: open() no longer silently creates the database file.
+      await ProjectDatabaseService().create((await paths.database('p')).path);
       final source = File('${root.path}/source.png')
         ..writeAsBytesSync([1, 2, 3]);
       final replacement = File('${root.path}/replacement.png')

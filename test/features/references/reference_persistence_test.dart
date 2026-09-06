@@ -18,6 +18,8 @@ void main() {
       final paths = ProjectPaths(rootDirectory: root);
       final databaseFile = await paths.database('project-1');
       final service = ProjectDatabaseService();
+      // 145.42: open() no longer silently creates the database file.
+      await service.create(databaseFile.path);
       final first = await service.open(databaseFile.path);
       await first
           .into(first.references)

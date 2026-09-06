@@ -92,6 +92,16 @@ class ProjectDatabaseService {
 
   Future<ProjectDatabase> open(String databasePath) async {
     final onDisk = await readProjectDatabaseSchemaVersion(databasePath);
+    // Sprint 145.42: a missing database file is an unavailable
+    // storage state, never a license to silently create an empty
+    // database - ProjectDatabaseService.create() is the only
+    // production creator.
+    if (!File(databasePath).existsSync()) {
+      throw ProjectDatabaseUnavailableException(
+        databasePath,
+        StateError('database file does not exist'),
+      );
+    }
     if (onDisk != null && onDisk > ProjectDatabase.currentSchemaVersion) {
       throw SchemaVersionTooNewException(
         onDisk,

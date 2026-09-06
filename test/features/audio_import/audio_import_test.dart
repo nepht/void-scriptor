@@ -15,6 +15,8 @@ void main() {
       final paths = ProjectPaths(rootDirectory: root);
       await (await paths.project('p')).create(recursive: true);
       final service = ProjectDatabaseService();
+      // 145.42: open() no longer silently creates the database file.
+      await service.create((await paths.database('p')).path);
       final db = await service.open((await paths.database('p')).path);
       final repo = AudioImportRepository(db);
       final result = await repo.importFile(
@@ -25,7 +27,7 @@ void main() {
         sampleRate: 48000,
         channels: 2,
       );
-      expect(db.schemaVersion, 57);
+      expect(db.schemaVersion, 59);
       expect(result.contentHash, isNotEmpty);
       expect(result.projectRelativePath, contains('assets'));
       expect(

@@ -20,6 +20,8 @@ void main() {
       addTearDown(() => root.delete(recursive: true));
       final paths = ProjectPaths(rootDirectory: root);
       await ProjectFileService(paths: paths).createStructure('p');
+      // 145.42: open() no longer silently creates the database file.
+      await ProjectDatabaseService().create((await paths.database('p')).path);
       final database = await ProjectDatabaseService().open(
         (await paths.database('p')).path,
       );
@@ -62,6 +64,8 @@ void main() {
       addTearDown(() => root.delete(recursive: true));
       final paths = ProjectPaths(rootDirectory: root);
       await ProjectFileService(paths: paths).createStructure('p');
+      // 145.42: open() no longer silently creates the database file.
+      await ProjectDatabaseService().create((await paths.database('p')).path);
       final database = await ProjectDatabaseService().open(
         (await paths.database('p')).path,
       );

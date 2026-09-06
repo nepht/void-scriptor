@@ -16,6 +16,8 @@ void main() {
     await project.create(recursive: true);
     final dbPath = (await paths.database('project-vfx')).path;
     final service = ProjectDatabaseService();
+    // 145.42: open() no longer silently creates the database file.
+    await service.create(dbPath);
     final database = await service.open(dbPath);
     final vfxId = await CreateVfxService(database, paths: paths).create(
       projectId: 'project-vfx',
@@ -89,7 +91,7 @@ void main() {
     final second = await service.open(dbPath);
     addTearDown(second.close);
     final restored = VfxRepository(second);
-    expect(second.schemaVersion, 57);
+    expect(second.schemaVersion, 59);
     expect((await second.assetDao.getById(vfxId))?.type, 'vfx');
     expect((await restored.getVfx(vfxId))?.category, VfxCategory.portal);
     expect((await restored.getBehavior(vfxId))?.emitsLight, isTrue);

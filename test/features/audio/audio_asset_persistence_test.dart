@@ -13,6 +13,8 @@ void main() {
     await (await paths.project('p')).create(recursive: true);
     final dbPath = (await paths.database('p')).path;
     final service = ProjectDatabaseService();
+    // 145.42: open() no longer silently creates the database file.
+    await service.create(dbPath);
     final db = await service.open(dbPath);
     final repo = AudioAssetRepository(db);
     await repo.saveAudioFile(
@@ -93,7 +95,7 @@ void main() {
     final second = await service.open(dbPath);
     addTearDown(second.close);
     final restored = AudioAssetRepository(second);
-    expect(second.schemaVersion, 57);
+    expect(second.schemaVersion, 59);
     expect(
       (await restored.getSoundEffect('sfx-portal'))?.category,
       SoundEffectCategory.voidEffect,

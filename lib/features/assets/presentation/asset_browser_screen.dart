@@ -12,6 +12,7 @@ import '../application/asset_pagination.dart';
 import '../application/asset_repository.dart';
 import '../application/asset_view_preference_store.dart';
 import '../domain/asset_search_query.dart';
+import 'widgets/isolated_asset_reference_card.dart';
 import '../domain/asset_type.dart';
 
 class AssetBrowserScreen extends ConsumerStatefulWidget {
@@ -407,7 +408,40 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
       _toggleSelection(asset.id);
       return;
     }
+    _showAssetDetail(asset);
     _select(asset);
+  }
+
+  /// Isolated visual reference detail (ADR
+  /// docs/architecture/character-owned-assets-and-isolated-visual-references.md):
+  /// the primary reference renders on a transparency checkerboard with the
+  /// description below, isolated from any character context.
+  Future<void> _showAssetDetail(SearchableAsset asset) {
+    return showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        key: const Key('asset-detail-dialog'),
+        title: const Text('Asset detail'),
+        content: SizedBox(
+          width: 420,
+          child: SingleChildScrollView(
+            child: IsolatedAssetReferenceCard(
+              name: asset.name,
+              assetType: asset.type.name,
+              description: asset.description,
+              imagePath: asset.thumbnailPath,
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            key: const Key('asset-detail-close'),
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _toggleSelection(String assetId) {

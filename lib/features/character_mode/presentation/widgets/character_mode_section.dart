@@ -209,6 +209,7 @@ class _ModeLoadoutCard extends ConsumerWidget {
       for (final slot in slots) slot: _entryAssetId(entries, slot),
     };
     final original = Map<LoadoutSlot, String?>.from(selected);
+    final createdAssets = <db.Asset>[];
     final selectedQuantity = <LoadoutSlot, int>{
       for (final slot in slots) slot: _entryQuantity(entries, slot),
     };
@@ -226,7 +227,12 @@ class _ModeLoadoutCard extends ConsumerWidget {
                 for (final slot in selected.keys)
                   ListTile(
                     title: Text(_slotLabel(slot.value)),
-                    subtitle: Text(loadoutAssetLabel(selected[slot], assets)),
+                    subtitle: Text(
+                      loadoutAssetLabel(selected[slot], [
+                        ...assets,
+                        ...createdAssets,
+                      ]),
+                    ),
                     trailing: Wrap(
                       spacing: 4,
                       children: [
@@ -251,7 +257,14 @@ class _ModeLoadoutCard extends ConsumerWidget {
                               builder: (context) => AlertDialog(
                                 title: Text('Choose ${_slotLabel(slot.value)}'),
                                 content: AssetPicker(
-                                  assets: assets,
+                                  assets: [
+                                    for (final asset in assets)
+                                      if (!createdAssets.any(
+                                        (created) => created.id == asset.id,
+                                      ))
+                                        asset,
+                                    ...createdAssets,
+                                  ],
                                   assetType: type,
                                   initialAssetId: selected[slot],
                                   onCreate:
@@ -269,7 +282,10 @@ class _ModeLoadoutCard extends ConsumerWidget {
                               ),
                             );
                             if (asset != null) {
-                              setState(() => selected[slot] = asset.id);
+                              setState(() {
+                                selected[slot] = asset.id;
+                                createdAssets.add(asset);
+                              });
                             }
                           },
                           child: const Text('Choose'),

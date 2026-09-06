@@ -2316,3 +2316,11 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Ledger hygiene: this block appended to the HEAD blob (hash-object + update-index, LF-only, commit without pathspec); the sibling restructure of this file in the worktree (27+/149-, incl. armor/accessory + asset-browser blocks and compressed run105/107 blocks) was NOT adopted and stays uncommitted.
 - ROADMAP_STATE.json not touched (approval gate; uncommitted sibling blocks precedent). Nothing pushed (push is Choi call).
 - Next: (1) minimum-device matrix + repeat journey for 145.44 needs Choi interactive session (cron cua-driver blocked 5x on record); (2) Settings Hub 5b6e11a only when routing/shell/settings region is committed; (3) NO-OP if regions stay dirty.
+
+### 2026-09-07 - run115 nephthys - stability refresh at 55515a7: sibling assets lib change (a2a3f93) covered FULL GREEN (0 code mutation)
+
+- Window: sibling commit a2a3f93 01:54 (detail dialog + instant loadout labels), gap edit 32+ min, 0 dart/flutter processes at run start (02:10); wave WIP 510 dirty files untouched.
+- Cron-run114 closeout FAILED after commit (510 dirty files snapshotted, AD_HOC script under 100/1000); classification unchanged: evidence-only run, no code mutation. Notepad continuity restored this run.
+- Gates fresh @HEAD 55515a7, Windows toolchain: flutter analyze No issues 12.5s; FULL SUITE 3827 PASS / 0 FAIL / 1 SKIP "All tests passed!" ~21min (delta vs run111 3824 = +3, exactly the sibling a2a3f93/9c8ec8e new tests: asset_detail_dialog 2 + loadout quantity 1); flutter build windows --debug PASS 27.4s; git diff --check exit 0.
+- Roadmap guard PASS pre-run (pointer 145.27, canonical_sha 86af6a5); HEAD unchanged through run (no mid-run sibling commit); ROADMAP_STATE clean; 145.27 stays PARTIAL (unchanged blockers: user validation, native journey, route gating 11 demo routes - all outside cron).
+- This block is the sole change of the run (append-only, blob from HEAD + LF block); no push (decision Choi); no ROADMAP_STATE change (pointer rules).

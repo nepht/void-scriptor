@@ -10,6 +10,7 @@ class ProjectSidebarModulePreferences {
     required this.factions,
     required this.relationshipMap,
     this.weapons = false,
+    this.storyItems = false,
   });
 
   // Retained only to read v1 preference files. Factions and relationships are
@@ -17,37 +18,44 @@ class ProjectSidebarModulePreferences {
   final bool factions;
   final bool relationshipMap;
   final bool weapons;
+  final bool storyItems;
 
   ProjectSidebarModulePreferences copyWith({
     bool? factions,
     bool? relationshipMap,
     bool? weapons,
+    bool? storyItems,
   }) => ProjectSidebarModulePreferences(
     factions: factions ?? this.factions,
     relationshipMap: relationshipMap ?? this.relationshipMap,
     weapons: weapons ?? this.weapons,
+    storyItems: storyItems ?? this.storyItems,
   );
 
   Map<String, Object> toJson() => {
-    'version': 2,
+    'version': 3,
     'factions': false,
     'relationshipMap': false,
     'weapons': weapons,
+    'storyItems': storyItems,
   };
 
   static ProjectSidebarModulePreferences? tryFromJson(Object? value) {
     if (value is! Map<String, dynamic>) return null;
     final version = value['version'];
-    if (version != 1 && version != 2) return null;
+    if (version != 1 && version != 2 && version != 3) return null;
     final factions = value['factions'];
     final relationshipMap = value['relationshipMap'];
     if (factions is! bool || relationshipMap is! bool) return null;
     final weapons = value['weapons'];
-    if (version == 2 && weapons is! bool) return null;
+    final storyItems = value['storyItems'];
+    if (version >= 2 && weapons is! bool) return null;
+    if (version == 3 && storyItems is! bool) return null;
     return ProjectSidebarModulePreferences(
       factions: false,
       relationshipMap: false,
-      weapons: version == 2 ? weapons! as bool : false,
+      weapons: version >= 2 ? weapons! as bool : false,
+      storyItems: version == 3 ? storyItems! as bool : false,
     );
   }
 
@@ -56,10 +64,12 @@ class ProjectSidebarModulePreferences {
       other is ProjectSidebarModulePreferences &&
       factions == other.factions &&
       relationshipMap == other.relationshipMap &&
-      weapons == other.weapons;
+      weapons == other.weapons &&
+      storyItems == other.storyItems;
 
   @override
-  int get hashCode => Object.hash(factions, relationshipMap, weapons);
+  int get hashCode =>
+      Object.hash(factions, relationshipMap, weapons, storyItems);
 }
 
 class ProjectSidebarModulePolicy {
@@ -78,22 +88,39 @@ class ProjectSidebarModulePolicy {
     'epic',
   };
 
+  static const _storyItemGenreTerms = <String>{
+    'romance',
+    'romantic',
+    'drama',
+    'mystery',
+    'thriller',
+    'crime',
+    'detective',
+    'historical',
+    'fantasy',
+    'horror',
+    'gothic',
+    'adventure',
+  };
+
   static ProjectSidebarModulePreferences recommend({
     required Iterable<String> genres,
     required bool hasFactions,
     required bool hasRelationships,
     bool hasWeapons = false,
+    bool hasStoryItems = false,
   }) {
     final normalized = genres
         .map((genre) => genre.trim().toLowerCase())
-        .where((genre) => genre.isNotEmpty);
-    final genreSuggestsWeapons = normalized.any(
-      (genre) => _factionGenreTerms.any(genre.contains),
-    );
+        .where((genre) => genre.isNotEmpty)
+        .toList(growable: false);
+    bool matches(Set<String> terms) =>
+        normalized.any((genre) => terms.any(genre.contains));
     return ProjectSidebarModulePreferences(
       factions: false,
       relationshipMap: false,
-      weapons: hasWeapons || genreSuggestsWeapons,
+      weapons: hasWeapons || matches(_factionGenreTerms),
+      storyItems: hasStoryItems || matches(_storyItemGenreTerms),
     );
   }
 }
@@ -131,11 +158,15 @@ class ProjectSidebarModulePreferencesService {
       projectId,
     );
     final weapons = await database.weaponDao.getWeapons(projectId);
+    final props = await (database.select(
+      database.props,
+    )..where((row) => row.projectId.equals(projectId))).get();
     return ProjectSidebarModulePolicy.recommend(
       genres: stories.map((story) => story.genre),
       hasFactions: factions.isNotEmpty,
       hasRelationships: relationships.isNotEmpty,
       hasWeapons: weapons.isNotEmpty,
+      hasStoryItems: props.isNotEmpty,
     );
   }
 

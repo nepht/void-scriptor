@@ -14,6 +14,8 @@ import '../../wardrobe/data/wardrobe_repository_impl.dart';
 import '../../wardrobe/domain/wardrobe_model.dart';
 import '../../weapon/data/weapon_repository_impl.dart';
 import '../../weapon/domain/weapon_model.dart';
+import '../../props/data/prop_repository.dart';
+import '../../props/domain/prop_model.dart';
 import 'explorer_environment_group.dart';
 import '../../environment/data/environment_repository_impl.dart';
 import '../../environment/domain/environment_model.dart';
@@ -59,6 +61,15 @@ final projectSidebarModulePreferencesProvider =
             projectId: projectId,
           );
     });
+
+final propExplorerProvider = FutureProvider.family<List<PropModel>, String>((
+  ref,
+  projectId,
+) async {
+  final session = ref.watch(projectSessionProvider).valueOrNull;
+  if (session == null || session.manifest.id != projectId) return const [];
+  return PropRepository(session.database).listForProject(projectId);
+});
 
 final storyExplorerProvider = FutureProvider.family<List<Asset>, String>((
   ref,
@@ -322,6 +333,9 @@ class ExplorerPanel extends ConsumerWidget {
     final weapons = projectId == null
         ? const AsyncValue<List<WeaponModel>>.data([])
         : ref.watch(weaponExplorerProvider(projectId));
+    final storyItems = projectId == null
+        ? const AsyncValue<List<PropModel>>.data([])
+        : ref.watch(propExplorerProvider(projectId));
 
     final environments = projectId == null
         ? const AsyncValue<List<EnvironmentModel>>.data([])
@@ -446,6 +460,12 @@ class ExplorerPanel extends ConsumerWidget {
                             ),
                           ),
                     ),
+                  if (modulePreferences.storyItems)
+                    _StoryItemGroup(
+                      items: storyItems,
+                      selectedId: ref.watch(selectionProvider)?.assetId,
+                      onSelected: (item) => _showStoryItem(context, item),
+                    ),
                   EnvironmentGroup(
                     onFocused: () =>
                         focusExplorerAsset(ref, AssetType.environment),
@@ -495,6 +515,42 @@ class ExplorerPanel extends ConsumerWidget {
   }
 }
 
+Future<void> _showStoryItem(
+  BuildContext context,
+  PropModel item,
+) => showDialog<void>(
+  context: context,
+  builder: (context) => AlertDialog(
+    title: Text(item.name),
+    content: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 460),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Category: ${item.category.name}'),
+          const SizedBox(height: 12),
+          Text(
+            item.description.isEmpty ? 'No description yet.' : item.description,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            item.function.isEmpty ? 'No story function yet.' : item.function,
+          ),
+          const SizedBox(height: 12),
+          Text(item.storyCritical ? 'Story-critical item' : 'Supporting item'),
+        ],
+      ),
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: const Text('Close'),
+      ),
+    ],
+  ),
+);
+
 Future<void> _configureSidebarModules(
   BuildContext context,
   WidgetRef ref,
@@ -502,6 +558,7 @@ Future<void> _configureSidebarModules(
   ProjectSidebarModulePreferences current,
 ) async {
   var weapons = current.weapons;
+  var storyItems = current.storyItems;
   final result = await showDialog<ProjectSidebarModulePreferences>(
     context: context,
     builder: (dialogContext) => StatefulBuilder(
@@ -528,6 +585,16 @@ Future<void> _configureSidebarModules(
                 onChanged: (value) =>
                     setState(() => weapons = value ?? weapons),
               ),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Story Items'),
+                subtitle: const Text(
+                  'Letters, keepsakes, evidence, artifacts, and plot objects',
+                ),
+                value: storyItems,
+                onChanged: (value) =>
+                    setState(() => storyItems = value ?? storyItems),
+              ),
             ],
           ),
         ),
@@ -543,6 +610,7 @@ Future<void> _configureSidebarModules(
                 factions: false,
                 relationshipMap: false,
                 weapons: weapons,
+                storyItems: storyItems,
               ),
             ),
             child: const Text('Save'),
@@ -901,6 +969,60 @@ class _WardrobeGroup extends StatelessWidget {
       data: (items) => items.isEmpty
           ? [const ListTile(dense: true, title: Text('No wardrobes yet'))]
           : items
+                .map(
+                  (item) => ListTile(
+                    dense: true,
+                    minTileHeight: 30,
+                    title: Text(
+                      item.name,
+                      style: TextStyle(
+                        color: context.palette.textMuted,
+                        fontSize: 11,
+                      ),
+                    ),
+                    selected: selectedId == item.assetId,
+                    selectedTileColor: context.palette.primary.withValues(
+                      alpha: 0.12,
+                    ),
+                    onTap: () => onSelected(item),
+                  ),
+                )
+                .toList(),
+    ),
+  );
+}
+
+class _StoryItemGroup extends StatelessWidget {
+  const _StoryItemGroup({
+    required this.items,
+    required this.selectedId,
+    required this.onSelected,
+  });
+
+  final AsyncValue<List<PropModel>> items;
+  final String? selectedId;
+  final ValueChanged<PropModel> onSelected;
+
+  @override
+  Widget build(BuildContext context) => ExpansionTile(
+    initiallyExpanded: true,
+    tilePadding: const EdgeInsets.symmetric(horizontal: 9),
+    childrenPadding: const EdgeInsets.only(left: 28),
+    leading: Icon(
+      Icons.inventory_2_outlined,
+      size: 16,
+      color: context.palette.textMuted,
+    ),
+    title: Text(
+      'Story Items',
+      style: TextStyle(color: context.palette.textSecondary, fontSize: 12),
+    ),
+    children: items.when(
+      loading: () => [const ListTile(dense: true, title: Text('Loading...'))],
+      error: (error, _) => [ListTile(dense: true, title: Text('$error'))],
+      data: (values) => values.isEmpty
+          ? [const ListTile(dense: true, title: Text('No story items yet'))]
+          : values
                 .map(
                   (item) => ListTile(
                     dense: true,

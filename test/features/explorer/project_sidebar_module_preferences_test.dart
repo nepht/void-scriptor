@@ -15,6 +15,7 @@ void main() {
     expect(romance.factions, isFalse);
     expect(romance.relationshipMap, isFalse);
     expect(romance.weapons, isFalse);
+    expect(romance.storyItems, isTrue);
 
     final fantasy = ProjectSidebarModulePolicy.recommend(
       genres: const ['Science Fantasy'],

@@ -8,6 +8,30 @@ part 'prop_repository.g.dart';
 class PropRepository extends DatabaseAccessor<ProjectDatabase>
     with _$PropRepositoryMixin {
   PropRepository(super.db);
+
+  Future<List<domain.PropModel>> listForProject(String projectId) async {
+    final rows =
+        await (select(props)
+              ..where((row) => row.projectId.equals(projectId))
+              ..orderBy([(row) => OrderingTerm.asc(row.name)]))
+            .get();
+    return [
+      for (final row in rows)
+        domain.PropModel(
+          assetId: row.assetId,
+          projectId: row.projectId,
+          name: row.name,
+          category: domain.PropCategory.values.firstWhere(
+            (value) => value.name == row.category,
+            orElse: () => domain.PropCategory.other,
+          ),
+          description: row.description,
+          function: row.function,
+          storyCritical: row.storyCritical,
+        ),
+    ];
+  }
+
   Future<domain.PropModel?> getProp(String id) async {
     final r = await (select(
       props,

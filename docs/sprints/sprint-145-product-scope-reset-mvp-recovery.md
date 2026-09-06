@@ -2121,3 +2121,35 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Native Windows journey on `Tes Novel`: Assets page now lists Qowner, Earth, Qowner - Quiz Maker, Test Story Item — Native Journey (previously "No assets found"); live filter "story" narrowed to the Story Item only. Honest note: "Test Armor — Native Journey" does not appear because `armor` is not yet an `AssetType` enum value (unknown stored types are skipped by design); product follow-up, not a mapper bug.
 - Evidence: `docs/evidence/asset-browser-live-data-20260906/01-assets-live-data.png`, `02-filter-story-live.png`. Graceful close verified (process exited, no session locks).
 - 145.44 "Search indexing" investigation status: INVESTIGATION → ROOT-CAUSED + FIXED (widget-level); minimum-device matrix and repeat run for 145.44 remain MISSING.
+
+### 2026-09-06 - run104 cron nephthys - rekonsiliasi 145.34 rollback self-failure (VERIFIED, tanpa mutasi kode)
+
+- Input job: sisa gap handoff 2026-09-04 region 145.34 = uji kegagalan rollback
+  sendiri dgn data temporer, error melaporkan area gagal, area lain tetap dicoba,
+  emergency backup dipertahankan.
+- Temuan: gap TERNYATA sudah tertutup di HEAD sebelum run ini. Commit 0dfe64c
+  (2026-09-04, run53: rollback-failure injection 145.34) memuat
+  test/features/project_resilience/backup_rollback_failure_test.dart (2 test:
+  kegagalan area manifest -> BackupRollbackException.rollbackErrors eksak
+  ['manifest'] sementara database/assets/workspaces dipulihkan ke pre-restore
+  state + emergency backup dipertahankan; kegagalan 4 area teragregasi) di atas
+  engine rollbackPayloadAreas/restoreWithRollback/lastEmergencyBackupPath (refactor
+  run53 + engine per-area Codex, diadopsi run53 sesuai otorisasi region sibling
+  2026-09-04). Detail: blok ledger "run53 rollback-failure injection 145.34 CLOSED".
+- Bukti segar @HEAD fef7ed7 (bukan klaim historis run53), Windows host, toolchain
+  D:/DevTools Flutter: focused backup_rollback_failure_test.dart +
+  backup_full_payload_rollback_test.dart = 4 PASS / 0 FAIL exit 0; regresi penuh
+  test/features/project_resilience = 183 PASS / 0 FAIL / 1 SKIP exit 0 (~2.1 mnt).
+- Region: project_recovery_services.dart bersih di HEAD (log 7c0edc7/9c42fc9/5cbe9e2);
+  WIP sibling project_resilience lain (project_session_manager.dart M,
+  backup_location_policy.dart M, 5 test M, 4 test ?? session_lock*/backup_asset_integrity)
+  tidak disentuh; sibling Choi aktif saat run (commit fef7ed7 21:21 armor/accessory,
+  0 file lib/test berubah dalam 15 mnt terakhir).
+- Implikasi: sisa 145.34 yang benar2 terbuka hanya fault injection OS-native
+  saat rollback (disk-full/power-loss) UNVERIFIABLE dari cron (preseden run53/86/90),
+  plus keputusan settings UI milik Choi. Handoff "uji kegagalan rollback sendiri"
+  status: sudah-dibuktikan; tidak perlu slice baru.
+- Guard: PASS pre-run (pointer 145.27, canonical_sha 86af6a5). Post-ledger guard
+  dijalankan setelah commit ini. ROADMAP_STATE tidak disentuh. Tidak push
+  (keputusan push milik Choi).
+- DISCLOSURE AMEND: percobaan commit pertama (c30b582) keliru mengadopsi blok ledger armor/accessory milik sibling karena pitfall git commit -- <path> memakai isi worktree pathspec, bukan blob index hasil rekonstruksi; di-amend menjadi blob murni HEAD+run104 dan blok sibling dikembalikan uncommitted di worktree (preseden run87/91/95/96).

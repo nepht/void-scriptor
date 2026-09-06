@@ -7,6 +7,24 @@ import '../domain/project_model.dart';
 import 'project_recovery_service.dart';
 import 'project_paths.dart';
 
+/// The project registry at [registryPath] cannot be parsed into a usable
+/// project list. [cause] is the underlying parse/type failure; the corrupt
+/// file is preserved on disk for manual inspection.
+class ProjectRegistryUnreadableException implements Exception {
+  ProjectRegistryUnreadableException(this.registryPath, this.cause);
+
+  final String registryPath;
+
+  /// The underlying content failure (JSON syntax, registry shape, or the
+  /// type error of a field-corrupt entry).
+  final Object cause;
+
+  @override
+  String toString() =>
+      'ProjectRegistryUnreadableException: registry at $registryPath '
+      'is not a readable project registry ($cause)';
+}
+
 class ProjectRegistryService {
   ProjectRegistryService({Directory? rootDirectory, this.paths})
     : file = rootDirectory == null
@@ -34,7 +52,7 @@ class ProjectRegistryService {
     // terkubur di stash `.import-backup-*` sebelum daftar proyek
     // dilaporkan.
     await _recoverImportStashes();
-    final registered = await _decodeProjects(file);
+    final registered = await _decodeProjectsWithBackupRecovery(file);
     // 145.42 interrupted-move window: consume move journals that
     // landed inside this listing root before the marker delete ran.
     await _consumeLandedMoveMarkers(registered);
@@ -63,20 +81,70 @@ class ProjectRegistryService {
     return merged;
   }
 
+  /// Bug-hunt run94 BUG-04: corrupt registry CONTENT is not a power-loss
+  /// window ([ProjectRecoveryService.recoverIfInterrupted] only handles a
+  /// MISSING target). The last durable copy in `.bak` is restored to the
+  /// target before the failure is reported; without a `.bak` the corrupt
+  /// file is preserved for inspection and the typed unreadable exception
+  /// propagates (remove()/upsert() compose on this, so they fail loudly
+  /// instead of silently diverging registry from disk).
+  Future<List<ProjectModel>> _decodeProjectsWithBackupRecovery(
+    File file,
+  ) async {
+    try {
+      return await _decodeProjects(file);
+    } on ProjectRegistryUnreadableException {
+      final restored = await _recovery.restoreBackup(file);
+      if (!restored) rethrow;
+      return _decodeProjects(file);
+    }
+  }
+
+  /// Corrupt content (unparsable JSON, wrong shape, field-level type
+  /// failures) is reported as [ProjectRegistryUnreadableException]. Two
+  /// deliberate non-corruption contracts are preserved raw:
+  /// 1. file-level I/O failures (missing/unreadable registry) propagate as
+  ///    FileSystemException, exactly as before this slice;
+  /// 2. an interpretable registry whose schema is newer than 1 keeps the
+  ///    raw FormatException compatibility rejection (an app-update artifact
+  ///    is an actionable "upgrade required" signal, not corruption).
   Future<List<ProjectModel>> _decodeProjects(File registryFile) async {
     if (!await registryFile.exists()) return const [];
-    final decoded =
-        jsonDecode(await registryFile.readAsString()) as Map<String, dynamic>;
+    final Object decoded;
+    try {
+      decoded = jsonDecode(await registryFile.readAsString());
+    } on FileSystemException {
+      rethrow;
+    } on Object catch (cause) {
+      throw ProjectRegistryUnreadableException(registryFile.path, cause);
+    }
+    if (decoded is! Map<String, dynamic>) {
+      throw ProjectRegistryUnreadableException(
+        registryFile.path,
+        const FormatException('Project registry must be a JSON object'),
+      );
+    }
     final schemaVersion = decoded['schemaVersion'];
     if (schemaVersion != 1) {
+      // Compatibility rejection stays raw: an app-update artifact is an
+      // actionable "upgrade required" signal, not corruption.
       throw FormatException(
         'Unsupported project registry schema version: $schemaVersion',
       );
     }
-    final projects = decoded['projects'] as List<dynamic>? ?? const [];
-    return projects
-        .map((item) => ProjectModel.fromJson(item as Map<String, dynamic>))
-        .toList(growable: false);
+    final List<dynamic> entries;
+    try {
+      entries = decoded['projects'] as List<dynamic>? ?? const [];
+    } on Object catch (cause) {
+      throw ProjectRegistryUnreadableException(registryFile.path, cause);
+    }
+    try {
+      return entries
+          .map((item) => ProjectModel.fromJson(item as Map<String, dynamic>))
+          .toList(growable: false);
+    } on Object catch (cause) {
+      throw ProjectRegistryUnreadableException(registryFile.path, cause);
+    }
   }
 
   Future<Directory> _listingOwnerDirectory() async {

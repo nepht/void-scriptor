@@ -89,7 +89,7 @@ void main() {
     );
 
     test(
-      'corrupt registry JSON fails load without overwriting the file',
+      'corrupt registry JSON fails load typed without overwriting the file',
       () async {
         final root = await Directory.systemTemp.createTemp(
           's14512-corrupt-registry-',
@@ -102,7 +102,7 @@ void main() {
 
         expect(
           ProjectRegistryService(rootDirectory: root).load(),
-          throwsA(isA<FormatException>()),
+          throwsA(isA<ProjectRegistryUnreadableException>()),
         );
         expect(await registryFile.readAsString(), '{not-json');
       },

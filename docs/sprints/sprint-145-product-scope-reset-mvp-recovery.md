@@ -2164,3 +2164,36 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Bukti: guard PASS pre-commit; diff --check PASS per commit; status docs/adr + .hermes/ROADMAP_STATE.json bersih pasca-commit; TANPA perubahan lib/test. Full suite tidak diulang (kode tidak berubah sejak fdd9970 hijau run89/101; anti-berputar).
 - Status 145.27 tetap PARTIAL (user validation + native proof + route gating demo + keputusan 145.44-145.50 milik Choi). Tidak push (HEAD 7e41dac, keputusan push Choi).
 - Next: Settings Hub 5b6e11a bila region routing/shell/settings bersih; native journey 145.42/145.44 dari sesi utama Choi; keputusan Choi 145.47/145.49/145.50 + push; NO-OP jika nihil.
+
+## Update 2026-09-06 (nephthys cron run107, 145.42 process_kill DB-layer evidence closure via adoption)
+
+- Gap: the 145.42 DB-layer process_kill acceptance had no committed artifact -
+  the sibling-authored untracked test
+  test/database/project/project_database_process_kill_test.dart + fixture
+  test/database/project/fixtures/db_process_kill_child.dart (2026-09-05
+  16:45-16:50, cited in this ledger, proven 2/2 at HEAD in run75) stayed
+  untracked across runs 75-106.
+- Action: adoption commit 76248c2 (2 files +173, explicit scoped paths, sibling
+  attribution in the commit message). No production code changed; the wide
+  sibling tracked-M wave (167 files incl. ai/world/shell/CI) remains untouched
+  and unadopted; ROADMAP_STATE pointer stays 145.27.
+- Fresh evidence @ HEAD 76248c2 (dirty worktree): focused
+  project_database_process_kill_test 2/2 PASS exit 0 - OS-native harness
+  (child dart.exe stages a committed row, holds an open transaction, is
+  hard-killed via Process.kill; the production open path recovers the hot
+  journal, committed data survives, the open transaction rolls back, and the
+  recovered DB accepts new writes; non-vacuousness control: a torn DB file is
+  rejected as ProjectDatabaseUnreadableException); regression test/database +
+  test/core/persistence 114 PASS / 0 FAIL exit 0; flutter analyze full tree
+  No issues found! (109.6s, pre-adoption); git diff --check PASS;
+  flutter build windows --debug PASS (21.8s); roadmap guard PASS pre-commit
+  and post-commit (pointer 145.27, canonical_sha 86af6a5).
+- 145.42 DB-layer failure matrix is now fully committed evidence: BUSY
+  (5cdfb75), corrupt (5cd2589), missing-file (f55d059), drive-absent
+  (937298c), write-failure (fdd9970), process-kill/WAL (76248c2). Remaining
+  145.42 boundaries: drive-removal live probe + installed-device validation
+  (hardware-bound, UNVERIFIABLE from cron); interrupted move/import/export/
+  restore carry committed slices (move-recovery journal, import crash-window,
+  export atomic staging, restore staging heal) with their own native gaps.
+- Pointer stays 145.27 (PARTIAL). Not pushed (HEAD 76248c2, ahead 27 over
+  origin/master).

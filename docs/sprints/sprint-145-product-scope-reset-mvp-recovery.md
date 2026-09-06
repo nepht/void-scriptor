@@ -2197,3 +2197,36 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   export atomic staging, restore staging heal) with their own native gaps.
 - Pointer stays 145.27 (PARTIAL). Not pushed (HEAD 76248c2, ahead 27 over
   origin/master).
+
+### 2026-09-06 - run108 nephthys - stability gate refresh at HEAD bb1bc04; 2 concurrent-owned FAIL recorded
+
+- Scope: zero-mutation stability run. No production or test file touched.
+  Guard PASS pre-run (pointer 145.27, canonical_sha 86af6a5); no conflict
+  markers; no flutter/dart process at start.
+- Full suite at HEAD bb1bc04 (dirty sibling worktree):
+  flutter test --no-pub -> +3814 ~1 SKIP -2 FAIL, exit 1 (~19.5 min).
+  Baseline run101 3805/1/0 @ 8b50621; delta +9 PASS from sibling commits
+  (76248c2 process-kill harness + sibling feature commits).
+- FAIL 1 (compile, concurrent-owned live edit):
+  test/features/assets/standalone_asset_types_creation_test.dart M sibling,
+  mtime 23:07:36 mid-run (edited DURING this run): syntax error at line 45
+  (stray `});`) + LoadoutSlot.creature member not found (production enum not
+  extended yet). Sibling is actively writing this file; not touched.
+- FAIL 2 (deterministic, sibling-region refactor):
+  test/features/export/story_txt_export_ui_test.dart "Export TXT menulis
+  naskah teks polos ke export directory" - expect(find.textContaining
+  ('TXT diekspor')) finds 0 widgets (test line 99). Clean test file (2026-09-03,
+  not modified); production lib/features/story/presentation/story_workspace_screen.dart
+  carries a wide uncommitted sibling refactor (+126/-30, _buildDedicatedSection/
+  activeSection section splitting) that changed the export surface the test
+  exercises. Isolation rerun: +1 -1 exit 1 -> deterministic, not a flake.
+  Root cause hypothesis (unverified, sibling to confirm): export snackbar or
+  action path moved under the section refactor.
+- Both FAILs are concurrent-owned sibling WIP (assets creation test mid-edit;
+  story workspace screen refactor). Not patched per sibling-region discipline;
+  recorded here so the next cron run re-checks only these two regions.
+- Not pushed (HEAD bb1bc04, ahead 30 over origin/master - push is Choi's call).
+- Next: (1) re-run suite / the two failing regions once sibling commits or
+  reverts; (2) Settings Hub 5b6e11a only if routing/shell/settings region
+  committed; (3) native journey 145.42/145.44 needs Choi's interactive session;
+  (4) NO-OP if regions still dirty.

@@ -2265,3 +2265,39 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   committed; (2) native journey 145.42/145.44 needs Choi's interactive session
   (cua-driver ready only there; 5x cron failures on record); (3) NO-OP if
   regions stay dirty.
+
+### 2026-09-07 - run112 cron nephthys - hard-kill handoff evidence reconciled to canonical acceptance (VERIFIED, no code mutation)
+
+- Input job: HANDOFF HARD-KILL WINDOWS VERIFIED (2026-09-07) asks the next run
+  to reconcile those working-tree patches to canonical Sprint 145.27/145.42
+  acceptance, then pick the next incomplete step. No re-implementation.
+- Live environment: interactive native session ACTIVE during this run
+  (void_scriptor.exe PID 15352, Debug exe from the canonical repo, started
+  01:24, CPU 2.3 -> 5.3 while observed = likely the native journey executor).
+  Cron honored it: no UI/build interference, no region touched.
+- Fresh re-run at live tree (flutter test --no-pub, canonical Windows toolchain):
+  test/database/project/project_database_process_kill_test.dart = 4/4 PASS,
+  exit 0 (committed-before-kill survives + open tx rolls back + production open
+  recovers; torn-file rejected = failure matrix not vacuous).
+  test/features/project_resilience/durable_draft_journal_process_kill_test.dart
+  = 2/2 PASS, exit 0 (journal content of a hard-killed real process fully
+  recoverable; half-written tmp never treated as recoverable source).
+- Evidence sources read: test/support/real_dart_executable.dart (untracked;
+  resolves real dart.exe independent of FLUTTER_ROOT fallback), harness edits in
+  test/database/project/project_database_process_kill_test.dart,
+  test/features/project_resilience/durable_draft_journal_process_kill_test.dart
+  (+ fixtures) - matches handoff claim exactly.
+- Acceptance mapping: canonical 145.42 remaining[] item process_kill now has
+  DB-layer (this evidence) and draft-journal-layer (this evidence) coverage.
+  145.27 non-mutating workspaces priority is a product decision (Choi) and
+  stays PARTIAL. Other 145.42 remaining items unchanged: power_loss,
+  disk_full, permission_loss, drive_removal live, interrupted move/import/
+  export/restore, installed_device_validation (hardware/OS-bound or owner
+  decisions - UNVERIFIABLE from cron).
+- Guard PASS pre-run (pointer 145.27, canonical_sha 86af6a5). git diff --check
+  exit 0 pre-run. Roadmap pointer not moved (145.27 remains next_step).
+- No code files mutated, no commits adopted, no push (push is Choi's call).
+- Next: (1) after the interactive native session ends, re-verify its journey
+  evidence for 145.42/145.44 if artifacts land in the ledger; (2) Settings Hub
+  queue 5b6e11a only when routing/shell/settings region is committed; (3) NO-OP
+  if regions stay dirty.

@@ -2089,6 +2089,14 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Boundary: in-process mutex only; cross-process registry lock remains UNVERIFIABLE / out of scope (documented in async_mutex.dart).
 - Remaining bug-hunt REAL BUGs: BUG-07/08 (probeWrite dead-code, removal decision), BUG-18 (deferred, sibling region). No push (push decision owned by Choi).
 
+### 2026-09-06 — Stand-alone Armor/Story Item creation + native persistence (VERIFIED-PARTIAL)
+- Implemented existing-schema `AssetDao.createStandaloneCharacterAsset` for explicit `armor` and `prop` types only; no schema bump or migration. Empty names and unrelated asset types are rejected.
+- Loadout picker now exposes `Create armor` and `Create story item`. Creation captures editable name/description, persists a stand-alone project asset, returns it to the selected Character Mode slot, and refreshes the project asset provider.
+- TDD: RED missing DAO method; intermediate compile failure exposed callback `Future<dynamic>` mismatch and was corrected to `Future<Asset?>`. Final focused/regression suite 12/12 PASS; focused analyzer CLEAN; Windows debug build PASS 45.6s.
+- Native Windows journey used sample project `Tes Novel`, not Saga canon: Qowner → Base Mode → Edit Loadout → Create `Test Armor — Native Journey` and `Test Story Item — Native Journey` → Save Loadout → graceful close → reopen.
+- Restart persistence VERIFIED in UI and SQLite. Both entries resolve through the same Base Mode to Qowner character ID `728a48b1-a12e-4679-b238-a937b10cc2b7`; asset types are `armor` and `prop`; SQLite integrity `ok`; no session lock after graceful close.
+- Evidence appended as screenshots `04`–`09` under `docs/evidence/character-owned-loadout-native-2026-09-06/`.
+- Remaining UX gap: loadout summary and selection currently display UUIDs instead of asset names. Visual-reference import/cutout and ownership/bearer history remain deferred; D-SCHEMA-01 remains OPEN.
 ### 2026-09-06 - run101: write-probe purity BUG-07/08 closed (bug-hunt run94 patch #6)
 - Slice: `ProjectDatabaseService.probeWrite` rewritten as ONE transaction (CREATE + DROP, COMMIT last, best-effort ROLLBACK on failure); removed `PRAGMA journal_mode = WAL` - the probe permanently rewrote the user's journal mode (header byte 18-19 measured RED [1,1] -> [2,2]), violating its own no-modification contract; removed unconditional `-wal`/`-shm` deletion (BUG-08: deleting a live WAL discards committed transactions).
 - RED verified: journal-mode flip on a rollback-journal database + probe-table residue via poison BEFORE DELETE trigger (cleanup sabotage). GREEN 6/6: 4 new purity tests (`project_database_write_probe_purity_test.dart`) + 2 existing 145.42 write-failure tests unchanged.
@@ -2097,3 +2105,19 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Commit: bb0af70 (fix(database), 2 files +225/-31). Sibling loadout journey block preserved uncommitted in the worktree ledger (10 lines, not adopted).
 - Remaining REAL BUGs (bug-hunt run94 Referee): BUG-18 only (companionWritten guard, deferred - `project_session_manager.dart` carries sibling +62/-15 uncommitted). BUG-14 = Referee NOT A BUG. BUG-02/05 closed run100, BUG-04 run96, BUG-09 run97, BUG-10 run98, BUG-16 run99, BUG-13 run95.
 - Next: re-check sibling commit before any BUG-18 work; native journey gap #1/#2 (145.44) still needs Choi's interactive session.
+
+### 2026-09-06 — Human-readable loadout, unequip, and isolated reference card (VERIFIED-PARTIAL)
+- Replaced UUID-only loadout presentation with `assetId → asset.name` resolution in both Character Mode summary and Edit Loadout dialog; missing IDs render `Unknown asset`, not a misleading raw token.
+- Added explicit `Clear` action and save-diff behavior. Clearing removes only the Character Mode assignment through `CharacterLoadoutRepository.removeSlot`; it does not delete the stand-alone asset.
+- TDD contract covers name resolution and unchanged/remove/replace decisions. Focused/regression suite 13/13 PASS; focused analyzer CLEAN; Windows debug build PASS 29.8s.
+- Native Windows journey on `Tes Novel` VERIFIED human-readable names `Test Armor — Native Journey` and `Test Story Item — Native Journey`; Edit Loadout showed Clear actions. Clearing carried item + Save removed its loadout row while its `prop` asset remained in `assets`; SQLite integrity `ok`. Armor assignment remained intact. Graceful close left no process/session lock.
+- Added additive `IsolatedAssetReferenceCard` component: checkerboard transparency preview, contain-fit stand-alone image, and editable description rendered outside/below the image. Widget test PASS. It is not yet wired to Character Visuals or asset workspaces because those integration files are sibling-modified; status remains PARTIAL, not native-verified.
+- Evidence screenshots `10`–`12` under `docs/evidence/character-owned-loadout-native-2026-09-06/`.
+
+### 2026-09-06 — Search/Asset Browser live-data fix (145.44 indexing gap CLOSED)
+- Root cause (Phase 1): `app_router.dart` built `const AssetBrowserScreen()` with no data; the screen only read `widget.assets` (default `const []`) and never consumed `projectAssetsProvider`, so the Search route always rendered "No assets found" regardless of project content.
+- Fix located in `asset_browser_screen.dart` only (router file is sibling-modified and untouched): when constructed without explicit `assets`, the screen now subscribes to `projectAssetsProvider` via `ref.listenManual(fireImmediately: true)`, maps `db.Asset` rows to `SearchableAsset` (rows whose stored type is not in `AssetType` are skipped, not faked), and re-syncs pagination on updates. Explicit `assets:` injection (all existing tests/routes data path) is unchanged and still wins.
+- TDD: RED confirmed for the right reason (live data never rendered) → GREEN. Focused suite `asset_browser_live_project_test.dart` (2 new regression tests) + `asset_browser_screen_test.dart` (5 existing) = 7/7 PASS; focused analyzer CLEAN; Windows debug build PASS 27.1s.
+- Native Windows journey on `Tes Novel`: Assets page now lists Qowner, Earth, Qowner - Quiz Maker, Test Story Item — Native Journey (previously "No assets found"); live filter "story" narrowed to the Story Item only. Honest note: "Test Armor — Native Journey" does not appear because `armor` is not yet an `AssetType` enum value (unknown stored types are skipped by design); product follow-up, not a mapper bug.
+- Evidence: `docs/evidence/asset-browser-live-data-20260906/01-assets-live-data.png`, `02-filter-story-live.png`. Graceful close verified (process exited, no session locks).
+- 145.44 "Search indexing" investigation status: INVESTIGATION → ROOT-CAUSED + FIXED (widget-level); minimum-device matrix and repeat run for 145.44 remain MISSING.

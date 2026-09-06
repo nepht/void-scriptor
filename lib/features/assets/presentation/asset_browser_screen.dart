@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../core/selection/selection_controller.dart';
 import '../../../core/selection/selection_model.dart';
 import '../../../database/project/project_database.dart' as db;
+import '../../../features/projects/presentation/project_persistence_providers.dart';
 import '../../character_mode/presentation/character_mode_controller.dart';
 import '../application/asset_pagination.dart';
 import '../application/asset_repository.dart';
@@ -18,10 +20,20 @@ class AssetBrowserScreen extends ConsumerStatefulWidget {
     this.assets = const [],
     this.repository,
     this.viewPreferenceStore,
+    this.onCreateAsset,
   });
   final List<SearchableAsset> assets;
   final AssetRepository? repository;
   final AssetViewPreferenceStore? viewPreferenceStore;
+
+  /// Persists a stand-alone asset (wardrobe/weapon/armor/accessory/prop).
+  /// Returns the new asset id, or null when the session is unavailable.
+  final Future<String?> Function({
+    required String name,
+    required String description,
+    required String type,
+  })?
+  onCreateAsset;
 
   @override
   ConsumerState<AssetBrowserScreen> createState() => _AssetBrowserScreenState();
@@ -305,9 +317,53 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
               ),
             ],
           ),
+          floatingActionButton: FloatingActionButton.extended(
+            key: const Key('asset-browser-create-fab'),
+            onPressed: _openCreateDialog,
+            tooltip: 'Create stand-alone asset',
+            icon: const Icon(Icons.add),
+            label: const Text('Create asset'),
+          ),
         ),
       ),
     );
+  }
+
+  Future<void> _openCreateDialog() async {
+    final created = await showDialog<_NewAssetDraft>(
+      context: context,
+      builder: (dialogContext) => const _CreateAssetDialog(),
+    );
+    final draft = created;
+    if (draft == null || !mounted) return;
+    final create = widget.onCreateAsset ?? _defaultCreateAsset;
+    final id = await create(
+      name: draft.name,
+      description: draft.description,
+      type: draft.type,
+    );
+    if (id == null || !mounted) return;
+    ref.invalidate(projectAssetsProvider);
+  }
+
+  /// Production default: persists through the active project session.
+  Future<String?> _defaultCreateAsset({
+    required String name,
+    required String description,
+    required String type,
+  }) async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null) return null;
+    final id = const Uuid().v4();
+    await session.database.assetDao.createStandaloneAsset(
+      id: id,
+      projectId: session.manifest.id,
+      name: name,
+      description: description,
+      type: type,
+      now: DateTime.now().toUtc(),
+    );
+    return id;
   }
 
   Widget _buildResults(BuildContext context) {
@@ -400,6 +456,108 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
           projectId: asset.projectId,
         ),
       );
+}
+
+class _NewAssetDraft {
+  const _NewAssetDraft({
+    required this.name,
+    required this.description,
+    required this.type,
+  });
+  final String name;
+  final String description;
+  final String type;
+}
+
+class _CreateAssetDialog extends StatefulWidget {
+  const _CreateAssetDialog();
+
+  @override
+  State<_CreateAssetDialog> createState() => _CreateAssetDialogState();
+}
+
+class _CreateAssetDialogState extends State<_CreateAssetDialog> {
+  final _nameController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  String _type = 'armor';
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final name = _nameController.text.trim();
+    return AlertDialog(
+      title: const Text('Create stand-alone asset'),
+      content: SizedBox(
+        width: 380,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              key: const Key('create-asset-name-field'),
+              controller: _nameController,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: 'Name',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              key: const Key('create-asset-description-field'),
+              controller: _descriptionController,
+              decoration: const InputDecoration(
+                labelText: 'Description',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              initialValue: _type,
+              decoration: const InputDecoration(
+                labelText: 'Type',
+                border: OutlineInputBorder(),
+              ),
+              items: const [
+                DropdownMenuItem(value: 'armor', child: Text('armor')),
+                DropdownMenuItem(value: 'accessory', child: Text('accessory')),
+                DropdownMenuItem(value: 'wardrobe', child: Text('wardrobe')),
+                DropdownMenuItem(value: 'weapon', child: Text('weapon')),
+                DropdownMenuItem(value: 'prop', child: Text('story item')),
+              ],
+              onChanged: (value) => setState(() => _type = value ?? _type),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          key: const Key('create-asset-submit-button'),
+          onPressed: name.isEmpty
+              ? null
+              : () => Navigator.of(context).pop(
+                  _NewAssetDraft(
+                    name: name,
+                    description: _descriptionController.text.trim(),
+                    type: _type,
+                  ),
+                ),
+          child: const Text('Create'),
+        ),
+      ],
+    );
+  }
 }
 
 class _FocusSearchIntent extends Intent {

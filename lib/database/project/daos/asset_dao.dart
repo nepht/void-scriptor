@@ -34,11 +34,36 @@ class AssetDao extends DatabaseAccessor<ProjectDatabase> with _$AssetDaoMixin {
     required String type,
     String description = '',
     required DateTime now,
+  }) => createStandaloneAsset(
+    id: id,
+    projectId: projectId,
+    name: name,
+    type: type,
+    description: description,
+    now: now,
+  );
+
+  /// Creates a stand-alone catalog asset. Stand-alone types per product
+  /// contract (2026-09-06): wardrobe, weapon, armor, accessory, prop.
+  Future<void> createStandaloneAsset({
+    required String id,
+    required String projectId,
+    required String name,
+    required String type,
+    String description = '',
+    required DateTime now,
   }) async {
+    const standaloneTypes = <String>{
+      'wardrobe',
+      'weapon',
+      'armor',
+      'accessory',
+      'prop',
+    };
     final normalizedName = name.trim();
     if (normalizedName.isEmpty) throw ArgumentError('Name must not be empty');
-    if (type != 'armor' && type != 'prop') {
-      throw ArgumentError('Only armor and prop assets are supported');
+    if (!standaloneTypes.contains(type)) {
+      throw ArgumentError('Type is not a stand-alone asset type: $type');
     }
     await into(assets).insert(
       AssetsCompanion.insert(

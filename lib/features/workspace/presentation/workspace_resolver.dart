@@ -33,7 +33,14 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 import '../../../design_system/typography/void_typography.dart';
 
 class WorkspaceResolver extends ConsumerWidget {
-  const WorkspaceResolver({super.key});
+  const WorkspaceResolver({
+    super.key,
+    this.activeSection,
+    this.onSectionRequested,
+  });
+
+  final String? activeSection;
+  final ValueChanged<String>? onSectionRequested;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -90,6 +97,7 @@ class WorkspaceResolver extends ConsumerWidget {
         );
       }
       return ProjectOverview(
+        activeSection: activeSection,
         onCreateNovel: session == null
             ? null
             : (title) async {
@@ -213,9 +221,12 @@ class WorkspaceResolver extends ConsumerWidget {
 class ProjectOverview extends StatelessWidget {
   const ProjectOverview({
     super.key,
+    this.activeSection,
     this.onCreateNovel,
     this.onOpenGlobalSearch,
   });
+
+  final String? activeSection;
 
   final Future<void> Function(String title)? onCreateNovel;
   final void Function(BuildContext context)? onOpenGlobalSearch;
@@ -264,6 +275,33 @@ class ProjectOverview extends StatelessWidget {
           'Select an asset from Explorer to open its workspace.',
           style: TextStyle(color: context.palette.textMuted),
         ),
+        if (activeSection == 'Outline') ...[
+          const SizedBox(height: 16),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: context.palette.panel,
+              border: Border.all(color: context.palette.borderSoft),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('STORY STRUCTURE'),
+                SizedBox(height: 8),
+                Text('Story → Arc → Chapter → Scene'),
+                SizedBox(height: 8),
+                Text(
+                  'Pilih novel dari Explorer untuk membuka Outline, '
+                  'atau buat novel pertama di bawah - bab dan adegan awal '
+                  'dibuat otomatis.',
+                ),
+              ],
+            ),
+          ),
+        ],
         if (onCreateNovel != null) ...[
           const SizedBox(height: 16),
           FilledButton.icon(

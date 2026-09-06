@@ -195,37 +195,42 @@ class ProjectDatabaseService {
       readProjectDatabaseSchemaVersion(databasePath);
 
   /// Sprint 145.42 (Data Safety Failure Matrix) - probe tulis opsional
-  /// yang mengeksekusi mutasi atomik dalam transaksi ROLLBACK untuk
-  /// memastikan storage di balik [databasePath] benar-benar menerima
-  /// tulisan. Berhasil diam, melempar
+  /// yang memverifikasi storage di balik [databasePath] benar-benar
+  /// menerima tulisan. Berhasil diam, melempar
   /// [ProjectDatabaseWriteFailedException] ketika media menolak (read-
-  /// only attribute, permission loss, disk full). TIDAK memodifikasi
-  /// data aplikasi - probe di-rollback setelah eksekusi.
+  /// only attribute, permission loss, disk full).
+  ///
+  /// Kontrak purity (bug-hunt run94 BUG-07/BUG-08):
+  /// - CREATE + DROP tabel probe dalam SATU transaksi; COMMIT adalah
+  ///   pernyataan terakhir sehingga tidak ada jendela crash yang
+  ///   menyisakan tabel [__scriptor_write_probe] di database pengguna.
+  ///   Kegagalan apa pun sebelum COMMIT di-rollback.
+  /// - Mode jurnal pengguna TIDAK diubah (tanpa
+  ///   PRAGMA journal_mode = WAL): mengubahnya adalah modifikasi
+  ///   bentuk data aplikasi yang permanen.
+  /// - Sidecar -wal/-shm TIDAK pernah dihapus: menghapus WAL milik
+  ///   koneksi hidup membuang transaksi yang sudah di-commit.
+  /// - VACUUM + wal_checkpoint(TRUNCATE) best-effort mengembalikan
+  ///   ukuran file ke posisi sebelum probe.
   Future<void> probeWrite(String databasePath) async {
-    final walSidecar = File('$databasePath-wal');
-    final shmSidecar = File('$databasePath-shm');
     final raw = sqlite.sqlite3.open(databasePath);
     try {
-      // Memaksa satu mutasi durable ke file utama, lalu membersihkannya
-      // di transaksi kedua. Journal DELETE (default sqlite3) tidak
-      // menyentuh file tanpa COMMIT, jadi rollback tidak berguna di
-      // sini - kita harus menulis dan menghapus.
-      raw.execute('PRAGMA journal_mode = WAL');
       raw.execute('BEGIN IMMEDIATE');
       raw.execute(
         'CREATE TABLE IF NOT EXISTS __scriptor_write_probe '
         '(id INTEGER PRIMARY KEY)',
       );
-      raw.execute(
-        'INSERT OR REPLACE INTO __scriptor_write_probe (id) '
-        'VALUES (1)',
-      );
+      raw.execute('DROP TABLE __scriptor_write_probe');
+      // COMMIT adalah pernyataan terakhir: setelah titik ini tidak ada
+      // langkah cleanup yang bisa tertinggal; sebelum titik ini semua
+      // perubahan masih bisa di-rollback.
       raw.execute('COMMIT');
-      raw.execute('BEGIN IMMEDIATE');
-      raw.execute('DELETE FROM __scriptor_write_probe');
-      raw.execute('COMMIT');
-      raw.execute('DROP TABLE IF EXISTS __scriptor_write_probe');
     } on sqlite.SqliteException catch (error) {
+      try {
+        raw.execute('ROLLBACK');
+      } on sqlite.SqliteException {
+        // best-effort: koneksi ditutup di finally.
+      }
       // Setiap SqliteException dari jalur tulis adalah klasifikasi
       // media tulis: SQLITE_READONLY (8) = file/direktori write-
       // protected; SQLITE_FULL (13) = disk penuh; SQLITE_IOERR_WRITE
@@ -245,17 +250,6 @@ class ProjectDatabaseService {
         // best-effort saat probe gagal
       }
       raw.close();
-    }
-    // Pasca-close: hapus sidecar kosong jika WAL sempat diaktifkan
-    // atau file jurnal DELETE tidak ter-reclaim otomatis.
-    for (final sidecar in [walSidecar, shmSidecar]) {
-      if (sidecar.existsSync()) {
-        try {
-          sidecar.deleteSync();
-        } on FileSystemException {
-          // best-effort
-        }
-      }
     }
   }
 }

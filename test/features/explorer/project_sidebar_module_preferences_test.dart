@@ -6,6 +6,63 @@ import 'package:void_scriptor/features/explorer/application/project_sidebar_modu
 import 'package:void_scriptor/features/project_resilience/application/project_session_manager.dart';
 
 void main() {
+  test('recognizes all 24 supported genre families', () {
+    const expected = {
+      'Romance',
+      'Drama',
+      'Fantasy',
+      'Science Fiction',
+      'Mystery',
+      'Thriller',
+      'Crime',
+      'Detective',
+      'Horror',
+      'Gothic',
+      'Historical',
+      'Adventure',
+      'Action',
+      'War / Military',
+      'Political',
+      'Dystopia',
+      'Kingdom / Epic',
+      'Young Adult',
+      'Coming-of-age',
+      'Family Saga',
+      'Slice of Life',
+      'Comedy / Satire',
+      'Literary Fiction',
+      'Magical Realism',
+    };
+    expect(ProjectSidebarModulePolicy.supportedGenreFamilies, expected);
+    for (final genre in expected) {
+      expect(
+        ProjectSidebarModulePolicy.profileFor(genre),
+        isNotNull,
+        reason: genre,
+      );
+    }
+  });
+
+  test('genre profiles recommend only relevant optional modules', () {
+    final romance = ProjectSidebarModulePolicy.recommend(
+      genres: const ['School romance'],
+      hasFactions: false,
+      hasRelationships: false,
+    );
+    expect(romance.wardrobe, isTrue);
+    expect(romance.weapons, isFalse);
+    expect(romance.storyItems, isTrue);
+
+    final military = ProjectSidebarModulePolicy.recommend(
+      genres: const ['Military science fiction'],
+      hasFactions: false,
+      hasRelationships: false,
+    );
+    expect(military.wardrobe, isFalse);
+    expect(military.weapons, isTrue);
+    expect(military.storyItems, isFalse);
+  });
+
   test('genre recommends factions without making it mandatory', () {
     final romance = ProjectSidebarModulePolicy.recommend(
       genres: const ['Romance', 'School drama'],

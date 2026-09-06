@@ -431,20 +431,21 @@ class ExplorerPanel extends ConsumerWidget {
                           ),
                         ),
                   ),
-                  _WardrobeGroup(
-                    wardrobes: wardrobes,
-                    selectedId: ref.watch(selectionProvider)?.assetId,
+                  if (modulePreferences.wardrobe)
+                    _WardrobeGroup(
+                      wardrobes: wardrobes,
+                      selectedId: ref.watch(selectionProvider)?.assetId,
 
-                    onSelected: (wardrobe) => ref
-                        .read(selectionProvider.notifier)
-                        .select(
-                          SelectionModel(
-                            assetId: wardrobe.assetId,
-                            assetType: AssetType.wardrobe,
-                            projectId: wardrobe.projectId,
+                      onSelected: (wardrobe) => ref
+                          .read(selectionProvider.notifier)
+                          .select(
+                            SelectionModel(
+                              assetId: wardrobe.assetId,
+                              assetType: AssetType.wardrobe,
+                              projectId: wardrobe.projectId,
+                            ),
                           ),
-                        ),
-                  ),
+                    ),
                   if (modulePreferences.weapons)
                     _WeaponGroup(
                       weapons: weapons,
@@ -557,6 +558,7 @@ Future<void> _configureSidebarModules(
   String projectId,
   ProjectSidebarModulePreferences current,
 ) async {
+  var wardrobe = current.wardrobe;
   var weapons = current.weapons;
   var storyItems = current.storyItems;
   final result = await showDialog<ProjectSidebarModulePreferences>(
@@ -575,6 +577,16 @@ Future<void> _configureSidebarModules(
                 style: TextStyle(color: context.palette.textMuted),
               ),
               const SizedBox(height: 8),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Wardrobe'),
+                subtitle: const Text(
+                  'Clothing, costumes, jewelry, and accessories',
+                ),
+                value: wardrobe,
+                onChanged: (value) =>
+                    setState(() => wardrobe = value ?? wardrobe),
+              ),
               CheckboxListTile(
                 contentPadding: EdgeInsets.zero,
                 title: const Text('Weapons'),
@@ -611,6 +623,7 @@ Future<void> _configureSidebarModules(
                 relationshipMap: false,
                 weapons: weapons,
                 storyItems: storyItems,
+                wardrobe: wardrobe,
               ),
             ),
             child: const Text('Save'),

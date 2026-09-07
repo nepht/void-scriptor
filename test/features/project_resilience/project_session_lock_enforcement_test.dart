@@ -15,9 +15,9 @@ void main() {
 
   setUp(() async {
     root = await Directory.systemTemp.createTemp('core-hunt-20260906-lock-');
-    package = await ProjectPackageService(rootDirectory: root).create(
-      name: 'Locked Project',
-    );
+    package = await ProjectPackageService(
+      rootDirectory: root,
+    ).create(name: 'Locked Project');
   });
 
   tearDown(() async {
@@ -46,21 +46,18 @@ void main() {
   }
 
   group('core-hunt-20260906 session open lock enforcement (BUG-21)', () {
-    test(
-      'open throws ProjectLockedException for a locked project and leaves '
-      'no session lock file behind',
-      () async {
-        await seedLock('s3cret', locked: true);
+    test('open throws ProjectLockedException for a locked project and leaves '
+        'no session lock file behind', () async {
+      await seedLock('s3cret', locked: true);
 
-        await expectLater(
-          ProjectSessionManager().open(package),
-          throwsA(isA<ProjectLockedException>()),
-        );
+      await expectLater(
+        ProjectSessionManager().open(package),
+        throwsA(isA<ProjectLockedException>()),
+      );
 
-        // The failed open must not leave the write-companion behind.
-        expect(await package.lockFile.exists(), isFalse);
-      },
-    );
+      // The failed open must not leave the write-companion behind.
+      expect(await package.lockFile.exists(), isFalse);
+    });
 
     test('open succeeds after the passphrase is unlocked', () async {
       await seedLock('s3cret', locked: false);

@@ -205,13 +205,9 @@ class ProjectSessionManager {
       // write companion, and closes the database.
       final lockRow =
           await (database.select(database.securitySettings)
-                ..where(
-                  (row) => row.projectId.equals(package.projectId),
-                ))
+                ..where((row) => row.projectId.equals(package.projectId)))
               .getSingleOrNull();
-      if (lockRow != null &&
-          lockRow.passphraseHash != null &&
-          lockRow.locked) {
+      if (lockRow != null && lockRow.passphraseHash != null && lockRow.locked) {
         throw ProjectLockedException(package.projectId);
       }
       metrics.record(

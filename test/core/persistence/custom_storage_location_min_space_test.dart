@@ -44,49 +44,43 @@ void main() {
   });
 
   group('core-hunt-20260906 min-free-space enforcement (BUG-14)', () {
-    test(
-      'setActiveLocation rejects a notEnoughSpace location without '
-      'touching the registry',
-      () async {
-        final store = CustomStorageLocationStore(registryFile: registryFile);
-        final target = p.join(tempRoot.path, 'TightStore');
-        await Directory(target).create(recursive: true);
+    test('setActiveLocation rejects a notEnoughSpace location without '
+        'touching the registry', () async {
+      final store = CustomStorageLocationStore(registryFile: registryFile);
+      final target = p.join(tempRoot.path, 'TightStore');
+      await Directory(target).create(recursive: true);
 
-        await expectLater(
-          store.setActiveLocation(target, health: const _TightSpace()),
-          throwsA(isA<StateError>()),
-        );
+      await expectLater(
+        store.setActiveLocation(target, health: const _TightSpace()),
+        throwsA(isA<StateError>()),
+      );
 
-        // Rejection happens before any persistence: no registry file, and
-        // a fresh load reports no active location.
-        expect(await registryFile.exists(), isFalse);
-        final state = await store.load();
-        expect(state.activeLocation, isNull);
-      },
-    );
+      // Rejection happens before any persistence: no registry file, and
+      // a fresh load reports no active location.
+      expect(await registryFile.exists(), isFalse);
+      final state = await store.load();
+      expect(state.activeLocation, isNull);
+    });
 
-    test(
-      'relinkLocation rejects a notEnoughSpace target and keeps the '
-      'current binding',
-      () async {
-        final store = CustomStorageLocationStore(registryFile: registryFile);
-        final good = p.join(tempRoot.path, 'GoodStore');
-        await Directory(good).create(recursive: true);
-        await store.setActiveLocation(good, health: const _GenerousSpace());
-        await store.bindProject('proj-1');
+    test('relinkLocation rejects a notEnoughSpace target and keeps the '
+        'current binding', () async {
+      final store = CustomStorageLocationStore(registryFile: registryFile);
+      final good = p.join(tempRoot.path, 'GoodStore');
+      await Directory(good).create(recursive: true);
+      await store.setActiveLocation(good, health: const _GenerousSpace());
+      await store.bindProject('proj-1');
 
-        final tight = p.join(tempRoot.path, 'TightStore');
-        await Directory(tight).create(recursive: true);
+      final tight = p.join(tempRoot.path, 'TightStore');
+      await Directory(tight).create(recursive: true);
 
-        await expectLater(
-          store.relinkLocation(tight, health: const _TightSpace()),
-          throwsA(isA<StateError>()),
-        );
+      await expectLater(
+        store.relinkLocation(tight, health: const _TightSpace()),
+        throwsA(isA<StateError>()),
+      );
 
-        final state = await store.load();
-        expect(state.activeLocation, good);
-        expect(state.boundProjectId, 'proj-1');
-      },
-    );
+      final state = await store.load();
+      expect(state.activeLocation, good);
+      expect(state.boundProjectId, 'proj-1');
+    });
   });
 }

@@ -2513,3 +2513,38 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Tidak push (HEAD maju 1, keputusan Choi). Temp bersih (fullsuite_run126.log dihapus), 0 proses flutter/dart di akhir.
 - Status: 145.27 tetap PARTIAL (sisa = user validation + native journey sesi interaktif Choi); 145.44 PENDING hanya minimum-device run (hardware-bound).
 - Next: (1) verifikasi native switch-proyek dari sesi interaktif Choi; (2) keputusan Choi push (ahead ~52) + ROADMAP_STATE; (3) NO-OP bila tidak ada fakta baru - jangan paksa slice baru.
+
+### 2026-09-07 - run127b cron nephthys - typed failure surface untuk kegagalan open DB (145.42 permukaan pengguna)
+
+- Gap: klasifikasi typed DB (run94/101: ProjectDatabaseLocked /
+  WriteFailed / Unavailable / Unreadable + probeWrite) tidak pernah
+  sampai ke pengguna - VoidAppShell hanya mengklasifikasi StateError
+  sesi terkunci; 4 keadaan DB jatuh ke pesan generik, pengguna tidak
+  tahu tindakan pemulihannya (bebakas ruang / pulihkan izin tulis /
+  pasang drive / pulihkan backup).
+- Rekonsiliasi: DB-layer permission_loss SUDAH berbukti injeksi nyata
+  di HEAD (fdd9970: attrib +R -> SQLITE_READONLY -> typed write-failure;
+  test write_failure + open_error_classification 7/7 PASS fresh @HEAD),
+  run112 belum memetakan bukti tsb ke acceptance - kini terekonsiliasi.
+- Slice: commit 04c6516 (feat shell 2 file +172/-1): VoidAppShell
+  _openFailureMessage(error) memetakan 4 typed exception ke pesan
+  pemulihan spesifik Bahasa Indonesia; error tak terklasifikasi tetap
+  pesan generik (tidak mengarang diagnosis).
+- TDD: RED terverifikasi 4/4 typed test gagal (+0/-4, pesan spesifik
+  absen; test pesan-generik lulus sejak awal); GREEN 6/6.
+- Bukti: regresi test/app + test/features/projects 167/167 PASS;
+  format 2 file owned; analyze scoped No issues; diff --check PASS;
+  build windows debug PASS 36.6s; FULL SUITE 3853 PASS / 0 FAIL /
+  1 SKIP "All tests passed!" exit 0 ~23.5 mnt di HEAD 436cd51 murni
+  (delta +5 eksak = 5 test baru slice, 0 regresi); guard PASS pre+post
+  (pointer 145.27, sha 86af6a5); secret-scan 2 file owned bersih.
+- Kepemilikan: void_app_shell.dart + project_open_error_test.dart
+  terakhir disentuh wave adopsi 5efa2bd run117 (audited sendiri);
+  region shell idle; 0 proses sibling sepanjang run; worktree source
+  == HEAD saat full suite dijalankan.
+- Batas jujur: pesan UI diverifikasi level widget test; native journey
+  kegagalan open UNVERIFIABLE dari cron (preseden cua-driver 5x).
+  145.42 tersisa: power_loss/drive_removal live + installed-device
+  (hardware-bound), interrupted import/export/restore (verifikasi
+  berikutnya). 145.27 tetap PARTIAL (user validation + native journey).
+- Tidak push (HEAD 04c6516, ahead 53; keputusan Choi).

@@ -137,4 +137,48 @@ void main() {
     await coordinator.dispose();
     expect(persisted, 0);
   });
+
+  // Regression bug-hunt-run128 BUG-8 (REAL BUG, Medium): konten yang
+  // diketik SAAT save in-flight untuk scene yang sama sebelumnya hilang
+  // diam-diam — acknowledge butuh-konten menghapus entri journal v2, dan
+  // clear-pending butuh-konten membuang draf v2 di memori.
+  test('content typed during an in-flight save of the SAME scene survives '
+      '(bug-hunt-run128 BUG-8)', () async {
+    final persisted = <String, String>{};
+    final first = Completer<void>();
+    final coordinator = DurableAutosaveCoordinator(
+      // Debounce sangat panjang: satu-satunya save v2 terjadi lewat
+      // saveNow eksplisit, jadi asersi antara tidak balapan dengan timer.
+      debounceDelay: const Duration(seconds: 30),
+      persist: (sceneId, content) async {
+        persisted[sceneId] = content;
+        if (content == 'v1') await first.future;
+      },
+      journal: journal,
+    );
+
+    await coordinator.onDraftChanged(sceneId: 'scene-a', content: 'v1');
+    final flushing = coordinator.saveNow();
+    // Persis saat persist v1 berjalan, pengguna mengetik v2 di scene sama.
+    await coordinator.onDraftChanged(sceneId: 'scene-a', content: 'v2');
+    first.complete();
+    await flushing;
+
+    // Setelah save v1 selesai: journal durable HARUS masih berisi v2
+    // (acknowledge content-aware) — v2 belum pernah di-persist.
+    final afterFirst = await journal.pendingEntries();
+    expect(
+      afterFirst.map((e) => e.content),
+      contains('v2'),
+      reason:
+          'acknowledge butuh-konten menjatuhkan entri v2 yang belum '
+          'pernah di-persist (silent loss)',
+    );
+
+    // v2 harus tetap tersimpan pada flush berikutnya, lalu journal bersih.
+    await coordinator.saveNow();
+    expect(persisted['scene-a'], 'v2');
+    expect(await journal.pendingEntries(), isEmpty);
+    await coordinator.dispose();
+  });
 }

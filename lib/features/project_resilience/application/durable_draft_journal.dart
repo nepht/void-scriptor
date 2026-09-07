@@ -91,9 +91,28 @@ class DurableDraftJournal {
   }
 
   /// Menghapus entri journal SETELAH konten tersimpan durable.
-  Future<void> acknowledge(String sceneId) async {
+  ///
+  /// [content] non-null membuat penghapusan content-aware (bug-hunt-run128
+  /// BUG-8): entri hanya dihapus jika konten di disk PERSIS versi yang
+  /// baru saja tersimpan. Jika stage lebih baru sudah menimpa file saat
+  /// save lama berjalan, entri itu dipertahankan (no silent loss).
+  /// [content] null = hapus tanpa syarat — hanya untuk keputusan eksplisit
+  /// pengguna (buang draf / replay restore), bukan jalur autosave.
+  Future<void> acknowledge(String sceneId, {String? content}) async {
     final file = _entryFile(sceneId);
-    if (await file.exists()) await file.delete();
+    if (!await file.exists()) return;
+    if (content != null) {
+      try {
+        final decoded =
+            jsonDecode(await file.readAsString()) as Map<String, dynamic>;
+        if (decoded['content'] != content) return;
+      } on Object {
+        // File tidak terbaca/korup: jangan hapus buta — pemulihan tetap
+        // memakai jalur entri valid, dan file korup diabaikan pendingEntries.
+        return;
+      }
+    }
+    await file.delete();
   }
 
   Future<void> close() async {

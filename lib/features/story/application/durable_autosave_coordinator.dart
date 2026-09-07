@@ -94,12 +94,18 @@ class DurableAutosaveCoordinator {
     try {
       try {
         await _persist(savedSceneId, savedContent);
-        // Acknowledge hanya setelah persist sukses (no silent loss).
-        await _journal?.acknowledge(savedSceneId);
+        // Acknowledge content-aware (bug-hunt-run128 BUG-8): entri journal
+        // hanya dihapus jika masih memuat persis konten yang tersimpan.
+        // Stage lebih baru (diketik saat save berjalan) mempertahankan
+        // entrinya sehingga tidak ada staging yang hilang diam-diam.
+        await _journal?.acknowledge(savedSceneId, content: savedContent);
         onSaved?.call(savedSceneId, savedContent);
-        // Hanya clear jika sceneId masih sama — draf yang di-set oleh
-        // onDraftChanged saat save berjalan TIDAK dihapus (no silent loss).
-        if (_pendingSceneId == savedSceneId) {
+        // Clear hanya jika scene DAN konten masih persis yang tersimpan —
+        // draf baru yang di-set oleh onDraftChanged saat save berjalan
+        // TIDAK dihapus (no silent loss); timer debounce berikutnya yang
+        // menyimpannya.
+        if (_pendingSceneId == savedSceneId &&
+            _pendingContent == savedContent) {
           _pendingSceneId = null;
           _pendingContent = null;
         }

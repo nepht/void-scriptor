@@ -93,7 +93,7 @@ class _FakeDurableDraftJournal extends DurableDraftJournal {
       entries.values.toList()..sort((a, b) => a.sceneId.compareTo(b.sceneId));
 
   @override
-  Future<void> acknowledge(String sceneId) async {
+  Future<void> acknowledge(String sceneId, {String? content}) async {
     entries.remove(sceneId);
   }
 }

@@ -7,6 +7,7 @@ import '../../../core/persistence/project_registry_service.dart';
 import '../../../core/persistence/storage_location_registry_resolver.dart';
 import '../../../core/project_package/project_package.dart';
 import '../../project_resilience/application/project_session_manager.dart';
+import '../../../core/selection/selection_controller.dart';
 import '../data/project_local_data_source.dart';
 import '../data/project_repository_impl.dart';
 
@@ -107,6 +108,7 @@ class ProjectSessionController extends AsyncNotifier<ProjectSession?> {
     String projectId,
     ProjectOpenMode mode,
   ) async {
+    _releaseForeignSelection(projectId);
     state = const AsyncLoading();
     try {
       await _session?.close();
@@ -148,6 +150,18 @@ class ProjectSessionController extends AsyncNotifier<ProjectSession?> {
     }
     await _session?.close();
     _session = null;
+    ref.read(selectionProvider.notifier).clear();
     state = const AsyncData(null);
+  }
+
+  /// A selection created under a different project (or without a project)
+  /// cannot be resolved against the newly opened database: releasing it
+  /// prevents the Inspector from rendering a foreign asset id (observed as
+  /// a stale character UUID after switching projects during 145.44).
+  void _releaseForeignSelection(String projectId) {
+    final selection = ref.read(selectionProvider);
+    if (selection != null && selection.projectId != projectId) {
+      ref.read(selectionProvider.notifier).clear();
+    }
   }
 }

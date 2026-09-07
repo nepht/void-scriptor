@@ -7,7 +7,20 @@ class BackgroundJobQueue {
     this.maxConcurrentJobs = 2,
     Map<JobResource, int> resourceLimits = const {},
   }) : _resourceLimits = Map.unmodifiable(resourceLimits),
-       assert(maxConcurrentJobs > 0);
+       assert(maxConcurrentJobs > 0) {
+    // core-hunt-20260906 BUG-49: a limit <= 0 can never be satisfied, so
+    // any task requiring that resource would spin drain() forever at
+    // Duration.zero while burning CPU. Reject it up front instead.
+    for (final entry in _resourceLimits.entries) {
+      if (entry.value <= 0) {
+        throw ArgumentError.value(
+          entry.value,
+          'resourceLimits[${entry.key}]',
+          'must be greater than 0; a satisfiable limit is required',
+        );
+      }
+    }
+  }
 
   final int maxConcurrentJobs;
   final Map<JobResource, int> _resourceLimits;
@@ -30,16 +43,33 @@ class BackgroundJobQueue {
 
   bool enqueue(BackgroundTask task) {
     final key = task.taskKey;
-    if (_tasks.containsKey(task.id) ||
-        (key != null &&
-            _tasks.values.any(
-              (candidate) =>
-                  candidate.taskKey == key &&
-                  _jobs[candidate.id]?.status !=
-                      BackgroundJobStatus.completed &&
-                  _jobs[candidate.id]?.status != BackgroundJobStatus.failed &&
-                  _jobs[candidate.id]?.status != BackgroundJobStatus.cancelled,
-            ))) {
+    // core-hunt-20260906 BUG-48: the taskKey dedup below deliberately
+    // treats completed/failed/cancelled as re-enqueueable, but the id
+    // check ignored terminal status, so a finished id could never run
+    // again and the maps grew without bound. The id check now follows
+    // the same terminal-state rule; a terminal id is replaced on
+    // re-enqueue instead of blocking forever.
+    final existingJob = _jobs[task.id];
+    final idIsTerminal = existingJob != null &&
+        (existingJob.status == BackgroundJobStatus.completed ||
+            existingJob.status == BackgroundJobStatus.failed ||
+            existingJob.status == BackgroundJobStatus.cancelled);
+    if (!idIsTerminal && _tasks.containsKey(task.id)) return false;
+    if (idIsTerminal) {
+      _tasks.remove(task.id);
+      _tokens.remove(task.id);
+      _jobs.remove(task.id);
+      _pending.removeWhere((candidate) => candidate.id == task.id);
+    }
+    if (key != null &&
+        _tasks.values.any(
+          (candidate) =>
+              candidate.taskKey == key &&
+              _jobs[candidate.id]?.status !=
+                  BackgroundJobStatus.completed &&
+              _jobs[candidate.id]?.status != BackgroundJobStatus.failed &&
+              _jobs[candidate.id]?.status != BackgroundJobStatus.cancelled,
+        )) {
       return false;
     }
     _tasks[task.id] = task;

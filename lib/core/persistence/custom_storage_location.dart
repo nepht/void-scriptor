@@ -350,7 +350,10 @@ class CustomStorageLocationStore {
     }
   }
 
-  Future<void> setActiveLocation(String rawLocation) async {
+  Future<void> setActiveLocation(
+    String rawLocation, {
+    StorageHealthProbe? health,
+  }) async {
     final location = CustomStorageLocation.normalizeLocation(rawLocation);
     if (!await Directory(location).exists()) {
       final ancestor = await CustomStorageLocation.nearestExistingAncestor(
@@ -361,10 +364,20 @@ class CustomStorageLocationStore {
       }
       await Directory(location).create(recursive: true);
     }
-    final results = await CustomStorageLocation.probe(location);
+    final results = await CustomStorageLocation.probe(location, health: health);
     if (!results.exists || !results.writable) {
       throw StateError(
         'Custom storage location is not usable: ${results.reason.name}',
+      );
+    }
+    // core-hunt-20260906 BUG-14: exists+writable alone accepted a drive
+    // the probe already flagged notEnoughSpace, so the minFreeBytes guard
+    // never fired at activation time.
+    if (results.reason == StorageProbeReason.notEnoughSpace) {
+      throw StateError(
+        'Custom storage location lacks free space: '
+        '${results.freeBytes} bytes free, '
+        '${CustomStorageLocation.minFreeBytes} required',
       );
     }
     final current = await load();
@@ -388,7 +401,10 @@ class CustomStorageLocationStore {
     );
   }
 
-  Future<void> relinkLocation(String newLocation) async {
+  Future<void> relinkLocation(
+    String newLocation, {
+    StorageHealthProbe? health,
+  }) async {
     final location = CustomStorageLocation.normalizeLocation(newLocation);
     final current = await load();
     if (current.boundProjectId != null) {
@@ -399,9 +415,19 @@ class CustomStorageLocationStore {
         throw StateError('Relink target does not contain the bound project');
       }
     }
-    final results = await CustomStorageLocation.probe(location);
+    final results = await CustomStorageLocation.probe(location, health: health);
     if (!results.exists || !results.writable) {
       throw StateError('Relink location is not usable: ${results.reason.name}');
+    }
+    // core-hunt-20260906 BUG-14: same guard as setActiveLocation — a
+    // notEnoughSpace relink target fails loudly instead of being persisted
+    // and surfacing as a missingDrive on the next load.
+    if (results.reason == StorageProbeReason.notEnoughSpace) {
+      throw StateError(
+        'Relink location lacks free space: '
+        '${results.freeBytes} bytes free, '
+        '${CustomStorageLocation.minFreeBytes} required',
+      );
     }
     await _save(
       CustomStorageLocationState(

@@ -2433,3 +2433,34 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Next: (1) wiring session -> ProjectContextSummary (1 slice kecil, region sama);
   (2) native journey 145.42/145.44 dr sesi interaktif Choi; (3) keputusan Choi push +
   ROADMAP_STATE; (4) NO-OP bila region shell/routing kembali live-edit.
+
+### 2026-09-07 - run120 nephthys - Frontier 2 continuation: live project context wired (7403b95)
+
+- Window: guard PASS pre+post (pointer 145.27, canonical_sha 86af6a5); HEAD start 2b3d125
+  (run119 ledger); region shell bersih di start; 0 proses flutter/dart saat start; tidak ada
+  commit sibling mid-run.
+- Gap lanjutan queue Choi 5b6e11a (disisakan run119): VoidTopBar menerima ProjectContextSummary
+  tapi VoidDesktopShell TIDAK mengirim apa pun -> nama project live tidak tampil dan menu
+  Backup & Export tidak muncul meski sesi proyek aktif.
+- Slice: VoidDesktopShell membangun ProjectContextSummary(session.manifest.id, session.manifest.name)
+  saat session != null, null tanpa sesi. Overflow hardening void_top_bar: tombol project-context
+  dibungkus Flexible dan nama proyek Flexible + ellipsis (RenderFlex +56px pada lebar 800
+  tertangkap test shell; nama panjang kini menyusut, tidak meluap).
+- TDD: RED terverifikasi 2/2 fail (nama live 'Proyek Uji Frontier 3' tidak ada di tree + tap
+  project-context gagal); setelah patch wiring, failure bergeser ke RenderFlex overflow
+  (defect nyata layar sempit) -> hardening Flexible -> GREEN 2/2.
+- Bukti: focused 2/2 PASS; regresi test/app/shell 25/25 PASS; flutter analyze No issues 9.7s
+  (1 lint const milik sendiri diperbaiki); dart format 3 file owned; git diff --check exit 0;
+  flutter build windows --debug PASS 26.8s; FULL SUITE 3846 PASS / 0 FAIL / 1 SKIP
+  'All tests passed!' ~13.2 mnt (delta +2 eksak = 2 test frontier3).
+- Commit 7403b95 (3 file +135/-10) staged eksplisit per path (void_desktop_shell,
+  void_top_bar, test baru); tidak ada hunk sibling di region ini; .hermes/ tidak disentuh.
+- Ledger append via hash-object -w + update-index TANPA pathspec; worktree ledger terverifikasi
+  byte-identik HEAD (tail-hash 3000 char match) sebelum edit; blok ini satu-satunya perubahan run.
+- Batas jujur: native journey top bar (nama live + menu Backup & Export pada window asli) tetap
+  UNVERIFIABLE dari cron (cua-driver blocked 5x, preseden run83-90); perubahan terlihat pada
+  build native berikutnya.
+- Tidak push (HEAD 7403b95 + ledger ini, ahead 45->46; keputusan Choi). 145.27 tetap PARTIAL;
+  pointer tidak berubah.
+- Next: (1) keputusan Choi push + commit ROADMAP_STATE; (2) native journey 145.42/145.44 dari
+  sesi interaktif Choi; (3) Frontier berikutnya / NO-OP bila region shell kembali live-edit.

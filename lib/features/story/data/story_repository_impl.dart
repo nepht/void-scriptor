@@ -344,6 +344,12 @@ class StoryRepositoryImpl {
     required String snapshotId,
   }) async {
     final snapshots = await database.storyDao.getSceneDraftSnapshots(sceneId);
+    if (!snapshots.any((s) => s.id == snapshotId)) {
+      throw StateError(
+        'snapshot $snapshotId tidak ditemukan di scene $sceneId '
+        '(mungkin sudah dipangkas retensi)',
+      );
+    }
     final target = snapshots.firstWhere((s) => s.id == snapshotId);
     final current = await getSceneDraft(sceneId);
     if (current != null) {

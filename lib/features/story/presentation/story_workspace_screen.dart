@@ -1283,20 +1283,29 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   }
 
   /// Step 145.24: pulihkan snapshot terpilih; repository membuat backup
-  /// otomatis teks kini sebelum restore (kontrak 109.22).
+  /// otomatis teks kini sebelum restore (kontrak 109.22). Kegagalan
+  /// (mis. id ter-purge retensi) ditampilkan via SnackBar — finally tetap
+  /// memuat ulang daftar snapshot sehingga tombol tidak terkunci.
   Future<void> _restoreSnapshot(String snapshotId) async {
     final repository = widget.repository;
     final sceneId = _selectedSceneId;
     if (repository == null || sceneId == null) return;
     _restoringSnapshotId = snapshotId;
     try {
-      final content = await repository.restoreSceneDraftSnapshot(
-        sceneId,
-        snapshotId: snapshotId,
-      );
-      if (!mounted) return;
-      _draft.value = TextEditingValue(text: content);
-      setState(() => _updateWordCount(content));
+      try {
+        final content = await repository.restoreSceneDraftSnapshot(
+          sceneId,
+          snapshotId: snapshotId,
+        );
+        if (!mounted) return;
+        _draft.value = TextEditingValue(text: content);
+        setState(() => _updateWordCount(content));
+      } catch (error) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Snapshot tidak dapat dipulihkan: $error')),
+        );
+      }
     } finally {
       _restoringSnapshotId = '';
       await _loadSnapshotsFor(sceneId);

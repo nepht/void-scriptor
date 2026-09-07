@@ -138,6 +138,80 @@ void main() {
     expect(persisted, 0);
   });
 
+  // Regression bug-hunt-run128 BUG-2 (REAL BUG, Medium): delete-all
+  // keystroke (konten kosong) dilempar ArgumentError oleh journal.stage()
+  // dan lolos tanpa tertangkap melalui rantai onDraftChanged yang
+  // fire-and-forget di layar. Secara rutin memicu uncaught async exception
+  // pada jalur terpanas pengguna dan melompati penjadwalan autosave.
+  // Kontrak yang benar: konten kosong adalah transisi state — draf pending
+  // kosong boleh dijadwalkan dan di-persist, journal durable TIDAK
+  // di-stage (kosong bukan draf yang perlu dipulihkan), tanpa lemparan.
+  test('blank delete-all keystroke is a state transition, not an error '
+      '(bug-hunt-run128 BUG-2)', () async {
+    final persisted = <String, String>{};
+    final coordinator = DurableAutosaveCoordinator(
+      debounceDelay: const Duration(milliseconds: 10),
+      persist: (sceneId, content) async => persisted[sceneId] = content,
+      journal: journal,
+    );
+
+    // Delete-all: select-all + delete mengirim '' ke onChanged.
+    await coordinator.onDraftChanged(sceneId: 'scene-a', content: '');
+
+    // Tidak ada uncaught ArgumentError; autosave dijadwalkan dan draf
+    // kosong TETAP di-persist (konsisten dengan persist normal).
+    await Future<void>.delayed(const Duration(milliseconds: 60));
+    expect(persisted['scene-a'], '');
+
+    // Journal durable tidak di-stage untuk konten kosong (tidak ada
+    // yang perlu dipulihkan), tapi kekosongan tidak merusak state.
+    expect(await journal.pendingEntries(), isEmpty);
+    await coordinator.dispose();
+  });
+
+  // BUG-2 companion: kegagalan journal.stage() (disk penuh/permission)
+  // TIDAK boleh lolos sebagai uncaught async error melalui rantai
+  // fire-and-forget. Kontrak: kegagalan dilaporkan via onPersistError
+  // (layar menampilkan banner 'Gagal menyimpan draf'), draf tetap pending,
+  // autosave tetap dijadwalkan, dan draf valid sebelumnya di journal
+  // tidak tersentuh. Pembersihan .tmp tersendat adalah best-effort
+  // senyap (failure-injection test journal yang ada sudah memverifikasi
+  // bahwa draf valid lama tetap dipulihkan melewatinya).
+  test('journal stage failure is reported, never escapes uncaught '
+      '(bug-hunt-run128 BUG-2)', () async {
+    // Draf valid sebelumnya di journal.
+    await journal.stage(sceneId: 'scene-a', content: 'Draf valid lama.');
+    // Buat target .tmp jadi direktori → stage() gagal deterministik
+    // (FileSystemException, pola failure-injection journal).
+    await Directory('${journalDir.path}/scene-a.json.tmp').create();
+    var persistCalled = 0;
+    Object? reportedError;
+    final coordinator = DurableAutosaveCoordinator(
+      debounceDelay: const Duration(milliseconds: 10),
+      persist: (sceneId, content) async => persistCalled++,
+      journal: journal,
+      onPersistError: (sceneId, content, error) => reportedError = error,
+    );
+
+    // onDraftChanged selesai TANPA melempar meski journal gagal.
+    await coordinator.onDraftChanged(sceneId: 'scene-a', content: 'Draf.');
+    await Future<void>.delayed(const Duration(milliseconds: 60));
+
+    expect(reportedError, isA<FileSystemException>());
+    expect(persistCalled, 1, reason: 'autosave tetap dijadwalkan');
+    // Draf valid lama tidak tersentuh oleh kegagalan stage.
+    expect(
+      (await journal.pendingEntries()).map((e) => e.content),
+      contains('Draf valid lama.'),
+    );
+    // Best-effort cleanup senyap: penghapusan .tmp gagal tanpa efek.
+    expect(
+      Directory('${journalDir.path}/scene-a.json.tmp').existsSync(),
+      isTrue,
+    );
+    await coordinator.dispose();
+  });
+
   // Regression bug-hunt-run128 BUG-8 (REAL BUG, Medium): konten yang
   // diketik SAAT save in-flight untuk scene yang sama sebelumnya hilang
   // diam-diam — acknowledge butuh-konten menghapus entri journal v2, dan

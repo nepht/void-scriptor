@@ -31,9 +31,13 @@ void main() {
       // Windows: read-only file menolak delete - pulihkan flag dulu.
       final db = File('${root.path}/project.db');
       if (db.existsSync()) {
-        final result = await Process.run('attrib', <String>['-R', db.path]);
-        if (result.exitCode != 0) {
-          // Fallback POSIX chmod.
+        if (Platform.isWindows) {
+          final result = await Process.run('attrib', <String>['-R', db.path]);
+          if (result.exitCode != 0) {
+            // Fallback POSIX chmod.
+            await Process.run('chmod', <String>['u+w', db.path]);
+          }
+        } else {
           await Process.run('chmod', <String>['u+w', db.path]);
         }
       }
@@ -47,9 +51,15 @@ void main() {
     final service = ProjectDatabaseService();
     await service.create(dbPath);
 
-    // Windows: flag read-only di level file.
-    final result = await Process.run('attrib', <String>['+R', dbPath]);
-    if (result.exitCode != 0) {
+    // Windows: flag read-only di level file via attrib. POSIX: chmod a-w.
+    // Pemilihan tidak bisa lewat fallback exit-code: di POSIX binary
+    // `attrib` tidak ada sehingga Process.run melempar ProcessException
+    // sebelum fallback tercapai (CI Linux 61156d4). Produksi tetap
+    // platform-netral: koneksi terbuka read-only, tulis pertama drift
+    // initialization memicu SQLITE_READONLY (8) -> typed write-failure.
+    if (Platform.isWindows) {
+      await Process.run('attrib', <String>['+R', dbPath]);
+    } else {
       await Process.run('chmod', <String>['a-w', dbPath]);
     }
 

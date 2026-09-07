@@ -89,6 +89,38 @@ class ProjectLockService {
     return row.passphraseHash != null && row.locked;
   }
 
+  /// core-hunt-20260906 BUG-44: the encryption toggle previously wrote only
+  /// widget state. These methods make the switch drive the persisted
+  /// `securitySettings.encryptionEnabled` flag.
+  ///
+  /// Enabling requires an existing passphrase (the PBKDF2 key source);
+  /// disabling only needs a row. Callers without a backing store must not
+  /// pretend to persist anything — the UI renders the switch disabled
+  /// instead.
+  Future<bool> isEncryptionEnabled(String projectId) async {
+    final row = await _row(projectId);
+    return row?.encryptionEnabled ?? false;
+  }
+
+  Future<void> setEncryptionEnabled(String projectId, bool enabled) async {
+    final row = await _row(projectId);
+    if (enabled) {
+      if (row == null || row.passphraseHash == null) {
+        throw StateError(
+          'cannot enable encryption without a passphrase (key source)',
+        );
+      }
+    } else if (row == null) {
+      throw StateError('no security settings row to update');
+    }
+    await (database.update(database.securitySettings)
+          ..where((r) => r.projectId.equals(projectId)))
+        .write(SecuritySettingsCompanion(
+      encryptionEnabled: Value(enabled),
+      updatedAt: Value(DateTime.now().toUtc()),
+    ));
+  }
+
   Future<SecuritySetting?> _row(String projectId) async {
     final query = database.select(database.securitySettings)
       ..where((row) => row.projectId.equals(projectId));

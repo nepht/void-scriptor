@@ -1,3 +1,15 @@
+### 2026-09-07 — run125 cron nephthys: cross-project stale-selection release (fix 41f7d56)
+
+- Slice: bug kandidat lintas proyek dari journey run-2 145.44 (ledger 7e21844: Inspector tetap menampilkan UUID karakter Saga f779c69f... setelah pindah ke Tes Novel) - dipilih sesuai next-action run124, region projects/selection bebas (sibling idle sejak 07:09, worktree source bersih).
+- Root cause (audit live): ProjectSessionController._openProject menutup sesi lama dan membuka sesi baru TANPA melepas selectionProvider global; closeProject() juga tidak clear. InspectorResolver hanya menonton selectionProvider, sehingga aset id proyek lama dirender terhadap database proyek baru (UUID mentah).
+- Fix minimal (1 file lib): _releaseForeignSelection(projectId) dipanggil di awal _openProject (melepas seleksi yang projectId-nya beda); closeProject() clear() seleksi. Guard header ProjectSessionController tidak berubah.
+- RED terverifikasi: test/app/project_session_selection_reset_test.dart 2 test (switch project + close project) gagal dengan 'Expected: null / Actual: SelectionModel' sebelum patch.
+- GREEN: 2/2 PASS. Regression: test/core/selection + test/features/explorer + test/features/inspector + test/features/character + project_exit_guard + test baru = 96/96 PASS exit 0.
+- Gates: flutter analyze --no-pub No issues (12.6s); dart format 2 file owned clean; git diff --check PASS; flutter build windows --debug PASS 29.6s.
+- Commit 41f7d56 (fix(selection), 2 file +123/-0: project_persistence_providers.dart + test baru; tanpa pathspec, index bersih, tidak ada hunk sibling). Guard PASS pre+post (pointer 145.27, sha 86af6a5).
+- Batas jujur: verifikasi native journey switch-proyek tidak dijalankan (cua-driver blocked di cron, preseden 5x) - bukti pada level provider/regresi widget; empty-state Inspector setelah clear sudah tercakup test inspector_resolver.
+- Tidak push (HEAD 41f7d56, ahead 50; keputusan Choi). Temp bersih.
+- Next: (1) keputusan Choi push + ROADMAP_STATE; (2) verifikasi native switch-proyek di sesi interaktif; (3) NO-OP jika tidak ada fakta baru.
 # Sprint 145 — Product Scope Reset & Core MVP Recovery (Step Ledger)
 
 Sumber kanonik: `sprint_145.json` (CORRECTIVE_IMPLEMENTATION_PLAN, 50 langkah)

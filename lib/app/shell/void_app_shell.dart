@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../adaptive/void_breakpoints.dart';
 import '../routing/app_routes.dart';
 import '../../features/projects/presentation/project_persistence_providers.dart';
+import '../../database/project/project_database_service.dart';
 import 'desktop/void_desktop_shell.dart';
 import 'mobile/void_mobile_shell.dart';
 
@@ -17,6 +18,31 @@ class VoidAppShell extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<VoidAppShell> createState() => _VoidAppShellState();
+}
+
+/// Sprint 145.42: pesan pemulihan spesifik untuk keadaan database bertipe
+/// hasil klasifikasi [classifyProjectDatabaseOpenError]. Selain keempat
+/// klasifikasi ini, pesan generik dipertahankan untuk error tak terduga
+/// agar tidak pernah mengarang diagnosis.
+String _openFailureMessage(Object? error) {
+  if (error is ProjectDatabaseWriteFailedException) {
+    return 'Penyimpanan proyek menolak penulisan. Bebaskan ruang disk atau '
+        'pulihkan izin tulis folder proyek, lalu coba lagi.';
+  }
+  if (error is ProjectDatabaseUnavailableException) {
+    return 'Lokasi penyimpanan proyek tidak dapat diakses. Pastikan drive '
+        'atau lokasi kustom terpasang, lalu coba lagi.';
+  }
+  if (error is ProjectDatabaseLockedException) {
+    return 'Proyek sedang dibuka aplikasi lain. Tutup aplikasi yang memakai '
+        'proyek ini, lalu coba lagi.';
+  }
+  if (error is ProjectDatabaseUnreadableException) {
+    return 'Basis data proyek tidak dapat dibaca. Cadangkan folder proyek '
+        'sebelum mencoba pemulihan backup.';
+  }
+  return 'Periksa lokasi folder, izin akses, dan kondisi berkas proyek, '
+      'lalu coba lagi.';
 }
 
 class _VoidAppShellState extends ConsumerState<VoidAppShell> {
@@ -96,7 +122,7 @@ class _VoidAppShellState extends ConsumerState<VoidAppShell> {
                     Text(
                       locked
                           ? 'Proyek memiliki sesi aktif atau penanda sesi lama. Tutup aplikasi lain yang memakai proyek ini. Jika masih terkunci, pulihkan penanda sesi setelah mencadangkan proyek.'
-                          : 'Periksa lokasi folder, izin akses, dan kondisi berkas proyek, lalu coba lagi.',
+                          : _openFailureMessage(error),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),

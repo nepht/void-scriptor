@@ -53,6 +53,13 @@ final projectSessionProvider =
 
 final currentProjectSessionProvider = projectSessionProvider;
 
+/// Stable project identity of the ACTIVE session, null when detached
+/// (dashboard). The Inspector cross-project guard compares the selection's
+/// projectId against this value instead of holding a full session.
+final currentProjectIdProvider = Provider<String?>((ref) {
+  return ref.watch(projectSessionProvider).valueOrNull?.manifest.id;
+});
+
 class ProjectSessionController extends AsyncNotifier<ProjectSession?> {
   ProjectSession? _session;
   Future<ProjectSession>? _pendingOpen;

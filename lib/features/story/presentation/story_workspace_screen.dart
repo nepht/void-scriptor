@@ -1278,7 +1278,18 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
       ),
     );
     if (label == null || label.trim().isEmpty || !mounted) return;
-    await repository.captureSceneDraftSnapshot(sceneId, label: label.trim());
+    // BUG-25: capture gagal (mis. scene belum punya draf tersimpan —
+    // repository melempar StateError) wajib terlihat pengguna, bukan
+    // exception asinkron senyap.
+    try {
+      await repository.captureSceneDraftSnapshot(sceneId, label: label.trim());
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Snapshot tidak dapat direkam: $error')),
+      );
+      return;
+    }
     await _loadSnapshotsFor(sceneId);
   }
 

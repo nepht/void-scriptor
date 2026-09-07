@@ -78,9 +78,11 @@ class VoidTopBar extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               if (projectContext != null)
-                _ProjectContextButton(
-                  summary: projectContext,
-                  onMenuSelected: onMenuSelected,
+                Flexible(
+                  child: _ProjectContextButton(
+                    summary: projectContext,
+                    onMenuSelected: onMenuSelected,
+                  ),
                 ),
               Expanded(
                 child: SingleChildScrollView(
@@ -182,13 +184,18 @@ class _ProjectContextButton extends StatelessWidget {
         children: [
           const Icon(Icons.auto_stories_outlined, size: 15),
           const SizedBox(width: 6),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 160),
-            child: Text(
-              summary.projectName,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          Flexible(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 160),
+              child: Text(
+                summary.projectName,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ),
           const Icon(Icons.arrow_drop_down, size: 18),

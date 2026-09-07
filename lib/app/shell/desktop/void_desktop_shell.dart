@@ -105,6 +105,12 @@ class VoidDesktopShell extends ConsumerWidget {
         children: [
           VoidTopBar(
             saveState: state,
+            projectContext: session == null
+                ? null
+                : ProjectContextSummary(
+                    projectId: session.manifest.id,
+                    projectName: session.manifest.name,
+                  ),
             onMenuSelected: (menu) {
               final assetType = explorerAssetTypeForMenu(menu);
               if (assetType != null) {

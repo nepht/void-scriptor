@@ -34,6 +34,19 @@ enum ProjectOpenMode { readWrite, readOnly }
 
 typedef ProjectSchemaVersionReader = Future<int?> Function(String databasePath);
 
+/// Thrown when [ProjectSessionManager.open] refuses to open a project whose
+/// persisted passphrase lock is currently engaged. The caller (UI) should
+/// prompt for the passphrase and retry; the partial session it started is
+/// fully torn down before this propagates.
+class ProjectLockedException implements Exception {
+  ProjectLockedException(this.projectId);
+
+  final String projectId;
+
+  @override
+  String toString() => 'ProjectLockedException(projectId: $projectId)';
+}
+
 class ProjectSession {
   ProjectSession({
     required this.package,
@@ -182,6 +195,25 @@ class ProjectSessionManager {
       database = mode == ProjectOpenMode.readOnly
           ? await databaseService.openReadOnly(package.databaseFile.path)
           : await databaseService.open(package.databaseFile.path);
+      // core-hunt-20260906 BUG-21: the persisted passphrase lock was never
+      // consulted on any open path. Check it now that the database is
+      // open (the security row lives in this database, so there is no
+      // chicken-and-egg); a locked project is refused before any
+      // repository/runtime is built on top of it. No row at all means no
+      // passphrase was ever set — that is not a lock. The throw re-enters
+      // the catch below, which releases the session lock, deletes the
+      // write companion, and closes the database.
+      final lockRow =
+          await (database.select(database.securitySettings)
+                ..where(
+                  (row) => row.projectId.equals(package.projectId),
+                ))
+              .getSingleOrNull();
+      if (lockRow != null &&
+          lockRow.passphraseHash != null &&
+          lockRow.locked) {
+        throw ProjectLockedException(package.projectId);
+      }
       metrics.record(
         'database',
         Duration(

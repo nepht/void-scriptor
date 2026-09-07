@@ -2725,3 +2725,12 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Sisa BUG run128: 8 Low - BUG-3 ter-patch slice ini; tersisa BUG-4
   (SaveCoordinator test-only), BUG-9, BUG-11, BUG-14, BUG-15, BUG-22,
   BUG-25 menunggu prioritas Choi; satu slice per run sesuai ritme cron.
+
+### 2026-09-07 - nephthys: hook UI import gambar referensi (145.44, keputusan Choi: single import dulu)
+
+- Keputusan produk via tanya-jawab: alur single import lebih dulu (tombol di detail aset); bulk folder (ratusan aset) ditunda menunggu keputusan Choi.
+- e5a8b0e feat(assets): AssetBrowserScreen.onImportThumbnail (seam testable, mengikuti preseden onCreateAsset) + default produksi: file_selector dialog gambar (png/jpg/jpeg/webp/gif) → AssetThumbnailImporter ke paket aktif (session.package.assetsDirectory) → refresh list in-memory (SearchableAsset.copyWith +thumbnailPath) → dialog tertutup; cancel/invalid → dialog tetap. Wiring IsolatedAssetReferenceCard.onAddReference (tombol "Add isolated reference" kini hidup, sebelumnya dead di browser).
+- Dependensi: file_selector ^1.0.4 (pubspec+lock, posisi alfabetis).
+- TDD: RED kompilasi (seam undefined) → GREEN 3/3 widget test (tombol aktif tanpa session via wiring, seam terpanggil+dialog tertutup, cancel tetap terbuka); regression test/features/assets 47/47; analyzer + format bersih di path owned; commit scoped 5 file (pubspec, lock, screen, domain, test).
+- Batas bukti: dialog file native (jalur produksi) UNVERIFIABLE di harness widget (seam yang dibuktikan); native journey menyusul saat dogfood desktop.
+- CI run e5a8b0e dipantau; run 1188c5f dibatalkan concurrency-group (superseded oleh e5a8b0e).

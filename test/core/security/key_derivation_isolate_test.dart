@@ -15,7 +15,11 @@ List<int> _referenceDerive(
   final password = utf8.encode(passphrase);
   const hashLen = 32;
   final output = <int>[];
-  for (var blockIndex = 1; blockIndex <= (length / hashLen).ceil(); blockIndex++) {
+  for (
+    var blockIndex = 1;
+    blockIndex <= (length / hashLen).ceil();
+    blockIndex++
+  ) {
     final saltWithIndex = <int>[
       ...salt,
       (blockIndex >> 24) & 0xFF,
@@ -38,44 +42,49 @@ List<int> _referenceDerive(
 
 void main() {
   group('core-hunt-20260906 PBKDF2 isolate offload (BUG-31)', () {
+    test('derive() returns control to the calling isolate immediately while '
+        'a heavy (200k-iteration) derivation runs off-thread', () async {
+      const deriver = Pbkdf2KeyDeriver();
+      final stopwatch = Stopwatch()..start();
+      final future = deriver.derive(
+        passphrase: 'long-enough-passphrase',
+        salt: const [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        iterations: 200000,
+        length: 32,
+      );
+      final returnedAfterMs = stopwatch.elapsedMilliseconds;
+      final key = await future;
+
+      expect(key.bytes.length, 32);
+      // The synchronous loop costs seconds on this host; returning in
+      // well under a second proves the work left the calling isolate.
+      expect(
+        returnedAfterMs,
+        lessThan(500),
+        reason: 'derive() blocked the calling isolate (BUG-31)',
+      );
+    });
+
     test(
-      'derive() returns control to the calling isolate immediately while '
-      'a heavy (200k-iteration) derivation runs off-thread',
+      'offloaded derivation is byte-identical to the reference loop',
       () async {
         const deriver = Pbkdf2KeyDeriver();
-        final stopwatch = Stopwatch()..start();
-        final future = deriver.derive(
-          passphrase: 'long-enough-passphrase',
-          salt: const [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
-          iterations: 200000,
+        final key = await deriver.derive(
+          passphrase: 'determinism-check',
+          salt: const [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+          iterations: 1000,
           length: 32,
         );
-        final returnedAfterMs = stopwatch.elapsedMilliseconds;
-        final key = await future;
-
-        expect(key.bytes.length, 32);
-        // The synchronous loop costs seconds on this host; returning in
-        // well under a second proves the work left the calling isolate.
         expect(
-          returnedAfterMs,
-          lessThan(500),
-          reason: 'derive() blocked the calling isolate (BUG-31)',
+          key.bytes,
+          _referenceDerive(
+            'determinism-check',
+            const [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+            1000,
+            32,
+          ),
         );
       },
     );
-
-    test('offloaded derivation is byte-identical to the reference loop', () async {
-      const deriver = Pbkdf2KeyDeriver();
-      final key = await deriver.derive(
-        passphrase: 'determinism-check',
-        salt: const [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
-        iterations: 1000,
-        length: 32,
-      );
-      expect(
-        key.bytes,
-        _referenceDerive('determinism-check', const [9, 8, 7, 6, 5, 4, 3, 2, 1, 0], 1000, 32),
-      );
-    });
   });
 }

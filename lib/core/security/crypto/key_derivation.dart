@@ -39,12 +39,14 @@ class Pbkdf2KeyDeriver {
     required int iterations,
     required int length,
   }) {
-    return Isolate.run(() => _deriveSync(
-          passphrase: passphrase,
-          salt: salt,
-          iterations: iterations,
-          length: length,
-        ));
+    return Isolate.run(
+      () => _deriveSync(
+        passphrase: passphrase,
+        salt: salt,
+        iterations: iterations,
+        length: length,
+      ),
+    );
   }
 
   static SecretKey _deriveSync({

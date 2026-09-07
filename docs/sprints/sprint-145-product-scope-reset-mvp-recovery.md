@@ -2503,3 +2503,13 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Observasi jujur: Inspector menampilkan UUID karakter Saga (f779c69f…) stale setelah pindah ke Tes Novel sampai seleksi baru — bug kandidat lintas proyek, dicatat, belum difix.
 - Status jujur: 145.44 TETAP PENDING secara kanonik — gap repeat + logs + hashes kini CLOSED; yang tersisa hanya minimum-spec device run (butuh hardware terpisah dari Choi). 145.42: process_kill + concurrent-open + corrupt-detectability ada buktinya; power_loss/disk_full/permission_loss/drive_removal/interrupted-move tetap open (sebagian hardware-bound).
 - Laporan cron: Telegram job `a59f6077c731` di-fire manual setelah commit ini; remediation agent 04:00 membaca ledger penuh.
+### 2026-09-07 - run126 cron nephthys - FULL SUITE PENUTUP SLICE run125 (stability refresh, 0 mutasi kode)
+
+- FAKTA: run125 commit fix(selection) 41f7d56 + ledger ad33c07 baru dibukti regression 96/96 focused; full suite kanonik belum pernah jalan di atas 41f7d56 (baseline hijau terakhir run122 @ df57c50). Run ini menutup gate penuh, 0 mutasi kode.
+- Precheck: guard PASS pre (pointer 145.27, canonical_sha 86af6a5); HEAD start ad33c07; 0 proses dart/flutter; 0 conflict marker; worktree source == HEAD (hanya .hermes sibling: SPRINT_PROGRESS.md -45 sibling, AUTONOMOUS_ROADMAP_PROMPT.md untracked - dipreservasi, tidak diadopsi).
+- Gate fresh: dart analyze No issues found! (~9 dtk); FULL SUITE background ~19.5 mnt = 3848 PASS / 0 FAIL / 1 SKIP, "All tests passed!", EXIT_CODE=0 (delta +2 eksak vs baseline run122 3846 = 2 test baru slice run125; nol regresi). git diff --check exit 0.
+- Dengan ini slice fix stale-selection lintas proyek (41f7d56) lulus seluruh gate yang dapat dieksekusi cron: RED 2 -> GREEN 2 -> regression 96/96 -> analyze -> full suite 3848 -> diff --check. Batas jujur tetap: verifikasi native switch-proyek dari sesi interaktif Choi (cua-driver cron blocked 5x, preseden).
+- Ledger commit append murni via hash-object blob HEAD + update-index TANPA pathspec (worktree verif byte-identik sebelum edit; prosedur bersih ke-5 berturut-turut).
+- Tidak push (HEAD maju 1, keputusan Choi). Temp bersih (fullsuite_run126.log dihapus), 0 proses flutter/dart di akhir.
+- Status: 145.27 tetap PARTIAL (sisa = user validation + native journey sesi interaktif Choi); 145.44 PENDING hanya minimum-device run (hardware-bound).
+- Next: (1) verifikasi native switch-proyek dari sesi interaktif Choi; (2) keputusan Choi push (ahead ~52) + ROADMAP_STATE; (3) NO-OP bila tidak ada fakta baru - jangan paksa slice baru.

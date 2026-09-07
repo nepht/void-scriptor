@@ -793,37 +793,61 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
         ),
         const SizedBox(height: 8),
         for (final entry in _pendingRecovery)
-          ListTile(
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-            title: Text(
-              'Scene ${entry.sceneId}',
-              style: TextStyle(color: p.textPrimary),
+          if (entry.isCorrupt)
+            ListTile(
+              key: const ValueKey('recovery_corrupt_entry'),
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.warning_amber_rounded),
+              title: Text(
+                'Scene ${entry.sceneId}',
+                style: TextStyle(color: p.textPrimary),
+              ),
+              subtitle: const Text(
+                'Isi draf tidak dapat dibaca (file journal korup atau '
+                'terpotong). Draf ini tidak dapat dipulihkan otomatis.',
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: TextButton(
+                onPressed: _recoveryBusy
+                    ? null
+                    : () => _discardPendingDraft(entry),
+                child: const Text('Buang'),
+              ),
+            )
+          else
+            ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                'Scene ${entry.sceneId}',
+                style: TextStyle(color: p.textPrimary),
+              ),
+              subtitle: Text(
+                entry.content,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: p.textSecondary),
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextButton(
+                    onPressed: _recoveryBusy
+                        ? null
+                        : () => _restorePendingDraft(entry),
+                    child: const Text('Pulihkan Draft'),
+                  ),
+                  TextButton(
+                    onPressed: _recoveryBusy
+                        ? null
+                        : () => _discardPendingDraft(entry),
+                    child: const Text('Buang'),
+                  ),
+                ],
+              ),
             ),
-            subtitle: Text(
-              entry.content,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: p.textSecondary),
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextButton(
-                  onPressed: _recoveryBusy
-                      ? null
-                      : () => _restorePendingDraft(entry),
-                  child: const Text('Pulihkan Draft'),
-                ),
-                TextButton(
-                  onPressed: _recoveryBusy
-                      ? null
-                      : () => _discardPendingDraft(entry),
-                  child: const Text('Buang'),
-                ),
-              ],
-            ),
-          ),
       ],
     );
   }

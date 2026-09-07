@@ -2607,3 +2607,47 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Bukti: RED 2/2 FAIL eksak → GREEN focused 2/2 PASS (2x, sebelum+sesudah format); regression test/features/story = 169 PASS / 0 FAIL (EXIT=0, log %TEMP%/regression_bug17_story.log); flutter analyze --no-pub No issues found (19,6 s); dart format 2 file owned (1 changed); git diff --check exit 0; flutter build windows --debug --no-pub PASS 35,8 s.
 - Commit 9c463b8 (2 file, +301/-1, scoped tanpa file sibling .hermes). Native UI journey UNVERIFIABLE dari cron (preseden cua-driver); kontrak dibuktikan unit/widget test deterministik. Pointer tetap 145.27; tidak push (keputusan Choi).
 - Sisa BUG run128: BUG-18/1 (Medium) + 8 Low belum dipatch; satu slice per run sesuai ritme cron.
+
+### 2026-09-07 - run132 cron nephthys: patch BUG-1 bug-hunt-run128 (journal corrupt entry surfaced, slice TDD)
+
+- Otorisasi: instruksi job cron (patch bug terkonfirmasi = tugas agen utama;
+  preseden run129 BUG-8, run130 BUG-2, run131 BUG-17). Slice dipilih: BUG-1
+  (REAL BUG Medium; file durable_draft_journal.dart bersih sibling —
+  BUG-18 di story_workspace_screen.dart menyusul pada run berikutnya).
+- Root cause terverifikasi di HEAD 447ce45: pendingEntries() menelan
+  `<scene>.json` final yang truncated/korup via `on FormatException {
+  continue; }` — file final itu satu-satunya salinan draf unsaved
+  (crash/power-loss di jendela tulis), hilang tanpa sinyal, kontra kontrak
+  no-silent-loss jurnalnya sendiri; branch null-field (JSON valid,
+  sceneId/content hilang) juga dibuang diam-diam; doc class mengklaim
+  jaminan "tidak meninggalkan file setengah jadi" yang tidak dapat
+  dipenuhi dart:io (flush() tanpa fsync).
+- TDD: RED test baru durable_draft_journal_corrupt_entry_test.dart (4 test:
+  truncated final ter-surface isCorrupt, field tak lengkap ter-surface dari
+  nama file, .tmp tetap diabaikan, entri valid tak berubah) gagal eksak pada
+  simbol `isCorrupt` yang tidak ada; RED UI test baru
+  recovery_corrupt_entry_ui_test.dart (panel DRAFT RECOVERY menampilkan
+  entri korup, tanpa tombol Pulihkan Draft, Buang tersedia + discard
+  menghapus entri) gagal eksak (0 widgets recovery_corrupt_entry).
+- GREEN minimal: PendingDraftEntry.corrupt ctor + field isCorrupt (default
+  false, kontrak PendingDraftEntry lama utuh, fake sibling tidak tersentuh);
+  pendingEntries() men-surface FormatException dan null-field sebagai entri
+  korup (sceneId dari nama file); panel membedakan entri korup: ikon
+  warning, pesan "Isi draf tidak dapat dibaca...", tombol Buang saja; doc
+  class ditemper (batas fsync dijelaskan). Warning drift "multiple
+  databases" di harness UI didokumentasikan dan dinonaktifkan one-shot
+  (fake noSuchMethod tidak pernah membuka file database).
+- Bukti: GREEN focused journal 8/8 PASS (termasuk 4 test lama journal);
+  UI 2/2 PASS; regression test/features/project_resilience +
+  test/features/story + test/features/workspace = 380 PASS / 1 SKIP /
+  0 FAIL (EXIT=0, log %TEMP%/regression_bug1_run132.log); flutter analyze
+  --no-pub No issues found (9,7 s); dart format 4 file owned (2 changed);
+  git diff --check exit 0; flutter build windows --debug --no-pub PASS
+  29,2 s; guard PASS pre+post (pointer 145.27, canonical_sha 86af6a5).
+- Commit scoped 5 path (journal + screen + 2 test + ledger ini) tanpa file
+  sibling .hermes. Native UI journey UNVERIFIABLE dari cron (preseden
+  cua-driver); kontrak dibuktikan unit/widget test deterministik. Pointer
+  tetap 145.27; tidak push (keputusan Choi).
+- Sisa BUG run128: BUG-18 (Medium, story_workspace_screen.dart:
+  build-phase mutation + stale-draft clobber lintas scene) + 8 Low belum
+  dipatch; satu slice per run sesuai ritme cron.

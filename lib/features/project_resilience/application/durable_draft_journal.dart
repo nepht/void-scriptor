@@ -9,9 +9,16 @@ import 'package:path/path.dart' as p;
 /// Menyimpan draf yang belum tersimpan durable ke file JSON per scene di
 /// dalam direktori proyek (`recovery/draft-journal/`). Tulisan bersifat
 /// atomic: konten ditulis ke `<scene>.json.tmp`, di-flush, lalu di-rename
-/// ke `<scene>.json` sehingga crash/power-loss tidak meninggalkan file
-/// setengah jadi. `acknowledge` menghapus entri hanya SETELAH autosave
-/// durable sukses (no silent loss).
+/// ke `<scene>.json`. Rename memberikan jaminan file final tidak pernah
+/// "setengah jadi" bila proses tulis selesai normal; Namun demikian,
+/// power-loss/crash di jendela tulis tetap dapat meninggalkan file final
+/// yang terpotong — entri semacam itu TIDAK dibuang diam-diam:
+/// `pendingEntries()` men-surface-nya sebagai entri `isCorrupt` agar panel
+/// DRAFT RECOVERY menampilkan statusnya (no silent loss). Sumber pemulihan
+/// yang sah hanya file final; artefak `.tmp` in-progress selalu diabaikan.
+/// Catatan batas platform: `flush()` dart:io tidak menjamin fsync
+/// OS-level/directory-entry, jadi kehilangan data saat power-loss total
+/// tidak sepenuhnya dapat dihilangkan di layer ini.
 class DurableDraftJournal {
   DurableDraftJournal({required this._dir, DateTime Function()? clock})
     : _clock = clock ?? DateTime.now;
@@ -71,8 +78,16 @@ class DurableDraftJournal {
             jsonDecode(await entity.readAsString()) as Map<String, dynamic>;
         final sceneId = decoded['sceneId'] as String?;
         final content = decoded['content'] as String?;
-        if (sceneId == null || sceneId.isEmpty) continue;
-        if (content == null) continue;
+        if (sceneId == null || sceneId.isEmpty || content == null) {
+          // JSON valid tetapi field wajib tidak lengkap: tidak dapat
+          // dipulihkan, tetapi tetap di-surface (BUG-1, no silent loss).
+          entries.add(
+            PendingDraftEntry.corrupt(
+              sceneId: p.basenameWithoutExtension(entity.path),
+            ),
+          );
+          continue;
+        }
         entries.add(
           PendingDraftEntry(
             sceneId: sceneId,
@@ -81,9 +96,16 @@ class DurableDraftJournal {
           ),
         );
       } on FormatException {
-        // Entri korup (crash sebelum rename selesai) diabaikan: file
-        // .tmp setengah jadi tidak pernah dianggap sumber pemulihan.
-        continue;
+        // File final terpotong/korup (crash/power-loss di jendela tulis):
+        // SATU-SATUNYA salinan draf unsaved pengguna — jangan dibuang
+        // diam-diam (bug-hunt-run128 BUG-1). Surface sebagai entri korup
+        // agar panel DRAFT RECOVERY menampilkan statusnya. Artefak .tmp
+        // in-progress tidak pernah mencapai sini (saringan .endsWith).
+        entries.add(
+          PendingDraftEntry.corrupt(
+            sceneId: p.basenameWithoutExtension(entity.path),
+          ),
+        );
       }
     }
     entries.sort((a, b) => a.sceneId.compareTo(b.sceneId));
@@ -122,13 +144,27 @@ class DurableDraftJournal {
 
 /// Satu entri draf yang belum tersimpan; dibaca dari journal durable.
 class PendingDraftEntry {
+  /// Entri korup/truncated: konten tidak dapat dibaca. [sceneId] berasal
+  /// dari nama file ketika isi tidak terdekode, agar panel pemulihan tetap
+  /// dapat menampilkan keberadaannya (no silent loss, bug-hunt-run128 BUG-1).
+  const PendingDraftEntry.corrupt({required this.sceneId})
+    : content = '',
+      isCorrupt = true,
+      stagedAt = null;
+
   const PendingDraftEntry({
     required this.sceneId,
     required this.content,
     required this.stagedAt,
+    this.isCorrupt = false,
   });
 
   final String sceneId;
   final String content;
+
+  /// True ketika entri tidak dapat didekode (truncated/korup). Entri korup
+  /// TIDAK dapat direstore ulang ke repository; ia ditampilkan agar pengguna
+  /// tahu draf unsaved pernah ada dan bisa menghapusnya secara eksplisit.
+  final bool isCorrupt;
   final DateTime? stagedAt;
 }

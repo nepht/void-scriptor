@@ -209,10 +209,18 @@ class StoryRepositoryImpl {
       final chapters = await database.storyDao.getChapters(story.assetId);
       for (final chapter in chapters) {
         final scenes = await database.storyDao.getScenesByChapter(chapter.id);
+        // BUG-15 (bug-hunt-run128): judul bab adalah string satu chapter,
+        // bukan per scene — hit judul bab dihitung sekali dan ditambahkan
+        // ke baris scene pertama agar matchCount tidak menggelembung
+        // sebanyak jumlah scene.
+        final chapterTitleCount = chapter.title.toLowerCase().contains(needle)
+            ? 1
+            : 0;
+        var isFirstScene = true;
         for (final scene in scenes) {
           var count = 0;
           if (scene.title.toLowerCase().contains(needle)) count++;
-          if (chapter.title.toLowerCase().contains(needle)) count++;
+          if (isFirstScene) count += chapterTitleCount;
           final beats = await database.storyDao.getSceneBeats(scene.id);
           for (final beat in beats) {
             if (beat.content.toLowerCase().contains(needle)) count++;
@@ -228,6 +236,7 @@ class StoryRepositoryImpl {
                   : existing.matchCount + count,
             );
           }
+          isFirstScene = false;
         }
       }
     }

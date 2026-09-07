@@ -71,6 +71,56 @@ void main() {
     },
   );
 
+  test(
+    'novel search counts a chapter-title match once, not once per scene',
+    () async {
+      final root = await Directory.systemTemp.createTemp('novel-search-');
+      addTearDown(() => root.delete(recursive: true));
+      final paths = ProjectPaths(rootDirectory: root);
+      final databaseService = ProjectDatabaseService();
+      final dbPath = (await paths.database('project-1')).path;
+      await databaseService.create(dbPath);
+      final database = await databaseService.open(dbPath);
+      addTearDown(database.close);
+      final storyService = CreateStoryService(database: database, paths: paths);
+      final storyId = await storyService.createStory(
+        projectId: 'project-1',
+        title: 'Novel',
+      );
+      final chapterId = await storyService.createChapter(
+        storyId: storyId,
+        title: 'Bab Void',
+        chapterNumber: 1,
+      );
+      final firstSceneId = await storyService.createScene(
+        storyId: storyId,
+        chapterId: chapterId,
+        title: 'Scene Pertama',
+        sceneNumber: 1,
+      );
+      final secondSceneId = await storyService.createScene(
+        storyId: storyId,
+        chapterId: chapterId,
+        title: 'Scene Kedua',
+        sceneNumber: 2,
+      );
+      final repository = StoryRepositoryImpl(
+        database: database,
+        projectId: 'project-1',
+      );
+
+      final results = await repository.searchNovel('void');
+
+      // Satu kemunculan judul bab hanya dihitung sekali: baris scene
+      // pertama mewakili chapter, scene lain tidak menggandakan hitnya.
+      expect(results, hasLength(1));
+      expect(results.single.sceneId, firstSceneId);
+      expect(results.single.chapterTitle, 'Bab Void');
+      expect(results.single.matchCount, 1);
+      expect(secondSceneId, isNotNull);
+    },
+  );
+
   test('novel search is case-insensitive and trims the query', () async {
     final root = await Directory.systemTemp.createTemp('novel-search-');
     addTearDown(() => root.delete(recursive: true));

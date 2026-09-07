@@ -125,6 +125,14 @@ class AssetDao extends DatabaseAccessor<ProjectDatabase> with _$AssetDaoMixin {
       (update(assets)..where((row) => row.id.equals(assetId))).write(
         AssetsCompanion(favorite: Value(value)),
       );
+
+  /// 145.44: writes the asset thumbnail reference. The schema column has
+  /// existed since the asset browser, but nothing produced it until the
+  /// thumbnail importer landed; the browser renders it at read time.
+  Future<void> setThumbnail(String assetId, String? path) =>
+      (update(assets)..where((row) => row.id.equals(assetId))).write(
+        AssetsCompanion(thumbnailPath: Value(path)),
+      );
   Future<void> markOpened(String assetId, DateTime at) =>
       (update(assets)..where((row) => row.id.equals(assetId))).write(
         AssetsCompanion(lastOpenedAt: Value(at)),

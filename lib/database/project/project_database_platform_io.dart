@@ -53,3 +53,41 @@ Future<int?> readProjectDatabaseSchemaVersion(String databasePath) async {
     database.close();
   }
 }
+
+/// Sprint 145.42 write-probe execution (moved behind the platform seam so
+/// the ffi singleton stays out of the web compile, 145.44 CI Build Web
+/// release). Purity contract lives on [ProjectDatabaseService.probeWrite].
+Future<void> probeProjectDatabaseWrite(String databasePath) async {
+  final raw = sqlite.sqlite3.open(databasePath);
+  try {
+    raw.execute('BEGIN IMMEDIATE');
+    raw.execute(
+      'CREATE TABLE IF NOT EXISTS __scriptor_write_probe '
+      '(id INTEGER PRIMARY KEY)',
+    );
+    raw.execute('DROP TABLE __scriptor_write_probe');
+    // COMMIT adalah pernyataan terakhir: setelah titik ini tidak ada
+    // langkah cleanup yang bisa tertinggal; sebelum titik ini semua
+    // perubahan masih bisa di-rollback.
+    raw.execute('COMMIT');
+  } on sqlite.SqliteException {
+    try {
+      raw.execute('ROLLBACK');
+    } on sqlite.SqliteException {
+      // best-effort: koneksi ditutup di finally.
+    }
+    rethrow;
+  } finally {
+    try {
+      // VACUUM merebut kembali halaman kosong dari freelist,
+      // mengembalikan ukuran file utama ke posisi sebelum probe.
+      // Untuk database kecil (page size 4 KiB) ini hanya satu
+      // halaman dan selesai cepat.
+      raw.execute('VACUUM');
+      raw.execute('PRAGMA wal_checkpoint(TRUNCATE)');
+    } on sqlite.SqliteException {
+      // best-effort saat probe gagal
+    }
+    raw.close();
+  }
+}

@@ -14,3 +14,7 @@ Future<void> createProjectDatabase(String databasePath) async {
 
 Future<int?> readProjectDatabaseSchemaVersion(String databasePath) async =>
     null;
+
+Future<void> probeProjectDatabaseWrite(String databasePath) async {
+  throw UnsupportedError('Write probe is unavailable on this platform');
+}

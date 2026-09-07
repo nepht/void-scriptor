@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:sqlite3/sqlite3.dart' as sqlite;
+import 'package:sqlite3/common.dart' as sqlite;
 
 import 'project_database.dart';
 import 'project_database_platform.dart'
@@ -200,7 +200,8 @@ class ProjectDatabaseService {
   /// [ProjectDatabaseWriteFailedException] ketika media menolak (read-
   /// only attribute, permission loss, disk full).
   ///
-  /// Kontrak purity (bug-hunt run94 BUG-07/BUG-08):
+  /// Kontrak purity (bug-hunt run94 BUG-07/BUG-08) dipertahankan oleh
+  /// implementasi platform di [probeProjectDatabaseWrite]:
   /// - CREATE + DROP tabel probe dalam SATU transaksi; COMMIT adalah
   ///   pernyataan terakhir sehingga tidak ada jendela crash yang
   ///   menyisakan tabel [__scriptor_write_probe] di database pengguna.
@@ -212,25 +213,15 @@ class ProjectDatabaseService {
   ///   koneksi hidup membuang transaksi yang sudah di-commit.
   /// - VACUUM + wal_checkpoint(TRUNCATE) best-effort mengembalikan
   ///   ukuran file ke posisi sebelum probe.
+  ///
+  /// Eksekusi berada di belakang seam platform: ffi singleton sqlite3
+  /// tidak tersedia di web (145.44 CI Build Web release), sementara
+  /// klasifikasi [SqliteException] pada open() tetap dibagikan lewat
+  /// package:sqlite3/common.dart.
   Future<void> probeWrite(String databasePath) async {
-    final raw = sqlite.sqlite3.open(databasePath);
     try {
-      raw.execute('BEGIN IMMEDIATE');
-      raw.execute(
-        'CREATE TABLE IF NOT EXISTS __scriptor_write_probe '
-        '(id INTEGER PRIMARY KEY)',
-      );
-      raw.execute('DROP TABLE __scriptor_write_probe');
-      // COMMIT adalah pernyataan terakhir: setelah titik ini tidak ada
-      // langkah cleanup yang bisa tertinggal; sebelum titik ini semua
-      // perubahan masih bisa di-rollback.
-      raw.execute('COMMIT');
+      await probeProjectDatabaseWrite(databasePath);
     } on sqlite.SqliteException catch (error) {
-      try {
-        raw.execute('ROLLBACK');
-      } on sqlite.SqliteException {
-        // best-effort: koneksi ditutup di finally.
-      }
       // Setiap SqliteException dari jalur tulis adalah klasifikasi
       // media tulis: SQLITE_READONLY (8) = file/direktori write-
       // protected; SQLITE_FULL (13) = disk penuh; SQLITE_IOERR_WRITE
@@ -238,18 +229,6 @@ class ProjectDatabaseService {
       // sidecar tidak bisa dibuat. Bukan korup dan bukan storage
       // hilang - database sendiri bisa saja sehat.
       throw ProjectDatabaseWriteFailedException(databasePath, error);
-    } finally {
-      try {
-        // VACUUM merebut kembali halaman kosong dari freelist,
-        // mengembalikan ukuran file utama ke posisi sebelum probe.
-        // Untuk database kecil (page size 4 KiB) ini hanya satu
-        // halaman dan selesai cepat.
-        raw.execute('VACUUM');
-        raw.execute('PRAGMA wal_checkpoint(TRUNCATE)');
-      } on sqlite.SqliteException {
-        // best-effort saat probe gagal
-      }
-      raw.close();
     }
   }
 }

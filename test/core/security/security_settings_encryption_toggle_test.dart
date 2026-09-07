@@ -31,28 +31,34 @@ void main() {
       expect(await service.isEncryptionEnabled('p1'), isFalse);
     });
 
-    test('setEncryptionEnabled without a passphrase is rejected and creates no row', () async {
-      await expectLater(
-        service.setEncryptionEnabled('p1', true),
-        throwsA(isA<StateError>()),
-      );
-      expect(await service.isEncryptionEnabled('p1'), isFalse);
-      final rows = await db.select(db.securitySettings).get();
-      expect(rows, isEmpty);
-    });
+    test(
+      'setEncryptionEnabled without a passphrase is rejected and creates no row',
+      () async {
+        await expectLater(
+          service.setEncryptionEnabled('p1', true),
+          throwsA(isA<StateError>()),
+        );
+        expect(await service.isEncryptionEnabled('p1'), isFalse);
+        final rows = await db.select(db.securitySettings).get();
+        expect(rows, isEmpty);
+      },
+    );
 
-    test('setPassphrase enables encryption; disable then re-enable persists', () async {
-      await service.setPassphrase('p1', 'correct horse battery staple');
-      expect(await service.isEncryptionEnabled('p1'), isTrue);
+    test(
+      'setPassphrase enables encryption; disable then re-enable persists',
+      () async {
+        await service.setPassphrase('p1', 'correct horse battery staple');
+        expect(await service.isEncryptionEnabled('p1'), isTrue);
 
-      await service.setEncryptionEnabled('p1', false);
-      expect(await service.isEncryptionEnabled('p1'), isFalse);
+        await service.setEncryptionEnabled('p1', false);
+        expect(await service.isEncryptionEnabled('p1'), isFalse);
 
-      await service.setEncryptionEnabled('p1', true);
-      expect(await service.isEncryptionEnabled('p1'), isTrue);
-      // The passphrase/lock state must survive the toggle.
-      expect(await service.isLocked('p1'), isTrue);
-    });
+        await service.setEncryptionEnabled('p1', true);
+        expect(await service.isEncryptionEnabled('p1'), isTrue);
+        // The passphrase/lock state must survive the toggle.
+        expect(await service.isLocked('p1'), isTrue);
+      },
+    );
   });
 
   group('SecuritySettingsScreen persistence', () {
@@ -98,7 +104,10 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.textContaining('passphrase'), findsOneWidget);
-      expect(tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value, isFalse);
+      expect(
+        tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
+        isFalse,
+      );
       expect(await service.isEncryptionEnabled('p1'), isFalse);
     });
 
@@ -110,7 +119,10 @@ void main() {
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
-      expect(tester.widget<SwitchListTile>(find.byType(SwitchListTile)).onChanged, isNull);
+      expect(
+        tester.widget<SwitchListTile>(find.byType(SwitchListTile)).onChanged,
+        isNull,
+      );
     });
   });
 }

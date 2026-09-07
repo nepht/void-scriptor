@@ -37,10 +37,10 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
   bool get _hasStore => widget.database != null && widget.projectId != null;
 
   ProjectLockService _service() => ProjectLockService(
-        database: widget.database!,
-        deriver: const Pbkdf2KeyDeriver(),
-        integrity: const HmacIntegrity(),
-      );
+    database: widget.database!,
+    deriver: const Pbkdf2KeyDeriver(),
+    integrity: const HmacIntegrity(),
+  );
 
   @override
   void initState() {
@@ -68,9 +68,9 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
       if (mounted) setState(() => _encryptionEnabled = value);
     } on StateError catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     }
   }
 

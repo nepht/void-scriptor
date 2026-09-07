@@ -113,12 +113,14 @@ class ProjectLockService {
     } else if (row == null) {
       throw StateError('no security settings row to update');
     }
-    await (database.update(database.securitySettings)
-          ..where((r) => r.projectId.equals(projectId)))
-        .write(SecuritySettingsCompanion(
-      encryptionEnabled: Value(enabled),
-      updatedAt: Value(DateTime.now().toUtc()),
-    ));
+    await (database.update(
+      database.securitySettings,
+    )..where((r) => r.projectId.equals(projectId))).write(
+      SecuritySettingsCompanion(
+        encryptionEnabled: Value(enabled),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
   }
 
   Future<SecuritySetting?> _row(String projectId) async {

@@ -50,7 +50,8 @@ class BackgroundJobQueue {
     // the same terminal-state rule; a terminal id is replaced on
     // re-enqueue instead of blocking forever.
     final existingJob = _jobs[task.id];
-    final idIsTerminal = existingJob != null &&
+    final idIsTerminal =
+        existingJob != null &&
         (existingJob.status == BackgroundJobStatus.completed ||
             existingJob.status == BackgroundJobStatus.failed ||
             existingJob.status == BackgroundJobStatus.cancelled);
@@ -65,8 +66,7 @@ class BackgroundJobQueue {
         _tasks.values.any(
           (candidate) =>
               candidate.taskKey == key &&
-              _jobs[candidate.id]?.status !=
-                  BackgroundJobStatus.completed &&
+              _jobs[candidate.id]?.status != BackgroundJobStatus.completed &&
               _jobs[candidate.id]?.status != BackgroundJobStatus.failed &&
               _jobs[candidate.id]?.status != BackgroundJobStatus.cancelled,
         )) {

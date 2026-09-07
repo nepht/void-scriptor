@@ -38,23 +38,25 @@ class JobDependencyGraph {
     // Cycle members are unblocked so the deadlock surfaces as a run that
     // fails visibly instead of a silent permanent stall.
     if (_cyclicJobIds.contains(jobId)) return true;
-    return _dependencies
-        .where((dependency) => dependency.jobId == jobId)
-        .every((dependency) {
-      final status = statuses[dependency.dependsOnId];
-      // Failed/cancelled dependencies count as done: the dependent should
-      // run and fail visibly rather than pend forever. An unknown status
-      // (dependency not yet recorded) still blocks.
-      return status == 'completed' ||
-          status == 'failed' ||
-          status == 'cancelled';
-    });
+    return _dependencies.where((dependency) => dependency.jobId == jobId).every(
+      (dependency) {
+        final status = statuses[dependency.dependsOnId];
+        // Failed/cancelled dependencies count as done: the dependent should
+        // run and fail visibly rather than pend forever. An unknown status
+        // (dependency not yet recorded) still blocks.
+        return status == 'completed' ||
+            status == 'failed' ||
+            status == 'cancelled';
+      },
+    );
   }
 
   Set<String> _findCycleMembers() {
     final dependents = <String, List<String>>{};
     for (final dependency in _dependencies) {
-      dependents.putIfAbsent(dependency.jobId, () => []).add(dependency.dependsOnId);
+      dependents
+          .putIfAbsent(dependency.jobId, () => [])
+          .add(dependency.dependsOnId);
     }
 
     final resolved = <String>{};

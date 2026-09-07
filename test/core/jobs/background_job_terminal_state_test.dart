@@ -39,79 +39,97 @@ void main() {
       expect(queue.jobOf(task.id)!.status, BackgroundJobStatus.completed);
     });
 
-    test('a failed task id can be re-enqueued (mirrors the taskKey allowance)', () async {
-      var attempts = 0;
-      final queue = BackgroundJobQueue();
-      final failing = _Task(
-        _job('retry-me', BackgroundJobPriority.normal),
-        onExecute: (_) async {
-          attempts++;
-          throw StateError('boom');
-        },
-        taskKey: 'integrity:scan',
-      );
-      expect(queue.enqueue(failing), isTrue);
-      await queue.drain();
-      expect(queue.jobOf(failing.id)!.status, BackgroundJobStatus.failed);
+    test(
+      'a failed task id can be re-enqueued (mirrors the taskKey allowance)',
+      () async {
+        var attempts = 0;
+        final queue = BackgroundJobQueue();
+        final failing = _Task(
+          _job('retry-me', BackgroundJobPriority.normal),
+          onExecute: (_) async {
+            attempts++;
+            throw StateError('boom');
+          },
+          taskKey: 'integrity:scan',
+        );
+        expect(queue.enqueue(failing), isTrue);
+        await queue.drain();
+        expect(queue.jobOf(failing.id)!.status, BackgroundJobStatus.failed);
 
-      final retry = _Task(
-        _job('retry-me', BackgroundJobPriority.normal),
-        onExecute: (_) async => attempts++,
-        taskKey: 'integrity:scan',
-      );
-      expect(queue.enqueue(retry), isTrue);
-      await queue.drain();
-      expect(attempts, 2);
-      expect(queue.jobOf(retry.id)!.status, BackgroundJobStatus.completed);
-    });
+        final retry = _Task(
+          _job('retry-me', BackgroundJobPriority.normal),
+          onExecute: (_) async => attempts++,
+          taskKey: 'integrity:scan',
+        );
+        expect(queue.enqueue(retry), isTrue);
+        await queue.drain();
+        expect(attempts, 2);
+        expect(queue.jobOf(retry.id)!.status, BackgroundJobStatus.completed);
+      },
+    );
 
     test('a live (queued) duplicate is still rejected on id and taskKey', () {
       final queue = BackgroundJobQueue();
-      queue.enqueue(_Task(_job('live', BackgroundJobPriority.normal),
-          taskKey: 'waveform:job'));
+      queue.enqueue(
+        _Task(
+          _job('live', BackgroundJobPriority.normal),
+          taskKey: 'waveform:job',
+        ),
+      );
       expect(
-        queue.enqueue(_Task(_job('live', BackgroundJobPriority.high),
-            taskKey: 'waveform:job')),
+        queue.enqueue(
+          _Task(
+            _job('live', BackgroundJobPriority.high),
+            taskKey: 'waveform:job',
+          ),
+        ),
         isFalse,
         reason: 'same id while still queued must not double-enqueue',
       );
       expect(
-        queue.enqueue(_Task(_job('other', BackgroundJobPriority.high),
-            taskKey: 'waveform:job')),
+        queue.enqueue(
+          _Task(
+            _job('other', BackgroundJobPriority.high),
+            taskKey: 'waveform:job',
+          ),
+        ),
         isFalse,
         reason: 'taskKey coalescing must stay intact for live jobs',
       );
     });
 
-    test('re-enqueue replaces history rather than accumulating duplicates', () async {
-      final queue = BackgroundJobQueue();
-      final first = _Task(
-        _job('cycle', BackgroundJobPriority.normal),
-        onExecute: (_) async {},
-      );
-      queue.enqueue(first);
-      await queue.drain();
-      queue.enqueue(_Task(_job('cycle', BackgroundJobPriority.normal),
-          onExecute: (_) async {}));
-      await queue.drain();
-      final ids = queue.jobs.map((job) => job.id).toList();
-      expect(ids.where((id) => id == 'cycle'), hasLength(1));
-    });
+    test(
+      're-enqueue replaces history rather than accumulating duplicates',
+      () async {
+        final queue = BackgroundJobQueue();
+        final first = _Task(
+          _job('cycle', BackgroundJobPriority.normal),
+          onExecute: (_) async {},
+        );
+        queue.enqueue(first);
+        await queue.drain();
+        queue.enqueue(
+          _Task(
+            _job('cycle', BackgroundJobPriority.normal),
+            onExecute: (_) async {},
+          ),
+        );
+        await queue.drain();
+        final ids = queue.jobs.map((job) => job.id).toList();
+        expect(ids.where((id) => id == 'cycle'), hasLength(1));
+      },
+    );
   });
 
   group('core-hunt-20260906 drain starvation guard (BUG-49)', () {
     test('a zero or negative resource limit is rejected at construction', () {
       expect(
-        () => BackgroundJobQueue(
-          resourceLimits: const {JobResource.cpu: 0},
-        ),
+        () => BackgroundJobQueue(resourceLimits: const {JobResource.cpu: 0}),
         throwsA(isA<ArgumentError>()),
         reason: 'BUG-49: limit 0 makes drain spin at Duration.zero forever',
       );
       expect(
-        () => BackgroundJobQueue(
-          resourceLimits: const {JobResource.disk: -2},
-        ),
+        () => BackgroundJobQueue(resourceLimits: const {JobResource.disk: -2}),
         throwsA(isA<ArgumentError>()),
       );
     });
@@ -142,12 +160,13 @@ void main() {
         const JobDependency(jobId: 'dependent', dependsOnId: 'cancelled-dep'),
       ]);
       expect(
-        graph.isReady(
-          'dependent',
-          const {'failed-dep': 'failed', 'cancelled-dep': 'cancelled'},
-        ),
+        graph.isReady('dependent', const {
+          'failed-dep': 'failed',
+          'cancelled-dep': 'cancelled',
+        }),
         isTrue,
-        reason: 'BUG-53: failed/cancelled deps left the dependent pending forever',
+        reason:
+            'BUG-53: failed/cancelled deps left the dependent pending forever',
       );
     });
 
@@ -164,10 +183,7 @@ void main() {
       ]);
       expect(graph.isReady('dependent', const {'slow': 'running'}), isFalse);
       expect(graph.isReady('dependent', const {'slow': 'queued'}), isFalse);
-      expect(
-        graph.isReady('dependent', const {'slow': 'completed'}),
-        isTrue,
-      );
+      expect(graph.isReady('dependent', const {'slow': 'completed'}), isTrue);
     });
 
     test('a dependency cycle breaks the deadlock instead of stalling', () {
@@ -197,14 +213,14 @@ void main() {
 }
 
 BackgroundJob _job(String id, BackgroundJobPriority priority) => BackgroundJob(
-      id: id,
-      projectId: 'project-1',
-      type: BackgroundJobType.custom,
-      label: id,
-      status: BackgroundJobStatus.queued,
-      priority: priority,
-      createdAt: DateTime(2026),
-    );
+  id: id,
+  projectId: 'project-1',
+  type: BackgroundJobType.custom,
+  label: id,
+  status: BackgroundJobStatus.queued,
+  priority: priority,
+  createdAt: DateTime(2026),
+);
 
 class _Task implements BackgroundTask {
   _Task(

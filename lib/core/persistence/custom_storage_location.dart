@@ -2,6 +2,23 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
+import 'package:void_scriptor/core/persistence/project_recovery_service.dart';
+
+/// Raised when the storage-location registry content is unreadable
+/// (corrupt JSON, wrong shape, or field-level type failures). [cause] is
+/// the underlying parse/type failure; the corrupt file is preserved on
+/// disk for manual inspection unless a `.bak` recovery restored it.
+/// Mirrors `ProjectRegistryUnreadableException` in the project registry.
+class CustomStorageRegistryUnreadableException implements Exception {
+  CustomStorageRegistryUnreadableException(this.registryPath, this.cause);
+
+  final String registryPath;
+  final Object cause;
+
+  @override
+  String toString() =>
+      'CustomStorageRegistryUnreadableException($registryPath: $cause)';
+}
 
 enum StorageProbeReason {
   ok,
@@ -257,6 +274,7 @@ class CustomStorageLocationStore {
   CustomStorageLocationStore({required this.registryFile});
 
   final File registryFile;
+  final ProjectRecoveryService _recovery = const ProjectRecoveryService();
   CustomStorageLocationState? _cachedState;
 
   /// Last state observed by [load], or null before the first load. Lets
@@ -269,6 +287,17 @@ class CustomStorageLocationStore {
   }
 
   Future<CustomStorageLocationState> _read() async {
+    // Bug-hunt core-hunt-20260906 BUG-15: recovery runs BEFORE the missing
+    // check because an interrupted atomic write leaves the target MISSING
+    // with `.bak` (last durable copy) still on disk; without this, a
+    // crash window would report the empty default state and silently
+    // forget the bound project. Corrupt (present-but-unreadable) content
+    // is not a power-loss window: the last durable copy in `.bak` is
+    // restored before the failure is reported; without a `.bak` the
+    // corrupt file is preserved for inspection and the typed unreadable
+    // exception propagates (ProjectPaths.compose reports it instead of
+    // silently relocating every project path to Documents).
+    await _recovery.recoverIfInterrupted(registryFile);
     if (!await registryFile.exists()) {
       return const CustomStorageLocationState(
         schemaVersion: 1,
@@ -276,23 +305,55 @@ class CustomStorageLocationStore {
         boundProjectId: null,
       );
     }
-    final decoded =
-        jsonDecode(await registryFile.readAsString()) as Map<String, dynamic>;
-    final schemaVersion = decoded['schemaVersion'] as int? ?? 1;
-    final active = decoded['activeLocation'] as String?;
-    final bound = decoded['boundProjectId'] as String?;
-    var status = StorageLocationStatus.healthy;
-    if (active != null && !await Directory(active).exists()) {
-      status = StorageLocationStatus.missingDrive;
+    try {
+      return await _decodeState(registryFile);
+    } on CustomStorageRegistryUnreadableException {
+      final restored = await _recovery.restoreBackup(registryFile);
+      if (!restored) rethrow;
+      return _decodeState(registryFile);
     }
-    return CustomStorageLocationState(
-      schemaVersion: schemaVersion,
-      activeLocation: active == null
-          ? null
-          : CustomStorageLocation._normalizeStoredLocation(active),
-      boundProjectId: bound,
-      status: status,
-    );
+  }
+
+  Future<CustomStorageLocationState> _decodeState(File registryFile) async {
+    final Object decoded;
+    try {
+      decoded = jsonDecode(await registryFile.readAsString());
+    } on FileSystemException {
+      rethrow;
+    } on Object catch (cause) {
+      throw CustomStorageRegistryUnreadableException(
+        registryFile.path,
+        cause,
+      );
+    }
+    if (decoded is! Map<String, dynamic>) {
+      throw CustomStorageRegistryUnreadableException(
+        registryFile.path,
+        const FormatException('Storage registry must be a JSON object'),
+      );
+    }
+    try {
+      final schemaVersion = decoded['schemaVersion'] as int? ?? 1;
+      final active = decoded['activeLocation'] as String?;
+      final bound = decoded['boundProjectId'] as String?;
+      var status = StorageLocationStatus.healthy;
+      if (active != null && !await Directory(active).exists()) {
+        status = StorageLocationStatus.missingDrive;
+      }
+      return CustomStorageLocationState(
+        schemaVersion: schemaVersion,
+        activeLocation: active == null
+            ? null
+            : CustomStorageLocation._normalizeStoredLocation(active),
+        boundProjectId: bound,
+        status: status,
+      );
+    } on Object catch (cause) {
+      throw CustomStorageRegistryUnreadableException(
+        registryFile.path,
+        cause,
+      );
+    }
   }
 
   Future<void> setActiveLocation(String rawLocation) async {
@@ -358,17 +419,18 @@ class CustomStorageLocationStore {
   }
 
   Future<void> _save(CustomStorageLocationState state) async {
-    await registryFile.parent.create(recursive: true);
+    // Bug-hunt core-hunt-20260906 BUG-16: route through the shared atomic
+    // writer so the previous durable copy survives as `.bak` and an
+    // interrupted write leaves a recoverable window, matching every other
+    // registry write in the codebase.
     final json = {
       'schemaVersion': state.schemaVersion,
       'activeLocation': state.activeLocation,
       'boundProjectId': state.boundProjectId,
     };
-    final temporary = File('${registryFile.path}.tmp');
-    await temporary.writeAsString(
-      '${const JsonEncoder.withIndent('  ').convert(json)}\n',
-      flush: true,
+    await _recovery.atomicWrite(
+      target: registryFile,
+      content: '${const JsonEncoder.withIndent('  ').convert(json)}\n',
     );
-    await temporary.rename(registryFile.path);
   }
 }

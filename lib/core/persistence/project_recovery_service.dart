@@ -64,7 +64,13 @@ class ProjectRecoveryService {
       ProjectManifest manifest;
       try {
         manifest = ProjectManifest.fromJson(decoded);
-      } on FormatException {
+      } on Object {
+        // Bug-hunt core-hunt-20260906 BUG-02: a syntactically valid
+        // marker whose manifest is type-corrupt throws TypeError, not
+        // FormatException; letting it escape aborted the whole admission
+        // scan for every sibling package. Corrupt markers are skipped
+        // and left on disk for manual inspection, like every other
+        // corrupt-marker path in this class.
         continue;
       }
       final id = name.substring(0, name.length - '.voidproject'.length);

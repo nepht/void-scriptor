@@ -1,0 +1,29 @@
+{
+  "captured_at": "2026-09-07",
+  "purpose": "145.44 minimum/recommended device matrix — interim entry. This machine is the RECOMMENDED development device. A true minimum-spec device run still requires separate hardware (user-supplied).",
+  "recommended_device": {
+    "os": "Microsoft Windows 11 Pro (10.0.22621)",
+    "cpu": "Intel(R) Core(TM) i5-4570 CPU @ 3.20GHz (4C/4T)",
+    "ram_gb": 31.9,
+    "gpu": "AMD Radeon RX590 GME (~4 GB, AdapterRAM 4293918720)",
+    "role": "recommended — all native journeys on this profile",
+    "runs": [
+      {
+        "date": "2026-09-06",
+        "evidence_dir": "docs/evidence/145.44/",
+        "actor": "Choirudin interactive + run113 reconciliation (read-only)",
+        "summary": "9 PNG + 4 JSON, two sample projects, hashes, search-empty-index finding fixed same day (commit 98af5ee)"
+      },
+      {
+        "date": "2026-09-07",
+        "evidence_dir": "docs/evidence/145.44-repeat-20260907/",
+        "actor": "nephthys interactive (run109)",
+        "summary": "8 PNG + logs + hashes-before/after + corrupt-db probe; journey repeated across Saga + Tes Novel; regression full suite 3846 PASS; app window at ~1264x711 (non-maximized) as a narrower-window proxy point"
+      }
+    ]
+  },
+  "minimum_device": {
+    "status": "MISSING — requires real low-spec hardware from user; not simulable honestly on this machine",
+    "note": "Narrow-window proxy on recommended device is recorded as auxiliary evidence only, NOT as a substitute for the minimum-device run."
+  }
+}

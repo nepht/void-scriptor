@@ -1,0 +1,52 @@
+{
+  "captured_at": "2026-09-07",
+  "purpose": "145.44 repeat complete journey (run 2 of 2 across sample projects) — honest classification against canonical acceptance.",
+  "journey": {
+    "build": "build/windows/x64/runner/Debug/void_scriptor.exe @ commit a2a3f93 (feat: isolated visual reference detail dialog)",
+    "launch_mode": "fresh process, windowed ~1264x711",
+    "steps": [
+      "Dashboard fresh launch (01)",
+      "Open Void-Cube-Saga — UJI SALINAN (Copy) (d53c8787): explorer tree full (Story, 10 characters incl. Azrael Noctis selected, environment Earth) (02)",
+      "Character workspace Azrael Noctis renders; CURRENT MODE honest empty ('No loadout entries'); Inspector UUID f779c69f (03)",
+      "Dashboard statistics live for Saga: Characters 10, Environments 4, Assets 15 (04)",
+      "Search/Asset Library Saga: index live, 10 character cards + Earth + env cards (05)",
+      "Switch to Tes Novel (3c30ca9c): explorer + workspace render (06)",
+      "Search/Asset Library Tes Novel: all 9 assets incl. creature×2, vehicle, armor, prop, accessory, story, character, environment (07)",
+      "NEW feature regression: tap Void Skiff card → 'Asset detail' dialog with checkerboard area, type 'vehicle', description; Close works (08)",
+      "Graceful close via titlebar Close; tasklist confirms no void_scriptor.exe remaining"
+    ],
+    "observations": [
+      {
+        "severity": "minor",
+        "finding": "Inspector panel kept showing the previously selected Saga character UUID (f779c69f…) after switching to Tes Novel until another selection was made.",
+        "classification": "cross-project stale selection display; no data corruption; logged as follow-up bug candidate, not fixed in this run"
+      },
+      {
+        "severity": "info",
+        "finding": "Saga project.json SHA-256 identical before/after journey (1f101a3a…) and Tes Novel project.json unchanged; both DB integrity_check ok — read-only journey confirmed."
+      }
+    ]
+  },
+  "artifacts": {
+    "screenshots": "01–08 PNG (this directory)",
+    "hashes": ["hashes-before.json", "hashes-after.json"],
+    "logs": ["regression-full-suite-run109.log (3846 PASS, EXIT_CODE=0)"],
+    "corruption_probe": "corrupt-db-probe.json (145.42 area: SQLite 'database disk image is malformed' detectable on scratch copy; source untouched)",
+    "device_matrix": "device-matrix.json"
+  },
+  "classification": {
+    "landed_now": [
+      "REPEAT complete journey across both sample projects (second independent run this certification cycle)",
+      "dedicated log artifact (full-suite regression log)",
+      "hashes before/after",
+      "regression evidence (3846 tests)",
+      "145.42 corrupt-database detectability probe (scratch copy)"
+    ],
+    "still_missing_for_14544_PENDING": [
+      "minimum-spec device run (needs separate hardware)",
+      "additional repeat runs beyond run 1 (Choi interactive) + run 2 (this) if the contract is read as N>2",
+      "in-app recovery UX for corrupt DB (145.42 code behavior, distinct from detectability)"
+    ],
+    "verdict": "145.44 remains PENDING by canonical standard; repeat + logs + hashes gaps are now CLOSED, only minimum-device matrix remains hardware-bound."
+  }
+}

@@ -1,0 +1,9 @@
+{
+ "purpose": "145.42 corrupt-database detectability probe on a SCRATCH COPY (non-destructive; source untouched)",
+ "corruption": "0xDEADBEEF*64 overwritten at byte offset 4096 of copied project.db",
+ "detection": {
+  "query_error": "database disk image is malformed"
+ },
+ "source_project": "3c30ca9c (Tes Novel)",
+ "note": "Detectability evidence only; in-app recovery UX remains future work."
+}

@@ -1,3 +1,4 @@
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,7 @@ import '../../../features/projects/presentation/project_persistence_providers.da
 import '../../character_mode/presentation/character_mode_controller.dart';
 import '../application/asset_pagination.dart';
 import '../application/asset_repository.dart';
+import '../application/asset_thumbnail_importer.dart';
 import '../application/asset_view_preference_store.dart';
 import '../domain/asset_search_query.dart';
 import 'widgets/isolated_asset_reference_card.dart';
@@ -22,6 +24,7 @@ class AssetBrowserScreen extends ConsumerStatefulWidget {
     this.repository,
     this.viewPreferenceStore,
     this.onCreateAsset,
+    this.onImportThumbnail,
   });
   final List<SearchableAsset> assets;
   final AssetRepository? repository;
@@ -36,6 +39,12 @@ class AssetBrowserScreen extends ConsumerStatefulWidget {
     required String type,
   })?
   onCreateAsset;
+
+  /// 145.44: imports one local image as the asset's isolated visual
+  /// reference (thumbnail). Returns the stored package path, or null when
+  /// the user cancels / the session is unavailable. Production default
+  /// opens a file dialog and copies through [AssetThumbnailImporter].
+  final Future<String?> Function(String assetId)? onImportThumbnail;
 
   @override
   ConsumerState<AssetBrowserScreen> createState() => _AssetBrowserScreenState();
@@ -430,6 +439,27 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
               assetType: asset.type.name,
               description: asset.description,
               imagePath: asset.thumbnailPath,
+              onAddReference: () async {
+                final stored =
+                    await (widget.onImportThumbnail ?? _defaultImportThumbnail)(
+                      asset.id,
+                    );
+                if (!dialogContext.mounted) return;
+                if (stored != null) {
+                  Navigator.of(dialogContext).pop();
+                  if (mounted) {
+                    setState(() {
+                      _liveAssets = _liveAssets
+                          ?.map(
+                            (entry) => entry.id == asset.id
+                                ? entry.copyWith(thumbnailPath: stored)
+                                : entry,
+                          )
+                          .toList();
+                    });
+                  }
+                }
+              },
             ),
           ),
         ),
@@ -442,6 +472,33 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
         ],
       ),
     );
+  }
+
+  /// Production default: file dialog (image types) then a copy into the
+  /// active package's asset namespace via [AssetThumbnailImporter].
+  Future<String?> _defaultImportThumbnail(String assetId) async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null) return null;
+    const typeGroup = XTypeGroup(
+      label: 'Images',
+      extensions: ['png', 'jpg', 'jpeg', 'webp', 'gif'],
+    );
+    final file = await openFile(acceptedTypeGroups: [typeGroup]);
+    if (file == null) return null;
+    final importer = AssetThumbnailImporter(
+      database: session.database,
+      assetsDirectory: session.package.assetsDirectory,
+    );
+    try {
+      return await importer.importFromFile(
+        assetId: assetId,
+        sourcePath: file.path,
+      );
+    } on StateError {
+      return null;
+    } on ArgumentError {
+      return null;
+    }
   }
 
   void _toggleSelection(String assetId) {

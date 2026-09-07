@@ -106,18 +106,21 @@ class SearchableAsset {
   final DateTime? lastOpenedAt;
   final String? thumbnailPath;
 
-  SearchableAsset copyWith({bool? favorite, DateTime? lastOpenedAt}) =>
-      SearchableAsset(
-        id: id,
-        projectId: projectId,
-        name: name,
-        type: type,
-        description: description,
-        tags: tags,
-        favorite: favorite ?? this.favorite,
-        lastOpenedAt: lastOpenedAt ?? this.lastOpenedAt,
-        thumbnailPath: thumbnailPath,
-      );
+  SearchableAsset copyWith({
+    bool? favorite,
+    DateTime? lastOpenedAt,
+    String? thumbnailPath,
+  }) => SearchableAsset(
+    id: id,
+    projectId: projectId,
+    name: name,
+    type: type,
+    description: description,
+    tags: tags,
+    favorite: favorite ?? this.favorite,
+    lastOpenedAt: lastOpenedAt ?? this.lastOpenedAt,
+    thumbnailPath: thumbnailPath ?? this.thumbnailPath,
+  );
 }
 
 extension<T> on Iterable<T> {

@@ -164,6 +164,37 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   /// dan label autosave dirender dari sesi (autosave_visible).
   FocusWritingSession? _focusSession;
 
+  /// bug-hunt-run128 BUG-17: future hierarchy dipegang State, BUKAN
+  /// dialokasi di build. FutureBuilder yang menerima future baru pada
+  /// setiap rebuild membuat setiap keystroke (dua setState lewat _count)
+  /// menembak query hierarchy penuh (N+1) dan mengembalikan panel
+  /// CHAPTERS ke "Memuat struktur story...". Cache dibatalkan saat
+  /// storyId berubah atau lewat _reloadStoryHierarchy setelah mutasi
+  /// struktur (impor novel workspace).
+  Future<StoryHierarchy>? _hierarchyFuture;
+  String? _hierarchyStoryId;
+
+  /// Mengembalikan future hierarchy yang stabil antar rebuild.
+  /// Hanya dipanggil dari _buildLiveChapters setelah null-check repository.
+  Future<StoryHierarchy> _ensureHierarchyFuture() {
+    final storyId = widget.storyId;
+    if (storyId != _hierarchyStoryId) {
+      _hierarchyStoryId = storyId;
+      _hierarchyFuture = null;
+    }
+    return _hierarchyFuture ??= widget.repository!.getStoryHierarchy(storyId);
+  }
+
+  /// bug-hunt-run128 BUG-17: refresh eksplisit setelah mutasi struktur
+  /// (impor novel workspace) agar panel CHAPTERS tidak stale — cache
+  /// future tidak lagi mengandalkan rebuild insidental untuk memuat ulang.
+  void _reloadStoryHierarchy() {
+    final repository = widget.repository;
+    if (repository == null) return;
+    _hierarchyStoryId = widget.storyId;
+    _hierarchyFuture = repository.getStoryHierarchy(widget.storyId);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -626,6 +657,11 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     try {
       final result = await actions.run(archive, options);
       if (!mounted) return;
+      // bug-hunt-run128 BUG-17: impor sukses = mutasi struktur (chapter/
+      // scene baru). Refresh future hierarchy secara eksplisit agar panel
+      // CHAPTERS tidak stale — cache future tidak lagi mengandalkan
+      // rebuild insidental untuk memuat ulang.
+      _reloadStoryHierarchy();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -890,7 +926,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
       return const Text('Belum ada session project aktif.');
     }
     return FutureBuilder<StoryHierarchy>(
-      future: repository.getStoryHierarchy(widget.storyId),
+      future: _ensureHierarchyFuture(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Text(

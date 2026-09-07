@@ -37,6 +37,7 @@ abstract interface class AssetRepository {
   Future<List<String>> tagsFor(String assetId);
   Future<void> addTagToAssets(Iterable<String> assetIds, String tag);
   Future<void> setFavorite(String assetId, bool value);
+  Future<void> setThumbnail(String assetId, String path);
   Future<void> markOpened(String assetId, DateTime at);
   Future<void> createCollection(AssetCollectionModel collection);
   Future<void> addToCollection(String collectionId, String assetId);
@@ -56,6 +57,13 @@ class InMemoryAssetRepository implements AssetRepository {
 
   @override
   Future<SearchableAsset?> getAsset(String id) async => _assets[id];
+
+  @override
+  Future<void> setThumbnail(String assetId, String path) async {
+    final asset = _assets[assetId];
+    if (asset == null) return;
+    _assets[assetId] = asset.copyWith(thumbnailPath: path);
+  }
 
   @override
   Future<void> replaceTags(String assetId, Iterable<String> tags) async {

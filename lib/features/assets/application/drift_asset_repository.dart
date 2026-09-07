@@ -38,6 +38,7 @@ class DriftAssetRepository implements AssetRepository {
       type: _typeFromStorage(asset.type),
       favorite: asset.favorite,
       lastOpenedAt: asset.lastOpenedAt,
+      thumbnailPath: asset.thumbnailPath,
       tags: (await database.assetDao.getTags(id)).toSet(),
     );
   }
@@ -57,6 +58,10 @@ class DriftAssetRepository implements AssetRepository {
   @override
   Future<void> setFavorite(String assetId, bool value) =>
       database.assetDao.setFavorite(assetId, value);
+
+  @override
+  Future<void> setThumbnail(String assetId, String path) =>
+      database.assetDao.setThumbnail(assetId, path);
 
   @override
   Future<void> markOpened(String assetId, DateTime at) =>

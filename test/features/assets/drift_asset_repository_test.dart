@@ -33,6 +33,7 @@ void main() {
       await repository.replaceTags('weapon', ['VOID', 'combat']);
       await repository.setFavorite('weapon', true);
       await repository.markOpened('weapon', DateTime.utc(2026, 3, 4));
+      await repository.setThumbnail('weapon', r'C:\x\void-sword-thumb.png');
       await repository.createCollection(
         const AssetCollectionModel(id: 'c', projectId: 'p', name: 'Favorites'),
       );
@@ -42,6 +43,7 @@ void main() {
       expect(asset?.favorite, isTrue);
       expect(asset?.tags, {'void', 'combat'});
       expect(asset?.lastOpenedAt?.toUtc(), DateTime.utc(2026, 3, 4));
+      expect(asset?.thumbnailPath, r'C:\x\void-sword-thumb.png');
       expect(collection?.assetIds, ['weapon']);
     },
   );

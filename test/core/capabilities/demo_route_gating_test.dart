@@ -40,19 +40,25 @@ void main() {
       expect(RouteCapabilityGuard.canonicalRules.length, 13);
     });
 
-    test('setiap rule demo memetakan ke capabilityId kanonik peta reaktivasi',
-        () {
-      final knownIds = ReactivationDependencyMap.entries
-          .map((entry) => entry.capabilityId)
-          .toSet();
-      for (final route in demoRoutes) {
-        final rule = RouteCapabilityGuard.canonicalRules
-            .singleWhere((rule) => rule.route == route);
-        expect(knownIds.contains(rule.capabilityId), isTrue,
-            reason: '$route memakai capabilityId tak kanonik');
-        expect(rule.fallbackRoute, '/dashboard');
-      }
-    });
+    test(
+      'setiap rule demo memetakan ke capabilityId kanonik peta reaktivasi',
+      () {
+        final knownIds = ReactivationDependencyMap.entries
+            .map((entry) => entry.capabilityId)
+            .toSet();
+        for (final route in demoRoutes) {
+          final rule = RouteCapabilityGuard.canonicalRules.singleWhere(
+            (rule) => rule.route == route,
+          );
+          expect(
+            knownIds.contains(rule.capabilityId),
+            isTrue,
+            reason: '$route memakai capabilityId tak kanonik',
+          );
+          expect(rule.fallbackRoute, '/dashboard');
+        }
+      },
+    );
 
     test('peta reaktivasi mendaftar 11 capability demo engine baru', () {
       final ids = ReactivationDependencyMap.entries
@@ -79,8 +85,11 @@ void main() {
     test('route demo dialihkan ke dashboard selama capability deferred', () {
       final guard = RouteCapabilityGuard(flags: FeatureFlagRegistry());
       for (final route in demoRoutes) {
-        expect(guard.redirectFor(route), '/dashboard',
-            reason: '$route harus digate selama capability deferred');
+        expect(
+          guard.redirectFor(route),
+          '/dashboard',
+          reason: '$route harus digate selama capability deferred',
+        );
       }
     });
 

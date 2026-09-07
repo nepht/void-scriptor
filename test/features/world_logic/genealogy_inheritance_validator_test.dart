@@ -88,8 +88,12 @@ void main() {
         );
         final report = const GenealogyInheritanceValidator().validate(
           graph: graph,
-          lifespans: <String, LifeSpan>{"p1": const LifeSpan(id: "p1", birthTick: 0)},
-          options: const GenealogyValidationOptions(strictMissingLifespan: true),
+          lifespans: <String, LifeSpan>{
+            "p1": const LifeSpan(id: "p1", birthTick: 0),
+          },
+          options: const GenealogyValidationOptions(
+            strictMissingLifespan: true,
+          ),
         );
         expect(
           report.anomalies
@@ -133,7 +137,9 @@ void main() {
           ),
         ],
       );
-      final report = const GenealogyInheritanceValidator().validate(graph: graph);
+      final report = const GenealogyInheritanceValidator().validate(
+        graph: graph,
+      );
       final cycles = report.anomalies
           .where((a) => a.code == GenealogyAnomalyCode.cycle)
           .toList();
@@ -157,7 +163,9 @@ void main() {
           ),
         ],
       );
-      final report = const GenealogyInheritanceValidator().validate(graph: graph);
+      final report = const GenealogyInheritanceValidator().validate(
+        graph: graph,
+      );
       expect(
         report.anomalies.any((a) => a.code == GenealogyAnomalyCode.cycle),
         isFalse,
@@ -198,7 +206,11 @@ void main() {
       ],
     );
     final lifespans = <String, LifeSpan>{
-      "patriarch": const LifeSpan(id: "patriarch", birthTick: 0, deathTick: 100),
+      "patriarch": const LifeSpan(
+        id: "patriarch",
+        birthTick: 0,
+        deathTick: 100,
+      ),
       "son": const LifeSpan(id: "son", birthTick: 10),
       "daughter": const LifeSpan(id: "daughter", birthTick: 12),
       "adopted": const LifeSpan(id: "adopted", birthTick: 14),

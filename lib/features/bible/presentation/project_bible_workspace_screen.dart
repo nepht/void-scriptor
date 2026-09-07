@@ -601,7 +601,8 @@ class _RelationMapSection extends ConsumerStatefulWidget {
   const _RelationMapSection();
 
   @override
-  ConsumerState<_RelationMapSection> createState() => _RelationMapSectionState();
+  ConsumerState<_RelationMapSection> createState() =>
+      _RelationMapSectionState();
 }
 
 class _RelationMapSectionState extends ConsumerState<_RelationMapSection> {
@@ -713,10 +714,7 @@ class _RelationMapCard extends StatelessWidget {
                   entry.targetName,
                   overflow: narrow ? TextOverflow.ellipsis : null,
                   maxLines: narrow ? 1 : 3,
-                  style: TextStyle(
-                    color: palette.textSecondary,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: palette.textSecondary, fontSize: 12),
                 ),
               ],
             ),

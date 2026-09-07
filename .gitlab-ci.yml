@@ -1,0 +1,52 @@
+# GitLab CI for Void Scriptor — Linux verify pipeline.
+#
+# Strategy: the authoritative multi-platform matrix (Linux/Web/Android/
+# Windows/macOS/iOS-simulator builds) lives in GitHub Actions
+# (.github/workflows/ci.yml). GitLab CI covers the fast verify lane
+# (format + analyze + test) so every push to gitlab.com gets a green/red
+# signal without duplicating the full build matrix on shared runners.
+#
+# Toolchain: pinned Flutter 3.44.9 stable (verified present in the
+# official release manifest; matches the GitHub workflow pin). Installed
+# from the official tarball because no public Docker image carries this
+# version yet. CI runs stay hermetic: no project data, no local paths.
+
+stages:
+  - verify
+
+flutter-verify:
+  stage: verify
+  image: debian:bookworm-slim
+  timeout: 45 minutes
+  variables:
+    FLUTTER_VERSION: "3.44.9"
+    FLUTTER_ROOT: "/opt/flutter"
+    PUB_CACHE: "$CI_PROJECT_DIR/.pub-cache"
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq curl git xz-utils unzip
+    - curl -fsSL
+      "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz"
+      -o /tmp/flutter.tar.xz
+    - mkdir -p "$FLUTTER_ROOT"
+    - tar -xJf /tmp/flutter.tar.xz -C "$FLUTTER_ROOT" --strip-components=1
+    - export PATH="$FLUTTER_ROOT/bin:$PATH"
+    - git config --global --add safe.directory "$FLUTTER_ROOT"
+    - flutter config --no-analytics
+  script:
+    - flutter --version
+    - flutter pub get
+    - git diff --exit-code -- pubspec.lock
+    - dart format --output=none --set-exit-if-changed lib test
+    - flutter analyze
+    - flutter test --no-test-assets
+  cache:
+    key:
+      files:
+        - pubspec.lock
+    paths:
+      - .pub-cache/
+  rules:
+    # Run on pushes to the default branch and on merge requests.
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'

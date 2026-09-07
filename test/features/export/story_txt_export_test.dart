@@ -8,7 +8,8 @@ import 'package:void_scriptor/features/story/application/story_txt_exporter.dart
 import 'package:void_scriptor/features/story/data/story_repository_impl.dart';
 
 void main() {
-  Future<(StoryRepositoryImpl, String, CreateStoryService)> seedStoryFixture() async {
+  Future<(StoryRepositoryImpl, String, CreateStoryService)>
+  seedStoryFixture() async {
     final root = await Directory.systemTemp.createTemp('s14535-txt-');
     final paths = ProjectPaths(rootDirectory: root);
     final dbPath = (await paths.database('project-1')).path;

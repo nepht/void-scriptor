@@ -47,7 +47,9 @@ void main() {
     await rewound.customStatement(
       'DROP TABLE IF EXISTS character_universe_timeline_overrides',
     );
-    await rewound.customStatement('DROP TABLE IF EXISTS character_novel_states');
+    await rewound.customStatement(
+      'DROP TABLE IF EXISTS character_novel_states',
+    );
     await rewound.customStatement('PRAGMA user_version = 53');
     await rewound.close();
   }

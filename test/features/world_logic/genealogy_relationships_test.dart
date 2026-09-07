@@ -43,26 +43,29 @@ void main() {
     });
   });
   group("adoption", () {
-    test("adopsi menghasilkan parentChild virtual edge dengan note adoption", () {
-      final graph = GenealogyGraph(
-        nodes: const {
-          "a1": GenealogyNode(id: "a1", name: "Adopter"),
-          "a2": GenealogyNode(id: "a2", name: "Adoptee"),
-        },
-        edges: [
-          const GenealogyRelation(
-            id: "ad1",
-            kind: GenealogyRelationKind.adoption,
-            fromId: "a1",
-            toId: "a2",
-            validFrom: 5,
-            note: "resmi",
-          ),
-        ],
-      );
-      expect(graph.parentsOf("a2"), ["a1"]);
-      expect(graph.adoptiveParentsOf("a2"), ["a1"]);
-    });
+    test(
+      "adopsi menghasilkan parentChild virtual edge dengan note adoption",
+      () {
+        final graph = GenealogyGraph(
+          nodes: const {
+            "a1": GenealogyNode(id: "a1", name: "Adopter"),
+            "a2": GenealogyNode(id: "a2", name: "Adoptee"),
+          },
+          edges: [
+            const GenealogyRelation(
+              id: "ad1",
+              kind: GenealogyRelationKind.adoption,
+              fromId: "a1",
+              toId: "a2",
+              validFrom: 5,
+              note: "resmi",
+            ),
+          ],
+        );
+        expect(graph.parentsOf("a2"), ["a1"]);
+        expect(graph.adoptiveParentsOf("a2"), ["a1"]);
+      },
+    );
   });
 
   group("partnership", () {
@@ -168,65 +171,68 @@ void main() {
   });
 
   group("validity_ranges", () {
-    test("validUntil lebih kecil dari validFrom / rujukan hilang / id kosong / validFrom negatif ditolak", () {
-      expect(
-        () => GenealogyGraph(
-          nodes: const {
-            "a": GenealogyNode(id: "a", name: "A"),
-            "b": GenealogyNode(id: "b", name: "B"),
-          },
-          edges: [
-            const GenealogyRelation(
-              id: "r1",
-              kind: GenealogyRelationKind.parentChild,
-              fromId: "a",
-              toId: "b",
-              validFrom: 10,
-              validUntil: 5,
-            ),
-          ],
-        ),
-        throwsArgumentError,
-      );
+    test(
+      "validUntil lebih kecil dari validFrom / rujukan hilang / id kosong / validFrom negatif ditolak",
+      () {
+        expect(
+          () => GenealogyGraph(
+            nodes: const {
+              "a": GenealogyNode(id: "a", name: "A"),
+              "b": GenealogyNode(id: "b", name: "B"),
+            },
+            edges: [
+              const GenealogyRelation(
+                id: "r1",
+                kind: GenealogyRelationKind.parentChild,
+                fromId: "a",
+                toId: "b",
+                validFrom: 10,
+                validUntil: 5,
+              ),
+            ],
+          ),
+          throwsArgumentError,
+        );
 
-      expect(
-        () => GenealogyGraph(
-          nodes: const {"a": GenealogyNode(id: "a", name: "A")},
-          edges: [
-            const GenealogyRelation(
-              id: "r1",
-              kind: GenealogyRelationKind.parentChild,
-              fromId: "a",
-              toId: "ghost",
-              validFrom: 0,
-            ),
-          ],
-        ),
-        throwsArgumentError,
-      );
+        expect(
+          () => GenealogyGraph(
+            nodes: const {"a": GenealogyNode(id: "a", name: "A")},
+            edges: [
+              const GenealogyRelation(
+                id: "r1",
+                kind: GenealogyRelationKind.parentChild,
+                fromId: "a",
+                toId: "ghost",
+                validFrom: 0,
+              ),
+            ],
+          ),
+          throwsArgumentError,
+        );
 
-      expect(
-        () => GenealogyRelation.validated(
-          id: "",
-          kind: GenealogyRelationKind.parentChild,
-          fromId: "a",
-          toId: "b",
-          validFrom: 0,
-        ),
-        throwsArgumentError,
-      );
+        expect(
+          () => GenealogyRelation.validated(
+            id: "",
+            kind: GenealogyRelationKind.parentChild,
+            fromId: "a",
+            toId: "b",
+            validFrom: 0,
+          ),
+          throwsArgumentError,
+        );
 
-      expect(
-        () => GenealogyRelation.validated(
-          id: "r1",
-          kind: GenealogyRelationKind.parentChild,
-          fromId: "a",
-          toId: "b",
-          validFrom: -1,
-        ),
-        throwsArgumentError,
-      );
-    });
+        expect(
+          () => GenealogyRelation.validated(
+            id: "r1",
+            kind: GenealogyRelationKind.parentChild,
+            fromId: "a",
+            toId: "b",
+            validFrom: -1,
+          ),
+          throwsArgumentError,
+        );
+      },
+    );
 
     test("activeAt(tick) memfilter edge di dalam validity range", () {
       final graph = GenealogyGraph(

@@ -21,19 +21,22 @@ void main() {
     } on FileSystemException catch (_) {}
   });
 
-  test('save writes a JSON file with status and metadata, no credentials', () async {
-    final store = AuthSessionStoreIo(file: sessionFile);
-    await store.save(const AuthSession.guest());
+  test(
+    'save writes a JSON file with status and metadata, no credentials',
+    () async {
+      final store = AuthSessionStoreIo(file: sessionFile);
+      await store.save(const AuthSession.guest());
 
-    expect(sessionFile.existsSync(), isTrue);
-    final Map<String, dynamic> json =
-        jsonDecode(sessionFile.readAsStringSync()) as Map<String, dynamic>;
-    expect(json['status'], 'guest');
-    expect(json.containsKey('userId'), isTrue);
-    expect(json.containsKey('email'), isTrue);
-    expect(json['userId'], isNull);
-    expect(json['email'], isNull);
-  });
+      expect(sessionFile.existsSync(), isTrue);
+      final Map<String, dynamic> json =
+          jsonDecode(sessionFile.readAsStringSync()) as Map<String, dynamic>;
+      expect(json['status'], 'guest');
+      expect(json.containsKey('userId'), isTrue);
+      expect(json.containsKey('email'), isTrue);
+      expect(json['userId'], isNull);
+      expect(json['email'], isNull);
+    },
+  );
 
   test('load restores a guest session from disk', () async {
     final store = AuthSessionStoreIo(file: sessionFile);

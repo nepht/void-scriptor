@@ -81,14 +81,12 @@ class EncyclopediaRecord {
     }
     final trimmedTitle = title.trim();
     if (trimmedTitle.isEmpty) {
-      throw ArgumentError.value(
-        title,
-        "title",
-        "title cannot be empty",
-      );
+      throw ArgumentError.value(title, "title", "title cannot be empty");
     }
-    final cleanedLocations =
-        scopeLocations.map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+    final cleanedLocations = scopeLocations
+        .map((s) => s.trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
     return EncyclopediaRecord._(
       recordId: id,
       domain: domain,
@@ -161,18 +159,10 @@ class SharedEncyclopediaSchema {
   void register(EncyclopediaRecord record) {
     final id = record.recordId;
     if (id.isEmpty) {
-      throw ArgumentError.value(
-        id,
-        "recordId",
-        "recordId cannot be empty",
-      );
+      throw ArgumentError.value(id, "recordId", "recordId cannot be empty");
     }
     if (_records.containsKey(id)) {
-      throw ArgumentError.value(
-        id,
-        "recordId",
-        "recordId already registered",
-      );
+      throw ArgumentError.value(id, "recordId", "recordId already registered");
     }
     _records[id] = record;
   }
@@ -205,19 +195,11 @@ class SchemaMigrationStep {
     required List<EncyclopediaDomain> domainsCovered,
   }) {
     if (order < 1) {
-      throw ArgumentError.value(
-        order,
-        "order",
-        "order must be >= 1",
-      );
+      throw ArgumentError.value(order, "order", "order must be >= 1");
     }
     final l = label.trim();
     if (l.isEmpty) {
-      throw ArgumentError.value(
-        label,
-        "label",
-        "label cannot be empty",
-      );
+      throw ArgumentError.value(label, "label", "label cannot be empty");
     }
     if (domainsCovered.isEmpty) {
       throw ArgumentError.value(
@@ -309,25 +291,23 @@ class CompatibilityIssue {
   factory CompatibilityIssue.missingCategory({
     required String recordId,
     required EncyclopediaDomain domain,
-  }) =>
-      CompatibilityIssue._(
-        kind: CompatibilityIssueKind.missingCategory,
-        recordId: recordId,
-        domain: domain,
-        note: "record has no taxonomy category",
-      );
+  }) => CompatibilityIssue._(
+    kind: CompatibilityIssueKind.missingCategory,
+    recordId: recordId,
+    domain: domain,
+    note: "record has no taxonomy category",
+  );
 
   factory CompatibilityIssue.duplicateCategory({
     required String recordId,
     required EncyclopediaDomain domain,
     required String taxonomyCategoryId,
-  }) =>
-      CompatibilityIssue._(
-        kind: CompatibilityIssueKind.duplicateCategory,
-        recordId: recordId,
-        domain: domain,
-        note: "taxonomy category $taxonomyCategoryId reused",
-      );
+  }) => CompatibilityIssue._(
+    kind: CompatibilityIssueKind.duplicateCategory,
+    recordId: recordId,
+    domain: domain,
+    note: "taxonomy category $taxonomyCategoryId reused",
+  );
 
   final CompatibilityIssueKind kind;
   final String recordId;
@@ -379,9 +359,7 @@ class SchemaCompatibilityCheck {
         }
       }
     }
-    return SchemaCompatibilityCheck._(
-      issues: List.unmodifiable(issues),
-    );
+    return SchemaCompatibilityCheck._(issues: List.unmodifiable(issues));
   }
 
   final List<CompatibilityIssue> issues;
@@ -418,11 +396,7 @@ class SchemaRepairAction {
     }
     final n = note.trim();
     if (n.isEmpty) {
-      throw ArgumentError.value(
-        note,
-        "note",
-        "note cannot be empty",
-      );
+      throw ArgumentError.value(note, "note", "note cannot be empty");
     }
     return SchemaRepairAction._(
       kind: kind,
@@ -444,7 +418,9 @@ class SchemaRepairPath {
 
   factory SchemaRepairPath.build(SchemaCompatibilityCheck check) {
     final actions = <SchemaRepairAction>[];
-    for (final issue in check.issuesOfKind(CompatibilityIssueKind.missingCategory)) {
+    for (final issue in check.issuesOfKind(
+      CompatibilityIssueKind.missingCategory,
+    )) {
       actions.add(
         SchemaRepairAction.validated(
           kind: RepairActionKind.flagMissingCategory,
@@ -453,7 +429,9 @@ class SchemaRepairPath {
         ),
       );
     }
-    for (final issue in check.issuesOfKind(CompatibilityIssueKind.duplicateCategory)) {
+    for (final issue in check.issuesOfKind(
+      CompatibilityIssueKind.duplicateCategory,
+    )) {
       actions.add(
         SchemaRepairAction.validated(
           kind: RepairActionKind.deDuplicateCategory,
@@ -462,9 +440,7 @@ class SchemaRepairPath {
         ),
       );
     }
-    return SchemaRepairPath._(
-      actions: List.unmodifiable(actions),
-    );
+    return SchemaRepairPath._(actions: List.unmodifiable(actions));
   }
 
   final List<SchemaRepairAction> actions;
@@ -504,11 +480,7 @@ class EncyclopediaBackupContract {
       );
     }
     if (byteSize < 0) {
-      throw ArgumentError.value(
-        byteSize,
-        "byteSize",
-        "byteSize must be >= 0",
-      );
+      throw ArgumentError.value(byteSize, "byteSize", "byteSize must be >= 0");
     }
     if (checksum.trim().isEmpty) {
       throw ArgumentError.value(
@@ -563,8 +535,6 @@ class RollbackDrillOutcome {
   final String notes;
 }
 
-
-
 /// Helper for reverse lookup of EncyclopediaDomain by stable id.
 class EncyclopediaDomainLookup {
   const EncyclopediaDomainLookup._();
@@ -574,10 +544,6 @@ class EncyclopediaDomainLookup {
     for (final d in EncyclopediaDomain.values) {
       if (d.id == normalized) return d;
     }
-    throw ArgumentError.value(
-      value,
-      "value",
-      "unknown encyclopedia domain id",
-    );
+    throw ArgumentError.value(value, "value", "unknown encyclopedia domain id");
   }
 }

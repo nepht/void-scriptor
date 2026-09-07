@@ -77,10 +77,11 @@ void main() {
             );
       });
       await tester.runAsync(
-        () => CreateEnvironmentService(
-          database: db,
-          paths: paths,
-        ).create(projectId: projectId, name: 'Kota Kabut', type: EnvironmentType.city),
+        () => CreateEnvironmentService(database: db, paths: paths).create(
+          projectId: projectId,
+          name: 'Kota Kabut',
+          type: EnvironmentType.city,
+        ),
       );
 
       // Jalur produksi: Explorer menulis workspaceIntentProvider bertipe

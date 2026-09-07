@@ -32,15 +32,18 @@ void main() {
     },
   );
 
-  test('open() still opens a healthy database created by the service', () async {
-    final root = await Directory.systemTemp.createTemp('s14542-healthy-db-');
-    addTearDown(() => root.delete(recursive: true));
-    final databasePath = p.join(root.path, 'project.db');
+  test(
+    'open() still opens a healthy database created by the service',
+    () async {
+      final root = await Directory.systemTemp.createTemp('s14542-healthy-db-');
+      addTearDown(() => root.delete(recursive: true));
+      final databasePath = p.join(root.path, 'project.db');
 
-    await ProjectDatabaseService().create(databasePath);
-    final database = await ProjectDatabaseService().open(databasePath);
+      await ProjectDatabaseService().create(databasePath);
+      final database = await ProjectDatabaseService().open(databasePath);
 
-    expect(database, isNotNull);
-    await database.close();
-  });
+      expect(database, isNotNull);
+      await database.close();
+    },
+  );
 }

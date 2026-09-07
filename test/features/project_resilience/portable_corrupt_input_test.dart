@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -51,30 +50,27 @@ void main() {
   );
   tearDown(() => root.delete(recursive: true));
 
-  test(
-    'import rejects an archive missing the manifest entry',
-    () async {
-      final archive = Archive()
-        ..addFile(
-          ArchiveFile.bytes('database/project.db', Uint8List.fromList([1])),
-        );
-      final file = File('${root.path}/missing-manifest.voidproject')
-        ..writeAsBytesSync(_zip(archive));
-      await expectLater(
-        PortableProjectImporter().importArchive(
-          file,
-          destination: Directory('${root.path}/out-1'),
-        ),
-        throwsA(
-          isA<FormatException>().having(
-            (e) => e.message,
-            'message',
-            'Invalid voidproject archive',
-          ),
-        ),
+  test('import rejects an archive missing the manifest entry', () async {
+    final archive = Archive()
+      ..addFile(
+        ArchiveFile.bytes('database/project.db', Uint8List.fromList([1])),
       );
-    },
-  );
+    final file = File('${root.path}/missing-manifest.voidproject')
+      ..writeAsBytesSync(_zip(archive));
+    await expectLater(
+      PortableProjectImporter().importArchive(
+        file,
+        destination: Directory('${root.path}/out-1'),
+      ),
+      throwsA(
+        isA<FormatException>().having(
+          (e) => e.message,
+          'message',
+          'Invalid voidproject archive',
+        ),
+      ),
+    );
+  });
 
   test('import rejects an archive missing the database entry', () async {
     final archive = Archive()

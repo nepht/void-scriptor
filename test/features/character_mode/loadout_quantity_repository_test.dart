@@ -21,16 +21,15 @@ void main() {
     required String id,
     required String slot,
     int quantity = 1,
-  }) =>
-      database.characterModeDao.insertLoadoutEntry(
-        CharacterLoadoutEntriesCompanion.insert(
-          id: id,
-          modeId: 'mode-1',
-          assetId: 'asset-1',
-          slot: slot,
-          quantity: Value(quantity),
-        ),
-      );
+  }) => database.characterModeDao.insertLoadoutEntry(
+    CharacterLoadoutEntriesCompanion.insert(
+      id: id,
+      modeId: 'mode-1',
+      assetId: 'asset-1',
+      slot: slot,
+      quantity: Value(quantity),
+    ),
+  );
 
   test('updates quantity in place for a multiple slot', () async {
     await seedEntry(id: 'e1', slot: 'carried_item');

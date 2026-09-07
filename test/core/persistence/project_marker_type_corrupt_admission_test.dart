@@ -17,9 +17,8 @@ void main() {
     } on FileSystemException catch (_) {}
   });
 
-  Directory packageOf(String id) => Directory(
-    '${tempRoot.path}${Platform.pathSeparator}$id.voidproject',
-  );
+  Directory packageOf(String id) =>
+      Directory('${tempRoot.path}${Platform.pathSeparator}$id.voidproject');
 
   File markerOf(Directory packageRoot) => File(
     '${packageRoot.path}${Platform.pathSeparator}'
@@ -27,43 +26,41 @@ void main() {
   );
 
   group('core-hunt-20260906 corrupt creation-marker admission', () {
-    test(
-      'a syntactically valid marker whose manifest is type-corrupt is '
-      'skipped and never bricks the whole admission scan',
-      () async {
-        final package = packageOf('type-corrupt');
-        await package.create(recursive: true);
-        // Valid JSON, but ProjectManifest.fromJson casts fields unchecked:
-        // projectId/name/createdAt type failures throw TypeError, not
-        // FormatException. The admission catch must not let it escape.
-        await markerOf(package).writeAsString(
-          jsonEncode(<String, dynamic>{
-            'projectId': <String>[], // wrong type -> TypeError, not FormatException
-            'name': 42,
-            'createdAt': 'not-a-date',
-          }),
-          flush: true,
-        );
+    test('a syntactically valid marker whose manifest is type-corrupt is '
+        'skipped and never bricks the whole admission scan', () async {
+      final package = packageOf('type-corrupt');
+      await package.create(recursive: true);
+      // Valid JSON, but ProjectManifest.fromJson casts fields unchecked:
+      // projectId/name/createdAt type failures throw TypeError, not
+      // FormatException. The admission catch must not let it escape.
+      await markerOf(package).writeAsString(
+        jsonEncode(<String, dynamic>{
+          'projectId':
+              <String>[], // wrong type -> TypeError, not FormatException
+          'name': 42,
+          'createdAt': 'not-a-date',
+        }),
+        flush: true,
+      );
 
-        final healthy = packageOf('healthy-sibling');
-        await healthy.create(recursive: true);
-        await markerOf(healthy).writeAsString(
-          jsonEncode(<String, dynamic>{
-            'projectId': 'healthy-sibling',
-            'name': 'Healthy Sibling',
-            'createdAt': '2026-09-06T00:00:00.000Z',
-            'updatedAt': '2026-09-06T00:00:00.000Z',
-          }),
-          flush: true,
-        );
+      final healthy = packageOf('healthy-sibling');
+      await healthy.create(recursive: true);
+      await markerOf(healthy).writeAsString(
+        jsonEncode(<String, dynamic>{
+          'projectId': 'healthy-sibling',
+          'name': 'Healthy Sibling',
+          'createdAt': '2026-09-06T00:00:00.000Z',
+          'updatedAt': '2026-09-06T00:00:00.000Z',
+        }),
+        flush: true,
+      );
 
-        const recovery = ProjectRecoveryService();
-        final admitted = await recovery.admitMarkedCreations(tempRoot, {});
+      const recovery = ProjectRecoveryService();
+      final admitted = await recovery.admitMarkedCreations(tempRoot, {});
 
-        expect(admitted.map((project) => project.id), ['healthy-sibling']);
-        // The corrupt marker stays on disk for manual inspection.
-        expect(await markerOf(package).exists(), isTrue);
-      },
-    );
+      expect(admitted.map((project) => project.id), ['healthy-sibling']);
+      // The corrupt marker stays on disk for manual inspection.
+      expect(await markerOf(package).exists(), isTrue);
+    });
   });
 }

@@ -97,10 +97,7 @@ void main() {
         width: 1600,
         child: VoidTopBar(
           onMenuSelected: _noop,
-          saveState: ProjectMutationState(
-            currentSequence: 1,
-            savedSequence: 1,
-          ),
+          saveState: ProjectMutationState(currentSequence: 1, savedSequence: 1),
         ),
       ),
     );
@@ -112,10 +109,7 @@ void main() {
         width: 1600,
         child: VoidTopBar(
           onMenuSelected: _noop,
-          saveState: ProjectMutationState(
-            currentSequence: 2,
-            savedSequence: 1,
-          ),
+          saveState: ProjectMutationState(currentSequence: 2, savedSequence: 1),
         ),
       ),
     );

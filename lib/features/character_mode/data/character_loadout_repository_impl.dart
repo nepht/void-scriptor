@@ -151,15 +151,16 @@ class CharacterLoadoutRepositoryImpl implements CharacterLoadoutRepository {
     }
     final quantityError = validateLoadoutQuantity(slot, quantity);
     if (quantityError != null) throw ArgumentError(quantityError);
-    final updated = await (database.update(
-      database.characterLoadoutEntries,
-    )..where(
-          (row) =>
-              row.modeId.equals(modeId) &
-              row.assetId.equals(assetId) &
-              row.slot.equals(slotValue),
-        ))
-        .write(db.CharacterLoadoutEntriesCompanion(quantity: Value(quantity)));
+    final updated =
+        await (database.update(database.characterLoadoutEntries)..where(
+              (row) =>
+                  row.modeId.equals(modeId) &
+                  row.assetId.equals(assetId) &
+                  row.slot.equals(slotValue),
+            ))
+            .write(
+              db.CharacterLoadoutEntriesCompanion(quantity: Value(quantity)),
+            );
     if (updated == 0) {
       throw ArgumentError('Loadout entry not found for quantity update');
     }

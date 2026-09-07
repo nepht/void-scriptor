@@ -14,14 +14,21 @@ import "package:void_scriptor/features/world_logic/domain/shared_encyclopedia_sc
 void main() {
   group("encyclopedia domain", () {
     test("six canonical domains with stable ids", () {
-      expect(
-        EncyclopediaDomain.values.map((d) => d.id).toList(),
-        <String>["herbology", "bestiary", "artifacts", "myth_theology", "names", "idioms"],
-      );
+      expect(EncyclopediaDomain.values.map((d) => d.id).toList(), <String>[
+        "herbology",
+        "bestiary",
+        "artifacts",
+        "myth_theology",
+        "names",
+        "idioms",
+      ]);
     });
 
     test("domain lookup by id rejects unknown ids", () {
-      expect(EncyclopediaDomainLookup.fromId("herbology"), EncyclopediaDomain.herbology);
+      expect(
+        EncyclopediaDomainLookup.fromId("herbology"),
+        EncyclopediaDomain.herbology,
+      );
       expect(
         () => EncyclopediaDomainLookup.fromId("unknown"),
         throwsA(isA<ArgumentError>()),
@@ -226,7 +233,9 @@ void main() {
       final check = SchemaCompatibilityCheck.evaluate(registry);
       expect(check.isHealthy, isFalse);
       expect(
-        check.issues.where((i) => i.kind == CompatibilityIssueKind.duplicateCategory).length,
+        check.issues
+            .where((i) => i.kind == CompatibilityIssueKind.duplicateCategory)
+            .length,
         greaterThanOrEqualTo(1),
       );
     });
@@ -243,7 +252,9 @@ void main() {
       final check = SchemaCompatibilityCheck.evaluate(registry);
       expect(check.issues, isNotEmpty);
       expect(
-        check.issues.where((i) => i.kind == CompatibilityIssueKind.missingCategory).length,
+        check.issues
+            .where((i) => i.kind == CompatibilityIssueKind.missingCategory)
+            .length,
         1,
       );
     });

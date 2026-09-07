@@ -36,27 +36,27 @@ void main() {
       );
     });
 
+    test('a passphrase set with one iteration count still unlocks after the '
+        'service default changes', () async {
+      final setter = serviceWith(iterations: 4);
+      await setter.setPassphrase('p1', 's3cret');
+
+      // App update raises the default: the stored per-row iteration
+      // count must win, or every existing passphrase is bricked.
+      final afterUpgrade = serviceWith(iterations: 8);
+      expect(await afterUpgrade.unlock('p1', 's3cret'), isTrue);
+      expect(await afterUpgrade.isLocked('p1'), isFalse);
+    });
+
     test(
-      'a passphrase set with one iteration count still unlocks after the '
-      'service default changes',
+      'wrong passphrase still fails under the persisted iteration count',
       () async {
         final setter = serviceWith(iterations: 4);
         await setter.setPassphrase('p1', 's3cret');
-
-        // App update raises the default: the stored per-row iteration
-        // count must win, or every existing passphrase is bricked.
         final afterUpgrade = serviceWith(iterations: 8);
-        expect(await afterUpgrade.unlock('p1', 's3cret'), isTrue);
-        expect(await afterUpgrade.isLocked('p1'), isFalse);
+        expect(await afterUpgrade.unlock('p1', 'nope'), isFalse);
+        expect(await afterUpgrade.isLocked('p1'), isTrue);
       },
     );
-
-    test('wrong passphrase still fails under the persisted iteration count', () async {
-      final setter = serviceWith(iterations: 4);
-      await setter.setPassphrase('p1', 's3cret');
-      final afterUpgrade = serviceWith(iterations: 8);
-      expect(await afterUpgrade.unlock('p1', 'nope'), isFalse);
-      expect(await afterUpgrade.isLocked('p1'), isTrue);
-    });
   });
 }

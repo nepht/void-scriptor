@@ -37,13 +37,18 @@ class CharacterRelationMapService {
 
     final characters = await database.characterDao.getAllCharacters(projectId);
     final characterNames = {
-      for (final character in characters) character.assetId: character.displayName,
+      for (final character in characters)
+        character.assetId: character.displayName,
     };
 
     final entries = <CharacterRelationMapEntry>[];
     for (final relation in relations) {
-      final sourceIsCharacter = characterNames.containsKey(relation.sourceAssetId);
-      final targetIsCharacter = characterNames.containsKey(relation.targetAssetId);
+      final sourceIsCharacter = characterNames.containsKey(
+        relation.sourceAssetId,
+      );
+      final targetIsCharacter = characterNames.containsKey(
+        relation.targetAssetId,
+      );
       if (!sourceIsCharacter && !targetIsCharacter) continue;
       final type = AssetRelationType.values.firstWhere(
         (candidate) => candidate.value == relation.relationType,
@@ -53,9 +58,11 @@ class CharacterRelationMapService {
         CharacterRelationMapEntry(
           relationId: relation.id,
           sourceAssetId: relation.sourceAssetId,
-          sourceName: characterNames[relation.sourceAssetId] ?? relation.sourceAssetId,
+          sourceName:
+              characterNames[relation.sourceAssetId] ?? relation.sourceAssetId,
           targetAssetId: relation.targetAssetId,
-          targetName: characterNames[relation.targetAssetId] ?? relation.targetAssetId,
+          targetName:
+              characterNames[relation.targetAssetId] ?? relation.targetAssetId,
           typeLabel: type.value,
         ),
       );

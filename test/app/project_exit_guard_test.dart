@@ -57,8 +57,8 @@ void main() {
         child: const ProjectExitGuard(child: SizedBox()),
       ),
     );
-      final exit = tester.binding.handleRequestAppExit();
-      await tester.pump();
+    final exit = tester.binding.handleRequestAppExit();
+    await tester.pump();
     controller.completion.completeError(StateError('close failed'));
     expect(await exit, AppExitResponse.cancel);
     expect(tester.takeException(), isA<StateError>());

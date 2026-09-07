@@ -34,35 +34,35 @@ void main() {
 
   for (final entry in routes.entries) {
     testWidgets(
-      'route ${entry.key} renders its integration panel when allowed', (
-      tester,
-    ) async {
-      final router = createAppRouter(
-        initialLocation: entry.key,
-        allowedCapabilities: {entry.value.capability},
-      );
-      addTearDown(router.dispose);
+      'route ${entry.key} renders its integration panel when allowed',
+      (tester) async {
+        final router = createAppRouter(
+          initialLocation: entry.key,
+          allowedCapabilities: {entry.value.capability},
+        );
+        addTearDown(router.dispose);
 
-      await tester.pumpWidget(_app(router));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(_app(router));
+        await tester.pumpAndSettle();
 
-      expect(find.text(entry.value.title), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    });
+        expect(find.text(entry.value.title), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets(
-      'route ${entry.key} redirects to dashboard while capability deferred', (
-      tester,
-    ) async {
-      final router = createAppRouter(initialLocation: entry.key);
-      addTearDown(router.dispose);
+      'route ${entry.key} redirects to dashboard while capability deferred',
+      (tester) async {
+        final router = createAppRouter(initialLocation: entry.key);
+        addTearDown(router.dispose);
 
-      await tester.pumpWidget(_app(router));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(_app(router));
+        await tester.pumpAndSettle();
 
-      expect(find.text(entry.value.title), findsNothing);
-      expect(find.text('DASHBOARD'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    });
+        expect(find.text(entry.value.title), findsNothing);
+        expect(find.text('DASHBOARD'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
   }
 }

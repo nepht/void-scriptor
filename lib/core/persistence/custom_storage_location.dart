@@ -321,10 +321,7 @@ class CustomStorageLocationStore {
     } on FileSystemException {
       rethrow;
     } on Object catch (cause) {
-      throw CustomStorageRegistryUnreadableException(
-        registryFile.path,
-        cause,
-      );
+      throw CustomStorageRegistryUnreadableException(registryFile.path, cause);
     }
     if (decoded is! Map<String, dynamic>) {
       throw CustomStorageRegistryUnreadableException(
@@ -349,10 +346,7 @@ class CustomStorageLocationStore {
         status: status,
       );
     } on Object catch (cause) {
-      throw CustomStorageRegistryUnreadableException(
-        registryFile.path,
-        cause,
-      );
+      throw CustomStorageRegistryUnreadableException(registryFile.path, cause);
     }
   }
 

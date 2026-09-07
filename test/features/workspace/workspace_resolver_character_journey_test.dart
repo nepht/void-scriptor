@@ -74,7 +74,9 @@ void main() {
       expect(container.read(selectionProvider), isNull);
 
       // Mutate the shared selection provider exactly like Explorer does.
-      container.read(selectionProvider.notifier).select(
+      container
+          .read(selectionProvider.notifier)
+          .select(
             SelectionModel(
               assetId: characterId,
               assetType: AssetType.character,

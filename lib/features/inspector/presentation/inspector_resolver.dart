@@ -31,8 +31,9 @@ class InspectorResolver extends ConsumerWidget {
     return Material(
       type: MaterialType.transparency,
       child: switch (selection.assetType) {
-        AssetType.character =>
-          CharacterInspector(characterId: selection.assetId),
+        AssetType.character => CharacterInspector(
+          characterId: selection.assetId,
+        ),
         AssetType.wardrobe => WardrobeInspector(wardrobeId: selection.assetId),
         AssetType.weapon => WeaponInspector(weaponId: selection.assetId),
         AssetType.environment => EnvironmentInspector(

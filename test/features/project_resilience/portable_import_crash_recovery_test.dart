@@ -21,9 +21,13 @@ void main() {
   tearDown(() => root.delete(recursive: true));
 
   String manifestId(Directory packageRoot) {
-    final json = jsonDecode(
-      File('${packageRoot.path}/manifest/project.json').readAsStringSync(),
-    ) as Map<String, dynamic>;
+    final json =
+        jsonDecode(
+              File(
+                '${packageRoot.path}/manifest/project.json',
+              ).readAsStringSync(),
+            )
+            as Map<String, dynamic>;
     return ProjectManifest.fromJson(json).id;
   }
 
@@ -64,9 +68,7 @@ void main() {
       await original.root.rename(stash.path);
       expect(await original.root.exists(), isFalse);
 
-      final projects = await ProjectRegistryService(
-        rootDirectory: root,
-      ).load();
+      final projects = await ProjectRegistryService(rootDirectory: root).load();
 
       expect(
         await Directory('${root.path}/$id.voidproject').exists(),
@@ -104,8 +106,11 @@ void main() {
 
       await ProjectRegistryService(rootDirectory: root).load();
 
-      expect(await stash.exists(), isTrue,
-          reason: 'ambiguous crash window must stay safe-by-default');
+      expect(
+        await stash.exists(),
+        isTrue,
+        reason: 'ambiguous crash window must stay safe-by-default',
+      );
       expect(
         File('${stash.path}/manifest/project.json').readAsStringSync(),
         contains('Original'),

@@ -174,6 +174,17 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   Future<StoryHierarchy>? _hierarchyFuture;
   String? _hierarchyStoryId;
 
+  /// bug-hunt-run128 BUG-18: nomor urut seleksi scene. Di-bump setiap
+  /// seleksi berpindah; setiap muatan (draf/snapshot/quick-ref) menangkap
+  /// nomor saat diminta dan membuang hasilnya bila seleksi sudah berubah.
+  /// Tanpa ini, pindah scene cepat A→B membuat muatan A yang selesai
+  /// belakangan menimpa editor B, dan ketikan berikutnya ter-autosave ke
+  /// scene yang salah (clobber lintas scene).
+  int _sceneLoadSeq = 0;
+
+  /// Post-frame seleksi sedang terjadwal (anti duplikasi antar rebuild).
+  bool _selectionSyncScheduled = false;
+
   /// Mengembalikan future hierarchy yang stabil antar rebuild.
   /// Hanya dipanggil dari _buildLiveChapters setelah null-check repository.
   Future<StoryHierarchy> _ensureHierarchyFuture() {
@@ -243,8 +254,11 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     final repository = widget.repository;
     final sceneId = widget.sceneId;
     if (repository == null || sceneId == null) return;
+    // bug-hunt-run128 BUG-18: muat scene eksplisit memakai guard seq yang
+    // sama; bila seleksi berpindah sebelum muatan selesai, hasil dibuang.
+    final seq = _sceneLoadSeq;
     final content = await repository.getSceneDraft(sceneId);
-    if (!mounted || content == null) return;
+    if (!mounted || content == null || seq != _sceneLoadSeq) return;
     _draft.value = TextEditingValue(text: content);
     setState(() => _updateWordCount(content));
   }
@@ -960,40 +974,69 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
           );
         }
         final hierarchy = snapshot.data!;
-        // Run62 (145.27 prioritas #1): layar Novel yang dibuka tanpa
-        // scene eksplisit tetap harus punya scene aktif sejak hierarchy
-        // termuat, agar suntingan pertama pengguna langsung masuk jalur
-        // autosave + journal durable (no silent loss saat pindah workspace).
-        StorySceneNode? firstScene;
-        for (final chapter in hierarchy.chapters) {
-          if (chapter.scenes.isNotEmpty) {
-            firstScene = chapter.scenes.first;
-            break;
+        // bug-hunt-run128 BUG-18: keputusan seleksi TIDAK dimutasi di
+        // dalam build — mutasi tanpa setState membuat bagian pohon lain
+        // (header SCENE EDITOR) tetap stale sampai rebuild kebetulan
+        // terjadi. Builder hanya MENDETEKSI kebutuhan seleksi awal /
+        // backfill judul lalu menjadwalkan satu setState post-frame.
+        StorySceneNode? defaultScene;
+        if (_selectedSceneId == null) {
+          for (final chapter in hierarchy.chapters) {
+            if (chapter.scenes.isNotEmpty) {
+              defaultScene = chapter.scenes.first;
+              break;
+            }
           }
         }
-        if (_selectedSceneId == null && firstScene != null) {
-          _selectedSceneId = firstScene.id;
-          _selectedSceneTitle = firstScene.title;
-          if (_draft.text.isEmpty) {
-            _loadDraftFor(firstScene.id);
-            _loadSnapshotsFor(firstScene.id);
-            _loadQuickRefsFor(firstScene.id);
-          } else {
-            // Pengguna sempat mengetik sebelum hierarchy termuat:
-            // ketikan dipertahankan lewat jalur autosave (journal
-            // durable + debounce), bukan ditimpa muatan ulang draf.
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) _count(_draft.text);
-            });
+        String? resolvedTitle;
+        if (_selectedSceneId != null && _selectedSceneTitle == null) {
+          outer:
+          for (final chapter in hierarchy.chapters) {
+            for (final scene in chapter.scenes) {
+              if (scene.id == _selectedSceneId) {
+                resolvedTitle = scene.title;
+                break outer;
+              }
+            }
           }
+        }
+        if ((defaultScene != null || resolvedTitle != null) &&
+            !_selectionSyncScheduled) {
+          _selectionSyncScheduled = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _selectionSyncScheduled = false;
+            if (!mounted) return;
+            final scene = defaultScene;
+            if (scene != null && _selectedSceneId == null) {
+              // Run62 (145.27 prioritas #1): layar Novel yang dibuka
+              // tanpa scene eksplisit tetap harus punya scene aktif sejak
+              // hierarchy termuat, agar suntingan pertama pengguna langsung
+              // masuk jalur autosave + journal durable (no silent loss
+              // saat pindah workspace).
+              setState(() {
+                _selectedSceneId = scene.id;
+                _selectedSceneTitle = scene.title;
+                _sceneLoadSeq++;
+              });
+              if (_draft.text.isEmpty) {
+                _loadDraftFor(scene.id);
+                _loadSnapshotsFor(scene.id);
+                _loadQuickRefsFor(scene.id);
+              } else {
+                // Pengguna sempat mengetik sebelum hierarchy termuat:
+                // ketikan dipertahankan lewat jalur autosave (journal
+                // durable + debounce), bukan ditimpa muatan ulang draf.
+                _count(_draft.text);
+              }
+            } else if (resolvedTitle != null && _selectedSceneTitle == null) {
+              setState(() => _selectedSceneTitle = resolvedTitle);
+            }
+          });
         }
         final rows = <Widget>[];
         for (final chapter in hierarchy.chapters) {
           rows.add(_Row(label: chapter.title));
           for (final scene in chapter.scenes) {
-            if (_selectedSceneTitle == null && scene.id == _selectedSceneId) {
-              _selectedSceneTitle = scene.title;
-            }
             rows.add(
               _Row(
                 label: scene.title,
@@ -1005,6 +1048,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                     _selectedSceneTitle = scene.title;
                     _sceneSnapshots = const [];
                     _sceneQuickRefs = const [];
+                    _sceneLoadSeq++;
                   });
                   _loadDraftFor(scene.id);
                   _loadSnapshotsFor(scene.id);
@@ -1022,9 +1066,12 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   }
 
   /// Memuat draft + daftar snapshot scene terpilih (Step 145.24).
+  /// bug-hunt-run128 BUG-18: hasil dibuang bila seleksi sudah berpindah
+  /// sejak permintaan (muatan scene lama tidak boleh menimpa editor baru).
   Future<void> _loadDraftFor(String sceneId) async {
+    final seq = _sceneLoadSeq;
     final content = await widget.repository?.getSceneDraft(sceneId);
-    if (!mounted) return;
+    if (!mounted || seq != _sceneLoadSeq) return;
     _draft.value = TextEditingValue(text: content ?? '');
     setState(() => _updateWordCount(content ?? ''));
   }
@@ -1033,8 +1080,9 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   Future<void> _loadQuickRefsFor(String sceneId) async {
     final repository = widget.repository;
     if (repository == null) return;
+    final seq = _sceneLoadSeq;
     final quickRefs = await repository.quickReferenceForScene(sceneId);
-    if (!mounted) return;
+    if (!mounted || seq != _sceneLoadSeq) return;
     setState(() => _sceneQuickRefs = quickRefs);
   }
 
@@ -1104,8 +1152,9 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   Future<void> _loadSnapshotsFor(String sceneId) async {
     final repository = widget.repository;
     if (repository == null) return;
+    final seq = _sceneLoadSeq;
     final snapshots = await repository.getSceneDraftSnapshots(sceneId);
-    if (!mounted) return;
+    if (!mounted || seq != _sceneLoadSeq) return;
     setState(() => _sceneSnapshots = snapshots);
   }
 

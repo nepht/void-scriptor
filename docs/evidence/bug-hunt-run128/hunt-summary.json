@@ -1,0 +1,41 @@
+{
+  "hunt": "bug-hunt run128 (nephthys cron, 2026-09-07)",
+  "skill": "adversarial-bug-hunt v1.2.0",
+  "target": "Core draft-safety/autosave region (prioritas #1 pengguna; kontrak 145.24/145.27/145.30)",
+  "repo": {
+    "path": "D:/VoidScriptor/void_scriptor_multiplatform",
+    "branch": "master",
+    "head_at_hunt_start": "e5b26ab8d12d48c5c9a91be778d9127af0e7f11e",
+    "head_at_referee_completion": "a575572",
+    "drift_note": "6 file scope byte-identik antar ketiga HEAD kecuali satu baris kosong; verdict berlaku untuk ketiganya"
+  },
+  "files_in_scope": [
+    "lib/features/project_resilience/application/durable_draft_journal.dart",
+    "lib/features/project_resilience/application/save_coordinator.dart",
+    "lib/features/story/application/durable_autosave_coordinator.dart",
+    "lib/features/story/domain/draft_snapshots.dart",
+    "lib/features/story/presentation/story_workspace_screen.dart",
+    "lib/features/story/data/story_repository_impl.dart"
+  ],
+  "agents": {
+    "hunter": { "subagent": "sa-0-7b7281bf", "findings": 25, "score": 82, "report": "hunter-report.md" },
+    "skeptic": { "subagent": "sa-0-3ad42ea9", "confirmed": 13, "unconfirmed": 6, "disproved": 6, "report": "skeptic-report.md" },
+    "referee": { "subagent": "sa-0-5319cb3e", "real_bugs": 13, "not_a_bug": 12, "report": "referee-report.md" }
+  },
+  "referee_verdict": {
+    "critical": 0,
+    "medium": ["BUG-8 acknowledge/pending-clear drops content typed during in-flight save", "BUG-17 inline FutureBuilder future per keystroke (full hierarchy N+1 + loading flash)", "BUG-18 build-phase state mutation + stale-draft clobber on rapid scene switch", "BUG-1 journal no-fsync + silent drop of crash-truncated json", "BUG-2 blank-content ArgumentError escapes uncaught through onDraftChanged"],
+    "low": ["BUG-3 orphaned .json.tmp no sweep", "BUG-4 SaveCoordinator mid-save markDirty lost-update (test-only class)", "BUG-9 set-based diff hides replacements", "BUG-11 firstWhere without orElse on restore of purged id", "BUG-14 O(chapters x scenes^2) hierarchy join", "BUG-15 chapter-title match counted per scene", "BUG-22 no didUpdateWidget/key: stale state across story switches (Medium confidence)", "BUG-25 captureSceneDraftSnapshot StateError no feedback"],
+    "not_a_bug": ["BUG-5", "BUG-6", "BUG-7", "BUG-10", "BUG-12", "BUG-13", "BUG-16", "BUG-19", "BUG-20", "BUG-21", "BUG-23", "BUG-24"],
+    "fix_priority_order": ["BUG-8", "BUG-2", "BUG-17", "BUG-18", "BUG-1", "BUG-11", "BUG-25", "BUG-15", "BUG-14", "BUG-3", "BUG-9", "BUG-4", "BUG-22"]
+  },
+  "commands_run": [
+    "dart run tool/roadmap_guard.dart (PASS, exit 0, recommended_step 145.27, pre-hunt)",
+    "git status --short --branch / git rev-parse HEAD (pre-hunt + post-referee)",
+    "flutter test --no-pub test/features/relations/character_relations_journey_test.dart (isolasi: PASS 1/1, 7s - flake run110 full-suite terkonfirmasi load-dependent)",
+    "delegate_task hunter -> skeptic -> referee (file-path handoff, Temp/vs-bug-hunt-run128/)"
+  ],
+  "one_shot_status": "COMPLETED - Permintaan one-shot adversarial-bug-hunt (otorisasi Choi 2026-09-06) sudah dikonsumsi run94 (2026-09-06, scope core persistence/registry; patch landed run95-101 + 3464cbf + a575572). run128 = hunt tambahan scan-only pada region berbeda (draft-safety story) yang belum pernah diaudit; tidak ada duplikasi scope run94. Tidak ada bug-hunt baru tanpa permintaan eksplisit Choi.",
+  "patch_authority_note": "Patch REAL BUG run128 belum dieksekusi: otorisasi patch dari cron 2026-09-06 terikat pada one-shot yang sudah terkonsumsi run94. Kandidat perbaikan teratas (BUG-8) menunggu keputusan Choi; semua verdict scan-only.",
+  "report_language": "id"
+}

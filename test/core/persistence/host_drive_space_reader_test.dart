@@ -32,6 +32,10 @@ void main() {
         final bytes = await reader.freeBytes(tempRoot.path);
         expect(bytes, greaterThanOrEqualTo(0));
       },
+      // PlatformDriveSpaceReader documents -1 (unknown budget) off-Windows:
+      // Get-PSDrive does not exist there, so a live non-negative reading is
+      // a Windows-only guarantee.
+      skip: !Platform.isWindows,
     );
 
     test(

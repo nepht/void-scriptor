@@ -165,5 +165,9 @@ void main() {
       expect(emergency.existsSync(), isTrue);
       expect(File('${emergency.path}/project.json').existsSync(), isTrue);
     },
+    // Forward restore must fail so every rollback area is exercised: the
+    // trigger is a live workspace file held open (Windows sharing
+    // violation). POSIX unlinks open files, so it only stages on Windows.
+    skip: !Platform.isWindows,
   );
 }

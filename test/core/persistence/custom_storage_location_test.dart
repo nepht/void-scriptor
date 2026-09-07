@@ -96,9 +96,20 @@ void main() {
         expect(loaded.activeLocation, target);
         expect(loaded.schemaVersion, 1);
 
-        // A drive letter with no ancestor is rejected
-        final noDrive = 'Z:${p.separator}SomeDir';
-        await expectLater(store.setActiveLocation(noDrive), throwsStateError);
+        // A drive letter with no ancestor is rejected. 'Z:/...' is only a
+        // root on Windows: there it stays absolute and hits the
+        // missing-drive StateError. POSIX parses it as a relative path, so
+        // the absolute-path gate raises ArgumentError first. Both paths
+        // must leave the registry unchanged.
+        if (Platform.isWindows) {
+          final noDrive = 'Z:${p.separator}SomeDir';
+          await expectLater(store.setActiveLocation(noDrive), throwsStateError);
+        } else {
+          await expectLater(
+            store.setActiveLocation('Z:${p.separator}SomeDir'),
+            throwsArgumentError,
+          );
+        }
         loaded = await store.load();
         expect(loaded.activeLocation, target);
       },
@@ -148,10 +159,18 @@ void main() {
         );
         expect(ancestor, isNotNull);
 
+        // 'Z:/...' is a drive root only on Windows, where an absent drive
+        // walks to null. POSIX parses it as a relative path, so the walk
+        // terminates at an existing ancestor (the cwd root '.') instead.
         final noAncestor = await CustomStorageLocation.nearestExistingAncestor(
           'Z:${p.separator}NoSuchDir',
         );
-        expect(noAncestor, isNull);
+        if (Platform.isWindows) {
+          expect(noAncestor, isNull);
+        } else {
+          expect(noAncestor, isNotNull);
+          expect(Directory(noAncestor!).existsSync(), isTrue);
+        }
       },
     );
   });

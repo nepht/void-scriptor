@@ -65,5 +65,9 @@ void main() {
       await lock.release();
       expect(await package.sessionFile.exists(), isFalse);
     },
+    // The blocked-delete precondition is staged with an open file handle:
+    // Windows sharing violations block the marker delete, while POSIX
+    // unlinks open files so the delete always succeeds there.
+    skip: !Platform.isWindows,
   );
 }

@@ -1,4 +1,5 @@
 import '../../database/project/project_database_service.dart';
+import '../project_package/void_project_format.dart';
 import 'project_manifest_service.dart';
 import 'project_paths.dart';
 
@@ -48,7 +49,13 @@ class ProjectHealthService {
           paths: _paths,
         ).read(projectId);
         manifestReadable = true;
-        schemaSupported = value.schemaVersion == 1;
+        // core-hunt-20260906 BUG-01: the app itself writes
+        // VoidProjectFormat.currentSchema, so "healthy" must accept the
+        // supported range, not just the legacy schema 1 (every current
+        // package otherwise reports unhealthy).
+        schemaSupported =
+            value.schemaVersion >= 1 &&
+            value.schemaVersion <= VoidProjectFormat.currentSchema;
       } on Object {
         manifestReadable = false;
       }

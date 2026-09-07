@@ -26,6 +26,16 @@ class ProjectLockService {
   static final _random = Random.secure();
 
   Future<void> setPassphrase(String projectId, String passphrase) async {
+    // core-hunt-20260906 BUG-24: an empty or whitespace passphrase derived
+    // a verifier anyone could satisfy by submitting the same empty string;
+    // reject before any derivation or row write.
+    if (passphrase.trim().isEmpty) {
+      throw ArgumentError.value(
+        passphrase,
+        'passphrase',
+        'must not be empty or whitespace-only',
+      );
+    }
     final salt = List<int>.generate(16, (_) => _random.nextInt(256));
     final key = await deriver.derive(
       passphrase: passphrase,
@@ -40,6 +50,7 @@ class ProjectLockService {
       locked: true,
       salt: base64Encode(salt),
       passphraseHash: base64Encode(hash),
+      kdfIterations: defaultIterations,
     );
   }
 
@@ -51,10 +62,14 @@ class ProjectLockService {
       return false;
     }
     final salt = base64Decode(row.passphraseSalt!);
+    // core-hunt-20260906 BUG-25: derive with the iteration count that was
+    // actually used at set time (persisted per row), not the current
+    // service default — otherwise raising defaultIterations bricks every
+    // existing passphrase.
     final key = await deriver.derive(
       passphrase: passphrase,
       salt: salt,
-      iterations: defaultIterations,
+      iterations: row.kdfIterations,
       length: 32,
     );
     final hash = await integrity.sign(key, utf8.encode(projectId));
@@ -93,6 +108,7 @@ class ProjectLockService {
     required bool locked,
     String? salt,
     String? passphraseHash,
+    int? kdfIterations,
   }) async {
     await database
         .into(database.securitySettings)
@@ -103,6 +119,7 @@ class ProjectLockService {
             locked: Value(locked),
             passphraseSalt: Value(salt),
             passphraseHash: Value(passphraseHash),
+            kdfIterations: Value(kdfIterations ?? defaultIterations),
             updatedAt: DateTime.now().toUtc(),
           ),
         );

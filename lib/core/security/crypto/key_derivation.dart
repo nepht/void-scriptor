@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:isolate';
 import 'dart:math';
 
 import 'package:crypto/crypto.dart';
@@ -25,12 +26,33 @@ class SecretKey {
 class Pbkdf2KeyDeriver {
   const Pbkdf2KeyDeriver();
 
+  /// Derives via PBKDF2-HMAC-SHA256. The heavy iteration loop runs on a
+  /// short-lived worker isolate (core-hunt-20260906 BUG-31: previously the
+  /// synchronous loop froze the calling — often UI — isolate for the full
+  /// derivation, seconds at the default 100k iterations). Results are
+  /// byte-identical to the former inline loop; message passing copies the
+  /// inputs, so the caller's buffers are never aliased and the [SecretKey]
+  /// zeroing contract is unchanged on both sides.
   Future<SecretKey> derive({
     required String passphrase,
     required List<int> salt,
     required int iterations,
     required int length,
-  }) async {
+  }) {
+    return Isolate.run(() => _deriveSync(
+          passphrase: passphrase,
+          salt: salt,
+          iterations: iterations,
+          length: length,
+        ));
+  }
+
+  static SecretKey _deriveSync({
+    required String passphrase,
+    required List<int> salt,
+    required int iterations,
+    required int length,
+  }) {
     final passwordBytes = utf8.encode(passphrase);
     const hashLen = 32; // SHA-256
     final blockCount = (length / hashLen).ceil();
@@ -43,7 +65,7 @@ class Pbkdf2KeyDeriver {
     return SecretKey(output.sublist(0, length));
   }
 
-  List<int> _pbkdf2Block(
+  static List<int> _pbkdf2Block(
     List<int> password,
     List<int> salt,
     int iterations,

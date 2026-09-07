@@ -2675,3 +2675,53 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Build Android debug APK lokal GAGAL (Gradle assembleDebug exit 1, error tak tertangkap tail) - CI job Linux SUCCESS termasuk langkah Build Android debug APK, jadi kegagalan lokal = kondisi lingkungan lokal, bukan repo; dibiarkan, CI yang jadi acuan.
 - Dual-push GitHub+GitLab group di semua commit; file sibling (.hermes, dashboard, explorer, inspector, security dirty) tidak disentuh. Pointer roadmap tetap 145.27 (perubahan ini di luar urutan pointer, slice perbaikan CI + fitur kecil terotorisasi).
 - CI run 35bfe36 dipantau (poller).
+
+### 2026-09-07 - run134 cron nephthys: sweep orphan .tmp journal (bug-hunt-run128 BUG-3, slice TDD)
+
+- Otorisasi: instruksi job cron (patch bug terkonfirmasi = tugas agen utama;
+  preseden run129 BUG-8, run130 BUG-2, run131 BUG-17, run132 BUG-1,
+  run133 BUG-18). Slice dipilih: BUG-3 (REAL BUG Low, satu-satunya sisa
+  run128 pada file journal produksi; BUG-4 memanggil kelas SaveCoordinator
+  test-only tanpa pemanggil produksi).
+- Root cause terverifikasi di HEAD 782b327: stage() menulis
+  `<scene>.json.tmp` -> flush -> rename; crash/power-loss di jendela
+  rename meninggalkan orphan `.tmp` yang tidak pernah disapu -
+  pendingEntries() mengabaikan semua `.tmp` (saringan .endsWith('.json')),
+  acknowledge() hanya menghapus `<scene>.json`, dan grep lib/ memastikan
+  tidak ada sweep. Pertumbuhan lambat tetapi tidak terbatas dan tidak
+  pernah dipulihkan ruangnya (kontra hygiene kontrak 145.30).
+- TDD: RED test baru durable_draft_journal_tmp_sweep_test.dart (2 test:
+  .tmp stale berumur 1 jam disapu di jalur baca pemulihan; .tmp segar
+  writer hidup TIDAK pernah disapu - no-silent-loss) gagal eksak pada
+  mekanisme sweep (Actual: orphan existsSync true); test proteksi fresh
+  hijau sejak awal (preseden run133).
+- GREEN minimal: sweep age-gated sekali-di-instance
+  (_sweepStaleTmpArtifactsOnce) pada awal pendingEntries() - hanya
+  `.json.tmp` berumur >= staleTmpThreshold (60 detik; jendela tulis
+  normal = milidetik) yang dihapus, per-file best-effort (kegagalan
+  I/O satu file tidak mengganggu pemulihan), flag sekali-per-instance
+  mencegah penyapuan berulang pada jalur terpanas; dokumen class
+  ditemper. File final `.json` (valid/korup) tidak tersentuh sweep.
+- Bukti: RED 1 FAIL eksak -> GREEN focused 2/2 PASS (post-format tetap
+  2/2); regression test/features/project_resilience + test/features/story
+  = 366 PASS / 1 SKIP / 0 FAIL (EXIT=0, log
+  %LOCALAPPDATA%/Temp/regression_bug3_run134.log); dart analyze
+  lib/features/project_resilience + test sweep = No issues found; dart
+  format 2 file owned (1 changed); git diff --check exit 0; flutter
+  analyze --no-pub seluruh repo = No issues found! (59,2 s);
+  flutter build windows --debug --no-pub PASS (void_scriptor.exe,
+  BUILD_EXIT=0); guard PASS pre+post (pointer 145.27, canonical_sha
+  86af6a5).
+- Sibling aktif terpantau dua kali (flutter build apk --debug 20:04-20:27,
+  flutter test security_settings_encryption_toggle_test 20:28-20:34 +
+  daur ulang berikutnya) menahan sqlite3.dll build dir; run menunggu
+  bounded (polling proses) tanpa menyentuh region sibling, tidak ada
+  overlap path dengan slice ini. RED/GREEN/regression dijalankan pada
+  jendela antar-proses sibling. Test RED sendiri satu-satunya file baru
+  di project_resilience.
+- Native UI journey UNVERIFIABLE dari cron (preseden cua-driver); kontrak
+  dibuktikan unit test deterministik. Pointer tetap 145.27; tidak push
+  (keputusan Choi).
+- Sisa BUG run128: 8 Low - BUG-3 ter-patch slice ini; tersisa BUG-4
+  (SaveCoordinator test-only), BUG-9, BUG-11, BUG-14, BUG-15, BUG-22,
+  BUG-25 menunggu prioritas Choi; satu slice per run sesuai ritme cron.

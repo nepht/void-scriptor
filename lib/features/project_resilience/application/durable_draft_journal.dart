@@ -19,6 +19,13 @@ import 'package:path/path.dart' as p;
 /// Catatan batas platform: `flush()` dart:io tidak menjamin fsync
 /// OS-level/directory-entry, jadi kehilangan data saat power-loss total
 /// tidak sepenuhnya dapat dihilangkan di layer ini.
+///
+/// Artefak `.json.tmp` dari writer yang mati setelah flush namun sebelum
+/// rename akan menjadi orphan permanen (bukan sumber pemulihan). Sweep
+/// age-gated sekali-di-instance pada `pendingEntries()` membersihkannya
+/// (bug-hunt-run128 BUG-3): hanya `.tmp` berumur >= [staleTmpThreshold]
+/// yang dihapus, sehingga jendela tulis writer hidup tidak pernah
+/// tersentuh dan file final tidak pernah menjadi sasaran sweep.
 class DurableDraftJournal {
   DurableDraftJournal({required this._dir, DateTime Function()? clock})
     : _clock = clock ?? DateTime.now;
@@ -26,6 +33,12 @@ class DurableDraftJournal {
   final Directory _dir;
   final DateTime Function() _clock;
   bool _closed = false;
+
+  /// Ambang umur sweep `.tmp`: jauh di atas jendela tulis normal
+  /// (milidetik), di bawah rentang orphan crash yang layak dibersihkan.
+  static const Duration staleTmpThreshold = Duration(seconds: 60);
+
+  bool _staleTmpSwept = false;
 
   File _entryFile(String sceneId) =>
       File(p.join(_dir.path, '${_safeSceneId(sceneId)}.json'));
@@ -67,8 +80,12 @@ class DurableDraftJournal {
   }
 
   /// Daftar draf yang belum di-acknowledge (urut nama scene, deterministik).
+  ///
+  /// Setiap instance menyapu orphan `.tmp` stale sekali pada panggilan
+  /// pertama (bug-hunt-run128 BUG-3); kegagalan sweep best-effort senyap.
   Future<List<PendingDraftEntry>> pendingEntries() async {
     if (!await _dir.exists()) return const <PendingDraftEntry>[];
+    await _sweepStaleTmpArtifactsOnce();
     final entries = <PendingDraftEntry>[];
     await for (final entity in _dir.list()) {
       if (entity is! File) continue;
@@ -139,6 +156,34 @@ class DurableDraftJournal {
 
   Future<void> close() async {
     _closed = true;
+  }
+
+  /// Sweep `.json.tmp` stale sekali-di-instance (bug-hunt-run128 BUG-3).
+  ///
+  /// `.tmp` berumur >= [staleTmpThreshold] adalah orphan dari writer yang
+  /// mati di jendela rename (crash/power-loss) — bukan sumber pemulihan
+  /// dan tidak pernah dipulihkan ruangnya. Age-gate melindungi jendela
+  /// tulis writer hidup (jendela normal = milidetik). Hanya file yang
+  /// dihapus, per-file best-effort: kegagalan I/O tidak mengganggu
+  /// pemulihan draf dan instance tidak mencoba lagi (asumsi single
+  /// writer; percobaan ulang di panggilan `pendingEntries()` berikutnya
+  /// milik instance baru, mis. setelah restart).
+  Future<void> _sweepStaleTmpArtifactsOnce() async {
+    if (_staleTmpSwept) return;
+    _staleTmpSwept = true;
+    final now = _clock();
+    await for (final entity in _dir.list()) {
+      if (entity is! File) continue;
+      if (!entity.path.endsWith('.json.tmp')) continue;
+      try {
+        final stat = await entity.stat();
+        if (now.difference(stat.modified) < staleTmpThreshold) continue;
+        await entity.delete();
+      } on Object {
+        // Best-effort: satu file .tmp yang tidak bisa dihapus (permission,
+        // race) tidak boleh mengganggu jalur baca pemulihan.
+      }
+    }
   }
 }
 

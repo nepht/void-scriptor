@@ -5,6 +5,25 @@ import 'package:path_provider/path_provider.dart';
 
 import 'custom_storage_location.dart';
 
+/// Why [ProjectPaths.root] fell back away from the configured custom
+/// storage location (core-hunt-20260906 BUG-12).
+enum StorageFallbackReason { missingDrive, degraded }
+
+/// Typed signal emitted when the effective project root differs from the
+/// configured custom storage location. The fallback itself is a codified
+/// contract (wiring tests); this makes it observable instead of silent.
+class StorageFallbackNotice {
+  const StorageFallbackNotice({
+    required this.reason,
+    required this.requestedLocation,
+    required this.effectiveRoot,
+  });
+
+  final StorageFallbackReason reason;
+  final String? requestedLocation;
+  final Directory effectiveRoot;
+}
+
 final class ProjectPaths {
   ProjectPaths({
     Directory? rootDirectory,
@@ -23,6 +42,16 @@ final class ProjectPaths {
   final Future<String?> Function()? _supportPathOverride;
   final CustomStorageLocationStore? _storageStore;
   final Directory? _fallbackRoot;
+
+  /// core-hunt-20260906 BUG-12: the missingDrive→Documents fallback is a
+  /// codified contract, but it used to be silent. This exposes the most
+  /// recent fallback away from the configured custom storage location so
+  /// consumers (status bar / settings surface) can surface a visible
+  /// warning: "projects are currently written to <fallback> because the
+  /// configured drive is missing". Cleared whenever a subsequent [root]
+  /// call uses the configured location, and null when no custom store is
+  /// configured at all.
+  StorageFallbackNotice? lastFallbackNotice;
 
   /// Exposes the effective custom storage root (healthy active location) or
   /// null when no custom location is configured. Used by wiring tests and the
@@ -50,8 +79,18 @@ final class ProjectPaths {
       if (active != null && state.status == StorageLocationStatus.healthy) {
         final custom = Directory(active);
         await custom.create(recursive: true);
+        lastFallbackNotice = null;
         return custom;
       }
+      // core-hunt-20260906 BUG-12: the fallback is intentional (codified
+      // wiring contract) but must not be silent. Record a typed notice for
+      // consumers; the status surface can show a visible warning.
+      lastFallbackNotice = StorageFallbackNotice(
+        reason: StorageFallbackReason.missingDrive,
+        requestedLocation: active,
+        effectiveRoot: _fallbackRoot ??
+            Directory(p.join(await _documentsPath(), 'VoidScriptor', 'Projects')),
+      );
     }
 
     final fallback = _fallbackRoot;

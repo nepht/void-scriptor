@@ -22,6 +22,7 @@ import 'widgets/silhouette_card.dart';
 import 'widgets/turnaround_card.dart';
 import '../../character_mode/presentation/widgets/character_mode_section.dart';
 import '../../character_mode/domain/loadout_slot.dart';
+import '../../workspace/application/workspace_section_controller.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class CharacterWorkspaceScreen extends ConsumerStatefulWidget {
@@ -79,36 +80,10 @@ class _CharacterWorkspaceScreenState
                 constraints: BoxConstraints(
                   maxWidth: desktop ? 1180 : double.infinity,
                 ),
-                child: desktop
-                    ? _content(character, identity, true)
-                    : Column(
-                        children: [
-                          // Narrow layout: the mode section joins the scroll
-                          // area so the fixed header column cannot overflow
-                          // on phone-sized viewports.
-                          CharacterModeSection(characterId: character.assetId),
-                          const SizedBox(height: 16),
-                          _content(character, identity, false),
-                        ],
-                      ),
+                child: _content(character, identity, desktop),
               ),
             );
-            final showIdentityTools =
-                widget.activeSection == null ||
-                widget.activeSection == 'Identity';
-            return desktop && showIdentityTools
-                ? Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(18, 12, 18, 0),
-                        child: CharacterModeSection(
-                          characterId: character.assetId,
-                        ),
-                      ),
-                      Expanded(child: body),
-                    ],
-                  )
-                : body;
+            return body;
           },
         ),
       ),
@@ -225,21 +200,24 @@ class _CharacterWorkspaceScreenState
         ),
         const SizedBox(height: 12),
         CharacterScopeStatusCard(characterId: character.assetId),
+        const SizedBox(height: 16),
+        CharacterModeSection(
+          characterId: character.assetId,
+          title: 'Companions',
+          showModeDetails: false,
+          slots: const [LoadoutSlot.companion],
+        ),
       ],
     );
-    final section = widget.activeSection;
+    final section = widget.activeSection == null
+        ? null
+        : canonicalWorkspaceSection(
+            WorkspaceKind.character,
+            widget.activeSection!,
+          );
     if (section == 'Profile') return Column(children: [top]);
-    if (section == 'Identity') {
-      return Column(
-        children: [
-          identityCard,
-          const SizedBox(height: 16),
-          identityPreservation,
-        ],
-      );
-    }
     if (section == 'Relationships') return relationships;
-    if (section == 'Appearance & Gear') {
+    if (section == 'Appearance') {
       return Column(
         children: [
           const CharacterPortraitCard(),
@@ -250,10 +228,11 @@ class _CharacterWorkspaceScreenState
           const SizedBox(height: 16),
           const ReferencesCard(),
           const SizedBox(height: 16),
+          identityPreservation,
+          const SizedBox(height: 16),
           CharacterModeSection(
             characterId: character.assetId,
             title: 'Appearance & Gear',
-            showModeDetails: false,
             slots: const [
               LoadoutSlot.wardrobe,
               LoadoutSlot.armor,
@@ -261,17 +240,11 @@ class _CharacterWorkspaceScreenState
               LoadoutSlot.secondaryWeapon,
               LoadoutSlot.accessory,
               LoadoutSlot.hairVariant,
+              LoadoutSlot.carriedItem,
+              LoadoutSlot.vehicle,
             ],
           ),
         ],
-      );
-    }
-    if (section == 'Companions & Carry') {
-      return CharacterModeSection(
-        characterId: character.assetId,
-        title: 'Companions & Carried Items',
-        showModeDetails: false,
-        slots: const [LoadoutSlot.companion, LoadoutSlot.carriedItem],
       );
     }
     if (section == 'Notes') return notes;

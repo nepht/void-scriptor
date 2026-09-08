@@ -21,6 +21,15 @@
 - Batas jujur: verifikasi native journey switch-proyek tidak dijalankan (cua-driver blocked di cron, preseden 5x) - bukti pada level provider/regresi widget; empty-state Inspector setelah clear sudah tercakup test inspector_resolver.
 - Tidak push (HEAD 41f7d56, ahead 50; keputusan Choi). Temp bersih.
 - Next: (1) keputusan Choi push + ROADMAP_STATE; (2) verifikasi native switch-proyek di sesi interaktif; (3) NO-OP jika tidak ada fakta baru.
+### 2026-09-09 - nephthys (cron run148): patch BUG-9 bug-hunt-run128 (diff snapshot semantik multiset, slice TDD)
+
+- Slice: bug terkonfirmasi diprioritaskan di atas hunt baru (otorisasi berulang 2026-09-07). Dipilih BUG-9 (REAL BUG Low, satu-satunya temuan run128 dengan konsumsi domain produksi; preseden run129-135 patch BUG terkonfirmasi; BUG-14/22/3/11/15/25/1/8/17/18/2 sudah ter-patch run129-145).
+- Root cause terverifikasi di HEAD 91b30dc: `DraftSnapshotStore.diffWithCurrent` (draft_snapshots.dart:163-186) membandingkan baris via `toSet()` — kebutaan multiplisitas: snapshot [A,A,B] vs current [A,B,B] (satu 'A' diganti 'B') melaporkan removed=[] added=[] unchanged=3 (zero diff), unchangedCount menggelembung untuk baris duplikat. Verdict Referee run128: multiset (bag) semantics; LCS tidak diminta (belum ada consumer diff posisional).
+- TDD: RED test baru `duplikasi baris memakai semantik multiset (bug-hunt-run128 BUG-9)` di draft_snapshots_test.dart gagal eksak pada mekanisme (removedLines [] vs expected ['A']); GREEN minimal: hitung kejadian per baris (Map<String,int>), removed/added = surplus kejadian, unchanged = Σ min(counts). Doc comment method menegaskan semantik multiset.
+- Bukti: RED 1 FAIL eksak (5 test lain tetap PASS) -> GREEN focused 6/6 PASS; regresi test/features/story 180 PASS / 0 FAIL exit 0; flutter analyze --no-pub lib/features/story + test/features/story No issues found (6.8s); dart format 2 file owned (1 changed); git diff --check exit 0; flutter build windows --debug --no-pub PASS 26.0s; roadmap guard PASS pre+post (pointer 145.27, canonical_sha 86af6a5).
+- Commit 7d08c97 (2 file +46/-12, path eksplisit; SPRINT_PROGRESS.md M sibling + untracked docs dipertahankan tanpa di-commit). Native UI journey UNVERIFIABLE dari cron (preseden cua-driver); kontrak dibuktikan unit test deterministik (domain murni, tanpa jalur UI). Pointer tetap 145.27; tidak push (ahead 5, keputusan Choi).
+- Sisa REAL BUG run128: SEMUA 13 ter-patch (BUG-8/2/17/18/1/3/11/25/15/14/9 + BUG-4/BUG-22 lintas run hingga 145). Bug-hunt berulang: run berikutnya boleh memilih scope baru dari gap acceptance/diff berubah; scope identik tanpa evidence baru tidak dipindai ulang.
+
 # Sprint 145 — Product Scope Reset & Core MVP Recovery (Step Ledger)
 
 Sumber kanonik: `sprint_145.json` (CORRECTIVE_IMPLEMENTATION_PLAN, 50 langkah)

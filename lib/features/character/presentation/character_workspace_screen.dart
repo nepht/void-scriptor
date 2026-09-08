@@ -15,6 +15,7 @@ import 'widgets/character_identity_card.dart';
 import 'widgets/character_portrait_card.dart';
 import 'widgets/character_scope_status_card.dart';
 import 'widgets/character_private_notes_card.dart';
+import 'widgets/narrative_assignment_card.dart';
 import 'widgets/color_palette_card.dart';
 import 'widgets/identity_preservation_card.dart';
 import 'widgets/references_card.dart';
@@ -215,7 +216,15 @@ class _CharacterWorkspaceScreenState
             WorkspaceKind.character,
             widget.activeSection!,
           );
-    if (section == 'Profile') return Column(children: [top]);
+    if (section == 'Profile') {
+      return Column(
+        children: [
+          top,
+          const SizedBox(height: 16),
+          NarrativeAssignmentCard(characterId: character.assetId),
+        ],
+      );
+    }
     if (section == 'Relationships') return relationships;
     if (section == 'Appearance') {
       return Column(
@@ -251,6 +260,8 @@ class _CharacterWorkspaceScreenState
     return Column(
       children: [
         top,
+        const SizedBox(height: 16),
+        NarrativeAssignmentCard(characterId: character.assetId),
         const SizedBox(height: 16),
         const TurnaroundCard(),
         const SizedBox(height: 16),

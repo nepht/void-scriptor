@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 import 'async_mutex.dart';
+import '../project_package/project_package.dart';
 
 import 'project_manifest.dart';
 import '../domain/project_model.dart';
@@ -42,6 +43,14 @@ class ProjectRecoveryService {
   /// known to the caller are treated as registered: their stale marker is
   /// consumed and no duplicate is produced. Unsupported or corrupt markers
   /// are left untouched for manual inspection.
+  ///
+  /// Bug-hunt core-hunt-20260906 BUG-6: the marker is staged BEFORE the
+  /// database and manifest are written, so a crash mid-creation leaves a
+  /// marker-only (or db-only) folder. Admission therefore also requires
+  /// package completeness: manifest file, database file, and an on-disk
+  /// manifest whose projectId agrees with the folder name. Incomplete
+  /// packages are skipped untouched for manual inspection, like corrupt
+  /// markers.
   Future<List<ProjectModel>> admitMarkedCreations(
     Directory ownerDirectory,
     Set<String> knownProjectIds,
@@ -75,6 +84,27 @@ class ProjectRecoveryService {
       }
       final id = name.substring(0, name.length - '.voidproject'.length);
       if (id != manifest.id) continue;
+      // BUG-6: require package completeness before admission. The marker
+      // is staged before the database and manifest are written, so its
+      // presence alone does not prove the package finished assembling.
+      final package = ProjectPackage(projectId: id, root: entity);
+      if (!await package.manifestFile.exists()) continue;
+      if (!await package.databaseFile.exists()) continue;
+      String diskManifestJson;
+      try {
+        diskManifestJson = await package.manifestFile.readAsString();
+      } on FileSystemException {
+        continue;
+      }
+      Object? diskManifestDecoded;
+      try {
+        diskManifestDecoded = jsonDecode(diskManifestJson);
+      } on Object {
+        continue;
+      }
+      if (diskManifestDecoded is! Map<String, dynamic>) continue;
+      final diskProjectId = diskManifestDecoded['projectId'];
+      if (diskProjectId is! String || diskProjectId != id) continue;
       if (knownProjectIds.contains(id)) {
         await _consumeQuietly(marker);
         continue;

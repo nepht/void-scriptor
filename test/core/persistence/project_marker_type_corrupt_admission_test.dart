@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/core/persistence/project_recovery_service.dart';
 
 void main() {
@@ -45,6 +46,28 @@ void main() {
 
       final healthy = packageOf('healthy-sibling');
       await healthy.create(recursive: true);
+      // BUG-6 contract: admission requires a complete package, so the
+      // healthy sibling must carry an on-disk manifest and a real
+      // database, not just a marker.
+      await Directory(
+        '${healthy.path}${Platform.pathSeparator}manifest',
+      ).create();
+      await File(
+        '${healthy.path}${Platform.pathSeparator}manifest'
+        '${Platform.pathSeparator}project.json',
+      ).writeAsString(
+        jsonEncode(<String, dynamic>{
+          'projectId': 'healthy-sibling',
+          'name': 'Healthy Sibling',
+          'createdAt': '2026-09-06T00:00:00.000Z',
+          'updatedAt': '2026-09-06T00:00:00.000Z',
+        }),
+        flush: true,
+      );
+      await ProjectDatabaseService().create(
+        '${healthy.path}${Platform.pathSeparator}database'
+        '${Platform.pathSeparator}project.db',
+      );
       await markerOf(healthy).writeAsString(
         jsonEncode(<String, dynamic>{
           'projectId': 'healthy-sibling',

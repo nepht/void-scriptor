@@ -135,4 +135,33 @@ void main() {
     expect(summary.importedPerAsset.keys, ['a-father']);
     expect(summary.importedPerAsset['a-father'], 2);
   });
+
+  test('multiple folders pointing at one asset import only the strongest and '
+      'leave exactly one primary', () async {
+    await seedAsset('a-aurivy', 'Aurivy');
+    final exact = await folder('Aurivy');
+    await writeImage(exact, 'a-exact1.png');
+    await writeImage(exact, 'b-exact2.png');
+    final weakPrefix = await folder('Aurivy Mother');
+    await writeImage(weakPrefix, 'weak.png');
+
+    final summary = await ReferenceBulkImporter(
+      database: database,
+      assetsDirectory: assetsDir,
+      projectId: 'p',
+    ).importFromFolder(root: Directory('${tempRoot.path}/images'));
+
+    expect(summary.importedPerAsset, {'a-aurivy': 2});
+    expect(summary.outcompetedFolders, {'Aurivy Mother': 'a-aurivy'});
+    final refs = await database.referenceDao.list(
+      projectId: 'p',
+      ownerAssetId: 'a-aurivy',
+    );
+    expect(refs.length, 2);
+    expect(
+      refs.where((r) => r.primaryReference).length,
+      1,
+      reason: 'primary ganda melanggar integritas galeri',
+    );
+  });
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../widgets/relation_section.dart';
+import '../widgets/support_relationship_section.dart';
 import 'inspector_body.dart';
 
 class CharacterInspector extends ConsumerWidget {
@@ -17,6 +18,8 @@ class CharacterInspector extends ConsumerWidget {
       ),
       const SizedBox(height: 16),
       RelationSection(assetId: characterId),
+      const SizedBox(height: 16),
+      SupportRelationshipSection(assetId: characterId),
     ],
   );
 }

@@ -3,10 +3,8 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 import '../../../database/project/project_database.dart';
+import 'asset_folder_matcher.dart';
 import 'asset_thumbnail_importer.dart';
-
-/// Kekuatan pencocokan folder -> aset. Makin tinggi, makin spesifik.
-enum _MatchStrength { prefix, tokenSet, exact }
 
 class _FolderCandidate {
   const _FolderCandidate({
@@ -18,7 +16,7 @@ class _FolderCandidate {
 
   final String folderName;
   final String assetId;
-  final _MatchStrength strength;
+  final AssetFolderMatchStrength strength;
   final List<String> images;
 }
 
@@ -80,6 +78,7 @@ class AssetThumbnailBulkImporter {
        );
 
   final AssetThumbnailImporter _importer;
+  final AssetFolderMatcher _matcher = const AssetFolderMatcher();
 
   Future<BulkThumbnailSummary> importFromFolder({
     required Directory root,
@@ -88,7 +87,6 @@ class AssetThumbnailBulkImporter {
     final assetsByName = <String, String>{
       for (final asset in assets) asset.name.toLowerCase().trim(): asset.id,
     };
-    final sortedNames = assetsByName.keys.toList()..sort();
 
     final candidates = <_FolderCandidate>[];
     final unmatched = <String>[];
@@ -109,23 +107,16 @@ class AssetThumbnailBulkImporter {
       final folderName = p.basename(entry.path);
       if (folderName.startsWith('_')) continue;
 
-      final match = _matchAsset(folderName, assetsByName, sortedNames);
+      final match = _matcher.match(folderName, assetsByName);
       if (match == null) {
         unmatched.add(folderName);
         continue;
       }
       final (assetId, strength) = match;
-      final images =
-          (await entry.list().toList())
-              .whereType<File>()
-              .where(
-                (file) => AssetThumbnailImporter.allowedExtensions.contains(
-                  p.extension(file.path).toLowerCase(),
-                ),
-              )
-              .map((file) => p.basename(file.path))
-              .toList()
-            ..sort();
+      final images = await sortedImageFiles(
+        entry,
+        AssetThumbnailImporter.allowedExtensions,
+      );
       if (images.isEmpty) {
         emptyMatched[folderName] = assetId;
         continue;
@@ -194,40 +185,5 @@ class AssetThumbnailBulkImporter {
       outcompetedFolders: outcompeted,
       skippedRootImages: skippedRoot,
     );
-  }
-
-  /// Exact (case-insensitive) > token-set > prefix terpanjang; null jika
-  /// tidak ada yang cocok.
-  (String, _MatchStrength)? _matchAsset(
-    String folderName,
-    Map<String, String> assetsByName,
-    List<String> sortedNames,
-  ) {
-    final needle = folderName.toLowerCase().trim();
-    final exact = assetsByName[needle];
-    if (exact != null) return (exact, _MatchStrength.exact);
-
-    final needleTokens = needle.split(RegExp(r'\s+'));
-    for (final name in sortedNames) {
-      if (_sameTokenSet(name, needleTokens)) {
-        return (assetsByName[name]!, _MatchStrength.tokenSet);
-      }
-    }
-    for (final name in sortedNames) {
-      if (needle.startsWith('$name ')) {
-        return (assetsByName[name]!, _MatchStrength.prefix);
-      }
-    }
-    return null;
-  }
-
-  bool _sameTokenSet(String assetName, List<String> folderTokens) {
-    final assetTokens = assetName.split(RegExp(r'\s+'));
-    if (assetTokens.length != folderTokens.length) return false;
-    final remaining = [...folderTokens];
-    for (final token in assetTokens) {
-      if (!remaining.remove(token)) return false;
-    }
-    return true;
   }
 }

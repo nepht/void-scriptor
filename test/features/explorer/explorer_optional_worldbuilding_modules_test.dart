@@ -92,6 +92,10 @@ void main() {
         findsNothing,
       );
       expect(find.widgetWithText(CheckboxListTile, 'Weapons'), findsOneWidget);
+      await tester.ensureVisible(
+        find.widgetWithText(CheckboxListTile, 'Weapons'),
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(CheckboxListTile, 'Weapons'));
       await tester.tap(find.widgetWithText(FilledButton, 'Save'));
       await tester.pumpAndSettle();

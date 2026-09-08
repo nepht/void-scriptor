@@ -27,7 +27,14 @@ class WorkspacePanel extends ConsumerWidget {
     );
     final sectionState = ref.watch(workspaceSectionProvider);
     final rememberedSection = sectionState.activeFor(workspace.kind);
-    final activeSection = workspace.sections.contains(rememberedSection)
+    final activeSection =
+        (workspace.sections.contains(rememberedSection) ||
+            (workspace.kind == WorkspaceKind.novel &&
+                const [
+                  'Versions',
+                  'Export',
+                  'Lore Links',
+                ].contains(rememberedSection)))
         ? rememberedSection!
         : workspace.sections.first;
 
@@ -154,6 +161,17 @@ class _WorkspaceSections extends StatelessWidget {
                 selected: section == activeSection,
                 onTap: () => onSelected(section),
               ),
+            if (workspace.kind == WorkspaceKind.novel)
+              PopupMenuButton<String>(
+                tooltip: 'Document actions',
+                icon: const Icon(Icons.more_horiz),
+                onSelected: onSelected,
+                itemBuilder: (_) => const [
+                  PopupMenuItem(value: 'Versions', child: Text('Versions')),
+                  PopupMenuItem(value: 'Export', child: Text('Export')),
+                  PopupMenuItem(value: 'Lore Links', child: Text('Lore Links')),
+                ],
+              ),
           ],
         ),
       ),
@@ -226,21 +244,14 @@ class _WorkspacePresentation {
     title: 'Novel Workspace',
     description: 'Manuscript, chapters, scenes, and export',
     icon: Icons.auto_stories_outlined,
-    sections: ['Outline', 'Manuscript', 'Lore Links', 'Versions', 'Export'],
+    sections: ['Manuscript', 'Planning'],
   );
   static const character = _WorkspacePresentation(
     kind: WorkspaceKind.character,
     title: 'Character Workspace',
     description: 'Identity, voice, relationships, and references',
     icon: Icons.person_outline,
-    sections: [
-      'Profile',
-      'Identity',
-      'Relationships',
-      'Appearance & Gear',
-      'Companions & Carry',
-      'Notes',
-    ],
+    sections: ['Profile', 'Relationships', 'Appearance', 'Notes'],
   );
   static const worldbuilding = _WorkspacePresentation(
     kind: WorkspaceKind.worldbuilding,
@@ -255,6 +266,13 @@ class _WorkspacePresentation {
       'Timeline',
       'Lore Notes',
     ],
+  );
+  static const location = _WorkspacePresentation(
+    kind: WorkspaceKind.worldbuilding,
+    title: 'Worldbuilding Workspace',
+    description: 'Locations, factions, timeline, and lore',
+    icon: Icons.place_outlined,
+    sections: ['Details'],
   );
   static const creature = _WorkspacePresentation(
     kind: WorkspaceKind.worldbuilding,
@@ -316,7 +334,7 @@ class _WorkspacePresentation {
     null || AssetType.story || AssetType.scene => novel,
     AssetType.character => character,
     AssetType.creature => creature,
-    AssetType.environment ||
+    AssetType.environment => location,
     AssetType.faction ||
     AssetType.timeline ||
     AssetType.species ||

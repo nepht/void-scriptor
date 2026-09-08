@@ -1334,7 +1334,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
         ),
       ),
       const SizedBox(height: 16),
-      if (section == 'Outline') ...[
+      if (section == 'Outline' || section == 'Planning') ...[
         if (widget.workspaceProjection != null) ...[
           WorkspaceProjectionCard(
             projectionFuture: widget.workspaceProjection!,

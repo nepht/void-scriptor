@@ -40,6 +40,12 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
 
     expect(find.text('Dashboard'), findsOneWidget);
+    expect(find.text('Your writing desk'), findsOneWidget);
+    expect(find.byKey(const ValueKey('dashboard-content')), findsOneWidget);
+    expect(
+      tester.getSize(find.byKey(const ValueKey('dashboard-content'))).width,
+      lessThanOrEqualTo(1280),
+    );
     expect(find.text('Welcome back, Guest'), findsOneWidget);
     expect(find.text('Recent Projects'), findsOneWidget);
     expect(find.text('Statistics'), findsOneWidget);

@@ -26,7 +26,14 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Manuscript'), findsOneWidget);
+    expect(find.text('Planning'), findsOneWidget);
+    expect(find.text('Export'), findsNothing);
+    await tester.tap(find.byTooltip('Document actions'));
+    await tester.pumpAndSettle();
     expect(find.text('Export'), findsOneWidget);
+    await tester.tap(find.text('Export'));
+    await tester.pumpAndSettle();
+    expect(containerSection(tester), 'Export');
 
     final container = ProviderScope.containerOf(
       tester.element(find.byType(WorkspacePanel)),
@@ -56,10 +63,11 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Relationships'), findsOneWidget);
-    expect(find.text('Appearance & Gear'), findsOneWidget);
-    expect(find.text('Companions & Carry'), findsOneWidget);
+    expect(find.text('Appearance'), findsOneWidget);
+    expect(find.text('Identity'), findsNothing);
+    expect(find.text('Companions & Carry'), findsNothing);
     final visualsTab = find.byKey(
-      const ValueKey('workspace-section-Appearance & Gear'),
+      const ValueKey('workspace-section-Appearance'),
     );
     await tester.drag(
       find.byType(SingleChildScrollView).first,
@@ -72,7 +80,7 @@ void main() {
       container
           .read(workspaceSectionProvider)
           .activeFor(WorkspaceKind.character),
-      'Appearance & Gear',
+      'Appearance',
     );
 
     container
@@ -91,10 +99,13 @@ void main() {
       find.text('Locations, factions, timeline, and lore'),
       findsOneWidget,
     );
-    expect(find.text('Locations'), findsOneWidget);
-    expect(find.text('Factions'), findsOneWidget);
-    expect(find.text('Relationships'), findsOneWidget);
-    expect(find.text('Lore Notes'), findsOneWidget);
+    expect(find.text('Details'), findsOneWidget);
+    expect(find.text('Overview'), findsNothing);
+    expect(find.text('Locations'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 }
+
+String? containerSection(WidgetTester tester) => ProviderScope.containerOf(
+  tester.element(find.byType(WorkspacePanel)),
+).read(workspaceSectionProvider).activeFor(WorkspaceKind.novel);

@@ -7,7 +7,6 @@ import '../../../core/auth/auth_controller.dart';
 import '../../../core/auth/auth_status.dart';
 import '../../character/presentation/character_controller.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
-import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
 import 'widgets/local_only_status.dart';
 import 'widgets/quick_actions.dart';
@@ -77,60 +76,77 @@ class DashboardScreen extends ConsumerWidget {
             builder: (context, constraints) {
               final desktop = constraints.maxWidth >= 1200;
               return SingleChildScrollView(
-                padding: const EdgeInsets.all(VoidSpacing.xxl),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Wrap(
-                      spacing: 16,
-                      runSpacing: 10,
-                      crossAxisAlignment: WrapCrossAlignment.center,
+                padding: EdgeInsets.symmetric(
+                  horizontal: constraints.maxWidth < 600 ? 16 : 32,
+                  vertical: 32,
+                ),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 1280),
+                    child: Column(
+                      key: const ValueKey('dashboard-content'),
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Dashboard',
-                          style: VoidTypography.displayMedium,
+                        Wrap(
+                          spacing: 16,
+                          runSpacing: 10,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            const Text(
+                              'Dashboard',
+                              style: VoidTypography.displayMedium,
+                            ),
+                            LocalOnlyStatusBadge(
+                              isLocalOnly:
+                                  authSession.status == AuthStatus.guest ||
+                                  authSession.status == AuthStatus.offline,
+                            ),
+                          ],
                         ),
-                        LocalOnlyStatusBadge(
-                          isLocalOnly:
-                              authSession.status == AuthStatus.guest ||
-                              authSession.status == AuthStatus.offline,
+                        const SizedBox(height: 8),
+                        Text(
+                          'Your writing desk',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(color: context.palette.textMuted),
                         ),
+                        const SizedBox(height: 32),
+                        WelcomeCard(
+                          displayName: authSession.displayName ?? 'Creator',
+                        ),
+                        const SizedBox(height: 16),
+                        QuickActions(
+                          onCreateCharacter: () =>
+                              _createCharacter(context, ref),
+                        ),
+                        const SizedBox(height: 32),
+                        if (desktop)
+                          const Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(flex: 2, child: RecentProjects()),
+                              SizedBox(width: 24),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    StatisticsPanel(),
+                                    SizedBox(height: 16),
+                                    StorageCard(),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        else ...[
+                          const RecentProjects(),
+                          const SizedBox(height: 16),
+                          const StatisticsPanel(),
+                          const SizedBox(height: 16),
+                          const StorageCard(),
+                        ],
                       ],
                     ),
-                    const SizedBox(height: 20),
-                    WelcomeCard(
-                      displayName: authSession.displayName ?? 'Creator',
-                    ),
-                    const SizedBox(height: 16),
-                    QuickActions(
-                      onCreateCharacter: () => _createCharacter(context, ref),
-                    ),
-                    const SizedBox(height: 24),
-                    if (desktop)
-                      const Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(flex: 2, child: RecentProjects()),
-                          SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                StatisticsPanel(),
-                                SizedBox(height: 16),
-                                StorageCard(),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )
-                    else ...[
-                      const RecentProjects(),
-                      const SizedBox(height: 16),
-                      const StatisticsPanel(),
-                      const SizedBox(height: 16),
-                      const StorageCard(),
-                    ],
-                  ],
+                  ),
                 ),
               );
             },

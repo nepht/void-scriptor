@@ -11,17 +11,11 @@ class CharacterInspector extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => ListView(
     padding: const EdgeInsets.all(16),
     children: [
-      InspectorBody(
-        name: characterId,
-        type: 'Character',
-        sections: const [
-          'Properties',
-          'Identity',
-          'Tags',
-          'AI Context',
-          'History',
-        ],
+      InspectorBody(name: characterId, type: 'Character', sections: const []),
+      const Text(
+        'Edit character details in the workspace. Related assets are shown below.',
       ),
+      const SizedBox(height: 16),
       RelationSection(assetId: characterId),
     ],
   );

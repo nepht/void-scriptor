@@ -1,4 +1,7 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as path;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -27,11 +30,20 @@ class RecentProjects extends ConsumerWidget {
             const Text('Loading projects...'),
           ],
         ),
-        error: (error, stack) => Text('$error', style: VoidTypography.body),
+        error: (error, stack) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Projects could not be loaded.'),
+            TextButton(
+              onPressed: () => ref.invalidate(projectControllerProvider),
+              child: const Text('Try again'),
+            ),
+          ],
+        ),
         data: (items) {
           final recent = [...items]
             ..sort((a, b) => b.lastOpenedAt.compareTo(a.lastOpenedAt));
-          final visible = recent.take(3).toList();
+          final visible = recent.take(4).toList();
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -50,16 +62,32 @@ class RecentProjects extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              if (visible.isEmpty)
+              if (visible.isEmpty) ...[
                 const Text(
                   'No projects yet. Create your first universe.',
                   style: VoidTypography.body,
-                )
-              else
-                for (var index = 0; index < visible.length; index++) ...[
+                ),
+                const SizedBox(height: 16),
+                FilledButton.icon(
+                  onPressed: () => context.go(AppRoutes.createProject),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Create your first project'),
+                ),
+              ] else ...[
+                _ContinueProject(project: visible.first),
+                if (visible.length > 1) ...[
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Other recent projects',
+                    style: VoidTypography.title,
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                for (var index = 1; index < visible.length; index++) ...[
                   _ProjectItem(project: visible[index]),
                   if (index != visible.length - 1) const Divider(),
                 ],
+              ],
             ],
           );
         },
@@ -86,6 +114,122 @@ class _RecentProjectsHeader extends StatelessWidget {
   }
 }
 
+void _openProject(BuildContext context, WidgetRef ref, ProjectModel project) {
+  ref.read(currentProjectProvider.notifier).state = project;
+  context.go('/studio/${Uri.encodeComponent(project.id)}');
+}
+
+String _openedLabel(BuildContext context, ProjectModel project) =>
+    'Last opened ${MaterialLocalizations.of(context).formatMediumDate(project.lastOpenedAt.toLocal())}';
+
+class _ProjectCover extends StatelessWidget {
+  const _ProjectCover({required this.project, this.large = false});
+  final ProjectModel project;
+  final bool large;
+
+  @override
+  Widget build(BuildContext context) {
+    final thumbnail = project.thumbnailPath;
+    final placeholder = ColoredBox(
+      color: context.palette.surfaceElevated,
+      child: Center(
+        child: Icon(
+          Icons.auto_stories_outlined,
+          size: large ? 40 : 24,
+          color: context.palette.textMuted,
+        ),
+      ),
+    );
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: SizedBox(
+        width: large ? 112 : 48,
+        height: large ? 156 : 64,
+        child: !kIsWeb && thumbnail != null && thumbnail.trim().isNotEmpty
+            ? Image.file(
+                File(
+                  path.isAbsolute(thumbnail)
+                      ? thumbnail
+                      : path.join(project.localPath, thumbnail),
+                ),
+                fit: BoxFit.cover,
+                excludeFromSemantics: true,
+                errorBuilder: (_, _, _) => placeholder,
+              )
+            : placeholder,
+      ),
+    );
+  }
+}
+
+class _ContinueProject extends ConsumerWidget {
+  const _ContinueProject({required this.project});
+  final ProjectModel project;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final details = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Pick up where you left off',
+          style: Theme.of(
+            context,
+          ).textTheme.labelLarge?.copyWith(color: context.palette.textMuted),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          project.name,
+          style: Theme.of(context).textTheme.headlineSmall,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+        ),
+        if (project.description.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Text(
+            project.description,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+        const SizedBox(height: 12),
+        Text(
+          _openedLabel(context, project),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 20),
+        FilledButton.icon(
+          onPressed: () => _openProject(context, ref, project),
+          icon: const Icon(Icons.edit_outlined),
+          label: const Text('Continue writing'),
+        ),
+      ],
+    );
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 480) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _ProjectCover(project: project),
+              const SizedBox(height: 16),
+              details,
+            ],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _ProjectCover(project: project, large: true),
+            const SizedBox(width: 24),
+            Expanded(child: details),
+          ],
+        );
+      },
+    );
+  }
+}
+
 class _ProjectItem extends ConsumerWidget {
   const _ProjectItem({required this.project});
 
@@ -94,33 +238,24 @@ class _ProjectItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
-      onTap: () {
-        ref.read(currentProjectProvider.notifier).state = project;
-        context.go('/studio/${project.id}');
-      },
+      onTap: () => _openProject(context, ref, project),
       borderRadius: BorderRadius.circular(8),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Row(
           children: [
-            Container(
-              width: 56,
-              height: 42,
-              decoration: BoxDecoration(
-                color: context.palette.surfaceElevated,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                Icons.folder_outlined,
-                color: context.palette.textMuted,
-              ),
-            ),
+            _ProjectCover(project: project),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(project.name, style: VoidTypography.title),
+                  Text(
+                    project.name,
+                    style: VoidTypography.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   const SizedBox(height: 3),
                   Text(
                     project.description.isEmpty
@@ -129,6 +264,11 @@ class _ProjectItem extends ConsumerWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: VoidTypography.caption,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _openedLabel(context, project),
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),

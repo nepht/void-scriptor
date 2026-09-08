@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../design_system/typography/void_typography.dart';
-import '../../../../design_system/widgets/void_card.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class WelcomeCard extends StatelessWidget {
@@ -11,15 +10,16 @@ class WelcomeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return VoidCard(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
           CircleAvatar(
             radius: 28,
-            backgroundColor: context.palette.primary,
-            child: const Icon(
+            backgroundColor: context.palette.surfaceElevated,
+            child: Icon(
               Icons.auto_stories_outlined,
-              color: Colors.white,
+              color: context.palette.primaryBright,
               size: 26,
             ),
           ),
@@ -40,7 +40,6 @@ class WelcomeCard extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.edit_outlined, color: context.palette.primaryBright),
         ],
       ),
     );

@@ -486,19 +486,20 @@ class ExplorerPanel extends ConsumerWidget {
                         ),
                   ),
                   const _ExplorerSectionLabel('WORLD & CREATURES'),
-                  _CreatureGroup(
-                    creatures: creatures,
-                    selectedId: ref.watch(selectionProvider)?.assetId,
-                    onSelected: (creature) => ref
-                        .read(selectionProvider.notifier)
-                        .select(
-                          SelectionModel(
-                            assetId: creature.assetId,
-                            assetType: AssetType.creature,
-                            projectId: creature.projectId,
+                  if (modulePreferences.creatures)
+                    _CreatureGroup(
+                      creatures: creatures,
+                      selectedId: ref.watch(selectionProvider)?.assetId,
+                      onSelected: (creature) => ref
+                          .read(selectionProvider.notifier)
+                          .select(
+                            SelectionModel(
+                              assetId: creature.assetId,
+                              assetType: AssetType.creature,
+                              projectId: creature.projectId,
+                            ),
                           ),
-                        ),
-                  ),
+                    ),
                   EnvironmentGroup(
                     onFocused: () =>
                         focusExplorerAsset(ref, AssetType.environment),
@@ -522,7 +523,8 @@ class ExplorerPanel extends ConsumerWidget {
                         onTimelineSelected ??
                         () => focusExplorerAsset(ref, AssetType.timeline),
                   ),
-                  const _ExplorerSectionLabel('OBJECTS & LOADOUT'),
+                  if (modulePreferences.hasLoadout)
+                    const _ExplorerSectionLabel('OBJECTS & LOADOUT'),
                   if (modulePreferences.wardrobe)
                     _WardrobeGroup(
                       wardrobes: wardrobes,
@@ -538,22 +540,24 @@ class ExplorerPanel extends ConsumerWidget {
                             ),
                           ),
                     ),
-                  _AssetGroup(
-                    label: 'Armor',
-                    icon: Icons.shield_outlined,
-                    assets: armors,
-                    selectedId: ref.watch(selectionProvider)?.assetId,
-                    onSelected: (asset) =>
-                        _selectDatabaseAsset(ref, asset, AssetType.armor),
-                  ),
-                  _AssetGroup(
-                    label: 'Accessories',
-                    icon: Icons.watch_outlined,
-                    assets: accessories,
-                    selectedId: ref.watch(selectionProvider)?.assetId,
-                    onSelected: (asset) =>
-                        _selectDatabaseAsset(ref, asset, AssetType.accessory),
-                  ),
+                  if (modulePreferences.armor)
+                    _AssetGroup(
+                      label: 'Armor',
+                      icon: Icons.shield_outlined,
+                      assets: armors,
+                      selectedId: ref.watch(selectionProvider)?.assetId,
+                      onSelected: (asset) =>
+                          _selectDatabaseAsset(ref, asset, AssetType.armor),
+                    ),
+                  if (modulePreferences.accessories)
+                    _AssetGroup(
+                      label: 'Accessories',
+                      icon: Icons.watch_outlined,
+                      assets: accessories,
+                      selectedId: ref.watch(selectionProvider)?.assetId,
+                      onSelected: (asset) =>
+                          _selectDatabaseAsset(ref, asset, AssetType.accessory),
+                    ),
                   if (modulePreferences.weapons)
                     _WeaponGroup(
                       weapons: weapons,
@@ -736,6 +740,9 @@ Future<void> _configureSidebarModules(
   var wardrobe = current.wardrobe;
   var weapons = current.weapons;
   var storyItems = current.storyItems;
+  var creatures = current.creatures;
+  var armor = current.armor;
+  var accessories = current.accessories;
   final result = await showDialog<ProjectSidebarModulePreferences>(
     context: context,
     builder: (dialogContext) => StatefulBuilder(
@@ -743,46 +750,99 @@ Future<void> _configureSidebarModules(
         title: const Text('Sidebar modules'),
         content: SizedBox(
           width: 420,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Suggested by genre; you remain in control.',
-                style: TextStyle(color: context.palette.textMuted),
-              ),
-              const SizedBox(height: 8),
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Wardrobe'),
-                subtitle: const Text(
-                  'Clothing, costumes, jewelry, and accessories',
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Suggested by genre; you remain in control.',
+                  style: TextStyle(color: context.palette.textMuted),
                 ),
-                value: wardrobe,
-                onChanged: (value) =>
-                    setState(() => wardrobe = value ?? wardrobe),
-              ),
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Weapons'),
-                subtitle: const Text(
-                  'Useful for action, fantasy, war, and adventure stories',
+                const SizedBox(height: 8),
+                const Text(
+                  'Hidden modules keep their data. Changes apply only to this project.',
                 ),
-                value: weapons,
-                onChanged: (value) =>
-                    setState(() => weapons = value ?? weapons),
-              ),
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Story Items'),
-                subtitle: const Text(
-                  'Letters, keepsakes, evidence, artifacts, and plot objects',
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    TextButton(
+                      onPressed: () => setState(() {
+                        wardrobe = true;
+                        storyItems = true;
+                        accessories = true;
+                        weapons = false;
+                        armor = false;
+                        creatures = false;
+                      }),
+                      child: const Text('Drama / Romance'),
+                    ),
+                    TextButton(
+                      onPressed: () => setState(() {
+                        wardrobe = true;
+                        storyItems = true;
+                        accessories = true;
+                        weapons = true;
+                        armor = true;
+                        creatures = true;
+                      }),
+                      child: const Text('Fantasy / Adventure'),
+                    ),
+                  ],
                 ),
-                value: storyItems,
-                onChanged: (value) =>
-                    setState(() => storyItems = value ?? storyItems),
-              ),
-            ],
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Creatures & Companions'),
+                  value: creatures,
+                  onChanged: (value) =>
+                      setState(() => creatures = value ?? creatures),
+                ),
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Armor'),
+                  value: armor,
+                  onChanged: (value) => setState(() => armor = value ?? armor),
+                ),
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Accessories'),
+                  value: accessories,
+                  onChanged: (value) =>
+                      setState(() => accessories = value ?? accessories),
+                ),
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Wardrobe'),
+                  subtitle: const Text(
+                    'Clothing, costumes, jewelry, and accessories',
+                  ),
+                  value: wardrobe,
+                  onChanged: (value) =>
+                      setState(() => wardrobe = value ?? wardrobe),
+                ),
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Weapons'),
+                  subtitle: const Text(
+                    'Useful for action, fantasy, war, and adventure stories',
+                  ),
+                  value: weapons,
+                  onChanged: (value) =>
+                      setState(() => weapons = value ?? weapons),
+                ),
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Story Items'),
+                  subtitle: const Text(
+                    'Letters, keepsakes, evidence, artifacts, and plot objects',
+                  ),
+                  value: storyItems,
+                  onChanged: (value) =>
+                      setState(() => storyItems = value ?? storyItems),
+                ),
+              ],
+            ),
           ),
         ),
         actions: [
@@ -799,6 +859,9 @@ Future<void> _configureSidebarModules(
                 weapons: weapons,
                 storyItems: storyItems,
                 wardrobe: wardrobe,
+                creatures: creatures,
+                armor: armor,
+                accessories: accessories,
               ),
             ),
             child: const Text('Save'),

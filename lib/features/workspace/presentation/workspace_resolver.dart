@@ -312,7 +312,7 @@ class ProjectOverview extends StatelessWidget {
         // Friksi #4 native journey 145.43: tab Outline tanpa aset terpilih
         // tidak boleh mati total - tunjukkan struktur yang akan dibuat dan
         // arahkan ke novel pertama lewat aksi Create Novel yang sama.
-        if (activeSection == 'Outline') ...[
+        if (activeSection == 'Outline' || activeSection == 'Planning') ...[
           const SizedBox(height: 16),
           Container(
             width: double.infinity,

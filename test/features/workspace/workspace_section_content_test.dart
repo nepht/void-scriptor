@@ -5,6 +5,19 @@ import 'package:void_scriptor/features/story/presentation/story_workspace_screen
 import 'package:void_scriptor/features/workspace/presentation/workspace_resolver.dart';
 
 void main() {
+  testWidgets('Planning retains live chapter controls', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: StoryWorkspaceScreen(
+          storyId: 'story-1',
+          activeSection: 'Planning',
+        ),
+      ),
+    );
+    expect(find.text('CHAPTERS'), findsOneWidget);
+    expect(find.text('SCENE EDITOR'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('novel section shows only its relevant workspace content', (
     tester,
   ) async {

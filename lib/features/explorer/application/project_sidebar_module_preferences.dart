@@ -12,6 +12,9 @@ class ProjectSidebarModulePreferences {
     this.weapons = false,
     this.storyItems = false,
     this.wardrobe = true,
+    this.creatures = true,
+    this.armor = true,
+    this.accessories = true,
   });
 
   // Retained only to read v1 preference files. Factions and relationships are
@@ -21,6 +24,11 @@ class ProjectSidebarModulePreferences {
   final bool weapons;
   final bool storyItems;
   final bool wardrobe;
+  final bool creatures;
+  final bool armor;
+  final bool accessories;
+  bool get hasLoadout =>
+      wardrobe || weapons || storyItems || armor || accessories;
 
   ProjectSidebarModulePreferences copyWith({
     bool? factions,
@@ -28,27 +36,40 @@ class ProjectSidebarModulePreferences {
     bool? weapons,
     bool? storyItems,
     bool? wardrobe,
+    bool? creatures,
+    bool? armor,
+    bool? accessories,
   }) => ProjectSidebarModulePreferences(
     factions: factions ?? this.factions,
     relationshipMap: relationshipMap ?? this.relationshipMap,
     weapons: weapons ?? this.weapons,
     storyItems: storyItems ?? this.storyItems,
     wardrobe: wardrobe ?? this.wardrobe,
+    creatures: creatures ?? this.creatures,
+    armor: armor ?? this.armor,
+    accessories: accessories ?? this.accessories,
   );
 
   Map<String, Object> toJson() => {
-    'version': 4,
+    'version': 5,
     'factions': false,
     'relationshipMap': false,
     'weapons': weapons,
     'storyItems': storyItems,
     'wardrobe': wardrobe,
+    'creatures': creatures,
+    'armor': armor,
+    'accessories': accessories,
   };
 
   static ProjectSidebarModulePreferences? tryFromJson(Object? value) {
     if (value is! Map<String, dynamic>) return null;
     final version = value['version'];
-    if (version != 1 && version != 2 && version != 3 && version != 4) {
+    if (version != 1 &&
+        version != 2 &&
+        version != 3 &&
+        version != 4 &&
+        version != 5) {
       return null;
     }
     final factions = value['factions'];
@@ -59,13 +80,22 @@ class ProjectSidebarModulePreferences {
     final wardrobe = value['wardrobe'];
     if (version >= 2 && weapons is! bool) return null;
     if (version >= 3 && storyItems is! bool) return null;
-    if (version == 4 && wardrobe is! bool) return null;
+    if (version >= 4 && wardrobe is! bool) return null;
+    if (version == 5 &&
+        (value['creatures'] is! bool ||
+            value['armor'] is! bool ||
+            value['accessories'] is! bool)) {
+      return null;
+    }
     return ProjectSidebarModulePreferences(
       factions: false,
       relationshipMap: false,
       weapons: version >= 2 ? weapons! as bool : false,
       storyItems: version >= 3 ? storyItems! as bool : false,
-      wardrobe: version == 4 ? wardrobe! as bool : true,
+      wardrobe: version >= 4 ? wardrobe! as bool : true,
+      creatures: version == 5 ? value['creatures'] as bool : true,
+      armor: version == 5 ? value['armor'] as bool : true,
+      accessories: version == 5 ? value['accessories'] as bool : true,
     );
   }
 
@@ -76,11 +106,22 @@ class ProjectSidebarModulePreferences {
       relationshipMap == other.relationshipMap &&
       weapons == other.weapons &&
       storyItems == other.storyItems &&
-      wardrobe == other.wardrobe;
+      wardrobe == other.wardrobe &&
+      creatures == other.creatures &&
+      armor == other.armor &&
+      accessories == other.accessories;
 
   @override
-  int get hashCode =>
-      Object.hash(factions, relationshipMap, weapons, storyItems, wardrobe);
+  int get hashCode => Object.hash(
+    factions,
+    relationshipMap,
+    weapons,
+    storyItems,
+    wardrobe,
+    creatures,
+    armor,
+    accessories,
+  );
 }
 
 class SidebarGenreProfile {

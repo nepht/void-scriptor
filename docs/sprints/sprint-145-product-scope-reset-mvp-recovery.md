@@ -2807,3 +2807,11 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Status 145.42: pencatatan durable kini ada; sisa nyata = live disk-full/permission (butuh media virtual terisolasi aman), drive-removal live, device validation (hardware-bound). Empat kasus USER_REPORTED_PASS dipertahankan dengan field unknown dicatat apa adanya.
 - Website assignment (HERMES_WEBSITE_DOWNLOAD_HANDOFF_2026-09-08): DITERIMA; inspeksi sumber + verifikasi identitas Cloudflare read-only dijadwalkan run berikutnya pada boundary aman. Delta policy notification dipatuhi (hanya hasil baru).
 - Pointer tetap 145.27; commit scoped doc-only (matriks + ledger ini); file dirty sibling tidak disentuh; tidak push (keputusan Choi).
+
+### 2026-09-08 - nephthys (sesi interaktif): bulk thumbnail import (menu #3 Choi)
+- TDD: test/features/assets/asset_thumbnail_bulk_import_test.dart (3 test: match case-insensitive + first-image + re-import replace; token-set word-order "QOWNER FATHER"->"Father Qowner"; kompetisi folder prefix vs exact + emptyMatchedFolders dilaporkan).
+- lib/features/assets/application/asset_thumbnail_bulk_importer.dart: exact > token-set > prefix; resolusi kompetisi folder (terkuat menang, lemah -> outcompetedFolders); emptyMatchedFolders/unmatchedFolders/skippedRootImages dilaporkan; reuse AssetThumbnailImporter.importFromFile.
+- Commit 7346453 (RED->GREEN iterasi desain: containment dihapus karena menangkap folder lemah salah, diganti resolusi strength yang jujur).
+- EKSEKUSI NYATA (driver test sementara, dihapus setelahnya): folder D:\Gambar AI\My Character (671 gambar) -> paket fixture d53c8787 (UJI SALINAN). Hasil: APPLIED 8 aset (Azrael Noctis, BYTE, Dinoq, Father Qowner, Lumi, Neo Lyra, Qowner, Reika Kokuen); EXTRA images dilaporkan per aset (total 110); UNMATCHED 20 folder (incl. "Aurivy" - fixture hanya punya "Aurivy (Dogfood)"; proyek asli dgn aset "Aurivy" akan match); OUTCOMPETED "QOWNER MOTHER"->Qowner (folder exact menang); ROOT_LOOSE 15.
+- Ground truth DB: 9/16 aset ber-thumbnail_path (8 baru + Aurivy dogfood); semua file ada di disk 1,3-3,2 MB (gambar asli). sqlite read-only query post-run.
+- Test features/assets + database/project: 82/82 PASS; format/analyze bersih. Commit + push menyusul.

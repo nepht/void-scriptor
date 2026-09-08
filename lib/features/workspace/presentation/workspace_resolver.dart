@@ -186,6 +186,10 @@ class WorkspaceResolver extends ConsumerWidget {
         activeSection: activeSection,
       ),
       AssetType.story => StoryWorkspaceScreen(
+        // bug-hunt-run128 BUG-22: story -> story pada element yang sama
+        // memakai ulang State layar story (draft scene/journal basi). Key per
+        // story memaksa State baru - pola sama dengan key 'wb-<projectId>'.
+        key: ValueKey('story-${selection.assetId}'),
         storyId: selection.assetId,
         draftJournal: session == null
             ? null

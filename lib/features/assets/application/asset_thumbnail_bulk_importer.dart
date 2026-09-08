@@ -5,12 +5,34 @@ import 'package:path/path.dart' as p;
 import '../../../database/project/project_database.dart';
 import 'asset_thumbnail_importer.dart';
 
+/// Kekuatan pencocokan folder -> aset. Makin tinggi, makin spesifik.
+enum _MatchStrength { prefix, tokenSet, exact }
+
+class _FolderCandidate {
+  const _FolderCandidate({
+    required this.folderName,
+    required this.assetId,
+    required this.strength,
+    required this.images,
+  });
+
+  final String folderName;
+  final String assetId;
+  final _MatchStrength strength;
+  final List<String> images;
+}
+
 /// Ringkasan satu kali bulk import dari folder gambar referensi.
 ///
 /// - `applied`: assetId -> path thumbnail yang terpasang.
-/// - `extraImagesPerAsset`: assetId -> gambar lain di folder yang tidak
-///   dipakai (satu aset hanya punya satu slot thumbnail).
+/// - `extraImagesPerAsset`: assetId -> gambar lain di folder pemenang yang
+///   tidak dipakai (satu aset hanya punya satu slot thumbnail).
 /// - `unmatchedFolders`: nama folder tanpa aset yang cocok.
+/// - `emptyMatchedFolders`: folder -> assetId; folder yang cocok ke aset
+///   tetapi tidak berisi gambar — tidak ada yang bisa diterapkan.
+/// - `outcompetedFolders`: folder yang cocok ke aset tetapi kalah dari
+///   folder lain yang lebih spesifik untuk aset yang sama (mis. "QOWNER
+///   ARMOR" prefix kalah dari "Qowner" exact) — tidak mengubah thumbnail.
 /// - `skippedRootImages`: jumlah gambar lepas langsung di root (tidak bisa
 ///   diatribusikan ke aset mana pun dari nama foldernya).
 class BulkThumbnailSummary {
@@ -18,32 +40,36 @@ class BulkThumbnailSummary {
     required this.applied,
     required this.extraImagesPerAsset,
     required this.unmatchedFolders,
+    required this.emptyMatchedFolders,
+    required this.outcompetedFolders,
     required this.skippedRootImages,
   });
 
   final Map<String, String> applied;
   final Map<String, List<String>> extraImagesPerAsset;
   final List<String> unmatchedFolders;
+  final Map<String, String> emptyMatchedFolders;
+  final Map<String, String> outcompetedFolders;
   final int skippedRootImages;
 }
 
 /// Import massal thumbnail dari folder referensi per karakter.
 ///
 /// Kontrak:
-/// - Setiap sub-folder root dipetakan ke satu aset berdasarkan nama:
-///   cocok exact (case-insensitive), lalu prefix — folder
-///   "Azrael Noctis ( Demon Lord )" jatuh ke aset "Azrael Noctis";
-///   aset terpanjang yang menang agar "Father Qowner" tidak tertukar
-///   dengan "Qowner".
+/// - Setiap sub-folder root dinilai kecocokannya ke aset berdasarkan nama:
+///   exact (case-insensitive) > kesamaan himpunan token ("QOWNER FATHER" ->
+///   "Father Qowner") > prefix ("Azrael Noctis ( Demon Lord )").
+/// - Ketika beberapa folder menunjuk aset yang sama, hanya folder
+///   terkuat yang dieksekusi (tie: nama folder alfabetis); folder lemah
+///   dilaporkan di `outcompetedFolders` agar thumbnail tidak tertimpa
+///   folder sembarangan.
 /// - Gambar pertama (urut nama byte) menjadi thumbnail via
 ///   [AssetThumbnailImporter.importFromFile] sehingga aturan penyalinan,
 ///   penggantian, dan namespace yang sama berlaku.
 /// - Folder meta (`_` prefix) dilewati; gambar langsung di root dihitung
 ///   sebagai skipped, bukan gagal.
-/// - Kegagalan I/O pada satu folder tidak menggagalkan folder lain;
-///   folder bermasalah masuk [BulkThumbnailSummary.unmatchedFolders]
-///   hanya bila penyebabnya pencocokan, sedangkan kegagalan import
-///   direthrow (data korup tidak boleh dilaporkan sebagai sukses).
+/// - Kegagalan I/O import direthrow: data korup tidak boleh dilaporkan
+///   sebagai sukses.
 class AssetThumbnailBulkImporter {
   AssetThumbnailBulkImporter({
     required ProjectDatabase database,
@@ -63,9 +89,10 @@ class AssetThumbnailBulkImporter {
       for (final asset in assets) asset.name.toLowerCase().trim(): asset.id,
     };
     final sortedNames = assetsByName.keys.toList()..sort();
-    final applied = <String, String>{};
-    final extraImages = <String, List<String>>{};
+
+    final candidates = <_FolderCandidate>[];
     final unmatched = <String>[];
+    final emptyMatched = <String, String>{};
     var skippedRoot = 0;
 
     final entries = await root.list().toList();
@@ -82,12 +109,12 @@ class AssetThumbnailBulkImporter {
       final folderName = p.basename(entry.path);
       if (folderName.startsWith('_')) continue;
 
-      final assetId = _matchAsset(folderName, assetsByName, sortedNames);
-      if (assetId == null) {
+      final match = _matchAsset(folderName, assetsByName, sortedNames);
+      if (match == null) {
         unmatched.add(folderName);
         continue;
       }
-
+      final (assetId, strength) = match;
       final images =
           (await entry.list().toList())
               .whereType<File>()
@@ -99,16 +126,63 @@ class AssetThumbnailBulkImporter {
               .map((file) => p.basename(file.path))
               .toList()
             ..sort();
-      if (images.isEmpty) continue;
+      if (images.isEmpty) {
+        emptyMatched[folderName] = assetId;
+        continue;
+      }
+      candidates.add(
+        _FolderCandidate(
+          folderName: folderName,
+          assetId: assetId,
+          strength: strength,
+          images: images,
+        ),
+      );
+    }
+    candidates.sort((a, b) => a.folderName.compareTo(b.folderName));
 
+    // Resolusi konflik: folder terkuat per aset menang; sisanya dilaporkan.
+    // Kandidat sudah terurut nama folder sehingga tie-break deterministik:
+    // folder pertama (alfabetis) memegang posisi saat kekuatan sama.
+    final winners = <String, _FolderCandidate>{};
+    final outcompeted = <String, String>{};
+    for (final candidate in candidates) {
+      final incumbent = winners[candidate.assetId];
+      if (incumbent == null) {
+        winners[candidate.assetId] = candidate;
+        continue;
+      }
+      if (candidate.strength.index > incumbent.strength.index) {
+        outcompeted[incumbent.folderName] = candidate.assetId;
+        winners[candidate.assetId] = candidate;
+      } else {
+        outcompeted[candidate.folderName] = candidate.assetId;
+      }
+    }
+
+    final applied = <String, String>{};
+    final extraImages = <String, List<String>>{};
+    final thumbnailDirectory = _importer.thumbnailDirectory();
+    final orderedAssets = winners.keys.toList()..sort();
+    for (final assetId in orderedAssets) {
+      final candidate = winners[assetId]!;
       final appliedPath = await _importer.importFromFile(
         assetId: assetId,
-        sourcePath: p.join(entry.path, images.first),
+        sourcePath: p.join(
+          p.join(root.path, candidate.folderName),
+          candidate.images.first,
+        ),
       );
       applied[assetId] = appliedPath;
-      if (images.length > 1) {
-        extraImages[assetId] = images.sublist(1);
+      if (candidate.images.length > 1) {
+        extraImages[assetId] = candidate.images.sublist(1);
       }
+      // Verifikasi namespace: salinan wajib berada di dalam paket.
+      assert(
+        p
+            .canonicalize(p.dirname(appliedPath))
+            .startsWith(p.canonicalize(thumbnailDirectory.path)),
+      );
     }
     unmatched.sort();
 
@@ -116,23 +190,44 @@ class AssetThumbnailBulkImporter {
       applied: applied,
       extraImagesPerAsset: extraImages,
       unmatchedFolders: unmatched,
+      emptyMatchedFolders: emptyMatched,
+      outcompetedFolders: outcompeted,
       skippedRootImages: skippedRoot,
     );
   }
 
-  /// Exact match (case-insensitive) menang; jika tidak ada, prefix match
-  /// dengan nama aset terpanjang (deterministik, sudah diurut).
-  String? _matchAsset(
+  /// Exact (case-insensitive) > token-set > prefix terpanjang; null jika
+  /// tidak ada yang cocok.
+  (String, _MatchStrength)? _matchAsset(
     String folderName,
     Map<String, String> assetsByName,
     List<String> sortedNames,
   ) {
     final needle = folderName.toLowerCase().trim();
     final exact = assetsByName[needle];
-    if (exact != null) return exact;
+    if (exact != null) return (exact, _MatchStrength.exact);
+
+    final needleTokens = needle.split(RegExp(r'\s+'));
     for (final name in sortedNames) {
-      if (needle.startsWith('$name ')) return assetsByName[name]!;
+      if (_sameTokenSet(name, needleTokens)) {
+        return (assetsByName[name]!, _MatchStrength.tokenSet);
+      }
+    }
+    for (final name in sortedNames) {
+      if (needle.startsWith('$name ')) {
+        return (assetsByName[name]!, _MatchStrength.prefix);
+      }
     }
     return null;
+  }
+
+  bool _sameTokenSet(String assetName, List<String> folderTokens) {
+    final assetTokens = assetName.split(RegExp(r'\s+'));
+    if (assetTokens.length != folderTokens.length) return false;
+    final remaining = [...folderTokens];
+    for (final token in assetTokens) {
+      if (!remaining.remove(token)) return false;
+    }
+    return true;
   }
 }

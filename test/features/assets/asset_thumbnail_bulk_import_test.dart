@@ -139,4 +139,33 @@ void main() {
       );
     },
   );
+
+  test('word-order variants match by token set, prefix folders yield to '
+      'stronger matches, and empty matched folders are reported', () async {
+    await seedAsset('a-father', 'Father Qowner');
+    await seedAsset('a-qowner', 'Qowner');
+    final fatherReversed = await folder('QOWNER FATHER');
+    await writeImage(fatherReversed, 'reversed.png');
+    final qownerPlain = await folder('Qowner');
+    await writeImage(qownerPlain, 'plain.png');
+    final weakPrefix = await folder('QOWNER ARMOR');
+    await writeImage(weakPrefix, 'weak.png'); // prefix match, tapi lemah
+    await folder('Qowner Extras'); // match "Qowner" prefix, tanpa gambar
+
+    final summary = await AssetThumbnailBulkImporter(
+      database: database,
+      assetsDirectory: assetsDir,
+    ).importFromFolder(root: Directory('${tempRoot.path}/images'));
+
+    // Urutan kata terbalik tetap mengenali karakternya.
+    expect(summary.applied['a-father'], isNotNull);
+    // Folder exact "Qowner" menang untuk aset yang sama; folder prefix
+    // lemah dilaporkan sebagai outcompeted - thumbnail tidak tertimpa.
+    expect(summary.applied['a-qowner'], endsWith('.png'));
+    expect(summary.outcompetedFolders.keys, ['QOWNER ARMOR']);
+    expect(summary.outcompetedFolders['QOWNER ARMOR'], 'a-qowner');
+    // Folder kosong yang cocok dilaporkan, bukan hilang diam-diam.
+    expect(summary.emptyMatchedFolders, {'Qowner Extras': 'a-qowner'});
+    expect(summary.unmatchedFolders, isEmpty);
+  });
 }

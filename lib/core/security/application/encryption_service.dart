@@ -35,13 +35,26 @@ class EncryptedFileService {
   final Directory directory;
 
   /// Encrypts [sourcePath] and writes `<name>.enc` into [directory].
-  Future<String> encryptFile(SecretKey key, String sourcePath) async {
+  ///
+  /// core-hunt-20260906 BUG-36: the plaintext source used to survive the
+  /// call, defeating the stated purpose of at-rest encryption. The source
+  /// is now deleted after a successful `.enc` write; pass
+  /// [deleteSource] = false for the legacy copy behavior. A failed
+  /// encryption (or failed `.enc` write) never touches the source.
+  Future<String> encryptFile(
+    SecretKey key,
+    String sourcePath, {
+    bool deleteSource = true,
+  }) async {
     await directory.create(recursive: true);
     final source = File(sourcePath);
     final bytes = await source.readAsBytes();
     final blob = await cipher.encrypt(key, bytes);
     final outPath = p.join(directory.path, '${p.basename(sourcePath)}.enc');
     await File(outPath).writeAsBytes(_encodeBlob(blob));
+    if (deleteSource) {
+      await source.delete();
+    }
     return outPath;
   }
 

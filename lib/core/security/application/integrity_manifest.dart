@@ -39,12 +39,25 @@ class IntegrityManifest {
     SecretKey key, {
     required HmacIntegrity integrity,
   }) async {
+    // core-hunt-20260906 BUG-34: verifying only the manifest's own entries
+    // missed files ADDED after signing. The manifest must match the actual
+    // directory contents: every entry must verify, and every file on disk
+    // must be covered by the manifest (set equality on relative paths).
+    final signedPaths = <String>{};
     for (final entry in entries) {
       final file = File(p.join(directory.path, entry.relativePath));
       if (!await file.exists()) return false;
       final bytes = await file.readAsBytes();
       final valid = await integrity.verify(key, bytes, entry.signature);
       if (!valid) return false;
+      signedPaths.add(p.posix.normalize(entry.relativePath.replaceAll('\\', '/')));
+    }
+    await for (final entity in directory.list(recursive: true)) {
+      if (entity is! File) continue;
+      final rel = p.posix.normalize(
+        p.relative(entity.path, from: directory.path).replaceAll('\\', '/'),
+      );
+      if (!signedPaths.contains(rel)) return false;
     }
     return true;
   }

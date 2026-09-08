@@ -76,7 +76,45 @@ class DurableDraftJournal {
       }
       rethrow;
     }
-    await temp.rename(_entryFile(sceneId).path);
+    await _renameWithWindowsSharingRetry(temp, _entryFile(sceneId).path);
+  }
+
+  /// Rename yang tahan terhadap ERROR_SHARING_VIOLATION/ERROR_ACCESS_DENIED
+  /// (errno 32/5) Windows: handle eksternal sesaat (antivirus/indexer/sync
+  /// client) tanpa FILE_SHARE_DELETE dapat membuat MoveFileEx gagal pada
+  /// jendela sesaat setelah file ditulis/ditimpa, lalu berhasil di percobaan
+  /// berikutnya (temuan field rerun146: autosave scene gagal errno 32 pada
+  /// rename `.tmp` -> `.json`, retry manual selalu sukses). Ladder bounded
+  /// disalin dari preseden repo `_WorkflowCheckpointStore
+  /// ._renameWithWindowsSharingRetry` (lib/workflow/workflow_runner.dart):
+  /// Windows-only, errno 5/32 saja, rethrow untuk semua kegagalan lain
+  /// sehingga jalur no-silent-loss `onPersistError` tidak berubah.
+  Future<void> _renameWithWindowsSharingRetry(
+    File source,
+    String destination,
+  ) async {
+    const retryDelays = <Duration>[
+      Duration(milliseconds: 10),
+      Duration(milliseconds: 20),
+      Duration(milliseconds: 40),
+      Duration(milliseconds: 80),
+      Duration(milliseconds: 160),
+      Duration(milliseconds: 320),
+    ];
+    for (var attempt = 0; ; attempt++) {
+      try {
+        await source.rename(destination);
+        return;
+      } on FileSystemException catch (error) {
+        final errorCode = error.osError?.errorCode;
+        final isTransientWindowsSharingError =
+            Platform.isWindows && (errorCode == 5 || errorCode == 32);
+        if (!isTransientWindowsSharingError || attempt >= retryDelays.length) {
+          rethrow;
+        }
+        await Future<void>.delayed(retryDelays[attempt]);
+      }
+    }
   }
 
   /// Daftar draf yang belum di-acknowledge (urut nama scene, deterministik).

@@ -19,7 +19,7 @@ import 'package:void_scriptor/features/project_resilience/application/portable_p
 ///   - the manifest format version (VoidProjectFormat.currentSchema = 16),
 ///     already guarded: a future version is rejected with FormatException
 ///     (see portable_corrupt_input_test.dart);
-///   - the database user_version (ProjectDatabase.currentSchemaVersion = 59),
+///   - the database user_version (ProjectDatabase.currentSchemaVersion = 60),
 ///     migrated forward by the production open path.
 ///
 /// PASS-first: the behavior below was probed live before this test existed.

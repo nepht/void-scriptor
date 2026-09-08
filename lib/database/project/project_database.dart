@@ -90,6 +90,7 @@ import 'tables/creative.dart';
 import 'tables/xr.dart';
 import 'tables/metaverse.dart';
 import 'tables/characters.dart';
+import 'tables/character_narrative_assignments.dart';
 import 'tables/novel_character_links.dart';
 import 'tables/workflow_persistence.dart';
 import 'tables/wardrobes.dart';
@@ -148,6 +149,8 @@ class ProjectMetadata extends Table {
     Assets,
     AssetTags,
     Characters,
+    CharacterNarrativeAssignments,
+    CharacterSupportRelationships,
     NovelCharacterLinks,
     WorkflowDefinitions,
     WorkflowRunRecords,
@@ -341,7 +344,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 59;
+  static const currentSchemaVersion = 60;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -708,6 +711,10 @@ class ProjectDatabase extends _$ProjectDatabase {
         await m.createTable(characterCanonicalScopes);
         await m.createTable(characterUniverseTimelineOverrides);
         await m.createTable(characterNovelStates);
+      }
+      if (from < 60) {
+        await m.createTable(characterNarrativeAssignments);
+        await m.createTable(characterSupportRelationships);
       }
     },
   );

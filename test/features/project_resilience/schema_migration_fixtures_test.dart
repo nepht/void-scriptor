@@ -361,7 +361,10 @@ void main() {
         final version = await database
             .customSelect('PRAGMA user_version')
             .getSingle();
-        expect(version.data['user_version'], 59);
+        expect(
+          version.data['user_version'],
+          ProjectDatabase.currentSchemaVersion,
+        );
 
         // No silent discard across EVERY Core family, not just characters.
         expect(await database.select(database.stories).get(), hasLength(1));
@@ -419,12 +422,15 @@ void main() {
     );
 
     test(
-      'CURRENT: fresh create opens at v59 and reopens as a stable no-op',
+      'CURRENT: fresh create opens at current schema and reopens as a stable no-op',
       () async {
         final service = ProjectDatabaseService();
         await service.create(dbFile().path);
 
-        expect(await service.schemaVersion(dbFile().path), 59);
+        expect(
+          await service.schemaVersion(dbFile().path),
+          ProjectDatabase.currentSchemaVersion,
+        );
 
         var database = await service.open(dbFile().path);
         await database.customSelect('SELECT 1').get();
@@ -434,7 +440,10 @@ void main() {
         final version = await database
             .customSelect('PRAGMA user_version')
             .getSingle();
-        expect(version.data['user_version'], 59);
+        expect(
+          version.data['user_version'],
+          ProjectDatabase.currentSchemaVersion,
+        );
         await database.close();
       },
     );
@@ -449,7 +458,10 @@ void main() {
         final version = await database
             .customSelect('PRAGMA user_version')
             .getSingle();
-        expect(version.data['user_version'], 59);
+        expect(
+          version.data['user_version'],
+          ProjectDatabase.currentSchemaVersion,
+        );
 
         final voiceColumns = await database
             .customSelect('PRAGMA table_info(characters)')
@@ -577,7 +589,10 @@ void main() {
         final versionRow = await opened
             .customSelect('PRAGMA user_version')
             .get();
-        expect(versionRow.first.data['user_version'], 59);
+        expect(
+          versionRow.first.data['user_version'],
+          ProjectDatabase.currentSchemaVersion,
+        );
         final coreRows = await opened.select(opened.characters).get();
         expect(coreRows, hasLength(1));
         expect(coreRows.first.displayName, 'Qowner');
@@ -639,7 +654,10 @@ void main() {
             final version = await database
                 .customSelect('PRAGMA user_version')
                 .getSingle();
-            expect(version.data['user_version'], 59);
+            expect(
+              version.data['user_version'],
+              ProjectDatabase.currentSchemaVersion,
+            );
             // If migration succeeded, verify Core data intact
             final assets = await database.select(database.assets).get();
             expect(assets, hasLength(1));

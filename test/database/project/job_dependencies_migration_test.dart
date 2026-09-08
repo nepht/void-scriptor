@@ -27,7 +27,7 @@ void main() {
     await db.close();
   });
 
-  test('schema version is 58', () {
-    expect(ProjectDatabase.currentSchemaVersion, 59);
+  test('schema version matches current schema', () {
+    expect(ProjectDatabase.currentSchemaVersion, 60);
   });
 }

@@ -55,14 +55,17 @@ void main() {
   }
 
   group('105.10 migration matrix', () {
-    test('fresh RC install creates v59 directly', () async {
+    test('fresh RC install creates the current schema directly', () async {
       final database = ProjectDatabase(NativeDatabase(dbFile()));
       await database.customSelect('SELECT 1').get();
-      expect(ProjectDatabase.currentSchemaVersion, 59);
+      expect(ProjectDatabase.currentSchemaVersion, 60);
       final version = await database
           .customSelect('PRAGMA user_version')
           .getSingle();
-      expect(version.data['user_version'], 59);
+      expect(
+        version.data['user_version'],
+        ProjectDatabase.currentSchemaVersion,
+      );
       await database.close();
     });
 
@@ -76,7 +79,10 @@ void main() {
       final version = await database
           .customSelect('PRAGMA user_version')
           .getSingle();
-      expect(version.data['user_version'], 59);
+      expect(
+        version.data['user_version'],
+        ProjectDatabase.currentSchemaVersion,
+      );
       await database.close();
     });
 
@@ -115,7 +121,10 @@ void main() {
         final version = await database
             .customSelect('PRAGMA user_version')
             .getSingle();
-        expect(version.data['user_version'], 59);
+        expect(
+          version.data['user_version'],
+          ProjectDatabase.currentSchemaVersion,
+        );
         await database.close();
       },
     );

@@ -95,7 +95,7 @@ void main() {
     final second = await service.open(dbPath);
     addTearDown(second.close);
     final restored = AudioAssetRepository(second);
-    expect(second.schemaVersion, 59);
+    expect(second.schemaVersion, 60);
     expect(
       (await restored.getSoundEffect('sfx-portal'))?.category,
       SoundEffectCategory.voidEffect,

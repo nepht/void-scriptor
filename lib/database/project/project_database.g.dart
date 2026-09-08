@@ -1860,6 +1860,1071 @@ class CharactersCompanion extends UpdateCompanion<Character> {
   }
 }
 
+class $CharacterNarrativeAssignmentsTable extends CharacterNarrativeAssignments
+    with
+        TableInfo<
+          $CharacterNarrativeAssignmentsTable,
+          CharacterNarrativeAssignment
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CharacterNarrativeAssignmentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _novelWorkspaceIdMeta = const VerificationMeta(
+    'novelWorkspaceId',
+  );
+  @override
+  late final GeneratedColumn<String> novelWorkspaceId = GeneratedColumn<String>(
+    'novel_workspace_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _characterIdMeta = const VerificationMeta(
+    'characterId',
+  );
+  @override
+  late final GeneratedColumn<String> characterId = GeneratedColumn<String>(
+    'character_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _rolesMeta = const VerificationMeta('roles');
+  @override
+  late final GeneratedColumn<String> roles = GeneratedColumn<String>(
+    'roles',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _importanceMeta = const VerificationMeta(
+    'importance',
+  );
+  @override
+  late final GeneratedColumn<String> importance = GeneratedColumn<String>(
+    'importance',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _povMeta = const VerificationMeta('pov');
+  @override
+  late final GeneratedColumn<String> pov = GeneratedColumn<String>(
+    'pov',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    projectId,
+    novelWorkspaceId,
+    characterId,
+    roles,
+    importance,
+    pov,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'character_narrative_assignments';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CharacterNarrativeAssignment> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('novel_workspace_id')) {
+      context.handle(
+        _novelWorkspaceIdMeta,
+        novelWorkspaceId.isAcceptableOrUnknown(
+          data['novel_workspace_id']!,
+          _novelWorkspaceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_novelWorkspaceIdMeta);
+    }
+    if (data.containsKey('character_id')) {
+      context.handle(
+        _characterIdMeta,
+        characterId.isAcceptableOrUnknown(
+          data['character_id']!,
+          _characterIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_characterIdMeta);
+    }
+    if (data.containsKey('roles')) {
+      context.handle(
+        _rolesMeta,
+        roles.isAcceptableOrUnknown(data['roles']!, _rolesMeta),
+      );
+    }
+    if (data.containsKey('importance')) {
+      context.handle(
+        _importanceMeta,
+        importance.isAcceptableOrUnknown(data['importance']!, _importanceMeta),
+      );
+    }
+    if (data.containsKey('pov')) {
+      context.handle(
+        _povMeta,
+        pov.isAcceptableOrUnknown(data['pov']!, _povMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {
+    projectId,
+    novelWorkspaceId,
+    characterId,
+  };
+  @override
+  CharacterNarrativeAssignment map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CharacterNarrativeAssignment(
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      novelWorkspaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}novel_workspace_id'],
+      )!,
+      characterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}character_id'],
+      )!,
+      roles: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}roles'],
+      ),
+      importance: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}importance'],
+      ),
+      pov: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pov'],
+      ),
+    );
+  }
+
+  @override
+  $CharacterNarrativeAssignmentsTable createAlias(String alias) {
+    return $CharacterNarrativeAssignmentsTable(attachedDatabase, alias);
+  }
+}
+
+class CharacterNarrativeAssignment extends DataClass
+    implements Insertable<CharacterNarrativeAssignment> {
+  final String projectId;
+  final String novelWorkspaceId;
+  final String characterId;
+
+  /// Comma-joined [NarrativeRole] wire tokens; null/empty = no roles yet.
+  final String? roles;
+
+  /// [NarrativeImportance] wire token; null = unspecified.
+  final String? importance;
+
+  /// [NarrativePov] wire token; null = unspecified.
+  final String? pov;
+  const CharacterNarrativeAssignment({
+    required this.projectId,
+    required this.novelWorkspaceId,
+    required this.characterId,
+    this.roles,
+    this.importance,
+    this.pov,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['project_id'] = Variable<String>(projectId);
+    map['novel_workspace_id'] = Variable<String>(novelWorkspaceId);
+    map['character_id'] = Variable<String>(characterId);
+    if (!nullToAbsent || roles != null) {
+      map['roles'] = Variable<String>(roles);
+    }
+    if (!nullToAbsent || importance != null) {
+      map['importance'] = Variable<String>(importance);
+    }
+    if (!nullToAbsent || pov != null) {
+      map['pov'] = Variable<String>(pov);
+    }
+    return map;
+  }
+
+  CharacterNarrativeAssignmentsCompanion toCompanion(bool nullToAbsent) {
+    return CharacterNarrativeAssignmentsCompanion(
+      projectId: Value(projectId),
+      novelWorkspaceId: Value(novelWorkspaceId),
+      characterId: Value(characterId),
+      roles: roles == null && nullToAbsent
+          ? const Value.absent()
+          : Value(roles),
+      importance: importance == null && nullToAbsent
+          ? const Value.absent()
+          : Value(importance),
+      pov: pov == null && nullToAbsent ? const Value.absent() : Value(pov),
+    );
+  }
+
+  factory CharacterNarrativeAssignment.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CharacterNarrativeAssignment(
+      projectId: serializer.fromJson<String>(json['projectId']),
+      novelWorkspaceId: serializer.fromJson<String>(json['novelWorkspaceId']),
+      characterId: serializer.fromJson<String>(json['characterId']),
+      roles: serializer.fromJson<String?>(json['roles']),
+      importance: serializer.fromJson<String?>(json['importance']),
+      pov: serializer.fromJson<String?>(json['pov']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'projectId': serializer.toJson<String>(projectId),
+      'novelWorkspaceId': serializer.toJson<String>(novelWorkspaceId),
+      'characterId': serializer.toJson<String>(characterId),
+      'roles': serializer.toJson<String?>(roles),
+      'importance': serializer.toJson<String?>(importance),
+      'pov': serializer.toJson<String?>(pov),
+    };
+  }
+
+  CharacterNarrativeAssignment copyWith({
+    String? projectId,
+    String? novelWorkspaceId,
+    String? characterId,
+    Value<String?> roles = const Value.absent(),
+    Value<String?> importance = const Value.absent(),
+    Value<String?> pov = const Value.absent(),
+  }) => CharacterNarrativeAssignment(
+    projectId: projectId ?? this.projectId,
+    novelWorkspaceId: novelWorkspaceId ?? this.novelWorkspaceId,
+    characterId: characterId ?? this.characterId,
+    roles: roles.present ? roles.value : this.roles,
+    importance: importance.present ? importance.value : this.importance,
+    pov: pov.present ? pov.value : this.pov,
+  );
+  CharacterNarrativeAssignment copyWithCompanion(
+    CharacterNarrativeAssignmentsCompanion data,
+  ) {
+    return CharacterNarrativeAssignment(
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      novelWorkspaceId: data.novelWorkspaceId.present
+          ? data.novelWorkspaceId.value
+          : this.novelWorkspaceId,
+      characterId: data.characterId.present
+          ? data.characterId.value
+          : this.characterId,
+      roles: data.roles.present ? data.roles.value : this.roles,
+      importance: data.importance.present
+          ? data.importance.value
+          : this.importance,
+      pov: data.pov.present ? data.pov.value : this.pov,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterNarrativeAssignment(')
+          ..write('projectId: $projectId, ')
+          ..write('novelWorkspaceId: $novelWorkspaceId, ')
+          ..write('characterId: $characterId, ')
+          ..write('roles: $roles, ')
+          ..write('importance: $importance, ')
+          ..write('pov: $pov')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    projectId,
+    novelWorkspaceId,
+    characterId,
+    roles,
+    importance,
+    pov,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CharacterNarrativeAssignment &&
+          other.projectId == this.projectId &&
+          other.novelWorkspaceId == this.novelWorkspaceId &&
+          other.characterId == this.characterId &&
+          other.roles == this.roles &&
+          other.importance == this.importance &&
+          other.pov == this.pov);
+}
+
+class CharacterNarrativeAssignmentsCompanion
+    extends UpdateCompanion<CharacterNarrativeAssignment> {
+  final Value<String> projectId;
+  final Value<String> novelWorkspaceId;
+  final Value<String> characterId;
+  final Value<String?> roles;
+  final Value<String?> importance;
+  final Value<String?> pov;
+  final Value<int> rowid;
+  const CharacterNarrativeAssignmentsCompanion({
+    this.projectId = const Value.absent(),
+    this.novelWorkspaceId = const Value.absent(),
+    this.characterId = const Value.absent(),
+    this.roles = const Value.absent(),
+    this.importance = const Value.absent(),
+    this.pov = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CharacterNarrativeAssignmentsCompanion.insert({
+    required String projectId,
+    required String novelWorkspaceId,
+    required String characterId,
+    this.roles = const Value.absent(),
+    this.importance = const Value.absent(),
+    this.pov = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : projectId = Value(projectId),
+       novelWorkspaceId = Value(novelWorkspaceId),
+       characterId = Value(characterId);
+  static Insertable<CharacterNarrativeAssignment> custom({
+    Expression<String>? projectId,
+    Expression<String>? novelWorkspaceId,
+    Expression<String>? characterId,
+    Expression<String>? roles,
+    Expression<String>? importance,
+    Expression<String>? pov,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (projectId != null) 'project_id': projectId,
+      if (novelWorkspaceId != null) 'novel_workspace_id': novelWorkspaceId,
+      if (characterId != null) 'character_id': characterId,
+      if (roles != null) 'roles': roles,
+      if (importance != null) 'importance': importance,
+      if (pov != null) 'pov': pov,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CharacterNarrativeAssignmentsCompanion copyWith({
+    Value<String>? projectId,
+    Value<String>? novelWorkspaceId,
+    Value<String>? characterId,
+    Value<String?>? roles,
+    Value<String?>? importance,
+    Value<String?>? pov,
+    Value<int>? rowid,
+  }) {
+    return CharacterNarrativeAssignmentsCompanion(
+      projectId: projectId ?? this.projectId,
+      novelWorkspaceId: novelWorkspaceId ?? this.novelWorkspaceId,
+      characterId: characterId ?? this.characterId,
+      roles: roles ?? this.roles,
+      importance: importance ?? this.importance,
+      pov: pov ?? this.pov,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (novelWorkspaceId.present) {
+      map['novel_workspace_id'] = Variable<String>(novelWorkspaceId.value);
+    }
+    if (characterId.present) {
+      map['character_id'] = Variable<String>(characterId.value);
+    }
+    if (roles.present) {
+      map['roles'] = Variable<String>(roles.value);
+    }
+    if (importance.present) {
+      map['importance'] = Variable<String>(importance.value);
+    }
+    if (pov.present) {
+      map['pov'] = Variable<String>(pov.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterNarrativeAssignmentsCompanion(')
+          ..write('projectId: $projectId, ')
+          ..write('novelWorkspaceId: $novelWorkspaceId, ')
+          ..write('characterId: $characterId, ')
+          ..write('roles: $roles, ')
+          ..write('importance: $importance, ')
+          ..write('pov: $pov, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CharacterSupportRelationshipsTable extends CharacterSupportRelationships
+    with
+        TableInfo<
+          $CharacterSupportRelationshipsTable,
+          CharacterSupportRelationship
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CharacterSupportRelationshipsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _projectIdMeta = const VerificationMeta(
+    'projectId',
+  );
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+    'project_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceCharacterIdMeta = const VerificationMeta(
+    'sourceCharacterId',
+  );
+  @override
+  late final GeneratedColumn<String> sourceCharacterId =
+      GeneratedColumn<String>(
+        'source_character_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _supportedIdMeta = const VerificationMeta(
+    'supportedId',
+  );
+  @override
+  late final GeneratedColumn<String> supportedId = GeneratedColumn<String>(
+    'supported_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _storyNovelWorkspaceIdMeta =
+      const VerificationMeta('storyNovelWorkspaceId');
+  @override
+  late final GeneratedColumn<String> storyNovelWorkspaceId =
+      GeneratedColumn<String>(
+        'story_novel_workspace_id',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationMeta = const VerificationMeta(
+    'duration',
+  );
+  @override
+  late final GeneratedColumn<String> duration = GeneratedColumn<String>(
+    'duration',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('unspecified'),
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('unspecified'),
+  );
+  static const VerificationMeta _purposeMeta = const VerificationMeta(
+    'purpose',
+  );
+  @override
+  late final GeneratedColumn<String> purpose = GeneratedColumn<String>(
+    'purpose',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _separationReasonMeta = const VerificationMeta(
+    'separationReason',
+  );
+  @override
+  late final GeneratedColumn<String> separationReason = GeneratedColumn<String>(
+    'separation_reason',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    projectId,
+    sourceCharacterId,
+    supportedId,
+    storyNovelWorkspaceId,
+    type,
+    duration,
+    status,
+    purpose,
+    separationReason,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'character_support_relationships';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CharacterSupportRelationship> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('project_id')) {
+      context.handle(
+        _projectIdMeta,
+        projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('source_character_id')) {
+      context.handle(
+        _sourceCharacterIdMeta,
+        sourceCharacterId.isAcceptableOrUnknown(
+          data['source_character_id']!,
+          _sourceCharacterIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceCharacterIdMeta);
+    }
+    if (data.containsKey('supported_id')) {
+      context.handle(
+        _supportedIdMeta,
+        supportedId.isAcceptableOrUnknown(
+          data['supported_id']!,
+          _supportedIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_supportedIdMeta);
+    }
+    if (data.containsKey('story_novel_workspace_id')) {
+      context.handle(
+        _storyNovelWorkspaceIdMeta,
+        storyNovelWorkspaceId.isAcceptableOrUnknown(
+          data['story_novel_workspace_id']!,
+          _storyNovelWorkspaceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_storyNovelWorkspaceIdMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('duration')) {
+      context.handle(
+        _durationMeta,
+        duration.isAcceptableOrUnknown(data['duration']!, _durationMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('purpose')) {
+      context.handle(
+        _purposeMeta,
+        purpose.isAcceptableOrUnknown(data['purpose']!, _purposeMeta),
+      );
+    }
+    if (data.containsKey('separation_reason')) {
+      context.handle(
+        _separationReasonMeta,
+        separationReason.isAcceptableOrUnknown(
+          data['separation_reason']!,
+          _separationReasonMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {
+    projectId,
+    sourceCharacterId,
+    supportedId,
+    storyNovelWorkspaceId,
+  };
+  @override
+  CharacterSupportRelationship map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CharacterSupportRelationship(
+      projectId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}project_id'],
+      )!,
+      sourceCharacterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_character_id'],
+      )!,
+      supportedId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}supported_id'],
+      )!,
+      storyNovelWorkspaceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}story_novel_workspace_id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      duration: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}duration'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      purpose: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}purpose'],
+      ),
+      separationReason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}separation_reason'],
+      ),
+    );
+  }
+
+  @override
+  $CharacterSupportRelationshipsTable createAlias(String alias) {
+    return $CharacterSupportRelationshipsTable(attachedDatabase, alias);
+  }
+}
+
+class CharacterSupportRelationship extends DataClass
+    implements Insertable<CharacterSupportRelationship> {
+  final String projectId;
+  final String sourceCharacterId;
+  final String supportedId;
+  final String storyNovelWorkspaceId;
+
+  /// [SupportType] wire token; required for a persisted relationship.
+  final String type;
+
+  /// [SupportDuration] wire token; default unspecified.
+  final String duration;
+
+  /// [SupportStatus] wire token; default unspecified.
+  final String status;
+
+  /// Optional purpose of the support.
+  final String? purpose;
+
+  /// Optional reason recorded when the support separates/ends.
+  final String? separationReason;
+  const CharacterSupportRelationship({
+    required this.projectId,
+    required this.sourceCharacterId,
+    required this.supportedId,
+    required this.storyNovelWorkspaceId,
+    required this.type,
+    required this.duration,
+    required this.status,
+    this.purpose,
+    this.separationReason,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['project_id'] = Variable<String>(projectId);
+    map['source_character_id'] = Variable<String>(sourceCharacterId);
+    map['supported_id'] = Variable<String>(supportedId);
+    map['story_novel_workspace_id'] = Variable<String>(storyNovelWorkspaceId);
+    map['type'] = Variable<String>(type);
+    map['duration'] = Variable<String>(duration);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || purpose != null) {
+      map['purpose'] = Variable<String>(purpose);
+    }
+    if (!nullToAbsent || separationReason != null) {
+      map['separation_reason'] = Variable<String>(separationReason);
+    }
+    return map;
+  }
+
+  CharacterSupportRelationshipsCompanion toCompanion(bool nullToAbsent) {
+    return CharacterSupportRelationshipsCompanion(
+      projectId: Value(projectId),
+      sourceCharacterId: Value(sourceCharacterId),
+      supportedId: Value(supportedId),
+      storyNovelWorkspaceId: Value(storyNovelWorkspaceId),
+      type: Value(type),
+      duration: Value(duration),
+      status: Value(status),
+      purpose: purpose == null && nullToAbsent
+          ? const Value.absent()
+          : Value(purpose),
+      separationReason: separationReason == null && nullToAbsent
+          ? const Value.absent()
+          : Value(separationReason),
+    );
+  }
+
+  factory CharacterSupportRelationship.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CharacterSupportRelationship(
+      projectId: serializer.fromJson<String>(json['projectId']),
+      sourceCharacterId: serializer.fromJson<String>(json['sourceCharacterId']),
+      supportedId: serializer.fromJson<String>(json['supportedId']),
+      storyNovelWorkspaceId: serializer.fromJson<String>(
+        json['storyNovelWorkspaceId'],
+      ),
+      type: serializer.fromJson<String>(json['type']),
+      duration: serializer.fromJson<String>(json['duration']),
+      status: serializer.fromJson<String>(json['status']),
+      purpose: serializer.fromJson<String?>(json['purpose']),
+      separationReason: serializer.fromJson<String?>(json['separationReason']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'projectId': serializer.toJson<String>(projectId),
+      'sourceCharacterId': serializer.toJson<String>(sourceCharacterId),
+      'supportedId': serializer.toJson<String>(supportedId),
+      'storyNovelWorkspaceId': serializer.toJson<String>(storyNovelWorkspaceId),
+      'type': serializer.toJson<String>(type),
+      'duration': serializer.toJson<String>(duration),
+      'status': serializer.toJson<String>(status),
+      'purpose': serializer.toJson<String?>(purpose),
+      'separationReason': serializer.toJson<String?>(separationReason),
+    };
+  }
+
+  CharacterSupportRelationship copyWith({
+    String? projectId,
+    String? sourceCharacterId,
+    String? supportedId,
+    String? storyNovelWorkspaceId,
+    String? type,
+    String? duration,
+    String? status,
+    Value<String?> purpose = const Value.absent(),
+    Value<String?> separationReason = const Value.absent(),
+  }) => CharacterSupportRelationship(
+    projectId: projectId ?? this.projectId,
+    sourceCharacterId: sourceCharacterId ?? this.sourceCharacterId,
+    supportedId: supportedId ?? this.supportedId,
+    storyNovelWorkspaceId: storyNovelWorkspaceId ?? this.storyNovelWorkspaceId,
+    type: type ?? this.type,
+    duration: duration ?? this.duration,
+    status: status ?? this.status,
+    purpose: purpose.present ? purpose.value : this.purpose,
+    separationReason: separationReason.present
+        ? separationReason.value
+        : this.separationReason,
+  );
+  CharacterSupportRelationship copyWithCompanion(
+    CharacterSupportRelationshipsCompanion data,
+  ) {
+    return CharacterSupportRelationship(
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      sourceCharacterId: data.sourceCharacterId.present
+          ? data.sourceCharacterId.value
+          : this.sourceCharacterId,
+      supportedId: data.supportedId.present
+          ? data.supportedId.value
+          : this.supportedId,
+      storyNovelWorkspaceId: data.storyNovelWorkspaceId.present
+          ? data.storyNovelWorkspaceId.value
+          : this.storyNovelWorkspaceId,
+      type: data.type.present ? data.type.value : this.type,
+      duration: data.duration.present ? data.duration.value : this.duration,
+      status: data.status.present ? data.status.value : this.status,
+      purpose: data.purpose.present ? data.purpose.value : this.purpose,
+      separationReason: data.separationReason.present
+          ? data.separationReason.value
+          : this.separationReason,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterSupportRelationship(')
+          ..write('projectId: $projectId, ')
+          ..write('sourceCharacterId: $sourceCharacterId, ')
+          ..write('supportedId: $supportedId, ')
+          ..write('storyNovelWorkspaceId: $storyNovelWorkspaceId, ')
+          ..write('type: $type, ')
+          ..write('duration: $duration, ')
+          ..write('status: $status, ')
+          ..write('purpose: $purpose, ')
+          ..write('separationReason: $separationReason')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    projectId,
+    sourceCharacterId,
+    supportedId,
+    storyNovelWorkspaceId,
+    type,
+    duration,
+    status,
+    purpose,
+    separationReason,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CharacterSupportRelationship &&
+          other.projectId == this.projectId &&
+          other.sourceCharacterId == this.sourceCharacterId &&
+          other.supportedId == this.supportedId &&
+          other.storyNovelWorkspaceId == this.storyNovelWorkspaceId &&
+          other.type == this.type &&
+          other.duration == this.duration &&
+          other.status == this.status &&
+          other.purpose == this.purpose &&
+          other.separationReason == this.separationReason);
+}
+
+class CharacterSupportRelationshipsCompanion
+    extends UpdateCompanion<CharacterSupportRelationship> {
+  final Value<String> projectId;
+  final Value<String> sourceCharacterId;
+  final Value<String> supportedId;
+  final Value<String> storyNovelWorkspaceId;
+  final Value<String> type;
+  final Value<String> duration;
+  final Value<String> status;
+  final Value<String?> purpose;
+  final Value<String?> separationReason;
+  final Value<int> rowid;
+  const CharacterSupportRelationshipsCompanion({
+    this.projectId = const Value.absent(),
+    this.sourceCharacterId = const Value.absent(),
+    this.supportedId = const Value.absent(),
+    this.storyNovelWorkspaceId = const Value.absent(),
+    this.type = const Value.absent(),
+    this.duration = const Value.absent(),
+    this.status = const Value.absent(),
+    this.purpose = const Value.absent(),
+    this.separationReason = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CharacterSupportRelationshipsCompanion.insert({
+    required String projectId,
+    required String sourceCharacterId,
+    required String supportedId,
+    required String storyNovelWorkspaceId,
+    required String type,
+    this.duration = const Value.absent(),
+    this.status = const Value.absent(),
+    this.purpose = const Value.absent(),
+    this.separationReason = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : projectId = Value(projectId),
+       sourceCharacterId = Value(sourceCharacterId),
+       supportedId = Value(supportedId),
+       storyNovelWorkspaceId = Value(storyNovelWorkspaceId),
+       type = Value(type);
+  static Insertable<CharacterSupportRelationship> custom({
+    Expression<String>? projectId,
+    Expression<String>? sourceCharacterId,
+    Expression<String>? supportedId,
+    Expression<String>? storyNovelWorkspaceId,
+    Expression<String>? type,
+    Expression<String>? duration,
+    Expression<String>? status,
+    Expression<String>? purpose,
+    Expression<String>? separationReason,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (projectId != null) 'project_id': projectId,
+      if (sourceCharacterId != null) 'source_character_id': sourceCharacterId,
+      if (supportedId != null) 'supported_id': supportedId,
+      if (storyNovelWorkspaceId != null)
+        'story_novel_workspace_id': storyNovelWorkspaceId,
+      if (type != null) 'type': type,
+      if (duration != null) 'duration': duration,
+      if (status != null) 'status': status,
+      if (purpose != null) 'purpose': purpose,
+      if (separationReason != null) 'separation_reason': separationReason,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CharacterSupportRelationshipsCompanion copyWith({
+    Value<String>? projectId,
+    Value<String>? sourceCharacterId,
+    Value<String>? supportedId,
+    Value<String>? storyNovelWorkspaceId,
+    Value<String>? type,
+    Value<String>? duration,
+    Value<String>? status,
+    Value<String?>? purpose,
+    Value<String?>? separationReason,
+    Value<int>? rowid,
+  }) {
+    return CharacterSupportRelationshipsCompanion(
+      projectId: projectId ?? this.projectId,
+      sourceCharacterId: sourceCharacterId ?? this.sourceCharacterId,
+      supportedId: supportedId ?? this.supportedId,
+      storyNovelWorkspaceId:
+          storyNovelWorkspaceId ?? this.storyNovelWorkspaceId,
+      type: type ?? this.type,
+      duration: duration ?? this.duration,
+      status: status ?? this.status,
+      purpose: purpose ?? this.purpose,
+      separationReason: separationReason ?? this.separationReason,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (sourceCharacterId.present) {
+      map['source_character_id'] = Variable<String>(sourceCharacterId.value);
+    }
+    if (supportedId.present) {
+      map['supported_id'] = Variable<String>(supportedId.value);
+    }
+    if (storyNovelWorkspaceId.present) {
+      map['story_novel_workspace_id'] = Variable<String>(
+        storyNovelWorkspaceId.value,
+      );
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (duration.present) {
+      map['duration'] = Variable<String>(duration.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (purpose.present) {
+      map['purpose'] = Variable<String>(purpose.value);
+    }
+    if (separationReason.present) {
+      map['separation_reason'] = Variable<String>(separationReason.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CharacterSupportRelationshipsCompanion(')
+          ..write('projectId: $projectId, ')
+          ..write('sourceCharacterId: $sourceCharacterId, ')
+          ..write('supportedId: $supportedId, ')
+          ..write('storyNovelWorkspaceId: $storyNovelWorkspaceId, ')
+          ..write('type: $type, ')
+          ..write('duration: $duration, ')
+          ..write('status: $status, ')
+          ..write('purpose: $purpose, ')
+          ..write('separationReason: $separationReason, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $NovelCharacterLinksTable extends NovelCharacterLinks
     with TableInfo<$NovelCharacterLinksTable, NovelCharacterLink> {
   @override
@@ -72700,6 +73765,10 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   late final $AssetsTable assets = $AssetsTable(this);
   late final $AssetTagsTable assetTags = $AssetTagsTable(this);
   late final $CharactersTable characters = $CharactersTable(this);
+  late final $CharacterNarrativeAssignmentsTable characterNarrativeAssignments =
+      $CharacterNarrativeAssignmentsTable(this);
+  late final $CharacterSupportRelationshipsTable characterSupportRelationships =
+      $CharacterSupportRelationshipsTable(this);
   late final $NovelCharacterLinksTable novelCharacterLinks =
       $NovelCharacterLinksTable(this);
   late final $WorkflowDefinitionsTable workflowDefinitions =
@@ -73037,6 +74106,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     assets,
     assetTags,
     characters,
+    characterNarrativeAssignments,
+    characterSupportRelationships,
     novelCharacterLinks,
     workflowDefinitions,
     workflowRunRecords,
@@ -74166,6 +75237,553 @@ typedef $$CharactersTableProcessedTableManager =
         BaseReferences<_$ProjectDatabase, $CharactersTable, Character>,
       ),
       Character,
+      PrefetchHooks Function()
+    >;
+typedef $$CharacterNarrativeAssignmentsTableCreateCompanionBuilder =
+    CharacterNarrativeAssignmentsCompanion Function({
+      required String projectId,
+      required String novelWorkspaceId,
+      required String characterId,
+      Value<String?> roles,
+      Value<String?> importance,
+      Value<String?> pov,
+      Value<int> rowid,
+    });
+typedef $$CharacterNarrativeAssignmentsTableUpdateCompanionBuilder =
+    CharacterNarrativeAssignmentsCompanion Function({
+      Value<String> projectId,
+      Value<String> novelWorkspaceId,
+      Value<String> characterId,
+      Value<String?> roles,
+      Value<String?> importance,
+      Value<String?> pov,
+      Value<int> rowid,
+    });
+
+class $$CharacterNarrativeAssignmentsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CharacterNarrativeAssignmentsTable> {
+  $$CharacterNarrativeAssignmentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get novelWorkspaceId => $composableBuilder(
+    column: $table.novelWorkspaceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get roles => $composableBuilder(
+    column: $table.roles,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get importance => $composableBuilder(
+    column: $table.importance,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pov => $composableBuilder(
+    column: $table.pov,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CharacterNarrativeAssignmentsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CharacterNarrativeAssignmentsTable> {
+  $$CharacterNarrativeAssignmentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get novelWorkspaceId => $composableBuilder(
+    column: $table.novelWorkspaceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get roles => $composableBuilder(
+    column: $table.roles,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get importance => $composableBuilder(
+    column: $table.importance,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pov => $composableBuilder(
+    column: $table.pov,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CharacterNarrativeAssignmentsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CharacterNarrativeAssignmentsTable> {
+  $$CharacterNarrativeAssignmentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get novelWorkspaceId => $composableBuilder(
+    column: $table.novelWorkspaceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get characterId => $composableBuilder(
+    column: $table.characterId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get roles =>
+      $composableBuilder(column: $table.roles, builder: (column) => column);
+
+  GeneratedColumn<String> get importance => $composableBuilder(
+    column: $table.importance,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get pov =>
+      $composableBuilder(column: $table.pov, builder: (column) => column);
+}
+
+class $$CharacterNarrativeAssignmentsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CharacterNarrativeAssignmentsTable,
+          CharacterNarrativeAssignment,
+          $$CharacterNarrativeAssignmentsTableFilterComposer,
+          $$CharacterNarrativeAssignmentsTableOrderingComposer,
+          $$CharacterNarrativeAssignmentsTableAnnotationComposer,
+          $$CharacterNarrativeAssignmentsTableCreateCompanionBuilder,
+          $$CharacterNarrativeAssignmentsTableUpdateCompanionBuilder,
+          (
+            CharacterNarrativeAssignment,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CharacterNarrativeAssignmentsTable,
+              CharacterNarrativeAssignment
+            >,
+          ),
+          CharacterNarrativeAssignment,
+          PrefetchHooks Function()
+        > {
+  $$CharacterNarrativeAssignmentsTableTableManager(
+    _$ProjectDatabase db,
+    $CharacterNarrativeAssignmentsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CharacterNarrativeAssignmentsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CharacterNarrativeAssignmentsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CharacterNarrativeAssignmentsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> projectId = const Value.absent(),
+                Value<String> novelWorkspaceId = const Value.absent(),
+                Value<String> characterId = const Value.absent(),
+                Value<String?> roles = const Value.absent(),
+                Value<String?> importance = const Value.absent(),
+                Value<String?> pov = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterNarrativeAssignmentsCompanion(
+                projectId: projectId,
+                novelWorkspaceId: novelWorkspaceId,
+                characterId: characterId,
+                roles: roles,
+                importance: importance,
+                pov: pov,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String projectId,
+                required String novelWorkspaceId,
+                required String characterId,
+                Value<String?> roles = const Value.absent(),
+                Value<String?> importance = const Value.absent(),
+                Value<String?> pov = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterNarrativeAssignmentsCompanion.insert(
+                projectId: projectId,
+                novelWorkspaceId: novelWorkspaceId,
+                characterId: characterId,
+                roles: roles,
+                importance: importance,
+                pov: pov,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CharacterNarrativeAssignmentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CharacterNarrativeAssignmentsTable,
+      CharacterNarrativeAssignment,
+      $$CharacterNarrativeAssignmentsTableFilterComposer,
+      $$CharacterNarrativeAssignmentsTableOrderingComposer,
+      $$CharacterNarrativeAssignmentsTableAnnotationComposer,
+      $$CharacterNarrativeAssignmentsTableCreateCompanionBuilder,
+      $$CharacterNarrativeAssignmentsTableUpdateCompanionBuilder,
+      (
+        CharacterNarrativeAssignment,
+        BaseReferences<
+          _$ProjectDatabase,
+          $CharacterNarrativeAssignmentsTable,
+          CharacterNarrativeAssignment
+        >,
+      ),
+      CharacterNarrativeAssignment,
+      PrefetchHooks Function()
+    >;
+typedef $$CharacterSupportRelationshipsTableCreateCompanionBuilder =
+    CharacterSupportRelationshipsCompanion Function({
+      required String projectId,
+      required String sourceCharacterId,
+      required String supportedId,
+      required String storyNovelWorkspaceId,
+      required String type,
+      Value<String> duration,
+      Value<String> status,
+      Value<String?> purpose,
+      Value<String?> separationReason,
+      Value<int> rowid,
+    });
+typedef $$CharacterSupportRelationshipsTableUpdateCompanionBuilder =
+    CharacterSupportRelationshipsCompanion Function({
+      Value<String> projectId,
+      Value<String> sourceCharacterId,
+      Value<String> supportedId,
+      Value<String> storyNovelWorkspaceId,
+      Value<String> type,
+      Value<String> duration,
+      Value<String> status,
+      Value<String?> purpose,
+      Value<String?> separationReason,
+      Value<int> rowid,
+    });
+
+class $$CharacterSupportRelationshipsTableFilterComposer
+    extends Composer<_$ProjectDatabase, $CharacterSupportRelationshipsTable> {
+  $$CharacterSupportRelationshipsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceCharacterId => $composableBuilder(
+    column: $table.sourceCharacterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get supportedId => $composableBuilder(
+    column: $table.supportedId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get storyNovelWorkspaceId => $composableBuilder(
+    column: $table.storyNovelWorkspaceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get duration => $composableBuilder(
+    column: $table.duration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get purpose => $composableBuilder(
+    column: $table.purpose,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get separationReason => $composableBuilder(
+    column: $table.separationReason,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CharacterSupportRelationshipsTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $CharacterSupportRelationshipsTable> {
+  $$CharacterSupportRelationshipsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get projectId => $composableBuilder(
+    column: $table.projectId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceCharacterId => $composableBuilder(
+    column: $table.sourceCharacterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get supportedId => $composableBuilder(
+    column: $table.supportedId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get storyNovelWorkspaceId => $composableBuilder(
+    column: $table.storyNovelWorkspaceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get duration => $composableBuilder(
+    column: $table.duration,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get purpose => $composableBuilder(
+    column: $table.purpose,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get separationReason => $composableBuilder(
+    column: $table.separationReason,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CharacterSupportRelationshipsTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $CharacterSupportRelationshipsTable> {
+  $$CharacterSupportRelationshipsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get projectId =>
+      $composableBuilder(column: $table.projectId, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceCharacterId => $composableBuilder(
+    column: $table.sourceCharacterId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get supportedId => $composableBuilder(
+    column: $table.supportedId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get storyNovelWorkspaceId => $composableBuilder(
+    column: $table.storyNovelWorkspaceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get duration =>
+      $composableBuilder(column: $table.duration, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get purpose =>
+      $composableBuilder(column: $table.purpose, builder: (column) => column);
+
+  GeneratedColumn<String> get separationReason => $composableBuilder(
+    column: $table.separationReason,
+    builder: (column) => column,
+  );
+}
+
+class $$CharacterSupportRelationshipsTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $CharacterSupportRelationshipsTable,
+          CharacterSupportRelationship,
+          $$CharacterSupportRelationshipsTableFilterComposer,
+          $$CharacterSupportRelationshipsTableOrderingComposer,
+          $$CharacterSupportRelationshipsTableAnnotationComposer,
+          $$CharacterSupportRelationshipsTableCreateCompanionBuilder,
+          $$CharacterSupportRelationshipsTableUpdateCompanionBuilder,
+          (
+            CharacterSupportRelationship,
+            BaseReferences<
+              _$ProjectDatabase,
+              $CharacterSupportRelationshipsTable,
+              CharacterSupportRelationship
+            >,
+          ),
+          CharacterSupportRelationship,
+          PrefetchHooks Function()
+        > {
+  $$CharacterSupportRelationshipsTableTableManager(
+    _$ProjectDatabase db,
+    $CharacterSupportRelationshipsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CharacterSupportRelationshipsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CharacterSupportRelationshipsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CharacterSupportRelationshipsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> projectId = const Value.absent(),
+                Value<String> sourceCharacterId = const Value.absent(),
+                Value<String> supportedId = const Value.absent(),
+                Value<String> storyNovelWorkspaceId = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> duration = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> purpose = const Value.absent(),
+                Value<String?> separationReason = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterSupportRelationshipsCompanion(
+                projectId: projectId,
+                sourceCharacterId: sourceCharacterId,
+                supportedId: supportedId,
+                storyNovelWorkspaceId: storyNovelWorkspaceId,
+                type: type,
+                duration: duration,
+                status: status,
+                purpose: purpose,
+                separationReason: separationReason,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String projectId,
+                required String sourceCharacterId,
+                required String supportedId,
+                required String storyNovelWorkspaceId,
+                required String type,
+                Value<String> duration = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> purpose = const Value.absent(),
+                Value<String?> separationReason = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CharacterSupportRelationshipsCompanion.insert(
+                projectId: projectId,
+                sourceCharacterId: sourceCharacterId,
+                supportedId: supportedId,
+                storyNovelWorkspaceId: storyNovelWorkspaceId,
+                type: type,
+                duration: duration,
+                status: status,
+                purpose: purpose,
+                separationReason: separationReason,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CharacterSupportRelationshipsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $CharacterSupportRelationshipsTable,
+      CharacterSupportRelationship,
+      $$CharacterSupportRelationshipsTableFilterComposer,
+      $$CharacterSupportRelationshipsTableOrderingComposer,
+      $$CharacterSupportRelationshipsTableAnnotationComposer,
+      $$CharacterSupportRelationshipsTableCreateCompanionBuilder,
+      $$CharacterSupportRelationshipsTableUpdateCompanionBuilder,
+      (
+        CharacterSupportRelationship,
+        BaseReferences<
+          _$ProjectDatabase,
+          $CharacterSupportRelationshipsTable,
+          CharacterSupportRelationship
+        >,
+      ),
+      CharacterSupportRelationship,
       PrefetchHooks Function()
     >;
 typedef $$NovelCharacterLinksTableCreateCompanionBuilder =
@@ -112615,6 +114233,18 @@ class $ProjectDatabaseManager {
       $$AssetTagsTableTableManager(_db, _db.assetTags);
   $$CharactersTableTableManager get characters =>
       $$CharactersTableTableManager(_db, _db.characters);
+  $$CharacterNarrativeAssignmentsTableTableManager
+  get characterNarrativeAssignments =>
+      $$CharacterNarrativeAssignmentsTableTableManager(
+        _db,
+        _db.characterNarrativeAssignments,
+      );
+  $$CharacterSupportRelationshipsTableTableManager
+  get characterSupportRelationships =>
+      $$CharacterSupportRelationshipsTableTableManager(
+        _db,
+        _db.characterSupportRelationships,
+      );
   $$NovelCharacterLinksTableTableManager get novelCharacterLinks =>
       $$NovelCharacterLinksTableTableManager(_db, _db.novelCharacterLinks);
   $$WorkflowDefinitionsTableTableManager get workflowDefinitions =>

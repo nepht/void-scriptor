@@ -1,3 +1,14 @@
+### 2026-09-08 - run139 interactive nephthys: BUG-6 creation-completeness admission CLOSED + Codex workspace wave adopted (commits 1f34f35 + f4d4212)
+
+- Konteks: permintaan Choi "Minta codex menyelesaikan pekerjaannya" + arah "bekerja sama, bukan saling menutupi". Probe: sesi Codex interaktif AKTIF (codex.exe) dengan ~10 file M; diputuskan TIDAK menembak codex exec kedua (tabrakan worktree), melainkan memverifikasi + menuntaskan + meng-commit WIP yang ada (preseden adopsi run75/85/117, atribusi penuh).
+- BUG-6 (core-hunt-20260906) RED test untracked milik sesi bug-hunt (test/core/persistence/project_creation_completeness_admission_test.dart, 3 FAIL: marker-only/db-only/id-drift teradmit) diadopsi dan diselesaikan TDD: admitMarkedCreations kini menuntut kelengkapan paket - manifest file + database file on-disk + manifest disk yang projectId-nya = nama folder; paket tidak lengkap dibiarkan utuh utk inspeksi manual.
+- GREEN: focused 4/4 PASS. Satu regresi ditemukan dan diperbaiki: fixture healthy-sibling BUG-02 (project_marker_type_corrupt_admission_test.dart) marker-only murni - bertentangan dgn kontrak BUG-6; fixture dilengkapi manifest on-disk + database nyata (ProjectDatabaseService.create). Pitfall tercatat: import salah package:void_scriptor/core/database/... -> loading fail -> path benar package:void_scriptor/database/....
+- Bukti: regresi test/core/persistence 96/96 PASS exit 0; flutter analyze full No issues found! (161,2s); dart format 3 file 0 changed; git diff --check exit 0; secret-scan owned files bersih; roadmap_guard PASS pre+post (pointer 145.27, last_resolved 145.26, canonical_sha 86af6a5).
+- Commit 1f34f35 fix(persistence) 3 file +160 (termasuk adopsi test RED w/ atribusi; disclose: terdiri atas implementasi nephthys + test sesi hunt).
+- Adopsi wave UI Codex: commit f4d4212 feat(ui) 24 file +788/-208 - dashboard responsive redesign (WelcomeCard/QuickActions/RecentProjects), explorer module opsional (creatures/loadout/armor/accessories, data tetap tersimpan), workspace section alias/ownership, plugin registrant file_selector (linux/macos/windows). Gates: dashboard+explorer+workspace 27/27 PASS; analyze clean; format 0 changed.
+- Dipreservasi tanpa commit: .hermes/SPRINT_PROGRESS.md (M asing, -45), character_workspace_screen.dart (M sibling live), .hermes/AUTONOMOUS_ROADMAP_PROMPT.md + docs/MASTER_SPRINT.md + docs/backlog/ (untracked sesi lain). Tanpa git add -A. Tidak push (keputusan Choi).
+- Batas bukti: native UI journey atas kedua slice UNVERIFIABLE; kontrak dibuktikan widget/unit test. Pointer tetap 145.27 PARTIAL.
+
 ### 2026-09-07 — run125 cron nephthys: cross-project stale-selection release (fix 41f7d56)
 
 - Slice: bug kandidat lintas proyek dari journey run-2 145.44 (ledger 7e21844: Inspector tetap menampilkan UUID karakter Saga f779c69f... setelah pindah ke Tes Novel) - dipilih sesuai next-action run124, region projects/selection bebas (sibling idle sejak 07:09, worktree source bersih).

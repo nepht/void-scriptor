@@ -146,17 +146,22 @@ class StoryRepositoryImpl {
         ),
       );
     }
+    // bug-hunt-run128 BUG-14: lookup Map menggantikan nested linear scan
+    // O(C*S^2); sceneNodes dibangun 1:1 dari scenes (dan chapterNodes dari
+    // chapters), sehingga kegagalan lookup tidak mungkin terjadi.
+    final sceneChapterById = {
+      for (final scene in scenes) scene.id: scene.chapterId,
+    };
+    final chapterArcById = {
+      for (final chapter in chapters) chapter.id: chapter.arcId,
+    };
     final chapterNodes = chapters
         .map(
           (chapter) => StoryChapterNode(
             chapter.id,
             chapter.title,
             sceneNodes
-                .where(
-                  (s) =>
-                      scenes.firstWhere((x) => x.id == s.id).chapterId ==
-                      chapter.id,
-                )
+                .where((s) => sceneChapterById[s.id] == chapter.id)
                 .toList(),
           ),
         )
@@ -166,12 +171,7 @@ class StoryRepositoryImpl {
           (arc) => StoryArcNode(
             arc.id,
             arc.title,
-            chapterNodes
-                .where(
-                  (c) =>
-                      chapters.firstWhere((x) => x.id == c.id).arcId == arc.id,
-                )
-                .toList(),
+            chapterNodes.where((c) => chapterArcById[c.id] == arc.id).toList(),
           ),
         )
         .toList();

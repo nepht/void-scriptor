@@ -160,23 +160,41 @@ class DraftSnapshotStore {
       List.unmodifiable(_drafts[draftId]?.snapshots ?? const <DraftSnapshot>[]);
 
   /// Perbandingan baris snapshot [index] terhadap teks kini; deterministik.
+  ///
+  /// Semantik multiset: setiap baris dihitung per kejadian, bukan sebagai
+  /// keanggotaan set, sehingga penggantian salinan duplikat (mis. satu 'A'
+  /// dihapus sementara satu 'B' ditambah) tidak pernah dilaporkan tanpa
+  /// perubahan (bug-hunt-run128 BUG-9).
   SnapshotDiff diffWithCurrent(String draftId, {required int index}) {
     final state = _stateFor(draftId);
     final snapshotLines = state.snapshots[index].content.split('\n');
     final currentLines = state.current.split('\n');
-    final currentSet = currentLines.toSet();
-    final snapshotSet = snapshotLines.toSet();
-    final removed = <String>[
-      for (final line in snapshotLines)
-        if (!currentSet.contains(line)) line,
-    ];
-    final added = <String>[
-      for (final line in currentLines)
-        if (!snapshotSet.contains(line)) line,
-    ];
-    var unchanged = 0;
+    final currentCounts = <String, int>{};
+    for (final line in currentLines) {
+      currentCounts[line] = (currentCounts[line] ?? 0) + 1;
+    }
+    final snapshotCounts = <String, int>{};
     for (final line in snapshotLines) {
-      if (currentSet.contains(line)) unchanged++;
+      snapshotCounts[line] = (snapshotCounts[line] ?? 0) + 1;
+    }
+    final removed = <String>[];
+    for (final entry in snapshotCounts.entries) {
+      final surplus = entry.value - (currentCounts[entry.key] ?? 0);
+      for (var i = 0; i < surplus; i++) {
+        removed.add(entry.key);
+      }
+    }
+    final added = <String>[];
+    for (final entry in currentCounts.entries) {
+      final surplus = entry.value - (snapshotCounts[entry.key] ?? 0);
+      for (var i = 0; i < surplus; i++) {
+        added.add(entry.key);
+      }
+    }
+    var unchanged = 0;
+    for (final entry in snapshotCounts.entries) {
+      final inCurrent = currentCounts[entry.key] ?? 0;
+      unchanged += entry.value < inCurrent ? entry.value : inCurrent;
     }
     return SnapshotDiff(
       removedLines: removed,

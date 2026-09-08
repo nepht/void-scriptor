@@ -71,6 +71,22 @@ void main() {
       expect(diff.addedLines, containsAll(<String>['baris dua revisi']));
       expect(diff.unchangedCount, 1);
     });
+
+    test(
+      'duplikasi baris memakai semantik multiset (bug-hunt-run128 BUG-9)',
+      () {
+        final store = DraftSnapshotStore()..updateCurrent('d-3b', 'A\nA\nB');
+        store.captureManual('d-3b', label: 'v1', content: 'A\nA\nB');
+        store.updateCurrent('d-3b', 'A\nB\nB');
+
+        final diff = store.diffWithCurrent('d-3b', index: 0);
+        // Satu 'A' diganti satu 'B': multiset menghitung kejadian per baris,
+        // bukan keanggotaan set — replacement tidak boleh dilaporkan zero diff.
+        expect(diff.removedLines, <String>['A']);
+        expect(diff.addedLines, <String>['B']);
+        expect(diff.unchangedCount, 2);
+      },
+    );
   });
 
   group('restore_creates_backup', () {

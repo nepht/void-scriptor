@@ -4,6 +4,29 @@
 > pointer. Gunakan `docs/roadmap/ROADMAP_POLICY.json`, ledger sprint aktif, dan
 > `.hermes/ROADMAP_STATE.json` yang sudah lolos roadmap guard.
 
+## Run164 — Hunt-run157 BUG-18/BUG-14 inspector fix (nephthys, 2026-09-09 interaktif)
+
+- Sisa temuan run157 yang difiks: BUG-18 (SupportRelationshipSection
+  merender token wire mentah `travel_companion · permanent · active`
+  di subtitle baris dan dropdown edit, inkonsisten dengan label manusia
+  di kartu naratif) dan BUG-14 (dialog Add Support terbuka dengan
+  dropdown kosong + tombol Save diam-diam disabled saat proyek belum
+  punya novel/karakter lain, tanpa penjelasan). Commit `d2489d4`
+  (3 file adaptasi test intent-preserving).
+- RED→GREEN: support_relationship_section_empty_dialog_test.dart 2/2
+  (0 widget penjelasan → 2/2 GREEN); support_relationship_section_human_labels_test.dart
+  2/2 (token mentah → label helper supportTypeLabel/supportDurationLabel/
+  supportStatusLabel di baris + 3 dropdown).
+- Bukti aktual: regresi test/features/inspector + test/features/character
+  97 PASS; test/features/workspaces 89 PASS; analyze: No issues found;
+  diff --check: clean; build windows --debug PASS 31,7s.
+- Sisa run157 (semua Low): BUG-07/10/11/13/19 latent/dead-path +
+  BUG-17 menunggu keputusan scope Choirudin (group target = phase-one
+  cut atau defect?). Pointer 145.27 tidak dipindah (decision-owned).
+- Approval penulisan .hermes/ diberikan Choirudin di run interaktif
+  ini; entri run161 yang tertahan di working tree ikut ter-commit dalam
+  satu commit scoped .hermes/.
+
 Overall Status: IN PROGRESS
 Current Sprint: 51 (VERIFIED-LOCAL)
 Next Sprint: 52 (PARTIAL/BLOCKED - canonical detail required)
@@ -809,51 +832,8 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
   2026-08-27); roadmap guard PASS exit 0 setelah rekonsiliasi.
 - Tidak ada source code, schema, migration, atau data user yang diubah dalam
   run ini; hanya bookkeeping ledger + runtime state.
-## Sprint 110.17 Genealogy Relationship Rules (nephthys, 2026-08-29 03:30 WIB)
 
-- Step 110.17 dieksekusi TDD penuh (RED: undefined GenealogyRelation/
-  GenealogyRegistry/ValidityRange -> GREEN 13/13).
-- Modul BARU: lib/features/world_logic/domain/genealogy_relationship_rules.dart
-  (236 baris) + test/features/world_logic/genealogy_relationship_rules_test.dart
-  (160 baris).
-- Acceptance sprint_110.json baris 110.17 (parent_child, adoption,
-  partnership, guardian, clan, validity_ranges) tercakup 1:1:
-  - parent_child: terarah, biologis, anti-siklus via DFS ancestor check,
-    konflik dengan adoption untuk node yang sama
-  - adoption: non-biologis, single adoption per child
-  - partnership: bidirectional, anti self-loop
-  - guardian: non-biologis, coexist dengan parent_child
-  - clan: membership klan dari klanId ke nodeId
-  - ValidityRange: fromTick/toTick opsional, isActiveAt dengan asOfTick escape
-    hatch untuk tick besar
-- Domain-only, tanpa persistence, UI, wall clock, locale, atau random;
-  konstruktor const untuk semua relation opsional validity.
-- Regression test/features/world_logic = 117/117 PASS (13 baru + 104 existing).
-- Scoped dart format + dart analyze: No issues found.
 
-## Sprint 110.23-110.25 Faction Diplomacy Grid (nephthys, 2026-08-29 11:35 WIB)
-
-- Langkah kanonik 110.23-110.25 (F13 Faction Diplomacy Grid) dieksekusi TDD
-  penuh (file untracked di working tree, RED test dieksekusi -> GREEN 11/11).
-- Modul BARU: lib/features/world_logic/domain/faction_diplomacy_core.dart
-  (255 baris) + test/features/world_logic/faction_diplomacy_core_test.dart
-  (11 tests, 227 baris).
-- Acceptance sprint_110.json baris 110.23-110.25 tercakup 1:1 oleh 11 test:
-  - 110.23 directed_relation/relationship_type/intensity/validity_ranges/
-    matrix_view (FactionRelation + ValidityRange.overlaps + FactionRelationOverlap
-    + historyOf).
-  - 110.24 public_stance/secret_stance/perceived_stance/knowledge_access/
-    spoiler_integration (DiplomacyRelationKind + attachProvenance 110.7).
-  - 110.25 treaties/conflicts/trade_links/change_events/timeline_view
-    (FactionTreaty + FactionConflict + FactionTrade + eventsForFaction +
-    historyOf).
-- Konsumsi ValidityRange (110.17) dan ResultOrigin (110.7).
-- Domain-only, deterministic, no persistence/UI/wall clock/locale/random.
-- Full regression test/features/world_logic + test/features/simulation +
-  test/core/feature_flags 215/215 green (naik dari 204/204, +11 dari 110.23).
-- Scoped dart format + dart analyze: No issues found.
-- Commit: 99e4800 (nephthys, 2026-08-29 11:35 WIB, cron remediation).
-- Catatan jujur: push mengikuti kontrak push butuh izin; tidak push otomatis.
 ## Run153 — Acceptance handoff single-writer + bukti export/import narrative (nephthys, 2026-09-09 cron)
 
 - ACCEPTANCE OF HANDOFF (RELEASED_TO_HERMES 2026-09-08): Hermes menerima
@@ -880,3 +860,25 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
   narrow-layout/text-scale UI acceptance baru dan native journey
   (UNVERIFIABLE dari cron tanpa sesi desktop).
 - Pointer 145.27 tidak dipindah. Tidak push (ahead 15).
+
+## Run161 — Hunt-run157 Referee Observation: cross-character staleness diperbaiki (nephthys, 2026-09-09 cron)
+
+- Temuan hunt run157 yang belum ada perbaikannya: Referee Observation
+  "Cross-character staleness di SupportRelationshipSection" — State section
+  hanya guard session id (tanpa key, tanpa didUpdateWidget), sehingga ganti
+  karakter A->B dalam satu proyek memakai ulang State dan menampilkan baris
+  support milik A di inspector B; delete dari layar B menghapus data A
+  (koordinat stale). Trigger DIJAMIN (setiap ganti karakter), kategori
+  data-loss. Commit 08a5acf (2 file +238).
+- RED mekanisme-eksak 2/2 GAGAL sesuai klaim: baris A dirender di layar B;
+  listSupports(A) kosong setelah delete dari layar B. GREEN: didUpdateWidget
+  pada assetId change melepas baris stale lalu reload; commit 08a5acf
+  lib/features/inspector/presentation/widgets/support_relationship_section.dart
+  + test/features/inspector/support_relationship_section_character_switch_test.dart.
+- Bukti aktual: focused 2/2 PASS; regresi test/features/inspector 15/15,
+  test/features/workspaces 89/89 PASS; flutter analyze --no-pub: No issues
+  found; dart format owned 2 files 0 changed; git diff --check exit 0;
+  flutter build windows --debug --no-pub PASS 24,9s.
+- Pointer 145.27 tidak berubah (decision-owned). Sisa temuan run157: 12 Low
+  belum difiks (BUG-03/04/07/08/09/10/11/13/14/17/18/19). Tidak push
+  (ahead 30). Sibling dirty (ledger edit, backlog, evidence) dipertahankan.

@@ -138,17 +138,34 @@ class NarrativeAssignment {
 
   factory NarrativeAssignment.fromJson(Map<String, dynamic> json) {
     final rawRoles = json['roles'];
-    final roles = rawRoles is List
-        ? rawRoles.map((role) => NarrativeRole.fromWire(role as String)).toSet()
-        : const <NarrativeRole>{};
+    final roles = <NarrativeRole>{};
+    if (rawRoles is List) {
+      // BUG-11 (hunt-run157): one unknown/malformed role entry (realistic
+      // vector: version-skewed portable import) must not abort the whole
+      // decode; skip it so the valid entries stay adoptable.
+      for (final entry in rawRoles) {
+        if (entry is! String) continue;
+        try {
+          roles.add(NarrativeRole.fromWire(entry));
+        } on ArgumentError {
+          // Unknown role token: keep the assignment without it.
+        }
+      }
+    }
     return NarrativeAssignment(
       novelWorkspaceId: json['novel_workspace_id'] as String,
       characterId: json['character_id'] as String,
       roles: roles,
-      importance: NarrativeImportance.fromWire(
-        (json['importance'] as String?) ?? 'unspecified',
+      importance: _tolerantEnum(
+        json['importance'],
+        NarrativeImportance.fromWire,
+        NarrativeImportance.unspecified,
       ),
-      pov: NarrativePov.fromWire((json['pov'] as String?) ?? 'unspecified'),
+      pov: _tolerantEnum(
+        json['pov'],
+        NarrativePov.fromWire,
+        NarrativePov.unspecified,
+      ),
     );
   }
 
@@ -188,6 +205,20 @@ bool _setEquals(Set<Object?> left, Set<Object?> right) {
     }
   }
   return true;
+}
+
+/// BUG-11 (hunt-run157) shared tolerant decode: an unknown or non-string
+/// optional enum token falls back to [fallback] ("no explicit value")
+/// instead of aborting the whole decode.
+T _tolerantEnum<T>(Object? value, T Function(String) fromWire, T fallback) {
+  if (value is! String) {
+    return fallback;
+  }
+  try {
+    return fromWire(value);
+  } on ArgumentError {
+    return fallback;
+  }
 }
 
 /// Kind of support one character provides to another character or group
@@ -300,12 +331,19 @@ class SupportRelationship {
   /// Returns a copy with the given fields replaced; unspecified-named fields
   /// keep their current value. Changing [duration] never touches importance
   /// or POV because those live on [NarrativeAssignment], not here.
+  ///
+  /// Nullable optional fields ([purpose], [separationReason]) cannot be
+  /// cleared through a null argument (null means "keep"); pass the matching
+  /// `clearX` flag instead (hunt-run157 BUG-10). A value passed together with
+  /// its clear flag wins.
   SupportRelationship copyWith({
     SupportType? type,
     SupportDuration? duration,
     SupportStatus? status,
     String? purpose,
     String? separationReason,
+    bool clearPurpose = false,
+    bool clearSeparationReason = false,
   }) => SupportRelationship(
     sourceCharacterId: sourceCharacterId,
     supportedId: supportedId,
@@ -313,8 +351,10 @@ class SupportRelationship {
     type: type ?? this.type,
     duration: duration ?? this.duration,
     status: status ?? this.status,
-    purpose: purpose ?? this.purpose,
-    separationReason: separationReason ?? this.separationReason,
+    purpose: clearPurpose ? purpose : (purpose ?? this.purpose),
+    separationReason: clearSeparationReason
+        ? separationReason
+        : (separationReason ?? this.separationReason),
   );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -334,14 +374,22 @@ class SupportRelationship {
       supportedId: json['supported_id'] as String,
       storyNovelWorkspaceId: json['story_novel_workspace_id'] as String,
       type: SupportType.fromWire(json['type'] as String),
-      duration: SupportDuration.fromWire(
-        (json['duration'] as String?) ?? 'unspecified',
+      duration: _tolerantEnum(
+        json['duration'],
+        SupportDuration.fromWire,
+        SupportDuration.unspecified,
       ),
-      status: SupportStatus.fromWire(
-        (json['status'] as String?) ?? 'unspecified',
+      status: _tolerantEnum(
+        json['status'],
+        SupportStatus.fromWire,
+        SupportStatus.unspecified,
       ),
-      purpose: json['purpose'] as String?,
-      separationReason: json['separation_reason'] as String?,
+      // BUG-11 (hunt-run157): a non-string optional payload (version-skewed
+      // import) must not abort the whole decode; drop it instead.
+      purpose: json['purpose'] is String ? json['purpose'] as String : null,
+      separationReason: json['separation_reason'] is String
+          ? json['separation_reason'] as String
+          : null,
     );
   }
 

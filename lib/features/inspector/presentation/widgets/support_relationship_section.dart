@@ -110,8 +110,10 @@ class _SupportRelationshipSectionState
     if (session == null || !mounted) {
       if (mounted) {
         setState(() {
-          _supports = const [];
-          _characterNames = const {};
+          // BUG-07 (hunt-run157): keep the not-ready (null) state when no
+          // project session exists. Storing an empty list here rendered the
+          // fake empty state "No support relationships yet" — data that has
+          // not been loaded must never masquerade as a confirmed-empty list.
           _loadError = null;
         });
       }

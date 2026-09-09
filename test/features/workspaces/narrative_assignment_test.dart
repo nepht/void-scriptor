@@ -97,18 +97,27 @@ void main() {
       expect(restored, equals(assignment));
     });
 
-    test('unknown stored role values are rejected, not silently dropped', () {
+    test('unknown stored role values are dropped, valid entries survive', () {
+      // BUG-11 (hunt-run157): the strict decode aborted the whole import on
+      // one unknown token (version-skew vector). The contract is now
+      // per-entry tolerance — mirroring the repository's tolerant row decode
+      // — so an unknown token is DROPPED, never adopted as a valid value,
+      // and the rest of the assignment still loads.
       final json = <String, dynamic>{
         'novel_workspace_id': 'n',
         'character_id': 'c',
-        'roles': <String>['sidekick'],
+        'roles': <String>['sidekick', 'protagonist'],
         'importance': 'major',
         'pov': 'unspecified',
       };
-      expect(() => NarrativeAssignment.fromJson(json), throwsArgumentError);
+      final assignment = NarrativeAssignment.fromJson(json);
+      expect(assignment.roles, {NarrativeRole.protagonist});
+      expect(assignment.importance, NarrativeImportance.major);
     });
 
-    test('unknown stored importance values are rejected', () {
+    test('unknown stored importance values fall back to unspecified', () {
+      // BUG-11 (hunt-run157): instead of aborting the decode, an unknown
+      // scalar decodes to the "no explicit value" default.
       final json = <String, dynamic>{
         'novel_workspace_id': 'n',
         'character_id': 'c',
@@ -116,7 +125,8 @@ void main() {
         'importance': 'legendary',
         'pov': 'unspecified',
       };
-      expect(() => NarrativeAssignment.fromJson(json), throwsArgumentError);
+      final assignment = NarrativeAssignment.fromJson(json);
+      expect(assignment.importance, NarrativeImportance.unspecified);
     });
   });
 

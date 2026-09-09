@@ -92,11 +92,19 @@ class NarrativeAssignmentRepository {
     String supportedId,
   ) async {
     final rows =
-        await (database.select(database.characterSupportRelationships)..where(
-              (row) =>
-                  row.projectId.equals(projectId) &
-                  row.supportedId.equals(supportedId),
-            ))
+        await (database.select(database.characterSupportRelationships)
+              ..where(
+                (row) =>
+                    row.projectId.equals(projectId) &
+                    row.supportedId.equals(supportedId),
+              )
+              // BUG-13 (hunt-run157): mirror listSupports' deterministic
+              // (story, supported) ordering so consumers cannot observe raw
+              // insertion order.
+              ..orderBy([
+                (row) => OrderingTerm.asc(row.storyNovelWorkspaceId),
+                (row) => OrderingTerm.asc(row.supportedId),
+              ]))
             .get();
     return rows.map(_supportFromRow).toList(growable: false);
   }
@@ -286,6 +294,3 @@ class NarrativeAssignmentRepository {
   static String? rowSetToken(Set<String> tokens) =>
       tokens.isEmpty ? null : tokens.join(',');
 }
-
-Set<domain.NarrativeRole> roleTokensToRoles(Set<String> roleTokens) =>
-    roleTokens.map(domain.NarrativeRole.fromWire).toSet();

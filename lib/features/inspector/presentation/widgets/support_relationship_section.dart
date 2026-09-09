@@ -128,8 +128,14 @@ class _SupportRelationshipSectionState
       setState(() {
         _supports = supports;
         _loadedSessionId = session.manifest.id;
+        // BUG-17 (group support): the domain promises character **or group**;
+        // groups are represented by faction assets, so their names must also
+        // resolve instead of rendering a raw UUID.
         _characterNames = {
-          for (final asset in assets.where((a) => a.type == 'character'))
+          for (final asset
+              in assets.where(
+                (a) => a.type == 'character' || a.type == 'faction',
+              ))
             asset.id: asset.name,
         };
         _loadError = null;
@@ -371,6 +377,7 @@ class _SupportRelationshipSectionState
   ) async {
     final List<SupportNovelOption> novels;
     final List<Asset> characters;
+    final List<Asset> factions;
     try {
       novels = await ref.read(supportNovelOptionsProvider.future);
       final assets = await repository.database.assetDao.getAllAssets();
@@ -378,6 +385,12 @@ class _SupportRelationshipSectionState
           .where(
             (asset) => asset.type == 'character' && asset.id != widget.assetId,
           )
+          .toList(growable: false);
+      // BUG-17 (group support): the domain model allows a support target to
+      // be a group; groups are faction assets in this codebase, so offer
+      // them alongside individual characters in the picker.
+      factions = assets
+          .where((asset) => asset.type == 'faction')
           .toList(growable: false);
     } catch (error) {
       if (!mounted) return null;
@@ -397,7 +410,9 @@ class _SupportRelationshipSectionState
         emptyPrerequisite =
             'No stories/novels exist yet. Create a novel '
             'first, then add support relationships.';
-      } else if (characters.isEmpty) {
+      } else if (characters.isEmpty && factions.isEmpty) {
+        // Both empty: the sibling BUG-14 contract message stays verbatim —
+        // in this state no group exists either, so groups add nothing.
         emptyPrerequisite =
             'No other characters exist yet. Create another '
             'character first, then add support relationships.';
@@ -408,6 +423,7 @@ class _SupportRelationshipSectionState
       builder: (dialogContext) => _SupportEditDialog(
         sourceCharacterId: widget.assetId,
         characters: characters,
+        factions: factions,
         novels: novels,
         initial: initial,
         emptyPrerequisite: emptyPrerequisite,
@@ -420,6 +436,7 @@ class _SupportEditDialog extends StatefulWidget {
   const _SupportEditDialog({
     required this.sourceCharacterId,
     required this.characters,
+    required this.factions,
     required this.novels,
     required this.initial,
     this.emptyPrerequisite,
@@ -427,6 +444,10 @@ class _SupportEditDialog extends StatefulWidget {
 
   final String sourceCharacterId;
   final List<Asset> characters;
+
+  /// Group targets (BUG-17): faction assets offered as support targets
+  /// alongside [characters].
+  final List<Asset> factions;
   final List<SupportNovelOption> novels;
   final SupportRelationship? initial;
 
@@ -486,20 +507,33 @@ class _SupportEditDialogState extends State<_SupportEditDialog> {
               isExpanded: true,
               initialValue: _supportedId,
               decoration: const InputDecoration(
-                labelText: 'Supported character',
+                labelText: 'Supported character or group',
               ),
-              items: widget.characters
-                  .map(
-                    (asset) => DropdownMenuItem(
-                      value: asset.id,
-                      child: Text(
-                        asset.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+              items: [
+                ...widget.characters.map(
+                  (asset) => DropdownMenuItem(
+                    value: asset.id,
+                    child: Text(
+                      asset.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  )
-                  .toList(),
+                  ),
+                ),
+                // BUG-17 (group support): groups render with an explicit
+                // marker so a faction is distinguishable from a character
+                // with the same display name.
+                ...widget.factions.map(
+                  (asset) => DropdownMenuItem(
+                    value: asset.id,
+                    child: Text(
+                      'Group: ${asset.name}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ].toList(),
               onChanged: widget.initial == null
                   ? (value) => setState(() => _supportedId = value)
                   : null,

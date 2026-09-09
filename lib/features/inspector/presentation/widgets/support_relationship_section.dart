@@ -132,10 +132,9 @@ class _SupportRelationshipSectionState
         // groups are represented by faction assets, so their names must also
         // resolve instead of rendering a raw UUID.
         _characterNames = {
-          for (final asset
-              in assets.where(
-                (a) => a.type == 'character' || a.type == 'faction',
-              ))
+          for (final asset in assets.where(
+            (a) => a.type == 'character' || a.type == 'faction',
+          ))
             asset.id: asset.name,
         };
         _loadError = null;

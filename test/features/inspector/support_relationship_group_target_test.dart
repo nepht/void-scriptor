@@ -39,7 +39,9 @@ void main() {
     await tester.runAsync(() async {
       root = await Directory.systemTemp.createTemp('support-group-$name-');
       addTearDown(() => root.delete(recursive: true));
-      package = await ProjectPackageService(rootDirectory: root).create(name: 'Support Group $name');
+      package = await ProjectPackageService(
+        rootDirectory: root,
+      ).create(name: 'Support Group $name');
       session = await ProjectSessionManager().open(package);
       addTearDown(session.database.close);
       final repo = CharacterRepositoryImpl(
@@ -51,92 +53,156 @@ void main() {
       await repo.createCharacter(name: 'Byte');
       final now = DateTime.now();
       const novelId = 'novel-first';
-      await session.database.into(session.database.assets).insert(AssetsCompanion.insert(
-            id: novelId,
-            projectId: package.projectId,
-            name: 'First Novel',
-            type: 'story',
-            createdAt: now,
-            updatedAt: now,
-          ));
-      await session.database.into(session.database.stories).insert(
-            StoriesCompanion.insert(assetId: novelId, projectId: package.projectId, title: 'First Novel'),
+      await session.database
+          .into(session.database.assets)
+          .insert(
+            AssetsCompanion.insert(
+              id: novelId,
+              projectId: package.projectId,
+              name: 'First Novel',
+              type: 'story',
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
+      await session.database
+          .into(session.database.stories)
+          .insert(
+            StoriesCompanion.insert(
+              assetId: novelId,
+              projectId: package.projectId,
+              title: 'First Novel',
+            ),
           );
       if (withFaction) {
         const factionAssetId = 'faction-sentinels';
-        await session.database.into(session.database.assets).insert(AssetsCompanion.insert(
-              id: factionAssetId,
-              projectId: package.projectId,
-              name: 'Sentinels',
-              type: 'faction',
-              createdAt: now,
-              updatedAt: now,
-            ));
-        await session.database.into(session.database.factions).insert(FactionsCompanion.insert(
-              assetId: factionAssetId,
-              projectId: package.projectId,
-              name: 'Sentinels',
-            ));
+        await session.database
+            .into(session.database.assets)
+            .insert(
+              AssetsCompanion.insert(
+                id: factionAssetId,
+                projectId: package.projectId,
+                name: 'Sentinels',
+                type: 'faction',
+                createdAt: now,
+                updatedAt: now,
+              ),
+            );
+        await session.database
+            .into(session.database.factions)
+            .insert(
+              FactionsCompanion.insert(
+                assetId: factionAssetId,
+                projectId: package.projectId,
+                name: 'Sentinels',
+              ),
+            );
       }
     });
     return (package, session, qId);
   }
 
-  Future<void> pumpInspector(WidgetTester tester, ProjectSession session, String characterId) async {
+  Future<void> pumpInspector(
+    WidgetTester tester,
+    ProjectSession session,
+    String characterId,
+  ) async {
     await tester.binding.setSurfaceSize(const Size(1280, 900));
     addTearDown(() => tester.binding.setSurfaceSize(null));
-    await tester.pumpWidget(ProviderScope(
-      overrides: [projectSessionProvider.overrideWith(() => _FakeProjectSessionController(session))],
-      child: MaterialApp(home: Scaffold(body: SizedBox(width: 1280, height: 900, child: CharacterInspector(characterId: characterId)))),
-    ));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectSessionProvider.overrideWith(
+            () => _FakeProjectSessionController(session),
+          ),
+        ],
+        child: MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 1280,
+              height: 900,
+              child: CharacterInspector(characterId: characterId),
+            ),
+          ),
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
   }
 
-  testWidgets('group-target picker exposes faction assets alongside characters (BUG-17)', (tester) async {
-    final (package, session, qId) = await seed(tester, 'picker', withFaction: true);
-    addTearDown(() {});
-    await pumpInspector(tester, session, qId);
-    await tester.tap(find.widgetWithText(TextButton, 'Add Support'));
-    await tester.pumpAndSettle();
+  testWidgets(
+    'group-target picker exposes faction assets alongside characters (BUG-17)',
+    (tester) async {
+      final (package, session, qId) = await seed(
+        tester,
+        'picker',
+        withFaction: true,
+      );
+      addTearDown(() {});
+      await pumpInspector(tester, session, qId);
+      await tester.tap(find.widgetWithText(TextButton, 'Add Support'));
+      await tester.pumpAndSettle();
 
-    // Open the supported-target dropdown menu: character Byte and faction
-    // 'Group: Sentinels' must both be offered as targets (BUG-17).
-    await tester.tap(find.byType(DropdownButtonFormField<String>).first);
-    await tester.pumpAndSettle();
-    expect(find.text('Byte'), findsOneWidget);
-    expect(find.text('Group: Sentinels'), findsOneWidget);
-  });
+      // Open the supported-target dropdown menu: character Byte and faction
+      // 'Group: Sentinels' must both be offered as targets (BUG-17).
+      await tester.tap(find.byType(DropdownButtonFormField<String>).first);
+      await tester.pumpAndSettle();
+      expect(find.text('Byte'), findsOneWidget);
+      expect(find.text('Group: Sentinels'), findsOneWidget);
+    },
+  );
 
-  testWidgets('faction-supported row resolves faction name instead of raw UUID (BUG-17)', (tester) async {
-    final (package, session, qId) = await seed(tester, 'row', withFaction: true);
-    await NarrativeAssignmentRepository(database: session.database, projectId: package.projectId).saveSupport(SupportRelationship(
+  testWidgets(
+    'faction-supported row resolves faction name instead of raw UUID (BUG-17)',
+    (tester) async {
+      final (package, session, qId) = await seed(
+        tester,
+        'row',
+        withFaction: true,
+      );
+      await NarrativeAssignmentRepository(
+        database: session.database,
+        projectId: package.projectId,
+      ).saveSupport(
+        SupportRelationship(
           sourceCharacterId: qId,
           supportedId: 'faction-sentinels',
           storyNovelWorkspaceId: 'novel-first',
           type: SupportType.supporter,
           duration: SupportDuration.permanent,
           status: SupportStatus.active,
-        ));
-    await pumpInspector(tester, session, qId);
-    expect(find.textContaining('Sentinels'), findsOneWidget);
-    expect(find.textContaining('faction-sentinels'), findsNothing);
-  });
+        ),
+      );
+      await pumpInspector(tester, session, qId);
+      expect(find.textContaining('Sentinels'), findsOneWidget);
+      expect(find.textContaining('faction-sentinels'), findsNothing);
+    },
+  );
 
-  testWidgets('dialog still opens when only a group exists (BUG-17)', (tester) async {
+  testWidgets('dialog still opens when only a group exists (BUG-17)', (
+    tester,
+  ) async {
     // BUG-14 contract guards the no-characters state, but with a group
     // (faction) present the dialog must open normally — groups are valid
     // support targets.
-    final (package, session, qId) = await seed(tester, 'group-only', withFaction: true);
+    final (package, session, qId) = await seed(
+      tester,
+      'group-only',
+      withFaction: true,
+    );
     // Remove Byte's asset row (picker source) so only the faction remains.
-    await (session.database.delete(session.database.assets)
-          ..where((row) => row.id.equals('char-byte')))
-        .go();
+    await (session.database.delete(
+      session.database.assets,
+    )..where((row) => row.id.equals('char-byte'))).go();
     await pumpInspector(tester, session, qId);
     await tester.tap(find.widgetWithText(TextButton, 'Add Support'));
     await tester.pumpAndSettle();
 
     expect(find.text('Add Support'), findsWidgets);
     expect(find.textContaining('No other characters exist yet'), findsNothing);
-    expect(find.byType(DropdownButtonFormField<String>), findsAtLeastNWidgets(2));
+    expect(
+      find.byType(DropdownButtonFormField<String>),
+      findsAtLeastNWidgets(2),
+    );
   });
 }

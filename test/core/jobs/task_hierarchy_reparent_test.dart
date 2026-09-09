@@ -6,23 +6,36 @@ import 'package:void_scriptor/core/jobs/task_hierarchy.dart';
 /// re-parented under two parents produced a duplicated, inconsistent tree.
 void main() {
   group('core-hunt-20260906 task hierarchy re-attach (BUG-56)', () {
-    test('re-attaching an id under a new parent detaches it from the old one', () {
-      final hierarchy = TaskHierarchy();
-      hierarchy.attach('import', label: 'Import');
-      hierarchy.attachChild('import', 'hash', label: 'Hash', kind: TaskKind.derived);
-      hierarchy.attach('cleanup', label: 'Cleanup');
+    test(
+      're-attaching an id under a new parent detaches it from the old one',
+      () {
+        final hierarchy = TaskHierarchy();
+        hierarchy.attach('import', label: 'Import');
+        hierarchy.attachChild(
+          'import',
+          'hash',
+          label: 'Hash',
+          kind: TaskKind.derived,
+        );
+        hierarchy.attach('cleanup', label: 'Cleanup');
 
-      hierarchy.attachChild('cleanup', 'hash', label: 'Hash', kind: TaskKind.derived);
+        hierarchy.attachChild(
+          'cleanup',
+          'hash',
+          label: 'Hash',
+          kind: TaskKind.derived,
+        );
 
-      final importNode = hierarchy.tree.firstWhere((n) => n.id == 'import');
-      final cleanupNode = hierarchy.tree.firstWhere((n) => n.id == 'cleanup');
-      expect(
-        importNode.children.map((c) => c.id),
-        isNot(contains('hash')),
-        reason: 'BUG-56: old parent kept a stale orphan child object',
-      );
-      expect(cleanupNode.children.map((c) => c.id), contains('hash'));
-    });
+        final importNode = hierarchy.tree.firstWhere((n) => n.id == 'import');
+        final cleanupNode = hierarchy.tree.firstWhere((n) => n.id == 'cleanup');
+        expect(
+          importNode.children.map((c) => c.id),
+          isNot(contains('hash')),
+          reason: 'BUG-56: old parent kept a stale orphan child object',
+        );
+        expect(cleanupNode.children.map((c) => c.id), contains('hash'));
+      },
+    );
 
     test('a re-attached id exists exactly once (moved, not duplicated)', () {
       final hierarchy = TaskHierarchy();
@@ -52,7 +65,10 @@ void main() {
 
       hierarchy.attachChild('q', 'job', label: 'Renamed', kind: TaskKind.user);
 
-      final node = hierarchy.tree.firstWhere((n) => n.id == 'q').children.single;
+      final node = hierarchy.tree
+          .firstWhere((n) => n.id == 'q')
+          .children
+          .single;
       expect(node.label, 'Renamed');
       expect(node.kind, TaskKind.user);
     });
@@ -68,8 +84,18 @@ void main() {
     test('re-parenting under own descendant is refused (no cycle)', () {
       final hierarchy = TaskHierarchy();
       hierarchy.attach('root', label: 'Root');
-      hierarchy.attachChild('root', 'mid', label: 'Mid', kind: TaskKind.derived);
-      hierarchy.attachChild('mid', 'leaf', label: 'Leaf', kind: TaskKind.derived);
+      hierarchy.attachChild(
+        'root',
+        'mid',
+        label: 'Mid',
+        kind: TaskKind.derived,
+      );
+      hierarchy.attachChild(
+        'mid',
+        'leaf',
+        label: 'Leaf',
+        kind: TaskKind.derived,
+      );
 
       // leaf cannot become the parent of root (cycle).
       hierarchy.attachChild('leaf', 'root', label: 'Root', kind: TaskKind.user);

@@ -88,8 +88,11 @@ final class ProjectPaths {
       lastFallbackNotice = StorageFallbackNotice(
         reason: StorageFallbackReason.missingDrive,
         requestedLocation: active,
-        effectiveRoot: _fallbackRoot ??
-            Directory(p.join(await _documentsPath(), 'VoidScriptor', 'Projects')),
+        effectiveRoot:
+            _fallbackRoot ??
+            Directory(
+              p.join(await _documentsPath(), 'VoidScriptor', 'Projects'),
+            ),
       );
     }
 

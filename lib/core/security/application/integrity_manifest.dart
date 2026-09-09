@@ -50,7 +50,9 @@ class IntegrityManifest {
       final bytes = await file.readAsBytes();
       final valid = await integrity.verify(key, bytes, entry.signature);
       if (!valid) return false;
-      signedPaths.add(p.posix.normalize(entry.relativePath.replaceAll('\\', '/')));
+      signedPaths.add(
+        p.posix.normalize(entry.relativePath.replaceAll('\\', '/')),
+      );
     }
     await for (final entity in directory.list(recursive: true)) {
       if (entity is! File) continue;

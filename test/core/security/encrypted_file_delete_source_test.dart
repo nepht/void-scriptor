@@ -24,30 +24,39 @@ void main() {
   });
 
   Future<SecretKey> keyOf() => const Pbkdf2KeyDeriver().derive(
-        passphrase: 'k36',
-        salt: const [9, 8, 7, 6, 5, 4, 3, 2],
-        iterations: 4,
-        length: 32,
+    passphrase: 'k36',
+    salt: const [9, 8, 7, 6, 5, 4, 3, 2],
+    iterations: 4,
+    length: 32,
+  );
+
+  test(
+    'default encryptFile removes the plaintext source after a successful write',
+    () async {
+      final service = EncryptedFileService(
+        cipher: const AesGcmCipher(),
+        directory: dir,
       );
+      final key = await keyOf();
 
-  test('default encryptFile removes the plaintext source after a successful write', () async {
-    final service = EncryptedFileService(cipher: const AesGcmCipher(), directory: dir);
-    final key = await keyOf();
+      final encPath = await service.encryptFile(key, source.path);
 
-    final encPath = await service.encryptFile(key, source.path);
-
-    expect(File(encPath).existsSync(), isTrue);
-    expect(
-      source.existsSync(),
-      isFalse,
-      reason: 'BUG-36: plaintext source survived encryption',
-    );
-    final decrypted = await service.decryptFile(key, encPath);
-    expect(decrypted, 'top secret');
-  });
+      expect(File(encPath).existsSync(), isTrue);
+      expect(
+        source.existsSync(),
+        isFalse,
+        reason: 'BUG-36: plaintext source survived encryption',
+      );
+      final decrypted = await service.decryptFile(key, encPath);
+      expect(decrypted, 'top secret');
+    },
+  );
 
   test('deleteSource: false keeps the legacy copy behavior', () async {
-    final service = EncryptedFileService(cipher: const AesGcmCipher(), directory: dir);
+    final service = EncryptedFileService(
+      cipher: const AesGcmCipher(),
+      directory: dir,
+    );
     final key = await keyOf();
 
     await service.encryptFile(key, source.path, deleteSource: false);
@@ -55,19 +64,28 @@ void main() {
     expect(source.existsSync(), isTrue);
   });
 
-  test('a failed encryption leaves the source untouched (no data loss)', () async {
-    final service = EncryptedFileService(cipher: const AesGcmCipher(), directory: dir);
-    final key = await keyOf();
+  test(
+    'a failed encryption leaves the source untouched (no data loss)',
+    () async {
+      final service = EncryptedFileService(
+        cipher: const AesGcmCipher(),
+        directory: dir,
+      );
+      final key = await keyOf();
 
-    // Force the .enc write to fail by making the output path a directory.
-    final outDir = Directory('${dir.path}/secret.txt.enc');
-    await outDir.create();
+      // Force the .enc write to fail by making the output path a directory.
+      final outDir = Directory('${dir.path}/secret.txt.enc');
+      await outDir.create();
 
-    await expectLater(
-      service.encryptFile(key, source.path),
-      throwsA(isA<FileSystemException>()),
-    );
-    expect(source.existsSync(), isTrue,
-        reason: 'source must never be deleted when the .enc write failed');
-  });
+      await expectLater(
+        service.encryptFile(key, source.path),
+        throwsA(isA<FileSystemException>()),
+      );
+      expect(
+        source.existsSync(),
+        isTrue,
+        reason: 'source must never be deleted when the .enc write failed',
+      );
+    },
+  );
 }

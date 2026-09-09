@@ -14,7 +14,9 @@ void main() {
   late Directory customDrive;
 
   setUp(() async {
-    tempRoot = await Directory.systemTemp.createTemp('core-hunt-20260906-bug12-');
+    tempRoot = await Directory.systemTemp.createTemp(
+      'core-hunt-20260906-bug12-',
+    );
     customDrive = Directory(p.join(tempRoot.path, 'drive'));
     await customDrive.create(recursive: true);
   });
@@ -80,9 +82,7 @@ void main() {
     });
 
     test('no custom store configured: no notice', () async {
-      final paths = ProjectPaths(
-        fallbackRootDirectory: tempRoot,
-      );
+      final paths = ProjectPaths(fallbackRootDirectory: tempRoot);
       await paths.root();
       expect(paths.lastFallbackNotice, isNull);
     });

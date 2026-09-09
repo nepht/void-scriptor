@@ -10,6 +10,7 @@ import '../../../core/selection/selection_model.dart';
 import '../../assets/domain/asset_type.dart';
 import '../../character/domain/character_model.dart';
 import '../../character/presentation/character_controller.dart';
+import '../../character_mode/presentation/character_mode_controller.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 import '../../wardrobe/data/wardrobe_repository_impl.dart';
 import '../../wardrobe/domain/wardrobe_model.dart';
@@ -1047,6 +1048,10 @@ Future<void> createExplorerAsset(
           sceneNumber: 1,
         );
         ref.invalidate(storyExplorerProvider(projectId));
+        // New novels must be selectable as narrative/support story context
+        // without an unrelated action rebuilding the asset graph
+        // (hunt-run157 BUG-05, Referee REAL BUG Medium).
+        ref.invalidate(projectAssetsProvider);
       case AssetType.wardrobe:
         assetId = await CreateWardrobeService(
           database: session.database,

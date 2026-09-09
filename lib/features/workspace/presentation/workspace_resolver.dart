@@ -8,6 +8,7 @@ import '../../projects/presentation/project_persistence_providers.dart';
 import '../../assets/domain/asset_type.dart';
 import '../../assets/presentation/supporting_asset_workspace_screen.dart';
 import '../../character/presentation/character_workspace_screen.dart';
+import '../../character_mode/presentation/character_mode_controller.dart';
 import '../../creatures/presentation/creature_workspace_screen.dart';
 import '../../wardrobe/presentation/wardrobe_workspace_screen.dart';
 import '../../weapon/presentation/weapon_workspace_screen.dart';
@@ -135,6 +136,10 @@ class WorkspaceResolver extends ConsumerWidget {
                         projectId: session.manifest.id,
                       ),
                     );
+                // New novels must be selectable as narrative/support story
+                // context without an unrelated action rebuilding the asset
+                // graph (hunt-run157 BUG-05, Referee REAL BUG Medium).
+                ref.invalidate(projectAssetsProvider);
               },
         onOpenGlobalSearch: session == null
             ? null

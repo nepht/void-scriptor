@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../database/project/project_database.dart';
 import '../../../../design_system/theme/void_theme_context.dart';
+import '../../../character_mode/presentation/character_mode_controller.dart';
 import '../../../projects/presentation/project_persistence_providers.dart';
 import '../../../workspaces/application/narrative_assignment_repository.dart';
 import '../../../workspaces/domain/narrative_assignment.dart';
@@ -16,12 +17,15 @@ class SupportNovelOption {
 
 /// Story context for the character's support relationships: the active
 /// project's story assets (the same records the Novel workspace opens).
+/// Derives from the project asset graph (like narrativeNovelOptionsProvider)
+/// instead of a raw DAO snapshot, so a novel created mid-session appears
+/// here as soon as that graph is refreshed (hunt-run157 BUG-05).
 final supportNovelOptionsProvider = FutureProvider<List<SupportNovelOption>>((
   ref,
 ) async {
   final session = ref.watch(projectSessionProvider).valueOrNull;
   if (session == null) return const [];
-  final assets = await session.database.assetDao.getAllAssets();
+  final assets = await ref.watch(projectAssetsProvider.future);
   return assets
       .where((asset) => asset.type == 'story')
       .map((asset) => SupportNovelOption(id: asset.id, name: asset.name))

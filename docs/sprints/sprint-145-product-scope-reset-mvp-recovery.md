@@ -1,3 +1,12 @@
+### 2026-09-09 - nephthys (cron run152): backlog phase_one item 3 - filter character list by role/importance/POV + reset
+
+- Slice: docs/backlog/character-roles-support.json phase_one ui item 3 - item UI phase_one TERAKHIR (persistence run149, assignment UI run150, support UI run151 sudah ter-commit). Tidak ada pointer berubah; guard PASS pre+post (pointer 145.27, sha 86af6a5).
+- Domain BARU: lib/features/workspaces/domain/narrative_character_filter.dart - NarrativeCharacterFilter: AND antar dimensi role/importance/POV, OR antar assignment per-novel satu karakter; filter 'unspecified' importance/POV mencocokkan karakter tanpa nilai eksplisit (vacuously true tanpa assignment). Kontrak dikunci 7 test (RED: class undefined; RED kedua semantik every-vs-any terverifikasi sebelum koreksi minimal).
+- Repository: NarrativeAssignmentRepository.listAssignments() - baca seluruh assignment project-scoped (semua novel+character) untuk sumber filter; test membuktikan baris project lain tidak bocor (RED->GREEN).
+- Explorer: _CharacterGroup jadi ConsumerStatefulWidget - ikon filter (tampil saat ada karakter, tint primary saat filter aktif), dialog Role/Importance/POV dropdown + Reset/Apply; filtering jalan terhadap provider baru explorerNarrativeAssignmentsProvider. Widget journey test memakai project session temp nyata: role menyaring ke 1, reset pulih 4, importance ke 2, POV ke 1, reset akhir pulih semua (RED tooltip tak ditemukan -> GREEN).
+- Bukti: focused domain 7/7 + persistence 7/7 (total workspaces 87/87) + explorer journey 1/1 (regresi explorer 20/20, inspector 9/9, character 68/68); flutter analyze --no-pub FULL No issues found! (112,4s); dart format owned 6 changed; git diff --check exit 0; flutter build windows --debug --no-pub PASS 43,6s; guard PASS post.
+- Commit 4efcfa8 (6 file +763/-43, path eksplisit, tanpa git add -A; SPRINT_PROGRESS.md M sibling + untracked docs dipertahankan). Sisa backlog phase_one: acceptance narrow-layout/text-scale untuk UI baru (assignment card, support section, filter) belum dibuat; native journey UNVERIFIABLE dari cron. Pointer tetap 145.27; tidak push (ahead 13).
+
 ### 2026-09-09 - nephthys (cron run151): backlog phase_one item 2 - support relationship editing di Character Inspector
 
 - Slice: docs/backlog/character-roles-support.json phase_one ui item 2 ("Edit support attributes in Relationships") - kelanjutan persistence run149 + UI assignment run150. Tidak ada pointer berubah; guard PASS pre (pointer 145.27, sha 86af6a5).

@@ -26,6 +26,9 @@ class _ThemeSettingsScreenState extends ConsumerState<ThemeSettingsScreen> {
     ref.watch(platformProvider);
     final theme = ref.watch(themeControllerProvider);
     final selected = theme.valueOrNull ?? AppThemeMode.system;
+    final selectedAccent =
+        ref.watch(themeAccentControllerProvider).valueOrNull ??
+        VoidThemeAccent.voidPurple;
     final selectedLabel = switch (selected) {
       AppThemeMode.dark => 'Dark',
       AppThemeMode.light => 'Light',
@@ -67,10 +70,95 @@ class _ThemeSettingsScreenState extends ConsumerState<ThemeSettingsScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: VoidSpacing.lg),
+              Text(
+                'Accent color',
+                style: VoidTypography.headingMedium.copyWith(
+                  color: context.palette.textPrimary,
+                ),
+              ),
+              const SizedBox(height: VoidSpacing.md),
+              Wrap(
+                spacing: VoidSpacing.md,
+                runSpacing: VoidSpacing.md,
+                children: [
+                  for (final accent in VoidThemeAccent.values)
+                    _AccentChoice(
+                      accent: accent,
+                      selected: selectedAccent == accent,
+                      onSelect: () => ref
+                          .read(themeAccentControllerProvider.notifier)
+                          .setAccent(accent),
+                    ),
+                ],
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Chip pilihan warna aksen: swatch dua-tone (light+dark primary) + label.
+class _AccentChoice extends StatelessWidget {
+  const _AccentChoice({
+    required this.accent,
+    required this.selected,
+    required this.onSelect,
+  });
+
+  final VoidThemeAccent accent;
+  final bool selected;
+  final VoidCallback onSelect;
+
+  static const _labels = <VoidThemeAccent, String>{
+    VoidThemeAccent.voidPurple: 'Void Purple',
+    VoidThemeAccent.ink: 'Ink',
+    VoidThemeAccent.ember: 'Ember',
+    VoidThemeAccent.sage: 'Sage',
+    VoidThemeAccent.rose: 'Rose',
+    VoidThemeAccent.ocean: 'Ocean',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final variant = accent.variant;
+    final palette = context.palette;
+    return FilterChip(
+      selected: selected,
+      onSelected: (_) => onSelect(),
+      showCheckmark: false,
+      avatar: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Container(color: variant.lightPalette.primary),
+                  ),
+                  Expanded(
+                    child: Container(color: variant.darkPalette.primary),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (selected)
+            Positioned.fill(
+              child: Icon(
+                Icons.check_rounded,
+                size: 16,
+                color: palette.textPrimary,
+              ),
+            ),
+        ],
+      ),
+      label: Text(_labels[accent] ?? accent.name),
     );
   }
 }

@@ -1,56 +1,139 @@
 import 'package:flutter/material.dart';
 
-import '../colors/void_colors.dart';
-import '../colors/void_colors_light.dart';
 import 'void_palette.dart';
 
+/// Pembangun tema Void Scriptor.
+///
+/// Kontras (regresi 2026-09-09): `textTheme` dipasang dari [palette] aktif
+/// sehingga tinta teks selalu kontras terhadap latar tema — tidak ada lagi
+/// warna hardcode tema gelap pada tema terang.
 abstract final class VoidTheme {
-  static ThemeData get dark {
-    const scheme = ColorScheme.dark(
-      primary: VoidColors.primary,
-      secondary: VoidColors.secondary,
-      surface: VoidColors.surface,
-      error: VoidColors.danger,
+  /// Tema gelap identitas Void (default). Dipertahankan agar pemakai lama
+  /// `VoidTheme.dark`/`VoidTheme.light` tetap berfungsi.
+  static ThemeData get dark => buildDark(VoidPalette.dark);
+  static ThemeData get light => buildLight(VoidPalette.light);
+
+  /// Pasangan tinta [VoidPalette.textPrimary] ke slot textTheme inti.
+  static TextTheme textThemeFrom(VoidPalette palette) {
+    final ink = palette.textPrimary;
+    final inkSecondary = palette.textSecondary;
+    final inkMuted = palette.textMuted;
+    return TextTheme(
+      displayLarge: TextStyle(
+        fontSize: 32,
+        fontWeight: FontWeight.w700,
+        height: 1.2,
+        color: ink,
+      ),
+      displayMedium: TextStyle(
+        fontSize: 26,
+        fontWeight: FontWeight.w700,
+        height: 1.2,
+        color: ink,
+      ),
+      displaySmall: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        color: ink,
+      ),
+      headlineLarge: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        color: ink,
+      ),
+      headlineMedium: TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.w600,
+        color: ink,
+      ),
+      headlineSmall: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: ink,
+      ),
+      titleLarge: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        color: ink,
+      ),
+      titleMedium: TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: ink,
+      ),
+      titleSmall: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: ink,
+      ),
+      bodyLarge: TextStyle(fontSize: 15, height: 1.45, color: ink),
+      bodyMedium: TextStyle(fontSize: 14, height: 1.45, color: inkSecondary),
+      bodySmall: TextStyle(fontSize: 12, height: 1.4, color: inkMuted),
+      labelLarge: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w500,
+        color: ink,
+      ),
+      labelMedium: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w500,
+        color: inkSecondary,
+      ),
+      labelSmall: TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        color: inkMuted,
+      ),
+    );
+  }
+
+  static ThemeData buildDark(VoidPalette palette) {
+    final scheme = ColorScheme.dark(
+      primary: palette.primary,
+      secondary: palette.secondary,
+      surface: palette.surface,
+      error: palette.danger,
       onPrimary: Colors.white,
       onSecondary: Colors.white,
-      onSurface: VoidColors.textPrimary,
+      onSurface: palette.textPrimary,
       onError: Colors.white,
     );
 
     return ThemeData(
       brightness: Brightness.dark,
       colorScheme: scheme,
-      extensions: const [VoidPalette.dark],
-      scaffoldBackgroundColor: VoidColors.background,
-      dividerColor: VoidColors.divider,
+      extensions: [palette],
+      scaffoldBackgroundColor: palette.background,
+      dividerColor: palette.divider,
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
+      textTheme: textThemeFrom(palette),
 
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: VoidColors.surfaceElevated,
-        hintStyle: const TextStyle(color: VoidColors.textMuted, fontSize: 13),
+        fillColor: palette.surfaceElevated,
+        hintStyle: TextStyle(color: palette.textMuted, fontSize: 13),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: VoidColors.border),
+          borderSide: BorderSide(color: palette.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: VoidColors.border),
+          borderSide: BorderSide(color: palette.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: VoidColors.primary),
+          borderSide: BorderSide(color: palette.primary),
         ),
       ),
 
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
-          color: VoidColors.surfaceElevated,
+          color: palette.surfaceElevated,
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: VoidColors.border),
+          border: Border.all(color: palette.border),
         ),
-        textStyle: const TextStyle(color: VoidColors.textPrimary, fontSize: 12),
+        textStyle: TextStyle(color: palette.textPrimary, fontSize: 12),
       ),
 
       scrollbarTheme: ScrollbarThemeData(
@@ -58,66 +141,61 @@ abstract final class VoidTheme {
         radius: const Radius.circular(10),
         thumbColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.hovered)) {
-            return VoidColors.textMuted;
+            return palette.textMuted;
           }
-          return VoidColors.border;
+          return palette.border;
         }),
       ),
     );
   }
 
-  static ThemeData get light {
-    const scheme = ColorScheme.light(
-      primary: VoidColors.primary,
-      secondary: VoidColors.secondary,
-      surface: VoidColorsLight.surface,
-      error: VoidColors.danger,
+  static ThemeData buildLight(VoidPalette palette) {
+    final scheme = ColorScheme.light(
+      primary: palette.primary,
+      secondary: palette.secondary,
+      surface: palette.surface,
+      error: palette.danger,
       onPrimary: Colors.white,
       onSecondary: Colors.white,
-      onSurface: VoidColorsLight.textPrimary,
+      onSurface: palette.textPrimary,
       onError: Colors.white,
     );
 
     return ThemeData(
       brightness: Brightness.light,
       colorScheme: scheme,
-      extensions: const [VoidPalette.light],
-      scaffoldBackgroundColor: VoidColorsLight.background,
-      dividerColor: VoidColorsLight.divider,
+      extensions: [palette],
+      scaffoldBackgroundColor: palette.background,
+      dividerColor: palette.divider,
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
+      textTheme: textThemeFrom(palette),
 
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: VoidColorsLight.surfaceElevated,
-        hintStyle: const TextStyle(
-          color: VoidColorsLight.textMuted,
-          fontSize: 13,
-        ),
+        fillColor: palette.surfaceElevated,
+        hintStyle: TextStyle(color: palette.textMuted, fontSize: 13),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: VoidColorsLight.border),
+          borderSide: BorderSide(color: palette.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: VoidColorsLight.border),
+          borderSide: BorderSide(color: palette.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: VoidColors.primary),
+          borderSide: BorderSide(color: palette.primary),
         ),
       ),
 
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
-          color: VoidColorsLight.surfaceElevated,
+          color: palette.surfaceElevated,
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: VoidColorsLight.border),
+          border: Border.all(color: palette.border),
         ),
-        textStyle: const TextStyle(
-          color: VoidColorsLight.textPrimary,
-          fontSize: 12,
-        ),
+        textStyle: TextStyle(color: palette.textPrimary, fontSize: 12),
       ),
 
       scrollbarTheme: ScrollbarThemeData(
@@ -125,9 +203,9 @@ abstract final class VoidTheme {
         radius: const Radius.circular(10),
         thumbColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.hovered)) {
-            return VoidColorsLight.textMuted;
+            return palette.textMuted;
           }
-          return VoidColorsLight.border;
+          return palette.border;
         }),
       ),
     );

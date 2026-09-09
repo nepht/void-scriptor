@@ -3200,6 +3200,36 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   gagal - dilaporkan jujur sebagai sisa BUG-04). Pointer tetap 145.27;
   tidak push.
 
+### 2026-09-10 - nephthys (cron run167): slice BUG-02 hunt run165 - faction search hit navigation
+
+- Bug terkonfirmasi Referee run165 BUG-02 (Medium) DIPERBAIKI (commit
+  d004eda): hit faksi di Global Search Sheet tidak pernah menavigasi -
+  kedua callsite produksi (`WorkspaceResolver` overview `onOpenGlobalSearch`
+  dan `VoidDesktopShell.onOpenSearch`) tidak men-wire `onSelectFaction`,
+  sehingga `_openHit` pop sheet lalu callback no-op; baris null-type lain
+  (legacy `hair_variant`) menabrak jalur mati yang sama. Fix minimal:
+  (1) kedua callsite kini menulis `SelectionModel(assetId, assetType:
+  AssetType.faction, projectId)` ke `selectionProvider` - jalur produksi
+  yang sama dengan Explorer; resolver branch faction (183-192) membuka
+  `WorldbuildingBody`; (2) `GlobalSearchLauncher.search` mengecualikan baris
+  storage yang tidak dapat dipetakan ke `AssetType` dari hasil (kontrak
+  search terdokumentasi: Characters/Locations/Stories/Factions), sesuai
+  arah fix Referee.
+- RED mekanisme-eksak (test/features/workspace/
+  global_search_faction_navigation_test.dart): klik hit faksi di jalur
+  produksi tanpa callback -> selection tetap null (Expected UUID, Actual
+  null) + baris hair_variant terlisting; GREEN 2/2 setelah patch. Regresi
+  test/features/workspace + test/app/shell 58 PASS/0 FAIL; global search
+  focused suite (faction_navigation + launcher + journey) 5 PASS; flutter
+  analyze --no-pub No issues found (11,9s); dart format owned 4 file
+  (0 changed); git diff --check exit 0; flutter build windows --debug
+  --no-pub PASS 27,3s; guard PASS pre (pointer 145.27).
+- Commit d004eda scoped 4 file (3 lib + 1 test); snapshot recoverable
+  owned files di %TEMP%/vs-bug02-snap/. Sisa hunt run165: BUG-05 (Medium,
+  creature intent -> WorldbuildingBody generik tanpa recovery), BUG-09
+  (Low, vehicle selection dead-end). Pointer tetap 145.27; tidak push
+  (ahead 6); sibling untracked docs dipertahankan.
+
 ### 2026-09-10 - nephthys (cron run165): adversarial bug-hunt region workspace-switch (scan-only)
 
 - Antrean bug run157 tuntas (run158-164 menutup semua Medium + sebagian Low;

@@ -3307,3 +3307,41 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   Header/body creature kini setuju; verifikasi native klik-tab di UI
   tetap bukti terpisah (bukan bagian slice unit ini). Pointer tetap
   145.27; tidak push (ahead 7).
+
+### 2026-09-10 - nephthys (cron run169): BUG-09 vehicle selection dead-end CLOSED (hunt run165 fix #4, selesai)
+
+- Slice: bug terkonfirmasi hunt run165 BUG-09 (Low, Referee REAL BUG) -
+  selection vehicle dead-end ke `const ProjectOverview()` tanpa callback
+  (resolver 279) sementara header panel mengiklankan "Asset Workspace".
+  Reachability terverifikasi Referee: vehicle producible via Asset Browser
+  create dialog (asset_browser_screen.dart:627) + global search sheet, dan
+  `asset_dao.dart` standaloneTypes memvalidasi 'vehicle'.
+- Fix minimal satu titik: `AssetType.vehicle` ditambahkan ke branch
+  `SupportingAssetWorkspaceScreen` di workspace_resolver.dart (pola armor/
+  accessory/prop yang sudah teruji). Layar supporting-asset bersifat
+  data-driven: tipe tanpa spesialisasi dirender label generik jujur
+  (vehicle -> "vehicle", ikon kategori), tanpa konten palsu.
+- TDD: RED mekanisme-eksak 1/1 GAGAL dulu tanpa patch (baris Drift nyata
+  'Rover' type vehicle + selection AssetType.vehicle -> ProjectOverview
+  ditemukan, Expected findsNothing). Pitfall harness: import
+  ProjectPackageService tertinggal pada RED pertama (compile error, bukan
+  RED valid) - diperbaiki sebelum RED diakui; analyzer info lint
+  prefer_const_declarations pada test diperbaiki sebelum gate GREEN.
+- Bukti: GREEN focused 1/1 (workspace_resolver_vehicle_selection_test.dart);
+  regresi test/features/workspace + assets + creatures 83 PASS/0 FAIL
+  (background 209s); flutter analyze --no-pub No issues found (12,2s);
+  dart format owned 2 file 0 changed; git diff --check exit 0;
+  flutter build windows --debug --no-pub PASS 25,4s; guard PASS pre-run
+  (pointer 145.27, sha canonical 86af6a5).
+- Commit 40fe892 (2 file: resolver + test baru). Sibling untracked docs
+  (.hermes/AUTONOMOUS_ROADMAP_PROMPT.md, docs/MASTER_SPRINT.md,
+  docs/backlog/, docs/evidence/website-source-reconciliation) dipreservasi.
+- Sisa hunt run165: TIDAK ADA. 4/4 REAL BUG Referee selesai diperbaiki:
+  BUG-02 (d004eda), BUG-04 (1b39986), BUG-05 (af1451b), BUG-09 (40fe892).
+- Pencatatan state: update `.hermes/ROADMAP_STATE.json` (entri run169)
+  DIBLOKIR approval gate - write ke .hermes/ memerlukan persetujuan
+  interaktif yang tidak tersedia di cron (commit state run168 adalah run
+  sebelum gate ini aktif). Entri ledger ini adalah bukti kanonik; state
+  menyusul saat Choi menyetujui atau run interaktif berikutnya. Pointer
+  tetap 145.27; tidak push (ahead 10); tidak ada file lib/test lain yang
+  berubah.

@@ -1,3 +1,46 @@
+### 2026-09-09 - nephthys (cron run163): slice hunt-run157 BUG-04+BUG-03 - guard project switch + replace atomik
+
+- Bug terkonfirmasi tersisa hunt run157 diprioritaskan (otorisasi 2026-09-07:
+  bug dulu, hunt baru menyusul bila scope baru). Slice: BUG-04 (repo
+  tertangkap sebelum dialog await -> write/delete mendarat di DB proyek
+  LAMA saat user ganti proyek mid-flight) + BUG-03 (remove-then-save
+  non-atomik pada edit perubahan koordinat -> save gagal menghilangkan
+  baris asli). Keduanya satu widget, keduanya data-safety; dipilih di atas
+  Low kosmetik (BUG-14/17/18).
+- RED mekanisme-eksak @ HEAD d6ed908: test/features/inspector/
+  support_relationship_section_project_switch_guard_test.dart (BUG-04:
+  dua project session nyata, dialog edit dibuka di A, session di-swap ke B
+  pre-Save, ground truth repo A -> Expected mentor / Actual protector =
+  write ke proyek lama terbukti) dan support_relationship_section_atomic_
+  edit_test.dart (BUG-03: trigger SQLite RAISE(ABORT) nyata pada INSERT
+  support -> remove ter-commit, baris asli hilang; plus journey UI:
+  save gagal -> snackbar tanpa kehilangan baris).
+- GREEN patch minimal dua layer (saran Referee): (1) widget - _repository()
+  mencatat _actionSessionId; tiga jalur aksi (add/edit/delete) re-validasi
+  session id + identitas database repo via _actionSessionStillCurrent()/
+  _isCurrentRepository() setelah setiap await yang bisa melintasi switch;
+  abort senyap adalah outcome aman; (2) repo - replaceSupport() baru
+  membungkus delete+insert dalam SATU database.transaction drift.
+- Pitfall harness baru (terverifikasi): Directory.systemTemp.createTemp di
+  luar tester.runAsync menggantung selamanya di fake-async zone (test
+  freeze 10 menit tanpa marker); SEMUA IO nyata wajib di dalam runAsync -
+  pola sibling test yang lulus sudah begitu. expectLater tidak dapat
+  mengamati future real-async dari runAsync; pakai try/catch manual.
+  Trigger SQLite dipakai untuk injeksi kegagalan INSERT yang eksak (drift
+  transaction rethrow, terverifikasi di sumber drift 2.34.3).
+- Bukti: focused 3/3 PASS (exit 0); regresi test/features/inspector +
+  test/features/workspaces 107 PASS / 0 FAIL; flutter analyze --no-pub
+  No issues found (181,4s); dart format owned 4 file (2 changed lalu
+  dirapikan, 0 sisa); git diff --check exit 0; flutter build windows
+  --debug --no-pub PASS 51,8s; guard PASS pre+post pointer 145.27.
+- Sisa REAL BUG run157: 8 Low (BUG-07/10/11/13/14/17/18/19 - mayoritas
+  kosmetik/latent/dead-path). Next action: hunt baru region berbeda atau
+  slice Low prioritas tertinggi (BUG-14 dialog kosong tanpa penjelasan,
+  satu-satunya yang terlihat user) pada run berikutnya. Pointer tetap
+  145.27; tidak push; sibling dirty dipertahankan.
+- Commit scoped 337b821 (2 lib + 2 test, +550/-10). Sibling dirty
+  (SPRINT_PROGRESS M, untracked docs) dipertahankan utuh.
+
 ### 2026-09-09 - nephthys (cron run162): slice hunt-run157 BUG-08+BUG-09 - terminal failure state narrative card
 
 - Bug terkonfirmasi tersisa hunt run157 diprioritaskan (otorisasi 2026-09-07;

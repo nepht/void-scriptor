@@ -1,0 +1,46 @@
+{
+  "hunt": "bug-hunt-run165",
+  "date": "2026-09-10",
+  "executor": "nephthys cron run165",
+  "target_region": "workspace-switch flow (lib/features/workspace/**: resolver, panel, global search)",
+  "repo": "D:\\VoidScriptor\\void_scriptor_multiplatform",
+  "branch": "master",
+  "head_at_hunt_start": "51ca45520be1363ca3a02b5f115d8b18b8382f85",
+  "files_in_scope": [
+    "lib/features/workspace/application/global_search_launcher.dart",
+    "lib/features/workspace/application/workspace_section_controller.dart",
+    "lib/features/workspace/presentation/global_search_sheet.dart",
+    "lib/features/workspace/presentation/workspace_panel.dart",
+    "lib/features/workspace/presentation/workspace_resolver.dart"
+  ],
+  "agents": {
+    "hunter": { "findings": 12, "score": 36, "report": "hunter-report.md" },
+    "skeptic": { "upheld": 4, "upheld_with_caveat": 2, "disproven": 6, "report": "skeptic-report.md" },
+    "referee": { "real_bug": 4, "not_a_bug": 8, "medium": 3, "low": 1, "report": "referee-report.md" }
+  },
+  "referee_confirmed_bugs": [
+    "BUG-02 (Medium): faction search hit pops sheet, no navigation — onSelectFaction never wired at either production callsite (resolver 147-151, desktop shell 154-160); hair_variant null-type rows hit the same dead path",
+    "BUG-04 (Medium): novel-creation chain (resolver 110-143) has no try/catch — persist failure invisible, partial story without Chapter 1/Scene 1 possible, 'Novel created.' snackbar skipped",
+    "BUG-05 (Medium): creature intent renders generic WorldbuildingBody while panel header advertises 'Creature Workspace' (tabs render nothing); intent survives project switches, no creature recovery path (explorer recovery provider default: return)",
+    "BUG-09 (Low): unhandled vehicle selection (producible via Asset Browser create dialog + search sheet) dead-ends on callback-less const ProjectOverview() (resolver 254)"
+  ],
+  "not_a_bug": [
+    "BUG-01 (search race: structurally excluded by drift NativeDatabase in-main-isolate FIFO; token = cheap hardening)",
+    "BUG-03 (captured session = correct destination)",
+    "BUG-06 (link write targets link's own project; failure visible)",
+    "BUG-07 (no reachable harm; consistency fix optional)",
+    "BUG-08 (modal barrier blocks switch; projectId filter anyway)",
+    "BUG-10 (Hunter misread the filter condition)",
+    "BUG-11 (unstable != non-deterministic; inputs ordered)",
+    "BUG-12 (every projectId==null state has null selection)"
+  ],
+  "fixes_this_run": [],
+  "remaining_confirmed_bugs": [
+    "BUG-02 (Medium)",
+    "BUG-04 (Medium)",
+    "BUG-05 (Medium)",
+    "BUG-09 (Low)"
+  ],
+  "next_action": "Slice BUG-04 (Medium, prioritas #1 pengguna: buat novel gagal harus terlihat + tidak meninggalkan story yatim): RED mechanism-exact test di test/features/workspaces, try/catch + failure snackbar di onCreateNovel/_createNovel, evaluasi atomicity story+chapter+scene di CreateStoryService. Map ke acceptance 145.43 (error recovery). TIDAK dieksekusi run165 karena region theme sibling sedang ditulis aktif (gate test full-suite ditunda sampai region tenang).",
+  "notes": "Hunt scan-only, tidak ada file lib/test disentuh run ini. Sibling theme region aktif ditulis selama run (file mtime 00:40-00:44+); slice fix ditunda agar gate regresi tidak menyentuh region sibling yang berubah."
+}

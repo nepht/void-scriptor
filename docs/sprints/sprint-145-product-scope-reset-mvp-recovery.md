@@ -3166,3 +3166,45 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   berbeda atau slice Low prioritas tertinggi (BUG-08 error+retry card) pada
   run berikutnya. Pointer tetap 145.27; tidak push; sibling dirty
   (SPRINT_PROGRESS M, untracked docs) dipertahankan.
+
+### 2026-09-10 - nephthys (cron run165): adversarial bug-hunt region workspace-switch (scan-only)
+
+- Antrean bug run157 tuntas (run158-164 menutup semua Medium + sebagian Low;
+  BUG-17 Low decision-owned menunggu Choi). Sesuai otorisasi 2026-09-07
+  (bug-hunt berulang), hunt baru region BELUM pernah dipindai:
+  lib/features/workspace/** (5 file, 1.562 baris) - resolver/panel/global
+  search, melayani prioritas #1 pengguna (keamanan draf & alur switch
+  workspace). Scope baru, bukan rescan region identik. HEAD saat mulai
+  51ca455; dirty theme region (void_app.dart, core/theme, design_system,
+  test theme) AKTIF ditulis sibling selama run (mtime 00:40-00:44+,
+  run165 00:31-01:00) - tidak disentuh, scan-only.
+- Hunter 12 temuan (36 poin) -> Skeptic: 4 upheld, 2 upheld-caveat,
+  6 disproven (+14) -> Referee (authority): REAL BUG 4, NOT A BUG 8.
+  Referee menolak 2 upheld Skeptic (BUG-01 race terbukti terstruktur
+  tereliminasi oleh NativeDatabase in-main-isolate FIFO drift 2.34.3;
+  BUG-07 tanpa harm terjangkau). Bukti: docs/evidence/bug-hunt-run165/
+  {hunter,skeptic,referee}-report.md + hunt-summary.json.
+- REAL BUG Referee (kandidat perbaikan, urut prioritas):
+  1. BUG-04 (Medium) resolver 110-143 + ProjectOverview._createNovel
+     277-308: rantai createStory->createChapter->createScene tanpa
+     try/catch - persist failure tak terlihat (hanya global handler),
+     snackbar 'Novel created.' dilewati, story yatim tanpa Chapter 1/Scene 1
+     mungkin. Kontrak: persist failure visibly; map ke 145.43 error
+     recovery. Kandidat slice berikutnya.
+  2. BUG-02 (Medium) onSelectFaction tidak pernah di-wire di kedua
+     callsite produksi (resolver 147-151, void_desktop_shell 154-160) -
+     hit faction di global search pop sheet tanpa navigasi; baris
+     hair_variant (assetType null) kena jalur mati yang sama.
+  3. BUG-05 (Medium) intent creature merender WorldbuildingBody generik
+     sementara header panel menjanjikan 'Creature Workspace' (tab klik =
+     kosong); intent selamat lintas proyek, tanpa jalur recovery creature
+     (explorer recovery provider default: return).
+  4. BUG-09 (Low) selection vehicle (producible via Asset Browser create
+     dialog + search sheet) dead-end ke const ProjectOverview() tanpa
+     callback (resolver 254).
+- Slice fix TIDAK dieksekusi run ini: gate regresi full akan menyentuh
+  region theme sibling yang sedang berubah aktif (rule region aktif).
+  Next action: slice BUG-04 (RED mechanism-exact -> try/catch + failure
+  snackbar + evaluasi atomicity chapter/scene) pada run berikutnya saat
+  region theme tenang. Pointer tetap 145.27; tidak push; tidak ada file
+  lib/test yang diubah run ini.

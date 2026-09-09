@@ -161,10 +161,10 @@ void main() {
 
       // Change the type so a completed write is detectable in the database.
       await tester.runAsync(() async {
-        await tester.tap(find.text('mentor'));
+        await tester.tap(find.text('Mentor'));
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 300));
-        await tester.tap(find.text('protector').last);
+        await tester.tap(find.text('Protector').last);
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 300));
       });

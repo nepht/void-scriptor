@@ -159,12 +159,12 @@ void main() {
     // Type defaults to supporter; set duration and status.
     await tester.tap(find.byType(DropdownButtonFormField<SupportDuration>));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('permanent').last);
+    await tester.tap(find.text('Permanent').last);
     await tester.pumpAndSettle();
 
     await tester.tap(find.byType(DropdownButtonFormField<SupportStatus>));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('active').last);
+    await tester.tap(find.text('Active').last);
     await tester.pumpAndSettle();
 
     await tester.enterText(
@@ -228,12 +228,12 @@ void main() {
 
       await tester.tap(find.byType(DropdownButtonFormField<SupportDuration>));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('recurring').last);
+      await tester.tap(find.text('Recurring').last);
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(DropdownButtonFormField<SupportStatus>));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('separated').last);
+      await tester.tap(find.text('Separated').last);
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Save Support'));

@@ -239,10 +239,10 @@ void main() {
     // attribute (type) while the coordinates stay fixed; the staged trigger
     // then fails exactly at the INSERT of the confirmed edit.
     await tester.runAsync(() async {
-      await tester.tap(find.text('mentor'));
+      await tester.tap(find.text('Mentor'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
-      await tester.tap(find.text('protector').last);
+      await tester.tap(find.text('Protector').last);
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
     });

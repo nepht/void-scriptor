@@ -15,6 +15,31 @@ class SupportNovelOption {
   final String name;
 }
 
+/// Human-readable labels for support enum values (hunt-run157 BUG-18):
+/// users read "Travel companion", never the raw wire token
+/// "travel_companion". Mirrors the narrative card's label helpers.
+String supportTypeLabel(SupportType type) => switch (type) {
+  SupportType.travelCompanion => 'Travel companion',
+  SupportType.mentor => 'Mentor',
+  SupportType.informant => 'Informant',
+  SupportType.protector => 'Protector',
+  SupportType.supporter => 'Supporter',
+};
+
+String supportDurationLabel(SupportDuration duration) => switch (duration) {
+  SupportDuration.permanent => 'Permanent',
+  SupportDuration.temporary => 'Temporary',
+  SupportDuration.recurring => 'Recurring',
+  SupportDuration.unspecified => '—',
+};
+
+String supportStatusLabel(SupportStatus status) => switch (status) {
+  SupportStatus.active => 'Active',
+  SupportStatus.separated => 'Separated',
+  SupportStatus.terminated => 'Terminated',
+  SupportStatus.unspecified => '—',
+};
+
 /// Story context for the character's support relationships: the active
 /// project's story assets (the same records the Novel workspace opens).
 /// Derives from the project asset graph (like narrativeNovelOptionsProvider)
@@ -217,8 +242,8 @@ class _SupportRelationshipSectionState
       leading: const Icon(Icons.volunteer_activism_outlined, size: 16),
       title: Text(supportedName),
       subtitle: Text(
-        '${support.type.wireName} · ${support.duration.wireName} · '
-        '${support.status.wireName}',
+        '${supportTypeLabel(support.type)} · ${supportDurationLabel(support.duration)} · '
+        '${supportStatusLabel(support.status)}',
         style: TextStyle(color: context.palette.textMuted),
       ),
       trailing: IconButton(
@@ -362,6 +387,22 @@ class _SupportRelationshipSectionState
       return null;
     }
     if (!mounted) return null;
+    // hunt-run157 BUG-14: an empty Add dialog must explain itself. With no
+    // novels or no other characters the dropdowns stay empty and Save stays
+    // disabled — silently. Compute the missing prerequisite and render the
+    // reason + next action inside the dialog instead.
+    String? emptyPrerequisite;
+    if (initial == null) {
+      if (novels.isEmpty) {
+        emptyPrerequisite =
+            'No stories/novels exist yet. Create a novel '
+            'first, then add support relationships.';
+      } else if (characters.isEmpty) {
+        emptyPrerequisite =
+            'No other characters exist yet. Create another '
+            'character first, then add support relationships.';
+      }
+    }
     return showDialog<SupportRelationship>(
       context: context,
       builder: (dialogContext) => _SupportEditDialog(
@@ -369,6 +410,7 @@ class _SupportRelationshipSectionState
         characters: characters,
         novels: novels,
         initial: initial,
+        emptyPrerequisite: emptyPrerequisite,
       ),
     );
   }
@@ -380,12 +422,17 @@ class _SupportEditDialog extends StatefulWidget {
     required this.characters,
     required this.novels,
     required this.initial,
+    this.emptyPrerequisite,
   });
 
   final String sourceCharacterId;
   final List<Asset> characters;
   final List<SupportNovelOption> novels;
   final SupportRelationship? initial;
+
+  /// Explains why both dropdowns are empty and Save is disabled (Add mode
+  /// only; hunt-run157 BUG-14). Null when prerequisites exist.
+  final String? emptyPrerequisite;
 
   @override
   State<_SupportEditDialog> createState() => _SupportEditDialogState();
@@ -431,6 +478,10 @@ class _SupportEditDialogState extends State<_SupportEditDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (widget.emptyPrerequisite != null) ...[
+              Text(widget.emptyPrerequisite!),
+              const SizedBox(height: 12),
+            ],
             DropdownButtonFormField<String>(
               isExpanded: true,
               initialValue: _supportedId,
@@ -483,7 +534,7 @@ class _SupportEditDialogState extends State<_SupportEditDialog> {
                   .map(
                     (type) => DropdownMenuItem(
                       value: type,
-                      child: Text(type.wireName),
+                      child: Text(supportTypeLabel(type)),
                     ),
                   )
                   .toList(),
@@ -500,7 +551,7 @@ class _SupportEditDialogState extends State<_SupportEditDialog> {
                   .map(
                     (duration) => DropdownMenuItem(
                       value: duration,
-                      child: Text(duration.wireName),
+                      child: Text(supportDurationLabel(duration)),
                     ),
                   )
                   .toList(),
@@ -517,7 +568,7 @@ class _SupportEditDialogState extends State<_SupportEditDialog> {
                   .map(
                     (status) => DropdownMenuItem(
                       value: status,
-                      child: Text(status.wireName),
+                      child: Text(supportStatusLabel(status)),
                     ),
                   )
                   .toList(),

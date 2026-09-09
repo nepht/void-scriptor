@@ -103,6 +103,16 @@ class WorkspaceResolver extends ConsumerWidget {
           activeSection: activeSection,
         );
       }
+      if (session != null && type == AssetType.creature) {
+        // BUG-05 (hunt-20260910): intent creature tanpa selection tidak boleh
+        // jatuh ke WorldbuildingBody generik (header panel mengiklankan
+        // "Creature Workspace" dengan tab Profile/Anatomy/Abilities yang
+        // merender kosong). explorerCatalogRecoveryProvider memulihkan
+        // selection creature dari memori/katalog; widget ini menampilkan
+        // keadaan yang jujur: recovery/loading, error, atau kosong dengan
+        // aksi create nyata.
+        return _CreatureEmptyState(projectId: session.manifest.id);
+      }
       return ProjectOverview(
         activeSection: activeSection,
         onCreateNovel: session == null
@@ -395,11 +405,77 @@ class ProjectOverview extends StatelessWidget {
   );
 }
 
+/// Typed creature empty-state untuk intent creature tanpa selection
+/// (BUG-05, hunt-20260910). Menampilkan keadaan katalog yang jujur:
+/// memuat (menunggu recovery), gagal (dengan retry), kosong (dengan aksi
+/// create nyata), atau memulihkan selection yang diingat dari katalog.
+class _CreatureEmptyState extends ConsumerWidget {
+  const _CreatureEmptyState({required this.projectId});
+
+  final String projectId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final catalog = ref.watch(creatureExplorerProvider(projectId));
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Creature Workspace',
+              style: VoidTypography.headingMedium,
+            ),
+            const SizedBox(height: 8),
+            switch (catalog) {
+              AsyncLoading() => const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: CircularProgressIndicator(),
+              ),
+              AsyncData(:final value) when value.isEmpty => const Text(
+                'Belum ada creature di proyek ini. Buat creature '
+                'pertama dari Explorer atau tombol di bawah.',
+                textAlign: TextAlign.center,
+              ),
+              AsyncError() => Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Katalog creature gagal dimuat.'),
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    onPressed: () =>
+                        ref.invalidate(creatureExplorerProvider(projectId)),
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Coba lagi'),
+                  ),
+                ],
+              ),
+              _ => const SizedBox.shrink(),
+            },
+            if (!catalog.isLoading && catalog is! AsyncError) ...[
+              const SizedBox(height: 16),
+              FilledButton.icon(
+                onPressed: () => createExplorerAsset(
+                  context,
+                  ref,
+                  fixedType: AssetType.creature,
+                ),
+                icon: const Icon(Icons.pets_outlined),
+                label: const Text('Buat Creature'),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 bool _isWorldbuildingIntent(AssetType? type) => switch (type) {
   AssetType.environment ||
   AssetType.faction ||
   AssetType.timeline ||
-  AssetType.creature ||
   AssetType.species ||
   AssetType.technology ||
   AssetType.powerSystem => true,

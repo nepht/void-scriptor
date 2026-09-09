@@ -185,6 +185,13 @@ void focusExplorerAsset(WidgetRef ref, AssetType type) {
           .read(environmentExplorerProvider(projectId))
           .valueOrNull;
       restore(environments?.map((item) => item.assetId));
+    case AssetType.creature:
+      // BUG-05 (hunt-20260910): restore sinkron saat katalog creature
+      // sudah siap, mengikuti pola character/environment.
+      final creatures = ref
+          .read(creatureExplorerProvider(projectId))
+          .valueOrNull;
+      restore(creatures?.map((item) => item.assetId));
     default:
       if (ref.read(selectionProvider)?.assetType != type) {
         ref.read(selectionProvider.notifier).clear();
@@ -284,6 +291,10 @@ final explorerCatalogRecoveryProvider = Provider<void>((ref) {
       catalog = ref.watch(storyExplorerProvider(projectId));
     case AssetType.environment:
       catalog = ref.watch(environmentExplorerProvider(projectId));
+    case AssetType.creature:
+      // BUG-05 (hunt-20260910): creature intent tanpa selection pun butuh
+      // pemulihan; tanpa ini intent creature stranded tanpa jalur pulih.
+      catalog = ref.watch(creatureExplorerProvider(projectId));
     default:
       return;
   }

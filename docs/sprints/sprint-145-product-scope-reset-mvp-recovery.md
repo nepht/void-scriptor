@@ -3271,3 +3271,39 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   snackbar + evaluasi atomicity chapter/scene) pada run berikutnya saat
   region theme tenang. Pointer tetap 145.27; tidak push; tidak ada file
   lib/test yang diubah run ini.
+
+### 2026-09-10 - nephthys (cron run168): BUG-05 creature intent recovery CLOSED (hunt run165 fix #3)
+
+- Slice: bug terkonfirmasi hunt run165 BUG-05 (Medium) - intent creature
+  tanpa selection dirender WorldbuildingBody generik (tanpa data creature)
+  sementara header panel `forAssetType(creature)` mengiklankan "Creature
+  Workspace" (tab Profile/Anatomy/Abilities/Modes/Ecology - semua kosong),
+  dan `explorerCatalogRecoveryProvider` menolak creature (`default: return`)
+  sehingga intent stranded sampai user memilih ulang manual di Explorer.
+  Fix minimal dua titik, mengikuti pola character/environment yang sudah
+  teruji: (1) creature dikeluarkan dari `_isWorldbuildingIntent` + branch
+  resolver baru merender `_CreatureEmptyState` typed (judul "Creature
+  Workspace", keadaan jujur: loading spinner saat katalog memuat/recovery
+  berjalan, pesan gagal + tombol Coba lagi dengan
+  `ref.invalidate(creatureExplorerProvider)`, pesan kosong + tombol
+  "Buat Creature" via `createExplorerAsset(fixedType: creature)` yang
+  sudah punya dialog kategori + failure snackbar + guard session);
+  (2) `case AssetType.creature` ditambahkan ke recovery provider DAN ke
+  switch restore sinkron `focusExplorerAsset` (`creatures.map(assetId)`).
+- TDD: RED mekanisme-eksak 2/2 GAGAL dulu tanpa patch (test 1: intent
+  creature -> WorldbuildingBody ditemukan, Expected findsNothing; test 2:
+  selection creature dilepas ala project switch -> tidak pernah pulih,
+  CreatureWorkspaceScreen tidak pernah muncul). Pitfall harness: IO nyata
+  CreateCreatureService (Directory.create) wajib `tester.runAsync`
+  (FakeAsync body); test 1 hang 300s sebelum perbaikan ini.
+- Bukti: GREEN focused 2/2 (workspace_resolver_creature_intent_recovery_test.dart);
+  regresi test/features/workspace + explorer + creatures 58 PASS/0 FAIL
+  (re-run pasca-format tetap 58/58); flutter analyze --no-pub No issues
+  found (12,3s, fix prefer_const_constructors dulu sebelum pass); dart
+  format owned 3 file; git diff --check exit 0; flutter build windows
+  --debug --no-pub PASS 26,9s; guard PASS pre+post (pointer 145.27,
+  sha canonical 86af6a5). Sibling untracked docs dipertahankan.
+- Sisa hunt run165: BUG-09 (Low) vehicle selection dead-end resolver 254.
+  Header/body creature kini setuju; verifikasi native klik-tab di UI
+  tetap bukti terpisah (bukan bagian slice unit ini). Pointer tetap
+  145.27; tidak push (ahead 7).

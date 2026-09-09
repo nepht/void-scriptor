@@ -3013,3 +3013,37 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   korup menggagalkan listAssignments dan explorer menelan error jadi daftar
   kosong) + 12 Low. Next action: slice BUG-02 (invoke deleteForCharacter di
   dalam transaksi deleteCharacter).
+
+### 2026-09-09 - nephthys (cron run158): slice BUG-02 run157 - narrative cleanup saat hapus karakter
+
+- Bug terkonfirmasi tersisa dari hunt run157 diprioritaskan sesuai otorisasi
+  2026-09-07 (bug dulu, baru hunt baru). BUG-02 (Medium, High, REAL BUG):
+  `deleteForCharacter` punya nol pemanggil produksi -> hapus karakter
+  meninggalkan orphan rows permanen di `character_narrative_assignments` +
+  `character_support_relationships` (tanpa FK), muncul sebagai raw UUID di
+  bagian karakter lain dan ikut terbawa export/import.
+- RED mekanisme-eksak pada HEAD 54b79bc: test baru
+  test/features/character/character_deletion_narrative_cleanup_test.dart (2
+  test) via deleteCharacter produksi nyata + ground truth close/reopen DB -
+  assignment survive ("Actual: contains deleted id") dan support row source
+  survive ("Expected: empty / Actual: [protector permanent]"). RED 0/2.
+- GREEN patch minimal (saran Referee): panggil `deleteForCharacter(id)` di
+  dalam transaksi `deleteCharacter` yang sudah ada pada
+  character_repository_impl.dart - cleanup ikut atomik dengan penghapusan,
+  sekaligus menurunkan BUG-15 (dua delete internal kini dalam transaksi luar).
+- Bukti: focused 2/2 PASS; regresi berurutan test/features/character 72 PASS,
+  test/features/workspaces 87 PASS, test/features/project_resilience 196
+  PASS/1 skip/0 FAIL (exit 0 semua); flutter analyze --no-pub No issues found
+  (11,0s); dart format owned 0 changed; git diff --check exit 0; flutter
+  build windows --debug --no-pub PASS 25,9s; guard PASS pre+post.
+- Risiko sisa: orphan rows yang SUDAH ada di project lama tidak dibersihkan
+  oleh patch ini (butuh keputusan repair/migration terpisah, bukan scope
+  bug-hunt); native journey deletion+cleanup UNVERIFIABLE dari cron.
+- Sisa REAL BUG run157: BUG-05 (Medium, dropdown novel stale pasca-create
+  story), BUG-06 (Medium, satu token wire korup menggagalkan listAssignments;
+  explorer menelan error jadi daftar kosong) + 12 Low. Next action: slice
+  BUG-06 (per-row tolerant decode + surface error provider).
+- Commit scoped e30026a (2 file milik slice). Sibling dirty (SPRINT_PROGRESS
+  M, untracked docs/backlog, MASTER_SPRINT, website evidence json,
+  AUTONOMOUS_ROADMAP_PROMPT) dipertahankan utuh. Pointer tetap 145.27;
+  tidak push.

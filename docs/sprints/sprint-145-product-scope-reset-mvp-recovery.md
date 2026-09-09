@@ -2936,3 +2936,25 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Bukti: focused inspector+explorer 9/9 PASS; regresi test/features/{inspector,explorer,workspaces,character} 189/189 PASS exit 0; flutter analyze --no-pub No issues found! (13,0s; 6 lint awal file sendiri dibersihkan: 5 prefer_const + 1 unused import); dart format owned 0 changed; git diff --check exit 0; flutter build windows --debug --no-pub PASS 45,9s; guard PASS pre+post (pointer 145.27, canonical_sha 86af6a5).
 - Commit eb684b9 (3 file +249/-41 scoped: section + 2 test file). Sibling SPRINT_PROGRESS.md M (pruning entri 110.x, pra-eksisting) + 4 untracked docs dipertahankan, tidak disentuh. Native journey UNVERIFIABLE dari cron (kontrak UI state terkunci widget test deterministik; preseden cua-driver).
 - Dengan ini acceptance backlog phase_one: domain/persistence/UI-edit/support-editor/filter/export-import/empty-loading-error+narrow+text-scale seluruhnya VERIFIED level test; sisa eksplisit backlog: native journey + role history per arc (deferred backlog). Pointer tetap 145.27; tidak push.
+
+### 2026-09-09 - nephthys (cron run155): 145.42 permission_loss live VERIFIED fresh di HEAD + proxy POSIX
+
+- Gap terpilih: matrix case `permission_loss` masih PARTIAL dengan next_action lama
+  "retesifikasi live permission-loss butuh fixture disposable + verifikasi POSIX
+  classification reachable" — keduanya kini dieksekusi.
+- Bukti live Windows fresh @ HEAD cf90950: flutter test --no-pub
+  test/database/project/{project_database_write_failure,project_database_write_probe_purity,
+  project_database_open_error_classification}_test.dart --reporter expanded = 11/11 PASS exit 0;
+  mencakup live `attrib +R` pada fixture disposable -> open() melempar
+  ProjectDatabaseWriteFailedException (typed, bukan korupsi).
+- Proxy POSIX (narrowest, sesuai kontrak skill): WSL Ubuntu python3 3.14.4 + sqlite3 3.46.1,
+  chmod a-w pada fixture disposable -> INSERT gagal dengan sqlite_errorcode 8
+  (SQLITE_READONLY) = persis kode yang diklasifikasikan produksi
+  (lib/database/project/project_database_service.dart extendedResultCode==8). Fixture dihapus.
+- Regression: flutter test --no-pub test/features/project_resilience = 196 PASS / 1 skip /
+  0 FAIL exit 0 (~3m25s).
+- Matriks diperbarui: docs/evidence/145.42-resilience-matrix.json case permission_loss ->
+  VERIFIED (dengan limitation POSIX=proxy dicatat eksplisit). Kasus lain tidak disentuh.
+- Sisa 145.42: explicit_disk_full live + drive-removal live (butuh media virtual terisolasi,
+  belum tersedia), power_loss fisik + device minimum-spec (hardware-bound, UNVERIFIABLE).
+  Pointer tetap 145.27; tidak push.

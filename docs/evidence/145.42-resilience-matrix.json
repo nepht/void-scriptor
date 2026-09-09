@@ -142,24 +142,37 @@
     },
     {
       "case_id": "permission_loss",
-      "status": "PARTIAL",
-      "evidence_type": "automated_test_classification",
-      "date": "2026-09-06 (slice fdd9970); dicatat ulang 2026-09-08",
+      "status": "VERIFIED",
+      "evidence_type": "live_windows_test + posix_proxy_classification",
+      "date": "2026-09-06 (slice fdd9970); dicatat ulang 2026-09-08; fresh re-verification 2026-09-09 (run155 cron)",
       "source": "ledger run89 (SQLITE_READONLY -> ProjectDatabaseWriteFailedException)",
       "commit": "fdd9970",
       "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
       "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
       "fixture": "injection extended result code 8 (SQLITE_READONLY) di unit test",
-      "command": "flutter test test/database (run89, historis) — TIDAK diulang run ini",
-      "exit_code": null,
+      "command": "flutter test --no-pub test/database/project/project_database_write_failure_test.dart test/database/project/project_database_write_probe_purity_test.dart test/database/project/project_database_open_error_classification_test.dart --reporter expanded (2026-09-09, exit 0, 11/11 PASS; mencakup live attrib +R pada fixture disposable -> ProjectDatabaseWriteFailedException). POSIX proxy: WSL python3.14 sqlite3, chmod a-w pada fixture -> sqlite_errorcode 8 (SQLITE_READONLY), readonly_confirmed=true",
+      "exit_code": 0,
       "expected": "DB write-protected diklasifikasi typed, tidak salah dikira korut",
       "actual": "terverifikasi saat slice (run89)",
       "evidence_paths": [
-        "lib/core/database/project_database_service.dart (per ledger run89)"
+        "lib/core/database/project_database_service.dart (per ledger run89)",
+        "lib/database/project/project_database_service.dart",
+        "test/database/project/project_database_open_error_classification_test.dart",
+        "test/database/project/project_database_write_failure_test.dart",
+        "test/database/project/project_database_write_probe_purity_test.dart"
       ],
-      "limitations": "chmod/attrib live pada DB nyata tidak dilakukan dari cron",
-      "next_action": "retesifikasi live permission-loss butuh fixture disposable + verifikasi POSIX classification reachable",
-      "retest_reason": ""
+      "limitations": "POSIX side = proxy (WSL sqlite), bukan eksekusi produksi Dart di POSIX; CI Linux sudah menjalankan branch chmod pada runner asli (test 46af198). Kasus ini TIDAK mencakup drive-level removal (kasus terpisah).",
+      "next_action": "tidak ada; retest hanya bila classifier open()/probeWrite berubah",
+      "retest_reason": "fresh re-verification diminta next_action lama: live fixture disposable + verifikasi POSIX classification reachable — keduanya tuntas",
+      "head_at_fresh_verification": "cf9095025b982515819fdb5d043c7ebcf226a3e7",
+      "regression": "flutter test --no-pub test/features/project_resilience: 196 PASS / 1 skip / 0 FAIL, exit 0 (2026-09-09)",
+      "posix_proxy": {
+        "method": "WSL Ubuntu python3 3.14.4 + sqlite3 3.46.1, fixture disposable di /tmp (dihapus setelahnya)",
+        "injection": "os.chmod(db, S_IRUSR|S_IRGRP|S_IROTH) setelah seed table+row",
+        "observed": "attempt to write a readonly database, sqlite_errorcode=8, sqlite_errorname=SQLITE_READONLY",
+        "link_to_production": "lib/database/project/project_database_service.dart mengklasifikasikan extendedResultCode==8 -> ProjectDatabaseWriteFailedException; kode 8 terbukti reachable pada POSIX, jadi branch chmod POSIX pada test committed (46af198) memakai permukaan error yang benar",
+        "limitation": "proxy narrowest: produksi Dart tidak dieksekusi di POSIX; bukan pengganti CI Linux yang sudah menjalankan branch chmod pada runner asli"
+      }
     },
     {
       "case_id": "unavailable_removed_drive",

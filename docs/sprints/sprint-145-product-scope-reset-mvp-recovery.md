@@ -1,3 +1,35 @@
+### 2026-09-09 - nephthys (cron run162): slice hunt-run157 BUG-08+BUG-09 - terminal failure state narrative card
+
+- Bug terkonfirmasi tersisa hunt run157 diprioritaskan (otorisasi 2026-09-07;
+  ledger run160 menominasikan BUG-08 Low prioritas tertinggi; BUG-08 dan
+  BUG-09 satu kelas terminal-failure pada card yang sama -> satu slice).
+  BUG-08 (Referee REAL BUG Low): load gagal merender error + garis
+  "Loading assignment..." abadi tanpa retry (catch tak menyentuh
+  _loadedForCurrentNovel). BUG-09: session null pada pick -> return senyap,
+  card stuck loading tanpa error.
+- RED mekanisme-eksak @ HEAD 08a5acf: test/features/character/
+  narrative_card_terminal_failure_test.dart 3/3 gagal sesuai mekanisme
+  ("Loading assignment..." dirender saat gagal; Retry chip tidak ada (tap
+  finder gagal menemukan); teks "No project session" tidak ada). Window
+  BUG-09 distage deterministik: narrativeNovelOptionsProvider dioverride
+  berisi data sementara projectSessionProvider null.
+- GREEN patch minimal satu file lib: state terminal `_failed` pada
+  NarrativeAssignmentCard - build merender error + ActionChip Retry
+  (pola repo support_relationship_section) MENGGANTIKAN garis loading dan
+  editor; catch _loadFor menandai _failed; session null -> error eksplisit
+  "No project session."; _retryLoad memuat ulang novel terpilih; reset
+  _failed/_error saat ganti karakter (didUpdateWidget). didUpdateWidget
+  BUG-01 (epoch) dan key per karakter tidak disentuh.
+- Bukti: focused 3/3 PASS; regresi test/features/character 75/75 PASS;
+  flutter analyze --no-pub No issues found (10,9s); dart format owned 2
+  file (2 changed); git diff --check exit 0; flutter build windows --debug
+  --no-pub PASS 24,9s; guard PASS pre+post pointer 145.27.
+- Commit c878f21 (2 file, path eksplisit; .hermes M sibling + untracked
+  docs dipertahankan; tidak push). Sisa hunt run157: 10 Low (BUG-03/04/07/
+  10/11/13/14/17/18/19; BUG-15 tertutup fix BUG-02 run158). Next action:
+  hunt baru region berbeda atau slice Low berikutnya (BUG-18 label helpers
+  user-visible per row) pada run berikutnya. Pointer tetap 145.27.
+
 ### 2026-09-09 - nephthys (cron run159): hunt-run157 BUG-05 fixed - stale novel dropdowns after mid-session story creation
 
 - Slice: bug terkonfirmasi hunt run157 BUG-05 (Referee REAL BUG Medium) - provider opsi novel untuk Narrative Assignment (narrativeNovelOptionsProvider) dan Support Relationship (supportNovelOptionsProvider) tidak pernah di-invalidasi oleh jalur create novel mana pun; novel yang dibuat di tengah sesi tidak muncul di kedua dropdown hingga aksi tak terkait membangun ulang graf aset. Region masih hidup di HEAD a03111d (grep: tidak ada invalidate pada kedua path create; supportNovelOptionsProvider masih baca DAO mentah). Tidak ada pointer berubah; guard PASS pre+post (pointer 145.27, sha 86af6a5).

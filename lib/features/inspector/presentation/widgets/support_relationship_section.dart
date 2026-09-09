@@ -49,6 +49,7 @@ class _SupportRelationshipSectionState
   List<SupportRelationship>? _supports;
   Map<String, String> _characterNames = const {};
   String? _loadedSessionId;
+  String? _loadError;
 
   @override
   void initState() {
@@ -63,6 +64,7 @@ class _SupportRelationshipSectionState
         setState(() {
           _supports = const [];
           _characterNames = const {};
+          _loadError = null;
         });
       }
       return;
@@ -71,17 +73,28 @@ class _SupportRelationshipSectionState
       database: session.database,
       projectId: session.manifest.id,
     );
-    final supports = await repository.listSupports(widget.assetId);
-    final assets = await session.database.assetDao.getAllAssets();
-    if (!mounted) return;
-    setState(() {
-      _supports = supports;
-      _loadedSessionId = session.manifest.id;
-      _characterNames = {
-        for (final asset in assets.where((a) => a.type == 'character'))
-          asset.id: asset.name,
-      };
-    });
+    try {
+      final supports = await repository.listSupports(widget.assetId);
+      final assets = await session.database.assetDao.getAllAssets();
+      if (!mounted) return;
+      setState(() {
+        _supports = supports;
+        _loadedSessionId = session.manifest.id;
+        _characterNames = {
+          for (final asset in assets.where((a) => a.type == 'character'))
+            asset.id: asset.name,
+        };
+        _loadError = null;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      // Failure is a distinct state: never render a fake empty list that
+      // would hide real relationships behind "No support relationships yet".
+      setState(() {
+        _supports = null;
+        _loadError = '$error';
+      });
+    }
   }
 
   NarrativeAssignmentRepository? _repository() {
@@ -131,7 +144,18 @@ class _SupportRelationshipSectionState
           ],
         ),
         const SizedBox(height: 8),
-        if (supports == null)
+        if (_loadError != null) ...[
+          Text(
+            'Support relationships failed to load: $_loadError',
+            style: TextStyle(color: context.palette.danger),
+          ),
+          const SizedBox(height: 4),
+          ActionChip(
+            avatar: const Icon(Icons.refresh, size: 14),
+            label: const Text('Retry'),
+            onPressed: _load,
+          ),
+        ] else if (supports == null)
           Text('Loading...', style: TextStyle(color: context.palette.textMuted))
         else if (supports.isEmpty)
           Text(
@@ -172,7 +196,15 @@ class _SupportRelationshipSectionState
     if (repository == null || !mounted) return;
     final result = await _showEditDialog(repository, null);
     if (result == null || !mounted) return;
-    await repository.saveSupport(result);
+    try {
+      await repository.saveSupport(result);
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save support relationship: $error')),
+      );
+      return;
+    }
     await _load();
   }
 
@@ -181,17 +213,25 @@ class _SupportRelationshipSectionState
     if (repository == null || !mounted) return;
     final result = await _showEditDialog(repository, support);
     if (result == null || !mounted) return;
-    if (result.supportedId != support.supportedId ||
-        result.storyNovelWorkspaceId != support.storyNovelWorkspaceId) {
-      // Coordinates changed (picker locked, defensive): drop the old row so
-      // the edit cannot duplicate a relationship under new coordinates.
-      await repository.removeSupport(
-        sourceCharacterId: support.sourceCharacterId,
-        supportedId: support.supportedId,
-        storyNovelWorkspaceId: support.storyNovelWorkspaceId,
+    try {
+      if (result.supportedId != support.supportedId ||
+          result.storyNovelWorkspaceId != support.storyNovelWorkspaceId) {
+        // Coordinates changed (picker locked, defensive): drop the old row so
+        // the edit cannot duplicate a relationship under new coordinates.
+        await repository.removeSupport(
+          sourceCharacterId: support.sourceCharacterId,
+          supportedId: support.supportedId,
+          storyNovelWorkspaceId: support.storyNovelWorkspaceId,
+        );
+      }
+      await repository.saveSupport(result);
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save support relationship: $error')),
       );
+      return;
     }
-    await repository.saveSupport(result);
     await _load();
   }
 
@@ -222,11 +262,21 @@ class _SupportRelationshipSectionState
       ),
     );
     if (confirmed != true || !mounted) return;
-    await repository.removeSupport(
-      sourceCharacterId: support.sourceCharacterId,
-      supportedId: support.supportedId,
-      storyNovelWorkspaceId: support.storyNovelWorkspaceId,
-    );
+    try {
+      await repository.removeSupport(
+        sourceCharacterId: support.sourceCharacterId,
+        supportedId: support.supportedId,
+        storyNovelWorkspaceId: support.storyNovelWorkspaceId,
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete support relationship: $error'),
+        ),
+      );
+      return;
+    }
     await _load();
   }
 
@@ -234,13 +284,23 @@ class _SupportRelationshipSectionState
     NarrativeAssignmentRepository repository,
     SupportRelationship? initial,
   ) async {
-    final novels = await ref.read(supportNovelOptionsProvider.future);
-    final assets = await repository.database.assetDao.getAllAssets();
-    final characters = assets
-        .where(
-          (asset) => asset.type == 'character' && asset.id != widget.assetId,
-        )
-        .toList(growable: false);
+    final List<SupportNovelOption> novels;
+    final List<Asset> characters;
+    try {
+      novels = await ref.read(supportNovelOptionsProvider.future);
+      final assets = await repository.database.assetDao.getAllAssets();
+      characters = assets
+          .where(
+            (asset) => asset.type == 'character' && asset.id != widget.assetId,
+          )
+          .toList(growable: false);
+    } catch (error) {
+      if (!mounted) return null;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to open editor: $error')));
+      return null;
+    }
     if (!mounted) return null;
     return showDialog<SupportRelationship>(
       context: context,
@@ -321,7 +381,11 @@ class _SupportEditDialogState extends State<_SupportEditDialog> {
                   .map(
                     (asset) => DropdownMenuItem(
                       value: asset.id,
-                      child: Text(asset.name),
+                      child: Text(
+                        asset.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   )
                   .toList(),
@@ -338,7 +402,11 @@ class _SupportEditDialogState extends State<_SupportEditDialog> {
                   .map(
                     (novel) => DropdownMenuItem(
                       value: novel.id,
-                      child: Text(novel.name),
+                      child: Text(
+                        novel.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   )
                   .toList(),

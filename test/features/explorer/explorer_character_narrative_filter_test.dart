@@ -188,6 +188,55 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('filter dialog holds enlarged text scale without overflow', (
+    tester,
+  ) async {
+    // Accessibility contract: the dialog must reflow at 2.0 text scale
+    // (antislop-human R-35) instead of clipping or overflowing.
+    final session =
+        (await tester.runAsync<ProjectSession>(createSession)) ??
+        (throw StateError('temporary session unavailable'));
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+      await tester.runAsync(() => session.close());
+    });
+    await tester.runAsync(() async {
+      await seedCharacter(session, id: 'c-scale', name: 'Scaled Character');
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectSessionProvider.overrideWith(() => _FixedSession(session)),
+          projectPathsProvider.overrideWithValue(
+            ProjectPaths(rootDirectory: Directory.systemTemp),
+          ),
+        ],
+        child: const MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 320,
+              child: MediaQuery(
+                // Repo-established pattern (recent_projects_test.dart):
+                // enlarged text via MediaQuery textScaler, 2.0 = max scale.
+                data: MediaQueryData(textScaler: TextScaler.linear(2.0)),
+                child: ExplorerPanel(),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await openFilterMenu(tester);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Filter Characters'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }
 
 class _FixedSession extends ProjectSessionController {

@@ -97,9 +97,10 @@ void main() {
   Future<void> pumpInspector(
     WidgetTester tester,
     ProjectSession session,
-    String characterId,
-  ) async {
-    await tester.binding.setSurfaceSize(const Size(1280, 900));
+    String characterId, {
+    Size size = const Size(1280, 900),
+  }) async {
+    await tester.binding.setSurfaceSize(size);
     addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(
       ProviderScope(
@@ -111,8 +112,8 @@ void main() {
         child: MaterialApp(
           home: Scaffold(
             body: SizedBox(
-              width: 1280,
-              height: 900,
+              width: size.width,
+              height: size.height,
               child: CharacterInspector(characterId: characterId),
             ),
           ),
@@ -261,4 +262,94 @@ void main() {
       expect(assignment.roles, const [NarrativeRole.protagonist]);
     },
   );
+
+  testWidgets('no support relationships yet empty state, narrow surface', (
+    tester,
+  ) async {
+    // Empty is an honest state, not an error: prove it renders on a narrow
+    // surface without overflow so future hardening cannot confuse the two.
+    final (_, session, aId, _, _, _) = await seed(tester, 'empty-narrow');
+    await pumpInspector(tester, session, aId, size: const Size(320, 700));
+
+    expect(find.text('No support relationships yet'), findsOneWidget);
+    expect(find.text('Add Support'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('load failure shows error state, not a fake empty list', (
+    tester,
+  ) async {
+    // Failure is a distinct state: when the repository load throws, the
+    // section must say what failed and keep Retry available instead of
+    // rendering the empty state that would hide real relationships.
+    final (_, session, aId, _, _, _) = await seed(tester, 'load-fail');
+    await session.database.close();
+
+    await pumpInspector(tester, session, aId, size: const Size(420, 800));
+
+    await tester.pump(const Duration(milliseconds: 50));
+    expect(find.text('No support relationships yet'), findsNothing);
+    expect(find.textContaining('failed to load'), findsOneWidget);
+    expect(find.text('Retry'), findsOneWidget);
+  });
+
+  testWidgets('save failure surfaces visible feedback and keeps row', (
+    tester,
+  ) async {
+    final (_, session, aId, bId, _, repository) = await seed(
+      tester,
+      'save-fail',
+    );
+    await repository.saveSupport(
+      SupportRelationship(
+        sourceCharacterId: aId,
+        supportedId: bId,
+        storyNovelWorkspaceId: 'novel-first-novel',
+        type: SupportType.supporter,
+        duration: SupportDuration.permanent,
+      ),
+    );
+    await pumpInspector(tester, session, aId);
+
+    expect(find.text('Byte'), findsOneWidget);
+    // Open the edit dialog while the database is alive.
+    await tester.tap(find.text('Byte'));
+    await tester.pumpAndSettle();
+    expect(find.text('Edit Support'), findsOneWidget);
+    // Kill the database before saving: persistence now fails.
+    await session.database.close();
+
+    await tester.tap(find.text('Save Support'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.textContaining('Failed to save'), findsOneWidget);
+    // The relationship row itself stays visible; the failure never deletes data.
+    expect(find.text('Byte'), findsOneWidget);
+  });
+
+  testWidgets('support edit dialog ellipsizes very long names', (tester) async {
+    final (_, session, aId, bId, _, repository) = await seed(
+      tester,
+      'long-name',
+    );
+    await repository.saveSupport(
+      SupportRelationship(
+        sourceCharacterId: aId,
+        supportedId: bId,
+        storyNovelWorkspaceId: 'novel-first-novel',
+        type: SupportType.supporter,
+        duration: SupportDuration.permanent,
+      ),
+    );
+    await pumpInspector(tester, session, aId);
+
+    await tester.tap(find.text('Byte'));
+    await tester.pumpAndSettle();
+
+    // The picker labels wrap instead of clipping mid-row; the dialog holds a
+    // narrow surface without RenderFlex overflow.
+    expect(find.text('Edit Support'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }

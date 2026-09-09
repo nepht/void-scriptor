@@ -1303,23 +1303,37 @@ class _CharacterGroupState extends ConsumerState<_CharacterGroup> {
 
   @override
   Widget build(BuildContext context) {
-    final assignments = ref
-        .watch(explorerNarrativeAssignmentsProvider)
-        .valueOrNull;
+    final assignments = ref.watch(explorerNarrativeAssignmentsProvider);
+    // Hunt-20260909 BUG-06: a failed narrative provider must be visible and
+    // must never silently collapse the character list (an empty assignment
+    // list makes every filter dimension match nobody).
+    final assignmentError = assignments.hasError && !assignments.isLoading
+        ? (assignments.error is StateError
+              ? (assignments.error as StateError).message.toString()
+              : assignments.error.toString())
+        : null;
+    final usableAssignments = assignments.valueOrNull ?? const [];
     final filter = _filter;
     final characters = widget.characters.valueOrNull;
-    final filtered = characters == null
-        ? null
-        : (filter.isActive
-              ? characters
-                    .where(
-                      (item) => filter.matchesCharacter(
-                        characterId: item.assetId,
-                        assignments: assignments ?? const [],
-                      ),
-                    )
-                    .toList(growable: false)
-              : characters);
+    final List<CharacterModel>? filtered;
+    if (characters == null) {
+      filtered = null;
+    } else if (filter.isActive && assignmentError != null) {
+      // Fail open: unavailable narrative data degrades to the unfiltered
+      // list instead of matching nobody.
+      filtered = null;
+    } else if (filter.isActive) {
+      filtered = characters
+          .where(
+            (item) => filter.matchesCharacter(
+              characterId: item.assetId,
+              assignments: usableAssignments,
+            ),
+          )
+          .toList(growable: false);
+    } else {
+      filtered = null;
+    }
     return ExpansionTile(
       onExpansionChanged: (_) => widget.onFocused?.call(),
       initiallyExpanded: true,
@@ -1358,32 +1372,50 @@ class _CharacterGroupState extends ConsumerState<_CharacterGroup> {
             ),
         ],
       ),
-      children: widget.characters.when(
-        loading: () => [const ListTile(dense: true, title: Text('Loading...'))],
-        error: (error, _) => [ListTile(dense: true, title: Text('$error'))],
-        data: (items) => items.isEmpty
-            ? [const ListTile(dense: true, title: Text('No characters yet'))]
-            : (filtered ?? items)
-                  .map(
-                    (item) => ListTile(
-                      dense: true,
-                      minTileHeight: 30,
-                      title: Text(
-                        item.displayName,
-                        style: TextStyle(
-                          color: context.palette.textMuted,
-                          fontSize: 11,
+      children: [
+        if (assignmentError != null)
+          ListTile(
+            dense: true,
+            minTileHeight: 30,
+            leading: Icon(
+              Icons.warning_amber_outlined,
+              size: 16,
+              color: context.palette.danger,
+            ),
+            title: Text(
+              'Narrative data unavailable: $assignmentError',
+              style: TextStyle(color: context.palette.danger, fontSize: 11),
+            ),
+          ),
+        ...widget.characters.when(
+          loading: () => [
+            const ListTile(dense: true, title: Text('Loading...')),
+          ],
+          error: (error, _) => [ListTile(dense: true, title: Text('$error'))],
+          data: (items) => items.isEmpty
+              ? [const ListTile(dense: true, title: Text('No characters yet'))]
+              : (filtered ?? items)
+                    .map(
+                      (item) => ListTile(
+                        dense: true,
+                        minTileHeight: 30,
+                        title: Text(
+                          item.displayName,
+                          style: TextStyle(
+                            color: context.palette.textMuted,
+                            fontSize: 11,
+                          ),
                         ),
+                        selected: widget.selectedId == item.assetId,
+                        selectedTileColor: context.palette.primary.withValues(
+                          alpha: 0.12,
+                        ),
+                        onTap: () => widget.onSelected(item),
                       ),
-                      selected: widget.selectedId == item.assetId,
-                      selectedTileColor: context.palette.primary.withValues(
-                        alpha: 0.12,
-                      ),
-                      onTap: () => widget.onSelected(item),
-                    ),
-                  )
-                  .toList(),
-      ),
+                    )
+                    .toList(),
+        ),
+      ],
     );
   }
 }

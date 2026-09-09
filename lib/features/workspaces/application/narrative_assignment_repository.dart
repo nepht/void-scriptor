@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart' hide isNull;
+import 'package:flutter/foundation.dart' show debugPrint;
 
 import '../../../database/project/project_database.dart' as data;
 import '../domain/narrative_assignment.dart' as domain;
@@ -8,7 +9,10 @@ import '../domain/narrative_assignment.dart' as domain;
 /// character keeps a single profile; assignments are keyed per (project,
 /// novel, character) so the same character holds independent roles in
 /// different novels without cross-contamination. Enum values persist as the
-/// domain wire tokens; unknown tokens fail loudly via `fromWire`.
+/// domain wire tokens; `fromWire` itself stays strict, but row decoding here
+/// is tolerant per token: an unknown token (the realistic vector is a
+/// version-skewed portable import or a manual DB edit — hunt-20260909
+/// BUG-06) is skipped with a warning instead of failing the whole list.
 class NarrativeAssignmentRepository {
   NarrativeAssignmentRepository({
     required this.database,
@@ -182,23 +186,62 @@ class NarrativeAssignmentRepository {
   domain.NarrativeAssignment _assignmentFromRow(
     data.CharacterNarrativeAssignment row,
   ) {
-    final roleTokens = (row.roles ?? '')
-        .split(',')
-        .map((token) => token.trim())
-        .where((token) => token.isNotEmpty)
-        .map(domain.NarrativeRole.fromWire)
-        .toSet();
+    final roleTokens = <domain.NarrativeRole>{};
+    for (final rawToken in (row.roles ?? '').split(',')) {
+      final token = rawToken.trim();
+      if (token.isEmpty) continue;
+      try {
+        roleTokens.add(domain.NarrativeRole.fromWire(token));
+      } on ArgumentError {
+        debugPrint(
+          'NarrativeAssignmentRepository: skipping unknown role token '
+          '"$token" in assignment (novel=${row.novelWorkspaceId}, '
+          'character=${row.characterId})',
+        );
+      }
+    }
     return domain.NarrativeAssignment(
       novelWorkspaceId: row.novelWorkspaceId,
       characterId: row.characterId,
       roles: roleTokens,
       importance: row.importance == null
           ? domain.NarrativeImportance.unspecified
-          : domain.NarrativeImportance.fromWire(row.importance!),
+          : _tolerantWire(
+              row.importance!,
+              domain.NarrativeImportance.fromWire,
+              domain.NarrativeImportance.unspecified,
+              row,
+            ),
       pov: row.pov == null
           ? domain.NarrativePov.unspecified
-          : domain.NarrativePov.fromWire(row.pov!),
+          : _tolerantWire(
+              row.pov!,
+              domain.NarrativePov.fromWire,
+              domain.NarrativePov.unspecified,
+              row,
+            ),
     );
+  }
+
+  /// Tolerant scalar decode: an unknown token falls back to [fallback]
+  /// instead of aborting the whole assignment list (hunt BUG-06); the
+  /// fallback values mean "no explicit value" in the filter semantics.
+  T _tolerantWire<T>(
+    String value,
+    T Function(String) fromWire,
+    T fallback,
+    data.CharacterNarrativeAssignment row,
+  ) {
+    try {
+      return fromWire(value);
+    } on ArgumentError {
+      debugPrint(
+        'NarrativeAssignmentRepository: unknown wire token "$value" decoded '
+        'as ${fallback.toString().toLowerCase()} (novel='
+        '${row.novelWorkspaceId}, character=${row.characterId})',
+      );
+      return fallback;
+    }
   }
 
   domain.SupportRelationship _supportFromRow(

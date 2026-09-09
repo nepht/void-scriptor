@@ -54,6 +54,11 @@ class _SupportRelationshipSectionState
   Map<String, String> _characterNames = const {};
   String? _loadedSessionId;
   String? _loadError;
+  // Session id captured when a repository action starts. A dialog await can
+  // straddle a project switch (hunt-run157 BUG-04): the write must be
+  // aborted when the session is no longer the one the action was started
+  // in, or the edit lands in the previous project's database.
+  String? _actionSessionId;
 
   @override
   void initState() {
@@ -118,10 +123,27 @@ class _SupportRelationshipSectionState
   NarrativeAssignmentRepository? _repository() {
     final session = ref.read(projectSessionProvider).valueOrNull;
     if (session == null) return null;
+    _actionSessionId = session.manifest.id;
     return NarrativeAssignmentRepository(
       database: session.database,
       projectId: session.manifest.id,
     );
+  }
+
+  /// True when the project session is still the one the running action was
+  /// started in. Every await that can straddle a project switch (dialog,
+  /// confirm) must re-validate before writing.
+  bool _actionSessionStillCurrent() {
+    final current = ref.read(projectSessionProvider).valueOrNull?.manifest.id;
+    return current != null && current == _actionSessionId;
+  }
+
+  /// True while [repository] is still bound to the currently active
+  /// project's database (the session provider may have already switched to
+  /// another project while an action awaited).
+  bool _isCurrentRepository(NarrativeAssignmentRepository repository) {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    return session != null && identical(session.database, repository.database);
   }
 
   @override
@@ -213,7 +235,15 @@ class _SupportRelationshipSectionState
     final repository = _repository();
     if (repository == null || !mounted) return;
     final result = await _showEditDialog(repository, null);
-    if (result == null || !mounted) return;
+    // Dialog await can straddle a project switch (hunt-run157 BUG-04):
+    // re-validate before writing so the edit never lands in the previous
+    // project's database.
+    if (result == null ||
+        !mounted ||
+        !_actionSessionStillCurrent() ||
+        !_isCurrentRepository(repository)) {
+      return;
+    }
     try {
       await repository.saveSupport(result);
     } catch (error) {
@@ -230,19 +260,25 @@ class _SupportRelationshipSectionState
     final repository = _repository();
     if (repository == null || !mounted) return;
     final result = await _showEditDialog(repository, support);
-    if (result == null || !mounted) return;
+    // Dialog await can straddle a project switch (hunt-run157 BUG-04):
+    // re-validate before writing so the edit never lands in the previous
+    // project's database.
+    if (result == null ||
+        !mounted ||
+        !_actionSessionStillCurrent() ||
+        !_isCurrentRepository(repository)) {
+      return;
+    }
     try {
       if (result.supportedId != support.supportedId ||
           result.storyNovelWorkspaceId != support.storyNovelWorkspaceId) {
-        // Coordinates changed (picker locked, defensive): drop the old row so
-        // the edit cannot duplicate a relationship under new coordinates.
-        await repository.removeSupport(
-          sourceCharacterId: support.sourceCharacterId,
-          supportedId: support.supportedId,
-          storyNovelWorkspaceId: support.storyNovelWorkspaceId,
-        );
+        // Coordinates changed (picker locked, defensive): replace the row
+        // atomically so a failed save cannot lose the original relationship
+        // (hunt-run157 BUG-03).
+        await repository.replaceSupport(previous: support, updated: result);
+      } else {
+        await repository.saveSupport(result);
       }
-      await repository.saveSupport(result);
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -280,6 +316,12 @@ class _SupportRelationshipSectionState
       ),
     );
     if (confirmed != true || !mounted) return;
+    // Confirm await can straddle a project switch (hunt-run157 BUG-04):
+    // re-validate before deleting so the removal never touches the previous
+    // project's database.
+    if (!_actionSessionStillCurrent() || !_isCurrentRepository(repository)) {
+      return;
+    }
     try {
       await repository.removeSupport(
         sourceCharacterId: support.sourceCharacterId,

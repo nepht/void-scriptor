@@ -112,6 +112,32 @@ class NarrativeAssignmentRepository {
         .insertOnConflictUpdate(companion);
   }
 
+  /// Replaces a support relationship whose coordinates changed (defensive
+  /// picker-locked edit) in ONE database transaction: the previous row is
+  /// removed and the updated row is written together, so a failure at any
+  /// point rolls back and the original relationship survives (hunt-run157
+  /// BUG-03 — the old remove-then-save lost the row when the save failed).
+  Future<void> replaceSupport({
+    required domain.SupportRelationship previous,
+    required domain.SupportRelationship updated,
+  }) async {
+    await database.transaction(() async {
+      await (database.delete(database.characterSupportRelationships)..where(
+            (row) =>
+                row.projectId.equals(projectId) &
+                row.sourceCharacterId.equals(previous.sourceCharacterId) &
+                row.supportedId.equals(previous.supportedId) &
+                row.storyNovelWorkspaceId.equals(
+                  previous.storyNovelWorkspaceId,
+                ),
+          ))
+          .go();
+      await database
+          .into(database.characterSupportRelationships)
+          .insertOnConflictUpdate(_supportTarget(updated));
+    });
+  }
+
   Future<void> removeSupport({
     required String sourceCharacterId,
     required String supportedId,

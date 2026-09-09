@@ -1,0 +1,61 @@
+{
+  "hunt": "bug-hunt-run157",
+  "date": "2026-09-09",
+  "executor": "nephthys cron run157",
+  "target_region": "narrative-assignment / support-relationship (backlog character-roles-support phase_one)",
+  "repo": "D:\\VoidScriptor\\void_scriptor_multiplatform",
+  "branch": "master",
+  "head_at_hunt_start": "2317894d4149c3cf49a32401cf5dfe58eabe666c",
+  "files_in_scope": [
+    "lib/database/project/tables/character_narrative_assignments.dart",
+    "lib/features/workspaces/domain/narrative_assignment.dart",
+    "lib/features/workspaces/domain/narrative_character_filter.dart",
+    "lib/features/workspaces/application/narrative_assignment_repository.dart",
+    "lib/features/inspector/presentation/widgets/support_relationship_section.dart",
+    "lib/features/character/presentation/widgets/narrative_assignment_card.dart"
+  ],
+  "agents": {
+    "hunter": {
+      "findings": 19,
+      "score": 48,
+      "report": "hunter-report.md"
+    },
+    "skeptic": {
+      "disproven": 1,
+      "upheld": 8,
+      "upheld_with_caveat": 10,
+      "report": "skeptic-report.md"
+    },
+    "referee": {
+      "real_bug": 17,
+      "not_a_bug": 2,
+      "medium": 4,
+      "low": 13,
+      "report": "referee-report.md"
+    }
+  },
+  "not_a_bug": [
+    "BUG-12 (O(C*A) scan = optimization note)",
+    "BUG-16 (foreign-project frame cannot render; build guard)"
+  ],
+  "referee_extra_observation": "SupportRelationshipSection State survives character A->B switch (no key/didUpdateWidget; guard checks session id only) -> rows of A may render under B; needs runtime verification; suggested ValueKey(assetId) at character_inspector.dart:22",
+  "fixes_this_run": [
+    {
+      "bug": "BUG-01",
+      "severity": "Medium",
+      "slice": "load-epoch staleness guard in _loadFor + test-overridable narrativeAssignmentRepositoryFactoryProvider seam + ValueKey('narrative-<assetId>') at both call sites",
+      "tests": [
+        "test/features/character/narrative_assignment_stale_load_test.dart (RED terverifikasi: guard dinonaktifkan -> save menulis assignment novel-fast = null = korupsi koordinat; guard aktif -> GREEN)",
+        "test/features/character/narrative_assignment_card_key_test.dart (RED: key null; GREEN: ValueKey berisi characterId)"
+      ],
+      "gates": "character 70 PASS; workspaces 87 PASS; inspector 13 PASS; analyze No issues; diff-check 0; windows debug build 42.4s PASS; guard PASS pre+post"
+    }
+  ],
+  "remaining_confirmed_bugs": [
+    "BUG-02 (Medium, orphan rows on character delete)",
+    "BUG-05 (Medium, stale novel dropdowns)",
+    "BUG-06 (Medium, silent wholesale decode failure)",
+    "BUG-03, BUG-04, BUG-07..BUG-11, BUG-13..BUG-15, BUG-17..BUG-19 (Low)"
+  ],
+  "next_action": "Slice BUG-02: invoke deleteForCharacter inside characterRepositoryImpl.deleteCharacter transaction (TDD, orphan cleanup acceptance 145.25/145.26)"
+}

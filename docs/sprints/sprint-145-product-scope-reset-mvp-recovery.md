@@ -2967,3 +2967,49 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
 - Re-verifikasi fresh @ HEAD b7ad693 (bukan re-audit; bukti klasifikasi dikonfirmasi tetap hidup di HEAD): interrupted_export+import+corruption trio 11 PASS exit 0; process_crash_wal hard-kill 2 PASS; write-failure 7 PASS; test/core/capabilities 30 PASS.
 - Rekonsiliasi docs/audits/core-worldbuilding-reduction.md (baris stale vs bukti yang sudah ada di HEAD): route-gating PARTIAL -> VERIFIED (commit 117f157; 13 canonical rules; kedua site router wrap guard redirect; grep push/go ke route gated di shell/dashboard kosong; capabilities 30/30 fresh); native interaction UNVERIFIABLE -> VERIFIED terbatas (run146 journey native penuh pada build 7ce1641; journey lain tetap UNVERIFIABLE dari cron); kalimat Decision disesuaikan. Baris user evidence dipertahankan MISSING (kebutuhan keputusan Choi).
 - Bukti perubahan: git diff --check exit 0; roadmap guard PASS pre+post (recommended_step 145.27, canonical_sha 86af6a5); commit scoped dua file docs (audit + ledger) saja. Status 145.27 tetap PARTIAL. Tidak push.
+
+### 2026-09-09 - nephthys (cron run157): bug-hunt run157 region narrative + fix BUG-01 (TDD)
+
+- Bug-hunt berulang (otorisasi 2026-09-07): tidak ada bug terkonfirmasi tersisa
+  (semua 13 run128 ter-patch, ledger line ~68) -> hunt baru pada region yang
+  belum pernah dihunt: narrative-assignment / support-relationship
+  (character-roles-support phase_one, schema v60). Scope 6 file (~1.630 baris),
+  HEAD 2317894d stabil sepanjang hunt (diverifikasi Hunter/Skeptic/Referee).
+- Pipeline Hunter(19 temuan, skor 48) -> Skeptic(1 DISPROVEN, 8 UPHELD,
+  10 UPHELD-WITH-CAVEAT) -> Referee: 17 REAL BUG (4 Medium, 13 Low), 2 NOT A
+  BUG (BUG-12 scan-complexity, BUG-16 build-guard). Laporan diarsipkan
+  docs/evidence/bug-hunt-run157/. Observasi tambahan Referee (perlu runtime):
+  SupportRelationshipSection tanpa key -> State bisa lintas karakter A->B.
+- SLICE fix BUG-01 (Medium, prioritas tertinggi - satu-satunya High turun
+  kelas; jalur utama edit assignment): NarrativeAssignmentCard._loadFor tanpa
+  guard staleness - urutan penyelesaian terbalik meninggalkan roles novel lama
+  di state, lalu Save menulisnya di koordinat novel AKTIF (korupsi assignment
+  lintas novel).
+- RED terverifikasi pada mekanisme eksak: guard dinonaktifkan (inversi patch
+  sementara) -> test stale-load RED dengan ground truth "Expected: not null /
+  Actual: null" pada novel-fast = assignment TIDAK tertulis di novel yang
+  diedit (save jalan di koordinat salah); guard dipulihkan -> GREEN 2/2.
+- GREEN: (1) guard epoch monotonik _loadEpoch di _loadFor (validasi mounted +
+  epoch pasca-await, termasuk cabang error); (2) seam test-overridable
+  narrativeAssignmentRepositoryFactoryProvider (pola currentProjectIdProvider)
+  sehingga delay load bisa diinjeksi deterministik; (3) ValueKey('narrative-
+  <assetId>') di kedua call site character_workspace_screen (pola BUG-22
+  wb-<projectId>) - State kartu tidak lagi melintasi pergantian karakter.
+- Test baru: narrative_assignment_stale_load_test.dart (journey end-to-end
+  session nyata + DB nyata + close/reopen ground truth) dan
+  narrative_assignment_card_key_test.dart (pump screen nyata, asersi key).
+- Bukti: focused 2/2 PASS; regresi test/features/character 70 PASS exit 0,
+  test/features/workspaces 87 PASS, test/features/inspector 13 PASS;
+  flutter analyze --no-pub No issues found! (2 lint milik sendiri dibersihkan);
+  dart format owned 2 file; git diff --check exit 0; flutter build windows
+  --debug --no-pub PASS 42,4s; roadmap guard PASS pre+post (pointer 145.27,
+  canonical_sha 86af6a5).
+- Commit scoped: 2 file lib + 2 test baru + evidence dir + ledger ini; sibling
+  SPRINT_PROGRESS.md M (pruning 110.x pra-eksisting) dan untracked docs
+  dipertahankan, tidak disentuh. Pointer tetap 145.27; tidak push.
+- Sisa REAL BUG run157: BUG-02 (Medium, deleteForCharacter tidak pernah
+  dipanggil produksi -> orphan rows saat delete karakter), BUG-05 (Medium,
+  dropdown novel stale pasca-create story), BUG-06 (Medium, satu token wire
+  korup menggagalkan listAssignments dan explorer menelan error jadi daftar
+  kosong) + 12 Low. Next action: slice BUG-02 (invoke deleteForCharacter di
+  dalam transaksi deleteCharacter).

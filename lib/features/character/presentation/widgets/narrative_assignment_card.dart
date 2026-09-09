@@ -7,6 +7,7 @@ import '../../../character_mode/presentation/character_mode_controller.dart';
 import '../../../projects/presentation/project_persistence_providers.dart';
 import '../../../workspaces/application/narrative_assignment_repository.dart';
 import '../../../workspaces/domain/narrative_assignment.dart';
+import '../../../../database/project/project_database.dart' as data;
 
 /// One selectable novel (story context) for narrative assignment editing.
 class NarrativeNovelOption {
@@ -15,6 +16,26 @@ class NarrativeNovelOption {
   final String id;
   final String name;
 }
+
+typedef NarrativeAssignmentRepositoryFactory =
+    NarrativeAssignmentRepository Function(
+      data.ProjectDatabase database,
+      String projectId,
+    );
+
+/// Test-overridable construction seam for the narrative repository. The
+/// default factory builds the storage-backed repository bound to the active
+/// project session; widget tests override it to inject a deterministic
+/// double. Mirrors the repo's established pattern of test-overridable
+/// providers (e.g. currentProjectIdProvider).
+final narrativeAssignmentRepositoryFactoryProvider =
+    Provider<NarrativeAssignmentRepositoryFactory>(
+      (ref) =>
+          (database, projectId) => NarrativeAssignmentRepository(
+            database: database,
+            projectId: projectId,
+          ),
+    );
 
 /// Story context for the character's narrative assignments: the active
 /// project's story assets (the same records the Novel workspace opens).
@@ -57,10 +78,19 @@ class _NarrativeAssignmentCardState
   bool _saving = false;
   String? _error;
 
+  /// Monotonic request token for [NarrativeNovelOption] loads. A completion
+  /// from an older token (superseded by a newer novel pick or a character
+  /// switch) must never write editor state — a stale completion left
+  /// unguarded used to leave another novel's roles in [_roles], which Save
+  /// then persisted under the CURRENT novel's coordinates (hunt-run157
+  /// BUG-01, Referee REAL BUG Medium).
+  int _loadEpoch = 0;
+
   @override
   void didUpdateWidget(NarrativeAssignmentCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.characterId != widget.characterId) {
+      _loadEpoch++;
       _selectedNovelId = null;
       _selectedNovel = null;
       _loadedForCurrentNovel = false;
@@ -80,8 +110,14 @@ class _NarrativeAssignmentCardState
   }
 
   Future<void> _loadFor(NarrativeNovelOption novel) async {
-    final repo = _repository();
-    if (repo == null) return;
+    final epoch = ++_loadEpoch;
+    final characterId = widget.characterId;
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null) return;
+    final repositoryFactory = ref.read(
+      narrativeAssignmentRepositoryFactoryProvider,
+    );
+    final repo = repositoryFactory(session.database, session.manifest.id);
     setState(() {
       _loading = true;
       _error = null;
@@ -89,9 +125,9 @@ class _NarrativeAssignmentCardState
     try {
       final assignment = await repo.getAssignment(
         novelWorkspaceId: novel.id,
-        characterId: widget.characterId,
+        characterId: characterId,
       );
-      if (!mounted) return;
+      if (!mounted || epoch != _loadEpoch) return;
       setState(() {
         _roles = assignment?.roles ?? <NarrativeRole>{};
         _importance = assignment?.importance ?? NarrativeImportance.unspecified;
@@ -100,7 +136,7 @@ class _NarrativeAssignmentCardState
         _loading = false;
       });
     } catch (error) {
-      if (!mounted) return;
+      if (!mounted || epoch != _loadEpoch) return;
       setState(() {
         _error = '$error';
         _loading = false;

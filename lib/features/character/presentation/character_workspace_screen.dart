@@ -221,7 +221,10 @@ class _CharacterWorkspaceScreenState
         children: [
           top,
           const SizedBox(height: 16),
-          NarrativeAssignmentCard(characterId: character.assetId),
+          NarrativeAssignmentCard(
+            key: ValueKey<String>('narrative-${character.assetId}'),
+            characterId: character.assetId,
+          ),
         ],
       );
     }
@@ -261,7 +264,10 @@ class _CharacterWorkspaceScreenState
       children: [
         top,
         const SizedBox(height: 16),
-        NarrativeAssignmentCard(characterId: character.assetId),
+        NarrativeAssignmentCard(
+          key: ValueKey<String>('narrative-${character.assetId}'),
+          characterId: character.assetId,
+        ),
         const SizedBox(height: 16),
         const TurnaroundCard(),
         const SizedBox(height: 16),

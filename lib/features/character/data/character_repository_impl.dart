@@ -12,6 +12,7 @@ import '../../../database/project/project_database.dart'
         CharacterUniverseTimelineOverride,
         CharacterNovelState;
 import '../../../core/persistence/project_paths.dart';
+import '../../workspaces/application/narrative_assignment_repository.dart';
 import '../application/create_character_service.dart';
 import '../domain/character_model.dart';
 import '../domain/character_repository.dart';
@@ -114,6 +115,13 @@ class CharacterRepositoryImpl implements CharacterRepository {
       await (database.delete(
         database.assets,
       )..where((row) => row.id.equals(id))).go();
+      // bug-hunt run157 BUG-02: clear narrative rows so a deleted character
+      // never leaves orphan assignments/support rows. Runs inside this
+      // transaction, so the two deletes are atomic with the deletion.
+      await NarrativeAssignmentRepository(
+        database: database,
+        projectId: projectId,
+      ).deleteForCharacter(id);
     });
     final project = await paths.project(projectId);
     final directory = Directory(

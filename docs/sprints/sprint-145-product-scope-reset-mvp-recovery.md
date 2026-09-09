@@ -3345,3 +3345,42 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   menyusul saat Choi menyetujui atau run interaktif berikutnya. Pointer
   tetap 145.27; tidak push (ahead 10); tidak ada file lib/test lain yang
   berubah.
+
+### 2026-09-10 - nephthys (cron run170): latent hunt-run157 BUG-07/10/11/13 + BUG-19 CLOSED (TDD)
+
+- Slice: sisa bug REAL terkonfirmasi Referee run157 yang masih latent
+  (semua Low; Medium BUG-06 sudah dipatch 0034331 oleh sesi interaktif
+  2026-09-09, diverifikasi di tree live + test regression hijau). Batch
+  domain-coherent pada lib/features/workspaces + inspector support section:
+  BUG-07 (null-session _load() menyimpan _supports = const [] -> fake
+  empty "No support relationships yet" tanpa session; kini state not-ready
+  null dipertahankan, build merender "Loading..."), BUG-10 (copyWith tidak
+  bisa clear purpose/separationReason; ditambah flag clearPurpose/
+  clearSeparationReason pola clearX konvensi repo, nilai + flag = nilai
+  menang), BUG-11 (fromJson domain abort total pada satu token asing/non-
+  string; kini toleran per-entry selaras decode repository: role asing
+  di-skip, enum skalar fallback unspecified, optional non-string di-drop;
+  dua asersi ketat lama di narrative_assignment_test.dart diperbarui
+  intent-preserving - token asing tetap tidak pernah diadopsi sebagai
+  nilai valid), BUG-13 (listSupportsFor kini orderBy story+supported
+  identik listSupports), BUG-19 (dead helper roleTokensToRoles dihapus;
+  grep zero callers).
+- TDD: RED mekanisme-eksak terverifikasi (BUG-07: "No support relationships
+  yet" dirender tanpa session; BUG-10: compile RED missing named parameter;
+  BUG-11: ArgumentError dari fromJson token asing; BUG-13: insertion order
+  ['novel-c','novel-a','novel-b'] vs ekspektasi terurut). Pitfall harness
+  tercatat: SupportRelationship non-const (runtime validation) - fixture
+  test wajib tanpa const; listSupportsFor(supportedId) memfilter
+  karakter yang DIDUKUNG, bukan source.
+- Bukti: GREEN focused 10/10 (narrative_latent_fixes_test,
+  support_relationship_copywith_clear_test,
+  support_relationship_section_null_session_test); regresi
+  test/features/workspaces + test/features/inspector 124 PASS/0 FAIL;
+  flutter analyze --no-pub No issues found (12,6s); dart format 7 owned
+  files (4 changed, style-only); git diff --check exit 0; flutter build
+  windows --debug --no-pub PASS (25,6s).
+- Commit e51d44c (7 file: 3 lib + 4 test, +333/-29). Sibling untracked
+  docs dipreservasi. Tidak push (ahead 12). Sisa hunt run157: BUG-17
+  (Low, decision-owned Choi - vocabulary group support), BUG-03/04/08
+  (Low, sudah dipatch sesi interaktif sebelumnya), lainnya dead-path
+  telah ditutup batch ini. Pointer tetap 145.27.

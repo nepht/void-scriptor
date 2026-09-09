@@ -3,6 +3,38 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/workspace/presentation/workspace_resolver.dart';
 
 void main() {
+  testWidgets('novel creation failure is visible, not silently swallowed', (
+    tester,
+  ) async {
+    // hunt run165 BUG-04 (Referee REAL BUG Medium): exception di dalam
+    // onCreateNovel lepas dari callback tombol tanpa await menuju global
+    // zone handler - tercatat di log, tidak pernah terlihat pengguna,
+    // sementara snackbar 'Novel created.' hanya pernah tampil saat sukses.
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ProjectOverview(
+            onCreateNovel: (title) async {
+              throw Exception('simulated persist failure');
+            },
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Create Novel'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.bySemanticsLabel('Novel title'),
+      'Void Cube Saga',
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Create'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Novel created.'), findsNothing);
+    expect(find.text('Novel gagal dibuat. Coba lagi.'), findsOneWidget);
+  });
+
   testWidgets('project overview creates a novel from title input', (
     tester,
   ) async {

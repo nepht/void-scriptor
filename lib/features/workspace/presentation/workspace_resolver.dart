@@ -300,7 +300,18 @@ class ProjectOverview extends StatelessWidget {
       ),
     );
     if (submitted == null || onCreateNovel == null) return;
-    await onCreateNovel!(submitted);
+    // hunt run165 BUG-04 (Referee REAL BUG Medium): persist failure tidak
+    // boleh lepas ke global zone handler tanpa feedback - pola yang sama
+    // dengan _createFaction di bawah.
+    try {
+      await onCreateNovel!(submitted);
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Novel gagal dibuat. Coba lagi.')),
+      );
+      return;
+    }
     if (!context.mounted) return;
     ScaffoldMessenger.of(
       context,

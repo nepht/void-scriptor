@@ -6,6 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/commands/project_mutation_state.dart';
+import '../../../core/domain/asset_type.dart';
+import '../../../core/selection/selection_controller.dart';
+import '../../../core/selection/selection_model.dart';
 import '../../../features/explorer/presentation/explorer_panel.dart';
 import '../../../features/inspector/presentation/inspector_panel.dart';
 import '../../../features/project_resilience/application/project_mutation_runtime.dart';
@@ -157,6 +160,20 @@ class VoidDesktopShell extends ConsumerWidget {
                         database: session.database,
                       ),
                       projectId: session.manifest.id,
+                      // BUG-02 (hunt-20260910): route faction hits through the
+                      // shared selectionProvider (same typed SelectionModel as
+                      // Explorer) so the resolver opens the faction branch.
+                      onSelectFaction: (factionId, factionName) {
+                        ref
+                            .read(selectionProvider.notifier)
+                            .select(
+                              SelectionModel(
+                                assetId: factionId,
+                                assetType: AssetType.faction,
+                                projectId: session.manifest.id,
+                              ),
+                            );
+                      },
                     );
                   },
             onLogout: onLogout,

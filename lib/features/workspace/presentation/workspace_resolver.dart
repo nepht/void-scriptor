@@ -148,6 +148,21 @@ class WorkspaceResolver extends ConsumerWidget {
                   sheetContext,
                   launcher: GlobalSearchLauncher(database: session.database),
                   projectId: session.manifest.id,
+                  // BUG-02 (hunt-20260910): a faction hit has no Assets row and
+                  // no typed AssetType, so the sheet routes it through this
+                  // callback; write the same typed faction SelectionModel the
+                  // Explorer writes so the resolver opens the faction branch.
+                  onSelectFaction: (factionId, factionName) {
+                    ref
+                        .read(selectionProvider.notifier)
+                        .select(
+                          SelectionModel(
+                            assetId: factionId,
+                            assetType: AssetType.faction,
+                            projectId: session.manifest.id,
+                          ),
+                        );
+                  },
                 );
               },
       );

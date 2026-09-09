@@ -47,7 +47,13 @@ class GlobalSearchLauncher {
     for (final row in await database.assetDao.getAllAssets()) {
       if (row.projectId != projectId) continue;
       final type = _typeFromStorage(row.type);
-      if (types.isNotEmpty && (type == null || !types.contains(type))) {
+      if (type == null) {
+        // Storage rows whose type cannot map to AssetType (e.g. legacy
+        // hair_variant rows) have no typed selection route; listing them
+        // would dead-end on a no-op callback (BUG-02).
+        continue;
+      }
+      if (types.isNotEmpty && !types.contains(type)) {
         continue;
       }
       final title = row.name;
@@ -57,7 +63,7 @@ class GlobalSearchLauncher {
         GlobalSearchHit(
           id: row.id,
           title: title,
-          subtitle: type?.name ?? row.type,
+          subtitle: type.name,
           score: score,
           assetType: type,
         ),

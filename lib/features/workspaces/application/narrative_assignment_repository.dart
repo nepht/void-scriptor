@@ -56,6 +56,16 @@ class NarrativeAssignmentRepository {
         .go();
   }
 
+  /// Every narrative assignment of this project (all novels, all characters).
+  /// Used by the explorer character-list filter; rows are project-scoped so
+  /// assignments of other projects never leak in.
+  Future<List<domain.NarrativeAssignment>> listAssignments() async {
+    final rows = await (database.select(
+      database.characterNarrativeAssignments,
+    )..where((row) => row.projectId.equals(projectId))).get();
+    return rows.map(_assignmentFromRow).toList(growable: false);
+  }
+
   Future<List<domain.SupportRelationship>> listSupports(
     String sourceCharacterId,
   ) async {

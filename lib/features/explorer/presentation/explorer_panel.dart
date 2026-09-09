@@ -33,6 +33,9 @@ import '../../environment/domain/environment_type.dart';
 import '../../story/application/create_story_service.dart';
 import '../../wardrobe/application/create_wardrobe_service.dart';
 import '../../weapon/application/create_weapon_service.dart';
+import '../../workspaces/application/narrative_assignment_repository.dart';
+import '../../workspaces/domain/narrative_assignment.dart';
+import '../../workspaces/domain/narrative_character_filter.dart';
 import '../application/project_sidebar_module_preferences.dart';
 import '../../workspace/application/workspace_section_controller.dart';
 
@@ -108,6 +111,19 @@ final storyExplorerProvider = FutureProvider.family<List<Asset>, String>((
 
 /// Tracks the semantic section requested by top-bar navigation.
 final explorerAssetFocusProvider = StateProvider<AssetType?>((ref) => null);
+
+/// All narrative assignments of the active project (empty when no session).
+/// Feeds the explorer character-list narrative filter (backlog
+/// character-roles-support phase_one).
+final explorerNarrativeAssignmentsProvider =
+    FutureProvider<List<NarrativeAssignment>>((ref) async {
+      final session = ref.watch(projectSessionProvider).valueOrNull;
+      if (session == null) return const [];
+      return NarrativeAssignmentRepository(
+        database: session.database,
+        projectId: session.manifest.id,
+      ).listAssignments();
+    });
 
 AssetType? explorerAssetTypeForMenu(String menu) => switch (menu) {
   'story' || 'novels' => AssetType.story,
@@ -1147,7 +1163,7 @@ class _ExplorerItem extends StatelessWidget {
   );
 }
 
-class _CharacterGroup extends StatelessWidget {
+class _CharacterGroup extends ConsumerStatefulWidget {
   const _CharacterGroup({
     required this.characters,
     required this.selectedId,
@@ -1161,50 +1177,210 @@ class _CharacterGroup extends StatelessWidget {
   final VoidCallback? onFocused;
   final ValueChanged<CharacterModel> onSelected;
   @override
-  Widget build(BuildContext context) => ExpansionTile(
-    onExpansionChanged: (_) => onFocused?.call(),
-    initiallyExpanded: true,
-    backgroundColor: focused
-        ? context.palette.primary.withValues(alpha: 0.08)
-        : null,
-    tilePadding: const EdgeInsets.symmetric(horizontal: 9),
-    childrenPadding: const EdgeInsets.only(left: 28),
-    leading: Icon(
-      Icons.people_outline,
-      size: 16,
-      color: context.palette.textMuted,
-    ),
-    title: Text(
-      'Characters',
-      style: TextStyle(color: context.palette.textSecondary, fontSize: 12),
-    ),
-    children: characters.when(
-      loading: () => [const ListTile(dense: true, title: Text('Loading...'))],
-      error: (error, _) => [ListTile(dense: true, title: Text('$error'))],
-      data: (items) => items.isEmpty
-          ? [const ListTile(dense: true, title: Text('No characters yet'))]
-          : items
-                .map(
-                  (item) => ListTile(
-                    dense: true,
-                    minTileHeight: 30,
-                    title: Text(
-                      item.displayName,
-                      style: TextStyle(
-                        color: context.palette.textMuted,
-                        fontSize: 11,
+  ConsumerState<_CharacterGroup> createState() => _CharacterGroupState();
+}
+
+class _CharacterGroupState extends ConsumerState<_CharacterGroup> {
+  NarrativeRole? _role;
+  NarrativeImportance? _importance;
+  NarrativePov? _pov;
+
+  bool get _hasActiveFilter =>
+      _role != null || _importance != null || _pov != null;
+
+  NarrativeCharacterFilter get _filter =>
+      NarrativeCharacterFilter(role: _role, importance: _importance, pov: _pov);
+
+  Future<void> _showFilterMenu() async {
+    NarrativeRole? role = _role;
+    NarrativeImportance? importance = _importance;
+    NarrativePov? pov = _pov;
+    final applied = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
+          title: const Text('Filter Characters'),
+          content: SizedBox(
+            width: 280,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Role'),
+                DropdownButton<NarrativeRole>(
+                  isExpanded: true,
+                  value: role,
+                  hint: const Text('All roles'),
+                  items: [
+                    for (final value in NarrativeRole.values)
+                      DropdownMenuItem(
+                        value: value,
+                        child: Text(switch (value) {
+                          NarrativeRole.protagonist => 'Protagonist',
+                          NarrativeRole.antagonist => 'Antagonist',
+                          NarrativeRole.supporting => 'Supporting',
+                          NarrativeRole.background => 'Background',
+                        }),
                       ),
+                  ],
+                  onChanged: (value) => setDialogState(() => role = value),
+                ),
+                const SizedBox(height: 8),
+                const Text('Importance'),
+                DropdownButton<NarrativeImportance>(
+                  isExpanded: true,
+                  value: importance,
+                  hint: const Text('All importance levels'),
+                  items: [
+                    for (final value in NarrativeImportance.values)
+                      DropdownMenuItem(
+                        value: value,
+                        child: Text(switch (value) {
+                          NarrativeImportance.major => 'Major',
+                          NarrativeImportance.supporting => 'Supporting',
+                          NarrativeImportance.minor => 'Minor',
+                          NarrativeImportance.unspecified => 'Unspecified',
+                        }),
+                      ),
+                  ],
+                  onChanged: (value) =>
+                      setDialogState(() => importance = value),
+                ),
+                const SizedBox(height: 8),
+                const Text('POV'),
+                DropdownButton<NarrativePov>(
+                  isExpanded: true,
+                  value: pov,
+                  hint: const Text('All POV values'),
+                  items: [
+                    for (final value in NarrativePov.values)
+                      DropdownMenuItem(
+                        value: value,
+                        child: Text(switch (value) {
+                          NarrativePov.yes => 'Yes',
+                          NarrativePov.no => 'No',
+                          NarrativePov.unspecified => 'Unspecified',
+                        }),
+                      ),
+                  ],
+                  onChanged: (value) => setDialogState(() => pov = value),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              key: const ValueKey('narrative-filter-reset'),
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Reset'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: const Text('Apply'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (!mounted) return;
+    setState(() {
+      if (applied == true) {
+        _role = role;
+        _importance = importance;
+        _pov = pov;
+      } else {
+        _role = null;
+        _importance = null;
+        _pov = null;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final assignments = ref
+        .watch(explorerNarrativeAssignmentsProvider)
+        .valueOrNull;
+    final filter = _filter;
+    final characters = widget.characters.valueOrNull;
+    final filtered = characters == null
+        ? null
+        : (filter.isActive
+              ? characters
+                    .where(
+                      (item) => filter.matchesCharacter(
+                        characterId: item.assetId,
+                        assignments: assignments ?? const [],
+                      ),
+                    )
+                    .toList(growable: false)
+              : characters);
+    return ExpansionTile(
+      onExpansionChanged: (_) => widget.onFocused?.call(),
+      initiallyExpanded: true,
+      backgroundColor: widget.focused
+          ? context.palette.primary.withValues(alpha: 0.08)
+          : null,
+      tilePadding: const EdgeInsets.symmetric(horizontal: 9),
+      childrenPadding: const EdgeInsets.only(left: 28),
+      leading: Icon(
+        Icons.people_outline,
+        size: 16,
+        color: context.palette.textMuted,
+      ),
+      title: Row(
+        children: [
+          Expanded(
+            child: Text(
+              'Characters',
+              style: TextStyle(
+                color: context.palette.textSecondary,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          if (widget.characters.hasValue && widget.characters.value!.isNotEmpty)
+            IconButton(
+              tooltip: 'Filter characters by narrative role',
+              icon: Icon(
+                Icons.filter_list,
+                size: 16,
+                color: _hasActiveFilter
+                    ? context.palette.primary
+                    : context.palette.textMuted,
+              ),
+              onPressed: _showFilterMenu,
+            ),
+        ],
+      ),
+      children: widget.characters.when(
+        loading: () => [const ListTile(dense: true, title: Text('Loading...'))],
+        error: (error, _) => [ListTile(dense: true, title: Text('$error'))],
+        data: (items) => items.isEmpty
+            ? [const ListTile(dense: true, title: Text('No characters yet'))]
+            : (filtered ?? items)
+                  .map(
+                    (item) => ListTile(
+                      dense: true,
+                      minTileHeight: 30,
+                      title: Text(
+                        item.displayName,
+                        style: TextStyle(
+                          color: context.palette.textMuted,
+                          fontSize: 11,
+                        ),
+                      ),
+                      selected: widget.selectedId == item.assetId,
+                      selectedTileColor: context.palette.primary.withValues(
+                        alpha: 0.12,
+                      ),
+                      onTap: () => widget.onSelected(item),
                     ),
-                    selected: selectedId == item.assetId,
-                    selectedTileColor: context.palette.primary.withValues(
-                      alpha: 0.12,
-                    ),
-                    onTap: () => onSelected(item),
-                  ),
-                )
-                .toList(),
-    ),
-  );
+                  )
+                  .toList(),
+      ),
+    );
+  }
 }
 
 class _WeaponGroup extends StatelessWidget {

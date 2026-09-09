@@ -69,6 +69,55 @@ void main() {
   NarrativeAssignmentRepository repoOf(ProjectDatabase db) =>
       NarrativeAssignmentRepository(database: db, projectId: 'project-1');
 
+  test('listAssignments returns every assignment of this project only', () async {
+    final dir = await Directory.systemTemp.createTemp('narr-persist-');
+    addTearDown(() => dir.delete(recursive: true));
+    final service = await createService();
+    final db = await openAt(service, dir.path);
+    addTearDown(db.close);
+
+    final repo = repoOf(db);
+    await repo.saveAssignment(
+      NarrativeAssignment(
+        novelWorkspaceId: 'novel-a',
+        characterId: 'char-1',
+        roles: {NarrativeRole.protagonist},
+        importance: NarrativeImportance.major,
+        pov: NarrativePov.yes,
+      ),
+    );
+    await repo.saveAssignment(
+      NarrativeAssignment(
+        novelWorkspaceId: 'novel-b',
+        characterId: 'char-1',
+        roles: {NarrativeRole.antagonist},
+      ),
+    );
+    // Assignment of a DIFFERENT project must not leak into this project's list.
+    await NarrativeAssignmentRepository(
+      database: db,
+      projectId: 'project-2',
+    ).saveAssignment(
+      NarrativeAssignment(
+        novelWorkspaceId: 'novel-a',
+        characterId: 'char-1',
+        roles: {NarrativeRole.background},
+      ),
+    );
+
+    final assignments = await repo.listAssignments();
+    expect(assignments, hasLength(2));
+    final byNovel = {
+      for (final assignment in assignments)
+        assignment.novelWorkspaceId: assignment,
+    };
+    expect(byNovel['novel-a']!.roles, {NarrativeRole.protagonist});
+    expect(byNovel['novel-a']!.importance, NarrativeImportance.major);
+    expect(byNovel['novel-a']!.pov, NarrativePov.yes);
+    expect(byNovel['novel-b']!.roles, {NarrativeRole.antagonist});
+    expect(byNovel['novel-b']!.importance, NarrativeImportance.unspecified);
+  });
+
   test('empty assignments and supports for unknown coordinates', () async {
     final dir = await Directory.systemTemp.createTemp('narr-persist-');
     addTearDown(() => dir.delete(recursive: true));

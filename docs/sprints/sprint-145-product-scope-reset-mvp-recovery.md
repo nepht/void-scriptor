@@ -3057,3 +3057,37 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   M, untracked docs/backlog, MASTER_SPRINT, website evidence json,
   AUTONOMOUS_ROADMAP_PROMPT) dipertahankan utuh. Pointer tetap 145.27;
   tidak push.
+
+### 2026-09-09 - nephthys (cron run160): slice BUG-06 run157 - tolerant decode + error surface explorer
+
+- Bug terkonfirmasi tersisa hunt run157 diprioritaskan (otorisasi 2026-09-07:
+  bug dulu, hunt baru menyusul bila scope baru). BUG-06 (Medium, REAL BUG):
+  satu token enum tak dikenal (vektor realistis: portable import lintas versi
+  / edit DB manual) membuat `listAssignments()` gagal seluruhnya, dan explorer
+  menelan error via `valueOrNull ?? const []` sehingga filter narrative aktif
+  mengkolapskan daftar karakter tanpa pesan.
+- RED mekanisme-eksak @ HEAD 3222ab4: test repo
+  test/features/workspaces/narrative_assignment_tolerant_decode_test.dart (2)
+  gagal dengan ArgumentError('Unknown narrative role: "time-lord"') dari
+  NarrativeRole.fromWire di listAssignments; test consumer
+  test/features/explorer/narrative_provider_error_surface_test.dart (3, provider
+  dioverride melempar StateError) gagal: tile error tidak ada (0 widgets) dan
+  filter aktif + error -> 0 ListTile karakter (list kosong senyap). Control
+  positif (provider sehat kosong = filter tetap menyaring, tanpa fake error)
+  PASS sejak RED: harness valid.
+- GREEN patch minimal dua layer (saran Referee): (1) repo - decode per-token
+  toleran (token asing dilewati dgn debugPrint warning, scalar asing ->
+  unspecified; koordinat novel/character row terjaga; fromWire domain tetap
+  strict); (2) _CharacterGroup - watch AsyncValue penuh, tile error terlihat
+  "Narrative data unavailable: <msg>" (danger palette), filter aktif fail-open
+  ke daftar penuh saat data unavailable.
+- Bukti: focused 5/5 PASS; regresi test/features/workspaces 89 PASS,
+  test/features/explorer 26 PASS, test/features/character 72 PASS (exit 0
+  semua); flutter analyze --no-pub No issues found (10,8s); dart format owned
+  4 file (3 changed); git diff --check exit 0; flutter build windows --debug
+  --no-pub PASS 25,9s.
+- Sisa REAL BUG run157: 12 Low (BUG-07..BUG-19 per referee-report, sebagian
+  test-only/latent); BUG-12/BUG-16 NOT A BUG. Next action: hunt baru region
+  berbeda atau slice Low prioritas tertinggi (BUG-08 error+retry card) pada
+  run berikutnya. Pointer tetap 145.27; tidak push; sibling dirty
+  (SPRINT_PROGRESS M, untracked docs) dipertahankan.

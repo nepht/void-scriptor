@@ -188,7 +188,11 @@ class WorkspaceResolver extends ConsumerWidget {
       AssetType.weapon => WeaponWorkspaceScreen(weaponId: selection.assetId),
       AssetType.armor ||
       AssetType.accessory ||
-      AssetType.prop => SupportingAssetWorkspaceScreen(
+      AssetType.prop ||
+      AssetType.vehicle => SupportingAssetWorkspaceScreen(
+        // BUG-09 (hunt run165): vehicle producible via Asset Browser create +
+        // search sheet; tanpa case ini selection vehicle dead-end ke overview
+        // tanpa callback. Layar supporting-asset bersifat data-driven.
         assetId: selection.assetId,
         activeSection: activeSection,
       ),

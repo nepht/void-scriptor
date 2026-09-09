@@ -78,6 +78,12 @@ class _NarrativeAssignmentCardState
   bool _saving = false;
   String? _error;
 
+  /// Terminal failure marker for the current load (hunt-run157 BUG-08): a
+  /// failed load must REPLACE the editor with an explicit error + Retry
+  /// control instead of leaving the eternal "Loading assignment..." line
+  /// rendered alongside the error.
+  bool _failed = false;
+
   /// Monotonic request token for [NarrativeNovelOption] loads. A completion
   /// from an older token (superseded by a newer novel pick or a character
   /// switch) must never write editor state — a stale completion left
@@ -97,6 +103,8 @@ class _NarrativeAssignmentCardState
       _roles = <NarrativeRole>{};
       _importance = NarrativeImportance.unspecified;
       _pov = NarrativePov.unspecified;
+      _failed = false;
+      _error = null;
     }
   }
 
@@ -113,7 +121,17 @@ class _NarrativeAssignmentCardState
     final epoch = ++_loadEpoch;
     final characterId = widget.characterId;
     final session = ref.read(projectSessionProvider).valueOrNull;
-    if (session == null) return;
+    if (session == null) {
+      // hunt-run157 BUG-09: a vanished session between the options-provider
+      // build and this pick used to return silently, leaving the card stuck
+      // on "Loading assignment..." with no error. Surface it explicitly.
+      setState(() {
+        _error = 'No project session.';
+        _failed = true;
+        _loading = false;
+      });
+      return;
+    }
     final repositoryFactory = ref.read(
       narrativeAssignmentRepositoryFactoryProvider,
     );
@@ -121,6 +139,7 @@ class _NarrativeAssignmentCardState
     setState(() {
       _loading = true;
       _error = null;
+      _failed = false;
     });
     try {
       final assignment = await repo.getAssignment(
@@ -134,14 +153,26 @@ class _NarrativeAssignmentCardState
         _pov = assignment?.pov ?? NarrativePov.unspecified;
         _loadedForCurrentNovel = true;
         _loading = false;
+        _failed = false;
       });
     } catch (error) {
       if (!mounted || epoch != _loadEpoch) return;
       setState(() {
         _error = '$error';
+        // Terminal failed state: the build renders error + Retry INSTEAD of
+        // the editor and the eternal loading line (BUG-08).
+        _failed = true;
         _loading = false;
       });
     }
+  }
+
+  /// Retry after a terminal load failure: re-run the load for the currently
+  /// selected novel (hunt-run157 BUG-08).
+  void _retryLoad() {
+    final novel = _selectedNovel;
+    if (novel == null) return;
+    _loadFor(novel);
   }
 
   Future<void> _save() async {
@@ -313,11 +344,15 @@ class _NarrativeAssignmentCardState
             ],
           ),
           const SizedBox(height: 12),
-          if (_error != null) ...[
+          if (_failed) ...[
             Text('Could not load assignment: $_error'),
             const SizedBox(height: 8),
-          ],
-          if (_loading || !_loadedForCurrentNovel)
+            ActionChip(
+              avatar: const Icon(Icons.refresh, size: 14),
+              label: const Text('Retry'),
+              onPressed: _retryLoad,
+            ),
+          ] else if (_loading || !_loadedForCurrentNovel)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 8),
               child: Text('Loading assignment...'),

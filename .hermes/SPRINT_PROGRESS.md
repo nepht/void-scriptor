@@ -854,3 +854,29 @@ Next action: monitor subtree lain Choirutin push/pull. TIDAK push HEAD 3a1edf2 (
 - Scoped dart format + dart analyze: No issues found.
 - Commit: 99e4800 (nephthys, 2026-08-29 11:35 WIB, cron remediation).
 - Catatan jujur: push mengikuti kontrak push butuh izin; tidak push otomatis.
+## Run153 — Acceptance handoff single-writer + bukti export/import narrative (nephthys, 2026-09-09 cron)
+
+- ACCEPTANCE OF HANDOFF (RELEASED_TO_HERMES 2026-09-08): Hermes menerima
+  kepemilikan mutasi worktree canonical D:\VoidScriptor\void_scriptor_multiplatform
+  dari pemilik Codex interaktif sebelumnya. Dibaca: HERMES_SINGLE_WRITER_HANDOFF.md,
+  HERMES_WEBSITE_DOWNLOAD_HANDOFF_2026-09-08.md, baseline 30 file (inventaris,
+  bukan kepemilikan). Perubahan sibling dipertahankan utuh.
+- Slice run153: acceptance backlog character-roles-support "Save/reopen and
+  applicable import/export preserve all fields" untuk tabel v60
+  character_narrative_assignments + character_support_relationships via jalur
+  produksi PortableProjectExporter -> PortableProjectImporter (zip .voidproject
+  penuh, checksum, path-escape guard) pada project fixture temporer.
+- Test baru test/features/project_resilience/portable_narrative_roundtrip_test.dart
+  (2 test): same-identity import mempertahankan assignment (roles ganda,
+  importance major, POV yes) + dua support (protector/permanent,
+  mentor/temporary/separated/purpose/separationReason); import-as-copy
+  me-rewrite project_id di baris narrative ke id baru dgn field utuh.
+- Bukti aktual run ini: focused 2/2 PASS; regression
+  test/features/project_resilience 196 PASS +1 skip +0 FAIL;
+  test/features/workspaces 87 PASS; dart format owned 1 file;
+  flutter analyze --no-pub: No issues found; git diff --check: exit 0.
+- Status backlog phase_one: persistence VERIFIED, UI edit/filter VERIFIED
+  (run151/152), export/import preservation VERIFIED (run153). Sisa:
+  narrow-layout/text-scale UI acceptance baru dan native journey
+  (UNVERIFIABLE dari cron tanpa sesi desktop).
+- Pointer 145.27 tidak dipindah. Tidak push (ahead 15).

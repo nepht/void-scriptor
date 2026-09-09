@@ -3167,6 +3167,39 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   run berikutnya. Pointer tetap 145.27; tidak push; sibling dirty
   (SPRINT_PROGRESS M, untracked docs) dipertahankan.
 
+### 2026-09-10 - nephthys (cron run166): slice BUG-04 hunt run165 - failure snackbar rantai create novel
+
+- Bug terkonfirmasi Referee run165 BUG-04 (Medium) DIPERBAIKI (commit
+  1b39986): `ProjectOverview._createNovel` kini menangkap exception dari
+  rantai `onCreateNovel` (createStory -> createChapter -> createScene,
+  resolver 110-143) dan menampilkan snackbar 'Novel gagal dibuat. Coba
+  lagi.' mengikuti pola `_createFaction` di file yang sama; exception
+  sebelumnya lepas ke `PlatformDispatcher.instance.onError`
+  (crash_diagnostics.dart:231-234) - tercatat di log, tidak pernah
+  terlihat pengguna; snackbar 'Novel created.' hanya pernah muncul saat
+  sukses. Memenuhi kontrak region "persist failure visibly" (map 145.43
+  error recovery). RED mekanisme-eksak: callback melempar -> 0 widget
+  'Novel gagal dibuat' sebelum patch (test/features/story/
+  novel_creation_action_test.dart). GREEN focused 2/2; regresi
+  story+workspace 207 PASS, explorer+inspector+character 126 PASS;
+  analyze No issues (13,5s); diff --check 0; build windows debug PASS
+  31,9s; guard PASS pre (pointer 145.27).
+- Commit 1defbce format-only: 8 file legacy unformatted (project_paths,
+  integrity_manifest, support_relationship_section + 5 test) tertandai
+  gate CI Verify formatting; token stream diverifikasi identik ke HEAD
+  (normalisasi whitespace+koma per file); test region 19 PASS sebelum
+  format. Format gate penuh (dart 3.44.6 lokal + SDK CI 3.44.9, daftar
+  file identik) kini exit 0.
+- Sisa hunt run165: BUG-02 (Medium, wire onSelectFaction di resolver
+  147-151 + desktop shell 154-160 + jalur null-type hair_variant),
+  BUG-05 (Medium, creature intent -> WorldbuildingBody generik tanpa
+  recovery), BUG-09 (Low, vehicle selection dead-end). Kandidat slice
+  run berikutnya. Atomicity story+chapter+scene satu transaksi masih
+  deferred (butuh perubahan CreateStoryService; slice ini menutup
+  visible-failure half; partial state tetap mungkin saat chapter/scene
+  gagal - dilaporkan jujur sebagai sisa BUG-04). Pointer tetap 145.27;
+  tidak push.
+
 ### 2026-09-10 - nephthys (cron run165): adversarial bug-hunt region workspace-switch (scan-only)
 
 - Antrean bug run157 tuntas (run158-164 menutup semua Medium + sebagian Low;

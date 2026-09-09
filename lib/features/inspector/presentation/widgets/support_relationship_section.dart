@@ -61,6 +61,20 @@ class _SupportRelationshipSectionState
     _load();
   }
 
+  @override
+  void didUpdateWidget(SupportRelationshipSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.assetId != widget.assetId) {
+      // Character switched in place (no key change): drop this character's
+      // stale rows immediately so the next frame can never render the
+      // previous character's relationships (hunt-run157 referee observation),
+      // then reload for the new asset.
+      _supports = null;
+      _characterNames = const {};
+      _load();
+    }
+  }
+
   Future<void> _load() async {
     final session = ref.read(projectSessionProvider).valueOrNull;
     if (session == null || !mounted) {

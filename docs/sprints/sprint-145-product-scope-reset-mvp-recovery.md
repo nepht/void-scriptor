@@ -1,3 +1,44 @@
+### 2026-09-10 - nephthys (cron run175): slice BUG-8 hunt run171 - retry katalog gagal unstrand typed intent
+
+- Slice: bug Referee run171 BUG-8 (Medium) DIPERBAIKI (commit bd4ee9b, 4 file
+  +271/-2): katalog yang gagal pada load pertama menyandera intent typed
+  story/environment - baris error grup Explorer hanyalah teks `$error` tanpa
+  aksi, recovery (`explorerCatalogRecoveryProvider`) hanya menunggu re-emit
+  yang tidak pernah terjadi (FutureProvider tidak auto-retry setelah error),
+  dan tap ulang navigasi dead-end senyap. Menutup prioritas pengguna
+  2026-09-04 #2 (tangani error/retry pemulihan pilihan).
+- Fix minimal tiga titik, pola retry `_CreatureEmptyState` (BUG-05 run168):
+  (1) `StoryGroup`/`EnvironmentGroup` menerima `onRetry?` opsional; baris
+  error kini `palette.danger` + `IconButton(tooltip: 'Coba lagi')` yang
+  meng-invalidate provider katalog proyek aktif (null saat tanpa session);
+  (2) call-site ExplorerPanel meng-wire `onRetry: () =>
+  ref.invalidate(storyExplorerProvider/environmentExplorerProvider(projectId))`;
+  (3) recovery provider tidak berubah perilaku - komentar BUG-8 ditambahkan
+  menjelaskan kontrak menunggu re-emit dari retry; setelah katalog pulih,
+  recovery memulihkan intent terstranding tanpa navigasi ulang.
+- RED mekanisme-eksak (test/features/explorer/
+  explorer_catalog_error_retry_test.dart, 3 testWidgets, Drift + package
+  nyata, override provider dengan flag fail-injection yang dibaca
+  ref.read): katalog story/environment gagal load pertama -> error row
+  dirender TANPA affordance retry (Expected findsOneWidget byTooltip, Actual
+  0) + recovery tidak pernah memulihkan selection. Pitfall harness
+  terekam: (a) AsyncError Riverpod MENGEMBALIKAN data sebelumnya pada reload
+  gagal - kegagalan harus di-inject SEBELUM load pertama agar error state
+  tanpa nilai (mekanisme penyanderaan eksak); (b) affordance retry adalah
+  IconButton tooltip, bukan Text - assert via find.byTooltip; (c) tap header
+  'Environments' pertama hanya focus + collapse tile initially-expanded -
+  re-expand dulu sebelum assert baris error (meniru aksi pengguna nyata).
+- Bukti: GREEN focused 3/3; regresi test/features/explorer + workspace +
+  app/shell 97 PASS/0 FAIL (background 2m24s); flutter analyze --no-pub No
+  issues found (156,3s); dart format owned 4 file (2 changed, style-only,
+  focused re-run tetap 3/3); git diff --check exit 0; flutter build windows
+  --debug PASS 44,6s; guard PASS pre-run (pointer 145.27, sha 86af6a5).
+- Sisa hunt run171: BUG-9 (Medium, story creation 3 langkah non-transaksional
+  di 2 call site - kandidat slice berikutnya) + 7 Low (BUG-3, 10-15, 18, 20).
+  Native GUI UNVERIFIABLE dari cron (sesi computer-use tidak tersedia run
+  ini). Pointer tetap 145.27; tidak push (ahead 22); sibling untracked docs
+  dipreservasi.
+
 ### 2026-09-10 - nephthys (cron run174): slice BUG-4 hunt run171 - top-bar Projects routing
 
 - Slice: bug Referee run171 BUG-4 (Medium) DIPERBAIKI (commit c0a95d8, 3 file

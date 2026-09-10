@@ -237,6 +237,100 @@ void main() {
     expect(find.text('Filter Characters'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'dismissing the filter dialog keeps the active filter; Reset still clears',
+    (tester) async {
+      // Hunt run171 BUG-11 (Referee: REAL BUG, Low): showDialog<bool> yields
+      // null on barrier dismissal, and the old `else` branch treated that
+      // exactly like an explicit Reset — an accidental outside-tap silently
+      // discarded the user's active filter. Contract now: only an explicit
+      // result mutates state (true -> apply, false -> reset); null is a
+      // no-op that leaves both the applied filter and the session intact.
+      final session =
+          (await tester.runAsync<ProjectSession>(createSession)) ??
+          (throw StateError('temporary session unavailable'));
+      addTearDown(() async {
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump();
+        await tester.runAsync(() => session.close());
+      });
+      await tester.runAsync(() async {
+        await seedCharacter(session, id: 'c-protag', name: 'Alira');
+        await seedCharacter(session, id: 'c-antag', name: 'Bravant');
+        await repoOf(session).saveAssignment(
+          NarrativeAssignment(
+            novelWorkspaceId: 'novel-1',
+            characterId: 'c-protag',
+            roles: {NarrativeRole.protagonist},
+            importance: NarrativeImportance.major,
+            pov: NarrativePov.yes,
+          ),
+        );
+      });
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            projectSessionProvider.overrideWith(() => _FixedSession(session)),
+            projectPathsProvider.overrideWithValue(
+              ProjectPaths(rootDirectory: Directory.systemTemp),
+            ),
+          ],
+          child: const MaterialApp(
+            home: Scaffold(body: SizedBox(width: 320, child: ExplorerPanel())),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      List<String> visibleNames() => [
+        'Alira',
+        'Bravant',
+      ].where((name) => characterTile(name).evaluate().isNotEmpty).toList();
+
+      expect(visibleNames(), ['Alira', 'Bravant']);
+
+      // Apply a protagonist filter first, so dismissal has something to lose.
+      await openFilterMenu(tester);
+      await tester.tap(find.text('All roles'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Protagonist').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Apply'));
+      await tester.pumpAndSettle();
+      expect(visibleNames(), ['Alira']);
+
+      // Re-open the dialog and tap the barrier (dismiss -> null result).
+      await openFilterMenu(tester);
+      expect(find.text('Filter Characters'), findsOneWidget);
+      await tester.tapAt(const Offset(5, 5));
+      await tester.pumpAndSettle();
+      expect(find.text('Filter Characters'), findsNothing);
+
+      // The active filter must survive the accidental dismissal.
+      expect(visibleNames(), ['Alira']);
+
+      // Explicit Reset keeps working: clears the filter.
+      await openFilterMenu(tester);
+      await tester.tap(find.text('Reset'));
+      await tester.pumpAndSettle();
+      expect(visibleNames(), ['Alira', 'Bravant']);
+
+      // Dismissal with unsaved dropdown changes neither applies nor clears:
+      // change the dropdown, dismiss, and the unfiltered state persists.
+      await openFilterMenu(tester);
+      await tester.tap(find.text('All roles'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Antagonist').last);
+      await tester.pumpAndSettle();
+      await tester.tapAt(const Offset(5, 5));
+      await tester.pumpAndSettle();
+      expect(visibleNames(), ['Alira', 'Bravant']);
+
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
 
 class _FixedSession extends ProjectSessionController {

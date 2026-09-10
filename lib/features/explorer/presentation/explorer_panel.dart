@@ -1362,8 +1362,13 @@ class _CharacterGroupState extends ConsumerState<_CharacterGroup> {
       ),
     );
     if (!mounted) return;
+    // Hunt run171 BUG-11: showDialog<bool> returns null on dismissal (barrier
+    // tap / back). Only an explicit result may mutate the filter: true applies
+    // the edited dropdowns, false is the explicit Reset. Null is a no-op so an
+    // accidental dismissal cannot silently discard the active filter.
+    if (applied == null) return;
     setState(() {
-      if (applied == true) {
+      if (applied) {
         _role = role;
         _importance = importance;
         _pov = pov;

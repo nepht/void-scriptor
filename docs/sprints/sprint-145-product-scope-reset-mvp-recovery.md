@@ -1,3 +1,47 @@
+### 2026-09-10 - nephthys (cron run181): BUG-15 genre substring false positive CLOSED (hunt run171 fix #11)
+
+- Slice: bug terkonfirmasi Referee run171 BUG-15 (Low, REAL BUG) DIPERBAIKI
+  (commit 27df525, 2 file +55/-3). Mekanisme terverifikasi di kode hidup
+  (lib/features/explorer/application/project_sidebar_module_preferences.dart
+  - lokasi aktual application/, report menyebut presentation/): `normalized.
+  contains(alias)` di profileFor dan `terms.any(genre.contains)` di
+  recommend() membuat 'live-action' mengadopsi profil Action (weapons=true)
+  dan 'warehouse mystery' mengenai term 'war' via frasa faction.
+- Patch minimal mengikuti arah Referee: helper _containsWholePhrase (padded
+  ' genre 'contains ' phrase ') dipakai di kedua situs - alias/term harus
+  muncul sebagai frasa utuh berseparasi. Spellings nyata ('science fiction',
+  'Military science fiction', 'School romance', 'Science Fantasy',
+  'warehouse mystery'->mystery) tetap match; preferensi tersimpan pengguna
+  dan override dialog tidak tersentuh (murni jalur rekomendasi).
+- TDD: RED mekanisme-eksak 2 FAIL eksak pada kode lama ('live-action'
+  Expected null Actual SidebarGenreProfile; warehouse.weapons Expected false
+  Actual true) -> GREEN focused 6/6. Regresi: test/features/explorer 36 PASS
+  (berurutan, flutter_tester dibersihkan), test/features/dashboard 11 PASS
+  (konsumen policy); dart analyze FULL No issues (16,9s); format owned
+  --set-exit-if-changed 0 changed; git diff --check exit 0; flutter build
+  windows --debug --no-pub PASS 33,2s; roadmap guard PASS pre-run DAN
+  post-commit (pointer 145.27, sha canonical 86af6a5).
+- Konkurensi/admisi: handoff single-writer RELEASED_TO_HERMES 2026-09-08
+  diacknowledged ulang; baseline fad8c546 terverifikasi ancestor HEAD
+  655e506 (rantai run171-179 telah dipush sibling - ahead kini 1 sebelum
+  commit ini). codex.exe hidup tapi read-only sesuai rilis; region
+  project_sidebar_module_preferences bersih (unmodified, mtime 07-09) -
+  bukan area sibling. Dirty .hermes/ROADMAP_STATE.json + untracked docs
+  (AUTONOMOUS_ROADMAP_PROMPT.md, MASTER_SPRINT.md, docs/backlog/,
+  website-source-reconciliation) DIPRESERVASI, tidak di-commit.
+- Sisa hunt run171 (Low): BUG-10 (getAllAssets full-table per family, butuh
+  DAO scoped query), BUG-12 (filter assignments loading render nol tile,
+  fail-open), BUG-14 (ref.read pasca-await dialog tanpa mounted guard,
+  runtime claim), BUG-20 (error module-prefs senyap, butuh surface retry).
+  Matriks 145.42 sudah rapat: sisa hardware-bound (power_loss, device
+  min-spec = keputusan Choi) + media virtual (disk_full/drive retesifikasi).
+  Native GUI UNVERIFIABLE dari cron (test domain). Tidak push.
+- Next action: satu Low run171 berikutnya (BUG-12 fail-open terkecil, atau
+  BUG-20 ikut pola retry run175; BUG-10 butuh scoped DAO) ATAU keputusan
+  Choi 145.43-145.50 / pekerjaan website-download (permintaan 2026-09-08,
+  butuh verifikasi login Cloudflare interaktif - laporan kebutuhan, bukan
+  eksekusi cron tanpa sesi).
+
 ### 2026-09-10 - nephthys (cron run180): BUG-3 persist listener tanpa try/catch CLOSED (hunt run171 fix #10)
 
 - Slice: bug terkonfirmasi Referee run171 BUG-3 (Low, REAL BUG) DIPERBAIKI

@@ -1,3 +1,30 @@
+### 2026-09-10 - nephthys (cron run173): slice BUG-7 hunt run171 - mobile shell requiresProject guard live-session
+
+- Slice: bug Referee run171 BUG-7 (Medium) DIPERBAIKI (commit 6bb7829):
+  guard requiresProject VoidMobileShell hanya membaca widget.projectId
+  (non-null hanya di /studio/:projectId); /workspace mem-mount shell tanpa
+  projectId sehingga Characters/World dengan sesi live salah push Projects
+  dan focusExplorerAsset tidak pernah tercapai. GREEN minimal: navigasi
+  diizinkan saat currentProjectIdProvider live; fallback param
+  mempertahankan kontrak no-session -> Projects.
+- Kepemilikan: region shell mobile bebas sibling (mtime 2026-09-06); sibling
+  interaktif aktif menulis workspace_resolver + hunt171 test selama run
+  berjalan (mtime 11:00-11:08, terpantau dua file berubah) -> region resolver
+  DIHINDARI; sibling menuntaskan & commit sendiri (2ad0135 + ledger b08b265)
+  sebelum commit slice ini; tanpa sentuhan silang file.
+- RED mekanisme-eksak @ 2ad0135: test/app/shell/void_mobile_shell_project_
+  guard_test.dart - BUG-7a sesi live nyata (package+Drift temp, pola runAsync)
+  tap Characters => "Projects Page" ter-push (gagal eksak alasan bug);
+  BUG-7b tanpa sesi tetap Projects (kontrak lama terkunci).
+- Bukti: focused 2/2 PASS; regresi test/app/shell 32/32 PASS; analyze
+  (lib/app/shell + test/app/shell) No issues; format 0 changed; git diff
+  --check exit 0; build windows debug --no-pub PASS 26,0s; guard PASS
+  pre+post (pointer 145.27, sha 86af6a5). Tidak push.
+- Sisa hunt-run171 REAL BUG terbuka: BUG-3/4/8-16 (BUG-2 run172, BUG-5/6
+  sibling, BUG-7 run173). Next action: BUG-8 (typed intent terstrand saat
+  katalog gagal, explorer_panel - kini bebas sibling) atau BUG-4 (top-bar
+  desktop Projects). Native mobile journey UNVERIFIABLE dari cron.
+
 ### 2026-09-08 - run140 interactive nephthys: hunt-run171 BUG-5 + BUG-6 closed (commit 2ad0135)
 
 - Permintaan Choi "Adakah bug yang bisa diperbaiki": referee run171 (docs/evidence/bug-hunt-run171) mengonfirmasi 16 REAL BUG di region explorer/selection, scan-only. Region eksplorasi/selection DIHINDARI karena sesi Codex interaktif aktif mengerjakan BUG-2 di sana (bukti: proses `flutter test test/features/explorer` berjalan, lalu commit 3ae20d8 mendarat di tengah run). Slice dipilih dari file bebas lain: workspace_resolver.dart.

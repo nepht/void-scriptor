@@ -3384,3 +3384,50 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   (Low, decision-owned Choi - vocabulary group support), BUG-03/04/08
   (Low, sudah dipatch sesi interaktif sebelumnya), lainnya dead-path
   telah ditutup batch ini. Pointer tetap 145.27.
+
+### 2026-09-10 - nephthys (cron run171): adversarial bug-hunt run171 - explorer catalog & selection recovery region
+
+- Slice run ini: bug-hunt scan-only sesuai otorisasi berulang 2026-09-07
+  (perbaikan bug = slice eksekutor utama run berikutnya). Region dipilih
+  dari prioritas pengguna 2026-09-04 #2 (pemulihan pilihan saat katalog
+  loading) + diff baru sejak hunt run165 (recovery creature af1451b +11
+  baris) + shell/selection controller belum pernah dihunt. Scope 6 file:
+  explorer_panel.dart, project_sidebar_module_preferences.dart,
+  selection_controller.dart, void_desktop_shell.dart, void_mobile_shell.dart,
+  workspace_resolver.dart. HEAD f72a265 identik sebelum/sesudah hunt
+  (tidak ada commit mid-hunt); hash sha256-12 per file tercatat di
+  hunt-summary.json agar perubahan uncommitted terdeteksi saat re-fix.
+- Pipeline Hunter -> Skeptic -> Referee berurutan via delegate_task
+  (file-path handoff, tanpa paste payload besar; laporan diverifikasi
+  on-disk di docs/evidence/bug-hunt-run171/). Read-only; tanpa dart/flutter
+  exec di child.
+- Hasil Referee (satu-satunya verdict authority): 16 REAL BUG (7 Medium,
+  9 Low), 4 NOT A BUG (BUG-1, BUG-16, BUG-17, BUG-19). Dua sengketa timing
+  (BUG-1 mikrotask resurrect seleksi pasca closeProject; BUG-17 seleksi
+  tanpa session) diselesaikan dari kode sumber riverpod-2.6.1 di pub cache:
+  rebuild dependen vsync-deferred (element.dart 597-603, scheduler.dart
+  8-10) dan clear()+state=AsyncData(null) di closeProject satu segmen
+  sinkron -> jendela klaim tidak mungkin ada; BUG-19: wipe memori hanya
+  pada katalog loaded-empty = cleanup memori mati.
+- Daftar 16 REAL BUG (detail + saran fix di referee-report.md):
+  Medium: BUG-2 (hydrasi selection memory sekali per app lifetime; persist
+  lintas-proyek menimpa file proyek aktif - kehilangan permanen + polusi),
+  BUG-4 (tombol desktop 'Projects' terintersep ke Novel workspace; arm
+  dead code), BUG-5 (onCreateNovel tak invalidate storyExplorerProvider),
+  BUG-6 (_createFaction tak reload _factions), BUG-7 (guard requiresProject
+  mobile pakai widget.projectId null di /workspace), BUG-8 (katalog gagal
+  = loading; intent terstrand tanpa retry), BUG-9 (story creation 3 langkah
+  non-transaksional di 2 situs). Low: BUG-3 (persist tanpa try/catch,
+  kontrak komentar palsu), BUG-10 (getAllAssets full-table per family),
+  BUG-11 (dismiss dialog filter = reset), BUG-12 (filter saat assignments
+  loading merender nol tile), BUG-13 (focus highlight bocor lintas proyek),
+  BUG-14 (ref.read pasca-await dialog tanpa mounted guard, 2 situs),
+  BUG-15 (genre substring false positive), BUG-18 (branch sync-restore
+  creature unreachable; _CreatureGroup tanpa onFocused), BUG-20 (error
+  provider module-prefs senyap tanpa retry).
+- Bukti: docs/evidence/bug-hunt-run171/{hunt-summary.json,hunter-report.md,
+  skeptic-report.md,referee-report.md}. Guard pre-run PASS (pointer 145.27,
+  sha canonical 86af6a5). Perbaikan run berikutnya memetakan bug ke
+  acceptance 145.27/145.30/145.34, lalu RED mekanisme-eksak -> patch
+  minimal -> GREEN/regresi -> gates wajib; hunt re-scan scope identik
+  dilarang tanpa diff/evidence baru.

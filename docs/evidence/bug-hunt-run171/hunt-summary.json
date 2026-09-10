@@ -1,0 +1,58 @@
+{
+  "hunt": "bug-hunt-run171",
+  "date": "2026-09-10",
+  "executor": "nephthys cron run171",
+  "target_region": "explorer catalog & selection recovery (lib/features/explorer/**, lib/core/selection/**, shells, workspace_resolver)",
+  "repo": "D:\\VoidScriptor\\void_scriptor_multiplatform",
+  "branch": "master",
+  "head_at_hunt_start": "f72a26513875ffb5d6a1cdfb6f4c587a1bd52ace",
+  "head_at_referee_completion": "f72a26513875ffb5d6a1cdfb6f4c587a1bd52ace",
+  "files_in_scope": [
+    "lib/features/explorer/presentation/explorer_panel.dart",
+    "lib/features/explorer/application/project_sidebar_module_preferences.dart",
+    "lib/core/selection/selection_controller.dart",
+    "lib/app/shell/desktop/void_desktop_shell.dart",
+    "lib/app/shell/mobile/void_mobile_shell.dart",
+    "lib/features/workspace/presentation/workspace_resolver.dart"
+  ],
+  "scope_file_hashes_sha256_12": {
+    "lib/features/explorer/presentation/explorer_panel.dart": "fe74e17a0019",
+    "lib/features/explorer/application/project_sidebar_module_preferences.dart": "dcfc779a56aa",
+    "lib/core/selection/selection_controller.dart": "5cdd797fd165",
+    "lib/app/shell/desktop/void_desktop_shell.dart": "91b559771d9f",
+    "lib/app/shell/mobile/void_mobile_shell.dart": "485b263028fc",
+    "lib/features/workspace/presentation/workspace_resolver.dart": "91cb67edbddc"
+  },
+  "selection_rationale": "Prioritas pengguna 2026-09-04 #2 (pemulihan pilihan saat katalog loading) + region punya diff baru sejak hunt run165 (recovery creature af1451b, +11 baris) + shell/selection controller belum pernah dihunt",
+  "agents": {
+    "hunter": { "findings": 20, "score": 56 },
+    "skeptic": { "accepted": 17, "disproved": 3, "disproved_ids": ["BUG-1", "BUG-17", "BUG-19"] },
+    "referee": { "real_bugs": 16, "not_a_bug": 4, "not_a_bug_ids": ["BUG-1", "BUG-16", "BUG-17", "BUG-19"], "medium": 7, "low": 9 }
+  },
+  "confirmed_bugs": [
+    { "id": "BUG-2", "severity": "Medium", "summary": "Selection memory hydration sekali per app lifetime; project switch tidak load memory proyek baru; persist menimpa file proyek aktif dengan snapshot lintas-proyek (kehilangan permanen + polusi)" },
+    { "id": "BUG-3", "severity": "Low", "summary": "Persist selection memory tanpa try/catch -> unhandled zone error berulang saat disk gagal; kontrak komentar (swallow+debugPrint) palsu" },
+    { "id": "BUG-4", "severity": "Medium", "summary": "Tombol top-bar desktop 'Projects' selalu terintersep ke Novel workspace; arm 'novels' => AppRoutes.projects dead code" },
+    { "id": "BUG-5", "severity": "Medium", "summary": "onCreateNovel (ProjectOverview) tidak invalidate storyExplorerProvider -> novel baru tak muncul di Explorer" },
+    { "id": "BUG-6", "severity": "Medium", "summary": "_createFaction tidak reload _factions; faksi baru tak tampak di daftar Factions (ValueKey sama)" },
+    { "id": "BUG-7", "severity": "Medium", "summary": "Guard requiresProject mobile memakai widget.projectId (null di /workspace) -> Characters/World salah push Projects meski session terbuka" },
+    { "id": "BUG-8", "severity": "Medium", "summary": "Katalog gagal diperlakukan sama dengan loading; intent typed terstrand tanpa retry utk character/story/environment" },
+    { "id": "BUG-9", "severity": "Medium", "summary": "Story creation 3 langkah non-transaksional (story->chapter->scene) di 2 call site; kegagalan meninggalkan story orphan, retry menduplikasi" },
+    { "id": "BUG-10", "severity": "Low", "summary": "getAllAssets() full-table per instance family armor/accessory/story + filter client-side" },
+    { "id": "BUG-11", "severity": "Low", "summary": "Dismiss dialog filter (null) menghapus filter seperti Reset eksplisit" },
+    { "id": "BUG-12", "severity": "Low", "summary": "Filter karakter saat assignments masih loading merender nol tile tanpa loading indicator" },
+    { "id": "BUG-13", "severity": "Low", "summary": "explorerAssetFocusProvider tidak pernah dibersihkan; highlight fokus bocor lintas proyek" },
+    { "id": "BUG-14", "severity": "Low", "summary": "ref.read setelah await dialog tanpa mounted guard (2 situs) -> StateError bila panel disposed" },
+    { "id": "BUG-15", "severity": "Low", "summary": "Genre matching substring tanpa word boundary ('live-action'->weapons, 'warehouse'->war)" },
+    { "id": "BUG-18", "severity": "Low", "summary": "Branch sync-restore creature unreachable; _CreatureGroup tanpa onFocused (berbeda dari EnvironmentGroup)" },
+    { "id": "BUG-20", "severity": "Low", "summary": "Error provider module-prefs senyap jatuh ke default tanpa retry (pola assignments tidak dicerminkan)" }
+  ],
+  "reports": ["hunter-report.md", "skeptic-report.md", "referee-report.md"],
+  "commands_read_only": [
+    "git rev-parse HEAD (pre + post referee)",
+    "git status --short --branch",
+    "git log --oneline -6 -- <scope files>",
+    "git log --oneline 51ca455..HEAD -- <scope files>"
+  ],
+  "notes": "Dua sengketa timing (BUG-1, BUG-17) diselesaikan Referee dari kode sumber riverpod-2.6.1 di pub cache (element.dart scheduler vsync-deferred; closeProject clear+null satu segmen sinkron). BUG-19 dibantah: wipe hanya pada katalog loaded-empty = cleanup memori mati. Fix bukan bagian hunt; pemetaan ke acceptance + RED-GREEN dilakukan eksekutor utama run berikutnya sesuai otorisasi perbaikan otomatis 2026-09-07."
+}

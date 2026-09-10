@@ -1394,10 +1394,17 @@ class _CharacterGroupState extends ConsumerState<_CharacterGroup> {
     final usableAssignments = assignments.valueOrNull ?? const [];
     final filter = _filter;
     final characters = widget.characters.valueOrNull;
+    // hunt-run171 BUG-12: while the narrative-assignments provider is still
+    // loading there is no data to filter against; `valueOrNull ?? const []`
+    // would make every explicit-value dimension match nobody and render zero
+    // tiles. Loading fails open like the error path - show the unfiltered
+    // list until real assignment data arrives, then filtering narrows again.
+    final filterDataUnavailable =
+        assignmentError != null || assignments.isLoading;
     final List<CharacterModel>? filtered;
     if (characters == null) {
       filtered = null;
-    } else if (filter.isActive && assignmentError != null) {
+    } else if (filter.isActive && filterDataUnavailable) {
       // Fail open: unavailable narrative data degrades to the unfiltered
       // list instead of matching nobody.
       filtered = null;

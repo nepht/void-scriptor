@@ -451,18 +451,28 @@ class ExplorerPanel extends ConsumerWidget {
             focusedType.$1 == activeSession.manifest.id
         ? focusedType.$2
         : null;
-    final modulePreferences = projectId == null
-        ? const ProjectSidebarModulePreferences(
-            factions: false,
-            relationshipMap: true,
+    final modulePreferencesAsync = projectId == null
+        ? const AsyncValue<ProjectSidebarModulePreferences>.data(
+            ProjectSidebarModulePreferences(
+              factions: false,
+              relationshipMap: true,
+            ),
           )
-        : ref
-                  .watch(projectSidebarModulePreferencesProvider(projectId))
-                  .valueOrNull ??
-              const ProjectSidebarModulePreferences(
-                factions: false,
-                relationshipMap: true,
-              );
+        : ref.watch(projectSidebarModulePreferencesProvider(projectId));
+    final modulePreferences =
+        modulePreferencesAsync.valueOrNull ??
+        const ProjectSidebarModulePreferences(
+          factions: false,
+          relationshipMap: true,
+        );
+    // BUG-20 (hunt-run171): a failed module-preferences load must not be
+    // silently masked by the defaults above — surface the failure with a
+    // retry that invalidates the provider (same pattern as BUG-8 catalog
+    // error rows).
+    final modulePreferencesError =
+        modulePreferencesAsync.hasError && !modulePreferencesAsync.isLoading
+        ? modulePreferencesAsync.error
+        : null;
 
     return Container(
       width: 245,
@@ -516,6 +526,34 @@ class ExplorerPanel extends ConsumerWidget {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 children: [
+                  if (modulePreferencesError != null)
+                    ListTile(
+                      dense: true,
+                      minTileHeight: 30,
+                      leading: Icon(
+                        Icons.warning_amber_outlined,
+                        size: 16,
+                        color: context.palette.danger,
+                      ),
+                      title: Text(
+                        'Sidebar modules unavailable: $modulePreferencesError',
+                        style: TextStyle(
+                          color: context.palette.danger,
+                          fontSize: 11,
+                        ),
+                      ),
+                      trailing: IconButton(
+                        tooltip: 'Retry sidebar modules',
+                        icon: const Icon(Icons.refresh),
+                        onPressed: projectId == null
+                            ? null
+                            : () => ref.invalidate(
+                                projectSidebarModulePreferencesProvider(
+                                  projectId,
+                                ),
+                              ),
+                      ),
+                    ),
                   const _ExplorerSectionLabel('NOVEL & STORY'),
                   _ExplorerItem(
                     icon: Icons.auto_stories_outlined,

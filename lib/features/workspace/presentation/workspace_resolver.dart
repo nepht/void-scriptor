@@ -150,6 +150,11 @@ class WorkspaceResolver extends ConsumerWidget {
                 // context without an unrelated action rebuilding the asset
                 // graph (hunt-run157 BUG-05, Referee REAL BUG Medium).
                 ref.invalidate(projectAssetsProvider);
+                // hunt-run171 BUG-5: the Explorer story list derives from
+                // storyExplorerProvider, which the panel creation path
+                // invalidates but this path never did — the new novel stayed
+                // absent until an unrelated invalidation.
+                ref.invalidate(storyExplorerProvider(session.manifest.id));
               },
         onOpenGlobalSearch: session == null
             ? null
@@ -611,6 +616,10 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
               projectId: session.manifest.id,
             ),
           );
+      // hunt-run171 BUG-6: the worldbuilding body caches its lists from the
+      // first load (_load only runs while _factions == null), so the created
+      // faction never appeared in the Factions list without a remount.
+      await _load();
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

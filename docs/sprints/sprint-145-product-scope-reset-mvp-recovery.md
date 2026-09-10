@@ -1,3 +1,13 @@
+### 2026-09-08 - run140 interactive nephthys: hunt-run171 BUG-5 + BUG-6 closed (commit 2ad0135)
+
+- Permintaan Choi "Adakah bug yang bisa diperbaiki": referee run171 (docs/evidence/bug-hunt-run171) mengonfirmasi 16 REAL BUG di region explorer/selection, scan-only. Region eksplorasi/selection DIHINDARI karena sesi Codex interaktif aktif mengerjakan BUG-2 di sana (bukti: proses `flutter test test/features/explorer` berjalan, lalu commit 3ae20d8 mendarat di tengah run). Slice dipilih dari file bebas lain: workspace_resolver.dart.
+- BUG-5: onCreateNovel branch ProjectOverview hanya meng-invalidate projectAssetsProvider; storyExplorerProvider tetap menyajikan snapshot kosong pre-creation -> novel baru tidak muncul di daftar story Explorer sampai invalidasi tak terkait. Fix: ref.invalidate(storyExplorerProvider(session.manifest.id)) - mirror jalur panel.
+- BUG-6: _createFaction menyeleksi faksi baru tanpa reload list cached _WorldbuildingBodyState (_load hanya jalan saat _factions == null) -> faksi tidak pernah muncul di daftar tanpa remount. Fix: await _load() setelah create sukses.
+- TDD: test/features/workspace/hunt171_creation_refresh_test.dart (2 testWidgets, package+session+Drift nyata). RED tervalidasi dengan SIKLUS REVERT pada bentuk final test (backup patch $LOCALAPPDATA/Temp/hunt171_fix.patch, tanpa git stash): tanpa fix kedua test gagal eksak (provider [] / empty-label masih ada); dengan fix 2/2 PASS.
+- Pelajaran pola harness (terdokumentasi di pesan commit): dialog create WAJIB mengikuti pola kanonik novel_options_refresh_after_story_creation_test - tap pembuka dialog via runAsync, pumpAndSettle di luar, enterText fake-zone, tap Create + seluruh rantai create nyata di DALAM satu runAsync dengan poll selectionProvider; pumpAndSettle di dalam runAsync tidak memproses frame (RED semu: dialog macet, bukan bug). Assertion observabel = kontrak provider langsung (warm cache sebelum create), bukan teks layar yang bercabang ke detail screen setelah select.
+- Regresi: test/features/workspace + novel_options_refresh + novel_creation_action = 37/37 PASS; re-verify di atas HEAD Codex 3ae20d8 (BUG-2 landed) = workspace+explorer 29/29 PASS; analyzer No issues; format idempoten; diff --check exit 0; secret-scan bersih; roadmap_guard PASS pre+post (pointer 145.27, sha 86af6a5).
+- Sisa hunt-run171 REAL BUG: BUG-1 disproved referee; BUG-2/3/4/7-16 masih terbuka (sebagian milik region Codex). Tanpa push (keputusan Choi).
+
 ### 2026-09-10 - nephthys (cron run172): slice BUG-2 hunt run171 - selection memory per-project (data-safety)
 
 - Slice: bug Referee run171 BUG-2 (Medium, kehilangan data) DIPERBAIKI:

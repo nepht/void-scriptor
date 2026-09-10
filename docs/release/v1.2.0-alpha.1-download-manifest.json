@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "case_id": "website_download_manifest_windows",
-  "status": "PARTIAL",
-  "date": "2026-09-10T22:30:00+07:00",
-  "run": "cron run189 nephthys",
-  "authority": "HERMES_WEBSITE_DOWNLOAD_HANDOFF_2026-09-08.md langkah 4-5 (manifest dari artefak nyata); eksekusi run143 langkah 1-2 selesai read-only; langkah 7 (wire website) BERMILIH menunggu keputusan pemetaan Choi karena checkout sumber live belum ditemukan",
+  "status": "VERIFIED(preview-wired); PRODUCTION_PENDING_USER_DECISION",
+  "date": "2026-09-10T23:59:00+07:00",
+  "run": "cron run191 nephthys",
+  "authority": "HERMES_WEBSITE_DOWNLOAD_HANDOFF_2026-09-08.md langkah 4-9; rekonsiliasi manifest ke artefak R2 terverifikasi; langkah 9 preview deploy dilakukan, promosi produksi menunggu keputusan Choi karena acceptance gate v1.2.0-alpha.1 berskala lokal/offline, bukan gate distribusi publik",
   "product": "Void Scriptor Studio",
   "version": "1.2.0-alpha.1",
   "channel": "preview",
@@ -12,7 +12,7 @@
   "platform": "windows",
   "architecture": "x64",
   "artifact_provenance": {
-    "built_from_commit": "bcd7307b83062592961cfd0e1ae4a82c75372674",
+    "built_from_commit": "5b08ce1 (run189 HEAD; delta bcd7307 = docs-only manifest+ledger, kode lib/test identik)",
     "built_from_branch": "master",
     "build_command": "flutter build windows --release --no-pub (D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat)",
     "build_exit_code": 0,
@@ -21,16 +21,25 @@
     "bundle_path": "build/windows/x64/runner/Release/",
     "bundle_files": 491,
     "bundle_uncompressed_bytes": 58992099,
-    "smoke_test": "launch exe -> proses hidup >8s -> taskkill termination signal -> graceful close, tidak ada proses tersisa; BUKAN bukti interaksi native penuh"
+    "smoke_test": "launch exe -> proses hidup >8s -> taskkill termination signal -> graceful close, tidak ada proses tersisa; BUKAN bukti interaksi native penuh",
+    "reconciliation_note": "Manifest run189 (sha256 0db602ec..., 34.636.171 B, built bcd7307) digantikan: artefak yang benar-benar di-upload ke R2 dan di-wire adalah build 5b08ce1 (5a7680b6..., 34.642.793 B), diverifikasi unduh-ulang dari R2 via API"
   },
   "artifact": {
-    "file": "void-scriptor-1.2.0-alpha.1-windows-x64.zip",
-    "local_path": "build/release-package/void-scriptor-1.2.0-alpha.1-windows-x64.zip",
-    "size_bytes": 34636171,
+    "file": "voidscriptor-1.2.0-alpha.1-windows-x64.zip",
+    "local_path": "D:/VoidScriptor/void_scriptor_multiplatform/build/release-package/void-scriptor-1.2.0-alpha.1-windows-x64.zip (referensi; source of truth = R2)",
+    "size_bytes": 34642793,
     "hash_algorithm": "sha256",
-    "sha256": "0db602ec198273014f1185187873bf017c58b00f0f7750ae28dc37257a4e0fb7",
-    "download_url": "UNAVAILABLE_PENDING_STORAGE_ENDPOINT_DECISION",
-    "packaging": "Compress-Archive seluruh isi Release bundle (exe + flutter_windows.dll + sqlite3.dll + 2 plugin dll + data/); tidak ada installer signed; tidak ada secret/project pengguna dalam bundle"
+    "sha256": "5a7680b6dea86aaddf0238f19069644e02adf7e050d3bd631246e601292547b6",
+    "download_url": "https://voidscriptor.pages.dev/downloads/voidscriptor-1.2.0-alpha.1-windows-x64.zip",
+    "packaging": "Compress-Archive seluruh isi Release bundle (exe + flutter_windows.dll + sqlite3.dll + 2 plugin dll + data/); tidak ada installer signed; SmartScreen dapat memperingatkan",
+    "storage": {
+      "type": "cloudflare_r2",
+      "bucket": "voidscriptor-downloads",
+      "key": "voidscriptor-1.2.0-alpha.1-windows-x64.zip",
+      "sidecar_sha256": "voidscriptor-1.2.0-alpha.1-windows-x64.zip.sha256 (verifikasi: sama dengan sha256 artefak)",
+      "served_via": "Pages advanced-mode _worker.js proxy /downloads/* dengan Content-Disposition attachment"
+    },
+    "download_url_status": "LIVE_ON_PREVIEW (980f660f, 234fb12c); PRODUCTION_PROMOTION_PENDING_USER_DECISION"
   },
   "per_file_sha256": {
     "void_scriptor.exe": "e88cd7dd1da7d15ae89ad3ff546396966e723827b153f40e63b1054ccdfbb714",
@@ -41,13 +50,44 @@
   "acceptance_gate": "docs/release/v1.2.0-alpha.1-acceptance-gate.md (GO_WITH_DOCUMENTED_RISK, lokal/offline saja)",
   "availability": "LOCAL_BUILD_ONLY",
   "known_limitations": [
-    "Tidak ada installer (NSIS/MSIX) dan tidak ada signing infrastructure - ZIP portable saja, Windows SmartScreen dapat memperingatkan",
-    "Download URL belum live: hosting R2/endpoint distro butuh keputusan Choi (billing/publik akses)",
-    "Smoke test bukan bukti native journey penuh (create/write/reopen belum diulang pada bundle Release ini)"
+    "Tidak ada installer (NSIS/MSIX) dan tidak ada signing - ZIP portable, SmartScreen dapat memperingatkan",
+    "Produksi voidscriptor.pages.dev belum memuat wiring download (preview saja) - menunggu keputusan Choi",
+    "Smoke test boot-only; native journey penuh pada bundle Release ini belum diulang",
+    "Verifikasi anonim /downloads/ di URL Cloudflare tertutup Access (endpoint preview tidak tercuali di Access) - bukti runtime worker dari pages dev lokal + status API, bukan unduhan publik end-to-end"
   ],
   "next_actions": [
-    "Choi: keputusan basis sumber website (A: recover checkout live vs B: buat baru dari kandidat v1) + keputusan hosting artefak (R2 baru = billing; alternatif GitHub Releases repo publik)",
-    "Setelah endpoint live: isi download_url, wire tombol Download di website sumber live, preview deploy, verifikasi end-to-end",
-    "Opsional: installer MSIX/NSIS + signing bila Choi menginginkan"
-  ]
+    "Choi: keputusan promosi produksi (opsi A: terapkan sekarang untuk ZIP Preview ini; opsi B: tunggu installer MSIX/signing; opsi C: biarkan preview, produksi menyusul gate rilis publik)",
+    "Setelah keputusan: deploy branch main (atau promote) -> verifikasi /downloads/ di produksi -> isi channel final",
+    "Opsional: installer MSIX/NSIS + signing bila diinginkan"
+  ],
+  "preview_deployments": [
+    {
+      "id": "980f660f",
+      "branch": "preview/hermes-run191",
+      "url": "https://980f660f.voidscriptor.pages.dev",
+      "commit": "e7a3518",
+      "note": "restore /app/ (470 file) + binding R2 via wrangler.toml"
+    },
+    {
+      "id": "234fb12c",
+      "branch": "preview/hermes-run191",
+      "url": "https://234fb12c.voidscriptor.pages.dev",
+      "commit": "276fcf2",
+      "note": "per-product wiring + denylist file internal; lokal diverifikasi: / 200, /app/ 200, denylist 404x4"
+    }
+  ],
+  "source_checkout": {
+    "path": "D:/Hermes_Storage/void-scriptor-website-source-live",
+    "provenance": "mirror produksi c35422bf: root files content-identical dengan live (robots.txt byte-identik; index.html CRLF-normalized identik; emblem md5 sama), app/ terverifikasi dari files-map metadata deployment",
+    "wiring_commits": [
+      "ace5f98",
+      "c448b39",
+      "18519e6",
+      "78eab57",
+      "1e9a6ad",
+      "e7a3518",
+      "276fcf2"
+    ]
+  },
+  "wiring_scope": "Hanya kartu Void Scriptor Studio yang mengunduh artefak nyata; tombol Qowner Quiz Maker dan Byte Assistant menampilkan notice 'akan tersedia pada rilis publik' (single-artifact scope); tooltip: versi/channel Preview/platform Windows x64/ukuran 34,6 MB; delta index.html vs live produksi = tepat satu baris wiring (tanpa perubahan desain)"
 }

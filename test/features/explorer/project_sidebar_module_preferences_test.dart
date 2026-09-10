@@ -84,6 +84,46 @@ void main() {
     expect(fantasy.weapons, isTrue);
   });
 
+  // void-scriptor-hunt-run171 BUG-15: raw substring matching let
+  // 'live-action' adopt the Action profile and 'warehouse' hit the 'war'
+  // faction term. Genre recommendations must match whole word tokens or
+  // contiguous phrases only.
+  test('hyphenated compound words do not match a genre alias as substring', () {
+    expect(ProjectSidebarModulePolicy.profileFor('live-action'), isNull);
+    expect(ProjectSidebarModulePolicy.profileFor('science-fiction'), isNull);
+    // The real spellings must still resolve.
+    expect(ProjectSidebarModulePolicy.profileFor('action')?.family, 'Action');
+    expect(
+      ProjectSidebarModulePolicy.profileFor('science fiction')?.family,
+      'Science Fiction',
+    );
+  });
+
+  test('genre terms with unrelated word prefixes do not recommend weapons', () {
+    final warehouse = ProjectSidebarModulePolicy.recommend(
+      genres: const ['warehouse mystery'],
+      hasFactions: false,
+      hasRelationships: false,
+    );
+    expect(warehouse.storyItems, isTrue, reason: 'mystery profile');
+    expect(
+      warehouse.weapons,
+      isFalse,
+      reason: "'warehouse' must not match the 'war' faction term",
+    );
+
+    final liveAction = ProjectSidebarModulePolicy.recommend(
+      genres: const ['live-action adventure'],
+      hasFactions: false,
+      hasRelationships: false,
+    );
+    expect(
+      liveAction.weapons,
+      isTrue,
+      reason: 'the standalone adventure token still matches',
+    );
+  });
+
   test(
     'saved choice overrides genre recommendation and survives reopen',
     () async {

@@ -233,6 +233,14 @@ class ProjectSidebarModulePolicy {
   static Set<String> get supportedGenreFamilies =>
       _profiles.values.map((profile) => profile.family).toSet();
 
+  // hunt-run171 BUG-15: substring matching let 'live-action' adopt the
+  // Action profile and 'warehouse' hit the 'war' term. Match a whole
+  // contiguous phrase only by requiring surrounding separators.
+  static bool _containsWholePhrase(String genre, String phrase) {
+    final padded = ' $genre ';
+    return padded.contains(' $phrase ');
+  }
+
   static SidebarGenreProfile? profileFor(String genre) {
     final normalized = genre.trim().toLowerCase();
     SidebarGenreProfile? best;
@@ -250,7 +258,8 @@ class ProjectSidebarModulePolicy {
         _ => [entry.key],
       };
       for (final alias in aliases) {
-        if (normalized.contains(alias) && alias.length > bestLength) {
+        if (_containsWholePhrase(normalized, alias) &&
+            alias.length > bestLength) {
           best = entry.value;
           bestLength = alias.length;
         }
@@ -305,8 +314,11 @@ class ProjectSidebarModulePolicy {
         .map(profileFor)
         .whereType<SidebarGenreProfile>()
         .toList(growable: false);
-    bool matches(Set<String> terms) =>
-        normalized.any((genre) => terms.any(genre.contains));
+    // hunt-run171 BUG-15: same word-boundary rule as profileFor so a genre
+    // like 'warehouse mystery' cannot match the standalone 'war' term.
+    bool matches(Set<String> terms) => normalized.any(
+      (genre) => terms.any((term) => _containsWholePhrase(genre, term)),
+    );
     return ProjectSidebarModulePreferences(
       factions: false,
       relationshipMap: false,

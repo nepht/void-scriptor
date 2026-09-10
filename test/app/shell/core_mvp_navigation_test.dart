@@ -49,7 +49,11 @@ void main() {
   });
 
   test('top bar destinations map to Explorer asset focus', () {
-    expect(explorerAssetTypeForMenu('novels'), AssetType.story);
+    // hunt-run171 BUG-4: pin lama 'novels' => AssetType.story adalah kontrak
+    // yang rusak (tombol Projects terintersep ke Novel workspace). 'novels'
+    // destinasi global Projects; fokus aset Novel lewat key 'story'.
+    expect(explorerAssetTypeForMenu('novels'), isNull);
+    expect(explorerAssetTypeForMenu('story'), AssetType.story);
     expect(explorerAssetTypeForMenu('characters'), AssetType.character);
     expect(explorerAssetTypeForMenu('world'), AssetType.environment);
     expect(explorerAssetTypeForMenu('workspace'), isNull);

@@ -127,7 +127,12 @@ final explorerNarrativeAssignmentsProvider =
     });
 
 AssetType? explorerAssetTypeForMenu(String menu) => switch (menu) {
-  'story' || 'novels' => AssetType.story,
+  // hunt-run171 BUG-4: 'novels' adalah destinasi global Projects (top-bar
+  // desktop), bukan fokus aset Explorer; memetakannya ke AssetType.story
+  // mengintersep tombol "Projects" ke Novel workspace dan membuat arm
+  // 'novels' => AppRoutes.projects dead code. Focus aset Novel tetap lewat
+  // key 'story' (satu-satunya producer) dan seleksi Explorer biasa.
+  'story' => AssetType.story,
   'characters' => AssetType.character,
   'world' => AssetType.environment,
   _ => null,

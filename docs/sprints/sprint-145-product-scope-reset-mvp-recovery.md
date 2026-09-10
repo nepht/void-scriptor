@@ -1,3 +1,51 @@
+### 2026-09-10 - nephthys (cron run180): BUG-3 persist listener tanpa try/catch CLOSED (hunt run171 fix #10)
+
+- Slice: bug terkonfirmasi Referee run171 BUG-3 (Low, REAL BUG) DIPERBAIKI
+  (commit f76d5eb, 2 file +157/-4). Mekanisme terverifikasi di kode hidup:
+  `persistSelectionMemorySnapshotSync` (lib/core/selection/
+  selection_memory_snapshot.dart:64-72 lama) menjalankan createSync/
+  writeAsStringSync/renameSync tanpa try/catch, dan listener
+  `selectionMemoryPersistenceProvider` (explorer_panel.dart:282-289)
+  memanggilnya telanjang — kegagalan disk lepas sebagai unhandled zone
+  error pada SETIAP perubahan seleksi, sementara komentar kontrak
+  (explorer_panel.dart:253-256) mengklaim "swallowed by contract ...
+  observable via debugPrint" yang objektif palsu (grep: tidak ada debugPrint
+  di jalur tulis).
+- Patch minimal mengikuti arah Referee: try/catch all + debugPrint di dalam
+  writer sync itu sendiri (satu titik, melindungi semua call site),
+  mencerminkan catch-all `loadSelectionMemorySnapshotSync`; komentar kontrak
+  kini benar dan menamai run171 BUG-3. Import `package:flutter/foundation.
+  dart` ditambahkan (debugPrint tanpa menarik material).
+- TDD: RED mekanisme-eksak dua lapis (test/core/selection/
+  selection_memory_persist_failure_test.dart): (1) unit — file blocker
+  squat pada path direktori cache paket (errno 183) -> throw asli
+  PathExistsException keluar dari fungsi, exit 1; (2) listener nyata —
+  select() via ProviderContainer dengan session proyek temporer produksi ->
+  PathExistsException TER-BUKTI tertangkap runZonedGuarded sebagai unhandled
+  error, exit 1. GREEN 2/2 (runZoned print-capture membuktikan debugPrint
+  muncul; zona listener bersih).
+- Regresi: test/core/selection + test/features/explorer 42 PASS/0 FAIL
+  (berurutan, flutter_tester dibersihkan sebelum run); dart analyze scoped
+  No issues (info prefer_iterable_wheretype test baru diperbaiki); format
+  owned 2 file (0 changed re-run --set-exit-if-changed); git diff --check
+  exit 0; flutter build windows --debug --no-pub PASS 46,2s; roadmap guard
+  PASS pre-run DAN post-state (pointer 145.27, sha canonical 86af6a5).
+  Native GUI journey UNVERIFIABLE dari cron (zona provider + DB/file nyata,
+  bukan interaksi jendela).
+- Sisa hunt run171 (Low): BUG-10 (getAllAssets full-table per family, butuh
+  DAO scoped query), BUG-12 (filter assignments loading render nol tile,
+  fail-open), BUG-14 (ref.read pasca-await dialog tanpa mounted guard,
+  medium-confidence runtime claim), BUG-15 (genre substring false positive,
+  word-boundary), BUG-20 (error module-prefs senyap, butuh surface retry).
+  Native GUI UNVERIFIABLE dari cron. Tidak push (ahead 30); sibling dirty
+  (.hermes/ROADMAP_STATE.json M, test/core/workflow/
+  workflow_persistence_test.dart M, untracked docs/backlog + evidence
+  website) dipreservasi utuh — commit hanya 2 path milik slice.
+- Next action: satu Low run171 berikutnya (BUG-20 error surface mengikuti
+  pola retry run175 atau BUG-12 fail-open) ATAU gap ledger 145.42
+  (interrupted move line ~1986, concurrent open line ~2020) ATAU keputusan
+  Choi 145.43-145.50; jangan re-scan scope run171.
+
 ### 2026-09-10 - nephthys (cron run177): slice BUG-13 hunt run171 - focus highlight bocor lintas proyek CLOSED
 
 - Slice: bug Referee run171 BUG-13 (Low, kosmetik lintas proyek) DIPERBAIKI

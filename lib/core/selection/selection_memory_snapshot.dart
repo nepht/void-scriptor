@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 
 import '../domain/asset_type.dart';
@@ -61,14 +62,26 @@ Future<SelectionMemorySnapshot> loadSelectionMemorySnapshot(File file) async {
 /// write completes inside the timer callback even under a fake-async test
 /// zone (real IO futures must never dangle there). The file is tiny and the
 /// write is debounced off the interaction hot path.
+///
+/// Failure contract (hunt-20260910 run171 BUG-3): disk failures are
+/// swallowed — navigation memory is a convenience and must never throw out
+/// of a Riverpod listener — but remain observable via [debugPrint], mirroring
+/// the load side's catch-all above.
 void persistSelectionMemorySnapshotSync(
   File file,
   SelectionMemorySnapshot snapshot,
 ) {
-  file.parent.createSync(recursive: true);
-  final tmp = File('${file.path}.tmp');
-  tmp.writeAsStringSync(jsonEncode(_encode(snapshot)), flush: true);
-  tmp.renameSync(file.path);
+  try {
+    file.parent.createSync(recursive: true);
+    final tmp = File('${file.path}.tmp');
+    tmp.writeAsStringSync(jsonEncode(_encode(snapshot)), flush: true);
+    tmp.renameSync(file.path);
+  } on Object catch (error) {
+    debugPrint(
+      'selection memory snapshot persist failed: $error '
+      '(in-session navigation memory is unaffected)',
+    );
+  }
 }
 
 File selectionMemoryFileFor(ProjectPackage package) =>

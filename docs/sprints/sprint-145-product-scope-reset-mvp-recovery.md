@@ -1,3 +1,23 @@
+### 2026-09-10 - nephthys (run186): akses cepat aksen di ThemeModeMenu top-bar CLOSED (polish tema run184)
+
+- Permintaan berjalan dari Choi ("banyak pilihan warna agar tidak
+  monoton"): menu popup tema kompak di top-bar kini menampilkan seksi
+  "Accent color" berisi 6 keluarga warna (swatch lingkaran dari
+  lightPalette.primary + label + check) di bawah 3 opsi mode; memilih
+  aksen memanggil ThemeAccentController.setAccent (persisten ke
+  appearance.theme_accent) tanpa membuka Settings penuh.
+- Implementasi: PopupMenuButton melebar ke Object dengan dispatch runtime
+  (AppThemeMode -> setMode, String name -> setAccent); divider memisahkan
+  seksi. Test lama appearance_settings_screen_test diupdate finder-nya
+  (PopupMenuButton<AppThemeMode> -> Object) - refactor sah, asersi
+  perilaku tidak berubah.
+- TDD: RED submenu belum ada (2 gagal eksak) -> GREEN 3 test baru
+  (submenu tampil; Sage tersimpan ke store; pemilihan mode tetap bekerja)
+  - core/theme 16/16 PASS, analyzer bersih. Commit 069908e (3 file,
+  +148/-12). Catatan: submenu belum didogfood visual di desktop karena
+  ThemeModeMenu terpasang di layar login, bukan shell dashboard; bukti
+  perilaku via widget test mekanisme-eksak.
+
 ### 2026-09-10 - nephthys (cron run185): BUG-10 full-table asset fetch + BUG-14 dialog disposed-ref CLOSED (hunt run171 fix #14/#15, TDD)
 
 - Dua bug sisa hunt run171 yang masih hidup di HEAD (marker fix agen lain

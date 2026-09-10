@@ -1,3 +1,14 @@
+### 2026-09-10 - nephthys (run189): Website handoff langkah 4-5 — Release bundle + download manifest (PARTIAL)
+
+- Authority: HERMES_WEBSITE_DOWNLOAD_HANDOFF_2026-09-08.md langkah 4-5 (manifest dari artefak nyata, tanpa deploy); run143 telah menuntaskan langkah 1-2 (identitas live: Pages project `voidscriptor` direct-upload, checkout sumber live TIDAK DITEMUKAN, kandidat v1 = snapshot pra-deploy bukan sumber live).
+- Gap yang dikerjakan: manifest download versioned harus bersumber artefak nyata — sebelumnya belum ada artefak Windows release sama sekali (hanya Debug); langkah 5 "reuse existing release packaging" tidak punya bahan.
+- Build Release fresh: `flutter build windows --release --no-pub` exit 0 (146,1s) di HEAD bcd7307 (commit run188, worktree source bersih). Bundle build/windows/x64/runner/Release/: 491 file, 58.994.099 B; exe+flutter_windows.dll+sqlite3.dll+file_selector+secure_storage+data/ lengkap.
+- Smoke launch: exe hidup >8 dtk (memori ~95 MB), taskkill termination signal, graceful close, tidak ada proses tersisa. BUKAN bukti native journey penuh — hanya bukti bundle boot.
+- Packaging: build/release-package/void-scriptor-1.2.0-alpha.1-windows-x64.zip (34.636.171 B; Compress-Archive isi Release penuh). SHA-256 0db602ec198273014f1185187873bf017c58b00f0f7750ae28dc37257a4e0fb7. Tanpa secret/data pengguna di dalam bundle.
+- Manifest baru: docs/release/v1.2.0-alpha.1-download-manifest.json — channel preview (pubspec 1.2.0-alpha.1; gate = GO_WITH_DOCUMENTED_RISK lokal), provenance commit+command+exit, per-file SHA-256, availability LOCAL_BUILD_ONLY, download_url UNAVAILABLE_PENDING_STORAGE_ENDPOINT_DECISION (hosting R2 baru = billing; GitHub Releases = alternatif), known limitations jujur (tanpa installer/signing, SmartScreen).
+- Keputusan Choi yang dibutuhkan (satu paket): (1) basis sumber website — A recover checkout live vs B buat baru dari kandidat v1; (2) hosting artefak — R2 baru (billing) vs GitHub Releases repo publik; setelah itu langkah 7 (wire tombol Download di sumber live) + preview deploy bisa dieksekusi.
+- Tidak ada mutasi source lib/test. Untracked docs dipertahankan; .hermes state M dipertahankan. Guard PASS pre-run (pointer 145.27); post-guard tidak dijalankan karena tidak ada mutasi kontrak — manifest bukan file registry. Tidak push.
+
 ### 2026-09-10 - nephthys (run188): JOURNEY NATIVE 145.27/145.42 VERIFIED (computer-use, project uji temporer)
 
 - Slice: pembuktian native alur inti di HEAD d7dcd1dc (build debug 82fb034,

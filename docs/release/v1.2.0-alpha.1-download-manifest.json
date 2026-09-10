@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "case_id": "website_download_manifest_windows",
+  "status": "PARTIAL",
+  "date": "2026-09-10T22:30:00+07:00",
+  "run": "cron run189 nephthys",
+  "authority": "HERMES_WEBSITE_DOWNLOAD_HANDOFF_2026-09-08.md langkah 4-5 (manifest dari artefak nyata); eksekusi run143 langkah 1-2 selesai read-only; langkah 7 (wire website) BERMILIH menunggu keputusan pemetaan Choi karena checkout sumber live belum ditemukan",
+  "product": "Void Scriptor Studio",
+  "version": "1.2.0-alpha.1",
+  "channel": "preview",
+  "channel_rationale": "pubspec.yaml 1.2.0-alpha.1; acceptance gate v1.2.0-alpha.1 = GO_WITH_DOCUMENTED_RISK lokal saja; label Stable tidak didukung gate rilis",
+  "platform": "windows",
+  "architecture": "x64",
+  "artifact_provenance": {
+    "built_from_commit": "bcd7307b83062592961cfd0e1ae4a82c75372674",
+    "built_from_branch": "master",
+    "build_command": "flutter build windows --release --no-pub (D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat)",
+    "build_exit_code": 0,
+    "build_duration": "146.1s",
+    "build_toolchain": "Flutter Windows 3.44.6 (dev toolchain; SDK 3.44.9 tersedia di D:\\DevTools\\Flutter-SDK-3.44.9)",
+    "bundle_path": "build/windows/x64/runner/Release/",
+    "bundle_files": 491,
+    "bundle_uncompressed_bytes": 58992099,
+    "smoke_test": "launch exe -> proses hidup >8s -> taskkill termination signal -> graceful close, tidak ada proses tersisa; BUKAN bukti interaksi native penuh"
+  },
+  "artifact": {
+    "file": "void-scriptor-1.2.0-alpha.1-windows-x64.zip",
+    "local_path": "build/release-package/void-scriptor-1.2.0-alpha.1-windows-x64.zip",
+    "size_bytes": 34636171,
+    "hash_algorithm": "sha256",
+    "sha256": "0db602ec198273014f1185187873bf017c58b00f0f7750ae28dc37257a4e0fb7",
+    "download_url": "UNAVAILABLE_PENDING_STORAGE_ENDPOINT_DECISION",
+    "packaging": "Compress-Archive seluruh isi Release bundle (exe + flutter_windows.dll + sqlite3.dll + 2 plugin dll + data/); tidak ada installer signed; tidak ada secret/project pengguna dalam bundle"
+  },
+  "per_file_sha256": {
+    "void_scriptor.exe": "e88cd7dd1da7d15ae89ad3ff546396966e723827b153f40e63b1054ccdfbb714",
+    "flutter_windows.dll": "a5c880a4218a04cfb3e58b103160334658122c5e43d3b818b3d9af5ab3e1fc0e",
+    "data/app.so": "90d54df4f00707d07349e8c8a041b6fbab7ada849459145c8df81b954bfb6520"
+  },
+  "release_notes": "docs/release/v1.2.0-alpha.1-release-notes.md",
+  "acceptance_gate": "docs/release/v1.2.0-alpha.1-acceptance-gate.md (GO_WITH_DOCUMENTED_RISK, lokal/offline saja)",
+  "availability": "LOCAL_BUILD_ONLY",
+  "known_limitations": [
+    "Tidak ada installer (NSIS/MSIX) dan tidak ada signing infrastructure - ZIP portable saja, Windows SmartScreen dapat memperingatkan",
+    "Download URL belum live: hosting R2/endpoint distro butuh keputusan Choi (billing/publik akses)",
+    "Smoke test bukan bukti native journey penuh (create/write/reopen belum diulang pada bundle Release ini)"
+  ],
+  "next_actions": [
+    "Choi: keputusan basis sumber website (A: recover checkout live vs B: buat baru dari kandidat v1) + keputusan hosting artefak (R2 baru = billing; alternatif GitHub Releases repo publik)",
+    "Setelah endpoint live: isi download_url, wire tombol Download di website sumber live, preview deploy, verifikasi end-to-end",
+    "Opsional: installer MSIX/NSIS + signing bila Choi menginginkan"
+  ]
+}

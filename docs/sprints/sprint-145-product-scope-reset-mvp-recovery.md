@@ -3946,7 +3946,7 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   ~1986, concurrent open line ~2020) ATAU keputusan Choi 145.43-145.50.
 
 
-### 2026-09-10 - nephthys (run180): sistem multi-tema warna + fix kontras light-mode CLOSED (fitur, keputusan Choi)
+### 2026-09-10 - nephthys (run184): sistem multi-tema warna + fix kontras light-mode CLOSED (fitur, keputusan Choi)
 
 - Slice: permintaan Choi "berikan warna thema yang lain agar tidak monoton"
   + bug terverifikasi device (teks putih-di-atas-putih pada Android
@@ -3977,5 +3977,7 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   pin currentSchemaVersion 59 padahal 822fd8b menaikkan DB ke 60 -
   pre-existing, file clean, maka pin dinaikkan ke 60 (655e506). Setelah
   itu test/core + test/design_system 660/660 All tests passed di HEAD.
-- Batas: dogfood UI Windows desktop berjalan terpisah (lihat entri
-  run181 bila diberi catatan sendiri); entri ledger ini commit docs-only.
+- Batas: dogfood UI Windows desktop (6 chip tampil, Sage terpilih ->
+  propagasi hijau live, persistensi storage + restart terverifikasi)
+  dicatat dalam run ini; entri ledger sibling run180-183 adalah hunt
+  run171, tidak saling menimpa.

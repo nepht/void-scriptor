@@ -1,3 +1,49 @@
+### 2026-09-10 - nephthys (cron run177): slice BUG-13 hunt run171 - focus highlight bocor lintas proyek CLOSED
+
+- Slice: bug Referee run171 BUG-13 (Low, kosmetik lintas proyek) DIPERBAIKI
+  (commit 2692696, 2 file +148/-6). Mekanisme terverifikasi di kode hidup:
+  explorerAssetFocusProvider adalah StateProvider<AssetType?> global yang
+  ditulis focusExplorerAsset dan di-watch mentah oleh _ExplorerBody
+  (focused: focusedType == AssetType.story/character); tidak pernah di-clear
+  dan tidak dijaga projectId, sehingga setelah fokus Novel di proyek A,
+  membuka proyek B pada run aplikasi yang sama merender StoryGroup B dengan
+  highlight fokus tanpa aksi fokus apa pun di B. Fix mengikuti pola intent
+  yang sudah ada (worldbuildingSectionIntentProvider menyimpan (projectId,
+  section), consumer resolver menjaga session): provider kini
+  StateProvider<(String, AssetType)?>; focusExplorerAsset membaca session
+  lebih awal (tanpa session -> null, bukan type telanjang); _ExplorerBody
+  membandingkan stamp dengan session aktif (effectiveFocusedType) sebelum
+  meneruskan ke StoryGroup/_CharacterGroup. Perilaku dalam satu proyek tidak
+  berubah.
+- TDD: RED mekanisme-eksak di konsumen nyata (test/features/explorer/
+  explorer_focus_project_guard_test.dart, dua proyek nyata satu registry
+  root temp, openProject produksi): fokus Novel di A -> sanity StoryGroup
+  A.focused true; switch close+open ke B -> StoryGroup B.focused TRUE
+  (GAGAL eksak alasan bug, exit 1); kontrol positif fokus di B tetap
+  highlight. Pitfall harness terekam: createTemp tanpa tester.runAsync di
+  body testWidgets menggantung tanpa marker (pola run163 dikonfirmasi ulang);
+  import explorer_story_group.dart eksplisit (pitfall transitive import).
+- Bukti: GREEN focused 1/1; regresi test/features/explorer + test/app/shell +
+  test/features/workspace + novel_creation_atomicity_ui = 100 PASS/0 FAIL
+  (background, ~1m41s); dart analyze (explorer_panel + test/features/explorer)
+  No issues found; dart format 2 owned file (0 changed pada re-run
+  --set-exit-if-changed); git diff --check exit 0; flutter build windows
+  --debug --no-pub PASS 45,3s; roadmap guard PASS pre-run DAN post-commit
+  (pointer 145.27, sha canonical 86af6a5). Native GUI journey UNVERIFIABLE
+  dari cron (jalur widget test DB nyata, bukan interaksi jendela).
+- Status hunt run171: sisa Low BUG-3 (persist tanpa try/catch vs kontrak
+  komentar), BUG-10 (getAllAssets full-table per family), BUG-11 (dismiss
+  dialog filter = reset), BUG-12 (filter saat assignments loading merender
+  nol tile), BUG-15 (genre substring false positive), BUG-18 (creature
+  sync-restore unreachable), BUG-20 (module-prefs error senyap). Seluruh
+  Medium CLOSED. Pointer tetap 145.27 (decision-owned). Tidak push (ahead
+  26); sibling dirty (.hermes/ROADMAP_STATE.json M berisi entri run175/176
+  pra-ada, untracked docs) dipreservasi utuh.
+- Next action: satu Low run171 berikutnya (BUG-11 dismiss=reset paling
+  murah eksak-mekanisme; BUG-20 error surface mengikuti pola retry run175;
+  BUG-10 butuh DAO scoped query) ATAU gap ledger 145.42 (interrupted move/
+  restore) ATAU keputusan Choi 145.43-145.50; jangan re-scan scope run171.
+
 ### 2026-09-10 - nephthys (cron run176): slice BUG-9 hunt run171 - atomisitas pembuatan novel CLOSED (sisa hunt run171 habis)
 
 - Slice: bug Referee run171 BUG-9 (Medium, satu-satunya sisa hunt run171)

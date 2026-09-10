@@ -26,8 +26,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Buka menu popup
-    await tester.tap(find.byType(PopupMenuButton<AppThemeMode>));
+    // Buka menu popup (tipe generic Object sejak submenu aksen run185).
+    await tester.tap(find.byType(PopupMenuButton<Object>));
     await tester.pumpAndSettle();
 
     expect(find.text('System (default)'), findsOneWidget);

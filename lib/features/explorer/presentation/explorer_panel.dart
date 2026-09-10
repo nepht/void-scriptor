@@ -321,6 +321,11 @@ final explorerCatalogRecoveryProvider = Provider<void>((ref) {
     // provider re-evaluates whenever the catalog, intent, or selection
     // changes. Writing here on an empty catalog would loop through the
     // intent provider without ever changing state.
+    //
+    // BUG-8 (hunt-run171): a failed catalog never re-emits on its own;
+    // the user-visible retry lives on the Explorer group error rows
+    // (onRetry -> invalidate). Recovery simply keeps waiting here until
+    // that retry (or any other invalidation) re-runs the catalog.
     return;
   }
   // Never mutate other providers synchronously while building: schedule
@@ -502,6 +507,13 @@ class ExplorerPanel extends ConsumerWidget {
                     stories: stories,
                     focused: focusedType == AssetType.story,
                     selectedId: ref.watch(selectionProvider)?.assetId,
+                    // BUG-8 (hunt-run171): katalog gagal harus bisa di-retry
+                    // dari baris error, bukan hanya menunggu invalidasi tak
+                    // langsung dari create flow.
+                    onRetry: projectId == null
+                        ? null
+                        : () =>
+                              ref.invalidate(storyExplorerProvider(projectId)),
                     onSelected: (story) => ref
                         .read(selectionProvider.notifier)
                         .select(
@@ -551,6 +563,14 @@ class ExplorerPanel extends ConsumerWidget {
                     environments: environments,
                     selectedId: ref.watch(selectionProvider)?.assetId,
 
+                    // BUG-8 (hunt-run171): katalog gagal harus bisa di-retry
+                    // dari baris error, bukan hanya menunggu invalidasi tak
+                    // langsung dari create flow.
+                    onRetry: projectId == null
+                        ? null
+                        : () => ref.invalidate(
+                            environmentExplorerProvider(projectId),
+                          ),
                     onSelected: (environment) => ref
                         .read(selectionProvider.notifier)
                         .select(

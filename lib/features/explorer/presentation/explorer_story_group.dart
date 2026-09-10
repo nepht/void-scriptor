@@ -12,12 +12,17 @@ class StoryGroup extends StatelessWidget {
     required this.onSelected,
     this.focused = false,
     this.onFocused,
+    this.onRetry,
   });
   final AsyncValue<List<Asset>> stories;
   final bool focused;
   final VoidCallback? onFocused;
   final String? selectedId;
   final ValueChanged<Asset> onSelected;
+
+  /// BUG-8 (hunt-run171): memungkinkan baris error menawarkan retry
+  /// katalog; null berarti tidak ada aksi retry yang tersedia.
+  final VoidCallback? onRetry;
   @override
   Widget build(BuildContext context) => ExpansionTile(
     onExpansionChanged: (_) => onFocused?.call(),
@@ -38,7 +43,23 @@ class StoryGroup extends StatelessWidget {
     ),
     children: stories.when(
       loading: () => [const ListTile(dense: true, title: Text('Loading...'))],
-      error: (error, _) => [ListTile(dense: true, title: Text('$error'))],
+      error: (error, _) => [
+        ListTile(
+          dense: true,
+          minTileHeight: 30,
+          title: Text(
+            '$error',
+            style: TextStyle(color: context.palette.danger, fontSize: 11),
+          ),
+          trailing: onRetry == null
+              ? null
+              : IconButton(
+                  tooltip: 'Coba lagi',
+                  icon: const Icon(Icons.refresh),
+                  onPressed: onRetry,
+                ),
+        ),
+      ],
       data: (items) => items.isEmpty
           ? [const ListTile(dense: true, title: Text('No stories yet'))]
           : items

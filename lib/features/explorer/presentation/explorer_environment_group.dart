@@ -11,12 +11,17 @@ class EnvironmentGroup extends StatelessWidget {
     required this.selectedId,
     required this.onSelected,
     this.onFocused,
+    this.onRetry,
   });
 
   final AsyncValue<List<EnvironmentModel>> environments;
   final String? selectedId;
   final ValueChanged<EnvironmentModel> onSelected;
   final VoidCallback? onFocused;
+
+  /// BUG-8 (hunt-run171): memungkinkan baris error menawarkan retry
+  /// katalog; null berarti tidak ada aksi retry yang tersedia.
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) => ExpansionTile(
@@ -35,7 +40,23 @@ class EnvironmentGroup extends StatelessWidget {
     ),
     children: environments.when(
       loading: () => [const ListTile(dense: true, title: Text('Loading...'))],
-      error: (error, _) => [ListTile(dense: true, title: Text('$error'))],
+      error: (error, _) => [
+        ListTile(
+          dense: true,
+          minTileHeight: 30,
+          title: Text(
+            '$error',
+            style: TextStyle(color: context.palette.danger, fontSize: 11),
+          ),
+          trailing: onRetry == null
+              ? null
+              : IconButton(
+                  tooltip: 'Coba lagi',
+                  icon: const Icon(Icons.refresh),
+                  onPressed: onRetry,
+                ),
+        ),
+      ],
       data: (items) => items.isEmpty
           ? [const ListTile(dense: true, title: Text('No environments yet'))]
           : items

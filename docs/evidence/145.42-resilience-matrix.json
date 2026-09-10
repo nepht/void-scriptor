@@ -239,6 +239,28 @@
       "retest_reason": ""
     },
     {
+      "case_id": "interrupted_restore",
+      "status": "VERIFIED(domain)",
+      "evidence_type": "automated_test",
+      "date": "2026-09-11",
+      "source": "ledger run193 (nephthys): heal staging artefak restore terputus dipindah ke session open",
+      "commit": "dicatat di entri ledger run193 (commit slice ini)",
+      "head_at_matrix_update": "f6da65ee44b40cbc1e27d416e014b2087aa2d171",
+      "dirty_scope": "worktree bersih kecuali slice ini (lib/features/project_resilience/application/project_session_manager.dart, test/features/project_resilience/project_session_open_restore_crash_heal_test.dart, file matriks, ledger)",
+      "fixture": "Directory.systemTemp 'hermes-s14542-restore-*': package .voidproject nyata + 4 artefak staging <final>.tmp (manifest, database, assets/, workspaces/) yang disimulasikan tersisa dari restore yang di-kill di crash window; fixture dibuat & dihancurkan test",
+      "command": "flutter test --no-pub test/features/project_resilience/project_session_open_restore_crash_heal_test.dart (RED dulu: Expected 0 / Actual 4 pada kode lama -> GREEN 2/2 setelah patch); regresi test/features/project_resilience 198 PASS / 1 skip / 0 FAIL; focused restore-family 9/9",
+      "exit_code": 0,
+      "expected": "restore yang terputus menyisakan staging artefak <final>.tmp; open read-write proyek membersihkannya (heal) tanpa mengharuskan user restore ulang; open read-only tidak memutasi package",
+      "actual": "RED terbukti (4 artefak bertahan setelah open pada kode lama); setelah patch: open readWrite menghapus 4/4 staging artefak, open readOnly membiarkan staging utuh; RestoreCrashRecovery.recover kini benar-benar sesuai docstring 'on the next session open'",
+      "evidence_paths": [
+        "test/features/project_resilience/project_session_open_restore_crash_heal_test.dart",
+        "lib/features/project_resilience/application/project_session_manager.dart (pemanggilan recover() di jalur readWrite open)"
+      ],
+      "limitations": "bukti level service/harness: artefak staging disimulasikan, bukan kill proses nyata di tengah penulisan restore; write in-place manifest/db tanpa tmp masih berarti kill mid-write bisa meninggalkan payload terpotong (tercakup terpisah oleh case process_crash_wal + torn-DB rejection); emergency backup pre-restore dipertahankan sesuai desain",
+      "next_action": "tidak ada; retest bila jalur restore atau session open berubah",
+      "retest_reason": ""
+    },
+    {
       "case_id": "corruption",
       "status": "VERIFIED(domain)",
       "evidence_type": "automated_test_plus_probe",

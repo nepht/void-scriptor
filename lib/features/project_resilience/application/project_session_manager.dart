@@ -160,6 +160,12 @@ class ProjectSessionManager {
     try {
       if (mode == ProjectOpenMode.readWrite) {
         await lock.acquire();
+        // 145.42 interrupted restore: a previous restore killed mid-crash-
+        // window leaves '<final>.tmp' staging artifacts inside the package.
+        // The session lock proves no other writer holds this project, so
+        // heal them before any payload is opened. A read-only open never
+        // mutates the package.
+        await RestoreCrashRecovery.recover(package);
         await package.lockFile.writeAsString(
           jsonEncode({
             'sessionId': const Uuid().v4(),

@@ -73,7 +73,9 @@ void main() {
 
     test('hydrated memory restores the remembered asset, not the first', () {
       final controller = container.read(selectionProvider.notifier);
-      controller.hydrateWorkspaceMemory({('p1', AssetType.story): 'story-2'});
+      controller.hydrateWorkspaceMemory({
+        ('p1', AssetType.story): 'story-2',
+      }, projectId: 'p1');
 
       controller.selectWorkspace(
         projectId: 'p1',
@@ -87,7 +89,9 @@ void main() {
       'user picks win over hydrated memory and drain exposes the snapshot',
       () {
         final controller = container.read(selectionProvider.notifier);
-        controller.hydrateWorkspaceMemory({('p1', AssetType.story): 'story-2'});
+        controller.hydrateWorkspaceMemory({
+          ('p1', AssetType.story): 'story-2',
+        }, projectId: 'p1');
         controller.select(
           const SelectionModel(
             assetId: 'story-1',
@@ -97,28 +101,58 @@ void main() {
         );
 
         expect(
-          controller.workspaceMemorySnapshot()[('p1', AssetType.story)],
+          controller.workspaceMemorySnapshot(projectId: 'p1')[(
+            'p1',
+            AssetType.story,
+          )],
           'story-1',
         );
 
         // Re-hydration must never resurrect stale entries over live picks.
-        controller.hydrateWorkspaceMemory({('p1', AssetType.story): 'story-2'});
+        controller.hydrateWorkspaceMemory({
+          ('p1', AssetType.story): 'story-2',
+        }, projectId: 'p1');
         expect(
-          controller.workspaceMemorySnapshot()[('p1', AssetType.story)],
+          controller.workspaceMemorySnapshot(projectId: 'p1')[(
+            'p1',
+            AssetType.story,
+          )],
           'story-1',
         );
       },
     );
 
-    test('hydration happens once and is reported', () {
+    test('hydration happens once per project and is reported', () {
       final controller = container.read(selectionProvider.notifier);
       expect(controller.isWorkspaceMemoryHydrated, isFalse);
-      controller.hydrateWorkspaceMemory({('p1', AssetType.story): 'story-2'});
+      controller.hydrateWorkspaceMemory({
+        ('p1', AssetType.story): 'story-2',
+      }, projectId: 'p1');
       expect(controller.isWorkspaceMemoryHydrated, isTrue);
-      controller.hydrateWorkspaceMemory({('p1', AssetType.story): 'story-9'});
+      // Same project: re-hydration must not resurrect stale entries over
+      // the already-hydrated memory.
+      controller.hydrateWorkspaceMemory({
+        ('p1', AssetType.story): 'story-9',
+      }, projectId: 'p1');
       expect(
-        controller.workspaceMemorySnapshot()[('p1', AssetType.story)],
+        controller.workspaceMemorySnapshot(projectId: 'p1')[(
+          'p1',
+          AssetType.story,
+        )],
         'story-2',
+      );
+      // A different project hydrates independently (hunt-20260910b BUG-2).
+      expect(controller.isWorkspaceMemoryHydratedForProject('p2'), isFalse);
+      controller.hydrateWorkspaceMemory({
+        ('p2', AssetType.character): 'character-9',
+      }, projectId: 'p2');
+      expect(controller.isWorkspaceMemoryHydratedForProject('p2'), isTrue);
+      expect(
+        controller.workspaceMemorySnapshot(projectId: 'p2')[(
+          'p2',
+          AssetType.character,
+        )],
+        'character-9',
       );
     });
   });

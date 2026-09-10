@@ -11,26 +11,53 @@ final workspaceIntentProvider = StateProvider<(String, AssetType)?>(
 
 class SelectionController extends Notifier<SelectionModel?> {
   final _workspaceSelections = <(String, AssetType), String>{};
-  bool _memoryHydrated = false;
+
+  /// Per-project hydration guard: re-hydration is allowed exactly once per
+  /// project session (hunt-20260910b BUG-2). A single app-lifetime flag made
+  /// the second project of a run inherit the first project's memory and let
+  /// persistence overwrite the second project's snapshot file with foreign
+  /// entries.
+  final _hydratedProjects = <String>{};
   @override
   SelectionModel? build() => null;
 
   /// Replaces in-session workspace memory with persisted entries exactly
-  /// once, before any user pick in this session. Stale persisted entries
-  /// must never overwrite selections the user has already made.
-  void hydrateWorkspaceMemory(SelectionMemorySnapshot persisted) {
-    if (_memoryHydrated) return;
-    _memoryHydrated = true;
+  /// once per project session, before any user pick in this session. Stale
+  /// persisted entries must never overwrite selections the user has
+  /// already made.
+  void hydrateWorkspaceMemory(
+    SelectionMemorySnapshot persisted, {
+    required String projectId,
+  }) {
+    if (_hydratedProjects.contains(projectId)) return;
+    _hydratedProjects.add(projectId);
     persisted.forEach((key, value) {
       _workspaceSelections.putIfAbsent(key, () => value);
     });
   }
 
-  bool get isWorkspaceMemoryHydrated => _memoryHydrated;
+  bool get isWorkspaceMemoryHydrated => _hydratedProjects.isNotEmpty;
+
+  /// Whether the given project's persisted memory has been hydrated in
+  /// this app run.
+  bool isWorkspaceMemoryHydratedForProject(String projectId) =>
+      _hydratedProjects.contains(projectId);
 
   /// Copy of the live per-workspace memory for persistence.
-  SelectionMemorySnapshot workspaceMemorySnapshot() =>
-      Map<(String, AssetType), String>.of(_workspaceSelections);
+  ///
+  /// [projectId] scopes the result to the active project: the persisted
+  /// file lives inside one project package, so writing entries from other
+  /// projects would pollute it and drop the project's own remembered
+  /// selections (hunt-20260910b BUG-2).
+  SelectionMemorySnapshot workspaceMemorySnapshot({String? projectId}) {
+    if (projectId == null) {
+      return Map<(String, AssetType), String>.of(_workspaceSelections);
+    }
+    return {
+      for (final entry in _workspaceSelections.entries)
+        if (entry.key.$1 == projectId) entry.key: entry.value,
+    };
+  }
 
   void select(SelectionModel selection) {
     final projectId = selection.projectId;

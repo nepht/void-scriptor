@@ -1,3 +1,48 @@
+### 2026-09-10 - nephthys (cron run172): slice BUG-2 hunt run171 - selection memory per-project (data-safety)
+
+- Slice: bug Referee run171 BUG-2 (Medium, kehilangan data) DIPERBAIKI:
+  hydrasi selection memory sekali per app lifetime + persist lintas-proyek
+  menimpa file proyek aktif dengan snapshot merged (proyek kedua dalam satu
+  run kehilangan memori navigasi persistennya + file-nya terpolusi entri
+  proyek lain). Dipilih di atas Medium lain (BUG-4/5/6/7/8/9) karena satu-
+  satunya yang kehilangan data persisten.
+- RED mekanisme-eksak @ HEAD e440967: test/features/explorer/
+  selection_memory_per_project_test.dart - dua proyek nyata dalam satu
+  registry root temp, switch A->B via openProject produksi (controller
+  menutup sesi lama sendiri), file B pre-seeded. RED kompilasi eksak
+  (isWorkspaceMemoryHydratedForProject undefined) lalu RED behavioral via
+  stub UnimplementedError.
+- GREEN minimal 2 file lib: selection_controller.dart - guard hydrasi per
+  proyek (_hydratedProjects), isWorkspaceMemoryHydratedForProject baru,
+  workspaceMemorySnapshot({projectId}) memfilter entri proyek aktif (null =
+  full map untuk call site non-persist); explorer_panel.dart
+  selectionMemoryPersistenceProvider - hydrate dengan projectId sesi aktif,
+  persist dengan workspaceMemorySnapshot(projectId:) sehingga file package
+  proyek hanya berisi entri proyek itu.
+- Adaptasi intent-preserving test lama: selection_memory_restart_
+  persistence_test.dart - call sites ke API baru; test 'hydration happens
+  once per project' menambah kasus proyek kedua (p2) ter-hydrate
+  independen; asersi inti restart (story2 pulih) tidak berubah.
+- Bukti: focused baru 1/1 PASS; regresi test/features/explorer 27/27 PASS
+  (post-format); regresi test/features/workspaces + test/features/character
+  173/173 PASS; flutter analyze --no-pub lib/core/selection
+  test/features/explorer = No issues; dart format owned 4 file; git diff
+  --check exit 0; flutter build windows --debug --no-pub PASS 49,4s; guard
+  PASS pre+post (pointer 145.27, canonical sha 86af6a5).
+- Catatan kontrak: entri (projectId,type) proyek A boleh tersisa di map
+  in-session (inert: konsumen key (projectId,type), persist ter-scope);
+  kontrak observable yang dibuktikan test = file proyek B bebas entri
+  asing dan entri B sendiri bertahan. Penyesuaian asersi dari "live map
+  bebas A" ke file-level mengikuti temuan bug (bug = overwrite file), bukan
+  pelemahan kontrak.
+- Sibling konkuren terdeteksi: test/features/workspace/
+  hunt171_creation_refresh_test.dart untracked baru milik eksekutor lain
+  (mtime segar, muncul saat run ini) - TIDAK disentuh, TIDAK di-commit.
+  Sisa REAL BUG run171: 15 (BUG-4/5/6/7/8/9 Medium; BUG-3/10/11/12/13/14/
+  15/18/20 Low). Next action: cek kepemilikan eksekutor lain dulu, lalu
+  BUG-4/5 region shell/resolver pada run berikutnya. Pointer tetap 145.27;
+  tidak push.
+
 ### 2026-09-09 - nephthys (cron run163): slice hunt-run157 BUG-04+BUG-03 - guard project switch + replace atomik
 
 - Bug terkonfirmasi tersisa hunt run157 diprioritaskan (otorisasi 2026-09-07:

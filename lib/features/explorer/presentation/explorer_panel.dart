@@ -234,30 +234,42 @@ void focusWorldbuildingSection(
 /// Persists per-workspace selection memory into the active project package
 /// (cache/selection_memory.json) so the remembered workspace selection
 /// survives an application restart. Hydration happens exactly once per
-/// session, as soon as a project session exists, and never overwrites
-/// selections the user has already made. Writes are debounced to one file
-/// write per burst; disk failures are swallowed by contract (memory is a
-/// convenience, never a blocker) but are observable via debugPrint.
+/// project session (re-hydrating when a different project is opened) and
+/// never overwrites selections the user has already made. Writes are
+/// scoped to the active project before persisting; disk failures are
+/// swallowed by contract (memory is a convenience, never a blocker) but
+/// are observable via debugPrint.
 final selectionMemoryPersistenceProvider = Provider<void>((ref) {
   final session = ref.watch(projectSessionProvider).valueOrNull;
   if (session == null) return;
+  final projectId = session.manifest.id;
 
+  // Hydration is per project session (hunt-20260910b BUG-2): each opened
+  // project loads its own persisted memory exactly once; a later project
+  // must not inherit the previous project's hydrated flag.
   ref
       .read(selectionProvider.notifier)
       .hydrateWorkspaceMemory(
         loadSelectionMemorySnapshotSync(
           selectionMemoryFileFor(session.package),
         ),
+        projectId: projectId,
       );
 
   // Synchronous write on each selection change: the snapshot is a tiny JSON
   // file, selection changes are tap-frequency, and a sync write inside the
   // single isolate is inherently serialized. A debounced Timer here would
   // dangle across widget-tree teardowns in fake-async test zones.
+  //
+  // The snapshot is scoped to the ACTIVE project before writing: the file
+  // lives inside this project's package, so foreign entries must never
+  // reach it (hunt-20260910b BUG-2).
   ref.listen(selectionProvider, (_, __) {
     persistSelectionMemorySnapshotSync(
       selectionMemoryFileFor(session.package),
-      ref.read(selectionProvider.notifier).workspaceMemorySnapshot(),
+      ref
+          .read(selectionProvider.notifier)
+          .workspaceMemorySnapshot(projectId: projectId),
     );
   });
 });

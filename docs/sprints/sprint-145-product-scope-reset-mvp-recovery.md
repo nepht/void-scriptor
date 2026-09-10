@@ -1,3 +1,33 @@
+### 2026-09-10 - nephthys (run188): JOURNEY NATIVE 145.27/145.42 VERIFIED (computer-use, project uji temporer)
+
+- Slice: pembuktian native alur inti di HEAD d7dcd1dc (build debug 82fb034,
+  PASS 25,5s) via computer-use sesuai otorisasi 2026-09-06 - prioritas
+  pengguna #6 yang selama ini UNVERIFIABLE dari cron. Project uji baru
+  "Journey186 Hermes" (500e61ef) dibuat lewat UI di D:\VoidScriptor_Data,
+  BUKAN naskah pengguna; dihapus penuh di akhir journey.
+- Alur terbukti native (10 screenshot + hashes + journey-summary.json di
+  docs/evidence/native-journey-14527-run188/): Dashboard guest offline ->
+  Create Project via dialog (paket .voidproject manifest+db terbentuk,
+  ground-truth filesystem) -> Create Novel atomik story+chapter+scene
+  satu aksi (bukti native service BUG-9 e94fbae) -> ketik draft di Scene
+  Editor -> autosave "Tersimpan 21:34" + durable draft-journal json
+  (isi diverifikasi read-only sqlite/fs) -> pindah Novel->Character
+  workspace -> kembali: draft tampil kembali (prioritas #1 pengguna
+  2026-09-04) -> close graceful tanpa session.lock tertinggal ->
+  relaunch: journal bertahan, kartu "Draft Recovery" muncul pasca-restart
+  -> tombol "Pulihkan Draft" mengembalikan teks utuh ke editor.
+- Konkurensi: run185-187 sibling mendarat di tengah journey (BUG-10/14,
+  tema, full-suite 4093/0) - tidak ada konflik; slice run188 = verifikasi
+  native + bukti, nol mutasi source. Guard PASS pre-run (pointer 145.27,
+  sha 86af6a5).
+- Observasi non-reproduksi (bukan bug terkonfirmasi): instance pertama
+  (pid 14328) exit diam-diam saat dialog Create Project sebelum project
+  terbentuk; tanpa event WER/crash, tidak tereproduksi pada instance
+  kedua yang menuntaskan journey penuh. Dicatat agar tidak hilang.
+- Sisa: drive-removal/power-loss live tetap hardware-bound UNVERIFIABLE;
+  145.43-145.50 menunggu keputusan Choi; website download menunggu
+  keputusan basis sumber (A live vs B v1) + izin deploy preview.
+
 ### 2026-09-10 - nephthys (run187): STABILITY GATE full-suite hijau penuh di dea1300+ (4093 PASS / 1 SKIP / 0 FAIL)
 
 - Gate: `flutter test` full (EXIT=0) pada HEAD pasca-polish menu aksen -

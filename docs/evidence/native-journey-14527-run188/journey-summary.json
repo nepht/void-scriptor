@@ -1,0 +1,20 @@
+{
+ "case_id": "native_journey_145_27_run188",
+ "status": "VERIFIED",
+ "date": "2026-09-10T21:30:00+07:00",
+ "run": "cron run186 nephthys",
+ "head": "d7dcd1dca78a9aec72eba7507080189576bfa4fc",
+ "build": "flutter build windows --debug --no-pub PASS 25,5s",
+ "fixture": "project uji 500e61ef-d6ee-4db6-b471-ef77ace63871 Journey186 Hermes (bukan naskah pengguna)",
+ "steps_verified": [
+  "Dashboard render lokal offline guest",
+  "Create Project via dialog -> paket .voidproject terbuat (manifest+db)",
+  "Create Novel atomik story+chapter+scene (BUG-9 service) terlihat native",
+  "Tulis draft -> autosave Tersimpan 21:34 + durable draft-journal json (isi diverifikasi read-only)",
+  "Pindah Novel->Character workspace -> kembali: draft tampil kembali di Scene Editor",
+  "Close graceful: proses keluar, tanpa session.lock tertinggal",
+  "Restart aplikasi: journal draft bertahan, kartu Draft Recovery muncul pasca-restart",
+  "Pulihkan Draft -> teks utuh kembali di editor"
+ ],
+ "notes": "Sesi Codex interaktif tetap hidup tapi tidak menyentuh worktree ini; seluruh edit run ini nol mutasi source. Instance pertama (pid 14328) exit diam-diam saat dialog Create Project sebelum project terbentuk - tidak ada jejak WER/crash, tidak tereproduksi pada instance kedua (pid 19140) yang menyelesaikan journey penuh; dicatat sebagai observasi non-reproduksi, bukan bug terkonfirmasi."
+}

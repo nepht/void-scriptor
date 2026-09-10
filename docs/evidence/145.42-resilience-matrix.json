@@ -325,6 +325,53 @@
       "limitations": "hardware-bound; windowed proxy hanya bukti tambahan, tidak menaikkan status",
       "next_action": "Choi menyediakan mesin minimum-spec atau menerima PARTIAL permanen",
       "retest_reason": ""
+    },
+    {
+      "case_id": "concurrent_open",
+      "status": "VERIFIED(domain)",
+      "evidence_type": "automated_test_fresh_rerun",
+      "date": "2026-09-11",
+      "head_at_verification": "f685ecfcaed19b0f45c6c38cca515df26255f856",
+      "dirty_scope": "worktree bersih (tracked); hanya untracked docs sibling: .hermes/AUTONOMOUS_ROADMAP_PROMPT.md, docs/MASTER_SPRINT.md, docs/backlog/, docs/evidence/website-source-reconciliation-2026-09-08.json (dipreservasi)",
+      "source": "run195-nephthys cron (bukti segar di HEAD live)",
+      "commit": "5cdfb75 (test + classifier; diverifikasi ulang di HEAD f685ecf)",
+      "fixture": "Directory.systemTemp 'hermes-dblock-*': DB produksi dibuat service.create(); writer kedua sqlite3 native dengan BEGIN IMMEDIATE memegang RESERVED lock (fixture dibuat & dihancurkan test)",
+      "command": "flutter test --no-pub test/database/project/project_database_concurrent_open_test.dart test/database/project/project_database_unavailable_open_test.dart",
+      "exit_code": 0,
+      "expected": "open kedua saat writer lain memegang file ditolak typed ProjectDatabaseLockedException (bukan salah korut); setelah kontender rilis, open produksi pulih dan migration selesai; drive/jalur absen -> ProjectDatabaseUnavailableException",
+      "actual": "4/4 PASS 'All tests passed!': 2 concurrent-open (locked typed + recovery+completion migration) + 2 unavailable-open (errno 3 path tidak ada + CANTOPEN 14)",
+      "evidence_paths": [
+        "test/database/project/project_database_concurrent_open_test.dart",
+        "test/database/project/project_database_unavailable_open_test.dart",
+        "lib/database/project/project_database_service.dart (classifier extended code 5)",
+        "lib/app/shell/void_app_shell.dart (pesan ramah locked)"
+      ],
+      "limitations": "simulasi lock via koneksi SQLite asli BEGIN IMMEDIATE di harness test, bukan dua instance aplikasi UI; retest bila classifier open berubah",
+      "next_action": "tidak ada wajib",
+      "retest_reason": "",
+      "provenance_note": "Kontrak canonical 145.42 menunjuk test/database/project/project_database_service_test.dart yang TIDAK ADA di pohon live (git log --all tanpa riwayat). Coverage live-nya adalah project_database_concurrent_open_test.dart (commit 5cdfb75). Kedua test yang dirujuk kontrak dijalankan ulang dari file live yang setara; matriks tidak mengubah acceptance kanonis."
+    },
+    {
+      "case_id": "different_project_isolation",
+      "status": "VERIFIED(domain)",
+      "evidence_type": "automated_test_fresh_rerun",
+      "date": "2026-09-11",
+      "head_at_verification": "f685ecfcaed19b0f45c6c38cca515df26255f856",
+      "dirty_scope": "worktree bersih (tracked); hanya untracked docs sibling: .hermes/AUTONOMOUS_ROADMAP_PROMPT.md, docs/MASTER_SPRINT.md, docs/backlog/, docs/evidence/website-source-reconciliation-2026-09-08.json (dipreservasi)",
+      "source": "run195-nephthys cron (bukti segar di HEAD live)",
+      "commit": "test/features/character/character_repository_test.dart (clean di HEAD f685ecf; diverifikasi segar)",
+      "fixture": "Directory.systemTemp 's08-isolation-*': dua project DB dibuat ProjectDatabaseService.create() di root test (fixture dibuat & dihancurkan test)",
+      "command": "flutter test --no-pub test/features/character/character_repository_test.dart",
+      "exit_code": 0,
+      "expected": "karakter yang dibuat di database project-1 tidak terlihat di database project-2 (isolasi antar-project)",
+      "actual": "6/6 PASS 'All tests passed!'; kasus kunci 'characters stay isolated across project databases'",
+      "evidence_paths": [
+        "test/features/character/character_repository_test.dart"
+      ],
+      "limitations": "level repository/database; bukan dua jendela aplikasi native",
+      "next_action": "tidak ada wajib",
+      "retest_reason": ""
     }
-  ]
+  ],
+  "last_verified_run": "run195 (2026-09-11): concurrent_open + different_project_isolation VERIFIED(domain) bukti segar HEAD f685ecf; provenance service_test.dart dicatat"
 }

@@ -3849,3 +3849,37 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   assignments loading) ATAU gap ledger 145.42 (interrupted move line
   ~1986, concurrent open line ~2020) ATAU keputusan Choi 145.43-145.50.
 
+
+### 2026-09-10 - nephthys (run180): sistem multi-tema warna + fix kontras light-mode CLOSED (fitur, keputusan Choi)
+
+- Slice: permintaan Choi "berikan warna thema yang lain agar tidak monoton"
+  + bug terverifikasi device (teks putih-di-atas-putih pada Android
+  system-light). Komit a3754ea (13 file, +926/-75) terpush GitHub+GitLab.
+- Arsitektur: VoidTypography berhenti hardcode VoidColors (tinta diambil
+  dari textTheme) sehingga 292 pemakaian di 85 file ikut membaik tanpa
+  menyentuh file-file itu; VoidTheme.build(VoidPalette) menyalurkan palet
+  ke textTheme+ColorScheme; VoidThemePresets 6 keluarga aksen (voidPurple
+  default, ink, ember, sage, rose, ocean) x light/dark; VoidThemeVariant
+  (mode x accent); ThemeAccentController + persistensi
+  appearance.theme_accent (additive, data lama aman); chip pemilih warna
+  di ThemeSettingsScreen.
+- TDD: 4 bullet merah-hijau beruntun. Gate: 21/21 test tema; analyzer
+  "No issues found!" pada region tersentuh; test WCAG >= 7:1
+  textPrimary-vs-background di SEMUA 12 palet (regresi kontras tak bisa
+  kambuh). Verifikasi perangkat Android (emulator Pixel_3a_API_30, APK
+  dari a3754ea, uiautomator2 + ground-truth vision): kontras dashboard
+  kuat tanpa teks redup; pilih Ocean mengubah radio/chevron/tab pill/CTA
+  menjadi biru dan bertahan lintas navigasi. Preview HTML 12 kartu palet
+  di Temp.
+- Gerbang CI TERHALANG (bukan kode): semua job a3754ea dan 7ce1641 mati
+  2-5 dtk tanpa steps/log; annotation resmi GitHub: "job not started
+  because recent account payments have failed or spending limit needs to
+  be increased" - billing akun nepht. Gitleaks lokal 8.30.1 atas rentang
+  terpush: no leaks. Aksi Choi: Billing and Plans, lalu re-run failed
+  jobs.
+- Rekonsiliasi gate lokal (lanjutan run ini): workflow_persistence_test
+  pin currentSchemaVersion 59 padahal 822fd8b menaikkan DB ke 60 -
+  pre-existing, file clean, maka pin dinaikkan ke 60 (655e506). Setelah
+  itu test/core + test/design_system 660/660 All tests passed di HEAD.
+- Batas: dogfood UI Windows desktop berjalan terpisah (lihat entri
+  run181 bila diberi catatan sendiri); entri ledger ini commit docs-only.

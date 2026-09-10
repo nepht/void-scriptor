@@ -3714,3 +3714,46 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   PASS 40,0s. Guard PASS pre+post (pointer 145.27, sha 86af6a5).
 - Sisa hunt run171 (Low): BUG-3, BUG-10, BUG-11, BUG-12, BUG-14, BUG-15,
   BUG-20. Native GUI UNVERIFIABLE dari cron. Tidak push (ahead 28).
+
+### 2026-09-10 - nephthys (cron run179): BUG-11 filter dialog dismissal CLOSED (hunt run171 fix #9)
+
+- Slice: bug terkonfirmasi Referee run171 BUG-11 (Low, REAL BUG,
+  explorer_panel.dart 1301-1312 lama) DIPERBAIKI (commit 5cc1a4e, 2 file
+  +100/-1). Mekanisme terverifikasi di kode hidup: showDialog<bool>
+  mengembalikan null saat dismissal (tap barrier/back), dan cabang else
+  `if (applied == true) {...} else {...}` memperlakukan null persis
+  seperti Reset eksplisit - ketukan tidak sengaja di luar dialog
+  membuang filter narasi aktif pengguna tanpa konfirmasi (tak bisa
+  dibedakan dari Reset).
+- Patch minimal mengikuti arah Referee: hanya hasil eksplisit yang boleh
+  memutasi state - true menerapkan dropdown yang diedit, false adalah
+  Reset eksplisit, null di-return lebih awal (no-op) sehingga dismissal
+  menjaga filter aktif. Perilaku Apply/Reset eksplisit tidak berubah.
+- TDD: RED mekanisme-eksak pada konsumen nyata (test
+  explorer_character_narrative_filter_test.dart, session proyek temp
+  produksi): Apply protagonist -> tap barrier Offset(5,5) -> dialog
+  tertutup DAN filter lenyap (Expected ['Alira'] / Actual
+  ['Alira','Bravant']) - exit 1. Skenario negatif tambahan: dismissal
+  dengan perubahan dropdown belum disimpan tidak menerapkan dan tidak
+  menghapus. GREEN 3/3 (test baru + 2 test lama Apply/Reset tetap).
+- Regresi: test/features/explorer 34 PASS/0 FAIL. dart analyze scoped
+  (explorer_panel + test filter) No issues. Format 2 owned file
+  (0 changed re-run --set-exit-if-changed). git diff --check exit 0.
+  flutter build windows --debug --no-pub PASS 27,7s. Guard PASS pre-run
+  DAN post-commit (pointer 145.27, sha canonical 86af6a5).
+- Konkurensi: run178 (ffb4738 + ledger e98cbf2) sudah mendarat penuh di
+  awal run ini; tool memberi flag "sibling modified" pada
+  explorer_panel.dart (perubahan ffb4738 pasca-read terakhir agen ini) -
+  area patch di-re-read via diff HEAD sebelum dan sesudah patch, net
+  diff = 6 baris BUG-11 saja, tanpa menyentuh perubahan sibling.
+  Warning hit-test tap() pada test baru tidak diwarisi test lama di
+  file yang sama (find.text 'All roles' vs render tetangga); asersi
+  perilaku tetap tajam.
+- Sisa hunt run171 (Low): BUG-3, BUG-10, BUG-12, BUG-14, BUG-15, BUG-20.
+  Native GUI UNVERIFIABLE dari cron (widget test, bukan interaksi
+  jendela). Tidak push (ahead 29).
+- Next action: satu Low run171 berikutnya (BUG-20 error surface mengikuti
+  pola retry run175; BUG-10 butuh DAO scoped query; BUG-12 fail-open saat
+  assignments loading) ATAU gap ledger 145.42 (interrupted move line
+  ~1986, concurrent open line ~2020) ATAU keputusan Choi 145.43-145.50.
+

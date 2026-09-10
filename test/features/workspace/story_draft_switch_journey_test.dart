@@ -351,4 +351,165 @@ void main() {
     expect(find.byKey(const ValueKey('autosave_error_banner')), findsNothing);
     expect(tester.takeException(), isNull);
   });
+
+  // T3 (bug-hunt-run128 BUG-22, run176 formalisasi): story -> story lewat
+  // resolver produksi. Tanpa ValueKey('story-<id>') State layar story
+  // dipakai ulang: sceneId story lama tetap terpilih dan ketikan story B
+  // ter-autosave ke scene milik story A (draftA/draftB basi - RED eksak
+  // a4d86ae). Acceptance: tiap scene menyimpan draftnya sendiri.
+  testWidgets('T3: story A -> story B keeps both drafts on their own scenes', (
+    tester,
+  ) async {
+    final root = await tester.runAsync(
+      () => Directory.systemTemp.createTemp('vs-draft-bug22-'),
+    );
+    final dir = root!;
+    addTearDown(() {
+      try {
+        if (dir.existsSync()) dir.deleteSync(recursive: true);
+      } on FileSystemException {
+        // File masih terkunci handle sesi; biarkan OS membersihkan %TEMP%.
+      }
+    });
+
+    final package = await tester.runAsync(
+      () => ProjectPackageService(
+        rootDirectory: Directory('${dir.path}/pkg'),
+      ).create(name: 'Draft Bug22'),
+    );
+    final session = await tester.runAsync(
+      () => ProjectSessionManager().open(package!),
+    );
+    final liveSession = session!;
+    addTearDown(liveSession.close);
+
+    final paths = ProjectPaths(rootDirectory: Directory('${dir.path}/data'));
+    final db = liveSession.database;
+    final projectId = liveSession.manifest.id;
+    final service = CreateStoryService(database: db, paths: paths);
+
+    final storyA = (await tester.runAsync(
+      () => service.createStory(projectId: projectId, title: 'Novel A'),
+    ))!;
+    final chapterA = (await tester.runAsync(
+      () => service.createChapter(
+        storyId: storyA,
+        title: 'Chapter 1',
+        chapterNumber: 1,
+      ),
+    ))!;
+    final sceneA = (await tester.runAsync(
+      () => service.createScene(
+        storyId: storyA,
+        chapterId: chapterA,
+        title: 'Scene A',
+        sceneNumber: 1,
+      ),
+    ))!;
+
+    final storyB = (await tester.runAsync(
+      () => service.createStory(projectId: projectId, title: 'Novel B'),
+    ))!;
+    final chapterB = (await tester.runAsync(
+      () => service.createChapter(
+        storyId: storyB,
+        title: 'Chapter 1',
+        chapterNumber: 1,
+      ),
+    ))!;
+    final sceneB = (await tester.runAsync(
+      () => service.createScene(
+        storyId: storyB,
+        chapterId: chapterB,
+        title: 'Scene B',
+        sceneNumber: 1,
+      ),
+    ))!;
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          projectSessionProvider.overrideWith(() => _FixedSession(liveSession)),
+          projectPathsProvider.overrideWithValue(paths),
+        ],
+        child: const MaterialApp(home: Scaffold(body: WorkspaceResolver())),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(WorkspaceResolver)),
+    );
+    final notifier = container.read(selectionProvider.notifier);
+
+    // Ketik draf A di story A. Persist butuh waktu nyata (pola T1/T2:
+    // FakeAsync pump saja tidak mendarat) - poll repository sampai draft
+    // benar-benar tersimpan, bukan fixed pump.
+    notifier.select(
+      SelectionModel(
+        assetId: storyA,
+        assetType: AssetType.story,
+        projectId: projectId,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.enterText(_draftField(), 'draf novel A');
+    await tester.pump(const Duration(milliseconds: 100));
+
+    final repository = StoryRepositoryImpl(database: db, projectId: projectId);
+    var draftALanded = false;
+    for (var i = 0; i < 100 && !draftALanded; i++) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pump(const Duration(milliseconds: 500));
+      draftALanded =
+          await tester.runAsync(() => repository.getSceneDraft(sceneA)) ==
+          'draf novel A';
+    }
+    expect(draftALanded, isTrue, reason: 'draft A harus ter-persist');
+
+    // Pindah langsung story A -> story B (jalur produksi yang sama).
+    notifier.select(
+      SelectionModel(
+        assetId: storyB,
+        assetType: AssetType.story,
+        projectId: projectId,
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 1800));
+    await tester.pumpAndSettle();
+    expect(find.byType(StoryWorkspaceScreen), findsOneWidget);
+
+    // Layar B segar: teks A tidak bocor ke field (State tidak dipakai ulang).
+    expect(find.text('draf novel A'), findsNothing);
+
+    await tester.enterText(_draftField(), 'draf novel B');
+    await tester.pump(const Duration(milliseconds: 100));
+
+    var draftBLanded = false;
+    for (var i = 0; i < 100 && !draftBLanded; i++) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pump(const Duration(milliseconds: 500));
+      draftBLanded =
+          await tester.runAsync(() => repository.getSceneDraft(sceneB)) ==
+          'draf novel B';
+    }
+    expect(draftBLanded, isTrue, reason: 'draft B harus ter-persist');
+
+    // Kontrak akhir BUG-22: tiap scene punya draft-nya sendiri. Pada versi
+    // tanpa key, ketikan B mendarat ke sceneId basi milik A (draftA
+    // tertimpa / draftB basi) - kedua asersi ini menangkapnya.
+    final draftA = await tester.runAsync(
+      () => repository.getSceneDraft(sceneA),
+    );
+    final draftB = await tester.runAsync(
+      () => repository.getSceneDraft(sceneB),
+    );
+    expect(draftA, 'draf novel A');
+    expect(draftB, 'draf novel B');
+    expect(tester.takeException(), isNull);
+  });
 }

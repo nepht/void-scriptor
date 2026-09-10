@@ -566,6 +566,9 @@ class ExplorerPanel extends ConsumerWidget {
                   if (modulePreferences.creatures)
                     _CreatureGroup(
                       creatures: creatures,
+                      focused: effectiveFocusedType == AssetType.creature,
+                      onFocused: () =>
+                          focusExplorerAsset(ref, AssetType.creature),
                       selectedId: ref.watch(selectionProvider)?.assetId,
                       onSelected: (creature) => ref
                           .read(selectionProvider.notifier)
@@ -715,13 +718,25 @@ class _CreatureGroup extends StatelessWidget {
     required this.creatures,
     required this.selectedId,
     required this.onSelected,
+    this.focused = false,
+    this.onFocused,
   });
   final AsyncValue<List<CreatureModel>> creatures;
   final String? selectedId;
   final ValueChanged<CreatureModel> onSelected;
+
+  /// BUG-18 (hunt-run171): parity with Story/Character/Environment groups —
+  /// the header tap re-focuses the creature workspace so the sync-restore
+  /// branch of focusExplorerAsset becomes reachable from the UI.
+  final bool focused;
+  final VoidCallback? onFocused;
   @override
   Widget build(BuildContext context) => ExpansionTile(
+    onExpansionChanged: (_) => onFocused?.call(),
     initiallyExpanded: true,
+    backgroundColor: focused
+        ? context.palette.primary.withValues(alpha: 0.08)
+        : null,
     tilePadding: const EdgeInsets.symmetric(horizontal: 9),
     childrenPadding: const EdgeInsets.only(left: 28),
     leading: Icon(

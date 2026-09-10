@@ -58,6 +58,8 @@ void main() {
   });
 
   test('schema version is 57', () {
-    expect(ProjectDatabase.currentSchemaVersion, 59);
+    // Pin mengikuti currentSchemaVersion; 60 = workspaces 145.25/145.26
+    // (822fd8b). Naikkan bersama tiap migrasi baru.
+    expect(ProjectDatabase.currentSchemaVersion, 60);
   });
 }

@@ -1,3 +1,49 @@
+### 2026-09-10 - nephthys (cron run183): BUG-20 module-prefs error surface + retry CLOSED (hunt run171 fix #13)
+
+- Slice: bug terkonfirmasi Referee run171 BUG-20 (Low, REAL BUG) DIPERBAIKI
+  (commit df3946d, 2 file +221/-11). Mekanisme terverifikasi di kode hidup:
+  `projectSidebarModulePreferencesProvider` masuk `AsyncError` bila
+  `load()` gagal di luar try FormatException (recoverIfInterrupted /
+  select DB), sedangkan panel lama memakai `valueOrNull ?? const defaults`
+  tanpa cabang `hasError` — pengguna diam-diam mendapat modul default
+  tanpa jalur pulih sampai invalidasi tak terkait (kontras baris
+  error+retry katalog BUG-8 di file yang sama).
+- Patch minimal mengikuti arah Referee: `modulePreferencesAsync` dipertahan
+  sebagai AsyncValue; variabel `modulePreferencesError` (hasError &&
+  !isLoading) merender ListTile peringatan inline (ikon warning + teks
+  'Sidebar modules unavailable: <error>', palette.danger 11px) dengan
+  trailing IconButton tooltip 'Retry sidebar modules' ->
+  `ref.invalidate(projectSidebarModulePreferencesProvider(projectId))`.
+  Fallback default, jalur no-session, dan preferensi tersimpan pengguna
+  tidak berubah. Preseden pola: explorer_story_group.dart error row BUG-8.
+- TDD: RED mekanisme-eksak (test explorer_module_preferences_error_retry_
+  test.dart; service override gagal-memuat dengan session proyek temp
+  produksi, sama harness run182): Expected satu baris 'Sidebar modules
+  unavailable' / Actual 0 pada kode lama, exit 1 -> GREEN 2/2 (baris error
+  muncul; tap retry menginkrementi loadCalls=2 dan baris hilang saat load
+  kedua sehat). Positive control healthy-prefs lulus sejak awal = harness
+  valid (label 'Creatures & Companions' koreksi harness, bukan bug produk).
+- Regresi: test/features/explorer penuh 39 PASS/0 FAIL (37 lama + 2 baru);
+  dart analyze scoped (explorer_panel.dart + test baru) No issues; format
+  owned --set-exit-if-changed bersih; git diff --check exit 0; flutter
+  build windows --debug --no-pub PASS 43,8s; roadmap guard PASS pre-run
+  (pointer 145.27, sha canonical 86af6a5).
+- Insiden tooling dicatat: output `flutter test` via terminal bash kembali
+  dengan EXIT=0 palsu saat ada test gagal (pipeline tail menelan exit
+  code); dikompensasi dengan membaca ringkasan `All tests passed!`/
+  `Some tests failed` dari output, bukan hanya exit code.
+- Adopsi & preservasi: single-writer RELEASED_TO_HERMES sudah di-ack
+  (run181/182); dirty .hermes/ROADMAP_STATE.json + untracked docs
+  (AUTONOMOUS_ROADMAP_PROMPT.md, MASTER_SPRINT.md, docs/backlog/,
+  website evidence) DIPRESERVASI, tidak di-commit. Tidak push (ahead 3).
+- Sisa hunt run171 (Low): BUG-14 (ref.read pasca-await dialog tanpa
+  mounted guard, runtime claim medium-confidence), BUG-10 (getAllAssets
+  full-table per family, butuh DAO scoped query). Matriks 145.42 tetap
+  hardware-bound/keputusan-Choi untuk sisanya.
+- Next action: BUG-14 (guard mounted dua situs dialog) ATAU BUG-10 (scoped
+  DAO) ATAU keputusan Choi 145.43-145.50 / verifikasi login Cloudflare
+  untuk pekerjaan website-download.
+
 ### 2026-09-10 - nephthys (cron run182): BUG-12 filter-while-loading fail-open CLOSED (hunt run171 fix #12)
 
 - Slice: bug terkonfirmasi Referee run171 BUG-12 (Low, REAL BUG) DIPERBAIKI

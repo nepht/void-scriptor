@@ -1,3 +1,72 @@
+### 2026-09-10 - nephthys (cron run185): BUG-10 full-table asset fetch + BUG-14 dialog disposed-ref CLOSED (hunt run171 fix #14/#15, TDD)
+
+- Dua bug sisa hunt run171 yang masih hidup di HEAD (marker fix agen lain
+  mengonfirmasi BUG-3/12/15/20 sudah tertangani; BUG-10 dan BUG-14 belum):
+  BUG-10 supportingAssetExplorerProvider/storyExplorerProvider menarik
+  seluruh tabel assets per instance family lalu menyaring di klien;
+  BUG-14 _configureSidebarModules/createExplorerAsset memanggil ref.read
+  tepat setelah await dialog tanpa guard mounted (panel yang di-dispose
+  di bawah dialog terbuka membuat WidgetRef disposed melempar
+  StateError).
+- BUG-10 patch: AssetDao.listByProjectAndType(projectId, type) - scope di
+  SQL (WHERE projectId+type, order nama case-insensitive; pola
+  PropRepository.listForProject); kedua provider memakainya; getAllAssets
+  tidak diubah (20 pemanggil lain). RED compile-exact -> GREEN 2/2
+  (test/database/asset_dao_scoped_query_test.dart: hanya baris
+  project+type yang keluar; sampah lintas proyek/tipe tak pernah keluar
+  dari DB; urutan 'alpha Cloak' sebelum 'Zeta Coat').
+- BUG-14 patch: guard context.mounted sebelum ref.read pertama
+  pasca-await di kedua situs (arah Referee). Test mekanisme-eksak dua
+  arah (test/features/explorer/explorer_dialog_dispose_guard_test.dart):
+  panel ConsumerWidget di-dispose di bawah dialog root navigator yang
+  tetap hidup, dialog di-pop true -> RED StateError 'disposed' di sink;
+  pola guarded no-op. Pitfall harness terdokumentasi: context pemanggil
+  harus DI DALAM MaterialApp (MaterialLocalizations) dan ref harus milik
+  widget yang benar-benar di-dispose.
+- Gates: dart format bersih, analyzer 'No issues found!' pada
+  database+explorer+test terkait, suite explorer/database/assets
+  125/125 PASS. Commit kode 8db0a75 (4 file, +268/-9).
+- Konvensi ledger: entri terbaru di atas (mengikuti run183 sibling);
+  entri run184 (tema+kontras, dogfood desktop) direlokasi ke urutan
+  kronologis terbaru tanpa mengubah isi.
+
+
+### 2026-09-10 - nephthys (run184): sistem multi-tema warna + fix kontras light-mode CLOSED (fitur, keputusan Choi)
+
+- Slice: permintaan Choi "berikan warna thema yang lain agar tidak monoton"
+  + bug terverifikasi device (teks putih-di-atas-putih pada Android
+  system-light). Komit a3754ea (13 file, +926/-75) terpush GitHub+GitLab.
+- Arsitektur: VoidTypography berhenti hardcode VoidColors (tinta diambil
+  dari textTheme) sehingga 292 pemakaian di 85 file ikut membaik tanpa
+  menyentuh file-file itu; VoidTheme.build(VoidPalette) menyalurkan palet
+  ke textTheme+ColorScheme; VoidThemePresets 6 keluarga aksen (voidPurple
+  default, ink, ember, sage, rose, ocean) x light/dark; VoidThemeVariant
+  (mode x accent); ThemeAccentController + persistensi
+  appearance.theme_accent (additive, data lama aman); chip pemilih warna
+  di ThemeSettingsScreen.
+- TDD: 4 bullet merah-hijau beruntun. Gate: 21/21 test tema; analyzer
+  "No issues found!" pada region tersentuh; test WCAG >= 7:1
+  textPrimary-vs-background di SEMUA 12 palet (regresi kontras tak bisa
+  kambuh). Verifikasi perangkat Android (emulator Pixel_3a_API_30, APK
+  dari a3754ea, uiautomator2 + ground-truth vision): kontras dashboard
+  kuat tanpa teks redup; pilih Ocean mengubah radio/chevron/tab pill/CTA
+  menjadi biru dan bertahan lintas navigasi. Preview HTML 12 kartu palet
+  di Temp.
+- Gerbang CI TERHALANG (bukan kode): semua job a3754ea dan 7ce1641 mati
+  2-5 dtk tanpa steps/log; annotation resmi GitHub: "job not started
+  because recent account payments have failed or spending limit needs to
+  be increased" - billing akun nepht. Gitleaks lokal 8.30.1 atas rentang
+  terpush: no leaks. Aksi Choi: Billing and Plans, lalu re-run failed
+  jobs.
+- Rekonsiliasi gate lokal (lanjutan run ini): workflow_persistence_test
+  pin currentSchemaVersion 59 padahal 822fd8b menaikkan DB ke 60 -
+  pre-existing, file clean, maka pin dinaikkan ke 60 (655e506). Setelah
+  itu test/core + test/design_system 660/660 All tests passed di HEAD.
+- Batas: dogfood UI Windows desktop (6 chip tampil, Sage terpilih ->
+  propagasi hijau live, persistensi storage + restart terverifikasi)
+  dicatat dalam run ini; entri ledger sibling run180-183 adalah hunt
+  run171, tidak saling menimpa.
+
 ### 2026-09-10 - nephthys (cron run183): BUG-20 module-prefs error surface + retry CLOSED (hunt run171 fix #13)
 
 - Slice: bug terkonfirmasi Referee run171 BUG-20 (Low, REAL BUG) DIPERBAIKI
@@ -3944,40 +4013,3 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   pola retry run175; BUG-10 butuh DAO scoped query; BUG-12 fail-open saat
   assignments loading) ATAU gap ledger 145.42 (interrupted move line
   ~1986, concurrent open line ~2020) ATAU keputusan Choi 145.43-145.50.
-
-
-### 2026-09-10 - nephthys (run184): sistem multi-tema warna + fix kontras light-mode CLOSED (fitur, keputusan Choi)
-
-- Slice: permintaan Choi "berikan warna thema yang lain agar tidak monoton"
-  + bug terverifikasi device (teks putih-di-atas-putih pada Android
-  system-light). Komit a3754ea (13 file, +926/-75) terpush GitHub+GitLab.
-- Arsitektur: VoidTypography berhenti hardcode VoidColors (tinta diambil
-  dari textTheme) sehingga 292 pemakaian di 85 file ikut membaik tanpa
-  menyentuh file-file itu; VoidTheme.build(VoidPalette) menyalurkan palet
-  ke textTheme+ColorScheme; VoidThemePresets 6 keluarga aksen (voidPurple
-  default, ink, ember, sage, rose, ocean) x light/dark; VoidThemeVariant
-  (mode x accent); ThemeAccentController + persistensi
-  appearance.theme_accent (additive, data lama aman); chip pemilih warna
-  di ThemeSettingsScreen.
-- TDD: 4 bullet merah-hijau beruntun. Gate: 21/21 test tema; analyzer
-  "No issues found!" pada region tersentuh; test WCAG >= 7:1
-  textPrimary-vs-background di SEMUA 12 palet (regresi kontras tak bisa
-  kambuh). Verifikasi perangkat Android (emulator Pixel_3a_API_30, APK
-  dari a3754ea, uiautomator2 + ground-truth vision): kontras dashboard
-  kuat tanpa teks redup; pilih Ocean mengubah radio/chevron/tab pill/CTA
-  menjadi biru dan bertahan lintas navigasi. Preview HTML 12 kartu palet
-  di Temp.
-- Gerbang CI TERHALANG (bukan kode): semua job a3754ea dan 7ce1641 mati
-  2-5 dtk tanpa steps/log; annotation resmi GitHub: "job not started
-  because recent account payments have failed or spending limit needs to
-  be increased" - billing akun nepht. Gitleaks lokal 8.30.1 atas rentang
-  terpush: no leaks. Aksi Choi: Billing and Plans, lalu re-run failed
-  jobs.
-- Rekonsiliasi gate lokal (lanjutan run ini): workflow_persistence_test
-  pin currentSchemaVersion 59 padahal 822fd8b menaikkan DB ke 60 -
-  pre-existing, file clean, maka pin dinaikkan ke 60 (655e506). Setelah
-  itu test/core + test/design_system 660/660 All tests passed di HEAD.
-- Batas: dogfood UI Windows desktop (6 chip tampil, Sage terpilih ->
-  propagasi hijau live, persistensi storage + restart terverifikasi)
-  dicatat dalam run ini; entri ledger sibling run180-183 adalah hunt
-  run171, tidak saling menimpa.

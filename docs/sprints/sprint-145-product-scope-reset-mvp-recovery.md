@@ -1,3 +1,24 @@
+### 2026-09-10 - nephthys (run187): STABILITY GATE full-suite hijau penuh di dea1300+ (4093 PASS / 1 SKIP / 0 FAIL)
+
+- Gate: `flutter test` full (EXIT=0) pada HEAD pasca-polish menu aksen -
+  pertama kali hijau penuh sejak wave workspaces 145.25/145.26. Dua
+  run: run pertama 4073 PASS/17 FAIL diinventarisasi satu per satu
+  (bukan diasumsikan), run kedua pasca-rekonsiliasi 4093 PASS/0 FAIL.
+- Rekonsiliasi (3a8a9d2): 3 pin stale currentSchemaVersion 59 -> 60
+  (ai_usage_log_repository, sync_log_repository, layout_preset_repository)
+  - kategori sama dengan workflow_persistence_test (655e506); bump sumber
+  tetap 822fd8b (workspaces 145.25/145.26).
+- Tribulasi terdokumentasi jujur: 13 "kegagalan" run pertama (keluarga
+  test AI) adalah artefak aksiden sendiri - file
+  build/native_assets/windows/sqlite3.dll terhapus saat diagnostik
+  file-lock (dipicu flutter test tidak bisa menghapus dll saat app
+  desktop masih jalan); RESEP: regenerasi via `flutter pub get` (bukan
+  menghapus manual), error khasnya "error code: 126 sqlite3_initialize".
+  1 flaky story_txt_export_ui tidak mereproduksi saat standalone
+  (konsisten catatan flaky I/O).
+- Konkurensi: sibling idle sepanjang gate; .hermes/ROADMAP_STATE.json
+  milik sibling tetap tidak disentuh.
+
 ### 2026-09-10 - nephthys (run186): akses cepat aksen di ThemeModeMenu top-bar CLOSED (polish tema run184)
 
 - Permintaan berjalan dari Choi ("banyak pilihan warna agar tidak

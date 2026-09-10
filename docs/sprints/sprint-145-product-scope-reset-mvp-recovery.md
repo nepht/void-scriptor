@@ -1,3 +1,12 @@
+### 2026-09-10 - nephthys (run190): backlog acceptance terakhir - narrow 390px + textScale 2.0 NarrativeAssignmentCard (PASS-first + inversi)
+
+- Slice: docs/backlog/character-roles-support.json phase_one acceptance "UI handles ... narrow layouts and enlarged text" - item UI terakhir yang belum berbukti (run151 mencatatnya tersisa; run152-179 menutup item lain). Tidak ada pointer berubah; guard PASS pre+post (pointer 145.27, sha canonical 86af6a5).
+- Test baru test/features/character/narrative_assignment_ui_narrow_test.dart (2 test, seed project temp nyata + CharacterWorkspaceScreen produksi): (1) 390x844 render tanpa overflow, (2) 1280x900 textScale 2.0 tanpa overflow - keduanya assert tester.takeException() isNull plus judul kartu tampil.
+- PASS-first terverifikasi lalu gigi test dibuktikan lewat inversi patch sementara (pola run157): Expanded+isExpanded:true pada dropdown Novel dibuang -> RED 2/2 (RenderFlex overflow tercapat takeException, teks scale 2.0 juga); file dipulihkan identik HEAD (git diff kosong) -> GREEN 2/2. Patroli Expanded sudah benar sejak implementasi run149; yang hilang adalah bukti acceptancenya.
+- Regresi: narrative_assignment_ui_test 7 PASS + character_workspace_test PASS (exit 0). dart format owned 1 file; flutter analyze --no-pub No issues found (25,1s); git diff --check exit 0; flutter build windows --debug --no-pub PASS 25,4s.
+- Sisa backlog phase_one: sub-acceptance empty/loading/error states SUDAH berbukti (terminal failure run162, retry, tolerant decode run165); acceptances lain sudah lulus. Native journey narrative UI tetap UNVERIFIABLE dari cron. Pointer tetap 145.27; tidak push (ahead 2+1).
+- Commit scoped: test baru + entri ledger ini saja. Sibling dirty (.hermes state, untracked docs) dipertahankan.
+
 ### 2026-09-10 - nephthys (run189): Website handoff langkah 4-5 — Release bundle + download manifest (PARTIAL)
 
 - Authority: HERMES_WEBSITE_DOWNLOAD_HANDOFF_2026-09-08.md langkah 4-5 (manifest dari artefak nyata, tanpa deploy); run143 telah menuntaskan langkah 1-2 (identitas live: Pages project `voidscriptor` direct-upload, checkout sumber live TIDAK DITEMUKAN, kandidat v1 = snapshot pra-deploy bukan sumber live).

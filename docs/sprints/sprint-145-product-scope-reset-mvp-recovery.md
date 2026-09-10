@@ -1,3 +1,55 @@
+### 2026-09-10 - nephthys (cron run176): slice BUG-9 hunt run171 - atomisitas pembuatan novel CLOSED (sisa hunt run171 habis)
+
+- Slice: bug Referee run171 BUG-9 (Medium, satu-satunya sisa hunt run171)
+  DIPERBAIKI (commit e94fbae, 5 file +377/-26). Akar terverifikasi di kode
+  hidup: dua call site produksi (workspace_resolver onCreateNovel
+  ~121-139 dan explorer_panel createExplorerAsset kasus AssetType.story)
+  merantai createStory -> createChapter -> createScene sebagai tiga write
+  autocommit terpisah tanpa kompensasi; kegagalan setelah createStory
+  meninggalkan baris story yatim dan catch-all hanya snackbar -> retry
+  menduplikasi novel dengan UUID baru (data-hygiene corruption pada alur
+  biasa, dua surface independen).
+- Fix minimal: CreateStoryService.createNovelWithFirstChapter - satu
+  database.transaction membungkus tiga insert; pada kegagalan menghapus
+  folder story yang sudah dibuat createStory (best-effort, exception asli
+  tetap propagasi). Kedua call site beralih ke operasi atomik; snackbar,
+  seleksi, dan invalidasi provider tidak berubah.
+- TDD: RED tervalidasi dua lapis. (1) Service-level novel_creation_atomicity_test.dart
+  gagal kompilasi pada simbol hilang -> implementasi -> dua mekanisme
+  asersi gagal eksak (folder story tertinggal; diperbaiki lewat
+  deleteIfExists pasca-transaksi). (2) UI-level
+  novel_creation_atomicity_ui_test.dart dijalankan terhadap kode LAMA
+  (patch di-revert via snapshot git diff di luar source, pola aman run
+  lama): story yatim 'Void Cube Novel' TER-BUKTI ter-commit saat scene
+  insert gagal - reproduksi mekanisme persis klaim Referee; restore patch,
+  kedua surface PASS.
+- Fault injection: trigger RAISE(ABORT) pada INSERT story_scenes (pola
+  kanonis run148 BUG-9-run128 + BUG-03 inspector) di DB disposable -
+  bukan mock, kegagalan SQLite nyata di titik tulis.
+- Pitfall harness: TextButton standalone membuat projectSessionProvider
+  belum settled -> ref.read early-return, dialog tak pernah terbuka
+  (bukan bug produk); fix = watch session lewat Consumer + asersi
+  SESSION_READY sebelum tap. Asersi folder: parent assets/stories kosong
+  adalah state sah (dibuat jalur lain) - yang dilarang hanya subfolder
+  story yatim.
+- Bukti: focused atomisitas 4/4 PASS; novel_creation_action 2/2; regresi
+  test/features/explorer + workspace 63 PASS; test/features/story penuh
+  185 PASS/0 FAIL; flutter analyze --no-pub No issues (13.8s); format
+  owned 5 file; git diff --check exit 0; flutter build windows --debug
+  --no-pub PASS 31.4s; roadmap guard PASS pre-run (pointer 145.27, sha
+  86af6a5). Native GUI journey UNVERIFIABLE dari cron (jalur widget test
+  dengan DB nyata, bukan interaksi jendela).
+- Status: sisa REAL BUG hunt run171 kini = 7 Low saja (BUG-3, 10, 11, 12,
+  13, 15, 18, 20 minus yang tercatat tertutup; sesuai hitungan run175
+  "BUG-9 + 7 Low"). Seluruh 7 Medium run171 (BUG-2/4/5/6/7/8/9) CLOSED.
+  Pointer 145.27 tidak berubah (decision-owned). Tidak push (ahead 24);
+  sibling dirty (.hermes/ROADMAP_STATE.json M, untracked docs) dipertahankan.
+- Next action: run berikutnya pilih satu Low run171 prioritas tertinggi
+  (BUG-13 focus-leak lintas proyek / BUG-11 dismiss=reset paling murah,
+  sesuai daftar Referee) ATAU gap ledger 145.42 (interrupted move line
+  ~1986, concurrent open line ~2020) ATAU keputusan 145.43-145.50 milik
+  Choi; jangan re-scan scope run171.
+
 ### 2026-09-10 - nephthys (cron run175): slice BUG-8 hunt run171 - retry katalog gagal unstrand typed intent
 
 - Slice: bug Referee run171 BUG-8 (Medium) DIPERBAIKI (commit bd4ee9b, 4 file

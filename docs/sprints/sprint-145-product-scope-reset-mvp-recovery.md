@@ -3686,3 +3686,31 @@ owning sibling streams; pending-adoption list now 9. Pointer stays 145.27.
   acceptance 145.27/145.30/145.34, lalu RED mekanisme-eksak -> patch
   minimal -> GREEN/regresi -> gates wajib; hunt re-scan scope identik
   dilarang tanpa diff/evidence baru.
+
+### 2026-09-10 - nephthys (cron run178): BUG-18 creature header focus CLOSED (hunt run171 fix #8)
+
+- Slice: bug terkonfirmasi Referee run171 BUG-18 (Low, REAL BUG) -
+  _CreatureGroup satu-satunya group Explorer tanpa focused/onFocused,
+  sehingga cabang restore sinkron creature di focusExplorerAsset (fix
+  BUG-05 run168) dead code dari UI: ketukan header Creatures hanya toggle
+  tile, tidak pernah memulihkan selection memory creature, tidak men-stamp
+  intent typed, dan tidak menyorot header (gap paritas vs
+  StoryGroup/_CharacterGroup/EnvironmentGroup).
+- Patch minimal commit ffb4738 (explorer_panel.dart +12, test baru +207):
+  _CreatureGroup menerima focused/onFocused, ExpansionTile memanggil
+  onExpansionChanged -> onFocused, instantiation mempass
+  onFocused: focusExplorerAsset(AssetType.creature) + focused dari
+  effectiveFocusedType (guard projectId BUG-13 otomatis berlaku), tint
+  fokus identik alpha 0.08.
+- RED mekanisme-eksak 2/2 pada kode lama: (1) dengan selection Character
+  hidup + memory creature, ketukan header membiarkan intent character dan
+  selection Kai (Expected creature/Actual character), (2) explorerAssetFocusProvider
+  tetap null. RED pertama tidak tajam (clear() tidak melepas intent ->
+  recovery provider async menyalamatkan) - dibentuk ulang ke state dunia
+  nyata dimana recovery pasif (selection non-null). GREEN 2/2.
+- Regresi: test/features/explorer 33 PASS, workspace 33 PASS, creatures +
+  app/shell 36 PASS. analyze No issues (4 info prefer_const test awal
+  diperbaiki). Format owned. git diff --check bersih. Windows debug build
+  PASS 40,0s. Guard PASS pre+post (pointer 145.27, sha 86af6a5).
+- Sisa hunt run171 (Low): BUG-3, BUG-10, BUG-11, BUG-12, BUG-14, BUG-15,
+  BUG-20. Native GUI UNVERIFIABLE dari cron. Tidak push (ahead 28).

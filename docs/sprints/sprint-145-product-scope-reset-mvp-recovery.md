@@ -1,3 +1,37 @@
+### 2026-09-10 - nephthys (cron run174): slice BUG-4 hunt run171 - top-bar Projects routing
+
+- Slice: bug Referee run171 BUG-4 (Medium) DIPERBAIKI (commit c0a95d8, 3 file
+  +141/-2): explorerAssetTypeForMenu('novels') memetakan destinasi global
+  Projects ke AssetType.story sehingga VoidDesktopShell.onMenuSelected selalu
+  mengintersep tombol top-bar "Projects" menjadi focusExplorerAsset(story) +
+  push /workspace saat sesi live; arm 'novels' => AppRoutes.projects dead code.
+  Fix arah Referee: 'novels' dikeluarkan dari pemetaan fokus aset (kini key
+  'story' saja - satu-satunya producer; mobile shell memakai destination.route
+  langsung, tidak lewat helper ini). Fokus Novel tetap tersedia via 'story' dan
+  seleksi Explorer.
+- Kepemilikan: void_desktop_shell.dart mtime 04:16 (>7 jam, bebas sibling);
+  explorer_panel.dart baru menyimpan BUG-2 run172 (sendiri); dirty tree hanya
+  sibling docs untracked yang dipreservasi.
+- RED mekanisme-eksak @ 0f1ee22: test/app/shell/void_desktop_shell_topbar_
+  projects_test.dart - BUG-4a sesi Drift nyata (pola harness BUG-7 run173)
+  tap Projects => "Projects Page" tidak pernah tercapai (gagal eksak alasan
+  bug); BUG-4b tanpa sesi tetap Projects (kontrak lama terkunci). GREEN 2/2.
+- Adaptasi pin intent-preserving: core_mvp_navigation_test 'novels' => isNull
+  (+ 'story' => story) dengan komentar penamaan temuan - kontrak lama yang
+  di-pin adalah kontrak rusak, bukan pelemahan.
+- Bukti: regresi test/app/shell 34/34 PASS; test/features/explorer +
+  test/app/navigation 31/31 PASS; test/features/workspaces 98/98 PASS;
+  analyze scoped (explorer + shells + navigation) No issues; format gate penuh
+  lib+test --set-exit-if-changed 0 changed; git diff --check exit 0; build
+  windows debug --no-pub PASS 30,0s; guard PASS pre+post (pointer 145.27,
+  sha 86af6a5). Tidak push.
+- Sisa hunt-run171 REAL BUG terbuka: BUG-3/8-16 + BUG-20 (BUG-2 run172,
+  BUG-5/6 run140, BUG-7 run173, BUG-4 run174). Next action: BUG-8 (typed
+  intent terstrand saat katalog gagal, explorer_panel) - periksa ulang
+  kepemilikan file dulu. Native desktop journey untuk BUG-4 UNVERIFIABLE
+  dari cron (komputer-interaksi butuh sesi interaktif); widget test
+  menyediakan bukti perilaku deterministik.
+
 ### 2026-09-10 - nephthys (cron run173): slice BUG-7 hunt run171 - mobile shell requiresProject guard live-session
 
 - Slice: bug Referee run171 BUG-7 (Medium) DIPERBAIKI (commit 6bb7829):

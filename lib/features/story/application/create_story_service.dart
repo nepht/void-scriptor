@@ -60,6 +60,52 @@ class CreateStoryService {
     }
   }
 
+  /// Creates a story with its seeded Chapter 1 / Scene 1 atomically.
+  ///
+  /// hunt-run171 BUG-9 (Referee REAL BUG Medium): both production call sites
+  /// chained createStory → createChapter → createScene with three separate
+  /// autocommit writes and no rollback, so a failure after createStory left
+  /// an orphaned story row (retry duplicates the novel). This method groups
+  /// the three inserts in ONE database transaction — any step failing rolls
+  /// back every row — and removes the story folder createStory materialized
+  /// when the transaction fails. Caller surfaces still show their existing
+  /// failure snackbar.
+  Future<String> createNovelWithFirstChapter({
+    required String projectId,
+    required String title,
+  }) async {
+    final directory = await paths.project(projectId);
+    final storyDirectory = DirectoryPath('${directory.path}/assets/stories');
+    var storyId = '';
+    try {
+      await database.transaction(() async {
+        storyId = await createStory(projectId: projectId, title: title);
+        final chapterId = await createChapter(
+          storyId: storyId,
+          title: 'Chapter 1',
+          chapterNumber: 1,
+        );
+        await createScene(
+          storyId: storyId,
+          chapterId: chapterId,
+          title: 'Scene 1',
+          sceneNumber: 1,
+        );
+      });
+      return storyId;
+    } catch (_) {
+      // createStory already deletes its own folder when ITS step fails; when
+      // a later step fails the folder it made would linger, so remove it.
+      final created = DirectoryPath('${storyDirectory.path}/$storyId');
+      try {
+        if (storyId.isNotEmpty) await created.deleteIfExists();
+      } catch (_) {
+        // Best-effort cleanup; the original failure must still propagate.
+      }
+      rethrow;
+    }
+  }
+
   Future<String> createArc({
     required String storyId,
     required String title,

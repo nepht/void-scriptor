@@ -1079,22 +1079,13 @@ Future<void> createExplorerAsset(
         ).create(projectId: projectId, name: name);
         ref.invalidate(characterControllerProvider(projectId));
       case AssetType.story:
-        final service = CreateStoryService(
+        // hunt-run171 BUG-9: story → chapter → scene must land atomically;
+        // the old three-await chain left an orphan story row (retry
+        // duplicated the novel) whenever a later insert failed.
+        assetId = await CreateStoryService(
           database: session.database,
           paths: paths,
-        );
-        assetId = await service.createStory(projectId: projectId, title: name);
-        final chapterId = await service.createChapter(
-          storyId: assetId,
-          title: 'Chapter 1',
-          chapterNumber: 1,
-        );
-        await service.createScene(
-          storyId: assetId,
-          chapterId: chapterId,
-          title: 'Scene 1',
-          sceneNumber: 1,
-        );
+        ).createNovelWithFirstChapter(projectId: projectId, title: name);
         ref.invalidate(storyExplorerProvider(projectId));
         // New novels must be selectable as narrative/support story context
         // without an unrelated action rebuilding the asset graph

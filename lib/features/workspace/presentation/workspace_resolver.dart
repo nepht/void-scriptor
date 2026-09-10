@@ -122,20 +122,14 @@ class WorkspaceResolver extends ConsumerWidget {
                   database: session.database,
                   paths: ref.read(projectPathsProvider),
                 );
-                final storyId = await service.createStory(
+                // hunt-run171 BUG-9: the three-step chain (story → chapter →
+                // scene) used to run in separate transactions; a failure after
+                // createStory orphaned the story row and ProjectOverview's
+                // catch just snackbarred, so retry duplicated the novel. One
+                // atomic call rolls every row back together.
+                final storyId = await service.createNovelWithFirstChapter(
                   projectId: session.manifest.id,
                   title: title,
-                );
-                final chapterId = await service.createChapter(
-                  storyId: storyId,
-                  title: 'Chapter 1',
-                  chapterNumber: 1,
-                );
-                await service.createScene(
-                  storyId: storyId,
-                  chapterId: chapterId,
-                  title: 'Scene 1',
-                  sceneNumber: 1,
                 );
                 ref
                     .read(selectionProvider.notifier)

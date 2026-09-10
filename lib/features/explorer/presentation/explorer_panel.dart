@@ -110,8 +110,13 @@ final storyExplorerProvider = FutureProvider.family<List<Asset>, String>((
       .toList(growable: false);
 });
 
-/// Tracks the semantic section requested by top-bar navigation.
-final explorerAssetFocusProvider = StateProvider<AssetType?>((ref) => null);
+/// Tracks the semantic asset type requested by top-bar navigation, stamped
+/// with the project session that produced it. Consumers must compare the
+/// stamp against the ACTIVE project session (hunt-run171 BUG-13: a bare
+/// `AssetType?` leaked the focus highlight into the next opened project).
+final explorerAssetFocusProvider = StateProvider<(String, AssetType)?>(
+  (ref) => null,
+);
 
 /// All narrative assignments of the active project (empty when no session).
 /// Feeds the explorer character-list narrative filter (backlog
@@ -142,7 +147,13 @@ void focusExplorerAsset(WidgetRef ref, AssetType type) {
   if (type != AssetType.faction) {
     ref.read(worldbuildingSectionIntentProvider.notifier).state = null;
   }
-  ref.read(explorerAssetFocusProvider.notifier).state = type;
+  final session = ref.read(projectSessionProvider).valueOrNull;
+  // hunt-run171 BUG-13: stamp the focus intent with its project session;
+  // without a session there is nothing to highlight, so clear instead of
+  // leaving a bare type that would leak into the next opened project.
+  ref.read(explorerAssetFocusProvider.notifier).state = session == null
+      ? null
+      : (session.manifest.id, type);
   final sectionTarget = switch (type) {
     AssetType.story || AssetType.scene => (WorkspaceKind.novel, 'Outline'),
     AssetType.character => (WorkspaceKind.character, 'Profile'),
@@ -155,7 +166,6 @@ void focusExplorerAsset(WidgetRef ref, AssetType type) {
         .read(workspaceSectionProvider.notifier)
         .activate(sectionTarget.$1, sectionTarget.$2);
   }
-  final session = ref.read(projectSessionProvider).valueOrNull;
   if (session == null) return;
   final projectId = session.manifest.id;
   final controller = ref.read(selectionProvider.notifier);
@@ -431,6 +441,16 @@ class ExplorerPanel extends ConsumerWidget {
         ? const AsyncValue<List<Asset>>.data([])
         : ref.watch(storyExplorerProvider(projectId));
     final focusedType = ref.watch(explorerAssetFocusProvider);
+    // hunt-run171 BUG-13: the focus intent must match the ACTIVE project
+    // session; a stale focus typed in another project must not highlight
+    // this project's explorer groups.
+    final activeSession = ref.watch(projectSessionProvider).valueOrNull;
+    final effectiveFocusedType =
+        focusedType != null &&
+            activeSession != null &&
+            focusedType.$1 == activeSession.manifest.id
+        ? focusedType.$2
+        : null;
     final modulePreferences = projectId == null
         ? const ProjectSidebarModulePreferences(
             factions: false,
@@ -505,7 +525,7 @@ class ExplorerPanel extends ConsumerWidget {
                   StoryGroup(
                     onFocused: () => focusExplorerAsset(ref, AssetType.story),
                     stories: stories,
-                    focused: focusedType == AssetType.story,
+                    focused: effectiveFocusedType == AssetType.story,
                     selectedId: ref.watch(selectionProvider)?.assetId,
                     // BUG-8 (hunt-run171): katalog gagal harus bisa di-retry
                     // dari baris error, bukan hanya menunggu invalidasi tak
@@ -529,7 +549,7 @@ class ExplorerPanel extends ConsumerWidget {
                     onFocused: () =>
                         focusExplorerAsset(ref, AssetType.character),
                     characters: characters,
-                    focused: focusedType == AssetType.character,
+                    focused: effectiveFocusedType == AssetType.character,
                     selectedId: ref.watch(selectionProvider)?.assetId,
 
                     onSelected: (character) => ref

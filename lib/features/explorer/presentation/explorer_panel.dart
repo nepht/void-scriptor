@@ -91,12 +91,12 @@ final supportingAssetExplorerProvider =
     FutureProvider.family<List<Asset>, (String, AssetType)>((ref, key) async {
       final session = ref.watch(projectSessionProvider).valueOrNull;
       if (session == null || session.manifest.id != key.$1) return const [];
-      return (await session.database.assetDao.getAllAssets())
-          .where(
-            (asset) => asset.projectId == key.$1 && asset.type == key.$2.name,
-          )
-          .toList(growable: false)
-        ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      // BUG-10 (hunt-run171): scope stays in SQL (see AssetDao
+      // listByProjectAndType) instead of a full-table fetch per instance.
+      return session.database.assetDao.listByProjectAndType(
+        key.$1,
+        key.$2.name,
+      );
     });
 
 final storyExplorerProvider = FutureProvider.family<List<Asset>, String>((
@@ -105,9 +105,8 @@ final storyExplorerProvider = FutureProvider.family<List<Asset>, String>((
 ) async {
   final session = ref.watch(projectSessionProvider).valueOrNull;
   if (session == null || session.manifest.id != projectId) return const [];
-  return (await session.database.assetDao.getAllAssets())
-      .where((asset) => asset.projectId == projectId && asset.type == 'story')
-      .toList(growable: false);
+  // BUG-10 (hunt-run171): SQL-scoped story assets (was full-table scan).
+  return session.database.assetDao.listByProjectAndType(projectId, 'story');
 });
 
 /// Tracks the semantic asset type requested by top-bar navigation, stamped
@@ -1009,6 +1008,10 @@ Future<void> _configureSidebarModules(
     ),
   );
   if (result == null) return;
+  // BUG-14 (hunt-run171): the panel may be disposed while its own dialog
+  // is open (stack replacement underneath); a disposed WidgetRef throws
+  // on read. Guard before touching ref, matching Referee guidance.
+  if (!context.mounted) return;
   final session = ref.read(projectSessionProvider).valueOrNull;
   if (session == null || session.manifest.id != projectId) return;
   try {
@@ -1138,6 +1141,9 @@ Future<void> createExplorerAsset(
     ),
   );
   if (result == null) return;
+  // BUG-14 (hunt-run171): same mounted guard before the first ref.read
+  // after the dialog await (ref.dispose would throw here).
+  if (!context.mounted) return;
   final (assetType, name, selectedCreatureCategory) = result;
   final projectId = session.manifest.id;
   final paths = ref.read(projectPathsProvider);

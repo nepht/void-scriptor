@@ -24,6 +24,19 @@ class AssetDao extends DatabaseAccessor<ProjectDatabase> with _$AssetDaoMixin {
   AssetDao(super.db);
 
   Future<List<Asset>> getAllAssets() => select(assets).get();
+
+  /// BUG-10 (hunt-run171): SQL-scoped fetch for explorer providers —
+  /// full-table `getAllAssets` per family instance pulled every project's
+  /// every asset type and filtered client-side. Scope stays in the WHERE
+  /// clause; ordering is case-insensitive by name (matches the previous
+  /// client-side comparator).
+  Future<List<Asset>> listByProjectAndType(String projectId, String type) =>
+      (select(assets)
+            ..where((row) => row.projectId.equals(projectId))
+            ..where((row) => row.type.equals(type))
+            ..orderBy([(row) => OrderingTerm.asc(row.name.lower())]))
+          .get();
+
   Future<Asset?> getById(String id) =>
       (select(assets)..where((row) => row.id.equals(id))).getSingleOrNull();
 

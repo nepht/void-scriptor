@@ -178,24 +178,34 @@
     },
     {
       "case_id": "unavailable_removed_drive",
-      "status": "PARTIAL",
-      "evidence_type": "automated_test_plus_probe",
-      "date": "2026-09-06 (slice 937298c); dicatat ulang 2026-09-08",
+      "status": "VERIFIED(domain)",
+      "evidence_type": "automated_test_plus_probe + live_virtual_drive_lifecycle",
+      "date": "2026-09-06 (slice 937298c); dicatat ulang 2026-09-08; upgrade 2026-09-11 (run196) via drive virtual subst",
       "source": "ledger run86 (ProjectDatabaseUnavailableException: errno 3 & CANTOPEN 14)",
       "commit": "937298c",
       "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
       "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
       "fixture": "drive Q:/ absen (probe empiris host) + unit test klasifikasi",
-      "command": "flutter test test/database + test/core/persistence (run86, historis)",
-      "exit_code": null,
+      "command": "flutter test --no-pub test/database/project/project_database_drive_removal_lifecycle_test.dart --reporter expanded (2026-09-11, exit 0, 2/2 PASS; subst T:/ -> %TEMP%\\hermes-subst-* disposable)",
+      "exit_code": 0,
       "expected": "drive dilepas/jalur hilang -> ProjectDatabaseUnavailableException, bukan raw PathNotFoundException atau salah korut",
-      "actual": "terverifikasi saat slice (run86): probe drive absen + klasifikasi typed",
+      "actual": "lifecycle nyata pada media virtual: subst mount -> service.create+open produksi sukses (project_metadata terisi) -> subst /D detach -> Directory/File drive tidak terlihat -> open() melempar ProjectDatabaseUnavailableException (bukan Unreadable/FileSystemException) -> remount -> schemaVersion terbaca, open sukses, jumlah baris metadata sama, integrity_check ok",
       "evidence_paths": [
         "lib/core/database/project_database_service.dart (per ledger run86)"
       ],
-      "limitations": "melepas drive umum pengguna dilarang (2026-09-08); live removal fisik hardware-bound UNVERIFIABLE",
-      "next_action": "retesifikasi hanya bila media virtual terisolasi aman tersedia dan tidak menyentuh drive pengguna",
-      "retest_reason": ""
+      "limitations": "subst mereplikasi lapisan resolve jalur OS (letter berhenti resolve, errno 3 / CANTOPEN) — BUKAN pelepasan USB fisik, power-off device, atau kegagalan kontroler; hardware-bound removal tetap UNVERIFIABLE menunggu keputusan Choi (2026-09-08)",
+      "next_action": "tidak ada; retest hanya bila classifier open()/probeWrite atau pemetaan errno berubah",
+      "retest_reason": "",
+      "virtual_media_upgrade": {
+        "method": "subst per-logon (media virtual terisolasi, user-level, reversible) pada backing %TEMP% disposable; TIDAK menyentuh drive/volume fisik pengguna",
+        "tooth_red": "gigi via inversi (pola run190/194): guard missing-file + klasifikasi CANTOPEN dinonaktifkan sementara -> kedua test RED persis pada mekanisme (PathNotFoundException mentah bocor; SqliteException(14) salah jadi ProjectDatabaseUnreadableException); lib dipulihkan identik (git diff lib/ = 0 baris) -> GREEN 2/2",
+        "regression": "flutter test --no-pub test/database: 39/39 PASS exit 0 (2026-09-11)",
+        "regression_resilience": "flutter test --no-pub test/features/project_resilience: 198 PASS / 1 skip / 0 FAIL exit 0 (2026-09-11)",
+        "analyze": "dart analyze test/database/project lib/database/project: No issues found!",
+        "build": "flutter build windows --debug --no-pub: PASS (23,7s)",
+        "head_at_upgrade": "4a1e17f017f932987b5780af3c8258a01020fbdd"
+      },
+      "head_at_fresh_verification": "4a1e17f017f932987b5780af3c8258a01020fbdd"
     },
     {
       "case_id": "interrupted_export",
@@ -373,5 +383,5 @@
       "retest_reason": ""
     }
   ],
-  "last_verified_run": "run195 (2026-09-11): concurrent_open + different_project_isolation VERIFIED(domain) bukti segar HEAD f685ecf; provenance service_test.dart dicatat"
+  "last_verified_run": "run196 (2026-09-11): unavailable_removed_drive naik PARTIAL -> VERIFIED(domain) via lifecycle drive virtual subst nyata (mount->create/open->detach->typed Unavailable->remount->integrity ok) di HEAD 4a1e17f017f932987b5780af3c8258a01020fbdd"
 }

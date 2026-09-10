@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "case_id": "website_download_wiring_2026-09-10",
-  "status": "PREVIEW_DEPLOYED_VERIFIED (production unchanged)",
+  "status": "LIVE_PROMOTED_VERIFIED (2026-09-10T23:40+07:00, Choi approved 'ok')",
   "date": "2026-09-10T23:15:00+07:00",
   "run": "interactive run165 nephthys (computer-use session scope, Choi: 'terapkan jika digutuhkan gunakan computer-use')",
   "authority": "HERMES_WEBSITE_DOWNLOAD_HANDOFF_2026-09-08.md + Choi decision 2026-09-10 option A (live deployment as source basis) + preview deploy authorization",

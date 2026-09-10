@@ -6,6 +6,7 @@ import '../../navigation/app_navigation_registry.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
 import '../../../features/assets/domain/asset_type.dart';
 import '../../../features/explorer/presentation/explorer_panel.dart';
+import '../../../features/projects/presentation/project_persistence_providers.dart';
 import '../../../features/workspace/presentation/workspace_panel.dart';
 import '../../routing/app_routes.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
@@ -101,7 +102,16 @@ class _VoidMobileShellState extends ConsumerState<VoidMobileShell> {
   }
 
   void _goToDestination(AppNavigationDestination destination) {
-    if (destination.requiresProject && widget.projectId == null) {
+    // hunt-run171 BUG-7: `widget.projectId` is non-null only on
+    // /studio/:projectId; /workspace mounts the shell bare, so gating
+    // requiresProject on the param alone bounced Characters/World to the
+    // Projects list even with a live session. Allow the navigation when the
+    // Riverpod session is live too; the param fallback keeps the historical
+    // contract (no session anywhere -> Projects).
+    final hasLiveProjectSession = ref.read(currentProjectIdProvider) != null;
+    if (destination.requiresProject &&
+        widget.projectId == null &&
+        !hasLiveProjectSession) {
       context.push(AppRoutes.projects);
       return;
     }

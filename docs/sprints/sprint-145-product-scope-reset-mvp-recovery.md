@@ -1,3 +1,53 @@
+### 2026-09-10 - nephthys (cron run182): BUG-12 filter-while-loading fail-open CLOSED (hunt run171 fix #12)
+
+- Slice: bug terkonfirmasi Referee run171 BUG-12 (Low, REAL BUG) DIPERBAIKI
+  (commit scoped 2 file +143/-1). Mekanisme terverifikasi di kode hidup
+  (_CharacterGroupState.build explorer_panel.dart ~1394-1404): filter
+  naratif aktif saat `explorerNarrativeAssignmentsProvider` MASIH loading
+  menyaring terhadap `valueOrNull ?? const []` -> `own.any` kosong match
+  nobody -> daftar karakter render NOL tile tanpa indikator; cabang
+  fail-open lama hanya menangani `assignmentError`, bukan loading.
+- Patch minimal mengikuti arah Referee (opsi fail-open): variabel
+  `filterDataUnavailable = assignmentError != null || assignments.isLoading`
+  dipakai di cabang fail-open — selama data assignment belum tiba daftar
+  degradasi ke unfiltered, menyempit normal begitu provider selesai.
+  Jalur error, UI, dan preferensi pengguna tidak berubah.
+- TDD: RED mekanisme-eksak (test/features/explorer/
+  explorer_filter_loading_fail_open_test.dart) — provider digantung via
+  Completer tak-terselesaikan + 2 karakter nyata (Drift+package temp),
+  filter Protagonist diterapkan: Expected Alira tile / Actual 0 (nol tile
+  terbukti), exit 1 -> GREEN 1/1. Harness belajar: dialog filter tetap
+  ter-hit di 320px setelah pump manual (warning tap offscreen = harness
+  noise, asersi ground-truth tetap sah).
+- Regresi: test/features/explorer penuh 37 PASS/0 FAIL (termasuk 3 test
+  fail-open error BUG-06 dan positive-control healthy-empty — fail-open
+  loading tidak melonggarkan penyaringan sehat); dart analyze scoped
+  (lib file + test baru) No issues; dart format owned (test di-reformat,
+  re-run --set-exit-if-changed bersih); git diff --check exit 0; flutter
+  build windows --debug --no-pub PASS 27,5s; roadmap guard PASS pre-run
+  (pointer 145.27, sha canonical 86af6a5). Native GUI UNVERIFIABLE dari
+  cron (transien loading, jendela nyata tidak ter-amati).
+- Insiden commit jujur: commit awal TIDAK menyertakan patch lib (hanya
+  test, "1 file changed" terdeteksi saat verifikasi `git show --stat`)
+  -> HEAD tak konsisten; diperbaiki via `git commit --amend` scoped
+  (add path lib eksplisit, commit milik sendiri belum di-push). Re-run
+  focused pada tree terkomit: PASS. Pelajaran: wajib `git show --stat`
+  setiap commit sebelum menutup ledger.
+- Adopsi & preservasi: handoff single-writer RELEASED_TO_HERMES 2026-09-08
+  diacknowledge (baseline fad8c54 ancestor HEAD). Dirty .hermes/
+  ROADMAP_STATE.json + untracked docs (AUTONOMOUS_ROADMAP_PROMPT.md,
+  MASTER_SPRINT.md, docs/backlog/, website evidence) DIPRESERVASI, tidak
+  di-commit. Tidak push.
+- Sisa hunt run171 (Low): BUG-14 (ref.read pasca-await dialog tanpa
+  mounted guard, runtime claim medium-confidence), BUG-20 (error
+  module-prefs senyap, butuh surface retry), BUG-10 (getAllAssets
+  full-table per family, butuh DAO scoped query). Matriks 145.42 tetap
+  hardware-bound/keputusan-Choi untuk sisanya.
+- Next action: satu Low run171 berikutnya (BUG-20 mengikuti pola retry
+  run175 paling murah; BUG-14 butuh guard mounted dua situs; BUG-10
+  butuh scoped DAO) ATAU keputusan Choi 145.43-145.50 / pekerjaan
+  website-download (butuh verifikasi login Cloudflare interaktif).
+
 ### 2026-09-10 - nephthys (cron run181): BUG-15 genre substring false positive CLOSED (hunt run171 fix #11)
 
 - Slice: bug terkonfirmasi Referee run171 BUG-15 (Low, REAL BUG) DIPERBAIKI

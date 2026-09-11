@@ -86,5 +86,26 @@ void main() {
       await paths.root();
       expect(paths.lastFallbackNotice, isNull);
     });
+
+    test('store present but nothing configured: no false missingDrive '
+        'notice (core-hunt run197 BUG-18)', () async {
+      // The production composition ALWAYS passes a store, and a fresh
+      // install has activeLocation == null. root() must not claim the
+      // "configured drive is missing" when nothing was ever configured —
+      // that contradicts the field's own contract and seeds a latent
+      // false warning for the first status-surface reader.
+      final store = CustomStorageLocationStore(
+        registryFile: File('${tempRoot.path}/unset/storage_locations.json'),
+      );
+      final paths = ProjectPaths(
+        customStorageStore: store,
+        fallbackRootDirectory: tempRoot,
+      );
+
+      final root = await paths.root();
+
+      expect(root.path, tempRoot.path);
+      expect(paths.lastFallbackNotice, isNull);
+    });
   });
 }

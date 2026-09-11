@@ -85,15 +85,23 @@ final class ProjectPaths {
       // core-hunt-20260906 BUG-12: the fallback is intentional (codified
       // wiring contract) but must not be silent. Record a typed notice for
       // consumers; the status surface can show a visible warning.
-      lastFallbackNotice = StorageFallbackNotice(
-        reason: StorageFallbackReason.missingDrive,
-        requestedLocation: active,
-        effectiveRoot:
-            _fallbackRoot ??
-            Directory(
-              p.join(await _documentsPath(), 'VoidScriptor', 'Projects'),
-            ),
-      );
+      // core-hunt run197 BUG-18: only a CONFIGURED-but-unreachable location
+      // is a fallback warning. With nothing configured (fresh install,
+      // activeLocation == null) the Documents root is the default home,
+      // not a fallback — the notice must stay null per its own contract.
+      if (active != null) {
+        lastFallbackNotice = StorageFallbackNotice(
+          reason: StorageFallbackReason.missingDrive,
+          requestedLocation: active,
+          effectiveRoot:
+              _fallbackRoot ??
+              Directory(
+                p.join(await _documentsPath(), 'VoidScriptor', 'Projects'),
+              ),
+        );
+      } else {
+        lastFallbackNotice = null;
+      }
     }
 
     final fallback = _fallbackRoot;

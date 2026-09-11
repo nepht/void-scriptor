@@ -75,4 +75,37 @@ void main() {
       );
     });
   });
+
+  test('bug-hunt run197 BUG-11: variant extended tiap keluarga tidak jatuh ke '
+      'korut - BUSY/LOCKED -> locked, READONLY -> write-failure, '
+      'CANTOPEN -> unavailable', () {
+    final cases = <int, Type>{
+      5: ProjectDatabaseLockedException, // SQLITE_BUSY
+      261: ProjectDatabaseLockedException, // SQLITE_BUSY_RECOVERY
+      517: ProjectDatabaseLockedException, // SQLITE_BUSY_SNAPSHOT
+      262: ProjectDatabaseLockedException, // SQLITE_LOCKED_SHAREDCACHE
+      518: ProjectDatabaseLockedException, // SQLITE_LOCKED_VTAB
+      264: ProjectDatabaseWriteFailedException, // SQLITE_READONLY_RECOVERY
+      520: ProjectDatabaseWriteFailedException, // SQLITE_READONLY_CANTINIT
+      776: ProjectDatabaseWriteFailedException, // SQLITE_READONLY_ROLLBACK
+      1032: ProjectDatabaseWriteFailedException, // SQLITE_READONLY_DIRECTORY
+      270: ProjectDatabaseUnavailableException, // SQLITE_CANTOPEN_NOTEMPDIR
+      526: ProjectDatabaseUnavailableException, // SQLITE_CANTOPEN_ISDIR
+      782: ProjectDatabaseUnavailableException, // SQLITE_CANTOPEN_FULLPATH
+      1038: ProjectDatabaseUnavailableException, // SQLITE_CANTOPEN_CONVPATH
+    };
+    cases.forEach((extended, type) {
+      final classified = classifyProjectDatabaseOpenError(
+        databasePath,
+        synthetic(extended),
+      );
+      expect(
+        classified.runtimeType,
+        type,
+        reason:
+            'extended $extended (primary ${extended & 0xFF}) '
+            'harus $type, bukan korut',
+      );
+    });
+  });
 }

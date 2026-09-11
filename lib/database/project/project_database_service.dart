@@ -113,42 +113,47 @@ class ProjectDatabaseWriteFailedException implements Exception {
 
 /// Pure classification of sqlite result codes on the project open path
 /// (bug-hunt run94 BUG-13: never compare extended codes after masking
-/// with 0xFF).
+/// with 0xFF; bug-hunt run197 BUG-11: extended VARIANTS of a handled
+/// family must classify with their family, never fall through to
+/// corruption).
 ///
-/// Family decisions use the **unmasked** extended result code (SQLITE_BUSY
-/// 5, SQLITE_READONLY 8, SQLITE_FULL 13, SQLITE_IOERR_WRITE 778,
-/// SQLITE_CANTOPEN 14); the **primary** code is consulted only for the one
-/// contract that loses meaning under masking: SQLITE_IOERR (primary 10).
-/// 778 & 0xFF = 10, so the previous `code == 778` comparison against the
-/// masked value could never match and the whole IOERR family
-/// (10/266/522/778/1034/...) fell through to the corruption
-/// classification even though the database itself may be healthy.
+/// Family decisions use the **primary** code (`resultCode` =
+/// `extendedResultCode & 0xFF`): per sqlite.org/rescode.html every
+/// extended result code is `primary | (n << 8)` and refines - never
+/// contradicts - its primary family (SQLITE_BUSY_SNAPSHOT 517 and
+/// SQLITE_BUSY_RECOVERY 261 are BUSY; SQLITE_LOCKED_SHAREDCACHE 262 is
+/// LOCKED; SQLITE_READONLY_DIRECTORY 1032 is READONLY; SQLITE_CANTOPEN_
+/// FULLPATH 782 is CANTOPEN). Masking is safe here because none of the
+/// corruption codes (SQLITE_CORRUPT 11, SQLITE_NOTADB 26) collides with
+/// the handled families (5/6/8/10/13/14).
 Exception classifyProjectDatabaseOpenError(
   String databasePath,
   sqlite.SqliteException error,
 ) {
-  // SQLITE_BUSY (extended result code 5): the file is healthy but another
-  // writer holds SHARED+RESERVED. The read-only schema probe succeeded,
-  // so this is neither future-schema nor corruption.
-  if (error.extendedResultCode == 5) {
+  final primary = error.resultCode; // extendedResultCode & 0xFF
+  // SQLITE_BUSY (5) / SQLITE_LOCKED (6), including every extended variant:
+  // the file is healthy but another connection holds a lock. The read-only
+  // schema probe succeeded, so this is neither future-schema nor corruption.
+  if (primary == 5 || primary == 6) {
     return ProjectDatabaseLockedException(databasePath, error);
   }
-  // SQLITE_READONLY (8) / SQLITE_FULL (13): the file is schema-valid but
-  // drift initialization writes project_metadata on first open - the same
-  // surface as media-level permission loss and a full storage volume.
-  if (error.extendedResultCode == 8 || error.extendedResultCode == 13) {
+  // SQLITE_READONLY (8) / SQLITE_FULL (13), including every extended
+  // variant (SQLITE_READONLY_RECOVERY 264, ...): the file is schema-valid
+  // but drift initialization writes project_metadata on first open - the
+  // same surface as media-level permission loss and a full storage volume.
+  if (primary == 8 || primary == 13) {
     return ProjectDatabaseWriteFailedException(databasePath, error);
   }
-  // SQLITE_IOERR_WRITE (778) and the whole SQLITE_IOERR family
-  // (primary 10): media-level I/O failure while opening or writing -
-  // a write failure, not proof of corruption.
-  if (error.extendedResultCode == 778 ||
-      error.resultCode == 10 /* SQLITE_IOERR */ ) {
+  // SQLITE_IOERR family (primary 10: 266/522/778/1034/...): media-level
+  // I/O failure while opening or writing - a write failure, not proof of
+  // corruption.
+  if (primary == 10) {
     return ProjectDatabaseWriteFailedException(databasePath, error);
   }
-  // SQLITE_CANTOPEN (14): the file cannot be opened/created - storage is
+  // SQLITE_CANTOPEN (14), including every extended variant
+  // (270/526/782/1038): the file cannot be opened/created - storage is
   // unreachable, not proof of corruption.
-  if (error.extendedResultCode == 14) {
+  if (primary == 14) {
     return ProjectDatabaseUnavailableException(databasePath, error);
   }
   return ProjectDatabaseUnreadableException(databasePath, error);

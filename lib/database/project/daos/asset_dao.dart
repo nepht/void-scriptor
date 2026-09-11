@@ -114,6 +114,10 @@ class AssetDao extends DatabaseAccessor<ProjectDatabase> with _$AssetDaoMixin {
         .map((value) => value.trim().toLowerCase())
         .where((value) => value.isNotEmpty)
         .toSet();
+    // BUG-22 (hunt-run197): resolve the owning asset's projectId once — the
+    // lookup is loop-invariant, one SELECT per tag only burned queries on
+    // the same row.
+    final projectId = (await getById(assetId))?.projectId ?? '';
     await transaction(() async {
       await (delete(
         assetTagLinks,
@@ -121,11 +125,7 @@ class AssetDao extends DatabaseAccessor<ProjectDatabase> with _$AssetDaoMixin {
       for (final name in normalized) {
         final id = '${assetId}_tag_$name';
         await into(tags).insertOnConflictUpdate(
-          TagsCompanion.insert(
-            id: id,
-            projectId: (await getById(assetId))?.projectId ?? '',
-            name: name,
-          ),
+          TagsCompanion.insert(id: id, projectId: projectId, name: name),
         );
         await into(
           assetTagLinks,

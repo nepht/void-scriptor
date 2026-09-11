@@ -41,6 +41,18 @@
     },
     "production_unchanged": "deployment list still shows c35422bf as latest production; no production deploy issued"
   },
+  "repair_2026_09_11": {
+    "incident": "promotion 5fae1184 (tree 1e9a6ad) shipped without app/ subtree - production Flutter Web behind Access gate went dead (302 to Access for missing asset base is pre-existing gate behavior, but the build files were absent from deployment manifest tree)",
+    "discovered_by": "sibling run191 (commit e7a3518 restores app/ in the mirror source)",
+    "repair": "deployed e7a3518 (approved-wiring + app/ 470 files restored) as production 07a09a9b at 2026-09-11 00:5x +07:00",
+    "verified": {
+      "deployment_list": "07a09a9b Production main e7a3518 (latest, supersedes 5fae1184)",
+      "root_byte_exact": "index.html served == tree e7a3518 (29037 B, sha256 5447531ef74ce218...); identical wiring to 1e9a6ad (git diff empty)",
+      "download": "zip served full 34,642,793 B, PK header, sha256 sidecar 5a7680b6dea86aad... matches",
+      "app_gate": "/app/main.dart.js 302 -> cloudflareaccess (gate alive as designed, files now present behind it)"
+    },
+    "lesson": "Pages direct-upload deploys ONLY the literal directory - removing any subtree (even accidentally, via .assetsignore misuse) removes it from production; always diff the deploy directory against the previous deployment manifest before --branch main"
+  },
   "next_actions": [
     "1. Choi opens https://download-preview.voidscriptor.pages.dev in his browser (Access login) -> verify landing + click download -> zip downloads and opens in Void Scriptor",
     "2. On approval: promote preview to production (wrangler pages deploy --branch main) -> download live on voidscriptor.pages.dev",

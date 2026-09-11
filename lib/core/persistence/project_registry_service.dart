@@ -77,7 +77,12 @@ class ProjectRegistryService {
     // registered so the next load consumes it without duplicating.
     await _saveUnlocked(merged);
     for (final project in admitted) {
-      await _recovery.consumeCreationMarker(
+      // bug-hunt run197 BUG-1: marker consumption is best-effort. The
+      // admission is already durable; a transient fresh-file delete
+      // failure (errno 32/5) must not throw the listing. A stale marker
+      // is harmless: the id is registered, so the next load consumes it
+      // without duplicating.
+      await _recovery.consumeCreationMarkerQuietly(
         File(
           p.join(project.localPath, ProjectRecoveryService.creationMarkerName),
         ),
@@ -199,7 +204,14 @@ class ProjectRegistryService {
     // here: only after the registration is durable is the creation
     // marker consumed. A crash before the save leaves the marker for
     // the next load to admit and consume.
-    await _recovery.consumeCreationMarker(
+    // bug-hunt run197 BUG-1 (Critical): consumption must be best-effort.
+    // The registration above is durable; a transient fresh-file delete
+    // failure (errno 32/5) used to propagate into
+    // ProjectController.createProject's catch, which deleted the COMPLETE
+    // package while the registry entry dangled. A stale marker is
+    // harmless (admitMarkedCreations treats known ids as registered) and
+    // is retried by the next load.
+    await _recovery.consumeCreationMarkerQuietly(
       File(
         p.join(project.localPath, ProjectRecoveryService.creationMarkerName),
       ),

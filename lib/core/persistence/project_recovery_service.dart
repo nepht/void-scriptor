@@ -106,7 +106,7 @@ class ProjectRecoveryService {
       final diskProjectId = diskManifestDecoded['projectId'];
       if (diskProjectId is! String || diskProjectId != id) continue;
       if (knownProjectIds.contains(id)) {
-        await _consumeQuietly(marker);
+        await consumeCreationMarkerQuietly(marker);
         continue;
       }
       final now = DateTime.now().toUtc();
@@ -131,7 +131,12 @@ class ProjectRecoveryService {
     if (await marker.exists()) await marker.delete();
   }
 
-  Future<void> _consumeQuietly(File marker) async {
+  /// Best-effort consumption (bug-hunt run197 BUG-1): a transient
+  /// fresh-file delete failure (errno 32/5) must never propagate once
+  /// registry membership is durable. A stale marker is harmless —
+  /// admitMarkedCreations treats known ids as registered — and the next
+  /// load retries the delete.
+  Future<void> consumeCreationMarkerQuietly(File marker) async {
     try {
       await consumeCreationMarker(marker);
     } on FileSystemException {

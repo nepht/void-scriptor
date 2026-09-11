@@ -11,6 +11,7 @@ import '../../features/authentication/presentation/login_screen.dart';
 import '../../features/authentication/presentation/register_screen.dart';
 import '../../features/account/presentation/account_cloud_center_screen.dart';
 import '../../features/settings/presentation/settings_hub_screen.dart';
+import '../../features/settings/presentation/storage_locations_screen.dart';
 import '../../features/platform/presentation/theme_settings_screen.dart';
 import '../../features/content_capabilities/presentation/content_capability_matrix_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
@@ -105,6 +106,10 @@ GoRouter createAppRouter({
       GoRoute(
         path: AppRoutes.settings,
         builder: (_, __) => const SettingsHubScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.storageLocations,
+        builder: (_, __) => const StorageLocationsScreen(),
       ),
       for (final alias in AppRoutes.foundationAliases.entries)
         GoRoute(
@@ -386,6 +391,10 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     GoRoute(
       path: AppRoutes.settings,
       builder: (_, __) => const SettingsHubScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.storageLocations,
+      builder: (_, __) => const StorageLocationsScreen(),
     ),
     for (final alias in AppRoutes.foundationAliases.entries)
       GoRoute(

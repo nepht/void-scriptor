@@ -89,4 +89,33 @@ void main() {
     );
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'Storage Locations terjangkau dari Hub dan membuka status nyata',
+    (tester) async {
+      final router = createAppRouter(initialLocation: AppRoutes.settings);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            projectSessionProvider.overrideWith(() => NullSessionController()),
+          ],
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
+      await tester.pumpAndSettle();
+      // 'About & Diagnostics' ber-ExpansionTile initiallyExpanded — tanpa tap.
+      final dest = find.text('Lokasi penyimpanan kustom');
+      await tester.ensureVisible(dest);
+      await tester.pumpAndSettle();
+      await tester.tap(dest);
+      await tester.pumpAndSettle();
+      expect(find.text('Storage Locations'), findsOneWidget);
+      expect(
+        find.text('Lokasi penyimpanan kustom'),
+        findsWidgets,
+        reason: 'Layar storage harus menampilkan kartu status nyata.',
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

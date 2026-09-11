@@ -96,6 +96,15 @@ class SettingsHubScreen extends ConsumerWidget {
                   subtitle: Text(defaultTargetPlatform.name),
                 ),
                 const _StorageDiagnosticsRow(),
+                ListTile(
+                  leading: const Icon(Icons.folder_copy_outlined),
+                  title: const Text('Lokasi penyimpanan kustom'),
+                  subtitle: const Text(
+                    'Set, relink, dan uji lokasi penyimpanan proyek.',
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push(AppRoutes.storageLocations),
+                ),
                 if (session != null)
                   ListTile(
                     leading: const Icon(Icons.monitor_heart_outlined),

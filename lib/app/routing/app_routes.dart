@@ -32,6 +32,9 @@ abstract final class AppRoutes {
   static const cinematicProduction = '/cinematic-production';
   static const productionValidation = '/production-validation';
   static const projectDiagnostics = '/project-diagnostics';
+
+  /// Storage location settings (145.38 Core settings UI; wiring Task 4).
+  static const storageLocations = '/settings/storage-locations';
   static const projectRepair = '/project-repair';
   static const projectBackups = '/project-backups';
   static const projectExport = '/project-export';

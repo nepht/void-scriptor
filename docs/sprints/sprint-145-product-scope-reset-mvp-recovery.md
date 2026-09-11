@@ -1,4 +1,13 @@
 
+### 2026-09-12 - nephthys (run222, interactive): vs-hunt-20260911 BUG-25 DIPERBAIKI - manifest metric clock sebelum read (commit 223df5d, 2 file)
+
+- Otorisasi: Choi "selanjutnya" (siklus antrean). Sensus live: BUG-22/23/26/11/16 dll sudah tertutup run203-209; BUG-25 = Low run197 terakhir yang hidup (mekanisme dari rencana wiring: "clock sebelum manifest read"); laporan Hunter run128-era & run197 tidak menyimpan mekanisme penuh di cache, diverifikasi ulang langsung di source.
+- Mekanisme eksak project_session_manager.dart open(): manifestStarted = DateTime.now() distempel SETELAH manifestFile.readAsString() selesai; metrics.record('manifest', now - manifestStarted) = dua now() back-to-back (~0 ms) — metric 'manifest' palsu permanen, sementara metric 'database' di blok yang sama benar (clock sebelum open DB, baris 267/286-293) — inkonsistensi mengonfirmasi salah tempat, bukan desain.
+- Fix minimal: clock dipindah SEBELUM read; read diekstrak ke protected seam readManifest(package) (produksi: plain readAsString, perilaku identik) mengikuti pola probe-seam run218 agar test bisa melambatkan read secara deterministik tanpa sleep di luar window.
+- TDD revert-cycle: test/features/project_resilience/session_manifest_metric_clock_test.dart (Windows-gated) — override readManifest stall 150ms; klaim durationOf('manifest') >= 120ms. RED pada kode lama (git checkout + re-apply patch): Expected true / Actual false; GREEN 1/1 setelah fix. Tanpa IO hang: stall di dalam bracket, bukan FakeAsync.
+- Bukti: regresi test/features/project_resilience 209 PASS/1 skip/0 FAIL; analyze scoped No issues (17,1s); format 2 file 0 changed; git diff --check exit 0; guard PASS (pointer 145.27, sha 86af6a5). Push: origin 9181e60..223df5d 0 ahead (sekaligus menggulung run219-221), gitlab menyusul.
+- Papan vs-hunt-20260911 kini 10/10 CLOSED (BUG-1 9c3ef10, BUG-2/4/5/8/10 61c27cc, BUG-3+6/7 3f59e28, BUG-25 223df5d). Sisa antrean: Task 4 storage settings (WIP sibling codex, untracked), Stream D housekeeping (keputusan Choi), 145.43-145.50 (keputusan Choi), hardware-bound 145.42 (UNVERIFIABLE). Tidak ada slice koding yang tersisa untuk diambil tanpa tabrakan.
+
 ### 2026-09-12 - nephthys (cron run221): remediasi guard BLOCKED — perbaikan sintaks JSON ROADMAP_STATE (amandemen run220)
 
 - Gejala: cron run221 gagal di script error guard: "runtime state JSON invalid: Unexpected character" — ROADMAP_STATE.json berstatus M sejak 00:27 (pasca commit run219 fd65445) tanpa writer aktif (tidak ada flutter/dart/codex-test process; sibling UI terakhir mtime 19:54).

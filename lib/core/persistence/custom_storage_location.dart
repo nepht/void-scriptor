@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
+import 'package:void_scriptor/core/persistence/async_mutex.dart';
 import 'package:void_scriptor/core/persistence/project_recovery_service.dart';
 
 /// Raised when the storage-location registry content is unreadable
@@ -283,13 +284,23 @@ class CustomStorageLocationStore {
 
   final File registryFile;
   final ProjectRecoveryService _recovery = const ProjectRecoveryService();
+  // Bug-hunt run197 BUG-9: read-modify-write mutations (load → build state →
+  // _save) must not interleave at await points, or one mutation builds its
+  // state from a stale load and clobbers the other's field — the lost-update
+  // class ProjectRegistryService already serializes with AsyncMutex.
+  final AsyncMutex _mutex = AsyncMutex();
   CustomStorageLocationState? _cachedState;
 
   /// Last state observed by [load], or null before the first load. Lets
   /// path wiring answer synchronously without an async registry read.
   CustomStorageLocationState? get cachedState => _cachedState;
 
-  Future<CustomStorageLocationState> load() async {
+  Future<CustomStorageLocationState> load() => _mutex.run(_loadUnlocked);
+
+  /// Unserialized internal read for callers already inside [_mutex.run]
+  /// (the mutations below); re-running through the public mutex would
+  /// deadlock, so the mutations observe [cachedState] instead.
+  Future<CustomStorageLocationState> _loadUnlocked() async {
     _cachedState = await _read();
     return _cachedState!;
   }
@@ -361,7 +372,7 @@ class CustomStorageLocationStore {
   Future<void> setActiveLocation(
     String rawLocation, {
     StorageHealthProbe? health,
-  }) async {
+  }) => _mutex.run(() async {
     final location = CustomStorageLocation.normalizeLocation(rawLocation);
     if (!await Directory(location).exists()) {
       final ancestor = await CustomStorageLocation.nearestExistingAncestor(
@@ -388,7 +399,7 @@ class CustomStorageLocationStore {
         '${CustomStorageLocation.minFreeBytes} required',
       );
     }
-    final current = await load();
+    final current = await _loadUnlocked();
     await _save(
       CustomStorageLocationState(
         schemaVersion: 1,
@@ -396,10 +407,10 @@ class CustomStorageLocationStore {
         boundProjectId: current.boundProjectId,
       ),
     );
-  }
+  });
 
-  Future<void> bindProject(String projectId) async {
-    final current = await load();
+  Future<void> bindProject(String projectId) => _mutex.run(() async {
+    final current = await _loadUnlocked();
     await _save(
       CustomStorageLocationState(
         schemaVersion: 1,
@@ -407,14 +418,14 @@ class CustomStorageLocationStore {
         boundProjectId: projectId,
       ),
     );
-  }
+  });
 
   Future<void> relinkLocation(
     String newLocation, {
     StorageHealthProbe? health,
-  }) async {
+  }) => _mutex.run(() async {
     final location = CustomStorageLocation.normalizeLocation(newLocation);
-    final current = await load();
+    final current = await _loadUnlocked();
     if (current.boundProjectId != null) {
       final existing = Directory(
         p.join(location, '${current.boundProjectId}.voidproject'),
@@ -444,7 +455,7 @@ class CustomStorageLocationStore {
         boundProjectId: current.boundProjectId,
       ),
     );
-  }
+  });
 
   Future<void> _save(CustomStorageLocationState state) async {
     // Bug-hunt core-hunt-20260906 BUG-16: route through the shared atomic

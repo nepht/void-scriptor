@@ -1,3 +1,14 @@
+### 2026-09-12 - nephthys (cron run225): Native install journey artefak download 1.2.0-alpha.1 — VERIFIED end-to-end (download → launch → create → write → restart → draft selamat)
+
+- Otorisasi: HERMES_WEBSITE_DOWNLOAD_HANDOFF_2026-09-08.md langkah 8 + OTORISASI COMPUTER USE 2026-09-06 (aplikasi + project/data uji temporer saja; tanpa menyentuh naskah pengguna). Guard PASS pre-run (exit 0, pointer 145.27, sha 86af6a5); gate PASS; tanpa proses flutter/dart/codex aktif; tanpa conflict marker.
+- Journey: unduh artefak LIVE (HTTP 200, 34.642.793 byte, sha256 5a7680b6... == evidence run224, MATCH True) → ekstrak 491 entri (testzip None) → launch Release/void_scriptor.exe (pid 16884) → buat project uji "UJI Journey Download 260912" → buat novel "Novel Uji Download" (Chapter 1 + Scene 1 auto; Inspector UUID b49a13d6...) → tulis draf uji di Scene Editor → WM_CLOSE graceful → relaunch (pid 23016) → Continue writing → klik novel di Explorer → draf IDENTIK tampil di Scene Editor, UUID sama.
+- Ground truth DB (read-only sqlite): scene_beats 1 row, content == teks uji, integrity_check ok SETELAHS tiap close; tanpa session.lock/-wal/-shm tersisa pasca close graceful (dua kali).
+- Semua state-changing step diverifikasi capture segar (som/vision); satu klik salah sasaran karena skala native 1.21x — dikoreksi ke koordinat native center elemen; tidak ada blind retry.
+- Cleanup: scratch temp (zip + extracted tree) dihapus penuh; project uji dibiarkan di D:\VoidScriptor_Data\Projects (keputusan hapus milik Choi, bisa lewat aplikasi).
+- Status: journey native download/install/write/restart VERIFIED (untuk artefak ini, pada mesin ini; bukan installer signed, bukan mesin bersih). Pointer 145.27 tidak berubah. Bukti: docs/evidence/download-install-journey-2026-09-12.json.
+- Sisa blocker: deploy perbaikan hero tetap menunggu `wrangler login` interaktif Choi (whoami diulang run ini: masih expired, non-interactive). Tidak push.
+- Tindakan berikutnya: Choi deploy post-login + verifikasi klik hero; cron berikutnya kembali antrean roadmap (keputusan 145.43-145.50 / Stream D) bila tidak ada handoff baru.
+
 ### 2026-09-12 - nephthys (cron run224): Website download integration — artefak 1.2.0-alpha.1 terverifikasi LIVE di R2+worker; tombol HERO mati ditemukan + diperbaiki terverifikasi; deploy menunggu wrangler login interaktif
 
 - Otorisasi: HERMES_WEBSITE_DOWNLOAD_HANDOFF_2026-09-08.md pada safe run boundary (guard PASS, tanpa penulis aktif); admisi RELEASED_TO_HERMES (2026-09-08) DIAKUI PADA run ini — Codex berhenti edit sumber produk, wilayah website kosong.

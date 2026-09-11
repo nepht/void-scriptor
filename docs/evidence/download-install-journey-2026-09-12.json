@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "case_id": "native_download_install_journey_2026_09_12",
+  "status": "VERIFIED",
+  "date": "2026-09-12",
+  "run": "cron run225 nephthys",
+  "authority": "HERMES_WEBSITE_DOWNLOAD_HANDOFF_2026-09-08.md langkah 8 (cek download end-to-end + uji install/start/save/reopen pada environment Windows terisolasi) + OTORISASI COMPUTER USE 2026-09-06 (Void Scriptor, project/data uji temporer)",
+  "journey": [
+    {
+      "step": "download",
+      "detail": "curl -sS -L https://voidscriptor.pages.dev/downloads/voidscriptor-1.2.0-alpha.1-windows-x64.zip -o vs-artifact.zip; CURL_EXIT=0; size 34642793 byte"
+    },
+    {
+      "step": "hash",
+      "detail": "sha256 = 5a7680b6dea86aaddf0238f19069644e02adf7e050d3bd631246e601292547b6 == nilai evidence run224 (MATCH True)"
+    },
+    {
+      "step": "extract",
+      "detail": "zipfile extractall + testzip()=None; 491 entri; extracted/Release/void_scriptor.exe"
+    },
+    {
+      "step": "launch_1",
+      "detail": "void_scriptor.exe pid 16884; dashboard render (computer_use capture som+vision)"
+    },
+    {
+      "step": "create_project",
+      "detail": "New Novel -> dialog -> nama 'UJI Journey Download 260912' -> Create Project; project terbuka, Novel Workspace, status Tersimpan"
+    },
+    {
+      "step": "create_novel",
+      "detail": "Create Novel -> 'Novel Uji Download' -> Create; Chapter 1 + Scene 1 auto, Inspector UUID b49a13d6-9d13-4553-8e25-91439648e9d9, status draft"
+    },
+    {
+      "step": "write_draft",
+      "detail": "Scene Editor diisi 'Uji ketahanan draf: laporan journey download cron nephthys. Draf ini harus selamat restart.' (terverifikasi di capture)"
+    },
+    {
+      "step": "db_ground_truth",
+      "detail": "sqlite ro: scene_beats(1 row, beat_type draft, content == teks uji); integrity_check ok"
+    },
+    {
+      "step": "close_1",
+      "detail": "WM_CLOSE graceful; proses keluar; TANPA session.lock / -wal / -shm tersisa"
+    },
+    {
+      "step": "relaunch",
+      "detail": "exe sama pid 23016; dashboard menampilkan 'UJI Journey Download 260912' last opened Sat 12 Sep + tombol Continue writing"
+    },
+    {
+      "step": "reopen_journey",
+      "detail": "Continue writing -> project terbuka; klik 'Novel Uji Download' di Explorer -> Story Bible - Novel Uji Download, Chapter 1 > Scene 1 SELECTED, Scene Editor menampilkan teks draf IDENTIK; Inspector UUID sama"
+    },
+    {
+      "step": "close_2",
+      "detail": "WM_CLOSE graceful; integrity_check ok; beat content tetap; tanpa lock/wal/shm leftovers"
+    }
+  ],
+  "test_project": {
+    "id": "7e90b57b-ceba-41f9-baf1-2258b50daa20.voidproject",
+    "root": "D:\\VoidScriptor_Data\\Projects",
+    "user_data_touched": false,
+    "user_manuscripts_touched": false
+  },
+  "cleanup": "Temp scratch C:\\Users\\nepht\\AppData\\Local\\Temp\\vs-dl-journey-20260912 dihapus penuh (downloaded zip + extracted tree); project uji dibiarkan (keputusan penghapusan milik Choi; bisa dihapus via aplikasi)",
+  "limitations": [
+    "Ini journey dengan zip unduhan pada mesin yang sama; bukan installer signed/InnoSetup dan bukan mesin bersih tanpa dev tools",
+    "Klik koordinat sekali jatuh ke item salah karena konversi native/screenshot scale 1.21x - diperbaiki dengan koordinat native center elemen",
+    "Transport input background PostMessage; setiap state-changing step diverifikasi dengan capture segar"
+  ],
+  "next_actions": [
+    "deploy hero fix masih BLOCKED menunggu wrangler login interaktif Choi",
+    "hapus project uji bila diinginkan",
+    "opsional: bungkus Release tree menjadi installer terstruktur bila Choi memutuskan"
+  ]
+}

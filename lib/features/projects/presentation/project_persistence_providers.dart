@@ -139,6 +139,22 @@ class ProjectSessionController extends AsyncNotifier<ProjectSession?> {
     ProjectOpenMode mode = ProjectOpenMode.readWrite,
   }) => openProject(projectId, mode: mode);
 
+  /// Wiring sprint Task 2 (BUG-12): passphrase prompt-and-retry contract.
+  /// Verifies the passphrase through [ProjectSessionManager.unlockProject]
+  /// and, on success, re-runs [openProject] (which re-checks the persisted
+  /// lock and now passes). Returns false on a wrong passphrase so the shell
+  /// can keep the prompt up with an inline error; open failures propagate.
+  Future<bool> unlockAndOpen(String projectId, String passphrase) async {
+    final root = await ref.read(projectPathsProvider).project(projectId);
+    final unlocked = await _manager.unlockProject(
+      ProjectPackage(projectId: projectId, root: root),
+      passphrase,
+    );
+    if (!unlocked) return false;
+    await openProject(projectId);
+    return true;
+  }
+
   Future<void> save() async {
     final session = _session;
     if (session == null) return;

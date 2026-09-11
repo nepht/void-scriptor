@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../adaptive/void_breakpoints.dart';
 import '../routing/app_routes.dart';
+import '../../core/security/presentation/project_lock_screen.dart';
+import '../../features/project_resilience/application/project_session_manager.dart';
 import '../../features/projects/presentation/project_persistence_providers.dart';
 import '../../database/project/project_database_service.dart';
 import 'desktop/void_desktop_shell.dart';
@@ -48,6 +50,44 @@ String _openFailureMessage(Object? error) {
 class _VoidAppShellState extends ConsumerState<VoidAppShell> {
   bool _opening = false;
   Object? _openError;
+  String? _unlockError;
+  bool _unlocking = false;
+
+  /// Wiring sprint Task 2 (BUG-12): the passphrase prompt-and-retry flow for
+  /// [ProjectLockedException]. True on success; false keeps the prompt up
+  /// with an inline rejection message.
+  Future<bool> _unlockProject(String passphrase) async {
+    final projectId = widget.projectId;
+    if (projectId == null || _unlocking) return false;
+    _unlocking = true;
+    try {
+      final opened = await ref
+          .read(projectSessionProvider.notifier)
+          .unlockAndOpen(projectId, passphrase);
+      if (opened && mounted) {
+        setState(() {
+          _openError = null;
+          _unlockError = null;
+        });
+      } else if (mounted) {
+        setState(() => _unlockError = 'Passphrase salah. Coba lagi.');
+      }
+      return opened;
+    } catch (error) {
+      // Unlock probe failures (typed database classification etc.) surface
+      // through the generic open-error screen, not as a rejected passphrase.
+      if (mounted) {
+        setState(() {
+          _openError = error;
+          _unlockError = null;
+        });
+      }
+      return false;
+    } finally {
+      _unlocking = false;
+    }
+  }
+
   int _openRequest = 0;
   @override
   void initState() {
@@ -68,6 +108,7 @@ class _VoidAppShellState extends ConsumerState<VoidAppShell> {
     if (projectId == null) {
       _opening = false;
       _openError = null;
+      _unlockError = null;
       return;
     }
     Future<void>.microtask(() async {
@@ -75,6 +116,7 @@ class _VoidAppShellState extends ConsumerState<VoidAppShell> {
       setState(() {
         _opening = true;
         _openError = null;
+        _unlockError = null;
       });
       try {
         await ref.read(projectSessionProvider.notifier).openProject(projectId);
@@ -98,6 +140,15 @@ class _VoidAppShellState extends ConsumerState<VoidAppShell> {
   Widget build(BuildContext context) {
     if (_opening || _openError != null) {
       final error = _openError;
+      if (error is ProjectLockedException && !_unlocking) {
+        // BUG-12 prompt-and-retry contract: passphrase prompt replaces the
+        // generic failure screen; a rejected attempt keeps it up inline.
+        return ProjectLockScreen(
+          projectName: error.projectId,
+          errorText: _unlockError,
+          onUnlock: _unlockProject,
+        );
+      }
       final locked =
           error is StateError &&
           error.message == 'Project has an active or stale session';

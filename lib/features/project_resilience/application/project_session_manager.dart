@@ -2,6 +2,9 @@ import 'dart:convert';
 
 import 'package:uuid/uuid.dart';
 
+import '../../../core/security/application/project_lock_service.dart';
+import '../../../core/security/crypto/encryption_cipher.dart';
+import '../../../core/security/crypto/key_derivation.dart';
 import '../../../core/commands/command_type_registry.dart';
 import '../../../core/jobs/background_job.dart';
 import '../../../core/jobs/background_job_queue.dart';
@@ -407,6 +410,36 @@ class ProjectSessionManager {
         }
       }
       rethrow;
+    }
+  }
+
+  /// Wiring sprint Task 2 (bug-hunt run197 BUG-12): implements the
+  /// `ProjectLockedException` doc promise — prompt for the passphrase and
+  /// retry. Opens the project database WITHOUT taking the write companion or
+  /// session lock (a passphrase check must never strand lock state if it
+  /// fails), verifies the passphrase through [ProjectLockService.unlock]
+  /// (which flips the persisted lock flag on success), then closes the probe
+  /// connection so [open] can proceed normally afterwards. Returns false on
+  /// a wrong passphrase; open-path failures propagate as the typed
+  /// classification exceptions the shell already renders.
+  Future<bool> unlockProject(ProjectPackage package, String passphrase) async {
+    final database = await ProjectDatabaseService().open(
+      package.databaseFile.path,
+    );
+    try {
+      final lockService = ProjectLockService(
+        database: database,
+        deriver: const Pbkdf2KeyDeriver(),
+        integrity: const HmacIntegrity(),
+      );
+      return await lockService.unlock(package.projectId, passphrase);
+    } finally {
+      try {
+        await database.close();
+      } on Object catch (_) {
+        // Secondary to the unlock outcome; mirrors the guarded-close
+        // convention in [ProjectSession._close].
+      }
     }
   }
 

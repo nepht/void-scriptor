@@ -25,7 +25,10 @@ void main() {
       MaterialApp(
         home: ProjectLockScreen(
           projectName: 'Demo',
-          onUnlock: (pass) => submitted = pass,
+          onUnlock: (pass) async {
+            submitted = pass;
+            return true;
+          },
         ),
       ),
     );

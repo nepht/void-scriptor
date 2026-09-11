@@ -236,7 +236,15 @@ class _Probe implements StorageHealthProbe {
     try {
       final probeFile = File(p.join(location, '.vs_write_probe'));
       await probeFile.writeAsString('ok', flush: true);
-      await probeFile.delete();
+      // bug-hunt run197 BUG-17: cleanup is best-effort and must not
+      // decide writability. A sharing violation on the delete (errno-32
+      // fresh-file window) after a SUCCESSFUL write used to fall into
+      // the same catch and reject a healthy location as
+      // permissionDenied at setActiveLocation/relinkLocation. A
+      // leftover probe file is harmless residue.
+      try {
+        await probeFile.delete();
+      } on FileSystemException catch (_) {}
     } on FileSystemException {
       writable = false;
     }

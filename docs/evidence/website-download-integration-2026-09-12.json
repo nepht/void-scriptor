@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "case_id": "website_download_integration_2026_09_12",
+  "status": "PARTIAL",
+  "date": "2026-09-12T03:20:00+07:00",
+  "run": "cron run224 nephthys",
+  "authority": "HERMES_WEBSITE_DOWNLOAD_HANDOFF_2026-09-08.md (langkah 1-8) + OTORISASI UI/UX CONTINUOUS 2026-09-07; admisi RELEASED_TO_HERMES diakui run ini",
+  "summary": "Artefak download 1.2.0-alpha.1 terverifikasi LIVE di R2+worker; wiring tombol kartu Studio sudah hidup di produksi; tombol HERO ditemukan mati (gap), diperbaiki terverifikasi di checkout git + deploy tree; deploy menunggu wrangler login interaktif.",
+  "findings": {
+    "live_identity_confirmed": {
+      "production_deployment": "c35422bf (direct upload, production branch main)",
+      "index_live_vs_checkout": "checkout site = live + 2 commit quiz milik Choi (b74882c, 46b6901) - konsisten, quiz dipreservasi",
+      "live_artifact_url": "https://voidscriptor.pages.dev/downloads/voidscriptor-1.2.0-alpha.1-windows-x64.zip",
+      "artifact_http": "HTTP 200, Content-Length 34642793, Content-Disposition attachment, application/zip",
+      "artifact_integrity": "md5 unduhan penuh 738164fe6653439330de3f219d438ba2 == HTTP ETag (single-stream); sha256 5a7680b6dea86aaddf0238f19069644e02adf7e050d3bd631246e601292547b6; zip magic PK valid; 491 entri, Release/ lengkap (exe+flutter_windows.dll+sqlite3.dll+plugins+data/app.so+flutter_assets)",
+      "artifact_provenance": "data/app.so byte-identik (sha256 90d54df4f00707d07349e8c8a041b6fb...) dengan build Release canonical lokal mtime 2026-09-10 22:18 WIB; pubspec version 1.2.0-alpha.1; commit sumber pasti = UNKNOWN (reflog 10 Sep tidak terekam di mesin ini)",
+      "provenance_gap": "Bundling zip + upload R2 + deploy _worker.js dilakukan eksekutor interaktif 2026-09-10/11 tanpa entri ledger/evidence; deploy tree (mirror) satu-satunya tempat wiring hidup sebelum run ini"
+    },
+    "hero_button_gap": {
+      "symptom": "Tombol utama halaman 'Download untuk Windows' (button.primary.download di hero, di luar .card) jatuh ke cabang notice 'akan tersedia pada rilis publik' karena pemetaan DL hanya berkunci data-i18n judul kartu",
+      "red_evidence": "Statis-deterministik dari kode wiring produksi: k=null untuk hero -> t='' -> DL['']=undefined -> else-branch; probe browser live hang (timeout 420s) sehingga RED dibuktikan dari kode, bukan klik",
+      "fix": "var DL + entri 'hero-cta' + fallback key e.getAttribute('data-i18n'); delta +98 byte, gaya minified identik",
+      "green_evidence": "node --check wiring.js PASS (kedua pohon); WIRING_GREEN PASS menjalankan kode wiring asli (eval exact): hero_would_navigate=/downloads/voidscriptor-1.2.0-alpha.1-windows-x64.zip, studio redirect tetap, Byte Assistant notice jujur tetap"
+    },
+    "changes": {
+      "site_checkout_git_commit": "c169a34 feat(download): wire hero button to 1.2.0-alpha.1 artifact + sync deploy wiring (4 file: index.html, _worker.js, wrangler.toml, .assetsignore; diff --check exit 0)",
+      "deploy_tree_mirror": "index.html di-patch sama (+98 byte) + terverifikasi identik dengan checkout",
+      "manifest": "D:/Hermes_Storage/void-scriptor-download-prep/void-scriptor-windows-manifest.json -> status AVAILABLE_PREVIEW, size/sha256/url/provenance dari pengukuran nyata",
+      "backups": "D:/Hermes_Storage/nephthys_run_backups/2026-09-12_website_dl/ (2 bak index.html)"
+    },
+    "blocked": {
+      "deploy_of_updated_index": "wrangler whoami: 'auth token has expired and could not be refreshed, environment is non-interactive' (2x, termasuk retry); BUTUH aksi interaktif pengguna: 'wrangler login' di terminal interaktif (browser OAuth) ATAU set CLOUDFLARE_API_TOKEN sebagai keputusan eksplisit",
+      "constraint_kepatuhan": "Tidak merotasi kredensial, tidak bypass auth; artifact TIDAK perlu deploy (sudah live); hanya perbaikan tombol hero yang menunggu deploy berikutnya"
+    },
+    "preview_live_distinction": "LIVE saat ini = c35422bf: tombol kartu Studio SUDAH berfungsi, tombol hero MASIH notice. Lokal (c169a34 + mirror): hero ter-wire, menunggu deploy. Tidak ada klaim live untuk perbaikan hero."
+  },
+  "remaining_gates": [
+    "wrangler login interaktif (keputusan pengguna) lalu wrangler pages deploy dari tree final",
+    "verifikasi post-deploy: klik hero di browser -> unduhan dimulai, tooltip benar",
+    "rekonsiliasi commit sumber pasti build 10-Sep 22:18 (gap UNKNOWN)",
+    "native install/start/save/reopen journey pada lingkungan bersih (UNVERIFIABLE dari cron) - label tetap Preview"
+  ],
+  "user_data": "Tidak ada data pengguna, naskah, atau proyek disentuh; hanya file website + manifest di Hermes_Storage dan checkout site."
+}

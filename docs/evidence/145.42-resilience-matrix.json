@@ -383,5 +383,40 @@
       "retest_reason": ""
     }
   ],
-  "last_verified_run": "run196 (2026-09-11): unavailable_removed_drive naik PARTIAL -> VERIFIED(domain) via lifecycle drive virtual subst nyata (mount->create/open->detach->typed Unavailable->remount->integrity ok) di HEAD 4a1e17f017f932987b5780af3c8258a01020fbdd"
+  "last_verified_run": "run219 (2026-09-11): fresh re-verification penuh keluarga kasus 145.42 di HEAD 31d6485 pasca 5 commit region (run200/201/212/217/218) — resilience 208 PASS/1 skip/0 FAIL, database 47 PASS, isolation 6/6, analyze No issues, build windows debug PASS",
+  "fresh_verification_run219": {
+    "date": "2026-09-11",
+    "reason": "retest condition 'bila jalur restore/session/registry/lock berubah' terpenuhi: run200 session-close guard (8fac67e), run201 openReadOnly classifier (58a84a1), run212 roll-forward interrupted-move di _loadUnlocked (ce28d9a), run217 unlock pre-migration backup (9c3ef10), run218 durability-first move journal drain (3f59e28) — region yang sama dengan 9 kasus matriks; bukti terakhir matriks masih HEAD 4a1e17f (run196)",
+    "head": "31d648535b86a823841bf8f3b130316cd249443d",
+    "dirty_scope": "2 tracked M sibling codex (login_screen.dart WIP UI, project_persistence_providers.dart) + 8 untracked sibling (shell_unlock_flow_hardening_test, storage_locations WIP, project_open_path_registry_resolution_test, docs) — dipreservasi; tidak ada overlap dengan region yang diuji",
+    "commands": [
+      {
+        "command": "flutter test --no-pub test/features/project_resilience",
+        "exit_code": 0,
+        "result": "208 PASS / 1 skip / 0 FAIL 'All tests passed!' — mencakup 9/13 kasus matriks: process_crash_wal, interrupted_import_move (termasuk backup_rollback_failure 2 test rollback-failure injection), interrupted_restore, corruption (corrupt_open + torn-DB), unavailable_removed_drive, interrupted_export (staging atomik), permission_loss, explicit_disk_full, concurrent_open"
+      },
+      {
+        "command": "flutter test --no-pub test/database",
+        "exit_code": 0,
+        "result": "47 PASS / 0 FAIL — process-kill, corrupt-open, disk-full engine, drive-removal lifecycle, concurrent/unavailable open"
+      },
+      {
+        "command": "flutter test --no-pub test/features/character/character_repository_test.dart",
+        "exit_code": 0,
+        "result": "6/6 PASS — different_project_isolation"
+      },
+      {
+        "command": "flutter analyze --no-pub",
+        "exit_code": 0,
+        "result": "No issues found! (23.8s)"
+      },
+      {
+        "command": "flutter build windows --debug --no-pub",
+        "exit_code": 0,
+        "result": "Built build/windows/x64/runner/Debug/void_scriptor.exe (56,0s)"
+      }
+    ],
+    "limitations": "verifikasi level test/service di HEAD baru; power_loss_physical dan device_validation_min_spec tetap UNVERIFIABLE (hardware-bound); 1 skip = platform-guard test yang memang diskip pada runner ini",
+    "next_action": "tidak ada wajib; retest berikutnya hanya bila region resilience/lock/registry berubah lagi"
+  }
 }

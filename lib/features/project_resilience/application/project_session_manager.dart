@@ -104,26 +104,90 @@ class ProjectSession {
   }
 
   Future<void>? _closing;
+  // run199 BUG-5: per-step completion flags. A mid-teardown failure must not
+  // skip the remaining steps (a blocked session-marker release used to leave
+  // the companion .project.lock behind) and must not replay already-finished
+  // steps on a retry (double dispose throws). close() clears the memoized
+  // future when a step fails so a later close() completes what is left.
+  bool _projectionsCleared = false;
+  bool _mutationRuntimeDisposed = false;
+  bool _jobsDisposed = false;
+  bool _databaseClosed = false;
+  bool _lockReleased = false;
 
   // All callers share shutdown, including its failure; disposed resources must
   // never be disposed again by a concurrent exit or provider teardown.
   Future<void> close() => _closing ??= _close();
 
   Future<void> _close() async {
-    workspaceProjections.clear();
-    await mutationRuntime.dispose();
-    for (final task in jobs.jobs) {
-      if (task.persistence == JobPersistence.transient) {
-        await jobs.cancel(task.id);
+    Object? failure;
+    void record(Object error) {
+      // Keep the FIRST ORIGINAL error: the fail-closed type (e.g.
+      // FileSystemException from lock.release) is part of the release
+      // contract; later steps still run best-effort.
+      failure ??= error;
+    }
+
+    if (!_projectionsCleared) {
+      try {
+        workspaceProjections.clear();
+        _projectionsCleared = true;
+      } on Object catch (e) {
+        record(e);
       }
     }
-    await jobs.dispose();
-    await database.close();
-    if (mode == ProjectOpenMode.readWrite) {
-      await lock.release();
-      if (await package.lockFile.exists()) {
-        await package.lockFile.delete();
+    if (!_mutationRuntimeDisposed) {
+      try {
+        await mutationRuntime.dispose();
+        _mutationRuntimeDisposed = true;
+      } on Object catch (e) {
+        record(e);
       }
+    }
+    if (!_jobsDisposed) {
+      try {
+        for (final task in jobs.jobs) {
+          if (task.persistence == JobPersistence.transient) {
+            await jobs.cancel(task.id);
+          }
+        }
+        await jobs.dispose();
+        _jobsDisposed = true;
+      } on Object catch (e) {
+        record(e);
+      }
+    }
+    if (!_databaseClosed) {
+      try {
+        await database.close();
+        _databaseClosed = true;
+      } on Object catch (e) {
+        record(e);
+      }
+    }
+    if (mode == ProjectOpenMode.readWrite) {
+      if (!_lockReleased) {
+        try {
+          await lock.release();
+          _lockReleased = true;
+        } on Object catch (e) {
+          // Fail-closed release keeps its error, but the companion cleanup
+          // below must still run instead of being skipped (BUG-5).
+          record(e);
+        }
+      }
+      try {
+        if (await package.lockFile.exists()) {
+          await package.lockFile.delete();
+        }
+      } on Object catch (e) {
+        record(e);
+      }
+    }
+    if (failure != null) {
+      // Let a later close() retry the steps that did not complete.
+      _closing = null;
+      throw failure!;
     }
   }
 }
@@ -316,17 +380,32 @@ class ProjectSessionManager {
           deleteCharacterSource: characterRepository.deleteCharacter,
         ),
       );
-    } catch (_) {
-      if (mode == ProjectOpenMode.readWrite) await lock.release();
-      if (mode == ProjectOpenMode.readWrite &&
-          companionWritten &&
-          await package.lockFile.exists()) {
-        await package.lockFile.delete();
-      }
-      // Ensure database is closed if it was partially opened
+    } catch (error) {
+      // run199 BUG-6 (hunt run197): each cleanup step is individually
+      // guarded and the database close runs FIRST, so a throw from the
+      // marker release or companion delete can neither skip the close nor
+      // replace the original open error rethrown below.
       try {
         if (database != null) await database.close();
-      } catch (_) {}
+      } on Object catch (_) {
+        // Secondary to the original error; previously swallowed as well.
+      }
+      if (mode == ProjectOpenMode.readWrite) {
+        try {
+          await lock.release();
+        } on Object catch (_) {
+          // release() is fail-closed by design; a transient errno-32 hold
+          // must not mask the original open failure or strand cleanup
+          // (same family as BUG-1/run198).
+        }
+        try {
+          if (companionWritten && await package.lockFile.exists()) {
+            await package.lockFile.delete();
+          }
+        } on Object catch (_) {
+          // Best-effort: the original error still propagates.
+        }
+      }
       rethrow;
     }
   }

@@ -29,6 +29,7 @@ import '../../project_resilience/application/durable_draft_journal.dart';
 import '../../story/presentation/story_workspace_screen.dart';
 import '../../project_resilience/application/project_session_manager.dart';
 import '../../workspaces/application/create_novel_character_link_service.dart';
+import '../../workspaces/application/story_cast_loader.dart';
 import '../../workspaces/application/workspace_projection_cache.dart';
 import '../../workspaces/presentation/workspace_export_actions.dart';
 import 'global_search_sheet.dart';
@@ -272,6 +273,12 @@ class WorkspaceResolver extends ConsumerWidget {
         workspaceProjection: session?.workspaceProjectionReader.forNovel(
           selection.assetId,
         ),
+        loadCast: session == null
+            ? null
+            : (novelWorkspaceId) => StoryCastLoader(
+                database: session.database,
+                projectId: session.manifest.id,
+              ).load(novelWorkspaceId),
         onTapAddCharacter: session == null
             ? null
             : (novelWorkspaceId) =>

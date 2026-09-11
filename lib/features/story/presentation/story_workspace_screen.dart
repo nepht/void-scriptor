@@ -17,7 +17,9 @@ import '../domain/focus_writing_mode.dart';
 import '../../character/domain/character_quick_ref.dart';
 import 'package:void_scriptor/database/project/project_database.dart'
     show SceneDraftSnapshot;
+import '../../workspaces/application/story_cast_loader.dart';
 import '../../workspaces/application/workspace_projection_cache.dart';
+import '../../workspaces/domain/narrative_assignment.dart';
 import '../../workspaces/presentation/workspace_export_actions.dart';
 import '../../workspaces/presentation/workspace_export_options_dialog.dart';
 import '../../workspaces/presentation/workspace_import_actions.dart';
@@ -41,6 +43,7 @@ class StoryWorkspaceScreen extends StatefulWidget {
     this.draftJournal,
     this.activeSection,
     this.onSectionRequested,
+    this.loadCast,
   });
   final String storyId;
   final StoryRepositoryImpl? repository;
@@ -81,6 +84,14 @@ class StoryWorkspaceScreen extends StatefulWidget {
   /// Optional workspace-level section selected by the surrounding shell.
   /// Null preserves the legacy all-in-one screen for standalone embeddings.
   final String? activeSection;
+
+  /// Wiring sprint Task 1 (character-roles-support phase_one, novel-side
+  /// view): read-only cast loader for the Cast section. Null keeps the
+  /// section absent so screens without a project session never render a
+  /// broken cast list — mirrors [loadLoreCatalog].
+  final Future<List<StoryCastEntry>> Function(String novelWorkspaceId)?
+  loadCast;
+
   final ValueChanged<String>? onSectionRequested;
 
   @override
@@ -127,6 +138,11 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   /// terpilih. Label snapshot manual diisi lewat field terpisah; restore
   /// selalu lewat repository.restoreSceneDraftSnapshot.
   List<SceneDraftSnapshot> _sceneSnapshots = const [];
+
+  /// Task 1 (novel-side cast view): cast rows for this novel, loaded once
+  /// per story via [StoryWorkspaceScreen.loadCast]; null = not loaded yet.
+  List<StoryCastEntry>? _cast;
+  String? _castStoryId;
 
   /// Step 145.25 Character Workspace Core: kartu quick reference kanonik
   /// karakter scene terpilih, dimuat lewat repository.quickReferenceForScene.
@@ -211,6 +227,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     super.initState();
     _selectedSceneId = widget.sceneId;
     _draftJournal = widget.draftJournal;
+    _ensureCastLoaded();
     // Step 145.30: koordinator autosave yang menyatukan debounce, journal
     // durable, dan persist dengan urutan no-silent-loss. Acknowledge hanya
     // setelah persist sukses; dispose mem-flush draf yang masih menunggu.
@@ -311,6 +328,84 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
       if (!mounted) return;
       setState(() => _loreCatalog = catalog);
     });
+  }
+
+  /// Task 1: one load per story id; stale loads (story switched before the
+  /// future resolves) are dropped instead of polluting the new novel's cast.
+  void _ensureCastLoaded() {
+    final loader = widget.loadCast;
+    final storyId = widget.storyId;
+    if (loader == null || _castStoryId == storyId) return;
+    _castStoryId = storyId;
+    _cast = null;
+    loader(storyId).then((cast) {
+      if (!mounted || _castStoryId != storyId) return;
+      setState(() => _cast = cast);
+    });
+  }
+
+  /// Read-only cast section (Task 1): the novel's characters with their
+  /// narrative roles from the story's perspective. Shows an explicit loading
+  /// and empty state; never renders rows without a loader.
+  Widget _buildCastPanel(VoidPalette palette) {
+    final cast = _cast;
+    if (cast == null) {
+      return _Panel(
+        title: 'CAST',
+        child: Text(
+          'Loading cast…',
+          style: TextStyle(color: palette.textSecondary),
+        ),
+      );
+    }
+    if (cast.isEmpty) {
+      return _Panel(
+        title: 'CAST',
+        child: Text(
+          'No cast assigned to this novel yet.',
+          style: TextStyle(color: palette.textSecondary),
+        ),
+      );
+    }
+    return _Panel(
+      title: 'CAST',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final entry in cast) ...[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Icons.person_outline, size: 20),
+                const SizedBox(width: 10),
+                Expanded(child: Text(entry.displayName)),
+                const SizedBox(width: 12),
+                Text(
+                  entry.assignment.roles.isEmpty
+                      ? 'Unspecified'
+                      : entry.assignment.roles
+                            .map(
+                              (role) => switch (role) {
+                                NarrativeRole.protagonist => 'Protagonist',
+                                NarrativeRole.antagonist => 'Antagonist',
+                                NarrativeRole.supporting => 'Supporting',
+                                NarrativeRole.background => 'Background',
+                              },
+                            )
+                            .join(', '),
+                  style: TextStyle(color: palette.textSecondary),
+                ),
+              ],
+            ),
+            const Divider(height: 16),
+          ],
+          Text(
+            'Roles are edited per novel in the Character Workspace.',
+            style: TextStyle(color: palette.textSecondary, fontSize: 12),
+          ),
+        ],
+      ),
+    );
   }
 
   void _syncLoreMenu() {
@@ -1375,6 +1470,8 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
         ),
       ] else if (section == 'Versions') ...[
         _Panel(title: 'SCENE SNAPSHOTS', child: _buildSnapshots(palette)),
+      ] else if (section == 'Cast') ...[
+        _buildCastPanel(palette),
       ] else if (section == 'Export') ...[
         _Panel(title: 'EXPORT NOVEL', child: _exportActions()),
       ],

@@ -34,6 +34,7 @@ class WorkspacePanel extends ConsumerWidget {
                   'Versions',
                   'Export',
                   'Lore Links',
+                  'Cast',
                 ].contains(rememberedSection)))
         ? rememberedSection!
         : workspace.sections.first;
@@ -167,6 +168,7 @@ class _WorkspaceSections extends StatelessWidget {
                 icon: const Icon(Icons.more_horiz),
                 onSelected: onSelected,
                 itemBuilder: (_) => const [
+                  PopupMenuItem(value: 'Cast', child: Text('Cast')),
                   PopupMenuItem(value: 'Versions', child: Text('Versions')),
                   PopupMenuItem(value: 'Export', child: Text('Export')),
                   PopupMenuItem(value: 'Lore Links', child: Text('Lore Links')),

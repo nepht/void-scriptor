@@ -8,6 +8,8 @@ import 'package:go_router/go_router.dart';
 import '../../../app/routing/app_routes.dart';
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
+import '../../platform/domain/platform_capability.dart';
+import '../../platform/platform_capability_providers.dart';
 import '../domain/project_model.dart';
 import 'project_controller.dart';
 import 'widgets/project_card.dart';
@@ -81,8 +83,14 @@ class ProjectListScreen extends ConsumerWidget {
                             project: items[index],
                             onDelete: () =>
                                 _confirmDelete(context, ref, items[index]),
-                            onMove: (project) =>
-                                _startMove(context, ref, project),
+                            onMove:
+                                ref
+                                    .watch(platformCapabilitiesProvider)
+                                    .supports(
+                                      PlatformCapability.localFileSystem,
+                                    )
+                                ? (project) => _startMove(context, ref, project)
+                                : null,
                           ),
                         );
                       },
@@ -100,11 +108,30 @@ class ProjectListScreen extends ConsumerWidget {
   /// Wiring sprint Task 3: folder picker for the move trigger; a cancelled
   /// picker is a no-op, a failed move keeps the project where it was and the
   /// typed reason surfaces in the snack bar.
+  ///
+  /// vs-hunt-20260911 BUG-8: the capability check happens BEFORE the native
+  /// picker opens (check-first pattern, mirroring ProjectController
+  /// createProject), and the card only exposes the action when the
+  /// relocation host is present.
   Future<void> _startMove(
     BuildContext context,
     WidgetRef ref,
     ProjectModel project,
   ) async {
+    try {
+      ref
+          .read(platformCapabilitiesProvider)
+          .require(
+            PlatformCapability.localFileSystem,
+            action: 'Memindahkan proyek',
+          );
+    } catch (error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('$error')));
+      return;
+    }
     // file_selector ^1.x getDirectoryPath has no label parameter.
     final destinationPath = await getDirectoryPath();
     if (destinationPath == null || !context.mounted) return;

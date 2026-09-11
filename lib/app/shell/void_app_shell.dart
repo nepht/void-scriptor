@@ -22,6 +22,24 @@ class VoidAppShell extends ConsumerStatefulWidget {
   ConsumerState<VoidAppShell> createState() => _VoidAppShellState();
 }
 
+/// vs-hunt-20260911 BUG-10: human display name for the locked-project
+/// prompt. Resolved from the project list (registry-backed); a fresh or
+/// unlisted project falls back to its id, so the prompt is never blank.
+final projectNameProvider = FutureProvider.family<String, String>((
+  ref,
+  projectId,
+) async {
+  try {
+    final entries = await ref.watch(projectRegistryServiceProvider).load();
+    for (final entry in entries) {
+      if (entry.id == projectId && entry.name.isNotEmpty) return entry.name;
+    }
+  } catch (_) {
+    // Registry unavailable: the caller falls back to the id.
+  }
+  return projectId;
+});
+
 /// Sprint 145.42: pesan pemulihan spesifik untuk keadaan database bertipe
 /// hasil klasifikasi [classifyProjectDatabaseOpenError]. Selain keempat
 /// klasifikasi ini, pesan generik dipertahankan untuk error tak terduga
@@ -43,6 +61,13 @@ String _openFailureMessage(Object? error) {
     return 'Basis data proyek tidak dapat dibaca. Cadangkan folder proyek '
         'sebelum mencoba pemulihan backup.';
   }
+  // vs-hunt-20260911 BUG-5 defensive tail: a healthy-but-locked project that
+  // reaches the generic screen (unlock-probe failure path) must not be told
+  // to check its folder — the real problem is the passphrase lock.
+  if (error is ProjectLockedException) {
+    return 'Proyek terkunci passphrase. Masukkan passphrase yang benar '
+        'untuk membuka proyek ini.';
+  }
   return 'Periksa lokasi folder, izin akses, dan kondisi berkas proyek, '
       'lalu coba lagi.';
 }
@@ -56,27 +81,35 @@ class _VoidAppShellState extends ConsumerState<VoidAppShell> {
   /// Wiring sprint Task 2 (BUG-12): the passphrase prompt-and-retry flow for
   /// [ProjectLockedException]. True on success; false keeps the prompt up
   /// with an inline rejection message.
+  ///
+  /// vs-hunt-20260911 BUG-4: the open-request token is captured and
+  /// re-checked after every await — an unlock that settles after a
+  /// navigation must not write state into (or reopen a session for) the
+  /// project the shell has since moved away from.
   Future<bool> _unlockProject(String passphrase) async {
     final projectId = widget.projectId;
     if (projectId == null || _unlocking) return false;
     _unlocking = true;
+    final request = _openRequest;
     try {
       final opened = await ref
           .read(projectSessionProvider.notifier)
           .unlockAndOpen(projectId, passphrase);
-      if (opened && mounted) {
+      final current =
+          mounted && request == _openRequest && widget.projectId == projectId;
+      if (opened && current) {
         setState(() {
           _openError = null;
           _unlockError = null;
         });
-      } else if (mounted) {
+      } else if (current) {
         setState(() => _unlockError = 'Passphrase salah. Coba lagi.');
       }
       return opened;
     } catch (error) {
       // Unlock probe failures (typed database classification etc.) surface
       // through the generic open-error screen, not as a rejected passphrase.
-      if (mounted) {
+      if (mounted && request == _openRequest) {
         setState(() {
           _openError = error;
           _unlockError = null;
@@ -140,11 +173,16 @@ class _VoidAppShellState extends ConsumerState<VoidAppShell> {
   Widget build(BuildContext context) {
     if (_opening || _openError != null) {
       final error = _openError;
-      if (error is ProjectLockedException && !_unlocking) {
+      if (error is ProjectLockedException) {
         // BUG-12 prompt-and-retry contract: passphrase prompt replaces the
         // generic failure screen; a rejected attempt keeps it up inline.
+        // vs-hunt-20260911 BUG-5: no `_unlocking` render gate — that flag
+        // flipped without setState, so any unrelated rebuild mid-unlock
+        // bounced the user to the generic screen. The busy state (disabled
+        // 'Memeriksa…' button) is owned by ProjectLockScreen itself.
+        final resolved = ref.watch(projectNameProvider(error.projectId));
         return ProjectLockScreen(
-          projectName: error.projectId,
+          projectName: resolved.valueOrNull ?? error.projectId,
           errorText: _unlockError,
           onUnlock: _unlockProject,
         );

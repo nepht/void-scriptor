@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -111,6 +113,26 @@ class ProjectSessionController extends AsyncNotifier<ProjectSession?> {
     }
   }
 
+  /// vs-hunt-20260911 BUG-2 (High): the package root is resolved from the
+  /// registry entry's localPath first, because a package can live anywhere
+  /// after "Move Project..." (Task 3). The root join is only the fallback
+  /// for projects without a registry entry (first-open-before-listing).
+  Future<String> resolvePackageRoot(String projectId) async {
+    try {
+      final registry = ref.read(projectRegistryServiceProvider);
+      final entries = await registry.load();
+      for (final entry in entries) {
+        if (entry.id == projectId && entry.localPath.isNotEmpty) {
+          return entry.localPath;
+        }
+      }
+    } catch (_) {
+      // Registry unavailable (fresh profile, locked file): fall through to
+      // the conventional root join instead of failing the open outright.
+    }
+    return (await ref.read(projectPathsProvider).project(projectId)).path;
+  }
+
   Future<ProjectSession> _openProject(
     String projectId,
     ProjectOpenMode mode,
@@ -120,9 +142,12 @@ class ProjectSessionController extends AsyncNotifier<ProjectSession?> {
     try {
       await _session?.close();
       _session = null;
-      final root = await ref.read(projectPathsProvider).project(projectId);
+      // vs-hunt-20260911 BUG-2: resolve via registry localPath (moved
+      // packages live outside the conventional root) with root-join
+      // fallback.
+      final rootPath = await resolvePackageRoot(projectId);
       final session = await _manager.open(
-        ProjectPackage(projectId: projectId, root: root),
+        ProjectPackage(projectId: projectId, root: Directory(rootPath)),
         mode: mode,
       );
       _session = session;
@@ -145,9 +170,11 @@ class ProjectSessionController extends AsyncNotifier<ProjectSession?> {
   /// lock and now passes). Returns false on a wrong passphrase so the shell
   /// can keep the prompt up with an inline error; open failures propagate.
   Future<bool> unlockAndOpen(String projectId, String passphrase) async {
-    final root = await ref.read(projectPathsProvider).project(projectId);
+    // vs-hunt-20260911 BUG-2: same registry-first resolution as the open
+    // path so the probe reaches the real (possibly moved) database.
+    final rootPath = await resolvePackageRoot(projectId);
     final unlocked = await _manager.unlockProject(
-      ProjectPackage(projectId: projectId, root: root),
+      ProjectPackage(projectId: projectId, root: Directory(rootPath)),
       passphrase,
     );
     if (!unlocked) return false;

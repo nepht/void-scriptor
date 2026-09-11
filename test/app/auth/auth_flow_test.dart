@@ -127,8 +127,14 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Welcome back'), findsOneWidget);
+    // Copy fail-closed berubah oleh refresh login UI interaktif 2026-09-11
+    // (login_screen.dart uncommitted sibling): pesan kini inline di form,
+    // bukan SnackBar. Kontrak fail-closed tetap: backend tidak tersedia harus
+    // menahan pengguna di Login dengan pesan jujur, tidak masuk Dashboard.
     expect(
-      find.text('Account sign-in is not connected. Use Guest or Offline mode.'),
+      find.text(
+        'Sign-in could not be completed. Try again or use Guest or Offline mode.',
+      ),
       findsOneWidget,
     );
     expect(find.text('Welcome Void Creator'), findsNothing);

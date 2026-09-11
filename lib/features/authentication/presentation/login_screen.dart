@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../core/auth/auth_controller.dart';
 import '../../../core/theme/theme_mode_menu.dart';
-import '../../../design_system/typography/void_typography.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
-import '../../../design_system/widgets/void_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({
@@ -13,408 +10,449 @@ class LoginScreen extends ConsumerStatefulWidget {
     required this.onRegister,
     required this.onForgotPassword,
   });
-
   final VoidCallback onRegister;
   final VoidCallback onForgotPassword;
-
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  bool _rememberMe = true;
-  bool _obscurePassword = true;
-  bool _socialLoading = false;
+  final _form = GlobalKey<FormState>();
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+  final _passwordFocus = FocusNode();
+  bool _obscure = true;
+  Offset _pointer = Offset.zero;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    _email.dispose();
+    _password.dispose();
+    _passwordFocus.dispose();
     super.dispose();
   }
 
   Future<void> _login() async {
+    if (ref.read(authControllerProvider).isLoading ||
+        !_form.currentState!.validate()) {
+      return;
+    }
     await ref
         .read(authControllerProvider.notifier)
-        .login(
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-        );
-  }
-
-  Future<void> _loginWithGoogle() async {
-    setState(() {
-      _socialLoading = true;
-    });
-    // Backend Google OAuth belum dikonfigurasi — tunjukkan feedback jujur.
-    await Future.delayed(const Duration(milliseconds: 600));
-    if (!mounted) return;
-    setState(() => _socialLoading = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Google login belum tersedia. Gunakan mode Guest atau Offline.',
-        ),
-      ),
-    );
-  }
-
-  Future<void> _loginWithGithub() async {
-    setState(() {
-      _socialLoading = true;
-    });
-    await Future.delayed(const Duration(milliseconds: 600));
-    if (!mounted) return;
-    setState(() => _socialLoading = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'GitHub login belum tersedia. Gunakan mode Guest atau Offline.',
-        ),
-      ),
-    );
+        .login(email: _email.text.trim(), password: _password.text);
   }
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authControllerProvider);
-    final loading = authState.isLoading;
-    final scheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Scaffold(
-      backgroundColor: scheme.surface,
-      body: Stack(
-        children: [
-          // Full-bleed background with dark overlay for readability
-          Positioned.fill(
-            child: Image.asset(
-              'assets/backgrounds/auth_background.png',
-              fit: BoxFit.cover,
-            ),
+    final auth = ref.watch(authControllerProvider);
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final reduced = MediaQuery.disableAnimationsOf(context);
+    final base = dark ? const Color(0xFF0C1019) : const Color(0xFFF5F3F8);
+    final ink = dark ? const Color(0xFFF2EFF8) : const Color(0xFF211A30);
+    final muted = dark ? const Color(0xFFB9B3C7) : const Color(0xFF5F566E);
+    final accent = dark ? const Color(0xFFCBB5FF) : const Color(0xFF6333B3);
+    final edge = dark ? const Color(0xFF797386) : const Color(0xFF847A92);
+    final border = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: edge),
+    );
+    final theme = Theme.of(context).copyWith(
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: dark ? const Color(0xFF151A26) : Colors.white,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 18,
+        ),
+        hintStyle: TextStyle(color: muted),
+        border: border,
+        enabledBorder: border,
+        focusedBorder: border.copyWith(
+          borderSide: BorderSide(color: accent, width: 2),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: dark
+              ? const Color(0xFFB99AEF)
+              : const Color(0xFF6333B3),
+          foregroundColor: dark ? const Color(0xFF20132F) : Colors.white,
+          minimumSize: const Size(0, 52),
+          padding: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    scheme.surface.withValues(alpha: isDark ? 0.55 : 0.25),
-                    scheme.surface.withValues(alpha: isDark ? 0.75 : 0.45),
-                    scheme.surface.withValues(alpha: isDark ? 0.88 : 0.72),
-                  ],
-                ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: ink,
+          side: BorderSide(color: edge),
+          minimumSize: const Size(0, 48),
+          padding: const EdgeInsets.all(14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: accent,
+          minimumSize: const Size(0, 48),
+        ),
+      ),
+    );
+    final form = Form(
+      key: _form,
+      child: AutofillGroup(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Welcome back',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.w600,
+                color: ink,
               ),
             ),
-          ),
-          // Pengaturan tampilan langsung dari layar login (menu popup kompak)
-          Positioned(
-            top: 12,
-            right: 12,
-            child: Material(
-              color: scheme.surface.withValues(alpha: 0.5),
-              shape: const CircleBorder(),
-              child: const ThemeModeMenu(iconSize: 20),
+            const SizedBox(height: 10),
+            Text(
+              'A place for your next chapter.',
+              style: TextStyle(fontSize: 16, height: 1.5, color: muted),
             ),
-          ),
-          Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 420),
-                child: Container(
-                  padding: const EdgeInsets.all(30),
-                  decoration: BoxDecoration(
-                    color: scheme.surface.withValues(
-                      alpha: isDark ? 0.82 : 0.90,
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: scheme.outlineVariant),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.5),
-                        blurRadius: 40,
-                        offset: const Offset(0, 20),
-                      ),
-                    ],
+            const SizedBox(height: 32),
+            Text(
+              'Email',
+              style: TextStyle(color: ink, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              controller: _email,
+              enabled: !auth.isLoading,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (_) => _passwordFocus.requestFocus(),
+              autofillHints: const [
+                AutofillHints.username,
+                AutofillHints.email,
+              ],
+              autocorrect: false,
+              decoration: const InputDecoration(hintText: 'you@example.com'),
+              validator: (value) =>
+                  RegExp(
+                    r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
+                  ).hasMatch(value?.trim() ?? '')
+                  ? null
+                  : 'Enter a valid email address.',
+            ),
+            const SizedBox(height: 22),
+            Text(
+              'Password',
+              style: TextStyle(color: ink, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              controller: _password,
+              focusNode: _passwordFocus,
+              enabled: !auth.isLoading,
+              obscureText: _obscure,
+              autocorrect: false,
+              enableSuggestions: false,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (_) => _login(),
+              autofillHints: const [AutofillHints.password],
+              decoration: InputDecoration(
+                hintText: 'Your password',
+                suffixIcon: IconButton(
+                  tooltip: _obscure ? 'Show password' : 'Hide password',
+                  onPressed: () => setState(() => _obscure = !_obscure),
+                  icon: Icon(
+                    _obscure
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Center(child: VoidLogo(textColor: scheme.onSurface)),
-
-                      const SizedBox(height: 34),
-
-                      Text(
-                        'Welcome back',
-                        textAlign: TextAlign.center,
-                        style: VoidTypography.headingLarge.copyWith(
-                          color: scheme.onSurface,
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      Text(
-                        'Sign in to continue to Void Scriptor.',
-                        textAlign: TextAlign.center,
-                        style: VoidTypography.body.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
-                      ),
-
-                      const SizedBox(height: 30),
-
-                      Text(
-                        'Email',
-                        style: VoidTypography.label.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      TextField(
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        autofillHints: const [AutofillHints.email],
-                        decoration: const InputDecoration(
-                          hintText: 'creator@example.com',
-                        ),
-                      ),
-
-                      const SizedBox(height: 18),
-
-                      Text(
-                        'Password',
-                        style: VoidTypography.label.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      TextField(
-                        controller: _passwordController,
-                        obscureText: _obscurePassword,
-                        autofillHints: const [AutofillHints.password],
-                        decoration: InputDecoration(
-                          hintText: 'Password',
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
-                            },
-                            icon: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      Wrap(
-                        alignment: WrapAlignment.spaceBetween,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        runSpacing: 4,
+                ),
+              ),
+              validator: (value) => value == null || value.isEmpty
+                  ? 'Enter your password.'
+                  : null,
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: auth.isLoading ? null : widget.onForgotPassword,
+                child: const Text('Forgot password?'),
+              ),
+            ),
+            const SizedBox(height: 8),
+            FilledButton(
+              onPressed: auth.isLoading ? null : _login,
+              child: Text(auth.isLoading ? 'Signing in…' : 'Sign In'),
+            ),
+            if (auth.hasError) ...[
+              const SizedBox(height: 16),
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  'Sign-in could not be completed. Try again or use Guest or Offline mode.',
+                  style: TextStyle(color: theme.colorScheme.error, height: 1.5),
+                ),
+              ),
+            ],
+            const SizedBox(height: 24),
+            Text(
+              'Google and GitHub sign-in are not available yet.',
+              style: TextStyle(color: muted, fontSize: 13, height: 1.5),
+            ),
+            const SizedBox(height: 24),
+            Divider(color: edge.withValues(alpha: .3)),
+            const SizedBox(height: 16),
+            Text(
+              'Start without an account',
+              style: TextStyle(color: ink, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Keep writing with local access.',
+              style: TextStyle(color: muted, height: 1.5),
+            ),
+            const SizedBox(height: 14),
+            OutlinedButton.icon(
+              onPressed: auth.isLoading
+                  ? null
+                  : () => ref
+                        .read(authControllerProvider.notifier)
+                        .continueOffline(),
+              icon: const Icon(Icons.folder_open_outlined, size: 20),
+              label: const Text('Work Offline'),
+            ),
+            TextButton(
+              onPressed: auth.isLoading
+                  ? null
+                  : () => ref
+                        .read(authControllerProvider.notifier)
+                        .continueAsGuest(),
+              child: const Text('Continue as Guest'),
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text('New here?', style: TextStyle(color: muted)),
+                TextButton(
+                  onPressed: auth.isLoading ? null : widget.onRegister,
+                  child: const Text('Create account'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    return Theme(
+      data: theme,
+      child: Scaffold(
+        backgroundColor: base,
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            final wide =
+                constraints.maxWidth >= 1050 &&
+                MediaQuery.textScalerOf(context).scale(16) <= 24;
+            return Stack(
+              children: [
+                Positioned.fill(
+                  child: ExcludeSemantics(
+                    child: IgnorePointer(
+                      child: Stack(
+                        fit: StackFit.expand,
                         children: [
-                          Checkbox(
-                            value: _rememberMe,
-                            onChanged: (value) {
-                              setState(() {
-                                _rememberMe = value ?? false;
-                              });
-                            },
+                          Image.asset(
+                            'assets/backgrounds/auth_background.png',
+                            fit: BoxFit.cover,
+                            alignment: Alignment.centerLeft,
                           ),
-                          Text(
-                            'Remember me',
-                            style: VoidTypography.caption.copyWith(
-                              color: scheme.onSurfaceVariant,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: widget.onForgotPassword,
-                            child: const Text('Forgot password?'),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 14),
-
-                      SizedBox(
-                        width: double.infinity,
-                        child: VoidButton(
-                          label: loading ? 'Signing In...' : 'Sign In',
-                          icon: Icons.login_rounded,
-                          onPressed: loading ? null : _login,
-                        ),
-                      ),
-
-                      if (authState.hasError) ...[
-                        const SizedBox(height: 12),
-                        Text(
-                          'Account sign-in is not connected. '
-                          'Use Guest or Offline mode.',
-                          textAlign: TextAlign.center,
-                          style: VoidTypography.caption.copyWith(
-                            color: scheme.error,
-                          ),
-                        ),
-                      ],
-
-                      const SizedBox(height: 18),
-
-                      Row(
-                        children: [
-                          const Expanded(child: Divider()),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text(
-                              'OR',
-                              style: VoidTypography.caption.copyWith(
-                                color: scheme.onSurfaceVariant,
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                colors: [
+                                  base.withValues(
+                                    alpha: dark && wide ? .5 : .92,
+                                  ),
+                                  base.withValues(alpha: .96),
+                                  base,
+                                ],
+                                stops: const [0, .62, 1],
                               ),
                             ),
                           ),
-                          const Expanded(child: Divider()),
-                        ],
-                      ),
-
-                      const SizedBox(height: 18),
-
-                      // ── Social login (UI saja; backend belum dikonfigurasi) ──
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: _socialLoading
-                                  ? null
-                                  : _loginWithGoogle,
-                              icon: const _GoogleGlyph(size: 18),
-                              label: const Text('Google'),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: _socialLoading
-                                  ? null
-                                  : _loginWithGithub,
-                              icon: const Icon(Icons.code_rounded),
-                              label: const Text('GitHub'),
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  base.withValues(alpha: .2),
+                                  Colors.transparent,
+                                  base,
+                                ],
+                              ),
                             ),
                           ),
                         ],
                       ),
-
-                      const SizedBox(height: 18),
-
-                      OutlinedButton.icon(
-                        onPressed: loading
-                            ? null
-                            : () {
-                                ref
-                                    .read(authControllerProvider.notifier)
-                                    .continueAsGuest();
-                              },
-                        icon: const Icon(Icons.person_outline),
-                        label: const Text('Continue as Guest'),
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      OutlinedButton.icon(
-                        onPressed: loading
-                            ? null
-                            : () {
-                                ref
-                                    .read(authControllerProvider.notifier)
-                                    .continueOffline();
-                              },
-                        icon: const Icon(Icons.wifi_off_outlined),
-                        label: const Text('Work Offline'),
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Text(
-                            'No account?',
-                            style: VoidTypography.caption.copyWith(
-                              color: scheme.onSurfaceVariant,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: widget.onRegister,
-                            child: const Text('Create account'),
-                          ),
-                        ],
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Glyph "G" Google (multi-warna) tanpa aset eksternal.
-class _GoogleGlyph extends StatelessWidget {
-  final double size;
-  const _GoogleGlyph({this.size = 18});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: CustomPaint(painter: _GoogleGlyphPainter()),
-    );
-  }
-}
-
-class _GoogleGlyphPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final p = size.shortestSide;
-    final r = p / 2;
-    final c = Offset(size.width / 2, size.height / 2);
-
-    // Ring dasar (putih)
-    final ring = Paint()..color = Colors.white;
-    canvas.drawCircle(c, r, ring);
-
-    // Huruf G sederhana (biru)
-    final text = TextPainter(
-      text: TextSpan(
-        text: 'G',
-        style: TextStyle(
-          fontSize: p * 0.62,
-          fontWeight: FontWeight.bold,
-          color: const Color(0xFF4285F4),
+                SafeArea(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.fromLTRB(
+                      wide ? 64 : 24,
+                      28,
+                      wide ? 64 : 24,
+                      32,
+                    ),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 1280),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child:
+                                        MediaQuery.textScalerOf(
+                                              context,
+                                            ).scale(13) >
+                                            20
+                                        ? const VoidLogo(compact: true)
+                                        : VoidLogo(textColor: ink),
+                                  ),
+                                ),
+                                const ThemeModeMenu(iconSize: 20),
+                              ],
+                            ),
+                            SizedBox(height: wide ? 68 : 36),
+                            if (wide)
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: MouseRegion(
+                                      onHover: reduced
+                                          ? null
+                                          : (event) => setState(
+                                              () => _pointer = Offset(
+                                                (event.localPosition.dx / 600 -
+                                                            .5)
+                                                        .clamp(-.5, .5) *
+                                                    12,
+                                                (event.localPosition.dy / 600 -
+                                                            .5)
+                                                        .clamp(-.5, .5) *
+                                                    12,
+                                              ),
+                                            ),
+                                      onExit: (_) => setState(
+                                        () => _pointer = Offset.zero,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 60,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            ExcludeSemantics(
+                                              child: TweenAnimationBuilder<Offset>(
+                                                tween: Tween(
+                                                  end: reduced
+                                                      ? Offset.zero
+                                                      : _pointer,
+                                                ),
+                                                duration: reduced
+                                                    ? Duration.zero
+                                                    : const Duration(
+                                                        milliseconds: 260,
+                                                      ),
+                                                builder:
+                                                    (context, offset, child) =>
+                                                        Transform.translate(
+                                                          offset: offset,
+                                                          child: child,
+                                                        ),
+                                                child: Image.asset(
+                                                  'assets/logos/void_scriptor_logo.png',
+                                                  width: 110,
+                                                  height: 140,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 40),
+                                            Text(
+                                              'Give your stories\na world to live in.',
+                                              style: TextStyle(
+                                                color: ink,
+                                                fontSize: 48,
+                                                height: 1.15,
+                                                fontWeight: FontWeight.w500,
+                                                letterSpacing: -1.2,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 24),
+                                            Text(
+                                              'Write the novel. Know your characters.\nBuild the world that connects them.',
+                                              style: TextStyle(
+                                                color: muted,
+                                                fontSize: 18,
+                                                height: 1.7,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 54),
+                                            Text(
+                                              'NOVELS  /  CHARACTERS  /  WORLDS',
+                                              style: TextStyle(
+                                                color: muted,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 408, child: form),
+                                ],
+                              )
+                            else
+                              Center(
+                                child: ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 440,
+                                  ),
+                                  child: form,
+                                ),
+                              ),
+                            const SizedBox(height: 36),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
-      textDirection: TextDirection.ltr,
     );
-    text.layout();
-    text.paint(canvas, c - Offset(text.width / 2, text.height / 2));
   }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

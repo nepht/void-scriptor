@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "[run227-nephthys 2026-09-12 cron] Re-verification rollback fault-injection 145.34 (4/4 PASS backup_rollback_failure + backup_full_payload di HEAD ed9f576) + audit matriks 145.42: 15 kasus, 12 VERIFIED, 3 USER_REPORTED_PASS, 2 hardware-bound UNVERIFIABLE (power_loss, min-spec device) = decision-owned Choi. Antrean teknis Core KOSONG: deploy hero tetap BLOCKED wrangler login (probe whoami ke-4 expired, tidak diulang); 145.43-145.50 keputusan Choi; push (ahead 6) keputusan Choi; format gate CI-exact 0 changed. Pointer 145.27 tetap. Next: NO-OP bila tidak ada handoff/input Choi baru.",
+  "last_verified_step": "[run228-nephthys 2026-09-12 cron] Journey native export+backup VERIFIED di HEAD b44979a (Export Markdown/TXT/Novel-workspace ZIP + Create Backup sha-verified; draft run225 selamat lintas sesi; close graceful tanpa lock). DUA GAP terkonfirmasi, dicatat ledger+evidence untuk slice berikutnya: GAP-BACKUP-RESTORE-NO-UI (ProjectBackupService.restore() tanpa caller UI produksi; layar Project Backups hanya Create/Scan) dan GAP-IMPORT-NOVEL-UNWIRED (pickImportArchive tidak di-wire, tombol Import Novel permanen disabled). Next: slice wire restore-backup UI dan/atau import picker (kontrak 145.34/145.33). Deploy hero tetap menunggu wrangler login Choi; 145.43-145.50/push = keputusan Choi; pointer 145.27 tetap.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-12T07:05:00+07:00",
-  "updated_by": "run227-nephthys",
+  "updated_at": "2026-09-12T05:50:00+07:00",
+  "updated_by": "run228-nephthys",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

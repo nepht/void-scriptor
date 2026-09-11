@@ -1,0 +1,47 @@
+{
+  "case_id": "native_export_backup_journey_run228",
+  "status": "VERIFIED_WITH_GAPS",
+  "date": "2026-09-12T22:45:00+07:00",
+  "run": "cron run228 nephthys",
+  "head_at_start": "b44979a94cb2985b1f179753a0c2cacf4b0da15d",
+  "build": "flutter build windows --debug --no-pub PASS (21,5s)",
+  "app": "build/windows/x64/runner/Debug/void_scriptor.exe pid 4828",
+  "fixture_project": "UJI Journey Download 260912 (7e90b57b-ceba-41f9-baf1-2258b50daa20.voidproject) — project uji yang sama dengan journey run225, bukan naskah pengguna",
+  "steps_verified": [
+    "Launch native (pid 4828), Dashboard Guest offline render",
+    "Continue writing -> project terbuka; draft run225 utuh di Scene Editor",
+    "Menu Document actions (…) -> section Export -> tombol Export Markdown/TXT/DOCX/Novel + Import Novel (disabled) terlihat",
+    "Export Markdown klik -> file exports/story.md 140 B, konten judul/Chapter 1/Scene 1/draf sesuai",
+    "Export TXT klik -> file exports/story.txt 123 B, konten sesuai",
+    "Export Novel klik -> dialog opsi representasi karakter (Reference manifest/Embedded snapshot/Fork); pilih Reference manifest -> Export -> file exports/novel-b49a13d6….voidworkspace 388 B, zipfile testzip None, workspace.export.json valid (format void-workspace-export v1, characterRepresentation reference_manifest)",
+    "Optional tools -> Diagnostics: Project Diagnostics tampil (Manifest valid, Database healthy, Portable yes, Storage 1.4 MB)",
+    "Project context menu (dropdown nama project) -> 'Backup & Export' -> Project Backups (Available backups: 0)",
+    "Create Backup klik -> status 'Backup created: …/backups/3382671f-5954-4092-8a83-edfcdd3e19aa'; Available backups: 1",
+    "Ground truth backup: backup.json (manual, schemaVersion 60) + project.db + project.json; sha256 manifest == sha256 file aktual (6eda6607… db, 8c50e50f… manifest)",
+    "Close graceful via CloseMainWindow: proses keluar, tanpa session.lock/-wal/-shm tertinggal"
+  ],
+  "gaps_confirmed": [
+    {
+      "id": "GAP-BACKUP-RESTORE-NO-UI",
+      "finding": "ProjectBackupService.restore() (project_recovery_services.dart baris ~314) hanya dipanggil dari test; grep seluruh lib/ tidak menemukan satu pun caller produksi. Layar Project Backups (ProjectResilienceView.backups) hanya menyediakan 'Create Backup' + 'Scan Again' — tidak ada jalur restore backup dari UI.",
+      "impact": "Acceptance 145.34 'restore preview + user-controlled restore' terbukti di domain/engine/test tetapi belum terjangkau pengguna native. Restore yang tersedia hanya otomatis (.bak recovery registry/manifest) dan restoreLatestTrash (trash), bukan restore backup penuh.",
+      "evidence": "grep -rn 'ProjectBackupService' lib/ -> hanya .create() di controller:91 dan session_manager:267/447; tidak ada .restore("
+    },
+    {
+      "id": "GAP-IMPORT-NOVEL-UNWIRED",
+      "finding": "Tombol 'Import Novel' di section Export permanen disabled karena pickImportArchive tidak pernah di-wire oleh WorkspaceResolver (grep pickImportArchive lib/ hanya di story_workspace_screen.dart sendiri).",
+      "impact": "Sisi import dari portable novel workspace tidak dapat dijalankan pengguna native walau engine WorkspaceImportActions ada dan di-inject (novelImportActions terisi).",
+      "evidence": "grep -rn 'pickImportArchive' lib/ -> 4 baris semua di story_workspace_screen.dart"
+    }
+  ],
+  "boundaries": [
+    "Journey ini bukti interaksi native pada mesin ini untuk build debug ini; bukan installer signed, bukan mesin bersih.",
+    "Restore backup penuh via UI tidak dapat diuji native karena jalurnya memang tidak ada (bukan keterbatasan tool)."
+  ],
+  "gates": {
+    "flutter_analyze": "No issues found! (14,5s)",
+    "git_diff_check": "exit 0",
+    "code_changes": "TIDAK ADA — slice verifikasi murni; dua gap dicatat untuk slice perbaikan berikutnya"
+  },
+  "next_action": "Slice berikutnya: wire restore backup ke Project Backups UI (TDD RED: layar tanpa aksi restore; GREEN: aksi 'Restore' + preview + konfirmasi) dan/atau wire pickImportArchive; keduanya dalam kontrak 145.34/145.33."
+}

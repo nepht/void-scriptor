@@ -1,75 +1,75 @@
 {
- "schema_version": 2,
- "architecture_recovery_decision": {
-  "recorded_on": "2026-09-05",
-  "authority": "Choirudin authorized Codex to choose the current direction and apply it in conversation",
-  "adr_0002": "ACCEPTED: retain Windows-first local-first foundation D1-D7",
-  "adr_0003": "ACCEPTED: Option B, stabilize existing Core with safety-first sequencing",
-  "source": "docs/adr/ADR-0003-core-mvp-recovery-decision.md",
-  "next_action": "Continue 145.42 explicit disk_full/permission_loss on disposable fixtures, then interrupted move/import/restore and SQLite WAL process-crash recovery; inspect existing coverage first",
-  "following_actions": "Exact-snapshot restore and scoped reconciliation; explicit deferred route mapping/gating; consistent regression/build evidence; user-assisted native journey; then pilot preparation",
-  "constraints": "No new modules, broad refactor, automatic release/push, user-data fault tests, or fabricated physical power-loss/device proof. Do not block independent safety work on route mapping or the now-decided ADR choice.",
-  "acceptance": "145.27 PARTIAL; 145.42 IN_PROGRESS; 145.49 direction decided only; native/device checks pending; 145.43-145.47 and 145.50 not closed"
- },
- "session_lock_safety_review": {
-  "status": "PARTIAL",
-  "supersedes": "run54 age-only recovery safety claim (ab27fc4)",
-  "finding": "RED reproduced takeover of aged owned marker and 12 simultaneous successful acquisitions. Age and heartbeat are not ownership evidence.",
-  "correction": "Exclusive atomic marker creation; no age-based recovery or heartbeat; unknown/crash markers remain blocked pending explicit offline recovery.",
-  "focused_evidence": "Atomic ownership correction: 10 tests PASS; independent process tests OWNED then BLOCKED after owner exit without release. Close-race follow-up: 13 focused PASS; scoped regression 193 PASS / 1 helper SKIP; analyzer clean; Windows debug build PASS 29.5s; diff-check and roadmap guard PASS. Hermes run64 full suite at related baseline: 3674 PASS / 0 FAIL / 1 SKIP.",
-  "remaining": "Full suite stability refresh and native sleep/crash/two-window testing remain required; do not advance 145.27 on this evidence alone.",
-  "user_data": "No user project or marker modified during this safety correction."
- },
- "product": "Void Scriptor",
- "repository": "D:\\VoidScriptor\\void_scriptor_multiplatform",
- "flutter_sdk": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat",
- "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
- "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
- "active_sprint": 145,
- "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
- "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
- "last_verified_step": "[run225-nephthys 2026-09-12 cron] Native install journey artefak download 1.2.0-alpha.1 VERIFIED: unduh LIVE sha256 match 5a7680b6..., extract 491 entri, launch Release exe, buat project+novel uji temporer, tulis draf Scene Editor, WM_CLOSE graceful, relaunch, draf IDENTIK (scene_beats ground truth, integrity ok, tanpa lock/wal leftovers). Bukti: docs/evidence/download-install-journey-2026-09-12.json. Deploy hero fix masih BLOCKED menunggu wrangler login interaktif Choi (whoami masih expired). Pointer 145.27 tidak berubah. Next: deploy post-login; cron berikutnya antrean roadmap/keputusan 145.43-145.50.",
- "next_step": "145.27",
- "stability_gate": {
-  "status": "PASS",
-  "resume_step": "145.25",
-  "previous_result": {
-   "verified_at": "2026-09-01 (145.25 evidence-closure cron)",
-   "roadmap_guard": "PASS pre-run; post-state check follows state update (pointer 145.26)",
-   "flutter_analyze": "PASS (No issues found!, 14.8s)",
-   "focused_core_regression": "PASS (test/features/character + test/features/relations + lore links + workspace resolver journey = 98 PASS)",
-   "full_flutter_test": "PASS (3267 PASS / 1 FAIL concurrent-owned 145.20: app_bootstrap_test vs uncommitted main.dart/app_router sibling; root-caused, not touched)",
-   "windows_debug_build": "PASS (26.4s)",
-   "head_at_verification": "abdc6b8",
-   "note": "145.25 voice/notes UI+editor gap closed via TDD; screen file staged mine-only to preserve concurrent deletion-review slice on disk"
+  "schema_version": 2,
+  "architecture_recovery_decision": {
+    "recorded_on": "2026-09-05",
+    "authority": "Choirudin authorized Codex to choose the current direction and apply it in conversation",
+    "adr_0002": "ACCEPTED: retain Windows-first local-first foundation D1-D7",
+    "adr_0003": "ACCEPTED: Option B, stabilize existing Core with safety-first sequencing",
+    "source": "docs/adr/ADR-0003-core-mvp-recovery-decision.md",
+    "next_action": "Continue 145.42 explicit disk_full/permission_loss on disposable fixtures, then interrupted move/import/restore and SQLite WAL process-crash recovery; inspect existing coverage first",
+    "following_actions": "Exact-snapshot restore and scoped reconciliation; explicit deferred route mapping/gating; consistent regression/build evidence; user-assisted native journey; then pilot preparation",
+    "constraints": "No new modules, broad refactor, automatic release/push, user-data fault tests, or fabricated physical power-loss/device proof. Do not block independent safety work on route mapping or the now-decided ADR choice.",
+    "acceptance": "145.27 PARTIAL; 145.42 IN_PROGRESS; 145.49 direction decided only; native/device checks pending; 145.43-145.47 and 145.50 not closed"
   },
-  "required_checks": [
-   "dart run tool/roadmap_guard.dart",
-   "flutter analyze",
-   "focused Core MVP regression",
-   "full flutter test",
-   "Windows debug build"
-  ]
- },
- "selection_rules": [
-  "Repository evidence and the active sprint ledger override stale narrative status text.",
-  "Never skip a pending step or invent acceptance criteria.",
-  "A reproducible regression blocks roadmap feature work until it is fixed and verified.",
-  "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
-  "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
- ],
- "updated_at": "2026-09-12T03:30:00+07:00",
- "updated_by": "run224-nephthys",
- "active_stream": "corrective_core_mvp",
- "suspended_streams": {
-  "sequential_expansion": {
-   "status": "SUSPENDED",
-   "priority": 2,
-   "sprint": 111,
-   "resume_step": "111.21",
-   "contract": "sprint_111.json",
-   "ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
-   "resume_condition": "corrective_core_mvp exit_gate is satisfied and recorded."
+  "session_lock_safety_review": {
+    "status": "PARTIAL",
+    "supersedes": "run54 age-only recovery safety claim (ab27fc4)",
+    "finding": "RED reproduced takeover of aged owned marker and 12 simultaneous successful acquisitions. Age and heartbeat are not ownership evidence.",
+    "correction": "Exclusive atomic marker creation; no age-based recovery or heartbeat; unknown/crash markers remain blocked pending explicit offline recovery.",
+    "focused_evidence": "Atomic ownership correction: 10 tests PASS; independent process tests OWNED then BLOCKED after owner exit without release. Close-race follow-up: 13 focused PASS; scoped regression 193 PASS / 1 helper SKIP; analyzer clean; Windows debug build PASS 29.5s; diff-check and roadmap guard PASS. Hermes run64 full suite at related baseline: 3674 PASS / 0 FAIL / 1 SKIP.",
+    "remaining": "Full suite stability refresh and native sleep/crash/two-window testing remain required; do not advance 145.27 on this evidence alone.",
+    "user_data": "No user project or marker modified during this safety correction."
+  },
+  "product": "Void Scriptor",
+  "repository": "D:\\VoidScriptor\\void_scriptor_multiplatform",
+  "flutter_sdk": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat",
+  "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
+  "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
+  "active_sprint": 145,
+  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
+  "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
+  "last_verified_step": "[run225-nephthys 2026-09-12 cron] Native install journey artefak download 1.2.0-alpha.1 VERIFIED: unduh LIVE sha256 match 5a7680b6..., extract 491 entri, launch Release exe, buat project+novel uji temporer, tulis draf Scene Editor, WM_CLOSE graceful, relaunch, draf IDENTIK (scene_beats ground truth, integrity ok, tanpa lock/wal leftovers). Bukti: docs/evidence/download-install-journey-2026-09-12.json. Deploy hero fix masih BLOCKED menunggu wrangler login interaktif Choi (whoami masih expired). Pointer 145.27 tidak berubah. Next: deploy post-login; cron berikutnya antrean roadmap/keputusan 145.43-145.50.",
+  "next_step": "145.27",
+  "stability_gate": {
+    "status": "PASS",
+    "resume_step": "145.25",
+    "previous_result": {
+      "verified_at": "2026-09-01 (145.25 evidence-closure cron)",
+      "roadmap_guard": "PASS pre-run; post-state check follows state update (pointer 145.26)",
+      "flutter_analyze": "PASS (No issues found!, 14.8s)",
+      "focused_core_regression": "PASS (test/features/character + test/features/relations + lore links + workspace resolver journey = 98 PASS)",
+      "full_flutter_test": "PASS (3267 PASS / 1 FAIL concurrent-owned 145.20: app_bootstrap_test vs uncommitted main.dart/app_router sibling; root-caused, not touched)",
+      "windows_debug_build": "PASS (26.4s)",
+      "head_at_verification": "abdc6b8",
+      "note": "145.25 voice/notes UI+editor gap closed via TDD; screen file staged mine-only to preserve concurrent deletion-review slice on disk"
+    },
+    "required_checks": [
+      "dart run tool/roadmap_guard.dart",
+      "flutter analyze",
+      "focused Core MVP regression",
+      "full flutter test",
+      "Windows debug build"
+    ]
+  },
+  "selection_rules": [
+    "Repository evidence and the active sprint ledger override stale narrative status text.",
+    "Never skip a pending step or invent acceptance criteria.",
+    "A reproducible regression blocks roadmap feature work until it is fixed and verified.",
+    "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
+    "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
+  ],
+  "updated_at": "2026-09-12T05:15:00+07:00",
+  "updated_by": "run226-nephthys",
+  "active_stream": "corrective_core_mvp",
+  "suspended_streams": {
+    "sequential_expansion": {
+      "status": "SUSPENDED",
+      "priority": 2,
+      "sprint": 111,
+      "resume_step": "111.21",
+      "contract": "sprint_111.json",
+      "ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
+      "resume_condition": "corrective_core_mvp exit_gate is satisfied and recorded."
+    }
   }
- }
 }

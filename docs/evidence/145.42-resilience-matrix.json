@@ -383,8 +383,8 @@
       "retest_reason": ""
     }
   ],
-  "last_verified_run": "run219 (2026-09-11): fresh re-verification penuh keluarga kasus 145.42 di HEAD 31d6485 pasca 5 commit region (run200/201/212/217/218) — resilience 208 PASS/1 skip/0 FAIL, database 47 PASS, isolation 6/6, analyze No issues, build windows debug PASS",
-  "fresh_verification_run219": {
+  "last_verified_run": "run220 (2026-09-11): fresh re-verification penuh keluarga kasus 145.42 di HEAD 31d6485 pasca 5 commit region (run200/201/212/217/218) — resilience 208 PASS/1 skip/0 FAIL, database 47 PASS, isolation 6/6, analyze No issues, build windows debug PASS",
+  "fresh_verification_run220": {
     "date": "2026-09-11",
     "reason": "retest condition 'bila jalur restore/session/registry/lock berubah' terpenuhi: run200 session-close guard (8fac67e), run201 openReadOnly classifier (58a84a1), run212 roll-forward interrupted-move di _loadUnlocked (ce28d9a), run217 unlock pre-migration backup (9c3ef10), run218 durability-first move journal drain (3f59e28) — region yang sama dengan 9 kasus matriks; bukti terakhir matriks masih HEAD 4a1e17f (run196)",
     "head": "31d648535b86a823841bf8f3b130316cd249443d",

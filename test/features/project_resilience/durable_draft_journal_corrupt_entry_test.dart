@@ -70,6 +70,67 @@ void main() {
     },
   );
 
+  test(
+    'type-corrupt final entries do not abort the whole recovery listing (BUG-8 run197)',
+    () async {
+      final root = await Directory.systemTemp.createTemp('hermes-bug8-jt-');
+      addTearDown(() => root.delete(recursive: true));
+      final dir = Directory('${root.path}/journal');
+      await dir.create(recursive: true);
+      final journal = DurableDraftJournal(dir: dir);
+
+      // Sibling sehat yang HARUS tetap terpulihkan.
+      await journal.stage(sceneId: 'scene-ok', content: 'Draf utuh.');
+
+      // JSON valid tetapi tipe field salah: `as String?` melempar TypeError
+      // (bukan FormatException). Satu file seperti ini tidak boleh
+      // membutakan seluruh listing pemulihan (no silent loss).
+      await File('${dir.path}/scene-int-id.json').writeAsString(
+        jsonEncode(<String, Object?>{'sceneId': 123, 'content': 'teks'}),
+      );
+      // stagedAt non-String: melempar TypeError pada `as String? ?? ''`.
+      await File('${dir.path}/scene-int-staged.json').writeAsString(
+        jsonEncode(<String, Object?>{
+          'sceneId': 'scene-int-staged',
+          'content': 'teks',
+          'stagedAt': 42,
+        }),
+      );
+      // Root JSON bukan Map: TypeError pada `as Map<String, dynamic>`.
+      await File('${dir.path}/scene-array.json').writeAsString('[1, 2, 3]');
+
+      final pending = await journal.pendingEntries();
+
+      // Listing tidak gagal: seluruh entri ter-surface.
+      expect(
+        pending.map((e) => e.sceneId),
+        containsAll(<String>[
+          'scene-ok',
+          'scene-int-id',
+          'scene-int-staged',
+          'scene-array',
+        ]),
+      );
+      // Sibling sehat tetap valid.
+      final ok = pending.singleWhere((e) => e.sceneId == 'scene-ok');
+      expect(ok.isCorrupt, isFalse);
+      expect(ok.content, 'Draf utuh.');
+      // Setiap entri korup tipe di-surface sebagai corrupt, tidak hilang.
+      for (final id in const [
+        'scene-int-id',
+        'scene-int-staged',
+        'scene-array',
+      ]) {
+        final entry = pending.singleWhere((e) => e.sceneId == id);
+        expect(
+          entry.isCorrupt,
+          isTrue,
+          reason: '$id harus visible sebagai korup',
+        );
+      }
+    },
+  );
+
   test('in-progress .tmp artifacts are never recovery sources', () async {
     final root = await Directory.systemTemp.createTemp('hermes-bug1-jc-');
     addTearDown(() => root.delete(recursive: true));

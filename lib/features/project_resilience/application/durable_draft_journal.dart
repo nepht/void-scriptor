@@ -150,12 +150,16 @@ class DurableDraftJournal {
             stagedAt: DateTime.tryParse(decoded['stagedAt'] as String? ?? ''),
           ),
         );
-      } on FormatException {
-        // File final terpotong/korup (crash/power-loss di jendela tulis):
-        // SATU-SATUNYA salinan draf unsaved pengguna — jangan dibuang
-        // diam-diam (bug-hunt-run128 BUG-1). Surface sebagai entri korup
-        // agar panel DRAFT RECOVERY menampilkan statusnya. Artefak .tmp
-        // in-progress tidak pernah mencapai sini (saringan .endsWith).
+      } on Object {
+        // File final terpotong/korup ATAU JSON valid dengan tipe field salah:
+        // jsonDecode korup -> FormatException; `as String?`/`as Map` pada
+        // tipe salah -> TypeError (bug-hunt-run197 BUG-8). SATU-SATUNYA
+        // salinan draf unsaved pengguna — jangan dibuang diam-diam
+        // (bug-hunt-run128 BUG-1). Surface sebagai entri korup agar panel
+        // DRAFT RECOVERY menampilkan statusnya. Pola sama dengan
+        // acknowledge() di file ini dan admitMarkedCreations
+        // (project_recovery_service.dart). Artefak .tmp in-progress tidak
+        // pernah mencapai sini (saringan .endsWith).
         entries.add(
           PendingDraftEntry.corrupt(
             sceneId: p.basenameWithoutExtension(entity.path),

@@ -28,6 +28,20 @@ class StorageLocationRegistryResolver {
         target: preferred,
         content: await legacyFile.readAsString(),
       );
+      // BUG-23 (bug-hunt run197, Referee REAL BUG): consume the legacy source
+      // after a successful copy. A one-way copy that leaves the source in
+      // place lets stale legacy content resurrect over newer durable state if
+      // the preferred file is ever lost. Rename (not delete) keeps the content
+      // available for inspection; failure to rename must not fail the
+      // migration, so this is best-effort only.
+      try {
+        await legacyFile.rename(
+          p.join(legacyFile.parent.path, '$fileName.imported'),
+        );
+      } on FileSystemException {
+        // Best-effort consumption: a leftover legacy file reproduces the old
+        // one-way-copy behavior, not a data hazard beyond the filed finding.
+      }
     }
     return preferred;
   }

@@ -37,7 +37,14 @@ void main() {
   );
 
   test(
-    'legacy location choice is copied once without deleting its source',
+    // BUG-23 (hunt run197, Referee REAL BUG): contract evolution from the old
+    // "copied once without deleting its source" — a one-way copy that never
+    // consumes the source lets stale legacy content resurrect over newer
+    // durable state if the preferred file is later lost. The source is now
+    // consumed by renaming it to <name>.imported (content preserved, not
+    // destroyed); the original migration intent (copy once, legacy edits must
+    // not override the preferred registry) is unchanged.
+    'legacy location choice is migrated once and its source is consumed',
     () async {
       final support = Directory(p.join(root.path, 'support'));
       final legacy = File(
@@ -54,7 +61,15 @@ void main() {
       );
 
       expect(await resolved.readAsString(), content);
-      expect(await legacy.readAsString(), content);
+      expect(await legacy.exists(), isFalse);
+      final imported = File(
+        p.join(
+          legacy.parent.path,
+          '${StorageLocationRegistryResolver.fileName}.imported',
+        ),
+      );
+      expect(await imported.exists(), isTrue);
+      expect(await imported.readAsString(), content);
 
       await legacy.writeAsString('changed legacy');
       final second = await const StorageLocationRegistryResolver().resolve(
@@ -64,4 +79,39 @@ void main() {
       expect(await second.readAsString(), content);
     },
   );
+
+  test('losing the preferred registry cannot re-import the consumed legacy '
+      'source (BUG-23 run197)', () async {
+    final support = Directory(p.join(root.path, 'support'));
+    final preferred = File(
+      p.join(support.path, 'VoidScriptor', 'storage_locations.json'),
+    );
+    final legacy = File(
+      p.join(root.path, 'documents', 'storage_locations.json'),
+    );
+    await legacy.parent.create(recursive: true);
+    const content =
+        '{"schemaVersion":1,"activeLocation":"D:/VoidScriptor_Data/Projects","boundProjectId":null}\n';
+    await legacy.writeAsString(content);
+
+    await const StorageLocationRegistryResolver().resolve(
+      applicationSupportDirectory: support,
+      legacyFile: legacy,
+    );
+
+    // Crash window: the preferred file AND its recovery .bak are lost. The
+    // legacy source was consumed at migration time, so nothing may import
+    // stale registry state back over the vacated preferred path.
+    await preferred.delete();
+    final bak = File('${preferred.path}.bak');
+    if (await bak.exists()) await bak.delete();
+
+    final resolved = await const StorageLocationRegistryResolver().resolve(
+      applicationSupportDirectory: support,
+      legacyFile: legacy,
+    );
+
+    expect(await legacy.exists(), isFalse);
+    expect(await resolved.exists(), isFalse);
+  });
 }

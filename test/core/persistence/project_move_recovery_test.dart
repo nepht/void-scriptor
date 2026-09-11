@@ -70,23 +70,78 @@ void main() {
     }
   });
 
-  test(
-    'movePackage relocates the package and consumes the journal marker',
-    () async {
-      final target = await const ProjectMoveService().movePackage(
-        package: package,
-        destinationRoot: destinationRoot,
-      );
+  test('movePackage relocates the package and leaves the landed journal for '
+      'durable-state consumption (bug-hunt vs-hunt-20260911 BUG-3)', () async {
+    final target = await const ProjectMoveService().movePackage(
+      package: package,
+      destinationRoot: destinationRoot,
+    );
 
-      expect(p.basename(target.path), '$projectId.voidproject');
-      expect(await package.exists(), isFalse);
-      expect(
-        await File(p.join(target.path, 'manifest', 'project.json')).exists(),
-        isTrue,
-      );
-      expect(await File(markerPath(target.path)).exists(), isFalse);
-    },
-  );
+    expect(p.basename(target.path), '$projectId.voidproject');
+    expect(await package.exists(), isFalse);
+    expect(
+      await File(p.join(target.path, 'manifest', 'project.json')).exists(),
+      isTrue,
+    );
+    // BUG-3 contract change: the old code deleted the travelled journal
+    // inside movePackage, while the registry entry was still stale.
+    // Durability first (the registry's own move-recovery rule): the
+    // journal survives until a caller has made the repointed listing
+    // durable; the relocation service consumes it right after the
+    // upsert and the registry's landed-marker sweep is the safety net.
+    expect(await File(markerPath(target.path)).exists(), isTrue);
+  });
+
+  test('the move journal survives while the registry entry is still stale '
+      '(bug-hunt vs-hunt-20260911 BUG-3)', () async {
+    // Reproduces the exact crash window: the probe observes disk state
+    // after movePackage returned and before ProjectRelocationService's
+    // registry.upsert ran (production seam moveService, real services).
+    // Old order: journal already deleted there — a process kill at that
+    // point left a healthy package with zero journal and a stale entry,
+    // invisible to every documented safety net.
+    final registry = ProjectRegistryService(rootDirectory: tempRoot);
+    await seedCompletePackage(package);
+    final model = ProjectModel(
+      id: projectId,
+      name: 'Move Test',
+      description: '',
+      createdAt: DateTime.utc(2026, 9, 6),
+      updatedAt: DateTime.utc(2026, 9, 6),
+      lastOpenedAt: DateTime.utc(2026, 9, 6),
+      localPath: package.path,
+      version: '1.0.0',
+    );
+    await registry.save([model]);
+
+    Object? journalAtCrashWindow;
+    final service = ProjectRelocationService(
+      registry: registry,
+      moveService: _CrashWindowProbeMoveService((moved) async {
+        journalAtCrashWindow = await File(markerPath(moved.path)).exists();
+      }),
+    );
+    final moved = await service.relocateProject(
+      projectId: projectId,
+      destinationRoot: destinationRoot,
+    );
+
+    expect(
+      journalAtCrashWindow,
+      isTrue,
+      reason:
+          'the journal must still be on disk while the entry names the old location',
+    );
+    final entry = (await registry.load()).firstWhere(
+      (project) => project.id == projectId,
+    );
+    expect(entry.localPath, moved.path, reason: 'entry repointed');
+    expect(
+      await File(markerPath(moved.path)).exists(),
+      isFalse,
+      reason: 'once the repoint is durable the stale journal is drained',
+    );
+  });
 
   test(
     'a process kill before the rename rolls forward to the recorded destination',
@@ -419,4 +474,27 @@ void main() {
       );
     },
   );
+}
+
+/// Crash-window probe (bug-hunt vs-hunt-20260911 BUG-3): a production
+/// [ProjectMoveService] that observes the journal state at the exact
+/// moment the old code consumed it — after the rename landed and before
+/// the caller's registry.upsert made the repoint durable.
+class _CrashWindowProbeMoveService implements ProjectMoveService {
+  _CrashWindowProbeMoveService(this._onMoved);
+
+  final Future<void> Function(Directory moved) _onMoved;
+
+  @override
+  Future<Directory> movePackage({
+    required Directory package,
+    required Directory destinationRoot,
+  }) async {
+    final moved = await const ProjectMoveService().movePackage(
+      package: package,
+      destinationRoot: destinationRoot,
+    );
+    await _onMoved(moved);
+    return moved;
+  }
 }

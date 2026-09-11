@@ -65,8 +65,12 @@ void main() {
       final entry = (await registry.load()).firstWhere((p) => p.id == model.id);
       expect(entry.localPath, package.path, reason: 'registry entry repointed');
 
-      // The moved location is loadable again: registry load re-checks entries
-      // against disk; a stale localPath would drop or tombstone the project.
+      // The moved location is loadable again. The registry load itself has
+      // no path-existence re-check (bug-hunt vs-hunt-20260911 BUG-7: an
+      // earlier comment falsely claimed stale localPaths are dropped or
+      // tombstoned on load) — this re-read proves the repointed entry is
+      // durable and stable across loads, which is exactly what BUG-3's
+      // durability-first ordering guarantees at the crash window.
       final reloaded = (await registry.load()).where((p) => p.id == model.id);
       expect(reloaded, isNotEmpty);
     },
@@ -86,6 +90,14 @@ void main() {
         '${destinationRoot.path}${Platform.pathSeparator}${model.id}.voidproject',
       );
       await occupied.create();
+      // bug-hunt vs-hunt-20260911 BUG-6: the obstacle must be NON-empty.
+      // POSIX rename(2) happily replaces an existing *empty* directory,
+      // so an empty obstacle only fails the rename on Windows — the
+      // unfiltered Linux CI job (ci.yml) would see no exception at all.
+      // A file inside makes rename fail on every platform.
+      await File(
+        '${occupied.path}${Platform.pathSeparator}obstacle.txt',
+      ).writeAsString('occupied', flush: true);
 
       final service = ProjectRelocationService(registry: registry);
       await expectLater(

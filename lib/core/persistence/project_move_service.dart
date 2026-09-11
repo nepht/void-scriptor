@@ -13,9 +13,14 @@ import 'project_registry_service.dart';
 ///
 /// The journal (`move-pending.marker`) is written and flushed BEFORE the
 /// rename opens the crash window. Recovery contract:
-/// - rename completed  -> the marker is stale journal state at the
-///   destination and is consumed by the registry once the project entry
-///   points at the new location, or by the next roll-forward scan;
+/// - rename completed  -> [movePackage] returns the destination WITH the
+///   journal still inside it. The caller must persist the registry repoint
+///   FIRST and only then drain the stale journal — bug-hunt
+///   vs-hunt-20260911 BUG-3 reversed the old consume-before-upsert order
+///   (durability first, the registry's own rule). If the caller crashes
+///   before draining, the journal is stale state the registry consumes
+///   once its entry points at the new location (landed-marker sweep), or
+///   it survives as recovery evidence when the entry was never repointed;
 /// - rename never ran  -> [ProjectRecoveryService.recoverInterruptedMoves]
 ///   rolls the package forward to the recorded destination;
 /// - rename failed     -> the package is still at the source, the journal
@@ -60,12 +65,15 @@ class ProjectMoveService {
       }
       rethrow;
     }
-    // The marker travelled with the package into the destination; the move
-    // is complete, so consume it there. A crash before this delete leaves
-    // the landed-marker state, which the registry consumes on next load.
-    await File(
-      p.join(destination, ProjectRecoveryService.movePendingMarkerName),
-    ).delete();
+    // The marker travelled with the package into the destination: the
+    // move itself is complete, but the journal stays on disk. The caller
+    // (ProjectRelocationService) must first make the registry repoint
+    // durable — bug-hunt vs-hunt-20260911 BUG-3: consuming the journal
+    // BEFORE the entry is repointed left a crash window where a healthy
+    // package had zero journal and a stale entry, invisible to every
+    // documented safety net. The relocation service drains it right
+    // after the upsert; the registry's landed-marker sweep remains the
+    // safety net for an un-drained stale journal.
     return Directory(destination);
   }
 }
@@ -73,11 +81,15 @@ class ProjectMoveService {
 /// Wiring sprint Task 3 (bug-hunt run197 BUG-7 "both halves ship together"):
 /// first production caller of [ProjectMoveService.movePackage]. A successful
 /// move is followed immediately by repointing the registry entry
-/// (`localPath`) to the new package location; the move marker is already
-/// consumed by [ProjectMoveService], and the repoint happens while no journal
-/// exists — a crash between the two steps surfaces as a healthy package with
-/// a stale entry, which the registry's load-time existence checks and the
-/// roll-forward scan treat as the pre-BUG-7 documented state.
+/// (`localPath`) to the new package location, and only after that repoint
+/// is durable is the travelled journal drained — bug-hunt vs-hunt-20260911
+/// BUG-3: the old order consumed the journal BEFORE the upsert, leaving a
+/// crash window where a healthy package had no journal and a stale entry
+/// (the registry has no path-existence re-check on load, so nothing
+/// self-healed it). The registry's roll-forward scan only reaches owner
+/// directories one level deep, so a journal left on a nested destination is
+/// drained here or by the registry's landed-marker sweep once the entry
+/// points at the package.
 class ProjectRelocationService {
   const ProjectRelocationService({
     required this.registry,
@@ -110,6 +122,22 @@ class ProjectRelocationService {
       destinationRoot: destinationRoot,
     );
     await registry.upsert(entry.copyWith(localPath: moved.path));
+    // Durability first (bug-hunt vs-hunt-20260911 BUG-3, same rule the
+    // registry applies to rolled-forward journals): the travelled marker
+    // may only be consumed AFTER the repointed entry is durable. A crash
+    // between the upsert and this drain leaves a stale journal on a
+    // package the registry already points at — harmless state that the
+    // registry's landed-marker sweep drains on the next load. Drain
+    // best-effort: a transient delete failure (errno 32/5) must not
+    // report a completed move as failed.
+    final journal = File(
+      p.join(moved.path, ProjectRecoveryService.movePendingMarkerName),
+    );
+    try {
+      if (await journal.exists()) await journal.delete();
+    } on FileSystemException {
+      // Left for the registry's next load to consume.
+    }
     return moved;
   }
 }

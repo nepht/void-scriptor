@@ -9,6 +9,56 @@ import '../project_package/project_package.dart';
 import 'project_manifest.dart';
 import '../domain/project_model.dart';
 
+/// Outcome accumulator for
+/// [ProjectRecoveryService.recoverInterruptedMovesInto] (bug-hunt run197
+/// BUG-7). The registry drives one sink per load and uses it to (a) repoint
+/// registered entries whose package was rolled forward, (b) admit packages
+/// that landed without their registry entry, and (c) spare journals the
+/// scan deliberately left in place from the landed-marker consumption.
+/// Path comparisons are canonicalized (case-insensitive on Windows) so a
+/// drive-letter case difference cannot disarm the skip logic.
+final class ProjectMoveRecoverySink {
+  final List<({String id, Directory package})> _rolled = [];
+  final Set<String> _rolledSources = {};
+  final Set<String> _untouchedSources = {};
+  final List<File> _travelledMarkers = [];
+
+  void addRolled(String id, Directory destination, String sourcePath) {
+    _rolled.add((id: id, package: destination));
+    _rolledSources.add(p.canonicalize(sourcePath));
+    // The marker travelled with the package into the destination. It is
+    // NOT consumed here: durability first (the run197 BUG-1 rule) — the
+    // journal must survive until the rolled-forward listing is durable,
+    // or a crash in between leaves a moved package with no journal and no
+    // registry entry (invisible forever). Callers drain explicitly.
+    _travelledMarkers.add(
+      File(
+        p.join(destination.path, ProjectRecoveryService.movePendingMarkerName),
+      ),
+    );
+  }
+
+  void addUntouchedJournal(String sourcePath) =>
+      _untouchedSources.add(p.canonicalize(sourcePath));
+
+  bool hasUntouchedJournalAt(String packagePath) =>
+      _untouchedSources.contains(p.canonicalize(packagePath));
+
+  List<({String id, Directory package})> get rolled =>
+      List.unmodifiable(_rolled);
+
+  /// Consumes the travelled journals best-effort. The direct
+  /// [ProjectRecoveryService.recoverInterruptedMoves] wrapper drains right
+  /// after its scan completes (its documented contract); the registry
+  /// drains only after the healed listing is persisted.
+  Future<void> consumeTravelledMarkers(ProjectRecoveryService recovery) async {
+    for (final marker in _travelledMarkers) {
+      await recovery.consumeMoveMarkerQuietly(marker);
+    }
+    _travelledMarkers.clear();
+  }
+}
+
 class ProjectRecoveryService {
   const ProjectRecoveryService();
 
@@ -216,8 +266,27 @@ class ProjectRecoveryService {
   /// left untouched for inspection. Returns the number of rolled-forward
   /// packages.
   Future<int> recoverInterruptedMoves(Directory sourceRoot) async {
-    if (!await sourceRoot.exists()) return 0;
-    var rolledForward = 0;
+    final sink = ProjectMoveRecoverySink();
+    await recoverInterruptedMovesInto(sourceRoot, sink);
+    // Direct callers (and the 145.42 interrupted-move contract) treat a
+    // completed scan as the end of recovery: drain the travelled journals
+    // now. The registry path drains only after the healed listing is
+    // durable instead.
+    await sink.consumeTravelledMarkers(this);
+    return sink.rolled.length;
+  }
+
+  /// Same scan as [recoverInterruptedMoves], reporting each rolled-forward
+  /// package (project id + destination) instead of only a count, so the
+  /// registry can repoint its entries and admit packages that landed
+  /// without their registry entry (bug-hunt run197 BUG-7: the roll-forward
+  /// half of the move contract must be wired where the landed-marker half
+  /// already runs).
+  Future<void> recoverInterruptedMovesInto(
+    Directory sourceRoot,
+    ProjectMoveRecoverySink sink,
+  ) async {
+    if (!await sourceRoot.exists()) return;
     await for (final entity in sourceRoot.list(followLinks: false)) {
       if (entity is! Directory) continue;
       final marker = File(p.join(entity.path, movePendingMarkerName));
@@ -252,6 +321,7 @@ class ProjectRecoveryService {
       if (!matchesSource || await target.exists()) {
         // Destination occupied or unavailable: leave the journal and the
         // package untouched rather than guessing.
+        sink.addUntouchedJournal(entity.path);
         continue;
       }
       try {
@@ -259,18 +329,92 @@ class ProjectRecoveryService {
       } on FileSystemException {
         continue;
       }
-      rolledForward++;
-      // The marker travelled with the package; consume it at the
-      // destination so the landed journal never survives recovery.
-      final travelledMarker = File(p.join(destination, movePendingMarkerName));
-      try {
-        if (await travelledMarker.exists()) await travelledMarker.delete();
-      } on FileSystemException {
-        // The registry load also consumes landed markers (best effort).
-      }
+      final markerProjectId = decoded['projectId'];
+      final id = markerProjectId is String && markerProjectId.isNotEmpty
+          ? markerProjectId
+          : p
+                .basename(destination)
+                .substring(
+                  0,
+                  p.basename(destination).length -
+                      (p.basename(destination).endsWith('.voidproject')
+                          ? '.voidproject'.length
+                          : 0),
+                );
+      sink.addRolled(id, target, entity.path);
     }
-    return rolledForward;
   }
+
+  /// Consumes a stale landed move marker best-effort: the registry's
+  /// durability-first rule for creation markers applies here too
+  /// (bug-hunt run197 BUG-1 pattern) — a transient fresh-file delete
+  /// failure (errno 32/5) must never throw the recovery scan; a stale
+  /// marker is harmless because the registry consumes it on next load.
+  Future<void> consumeMoveMarkerQuietly(File marker) async {
+    try {
+      if (await marker.exists()) await marker.delete();
+    } on FileSystemException {
+      // Best effort: the registry load also consumes landed markers.
+    }
+  }
+
+  /// Admits a rolled-forward move package after the same completeness
+  /// gate as [admitMarkedCreations]: the on-disk manifest must exist and
+  /// agree with the package folder identity, and the database file must
+  /// exist — a partial package rolled forward from a journal is never
+  /// surfaced (identity is never taken from the journal payload).
+  ///
+  /// Returns the admitted [ProjectModel], or null when the package fails
+  /// the gate (left in place for inspection).
+  Future<ProjectModel?> admitMarkedMovePackage(
+    Directory destination,
+    String id,
+  ) async {
+    final folderId = _projectIdFromFolder(p.basename(destination.path));
+    if (folderId == null || folderId != id) return null;
+    final package = ProjectPackage(projectId: folderId, root: destination);
+    if (!await package.manifestFile.exists()) return null;
+    if (!await package.databaseFile.exists()) return null;
+    String diskManifestJson;
+    try {
+      diskManifestJson = await package.manifestFile.readAsString();
+    } on FileSystemException {
+      return null;
+    }
+    Object? diskManifestDecoded;
+    try {
+      diskManifestDecoded = jsonDecode(diskManifestJson);
+    } on Object {
+      return null;
+    }
+    if (diskManifestDecoded is! Map<String, dynamic>) return null;
+    final diskProjectId = diskManifestDecoded['projectId'];
+    if (diskProjectId is! String || diskProjectId != folderId) return null;
+    ProjectManifest manifest;
+    try {
+      manifest = ProjectManifest.fromJson(diskManifestDecoded);
+    } on Object {
+      return null;
+    }
+    final now = DateTime.now().toUtc();
+    return ProjectModel(
+      id: folderId,
+      name: manifest.name,
+      description: manifest.description,
+      createdAt: manifest.createdAt,
+      updatedAt: now,
+      lastOpenedAt: now,
+      localPath: destination.path,
+      version: manifest.projectVersion,
+    );
+  }
+
+  /// The project id encoded in a `<projectId>.voidproject` folder name, or
+  /// null when the name is not a package folder.
+  static String? _projectIdFromFolder(String name) =>
+      name.endsWith('.voidproject')
+      ? name.substring(0, name.length - '.voidproject'.length)
+      : null;
 
   /// Recovers the destination-collision stash of an interrupted import.
   ///

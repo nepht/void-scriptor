@@ -35,6 +35,20 @@ void main() {
   String markerPath(String packagePath) =>
       p.join(packagePath, ProjectRecoveryService.movePendingMarkerName);
 
+  Future<void> seedCompletePackage(Directory pkg) async {
+    Directory(p.join(pkg.path, 'manifest')).createSync();
+    await File(
+      p.join(pkg.path, 'manifest', 'project.json'),
+    ).writeAsString(jsonEncode(buildManifest().toJson()), flush: true);
+    // Package completeness (run94/core-hunt BUG-6): admission requires an
+    // on-disk manifest AND the database file, so a partial package moved
+    // out from under a journal is never surfaced.
+    Directory(p.join(pkg.path, 'database')).createSync();
+    await File(
+      p.join(pkg.path, 'database', 'project.db'),
+    ).writeAsString('sqlite fixture', flush: true);
+  }
+
   setUp(() async {
     tempRoot = await Directory.systemTemp.createTemp('vs_move_recovery_');
     sourceRoot = Directory(p.join(tempRoot.path, 'source'))..createSync();
@@ -194,6 +208,215 @@ void main() {
       expect(loaded, hasLength(1));
       expect(loaded.first.id, projectId);
       expect(await File(markerPath(package.path)).exists(), isFalse);
+    },
+  );
+
+  // Bug-hunt run197 BUG-7: the roll-forward half of the interrupted-move
+  // contract was never wired into production. `_loadUnlocked` consumed
+  // landed destination markers of REGISTERED projects, but a package
+  // stranded at its source (crash BEFORE the rename) or landed without a
+  // registry entry (crash AFTER the rename, before the entry persisted)
+  // was invisible: unregistered packages are never discovered. The
+  // documented contract in project_move_service.dart promises the
+  // registry's roll-forward scan; 145.42 acceptance `interrupted_move`
+  // requires recovery to actually run. Referee fix direction: wire the
+  // recovery into `_loadUnlocked` — the two halves must ship together.
+  test(
+    'registry load rolls a source-stranded package forward and admits it',
+    () async {
+      // Process kill BEFORE the rename: the package sits in the registry
+      // root's legacy `Projects` subdirectory (an owner directory of the
+      // file-branch wiring) carrying its durable journal; the destination
+      // never materialized; the registry has no entry for the project.
+      final stranded = Directory(
+        p.join(destinationRoot.path, 'Projects', '$projectId.voidproject'),
+      )..createSync(recursive: true);
+      await seedCompletePackage(stranded);
+      await File(markerPath(stranded.path)).writeAsString(
+        jsonEncode({
+          'projectId': projectId,
+          'source': stranded.path,
+          'destination': p.join(destinationRoot.path, '$projectId.voidproject'),
+          'writtenAt': DateTime.now().toUtc().toIso8601String(),
+        }),
+        flush: true,
+      );
+      await File(
+        p.join(destinationRoot.path, 'projects.json'),
+      ).writeAsString(jsonEncode({'schemaVersion': 1, 'projects': []}));
+
+      final service = ProjectRegistryService(rootDirectory: destinationRoot);
+      final loaded = await service.load();
+
+      // The stranded package must be rolled forward, admitted, and visible.
+      final destination = Directory(
+        p.join(destinationRoot.path, '$projectId.voidproject'),
+      );
+      expect(await destination.exists(), isTrue);
+      expect(
+        await File(
+          p.join(destination.path, 'manifest', 'project.json'),
+        ).exists(),
+        isTrue,
+      );
+      expect(await stranded.exists(), isFalse);
+      expect(await File(markerPath(destination.path)).exists(), isFalse);
+      expect(loaded.map((project) => project.id), contains(projectId));
+      expect(
+        loaded.firstWhere((project) => project.id == projectId).localPath,
+        destination.path,
+      );
+    },
+  );
+
+  test(
+    'registry load repoints the registered entry of a rolled-forward package',
+    () async {
+      // A registered project whose move was interrupted BEFORE the rename:
+      // the registry entry still points at the source. Recovery must roll
+      // the package forward AND repoint the entry, or the project opens
+      // into a path that no longer exists.
+      final service = ProjectRegistryService(rootDirectory: tempRoot);
+      final inHomePackage = Directory(
+        p.join(tempRoot.path, '$projectId.voidproject'),
+      );
+      // Move the setUp package into the registry home (an owner directory).
+      await package.rename(inHomePackage.path);
+      final archivedRoot = Directory(p.join(tempRoot.path, 'Archived'))
+        ..createSync();
+      final model = ProjectModel(
+        id: projectId,
+        name: 'Move Test',
+        description: '',
+        createdAt: DateTime.utc(2026, 9, 6),
+        updatedAt: DateTime.utc(2026, 9, 6),
+        lastOpenedAt: DateTime.utc(2026, 9, 6),
+        localPath: inHomePackage.path,
+        version: '1.0.0',
+      );
+      await service.save([model]);
+      await File(markerPath(inHomePackage.path)).writeAsString(
+        jsonEncode({
+          'projectId': projectId,
+          'source': inHomePackage.path,
+          'destination': p.join(archivedRoot.path, '$projectId.voidproject'),
+          'writtenAt': DateTime.now().toUtc().toIso8601String(),
+        }),
+        flush: true,
+      );
+
+      final loaded = await service.load();
+
+      final destination = Directory(
+        p.join(archivedRoot.path, '$projectId.voidproject'),
+      );
+      expect(await destination.exists(), isTrue);
+      expect(await inHomePackage.exists(), isFalse);
+      expect(
+        loaded.firstWhere((project) => project.id == projectId).localPath,
+        destination.path,
+      );
+      // The repoint is durable: a fresh service reads the healed listing.
+      final reloaded = await ProjectRegistryService(
+        rootDirectory: tempRoot,
+      ).load();
+      expect(
+        reloaded.firstWhere((project) => project.id == projectId).localPath,
+        destination.path,
+      );
+      // The travelled journal is consumed once the healed entry is durable.
+      expect(await File(markerPath(destination.path)).exists(), isFalse);
+    },
+  );
+
+  test(
+    'registry load consumes a landed journal of an unregistered package without resurrecting it',
+    () async {
+      // Crash AFTER the successful rename, BEFORE the registry entry was
+      // persisted. BUG-7's fix scope is the roll-forward half; this case
+      // pins the pre-existing contract around it: the landed journal is
+      // stale state and is consumed, and the package is NOT admitted —
+      // folders without an explicit creation marker are deliberately
+      // unregistered state and must never be resurrected by a listing
+      // (the same posture protects explicit removals, run197 BUG-19).
+      final landed = Directory(
+        p.join(destinationRoot.path, '$projectId.voidproject'),
+      )..createSync(recursive: true);
+      await seedCompletePackage(landed);
+      await File(markerPath(landed.path)).writeAsString(
+        jsonEncode({
+          'projectId': projectId,
+          'source': p.join(sourceRoot.path, '$projectId.voidproject'),
+          'destination': landed.path,
+          'writtenAt': DateTime.now().toUtc().toIso8601String(),
+        }),
+        flush: true,
+      );
+      await File(
+        p.join(destinationRoot.path, 'projects.json'),
+      ).writeAsString(jsonEncode({'schemaVersion': 1, 'projects': []}));
+
+      final loaded = await ProjectRegistryService(
+        rootDirectory: destinationRoot,
+      ).load();
+
+      expect(loaded, isEmpty);
+      expect(await File(markerPath(landed.path)).exists(), isFalse);
+      expect(await landed.exists(), isTrue);
+    },
+  );
+
+  test(
+    'registry load leaves an occupied-destination journal untouched',
+    () async {
+      // A destination already occupied by a same-name directory is never
+      // guessed around: the journal and the stranded package stay for
+      // inspection (the non-guessing contract of
+      // recoverInterruptedMoves).
+      final inHomePackage = Directory(
+        p.join(tempRoot.path, '$projectId.voidproject'),
+      );
+      await package.rename(inHomePackage.path);
+      final archivedRoot = Directory(p.join(tempRoot.path, 'Archived'))
+        ..createSync();
+      final service = ProjectRegistryService(rootDirectory: tempRoot);
+      await service.save([
+        ProjectModel(
+          id: projectId,
+          name: 'Move Test',
+          description: '',
+          createdAt: DateTime.utc(2026, 9, 6),
+          updatedAt: DateTime.utc(2026, 9, 6),
+          lastOpenedAt: DateTime.utc(2026, 9, 6),
+          localPath: inHomePackage.path,
+          version: '1.0.0',
+        ),
+      ]);
+      await File(markerPath(inHomePackage.path)).writeAsString(
+        jsonEncode({
+          'projectId': projectId,
+          'source': inHomePackage.path,
+          'destination': p.join(archivedRoot.path, '$projectId.voidproject'),
+          'writtenAt': DateTime.now().toUtc().toIso8601String(),
+        }),
+        flush: true,
+      );
+      // Obstacle: the recorded destination is already occupied.
+      Directory(
+        p.join(archivedRoot.path, '$projectId.voidproject'),
+      ).createSync();
+
+      final loaded = await service.load();
+
+      // Nothing was destroyed by the load: the stranded package and its
+      // journal remain at the source for inspection; the entry still
+      // points at the source.
+      expect(await inHomePackage.exists(), isTrue);
+      expect(await File(markerPath(inHomePackage.path)).exists(), isTrue);
+      expect(
+        loaded.firstWhere((project) => project.id == projectId).localPath,
+        inHomePackage.path,
+      );
     },
   );
 }

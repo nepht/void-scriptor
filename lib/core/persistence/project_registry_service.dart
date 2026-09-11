@@ -85,8 +85,9 @@ class ProjectRegistryService {
     // terkubur di stash `.import-backup-*` sebelum daftar proyek
     // dilaporkan.
     await _recoverImportStashes();
-    final (registered, restoredFromBackup) =
+    final (decoded, restoredFromBackup) =
         await _decodeProjectsWithBackupRecovery(file);
+    var registered = decoded;
     final isBackupDerived = restoredFromBackup || !existedBeforeRecovery;
     if (isBackupDerived) {
       // run197 BUG-19: content that came from `.bak` may predate an
@@ -103,14 +104,88 @@ class ProjectRegistryService {
         }
       }
     }
-    // 145.42 interrupted-move window: consume move journals that
-    // landed inside this listing root before the marker delete ran.
-    await _consumeLandedMoveMarkers(registered);
-    // 145.42 crash window: a finished package whose registry entry never
-    // landed (process kill / power loss between create() and upsert) is
-    // admitted so a complete project never becomes invisible. Only an
-    // explicit creation marker admits; folders without one are
-    // deliberately unregistered state and are never touched.
+    // 145.42 interrupted-move window (bug-hunt run197 BUG-7): the
+    // roll-forward half of the move contract. A package stranded at its
+    // source (crash BEFORE the rename) or landed without a registry entry
+    // (crash AFTER the rename, before the entry persisted) was invisible —
+    // unregistered packages are never discovered — and the landed-marker
+    // consumption below silently deleted the only journal a stranded
+    // package carried. Recovery runs BEFORE that consumption, on the same
+    // owner-directory set as stash recovery and admission (run94 BUG-16),
+    // so both halves of the documented move contract
+    // (project_move_service.dart) ship together.
+    final moveRecovery = ProjectMoveRecoverySink();
+    for (final owner in await _ownerDirectories()) {
+      try {
+        await _recovery.recoverInterruptedMovesInto(owner, moveRecovery);
+      } on FileSystemException {
+        continue;
+      }
+    }
+    final rolled = moveRecovery.rolled;
+    if (rolled.isNotEmpty) {
+      final byId = {for (final project in registered) project.id: project};
+      final healed = [...registered];
+      var changed = false;
+      for (final (id: id, package: destination) in rolled) {
+        final existing = byId[id];
+        if (existing != null) {
+          // Repoint: the entry still names the pre-move source. The
+          // project's existence is already registered, so the folder-name
+          // identity (which recovery derived) is enough — the package on
+          // disk IS the registered one, just relocated.
+          final index = healed.indexOf(existing);
+          final moved = existing.copyWith(localPath: destination.path);
+          healed[index] = moved;
+          byId[id] = moved;
+          changed = true;
+        } else {
+          // Landed-but-unregistered: admit through the same completeness
+          // gate as interrupted creations (on-disk manifest + database,
+          // identity from the folder name, never the journal payload) so a
+          // partial package is never surfaced.
+          final admitted = await _recovery.admitMarkedMovePackage(
+            destination,
+            id,
+          );
+          if (admitted == null) continue;
+          healed.add(admitted);
+          byId[id] = admitted;
+          changed = true;
+        }
+      }
+      if (changed) {
+        // Durability FIRST: only once the healed listing is persisted may
+        // the travelled journals be consumed. A crash in between leaves the
+        // journal at the destination, which the next load's scan
+        // re-converges without losing anything.
+        await _saveUnlocked(healed);
+      }
+      // The rename already completed on disk, so every travelled journal is
+      // stale state now (the next scan would consume it as landed): drain
+      // it. An unadmitted package stays unregistered exactly as before —
+      // deliberately unregistered state is never surfaced by a listing.
+      await moveRecovery.consumeTravelledMarkers(_recovery);
+      registered = healed;
+    }
+    // 145.42 interrupted-move window: consume move journals that landed on
+    // registered packages before the marker delete ran (the scan above
+    // handles unregistered packages). Journals the scan deliberately left
+    // in place (an occupied destination is untouched state, never guessed
+    // around) are skipped so a journaled package is never silently
+    // disarmed by its next listing.
+    for (final project in registered) {
+      final packagePath = project.localPath;
+      if (moveRecovery.hasUntouchedJournalAt(packagePath)) continue;
+      final marker = File(
+        p.join(packagePath, ProjectRecoveryService.movePendingMarkerName),
+      );
+      try {
+        if (await marker.exists()) await marker.delete();
+      } on FileSystemException {
+        continue;
+      }
+    }
     final knownIds = registered.map((project) => project.id).toSet();
     final admitted = <ProjectModel>[];
     for (final owner in await _ownerDirectories()) {
@@ -335,24 +410,6 @@ class ProjectRegistryService {
       rethrow;
     }
   });
-
-  /// Best-effort consumption of landed move journals (145.42): a
-  /// `move-pending.marker` inside the directory of a registered
-  /// project means its move completed but the marker delete never
-  /// ran. The marker is stale state; consuming it must never block
-  /// project listing.
-  Future<void> _consumeLandedMoveMarkers(List<ProjectModel> projects) async {
-    for (final project in projects) {
-      final marker = File(
-        p.join(project.localPath, ProjectRecoveryService.movePendingMarkerName),
-      );
-      try {
-        if (await marker.exists()) await marker.delete();
-      } on FileSystemException {
-        continue;
-      }
-    }
-  }
 
   /// Best-effort recovery of interrupted-import stashes. Only
   /// [FileSystemException] is swallowed so an unavailable storage root

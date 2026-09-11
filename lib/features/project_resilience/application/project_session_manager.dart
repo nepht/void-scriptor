@@ -423,6 +423,26 @@ class ProjectSessionManager {
   /// a wrong passphrase; open-path failures propagate as the typed
   /// classification exceptions the shell already renders.
   Future<bool> unlockProject(ProjectPackage package, String passphrase) async {
+    // bug-hunt vs-hunt-20260911 BUG-1: the probe below opens the database
+    // read-write, so drift migrates an old-schema database during this open
+    // exactly as it would in [open]. Every other writer path creates the
+    // pre-migration backup first (see the guarded branch in [open]); the
+    // probe must not bypass that guard, or unlocking a locked project
+    // silently rewrites it with no backup — and the later guarded open can
+    // never create one because the version already equals current.
+    final existingVersion = await _schemaVersionReader(
+      package.databaseFile.path,
+    );
+    if (existingVersion != null &&
+        existingVersion < ProjectDatabase.currentSchemaVersion) {
+      await ProjectBackupService().create(
+        package: package,
+        type: 'pre-migration',
+        note:
+            'Automatic backup before database migration '
+            'v$existingVersion → v${ProjectDatabase.currentSchemaVersion}',
+      );
+    }
     final database = await ProjectDatabaseService().open(
       package.databaseFile.path,
     );

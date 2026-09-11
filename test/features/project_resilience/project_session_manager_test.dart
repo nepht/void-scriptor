@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/persistence/project_paths.dart';
 import 'package:void_scriptor/core/project_package/project_package_service.dart';
+import 'package:void_scriptor/core/security/application/project_lock_service.dart';
+import 'package:void_scriptor/core/security/crypto/encryption_cipher.dart';
+import 'package:void_scriptor/core/security/crypto/key_derivation.dart';
 import 'package:void_scriptor/features/character/application/rename_character_command.dart';
 import 'package:void_scriptor/features/character/data/character_repository_impl.dart';
 import 'package:void_scriptor/features/project_resilience/application/project_session_manager.dart';
@@ -120,4 +123,36 @@ void main() {
     );
     await manager.close(session);
   });
+
+  test('bug-hunt vs-hunt-20260911 BUG-1: unlockProject creates the '
+      'pre-migration backup before migrating an older database', () async {
+    final root = await Directory.systemTemp.createTemp(
+      'hermes-unlock-migration-',
+    );
+    addTearDown(() => root.delete(recursive: true));
+    final package = await ProjectPackageService(
+      rootDirectory: root,
+    ).create(name: 'Unlock Migration');
+    final manager = ProjectSessionManager(schemaVersionReader: (_) async => 33);
+    final setup = await manager.open(package);
+    final lockService = ProjectLockService(
+      database: setup.database,
+      deriver: const Pbkdf2KeyDeriver(),
+      integrity: const HmacIntegrity(),
+    );
+    await lockService.setPassphrase(package.projectId, 'correct horse');
+    await setup.close();
+
+    // The open() guarded path already created one pre-migration backup at
+    // session setup; the unlock probe on the same old-schema database must
+    // not skip the guard that open() applies to every other writer.
+    final unlocked = await manager.unlockProject(package, 'correct horse');
+    expect(unlocked, isTrue);
+
+    final backups = await package.backupDirectory
+        .list()
+        .where((entry) => entry is Directory)
+        .toList();
+    expect(backups.length, greaterThanOrEqualTo(2));
+  }, skip: !Platform.isWindows);
 }

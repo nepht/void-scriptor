@@ -21,8 +21,17 @@ Future<ProjectDatabase> openProjectDatabaseReadOnly(String databasePath) async {
   final database = ProjectDatabase(
     NativeDatabase.opened(raw, enableMigrations: false),
   );
-  await database.customSelect('SELECT 1').getSingle();
-  return database;
+  // core-hunt run197 BUG-13 companion: a failed probe query (missing table,
+  // corrupt header) used to leak the raw read-only handle, keeping the file
+  // locked on Windows after the caller received the classified error.
+  // Mirror openProjectDatabase's hardening: close, then rethrow.
+  try {
+    await database.customSelect('SELECT 1').getSingle();
+    return database;
+  } on Object {
+    await database.close();
+    rethrow;
+  }
 }
 
 Future<void> createProjectDatabase(String databasePath) async {

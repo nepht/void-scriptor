@@ -188,8 +188,28 @@ class ProjectDatabaseService {
     }
   }
 
-  Future<ProjectDatabase> openReadOnly(String databasePath) =>
-      openProjectDatabaseReadOnly(databasePath);
+  /// core-hunt run197 BUG-13: the read-only leg used to bypass the open
+  /// classification wrapper, leaking a raw SqliteException for missing,
+  /// corrupt, or BUSY databases on this path. Mirror open()'s typed
+  /// contract: missing file -> unavailable, SqliteException ->
+  /// classifyProjectDatabaseOpenError. A web UnsupportedError is a
+  /// platform-capability gap, not a storage state, and propagates
+  /// unchanged (same contract as probeProjectDatabaseWrite on web).
+  Future<ProjectDatabase> openReadOnly(String databasePath) async {
+    if (!File(databasePath).existsSync()) {
+      throw ProjectDatabaseUnavailableException(
+        databasePath,
+        StateError('database file does not exist'),
+      );
+    }
+    try {
+      return await openProjectDatabaseReadOnly(databasePath);
+    } on FileSystemException catch (error) {
+      throw ProjectDatabaseUnavailableException(databasePath, error);
+    } on sqlite.SqliteException catch (error) {
+      throw classifyProjectDatabaseOpenError(databasePath, error);
+    }
+  }
 
   Future<int?> schemaVersion(String databasePath) =>
       readProjectDatabaseSchemaVersion(databasePath);

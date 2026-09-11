@@ -1,3 +1,13 @@
+### 2026-09-11 - nephthys (run210, interactive): Task 0 wiring roadmap - character-roles-support end-to-end verified, backlog corrected (PHASE_ONE_WIRED_VERIFIED)
+
+- Permintaan Choi "Kerjakan task 0" (C:\\Users\\nepht\\.hermes\\plans\\2026-09-11_083000-void-scriptor-wiring-roadmap.md): audit verifikasi status backlog `docs/backlog/character-roles-support.json` yang tertulis REQUESTED_NOT_IMPLEMENTED.
+- Temuan: status STALE. Semua item Phase One punya implementasi + test di HEAD live: (1) NarrativeAssignmentCard mounted di character_workspace_screen.dart section Profile (dropdown novel + role chips + importance + POV; _save via NarrativeAssignmentRepository.saveAssignment/removeAssignment + SnackBar); (2) persistensi nyata terbukti oleh test 'saving roles/importance/POV persists per novel and survives close/reopen' (close DB -> reopen ProjectDatabaseService().open -> baca lewat repo produksi; skip non-Windows, dijalankan di Windows); (3) SupportRelationshipSection mounted di character_inspector.dart; (4) filter karakter by role/importance/POV + Reset ada di explorer_panel.dart (NarrativeCharacterFilter, ValueKey('narrative-filter-reset')); (5) roundtrip export/import v60 (portable_narrative_roundtrip_test, run153).
+- Eksekusi fresh Windows (bukan percaya log lama): test/features/character 77 PASS/0 FAIL; test/features/inspector 26 PASS/0 FAIL; narrative_character_filter + portable_narrative_roundtrip + explorer_filter_loading_fail_open = 10 PASS/0 FAIL. Total region 113 PASS.
+- Gap tersisa (dicatat, TIDAK diimplementasi di task ini - sesuai rencana): (a) novel-side view - belum ada section daftar karakter+role dari perspektif cerita (grep story/workspace hanya komentar) = Task 1 antrean; (b) validasi native interaktif semua surface (sesi Choi); (c) prinsip 'Enemy is a relationship' belum diaudit semantik relasinya.
+- Perubahan file: HANYA docs/backlog/character-roles-support.json (status -> PHASE_ONE_WIRED_VERIFIED + blok verification/gaps_remaining; field kontrak principles/acceptance/execution TIDAK disentuh - no immutable contract edits) + ledger ini.
+- Gate: guard PASS (pointer 145.27, sha 86af6a5); analyzer N/A (non-code); secret-scan backlog baru bersih; tanpa file sibling disentuh (worktree bersih saat mulai). Tidak push.
+- Lesson (terekam di plan): status backlog boleh basi; verifikasi live murah dibanding bangun ulang fitur yang ternyata sudah ada.
+
 # Sprint 145 — Product scope reset & Core MVP recovery
 
 ### 2026-09-11 - nephthys (run209): BUG-4 run197 (Low) DIPERBAIKI - DurableDraftJournal.close() drain stage() in-flight

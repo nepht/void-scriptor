@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "id": "character-roles-support",
+  "status": "PHASE_ONE_WIRED_VERIFIED",
+  "requested_on": "2026-09-07",
+  "authority": "BACKLOG_REQUIRES_CANONICAL_MAPPING",
+  "principles": [
+    "One character identity, no duplicate profiles or role-specific workspaces",
+    "Optional fields default to unspecified",
+    "Enemy is a relationship, not automatically antagonist or evil",
+    "Use figuran/background for novels; NPC for games"
+  ],
+  "phase_one": {
+    "narrative_assignment": {
+      "scope": "character and novel/story",
+      "roles": [
+        "protagonist",
+        "antagonist",
+        "supporting",
+        "background"
+      ],
+      "multiple_roles_allowed": true,
+      "importance": [
+        "major",
+        "supporting",
+        "minor",
+        "unspecified"
+      ],
+      "pov": [
+        "yes",
+        "no",
+        "unspecified"
+      ]
+    },
+    "support_relationship": {
+      "scope": "source character, supported character/group and story context",
+      "types": [
+        "travel_companion",
+        "mentor",
+        "informant",
+        "protector",
+        "supporter"
+      ],
+      "duration": [
+        "permanent",
+        "temporary",
+        "recurring",
+        "unspecified"
+      ],
+      "status": [
+        "active",
+        "separated",
+        "terminated",
+        "unspecified"
+      ],
+      "notes": "Optional purpose of support and reason for separation"
+    },
+    "ui": [
+      "Edit narrative role, importance and POV in Character Workspace with visible story context",
+      "Edit support attributes in Relationships",
+      "Filter character list by role, importance and POV with a clear reset action",
+      "Reuse compatible existing storage, do not create duplicate relationship systems"
+    ]
+  },
+  "deferred": [
+    "Role history per arc",
+    "Join/leave chapter and timeline links until timeline integration is ready"
+  ],
+  "acceptance": [
+    "Existing projects open unchanged with unspecified defaults",
+    "One character can have different roles in two novels without cross-contamination",
+    "A supports B permanently and C temporarily without overwriting either relationship",
+    "Duration changes do not change importance or POV",
+    "Save/reopen and applicable import/export preserve all fields",
+    "Filter/hide and relation removal do not delete character data",
+    "Migration/failure tests preserve existing data using temporary projects",
+    "UI handles empty/loading/error states, long names, narrow layouts and enlarged text"
+  ],
+  "execution": {
+    "owner": "Hermes existing single project executor",
+    "first_action": "Inspect implementation and canonical contracts; map gaps before implementing. Report a specific governance decision if outside contract; never invent a sprint number.",
+    "gates": [
+      "roadmap guard",
+      "RED",
+      "minimal patch",
+      "GREEN and regressions",
+      "analyzer",
+      "diff check",
+      "applicable build",
+      "honest native evidence"
+    ],
+    "restrictions": [
+      "Preserve user content",
+      "No concurrent writer",
+      "No immutable contract edits",
+      "No push/release"
+    ]
+  },
+  "wired_on": "2026-09-11",
+  "verification": {
+    "verified_by": "nephthys Task 0 (wiring roadmap 2026-09-11), evidence-based re-inspection of live HEAD",
+    "method": "widget/unit tests executed fresh on Windows + grep of production wiring",
+    "evidence": {
+      "narrative_assignment_ui": "NarrativeAssignmentCard mounted in character_workspace_screen.dart (Profile section); suites test/features/character 77 PASS/0 FAIL incl. 'saving roles/importance/POV persists per novel and survives close/reopen' (real Drift close/reopen through production repository)",
+      "support_relationship": "SupportRelationshipSection mounted in character_inspector.dart; test/features/inspector 26 PASS/0 FAIL",
+      "filter_by_role_importance_pov": "NarrativeCharacterFilter in explorer_panel.dart (role/importance/POV dropdowns + ValueKey('narrative-filter-reset')); narrative_character_filter_test + explorer_filter_loading_fail_open_test PASS",
+      "import_export": "portable_narrative_roundtrip_test 2 PASS (run153)",
+      "db": "tables v60 character_narrative_assignments + CharacterNovelStates"
+    },
+    "gaps_remaining": [
+      "Novel-side view: no section listing characters+roles FROM a novel/story perspective (story/workspace only comments reference narrative) - planned as wiring-sprint Task 1",
+      "Native interactive validation of all surfaces (computer_use session, Choi)",
+      "Principle 'Enemy is a relationship, not automatically antagonist' - relationship-type semantics not audited here"
+    ],
+    "note": "Status was REQUESTED_NOT_IMPLEMENTED while implementation had landed in earlier runs (domain run137, v60, roundtrip run153, UI cards later). Correction per no-silent-status policy; contract fields and acceptance lists untouched."
+  }
+}

@@ -202,19 +202,28 @@ class ProjectSessionManager {
 
   final ProjectSchemaVersionReader _schemaVersionReader;
 
+  /// The manifest read inside [open]'s metric bracket. A protected seam so
+  /// tests can stall the read deterministically (vs-hunt-20260911 BUG-25);
+  /// production behavior is a plain file read.
+  Future<String> readManifest(ProjectPackage package) =>
+      package.manifestFile.readAsString();
+
   Future<ProjectSession> open(
     ProjectPackage package, {
     ProjectOpenMode mode = ProjectOpenMode.readWrite,
   }) async {
+    // vs-hunt-20260911 BUG-25: the manifest clock starts BEFORE the read —
+    // the previous code stamped the start after readAsString had already
+    // completed, so the recorded duration was two back-to-back now() calls
+    // (~0 ms), not the manifest read it claims to measure.
+    final manifestStarted = DateTime.now();
     final manifest = ProjectManifest.fromJson(
-      jsonDecode(await package.manifestFile.readAsString())
-          as Map<String, dynamic>,
+      jsonDecode(await readManifest(package)) as Map<String, dynamic>,
     );
     if (manifest.id != package.projectId) {
       throw StateError('Project ID does not match package identity');
     }
     final metrics = PerformanceMetrics();
-    final manifestStarted = DateTime.now();
     metrics.record(
       'manifest',
       Duration(

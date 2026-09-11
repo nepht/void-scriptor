@@ -5,9 +5,12 @@ import 'package:drift/web.dart';
 import 'project_database.dart';
 
 Future<ProjectDatabase> openProjectDatabase(String databasePath) async {
+  // core-hunt run197 BUG-16: initialize used to run without the close-on-
+  // failure guard the io seam already had, leaking the WebDatabase wrapper
+  // when a drift web initialize (IndexedDB open error mid-migration) threw.
+  // The contract now lives once in initializeDatabaseOrClose, shared with io.
   final database = ProjectDatabase(WebDatabase('void_scriptor_$databasePath'));
-  await database.initialize();
-  return database;
+  return await initializeDatabaseOrClose(database);
 }
 
 Future<ProjectDatabase> openProjectDatabaseReadOnly(String databasePath) async {
@@ -16,8 +19,13 @@ Future<ProjectDatabase> openProjectDatabaseReadOnly(String databasePath) async {
 
 Future<void> createProjectDatabase(String databasePath) async {
   final database = ProjectDatabase(WebDatabase('void_scriptor_$databasePath'));
-  await database.initialize();
-  await database.close();
+  // Same asymmetry as BUG-16: the io seam closes in a finally so a failed
+  // initialize never leaks the wrapper; close must run on the failure path.
+  try {
+    await database.initialize();
+  } finally {
+    await database.close();
+  }
 }
 
 Future<int?> readProjectDatabaseSchemaVersion(String databasePath) async =>

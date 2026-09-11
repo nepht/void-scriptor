@@ -770,3 +770,25 @@ class ProjectDatabase extends _$ProjectDatabase {
     );
   }
 }
+
+/// core-hunt run197 BUG-16: the web platform seam constructed a
+/// [ProjectDatabase] and returned it without closing it when
+/// [ProjectDatabase.initialize] threw, while the io seam already guarded the
+/// same failure path with catch-close-rethrow. A drift web initialize failure
+/// (e.g. IndexedDB open error mid-migration) leaked the constructed wrapper.
+///
+/// This platform-agnostic helper owns that contract once: initialize, close
+/// on failure, rethrow the original error. Both platform seams delegate to it
+/// so the failure path stays symmetric and is compiled (and tested) on every
+/// platform, including the VM where the js-interop web seam cannot run.
+Future<ProjectDatabase> initializeDatabaseOrClose(
+  ProjectDatabase database,
+) async {
+  try {
+    await database.initialize();
+    return database;
+  } catch (_) {
+    await database.close();
+    rethrow;
+  }
+}

@@ -6,14 +6,10 @@ import 'package:sqlite3/sqlite3.dart' as sqlite;
 import 'project_database.dart';
 
 Future<ProjectDatabase> openProjectDatabase(String databasePath) async {
+  // core-hunt run197 BUG-16: the catch-close-rethrow contract now lives in
+  // the shared platform-agnostic helper so the web seam mirrors it exactly.
   final database = ProjectDatabase(NativeDatabase(File(databasePath)));
-  try {
-    await database.initialize();
-    return database;
-  } catch (_) {
-    await database.close();
-    rethrow;
-  }
+  return await initializeDatabaseOrClose(database);
 }
 
 Future<ProjectDatabase> openProjectDatabaseReadOnly(String databasePath) async {

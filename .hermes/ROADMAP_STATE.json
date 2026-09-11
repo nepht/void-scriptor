@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "[run225-nephthys 2026-09-12 cron] Native install journey artefak download 1.2.0-alpha.1 VERIFIED: unduh LIVE sha256 match 5a7680b6..., extract 491 entri, launch Release exe, buat project+novel uji temporer, tulis draf Scene Editor, WM_CLOSE graceful, relaunch, draf IDENTIK (scene_beats ground truth, integrity ok, tanpa lock/wal leftovers). Bukti: docs/evidence/download-install-journey-2026-09-12.json. Deploy hero fix masih BLOCKED menunggu wrangler login interaktif Choi (whoami masih expired). Pointer 145.27 tidak berubah. Next: deploy post-login; cron berikutnya antrean roadmap/keputusan 145.43-145.50.",
+  "last_verified_step": "[run227-nephthys 2026-09-12 cron] Re-verification rollback fault-injection 145.34 (4/4 PASS backup_rollback_failure + backup_full_payload di HEAD ed9f576) + audit matriks 145.42: 15 kasus, 12 VERIFIED, 3 USER_REPORTED_PASS, 2 hardware-bound UNVERIFIABLE (power_loss, min-spec device) = decision-owned Choi. Antrean teknis Core KOSONG: deploy hero tetap BLOCKED wrangler login (probe whoami ke-4 expired, tidak diulang); 145.43-145.50 keputusan Choi; push (ahead 6) keputusan Choi; format gate CI-exact 0 changed. Pointer 145.27 tetap. Next: NO-OP bila tidak ada handoff/input Choi baru.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-12T05:15:00+07:00",
-  "updated_by": "run226-nephthys",
+  "updated_at": "2026-09-12T07:05:00+07:00",
+  "updated_by": "run227-nephthys",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

@@ -47,8 +47,37 @@ class ProjectRegistryService {
 
   Future<List<ProjectModel>> load() => _mutex.run(_loadUnlocked);
 
+  /// Bug-hunt run197 BUG-19: tombstone file next to the registry recording
+  /// project ids the user explicitly removed. `.bak` recovery restores the
+  /// PRE-remove registry content, so without durable deletion intent an
+  /// unrelated corruption/power-loss event silently resurrects removed
+  /// projects. Written by [remove] BEFORE the registry rewrite, consulted
+  /// only on backup-restored listings, and cleared whenever a persisted
+  /// listing contains the id again (re-registering is a newer decision).
+  static const String removedSuffix = '.removed.json';
+
+  Future<File> _tombstoneFile() async =>
+      File('${(await _registryFile).path}$removedSuffix');
+
+  Future<Set<String>> _readTombstones(File tombstone) async {
+    try {
+      if (!await tombstone.exists()) return const {};
+      final decoded = jsonDecode(await tombstone.readAsString());
+      if (decoded is! List<dynamic>) return const {};
+      return decoded.whereType<String>().toSet();
+    } on Object {
+      // The tombstone is best-effort hardening: a corrupt one must never
+      // block project listing (same posture as marker consumption).
+      return const {};
+    }
+  }
+
   Future<List<ProjectModel>> _loadUnlocked() async {
     final file = await _registryFile;
+    // run197 BUG-19: a registry that materializes from `.bak` during the
+    // power-loss roll-forward below carries the same stale-content risk as
+    // a corrupt-registry restore, so both legs are backup-derived.
+    final existedBeforeRecovery = await file.exists();
     // 145.42 power-loss window: pulihkan registry dari .bak sebelum
     // melaporkan daftar proyek kosong.
     await _recovery.recoverIfInterrupted(file);
@@ -56,7 +85,24 @@ class ProjectRegistryService {
     // terkubur di stash `.import-backup-*` sebelum daftar proyek
     // dilaporkan.
     await _recoverImportStashes();
-    final registered = await _decodeProjectsWithBackupRecovery(file);
+    final (registered, restoredFromBackup) =
+        await _decodeProjectsWithBackupRecovery(file);
+    final isBackupDerived = restoredFromBackup || !existedBeforeRecovery;
+    if (isBackupDerived) {
+      // run197 BUG-19: content that came from `.bak` may predate an
+      // explicit removal. Filter it against durable deletion intent and
+      // persist the filtered (healed) listing so the decision sticks.
+      final removed = await _readTombstones(await _tombstoneFile());
+      if (removed.isNotEmpty) {
+        final filtered = registered
+            .where((project) => !removed.contains(project.id))
+            .toList();
+        if (filtered.length != registered.length) {
+          await _saveUnlocked(filtered);
+          return filtered;
+        }
+      }
+    }
     // 145.42 interrupted-move window: consume move journals that
     // landed inside this listing root before the marker delete ran.
     await _consumeLandedMoveMarkers(registered);
@@ -98,15 +144,19 @@ class ProjectRegistryService {
   /// file is preserved for inspection and the typed unreadable exception
   /// propagates (remove()/upsert() compose on this, so they fail loudly
   /// instead of silently diverging registry from disk).
-  Future<List<ProjectModel>> _decodeProjectsWithBackupRecovery(
+  ///
+  /// Returns whether the listing was restored from the `.bak` copy. That
+  /// content may predate explicit removals (run197 BUG-19), so callers
+  /// reconcile it against deletion tombstones.
+  Future<(List<ProjectModel>, bool)> _decodeProjectsWithBackupRecovery(
     File file,
   ) async {
     try {
-      return await _decodeProjects(file);
+      return (await _decodeProjects(file), false);
     } on ProjectRegistryUnreadableException {
       final restored = await _recovery.restoreBackup(file);
       if (!restored) rethrow;
-      return _decodeProjects(file);
+      return (await _decodeProjects(file), true);
     }
   }
 
@@ -189,6 +239,28 @@ class ProjectRegistryService {
       target: file,
       content: '${const JsonEncoder.withIndent('  ').convert(json)}\n',
     );
+    // run197 BUG-19: a persisted listing that still contains a previously
+    // removed id supersedes the deletion intent (re-creating under the same
+    // id is a newer decision). Best-effort: a stale tombstone only filters
+    // future backup-restored listings, never the live one.
+    final tombstone = await _tombstoneFile();
+    if (await tombstone.exists()) {
+      try {
+        final removed = await _readTombstones(tombstone);
+        final stillPresent = projects.map((project) => project.id).toSet();
+        final remaining = removed.difference(stillPresent).toList()..sort();
+        if (remaining.isEmpty) {
+          await tombstone.delete();
+        } else if (remaining.length != removed.length) {
+          await tombstone.writeAsString(
+            '${const JsonEncoder.withIndent('  ').convert(remaining)}\n',
+            flush: true,
+          );
+        }
+      } on FileSystemException {
+        // Keep the stale tombstone rather than throwing from a save.
+      }
+    }
   }
 
   Future<void> upsert(ProjectModel project) => _mutex.run(() async {
@@ -218,10 +290,50 @@ class ProjectRegistryService {
     );
   });
 
+  /// Removes [projectId] from the registry.
+  ///
+  /// run197 BUG-19: deletion intent is recorded durably BEFORE the registry
+  /// rewrite. `atomicWrite` archives the PRE-remove content as `.bak`, and
+  /// backup recovery restores that copy verbatim; without the tombstone a
+  /// later corruption/power-loss event would silently resurrect the removed
+  /// project. Tombstone write failure aborts the removal loudly (the user's
+  /// decision must be representable before the registry forgets it).
   Future<void> remove(String projectId) => _mutex.run(() async {
-    await _saveUnlocked(
-      (await _loadUnlocked()).where((item) => item.id != projectId).toList(),
+    final tombstone = await _tombstoneFile();
+    final removed = (await _readTombstones(tombstone)).toList()..sort();
+    if (!removed.contains(projectId)) removed.add(projectId);
+    await tombstone.writeAsString(
+      '${const JsonEncoder.withIndent('  ').convert(removed)}\n',
+      flush: true,
     );
+    try {
+      await _saveUnlocked(
+        (await _loadUnlocked()).where((item) => item.id != projectId).toList(),
+      );
+    } on Object {
+      // The registry rewrite failed loudly; do not leave a tombstone that
+      // hides a project the registry still lists. The compensation itself
+      // is best-effort: the ORIGINAL failure must always propagate.
+      try {
+        final stillListed = (await _loadUnlocked())
+            .map((item) => item.id)
+            .toSet();
+        if (stillListed.contains(projectId)) {
+          final remaining = (await _readTombstones(tombstone)).toList()
+            ..remove(projectId)
+            ..sort();
+          await tombstone.writeAsString(
+            '${const JsonEncoder.withIndent('  ').convert(remaining)}\n',
+            flush: true,
+          );
+        }
+      } on Object {
+        // Cannot prove the registry still lists the id; keep the tombstone
+        // (it only ever filters backup-restored listings, never the live
+        // decode) and surface the original failure below.
+      }
+      rethrow;
+    }
   });
 
   /// Best-effort consumption of landed move journals (145.42): a

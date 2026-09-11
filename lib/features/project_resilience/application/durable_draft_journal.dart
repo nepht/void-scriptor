@@ -34,6 +34,12 @@ class DurableDraftJournal {
   final DateTime Function() _clock;
   bool _closed = false;
 
+  /// Stage() yang sedang berjalan saat [close] dipanggil (bug-hunt-run197
+  /// BUG-4): close() menunggu semuanya selesai sehingga tidak ada tulisan
+  /// journal yang terjadi setelah close() kembali (stage pasca-close
+  /// sebelumnya bisa membuat ulang direktori journal yang sudah ditutup).
+  final Set<Future<void>> _inFlightStages = <Future<void>>{};
+
   /// Ambang umur sweep `.tmp`: jauh di atas jendela tulis normal
   /// (milidetik), di bawah rentang orphan crash yang layak dibersihkan.
   static const Duration staleTmpThreshold = Duration(seconds: 60);
@@ -56,6 +62,18 @@ class DurableDraftJournal {
     if (_closed) {
       throw StateError('journal is closed');
     }
+    final stageTask = _stageUntracked(sceneId, content);
+    _inFlightStages.add(stageTask);
+    try {
+      await stageTask;
+    } finally {
+      // Hapus entri milik stage ini saja (bug-hunt-run197 BUG-4); set
+      // bersama berarti stage() paralel tidak saling menghapus tugas.
+      _inFlightStages.remove(stageTask);
+    }
+  }
+
+  Future<void> _stageUntracked(String sceneId, String content) async {
     await _dir.create(recursive: true);
     final temp = File('${_entryFile(sceneId).path}.tmp');
     final payload = jsonEncode(<String, Object?>{
@@ -196,8 +214,21 @@ class DurableDraftJournal {
     await file.delete();
   }
 
+  /// Menutup journal: tolak stage() baru seketika, lalu drain stage() yang
+  /// sudah in-flight (bug-hunt-run197 BUG-4). Setelah future ini selesai,
+  /// tidak ada lagi mutasi direktori journal dari instance ini.
   Future<void> close() async {
     _closed = true;
+    while (_inFlightStages.isNotEmpty) {
+      final outstanding = List<Future<void>>.of(_inFlightStages);
+      // Kegagalan stage in-flight tidak boleh membuat close() gagal:
+      // pemanggil hanya ingin tahu semua tulisan sudah berhenti.
+      await Future.wait(
+        outstanding.map(
+          (task) => task.then<void>((_) {}, onError: (Object _) {}),
+        ),
+      );
+    }
   }
 
   /// Sweep `.json.tmp` stale sekali-di-instance (bug-hunt-run128 BUG-3).

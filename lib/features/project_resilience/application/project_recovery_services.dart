@@ -167,8 +167,8 @@ class BackupRollbackException implements Exception {
   @override
   String toString() =>
       'BackupRollbackException: restore failed and rollback is incomplete '
-      'for ${rollbackErrors.keys.join(', ')}. Emergency backup retained at '
-      '$emergencyBackupPath';
+      'for ${rollbackErrors.keys.join(', ')}. Restore error: $restoreError. '
+      'Emergency backup retained at $emergencyBackupPath';
 }
 
 class ProjectBackupService {

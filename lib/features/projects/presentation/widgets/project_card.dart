@@ -9,10 +9,20 @@ import '../project_controller.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class ProjectCard extends ConsumerWidget {
-  const ProjectCard({super.key, required this.project, required this.onDelete});
+  const ProjectCard({
+    super.key,
+    required this.project,
+    required this.onDelete,
+    this.onMove,
+  });
 
   final ProjectModel project;
   final VoidCallback onDelete;
+
+  /// Wiring sprint Task 3 (BUG-7 both halves): invoked when the user picks
+  /// 'Move Project…' from the actions menu. Null keeps the action absent so
+  /// embeddings without a relocation host never show a dead menu item.
+  final ValueChanged<ProjectModel>? onMove;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,9 +59,21 @@ class ProjectCard extends ConsumerWidget {
                       tooltip: 'Project actions for ${project.name}',
                       onSelected: (value) {
                         if (value == 'delete') onDelete();
+                        if (value == 'move') onMove?.call(project);
                       },
-                      itemBuilder: (context) => const [
-                        PopupMenuItem(
+                      itemBuilder: (context) => [
+                        if (onMove != null)
+                          const PopupMenuItem(
+                            value: 'move',
+                            child: Row(
+                              children: [
+                                Icon(Icons.drive_file_move_outline),
+                                SizedBox(width: 10),
+                                Text('Move Project…'),
+                              ],
+                            ),
+                          ),
+                        const PopupMenuItem(
                           value: 'delete',
                           child: Row(
                             children: [

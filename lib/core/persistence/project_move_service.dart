@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
+import '../domain/project_model.dart';
 import 'project_recovery_service.dart';
+import 'project_registry_service.dart';
 
 /// Moves a project package between directories of one volume behind a
 /// durable journal so an interrupted rename (process kill / power loss) is
@@ -65,5 +67,49 @@ class ProjectMoveService {
       p.join(destination, ProjectRecoveryService.movePendingMarkerName),
     ).delete();
     return Directory(destination);
+  }
+}
+
+/// Wiring sprint Task 3 (bug-hunt run197 BUG-7 "both halves ship together"):
+/// first production caller of [ProjectMoveService.movePackage]. A successful
+/// move is followed immediately by repointing the registry entry
+/// (`localPath`) to the new package location; the move marker is already
+/// consumed by [ProjectMoveService], and the repoint happens while no journal
+/// exists — a crash between the two steps surfaces as a healthy package with
+/// a stale entry, which the registry's load-time existence checks and the
+/// roll-forward scan treat as the pre-BUG-7 documented state.
+class ProjectRelocationService {
+  const ProjectRelocationService({
+    required this.registry,
+    this.moveService = const ProjectMoveService(),
+  });
+
+  final ProjectRegistryService registry;
+  final ProjectMoveService moveService;
+
+  /// Returns the moved package directory. Throws the original
+  /// [FileSystemException] when the rename fails; the registry entry is then
+  /// untouched and the journal consumed by [ProjectMoveService] itself.
+  Future<Directory> relocateProject({
+    required String projectId,
+    required Directory destinationRoot,
+  }) async {
+    final entries = await registry.load();
+    ProjectModel? entry;
+    for (final project in entries) {
+      if (project.id == projectId) {
+        entry = project;
+        break;
+      }
+    }
+    if (entry == null) {
+      throw StateError('Project $projectId is not registered');
+    }
+    final moved = await moveService.movePackage(
+      package: Directory(entry.localPath),
+      destinationRoot: destinationRoot,
+    );
+    await registry.upsert(entry.copyWith(localPath: moved.path));
+    return moved;
   }
 }

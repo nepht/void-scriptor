@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -78,6 +81,8 @@ class ProjectListScreen extends ConsumerWidget {
                             project: items[index],
                             onDelete: () =>
                                 _confirmDelete(context, ref, items[index]),
+                            onMove: (project) =>
+                                _startMove(context, ref, project),
                           ),
                         );
                       },
@@ -90,6 +95,36 @@ class ProjectListScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  /// Wiring sprint Task 3: folder picker for the move trigger; a cancelled
+  /// picker is a no-op, a failed move keeps the project where it was and the
+  /// typed reason surfaces in the snack bar.
+  Future<void> _startMove(
+    BuildContext context,
+    WidgetRef ref,
+    ProjectModel project,
+  ) async {
+    // file_selector ^1.x getDirectoryPath has no label parameter.
+    final destinationPath = await getDirectoryPath();
+    if (destinationPath == null || !context.mounted) return;
+    try {
+      final moved = await ref
+          .read(projectControllerProvider.notifier)
+          .moveProject(
+            projectId: project.id,
+            destinationRoot: Directory(destinationPath),
+          );
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Proyek dipindah ke ${moved.path}')),
+      );
+    } catch (error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Tidak dapat memindah proyek: $error')),
+      );
+    }
   }
 
   Future<void> _confirmDelete(

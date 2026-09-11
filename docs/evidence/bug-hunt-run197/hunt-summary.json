@@ -1,0 +1,49 @@
+{
+  "run": "run197",
+  "date": "2026-09-11",
+  "mode": "repeated-adversarial-bug-hunt (user authorization 2026-09-07)",
+  "target": "persistence/resilience/database region (18 files)",
+  "repo": "D:\\VoidScriptor\\void_scriptor_multiplatform",
+  "branch": "master",
+  "head_at_hunt_start": "b5d8bba8550fb8629f1e3feb62dc6ceb3e847c03",
+  "head_at_referee_completion": "b5d8bba8550fb8629f1e3feb62dc6ceb3e847c03",
+  "worktree_at_hunt_start": "clean (4 untracked non-source docs)",
+  "scope_selection_rule": "changed-region delta since last hunt of this region (run94 @ 074c5a1, 2026-09-06); selection/shell/explorer/theme region excluded (hunted run171, all 16 REAL BUG closed); narrative/support region excluded (run157 closed)",
+  "agents": {
+    "hunter": {
+      "findings": 26,
+      "score": 79,
+      "report": "hunter-report.md"
+    },
+    "skeptic": {
+      "confirmed": 15,
+      "disproved": 4,
+      "uncertain": 7,
+      "net_score": 12,
+      "report": "skeptic-report.md"
+    },
+    "referee": {
+      "real_bugs": 19,
+      "not_a_bug": 7,
+      "report": "referee-report.md"
+    }
+  },
+  "verdict_summary": {
+    "critical": ["BUG-1: unguarded creation-marker delete after durable upsert -> transient errno-32 makes ProjectController.delete the COMPLETE package (data-loss path)"],
+    "medium": [
+      "BUG-5: unguarded sequential session teardown leaks DB connection / strands session marker",
+      "BUG-6: open() catch: unguarded lock.release() precedes DB close; release throw skips close and replaces original error",
+      "BUG-8: durable_draft_journal pendingEntries() catches only FormatException; TypeError aborts whole recovery listing"
+    ],
+    "low": ["BUG-4", "BUG-7", "BUG-9", "BUG-10", "BUG-11", "BUG-12", "BUG-13", "BUG-16", "BUG-17", "BUG-18", "BUG-19", "BUG-22", "BUG-23", "BUG-25", "BUG-26(out-of-scope flag upheld)"],
+    "not_a_bug": ["BUG-2", "BUG-3", "BUG-14", "BUG-15", "BUG-20", "BUG-21", "BUG-24"]
+  },
+  "commands_run": [
+    "dart run tool/roadmap_guard.dart (pre-run PASS, exit 0)",
+    "git status --short --branch; git rev-parse HEAD (clean)",
+    "git diff --name-only 074c5a1..HEAD -- lib/core/persistence lib/features/project_resilience lib/database/project (18 files)",
+    "agent read-only inspection only (no tests/builds/network by children)"
+  ],
+  "status": "VERIFIED (all findings carry file:line + quoted evidence; referee read all 18 in-scope files + pub-cache sqlite3 3.5.1 sources)",
+  "next_action": "Run berikutnya: perbaiki BUG-1 (Critical, data-loss) dengan TDD - RED repro marker-delete failure pada fixture temporer -> guard consumeCreationMarker best-effort -> GREEN -> regression test/core/persistence -> analyze/build. Kemudian BUG-5/6/8 (Medium)."
+}

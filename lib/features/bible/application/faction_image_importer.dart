@@ -70,7 +70,19 @@ class FactionImageImporter {
     // Salin dulu: kegagalan I/O di sini meninggalkan keadaan lama utuh.
     await source.copy(target.path);
 
-    await repo.save(faction.copyWith(imagePath: target.path));
+    try {
+      await repo.save(faction.copyWith(imagePath: target.path));
+    } on Object {
+      // vs-hunt-20260913-bible BUG-4: save gagal = baris masih menunjuk
+      // keadaan lama; hapus salinan agar tidak yatim di namespace kita.
+      try {
+        await target.delete();
+      } on FileSystemException {
+        // Berkas terkunci: yatim tetap lebih baik daripada menggagalkan
+        // laporan kegagalan save yang asli.
+      }
+      rethrow;
+    }
 
     final superseded = faction.imagePath;
     if (superseded.isNotEmpty &&

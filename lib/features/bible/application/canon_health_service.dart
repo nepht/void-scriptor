@@ -3,6 +3,7 @@ import '../domain/canon_conflict.dart';
 class CanonHealthSummary {
   const CanonHealthSummary({
     required this.healthPercent,
+    required this.info,
     required this.critical,
     required this.errors,
     required this.warnings,
@@ -10,6 +11,7 @@ class CanonHealthSummary {
   });
 
   final int healthPercent;
+  final int info;
   final int critical;
   final int errors;
   final int warnings;
@@ -18,6 +20,7 @@ class CanonHealthSummary {
 
 class CanonHealthService {
   CanonHealthSummary summarize(Iterable<CanonConflict> conflicts) {
+    var info = 0;
     var critical = 0;
     var errors = 0;
     var warnings = 0;
@@ -25,6 +28,7 @@ class CanonHealthService {
     for (final conflict in conflicts.where((item) => !item.resolved)) {
       switch (conflict.severity) {
         case CanonConflictSeverity.info:
+          info++;
           weight += 1;
         case CanonConflictSeverity.warning:
           warnings++;
@@ -39,6 +43,7 @@ class CanonHealthService {
     }
     return CanonHealthSummary(
       healthPercent: (100 - weight).clamp(0, 100),
+      info: info,
       critical: critical,
       errors: errors,
       warnings: warnings,

@@ -7,6 +7,23 @@
 - Commit code **f6cff69** (2 file path eksplisit). Pointer 145.27 tetap PARTIAL, tanpa pergeseran; dicatat di area 145.33 sesuai konvensi hunt.
 - Sisa antrean hunt: Low BUG-13 (provenance timestamp determinism), BUG-10 (decode ganda, Medium-confidence). Keputusan produk menunggu Choi: wiring UI import/restore karakter (product_decision_pending_choi di state). Next action: BUG-13 lalu BUG-10; scope hash hunt lama PRE-run237..243, refresh sebelum hunt baru region novel I/O.
 
+### 2026-09-12 - nephthys (interaktif run244): Primary References karakter nyata + Timeline Bible dari data era
+
+- Scope: dua area ikon-only yang tersisa setelah run233/235/242, atas persetujuan Choi (item lanjutan).
+- ReferencesCard: slot Face..Expression dulu mati (label kosong, Add = snackbar "wired later", tabel
+  character_references.filePath tak pernah ditulis produksi). Kini dimuat nyata dari tabel; gambar
+  terikat tampil dari berkas milik paket (namespace character_references/); path basi -> "No image";
+  tambah = dialog slot -> file picker -> CharacterReferenceBinder (kontrak importer sama:
+  copy-then-write, supersede, hapus lama hanya dalam namespace, ekstensi ditolak sebelum artefak).
+- Sesi async: read sinkron provider di initState mengunci cabang no-session; pindah ke
+  ref.listenManual + reload saat sesi pertama tiba.
+- _TimelineCard Project Bible: "No eras yet"/"Timeline ready" statis -> data nyata (<=5 era +
+  chip jumlah; tanpa sesi pesan jujur).
+- Bukti: references_card_test 2/2, character_reference_binder_test 5/5, kontrak layar karakter
+  4/4, region character+bible --concurrency=1 138/138, analyze slice No issues (1 info sibling
+  untracked), format 8 changed, diff-check 0, roadmap_guard exit 0. Code a373f7e (pesan awal
+  run243 lalu diamend sebelum push karena cron run243 masuk lebih dulu).
+
 ### 2026-09-12 - nephthys (cron run243): restoreCharacter — jalur import simetris untuk export karakter (vs-hunt-20260912n BUG-17)
 
 - Guard PASS pre-run (exit 0, pointer 145.27, corrective_core_mvp, stability gate PASS). HEAD masuk 35783b4 (ledger run242); conflict marker nihil; tanpa proses flutter/void_scriptor. Handoff RELEASED_TO_HERMES sudah diterima; worktree utama bersih dari file milik penulis lain — WIP project_resilience (5 file) DAN edit sibling baru `references_card.dart` + `character_reference_binder.dart` (mtime 17:01, TERBUKTI AKTIF saat run) dipreservasi penuh, nol adopsi, nol sentuh.

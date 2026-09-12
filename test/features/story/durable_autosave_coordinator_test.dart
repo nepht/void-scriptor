@@ -179,11 +179,15 @@ void main() {
   // bahwa draf valid lama tetap dipulihkan melewatinya).
   test('journal stage failure is reported, never escapes uncaught '
       '(bug-hunt-run128 BUG-2)', () async {
-    // Draf valid sebelumnya di journal.
-    await journal.stage(sceneId: 'scene-a', content: 'Draf valid lama.');
-    // Buat target .tmp jadi direktori → stage() gagal deterministik
-    // (FileSystemException, pola failure-injection journal).
-    await Directory('${journalDir.path}/scene-a.json.tmp').create();
+    // Draf valid sebelumnya di journal (scene lain agar target rename
+    // scene-a tetap bersih).
+    await journal.stage(sceneId: 'scene-old', content: 'Draf valid lama.');
+    // Injection TIDAK bergantung nama `.tmp` (bug-hunt-20260912-autosave
+    // BUG-1 mengubah `.tmp` menjadi unik per-panggilan): block rename dengan
+    // membuat DESTINASI final `<scene>.json` berupa direktori — rename ke
+    // direktori selalu gagal FileSystemException (errno 5 di-retry ladder
+    // lalu di-rethrow). Deterministik pada kedua penamaan.
+    await Directory('${journalDir.path}/scene-a.json').create();
     var persistCalled = 0;
     Object? reportedError;
     final coordinator = DurableAutosaveCoordinator(
@@ -204,10 +208,12 @@ void main() {
       (await journal.pendingEntries()).map((e) => e.content),
       contains('Draf valid lama.'),
     );
-    // Best-effort cleanup senyap: penghapusan .tmp gagal tanpa efek.
+    // Rename yang terblokir tidak pernah menimpa destinasi: direktori final
+    // utuh, entri scene-a tidak pernah terpublikasi.
+    expect(Directory('${journalDir.path}/scene-a.json').existsSync(), isTrue);
     expect(
-      Directory('${journalDir.path}/scene-a.json.tmp').existsSync(),
-      isTrue,
+      (await journal.pendingEntries()).map((e) => e.sceneId),
+      isNot(contains('scene-a')),
     );
     await coordinator.dispose();
   });

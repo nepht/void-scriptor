@@ -1,3 +1,48 @@
+### 2026-09-13 - nephthys (cron run259): journey native backup->restore VERIFIED (gap run253 UNVERIFIABLE ditutup) - sesi desktop hidup, tanpa mutasi source
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53, stream
+  corrective_core_mvp, stability gate PASS). HEAD 9074716. Conflict markers nihil;
+  `git diff --check` exit 0. Tanpa proses flutter/dart/void_scriptor (hanya codex PID
+  21408 idle sejak 12/09). Sibling dirty DIPRESERVASI TANPA SENTUH (coordinator
+  +47 mtime 01:04, story_dao 01:09 dst; fingerprint dirty scope sha256
+  6c03e92541ad2af6 = sinyal untuk penulis sibling bahwa run ini tidak menyentuh
+  regionnya).
+- Seleksi slice: gap prioritas tertinggi yang AMAN dan belum terbukti =
+  `native_restore_journey_run253` UNVERIFIABLE (auxiliary.vision timeout 3x).
+  Harness check membuktikan sesi desktop hidup (GetForegroundWindow valid,
+  computer_use capture berfungsi + vision_analysis routed via auxiliary.vision).
+  Item A3 BUG-4/5 tetap terblokir penulis (verify after their commit); website
+  blocker (wrangler login interaktif) bertahan >2 run -> dilaporkan, tidak diulang.
+- Slice = journey native backup/restore penuh pada project UJI 7e90b57b (BUKAN
+  naskah pengguna), build windows --debug exit 0 (29,8s) DARI WORKING TREE
+  (termasuk WIP sibling -> hasil berlabel dirty-scope hash di atas). Launch pid
+  27612. VERIFIED end-to-end via computer_use (delivery foreground utk Flutter
+  canvas, re-capture tiap aksi state-changing):
+  1) Dashboard -> Continue writing (proyek uji terbuka, indikator Tersimpan);
+  2) Project-context button -> 'Backup & Export' -> rute /project-backups render
+     (Project resilience, Available backups: 2, Database 1.4 MB);
+  3) Create Backup -> sukses in-UI "Backup created: ...backups\44d73da9" (count 3);
+  4) Restore Latest Backup -> dialog 'Restore this backup?' dengan pernyataan
+     emergency backup -> Confirm Restore -> "Restored latest backup." tanpa error;
+  5) Close jendela -> proses exit sendiri; session.lock/.project.lock HILANG
+    (readback fs); DB uji read-only: PRAGMA integrity_check ok, user_version 61,
+     166 tabel.
+  6) Backups di disk: add44f12 type='pre-restore' note='Emergency backup before
+     restore' 02:32:39 + 44d73da9 manual 02:31:41 -> rantai emergency-backup
+     terverifikasi ground-truth, bukan hanya pesan UI.
+- Catatan kepemilikan menu: rute restore backup UI kini TERHUBUNG native (Gap
+  restore()-tanpa-caller run251 + journey run253 terisi). Sisa 145.34: fault
+  injection rollback-gagal dan exact-snapshot vs merge pada restore sukses tetap
+  terbuka (diagnosa via tes, bukan journey GUI).
+- Gates slice ini: tanpa mutasi source/lib/test (verifikasi native saja); bukti
+  disimpan docs/evidence/native-restore-journey-run259/ (4 screenshot berurutan);
+  `git diff --check` milik sibling tetap exit 0; tidak push (keputusan Choi);
+  pointer 145.27 TETAP PARTIAL (journey ini mengisi satu acceptance-evidence,
+  bukan seluruh rentang).
+- Tindakan berikutnya: run berikutnya cek commit sibling utk BUG-4/5 (bila sudah:
+  ACCEPT review focused+regresi lalu antrean C); keputusan Choi tetap tertunda:
+  wrangler login (deploy hero), close()-lifecycle journal, 145.43-145.50 pilot.
+
 ### 2026-09-13 - nephthys (cron run258): NO-OP mutasi - antrean hunt autosave masih ditulis sibling; verifikasi fresh health-read-only + gate format merah di dirty sibling
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53, stream

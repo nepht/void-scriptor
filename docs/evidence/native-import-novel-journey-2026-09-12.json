@@ -1,0 +1,43 @@
+{
+  "run": 230,
+  "date": "2026-09-12",
+  "slice": "Native journey Import Novel picker (run229 residual risk) + verifikasi WIP restore sibling + bukti lapangan dead-owner session-lock recovery",
+  "head": "c0ad0a9b3b68850aa1aec5960972607f1f022786",
+  "guard": {"pre_run_exit": 0, "recommended_step": "145.27", "canonical_sha256": "86af6a53a27fda4e7b5abc9b2a868550e4c0926977617ae3498381a76c4d5fa9"},
+  "ownership": {
+    "project_resilience_wip": "M 2 file + untracked flow/2 test, mtime terakhir 08:36 (<1 jam saat run mulai), tanpa proses penulis aktif; TIDAK disentuh/di-commit; diam-diam hash dicatat di ledger",
+    "decision": "verifikasi-read-only-saja (ambang takeover 24j run229 belum terlampaui)"
+  },
+  "wip_restore_verification": {
+    "command": "flutter test --no-pub test/features/project_resilience/backup_restore_ui_wiring_test.dart test/features/project_resilience/backup_restore_screen_wiring_test.dart",
+    "exit": 0,
+    "result": "7/7 PASS",
+    "coverage": "controller.restoreBackup exact-snapshot (marker pasca-backup hilang) + emergency retained + read-only fail-closed + flow close->restore->reopen + blocked schema-newer abort; layar: disabled tanpa backup, dialog konfirmasi, Cancel no-op, failure inline"
+  },
+  "native_journey": {
+    "build": {"command": "flutter build windows --debug --no-pub", "exit": 0, "kernel_blob": "2026-09-12T09:31 (HEAD c0ad0a9 + dirty WIP restore)"},
+    "launch": "pid 13972 window 26215586",
+    "steps": [
+      "Dashboard -> Continue writing (project uji 7e90b57b 'UJI Journey Download 260912', BUKAN naskah pengguna)",
+      "Explorer -> Novel Uji Download; Scene Editor tampil draf run225 'Belum tersimpan' (bukti durability tambahan)",
+      "Document actions -> Export section -> 'Import Novel' ENABLED (gap run228: permanen disabled)",
+      "Klik -> dialog native Windows 'Buka' (window_id baru 69468286) = picker resolver 0179cf6 TERBUKTI",
+      "Path C:\\Users\\nepht\\AppData\\Local\\Temp\\hermes-import-journey-230\\import-evidence.voidworkspace (salinan artefak export run228) -> Enter",
+      "Dialog konflik target muncul: radio Fail/Skip/Adopt existing links + Cancel/Import -> pilih Skip (paling non-destruktif) -> Import -> dialog tertutup, app stabil, AX penuh"
+    ],
+    "close_1": "UIA Invoke 'Close' ~09:47 -> proses exit TAPI session.lock + .project.lock (pid 13972, openedAt 09:36:27) TERTINGGAL",
+    "reopen_recovery": "Launch pid 4504 -> ProjectSessionLock._recoverDeadOwnerMarker: tasklist PID-dead terbukti -> snapshot recovery/stale-session-1789181555635306/session.lock -> acquire baru (processId 4504) -> workspace terbuka normal via Continue writing. Tanpa blokade, tanpa data hilang.",
+    "close_2": "UIA Invoke 'Close' -> exit, TANPA residual lock (bersih)",
+    "db_ground_truth": "PRAGMA integrity_check ok; stories=1 (Skip = no-op untuk novel target yang sama, sesuai kontrak)",
+    "status": "VERIFIED (interaction native; sesi desktop tersedia)"
+  },
+  "finding_new": {
+    "id": "GAP-RUN230-CLOSE-LEFT-STALE-LOCK",
+    "severity": "Medium (mitigated: dead-owner recovery terbukti field, forensic snapshot tersimpan, tidak ada kehilangan data)",
+    "symptom": "Close jendela (UIA Invoke tombol Close / WM_CLOSE) pada sesi 13972 keluar tanpa melepas session.lock/.project.lock; close identik di sesi 4504 bersih. Run228 mencatat close bersih pada project yang sama.",
+    "hypotheses": "race proses-exit vs release async (import/workspace state), atau jalur exit berbeda saat scene editor punya draft pending 'Belum tersimpan'",
+    "next_action": "reproduksi terkontrol di cron: open->write draft->close berulang, pantau residual; JANGAN upgrade acceptance 145.27 sebelum root cause"
+  },
+  "scratch": "C:/Users/nepht/AppData/Local/Temp/hermes-import-journey-230/ (copy artefak; boleh dihapus)",
+  "code_changes": "NONE (slice verifikasi native; tidak ada file lib/test milik cron yang diutak-atik)"
+}

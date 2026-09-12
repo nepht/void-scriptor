@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "[run229-nephthys 2026-09-12 cron] GAP-IMPORT-NOVEL-UNWIRED (145.33) ditutup: resolver inject picker .voidworkspace (file_selector openFile, XFile->File) -> tombol Import Novel kini enabled saat session hidup. RED->GREEN focused 2/2; regression workspace+story 222 PASS; build windows debug PASS; commit 0179cf6 (ahead 9, no push). WIP sibling GAP-BACKUP-RESTORE-NO-UI (5 file project_resilience, penulis aktif pagi ini) dipreservasi tanpa sentuh - run berikut: cek sudah commit atau idle>24j sebelum ambil alih. Native picker journey UNVERIFIABLE dari cron. Pointer 145.27 tetap.",
+  "last_verified_step": "145.27 (PARTIAL; run230: native Import Novel journey VERIFIED, WIP restore sibling verified 7/7 read-only, GAP-RUN230-CLOSE-LEFT-STALE-LOCK recorded; pointer unchanged)",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-12T05:50:00+07:00",
-  "updated_by": "run228-nephthys",
+  "updated_at": "2026-09-12T10:00:00+07:00",
+  "updated_by": "run230-nephthys",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

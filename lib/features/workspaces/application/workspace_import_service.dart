@@ -65,9 +65,16 @@ final class WorkspaceImportService {
     WorkspaceImportCollisionChoice collisionChoice =
         WorkspaceImportCollisionChoice.fail,
   }) async {
-    // Collision pre-checks run BEFORE reading the archive: a missing or
-    // corrupt archive must not change which error an existing target raises.
-    if (expectedWorkspaceId != null) {
+    // vs-hunt-20260912n BUG-07/20: the pre-check belongs to the `fail`
+    // contract only. For `fail` a missing or corrupt archive must not change
+    // which error an existing target raises, so it still runs before reading
+    // the archive. For `skip` and `adoptExistingLinks` the caller has already
+    // decided an existing target is acceptable, so the archive must be
+    // validated first and the collision handled below — an unconditional
+    // early throw made both non-fail choices unreachable whenever the caller
+    // supplied an expected workspace ID.
+    if (expectedWorkspaceId != null &&
+        collisionChoice == WorkspaceImportCollisionChoice.fail) {
       final expectedTarget = files.novelDirectory(expectedWorkspaceId);
       if (await expectedTarget.exists()) {
         throw StateError(
@@ -75,18 +82,6 @@ final class WorkspaceImportService {
         );
       }
     }
-    final probeId = expectedWorkspaceId ?? await _peekWorkspaceId(archive);
-    final target = files.novelDirectory(probeId);
-    final hasCollision = await target.exists();
-    if (hasCollision &&
-        collisionChoice == WorkspaceImportCollisionChoice.skip) {
-      return WorkspaceRestoreResult(
-        workspaceId: probeId,
-        restoredLinkCount: 0,
-        skipped: true,
-      );
-    }
-
     final decoded = ZipDecoder().decodeBytes(
       await archive.readAsBytes(),
       verify: true,
@@ -114,6 +109,22 @@ final class WorkspaceImportService {
     }
     if (expectedWorkspaceId != null && expectedWorkspaceId != workspaceId) {
       throw const FormatException('Workspace ID does not match expectation');
+    }
+
+    // vs-hunt-20260912n BUG-07/20: the collision decision is taken against
+    // the archive's own validated workspace ID, AFTER the manifest proves the
+    // archive is a readable Novel export. A corrupt archive now reports its
+    // real error instead of being masked by a collision, and `skip` /
+    // `adoptExistingLinks` stay reachable with an expected workspace ID.
+    final target = files.novelDirectory(workspaceId);
+    final hasCollision = await target.exists();
+    if (hasCollision &&
+        collisionChoice == WorkspaceImportCollisionChoice.skip) {
+      return WorkspaceRestoreResult(
+        workspaceId: workspaceId,
+        restoredLinkCount: 0,
+        skipped: true,
+      );
     }
 
     // Validate BEFORE any mutation.
@@ -326,26 +337,5 @@ final class WorkspaceImportService {
       throw const FormatException('Missing workspace export manifest');
     }
     return jsonDecode(utf8.decode(entry.readBytes()!)) as Map<String, dynamic>;
-  }
-
-  /// Reads only the manifest entry to learn the workspace ID before any
-  /// mutation. Corrupt archives raise here; that is acceptable because the
-  /// default choice (`fail`) must reject collisions regardless.
-  Future<String> _peekWorkspaceId(File archive) async {
-    final decoded = ZipDecoder().decodeBytes(
-      await archive.readAsBytes(),
-      verify: true,
-    );
-    final entry = decoded.find('workspace.export.json');
-    if (entry == null || !entry.isFile) {
-      throw const FormatException('Missing workspace export manifest');
-    }
-    final manifest =
-        jsonDecode(utf8.decode(entry.readBytes()!)) as Map<String, dynamic>;
-    final id = manifest['workspaceId'];
-    if (id is! String || id.trim().isEmpty) {
-      throw const FormatException('Missing Novel workspace ID');
-    }
-    return id;
   }
 }

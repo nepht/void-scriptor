@@ -1,3 +1,25 @@
+### 2026-09-12 - nephthys (interaktif run251): wiring nyata user-controlled restore backup (145.34) + close gap restore-tanpa-caller
+
+- Status gap lama ('restore() tanpa caller UI') TUTUP. WIP sibling project_resilience
+  (flow+controller+screen+2 test, terakhir ditulis 06:52-08:36, tak ada proses agen lain yang
+  hidup) diverifikasi utuh dan matang, lalu diadopsi sebagai slice run251 BUKAN ditulis ulang:
+  ProjectBackupRestoreFlow.restoreBackupAndReopen = preview kompatibilitas -> tolak backup
+  schema lebih baru sebelum sesi ditutup (fail-closed, tanpa kehilangan sesi) -> close session
+  -> restoreBackup (ProjectBackupService.restore, emergency pre-restore backup, rollback) ->
+  reopen; layar ProjectResilience 'Restore Latest Backup' disabled saat tanpa backup, dialog
+  konfirmasi eksplisit, seam onRestoreConfirmed untuk test deterministik tanpa IO fake-async.
+- Snapshot kini memuat baris backups newest-first (projectResilienceRepository.backupsFor).
+- Gate: flutter test region project_resilience --concurrency=2 = +216 ~1 All tests passed
+  (216 PASS, 1 skip, 0 FAIL; log Temp/resil-run251.log); format slice FMT=0 (2 file test
+  di-format, ikut commit); analyze lib+test project_resilience No issues; diff --check bersih;
+  roadmap_guard exit 0 (last_resolved_step 145.26, canonical sha 86af6a53).
+- Commit 321de25 scoped 5 path (flow/controller/screen + 2 test); diff karakter sibling
+  (portrait/controller) TIDAK disentuh. Push origin+gitlab.
+- Catatan integritas: run250 mem-PARTIAL-kan 145.27 dan itu dipertahankan; slice ini menutup
+  145.34 sisi wiring, BUKAN acceptance penuh 145.34 (regresi native journey restore masih
+  terbuka bila dituntut matriks). Gap tersisa diketahui: BUG-25/26 Low run197, hunt autosave
+  blocked kuota delegation, keputusan produk 145.45-145.50 menunggu Choi.
+
 ### 2026-09-12 - nephthys (cron run250): regresi native draft-safety 145.27 di HEAD 7520878 (verifikasi murni)
 
 - Preflight: guard PASS (recommended_step 145.27, stability_gate PASS); conflict markers

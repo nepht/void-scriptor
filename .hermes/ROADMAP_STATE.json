@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run262 vs-hunt-20260913-bible VERIFIED (rantai delegate penuh lulus: Hunter 4 -> Skeptic 4 -> Referee 4 REAL, 0 Critical/2 Medium/2 Low; laporan docs/evidence/vs-hunt-20260913-bible/) + BUG-2 fix VERIFIED GREEN (pesan uniqueness tidak render value null; RED 2 falsified, focused 4 PASS, bible region 53 PASS, analyze No issues, build windows debug PASS 20.9s, commit 7dd299f scoped 2 file). Antrean sisa: BUG-1 (Medium, sceneBeats unbounded), BUG-3/BUG-4 (Low). run261 BUG-02 shell CLOSED (6e01cea) sebelumnya.",
+  "last_verified_step": "run263 vs-hunt-20260913-bible BUG-1 VERIFIED GREEN (collectSources dibatasi WHERE sceneId.isIn scene milik proyek; RED interceptor 1->0, focused 18 PASS, bible region 53 PASS, analyze No issues, build windows debug PASS 26.7s, commit d6abda6). Antrean bible sisa BUG-3/BUG-4 (Low). run262 BUG-2 closed (7dd299f) sebelumnya.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T05:05:00+07:00",
-  "updated_by": "nephthys-cron-run262",
+  "updated_at": "2026-09-13T05:10:00+07:00",
+  "updated_by": "nephthys-cron-run263",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

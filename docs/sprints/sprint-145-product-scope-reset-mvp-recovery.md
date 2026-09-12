@@ -1,3 +1,34 @@
+### 2026-09-13 - nephthys (cron run263): vs-hunt-20260913-bible BUG-1 query scope GREEN
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk 483cd97 (run262
+  ter-commit; ahead 2 — push tetap keputusan Choi). Conflict markers nihil;
+  diff-check exit 0; proses flutter/dart nihil. Sibling dirty DIPRESERVASI
+  TANPA SENTUH: autosave vertical story (coordinator/story_dao/project_database/
+  repository_impl/screen + test untracked) dan character region 3 file — belum
+  mendarat, A3 ACCEPT tetap antri setelah commit mereka. Single-writer
+  RELEASED_TO_HERMES diakui kembali.
+- Slice: tutup BUG-1 (Medium) antrean vs-hunt-20260913-bible —
+  LoreBacklinkService.collectSources melakukan SELECT seluruh tabel scene_beats
+  lalu hanya menyaring via guard titles.containsKey di Dart (beban penuh DB
+  lintas proyek tiap scan; beat asing dengan sceneId tabrakan bisa bocor).
+  TDD: RED lore_backlinks_query_scope_test.dart (QueryInterceptor menghitung
+  SELECT scene_beats tanpa WHERE; Expected 0 Actual 1 + fixture proyek-2
+  independen) -> GREEN where sceneId.isIn(scene milik proyek), guard Dart
+  dihapus (setuju pola retargetOccurrences:130). Regresi: focused 3 file 18
+  PASS; test/features/bible 53 PASS / 0 FAIL; analyze No issues; format bersih
+  2 file; diff-check exit 0; build windows debug PASS 26,7s. Commit scoped
+  d6abda6 (2 file). Perilaku hasil tetap sama — temuan Referee beban query,
+  bukan salah output; pembuktian lewat statement, bukan assertion data.
+- Sisa antrean vs-hunt-20260913-bible: BUG-3 (Low, CanonHealthSummary tanpa
+  field info), BUG-4 (Low, faction_image_importer save-gagal tinggalkan file
+  yatim — bandingkan timeline_era_image_importer sebelum patch).
+- Status: 145.27 tetap PARTIAL; pointer tidak bergerak; guard post-commit
+  dijadwalkan ulang di state update. Native interaction UNVERIFIABLE dari
+  cron (perbaikan murni batas query, dibuktikan interceptor deterministik).
+- Next action: run berikutnya (1) A3 ACCEPT review sibling autosave bila
+  sudah commit; (2) jika masih dirty, tutup BUG-3/BUG-4 antrean bible.
+
 ### 2026-09-13 - nephthys (cron run262): hunt region bible/application + BUG-2 uniqueness message GREEN (vs-hunt-20260913-bible)
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53, stream

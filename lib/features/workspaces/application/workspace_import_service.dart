@@ -402,6 +402,136 @@ final class WorkspaceImportService {
     }
   }
 
+  /// vs-hunt-20260912n BUG-17: symmetric counterpart of
+  /// [WorkspaceExportService.exportCharacter]. Before this, character
+  /// archives were write-only artifacts — `restoreNovel` hard-rejects any
+  /// non-novel manifest, so nothing could read them back.
+  ///
+  /// Scope contract: a character export carries ONLY workspace files. It has
+  /// no link manifest and no embedded canonical rows, so restore touches
+  /// neither `novel_character_links` nor the `characters` table; it validates
+  /// the same chain as the novel path (size cap BEFORE read, format/type/
+  /// version, workspace ID, collision decision) and then moves the extracted
+  /// files into the character namespace atomically.
+  Future<WorkspaceRestoreResult> restoreCharacter(
+    File archive, {
+    String? expectedWorkspaceId,
+    WorkspaceImportCollisionChoice collisionChoice =
+        WorkspaceImportCollisionChoice.fail,
+  }) async {
+    // Same ordering contract as restoreNovel (BUG-07/20): the early
+    // collision pre-check belongs to the `fail` choice only, so a corrupt
+    // archive reports its real error under `skip`.
+    if (expectedWorkspaceId != null &&
+        collisionChoice == WorkspaceImportCollisionChoice.fail) {
+      final expectedTarget = files.characterDirectory(expectedWorkspaceId);
+      if (await expectedTarget.exists()) {
+        throw StateError(
+          'Character workspace already exists; collision decision is '
+          'required.',
+        );
+      }
+    }
+    // BUG-12's bound applies to every archive read, not just the novel path.
+    final decoded = ZipDecoder().decodeBytes(
+      await readArchiveBytes(archive),
+      verify: true,
+    );
+    final manifestEntry = decoded.find('workspace.export.json');
+    if (manifestEntry == null || !manifestEntry.isFile) {
+      throw const FormatException('Missing workspace export manifest');
+    }
+    final manifest =
+        jsonDecode(utf8.decode(manifestEntry.readBytes()!))
+            as Map<String, dynamic>;
+    if (manifest['format'] != 'void-workspace-export' ||
+        manifest['workspaceType'] != 'character') {
+      throw const FormatException(
+        'Archive is not a Character workspace export',
+      );
+    }
+    if (manifest['version'] != 1) {
+      throw const FormatException(
+        'Unsupported Character workspace export version',
+      );
+    }
+    final workspaceId = manifest['workspaceId'] as String?;
+    if (workspaceId == null || workspaceId.trim().isEmpty) {
+      throw const FormatException('Missing Character workspace ID');
+    }
+    if (expectedWorkspaceId != null && expectedWorkspaceId != workspaceId) {
+      throw const FormatException('Workspace ID does not match expectation');
+    }
+    // adoptExistingLinks is a link-merging decision; a character archive
+    // declares no links, so offering it would silently do nothing useful.
+    if (collisionChoice == WorkspaceImportCollisionChoice.adoptExistingLinks) {
+      throw StateError(
+        'Character workspace exports have no link manifest; '
+        'adoptExistingLinks is not supported.',
+      );
+    }
+    final target = files.characterDirectory(workspaceId);
+    final hasCollision = await target.exists();
+    if (hasCollision &&
+        collisionChoice == WorkspaceImportCollisionChoice.skip) {
+      return WorkspaceRestoreResult(
+        workspaceId: workspaceId,
+        restoredLinkCount: 0,
+        skipped: true,
+      );
+    }
+    if (hasCollision) {
+      throw StateError(
+        'Character workspace already exists; collision decision is required.',
+      );
+    }
+
+    final staging = await Directory.systemTemp.createTemp(
+      'void-workspace-restore-character-',
+    );
+    var movedIntoPlace = false;
+    try {
+      for (final entry in decoded) {
+        if (!entry.isFile || entry.name == 'workspace.export.json') continue;
+        final normalized = p.posix.normalize(entry.name);
+        if (!normalized.startsWith('workspace/') ||
+            p.posix.isAbsolute(normalized)) {
+          throw const FormatException('Archive entry escapes workspace');
+        }
+        final relative = normalized.substring('workspace/'.length);
+        if (relative.isEmpty ||
+            relative == '..' ||
+            relative.startsWith('../')) {
+          throw const FormatException('Archive entry escapes workspace');
+        }
+        final output = File(p.join(staging.path, relative));
+        final resolved = p.normalize(p.absolute(output.path));
+        final stagingRoot = p.normalize(p.absolute(staging.path));
+        final fromRoot = p.relative(resolved, from: stagingRoot);
+        if (fromRoot == '..' || fromRoot.startsWith('..${p.separator}')) {
+          throw const FormatException('Archive entry escapes workspace');
+        }
+        await output.parent.create(recursive: true);
+        await output.writeAsBytes(entry.readBytes()!);
+      }
+      await target.parent.create(recursive: true);
+      await staging.rename(target.path);
+      movedIntoPlace = true;
+      return WorkspaceRestoreResult(
+        workspaceId: workspaceId,
+        restoredLinkCount: 0,
+        skipped: false,
+      );
+    } catch (_) {
+      if (movedIntoPlace && await target.exists()) {
+        await target.delete(recursive: true);
+      }
+      rethrow;
+    } finally {
+      if (await staging.exists()) await staging.delete(recursive: true);
+    }
+  }
+
   /// Reads the archive manifest without touching any workspace directory.
   /// Used by import actions to surface the declared character representation
   /// before the user commits to a collision decision.

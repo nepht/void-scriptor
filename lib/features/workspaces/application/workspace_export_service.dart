@@ -45,6 +45,7 @@ final class WorkspaceExportService {
     required Directory destination,
     WorkspaceCharacterRepresentation characterRepresentation =
         WorkspaceCharacterRepresentation.referenceManifest,
+    DateTime? exportedAt,
   }) async {
     final source = files.novelDirectory(novelWorkspaceId);
     final exportedLinks = await links.listForNovel(novelWorkspaceId);
@@ -69,6 +70,11 @@ final class WorkspaceExportService {
     }
 
     // Embedded snapshot / fork: carry each linked canonical character file.
+    // vs-hunt-20260912n BUG-13: provenance timestamps are truncated to whole
+    // seconds (and can be pinned by the caller) so an export of unchanged
+    // data is reproducible instead of embedding microsecond noise.
+    final provenanceExportedAt = (exportedAt ?? DateTime.now().toUtc())
+        .copyWith(microsecond: 0);
     final temp = await Directory.systemTemp.createTemp('void-workspace-embed-');
     try {
       final charactersDir = Directory(p.join(temp.path, 'characters'));
@@ -104,7 +110,7 @@ final class WorkspaceExportService {
               'sourceProjectId': package.projectId,
               'characterWorkspaceId': link.characterWorkspaceId,
               'linkMode': link.mode.name,
-              'exportedAt': DateTime.now().toUtc().toIso8601String(),
+              'exportedAt': provenanceExportedAt.toIso8601String(),
               'representation': characterRepresentation.manifestValue,
             },
           }),

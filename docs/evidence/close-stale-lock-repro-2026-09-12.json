@@ -1,0 +1,27 @@
+{
+  "run": 231,
+  "date": "2026-09-12",
+  "slice": "Reproduksi terkontrol GAP-RUN230-CLOSE-LEFT-STALE-LOCK (native WM_CLOSE, data uji temporer)",
+  "head": "2e1b424925f850482d0144bbcedd27b7e0ef0871",
+  "guard": {"pre_run_exit": 0, "recommended_step": "145.27", "canonical_sha256": "86af6a53a27fda4e7b5abc9b2a868550e4c0926977617ae3498381a76c4d5fa9"},
+  "ownership": {
+    "project_resilience_wip": "5 file sibling (2 M + 3 untracked) masih dirty, mtime terakhir 08:36; idle ~2,3 jam saat run — di bawah ambang takeover 24 jam run229; TIDAK disentuh/di-commit/di-format",
+    "decision": "tanpa mutasi source; slice = bukti reproduksi native saja"
+  },
+  "method": {
+    "harness": "Python ctypes (hermes-close-cycle-231b/231c, disposable, dihapus setelah run): EnumWindows by title 'Void Scriptor', force_foreground (AttachThreadInput+ALT tap), SetCursorPos+mouse_event klik 'Continue writing' (255,552), PostMessageW(WM_CLOSE) = jalur pesan asli tombol X",
+    "project": "7e90b57b 'UJI Journey Download 260912' (proyek uji run225+, BUKAN naskah pengguna)",
+    "note": "Sesi computer_use (cua-driver) mati pertengahan run (timeout -> session ended, revive ditolak driver); jalur diganti ctypes yang menghasilkan klik/WM_CLOSE ekuivalen. Premis: residual lock terjadi pada close di sesi dengan state hidup — proyek live dibuka lalu ditutup tiap siklus.",
+    "ps_round1": "Sebelumnya 2 siklus powershell CloseMainWindow (UIA-equivalent WM_CLOSE) dashboard+live-session juga bersih."
+  },
+  "results": {
+    "standard_cycles": {"count": 4, "project_opened": "4/4 (session.lock + .project.lock hidup sebelum close)", "exit_code": "0 semua", "residual_locks": "0/4", "timestamps_utc": ["03:49:47", "03:49:59", "03:50:11", "03:50:23"]},
+    "draft_variant": {"count": 1, "detail": "ketik 11 karakter ke editor setelah proyek terbuka, autosave/draft settle 1,5s, lalu WM_CLOSE", "residual_locks": "0/1", "cycle1_of_variant": "klik Continue writing meleset (dashboard belum siap, proyek tidak terbuka) — close tetap bersih; cycle2 valid: draft typed + bersih"},
+    "total_stale": "0 dari 7 close native terkontrol (5 cycle b termasuk 1 no-open, 2 cycle c, 2 powershell)"
+  },
+  "verdict": "TIDAK TERREPRODUKSI. Hipotesis run230 'race/transien' bertahan: kejadian 1/1 observasi (09:47), close kedua sesi itu bersih, dan 7 close scripted berikutnya bersih — termasuk jalur UIA Invoke yang sama (powershell CloseMainWindow = WM_CLOSE) dan jalur PostMessageW identik.release() fail-closed errno-32 tetap kandidat mekanisme tunggal yang paling masuk akal; jika terjadi lagi, snapshot recovery tetap membuktikan keamanan data.",
+  "status_gap": "GAP-RUN230-CLOSE-LEFT-STALE-LOCK: MITIGATED / NOT-REPRODUCIBLE (turunkan dari Medium ke Low monitoring; JANGAN upgrade acceptance 145.27 dari hasil negatif ini)",
+  "native_limitation": "Aksi native penuh (import dialog + Skip) sebelum close TIDAK tercakup loop ini — sesi run230 punya state import tepat sebelum close. Reproduksi presisi itu butuh computer_use hidup; sesi driver mati di run ini.",
+  "code_changes": "NONE",
+  "next_action": "Pantau residual pada tiap journey native berikutnya (cek lock bersih setelah close); bila terulang 1x lagi, pasang log timestamp release() di session manager sebelum upgrade. Keputusan Choi tetap tertunda: native session 145.27/42/44, 145.43-145.50, deploy hero (wrangler login), push (ahead 11)."
+}

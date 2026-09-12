@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-12T18:05:00+07:00",
-  "updated_by": "hermes-cron-run246",
+  "updated_at": "2026-09-12T18:55:00+07:00",
+  "updated_by": "hermes-cron-run247",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -73,12 +73,10 @@
     }
   },
   "novel_io_hunt_2026_09_12": {
-    "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/12/13/16/17/20 resolved (BUG-09 verified already-closed); 1 Low remains in fix queue",
+    "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
     "hunt": "vs-hunt-20260912n; Hunter 25 -> Referee confirmed 14 (0 Critical), dismissed 11; parent corrected BUG-18/19 as false positive (RadioGroup exists in SDK). Reports: docs/evidence/vs-hunt-20260912n/",
     "fix": "BUG-05 embedded character payload missing -> silent blank character on import. RED->GREEN in test/features/workspaces/workspace_import_missing_payload_test.dart; pre-mutation FormatException gate. Commit d130b18. Gates: workspaces 99 PASS, novel_io 4 PASS, analyzer scoped clean, diff-check 0, Windows debug build PASS.",
-    "queue_next_runs": [
-      "BUG-10 decode archive once during import (Low, Medium-confidence; re-verify at HEAD first)"
-    ],
+    "queue_next_runs": [],
     "scope_do_not_rescan": "novel export/import vertical; hashes in docs/evidence/vs-hunt-20260912n/novel_io_scope.json are PRE-run237..243 - refresh before any new hunt on this region",
     "pointer_note": "145.27 remains PARTIAL; hunt+fix recorded under 145.33 area; no pointer movement.",
     "fixed_run236": {
@@ -99,7 +97,7 @@
       "commit": "b9d69fe",
       "evidence": "test/features/workspaces/workspace_import_collision_precheck_test.dart RED(3 fail)->GREEN(4/4); workspaces dir 110 PASS; fail-contract test preserved; build windows debug PASS 92.3s (isolated worktree at f99600f)"
     },
-    "updated_at_note": "run246 2026-09-12T18:05+07:00 (pointer 145.27 unchanged; BUG-13 closed ec8f9e3; sibling dirty character/project_resilience preserved)",
+    "updated_at_note": "run247 2026-09-12T18:55+07:00 (pointer 145.27 unchanged; BUG-10 closed b29b4af; hunt queue drained; sibling dirty character/project_resilience/ai preserved)",
     "fixed_run241": {
       "id": "vs-hunt-20260912n BUG-12 (Medium, zip-bomb/memory DoS)",
       "defect": "restoreNovel + peekManifest did readAsBytes()+decode with no size bound; oversized archive exhausted memory before validation",
@@ -128,6 +126,12 @@
       "defect": "exportNovel embedded provenance used raw DateTime.now().toUtc().toIso8601String(); microsecond fractions made repeated exports of unchanged bytes non-identical and untestable",
       "commit": "ec8f9e3",
       "evidence": "test/features/workspaces/workspace_export_timestamp_determinism_test.dart RED compile-fail -> GREEN 3/3 (explicit exportedAt verbatim; default second-precision; pinned double export byte-identical payload); workspaces dir 127 PASS/0 FAIL; analyze scoped clean; format clean; diff-check 0; Windows debug build PASS 27.9s on main worktree; native UNVERIFIABLE (cron)"
+    },
+    "fixed_run247": {
+      "id": "vs-hunt-20260912n BUG-10 (Low, robustness/code-quality)",
+      "defect": "production import decoded the archive twice (peekCharacterRepresentation via peekManifest, then restoreNovel); two reads of a mutable file meant the manifest confirmed in the dialog was not necessarily the manifest restored",
+      "commit": "b29b4af",
+      "evidence": "test/features/workspaces/workspace_import_single_decode_test.dart RED compile-fail -> GREEN 5/5 (single decode, bounded cap, corrupt-after-peek cannot change restore, mismatched-file preflight rejected before mutation, manifest validation intact); regression test/features/workspaces 132 PASS + test/features/story 189 PASS / 0 FAIL; scoped analyze No issues; format clean; diff-check 0; Windows debug build PASS 34.7s on main worktree; native UNVERIFIABLE (cron)"
     }
   }
 }

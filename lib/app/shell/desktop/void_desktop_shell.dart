@@ -23,6 +23,17 @@ import '../../routing/app_routes.dart';
 import 'void_status_bar.dart';
 import 'void_top_bar.dart';
 
+/// vs-hunt-20260913-shell-settings BUG-02 (REAL Low, kontrak 145.37):
+/// Klik tab yang sudah menjadi destinasi aktif tidak boleh menumpuk halaman
+/// identik di stack navigasi (shell desktop tidak punya tombol back untuk
+/// destinasi dalam-shell). Destinasi berbeda tetap di-push agar affordance
+/// back AppBar bawaan sub-destination (Settings/Assets/Backups) dipertahankan.
+void _pushDistinctRoute(BuildContext context, String route) {
+  final current = GoRouterState.of(context).matchedLocation;
+  if (current == route) return;
+  context.push(route);
+}
+
 class VoidDesktopShell extends ConsumerWidget {
   const VoidDesktopShell({
     super.key,
@@ -122,7 +133,7 @@ class VoidDesktopShell extends ConsumerWidget {
                   return;
                 }
                 focusExplorerAsset(ref, assetType);
-                context.push(AppRoutes.workspace);
+                _pushDistinctRoute(context, AppRoutes.workspace);
                 return;
               }
               final route = switch (menu) {
@@ -149,7 +160,7 @@ class VoidDesktopShell extends ConsumerWidget {
                 'account-cloud' => AppRoutes.accountCloud,
                 _ => null,
               };
-              if (route != null) context.push(route);
+              if (route != null) _pushDistinctRoute(context, route);
             },
             onOpenSearch: session == null
                 ? null

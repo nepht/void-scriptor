@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:archive/archive_io.dart';
 import 'package:path/path.dart' as p;
@@ -43,16 +44,91 @@ final class WorkspaceRestoreResult {
   final bool skipped;
 }
 
+/// vs-hunt-20260912n BUG-12: an archive file larger than the configured cap
+/// is refused before any of its bytes are read into memory.
+final class WorkspaceArchiveTooLargeException implements Exception {
+  const WorkspaceArchiveTooLargeException({
+    required this.archivePath,
+    required this.archiveBytes,
+    required this.maxAllowedBytes,
+  });
+
+  final String archivePath;
+  final int archiveBytes;
+  final int maxAllowedBytes;
+
+  @override
+  String toString() =>
+      'Workspace archive exceeds the size cap: $archiveBytes bytes > '
+      '$maxAllowedBytes bytes ($archivePath).';
+}
+
 final class WorkspaceImportService {
+  /// Default cap for import archives. Novel workspace exports are text
+  /// payloads (drafts, references, embedded character JSON); anything past
+  /// this is either an accident or a hostile file, and the full archive is
+  /// decoded in memory, so the cap must exist BEFORE reading.
+  static const int defaultMaxArchiveBytes = 512 * 1024 * 1024; // 512 MiB
+
+  /// Runtime check (not an assert): a non-positive cap would silently
+  /// disable the guard in release builds.
+  static void validateMaxArchiveBytes(int maxArchiveBytes) {
+    if (maxArchiveBytes <= 0) {
+      throw ArgumentError.value(
+        maxArchiveBytes,
+        'maxArchiveBytes',
+        'must be a positive byte count',
+      );
+    }
+  }
+
   WorkspaceImportService({
     required this.package,
     required this.links,
     data.ProjectDatabase? database,
+    this.maxArchiveBytes = defaultMaxArchiveBytes,
   }) : database = database ?? links.database,
-       files = WorkspaceFileNamespace(package);
+       files = WorkspaceFileNamespace(package) {
+    validateMaxArchiveBytes(maxArchiveBytes);
+  }
 
   final ProjectPackage package;
   final NovelCharacterLinkRepository links;
+
+  /// vs-hunt-20260912n BUG-12: hard bound on archive size, checked against
+  /// the file's length BEFORE `readAsBytes()` so an oversized file never
+  /// reaches memory.
+  final int maxArchiveBytes;
+
+  /// Reads the whole archive only after its size clears [maxArchiveBytes].
+  Future<Uint8List> readArchiveBytes(File archive) async {
+    final size = await archive.length();
+    if (size > maxArchiveBytes) {
+      throw WorkspaceArchiveTooLargeException(
+        archivePath: archive.path,
+        archiveBytes: size,
+        maxAllowedBytes: maxArchiveBytes,
+      );
+    }
+    return archive.readAsBytes();
+  }
+
+  /// Shared gate for the static peek path: same bound as the instance guard.
+  static Future<Uint8List> readArchiveBytesBounded(
+    File archive, {
+    required int maxArchiveBytes,
+  }) async {
+    validateMaxArchiveBytes(maxArchiveBytes);
+    final size = await archive.length();
+    if (size > maxArchiveBytes) {
+      throw WorkspaceArchiveTooLargeException(
+        archivePath: archive.path,
+        archiveBytes: size,
+        maxAllowedBytes: maxArchiveBytes,
+      );
+    }
+    return archive.readAsBytes();
+  }
 
   /// Canonical character store used to materialize embedded snapshot/fork
   /// exports. Defaults to the link repository's own database.
@@ -82,8 +158,10 @@ final class WorkspaceImportService {
         );
       }
     }
+    // vs-hunt-20260912n BUG-12: the size cap gates the read itself, so an
+    // oversized file is refused before its bytes enter memory.
     final decoded = ZipDecoder().decodeBytes(
-      await archive.readAsBytes(),
+      await readArchiveBytes(archive),
       verify: true,
     );
     final manifestEntry = decoded.find('workspace.export.json');
@@ -327,9 +405,16 @@ final class WorkspaceImportService {
   /// Reads the archive manifest without touching any workspace directory.
   /// Used by import actions to surface the declared character representation
   /// before the user commits to a collision decision.
-  static Future<Map<String, dynamic>> peekManifest(File archive) async {
+  ///
+  /// vs-hunt-20260912n BUG-12: peek runs BEFORE restore in the production
+  /// flow, so it enforces the same size cap — otherwise the guard would only
+  /// exist on the second read of the file.
+  static Future<Map<String, dynamic>> peekManifest(
+    File archive, {
+    int maxArchiveBytes = defaultMaxArchiveBytes,
+  }) async {
     final decoded = ZipDecoder().decodeBytes(
-      await archive.readAsBytes(),
+      await readArchiveBytesBounded(archive, maxArchiveBytes: maxArchiveBytes),
       verify: true,
     );
     final entry = decoded.find('workspace.export.json');

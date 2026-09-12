@@ -344,7 +344,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 60;
+  static const currentSchemaVersion = 61;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -715,6 +715,14 @@ class ProjectDatabase extends _$ProjectDatabase {
       if (from < 60) {
         await m.createTable(characterNarrativeAssignments);
         await m.createTable(characterSupportRelationships);
+      }
+      if (from < 61) {
+        if (!await _columnExists('factions', 'image_path')) {
+          await m.addColumn(factions, factions.imagePath);
+        }
+        if (!await _columnExists('timeline_eras', 'image_path')) {
+          await m.addColumn(timelineEras, timelineEras.imagePath);
+        }
       }
     },
   );

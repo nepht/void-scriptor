@@ -28,7 +28,7 @@ void main() {
 
   group('105.7 database schema freeze', () {
     test('locked at v60 with no silent changes', () {
-      expect(ProjectDatabase.currentSchemaVersion, 60);
+      expect(ProjectDatabase.currentSchemaVersion, 61);
     });
   });
 

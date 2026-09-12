@@ -37,11 +37,16 @@ class AssetThumbnailCard extends ConsumerStatefulWidget {
     required this.assetId,
     required this.title,
     required this.placeholderIcon,
+    this.aspectRatio = 4 / 5,
   });
 
   final String assetId;
   final String title;
   final IconData placeholderIcon;
+
+  /// Visual box shape; workspace cards use 4/5 while the environment
+  /// location preview keeps its historical 16/9.
+  final double aspectRatio;
 
   @override
   ConsumerState<AssetThumbnailCard> createState() => _AssetThumbnailCardState();
@@ -92,7 +97,7 @@ class _AssetThumbnailCardState extends ConsumerState<AssetThumbnailCard> {
           Text(widget.title, style: VoidTypography.headingMedium),
           const SizedBox(height: 14),
           AspectRatio(
-            aspectRatio: 4 / 5,
+            aspectRatio: widget.aspectRatio,
             child: Container(
               decoration: BoxDecoration(
                 color: context.palette.surfaceElevated,

@@ -8,6 +8,7 @@ class Factions extends Table {
   TextColumn get ideology => text().withDefault(const Constant(''))();
   TextColumn get status => text().withDefault(const Constant('active'))();
   TextColumn get headquarters => text().withDefault(const Constant(''))();
+  TextColumn get imagePath => text().withDefault(const Constant(''))();
 
   @override
   Set<Column<Object>> get primaryKey => {assetId};

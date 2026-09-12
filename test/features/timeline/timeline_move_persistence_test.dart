@@ -69,6 +69,6 @@ void main() {
     final reopenedClip = (await restarted.getClips(timelineId)).single;
     expect(reopenedClip.startSeconds, 3);
     expect(reopenedClip.durationSeconds, 2);
-    expect(second.schemaVersion, 60);
+    expect(second.schemaVersion, 61);
   });
 }

@@ -55,7 +55,7 @@ void main() {
     final second = await service.open(dbPath);
     addTearDown(second.close);
     final restored = AudioTimelineRepository(second);
-    expect(second.schemaVersion, 60);
+    expect(second.schemaVersion, 61);
     expect(
       (await restored.clipsForTimeline(
         'timeline-scene-8',

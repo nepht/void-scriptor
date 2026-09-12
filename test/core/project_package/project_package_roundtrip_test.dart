@@ -42,7 +42,7 @@ void main() {
       package.databaseFile.path,
     );
     addTearDown(second.close);
-    expect(second.schemaVersion, 60);
+    expect(second.schemaVersion, 61);
     expect(second.schemaVersion, greaterThan(0));
   });
 }

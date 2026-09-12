@@ -22,6 +22,7 @@ class FactionRepository extends DatabaseAccessor<ProjectDatabase>
           ideology: Value(faction.ideology),
           status: Value(faction.status),
           headquarters: Value(faction.headquarters),
+          imagePath: Value(faction.imagePath),
         ),
       );
 
@@ -38,6 +39,7 @@ class FactionRepository extends DatabaseAccessor<ProjectDatabase>
       ideology: row.ideology,
       status: row.status,
       headquarters: row.headquarters,
+      imagePath: row.imagePath,
     );
   }
 
@@ -98,6 +100,7 @@ class FactionRepository extends DatabaseAccessor<ProjectDatabase>
             ideology: row.ideology,
             status: row.status,
             headquarters: row.headquarters,
+            imagePath: row.imagePath,
           ),
         )
         .toList(growable: false);

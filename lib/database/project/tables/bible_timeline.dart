@@ -22,6 +22,7 @@ class TimelineEras extends Table {
   IntColumn get orderIndex => integer()();
   TextColumn get startLabel => text().nullable()();
   TextColumn get endLabel => text().nullable()();
+  TextColumn get imagePath => text().withDefault(const Constant(''))();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

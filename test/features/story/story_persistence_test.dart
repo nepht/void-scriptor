@@ -115,6 +115,6 @@ void main() {
     final docxBytes = await docxFile.readAsBytes();
     expect(docxBytes.take(2), orderedEquals([0x50, 0x4b]));
     expect(docxBytes.length, greaterThan(500));
-    expect(second.schemaVersion, 60);
+    expect(second.schemaVersion, 61);
   });
 }

@@ -10,7 +10,7 @@ void main() {
   test('schema version is 57', () {
     // Pin mengikuti currentSchemaVersion; 60 = workspaces 145.25/145.26
     // (822fd8b). Naikkan bersama tiap migrasi baru.
-    expect(ProjectDatabase.currentSchemaVersion, 60);
+    expect(ProjectDatabase.currentSchemaVersion, 61);
   });
 
   test('layout_presets and project_layout_states roundtrip', () async {

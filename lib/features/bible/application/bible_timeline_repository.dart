@@ -43,7 +43,29 @@ class BibleTimelineRepository extends DatabaseAccessor<ProjectDatabase>
           orderIndex: item.orderIndex,
           startLabel: Value(item.startLabel),
           endLabel: Value(item.endLabel),
+          imagePath: Value(item.imagePath),
         ),
+      );
+
+  /// run236: era lookup by primary key (id is globally unique), used by the
+  /// image importer which does not know the owning project up front.
+  Future<List<era_domain.TimelineEraModel>> listErasById(String id) async {
+    final rows = await (select(
+      timelineEras,
+    )..where((item) => item.id.equals(id))).get();
+    return rows.map(_toEraModel).toList(growable: false);
+  }
+
+  era_domain.TimelineEraModel _toEraModel(TimelineEra row) =>
+      era_domain.TimelineEraModel(
+        id: row.id,
+        projectId: row.projectId,
+        name: row.name,
+        description: row.description,
+        orderIndex: row.orderIndex,
+        startLabel: row.startLabel,
+        endLabel: row.endLabel,
+        imagePath: row.imagePath,
       );
 
   Future<void> saveHistoricalEvent(event_domain.HistoricalEventModel item) =>
@@ -76,19 +98,7 @@ class BibleTimelineRepository extends DatabaseAccessor<ProjectDatabase>
               ..where((item) => item.projectId.equals(projectId))
               ..orderBy([(item) => OrderingTerm(expression: item.orderIndex)]))
             .get();
-    return rows
-        .map(
-          (row) => era_domain.TimelineEraModel(
-            id: row.id,
-            projectId: row.projectId,
-            name: row.name,
-            description: row.description,
-            orderIndex: row.orderIndex,
-            startLabel: row.startLabel,
-            endLabel: row.endLabel,
-          ),
-        )
-        .toList(growable: false);
+    return rows.map(_toEraModel).toList(growable: false);
   }
 
   Future<List<event_domain.HistoricalEventParticipantModel>> participantsFor(

@@ -36436,6 +36436,18 @@ class $FactionsTable extends Factions with TableInfo<$FactionsTable, Faction> {
     requiredDuringInsert: false,
     defaultValue: const Constant(''),
   );
+  static const VerificationMeta _imagePathMeta = const VerificationMeta(
+    'imagePath',
+  );
+  @override
+  late final GeneratedColumn<String> imagePath = GeneratedColumn<String>(
+    'image_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     assetId,
@@ -36445,6 +36457,7 @@ class $FactionsTable extends Factions with TableInfo<$FactionsTable, Faction> {
     ideology,
     status,
     headquarters,
+    imagePath,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -36512,6 +36525,12 @@ class $FactionsTable extends Factions with TableInfo<$FactionsTable, Faction> {
         ),
       );
     }
+    if (data.containsKey('image_path')) {
+      context.handle(
+        _imagePathMeta,
+        imagePath.isAcceptableOrUnknown(data['image_path']!, _imagePathMeta),
+      );
+    }
     return context;
   }
 
@@ -36549,6 +36568,10 @@ class $FactionsTable extends Factions with TableInfo<$FactionsTable, Faction> {
         DriftSqlType.string,
         data['${effectivePrefix}headquarters'],
       )!,
+      imagePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}image_path'],
+      )!,
     );
   }
 
@@ -36566,6 +36589,7 @@ class Faction extends DataClass implements Insertable<Faction> {
   final String ideology;
   final String status;
   final String headquarters;
+  final String imagePath;
   const Faction({
     required this.assetId,
     required this.projectId,
@@ -36574,6 +36598,7 @@ class Faction extends DataClass implements Insertable<Faction> {
     required this.ideology,
     required this.status,
     required this.headquarters,
+    required this.imagePath,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -36585,6 +36610,7 @@ class Faction extends DataClass implements Insertable<Faction> {
     map['ideology'] = Variable<String>(ideology);
     map['status'] = Variable<String>(status);
     map['headquarters'] = Variable<String>(headquarters);
+    map['image_path'] = Variable<String>(imagePath);
     return map;
   }
 
@@ -36597,6 +36623,7 @@ class Faction extends DataClass implements Insertable<Faction> {
       ideology: Value(ideology),
       status: Value(status),
       headquarters: Value(headquarters),
+      imagePath: Value(imagePath),
     );
   }
 
@@ -36613,6 +36640,7 @@ class Faction extends DataClass implements Insertable<Faction> {
       ideology: serializer.fromJson<String>(json['ideology']),
       status: serializer.fromJson<String>(json['status']),
       headquarters: serializer.fromJson<String>(json['headquarters']),
+      imagePath: serializer.fromJson<String>(json['imagePath']),
     );
   }
   @override
@@ -36626,6 +36654,7 @@ class Faction extends DataClass implements Insertable<Faction> {
       'ideology': serializer.toJson<String>(ideology),
       'status': serializer.toJson<String>(status),
       'headquarters': serializer.toJson<String>(headquarters),
+      'imagePath': serializer.toJson<String>(imagePath),
     };
   }
 
@@ -36637,6 +36666,7 @@ class Faction extends DataClass implements Insertable<Faction> {
     String? ideology,
     String? status,
     String? headquarters,
+    String? imagePath,
   }) => Faction(
     assetId: assetId ?? this.assetId,
     projectId: projectId ?? this.projectId,
@@ -36645,6 +36675,7 @@ class Faction extends DataClass implements Insertable<Faction> {
     ideology: ideology ?? this.ideology,
     status: status ?? this.status,
     headquarters: headquarters ?? this.headquarters,
+    imagePath: imagePath ?? this.imagePath,
   );
   Faction copyWithCompanion(FactionsCompanion data) {
     return Faction(
@@ -36659,6 +36690,7 @@ class Faction extends DataClass implements Insertable<Faction> {
       headquarters: data.headquarters.present
           ? data.headquarters.value
           : this.headquarters,
+      imagePath: data.imagePath.present ? data.imagePath.value : this.imagePath,
     );
   }
 
@@ -36671,7 +36703,8 @@ class Faction extends DataClass implements Insertable<Faction> {
           ..write('description: $description, ')
           ..write('ideology: $ideology, ')
           ..write('status: $status, ')
-          ..write('headquarters: $headquarters')
+          ..write('headquarters: $headquarters, ')
+          ..write('imagePath: $imagePath')
           ..write(')'))
         .toString();
   }
@@ -36685,6 +36718,7 @@ class Faction extends DataClass implements Insertable<Faction> {
     ideology,
     status,
     headquarters,
+    imagePath,
   );
   @override
   bool operator ==(Object other) =>
@@ -36696,7 +36730,8 @@ class Faction extends DataClass implements Insertable<Faction> {
           other.description == this.description &&
           other.ideology == this.ideology &&
           other.status == this.status &&
-          other.headquarters == this.headquarters);
+          other.headquarters == this.headquarters &&
+          other.imagePath == this.imagePath);
 }
 
 class FactionsCompanion extends UpdateCompanion<Faction> {
@@ -36707,6 +36742,7 @@ class FactionsCompanion extends UpdateCompanion<Faction> {
   final Value<String> ideology;
   final Value<String> status;
   final Value<String> headquarters;
+  final Value<String> imagePath;
   final Value<int> rowid;
   const FactionsCompanion({
     this.assetId = const Value.absent(),
@@ -36716,6 +36752,7 @@ class FactionsCompanion extends UpdateCompanion<Faction> {
     this.ideology = const Value.absent(),
     this.status = const Value.absent(),
     this.headquarters = const Value.absent(),
+    this.imagePath = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   FactionsCompanion.insert({
@@ -36726,6 +36763,7 @@ class FactionsCompanion extends UpdateCompanion<Faction> {
     this.ideology = const Value.absent(),
     this.status = const Value.absent(),
     this.headquarters = const Value.absent(),
+    this.imagePath = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : assetId = Value(assetId),
        projectId = Value(projectId),
@@ -36738,6 +36776,7 @@ class FactionsCompanion extends UpdateCompanion<Faction> {
     Expression<String>? ideology,
     Expression<String>? status,
     Expression<String>? headquarters,
+    Expression<String>? imagePath,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -36748,6 +36787,7 @@ class FactionsCompanion extends UpdateCompanion<Faction> {
       if (ideology != null) 'ideology': ideology,
       if (status != null) 'status': status,
       if (headquarters != null) 'headquarters': headquarters,
+      if (imagePath != null) 'image_path': imagePath,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -36760,6 +36800,7 @@ class FactionsCompanion extends UpdateCompanion<Faction> {
     Value<String>? ideology,
     Value<String>? status,
     Value<String>? headquarters,
+    Value<String>? imagePath,
     Value<int>? rowid,
   }) {
     return FactionsCompanion(
@@ -36770,6 +36811,7 @@ class FactionsCompanion extends UpdateCompanion<Faction> {
       ideology: ideology ?? this.ideology,
       status: status ?? this.status,
       headquarters: headquarters ?? this.headquarters,
+      imagePath: imagePath ?? this.imagePath,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -36798,6 +36840,9 @@ class FactionsCompanion extends UpdateCompanion<Faction> {
     if (headquarters.present) {
       map['headquarters'] = Variable<String>(headquarters.value);
     }
+    if (imagePath.present) {
+      map['image_path'] = Variable<String>(imagePath.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -36814,6 +36859,7 @@ class FactionsCompanion extends UpdateCompanion<Faction> {
           ..write('ideology: $ideology, ')
           ..write('status: $status, ')
           ..write('headquarters: $headquarters, ')
+          ..write('imagePath: $imagePath, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -40524,6 +40570,18 @@ class $TimelineErasTable extends TimelineEras
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _imagePathMeta = const VerificationMeta(
+    'imagePath',
+  );
+  @override
+  late final GeneratedColumn<String> imagePath = GeneratedColumn<String>(
+    'image_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -40533,6 +40591,7 @@ class $TimelineErasTable extends TimelineEras
     orderIndex,
     startLabel,
     endLabel,
+    imagePath,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -40596,6 +40655,12 @@ class $TimelineErasTable extends TimelineEras
         endLabel.isAcceptableOrUnknown(data['end_label']!, _endLabelMeta),
       );
     }
+    if (data.containsKey('image_path')) {
+      context.handle(
+        _imagePathMeta,
+        imagePath.isAcceptableOrUnknown(data['image_path']!, _imagePathMeta),
+      );
+    }
     return context;
   }
 
@@ -40633,6 +40698,10 @@ class $TimelineErasTable extends TimelineEras
         DriftSqlType.string,
         data['${effectivePrefix}end_label'],
       ),
+      imagePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}image_path'],
+      )!,
     );
   }
 
@@ -40650,6 +40719,7 @@ class TimelineEra extends DataClass implements Insertable<TimelineEra> {
   final int orderIndex;
   final String? startLabel;
   final String? endLabel;
+  final String imagePath;
   const TimelineEra({
     required this.id,
     required this.projectId,
@@ -40658,6 +40728,7 @@ class TimelineEra extends DataClass implements Insertable<TimelineEra> {
     required this.orderIndex,
     this.startLabel,
     this.endLabel,
+    required this.imagePath,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -40673,6 +40744,7 @@ class TimelineEra extends DataClass implements Insertable<TimelineEra> {
     if (!nullToAbsent || endLabel != null) {
       map['end_label'] = Variable<String>(endLabel);
     }
+    map['image_path'] = Variable<String>(imagePath);
     return map;
   }
 
@@ -40689,6 +40761,7 @@ class TimelineEra extends DataClass implements Insertable<TimelineEra> {
       endLabel: endLabel == null && nullToAbsent
           ? const Value.absent()
           : Value(endLabel),
+      imagePath: Value(imagePath),
     );
   }
 
@@ -40705,6 +40778,7 @@ class TimelineEra extends DataClass implements Insertable<TimelineEra> {
       orderIndex: serializer.fromJson<int>(json['orderIndex']),
       startLabel: serializer.fromJson<String?>(json['startLabel']),
       endLabel: serializer.fromJson<String?>(json['endLabel']),
+      imagePath: serializer.fromJson<String>(json['imagePath']),
     );
   }
   @override
@@ -40718,6 +40792,7 @@ class TimelineEra extends DataClass implements Insertable<TimelineEra> {
       'orderIndex': serializer.toJson<int>(orderIndex),
       'startLabel': serializer.toJson<String?>(startLabel),
       'endLabel': serializer.toJson<String?>(endLabel),
+      'imagePath': serializer.toJson<String>(imagePath),
     };
   }
 
@@ -40729,6 +40804,7 @@ class TimelineEra extends DataClass implements Insertable<TimelineEra> {
     int? orderIndex,
     Value<String?> startLabel = const Value.absent(),
     Value<String?> endLabel = const Value.absent(),
+    String? imagePath,
   }) => TimelineEra(
     id: id ?? this.id,
     projectId: projectId ?? this.projectId,
@@ -40737,6 +40813,7 @@ class TimelineEra extends DataClass implements Insertable<TimelineEra> {
     orderIndex: orderIndex ?? this.orderIndex,
     startLabel: startLabel.present ? startLabel.value : this.startLabel,
     endLabel: endLabel.present ? endLabel.value : this.endLabel,
+    imagePath: imagePath ?? this.imagePath,
   );
   TimelineEra copyWithCompanion(TimelineErasCompanion data) {
     return TimelineEra(
@@ -40753,6 +40830,7 @@ class TimelineEra extends DataClass implements Insertable<TimelineEra> {
           ? data.startLabel.value
           : this.startLabel,
       endLabel: data.endLabel.present ? data.endLabel.value : this.endLabel,
+      imagePath: data.imagePath.present ? data.imagePath.value : this.imagePath,
     );
   }
 
@@ -40765,7 +40843,8 @@ class TimelineEra extends DataClass implements Insertable<TimelineEra> {
           ..write('description: $description, ')
           ..write('orderIndex: $orderIndex, ')
           ..write('startLabel: $startLabel, ')
-          ..write('endLabel: $endLabel')
+          ..write('endLabel: $endLabel, ')
+          ..write('imagePath: $imagePath')
           ..write(')'))
         .toString();
   }
@@ -40779,6 +40858,7 @@ class TimelineEra extends DataClass implements Insertable<TimelineEra> {
     orderIndex,
     startLabel,
     endLabel,
+    imagePath,
   );
   @override
   bool operator ==(Object other) =>
@@ -40790,7 +40870,8 @@ class TimelineEra extends DataClass implements Insertable<TimelineEra> {
           other.description == this.description &&
           other.orderIndex == this.orderIndex &&
           other.startLabel == this.startLabel &&
-          other.endLabel == this.endLabel);
+          other.endLabel == this.endLabel &&
+          other.imagePath == this.imagePath);
 }
 
 class TimelineErasCompanion extends UpdateCompanion<TimelineEra> {
@@ -40801,6 +40882,7 @@ class TimelineErasCompanion extends UpdateCompanion<TimelineEra> {
   final Value<int> orderIndex;
   final Value<String?> startLabel;
   final Value<String?> endLabel;
+  final Value<String> imagePath;
   final Value<int> rowid;
   const TimelineErasCompanion({
     this.id = const Value.absent(),
@@ -40810,6 +40892,7 @@ class TimelineErasCompanion extends UpdateCompanion<TimelineEra> {
     this.orderIndex = const Value.absent(),
     this.startLabel = const Value.absent(),
     this.endLabel = const Value.absent(),
+    this.imagePath = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TimelineErasCompanion.insert({
@@ -40820,6 +40903,7 @@ class TimelineErasCompanion extends UpdateCompanion<TimelineEra> {
     required int orderIndex,
     this.startLabel = const Value.absent(),
     this.endLabel = const Value.absent(),
+    this.imagePath = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        projectId = Value(projectId),
@@ -40833,6 +40917,7 @@ class TimelineErasCompanion extends UpdateCompanion<TimelineEra> {
     Expression<int>? orderIndex,
     Expression<String>? startLabel,
     Expression<String>? endLabel,
+    Expression<String>? imagePath,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -40843,6 +40928,7 @@ class TimelineErasCompanion extends UpdateCompanion<TimelineEra> {
       if (orderIndex != null) 'order_index': orderIndex,
       if (startLabel != null) 'start_label': startLabel,
       if (endLabel != null) 'end_label': endLabel,
+      if (imagePath != null) 'image_path': imagePath,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -40855,6 +40941,7 @@ class TimelineErasCompanion extends UpdateCompanion<TimelineEra> {
     Value<int>? orderIndex,
     Value<String?>? startLabel,
     Value<String?>? endLabel,
+    Value<String>? imagePath,
     Value<int>? rowid,
   }) {
     return TimelineErasCompanion(
@@ -40865,6 +40952,7 @@ class TimelineErasCompanion extends UpdateCompanion<TimelineEra> {
       orderIndex: orderIndex ?? this.orderIndex,
       startLabel: startLabel ?? this.startLabel,
       endLabel: endLabel ?? this.endLabel,
+      imagePath: imagePath ?? this.imagePath,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -40893,6 +40981,9 @@ class TimelineErasCompanion extends UpdateCompanion<TimelineEra> {
     if (endLabel.present) {
       map['end_label'] = Variable<String>(endLabel.value);
     }
+    if (imagePath.present) {
+      map['image_path'] = Variable<String>(imagePath.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -40909,6 +41000,7 @@ class TimelineErasCompanion extends UpdateCompanion<TimelineEra> {
           ..write('orderIndex: $orderIndex, ')
           ..write('startLabel: $startLabel, ')
           ..write('endLabel: $endLabel, ')
+          ..write('imagePath: $imagePath, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -93750,6 +93842,7 @@ typedef $$FactionsTableCreateCompanionBuilder =
       Value<String> ideology,
       Value<String> status,
       Value<String> headquarters,
+      Value<String> imagePath,
       Value<int> rowid,
     });
 typedef $$FactionsTableUpdateCompanionBuilder =
@@ -93761,6 +93854,7 @@ typedef $$FactionsTableUpdateCompanionBuilder =
       Value<String> ideology,
       Value<String> status,
       Value<String> headquarters,
+      Value<String> imagePath,
       Value<int> rowid,
     });
 
@@ -93805,6 +93899,11 @@ class $$FactionsTableFilterComposer
 
   ColumnFilters<String> get headquarters => $composableBuilder(
     column: $table.headquarters,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get imagePath => $composableBuilder(
+    column: $table.imagePath,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -93852,6 +93951,11 @@ class $$FactionsTableOrderingComposer
     column: $table.headquarters,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get imagePath => $composableBuilder(
+    column: $table.imagePath,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$FactionsTableAnnotationComposer
@@ -93887,6 +93991,9 @@ class $$FactionsTableAnnotationComposer
     column: $table.headquarters,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get imagePath =>
+      $composableBuilder(column: $table.imagePath, builder: (column) => column);
 }
 
 class $$FactionsTableTableManager
@@ -93924,6 +94031,7 @@ class $$FactionsTableTableManager
                 Value<String> ideology = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<String> headquarters = const Value.absent(),
+                Value<String> imagePath = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FactionsCompanion(
                 assetId: assetId,
@@ -93933,6 +94041,7 @@ class $$FactionsTableTableManager
                 ideology: ideology,
                 status: status,
                 headquarters: headquarters,
+                imagePath: imagePath,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -93944,6 +94053,7 @@ class $$FactionsTableTableManager
                 Value<String> ideology = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<String> headquarters = const Value.absent(),
+                Value<String> imagePath = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FactionsCompanion.insert(
                 assetId: assetId,
@@ -93953,6 +94063,7 @@ class $$FactionsTableTableManager
                 ideology: ideology,
                 status: status,
                 headquarters: headquarters,
+                imagePath: imagePath,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -95925,6 +96036,7 @@ typedef $$TimelineErasTableCreateCompanionBuilder =
       required int orderIndex,
       Value<String?> startLabel,
       Value<String?> endLabel,
+      Value<String> imagePath,
       Value<int> rowid,
     });
 typedef $$TimelineErasTableUpdateCompanionBuilder =
@@ -95936,6 +96048,7 @@ typedef $$TimelineErasTableUpdateCompanionBuilder =
       Value<int> orderIndex,
       Value<String?> startLabel,
       Value<String?> endLabel,
+      Value<String> imagePath,
       Value<int> rowid,
     });
 
@@ -95980,6 +96093,11 @@ class $$TimelineErasTableFilterComposer
 
   ColumnFilters<String> get endLabel => $composableBuilder(
     column: $table.endLabel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get imagePath => $composableBuilder(
+    column: $table.imagePath,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -96027,6 +96145,11 @@ class $$TimelineErasTableOrderingComposer
     column: $table.endLabel,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get imagePath => $composableBuilder(
+    column: $table.imagePath,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TimelineErasTableAnnotationComposer
@@ -96064,6 +96187,9 @@ class $$TimelineErasTableAnnotationComposer
 
   GeneratedColumn<String> get endLabel =>
       $composableBuilder(column: $table.endLabel, builder: (column) => column);
+
+  GeneratedColumn<String> get imagePath =>
+      $composableBuilder(column: $table.imagePath, builder: (column) => column);
 }
 
 class $$TimelineErasTableTableManager
@@ -96106,6 +96232,7 @@ class $$TimelineErasTableTableManager
                 Value<int> orderIndex = const Value.absent(),
                 Value<String?> startLabel = const Value.absent(),
                 Value<String?> endLabel = const Value.absent(),
+                Value<String> imagePath = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TimelineErasCompanion(
                 id: id,
@@ -96115,6 +96242,7 @@ class $$TimelineErasTableTableManager
                 orderIndex: orderIndex,
                 startLabel: startLabel,
                 endLabel: endLabel,
+                imagePath: imagePath,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -96126,6 +96254,7 @@ class $$TimelineErasTableTableManager
                 required int orderIndex,
                 Value<String?> startLabel = const Value.absent(),
                 Value<String?> endLabel = const Value.absent(),
+                Value<String> imagePath = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TimelineErasCompanion.insert(
                 id: id,
@@ -96135,6 +96264,7 @@ class $$TimelineErasTableTableManager
                 orderIndex: orderIndex,
                 startLabel: startLabel,
                 endLabel: endLabel,
+                imagePath: imagePath,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

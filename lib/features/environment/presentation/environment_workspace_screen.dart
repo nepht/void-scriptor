@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../assets/presentation/widgets/asset_thumbnail_card.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 import '../data/environment_repository_impl.dart';
 import '../domain/environment_model.dart';
@@ -47,7 +48,7 @@ class EnvironmentWorkspaceScreen extends ConsumerWidget {
                 if (width < 760)
                   Column(
                     children: [
-                      const _EnvironmentPreviewCard(),
+                      _EnvironmentPreviewCard(environmentId: environmentId),
                       const SizedBox(height: 12),
                       _EnvironmentInfoCard(model: model),
                     ],
@@ -56,7 +57,11 @@ class EnvironmentWorkspaceScreen extends ConsumerWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Expanded(child: _EnvironmentPreviewCard()),
+                      Expanded(
+                        child: _EnvironmentPreviewCard(
+                          environmentId: environmentId,
+                        ),
+                      ),
                       const SizedBox(width: 12),
                       Expanded(child: _EnvironmentInfoCard(model: model)),
                     ],
@@ -127,27 +132,17 @@ class _EnvironmentHeader extends StatelessWidget {
   );
 }
 
+/// Location preview: the same package-owned image binding used by the
+/// character portrait and wardrobe/weapon/accessory workspaces (run235/236).
 class _EnvironmentPreviewCard extends StatelessWidget {
-  const _EnvironmentPreviewCard();
+  const _EnvironmentPreviewCard({required this.environmentId});
+  final String environmentId;
   @override
-  Widget build(BuildContext context) => _EnvironmentCard(
+  Widget build(BuildContext context) => AssetThumbnailCard(
+    assetId: environmentId,
     title: 'LOCATION PREVIEW',
-    child: AspectRatio(
-      aspectRatio: 16 / 9,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: context.palette.panel,
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
-        ),
-        child: Center(
-          child: Icon(
-            Icons.landscape_outlined,
-            size: 54,
-            color: context.palette.textMuted,
-          ),
-        ),
-      ),
-    ),
+    placeholderIcon: Icons.landscape_outlined,
+    aspectRatio: 16 / 9,
   );
 }
 

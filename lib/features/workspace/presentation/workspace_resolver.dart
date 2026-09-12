@@ -5,7 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/selection/selection_controller.dart';
 import '../../../core/selection/selection_model.dart';
+import 'package:uuid/uuid.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
+import '../../bible/presentation/widgets/faction_image_card.dart';
+import '../../bible/presentation/widgets/timeline_era_image_card.dart';
 import '../../assets/domain/asset_type.dart';
 import '../../assets/presentation/supporting_asset_workspace_screen.dart';
 import '../../character/presentation/character_workspace_screen.dart';
@@ -294,13 +297,15 @@ class WorkspaceResolver extends ConsumerWidget {
                 ref
                     .read(workspaceSectionProvider.notifier)
                     .activate(WorkspaceKind.character, 'Profile');
-                ref.read(selectionProvider.notifier).select(
-                  SelectionModel(
-                    assetId: characterId,
-                    assetType: AssetType.character,
-                    projectId: session.manifest.id,
-                  ),
-                );
+                ref
+                    .read(selectionProvider.notifier)
+                    .select(
+                      SelectionModel(
+                        assetId: characterId,
+                        assetType: AssetType.character,
+                        projectId: session.manifest.id,
+                      ),
+                    );
               },
         activeSection: activeSection,
         onSectionRequested: onSectionRequested,
@@ -663,6 +668,60 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
     }
   }
 
+  /// run236 (Choi: "terapkan juga untuk world building dan timeline"):
+  /// tidak ada satu pun jalur pembuatan era sebelumnya — saveEra hanya
+  /// dipanggil repository/test, sehingga section Timeline selamanya kosong
+  /// dan kartu gambar era tak mungkin tampil untuk pengguna nyata. Dialog
+  /// ini memakai repository yang sama; nama kosong ditolak jujur.
+  Future<void> _createEra() async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null) return;
+    var name = '';
+    final submitted = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Create Era'),
+        content: TextField(
+          autofocus: true,
+          onChanged: (value) => name = value.trim(),
+          decoration: const InputDecoration(labelText: 'Era name'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (name.isNotEmpty) Navigator.pop(dialogContext, name);
+            },
+            child: const Text('Create'),
+          ),
+        ],
+      ),
+    );
+    if (submitted == null) return;
+    try {
+      final eraId = const Uuid().v4();
+      await BibleTimelineRepository(session.database).saveEra(
+        era.TimelineEraModel(
+          id: eraId,
+          projectId: session.manifest.id,
+          name: submitted,
+          orderIndex: _eras?.length ?? 0,
+        ),
+      );
+      await _load();
+      if (!mounted) return;
+      _selectAsset(eraId, AssetType.timeline);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Era gagal dibuat. Coba lagi.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
@@ -712,6 +771,14 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
                       icon: const Icon(Icons.flag_outlined),
                       label: const Text('Create Faction'),
                     ),
+                  if (showTimeline) ...[
+                    const SizedBox(width: 8),
+                    FilledButton.tonalIcon(
+                      onPressed: _createEra,
+                      icon: const Icon(Icons.timeline),
+                      label: const Text('Create Era'),
+                    ),
+                  ],
                 ],
               ),
               const SizedBox(height: 12),
@@ -731,6 +798,25 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
                   child: const Text('Muat ulang'),
                 ),
               ] else ...[
+                // run236: era terpilih mendapat kartu gambar nyata (parity
+                // portrait karakter / thumbnail aset). Era bukan baris
+                // assets, jadi kartu memakai kolom timeline_eras.image_path.
+                if (widget.assetId != null &&
+                    widget.assetType == AssetType.timeline &&
+                    (_eras ?? const []).any((e) => e.id == widget.assetId)) ...[
+                  TimelineEraImageCard(eraId: widget.assetId!),
+                  const SizedBox(height: 16),
+                ],
+                // run236: faksi terpilih mendapat kartu gambar nyata yang
+                // sama (kolom factions.image_path; faksi bukan baris assets).
+                if (widget.assetId != null &&
+                    widget.assetType == AssetType.faction &&
+                    (_factions ?? const []).any(
+                      (f) => f.assetId == widget.assetId,
+                    )) ...[
+                  FactionImageCard(factionId: widget.assetId!),
+                  const SizedBox(height: 16),
+                ],
                 if (showFactions)
                   _WorldSection(
                     title: 'Factions',
@@ -759,6 +845,11 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
                           title: eraItem.name,
                           subtitle: eraItem.description.trim(),
                           selected: selectedId == eraItem.id,
+                          // run236 defect lama: baris era tidak punya onTap
+                          // sama sekali, sehingga era tidak bisa dibuka dan
+                          // kartu gambarnya tak pernah tampil.
+                          onTap: () =>
+                              _selectAsset(eraItem.id, AssetType.timeline),
                         ),
                     ],
                   ),

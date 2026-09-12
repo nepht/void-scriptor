@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.27 (PARTIAL; run243: vs-hunt-20260912n BUG-17 fixed f545d5c - restoreCharacter added as the symmetric import path for exportCharacter; character archives were write-only dead ends. Chain: size cap BEFORE read, manifest format/type/version, expected-ID, fail/skip collision, traversal rejection, staging rename + compensating delete; adoptExistingLinks honestly rejected (no link manifest); links/characters tables never touched. RED compile-fail -> GREEN 8/8; regression test/features/workspaces 118 PASS/0 FAIL; scoped analyze No issues; format clean; diff-check 0; Windows debug build PASS 102.7s in isolated worktree (main worktree build blocked by ACTIVE sibling edits references_card.dart/character_reference_binder.dart mtime 17:01 - preserved, zero adoption; not this slice's regression). run241: BUG-12 fixed d29fa2c - restoreNovel and peekManifest now bound archive size BEFORE readAsBytes (WorkspaceArchiveTooLargeException, defaultMaxArchiveBytes 512 MiB, runtime-validated positive cap; target dir untouched on reject; production callers keep default). archive-4.0.9 decode is lazy so the real vector was the full-file read, not inflation - guard placed on file length. BUG-09 reconciled as ALREADY CLOSED in HEAD (snackbar success+error present since 58ea3e7, locked by story_workspace_novel_io_test 4/4 rerun). RED compile-fail -> GREEN 4/4; regression test/features/workspaces 114 PASS/0 FAIL in main worktree; focused import rerun 14/14 post-format; scoped analyze No issues; format clean; diff-check 0; Windows debug build PASS 41.0s at d29fa2c. Sibling mid-run wave (schemaVersion 60->61 across ~40 test files, mtime 16:06:17) preserved untouched, zero adoption. run240: BUG-07/20 fixed b9d69fe - skip/adopt reachable with expectedWorkspaceId, collision decided after manifest validation; RED 3-fail->GREEN 4/4; worktree-isolated gates at f99600f: workspaces 110 PASS, build PASS 92.3s. run239: BUG-04 fixed b3e17a6 - workspace export skips symlinks (followLinks:false). run238: BUG-03 fixed d022d45 - adoptExistingLinks link-only. run237: BUG-02 fixed 7cdf451 - restoreNovel rejects unsupported manifest version.)",
+  "last_verified_step": "145.27 (PARTIAL; run246: BUG-13 fixed ec8f9e3 - exportNovel takes optional exportedAt and truncates provenance to whole seconds; repeated embedded exports are now byte-stable. workspaces 127 PASS; build PASS 27.9s. run243: vs-hunt-20260912n BUG-17 fixed f545d5c - restoreCharacter added as the symmetric import path for exportCharacter; character archives were write-only dead ends. Chain: size cap BEFORE read, manifest format/type/version, expected-ID, fail/skip collision, traversal rejection, staging rename + compensating delete; adoptExistingLinks honestly rejected (no link manifest); links/characters tables never touched. RED compile-fail -> GREEN 8/8; regression test/features/workspaces 118 PASS/0 FAIL; scoped analyze No issues; format clean; diff-check 0; Windows debug build PASS 102.7s in isolated worktree (main worktree build blocked by ACTIVE sibling edits references_card.dart/character_reference_binder.dart mtime 17:01 - preserved, zero adoption; not this slice's regression). run241: BUG-12 fixed d29fa2c - restoreNovel and peekManifest now bound archive size BEFORE readAsBytes (WorkspaceArchiveTooLargeException, defaultMaxArchiveBytes 512 MiB, runtime-validated positive cap; target dir untouched on reject; production callers keep default). archive-4.0.9 decode is lazy so the real vector was the full-file read, not inflation - guard placed on file length. BUG-09 reconciled as ALREADY CLOSED in HEAD (snackbar success+error present since 58ea3e7, locked by story_workspace_novel_io_test 4/4 rerun). RED compile-fail -> GREEN 4/4; regression test/features/workspaces 114 PASS/0 FAIL in main worktree; focused import rerun 14/14 post-format; scoped analyze No issues; format clean; diff-check 0; Windows debug build PASS 41.0s at d29fa2c. Sibling mid-run wave (schemaVersion 60->61 across ~40 test files, mtime 16:06:17) preserved untouched, zero adoption. run240: BUG-07/20 fixed b9d69fe - skip/adopt reachable with expectedWorkspaceId, collision decided after manifest validation; RED 3-fail->GREEN 4/4; worktree-isolated gates at f99600f: workspaces 110 PASS, build PASS 92.3s. run239: BUG-04 fixed b3e17a6 - workspace export skips symlinks (followLinks:false). run238: BUG-03 fixed d022d45 - adoptExistingLinks link-only. run237: BUG-02 fixed 7cdf451 - restoreNovel rejects unsupported manifest version.)",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-12T17:35:00+07:00",
-  "updated_by": "hermes-cron-run245",
+  "updated_at": "2026-09-12T18:05:00+07:00",
+  "updated_by": "hermes-cron-run246",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -73,12 +73,11 @@
     }
   },
   "novel_io_hunt_2026_09_12": {
-    "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/12/16/17/20 resolved (BUG-09 verified already-closed); 2 Low remain in fix queue",
+    "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/12/13/16/17/20 resolved (BUG-09 verified already-closed); 1 Low remains in fix queue",
     "hunt": "vs-hunt-20260912n; Hunter 25 -> Referee confirmed 14 (0 Critical), dismissed 11; parent corrected BUG-18/19 as false positive (RadioGroup exists in SDK). Reports: docs/evidence/vs-hunt-20260912n/",
     "fix": "BUG-05 embedded character payload missing -> silent blank character on import. RED->GREEN in test/features/workspaces/workspace_import_missing_payload_test.dart; pre-mutation FormatException gate. Commit d130b18. Gates: workspaces 99 PASS, novel_io 4 PASS, analyzer scoped clean, diff-check 0, Windows debug build PASS.",
     "queue_next_runs": [
-      "BUG-13 export provenance timestamp determinism (Low)",
-      "BUG-10 decode archive once during import (Low, Medium-confidence)"
+      "BUG-10 decode archive once during import (Low, Medium-confidence; re-verify at HEAD first)"
     ],
     "scope_do_not_rescan": "novel export/import vertical; hashes in docs/evidence/vs-hunt-20260912n/novel_io_scope.json are PRE-run237..243 - refresh before any new hunt on this region",
     "pointer_note": "145.27 remains PARTIAL; hunt+fix recorded under 145.33 area; no pointer movement.",
@@ -100,7 +99,7 @@
       "commit": "b9d69fe",
       "evidence": "test/features/workspaces/workspace_import_collision_precheck_test.dart RED(3 fail)->GREEN(4/4); workspaces dir 110 PASS; fail-contract test preserved; build windows debug PASS 92.3s (isolated worktree at f99600f)"
     },
-    "updated_at_note": "run245 2026-09-12T17:35+07:00 (pointer 145.27 unchanged; BUG-16 closed; sibling run244 a373f7e preserved)",
+    "updated_at_note": "run246 2026-09-12T18:05+07:00 (pointer 145.27 unchanged; BUG-13 closed ec8f9e3; sibling dirty character/project_resilience preserved)",
     "fixed_run241": {
       "id": "vs-hunt-20260912n BUG-12 (Medium, zip-bomb/memory DoS)",
       "defect": "restoreNovel + peekManifest did readAsBytes()+decode with no size bound; oversized archive exhausted memory before validation",
@@ -123,6 +122,12 @@
       "defect": "NovelCharacterLink.fromJson used raw DateTime.parse on created_at/updated_at; malformed archive threw FormatException without field name (TypeError for non-String/null) and aborted the whole import",
       "commit": "f6cff69",
       "evidence": "test/features/workspaces/novel_character_link_test.dart RED(field-nameless FormatException reproduced)->GREEN 7/7; workspaces dir 124 PASS; analyze scoped clean; Windows debug build PASS 27.9s on main worktree; native UNVERIFIABLE (cron)"
+    },
+    "fixed_run246": {
+      "id": "vs-hunt-20260912n BUG-13 (Low, determinism)",
+      "defect": "exportNovel embedded provenance used raw DateTime.now().toUtc().toIso8601String(); microsecond fractions made repeated exports of unchanged bytes non-identical and untestable",
+      "commit": "ec8f9e3",
+      "evidence": "test/features/workspaces/workspace_export_timestamp_determinism_test.dart RED compile-fail -> GREEN 3/3 (explicit exportedAt verbatim; default second-precision; pinned double export byte-identical payload); workspaces dir 127 PASS/0 FAIL; analyze scoped clean; format clean; diff-check 0; Windows debug build PASS 27.9s on main worktree; native UNVERIFIABLE (cron)"
     }
   }
 }

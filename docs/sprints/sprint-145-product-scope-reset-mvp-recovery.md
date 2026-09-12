@@ -1,3 +1,35 @@
+### 2026-09-12 - nephthys (cron run253): gate build hijau di fedb42e; journey restore native UNVERIFIABLE (vision backend timeout)
+
+- Preflight: guard PASS (exit 0, recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS); conflict marker nihil; tidak ada
+  proses flutter/dart/void_scriptor lain. Sibling AKTIF terverifikasi lewat diff:
+  3 file region character (mtime 21:58, isi = murni rewrap `dart format`) +
+  laporan hunt autosave (hunter_report 22:04, referee_instructions 22:06) = region
+  eksekutor lain -> TIDAK disentuh/di-commit.
+- Gate baru: `flutter build windows --debug --no-pub` exit 0 (23.7s) pada HEAD
+  fedb42e - build pertama pasca slice run251.
+- Native journey restore 145.34: app child diluncurkan (window 'Void Scriptor'
+  hidup, pid 17688); canvas Flutter tidak mengekspos AX (hanya chrome jendela);
+  auxiliary.vision timeout 3x beruntun (capture som, capture vision,
+  vision_analyze) -> tanpa kemampuan membaca layar tidak ada klik buta yang
+  diizinkan. Status: UNVERIFIABLE run ini. Bukti screenshot:
+  AppData/Local/hermes/cache/images/computer_use_cfd9a1fea5b540eda4a50bbe4891946d.png
+  + computer_use_8dac84cf117f43c885a3c0e8f5af314b.png. App anak ditutup (tasklist
+  void_scriptor = 0), data pengguna tak disentuh (fixture uji 7e90b57b; snapshot
+  pre: scene_beats=1, assets=2, integrity ok - tidak ada restore yang dieksekusi).
+- Rekonsiliasi backlog READ-ONLY (tanpa retest, bukti run sebelumnya di ledger ini
+  masih relevan karena sumber tak berubah sejak 0dfe64c/81755fa/run57): gap handoff
+  'fault injection saat rollback sendiri gagal' SUDAH tertutup; prioritas #2
+  (katalog-loading recovery, 81755fa) dan #4 (restart selection persistence) sudah
+  mendarat; 145.42 sisa hanya kasus hardware-bound (power_loss, min-spec) =
+  keputusan Choi. Tidak ada slice baru yang aman dikerjakan run ini selain journey
+  native yang terblokir.
+- Mutasi run ini: NOL file source/lib/test. Hanya ledger + .hermes/ROADMAP_STATE.json.
+- Next: ulangi journey restore native pada sesi dengan auxiliary.vision hidup, ATAU
+  terima laporan manual Choi sebagai USER_REPORTED_PASS (4 kasus 2026-09-08 tetap
+  utuh). Hunt autosave dibiarkan ke eksekutor pemiliknya (SKPT belum terbit).
+
+
 ### 2026-09-12 - nephthys (cron run252): gate format CI untuk slice run251 + 4 file sibling (style-only)
 
 - Preflight: guard PASS (exit 0, recommended_step 145.27, canonical sha 86af6a53,

@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-12T22:20:00+07:00",
-  "updated_by": "hermes-cron-run252",
+  "updated_at": "2026-09-12T22:40:00+07:00",
+  "updated_by": "hermes-cron-run253",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -139,6 +139,12 @@
     "scope": "docs/evidence/vs-hunt-20260912-autosave/autosave_scope.json (6 file, HEAD b2ca031; region belum pernah di-hunt)",
     "failure": "delegate_task Hunter gagal 2x: upstream cbai/kimi-k2.7 429 code14018 Credits exhausted; nol mutasi repo",
     "next_action": "ulangi Hunter->Skeptic->Referee saat kuota delegation pulih ATAU Choi cabut pin delegation.model; JANGAN tandai scope sebagai clean",
-    "run248_note": "run248 = NO-OP mutasi; queue vs-hunt-20260912n tetap kosong; push backlog f366a7a..b2ca031 terverifikasi dual-remote (ahead 0)"
+    "run248_note": "run248 = NO-OP mutasi; queue vs-hunt-20260912n tetap kosong; push backlog f366a7a..b2ca031 terverifikasi dual-remote (ahead 0)",
+    "run253_note": "sibling hunt masih hidup di working tree (hunter report 22:04, skeptic/referee instructions 22:06, referee report BELUM ada); cron run253 tidak menyentuh scope/region karakter sibling"
+  },
+  "native_restore_journey_run253": {
+    "status": "UNVERIFIABLE (auxiliary.vision timeout 3x; Flutter canvas tanpa AX -> no blind clicks)",
+    "attempt": "2026-09-12 22:3x WIB, build windows --debug exit 0 (23.7s) di fedb42e; app child pid 17688 ditutup graceful, nol mutasi data",
+    "next_action": "retry di sesi vision hidup atau terima USER_REPORTED_PASS manual Choi; jangan ulangi attempt buta"
   }
 }

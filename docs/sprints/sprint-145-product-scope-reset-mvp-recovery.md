@@ -1,3 +1,20 @@
+### 2026-09-12 - nephthys (interaktif run249): ekstraksi ciri karakter ber-kutipan dari naskah (gerbang konsen)
+
+- Izin Choi 12 Sep ("aku ijinkan dan lanjutkan") dieksekusi: fitur AI terakhir dari
+  backlog wiring. Teks novel tidak pernah keluar aplikasi sebelum user tap Analisis;
+  hasil hanya proposal ber-kutipan bab; tidak ada field karakter yang berubah tanpa
+  centang manual + Terapkan; nol pre-ticked; undo lewat UpdateCharacterCommand tunggal.
+- Component: CharacterTraitExtractor (kontrak JSON ketat; trait tanpa sitasi/field luar
+  whitelist = FormatException; tag asing -> inferred), CharacterTraitExtractionService
+  (listNovels, buildManuscript per-bab 'Chapter N:' hanya bab yang menyebut nama,
+  24k cap), runtime.generateText() sinkron bypass queue media (prompt tercatat di
+  ai_prompt_history), sheet UI consent/proposals, applyTraitToModel (age/height longgar).
+- Defect pattern run244 dihindari: session async dipantau post-frame, bukan read di initState.
+- Bukti: extractor 9/9, service 5/5, sheet 2/2 (konsen gate: lastPrompt null sebelum tap;
+  absent character = gagal jujur tanpa panggilan API), region character 103/103,
+  region ai 128/128 concurrency=1; analyze slice No issues; format 4 changed;
+  diff-check 0; roadmap_guard exit 0. Code d999e04 (9 file, 1421+).
+
 ### 2026-09-12 - nephthys (cron run248): NO-OP mutasi — antrean kering, delegasi hunt terblokir kuota; push backlog 2 commit terverifikasi dual-remote
 
 - Guard PASS pre-run (exit 0, pointer 145.27, canonical sha 86af6a5, stream corrective_core_mvp, stability gate PASS). HEAD masuk b2ca031; conflict marker nihil; tanpa proses flutter/dart/codex/void_scriptor berjalan. Dirty sibling dipreservasi penuh nol sentuh: region character (trait_extractor + portrait + controller, mtime 18:25–18:27), project_resilience restore-UI WIP (GAP-BACKUP-RESTORE-NO-UI milik penulis lain, 4 file M + 3 test untracked), ai_generation_runtime (M). Handoff RELEASED_TO_HERMES sudah diakui run224; tidak ada takeover region dirty.

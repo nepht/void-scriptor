@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-12T17:08:28+07:00",
-  "updated_by": "hermes-cron-run243",
+  "updated_at": "2026-09-12T17:35:00+07:00",
+  "updated_by": "hermes-cron-run245",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -73,11 +73,10 @@
     }
   },
   "novel_io_hunt_2026_09_12": {
-    "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/12/17/20 resolved (BUG-09 verified already-closed); 3 Low remain in fix queue",
+    "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/12/16/17/20 resolved (BUG-09 verified already-closed); 2 Low remain in fix queue",
     "hunt": "vs-hunt-20260912n; Hunter 25 -> Referee confirmed 14 (0 Critical), dismissed 11; parent corrected BUG-18/19 as false positive (RadioGroup exists in SDK). Reports: docs/evidence/vs-hunt-20260912n/",
     "fix": "BUG-05 embedded character payload missing -> silent blank character on import. RED->GREEN in test/features/workspaces/workspace_import_missing_payload_test.dart; pre-mutation FormatException gate. Commit d130b18. Gates: workspaces 99 PASS, novel_io 4 PASS, analyzer scoped clean, diff-check 0, Windows debug build PASS.",
     "queue_next_runs": [
-      "BUG-16 tolerate malformed DateTime.parse in novel_character_link.dart:82-83 (Low)",
       "BUG-13 export provenance timestamp determinism (Low)",
       "BUG-10 decode archive once during import (Low, Medium-confidence)"
     ],
@@ -101,7 +100,7 @@
       "commit": "b9d69fe",
       "evidence": "test/features/workspaces/workspace_import_collision_precheck_test.dart RED(3 fail)->GREEN(4/4); workspaces dir 110 PASS; fail-contract test preserved; build windows debug PASS 92.3s (isolated worktree at f99600f)"
     },
-    "updated_at_note": "run243 2026-09-12T17:10+07:00",
+    "updated_at_note": "run245 2026-09-12T17:35+07:00 (pointer 145.27 unchanged; BUG-16 closed; sibling run244 a373f7e preserved)",
     "fixed_run241": {
       "id": "vs-hunt-20260912n BUG-12 (Medium, zip-bomb/memory DoS)",
       "defect": "restoreNovel + peekManifest did readAsBytes()+decode with no size bound; oversized archive exhausted memory before validation",
@@ -118,6 +117,12 @@
       "defect": "exportCharacter produced character-*.voidworkspace archives no import path could read; restoreNovel hard-rejects workspaceType != novel",
       "commit": "f545d5c",
       "evidence": "test/features/workspaces/workspace_import_character_restore_test.dart RED compile-fail -> GREEN 8/8; workspaces dir 118 PASS; isolated-worktree Windows debug build PASS 102.7s"
+    },
+    "fixed_run245": {
+      "id": "vs-hunt-20260912n BUG-16 (Low, robustness)",
+      "defect": "NovelCharacterLink.fromJson used raw DateTime.parse on created_at/updated_at; malformed archive threw FormatException without field name (TypeError for non-String/null) and aborted the whole import",
+      "commit": "f6cff69",
+      "evidence": "test/features/workspaces/novel_character_link_test.dart RED(field-nameless FormatException reproduced)->GREEN 7/7; workspaces dir 124 PASS; analyze scoped clean; Windows debug build PASS 27.9s on main worktree; native UNVERIFIABLE (cron)"
     }
   }
 }

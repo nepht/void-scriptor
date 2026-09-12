@@ -1,3 +1,64 @@
+### 2026-09-13 - nephthys (cron run258): NO-OP mutasi - antrean hunt autosave masih ditulis sibling; verifikasi fresh health-read-only + gate format merah di dirty sibling
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53, stream
+  corrective_core_mvp, stability gate PASS). HEAD 11ca859 (ahead 0 - terverifikasi
+  `git ls-remote origin refs/heads/master` identik HEAD). Conflict markers nihil;
+  `git diff --check` exit 0. Proses flutter/dart/void_scriptor nihil (hanya codex
+  PID 21408 sejak 12/09 12:59, idle). Sibling dirty DIPRESERVASI TANPA SENTUH:
+  coordinator +47, story_dao/project_database/screen/repository_impl (M),
+  character_region (M, terverifikasi style-only via whitespace-normalized diff),
+  test untracked durable_autosave_empty_ack_test.dart, evidence hunt (M + untracked).
+- Seleksi slice (satu gap prioritas tertinggi, aman): hasil audit = TIDAK ADA yang
+  aman. Rincian supaya run berikutnya tidak memindai ulang:
+  1. A3 BUG-4 (coordinator ack-butuh-seam) + BUG-5 (flush-before-restore) = perubahan
+     DIRTY milik penulis aktif (mtime 01:04-01:09, <60 menit sebelum akhir run).
+     Aturan run257 tetap berlaku: VERIFY AFTER THEIR COMMIT, jangan tulis ulang.
+  2. Item C pada file bersih - dicek satu per satu terhadap HEAD hidup: BUG-14 dan
+     BUG-16 sudah DIDISMISS Referee on-disk (baris dismissal entri run254); BUG-15
+     (fsync) sudah terdokumentasi sebagai batas platform di docstring HEAD
+     (`git show HEAD:...durable_draft_journal.dart | grep -c fsync` = 1); BUG-19 dan
+     BUG-20 berobjek `DraftSnapshotStore` yang NOT-PRODUCTION (tidak pernah
+     di-instantiate di lib/ - hanya definisi + test), sesuai koreksi verifikasi
+     independen di HANDOFF_CRON_V4.
+  3. Sisa item C "close() dipanggil dari lifecycle resolver atau hapus kontraknya":
+     journal dibuat BARU per-build di workspace_resolver.dart:235 (bukan milik
+     ProjectSession), jadi memanggil close() menuntut keputusan kepemilikan
+     lifecycle baru = perluasan kontrak, bukan remediasi bug. DITAHAN + dilaporkan,
+     tidak diam-diam dikerjakan.
+- Verifikasi fresh TANPA mutasi (Task 5 rencana wiring, region bersih
+  lib/core/persistence + test/core/persistence):
+  `flutter test --no-pub test/core/persistence/project_health_readonly_probe_test.dart
+  test/core/persistence/project_health_schema_range_test.dart
+  test/core/persistence/project_health_typed_failure_test.dart --reporter expanded`
+  -> All tests passed (5 test, EXIT=0). Kontrak read-only BUG-10 run197 (metadata tidak
+  tersentuh saat health check), schema range BUG-01 hunt-20260906, dan typed failure
+  future-schema terbukti hidup di HEAD. Status: sudah CLOSED - tidak ada patch,
+  tidak ada klaim baru.
+- TEMUAN GATE (actionable untuk penulis, bukan untuk cron): gate format CI MERAH di
+  working tree - `dart format --output=none --set-exit-if-changed lib test` ->
+  "Formatted 2215 files (1 changed)", offender
+  `lib/features/story/data/story_repository_impl.dart` (dirty milik penulis aktif,
+  mtime 01:08). HEAD sendiri lulus (perbaikan run252 8a73a9f). File SEDANG ditulis,
+  jadi TIDAK kusentuh/diformat - risiko overwrite > manfaat; persis pola run252
+  (commit tanpa format menjatuhkan 'Verify formatting' untuk seluruh push).
+- Website download handoff (2026-09-08): blocker tetap pada aksi interaktif Choi.
+  `wrangler whoami` 3 percobaan di dua direktori config: `~/.wrangler` (expired
+  2026-09-10T19:06Z) dan `XDG_CONFIG_HOME=Roaming/xdg.config/.wrangler` (expired
+  2026-09-12T16:53Z) -> keduanya "auth token has expired and could not be refreshed,
+  environment is non-interactive". Tidak ada rotasi/permintaan kredensial. Artefak
+  1.2.0-alpha.1 tetap LIVE di R2 (tidak butuh deploy); yang menunggu deploy hanya
+  perbaikan tombol hero di commit lokal c169a34.
+- 145.42 dibaca ulang (docs/evidence/145.42-resilience-matrix.json, 15 kasus):
+  10 VERIFIED(domain), 3 USER_REPORTED_PASS DIPERTAHANKAN apa adanya, 2 UNVERIFIABLE
+  hardware-bound (power_loss fisik + min-spec device) = keputusan Choi. Tidak ada
+  gap aman baru; tidak ada retest yang dibenarkan (sumber terkait tak berubah).
+- Mutasi run ini: NOL file source/lib/test. Hanya ledger ini + .hermes/ROADMAP_STATE.json.
+  Pointer 145.27 TIDAK berubah; 145.27 tetap PARTIAL (decision-owned). Tidak push.
+- Next action konkret: (1) setelah sibling commit -> jalankan ACCEPT review BUG-4/5
+  (focused coordinator+repo tests, regresi test/features/story, lalu antrean C);
+  (2) Choi `wrangler login` interaktif -> deploy tree hero + verifikasi klik;
+  (3) keputusan Choi 145.43-145.50 + format gate file sibling sebelum commit.
+
 ### 2026-09-13 - nephthys (cron run257): fix BUG-6 acknowledge content-aware restore draf (vs-hunt-20260912-autosave A3, parsial)
 
 - Otorisasi: instruksi Choi 2026-09-07 (bug hunt berulang + perbaikan otomatis, satu

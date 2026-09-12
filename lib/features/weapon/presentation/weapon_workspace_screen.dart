@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../assets/presentation/widgets/asset_thumbnail_card.dart';
 import '../domain/weapon_model.dart';
 import 'weapon_workspace_controller.dart';
 import 'widgets/weapon_detail_cards.dart';
@@ -37,10 +38,12 @@ class WeaponWorkspaceScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(18),
                   child: wide
                       ? _WeaponDesktop(
+                          weaponId: weaponId,
                           model: model,
                           specification: specification,
                         )
                       : _WeaponCompact(
+                          weaponId: weaponId,
                           model: model,
                           specification: specification,
                         ),
@@ -58,7 +61,12 @@ class WeaponWorkspaceScreen extends ConsumerWidget {
 }
 
 class _WeaponDesktop extends StatelessWidget {
-  const _WeaponDesktop({required this.model, required this.specification});
+  const _WeaponDesktop({
+    required this.weaponId,
+    required this.model,
+    required this.specification,
+  });
+  final String weaponId;
   final WeaponModel? model;
   final WeaponSpecificationData specification;
 
@@ -68,7 +76,14 @@ class _WeaponDesktop extends StatelessWidget {
       Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(width: 300, child: WeaponTechnicalViewCard()),
+          SizedBox(
+            width: 300,
+            child: AssetThumbnailCard(
+              assetId: weaponId,
+              title: 'Technical View',
+              placeholderIcon: Icons.auto_fix_high_outlined,
+            ),
+          ),
           const SizedBox(width: 16),
           Expanded(child: WeaponSpecificationCard(model: specification)),
         ],
@@ -106,14 +121,23 @@ class _WeaponDesktop extends StatelessWidget {
 }
 
 class _WeaponCompact extends StatelessWidget {
-  const _WeaponCompact({required this.model, required this.specification});
+  const _WeaponCompact({
+    required this.weaponId,
+    required this.model,
+    required this.specification,
+  });
+  final String weaponId;
   final WeaponModel? model;
   final WeaponSpecificationData specification;
 
   @override
   Widget build(BuildContext context) => Column(
     children: [
-      const WeaponTechnicalViewCard(),
+      AssetThumbnailCard(
+        assetId: weaponId,
+        title: 'Technical View',
+        placeholderIcon: Icons.auto_fix_high_outlined,
+      ),
       WeaponSpecificationCard(model: specification),
       const WeaponComponentsCard(),
       WeaponDimensionsCard(

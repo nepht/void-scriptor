@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../database/project/project_database.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
+import 'widgets/asset_thumbnail_card.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 final supportingAssetProvider = FutureProvider.family<Asset?, String>((
@@ -162,29 +163,39 @@ class _AssetDetails extends ConsumerWidget {
                   width: constraints.maxWidth >= 760
                       ? 300
                       : constraints.maxWidth,
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(18),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'ASSET INFO',
-                            style: Theme.of(context).textTheme.labelMedium,
-                          ),
-                          const SizedBox(height: 14),
-                          _InfoRow(
-                            label: 'Type',
-                            value: _labelForType(asset.type),
-                          ),
-                          _InfoRow(label: 'Version', value: asset.version),
-                          _InfoRow(
-                            label: 'Updated',
-                            value: _date(asset.updatedAt),
-                          ),
-                        ],
+                  child: Column(
+                    children: [
+                      AssetThumbnailCard(
+                        assetId: asset.id,
+                        title: 'Design View',
+                        placeholderIcon: Icons.inventory_2_outlined,
                       ),
-                    ),
+                      const SizedBox(height: 16),
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(18),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'ASSET INFO',
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
+                              const SizedBox(height: 14),
+                              _InfoRow(
+                                label: 'Type',
+                                value: _labelForType(asset.type),
+                              ),
+                              _InfoRow(label: 'Version', value: asset.version),
+                              _InfoRow(
+                                label: 'Updated',
+                                value: _date(asset.updatedAt),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

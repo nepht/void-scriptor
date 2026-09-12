@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../assets/presentation/widgets/asset_thumbnail_card.dart';
 import '../domain/wardrobe_model.dart';
 import 'wardrobe_workspace_controller.dart';
 import 'widgets/wardrobe_detail_cards.dart';
@@ -32,8 +33,8 @@ class WardrobeWorkspaceScreen extends ConsumerWidget {
                 return SingleChildScrollView(
                   padding: const EdgeInsets.all(18),
                   child: wide
-                      ? _DesktopWardrobe(model: model)
-                      : _CompactWardrobe(model: model),
+                      ? _DesktopWardrobe(wardrobeId: wardrobeId, model: model)
+                      : _CompactWardrobe(wardrobeId: wardrobeId, model: model),
                 );
               },
             ),
@@ -45,7 +46,8 @@ class WardrobeWorkspaceScreen extends ConsumerWidget {
 }
 
 class _DesktopWardrobe extends StatelessWidget {
-  const _DesktopWardrobe({required this.model});
+  const _DesktopWardrobe({required this.wardrobeId, required this.model});
+  final String wardrobeId;
   final WardrobeModel? model;
 
   @override
@@ -54,7 +56,14 @@ class _DesktopWardrobe extends StatelessWidget {
       Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(width: 300, child: WardrobeProductCard()),
+          SizedBox(
+            width: 300,
+            child: AssetThumbnailCard(
+              assetId: wardrobeId,
+              title: 'Product View',
+              placeholderIcon: Icons.checkroom_outlined,
+            ),
+          ),
           const SizedBox(width: 16),
           Expanded(
             child: WardrobeSpecificationCard(
@@ -82,13 +91,18 @@ class _DesktopWardrobe extends StatelessWidget {
 }
 
 class _CompactWardrobe extends StatelessWidget {
-  const _CompactWardrobe({required this.model});
+  const _CompactWardrobe({required this.wardrobeId, required this.model});
+  final String wardrobeId;
   final WardrobeModel? model;
 
   @override
   Widget build(BuildContext context) => Column(
     children: [
-      const WardrobeProductCard(),
+      AssetThumbnailCard(
+        assetId: wardrobeId,
+        title: 'Product View',
+        placeholderIcon: Icons.checkroom_outlined,
+      ),
       WardrobeSpecificationCard(
         category: model?.category ?? 'Outerwear',
         material: model?.primaryMaterial ?? 'Technical Synthetic',

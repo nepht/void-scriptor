@@ -8,8 +8,10 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 import '../../../database/project/project_database.dart';
 import '../../project_resilience/application/project_session_manager.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
+import '../application/bible_timeline_repository.dart';
 import '../application/create_faction_service.dart';
 import '../application/faction_repository.dart';
+import '../domain/timeline_era.dart';
 import '../domain/faction.dart';
 import '../../relations/application/character_relation_map_service.dart';
 
@@ -322,26 +324,70 @@ class _ConflictCard extends StatelessWidget {
   );
 }
 
-class _TimelineCard extends StatelessWidget {
+class _TimelineCard extends ConsumerWidget {
   const _TimelineCard();
   @override
-  Widget build(BuildContext context) => _BibleCard(
-    title: 'TIMELINE / ERAS',
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: Icon(Icons.timeline, color: context.palette.primaryBright),
-          title: const Text('No eras yet'),
-          subtitle: const Text(
-            'Create eras and historical events to build chronology.',
-          ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(projectSessionProvider).valueOrNull;
+    if (session == null) {
+      return const _BibleCard(
+        title: 'TIMELINE / ERAS',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(Icons.timeline),
+              title: Text('No project session'),
+              subtitle: Text('Open a project to manage its timeline.'),
+            ),
+          ],
         ),
-        const Chip(label: Text('Timeline ready')),
-      ],
-    ),
-  );
+      );
+    }
+    return FutureBuilder<List<TimelineEraModel>>(
+      future: BibleTimelineRepository(
+        session.database,
+      ).listEras(session.manifest.id),
+      builder: (context, snapshot) {
+        final eras = snapshot.data ?? const [];
+        return _BibleCard(
+          title: 'TIMELINE / ERAS',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (eras.isEmpty)
+                const ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(Icons.timeline),
+                  title: Text('No eras yet'),
+                  subtitle: Text(
+                    'Create eras in the Worldbuilding workspace to build chronology.',
+                  ),
+                )
+              else
+                for (final eraItem in eras.take(5))
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    leading: const Icon(Icons.timeline),
+                    title: Text(eraItem.name),
+                    subtitle: Text(
+                      [
+                        eraItem.startLabel,
+                        eraItem.endLabel,
+                      ].where((s) => s != null && s.isNotEmpty).join(' - '),
+                    ),
+                  ),
+              // run243: chip jujur - jumlah era nyata, bukan klaim statis
+              // "Timeline ready" yang dulu tampil bahkan saat tabel kosong.
+              Chip(label: Text('${eras.length} era(s)')),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
 
 class _FactionsSection extends ConsumerStatefulWidget {

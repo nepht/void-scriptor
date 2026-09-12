@@ -142,16 +142,16 @@ class _CharacterWorkspaceScreenState
       );
     } on Object catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Portrait import failed: $error')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Portrait import failed: $error')));
       return;
     }
     ref.invalidate(characterPortraitProvider(characterId));
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Portrait updated.')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Portrait updated.')));
   }
 
   Widget _content(
@@ -297,7 +297,7 @@ class _CharacterWorkspaceScreenState
           const SizedBox(height: 16),
           visual,
           const SizedBox(height: 16),
-          const ReferencesCard(),
+          ReferencesCard(characterId: character.assetId),
           const SizedBox(height: 16),
           identityPreservation,
           const SizedBox(height: 16),
@@ -336,7 +336,7 @@ class _CharacterWorkspaceScreenState
         const SizedBox(height: 16),
         notes,
         const SizedBox(height: 16),
-        const ReferencesCard(),
+        ReferencesCard(characterId: character.assetId),
         const SizedBox(height: 16),
         relationships,
       ],

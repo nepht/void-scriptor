@@ -30,17 +30,25 @@ void main() {
   test('stage propagates a write failure and keeps the previous valid draft '
       'recoverable', () async {
     final root = await Directory.systemTemp.createTemp('hermes-s30-fail2-');
-    addTearDown(() => root.delete(recursive: true));
+    addTearDown(() {
+      if (root.existsSync()) root.deleteSync(recursive: true);
+    });
     final dir = Directory('${root.path}/novel-2');
     await dir.create(recursive: true);
 
     final journal = DurableDraftJournal(dir: dir);
     await journal.stage(sceneId: 'scene-a', content: 'Versi tersimpan.');
 
-    // Simulasi disk/permission failure secara deterministik lintas
-    // platform: jadikan path target .tmp sebuah direktori sehingga
-    // openWrite pada path itu gagal (FileSystemException).
-    await Directory('${dir.path}/scene-a.json.tmp').create();
+    // Simulasi kegagalan tulis secara deterministik lintas platform:
+    // ganti direktori journal dengan FILE pada path yang sama sehingga
+    // _dir.create/recursively atau openWrite berikutnya gagal
+    // (FileSystemException). Catatan: blokade lama memakai path
+    // `<scene>.json.tmp` tetap; sejak vs-hunt-20260912-autosave BUG-1 nama
+    // temporer unik per panggilan, sehingga titik blokade dipindah ke level
+    // direktori — kontrak yang dibuktikan tidak berubah.
+    final backup = Directory('${root.path}/novel-2-backup');
+    await dir.rename(backup.path);
+    await File(dir.path).writeAsString('blocker');
 
     await expectLater(
       journal.stage(sceneId: 'scene-a', content: 'Versi gagal tulis.'),
@@ -49,7 +57,7 @@ void main() {
 
     // Versi lama harus tetap bisa dipulihkan - failure tidak menghapus
     // atau menimpa draf yang sebelumnya valid.
-    final pending = await journal.pendingEntries();
+    final pending = await DurableDraftJournal(dir: backup).pendingEntries();
     expect(pending, hasLength(1));
     expect(pending.single.content, 'Versi tersimpan.');
   });

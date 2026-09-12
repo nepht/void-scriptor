@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:path/path.dart' as p;
 
@@ -33,6 +34,15 @@ class DurableDraftJournal {
   final Directory _dir;
   final DateTime Function() _clock;
   bool _closed = false;
+
+  /// Salt acak per-instance untuk nama `.tmp` (bug-hunt-20260912-autosave
+  /// BUG-1): salt + serial membuat path temporer unik per panggilan stage(),
+  /// bahkan ketika beberapa instance/proses menulis scene yang sama.
+  static final String _instanceSalt = Random.secure()
+      .nextInt(0x1000000)
+      .toRadixString(16)
+      .padLeft(6, '0');
+  int _tmpSerial = 0;
 
   /// Stage() yang sedang berjalan saat [close] dipanggil (bug-hunt-run197
   /// BUG-4): close() menunggu semuanya selesai sehingga tidak ada tulisan
@@ -75,7 +85,19 @@ class DurableDraftJournal {
 
   Future<void> _stageUntracked(String sceneId, String content) async {
     await _dir.create(recursive: true);
-    final temp = File('${_entryFile(sceneId).path}.tmp');
+    // bug-hunt-20260912-autosave BUG-1 (Critical): `.tmp` deterministik tunggal
+    // per scene membuat stage paralel saling memangkas write & berebut rename
+    // (PathNotFoundException errno 2 / publikasi file setengah tulis = draf
+    // tak terpulihkan). Nama temporer kini unik per panggilan; suffix tetap
+    // berakhir `.json.tmp` agar sweep run128 BUG-3 dan saringan pemulihan lama
+    // tetap mengenalnya.
+    final temp = File(
+      p.join(
+        _dir.path,
+        '${_safeSceneId(sceneId)}.$_instanceSalt.'
+        '${_tmpSerial = _tmpSerial + 1}.json.tmp',
+      ),
+    );
     final payload = jsonEncode(<String, Object?>{
       'sceneId': sceneId,
       'content': content,
@@ -91,6 +113,14 @@ class DurableDraftJournal {
         await sink.close();
       } on Exception {
         // best-effort close; rename berikut tidak akan dilakukan
+      }
+      // Panggilan ini pemilik sah file temporer unik itu — bersihkan agar
+      // kegagalan tulis tidak menambah residu .tmp (orphan crash tetap
+      // ditanggung sweep age-gated).
+      try {
+        await temp.delete();
+      } on Exception {
+        // best-effort; file akan tersapu oleh jalur .tmp stale
       }
       rethrow;
     }

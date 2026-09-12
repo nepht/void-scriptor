@@ -79,9 +79,20 @@ class NovelCharacterLink {
       mode: mode,
       role: json['role'] as String,
       visibility: json['visibility'] as String,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      createdAt: _parseTimestamp(json['created_at'], 'created_at'),
+      updatedAt: _parseTimestamp(json['updated_at'], 'updated_at'),
     );
+  }
+
+  static DateTime _parseTimestamp(Object? value, String field) {
+    final parsed = value is String ? DateTime.tryParse(value) : null;
+    if (parsed == null) {
+      throw FormatException(
+        'Invalid $field timestamp in novel-character link',
+        value,
+      );
+    }
+    return parsed;
   }
 
   final String linkId;

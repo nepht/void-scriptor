@@ -71,6 +71,59 @@ void main() {
     expect(restored.owner, WorkspaceType.novel);
   });
 
+  test(
+    'rejects malformed timestamp fields with a descriptive format error',
+    () {
+      final base = NovelCharacterLink.create(
+        linkId: 'link-ts',
+        novelWorkspaceId: 'novel-ts',
+        characterWorkspaceId: 'character-ts',
+        characterId: 'character-entity-ts',
+        role: 'mentor',
+        visibility: 'visible',
+        now: DateTime.utc(2026, 9, 1),
+      ).toJson();
+
+      for (final field in ['created_at', 'updated_at']) {
+        for (final bad in ['not-a-date', '', 42, null]) {
+          final json = Map<String, dynamic>.from(base)..[field] = bad;
+          expect(
+            () => NovelCharacterLink.fromJson(json),
+            throwsA(
+              isA<FormatException>().having(
+                (e) => e.message,
+                'message',
+                contains(field),
+              ),
+            ),
+            reason:
+                'vs-hunt-20260912n BUG-16: $field=$bad must fail with a '
+                'descriptive FormatException, not a raw parse/TypeError',
+          );
+        }
+      }
+    },
+  );
+
+  test('accepts an ISO-8601 timestamp that carries a timezone offset', () {
+    final json =
+        NovelCharacterLink.create(
+            linkId: 'link-tz',
+            novelWorkspaceId: 'novel-tz',
+            characterWorkspaceId: 'character-tz',
+            characterId: 'character-entity-tz',
+            role: 'mentor',
+            visibility: 'visible',
+            now: DateTime.utc(2026, 9, 1),
+          ).toJson()
+          ..['created_at'] = '2026-09-01T00:00:00.000+07:00'
+          ..['updated_at'] = '2026-09-01T00:00:00.000+07:00';
+
+    final restored = NovelCharacterLink.fromJson(json);
+
+    expect(restored.createdAt, DateTime.utc(2026, 8, 31, 17));
+  });
+
   test('creates, lists, and unlinks without deleting the character source', () {
     final service = NovelCharacterLinkService();
     final link = service.create(

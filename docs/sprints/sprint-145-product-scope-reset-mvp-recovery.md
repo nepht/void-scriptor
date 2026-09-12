@@ -1,3 +1,31 @@
+### 2026-09-12 - nephthys (interaktif run256): fix Critical BUG-2 + Medium BUG-3/BUG-17 koordinator autosave (vs-hunt-20260912-autosave A2)
+
+- Otorisasi: Choi 'ok perbaiki' atas verdict run254 (18 REAL). Kronologi kolaborasi: slice
+  ini sempat tabrakan penulis dengan cron run255 (A1 jurnal BUG-1 + tmp_unique_test + revert
+  coordinator milik mereka) — pasca handoff, file koordinator jadi milikku; BUG-1 jurnal
+  sudah diverifikasi cron di bae67f9 dan TIDAK kusentuh ulang.
+- BUG-2 (Critical): pending state dipasang SINKRON sebelum await jurnal + guard generasi
+  (_changeGeneration + scene + konten) — kegagalan stage yang kontennya sudah digantikan
+  tidak lagi menimpa draf aktif maupun memicu banner error basi; debounce tetap dijadwalkan
+  SETELAH stage tuntas (kontrak run128 BUG-2/145.30 'journal before schedule' dipertahankan,
+  dibuktikan test baru 'failure for the ACTIVE draft is still reported').
+- BUG-3 (Medium): saveNow() in-flight kini menyimpan _inFlightSave; dispose() menunggunya
+  tuntas LALU meng-flush draf terbaru (sebelumnya resolve bohong + Timer post-dispose);
+  _finishRetry tidak pernah mengarm timer saat _disposed.
+- BUG-17 (Low): _persist dipisah dari acknowledge/onSaved — error pasca-persist sukses
+  dilaporkan lewat callback baru onAcknowledgeError (final constructor field), bukan
+  onPersistError; UI tak lagi bilang 'Gagal menyimpan draf' padahal DB durable.
+- Test RED->GREEN: durable_autosave_pending_order_test.dart (3) + dispose_and_reporting
+  (2) ditulis lebih dulu, RED terukur (Expected ['baru'] / Actual ['lama','baru']) lalu
+  hijau; durable_autosave_coordinator_test.dart injection 'tmp jadi direktori' diperbarui
+  ke blokade DESTINASI final `<scene>.json` (nama .tmp tak lagi deterministik pasca BUG-1
+  cron — kontrak lama: error dilaporkan, scene-a tak terpublikasi, draf lama utuh).
+- Gate: targeted story autosave 5 file +17 All tests passed; region penuh test/features/
+  story + project_resilience --concurrency=2 +413 ~1 All tests passed; format 4 file;
+  analyze slice No issues; diff --check bersih; roadmap_guard exit 0; build windows debug
+  (log di bawah). Commit code d22e112 scoped 4 path.
+- Sisa antrean hunt ini: BUG-4/5/6 (medium, butuh seam screen/repo) + 11 Low.
+
 ### 2026-09-12 - nephthys (cron run255): vs-hunt-20260912-autosave A1 (BUG-1 jurnal) VERIFIED + collision protocol sibling
 
 - Guard PASS awal (recommended 145.27). Instruksi HANDOFF_CRON_V4.md (Choi, 23:25) mengalihkan

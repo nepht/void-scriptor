@@ -1,3 +1,46 @@
+### 2026-09-13 - nephthys (cron run262): hunt region bible/application + BUG-2 uniqueness message GREEN (vs-hunt-20260913-bible)
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53, stream
+  corrective_core_mvp, stability gate PASS). HEAD masuk 7ec14e5 (run261 sudah ter-push;
+  ls-remote cocok, ahead 0 saat mulai). Conflict markers nihil; diff-check exit 0.
+  Proses flutter/dart nihil. Sibling dirty DIPRESERVASI TANPA SENTUH: autosave vertical
+  BUG-4/5 story (coordinator +47, story_dao, project_database, repository_impl, screen,
+  test untracked; mtime 00:39-01:11, idle ~3,5 jam, tanpa jejak proses penulis) +
+  character region 3 file — antrean A3 tetap "VERIFY AFTER THEIR COMMIT".
+  codex.exe hidup tapi read-only per RELEASED_TO_HERMES; single-writer diakui.
+  Invenaris status: matriks 145.42 final 12 VERIFIED + 3 USER_REPORTED_PASS + 2
+  hardware-bound (keputusan Choi); 145.34 rollback-failure sudah landed (0dfe64c +
+  9f24bb7); prioritas #1-#4 Choi tertutup; hunt run128/171/2026-09-12n/20260913-shell
+  kering. Tidak ada barrier implementasi baru pada pointer 145.27 (sisa = user
+  validation + sesi native interaktif + keputusan Choi) -> otorisasi hunt berulang.
+- Hunt region BARU: lib/features/bible/application (17 file non-generated, belum pernah
+  dipindai; scope + SHA-256 per file di docs/evidence/vs-hunt-20260913-bible/).
+  Rantai delegate PENUH LULUS (kuota flash-lite pulih): Hunter 4 temuan skor 12 ->
+  Skeptic 4 CONFIRMED -> Referee 4 REAL (0 Critical, 2 Medium, 2 Low). Laporan lengkap:
+  hunter_report.md / skeptic_report.md / referee_report_bible.md.
+- Slice fix: BUG-2 (Medium, pesan konflik kanon user-visible). Mekanisme diverifikasi
+  ulang oleh parent di HEAD: condition uniqueness tak punya expectedValue sehingga
+  template bersama me-render 'value "null" conflicts with the canon rule'.
+  TDD: RED 2 test (falsifikasi pesan aktual `value "null"` terukur di output gagal) ->
+  GREEN _uniquenessMessage (nilai/field duplikat + count) tanpa menyentuh template
+  forbiddenValue (test lama tetap hijau); regresi test/features/bible 53 PASS / 0 FAIL;
+  analyze lib+test bible No issues; dart format owned 2 file; diff-check exit 0;
+  build windows debug PASS 20,9s. Commit scoped 7dd299f (2 file).
+- Gap (antrean vs-hunt-20260913-bible, perbaikan oleh run berikutnya): BUG-1 lore_backlink_service.dart:36
+  collectSources select sceneBeats tanpa filter isIn(sceneIds) — output tetap benar
+  (guard titles.containsKey) tapi beban penuh DB lintas proyek; fix = batasi query ke
+  sceneIds proyek, RED via seed beat proyek lain. BUG-3 canon_health_service.dart:27
+  severity info menambah weight tapi CanonHealthSummary tanpa field info. BUG-4
+  faction_image_importer.dart:71 save gagal setelah copy menyisakan file yatim —
+  bandingkan konvensi timeline_era_image_importer sebelum patch.
+- Status: 145.27 tetap PARTIAL (pointer tidak bergerak; guard tetap recommended 145.27).
+  Native interaction slice ini UNVERIFIABLE dari cron (perubahan murni pesan domain,
+  dibuktikan unit test deterministik). Push backlog menunggu keputusan Choi (ahead 1).
+- Next action: run berikutnya (1) cek commit sibling autosave story (A3 ACCEPT review:
+  focused coordinator+story suite) bila sudah mendarat; (2) jika masih dirty, tutup
+  BUG-1 bible (Medium tertinggi tersisa, aman dari region sibling); (3) push backlog
+  menunggu Choi.
+
 ### 2026-09-13 - nephthys (cron run261): BUG-02 push-vs-go shell GREEN + commit 6e01cea (vs-hunt-20260913-shell-settings)
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53, stream

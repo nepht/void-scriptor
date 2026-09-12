@@ -1,3 +1,36 @@
+### 2026-09-12 - nephthys (cron run252): gate format CI untuk slice run251 + 4 file sibling (style-only)
+
+- Preflight: guard PASS (exit 0, recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS); conflict marker nihil; tidak ada
+  proses flutter/dart/void_scriptor. HEAD masuk 4d905ed lalu dimajukan sesi interaktif
+  run251 (321de25 + ledger 4bc3eb9) di tengah run - diverifikasi, tidak ditimpa,
+  tidak di-amend.
+- Slice run251 (wiring restore 145.34) diverifikasi ulang read-only oleh run ini
+  SEBELUM commit interaktifnya tiba: focused 7/7 PASS, region project_resilience
+  216 PASS / 1 skip / 0 FAIL, analyze scoped No issues. Tidak ada reimplementasi.
+- Temuan baru: 321de25 meng-commit 2 test backup_restore dalam bentuk yang masih
+  di-reflow `dart format` SDK lokal -> langkah CI 'Verify formatting' merah untuk
+  seluruh push. 4 file lain (story_cast_loader + 3 test assets/story) juga belum
+  pernah lulus gate yang sama.
+- Perbaikan: commit format-only 8a73a9f (6 path eksplisit). Murni rewrap -
+  token stream dibandingkan setelah normalisasi whitespace: identik untuk semua
+  file; nol asersi diedit. Bukti: `dart format --output=none --set-exit-if-changed
+  lib test` exit 0 (2210 file, 0 changed); `flutter test --no-pub` 6 file terdampak
+  = 17 PASS / 0 FAIL; `git diff --cached --check` exit 0.
+- Insiden pemulihan (dicatat jujur): `git checkout --` sempat meng-revert 3 diff
+  format karakter milik penulis lain; ketiganya dibangun ulang byte-identik dari
+  HEAD+formatter (diff style-only, dibuktikan whitespace-normalized), region
+  karakter kini tetap dirty seperti sebelumnya. Run berikutnya: audit diff region
+  character sebelum menyentuhnya.
+- Kepemilikan: docs/evidence/vs-hunt-20260912-autosave/* (M + untracked, laporan
+  hunter/skeptic/referee baru muncul saat run) = hunt autosave milik eksekutor
+  lain - TIDAK disentuh/di-commit. Push origin master diverifikasi ls-remote
+  (ahead 0, 8a73a9f).
+- Status pointer: 145.27 tetap PARTIAL; 145.34 wiring sudah ditutup run251; tidak
+  ada pergerakan pointer. Next: tutup gap autosave-hunt dari laporan referee
+  penulis tersebut, atau native journey restore 145.34 bila giliran guard.
+
+
 ### 2026-09-12 - nephthys (interaktif run251): wiring nyata user-controlled restore backup (145.34) + close gap restore-tanpa-caller
 
 - Status gap lama ('restore() tanpa caller UI') TUTUP. WIP sibling project_resilience

@@ -22,6 +22,8 @@ import '../../workspaces/application/workspace_projection_cache.dart';
 import '../../workspaces/domain/narrative_assignment.dart';
 import '../../workspaces/presentation/workspace_export_actions.dart';
 import '../../workspaces/presentation/workspace_export_options_dialog.dart';
+import '../../workspaces/application/workspace_import_service.dart'
+    show WorkspaceArchivePreflight;
 import '../../workspaces/presentation/workspace_import_actions.dart';
 import '../../workspaces/presentation/workspace_import_options_dialog.dart';
 import '../../workspaces/presentation/workspace_projection_card.dart';
@@ -410,9 +412,12 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                                       (role) => switch (role) {
                                         NarrativeRole.protagonist =>
                                           'Protagonist',
-                                        NarrativeRole.antagonist => 'Antagonist',
-                                        NarrativeRole.supporting => 'Supporting',
-                                        NarrativeRole.background => 'Background',
+                                        NarrativeRole.antagonist =>
+                                          'Antagonist',
+                                        NarrativeRole.supporting =>
+                                          'Supporting',
+                                        NarrativeRole.background =>
+                                          'Background',
                                       },
                                     )
                                     .join(', '),
@@ -429,8 +434,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                         child: Text(
                           [
                             if (entry.biography.isNotEmpty) entry.biography,
-                            if (entry.personality.isNotEmpty)
-                              entry.personality,
+                            if (entry.personality.isNotEmpty) entry.personality,
                           ].join(' · '),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -804,16 +808,28 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     if (actions == null || pick == null) return;
     final archive = await pick();
     if (!mounted || archive == null) return;
-    final representation = await actions.peekCharacterRepresentation(archive);
+    // vs-hunt-20260912n BUG-10: decode the archive exactly once. The same
+    // snapshot feeds the dialog's representation label and the restore, so
+    // the user confirms the bytes that actually get imported.
+    final WorkspaceArchivePreflight preflight;
+    try {
+      preflight = await actions.preflightArchive(archive);
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Impor Novel workspace gagal: $error')),
+      );
+      return;
+    }
     if (!mounted) return;
     final options = await showWorkspaceImportOptionsDialog(
       context: context,
-      loadRepresentation: () async => representation,
+      loadRepresentation: () async => preflight.characterRepresentation,
     );
     if (!mounted || options == null) return;
     setState(() => _novelIoBusy = true);
     try {
-      final result = await actions.run(archive, options);
+      final result = await actions.run(archive, options, preflight: preflight);
       if (!mounted) return;
       // bug-hunt-run128 BUG-17: impor sukses = mutasi struktur (chapter/
       // scene baru). Refresh future hierarchy secara eksplisit agar panel

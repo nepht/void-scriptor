@@ -63,6 +63,43 @@ final class WorkspaceArchiveTooLargeException implements Exception {
       '$maxAllowedBytes bytes ($archivePath).';
 }
 
+/// vs-hunt-20260912n BUG-10: the result of decoding an archive exactly once
+/// before the user commits to an import decision. The production flow used to
+/// decode the whole file in `peekCharacterRepresentation` and then decode it
+/// AGAIN inside `restoreNovel` — two full reads of a mutable file, where the
+/// manifest the user confirmed was not necessarily the manifest restored.
+/// A preflight carries the bounded bytes, the decoded archive, and the parsed
+/// manifest so the restore step consumes the same snapshot without re-opening
+/// the file.
+final class WorkspaceArchivePreflight {
+  WorkspaceArchivePreflight({
+    required File sourceFile,
+    required this.bytes,
+    required this.decoded,
+    required this.manifest,
+  }) : sourcePath = sourceFile.path;
+
+  /// Path of the file the snapshot was read from; used to refuse a preflight
+  /// handed to a restore of a different file.
+  final String sourcePath;
+
+  /// The bounded bytes the archive was decoded from.
+  final Uint8List bytes;
+
+  /// The single decoded archive, reused by the restore step.
+  final Archive decoded;
+
+  /// The parsed `workspace.export.json` manifest, if the archive carried one.
+  /// Validation of format/type/version stays with the restore step; a peek
+  /// only needs the declared representation.
+  final Map<String, dynamic> manifest;
+
+  /// The archive-declared character representation, or null when the
+  /// manifest does not declare one.
+  String? get characterRepresentation =>
+      manifest['characterRepresentation'] as String?;
+}
+
 final class WorkspaceImportService {
   /// Default cap for import archives. Novel workspace exports are text
   /// payloads (drafts, references, embedded character JSON); anything past
@@ -130,6 +167,52 @@ final class WorkspaceImportService {
     return archive.readAsBytes();
   }
 
+  /// vs-hunt-20260912n BUG-10: the ONE bounded read + decode an archive gets
+  /// before the user confirms an import. The peek step and the restore step
+  /// consume the same snapshot, so the manifest the user saw is the manifest
+  /// that is restored and the file is never opened twice.
+  static Future<WorkspaceArchivePreflight> preflightArchive(
+    File archive, {
+    int maxArchiveBytes = defaultMaxArchiveBytes,
+  }) async {
+    final bytes = await readArchiveBytesBounded(
+      archive,
+      maxArchiveBytes: maxArchiveBytes,
+    );
+    final decoded = ZipDecoder().decodeBytes(bytes, verify: true);
+    final entry = decoded.find('workspace.export.json');
+    if (entry == null || !entry.isFile) {
+      throw const FormatException('Missing workspace export manifest');
+    }
+    final manifest =
+        jsonDecode(utf8.decode(entry.readBytes()!)) as Map<String, dynamic>;
+    return WorkspaceArchivePreflight(
+      sourceFile: archive,
+      bytes: bytes,
+      decoded: decoded,
+      manifest: manifest,
+    );
+  }
+
+  /// BUG-10 guard: a preflight may only be consumed by a restore of the very
+  /// file it was read from, never a look-alike path handed over afterwards.
+  static void _requireSameSourceFile(
+    WorkspaceArchivePreflight preflight,
+    File archive,
+  ) {
+    if (!p.equals(
+      p.normalize(p.absolute(preflight.sourcePath)),
+      p.normalize(p.absolute(archive.path)),
+    )) {
+      throw ArgumentError.value(
+        archive.path,
+        'archive',
+        'does not match the preflight source file '
+            '(${preflight.sourcePath})',
+      );
+    }
+  }
+
   /// Canonical character store used to materialize embedded snapshot/fork
   /// exports. Defaults to the link repository's own database.
   final data.ProjectDatabase database;
@@ -140,7 +223,16 @@ final class WorkspaceImportService {
     String? expectedWorkspaceId,
     WorkspaceImportCollisionChoice collisionChoice =
         WorkspaceImportCollisionChoice.fail,
+    WorkspaceArchivePreflight? preflight,
   }) async {
+    // vs-hunt-20260912n BUG-10: when the caller already preflighted this
+    // exact file (peek before the collision dialog), the restore consumes
+    // that single decoded snapshot instead of reading and decoding again.
+    // The mismatch guard runs before anything else so a preflight for one
+    // file can never be restored under the name of another.
+    if (preflight != null) {
+      _requireSameSourceFile(preflight, archive);
+    }
     // vs-hunt-20260912n BUG-07/20: the pre-check belongs to the `fail`
     // contract only. For `fail` a missing or corrupt archive must not change
     // which error an existing target raises, so it still runs before reading
@@ -160,10 +252,22 @@ final class WorkspaceImportService {
     }
     // vs-hunt-20260912n BUG-12: the size cap gates the read itself, so an
     // oversized file is refused before its bytes enter memory.
-    final decoded = ZipDecoder().decodeBytes(
-      await readArchiveBytes(archive),
-      verify: true,
-    );
+    // vs-hunt-20260912n BUG-10: a preflight already passed that cap once, so
+    // the snapshot is reused instead of a second read + decode.
+    final decoded =
+        preflight?.decoded ??
+        ZipDecoder().decodeBytes(await readArchiveBytes(archive), verify: true);
+    if (preflight != null) {
+      // Same-object shortcut: the preflight parsed this exact manifest.
+      final manifest = preflight.manifest;
+      return _restoreNovelFromManifest(
+        archive: archive,
+        decoded: decoded,
+        manifest: manifest,
+        expectedWorkspaceId: expectedWorkspaceId,
+        collisionChoice: collisionChoice,
+      );
+    }
     final manifestEntry = decoded.find('workspace.export.json');
     if (manifestEntry == null || !manifestEntry.isFile) {
       throw const FormatException('Missing workspace export manifest');
@@ -171,6 +275,22 @@ final class WorkspaceImportService {
     final manifest =
         jsonDecode(utf8.decode(manifestEntry.readBytes()!))
             as Map<String, dynamic>;
+    return _restoreNovelFromManifest(
+      archive: archive,
+      decoded: decoded,
+      manifest: manifest,
+      expectedWorkspaceId: expectedWorkspaceId,
+      collisionChoice: collisionChoice,
+    );
+  }
+
+  Future<WorkspaceRestoreResult> _restoreNovelFromManifest({
+    required File archive,
+    required Archive decoded,
+    required Map<String, dynamic> manifest,
+    required String? expectedWorkspaceId,
+    required WorkspaceImportCollisionChoice collisionChoice,
+  }) async {
     if (manifest['format'] != 'void-workspace-export' ||
         manifest['workspaceType'] != 'novel') {
       throw const FormatException('Archive is not a Novel workspace export');

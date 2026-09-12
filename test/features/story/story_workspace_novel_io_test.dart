@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/project_package/project_package.dart';
@@ -312,10 +314,22 @@ class _RecordingImportActions extends WorkspaceImportActions {
       representation;
 
   @override
+  Future<WorkspaceArchivePreflight> preflightArchive(File archive) async {
+    onPeek(representation);
+    return WorkspaceArchivePreflight(
+      sourceFile: archive,
+      bytes: Uint8List(0),
+      decoded: Archive(),
+      manifest: {'characterRepresentation': representation},
+    );
+  }
+
+  @override
   Future<WorkspaceRestoreResult> run(
     File archive,
     WorkspaceImportOptions options, {
     String? expectedWorkspaceId,
+    WorkspaceArchivePreflight? preflight,
   }) {
     onRun(options.collisionChoice);
     return Future.value(

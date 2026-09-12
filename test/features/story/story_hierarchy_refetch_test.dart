@@ -12,7 +12,9 @@
 //    sampai ke panel: impor novel workspace yang sukses me-refresh
 //    future (cache tidak boleh menjadi panel stale).
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:archive/archive.dart';
 import 'package:drift/drift.dart' show QueryExecutor;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -248,9 +250,22 @@ class _MutatingImportActions extends WorkspaceImportActions {
     File archive,
     WorkspaceImportOptions options, {
     String? expectedWorkspaceId,
+    WorkspaceArchivePreflight? preflight,
   }) {
     return onRun();
   }
+
+  // The screen's import path preflight-loads the archive before the dialog.
+  // The fake archive on disk is not a zip, so return a synthetic snapshot
+  // carrying the declared representation.
+  @override
+  Future<WorkspaceArchivePreflight> preflightArchive(File archive) async =>
+      WorkspaceArchivePreflight(
+        sourceFile: archive,
+        bytes: Uint8List(0),
+        decoded: Archive(),
+        manifest: {'characterRepresentation': representation},
+      );
 }
 
 class _FakeDatabase extends ProjectDatabase {

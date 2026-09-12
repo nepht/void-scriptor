@@ -74,12 +74,16 @@ void main() {
     );
     expect(button.onPressed, isNotNull);
 
-    // Import stays VISIBLE BUT DISABLED while no picker dependency exists:
-    // honest capability signal instead of a fabricated IO path.
+    // Import now ENABLED: gap run228 GAP-IMPORT-NOVEL-UNWIRED closed — the
+    // resolver injects a real .voidworkspace archive picker next to the
+    // import actions. The old "visible but disabled" pin documented the
+    // pre-picker capability gap; evolution tracked in
+    // workspace_resolver_import_wiring_test.dart. Unknown-typed input is
+    // still never adopted: the picker filters to the production extension.
     final importButton = tester.widget<OutlinedButton>(
       find.widgetWithText(OutlinedButton, 'Import Novel'),
     );
-    expect(importButton.onPressed, isNull);
+    expect(importButton.onPressed, isNotNull);
 
     // Dialog opens with the production destination prefilled from the
     // package exports directory (drive-D support lands later per user).

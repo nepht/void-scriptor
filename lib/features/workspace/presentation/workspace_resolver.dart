@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -270,6 +271,7 @@ class WorkspaceResolver extends ConsumerWidget {
                 package: session.package,
                 links: session.novelCharacterLinks,
               ),
+        pickImportArchive: session == null ? null : _pickNovelImportArchive,
         workspaceProjection: session?.workspaceProjectionReader.forNovel(
           selection.assetId,
         ),
@@ -289,6 +291,21 @@ class WorkspaceResolver extends ConsumerWidget {
       _ => const ProjectOverview(),
     };
   }
+}
+
+/// ADR-WS-001 Novel workspace import (gap run228 GAP-IMPORT-NOVEL-UNWIRED):
+/// real archive picker handed to [StoryWorkspaceScreen]. The import pipeline
+/// (actions + options dialog) already existed; only this picker binding was
+/// missing, which left the Import Novel button permanently disabled.
+/// Accepts only the production export extension (.voidworkspace) so the
+/// native dialog cannot offer files the import service would reject.
+Future<File?> _pickNovelImportArchive() async {
+  const typeGroup = XTypeGroup(
+    label: 'Void Scriptor novel workspace',
+    extensions: <String>['voidworkspace'],
+  );
+  final picked = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+  return picked == null ? null : File(picked.path);
 }
 
 bool _opensWorldbuildingCollection(String? section) => switch (section) {

@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.27 (PARTIAL; run231: GAP-RUN230-CLOSE-LEFT-STALE-LOCK NOT-REPRODUCIBLE di 7 close native terkontrol (4 standar + 1 draft-typed + 2 CloseMainWindow), residual 0/7; gap turun ke Low-monitoring; acceptance TIDAK di-upgrade dari hasil negatif; catatan: sesi computer_use driver mati tengah-run, revive ditolak; pointer unchanged)",
+  "last_verified_step": "145.27 (PARTIAL; run232: journey native import->close PARTIAL — driver computer_use mati lagi (run ke-2 beruntun, identik run231; click timeout -> session ended, revive ditolak; auxiliary vision ikut mati). Terbukti sebelum driver mati: launch build fresh (HEAD+dirty WIP), open project uji via Continue writing (UIA+state-change), menu Document actions->submenu tampil. Sampel close terkontrol state menu+timeout = BERSIH (exit <0,5s, residual lock 0, DB integrity ok) -> tally GAP-RUN230 8/8 bersih sejak kejadian; acceptance TIDAK di-upgrade dari monitoring. Bukti: docs/evidence/native-journey-import-close-232-2026-09-12.json. WIP restore sibling idle 2,5j dipreservasi (<24j)",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,7 +58,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-12T10:55:00+07:00",
+  "updated_at": "2026-09-12T11:20:00+07:00",
   "updated_by": "nephthys-cron-run231",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {

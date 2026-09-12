@@ -1,0 +1,38 @@
+{
+ "run": 232,
+ "date": "2026-09-12",
+ "slice": "Sampel close state popup-menu + lanjutan parsial journey import native (monitoring GAP-RUN230); driver computer_use mati lagi di tengah run",
+ "head": "801d4827deb2b110b8e88ddbea5e5bec2b2ed0a2",
+ "guard": { "pre_run_exit": 0, "recommended_step": "145.27", "canonical_sha256": "86af6a53a27fda4e7b5abc9b2a868550e4c0926977617ae3498381a76c4d5fa9" },
+ "ownership": {
+  "project_resilience_wip": "5 file sibling (2 M + 3 untracked) masih dirty, mtime terakhir 08:36; idle ~2,5 jam saat run — di bawah ambang takeover 24 jam; TIDAK disentuh/di-commit/di-format",
+  "decision": "tanpa mutasi source; slice = bukti native saja"
+ },
+ "build": {
+  "command": "flutter build windows --debug --no-pub",
+  "exit": 0,
+  "duration": "26,7s",
+  "note": "kernel_blob berisi HEAD 801d482 + dirty WIP restore sibling (bukan murni HEAD); tidak ada test yang dijalankan atas nama WIP itu"
+ },
+ "journey_partial": {
+  "launch": "Debug exe pid 19664 window hwnd 20972598",
+  "step1_verified": "Klik koordinat (255,552) 'Continue writing' via driver (message: 'Performed UIA Invoke at (273,563)') -> STATE CHANGE terkonfirmasi: AX tree workspace penuh (Novel Uji Download, Manuscript/Planning/Document actions) = project uji 7e90b57b terbuka native",
+  "step2_verified": "Klik Document actions (698,183) -> submenu terbuka di AX: Cast/Versions/Export/Lore Links",
+  "step3_notreached": "Klik 'Export' (681,302) -> submenu tertutup tanpa panel Import terlihat di capture_after; percobaan ulang buka menu -> driver timeout (outcome unknown), sesi mati",
+  "import_dialog": "TIDAK dicapai pada run ini (butuh re-navigasi dengan driver hidup)"
+ },
+ "close_sample": {
+  "state_at_close": "workspace hidup dengan project terbuka + popup menu pernah aktif + 1 klik driver timeout outcome-unknown",
+  "method": "harness ctypes disposable: SetForegroundWindow + keybd_event ESC (tutup popup) + PostMessageW(WM_CLOSE); dihapus setelah run",
+  "result": "process exit <0,5s; residual session.lock/.project.lock = 0 (hanya snapshot forensik lama recovery/stale-session-1789181555635306 dari run230); DB integrity_check ok; stories=1",
+  "gap_run230_tally": "run230: 1 kejadian stale-lock; run231: 7/7 bersih; run232: 1/1 bersih -> total 8 close terkontrol bersih sejak kejadian"
+ },
+ "tooling_blocker": {
+  "computer_use": "cua-driver session hermes-1015ce1ceb40 'has ended; revive rejected' setelah 1 klik timeout (persis pola run231; 2 run beruntun)",
+  "auxiliary_vision": "vision_analysis gagal 'There was a problem with the request' pada semua capture (primier + fallback vision_analyze) -> screenshot tidak bisa dibaca model",
+  "consequence": "sisa journey (menu Export -> Import Novel -> dialog picker -> close setelah import) TIDAK bisa disertifikasi dari sesi cron ini; butuh driver hidup ATAU sesi interaktif Choi"
+ },
+ "gates": "tanpa perubahan source -> tidak ada test/analyzer baru; git diff --check milik sibling tetap exit 0; tidak push (ahead tetap milik Choi)",
+ "status": "PARTIAL (journey import belum penuh; sampel close VERIFIED bersih)",
+ "next_action": "Saat driver pulih/sesi interaktif: ulang journey import->close sekali lagi (titik kegagalan: klik 'Export' di menu Document actions). Bila sesi interaktif Choi tetap tak tersedia setelah run berikutnya, GAP-RUN230 sudah cukup bukti untuk ditutup oleh keputusan Choi sebagai NOT-REPRODUCIBLE (8 close bersih)."
+}

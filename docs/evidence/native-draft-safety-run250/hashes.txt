@@ -1,0 +1,5 @@
+1199c5d3661f951e944981c96fb70de1a618f1dc5af37ecfb84649940208f193  *01-dashboard-run250.png
+91276d5ff939c66f88906e7891b37835bd66af48cf68c868f2d7fecc81326c81  *02-project-open-no-selection-run250.png
+42fac79ea79cc8da3dc7c3b753c68ddb1e850d0099ed038a588aa64435bfa7bf  *03-draft-survived-restart-in-editor-run250.png
+525ef25de3499066f52f0fb0c7b36d2216f72d2783a7463f5a148a13fa6df5de  *04-back-to-novel-recovery-card-run250.png
+7e1576e43bb847e17a4030117e273f7fcfbe77527dacbc0a8f55362da6a5703e  *05-scene-editor-before-switch-run250.png

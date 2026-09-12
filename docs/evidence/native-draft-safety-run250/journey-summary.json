@@ -1,0 +1,20 @@
+{
+ "case_id": "native_draft_safety_run250",
+ "status": "VERIFIED",
+ "date": "2026-09-12T21:20:00+07:00",
+ "run": "cron run250 nephthys",
+ "head": "7520878",
+ "build": "flutter build windows --debug --no-pub PASS 46,2s (working tree HEAD 554ebe68-era + sibling edits preserved, zero source mutation this run)",
+ "fixture": "project uji 7e90b57b-ceba-41f9-baf1-2258b50daa20 'UJI Journey Download 260912' scene 5e5b3e88-570f-4309-b58a-903072ce1f2c (data uji cron, bukan naskah pengguna)",
+ "steps_verified": [
+  "Ketik draft bertahap di Scene Editor native -> autosave 'Tersimpan 20:50', counter kata naik 13->14->17",
+  "Ketik lalu LANGSUNG klik Create Asset (tanpa jeda, pending draft) -> dialog Create Asset muncul",
+  "Buat 'Karakter Uji 254' -> Character Workspace terbuka (tab Profile/Relationships/Appearance & Gear/Notes)",
+  "Kembali ke Novel via Explorer -> banner 'Draf belum disimpan ditemukan' + 'Pulihkan Draft' tampil",
+  "Draft 178 char utuh di journal AND baris scene_beats *_draft; PRAGMA integrity_check ok",
+  "Graceful close (WM_CLOSE, exit <1s): draft-journal dikosongkan SETELAH baris durable tersimpan, tidak ada session.lock aktif",
+  "Restart exe (pid 9316): konten draft tampil kembali di Scene Editor via sesi workspace + baris draft; readback DB ro: 1 baris draft len 178",
+  "Hapus baris beat uji e0c9e111-...-494f_254 dari fixture (0 rows; tidak pernah tertulis)"
+ ],
+ "notes": "Run ini VERIFIKASI murni: nol patch source, nol commit kode. Regression run188 (head d7dcd1d) tetap bukti historis; run250 membuktikan journey yang sama bertahan di HEAD 7520878. Temuan non-regresi: direktori recovery/stale-session-<ts>/session.lock ditinggalkan sebagai artefak recovery yang sah (bukan lock aktif) dan startup berikutnya normal."
+}

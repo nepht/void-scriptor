@@ -1,3 +1,28 @@
+### 2026-09-12 - nephthys (cron run250): regresi native draft-safety 145.27 di HEAD 7520878 (verifikasi murni)
+
+- Preflight: guard PASS (recommended_step 145.27, stability_gate PASS); conflict markers
+  bersih; proses lain di worktree tidak ada (sibling run249 sudah commit d999e04/7520878).
+  Slice ini NOL mutasi source — murni pembuktian ulang journey prioritas #1
+  (keamanan draf saat berpindah workspace) pada HEAD berjalan.
+- Journey native (build windows --debug dari working tree 7520878, fixture cron
+  'UJI Journey Download 260912' 7e90b57b, bukan naskah pengguna): ketik draft bertahap
+  -> autosave 'Tersimpan' (13->14->17 kata); ketik lalu LANGSUNG klik Create Asset
+  (pending draft, tanpa jeda) -> dialog muncul; buat 'Karakter Uji 254' -> Character
+  Workspace (tab Profile/Relationships/Appearance & Gear/Notes); kembali ke Novel via
+  Explorer -> banner 'Draf belum disimpan ditemukan' + 'Pulihkan Draft'; draft 178 char
+  utuh di journal DAN baris scene_beats *_draft; integrity_check ok.
+- Restart siklus: graceful close (WM_CLOSE <1s) mengosongkan draft-journal SETELAH baris
+  durable tersimpan; restart exe (pid 9316) -> konten draft tampil kembali di Scene
+  Editor; readback ro DB: 1 baris draft len 178. Cleanup: baris beat uji
+  e0c9e111-5f55-4214-b51a-643e0518494f_254 dihapus dari fixture (0 rows — tidak pernah
+  tertulis; penamaan beat = <uuid>_draft).
+- Bukti: docs/evidence/native-draft-safety-run250/ (5 screenshot + hashes.txt +
+  journey-summary.json). Temuan non-regresi: recovery/stale-session-<ts>/session.lock
+  ditinggalkan sebagai artefak recovery sah, startup berikutnya normal — dicatat,
+  bukan bug. Status 145.27 tetap PARTIAL (regresi journey #1 VERIFIED; acceptance
+  kanonik lain masih terpetakan di state). Gap terbuka tersisa: BUG-25/26 run197 Low
+  (dipertahankan), keputusan produk 145.45-145.50 (menunggu Choi).
+
 ### 2026-09-12 - nephthys (interaktif run249): ekstraksi ciri karakter ber-kutipan dari naskah (gerbang konsen)
 
 - Izin Choi 12 Sep ("aku ijinkan dan lanjutkan") dieksekusi: fitur AI terakhir dari

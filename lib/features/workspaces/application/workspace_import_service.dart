@@ -174,8 +174,16 @@ final class WorkspaceImportService {
           }
         }
         for (final link in restoredLinks) {
-          final payload =
-              embeddedPayloads[link.characterId] ?? const <String, dynamic>{};
+          final payload = embeddedPayloads[link.characterId];
+          if (payload == null) {
+            // vs-hunt-20260912n BUG-05: a missing embedded payload must
+            // reject the archive before any mutation. Falling back to an
+            // empty map used to silently insert a blank canonical
+            // character (displayName = raw ID).
+            throw FormatException(
+              'Missing embedded character payload for ${link.characterId}',
+            );
+          }
           // Columns with schema defaults are constructor params typed
           // Value<T>; Value.absent() lets the database default apply.
           T? read<T>(String key) => payload[key] as T?;

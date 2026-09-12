@@ -1,3 +1,32 @@
+### 2026-09-12 - nephthys (cron run255): vs-hunt-20260912-autosave A1 (BUG-1 jurnal) VERIFIED + collision protocol sibling
+
+- Guard PASS awal (recommended 145.27). Instruksi HANDOFF_CRON_V4.md (Choi, 23:25) mengalihkan
+  ANTREAN FIX hunt autosave ke cron v4 ini -> slice terpilih: A1 BUG-1 (Critical) durable_draft_journal.
+- Insiden tabrakan penulis: saat slice berjalan, eksekutor paralel (sesi "run254" lama + editor aktif
+  lain) ternyata masih menulis region yang sama: file tmp_unique_test/pending_order_test mereka muncul
+  (mtime 23:18-23:29), coordinator di-edit hidup (mtime 23:35 lalu stabil 23:38, sempat duplicate
+  `onAcknowledgeError` mid-edit). Tindakan sesuai protokol: revert MINE ke HEAD (restore snapshot luar
+  source), STOP menyentuh coordinator + pending_order_test (RED BUG-2 milik penulis lain, tidak dijalankan,
+  tidak diklaim), lanjut hanya di file jurnal yang dideklarasikan milik cron oleh handoff.
+- RED terukur di HEAD: probe throwaway 7/15 putaran stage() paralel scene sama gagal
+  PathNotFoundException errno 2 pada rename `.tmp` deterministik (mekanisme persis verdict Referee).
+- GREEN: temp path unik per panggilan (`<scene>.<salt6>.<serial>.json.tmp`, suffix .json.tmp dipertahankan
+  utk sweep run128 BUG-3) + best-effort hapus temp milik sendiri saat tulis gagal; kontrak sweep lama
+  dibuktikan tetap (test orphan pola baru tersapu). Catatan: satu stage bisa menang vs stage lain via
+  rename-at-time (last-writer-wins), tabrakan destruktif hilang.
+- Bukti gates: flutter test --no-pub tmp_unique 3/3 PASS; regression jurnal penuh 8 file 23/23 PASS;
+  failure_injection test diadaptasi intent-preserving (blokade path `.json.tmp` lama tak lagi deterministik
+  utk nama unik -> blokade dipindah ke level direktori; kontrak "versi lama tetap recoverable" utuh, 2/2
+  PASS ulang); dart analyze scoped No issues; dart format gate exit 0; git diff --check exit 0.
+- Windows build TIDAK dijalankan: void_scriptor.exe pengguna AKTIF berjalan (PID 8304, start 22:56) ->
+  artefak build terkunci; boundary ini dicatat jujur, bukan PASS.
+- Mutasi commit ini: durable_draft_journal.dart + tmp_unique_test.dart + failure_injection_test.dart
+  (3 file, path eksplisit). Sibling TIDAK diadopsi: coordinator + pending_order_test tetap dirty milik
+  penulisnya; region character format-only dibiarkan.
+- Next: BUG-2 koordinator JANGAN diulang cron ini (dimiliki penulis aktif). Setelah mereka commit, run
+  berikutnya verifikasi pending_order_test + 3 test koordinator lama (fire-and-forget run128 BUG-2 masih
+  harus lulus dengan penjadwalan post-stage), lalu lanjut antrean A3 per HANDOFF_CRON_V4.
+
 ### 2026-09-12 - nephthys (interaktif run254): vs-hunt-20260912-autosave SELESAI - 18 REAL BUGS (2 Critical, 5 Medium, 11 Low)
 
 - Otorisasi: Choi 'kerjakan semua stu persatu' -> retry hunt autosave yang blocked kuota di run248

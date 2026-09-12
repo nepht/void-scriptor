@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.27 (PARTIAL; run239: vs-hunt-20260912n BUG-04 fixed b3e17a6 — workspace export _copy now list(followLinks:false) + skip Link entities; symlinked file/dir inside novel/character workspace no longer archives external content nor aborts with PathNotFoundException. RED reproduced both export paths (verified via revert-reapply), worktree-isolated gates at HEAD e20a52f because main worktree uncompilable (sibling bible/resilience WIP): focused 2/2, workspaces region 106 PASS/0 FAIL, scoped analyze clean, format clean, diff-check 0, Windows debug build PASS 93.7s. run238: vs-hunt-20260912n BUG-03 fixed d022d45 — adoptExistingLinks now link-only (embedded payload materialization skipped while adopting; RED abort StateError + ghost char-2 -> GREEN guard `embedded && !adopting`). Verified in isolated HEAD worktree 771ba64 because main worktree uncompilable (sibling bible/resilience WIP): focused 2/2, workspaces region 104 PASS/0 FAIL, import suites 13/13 post-format, scoped analyze clean, Windows debug build PASS 101.0s. run237: vs-hunt-20260912n BUG-02 fixed 7cdf451 — restoreNovel rejects manifest version != 1 before any mutation (RED fail-open version:2 and version-less both accepted -> GREEN FormatException 'Unsupported Novel workspace export version', no novel dir/link left). Gates: focused 2/2, workspaces dir 102 PASS/0 FAIL, novel_io 4/4, atomicity+missing-payload rerun 4/4, scoped analyze clean, format clean, diff-check 0, Windows debug build PASS 40.6s. run236: vs-hunt-20260912n BUG-01 fixed 20c5ef2 — restoreNovel embedded materialization fully transactional (RED ghost chars ['char-1','char-2'] via squatting link row -> GREEN database.transaction wraps characters+move+links; unrelated rows survive; filesystem undo kept). Gates: focused 12/12, workspaces dir 100 PASS/0 FAIL, novel_io 5/5, analyze scoped clean, diff-check 0, Windows debug build PASS 40.2s. run234: BUG-05 fixed d130b18 + hunt VERIFIED 14 confirmed; run232: journey native import->close PARTIAL — driver computer_use mati (recorded, tally close 8/8 bersih)",
+  "last_verified_step": "145.27 (PARTIAL; run240: vs-hunt-20260912n BUG-07/20 fixed b9d69fe — restoreNovel collision pre-check now scoped to fail; skip/adoptExistingLinks reachable with expectedWorkspaceId; collision decided after manifest validation (corrupt archive reports FormatException, no masking); duplicate _peekWorkspaceId decode removed. RED 3-fail->GREEN 4/4; worktree-isolated gates at f99600f (main uncompilable, sibling WIP): workspaces region 110 PASS/0 FAIL, scoped analyze clean, diff-check 0, Windows debug build PASS 92.3s. run239: vs-hunt-20260912n BUG-04 fixed b3e17a6 — workspace export _copy now list(followLinks:false) + skip Link entities; symlinked file/dir inside novel/character workspace no longer archives external content nor aborts with PathNotFoundException. RED reproduced both export paths (verified via revert-reapply), worktree-isolated gates at HEAD e20a52f because main worktree uncompilable (sibling bible/resilience WIP): focused 2/2, workspaces region 106 PASS/0 FAIL, scoped analyze clean, format clean, diff-check 0, Windows debug build PASS 93.7s. run238: vs-hunt-20260912n BUG-03 fixed d022d45 — adoptExistingLinks now link-only (embedded payload materialization skipped while adopting; RED abort StateError + ghost char-2 -> GREEN guard `embedded && !adopting`). Verified in isolated HEAD worktree 771ba64 because main worktree uncompilable (sibling bible/resilience WIP): focused 2/2, workspaces region 104 PASS/0 FAIL, import suites 13/13 post-format, scoped analyze clean, Windows debug build PASS 101.0s. run237: vs-hunt-20260912n BUG-02 fixed 7cdf451 — restoreNovel rejects manifest version != 1 before any mutation (RED fail-open version:2 and version-less both accepted -> GREEN FormatException 'Unsupported Novel workspace export version', no novel dir/link left). Gates: focused 2/2, workspaces dir 102 PASS/0 FAIL, novel_io 4/4, atomicity+missing-payload rerun 4/4, scoped analyze clean, format clean, diff-check 0, Windows debug build PASS 40.6s. run236: vs-hunt-20260912n BUG-01 fixed 20c5ef2 — restoreNovel embedded materialization fully transactional (RED ghost chars ['char-1','char-2'] via squatting link row -> GREEN database.transaction wraps characters+move+links; unrelated rows survive; filesystem undo kept). Gates: focused 12/12, workspaces dir 100 PASS/0 FAIL, novel_io 5/5, analyze scoped clean, diff-check 0, Windows debug build PASS 40.2s. run234: BUG-05 fixed d130b18 + hunt VERIFIED 14 confirmed; run232: journey native import->close PARTIAL — driver computer_use mati (recorded, tally close 8/8 bersih)",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-12T15:35:00+07:00",
-  "updated_by": "nephthys-cron-run239",
+  "updated_at": "2026-09-12T15:55:00+07:00",
+  "updated_by": "hermes-cron-run240",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -73,14 +73,13 @@
     }
   },
   "novel_io_hunt_2026_09_12": {
-    "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-05 & BUG-01 fixed; 7 Medium + 3 Low findings remain in fix queue",
+    "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/20 fixed; 3 Medium + 3 Low remain in fix queue",
     "hunt": "vs-hunt-20260912n; Hunter 25 -> Referee confirmed 14 (0 Critical), dismissed 11; parent corrected BUG-18/19 as false positive (RadioGroup exists in SDK). Reports: docs/evidence/vs-hunt-20260912n/",
     "fix": "BUG-05 embedded character payload missing -> silent blank character on import. RED->GREEN in test/features/workspaces/workspace_import_missing_payload_test.dart; pre-mutation FormatException gate. Commit d130b18. Gates: workspaces 99 PASS, novel_io 4 PASS, analyzer scoped clean, diff-check 0, Windows debug build PASS.",
     "queue_next_runs": [
-      "BUG-07/20 collision pre-check ordering vs skip",
       "BUG-09 export feedback",
-      "BUG-17 restoreCharacter symmetry",
       "BUG-12 archive size cap (zip-bomb)",
+      "BUG-17 restoreCharacter symmetry",
       "BUG-10/13/16 (Low)"
     ],
     "scope_do_not_rescan": "novel export/import vertical; hashes in docs/evidence/vs-hunt-20260912n/novel_io_scope.json",
@@ -96,6 +95,13 @@
       "defect": "_copy used source.list(recursive:true) with default followLinks: symlinked file archived external content or crashed export (PathNotFoundException); symlinked dirs were recursed",
       "commit": "b3e17a6",
       "evidence": "test/features/workspaces/workspace_export_symlink_test.dart RED->GREEN (novel+character paths, anti-leak scan); workspaces dir 106 PASS; build windows debug PASS 93.7s"
-    }
+    },
+    "fixed_run240": {
+      "id": "vs-hunt-20260912n BUG-07 + BUG-20 (Medium, one root cause)",
+      "defect": "early expectedWorkspaceId collision throw fired for every collisionChoice before archive validation; skip/adopt unreachable with an explicit ID; collision error masked corrupt-archive error on non-fail choices",
+      "commit": "b9d69fe",
+      "evidence": "test/features/workspaces/workspace_import_collision_precheck_test.dart RED(3 fail)->GREEN(4/4); workspaces dir 110 PASS; fail-contract test preserved; build windows debug PASS 92.3s (isolated worktree at f99600f)"
+    },
+    "updated_at_note": "run240 2026-09-12T15:20+07:00"
   }
 }

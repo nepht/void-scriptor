@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.27 (PARTIAL; run241: vs-hunt-20260912n BUG-12 fixed d29fa2c - restoreNovel and peekManifest now bound archive size BEFORE readAsBytes (WorkspaceArchiveTooLargeException, defaultMaxArchiveBytes 512 MiB, runtime-validated positive cap; target dir untouched on reject; production callers keep default). archive-4.0.9 decode is lazy so the real vector was the full-file read, not inflation - guard placed on file length. BUG-09 reconciled as ALREADY CLOSED in HEAD (snackbar success+error present since 58ea3e7, locked by story_workspace_novel_io_test 4/4 rerun). RED compile-fail -> GREEN 4/4; regression test/features/workspaces 114 PASS/0 FAIL in main worktree; focused import rerun 14/14 post-format; scoped analyze No issues; format clean; diff-check 0; Windows debug build PASS 41.0s at d29fa2c. Sibling mid-run wave (schemaVersion 60->61 across ~40 test files, mtime 16:06:17) preserved untouched, zero adoption. run240: BUG-07/20 fixed b9d69fe - skip/adopt reachable with expectedWorkspaceId, collision decided after manifest validation; RED 3-fail->GREEN 4/4; worktree-isolated gates at f99600f: workspaces 110 PASS, build PASS 92.3s. run239: BUG-04 fixed b3e17a6 - workspace export skips symlinks (followLinks:false). run238: BUG-03 fixed d022d45 - adoptExistingLinks link-only. run237: BUG-02 fixed 7cdf451 - restoreNovel rejects unsupported manifest version.)",
+  "last_verified_step": "145.27 (PARTIAL; run243: vs-hunt-20260912n BUG-17 fixed f545d5c - restoreCharacter added as the symmetric import path for exportCharacter; character archives were write-only dead ends. Chain: size cap BEFORE read, manifest format/type/version, expected-ID, fail/skip collision, traversal rejection, staging rename + compensating delete; adoptExistingLinks honestly rejected (no link manifest); links/characters tables never touched. RED compile-fail -> GREEN 8/8; regression test/features/workspaces 118 PASS/0 FAIL; scoped analyze No issues; format clean; diff-check 0; Windows debug build PASS 102.7s in isolated worktree (main worktree build blocked by ACTIVE sibling edits references_card.dart/character_reference_binder.dart mtime 17:01 - preserved, zero adoption; not this slice's regression). run241: BUG-12 fixed d29fa2c - restoreNovel and peekManifest now bound archive size BEFORE readAsBytes (WorkspaceArchiveTooLargeException, defaultMaxArchiveBytes 512 MiB, runtime-validated positive cap; target dir untouched on reject; production callers keep default). archive-4.0.9 decode is lazy so the real vector was the full-file read, not inflation - guard placed on file length. BUG-09 reconciled as ALREADY CLOSED in HEAD (snackbar success+error present since 58ea3e7, locked by story_workspace_novel_io_test 4/4 rerun). RED compile-fail -> GREEN 4/4; regression test/features/workspaces 114 PASS/0 FAIL in main worktree; focused import rerun 14/14 post-format; scoped analyze No issues; format clean; diff-check 0; Windows debug build PASS 41.0s at d29fa2c. Sibling mid-run wave (schemaVersion 60->61 across ~40 test files, mtime 16:06:17) preserved untouched, zero adoption. run240: BUG-07/20 fixed b9d69fe - skip/adopt reachable with expectedWorkspaceId, collision decided after manifest validation; RED 3-fail->GREEN 4/4; worktree-isolated gates at f99600f: workspaces 110 PASS, build PASS 92.3s. run239: BUG-04 fixed b3e17a6 - workspace export skips symlinks (followLinks:false). run238: BUG-03 fixed d022d45 - adoptExistingLinks link-only. run237: BUG-02 fixed 7cdf451 - restoreNovel rejects unsupported manifest version.)",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-12T16:35:00+07:00",
-  "updated_by": "hermes-cron-run241",
+  "updated_at": "2026-09-12T17:08:28+07:00",
+  "updated_by": "hermes-cron-run243",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -73,15 +73,15 @@
     }
   },
   "novel_io_hunt_2026_09_12": {
-    "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/12/20 resolved (BUG-09 verified already-closed); 1 Medium + 3 Low remain in fix queue",
+    "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/12/17/20 resolved (BUG-09 verified already-closed); 3 Low remain in fix queue",
     "hunt": "vs-hunt-20260912n; Hunter 25 -> Referee confirmed 14 (0 Critical), dismissed 11; parent corrected BUG-18/19 as false positive (RadioGroup exists in SDK). Reports: docs/evidence/vs-hunt-20260912n/",
     "fix": "BUG-05 embedded character payload missing -> silent blank character on import. RED->GREEN in test/features/workspaces/workspace_import_missing_payload_test.dart; pre-mutation FormatException gate. Commit d130b18. Gates: workspaces 99 PASS, novel_io 4 PASS, analyzer scoped clean, diff-check 0, Windows debug build PASS.",
     "queue_next_runs": [
-      "BUG-17 restoreCharacter symmetry (exportCharacter has no import path)",
+      "BUG-16 tolerate malformed DateTime.parse in novel_character_link.dart:82-83 (Low)",
       "BUG-13 export provenance timestamp determinism (Low)",
-      "BUG-16 tolerate malformed DateTime.parse in novel_character_link.dart:82-83 (Low)"
+      "BUG-10 decode archive once during import (Low, Medium-confidence)"
     ],
-    "scope_do_not_rescan": "novel export/import vertical; hashes in docs/evidence/vs-hunt-20260912n/novel_io_scope.json are PRE-run237..241 - refresh before any new hunt on this region",
+    "scope_do_not_rescan": "novel export/import vertical; hashes in docs/evidence/vs-hunt-20260912n/novel_io_scope.json are PRE-run237..243 - refresh before any new hunt on this region",
     "pointer_note": "145.27 remains PARTIAL; hunt+fix recorded under 145.33 area; no pointer movement.",
     "fixed_run236": {
       "id": "vs-hunt-20260912n BUG-01 (Medium, data-safety)",
@@ -101,7 +101,7 @@
       "commit": "b9d69fe",
       "evidence": "test/features/workspaces/workspace_import_collision_precheck_test.dart RED(3 fail)->GREEN(4/4); workspaces dir 110 PASS; fail-contract test preserved; build windows debug PASS 92.3s (isolated worktree at f99600f)"
     },
-    "updated_at_note": "run241 2026-09-12T16:35+07:00",
+    "updated_at_note": "run243 2026-09-12T17:10+07:00",
     "fixed_run241": {
       "id": "vs-hunt-20260912n BUG-12 (Medium, zip-bomb/memory DoS)",
       "defect": "restoreNovel + peekManifest did readAsBytes()+decode with no size bound; oversized archive exhausted memory before validation",
@@ -111,6 +111,13 @@
     "verified_run241": {
       "id": "vs-hunt-20260912n BUG-09 (Medium claim) -> NOT A GAP at HEAD",
       "note": "export snackbar success+error present in story_workspace_screen.dart:774-799 since 58ea3e7; test-pinned; reran 4/4 PASS 2026-09-12"
+    },
+    "product_decision_pending_choi": "character import/restore UI wiring: engine path restoreCharacter landed (run243) but no UI button exposes it yet; exportCharacter itself also has no production caller. Decide whether character workspace deserves an Export/Import action pair.",
+    "fixed_run243": {
+      "id": "vs-hunt-20260912n BUG-17 (Medium, dead-end artifact)",
+      "defect": "exportCharacter produced character-*.voidworkspace archives no import path could read; restoreNovel hard-rejects workspaceType != novel",
+      "commit": "f545d5c",
+      "evidence": "test/features/workspaces/workspace_import_character_restore_test.dart RED compile-fail -> GREEN 8/8; workspaces dir 118 PASS; isolated-worktree Windows debug build PASS 102.7s"
     }
   }
 }

@@ -1,0 +1,18 @@
+{
+  "hunt": "vs-hunt-20260913-shell-settings",
+  "recorded_at": "2026-09-13T03:20+07:00",
+  "recorded_by": "nephthys cron run260 (hunt stage)",
+  "branch": "master",
+  "head": "d4a6dbfa5ca4184f509716fa0513d9d30886e1a0",
+  "region": "Shell navigasi global + settings (kontrak 145.37/145.38; region diotorisasi eksplisit Choi 2026-09-04; belum pernah di-adversarial-hunt)",
+  "files": {
+    "lib/app/shell/desktop/void_top_bar.dart": null,
+    "lib/app/shell/desktop/void_desktop_shell.dart": null,
+    "lib/app/shell/desktop/void_status_bar.dart": null,
+    "lib/features/settings/presentation/settings_hub_screen.dart": null,
+    "lib/features/settings/presentation/storage_locations_screen.dart": null,
+    "lib/features/settings/presentation/language_switcher.dart": null,
+    "lib/app/navigation/app_navigation_registry.dart": null
+  },
+  "notes": "Dirty sibling autosave/character region TIDAK termasuk scope dan tidak boleh disentuh. Hunter wajib membaca penuh 7 file di atas sebelum mengklaim apa pun."
+}

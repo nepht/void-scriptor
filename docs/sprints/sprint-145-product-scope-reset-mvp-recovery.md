@@ -1,3 +1,49 @@
+### 2026-09-13 - nephthys (cron run260): hunt shell/settings region (145.37/145.38) PARTIAL + BUG-06 fix GREEN (vs-hunt-20260913-shell-settings)
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53, stream
+  corrective_core_mvp, stability gate PASS). HEAD masuk d4a6dbf. Conflict markers nihil;
+  `git diff --check` exit 0. Proses flutter/dart/void_scriptor nihil. Sibling dirty
+  DIPRESERVASI TANPA SENTUH: autosave vertical BUG-4/5 (coordinator +47, story_dao,
+  project_database, repository_impl, screen, test untracked; mtime 00:39-01:11) = MASIH
+  belum di-commit sejak run258 -> antrean A3 tetap "VERIFY AFTER THEIR COMMIT";
+  character region (3 file, terverifikasi style-only) juga utuh.
+- Seleksi slice: antrean hunt lama kering (A3 blokir penulis; item C habis teraudit
+  run258). Otorisasi bug-hunt berulang 2026-09-07 -> hunt region BARU yang belum pernah
+  dipindai dan diizinkan eksplisit Choi 2026-09-04: shell navigasi global + settings
+  (kontrak 145.37/145.38), 7 file / 1730 baris, scope.json + hash HEAD d4a6dbf di
+  docs/evidence/vs-hunt-20260913-shell-settings/.
+- Rantai: Stage 1 Hunter delegate PASS (10 temuan, skor 26, hunter_report.md).
+  Stage 3 Skeptic delegate GAGAL 2x beruntun HTTP 429 quota (pin gemini/3.5-flash-lite
+  habis; codex CLI tak terpasang) -> ganti strategi sesuai aturan anti-berputar:
+  verifikasi independen per-temuan oleh agen utama (peran Skeptic+Referee digabung,
+  scan-only, setiap baris dibaca ulang di HEAD). Status rantai PARTIAL, documented di
+  referee_report_shell_settings.md.
+- Verdict: REAL reachable 2 (BUG-06 Low; BUG-02 push-vs-go Low - kandidat slice
+  berikutnya, belum diperbaiki: butuh RED stack-depth + risiko regressi shell), REAL
+  not-production 1 (BUG-08 firstWhere tanpa caller), BUKAN BUG/by-design 7 (stale-closure
+  salah karena ConsumerWidget rebuild; cloud/AI indicator = deferred scope; language
+  switcher = kontrak deferred tanpa wiring locale nyata - mount = dead control;
+  didChangeDependencies idempoten; duplikasi = style-only; donate dialog = by-design;
+  BUG-10 mounted-check tak terbukti).
+- Slice dieksekusi: BUG-06 storage_locations_screen.dart snackbar mutasi 300 ms ->
+  _kResultSnackDuration 4 s (4 jalur: _mutate berhasil/gagal + _submitRelink
+  berhasil/gagal). RED: assert duration>=4000 gagal Actual <300> (pump-based pertama
+  lolos-palsu karena show di zone runAsync - lesson: assert properti widget, bukan
+  timer dismiss utk snackbar yang muncul via runAsync). GREEN: focused
+  storage_locations_screen_test 8 PASS; region `flutter test --no-pub
+  test/features/settings` 22 PASS / 0 FAIL; `dart analyze lib/features/settings` No
+  issues; `dart format` 0 changed; `git diff --check` exit 0; `flutter build windows
+  --debug --no-pub` PASS 26,1s (working tree termasuk WIP sibling - label dirty-scope).
+- Commit 928efd4 scoped 2 file (lib+test slice; tanpa git add -A). Push dual-remote
+  sesuai izin standing HANDOFF_CRON_V4 setelah gates hijau; diverifikasi ls-remote.
+  Pointer 145.27 TETAP PARTIAL.
+- Next action: (1) sibling commit BUG-4/5 -> ACCEPT review (focused coordinator+repo,
+  regresi test/features/story) lalu antrean C; (2) slice BUG-02 push->go + RED
+  stack-depth atas izin 145.37 bila A3 masih blokir; (3) Choi: kuota delegation
+  (restore pin/lepas) utk rantai hunt 3-tahap penuh; wrangler login interaktif
+  (website, blocker bertahan >3 run - dilaporkan, tidak diulang).
+
+
 ### 2026-09-13 - nephthys (cron run259): journey native backup->restore VERIFIED (gap run253 UNVERIFIABLE ditutup) - sesi desktop hidup, tanpa mutasi source
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53, stream

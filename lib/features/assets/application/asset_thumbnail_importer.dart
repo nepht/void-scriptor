@@ -73,7 +73,19 @@ class AssetThumbnailImporter {
     await source.copy(target.path);
 
     final superseded = asset.thumbnailPath;
-    await database.assetDao.setThumbnail(assetId, target.path);
+    try {
+      await database.assetDao.setThumbnail(assetId, target.path);
+    } on Object {
+      // vs-hunt-20260913-importer BUG-4: update gagal = baris masih menunjuk
+      // thumbnail lama; hapus salinan baru agar tidak yatim di namespace kita.
+      try {
+        await target.delete();
+      } on FileSystemException {
+        // Berkas terkunci: yatim tetap lebih baik daripada menggagalkan
+        // laporan kegagalan update yang asli.
+      }
+      rethrow;
+    }
 
     // Hapus berkas lama hanya bila masih berada di namespace kita;
     // path luar (mis. legacy manual) tidak pernah disentuh.

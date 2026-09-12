@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "[run228-nephthys 2026-09-12 cron] Journey native export+backup VERIFIED di HEAD b44979a (Export Markdown/TXT/Novel-workspace ZIP + Create Backup sha-verified; draft run225 selamat lintas sesi; close graceful tanpa lock). DUA GAP terkonfirmasi, dicatat ledger+evidence untuk slice berikutnya: GAP-BACKUP-RESTORE-NO-UI (ProjectBackupService.restore() tanpa caller UI produksi; layar Project Backups hanya Create/Scan) dan GAP-IMPORT-NOVEL-UNWIRED (pickImportArchive tidak di-wire, tombol Import Novel permanen disabled). Next: slice wire restore-backup UI dan/atau import picker (kontrak 145.34/145.33). Deploy hero tetap menunggu wrangler login Choi; 145.43-145.50/push = keputusan Choi; pointer 145.27 tetap.",
+  "last_verified_step": "[run229-nephthys 2026-09-12 cron] GAP-IMPORT-NOVEL-UNWIRED (145.33) ditutup: resolver inject picker .voidworkspace (file_selector openFile, XFile->File) -> tombol Import Novel kini enabled saat session hidup. RED->GREEN focused 2/2; regression workspace+story 222 PASS; build windows debug PASS; commit 0179cf6 (ahead 9, no push). WIP sibling GAP-BACKUP-RESTORE-NO-UI (5 file project_resilience, penulis aktif pagi ini) dipreservasi tanpa sentuh - run berikut: cek sudah commit atau idle>24j sebelum ambil alih. Native picker journey UNVERIFIABLE dari cron. Pointer 145.27 tetap.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",

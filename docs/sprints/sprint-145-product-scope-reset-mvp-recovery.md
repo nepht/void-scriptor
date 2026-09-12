@@ -1,3 +1,45 @@
+### 2026-09-13 - nephthys (cron run265): vs-hunt-20260913-importer + BUG-3/BUG-4 GREEN
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk 50c6221 (run264
+  ter-commit; ahead 6 — push tetap keputusan Choi). Conflict markers nihil;
+  proses flutter/dart/void_scriptor nihil. Sibling dirty DIPRESERVASI TANPA
+  SENTUH: autosave vertical story (coordinator/story_dao/project_database/
+  repository_impl/screen + test untracked durable_autosave_empty_ack) +
+  character region 3 file — mtime terbaru mereka 01:09, 4,5 jam sebelum run;
+  A3 ACCEPT tetap antri setelah commit mereka. Single-writer RELEASED_TO_HERMES
+  diakui kembali (ack dicatat di entri ini).
+- Slice: satu adversarial-bug-hunt region importer/thumbnail/reference vertical
+  (12 file = 9 lib + 3 test, di bawah cap 20; fingerprint scope+HEAD dicatat di
+  docs/evidence/vs-hunt-20260913-importer/scope_hashes.txt sebelum Stage 1).
+  Hunter 6 temuan (40 poin) -> Skeptic accept 6/6 TANPA cek reachability
+  (dicritic di skeptic_report.md) -> Referee independen: BUG-3/BUG-4 REAL
+  (Medium), BUG-5 REAL Low, BUG-1/BUG-2/BUG-6 DISMISSED (addReference fresh
+  UUID + copy sebelum delete = probabilitas ~nol; assetId/eraId = UUID lokal,
+  traversal butuh DB/backup jahat = luar batas kepercayaan local-first).
+  Catatan delegasi: Referee percobaan #1 mati 429 upstream (gemini flash-lite,
+  11 call) lalu sukses di percobaan #2 dengan brief ringkas — probe kuota dulu.
+- Fix BUG-3+BUG-4 (satu kelas cacat, pola established faction importer
+  2a55bd7): TDD RED — dua test baru (timeline_era_image_save_failure_orphan +
+  asset_thumbnail_save_failure_orphan) injeksi trigger SQLite RAISE(ABORT) pada
+  fixture temporer; keduanya gagal persis dengan berkas yatim di namespace
+  (Expected: empty, Actual: [File ...era_images/era-orphan-1_...png]) -> GREEN
+  try/catch delete target + rethrow di saveEra dan setThumbnail. BUG-5 Low
+  TETAP ANTRE (partial import idempoten via content-hash; bukan risiko data).
+- Regresi/gates: focused 2 PASS; test/features/bible 56 PASS/0 FAIL;
+  test/features/assets 56 PASS/0 FAIL (sequential, satu proses sekali waktu);
+  dart analyze scoped 4 file No issues; format bersih pasca satu rewrap; git
+  diff --check exit 0; flutter build windows --debug PASS 27,0s. Commit scoped
+  06a3a3f (8 path eksplisit, tanpa -A; dirty sibling tak tersentuh).
+- Status: 145.27 tetap PARTIAL; pointer tidak bergerak; antrean
+  vs-hunt-20260913-importer = BUG-5 (Low) saja. Native interaction
+  UNVERIFIABLE dari cron (perbaikan murni jalur I/O service deterministik,
+  tidak mengubah UI).
+- Next action: run berikutnya (1) A3 ACCEPT review sibling autosave bila sudah
+  commit; (2) jika bersih, opsi: tutup BUG-5 Low (transaction/cleanup
+  per-item di reference_bulk_importer) ATAU hunt region baru (mis. reference
+  card/binder UI) — pilih dari gap acceptance, jangan pindai scope identik.
+
 ### 2026-09-13 - nephthys (cron run264): vs-hunt-20260913-bible BUG-3 + BUG-4 GREEN
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run264 vs-hunt-20260913-bible BUG-3+BUG-4 VERIFIED GREEN (CanonHealthSummary field info + FactionImageImporter rollback file yatim saat save gagal via trigger BEFORE INSERT; RED 2 test gagal tepat mekanisme, focused 6 PASS, bible region 55 PASS, analyze scoped No issues, format exit 0, build windows debug PASS 25.9s, commit 2a55bd7 scoped 4 file). Antrean vs-hunt-20260913-bible KELAR (BUG-1 d6abda6, BUG-2 7dd299f, BUG-3/4 2a55bd7). Sisa risiko dicatat: TimelineEra/AssetThumbnail importer punya pola copy-then-save tanpa rollback yang sama (bukan verdict hunt). run263 BUG-1 closed sebelumnya.",
+  "last_verified_step": "run265 vs-hunt-20260913-importer VERIFIED (Hunter 6 -> Referee: BUG-3/4 REAL Medium fixed 06a3a3f TDD trigger-injection RED->GREEN, bible 56 + assets 56 PASS, analyzer scoped clean, windows debug build 27s; BUG-1/2/6 DISMISSED (probabilitas ~nol / batas trust local-first); BUG-5 Low antri; pointer 145.27 tetap PARTIAL)",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T05:45:00+07:00",
-  "updated_by": "nephthys-cron-run264",
+  "updated_at": "2026-09-13T06:05:00+07:00",
+  "updated_by": "nephthys-cron-run265",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -152,5 +152,11 @@
     "evidence": "docs/evidence/native-restore-journey-run259/ (4 screenshots berurutan)",
     "scope_note": "rute restore UI kini terbukti terhubung native; sisa 145.34 = fault injection rollback-gagal + exact-snapshot vs merge (test-level, bukan GUI)",
     "next_action": "JANGAN ulangi attempt buta; journey ini closed"
+  },
+  "importer_hunt_2026_09_13": {
+    "status": "hunt COMPLETE (VERIFIED scan-only, 3 stages) + BUG-3/BUG-4 fixed 06a3a3f; queue sisa: BUG-5 (Low, transaction/cleanup reference_bulk_importer; partial import sudah idempoten via content-hash)",
+    "hunt": "docs/evidence/vs-hunt-20260913-importer/",
+    "dismissed": "BUG-1 character_reference_binder (copy sebelum delete + fresh UUID), BUG-2/BUG-6 traversal via id UUID lokal = luar batas local-first",
+    "delegation_note": "Referee attempt#1 429 upstream (gemini flash-lite); attempt#2 compact brief PASS"
   }
 }

@@ -198,7 +198,18 @@ class ReferenceBulkImporter {
           enabled: true,
           contentHash: digest,
         );
-        await database.referenceDao.insertReference(reference: reference);
+        try {
+          await database.referenceDao.insertReference(reference: reference);
+        } catch (_) {
+          // vs-hunt-20260913-importer BUG-5 (Low): salinan tidak boleh
+          // tertinggal yatim saat baris gagal dibuat — baris lain yang
+          // sudah sukses tetap valid (file-nya ada), dan re-import idempoten
+          // via content-hash. Pola sama faction/era/thumbnail importer.
+          try {
+            await target.delete();
+          } catch (_) {}
+          rethrow;
+        }
         firstImportedId ??= reference.id;
         created++;
         createdFiles.add(fileName);

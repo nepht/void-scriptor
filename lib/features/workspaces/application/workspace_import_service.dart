@@ -102,6 +102,12 @@ final class WorkspaceImportService {
         manifest['workspaceType'] != 'novel') {
       throw const FormatException('Archive is not a Novel workspace export');
     }
+    // vs-hunt-20260912n BUG-02: only version-1 semantics are implemented.
+    // An unknown or missing version must be rejected before any mutation,
+    // not silently decoded with version-1 rules.
+    if (manifest['version'] != 1) {
+      throw const FormatException('Unsupported Novel workspace export version');
+    }
     final workspaceId = manifest['workspaceId'] as String?;
     if (workspaceId == null || workspaceId.trim().isEmpty) {
       throw const FormatException('Missing Novel workspace ID');

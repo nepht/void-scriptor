@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-12T23:46:00+07:00",
-  "updated_by": "hermes-cron-run255",
+  "updated_at": "2026-09-13T01:20:00+07:00",
+  "updated_by": "nephthys cron run257",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -140,7 +140,8 @@
     "failure": "delegate_task Hunter gagal 2x: upstream cbai/kimi-k2.7 429 code14018 Credits exhausted; nol mutasi repo",
     "next_action": "ulangi Hunter->Skeptic->Referee saat kuota delegation pulih ATAU Choi cabut pin delegation.model; JANGAN tandai scope sebagai clean",
     "run248_note": "run248 = NO-OP mutasi; queue vs-hunt-20260912n tetap kosong; push backlog f366a7a..b2ca031 terverifikasi dual-remote (ahead 0)",
-    "run253_note": "sibling hunt masih hidup di working tree (hunter report 22:04, skeptic/referee instructions 22:06, referee report BELUM ada); cron run253 tidak menyentuh scope/region karakter sibling"
+    "run253_note": "sibling hunt masih hidup di working tree (hunter report 22:04, skeptic/referee instructions 22:06, referee report BELUM ada); cron run253 tidak menyentuh scope/region karakter sibling",
+    "queue_A3_status": "run257 PARTIAL: BUG-6 fixed+committed b630568 (content-aware acknowledge pada restore draf; RED->GREEN, fokus 22 PASS, regresi story 198 PASS). BUG-4/BUG-5 = perubahan dirty milik penulis koordinator aktif (coordinator +47 dirty, hunk aroundExternalDraftWrite di screen) - VERIFY AFTER THEIR COMMIT, jangan tulis ulang. Native 145.34 tetap UNVERIFIABLE (computer_use windows:[] 3+ run beruntun; butuh sesi desktop interaktif)."
   },
   "native_restore_journey_run253": {
     "status": "UNVERIFIABLE (auxiliary.vision timeout 3x; Flutter canvas tanpa AX -> no blind clicks)",

@@ -1,3 +1,32 @@
+### 2026-09-13 - nephthys (cron run257): fix BUG-6 acknowledge content-aware restore draf (vs-hunt-20260912-autosave A3, parsial)
+
+- Otorisasi: instruksi Choi 2026-09-07 (bug hunt berulang + perbaikan otomatis, satu
+  slice per run). A3 = BUG-4/5/6. BUG-4 + hunk BUG-5 di screen milik penulis
+  koordinator aktif (coordinator M +47, story_dao/project_database/repository_impl M,
+  mtime < 60 menit) — TIDAK kusentuh/kucuri-commit. Slice cron ini = BUG-6 saja.
+- BUG-6 (Medium, Referee REAL): `_restorePendingDraft` memanggil
+  `acknowledge(sceneId)` blind setelah `await saveSceneDraft`; jika pengguna mengetik
+  lagi selama await dan autosave men-stage konten BARU, ack menghapus entri jurnal yang
+  belum pernah dipersist = silent draft loss. Fix: `acknowledge(entry.sceneId,
+  content: entry.content)` (guard content-aware sudah ada di DurableDraftJournal
+  produksi, dibuktikan durable_draft_journal_test). Jalur 'Buang' tetap blind.
+- RED: test/features/story/recovery_content_aware_ack_test.dart gagal di HEAD (entri
+  tergantikan terhapus). GREEN: 2/2 PASS di worktree terisolasi base bersih HEAD
+  4d2011d (karena worktree utama tak-kompilable tanpa API aroundExternalDraftWrite yang
+  masih dirty sibling) DAN di worktree utama pasca-patch (termasuk saat hunk BUG-5
+  sibling ikut terbaca). Fokus 7 file autosave/recovery: 22/22 PASS. Regresi penuh
+  `test/features/story --concurrency=2`: 198 PASS, 0 FAIL.
+- Gate: dart analyze 2 file milik slice = No issues found; dart format
+  --set-exit-if-changed = 0 changed; git diff --check exit 0.
+- Commit `b630568` SCOPED via `git update-index --cacheinfo` blob HEAD+BUG-6 saja
+  (hunk BUG-5 sibling tetap dirty di worktree, tidak ikut ter-commit).
+- Sisa A3: BUG-4 (dispose/reporting coordinator) + BUG-5 (flush-before-restore) sudah
+  ADA sebagai perubahan dirty penulis koordinator — cron run berikutnya verifikasi
+  setelah mereka commit, jangan tulis ulang. Native journey 145.34: run257 launch child
+  PID 14040 OK tetapi computer_use `windows: []` (3+ run beruntun) → UNVERIFIABLE;
+  butuh sesi desktop interaktif. Next: rekap hasil ke ROADMAP_STATE, guard ulang,
+  pantau commit sibling utk ACCEPT review BUG-4/5.
+
 ### 2026-09-12 - nephthys (interaktif run256): fix Critical BUG-2 + Medium BUG-3/BUG-17 koordinator autosave (vs-hunt-20260912-autosave A2)
 
 - Otorisasi: Choi 'ok perbaiki' atas verdict run254 (18 REAL). Kronologi kolaborasi: slice

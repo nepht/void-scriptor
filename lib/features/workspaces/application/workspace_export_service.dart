@@ -179,7 +179,16 @@ final class WorkspaceExportService {
 
   Future<void> _copy(Directory source, Directory target) async {
     await target.create(recursive: true);
-    await for (final entity in source.list(recursive: true)) {
+    // vs-hunt-20260912n BUG-04: list WITHOUT following links. A symlinked
+    // file would archive content from outside the workspace (data leak) or
+    // abort the export (dangling link); a symlinked directory would be
+    // recursed into with the same result. Link entities are skipped entirely
+    // — an export contains only real, workspace-owned bytes.
+    await for (final entity in source.list(
+      recursive: true,
+      followLinks: false,
+    )) {
+      if (entity is Link) continue;
       final relative = p.relative(entity.path, from: source.path);
       final targetPath = p.join(target.path, relative);
       if (entity is Directory) {

@@ -141,105 +141,20 @@ final class WorkspaceImportService {
     // fork export materializes its canonical characters into the target
     // store; an existing character is a hard stop, not a silent overwrite.
     final representation = manifest['characterRepresentation'] as String?;
-    if (representation != null && representation != 'reference_manifest') {
-      final embeddedPayloads = <String, Map<String, dynamic>>{};
-      const embeddedPrefix = 'workspace/characters/';
-      for (final entry in decoded) {
-        if (!entry.isFile) continue;
-        final normalized = p.posix.normalize(entry.name);
-        if (!normalized.startsWith(embeddedPrefix) ||
-            !normalized.endsWith('.json')) {
-          continue;
-        }
-        final payload =
-            jsonDecode(utf8.decode(entry.readBytes()!)) as Map<String, dynamic>;
-        embeddedPayloads[normalized.substring(
-              embeddedPrefix.length,
-              normalized.length - '.json'.length,
-            )] =
-            payload;
-      }
-      final insertedCharacterIds = <String>[];
-      try {
-        for (final link in restoredLinks) {
-          final existing =
-              await (database.select(database.characters)
-                    ..where((tbl) => tbl.assetId.equals(link.characterId)))
-                  .getSingleOrNull();
-          if (existing != null) {
-            throw StateError(
-              'Canonical character ${link.characterId} already exists; '
-              'embedded snapshot/fork restore must not overwrite.',
-            );
-          }
-        }
-        for (final link in restoredLinks) {
-          final payload = embeddedPayloads[link.characterId];
-          if (payload == null) {
-            // vs-hunt-20260912n BUG-05: a missing embedded payload must
-            // reject the archive before any mutation. Falling back to an
-            // empty map used to silently insert a blank canonical
-            // character (displayName = raw ID).
-            throw FormatException(
-              'Missing embedded character payload for ${link.characterId}',
-            );
-          }
-          // Columns with schema defaults are constructor params typed
-          // Value<T>; Value.absent() lets the database default apply.
-          T? read<T>(String key) => payload[key] as T?;
-          await database
-              .into(database.characters)
-              .insert(
-                data.CharactersCompanion.insert(
-                  assetId: link.characterId,
-                  projectId: package.projectId,
-                  displayName: read<String>('displayName') ?? link.characterId,
-                  alias: read<String>('alias') != null
-                      ? Value(read<String>('alias')!)
-                      : const Value.absent(),
-                  biography: read<String>('biography') != null
-                      ? Value(read<String>('biography')!)
-                      : const Value.absent(),
-                  personality: read<String>('personality') != null
-                      ? Value(read<String>('personality')!)
-                      : const Value.absent(),
-                  gender: read<String>('gender') != null
-                      ? Value(read<String>('gender')!)
-                      : const Value.absent(),
-                  age: read<int>('age') != null
-                      ? Value(read<int>('age')!)
-                      : const Value.absent(),
-                  heightCm: read<num>('heightCm') != null
-                      ? Value(read<num>('heightCm')!.toDouble())
-                      : const Value.absent(),
-                  hair: read<String>('hair') != null
-                      ? Value(read<String>('hair')!)
-                      : const Value.absent(),
-                  eyes: read<String>('eyes') != null
-                      ? Value(read<String>('eyes')!)
-                      : const Value.absent(),
-                  skin: read<String>('skin') != null
-                      ? Value(read<String>('skin')!)
-                      : const Value.absent(),
-                ),
-              );
-          insertedCharacterIds.add(link.characterId);
-        }
-      } catch (_) {
-        for (final characterId in insertedCharacterIds.reversed) {
-          await (database.delete(
-            database.characters,
-          )..where((tbl) => tbl.assetId.equals(characterId))).go();
-        }
-        rethrow;
-      }
-    }
+    final embedded =
+        representation != null && representation != 'reference_manifest';
 
+    // vs-hunt-20260912n BUG-01: every mutation (character materialization,
+    // directory move, link inserts) happens inside ONE transaction. The old
+    // compensating-delete loops only covered the phase they ran in, so a
+    // failure while inserting links left already-materialized canonical
+    // characters behind as ghosts. Drift rolls the whole database back on
+    // any throw; only the filesystem move needs manual undo.
     final staging = await Directory.systemTemp.createTemp(
       'void-workspace-restore-',
     );
     var movedIntoPlace = false;
-    final insertedLinkIds = <String>[];
+    var restoredLinkCount = 0;
     try {
       if (!adopting) {
         for (final entry in decoded) {
@@ -265,31 +180,118 @@ final class WorkspaceImportService {
           await output.parent.create(recursive: true);
           await output.writeAsBytes(entry.readBytes()!);
         }
-
-        await target.parent.create(recursive: true);
-        await staging.rename(target.path);
-        movedIntoPlace = true;
       }
 
-      final existingLinkIds = adopting
-          ? (await links.listForNovel(
-              workspaceId,
-            )).map((link) => link.linkId).toSet()
-          : const <String>{};
-      for (final link in restoredLinks) {
-        if (adopting && existingLinkIds.contains(link.linkId)) continue;
-        await links.create(link);
-        insertedLinkIds.add(link.linkId);
-      }
+      await database.transaction(() async {
+        if (embedded) {
+          final embeddedPayloads = <String, Map<String, dynamic>>{};
+          const embeddedPrefix = 'workspace/characters/';
+          for (final entry in decoded) {
+            if (!entry.isFile) continue;
+            final normalized = p.posix.normalize(entry.name);
+            if (!normalized.startsWith(embeddedPrefix) ||
+                !normalized.endsWith('.json')) {
+              continue;
+            }
+            final payload =
+                jsonDecode(utf8.decode(entry.readBytes()!))
+                    as Map<String, dynamic>;
+            embeddedPayloads[normalized.substring(
+                  embeddedPrefix.length,
+                  normalized.length - '.json'.length,
+                )] =
+                payload;
+          }
+          for (final link in restoredLinks) {
+            final existing =
+                await (database.select(database.characters)
+                      ..where((tbl) => tbl.assetId.equals(link.characterId)))
+                    .getSingleOrNull();
+            if (existing != null) {
+              throw StateError(
+                'Canonical character ${link.characterId} already exists; '
+                'embedded snapshot/fork restore must not overwrite.',
+              );
+            }
+          }
+          for (final link in restoredLinks) {
+            final payload = embeddedPayloads[link.characterId];
+            if (payload == null) {
+              // vs-hunt-20260912n BUG-05: a missing embedded payload must
+              // reject the archive before any mutation. Falling back to an
+              // empty map used to silently insert a blank canonical
+              // character (displayName = raw ID).
+              throw FormatException(
+                'Missing embedded character payload for ${link.characterId}',
+              );
+            }
+            // Columns with schema defaults are constructor params typed
+            // Value<T>; Value.absent() lets the database default apply.
+            T? read<T>(String key) => payload[key] as T?;
+            await database
+                .into(database.characters)
+                .insert(
+                  data.CharactersCompanion.insert(
+                    assetId: link.characterId,
+                    projectId: package.projectId,
+                    displayName:
+                        read<String>('displayName') ?? link.characterId,
+                    alias: read<String>('alias') != null
+                        ? Value(read<String>('alias')!)
+                        : const Value.absent(),
+                    biography: read<String>('biography') != null
+                        ? Value(read<String>('biography')!)
+                        : const Value.absent(),
+                    personality: read<String>('personality') != null
+                        ? Value(read<String>('personality')!)
+                        : const Value.absent(),
+                    gender: read<String>('gender') != null
+                        ? Value(read<String>('gender')!)
+                        : const Value.absent(),
+                    age: read<int>('age') != null
+                        ? Value(read<int>('age')!)
+                        : const Value.absent(),
+                    heightCm: read<num>('heightCm') != null
+                        ? Value(read<num>('heightCm')!.toDouble())
+                        : const Value.absent(),
+                    hair: read<String>('hair') != null
+                        ? Value(read<String>('hair')!)
+                        : const Value.absent(),
+                    eyes: read<String>('eyes') != null
+                        ? Value(read<String>('eyes')!)
+                        : const Value.absent(),
+                    skin: read<String>('skin') != null
+                        ? Value(read<String>('skin')!)
+                        : const Value.absent(),
+                  ),
+                );
+          }
+        }
+
+        if (!adopting) {
+          await target.parent.create(recursive: true);
+          await staging.rename(target.path);
+          movedIntoPlace = true;
+        }
+
+        final existingLinkIds = adopting
+            ? (await links.listForNovel(
+                workspaceId,
+              )).map((link) => link.linkId).toSet()
+            : const <String>{};
+        for (final link in restoredLinks) {
+          if (adopting && existingLinkIds.contains(link.linkId)) continue;
+          await links.create(link);
+          restoredLinkCount++;
+        }
+      });
+
       return WorkspaceRestoreResult(
         workspaceId: workspaceId,
-        restoredLinkCount: insertedLinkIds.length,
+        restoredLinkCount: restoredLinkCount,
         skipped: false,
       );
     } catch (_) {
-      for (final linkId in insertedLinkIds.reversed) {
-        await links.unlink(linkId);
-      }
       if (movedIntoPlace && await target.exists()) {
         await target.delete(recursive: true);
       }

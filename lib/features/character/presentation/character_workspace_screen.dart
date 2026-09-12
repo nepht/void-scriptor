@@ -6,6 +6,7 @@ import 'package:file_selector/file_selector.dart';
 import '../../assets/application/asset_thumbnail_importer.dart';
 import '../domain/character_model.dart';
 import '../domain/character_identity_profile.dart';
+import '../../../design_system/widgets/void_button.dart';
 import 'character_workspace_controller.dart';
 import 'character_controller.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
@@ -15,6 +16,7 @@ import 'widgets/character_deletion_review_dialog.dart';
 import 'widgets/character_header.dart';
 import 'widgets/character_identity_card.dart';
 import 'widgets/character_portrait_card.dart';
+import 'widgets/character_trait_extraction_sheet.dart';
 import 'widgets/character_scope_status_card.dart';
 import 'widgets/character_private_notes_card.dart';
 import 'widgets/narrative_assignment_card.dart';
@@ -154,6 +156,17 @@ class _CharacterWorkspaceScreenState
     ).showSnackBar(const SnackBar(content: Text('Portrait updated.')));
   }
 
+  VoidButton _traitTrigger(CharacterModel character) => VoidButton(
+    key: const ValueKey('trait-extract-trigger'),
+    icon: Icons.auto_awesome,
+    label: 'Ekstraksi ciri dari naskah',
+    onPressed: () => CharacterTraitExtractionSheet.show(
+      context,
+      characterId: character.assetId,
+      characterName: character.displayName,
+    ),
+  );
+
   Widget _content(
     CharacterModel character,
     CharacterIdentityProfile identity,
@@ -276,6 +289,11 @@ class _CharacterWorkspaceScreenState
       return Column(
         children: [
           top,
+          const SizedBox(height: 16),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: _traitTrigger(character),
+          ),
           const SizedBox(height: 16),
           NarrativeAssignmentCard(
             key: ValueKey<String>('narrative-${character.assetId}'),

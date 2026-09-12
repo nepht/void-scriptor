@@ -141,6 +141,50 @@ class AiGenerationRuntime {
 
   Future<void> runQueue() => queue.drain();
 
+  /// Runs one text generation synchronously and returns the provider reply.
+  ///
+  /// Unlike [submitPrompt] this bypasses the durable queue: it is for
+  /// analysis-style calls (e.g. manuscript trait extraction) whose result is
+  /// consumed immediately as a user-facing proposal, not persisted media.
+  /// The prompt is still recorded in prompt history for provenance.
+  Future<String> generateText({
+    required String prompt,
+    required String providerId,
+    String? modelId,
+    PromptTarget target = PromptTarget.story,
+  }) async {
+    final normalizedPrompt = prompt.trim();
+    if (normalizedPrompt.isEmpty) {
+      throw ArgumentError.value(prompt, 'prompt', 'Prompt must not be empty.');
+    }
+    final provider = executor.registry.require(providerId);
+    provider.validateTarget(target);
+    final request = AiGenerationRequest(
+      jobId: 'direct-${const Uuid().v4()}',
+      prompt: normalizedPrompt,
+      target: target,
+      model: modelId,
+    );
+    final result = await provider.generate(request);
+    await _promptHistory.savePrompt(
+      projectId: projectId,
+      target: target.name,
+      prompt: normalizedPrompt,
+      negativePrompt: '',
+      provider: providerId,
+      model: modelId,
+    );
+    final text = result.outputs
+        .where((output) => output.type == AiOutputType.text)
+        .map((output) => output.text ?? '')
+        .join('\n')
+        .trim();
+    if (text.isEmpty) {
+      throw StateError('Provider "$providerId" returned no text output.');
+    }
+    return text;
+  }
+
   Future<String> submitImagePrompt({
     required String prompt,
     required String providerId,

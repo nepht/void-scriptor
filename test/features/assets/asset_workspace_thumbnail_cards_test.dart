@@ -123,9 +123,9 @@ void main() {
     (tester) async {
       final session = await seed(tester, 'stale', imageName: 'coat2.png');
       final stale = await tester.runAsync(
-        () async =>
-            (await session.database.assetDao.getById('asset-first'))!
-                .thumbnailPath!,
+        () async => (await session.database.assetDao.getById(
+          'asset-first',
+        ))!.thumbnailPath!,
       );
       await tester.runAsync(() => File(stale!).delete());
       await pumpBound(tester, session);

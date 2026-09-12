@@ -104,7 +104,10 @@ void main() {
 
       expect(find.text('Product View'), findsOneWidget);
       final image = tester.widget<Image>(find.byType(Image).first);
-      expect((image.image as FileImage).file.path, contains('asset_thumbnails'));
+      expect(
+        (image.image as FileImage).file.path,
+        contains('asset_thumbnails'),
+      );
       expect(find.text('Add Image'), findsWidgets);
       expect(tester.takeException(), isNull);
     },
@@ -123,7 +126,10 @@ void main() {
 
       expect(find.text('Technical View'), findsOneWidget);
       final image = tester.widget<Image>(find.byType(Image).first);
-      expect((image.image as FileImage).file.path, contains('asset_thumbnails'));
+      expect(
+        (image.image as FileImage).file.path,
+        contains('asset_thumbnails'),
+      );
       expect(find.text('Add Image'), findsWidgets);
       expect(tester.takeException(), isNull);
     },
@@ -142,7 +148,10 @@ void main() {
 
       expect(find.text('Design View'), findsOneWidget);
       final image = tester.widget<Image>(find.byType(Image).first);
-      expect((image.image as FileImage).file.path, contains('asset_thumbnails'));
+      expect(
+        (image.image as FileImage).file.path,
+        contains('asset_thumbnails'),
+      );
       expect(find.text('Add Image'), findsWidgets);
       expect(tester.takeException(), isNull);
     },

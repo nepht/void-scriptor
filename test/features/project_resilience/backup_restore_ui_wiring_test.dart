@@ -141,8 +141,7 @@ void main() {
         final package = await makePackage(root, 'Flow Wire');
         final controller = container.read(projectSessionProvider.notifier);
         await controller.open(package.projectId);
-        final session =
-            container.read(projectSessionProvider).valueOrNull!;
+        final session = container.read(projectSessionProvider).valueOrNull!;
         await ProjectResilienceController(
           session,
         ).createBackup(note: 'flow-slice');
@@ -159,7 +158,11 @@ void main() {
         );
 
         final fresh = container.read(projectSessionProvider).valueOrNull;
-        expect(fresh, isNotNull, reason: 'the project must reopen after restore');
+        expect(
+          fresh,
+          isNotNull,
+          reason: 'the project must reopen after restore',
+        );
         expect(fresh!.package.projectId, package.projectId);
         expect(identical(fresh, session), isFalse);
         expect(fresh.manifest.name, 'Flow Wire');
@@ -184,52 +187,49 @@ void main() {
     },
   );
 
-  test(
-    'restoreBackupAndReopen aborts fail-closed when the backup schema is '
-    'newer than the application schema',
-    () async {
-      final root = await Directory.systemTemp.createTemp(
-        'hermes-restorewire-block-',
-      );
-      addTearDown(() => root.delete(recursive: true));
-      final package = await makePackage(root, 'Blocked Future Schema');
-      final session = await ProjectSessionManager().open(package);
-      final controller = ProjectResilienceController(session);
-      await controller.createBackup(note: 'future-schema');
-      final rows = await rowsFor(session, package.projectId);
+  test('restoreBackupAndReopen aborts fail-closed when the backup schema is '
+      'newer than the application schema', () async {
+    final root = await Directory.systemTemp.createTemp(
+      'hermes-restorewire-block-',
+    );
+    addTearDown(() => root.delete(recursive: true));
+    final package = await makePackage(root, 'Blocked Future Schema');
+    final session = await ProjectSessionManager().open(package);
+    final controller = ProjectResilienceController(session);
+    await controller.createBackup(note: 'future-schema');
+    final rows = await rowsFor(session, package.projectId);
 
-      // Rewrite the recorded snapshot's database to a future user_version so
-      // the compatibility preview classifies it blocked. The controller row
-      // still references the backup directory on disk.
-      final dbPath = p.join(
-        package.backupDirectory.path,
-        rows.single.id,
-        'project.db',
-      );
-      final raw = sqlite3.open(dbPath);
-      raw.execute(
-        'PRAGMA user_version = ${ProjectDatabase.currentSchemaVersion + 7}',
-      );
-      raw.close();
-      await session.close();
+    // Rewrite the recorded snapshot's database to a future user_version so
+    // the compatibility preview classifies it blocked. The controller row
+    // still references the backup directory on disk.
+    final dbPath = p.join(
+      package.backupDirectory.path,
+      rows.single.id,
+      'project.db',
+    );
+    final raw = sqlite3.open(dbPath);
+    raw.execute(
+      'PRAGMA user_version = ${ProjectDatabase.currentSchemaVersion + 7}',
+    );
+    raw.close();
+    await session.close();
 
-      var reopenAttempts = 0;
-      await expectLater(
-        ProjectBackupRestoreFlow.restoreBackupAndReopen(
-          closeActiveSession: () async {},
-          reopenProject: () async => reopenAttempts++,
-          session: session,
-          backup: rows.single,
-        ),
-        throwsA(isA<StateError>()),
-      );
-      expect(
-        reopenAttempts,
-        0,
-        reason:
-            'a blocked restore must never proceed to reopen; the shell stays '
-            'on the live session',
-      );
-    },
-  );
+    var reopenAttempts = 0;
+    await expectLater(
+      ProjectBackupRestoreFlow.restoreBackupAndReopen(
+        closeActiveSession: () async {},
+        reopenProject: () async => reopenAttempts++,
+        session: session,
+        backup: rows.single,
+      ),
+      throwsA(isA<StateError>()),
+    );
+    expect(
+      reopenAttempts,
+      0,
+      reason:
+          'a blocked restore must never proceed to reopen; the shell stays '
+          'on the live session',
+    );
+  });
 }

@@ -101,9 +101,9 @@ void main() {
       );
       final session = opened!;
       await tester.runAsync(
-        () => ProjectResilienceController(session).createBackup(
-          note: 'ui-journey',
-        ),
+        () => ProjectResilienceController(
+          session,
+        ).createBackup(note: 'ui-journey'),
       );
       final rows = (await tester.runAsync(
         () => session.database.projectResilienceRepository.backupsFor(
@@ -162,53 +162,51 @@ void main() {
     },
   );
 
-  testWidgets(
-    'restore failure surfaces inline without losing the screen',
-    (tester) async {
-      final seeded = await tester.runAsync(() => makePackage('RUI2'));
-      final package = seeded!.$1;
-      final root = seeded.$2;
-      final opened = await tester.runAsync(
-        () => ProjectSessionManager().open(package),
-      );
-      final session = opened!;
-      await tester.runAsync(
-        () => ProjectResilienceController(session).createBackup(
-          note: 'ui-journey',
-        ),
-      );
-      addTearDown(() async {
-        await tester.runAsync(() => session.close());
-        if (root.existsSync()) await root.delete(recursive: true);
-      });
+  testWidgets('restore failure surfaces inline without losing the screen', (
+    tester,
+  ) async {
+    final seeded = await tester.runAsync(() => makePackage('RUI2'));
+    final package = seeded!.$1;
+    final root = seeded.$2;
+    final opened = await tester.runAsync(
+      () => ProjectSessionManager().open(package),
+    );
+    final session = opened!;
+    await tester.runAsync(
+      () =>
+          ProjectResilienceController(session).createBackup(note: 'ui-journey'),
+    );
+    addTearDown(() async {
+      await tester.runAsync(() => session.close());
+      if (root.existsSync()) await root.delete(recursive: true);
+    });
 
-      await tester.pumpWidget(
-        _wrapDetached(
-          MaterialApp(
-            home: ProjectResilienceWorkspaceScreen(
-              view: ProjectResilienceView.backups,
-              session: session,
-              onRestoreConfirmed: (backup) async =>
-                  throw StateError('injected restore failure'),
-            ),
+    await tester.pumpWidget(
+      _wrapDetached(
+        MaterialApp(
+          home: ProjectResilienceWorkspaceScreen(
+            view: ProjectResilienceView.backups,
+            session: session,
+            onRestoreConfirmed: (backup) async =>
+                throw StateError('injected restore failure'),
           ),
         ),
-      );
-      await pumpUntil(tester, find.text('Restore Latest Backup'));
+      ),
+    );
+    await pumpUntil(tester, find.text('Restore Latest Backup'));
 
-      await tester.tap(find.text('Restore Latest Backup'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Confirm Restore'));
-      await tester.pumpAndSettle();
-      expect(
-        find.textContaining('Operation failed'),
-        findsOneWidget,
-        reason: 'a failed restore must surface inline, not crash the screen',
-      );
-      expect(find.text('Restore Latest Backup'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    },
-  );
+    await tester.tap(find.text('Restore Latest Backup'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Confirm Restore'));
+    await tester.pumpAndSettle();
+    expect(
+      find.textContaining('Operation failed'),
+      findsOneWidget,
+      reason: 'a failed restore must surface inline, not crash the screen',
+    );
+    expect(find.text('Restore Latest Backup'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }
 
 /// The screen watches projectSessionProvider as a fallback; the provider's
@@ -217,9 +215,7 @@ void main() {
 /// makes pumpAndSettle spin. A detached (null) session override keeps the
 /// widget zone clean; the injected `session:` drives the screen under test.
 Widget _wrapDetached(Widget child) => ProviderScope(
-  overrides: [
-    projectSessionProvider.overrideWith(() => _DetachedSession()),
-  ],
+  overrides: [projectSessionProvider.overrideWith(() => _DetachedSession())],
   child: child,
 );
 

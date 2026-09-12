@@ -64,10 +64,9 @@ void main() {
       final character = await repo.createCharacter(name: 'Nyx');
       nyxId = character.assetId;
       await repo.updateCharacter(
-        (await repo.getCharacter(nyxId))!.copyWith(
-          biography: biography,
-          personality: personality,
-        ),
+        (await repo.getCharacter(
+          nyxId,
+        ))!.copyWith(biography: biography, personality: personality),
       );
       await NarrativeAssignmentRepository(
         database: session.database,

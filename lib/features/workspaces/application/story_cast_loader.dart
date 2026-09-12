@@ -45,8 +45,7 @@ class StoryCastLoader {
     final assignments = await repository.listAssignments();
     final characters = await database.characterDao.getAllCharacters(projectId);
     final profiles = <String, data.Character>{
-      for (final character in characters)
-        character.assetId: character,
+      for (final character in characters) character.assetId: character,
     };
     final entries = <StoryCastEntry>[];
     for (final assignment in assignments) {

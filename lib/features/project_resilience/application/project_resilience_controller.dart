@@ -21,6 +21,7 @@ class ProjectResilienceSnapshot {
     required this.backupItems,
     required this.trashItems,
     required this.orphanPaths,
+    this.backups = const [],
   });
 
   final ProjectIntegrityReport integrity;
@@ -28,6 +29,9 @@ class ProjectResilienceSnapshot {
   final int backupItems;
   final int trashItems;
   final Set<String> orphanPaths;
+
+  /// Recorded backup rows, newest first (Step 145.34 restore wiring).
+  final List<ProjectBackup> backups;
 }
 
 class ProjectResilienceController {
@@ -75,6 +79,9 @@ class ProjectResilienceController {
         .map((file) => file.relativePath)
         .toSet();
     final trashItems = (await _trashMetadata()).length;
+    final backupRows = (await session.database.projectResilienceRepository
+        .backupsFor(session.package.projectId));
+    backupRows.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     final backupItems = (await _backupDirectories()).length;
     return ProjectResilienceSnapshot(
       integrity: integrity,
@@ -82,6 +89,7 @@ class ProjectResilienceController {
       backupItems: backupItems,
       trashItems: trashItems,
       orphanPaths: actual.difference(referencedPaths),
+      backups: backupRows,
     );
   }
 
@@ -118,6 +126,29 @@ class ProjectResilienceController {
     );
     await _enforceBackupRetention();
     return backup;
+  }
+
+  /// Restores the recorded backup snapshot over the live package files
+  /// (Step 145.34 user-controlled restore). Uses the same
+  /// [ProjectBackupService.restore] rollback guarantee as the domain tests:
+  /// an emergency pre-restore backup is created first and retained on disk
+  /// when anything fails. Sessions open in read-only mode are rejected
+  /// fail-closed.
+  ///
+  /// Replacing project.db while its session is still open is a corruption
+  /// hazard, so callers that own a live session must go through
+  /// [ProjectBackupRestoreFlow.restoreBackupAndReopen], which closes the
+  /// session before invoking this restore path. WAL is flushed when the
+  /// session's database connection closes, so this method works purely on
+  /// package files and must never touch a (possibly already closed) live
+  /// database connection.
+  Future<void> restoreBackup(ProjectBackup backup) async {
+    _requireWritable();
+    final directory = _resolveBackupDirectory(backup.relativePath);
+    await ProjectBackupService().restore(
+      package: session.package,
+      backup: directory,
+    );
   }
 
   Future<File> exportPortable() async {

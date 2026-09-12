@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../projects/presentation/project_persistence_providers.dart';
+import '../../../database/project/project_database.dart';
 import '../application/portable_project_service.dart';
+import '../application/project_backup_restore_flow.dart';
 import '../application/project_resilience_controller.dart';
 import '../application/project_session_manager.dart';
 import '../application/project_storage_analyzer.dart';
@@ -128,10 +130,17 @@ class ProjectResilienceWorkspaceScreen extends ConsumerStatefulWidget {
     super.key,
     required this.view,
     this.session,
+    this.onRestoreConfirmed,
   });
 
   final ProjectResilienceView view;
   final ProjectSession? session;
+
+  /// Optional seam overriding the default restore flow (close -> restore ->
+  /// reopen). Tests inject a recording stub so the confirmation contract is
+  /// verified deterministically without real package I/O inside the
+  /// fake-async widget zone.
+  final Future<void> Function(ProjectBackup backup)? onRestoreConfirmed;
 
   @override
   ConsumerState<ProjectResilienceWorkspaceScreen> createState() =>
@@ -224,6 +233,9 @@ class _ProjectResilienceWorkspaceScreenState
           ],
         );
       case ProjectResilienceView.backups:
+        final latestBackup = snapshot.backups.isEmpty
+            ? null
+            : snapshot.backups.first;
         return _ViewContent(
           title: 'Project Backups',
           items: [
@@ -240,6 +252,17 @@ class _ProjectResilienceWorkspaceScreenState
                 );
                 return 'Backup created: ${backup.path}';
               }),
+            ),
+            ProjectResilienceAction(
+              label: 'Restore Latest Backup',
+              icon: Icons.restore,
+              onPressed: latestBackup == null
+                  ? null
+                  : () => _confirmAndRestoreLatest(
+                      context,
+                      session,
+                      latestBackup,
+                    ),
             ),
           ],
         );
@@ -390,6 +413,66 @@ class _ProjectResilienceWorkspaceScreenState
       }
     } catch (error) {
       if (mounted) setState(() => _message = 'Operation failed: $error');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  /// Step 145.34 user-controlled restore: confirm explicitly, close the
+  /// active session, overwrite the package files with the recorded snapshot,
+  /// and reopen the same project so the shell re-renders restored state.
+  /// Restoration failure surfaces inline; a blocked (schema-newer) backup is
+  /// rejected by the flow before the session is closed.
+  Future<void> _confirmAndRestoreLatest(
+    BuildContext context,
+    ProjectSession session,
+    ProjectBackup backup,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Restore this backup?'),
+        content: const Text(
+          'The current project files will be replaced with the recorded '
+          'backup snapshot. An emergency backup of the current state is '
+          'kept before restoring.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Confirm Restore'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      final override = widget.onRestoreConfirmed;
+      if (override != null) {
+        await override(backup);
+      } else {
+        await ProjectBackupRestoreFlow.restoreBackupAndReopen(
+          closeActiveSession: ref
+              .read(projectSessionProvider.notifier)
+              .closeProject,
+          reopenProject: () => ref
+              .read(projectSessionProvider.notifier)
+              .open(session.package.projectId),
+          session: session,
+          backup: backup,
+        );
+      }
+      if (mounted) setState(() => _message = 'Restored latest backup.');
+    } catch (error) {
+      if (mounted) {
+        setState(() => _message = 'Operation failed: $error');
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }

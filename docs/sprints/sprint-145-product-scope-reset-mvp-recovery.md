@@ -1,3 +1,30 @@
+### 2026-09-12 - nephthys (interaktif run254): vs-hunt-20260912-autosave SELESAI - 18 REAL BUGS (2 Critical, 5 Medium, 11 Low)
+
+- Otorisasi: Choi 'kerjakan semua stu persatu' -> retry hunt autosave yang blocked kuota di run248
+  (pin delegation dicabut, anak jalan di jalur berdaya; Hunter 1709s, Skeptic 2750s, Referee 245s).
+- Siklus penuh 3 agen independen per protokol adversarial-bug-hunt v1.2.0, scope 6 file vertikal
+  autosave/draft persistence (145.30/145.27), HEAD baca 4bc3eb9:
+  Hunter: 20 temuan skor 48 (hunter_report_autosave.md; sempat versi 18/117 lalu direvisi final 20/48).
+  Skeptic: 18 CONFIRM / 2 DISPROVE / 0 UNCERTAIN (skeptic_report_autosave.md) — steer terkirim saat
+  revisi Hunter terdeteksi, verdict berdasarkan versi canonical 20.
+  Referee (otoritas tunggal): 18 REAL / 2 NOT A BUG (referee_report_autosave.md; tabel lengkap
+  baris 310-343). Dismissal: BUG-14 (DateTime instant semantics: difference() absolute, klaim UTC
+  tidak mematahkan sweep), BUG-16 (entri corrupt discard-only di UI + pensi via null-content ack).
+- Poin Critical (sudah kusanity-check manual di source sebelum verdict, cocok):
+  BUG-1 durable_draft_journal.dart:76-98 dua stage paralel scene sama berbagi satu .tmp deterministik
+  -> rename bisa pindahkan sink setengah tulis -> entri journal corrupt = draf user TAK TERPULIHKAN.
+  BUG-2 durable_autosave_coordinator.dart:59-86 await stage() SEBELUM pasang _pending, caller layar
+  line 322 fire-and-forget -> edit lama menang-last tanpa error (langgar kontrak no-silent-loss sendiri).
+- Bukti HEAD akhir hunt: 86a96da (cron run252/253 mendarat di tengah Referee; nol tabrakan —
+  slice mereka format-only + ledger/state; region character sibling tak kusentuh).
+- Mutasi run ini: NOL source. Hanya 3 file evidence report (commit terpisah scoped) + ledger.
+- Next (MENUNGGU IZIN CHOI, aturan scan-only): batch fix via TDD urut prioritas usulan:
+  (A) BUG-1+BUG-2 Critical (unique tmp suffix + generation guard) -> (B) BUG-3..7 Medium
+  (dispose flush, content-aware ack kosong & replay, flush-before-restore, transaksi) ->
+  (C) 11 Low sekaligus/terpisah sesuai kapasitas sesi. Journey native restore 145.34 masih
+  blocked: layar 'Offline - Activation Required' (pid 14192) butuh kunci dari Choi +
+  auxiliary.vision timeout (run253 UNVERIFIABLE; retry via capture mode=som vision_analysis).
+
 ### 2026-09-12 - nephthys (cron run253): gate build hijau di fedb42e; journey restore native UNVERIFIABLE (vision backend timeout)
 
 - Preflight: guard PASS (exit 0, recommended_step 145.27, canonical sha 86af6a53,

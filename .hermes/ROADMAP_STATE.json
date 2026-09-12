@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.27 (PARTIAL; run234: novel export/import hunt vs-hunt-20260912n VERIFIED (14 confirmed) + BUG-05 fixed d130b18, queue in novel_io_hunt_2026_09_12;  run232: journey native import->close PARTIAL — driver computer_use mati lagi (run ke-2 beruntun, identik run231; click timeout -> session ended, revive ditolak; auxiliary vision ikut mati). Terbukti sebelum driver mati: launch build fresh (HEAD+dirty WIP), open project uji via Continue writing (UIA+state-change), menu Document actions->submenu tampil. Sampel close terkontrol state menu+timeout = BERSIH (exit <0,5s, residual lock 0, DB integrity ok) -> tally GAP-RUN230 8/8 bersih sejak kejadian; acceptance TIDAK di-upgrade dari monitoring. Bukti: docs/evidence/native-journey-import-close-232-2026-09-12.json. WIP restore sibling idle 2,5j dipreservasi (<24j)",
+  "last_verified_step": "145.27 (PARTIAL; run236: vs-hunt-20260912n BUG-01 fixed 20c5ef2 — restoreNovel embedded materialization fully transactional (RED ghost chars ['char-1','char-2'] via squatting link row -> GREEN database.transaction wraps characters+move+links; unrelated rows survive; filesystem undo kept). Gates: focused 12/12, workspaces dir 100 PASS/0 FAIL, novel_io 5/5, analyze scoped clean, diff-check 0, Windows debug build PASS 40.2s. run234: BUG-05 fixed d130b18 + hunt VERIFIED 14 confirmed; run232: journey native import->close PARTIAL — driver computer_use mati (recorded, tally close 8/8 bersih)",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-12T13:05:00+07:00",
-  "updated_by": "nephthys-cron-run234",
+  "updated_at": "2026-09-12T14:40:00+07:00",
+  "updated_by": "nephthys-cron-run236",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -73,21 +73,26 @@
     }
   },
   "novel_io_hunt_2026_09_12": {
-    "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-05 fixed; 8 Medium + 3 Low findings in fix queue",
+    "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-05 & BUG-01 fixed; 7 Medium + 3 Low findings remain in fix queue",
     "hunt": "vs-hunt-20260912n; Hunter 25 -> Referee confirmed 14 (0 Critical), dismissed 11; parent corrected BUG-18/19 as false positive (RadioGroup exists in SDK). Reports: docs/evidence/vs-hunt-20260912n/",
     "fix": "BUG-05 embedded character payload missing -> silent blank character on import. RED->GREEN in test/features/workspaces/workspace_import_missing_payload_test.dart; pre-mutation FormatException gate. Commit d130b18. Gates: workspaces 99 PASS, novel_io 4 PASS, analyzer scoped clean, diff-check 0, Windows debug build PASS.",
     "queue_next_runs": [
-      "BUG-01 non-transactional embedded materialization",
-      "BUG-07/20 collision pre-check ordering",
       "BUG-02 manifest version gate",
-      "BUG-12 archive size cap",
-      "BUG-03 adopt semantics",
+      "BUG-03 adopt semantics vs embedded materialization",
       "BUG-04 symlink in _copy",
+      "BUG-07/20 collision pre-check ordering vs skip",
       "BUG-09 export feedback",
       "BUG-17 restoreCharacter symmetry",
+      "BUG-12 archive size cap (zip-bomb)",
       "BUG-10/13/16 (Low)"
     ],
     "scope_do_not_rescan": "novel export/import vertical; hashes in docs/evidence/vs-hunt-20260912n/novel_io_scope.json",
-    "pointer_note": "145.27 remains PARTIAL; hunt+fix recorded under 145.33 area; no pointer movement."
+    "pointer_note": "145.27 remains PARTIAL; hunt+fix recorded under 145.33 area; no pointer movement.",
+    "fixed_run236": {
+      "id": "vs-hunt-20260912n BUG-01 (Medium, data-safety)",
+      "defect": "embedded character materialization + link inserts + directory move ran outside any transaction; failure after character inserts left ghost canonical characters",
+      "commit": "20c5ef2",
+      "evidence": "test/features/workspaces/workspace_import_atomicity_test.dart RED->GREEN; workspaces dir 100 PASS; build windows debug PASS"
+    }
   }
 }

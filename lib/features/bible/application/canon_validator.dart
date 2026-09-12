@@ -32,13 +32,20 @@ class CanonValidator {
     final severity = condition.validatorType == CanonValidatorType.uniqueness
         ? CanonConflictSeverity.critical
         : _severity(rule.severity);
+    final isUniqueness =
+        condition.validatorType == CanonValidatorType.uniqueness;
+    final message = isUniqueness
+        // vs-hunt-20260913-bible BUG-2: uniqueness has no expected value;
+        // the shared template used to render `value "null" conflicts...`.
+        ? _uniquenessMessage(rule, condition, values)
+        : _message(rule, expected, actual);
     return [
       CanonConflict(
         id: '${rule.id}:$targetId:${condition.id}',
         projectId: rule.projectId,
         ruleId: rule.id,
         targetId: targetId,
-        message: _message(rule, expected, actual),
+        message: message,
         severity: severity,
       ),
     ];
@@ -68,4 +75,25 @@ class CanonValidator {
   String _message(CanonRule rule, String? expected, Object? actual) =>
       '${rule.title}: value "$expected" conflicts with the canon rule. '
       'Actual: ${actual ?? 'missing'}.';
+
+  /// Human-readable conflict message for a uniqueness violation.
+  ///
+  /// Uniqueness conditions never carry an [CanonRuleCondition.expectedValue],
+  /// so the shared [_message] template would render `value "null"`. This names
+  /// the duplicated field value (or the field, or the rule) plus the observed
+  /// count instead.
+  String _uniquenessMessage(
+    CanonRule rule,
+    CanonRuleCondition condition,
+    Map<String, Object?> values,
+  ) {
+    final count = (values['count'] as num?)?.toInt();
+    final field = condition.targetField;
+    final fieldValue = field == null ? null : values[field];
+    final subject = fieldValue != null
+        ? '"$fieldValue"'
+        : (field != null ? 'value of "$field"' : 'this target');
+    return '${rule.title}: $subject appears ${count ?? 1} times, but the '
+        'canon rule requires it to be unique.';
+  }
 }

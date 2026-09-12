@@ -1266,7 +1266,18 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     setState(() => _recoveryBusy = true);
     try {
       await repository.saveSceneDraft(entry.sceneId, entry.content);
-      await widget.draftJournal?.acknowledge(entry.sceneId);
+      // vs-hunt-20260912-autosave BUG-6 (Medium): acknowledge WAJIB
+      // content-aware. Selama await save di atas, pengguna bisa mengetik
+      // lagi dan autosave men-stage konten BARU ke jurnal; ack blind akan
+      // menghapus entri yang belum pernah di-persist (silent loss). Bila
+      // entri masih persis konten yang direstore, ia dihapus seperti
+      // sebelumnya; bila tergantikan, entri baru dipertahankan dan autosave
+      // berikutnya yang menyimpan serta meng-ack-nya. Jalur 'Buang' tetap
+      // blind — keputusan eksplisit pengguna.
+      await widget.draftJournal?.acknowledge(
+        entry.sceneId,
+        content: entry.content,
+      );
       if (!mounted) return;
       if (_selectedSceneId == entry.sceneId) {
         _draft.value = TextEditingValue(text: entry.content);

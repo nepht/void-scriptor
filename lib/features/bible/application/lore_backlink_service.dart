@@ -33,7 +33,11 @@ class LoreBacklinkService {
     )..where((row) => row.storyId.isIn(storyRows.map((s) => s.assetId)))).get();
     final titles = {for (final scene in scenes) scene.id: scene.title};
 
-    final beats = await (db.select(db.sceneBeats)).get();
+    // BUG-1 (vs-hunt-20260913-bible): scope the beat read to this project's
+    // scenes instead of loading the whole scene_beats table on every scan.
+    final beats = await (db.select(
+      db.sceneBeats,
+    )..where((row) => row.sceneId.isIn(scenes.map((scene) => scene.id)))).get();
     const parser = InlineLoreLinkParser();
     final sources = <String, ({String title, List<String> targets})>{};
 
@@ -42,7 +46,6 @@ class LoreBacklinkService {
       final targets = <String>[];
       for (final segment in segments) {
         if (segment is! LoreLinkSegment) continue;
-        if (!titles.containsKey(beat.sceneId)) continue;
         targets.add(segment.displayName);
       }
       if (targets.isEmpty) continue;

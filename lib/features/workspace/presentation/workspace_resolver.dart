@@ -37,6 +37,7 @@ import 'global_search_sheet.dart';
 import '../../explorer/presentation/explorer_panel.dart';
 import '../../workspaces/presentation/workspace_import_actions.dart';
 import '../application/global_search_launcher.dart';
+import '../application/workspace_section_controller.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 import '../../../design_system/typography/void_typography.dart';
 
@@ -285,6 +286,22 @@ class WorkspaceResolver extends ConsumerWidget {
             ? null
             : (novelWorkspaceId) =>
                   _linkCharacterToNovel(context, session, novelWorkspaceId),
+        onTapCharacter: session == null
+            ? null
+            : (characterId) {
+                // Novel → character link: select the same asset Explorer
+                // would pick and activate its Profile section.
+                ref
+                    .read(workspaceSectionProvider.notifier)
+                    .activate(WorkspaceKind.character, 'Profile');
+                ref.read(selectionProvider.notifier).select(
+                  SelectionModel(
+                    assetId: characterId,
+                    assetType: AssetType.character,
+                    projectId: session.manifest.id,
+                  ),
+                );
+              },
         activeSection: activeSection,
         onSectionRequested: onSectionRequested,
       ),

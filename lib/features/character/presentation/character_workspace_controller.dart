@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
@@ -6,6 +8,20 @@ import '../application/update_character_identity_command.dart';
 import '../data/character_repository_impl.dart';
 import '../domain/character_identity_profile.dart';
 import '../domain/character_model.dart';
+
+/// Portrait file bound to a character asset, resolved from the asset
+/// `thumbnail_path` written by [AssetThumbnailImporter]. Null means the
+/// character has no imported portrait yet; a stale path pointing at a
+/// deleted file is filtered so the card falls back to its empty state.
+final characterPortraitProvider =
+    FutureProvider.family<String?, String>((ref, characterId) async {
+      final session = ref.watch(projectSessionProvider).valueOrNull;
+      if (session == null) return null;
+      final asset = await session.database.assetDao.getById(characterId);
+      final path = asset?.thumbnailPath;
+      if (path == null || path.isEmpty) return null;
+      return File(path).existsSync() ? path : null;
+    });
 
 final characterWorkspaceProvider =
     FutureProvider.family<CharacterModel?, String>((ref, characterId) async {

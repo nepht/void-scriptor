@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:file_selector/file_selector.dart';
+import '../../assets/application/asset_thumbnail_importer.dart';
 import '../domain/character_model.dart';
 import '../domain/character_identity_profile.dart';
 import 'character_workspace_controller.dart';
@@ -45,6 +47,7 @@ class _CharacterWorkspaceScreenState
   Widget build(BuildContext context) {
     final state = ref.watch(characterWorkspaceProvider(widget.characterId));
     final identity = ref.watch(characterIdentityProvider(widget.characterId));
+    final portrait = ref.watch(characterPortraitProvider(widget.characterId));
     return Container(
       color: context.palette.backgroundSecondary,
       child: state.when(
@@ -56,6 +59,7 @@ class _CharacterWorkspaceScreenState
                 character,
                 identity.valueOrNull ??
                     CharacterIdentityProfile(characterId: widget.characterId),
+                portrait.valueOrNull,
               ),
       ),
     );
@@ -64,6 +68,7 @@ class _CharacterWorkspaceScreenState
   Widget _buildWorkspace(
     CharacterModel character,
     CharacterIdentityProfile identity,
+    String? portraitPath,
   ) => Column(
     children: [
       CharacterHeader(
@@ -81,7 +86,7 @@ class _CharacterWorkspaceScreenState
                 constraints: BoxConstraints(
                   maxWidth: desktop ? 1180 : double.infinity,
                 ),
-                child: _content(character, identity, desktop),
+                child: _content(character, identity, desktop, portraitPath),
               ),
             );
             return body;
@@ -108,10 +113,52 @@ class _CharacterWorkspaceScreenState
     await actions.delete(character.assetId, decision: decision);
   }
 
+  /// Portrait import: pick a local image and copy it into the project
+  /// package via [AssetThumbnailImporter] (same durable path the asset
+  /// browser uses), then refresh the bound portrait. External files are
+  /// never referenced in place, so the portrait survives moving folders.
+  Future<void> _importPortrait(String characterId) async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No active project session.')),
+      );
+      return;
+    }
+    const typeGroup = XTypeGroup(
+      label: 'Images',
+      extensions: ['png', 'jpg', 'jpeg', 'webp', 'gif'],
+    );
+    final file = await openFile(acceptedTypeGroups: [typeGroup]);
+    if (file == null) return;
+    final importer = AssetThumbnailImporter(
+      database: session.database,
+      assetsDirectory: session.package.assetsDirectory,
+    );
+    try {
+      await importer.importFromFile(
+        assetId: characterId,
+        sourcePath: file.path,
+      );
+    } on Object catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Portrait import failed: $error')),
+      );
+      return;
+    }
+    ref.invalidate(characterPortraitProvider(characterId));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Portrait updated.')),
+    );
+  }
+
   Widget _content(
     CharacterModel character,
     CharacterIdentityProfile identity,
     bool desktop,
+    String? portraitPath,
   ) {
     final identityCard = CharacterIdentityCard(
       name: character.displayName,
@@ -126,14 +173,23 @@ class _CharacterWorkspaceScreenState
         ? Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(width: 280, child: CharacterPortraitCard()),
+              SizedBox(
+                width: 280,
+                child: CharacterPortraitCard(
+                  imagePath: portraitPath,
+                  onAddPortrait: () => _importPortrait(character.assetId),
+                ),
+              ),
               const SizedBox(width: 16),
               Expanded(child: identityCard),
             ],
           )
         : Column(
             children: [
-              const CharacterPortraitCard(),
+              CharacterPortraitCard(
+                imagePath: portraitPath,
+                onAddPortrait: () => _importPortrait(character.assetId),
+              ),
               const SizedBox(height: 16),
               identityCard,
             ],
@@ -232,7 +288,10 @@ class _CharacterWorkspaceScreenState
     if (section == 'Appearance') {
       return Column(
         children: [
-          const CharacterPortraitCard(),
+          CharacterPortraitCard(
+            imagePath: portraitPath,
+            onAddPortrait: () => _importPortrait(character.assetId),
+          ),
           const SizedBox(height: 16),
           const TurnaroundCard(),
           const SizedBox(height: 16),

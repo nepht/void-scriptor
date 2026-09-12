@@ -1,11 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class CharacterPortraitCard extends StatelessWidget {
-  const CharacterPortraitCard({super.key, this.imagePath});
+  const CharacterPortraitCard({
+    super.key,
+    this.imagePath,
+    this.onAddPortrait,
+  });
   final String? imagePath;
+
+  /// Bound production action that imports a local image into the project
+  /// package. Null keeps the honest guidance snackbar instead of a silent
+  /// no-op button.
+  final Future<void> Function()? onAddPortrait;
   @override
   Widget build(BuildContext context) => VoidCard(
     child: Column(
@@ -21,7 +32,7 @@ class CharacterPortraitCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: context.palette.borderSoft),
             ),
-            child: imagePath == null
+            child: imagePath == null || !File(imagePath!).existsSync()
                 ? Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -41,7 +52,7 @@ class CharacterPortraitCard extends StatelessWidget {
                   )
                 : ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(imagePath!, fit: BoxFit.cover),
+                    child: Image.file(File(imagePath!), fit: BoxFit.cover),
                   ),
           ),
         ),
@@ -49,13 +60,15 @@ class CharacterPortraitCard extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
-            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'Portrait upload is available from the project asset folder.',
+            onPressed:
+                onAddPortrait ??
+                () => ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Portrait upload is available from the project asset folder.',
+                    ),
+                  ),
                 ),
-              ),
-            ),
             icon: const Icon(Icons.add_photo_alternate_outlined),
             label: const Text('Add Portrait'),
           ),

@@ -3,17 +3,23 @@ import '../domain/narrative_assignment.dart';
 import 'narrative_assignment_repository.dart';
 
 /// One cast row for the Novel Workspace Cast section: the character's
-/// display name plus its narrative assignment for the selected novel.
+/// display name, its narrative assignment for the selected novel, and the
+/// description fields (biography/personality) authored in the Character
+/// Workspace.
 class StoryCastEntry {
   const StoryCastEntry({
     required this.characterId,
     required this.displayName,
     required this.assignment,
+    this.biography = '',
+    this.personality = '',
   });
 
   final String characterId;
   final String displayName;
   final NarrativeAssignment assignment;
+  final String biography;
+  final String personality;
 
   /// How much narrative weight this row carries (backing store value).
   NarrativeImportance get importance => assignment.importance;
@@ -38,15 +44,15 @@ class StoryCastLoader {
     );
     final assignments = await repository.listAssignments();
     final characters = await database.characterDao.getAllCharacters(projectId);
-    final names = <String, String>{
+    final profiles = <String, data.Character>{
       for (final character in characters)
-        character.assetId: character.displayName,
+        character.assetId: character,
     };
     final entries = <StoryCastEntry>[];
     for (final assignment in assignments) {
       if (assignment.novelWorkspaceId != novelWorkspaceId) continue;
-      final name = names[assignment.characterId];
-      if (name == null) {
+      final character = profiles[assignment.characterId];
+      if (character == null) {
         // Assignment without a matching character row (deleted character or
         // version-skewed portable import): skip the row, never fail the list.
         continue;
@@ -54,8 +60,10 @@ class StoryCastLoader {
       entries.add(
         StoryCastEntry(
           characterId: assignment.characterId,
-          displayName: name,
+          displayName: character.displayName,
           assignment: assignment,
+          biography: character.biography,
+          personality: character.personality,
         ),
       );
     }

@@ -44,6 +44,7 @@ class StoryWorkspaceScreen extends StatefulWidget {
     this.activeSection,
     this.onSectionRequested,
     this.loadCast,
+    this.onTapCharacter,
   });
   final String storyId;
   final StoryRepositoryImpl? repository;
@@ -91,6 +92,12 @@ class StoryWorkspaceScreen extends StatefulWidget {
   /// broken cast list — mirrors [loadLoreCatalog].
   final Future<List<StoryCastEntry>> Function(String novelWorkspaceId)?
   loadCast;
+
+  /// Opens the full character workspace for the tapped cast row (novel →
+  /// character direction of the two-way link). Null keeps rows read-only,
+  /// mirroring how [loadCast] keeps the whole section absent without a
+  /// session.
+  final void Function(String characterId)? onTapCharacter;
 
   final ValueChanged<String>? onSectionRequested;
 
@@ -373,34 +380,76 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (final entry in cast) ...[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Icon(Icons.person_outline, size: 20),
-                const SizedBox(width: 10),
-                Expanded(child: Text(entry.displayName)),
-                const SizedBox(width: 12),
-                Text(
-                  entry.assignment.roles.isEmpty
-                      ? 'Unspecified'
-                      : entry.assignment.roles
-                            .map(
-                              (role) => switch (role) {
-                                NarrativeRole.protagonist => 'Protagonist',
-                                NarrativeRole.antagonist => 'Antagonist',
-                                NarrativeRole.supporting => 'Supporting',
-                                NarrativeRole.background => 'Background',
-                              },
-                            )
-                            .join(', '),
-                  style: TextStyle(color: palette.textSecondary),
+            InkWell(
+              key: ValueKey('cast-row-${entry.characterId}'),
+              onTap: widget.onTapCharacter == null
+                  ? null
+                  : () => widget.onTapCharacter!(entry.characterId),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.person_outline, size: 20),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            entry.displayName,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          entry.assignment.roles.isEmpty
+                              ? 'Unspecified'
+                              : entry.assignment.roles
+                                    .map(
+                                      (role) => switch (role) {
+                                        NarrativeRole.protagonist =>
+                                          'Protagonist',
+                                        NarrativeRole.antagonist => 'Antagonist',
+                                        NarrativeRole.supporting => 'Supporting',
+                                        NarrativeRole.background => 'Background',
+                                      },
+                                    )
+                                    .join(', '),
+                          style: TextStyle(color: palette.textSecondary),
+                        ),
+                      ],
+                    ),
+                    // Description summary straight from the character
+                    // profile (novel → character two-way view).
+                    if (entry.biography.isNotEmpty ||
+                        entry.personality.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 30, top: 2),
+                        child: Text(
+                          [
+                            if (entry.biography.isNotEmpty) entry.biography,
+                            if (entry.personality.isNotEmpty)
+                              entry.personality,
+                          ].join(' · '),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: palette.textSecondary,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-              ],
+              ),
             ),
             const Divider(height: 16),
           ],
           Text(
-            'Roles are edited per novel in the Character Workspace.',
+            widget.onTapCharacter == null
+                ? 'Roles are edited per novel in the Character Workspace.'
+                : 'Tap a cast member to open their character workspace.',
             style: TextStyle(color: palette.textSecondary, fontSize: 12),
           ),
         ],

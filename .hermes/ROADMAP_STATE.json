@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-12T18:55:00+07:00",
-  "updated_by": "hermes-cron-run247",
+  "updated_at": "2026-09-12T19:35:00+07:00",
+  "updated_by": "hermes-cron-run248",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -133,5 +133,12 @@
       "commit": "b29b4af",
       "evidence": "test/features/workspaces/workspace_import_single_decode_test.dart RED compile-fail -> GREEN 5/5 (single decode, bounded cap, corrupt-after-peek cannot change restore, mismatched-file preflight rejected before mutation, manifest validation intact); regression test/features/workspaces 132 PASS + test/features/story 189 PASS / 0 FAIL; scoped analyze No issues; format clean; diff-check 0; Windows debug build PASS 34.7s on main worktree; native UNVERIFIABLE (cron)"
     }
+  },
+  "autosave_hunt_2026_09_12": {
+    "status": "BLOCKED (delegation quota) — scan-only hunt pada vertikal autosave/draft persistence belum menghasilkan laporan Hunter",
+    "scope": "docs/evidence/vs-hunt-20260912-autosave/autosave_scope.json (6 file, HEAD b2ca031; region belum pernah di-hunt)",
+    "failure": "delegate_task Hunter gagal 2x: upstream cbai/kimi-k2.7 429 code14018 Credits exhausted; nol mutasi repo",
+    "next_action": "ulangi Hunter->Skeptic->Referee saat kuota delegation pulih ATAU Choi cabut pin delegation.model; JANGAN tandai scope sebagai clean",
+    "run248_note": "run248 = NO-OP mutasi; queue vs-hunt-20260912n tetap kosong; push backlog f366a7a..b2ca031 terverifikasi dual-remote (ahead 0)"
   }
 }

@@ -1,0 +1,17 @@
+{
+  "hunt": "vs-hunt-20260912-autosave",
+  "recorded_at": "2026-09-12T19:15+07:00",
+  "recorded_by": "nephthys cron run248 (hunt stage)",
+  "branch": "master",
+  "head": "b2ca0317661646996a25568a7506a7060b3a613f",
+  "region": "autosave/draft persistence vertical (145.30/145.27 data-safety)",
+  "files": {
+    "lib/features/story/application/durable_autosave_coordinator.dart": "4fc65b1b11dfba54",
+    "lib/features/story/domain/draft_snapshots.dart": "5a742abcd6f78a67",
+    "lib/features/project_resilience/application/durable_draft_journal.dart": "b43d87e5f2d41379",
+    "lib/features/story/data/story_repository_impl.dart": "e5d770e988a2815c",
+    "lib/database/project/daos/story_dao.dart": "6e2b56ff5aaf7806",
+    "lib/database/project/tables/scene_draft_snapshots.dart": "c2ba0d1bd7670861"
+  },
+  "notes": "story_workspace_screen.dart excluded (caller surface, 1900 lines); hunter must read all listed files fully"
+}

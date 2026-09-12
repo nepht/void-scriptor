@@ -1,3 +1,39 @@
+### 2026-09-13 - nephthys (cron run266): vs-hunt-20260913-importer BUG-5 GREEN — antrean KELAR
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp). HEAD masuk dbca2c2 (run265 ter-commit; ahead
+  8 — push tetap keputusan Choi). Conflict markers nihil; proses
+  flutter/dart/void_scriptor nihil. Single-writer RELEASED_TO_HERMES diakui
+  kembali. Sibling dirty DIPRESERVASI TANPA SENTUH: autosave vertical story
+  (coordinator BUG-4/5 + story_dao BUG-9 + project_database BUG-19 indeks +
+  repository_impl BUG-8/10/20 + screen + test untracked durable_autosave_empty_ack;
+  mtime 00:39–01:11, penulis idle >5 jam — A3 ACCEPT tetap antri setelah
+  mereka commit, diff sudah di-review=readable, tidak ada kontrak bentrok) +
+  character region 3 file (format-only).
+- Slice: tutup BUG-5 (Low) antrean vs-hunt-20260913-importer —
+  ReferenceBulkImporter writeAsBytes->insertReference tanpa rollback = salinan
+  yatim di assets/references/<assetId>/ saat insert gagal. TDD RED: test baru
+  injeksi trigger BEFORE INSERT RAISE(ABORT) pada tabel "references" (pitfall:
+  reserved keyword SQLite, nama tabel wajib quoted — RED pertama gagal karena
+  itu, bukan karena BUG) -> gagal persis Expected empty Actual [File ...
+  6fd87b989b48.png]. GREEN: try/catch delete target + rethrow, pola sama
+  faction/era/thumbnail (2a55bd7/06a3a3f); baris sukses sebelumnya tetap
+  valid, re-import idempoten via content-hash.
+- Regresi/gates: fokus 1 PASS; region test/features/references 19 PASS/0 FAIL;
+  dart analyze scoped 2 file No issues; format bersih (exit 0, satu rewrap);
+  git diff --check exit 0; flutter build windows --debug PASS 20,4s. Commit
+  scoped 01ab45f (2 path eksplisit, tanpa -A; dirty sibling tak tersentuh).
+- Status: 145.27 tetap PARTIAL; pointer tidak bergerak; antrean
+  vs-hunt-20260913-importer KELAR (BUG-3/4 run265, BUG-5 run266). Native
+  interaction UNVERIFIABLE dari cron (perbaikan jalur I/O service
+  deterministik, tidak mengubah UI).
+- Next action: run berikutnya (1) jika sibling autosave sudah commit: A3
+  ACCEPT review (fokus coordinator/repository + regresi test/features/story);
+  (2) bila masih dirty: satu slice independen — hunt region baru (maks 20
+  file, pilih dari gap acceptance; kandidat reference card/binder UI sudah
+  tersentuh run265 -> pilih region belum dipindai) ATAU lanjut matriks
+  145.42 gap aman (fault injection rollback-gagal 145.34 sesuai handoff).
+
 ### 2026-09-13 - nephthys (cron run265): vs-hunt-20260913-importer + BUG-3/BUG-4 GREEN
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run265 vs-hunt-20260913-importer VERIFIED (Hunter 6 -> Referee: BUG-3/4 REAL Medium fixed 06a3a3f TDD trigger-injection RED->GREEN, bible 56 + assets 56 PASS, analyzer scoped clean, windows debug build 27s; BUG-1/2/6 DISMISSED (probabilitas ~nol / batas trust local-first); BUG-5 Low antri; pointer 145.27 tetap PARTIAL)",
+  "last_verified_step": "run266 vs-hunt-20260913-importer BUG-5 VERIFIED — antrean KELAR (reference_bulk_importer rollback salinan yatim saat insert gagal; RED trigger RAISE(ABORT) pada tabel quoted \"references\" (reserved keyword pitfall) -> GREEN; fokus 1 PASS + region references 19 PASS; analyzer scoped clean; build windows debug 20,4s; commit 01ab45f; pointer 145.27 tetap PARTIAL)",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T06:05:00+07:00",
-  "updated_by": "nephthys-cron-run265",
+  "updated_at": "2026-09-13T06:45:00+07:00",
+  "updated_by": "nephthys-cron-run266",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -154,7 +154,7 @@
     "next_action": "JANGAN ulangi attempt buta; journey ini closed"
   },
   "importer_hunt_2026_09_13": {
-    "status": "hunt COMPLETE (VERIFIED scan-only, 3 stages) + BUG-3/BUG-4 fixed 06a3a3f; queue sisa: BUG-5 (Low, transaction/cleanup reference_bulk_importer; partial import sudah idempoten via content-hash)",
+    "status": "hunt COMPLETE (VERIFIED scan-only, 3 stages) + BUG-3/BUG-4 fixed 06a3a3f + BUG-5 fixed 01ab45f; QUEUE EMPTY",
     "hunt": "docs/evidence/vs-hunt-20260913-importer/",
     "dismissed": "BUG-1 character_reference_binder (copy sebelum delete + fresh UUID), BUG-2/BUG-6 traversal via id UUID lokal = luar batas local-first",
     "delegation_note": "Referee attempt#1 429 upstream (gemini flash-lite); attempt#2 compact brief PASS"

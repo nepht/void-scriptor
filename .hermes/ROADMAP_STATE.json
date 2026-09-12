@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run263 vs-hunt-20260913-bible BUG-1 VERIFIED GREEN (collectSources dibatasi WHERE sceneId.isIn scene milik proyek; RED interceptor 1->0, focused 18 PASS, bible region 53 PASS, analyze No issues, build windows debug PASS 26.7s, commit d6abda6). Antrean bible sisa BUG-3/BUG-4 (Low). run262 BUG-2 closed (7dd299f) sebelumnya.",
+  "last_verified_step": "run264 vs-hunt-20260913-bible BUG-3+BUG-4 VERIFIED GREEN (CanonHealthSummary field info + FactionImageImporter rollback file yatim saat save gagal via trigger BEFORE INSERT; RED 2 test gagal tepat mekanisme, focused 6 PASS, bible region 55 PASS, analyze scoped No issues, format exit 0, build windows debug PASS 25.9s, commit 2a55bd7 scoped 4 file). Antrean vs-hunt-20260913-bible KELAR (BUG-1 d6abda6, BUG-2 7dd299f, BUG-3/4 2a55bd7). Sisa risiko dicatat: TimelineEra/AssetThumbnail importer punya pola copy-then-save tanpa rollback yang sama (bukan verdict hunt). run263 BUG-1 closed sebelumnya.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T05:10:00+07:00",
-  "updated_by": "nephthys-cron-run263",
+  "updated_at": "2026-09-13T05:45:00+07:00",
+  "updated_by": "nephthys-cron-run264",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

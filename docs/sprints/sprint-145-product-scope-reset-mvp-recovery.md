@@ -1,3 +1,45 @@
+### 2026-09-13 - nephthys (cron run264): vs-hunt-20260913-bible BUG-3 + BUG-4 GREEN
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk dacd639 (run263
+  ter-commit; ahead 4 — push tetap keputusan Choi). Conflict markers nihil;
+  proses flutter/dart/codex nihil. Sibling dirty DIPRESERVASI TANPA SENTUH:
+  autosave vertical story (coordinator/story_dao/project_database/repository_impl/
+  screen + test untracked durable_autosave_empty_ack) + character region 3 file —
+  terakhir ditulis 01:04 pagi, A3 ACCEPT tetap antri setelah commit mereka.
+  Single-writer RELEASED_TO_HERMES diakui kembali.
+- Slice: tutup dua sisa antrean vs-hunt-20260913-bible (Low) dalam satu
+  boundary domain bible.
+  BUG-3: CanonHealthService menambah weight untuk severity info tetapi
+  CanonHealthSummary tanpa field info -> kontribusi tak terlihat. TDD: RED
+  canon_health_service_test.dart test baru (info unresolved = 1, weight 1,
+  health 99) gagal compile undefined_getter -> GREEN `final int info` +
+  increment. Resolved info tidak dihitung (tetap assertion lama utuh).
+  BUG-4: FactionImageImporter copy sukses -> repo.save gagal = file yatim di
+  namespace faction_images. TDD: RED faction_image_save_failure_orphan_test.dart
+  (trigger SQLite BEFORE INSERT RAISE ABORT via customStatement; reproduksi
+  Exact: leftover file + save tetap throw) -> GREEN try/catch hapus target lalu
+  rethrow, pola komentar mengikuti konvensi importer sejenis. TimelineEra/
+  AssetThumbnail importer PUNYA cacat sama (copy->save tanpa rollback) tetapi
+  di luar verdict Referee run262 — dicatat di bawah, tidak diam-diam diperluas.
+- Regresi/gates: focused 6 PASS (2 file baru + faction_image_persistence);
+  test/features/bible SELURUH region 55 PASS / 0 FAIL; dart analyze scoped 4
+  file No issues; format bersih (exit 0); git diff --check exit 0; build windows
+  debug PASS 25,9s. Catatan analyzer full: 1 info prefer_const_constructors di
+  lib/database/project/daos/story_dao.dart:76 = region sibling autosave (M),
+  bukan milik run ini — tidak disentuh. Commit scoped 2a55bd7 (4 file).
+- Status: 145.27 tetap PARTIAL; pointer tidak bergerak; antrean
+  vs-hunt-20260913-bible KELAR (BUG-1 d6abda6, BUG-2 7dd299f, BUG-3/4 2a55bd7).
+  Native interaction UNVERIFIABLE dari cron (perbaikan service/importer
+  deterministik tingkat unit; tidak mengubah jalur UI).
+- Sisa risiko baru (bukan verdict hunt): TimelineEraImageImporter dan
+  AssetThumbnailImporter punya pola copy-then-save tanpa rollback yang sama;
+  layak jadi scope hunt berikutnya bila region disentuh.
+- Next action: run berikutnya (1) A3 ACCEPT review sibling autosave bila sudah
+  commit; (2) jika masih dirty, satu slice independen: hunt region baru (maks
+  20 file) MISALNYA vertical era/thumbnail importer atau lanjut matriks 145.42
+  gap aman; jangan mengulang scope identik.
+
 ### 2026-09-13 - nephthys (cron run263): vs-hunt-20260913-bible BUG-1 query scope GREEN
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

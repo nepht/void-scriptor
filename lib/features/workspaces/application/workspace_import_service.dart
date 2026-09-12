@@ -189,7 +189,13 @@ final class WorkspaceImportService {
       }
 
       await database.transaction(() async {
-        if (embedded) {
+        // vs-hunt-20260912n BUG-03: adoptExistingLinks is documented as
+        // link-only ("insert only link-manifest entries whose link ID does
+        // not exist yet"). Materializing embedded payloads during an adopt
+        // either aborted the whole operation on an existing canonical
+        // character or inserted payload characters as ghosts, so the
+        // embedded block is skipped whenever adopting is true.
+        if (embedded && !adopting) {
           final embeddedPayloads = <String, Map<String, dynamic>>{};
           const embeddedPrefix = 'workspace/characters/';
           for (final entry in decoded) {

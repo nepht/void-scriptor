@@ -1,0 +1,65 @@
+{
+  "run": 234,
+  "date": "2026-09-12",
+  "slice": "adversarial-bug-hunt vertikal export/import novel + perbaikan BUG-05 (TDD)",
+  "head_at_hunt_start": "a16d21d53d51c7018a50e450ba58d8c6ed5df172",
+  "head_after_commit": "d130b18d0d9e3ce194c83ce6e26a736804b049c0",
+  "guard": {
+    "pre_run_exit": 0,
+    "recommended_step": "145.27",
+    "canonical_sha256_prefix": "86af6a53"
+  },
+  "scope": {
+    "region": "lib/features/workspaces + presentation actions novel export/import (.voidworkspace) - kontrak 145.33",
+    "reports": [
+      "hunter_report_novel_io.md",
+      "skeptic_report_novel_io.md",
+      "referee_report_novel_io.md",
+      "novel_io_scope.json",
+      "hunter_instructions.txt"
+    ]
+  },
+  "pipeline": "Hunter -> Skeptic -> Referee berurutan, scan-only. Anak Skeptic/Referee sempat kena 503 upstream saat finalisasi tapi laporan tertulis utuh di disk; induk memverifikasi path+isi sebelum lanjut.",
+  "referee_stats": {
+    "hunter_total": 25,
+    "confirmed_real_bug": 14,
+    "dismissed": 11,
+    "critical": 0
+  },
+  "parent_correction": "BUG-18/BUG-19 (RadioGroup undefined) = FALSE POSITIVE Referee: RadioGroup ada di Flutter SDK (packages/flutter/lib/src/widgets/radio_group.dart, diekspor via widgets.dart:110). dart analyze + flutter build membuktikan kode terpasang valid. Tidak dikoreksi sebagai temuan; dicatat di ledger.",
+  "fixed_this_run": {
+    "id": "vs-hunt-20260912n BUG-05 (Medium, data-safety)",
+    "defect": "restoreNovel silently materialized a blank canonical character (displayName fallback = raw UUID) when an embedded snapshot/fork archive declared a character link but omitted workspace/characters/<id>.json",
+    "RED": "test/features/workspaces/workspace_import_missing_payload_test.dart - sebelum fix: restore COMPLETED padahal payload dibuang dari zip (karakter blank tertanam)",
+    "GREEN": "throw FormatException di pass validasi SEBELUM mutasi apa pun di lib/features/workspaces/application/workspace_import_service.dart; import yang ditolak tidak meninggalkan baris karakter hantu",
+    "gates": {
+      "focused": "1/1 PASS",
+      "import_region": "11/11 PASS (missing_payload + service + embedded + collision_choices)",
+      "workspaces_dir": "99 PASS / 0 FAIL",
+      "novel_io_regression": "4/4 PASS story_workspace_novel_io_test",
+      "dart_analyze_scoped": "No issues found (lib+test workspaces)",
+      "git_diff_check": "exit 0",
+      "windows_debug_build": "PASS 38.9s (kernel_blob = HEAD + WIP sibling assets/wardrobe/weapon/project_resilience; build pertama gagal karena sibling run233 setengah jadi, PASS pasca commit mereka - bukan regresi slice)",
+      "roadmap_guard_post": "lihat hasil guard pasca-ledger di bawah"
+    },
+    "commit": "d130b18 (2 file path eksplisit; tanpa push)"
+  },
+  "confirmed_backlog_for_next_runs": {
+    "Medium": [
+      "BUG-01 embedded character materialization non-transaksional (import gagal parsial meninggalkan karakter) - region sama",
+      "BUG-02 manifest workspaceVersion tidak divalidasi vs supported range",
+      "BUG-03 adoptExistingLinks tetap materialisasi karakter embedded (semantik adopt vs create tidak jelas)",
+      "BUG-04 _copy export mengikuti symlink direktori (_folderContainsSymlink hanya mengecek root)",
+      "BUG-07+BUG-20 collision pre-check mendahului validasi arsip & melewati pilihan skip",
+      "BUG-09 export novel tanpa feedback sukses/gagal ke pengguna (story_workspace_screen)",
+      "BUG-12 tidak ada batas ukuran arsip (zip-bomb) saat decode",
+      "BUG-17 exportCharacter tanpa pasangan restoreCharacter (asimetri API)"
+    ],
+    "Low": [
+      "BUG-10 arsip didekode 2-3x per import",
+      "BUG-13 timestamp provenance non-deterministik",
+      "BUG-16 DateTime.parse timestamp link membatalkan import utuh"
+    ]
+  },
+  "next_action": "Run berikutnya: satu slice perbaikan dari antrean di atas (prioritas: BUG-01 transactionalitas embedded, lalu BUG-07/20 ordering collision-check). Region novel_io JANGAN dipindai ulang (hash scope tercatat di novel_io_scope.json)."
+}

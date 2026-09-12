@@ -4,6 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/persistence/custom_storage_location.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 
+/// Durasi pesan hasil mutasi storage. vs-hunt-20260913-shell-settings BUG-06:
+/// 300 ms membuat pesan "berhasil/gagal" lenyap hampir seketika; pesan hasil
+/// aksi wajib bertahan minimal selama default Material (4 detik) agar
+/// pengguna sempat membacanya.
+const Duration _kResultSnackDuration = Duration(seconds: 4);
+
 /// Storage location settings (roadmap 145.38 Core settings; plan 2026-09-11
 /// Task 4 step 1: expose the production store mutations that had no caller).
 ///
@@ -72,14 +78,14 @@ class _StorageLocationsScreenState
       messenger.showSnackBar(
         SnackBar(
           content: Text('$label berhasil.'),
-          duration: const Duration(milliseconds: 300),
+          duration: _kResultSnackDuration,
         ),
       );
     } on Object catch (error) {
       messenger.showSnackBar(
         SnackBar(
           content: Text('$label gagal: $error'),
-          duration: const Duration(milliseconds: 300),
+          duration: _kResultSnackDuration,
         ),
       );
     } finally {
@@ -103,7 +109,7 @@ class _StorageLocationsScreenState
       messenger.showSnackBar(
         const SnackBar(
           content: Text('Relink lokasi berhasil.'),
-          duration: Duration(milliseconds: 300),
+          duration: _kResultSnackDuration,
         ),
       );
     } on Object catch (error) {
@@ -112,7 +118,7 @@ class _StorageLocationsScreenState
       messenger.showSnackBar(
         SnackBar(
           content: Text('Relink lokasi gagal: $error'),
-          duration: const Duration(milliseconds: 300),
+          duration: _kResultSnackDuration,
         ),
       );
     } finally {

@@ -159,6 +159,39 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  // vs-hunt-20260913-shell-settings BUG-06 (Referee REAL, Low):
+  // seluruh snackbar mutasi storage berdurasi 300 ms sehingga pesan
+  // "berhasil/gagal" lenyap hampir seketika — pengguna tidak sempat membaca
+  // hasil aksi (kontras dengan default SnackBar Material 4 detik).
+  // Kontrak: pesan hasil mutasi bertahan minimal 4 detik. Assert pada
+  // properti duration widget (bukan timer dismiss: show terjadi di zone
+  // runAsync sehingga timer jam nyata tidak dapat dikendalikan pump).
+  testWidgets('BUG-06: pesan hasil mutasi bertahan Minimal 4 detik', (
+    tester,
+  ) async {
+    probe.next = const StorageHealth(
+      writable: false,
+      freeBytes: 0,
+      reason: StorageProbeReason.permissionDenied,
+    );
+
+    await pumpReady(tester);
+    await tester.enterText(
+      find.byKey(const ValueKey('storage-set-active-field')),
+      customDrive.path,
+    );
+    await tester.tap(find.byKey(const ValueKey('storage-set-active-submit')));
+    await drainUntil(tester, find.textContaining('permissionDenied'));
+    expect(find.byType(SnackBar), findsOneWidget);
+
+    final snack = tester.widget<SnackBar>(find.byType(SnackBar));
+    expect(
+      snack.duration.inMilliseconds,
+      greaterThanOrEqualTo(4000),
+      reason: 'pesan gagal harus terbaca; 300 ms lenyap seketika (BUG-06)',
+    );
+  });
+
   testWidgets('relink lokasi memanggil store', (tester) async {
     await tester.runAsync(
       () => store.setActiveLocation(customDrive.path, health: probe),

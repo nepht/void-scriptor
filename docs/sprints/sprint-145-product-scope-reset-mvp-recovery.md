@@ -1,3 +1,38 @@
+### 2026-09-13 - nephthys (cron run261): BUG-02 push-vs-go shell GREEN + commit 6e01cea (vs-hunt-20260913-shell-settings)
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53, stream
+  corrective_core_mvp, stability gate PASS). HEAD masuk 5682eea. Conflict markers nihil;
+  `git diff --check` exit 0. Proses flutter/dart/flutter_tester nihil (codex.exe hanya
+  read-only, tidak ada jejak penulisan source interaktif). Sibling dirty DIPRESERVASI
+  TANPA SENTUH: autosave vertical BUG-4/5 (coordinator, story_dao, project_database,
+  repository_impl, screen, test untracked; mtime 00:39-01:11) — masih belum di-commit;
+  antrean A3 tetap "VERIFY AFTER THEIR COMMIT". Full analyze menunjukkan 1 info
+  prefer_const_constructors di story_dao.dart:76 = milik dirty sibling, BUKAN regresi
+  HEAD; region shell scoped analyze No issues.
+- Seleksi slice: kandidat eksplisit run260 — BUG-02 (REAL Low, kontrak 145.37):
+  void_desktop_shell.dart memakai context.push untuk SEMUA destinasi top-bar; klik tab
+  yang sama berulang menumpuk halaman identik tanpa back dalam-shell.
+- TDD: RED test/app/shell/void_desktop_shell_nav_stack_test.dart (3 test; BUG-02a/c
+  gagal Actual <3> Expected <2> — stack depth terukur via
+  router.routerDelegate.currentConfiguration.matches.length; harness compile-fail
+  Future<dynamic>->Future<ProjectSession?> diperbaiki dulu agar RED valid). GREEN
+  minimal: helper _pushDistinctRoute — no-op bila GoRouterState.of(context).
+  matchedLocation == rute tujuan; destinasi berbeda tetap push sehingga
+  back_navigation_test ("menu top bar membuka fitur dengan tombol back") dan
+  void_desktop_shell_topbar_projects_test tetap hijau tanpa adaptasi.
+- Bukti: focused 3/3 PASS; regresi test/app/shell + test/app/routing +
+  test/app/project_resilience_navigation_test.dart = 70 PASS / 0 FAIL; scoped analyze
+  No issues; dart format owned 2 file; git diff --check exit 0; flutter build
+  windows --debug PASS 30.7s. Commit scoped 6e01cea (2 file: shell + test baru).
+- Status: 145.27 tetap PARTIAL (pointer tidak bergerak; guard tetap recommended 145.27).
+  BUG-02 vs-hunt-20260913-shell-settings CLOSED. Sisa rantai hunt: BUG-08 menunggu
+  caller pertama (gate-only bila diadopsi). Native interaction slice ini UNVERIFIABLE
+  (cron; perubahan hanya terukur pada level stack-widget test).
+- Next action: run berikutnya cek commit sibling autosave (A3 ACCEPT review: focused
+  coordinator+repository tests + regresi test/features/story) bila sudah mendarat;
+  jika masih dirty, hunt scope baru (region Core belum terpindai) atau item checklist
+  145.42 yang tersisa aman. Push backlog menunggu keputusan Choi.
+
 ### 2026-09-13 - nephthys (cron run260): hunt shell/settings region (145.37/145.38) PARTIAL + BUG-06 fix GREEN (vs-hunt-20260913-shell-settings)
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53, stream

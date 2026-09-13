@@ -28,10 +28,26 @@ class TerritoryConflict {
 }
 
 class PredatorPressure {
+  /// Returns pressure clamped to [0, 1].
+  ///
+  /// Throws [ArgumentError] if [preyAlert] is not finite or [escapeRoutes]
+  /// is not positive.
   static double response({
     required double preyAlert,
     required int escapeRoutes,
-  }) => (preyAlert + 1 / escapeRoutes).clamp(0, 1);
+  }) {
+    if (!preyAlert.isFinite) {
+      throw ArgumentError.value(preyAlert, 'preyAlert', 'Must be finite');
+    }
+    if (escapeRoutes <= 0) {
+      throw ArgumentError.value(
+        escapeRoutes,
+        'escapeRoutes',
+        'Must be positive',
+      );
+    }
+    return (preyAlert + 1 / escapeRoutes).clamp(0, 1);
+  }
 }
 
 enum HuntAction { pursue, retreat, observe }

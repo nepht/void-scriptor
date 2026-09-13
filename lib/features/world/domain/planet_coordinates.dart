@@ -45,7 +45,24 @@ class LocalCoordinate {
 }
 
 class FloatingOrigin {
-  const FloatingOrigin({required this.latitude, required this.longitude});
+  /// Throws [ArgumentError] unless latitude is finite and in [-90, 90],
+  /// and longitude is finite and in [-180, 180].
+  FloatingOrigin({required this.latitude, required this.longitude}) {
+    if (!latitude.isFinite || latitude < -90 || latitude > 90) {
+      throw ArgumentError.value(
+        latitude,
+        'latitude',
+        'Must be finite and in [-90, 90]',
+      );
+    }
+    if (!longitude.isFinite || longitude < -180 || longitude > 180) {
+      throw ArgumentError.value(
+        longitude,
+        'longitude',
+        'Must be finite and in [-180, 180]',
+      );
+    }
+  }
   final double latitude;
   final double longitude;
 

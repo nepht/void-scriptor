@@ -2,6 +2,35 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/world/domain/creature_population.dart';
 
 void main() {
+  for (final routes in [0, -1]) {
+    test('predator pressure rejects escapeRoutes $routes', () {
+      expect(
+        () => PredatorPressure.response(preyAlert: .8, escapeRoutes: routes),
+        throwsA(
+          isA<ArgumentError>().having((e) => e.name, 'name', 'escapeRoutes'),
+        ),
+      );
+    });
+  }
+
+  for (final alert in [double.nan, double.infinity, double.negativeInfinity]) {
+    test('predator pressure rejects non-finite preyAlert $alert', () {
+      expect(
+        () => PredatorPressure.response(preyAlert: alert, escapeRoutes: 2),
+        throwsA(
+          isA<ArgumentError>().having((e) => e.name, 'name', 'preyAlert'),
+        ),
+      );
+    });
+  }
+
+  test('predator pressure preserves finite response and clamping', () {
+    expect(PredatorPressure.response(preyAlert: 0, escapeRoutes: 1), 1);
+    expect(PredatorPressure.response(preyAlert: .2, escapeRoutes: 2), .7);
+    expect(PredatorPressure.response(preyAlert: -2, escapeRoutes: 2), 0);
+    expect(PredatorPressure.response(preyAlert: 2, escapeRoutes: 2), 1);
+  });
+
   test('groups move with bounded boid separation and leadership', () {
     final group = CreatureGroup(id: 'g1', type: GroupType.herd);
     group.add('a');

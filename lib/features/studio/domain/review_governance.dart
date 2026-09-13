@@ -6,10 +6,25 @@ class AttentionItem {
 
 class AttentionQueue {
   final List<AttentionItem> _items = [];
-  void add(AttentionItem item) => _items.add(item);
+
+  /// Keeps the list sorted by descending priority at insertion so retrieval
+  /// stays O(1). Equal priorities keep insertion order.
+  void add(AttentionItem item) {
+    var low = 0;
+    var high = _items.length;
+    while (low < high) {
+      final mid = (low + high) >> 1;
+      if (_items[mid].priority >= item.priority) {
+        low = mid + 1;
+      } else {
+        high = mid;
+      }
+    }
+    _items.insert(low, item);
+  }
+
   AttentionItem? next() {
     if (_items.isEmpty) return null;
-    _items.sort((a, b) => b.priority.compareTo(a.priority));
     return _items.removeAt(0);
   }
 }

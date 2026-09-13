@@ -1,3 +1,9 @@
+### 2026-09-13 - nephthys (interaktif run288): CI GitHub HIDUP lagi — blokir billing RESMI selesai (Choi)
+- Choi membuka billing. Bukti empiris via API (token git credential fill, nilai tak ditampilkan): rerun-failed-jobs di tip origin 5780c6b diterima 201; Multiplatform CI job 'Build Windows debug' + 'Build macOS and iOS simulator' = SUCCESS attempt-2; Security/Gitleaks = SUCCESS attempt-2. Job 'Analyze, test, Linux, Web, Android' masih in_progress saat entri ditulis (poller background; lokal full-suite sudah +4345 ~1 hijau sebagai ekspektasi). Annotation lama 'payments have failed' = artefak attempt sebelum billing; attempt baru membuktikan job STARTED (punya steps berjalan).
+- Konsekuensi yang TERBUKA (butuh keputusan/izin Choi, jangan diam-diam): (1) pasang branch protection master = required status checks Multiplatform CI + Security sebelum merge dependabot (API repos/{o}/{r}/branches/{b}/protection — menulis aturan repo = perubahan lintas-agen, butuh kata Choi); (2) atur dependabot: reopen=true + minimum-updates-to-keep + grup mayor, atau skip mayor sampai proyek migrasi riverpod 3 dijadwalkan; (3) sertifikasi rantai: push berikutnya otomatis tersertifikasi CI hidup.
+- Sibling cron: berjalan normal di lineage 5780c6b+ (beberapa tick mendarat sepanjang sesi wave-4; tak ada anomali baru).
+- Next action: laporkan hasil CI final attempt saat poller selesai; tawarkan dua konfigurasi (protection + dependabot sbg PR konfigurasi) utk persetujuan Choi.
+
 ### 2026-09-13 - nephthys (cron run288): zombie DB-BUG-04 DIBERSIHKAN + regression lock fabricated data (tabrakan tengah-run dengan wave-4 interaktif, terselesaikan tanpa kerusakan)
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

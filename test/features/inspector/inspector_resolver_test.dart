@@ -5,6 +5,7 @@ import 'package:void_scriptor/core/selection/selection_controller.dart';
 import 'package:void_scriptor/core/selection/selection_model.dart';
 import 'package:void_scriptor/features/assets/domain/asset_type.dart';
 import 'package:void_scriptor/features/inspector/presentation/inspector_resolver.dart';
+import 'package:void_scriptor/features/inspector/presentation/inspectors/weapon_inspector.dart';
 import 'package:void_scriptor/features/story/presentation/story_inspector.dart';
 import 'package:void_scriptor/features/story/domain/story_model.dart';
 
@@ -41,9 +42,17 @@ void main() {
           ),
         );
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Weapon'), findsOneWidget);
-    expect(find.text('weapon-1'), findsOneWidget);
+    // vs-hunt-20260913-inspector INS-BUG-03 obsoleted the old
+    // `expect(find.text('weapon-1'), findsOneWidget)` assertion: the raw id
+    // token must never render. Intent preserved — the typed WeaponInspector
+    // is mounted and consumes the selected id — now proven via the
+    // 'Unknown asset' fallback it renders for an unresolved id.
+    expect(find.byType(WeaponInspector), findsOneWidget);
+    expect(find.text('Unknown asset'), findsOneWidget);
+    expect(find.text('weapon-1'), findsNothing);
   });
 
   testWidgets('story selection resolves to story inspector', (tester) async {

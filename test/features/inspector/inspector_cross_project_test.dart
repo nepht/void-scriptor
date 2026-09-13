@@ -5,6 +5,7 @@ import 'package:void_scriptor/core/selection/selection_controller.dart';
 import 'package:void_scriptor/core/selection/selection_model.dart';
 import 'package:void_scriptor/features/assets/domain/asset_type.dart';
 import 'package:void_scriptor/features/inspector/presentation/inspector_resolver.dart';
+import 'package:void_scriptor/features/inspector/presentation/inspectors/weapon_inspector.dart';
 import 'package:void_scriptor/features/projects/presentation/project_persistence_providers.dart';
 
 void main() {
@@ -58,8 +59,14 @@ void main() {
           ),
         );
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Weapon'), findsOneWidget);
-    expect(find.text('weapon-tesnovel'), findsOneWidget);
+    // vs-hunt-20260913-inspector INS-BUG-03: the typed inspector resolves for
+    // the active project (the old assertion pinned the raw id token, which
+    // the contract now forbids). Intent preserved: selection -> WeaponInspector
+    // is mounted and the raw id is never rendered in any AsyncValue state.
+    expect(find.byType(WeaponInspector), findsOneWidget);
+    expect(find.text('weapon-tesnovel'), findsNothing);
   });
 }

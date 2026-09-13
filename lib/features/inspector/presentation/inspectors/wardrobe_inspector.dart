@@ -67,48 +67,110 @@ class WardrobeInspector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(wardrobeInspectorProvider(wardrobeId));
-    final data = state.valueOrNull;
-    if (data == null) {
-      return Container(
-        color: context.palette.panel,
-        padding: const EdgeInsets.all(16),
-        child: Text(wardrobeId, style: VoidTypography.title),
-      );
-    }
-    return Container(
-      color: context.palette.panel,
-      padding: const EdgeInsets.all(16),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(data.name, style: VoidTypography.title),
-            Text(
-              'Wardrobe',
-              style: TextStyle(color: context.palette.textMuted),
-            ),
-            const SizedBox(height: 20),
-            _Section(
-              title: 'Properties',
-              rows: [
-                ('Category', data.category),
-                ('Material', data.material),
-                ('Fabric', data.fabric),
-                ('Fit', data.fit),
-                ('Style', data.style),
+    // vs-hunt-20260913-inspector INS-BUG-02: never surface the raw id token.
+    // Loading shows a real indicator, errors are visible, and an
+    // unresolvable wardrobe reads 'Unknown asset' (loadout UX contract),
+    // matching the .when pattern used by supporting_asset_workspace_screen.
+    return ref
+        .watch(wardrobeInspectorProvider(wardrobeId))
+        .when(
+          loading: () => _Panel(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Loading wardrobe...',
+                      style: TextStyle(color: context.palette.textMuted),
+                    ),
+                  ],
+                ),
+                Text(
+                  'Wardrobe',
+                  style: TextStyle(color: context.palette.textMuted),
+                ),
               ],
             ),
-            _Section(
-              title: 'Variants',
-              rows: [('Available', data.variants.join(', '))],
+          ),
+          error: (error, _) => _Panel(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$error',
+                  style: TextStyle(color: context.palette.textMuted),
+                ),
+                Text(
+                  'Wardrobe',
+                  style: TextStyle(color: context.palette.textMuted),
+                ),
+              ],
             ),
-            RelationSection(assetId: wardrobeId),
-          ],
-        ),
-      ),
-    );
+          ),
+          data: (data) {
+            if (data == null) {
+              return const _Panel(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Unknown asset', style: VoidTypography.title),
+                    Text('Wardrobe', style: VoidTypography.caption),
+                  ],
+                ),
+              );
+            }
+            return _Panel(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(data.name, style: VoidTypography.title),
+                    Text(
+                      'Wardrobe',
+                      style: TextStyle(color: context.palette.textMuted),
+                    ),
+                    const SizedBox(height: 20),
+                    _Section(
+                      title: 'Properties',
+                      rows: [
+                        ('Category', data.category),
+                        ('Material', data.material),
+                        ('Fabric', data.fabric),
+                        ('Fit', data.fit),
+                        ('Style', data.style),
+                      ],
+                    ),
+                    _Section(
+                      title: 'Variants',
+                      rows: [('Available', data.variants.join(', '))],
+                    ),
+                    RelationSection(assetId: wardrobeId),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
   }
+}
+
+class _Panel extends StatelessWidget {
+  const _Panel({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    color: context.palette.panel,
+    padding: const EdgeInsets.all(16),
+    child: child,
+  );
 }
 
 class _Section extends StatelessWidget {

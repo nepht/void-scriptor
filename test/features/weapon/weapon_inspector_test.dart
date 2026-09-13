@@ -30,6 +30,12 @@ void main() {
           ),
         );
     await tester.pump();
+    // INS-BUG-03 (vs-hunt-20260913-inspector): the inspector now renders a
+    // real loading branch first; pump once more so the provider settles
+    // (null session -> 'Unknown asset' data branch) before asserting the
+    // resolved structure. Intent unchanged: selection mounts the full
+    // WeaponInspector with its Properties and Relations sections.
+    await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.byType(WeaponInspector), findsOneWidget);
     expect(find.text('Properties'), findsOneWidget);

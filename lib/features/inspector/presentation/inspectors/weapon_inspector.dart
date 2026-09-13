@@ -63,39 +63,85 @@ class WeaponInspector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final data = ref.watch(weaponInspectorProvider(weaponId)).valueOrNull;
+    // vs-hunt-20260913-inspector INS-BUG-03: the old `data?.name ?? weaponId`
+    // title silently rendered the raw UUID while loading or when the weapon
+    // could not be resolved. Handle each AsyncValue state explicitly; the
+    // loadout UX contract forbids raw id tokens in the UI.
     return Container(
       color: context.palette.panel,
       padding: const EdgeInsets.all(16),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              data?.name ?? weaponId,
-              style: TextStyle(
-                color: context.palette.textPrimary,
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            Text('Weapon', style: TextStyle(color: context.palette.textMuted)),
-            const SizedBox(height: 20),
-            _Section(
-              title: 'Properties',
-              rows: [
-                ('Type', data?.weaponType ?? '—'),
-                ('Material', data?.material ?? '—'),
-                ('Length', data?.length ?? '—'),
-                ('Energy', data?.energy ?? '—'),
-                ('Core', data?.core ?? '—'),
-                ('Variant', data?.variant ?? '—'),
+      child: ref
+          .watch(weaponInspectorProvider(weaponId))
+          .when(
+            loading: () => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Loading weapon...',
+                      style: TextStyle(color: context.palette.textMuted),
+                    ),
+                  ],
+                ),
+                Text(
+                  'Weapon',
+                  style: TextStyle(color: context.palette.textMuted),
+                ),
               ],
             ),
-            RelationSection(assetId: weaponId),
-          ],
-        ),
-      ),
+            error: (error, _) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$error',
+                  style: TextStyle(color: context.palette.textMuted),
+                ),
+                Text(
+                  'Weapon',
+                  style: TextStyle(color: context.palette.textMuted),
+                ),
+              ],
+            ),
+            data: (data) => SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    data?.name ?? 'Unknown asset',
+                    style: TextStyle(
+                      color: context.palette.textPrimary,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    'Weapon',
+                    style: TextStyle(color: context.palette.textMuted),
+                  ),
+                  const SizedBox(height: 20),
+                  _Section(
+                    title: 'Properties',
+                    rows: [
+                      ('Type', data?.weaponType ?? '—'),
+                      ('Material', data?.material ?? '—'),
+                      ('Length', data?.length ?? '—'),
+                      ('Energy', data?.energy ?? '—'),
+                      ('Core', data?.core ?? '—'),
+                      ('Variant', data?.variant ?? '—'),
+                    ],
+                  ),
+                  RelationSection(assetId: weaponId),
+                ],
+              ),
+            ),
+          ),
     );
   }
 }

@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run293 (cron): STU-BUG-07 (Low, vs-hunt-20260913-studio) CLOSED TDD - AttentionQueue tidak lagi re-sort tiap next(); add() binary-insert menjaga invariant descending-priority (equal priority FIFO), next() tinggal removeAt(0). RED probe _CountingItem menghitung pembacaan prioritas: drain 24 item Expected 0 Actual 816 (tepat mekanisme re-sort); GREEN; 3 test penjaga intent hijau sejak awal tanpa pelemahan. Region test/features/studio 48 PASS / 0 FAIL (dua eksekusi independen exit 0); full suite +4370 ~1 exit 0 (+4 slice ini, +1 split golden sibling 7e203a8); analyze No issues; format 0 changed; diff-check 0; build windows debug PASS 19,9s; guard PASS pre+post. Commit 2da4623 scoped 2 file, TIDAK di-push (keputusan push milik Choi). Sibling 22449b7 (ci timeout 30->45m) wilayah disjunk dipreservasi. 145.34 rollback-failure diverifikasi ulang sudah CLOSED run227, tidak diulang. ANTREAN terbuka: STU-BUG-03 (butuh keputusan kontrak repository) + STU-BUG-06 (butuh keputusan normalisasi latency); region hunt berikutnya features/platform (20 file). Keputusan Choi menunggu: routing REF-BUG-2/WLD-PARENT, UI export/import character, 145.43-50, lab hardware 145.42, pemetaan scope 145.27, STU-BUG-03/06. Pointer 145.27 PARTIAL; stream corrective_core_mvp.",
+  "last_verified_step": "run295 (cron): hunt features/platform SELESAI (vs-hunt-20260914-platform, referee on-disk = otoritas: 6 REAL / 0 dismissed; 3 Medium PLAT-BUG-01/02/03 + 3 Low 04/05/06) + PLAT-BUG-01 CLOSED TDD - HealthCheck.allPassed fail-closed (checks.isNotEmpty && every; vacuous-true Map kosong bukan 'sehat'). RED Expected false/Actual true tepat mekanisme; focused 10 PASS; region platform 54 PASS; analyze No issues; format 0 changed; diff-check 0; build windows debug PASS 20,3s; FULL SUITE +4373 ~1 exit 0 (+3 slice ini, delta cocok vs baseline run293 +4370). Commit 87788d4 scoped 8 path, TIDAK di-push (izin Choi; ls-remote: origin=b82ac60, ahead 1). Sibling b82ac60 (run294 CI-sertification) dipreservasi; worker yatim vs_w3_c temp dibiarkan utuh (non-blocking, CPU 0). 145.34 tidak diulang (CLOSED run227). ANTREAN terbuka: PLAT-BUG-03 (butuh keputusan tujuan navigasi About; AboutScreen nol rute), PLAT-BUG-02/05/06 (Medium/Low dormant), STU-BUG-03 + STU-BUG-06 (keputusan Choi). Region platform terscan; region hunt berikutnya belum diantrikan. Keputusan Choi menunggu: routing REF-BUG-2/WLD-PARENT, UI export/import character, 145.43-50, lab hardware 145.42, pemetaan scope 145.27, STU-BUG-03/06, navigasi PLAT-BUG-03. Pointer 145.27 PARTIAL; stream corrective_core_mvp.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-14",
-  "updated_by": "nephthys cron run293",
+  "updated_by": "nephthys cron run295",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -229,5 +229,13 @@
     "dismissed": "04 heuristik injection filter by-design (dipin operations_safety_test); 05 penolakan tipe chat by-design (dipin studio_communication_test)",
     "reachability": "nol caller produksi luar region (hanya app_router->StudioCommandCenter DemoStudio); severity = kontrak API publik domain",
     "next_unscanned_regions": "features/platform (20 file, 1317 baris)"
+  },
+  "platform_hunt_2026_09_14_run295": {
+    "status": "hunt COMPLETE + PLAT-BUG-01 fixed; QUEUE: PLAT-BUG-03 Medium (butuh keputusan navigasi Choi) + 02 Medium dormant + 05/06 Low dormant",
+    "hunt": "docs/evidence/vs-hunt-20260914-platform/ (20 file scope lib/features/platform, sha256+HEAD a01d265, laporan on-disk referee_report_platform.md = otoritas 6 REAL / 0 dismissed)",
+    "confirmed": "01 Medium allPassed vacuous-true FIXED fail-closed (87788d4); 02 Medium cycle-check 2-node tanpa caller; 03 Medium AboutScreen 4 link tanpa onTap + nol rute (butuh keputusan tujuan); 04 Low inverted PluginApiVersion dormant (kontradiksi core/plugin versi canonical, nol caller); 05 Low sort tie-breaker; 06 Low divide-by-zero",
+    "dismissed": "none",
+    "reachability": "AboutScreen/UpdateScreen/WelcomeScreen/KeyboardNav/OptionalTour: nol rute produksi (hanya ThemeSettingsScreen ter-route); domain getters tanpa caller UI",
+    "next_unscanned_regions": "belum diantrikan - kandidat dari lib/features tanpa vs-hunt: cek daftar vs-hunt-* vs lib/features/*/ sebelum memilih"
   }
 }

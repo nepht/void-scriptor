@@ -22,7 +22,10 @@ class DashboardScreen extends ConsumerWidget {
   Future<void> _createCharacter(BuildContext context, WidgetRef ref) async {
     final session = ref.read(projectSessionProvider).valueOrNull;
     if (session == null) {
-      if (context.mounted) context.go(AppRoutes.studio);
+      // BUG-03 (vs-hunt-20260913-dashboard): '/studio' tanpa projectId
+      // me-render shell tanpa sesi — karakter tak mungkin dibuat. Destinasi
+      // pemulihan nyata tanpa sesi adalah daftar Proyek (kontrak shell sama).
+      if (context.mounted) context.go(AppRoutes.projects);
       return;
     }
     var name = '';

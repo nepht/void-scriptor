@@ -1,0 +1,27 @@
+{
+  "hunt": "vs-hunt-20260913-dashboard",
+  "recorded_at": "2026-09-13T23:55+07:00",
+  "recorded_by": "nephthys cron run283 (hunt stage)",
+  "branch": "master",
+  "head": "4027dcd2fe2a05f920cb42308d3717d7f07be145",
+  "region": "features/dashboard (16 file/1063 baris; region UI Core belum pernah di-adversarial-hunt; relevan otorisasi UI/UX continuous 2026-09-07 + kriteria Dashboard run global)",
+  "files": {
+    "lib/features/dashboard/application/dashboard_snapshot_provider.dart": "06b5b4034db592e6c426681fcafcdd244a1d8c076a8a1bfbf759665b2db74880",
+    "lib/features/dashboard/data/dashboard_repository.dart": "8a9b179d70a55cf433aff4c0332da1e628cec154c9839ca7f10f58d5fabd5f93",
+    "lib/features/dashboard/domain/dashboard_snapshot.dart": "6688f4f0cdfe8aa61b2d20f49c10d3297b5e0917dae5a0878b53f079d6cbcec0",
+    "lib/features/dashboard/presentation/dashboard_screen.dart": "fd63a17687f9b7a6ac9e729b8f96d1e711f09a0de8a2ec37104ec02af1368ab6",
+    "lib/features/dashboard/presentation/widgets/ai_activity_card.dart": "e8ba5367e092419e27b1caf1f1f461b81f606b1870effa3b980901821b30715f",
+    "lib/features/dashboard/presentation/widgets/brand_gallery.dart": "e0c659500a3895007081371258bb6cc48447c3bfcc227fa036d21257237d2fec",
+    "lib/features/dashboard/presentation/widgets/donation_card.dart": "ef54512a6f0d5d4c6803b39f5ea9470fe66d965de2e6e0d096419e23d657186c",
+    "lib/features/dashboard/presentation/widgets/local_only_status.dart": "b75c318991968fa19a0fd2359fee87b83e45504187c02231e853923bdca85775",
+    "lib/features/dashboard/presentation/widgets/marketplace_card.dart": "fe41281e6e85b0e12c560344586b13f44c2d81a32c68183f4a8a4960d7d8767f",
+    "lib/features/dashboard/presentation/widgets/notifications_card.dart": "8815fd9fd86975d2c2d6f21f40871db00db2405fb033b6d3b82e7e7c1628bf5c",
+    "lib/features/dashboard/presentation/widgets/quick_actions.dart": "420f40dd2d1ed717d62af00ed98b2347c85d30e07d9395353722c64fd6c78fbf",
+    "lib/features/dashboard/presentation/widgets/recent_assets.dart": "44a15f47518a198d6ac1fa79da4915aaa56cc9450e52a6a0637343015cb8e86c",
+    "lib/features/dashboard/presentation/widgets/recent_projects.dart": "19c46ed7adfc091440be25ff46f59cda77ce8a0aefac2e7d55bc855f27e629e3",
+    "lib/features/dashboard/presentation/widgets/statistics_panel.dart": "ea3b7de562c1c1d6057c18d4dccd196ac2e873ac854144f6a95e775a42fcd39a",
+    "lib/features/dashboard/presentation/widgets/storage_card.dart": "07af7ca904a51d21f3b0bb7c83342845b293937d4ecb9c81a79ef208292db871",
+    "lib/features/dashboard/presentation/widgets/welcome_card.dart": "2acd3974904137c0dc77d2e2f7b4656ae18359921c71812d6b794494e0d397f8"
+  },
+  "notes": "Scan-only. Tree bersih (hanya untracked artefak lama). Hunter wajib membaca penuh 16 file sebelum mengklaim."
+}

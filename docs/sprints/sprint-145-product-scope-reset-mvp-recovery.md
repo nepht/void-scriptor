@@ -1,3 +1,58 @@
+### 2026-09-13 - nephthys (cron run283): hunt region dashboard rantai 3-tahap LULUS + DB-BUG-03 DIPERBAIKI TDD (vs-hunt-20260913-dashboard)
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk 4027dcd. Tree
+  bersih kecuali untracked artefak lama (tak disentuh). Nol proses
+  flutter/dart/void_scriptor. Conflict markers nihil. Single-writer
+  RELEASED_TO_HERMES diakui kembali.
+- Seleksi: run282 eksplisit -> hunt region baru <=20 file ATAU peta acceptance
+  145.27. Peta acceptance 145.27 sudah terdokumentasi lengkap di
+  docs/audits/core-worldbuilding-reduction.md (tabel bukti + Decision PARTIAL)
+  -> dipilih hunt BARU: lib/features/dashboard/** (16 file/1063 baris, region
+  UI Core global yang belum pernah di-adversarial-hunt; relevan otorisasi
+  UI/UX continuous 2026-09-07). scope.json berisi sha256 per-file + HEAD
+  4027dcd. Nomor run 283 dicek bebas (grep run283 nol).
+- Rantai 3-tahap delegate LULUS penuh (pin gemini flash-lite sehat): Hunter 9
+  temuan (skor 21) -> Skeptic accept 5 / disprove 4 -> Referee on-disk
+  (otoritas): REAL 5 (BUG-01 Medium in-memory asset scan; BUG-03 Medium
+  Create Character tanpa sesi -> /studio shell mati; BUG-04 Low RecentAssets
+  hardcoded; BUG-07 Low statistik error tanpa retry; BUG-08 Low teks error
+  auth mentah), NOT A BUG 4 (BUG-02 Riverpod AsyncValue.error; BUG-05 stub
+  donasi jujur by-design; BUG-06 sort list kecil di build; BUG-09 errorBuilder
+  thumbnail). Laporan: docs/evidence/vs-hunt-20260913-dashboard/*_run283.md.
+- Verifikasi independen induk SEBELUM fix: BUG-03 CONFIRMED (dashboard_screen
+  _createCharacter session==null -> context.go(AppRoutes.studio); route
+  /studio builder = VoidAppShell projectId=null -> tidak ada jalur pembuatan
+  karakter, shell tanpa sesi; inkonsisten dgn kontrak shell onMenuSelected
+  session==null => AppRoutes.projects). BUG-04 terverifikasi tapi DEAD CODE:
+  RecentAssets nol importer di lib/ dan test/ (hanya definisinya sendiri) ->
+  tidak user-visible; dijadwalkan terpisah, bukan slice ini.
+- Eksekusi TDD satu slice (BUG-03): RED
+  test/features/dashboard/dashboard_create_character_no_session_test.dart
+  gagal Actual '/studio' Expected '/projects' (offset 1) -> GREEN minimal:
+  session==null kini context.go(AppRoutes.projects) + komentar kontrak.
+- Gates: fokus 1 PASS; region test/features/dashboard 13 PASS 0 FAIL; regresi
+  test/app/shell + test/app/routing 69 PASS 0 FAIL; app_bootstrap_test 1 PASS;
+  flutter analyze --no-pub seluruh repo No issues (29,5s); dart format owned
+  0 tersisa; git diff --check exit 0; flutter build windows --debug --no-pub
+  PASS 64,5s; roadmap_guard PASS post. Native GUI UNVERIFIABLE (cron tanpa
+  sesi desktop interaktif). Commit scoped path eksplisit, tanpa git add -A.
+- Antrean vs-hunt-20260913-dashboard TERBUKA: DB-BUG-01 Medium (tambah DAO
+  countByProject di AssetDao + pakai di DashboardRepository), DB-BUG-07 Low
+  (retry/invalidate di StatisticsPanel error state), DB-BUG-08 Low (error UI
+  auth yang manusiawi), DB-BUG-04 Low (hapus/rewire RecentAssets dead code).
+- Risiko: navigasi /studio legacy tetap ada utk deep-link lama; fix hanya
+  memindah destinasi quick-action, tidak menghapus rute. Reachability BUG-03
+  nyata (dashboard = landing screen default guest/offline).
+- Status: pointer 145.27 tetap PARTIAL (worldbuilding-reduction acceptance
+  butuh user evidence; peta bukti audit tetap); stream corrective_core_mvp;
+  push menunggu Choi (ahead 13 setelah commit ini; origin +10 CI/deps bumps —
+  divergensi tercatat, jangan pull di tree artefak).
+- Next action: run berikut kerjakan antrean dashboard (BUG-01 DAO-scoped
+  count, lalu 07/08/04) ATAU keputusan Choi (routing REF-BUG-2/WLD-PARENT-01/
+  02, UI export/import karakter 145.35, push/merge divergensi, lab hardware
+  145.42).
+
 ### 2026-09-13 - nephthys (cron run282): hunt sore region projects (rantai 3-tahap LULUS) + PRJ-run282 BUG-1/BUG-2 DIPERBAIKI TDD; insiden tabrakan direktori bukti pulih penuh
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

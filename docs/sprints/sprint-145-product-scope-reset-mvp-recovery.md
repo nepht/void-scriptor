@@ -1,3 +1,43 @@
+### 2026-09-14 - nephthys (cron run290): STU-BUG-01 (Medium) ditutup TDD — exception bertipe lookup task hilang (vs-hunt-20260913-studio)
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk 0df2989; tree
+  bersih dari M source milik orang lain — dipreservasi: .github/workflows/
+  security.yml (M, sibling CI) + 9 untracked artefak lama. conflict markers
+  nihil. Single-writer RELEASED_TO_HERMES diakui kembali.
+- Stalemate取证 (bukan blocker): tasklist menuai flutter_tester.exe+dart.exe
+  sejak 19:59 (4,5 jam lalu) — audit Cim: CPU 0,05 dtk total, WS 13 MB, 5 thread,
+  tidak naik selama 8 dtk; workspace temp test-nya hanya berisi artefak build
+  unit_test_assets. Kesimpulan: zombie sisa sesi lama, bukan eksekutor aktif —
+  tidak ada write konkuren. Tidak ada proses yang dihentikan (aturan preservasi).
+- Seleksi: antrean terbuka run289 = STU-BUG-01/03 (Medium) + 06/07/08 (Low).
+  SATU slice run ini: STU-BUG-01 (production_pipeline.dart:41/44/49 firstWhere
+  tanpa orElse -> StateError mentah bocor dari API domain publik). STU-BUG-03
+  butuh keputusan kontrak (append-only history mengubah bentuk DepartmentLead-
+  Repository / findByDepartment) -> antre tetap terbuka; jangan diperbaiki diam-
+  diam tanpa keputusan Referee lanjutan. 04/05 tetap JANGAN di-re-fix (dipin test).
+- RED: test/features/studio/domain/production_pipeline_missing_task_test.dart
+  (5 test) gagal compile tepat karena UnknownProductionTaskException belum ada
+  (= mekanisme klaim: exception bertipe tidak tersedia). GREEN:
+  UnknownProductionTaskException implements Exception + orElse throw di ketiga
+  firstWhere isBlocked/complete; kasus dependency menggantung menamai id
+  dependensi yang hilang. Test lama production_pipeline_test.dart tetap hijau
+  (intent dipertahankan, tanpa melemahkan assertion).
+- Gates aktual: focused 7 PASS (5 baru + 2 lama); region test/features/studio
+  penuh 38 PASS / 0 FAIL; dart analyze scoped No issues; flutter analyze
+  --no-pub full repo No issues (17,7s); dart format gate 0 changed (2 file
+  milik slice diformat sebelum gate); git diff --check exit 0; flutter build
+  windows --debug --no-pub PASS 27,7s; FULL SUITE `+4359 ~1 All other tests
+  passed!` exit 0 (23m20d; ~1 = platform-skip terdokumentasi; naik tepat +5 dari
+  baseline run289 +4354). Native UNVERIFIABLE (cron; kelas domain-only, tak
+  ter-mount UI — sama seperti catatan run289).
+- Status: 145.27 tetap PARTIAL; pointer tidak bergerak; stream
+  corrective_core_mvp. ANTREAN terbuka berikutnya: STU-BUG-03 (Medium, butuh
+  keputusan bentuk kontrak repository) + STU-BUG-06/07/08 (Low); region hunt
+  baru features/platform (20 file) sesuai otorisasi. Keputusan Choi yang
+  tercatat tetap menunggu (routing REF-BUG-2/WLD-PARENT, UI export/import
+  character, 145.43-50, lab hardware 145.42).
+
 ### 2026-09-13 - nephthys (cron run289): hunt region features/studio + STU-BUG-02 CRITICAL diperbaiki TDD (vs-hunt-20260913-studio)
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

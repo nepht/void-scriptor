@@ -75,6 +75,7 @@ class _StorageLocationsScreenState
       await action(store);
       clearOnSuccess?.clear();
       await _refresh();
+      if (!mounted) return;
       messenger.showSnackBar(
         SnackBar(
           content: Text('$label berhasil.'),
@@ -82,6 +83,7 @@ class _StorageLocationsScreenState
         ),
       );
     } on Object catch (error) {
+      if (!mounted) return;
       messenger.showSnackBar(
         SnackBar(
           content: Text('$label gagal: $error'),

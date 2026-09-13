@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run275 REF-BUG-3 (antrean run274) ditutup e3e5ca7: ReferenceImportDialog _submit kini menyetel errorText per-field utk path/nama kosong (teks-first, pulih saat diisi; RED dialog beku -> GREEN). Gate: references dir 22 PASS; analyze No issues; format 0; diff-check 0; build windows debug PASS 27.8s; guard PASS. Native UNVERIFIABLE (feedback-level, bukti widget test). REF-BUG-2 tetap gap tercatat (ReferenceManagementScreen tanpa rute; butuh metode toggle repo + keputusan routing Choi). Region references hunt tertutup utk temuan production-reachable. Pointer 145.27 tetap PARTIAL; sibling journal region (mtime 08:41-08:52) DIPRESERVASI tanpa sentuh.",
+  "last_verified_step": "run276 C-block vs-hunt-20260912-autosave DITUTUP (eacf3aa + 1a08388): WIP sibling idle >4,5 jam diresepsi setelah verifikasi independen (focused 5/5, project_resilience 222 PASS/1 SKIP, story 205 PASS, character 103 PASS) — dispose story screen kini tutup draftJournal setelah flush (run197 BUG-4 di produksi) + pin blind-ack discard korup vs content-aware refuse. fsync = documented limitation. Format-only character diadopsi krn gate CI Verify formatting merah di HEAD (bukti HEAD-copy). Gates: analyze scoped No issues; format lib+test 2230/0 changed; diff-check 0; build windows debug PASS 40,3s; guard PASS. Working tree source bersih. Native UNVERIFIABLE (cron). Pointer 145.27 tetap PARTIAL; push menunggu Choi (backlog 3 commit). Next: region hunt features/inspector ATAU gap acceptance 145.27/145.42.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T13:25:00+07:00",
-  "updated_by": "nephthys-cron-run275",
+  "updated_at": "2026-09-13T13:55:00+07:00",
+  "updated_by": "nephthys-cron-run276",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -135,7 +135,7 @@
     }
   },
   "autosave_hunt_2026_09_12": {
-    "status": "BLOCKED (delegation quota) — scan-only hunt pada vertikal autosave/draft persistence belum menghasilkan laporan Hunter",
+    "status": "hunt COMPLETE + A/B/C block CLOSED (C-block run276 eacf3aa; native journey run259 VERIFIED); queue autosave EMPTY",
     "scope": "docs/evidence/vs-hunt-20260912-autosave/autosave_scope.json (6 file, HEAD b2ca031; region belum pernah di-hunt)",
     "failure": "delegate_task Hunter gagal 2x: upstream cbai/kimi-k2.7 429 code14018 Credits exhausted; nol mutasi repo",
     "next_action": "ulangi Hunter->Skeptic->Referee saat kuota delegation pulih ATAU Choi cabut pin delegation.model; JANGAN tandai scope sebagai clean",
@@ -144,7 +144,8 @@
     "queue_A3_status": "run269 ACCEPT: WIP penulis idle sejak 01:10 diresepsi + diuji (bukan ditulis ulang) - BUG-4/5/8/9/10/19/20 referee on-disk masuk via commit 6a2c41e; 4 test baru durable_autosave_restore_coordination_test PASS; regresi story 203 PASS, project_resilience 219 PASS/1 SKIP, analyzer No issues.",
     "run258_note": "Gate format CI merah utk working tree (story_repository_impl.dart dirty belum di-format). Author wajib 'dart format' sebelum commit agar 'Verify formatting' tidak menjatuhkan seluruh push (pola run252).",
     "run260_note": "Delegation pin gemini/gemini-3.5-flash-lite KUOTA HABIS (429 dua stage beruntun pada hunt shell/settings; Hunter stage pertama sempat lulus). Butuh Choi: ganti/cabut pin delegation. Evidence: docs/evidence/vs-hunt-20260913-shell-settings/ (verdict self-audit: BUG-02 push-vs-go kandidat slice berikutnya; BUG-08 not-production).",
-    "run269_note": "Sisa antrean: rekonsiliasi item B-block vs referee on-disk (dispose/retention sebagian sudah masuk WIP), C-block fsync documented-limitation + close-lifecycle, native journey restore (sesi Choi). Pointer 145.27 tetap PARTIAL, stream tidak berubah."
+    "run269_note": "Sisa antrean: rekonsiliasi item B-block vs referee on-disk (dispose/retention sebagian sudah masuk WIP), C-block fsync documented-limitation + close-lifecycle, native journey restore (sesi Choi). Pointer 145.27 tetap PARTIAL, stream tidak berubah.",
+    "run276_note": "C-block ditutup via resepsi WIP idle terverifikasi (close-after-ack produksi + corrupt-discard pin + fsync documented limitation). Snapshot pre-aksi %LOCALAPPDATA%/Temp/vs-run276-sibling-snap-133624."
   },
   "native_restore_journey_run253": {
     "status": "VERIFIED (cron run259 2026-09-13 02:35 WIB - sesi desktop hidup, computer_use foreground delivery OK)",

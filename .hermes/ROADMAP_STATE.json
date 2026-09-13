@@ -28,7 +28,7 @@
  "active_sprint": 145,
  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
  "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
- "last_verified_step": "run297 (cron): PLAT-BUG-05 (Low) CLOSED TDD - BootstrapPlan.orderedSteps tie-breaker id deterministik (sort tunggal pada order tidak stabil; langkah order kembar kini deterministik order->id). RED tepat mekanisme (Expected alpha,mike,zeta / Actual zeta,alpha,mike); 5 test baru; region platform 65 PASS; analyze No issues; format 0 changed; diff-check 0; build windows debug PASS 21,2s; FULL SUITE +4384 ~1 exit 0 (+5 slice ini, delta cocok baseline run296 +4379). Commit fc150b6 scoped 2 path, TIDAK di-push. ANTREAN PLAT: PLAT-BUG-03 (keputusan Choi navigasi About), PLAT-BUG-06 (Low dormant guard budgetMb==0 - kandidat run berikutnya), PLAT-BUG-04 (keputusan: selaraskan/ biarkan). 145.27 tetap PARTIAL; stream corrective_core_mvp. Keputusan Choi menunggu: routing REF-BUG-2/WLD-PARENT, UI export/import character, 145.43-50, lab hardware 145.42, pemetaan scope 145.27, STU-BUG-03/06, PLAT-BUG-03/04, wrangler login.",
+ "last_verified_step": "run298 (cron): PLAT-BUG-06 (Low) CLOSED TDD - MemoryBaseline.utilization guard budgetMb<=0 (NaN/Infinity/rasio negatif hilang; 0.0 saat budget tak terkonfigurasi, withinBudget tetap). RED tepat mekanisme (Expected 0.0 Actual NaN/-4.8); 5 test baru; region platform 70 PASS; analyze No issues; format 0 changed; diff-check 0; build windows debug PASS 19,8s; FULL SUITE +4389 ~1 exit 0 (+5 slice ini, delta cocok baseline run297 +4384). Commit aca881c scoped 2 path, TIDAK di-push. ANTREAN PLAT: PLAT-BUG-03 (keputusan Choi navigasi About), PLAT-BUG-04 (keputusan: selaraskan/biarkan) - region features/platform selesai ditindaklanjuti; kandidat berikutnya: region hunt baru dari gap acceptance. 145.27 tetap PARTIAL; stream corrective_core_mvp. Keputusan Choi menunggu: routing REF-BUG-2/WLD-PARENT, UI export/import character, 145.43-50, lab hardware 145.42, pemetaan scope 145.27, STU-BUG-03/06, PLAT-BUG-03/04, wrangler login.",
  "next_step": "145.27",
  "stability_gate": {
   "status": "PASS",
@@ -59,7 +59,7 @@
   "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
  ],
  "updated_at": "2026-09-14",
- "updated_by": "nephthys cron run296",
+ "updated_by": "nephthys cron run298",
  "active_stream": "corrective_core_mvp",
  "suspended_streams": {
   "sequential_expansion": {

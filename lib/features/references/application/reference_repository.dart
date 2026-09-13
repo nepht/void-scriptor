@@ -385,24 +385,34 @@ class ReferenceImportService {
     final projectDir = await paths.project(projectId);
     final target = File(p.join(projectDir.path, current.filePath));
     await target.parent.create(recursive: true);
-    final versionNumber = await dao.nextVersion(referenceId);
-    final snapshot = File(
-      p.join(
-        target.parent.path,
-        'versions',
-        'v${versionNumber}_${p.basename(target.path)}',
-      ),
-    );
-    await snapshot.parent.create(recursive: true);
-    await target.copy(snapshot.path);
-    await dao.saveVersion(
-      referenceId: referenceId,
-      filePath: p.relative(snapshot.path, from: projectDir.path),
-      contentHash: current.contentHash,
-      changeNote: changeNote,
-    );
+    // vs-hunt-20260913-references REF-BUG-1: the stored file may be missing on
+    // disk (external deletion, moved drive). Snapshot only when there is a
+    // previous version to preserve; otherwise replacing recovers the row
+    // instead of throwing an unhandled FileSystemException.
+    final hasPreviousFile = await target.exists();
+    File? snapshot;
+    if (hasPreviousFile) {
+      final versionNumber = await dao.nextVersion(referenceId);
+      snapshot = File(
+        p.join(
+          target.parent.path,
+          'versions',
+          'v${versionNumber}_${p.basename(target.path)}',
+        ),
+      );
+      await snapshot.parent.create(recursive: true);
+      await target.copy(snapshot.path);
+    }
     await source.copy(target.path);
     final hash = sha256.convert(await target.readAsBytes()).toString();
+    if (snapshot != null) {
+      await dao.saveVersion(
+        referenceId: referenceId,
+        filePath: p.relative(snapshot.path, from: projectDir.path),
+        contentHash: current.contentHash,
+        changeNote: changeNote,
+      );
+    }
     await (database.update(
       database.references,
     )..where((row) => row.id.equals(referenceId))).write(

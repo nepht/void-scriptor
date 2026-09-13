@@ -1,0 +1,10 @@
+lib/features/references/application/reference_bulk_importer.dart
+lib/features/references/application/reference_file_health_service.dart
+lib/features/references/application/reference_repository.dart
+lib/features/references/application/reference_services.dart
+lib/features/references/domain/reference_models.dart
+lib/features/references/presentation/project_reference_library_screen.dart
+lib/features/references/presentation/reference_comparison_screen.dart
+lib/features/references/presentation/reference_import_dialog.dart
+lib/features/references/presentation/reference_library_screen.dart
+lib/features/references/presentation/reference_management_screen.dart

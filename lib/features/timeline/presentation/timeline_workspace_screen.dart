@@ -35,8 +35,12 @@ class _TimelineWorkspaceScreenState extends State<TimelineWorkspaceScreen> {
 
   void _moveClip(TimelineClipModel clip, double deltaSeconds) {
     final maxStart = widget.durationSeconds - clip.durationSeconds;
+    // A beat can outlast the scene duration (imported without validation), making
+    // maxStart negative; clamp(0.0, negative) throws ArgumentError. Pin the clip at
+    // 0 instead of crashing the workspace.
+    final upperBound = maxStart < 0 ? 0.0 : maxStart;
     final start = snapSeconds(
-      (clip.startSeconds + deltaSeconds).clamp(0.0, maxStart),
+      (clip.startSeconds + deltaSeconds).clamp(0.0, upperBound),
       TimelineSnapMode.tenthSecond,
       30,
     );

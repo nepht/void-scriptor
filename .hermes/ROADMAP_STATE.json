@@ -28,7 +28,7 @@
  "active_sprint": 145,
  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
  "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
- "last_verified_step": "run298 (cron): PLAT-BUG-06 (Low) CLOSED TDD - MemoryBaseline.utilization guard budgetMb<=0 (NaN/Infinity/rasio negatif hilang; 0.0 saat budget tak terkonfigurasi, withinBudget tetap). RED tepat mekanisme (Expected 0.0 Actual NaN/-4.8); 5 test baru; region platform 70 PASS; analyze No issues; format 0 changed; diff-check 0; build windows debug PASS 19,8s; FULL SUITE +4389 ~1 exit 0 (+5 slice ini, delta cocok baseline run297 +4384). Commit aca881c scoped 2 path, TIDAK di-push. ANTREAN PLAT: PLAT-BUG-03 (keputusan Choi navigasi About), PLAT-BUG-04 (keputusan: selaraskan/biarkan) - region features/platform selesai ditindaklanjuti; kandidat berikutnya: region hunt baru dari gap acceptance. 145.27 tetap PARTIAL; stream corrective_core_mvp. Keputusan Choi menunggu: routing REF-BUG-2/WLD-PARENT, UI export/import character, 145.43-50, lab hardware 145.42, pemetaan scope 145.27, STU-BUG-03/06, PLAT-BUG-03/04, wrangler login.",
+ "last_verified_step": "run299 (cron): vs-hunt-20260914-export SELESAI + EXP-BUG-04 (Low) CLOSED TDD - _preview tidak membelah surrogate pair UTF-16 (mundur 1 unit bila high surrogate di ujung; tanpa dependency baru, suggested Characters() ditolak parent_verification). RED 2 FAIL tepat mekanisme; focused 4/4; region export 57 PASS; e2e109+matrix PASS; analyze No issues; format owned 0 changed; diff-check 0; build windows debug PASS 20,5s; FULL SUITE +4393 ~1 exit 0 (delta +4 cocok baseline run298 +4389). Commit 2ccd047 scoped 8 path, TIDAK di-push. Region features/export selesai. Kandidat hunt berikutnya dari daftar unscanned: lib/features/pov/spoiler/lore (kecil) atau region lebih besar; keputusan Choi tetap prioritas. 145.27 tetap PARTIAL; stream corrective_core_mvp. Keputusan Choi menunggu: routing REF-BUG-2, UI export/import character, 145.43-50, lab hardware 145.42, pemetaan scope 145.27, STU-BUG-03/06, PLAT-BUG-03/04, DB-BUG-04, wrangler login.",
  "next_step": "145.27",
  "stability_gate": {
   "status": "PASS",
@@ -59,7 +59,7 @@
   "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
  ],
  "updated_at": "2026-09-14",
- "updated_by": "nephthys cron run298",
+ "updated_by": "nephthys cron run299",
  "active_stream": "corrective_core_mvp",
  "suspended_streams": {
   "sequential_expansion": {
@@ -221,7 +221,7 @@
   "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
  },
  "last_worker_run": "run296",
- "note": "run296: PLAT-BUG-02 closed (21ba2ea); queue PLAT tersisa 03 (keputusan Choi) + 04/05/06 Low dormant",
+ "note": "run299: EXP-BUG-04 closed (2ccd047); region export done; next hunt candidates unscanned: features/pov, features/spoiler, features/lore (small) atau region lebih besar",
  "studio_hunt_2026_09_13_run289": {
   "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
   "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",

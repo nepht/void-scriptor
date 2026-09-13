@@ -19,6 +19,7 @@
 //
 // deterministic interleaving: jurnal CLOSED => stage() melempar StateError
 // dengan cepat, antrean microtask membuat urutan kedua panggilan terbukti.
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -88,6 +89,41 @@ void main() {
     await coordinator.dispose();
   });
 
+  test(
+    'older stage completion after newer completion cannot replace pending',
+    () async {
+      final journal = _DelayedCompletionJournal(journalDir);
+      final persisted = <String>[];
+      final coordinator = DurableAutosaveCoordinator(
+        debounceDelay: const Duration(days: 1),
+        persist: (sceneId, content) async => persisted.add(content),
+        journal: journal,
+      );
+      addTearDown(() async {
+        if (!journal.releaseOlder.isCompleted) journal.releaseOlder.complete();
+        await coordinator.dispose();
+        await journal.close();
+      });
+
+      final older = coordinator.onDraftChanged(
+        sceneId: 'scene-a',
+        content: 'lama',
+      );
+      await journal.olderWritten.future;
+      await coordinator.onDraftChanged(sceneId: 'scene-a', content: 'baru');
+      expect(journal.completed, ['baru']);
+      journal.releaseOlder.complete();
+      await older;
+      expect(journal.completed, ['baru', 'lama']);
+
+      await coordinator.saveNow();
+      expect(persisted, ['baru']);
+      expect(await journal.pendingEntries(), isEmpty);
+      await coordinator.saveNow();
+      expect(persisted, ['baru'], reason: 'no stale pending remains');
+    },
+  );
+
   test('a failure for the ACTIVE draft is still reported (run128 BUG-2 '
       'contract preserved)', () async {
     final journal = DurableDraftJournal(dir: journalDir);
@@ -123,4 +159,24 @@ void main() {
     expect(reported, isEmpty); // kosong = transisi state, bukan error
     await coordinator.dispose();
   });
+}
+
+// Delay only the return to the coordinator, retaining real journal I/O.
+// Publication order is separate from the pending-completion regression.
+class _DelayedCompletionJournal extends DurableDraftJournal {
+  _DelayedCompletionJournal(Directory dir) : super(dir: dir);
+
+  final olderWritten = Completer<void>();
+  final releaseOlder = Completer<void>();
+  final completed = <String>[];
+
+  @override
+  Future<void> stage({required String sceneId, required String content}) async {
+    await super.stage(sceneId: sceneId, content: content);
+    if (content == 'lama') {
+      olderWritten.complete();
+      await releaseOlder.future;
+    }
+    completed.add(content);
+  }
 }

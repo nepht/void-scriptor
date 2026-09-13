@@ -123,9 +123,16 @@ class CharacterLoadoutRepositoryImpl implements CharacterLoadoutRepository {
               row.slot.equals(slot.value),
         ))
         .go();
-    final stillUsed = await (database.select(
-      database.characterLoadoutEntries,
-    )..where((row) => row.assetId.equals(assetId))).get();
+    final entries = database.characterLoadoutEntries;
+    final modes = database.characterModes;
+    final stillUsed =
+        await (database.select(entries).join([
+              innerJoin(modes, modes.id.equalsExp(entries.modeId)),
+            ])..where(
+              entries.assetId.equals(assetId) &
+                  modes.characterId.equals(mode.characterId),
+            ))
+            .get();
     if (stillUsed.isNotEmpty) return;
     final relationType = slot.assetType == 'weapon'
         ? 'uses'

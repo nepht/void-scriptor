@@ -42,6 +42,69 @@ void main() {
     await tempDir.delete(recursive: true);
   });
 
+  for (final slot in [LoadoutSlot.primaryWeapon, LoadoutSlot.wardrobe]) {
+    test(
+      'removeSlot scopes derived ${slot.assetType} relations to character',
+      () async {
+        final modes = CharacterModeRepositoryImpl(database);
+        final loadout = CharacterLoadoutRepositoryImpl(database);
+        await database
+            .into(database.assets)
+            .insert(
+              AssetsCompanion.insert(
+                id: 'character-2',
+                projectId: 'project-1',
+                name: 'Other',
+                type: 'character',
+                createdAt: DateTime(2026),
+                updatedAt: DateTime(2026),
+              ),
+            );
+        await database
+            .into(database.assets)
+            .insert(
+              AssetsCompanion.insert(
+                id: 'shared',
+                projectId: 'project-1',
+                name: 'Shared',
+                type: slot.assetType,
+                createdAt: DateTime(2026),
+                updatedAt: DateTime(2026),
+              ),
+            );
+        final a = await modes.createMode(
+          projectId: 'project-1',
+          characterId: 'character-1',
+          name: 'A',
+        );
+        final aOther = await modes.createMode(
+          projectId: 'project-1',
+          characterId: 'character-1',
+          name: 'A other',
+        );
+        final b = await modes.createMode(
+          projectId: 'project-1',
+          characterId: 'character-2',
+          name: 'B',
+        );
+        for (final mode in [a, aOther, b]) {
+          await loadout.setSlot(modeId: mode, slot: slot, assetId: 'shared');
+        }
+        await loadout.removeSlot(modeId: a, slot: slot, assetId: 'shared');
+        expect(
+          await database.select(database.assetRelations).get(),
+          hasLength(2),
+          reason: 'Another mode of A still uses the asset',
+        );
+        await loadout.removeSlot(modeId: aOther, slot: slot, assetId: 'shared');
+        final relations = await database.select(database.assetRelations).get();
+        expect(relations, hasLength(1));
+        expect(relations.single.sourceAssetId, 'character-2');
+        expect(await loadout.getLoadout(b), hasLength(1));
+      },
+    );
+  }
+
   test('create mode seeds override and keeps one default', () async {
     final service = CreateCharacterModeService(database: database);
 

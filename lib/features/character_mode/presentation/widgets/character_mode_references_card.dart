@@ -13,6 +13,7 @@ class CharacterModeReferencesCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(projectSessionProvider).valueOrNull;
     if (session == null) return const SizedBox.shrink();
+    ref.watch(projectAssetsProvider);
     final repository = CharacterModeReferenceRepository(session.database);
     return FutureBuilder(
       future: repository.getReferences(modeId),

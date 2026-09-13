@@ -37,6 +37,17 @@ class AssetDao extends DatabaseAccessor<ProjectDatabase> with _$AssetDaoMixin {
             ..orderBy([(row) => OrderingTerm.asc(row.name.lower())]))
           .get();
 
+  /// vs-hunt-20260913-dashboard DB-BUG-01: SQL-scoped asset count per
+  /// project. Callers (dashboard snapshot) previously did
+  /// `getAllAssets()` + client-side `.where(...).length`, pulling every
+  /// project's every asset row into memory just to produce one number.
+  Future<int> countByProject(String projectId) async =>
+      (selectOnly(assets)
+            ..addColumns([assets.id.count()])
+            ..where(assets.projectId.equals(projectId)))
+          .map((row) => row.read(assets.id.count()) ?? 0)
+          .getSingle();
+
   Future<Asset?> getById(String id) =>
       (select(assets)..where((row) => row.id.equals(id))).getSingleOrNull();
 

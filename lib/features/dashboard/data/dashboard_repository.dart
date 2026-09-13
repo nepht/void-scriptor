@@ -8,19 +8,22 @@ class DashboardRepository {
     ProjectDatabase database,
     String projectId,
   ) async {
-    final assetsFuture = database.assetDao.getAllAssets();
+    // vs-hunt-20260913-dashboard DB-BUG-01: asset count is computed in SQL
+    // via assetDao.countByProject instead of loading the whole assets table
+    // and filtering client-side.
     final charactersFuture = database.characterDao.getAllCharacters(projectId);
     final wardrobesFuture = database.wardrobeDao.getWardrobes(projectId);
     final weaponsFuture = database.weaponDao.getWeapons(projectId);
     final environmentsFuture = database.environmentDao.getEnvironments(
       projectId,
     );
+    final assetsFuture = database.assetDao.countByProject(projectId);
 
-    final assets = await assetsFuture;
     final characters = await charactersFuture;
     final wardrobes = await wardrobesFuture;
     final weapons = await weaponsFuture;
     final environments = await environmentsFuture;
+    final assetCount = await assetsFuture;
 
     return DashboardSnapshot(
       projects: 1,
@@ -28,7 +31,7 @@ class DashboardRepository {
       wardrobes: wardrobes.length,
       weapons: weapons.length,
       environments: environments.length,
-      assets: assets.where((asset) => asset.projectId == projectId).length,
+      assets: assetCount,
     );
   }
 }

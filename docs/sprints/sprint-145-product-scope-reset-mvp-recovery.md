@@ -1,3 +1,37 @@
+### 2026-09-13 - nephthys (cron run279): INS-BUG-01 DIPERBAIKI — nama karakter di InspectorBody, antrean inspector tersisa 02/03/06
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk ef7e4cd; tree
+  bersih kecuali artefak untracked lama (tak disentuh). Tidak ada proses
+  flutter/dart lain. Kanban: semua kartu done, nol running. Single-writer
+  RELEASED_TO_HERMES diakui kembali (re-acknowledgement).
+- Seleksi: next action run278 eksplisit = slice antrean INS-BUG-01
+  (CharacterInspector meneruskan UUID mentah ke InspectorBody — melanggar
+  kontrak loadout UX 'never render raw UUID'; verdict on-disk Referee = otoritas).
+- TDD: RED test baru character_inspector_display_name_test.dart — test 1
+  'Qowner' Expected 1 / Actual 0 (header saat itu token 'char-1'), test 2
+  'Unknown asset' absent. Pitfall harness: membungkus CharacterInspector
+  (ListView) dalam SingleChildScrollView = nested unbounded viewport; fix =
+  SizedBox saja. GREEN: characterInspectorNameProvider
+  (FutureProvider.family, assetDao.getById lewat session aktif), fallback
+  'Unknown asset' — bukan id mentah. Rekonsiliasi test karakter-switch lama
+  (intent-preserving): 'Byte' kini legal sebagai header B; invarian baris
+  support basi di-scope via find.descendant ke SupportRelationshipSection,
+  assertion aslinya (baris A tak boleh muncul/terhapus) utuh.
+- Gates: fokus 2/2 PASS; regression test/features/inspector 29 PASS;
+  test/features/relations 12 PASS; dart analyze lib+test inspector No issues;
+  dart format owned 0 changed (pas reformat karakter_inspector); diff-check
+  exit 0; flutter build windows --debug PASS 27,8s. Native UNVERIFIABLE
+  (cron; deterministik di widget test). Commit scoped e379273 (3 path).
+- Antrean inspector tersisa: INS-BUG-02/03 (loading/error state AsyncValue
+  Wardrobe/Weapon inspector — fallback UUID saat loading masih REAL BUG) dan
+  INS-BUG-06 (guard _load setState; run278 hanya menutup 04). Next: slice
+  INS-BUG-02+03 sekali jalan (pola identical), lalu 06.
+- Status: 145.27 tetap PARTIAL; stream corrective_core_mvp; push menunggu
+  Choi (divergensi master ef7e4cd..e379273 vs origin f3c3bc4 masih ranah
+  sesi interaktif — pola identik run278, jangan pull di tree berisi WIP).
+
+
 ### 2026-09-13 - nephthys (cron run278): hunt features/inspector (9 file) + INS-BUG-04 (Critical) DIPERBAIKI
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

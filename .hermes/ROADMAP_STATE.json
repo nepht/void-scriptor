@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run278 (cron): hunt vs-hunt-20260913-inspector (9 file, 1423 LOC, HEAD aac5948) - rantai 3-tahap LULUS: Hunter 6 temuan (31) -> Skeptic 5 ACCEPT/1 DISPROVE -> Referee 5 REAL/1 dismissed (on-disk referee_report_inspector.md = otoritas). INS-BUG-04 (kritis per Referee; verdict induk Medium): RelationSection._addRelation menulis lewat session basi setelah dialog await menembus switch project (kelas hunt-run157 BUG-04; guard identical database ala _isCurrentRepository). RED reproduksi exact (Expected empty / Actual [AssetRelation]) -> GREEN. Jalur delete terbukti fail-closed (klaim Referee overstated, dikoreksi induk). Gates: fokus 1/1; inspector 27 PASS; relations 12 PASS; analyze No issues; format 0 changed; diff-check 0; build windows debug PASS 29,0s; guard PASS. Antrean INS-BUG-01/02/03/06 (nama karakter UUID di InspectorBody; loading/error AsyncValue wardrobe/weapon; guard _load). Divergensi master b617086 vs origin (d15ce46 wave-2 run277) menunggu rekon silang sesi interaktif/Choi - BUKAN milik cron. Pointer 145.27 tetap PARTIAL; push menunggu Choi. Next: INS-BUG-01 slice ATAU selesaikan divergensi.",
+  "last_verified_step": "run279 (cron): INS-BUG-01 closed via e379273 — CharacterInspector kini resolv nama karakter (characterInspectorNameProvider/assetDao.getById, fallback 'Unknown asset', kontrak loadout UX no-raw-UUID). RED->GREEN fokus 2/2; inspector 29 PASS; relations 12 PASS; analyze No issues; format 0 changed; diff-check 0; build windows debug PASS 27,8s; guard PASS. Rekonsiliasi intent-preserving test karakter-switch lama (find.descendant scope SupportRelationshipSection). Antrean: INS-BUG-02/03 (loading/error AsyncValue Wardrobe/Weapon) lalu 06 (guard _load). Divergensi master e379273 vs origin f3c3bc4 tetap ranah interaktif/Choi; push menunggu Choi. Pointer 145.27 tetap PARTIAL. Next: slice INS-BUG-02+03.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T13:55:00+07:00",
-  "updated_by": "nephthys-cron-run276",
+  "updated_at": "2026-09-13T15:55:00+07:00",
+  "updated_by": "nephthys-cron-run279",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

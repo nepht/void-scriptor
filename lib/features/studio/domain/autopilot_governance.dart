@@ -5,8 +5,13 @@ class AutopilotControl {
   bool isRunning = false;
   void start() => isRunning = true;
   void pause() => isRunning = false;
-  bool canExecute(String command) =>
-      isRunning && mode != AutopilotMode.dryRun && command != 'delete';
+  // vs-hunt-20260913-studio STU-BUG-02: the destructive-command guard must
+  // normalize case and surrounding whitespace so 'DELETE' / ' Delete '
+  // cannot bypass it; the raw string compare used to let them through.
+  bool canExecute(String command) {
+    final normalized = command.trim().toLowerCase();
+    return isRunning && mode != AutopilotMode.dryRun && normalized != 'delete';
+  }
 }
 
 enum ApprovalStatus { pending, approved, rejected }

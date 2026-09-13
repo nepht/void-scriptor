@@ -1,3 +1,47 @@
+### 2026-09-13 - nephthys (cron run289): hunt region features/studio + STU-BUG-02 CRITICAL diperbaiki TDD (vs-hunt-20260913-studio)
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk 5780c6b; tree
+  bersih (10 untracked artefak lama dipreservasi); nol proses flutter/dart/
+  void_scriptor; conflict markers nihil. Single-writer RELEASED_TO_HERMES diakui
+  kembali. Tengah-run sibling interaktif mendarat df2656a (ledger+state saja,
+  wilayah disjunk dengan slice ini) — dipreservasi, bukan direview ulang.
+- Seleksi: antrean bug hunt NOL per run288; otorisasi hunt berulang -> region
+  BARU lib/features/studio (13 file non-generated, 698 LOC; salah satu
+  next_unscanned_regions run282/283; hanya dirujuk app_router via
+  StudioCommandCenter demo-registry). Scope+sha256+HEAD:
+  docs/evidence/vs-hunt-20260913-studio/scope_hashes.txt.
+- Rantai 3-TAHAP delegate LULUS penuh (pin gemini flash-lite era sehat):
+  Hunter 8 temuan skor 38 -> Skeptic 6 ACCEPT / 2 DISPROVE -> Referee on-disk
+  = otoritas: 6 REAL (Critical 1 / Medium 2 / Low 3), tanpa dismissal
+  tambahan. STU-BUG-04 + STU-BUG-05 NOT A BUG (heuristic injection filter dan
+  penolakan tipe chat = desain dipin unit test) — JANGAN di-re-fix.
+- Verifikasi reachability parent independen: grep luar-region = nol caller
+  produksi untuk keenam kelas terdampak; rute studio memakai DemoStudio.
+  Semua temuan domain-only — tidak ada risiko data pengguna nyata; severity
+  tetap divisih Referee sebagai kontrak API publik domain.
+- Slice: STU-BUG-02 (satu-satunya Critical) via TDD. RED
+  autopilot_delete_guard_normalization_test.dart gagal tepat pada mekanisme
+  klaim ('DELETE' Expected false Actual true) -> GREEN: canExecute menormalkan
+  trim().toLowerCase() sebelum membandingkan 'delete'; test lama
+  canExecute('delete')==false tetap hijau (intent dipertahankan).
+  ANTREAN terbuka run berikutnya: STU-BUG-01 (Medium firstWhere tanpa orElse
+  production_pipeline.dart:41/44/49), STU-BUG-03 (Medium map overwrite lead),
+  STU-BUG-06/07/08 (Low).
+- Gates aktual: fokus studio region 33 PASS / 0 FAIL; dart analyze scoped
+  No issues; flutter analyze --no-pub full repo No issues (14,5s); dart format
+  gate 0 changed; git diff --check exit 0; flutter build windows --debug
+  --no-pub PASS 21,7s; FULL SUITE `+4354 ~1 All other tests passed!` exit 0
+  (satu-satunya skip = platform-skip terdokumentasi). Native UNVERIFIABLE
+  (cron; kelas tak ter-mount di UI nyata). Catatan CI: sibling run288
+  melaporkan Actions hidup pasca-billing — push entri ini tersertifikasi CI.
+- Status: 145.27 tetap PARTIAL; pointer tidak bergerak; stream
+  corrective_core_mvp. Next action: tutup antrean STU-BUG-01/03 (Medium,
+  domain-only) ATAU region hunt features/platform (20 file, 1317 baris, pas
+  batas cap) sesuai otorisasi; keputusan Choi yang tercatat tetap menunggu
+  (branch protection + dependabot policy, routing REF-BUG-2/WLD-PARENT,
+  UI export/import character, 145.43-50).
+
 ### 2026-09-13 - nephthys (interaktif run288): CI GitHub HIDUP lagi — blokir billing RESMI selesai (Choi)
 - Choi membuka billing. Bukti empiris via API (token git credential fill, nilai tak ditampilkan): rerun-failed-jobs di tip origin 5780c6b diterima 201; Multiplatform CI job 'Build Windows debug' + 'Build macOS and iOS simulator' = SUCCESS attempt-2; Security/Gitleaks = SUCCESS attempt-2. Job 'Analyze, test, Linux, Web, Android' masih in_progress saat entri ditulis (poller background; lokal full-suite sudah +4345 ~1 hijau sebagai ekspektasi). Annotation lama 'payments have failed' = artefak attempt sebelum billing; attempt baru membuktikan job STARTED (punya steps berjalan).
 - Konsekuensi yang TERBUKA (butuh keputusan/izin Choi, jangan diam-diam): (1) pasang branch protection master = required status checks Multiplatform CI + Security sebelum merge dependabot (API repos/{o}/{r}/branches/{b}/protection — menulis aturan repo = perubahan lintas-agen, butuh kata Choi); (2) atur dependabot: reopen=true + minimum-updates-to-keep + grup mayor, atau skip mayor sampai proyek migrasi riverpod 3 dijadwalkan; (3) sertifikasi rantai: push berikutnya otomatis tersertifikasi CI hidup.

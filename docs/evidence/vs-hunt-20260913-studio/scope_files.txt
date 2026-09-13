@@ -1,0 +1,13 @@
+lib/features/studio/domain/agent_memory_resilience.dart
+lib/features/studio/domain/agent_selection.dart
+lib/features/studio/domain/autopilot_governance.dart
+lib/features/studio/domain/delegation_budget.dart
+lib/features/studio/domain/operations_safety.dart
+lib/features/studio/domain/organization_agent.dart
+lib/features/studio/domain/production_pipeline.dart
+lib/features/studio/domain/review_governance.dart
+lib/features/studio/domain/studio_closeout_contract.dart
+lib/features/studio/domain/studio_communication.dart
+lib/features/studio/domain/studio_entity.dart
+lib/features/studio/domain/studio_workspace.dart
+lib/features/studio/presentation/studio_command_center.dart

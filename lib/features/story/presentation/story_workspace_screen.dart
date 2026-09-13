@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -301,7 +302,17 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     _teardownLoreMenu();
     // Step 145.30: flush draf yang masih menunggu debounce (no silent loss)
     // alih-alih hanya membatalkan timer.
-    _autosave.dispose();
+    // vs-hunt-20260912-autosave BUG-17 (kontrak run197 BUG-4 ditegakkan di
+    // produksi): journal milik layar ini ditutup SETELAH flush tuntas, agar
+    // acknowledge flush masih sah (close lebih dulu = ack StateError) dan
+    // tidak ada lagi mutasi direktori journal dari instance yang sudah
+    // ditinggalkan. Kegagalan drain tidak boleh menggagalkan dispose.
+    unawaited(
+      _autosave
+          .dispose()
+          .then<void>((_) {}, onError: (Object _) {})
+          .then((_) => _draftJournal?.close()),
+    );
     _draft.dispose();
     super.dispose();
   }

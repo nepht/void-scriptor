@@ -59,7 +59,11 @@ class ModelRouter {
   final List<String> _models;
   String? select({required bool preferLocal}) {
     if (_models.isEmpty) return null;
-    if (preferLocal && _models.contains('local')) return 'local';
+    if (preferLocal) {
+      for (final model in _models) {
+        if (model.toLowerCase().contains('local')) return model;
+      }
+    }
     return _models.first;
   }
 }

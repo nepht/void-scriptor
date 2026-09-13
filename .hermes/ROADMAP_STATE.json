@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run295 (cron): hunt features/platform SELESAI (vs-hunt-20260914-platform, referee on-disk = otoritas: 6 REAL / 0 dismissed; 3 Medium PLAT-BUG-01/02/03 + 3 Low 04/05/06) + PLAT-BUG-01 CLOSED TDD - HealthCheck.allPassed fail-closed (checks.isNotEmpty && every; vacuous-true Map kosong bukan 'sehat'). RED Expected false/Actual true tepat mekanisme; focused 10 PASS; region platform 54 PASS; analyze No issues; format 0 changed; diff-check 0; build windows debug PASS 20,3s; FULL SUITE +4373 ~1 exit 0 (+3 slice ini, delta cocok vs baseline run293 +4370). Commit 87788d4 scoped 8 path, TIDAK di-push (izin Choi; ls-remote: origin=b82ac60, ahead 1). Sibling b82ac60 (run294 CI-sertification) dipreservasi; worker yatim vs_w3_c temp dibiarkan utuh (non-blocking, CPU 0). 145.34 tidak diulang (CLOSED run227). ANTREAN terbuka: PLAT-BUG-03 (butuh keputusan tujuan navigasi About; AboutScreen nol rute), PLAT-BUG-02/05/06 (Medium/Low dormant), STU-BUG-03 + STU-BUG-06 (keputusan Choi). Region platform terscan; region hunt berikutnya belum diantrikan. Keputusan Choi menunggu: routing REF-BUG-2/WLD-PARENT, UI export/import character, 145.43-50, lab hardware 145.42, pemetaan scope 145.27, STU-BUG-03/06, navigasi PLAT-BUG-03. Pointer 145.27 PARTIAL; stream corrective_core_mvp.",
+  "last_verified_step": "run296 (cron): PLAT-BUG-02 (Medium) CLOSED TDD - ModuleBoundary.hasCircularDependency kini DFS transitive penuh (dulu hanya back-edge 2-node; siklus A->B->C->A + self-dep lolos). RED tepat mekanisme (3-node Expected true/Actual false); 6 test baru; region platform 60 PASS; analyze No issues; format 0 changed; diff-check 0; build windows debug PASS 19,7s; FULL SUITE +4379 ~1 exit 0 (+6 slice ini, delta cocok baseline run295 +4373). Commit 21ba2ea scoped 2 path, TIDAK di-push. ANTREAN PLAT: PLAT-BUG-03 (keputusan Choi navigasi About), PLAT-BUG-04/05/06 (Low dormant). 145.27 tetap PARTIAL; stream corrective_core_mvp. Keputusan Choi menunggu: routing REF-BUG-2/WLD-PARENT, UI export/import character, 145.43-50, lab hardware 145.42, pemetaan scope 145.27, STU-BUG-03/06, PLAT-BUG-03, wrangler login.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-14",
-  "updated_by": "nephthys cron run295",
+  "updated_by": "nephthys cron run296",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -220,8 +220,8 @@
     "evidence": "RED dashboard_create_character_no_session_test Actual '/studio' -> GREEN; fokus 1 PASS; test/features/dashboard 13 PASS; shell+routing 69 PASS; analyze No issues; build windows debug 64,5s; guard PASS",
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
-  "last_worker_run": "run294",
-  "note": "run294: CI SERTIFIKASI PENUH 4/4 ALL_GREEN tip 22449b7 (5 root-cause era CI-mati terdan); branch protection = keputusan Choi berikutnya",
+  "last_worker_run": "run296",
+  "note": "run296: PLAT-BUG-02 closed (21ba2ea); queue PLAT tersisa 03 (keputusan Choi) + 04/05/06 Low dormant",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",
@@ -231,9 +231,9 @@
     "next_unscanned_regions": "features/platform (20 file, 1317 baris)"
   },
   "platform_hunt_2026_09_14_run295": {
-    "status": "hunt COMPLETE + PLAT-BUG-01 fixed; QUEUE: PLAT-BUG-03 Medium (butuh keputusan navigasi Choi) + 02 Medium dormant + 05/06 Low dormant",
+    "status": "hunt COMPLETE + PLAT-BUG-01/02 fixed; QUEUE: PLAT-BUG-03 Medium (butuh keputusan navigasi Choi) + 04/05/06 Low dormant",
     "hunt": "docs/evidence/vs-hunt-20260914-platform/ (20 file scope lib/features/platform, sha256+HEAD a01d265, laporan on-disk referee_report_platform.md = otoritas 6 REAL / 0 dismissed)",
-    "confirmed": "01 Medium allPassed vacuous-true FIXED fail-closed (87788d4); 02 Medium cycle-check 2-node tanpa caller; 03 Medium AboutScreen 4 link tanpa onTap + nol rute (butuh keputusan tujuan); 04 Low inverted PluginApiVersion dormant (kontradiksi core/plugin versi canonical, nol caller); 05 Low sort tie-breaker; 06 Low divide-by-zero",
+    "confirmed": "01 Medium allPassed vacuous-true FIXED fail-closed (87788d4); 02 Medium cycle-check 2-node FIXED DFS transitive (21ba2ea run296); 03 Medium AboutScreen 4 link tanpa onTap + nol rute (butuh keputusan tujuan); 04 Low inverted PluginApiVersion dormant (kontradiksi core/plugin versi canonical, nol caller); 05 Low sort tie-breaker; 06 Low divide-by-zero",
     "dismissed": "none",
     "reachability": "AboutScreen/UpdateScreen/WelcomeScreen/KeyboardNav/OptionalTour: nol rute produksi (hanya ThemeSettingsScreen ter-route); domain getters tanpa caller UI",
     "next_unscanned_regions": "belum diantrikan - kandidat dari lib/features tanpa vs-hunt: cek daftar vs-hunt-* vs lib/features/*/ sebelum memilih"

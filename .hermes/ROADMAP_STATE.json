@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run285 (cron; renumber dari 284 — bentrok entri interaktif sibling 8b18581 ter-push tengah-run): DB-BUG-01 antrean dashboard DIPERBAIKI TDD — AssetDao.countByProject (selectOnly+count, pola countCharacterModes) dipakai DashboardRepository; full-table getAllAssets()+filter in-memory dibuang dari snapshot. RED compile-fail symbol -> GREEN. Gates: fokus 4, regresi dashboard+database 61 PASS 0 FAIL, analyze scoped No issues, format 0, diff-check 0, build windows debug PASS 48,8s, guard PASS post. Commit 8513fd3 (3 file scoped). Native GUI UNVERIFIABLE (cron). Sibling WIP tak dikenal terakumulasi saat run (ci/workflows, pubspec, character_mode refs, durable_draft_journal, storage_locations, 2 test deleted) — tak disentuh; audit dulu sebelum slice yang menumpang. Antrean dashboard tersisa: DB-BUG-07/08/04 (Low). Pointer 145.27 tetap PARTIAL; stream corrective_core_mvp; push: fix 8513fd3 sudah di origin+gitlab via recovery rantai sibling (8b18581 memuat 8513fd3); sisa lokal-only = ledger renumber ini. Next: antrean 07/08/04 ATAU keputusan Choi (routing REF-BUG-2/WLD-PARENT-01/02, UI export/import 145.35, push divergensi, lab hardware 145.42).",
+  "last_verified_step": "run286 (cron): DB-BUG-07 + DB-BUG-08 antrean dashboard DIPERBAIKI TDD. RED->GREEN di test/features/dashboard (statistics retry via ref.invalidate pola RecentProjects; auth error builder pesan tetap, tanpa raw $error dump). Bukti run ini: dashboard 14 PASS 0 FAIL; analyze scoped + full No issues; format 0; diff-check 0; build windows debug PASS 26,6s; guard PASS pre+post. Commit f7c835d (4 file scoped). Native GUI UNVERIFIABLE (cron). Forensik: flutter test yatim 19:59 dari wave-3 interaktif (CPU flat, orkestrator mati, worktree Temp/vs_w3_c) - bukan eksekutor aktif, tidak disentuh. Pitfall: find.textContaining findSubString dihapus di Flutter ini (compile error). Antrean dashboard tersisa: DB-BUG-04 (RecentAssets hardcoded - wire/hapus = keputusan kontrak data). Pointer 145.27 tetap PARTIAL; stream corrective_core_mvp. Push: tidak dilakukan dari run ini tanpa need; keputusan Choi (routing REF-BUG-2/WLD-PARENT-01/02, UI export/import 145.35, migrasi Riverpod 3, dependabot policy, lab hardware 145.42).",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-14T00:05:00+07:00",
-  "updated_by": "cron-run285",
+  "updated_at": "2026-09-13T22:55:00+07:00",
+  "updated_by": "cron-run286",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -213,7 +213,7 @@
     "next_unscanned_regions": "features/settings shell (cek overlap run260) atau domain world/advanced non-routed (keputusan routing Choi dulu)"
   },
   "dashboard_hunt_2026_09_13_run283": {
-    "status": "hunt COMPLETE (rantai 3-tahap delegate penuh LULUS, pin gemini flash-lite sehat) + DB-BUG-03 fixed; QUEUE: DB-BUG-01/04/07/08",
+    "status": "hunt COMPLETE + DB-BUG-03 fixed (run283-era), DB-BUG-01 fixed (run285 8513fd3), DB-BUG-07 + DB-BUG-08 fixed (run286 f7c835d); QUEUE tersisa: DB-BUG-04 (Low)",
     "hunt": "docs/evidence/vs-hunt-20260913-dashboard/ (scope.json sha256+HEAD 4027dcd, hunter/skeptic/referee laporan *_run283.md)",
     "confirmed": "DB-BUG-01 Medium getAllAssets in-memory scan di DashboardRepository; DB-BUG-03 Medium session-null Create Character -> /studio shell mati (FIXED, navigasi ke /projects per kontrak shell); DB-BUG-04 Low RecentAssets hardcoded = DEAD CODE nol importer (hapus/rewire terpisah); DB-BUG-07 Low statistik error tanpa retry; DB-BUG-08 Low raw $error auth UI",
     "dismissed": "BUG-02 (Riverpod FutureProvider auto AsyncValue.error), BUG-05 (stub donasi jujur = by-design deferred payment), BUG-06 (sort list kecil di build = negligible), BUG-09 (errorBuilder thumbnail menangani file error)",

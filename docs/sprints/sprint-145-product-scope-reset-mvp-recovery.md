@@ -1,3 +1,47 @@
+### 2026-09-13 - nephthys (cron run274): hunt region references LULUS 3-TAHAP penuh + REF-BUG-1 fixed bf05986
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk da2df61 (run273
+  interaktif). Conflict markers nihil; flutter_tester/void_scriptor nihil.
+  Single-writer RELEASED_TO_HERMES diakui kembali. Region sibling journal
+  lifecycle (mtime 08:41-08:52, 4 file character/story dirty + 2 test untracked)
+  DIPRESERVASI TANPA SENTUH — idle >3 jam dari mulai run, tetap bukan milik cron.
+- Seleksi: otorisasi hunt berulang; region BARU lib/features/references
+  (10 file non-generated, 1963 LOC) kandidat eksplisit dari run271
+  (next_unscanned_regions). Scope+sha256+HEAD di
+  docs/evidence/vs-hunt-20260913-references/.
+- Rantai 3-TAHAP LULUS penuh (kedua kali pasca-preseden run262; pin gemini
+  flash-lite sehat era ini): Hunter 3 temuan (skor 11) -> Skeptic ACCEPT 3/3 ->
+  Referee 3 REAL / 0 dismissed (Medium 2, Low 1). Verdict on-disk = otoritas.
+- REF-BUG-1 (Medium, data-safety/UX): replaceFile menyalin target ke snapshot
+  tanpa cek eksistensi -> FileSystemException tak tertangani bila file referensi
+  hilang dari disk (deletion eksternal/pindah drive), referensi macet permanen.
+  Referee menemukan nuansa tambahan: saveVersion berjalan SEBELUM source.copy.
+- TDD: RED reproduksi mekanismenya persis (FileSystemException di
+  reference_repository.dart:397 via harness Drift nyata + file disimpan lalu
+  dihapus) -> GREEN: snapshot+saveVersion hanya saat target ada, source.copy
+  mendahului saveVersion (riwayat tak tercatat bila salin gagal); test kedua
+  menjaga jalur snapshot-normal. Fokus 2/2; regression test/features/references
+  21 PASS / 0 FAIL; flutter analyze --no-pub No issues; dart format gate
+  0 changed; git diff --check exit 0; flutter build windows --debug exit 0
+  (33,1s). Native UNVERIFIABLE (cron; perubahan jalur error-level dibuktikan
+  di test integrasi Drift nyata). Commit scoped bf05986 (7 path eksplisit).
+- REF-BUG-2 (Medium per Referee, TIDAK diperbaiki run ini): SwitchListTile
+  onChanged:null di ReferenceManagementScreen — verifikasi independen induk:
+  layar TIDAK dirutekan (grep pemanggil = nol; proyek hanya merutekan
+  ProjectReferenceLibraryScreen). Non-production-reachable; fix butuh metode
+  toggle-enabled repository yang belum ada = slice tersendiri + keputusan
+  penautan rute. Dicatat sebagai gap, bukan closure.
+- REF-BUG-3 (Low): ReferenceImportDialog._submit diam tanpa feedback saat
+  name/path kosong; reachable via ReferenceLibraryScreen:174. Antrean slice
+  berikutnya region ini ATAU kandidat hunt baru features/inspector (9 file).
+- Status: 145.27 tetap PARTIAL (pointer tidak bergerak; guard tetap
+  recommended 145.27). Tidak push (keputusan Choi per standing rule).
+- Next action: run berikutnya (1) ACCEPT review region journal lifecycle bila
+  sibling sudah commit (2 file test untracked + 4 dirty sejak 08:41-08:52);
+  (2) REF-BUG-3 fix kecil TDD atau hunt features/inspector; (3) push menunggu
+  Choi.
+
 ### 2026-09-13 - nephthys (interaktif run273): PILOT PARALEL-FIX 2 KANBAN WORKER (cx/gpt-6-astra) - overflow run249 + WLD-PARENT-01/02 CLOSED
 
 - Otorisasi: Choi "coba terapkan usulanmu" (usulan: pilot 2 worker kanban + 1 integrator).

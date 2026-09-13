@@ -12,6 +12,13 @@ updates:
       - dependencies
     commit-message:
       prefix: deps
+    ignore:
+      # Insiden 13 Sep (ledger run284): bump mayor riverpod 2->3 ter-merge tanpa
+      # CI lulus (billing mati) -> master merah 182 error. Riverpod 3 butuh
+      # proyek migrasi terjadwal (14 breaking API tersisa), jadi blokir PR
+      # mayor-nya sampai proyek itu selesai.
+      - dependency-name: flutter_riverpod
+        versions: '>=3.0.0'
 
   - package-ecosystem: github-actions
     directory: /

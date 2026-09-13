@@ -1,3 +1,34 @@
+### 2026-09-13 - nephthys (cron run269): antrean vs-hunt-20260912-autosave slice restore-coordination (BUG-5 Critical + BUG-4/8/10/9/19/20) GREEN
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk c380402 (run268;
+  ahead 4 - push tetap keputusan Choi). Conflict markers nihil; proses
+  flutter/void_scriptor nihil. Single-writer RELEASED_TO_HERMES diakui kembali.
+  Sibling dirty di-resepsi: region autosave story idle sejak 01:10 (>6,5 jam)
+  = WIP penulis sesi lampau, TIDAK ada eksekutor aktif; region character
+  (3 file diff format-only, mtime semalam) DIPRESERVASI TANPA SENTUH.
+- Seleksi slice: antrean HANDOFF_CRON_V4 vs-hunt-20260912-autosave. WIP pada
+  working tree ternyata menutup BUG-4/5/8/9/10/19/20 (penomoran referee
+  on-disk) minus test perilaku untuk jalur baru aroundExternalDraftWrite
+  (grep: nol referensi di test/). Deliverable run = audit diff + test
+  koordinasi restore<->autosave + dua fix analyzer scoped + commit.
+- TDD/bukti: 4 test baru durable_autosave_restore_coordination_test
+  (flush-before-restore urutan ketat; suntingan-saat-write bertahan; flush
+  gagal JANGAN ack jurnal - entri recoverable; scene lain tak tersentuh)
+  -> 14/14 PASS gabung harness sibling (empty_ack + coordinator);
+  regresi test/features/story 203 PASS; test/features/project_resilience
+  219 PASS 1 SKIP; flutter analyze --no-pub: No issues found (perbaiki
+  prefer_const story_dao + unused import test baru); format gate 7 file
+  owned exit 0; git diff --check exit 0; roadmap_guard PASS; commit scoped
+  8 file 6a2c41e (+442/-36). Build windows tidak dijalankan (risk murni
+  aplikasi-layer, tidak menyentuh shell/native surface).
+- Sisa antrean autosave (per HANDOFF): B-block dispose/retention sebagian
+  masuk via WIP ini - perlu rekonsiliasi item-per-item vs referee on-disk;
+  C-block fsync/close-lifecycle; native journey restore di Windows sesi Choi.
+  Status 145.27 tetap PARTIAL (pointer tidak bergeser).
+- Next action: jalankan satu slice hunt region belum-dipindai ATAU tutup
+  item B/C tersisa dengan referensi bug per-baris; push tetap menunggu Choi.
+
 ### 2026-09-13 - nephthys (cron run268): hunt region projects (rantai 3-tahap LULUS) + PRJ-BUG-02 localPath GREEN
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T07:05:00+07:00",
-  "updated_by": "nephthys-cron-run267",
+  "updated_at": "2026-09-13T08:05:00+07:00",
+  "updated_by": "nephthys-cron-run269",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -141,9 +141,10 @@
     "next_action": "ulangi Hunter->Skeptic->Referee saat kuota delegation pulih ATAU Choi cabut pin delegation.model; JANGAN tandai scope sebagai clean",
     "run248_note": "run248 = NO-OP mutasi; queue vs-hunt-20260912n tetap kosong; push backlog f366a7a..b2ca031 terverifikasi dual-remote (ahead 0)",
     "run253_note": "sibling hunt masih hidup di working tree (hunter report 22:04, skeptic/referee instructions 22:06, referee report BELUM ada); cron run253 tidak menyentuh scope/region karakter sibling",
-    "queue_A3_status": "run260 check: BUG-4/5 MASIH dirty milik penulis (coordinator +47, story_dao 01:09, mtime 00:39-01:11; HEAD d4a6dbf) - jangan tulis ulang; run berikutnya: bila sudah commit, jalankan ACCEPT review (focused coordinator+repository tests, regresi test/features/story) baru lanjut antrean C. Item C tersisa sudah terjawab audit HEAD (run258).",
+    "queue_A3_status": "run269 ACCEPT: WIP penulis idle sejak 01:10 diresepsi + diuji (bukan ditulis ulang) - BUG-4/5/8/9/10/19/20 referee on-disk masuk via commit 6a2c41e; 4 test baru durable_autosave_restore_coordination_test PASS; regresi story 203 PASS, project_resilience 219 PASS/1 SKIP, analyzer No issues.",
     "run258_note": "Gate format CI merah utk working tree (story_repository_impl.dart dirty belum di-format). Author wajib 'dart format' sebelum commit agar 'Verify formatting' tidak menjatuhkan seluruh push (pola run252).",
-    "run260_note": "Delegation pin gemini/gemini-3.5-flash-lite KUOTA HABIS (429 dua stage beruntun pada hunt shell/settings; Hunter stage pertama sempat lulus). Butuh Choi: ganti/cabut pin delegation. Evidence: docs/evidence/vs-hunt-20260913-shell-settings/ (verdict self-audit: BUG-02 push-vs-go kandidat slice berikutnya; BUG-08 not-production)."
+    "run260_note": "Delegation pin gemini/gemini-3.5-flash-lite KUOTA HABIS (429 dua stage beruntun pada hunt shell/settings; Hunter stage pertama sempat lulus). Butuh Choi: ganti/cabut pin delegation. Evidence: docs/evidence/vs-hunt-20260913-shell-settings/ (verdict self-audit: BUG-02 push-vs-go kandidat slice berikutnya; BUG-08 not-production).",
+    "run269_note": "Sisa antrean: rekonsiliasi item B-block vs referee on-disk (dispose/retention sebagian sudah masuk WIP), C-block fsync documented-limitation + close-lifecycle, native journey restore (sesi Choi). Pointer 145.27 tetap PARTIAL, stream tidak berubah."
   },
   "native_restore_journey_run253": {
     "status": "VERIFIED (cron run259 2026-09-13 02:35 WIB - sesi desktop hidup, computer_use foreground delivery OK)",

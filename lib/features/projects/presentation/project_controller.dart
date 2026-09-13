@@ -34,7 +34,9 @@ class ProjectController extends AsyncNotifier<List<ProjectModel>> {
 
     try {
       final package = await ProjectPackageService(
-        rootDirectory: await paths.root(),
+        rootDirectory: localPath.isEmpty
+            ? await paths.root()
+            : Directory(localPath),
       ).create(name: name, description: description);
       createdRoot = package.root;
       project = ProjectModel(

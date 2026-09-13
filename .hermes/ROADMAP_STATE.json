@@ -220,8 +220,8 @@
     "evidence": "RED dashboard_create_character_no_session_test Actual '/studio' -> GREEN; fokus 1 PASS; test/features/dashboard 13 PASS; shell+routing 69 PASS; analyze No issues; build windows debug 64,5s; guard PASS",
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
-  "last_worker_run": "run288",
-  "note": "run288 CI hidup: Windows/macOS/Gitleaks SUCCESS attempt-2 di 5780c6b; big job masih jalan; usulan: branch protection + kebijakan dependabot butuh izin Choi",
+  "last_worker_run": "run291",
+  "note": "run291: golden Windows-vs-Linux 24.14% = satu-satunya CI fail; dipisah+skip non-Windows (7e203a8); run besar 4319/1/40; sertifikasi tip menunggu poller",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE (rantai 3-tahap delegate penuh LULUS) + STU-BUG-02 fixed; QUEUE: STU-BUG-01/03 Medium + 06/07/08 Low (semua domain-only)",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",

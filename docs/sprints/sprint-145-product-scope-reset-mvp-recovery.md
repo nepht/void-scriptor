@@ -1,3 +1,9 @@
+### 2026-09-14 - nephthys (interaktif run291): root-cause CI tip failure = golden pixel Windows-vs-Linux; fix 7e203a8
+- Run besar pertama yang benar-benar BERJALAN penuh sejak billing hidup: 4319 pass / 1 fail / 40 skip di 66d4cad. Fail = test/features/authentication/login_screen_test.dart matchesGoldenFile goldens/login_desktop.png 'Pixel test failed, 24.14%' — baseline golden dilahirkan di Windows (46d7d22, cron 12 Sep), CI Linux tak pernah menjalankannya selama era billing-mati. Bukan regresi kode: verifikasi lokal Windows +2 All tests passed, versi Flutter CI identik (3.44.9).
+- FIX 7e203a8: test validasi credential dipisahkan dari golden (perilaku tetap dijaga DI SEMUA platform), golden jadi test tersendiri skip: !Platform.isWindows dengan komentar preseden per-platform + perintah regenerasi sadar (--update-goldens). Satu-satunya golden di repo; alternatif (regenerate di Linux / hardware-golden) butuh keputusan Choi.
+- Catatan operasional: push ini juga men-trigger run CI resmi di tip; Security/Windows/macOS sudah terbukti success di push-event sebelumnya. Ledger+state entri ini scoped; poller sertifikasi attached.
+- Next action: konfirmasi CI tip HIJAU dari notifikasi poller -> rantai resmi tersertifikasi CI nyata pertama dalam berbulan-bulan; tawarkan Choi opsi pagar branch protection memakai check yang sudah terbukti itu.
+
 ### 2026-09-14 - nephthys (cron run290): STU-BUG-01 (Medium) ditutup TDD — exception bertipe lookup task hilang (vs-hunt-20260913-studio)
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

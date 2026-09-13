@@ -1,3 +1,62 @@
+### 2026-09-13 - nephthys (cron run282): hunt sore region projects (rantai 3-tahap LULUS) + PRJ-run282 BUG-1/BUG-2 DIPERBAIKI TDD; insiden tabrakan direktori bukti pulih penuh
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk 8789d4c; tree
+  bersih kecuali untracked lama (tak disentuh). Nol proses flutter/dart/
+  void_scriptor. Single-writer RELEASED_TO_HERMES diakui kembali.
+- Seleksi: antrean run281 habis untuk inspector/references; sisa terbuka =
+  keputusan Choi (REF-BUG-2 routing, WLD-PARENT-01/02, UI export/import) +
+  kasus hardware-bound 145.42 (power_loss/device_validation — butuh lab,
+  UNVERIFIABLE aman di cron) + region belum di-hunt. Otorisasi bug-hunt
+  berulang 2026-09-07: satu hunt region <=20 file. CATATAN PENTING: rantai
+  pagi run268 (HEAD 648d9bf, numbering PRJ-BUG-01..04) ternyata SUDAH
+  mengerjakan projects (PRJ-BUG-02 fix 0fa679b, ancestor HEAD) — ledger
+  run268 baru terbaca SETELAH rantai sore selesai. Rantai sore memakai
+  label sendiri vs-hunt-20260913-projects run282 BUG-1/BUG-2 (fork baru dari
+  HEAD 8789d4c, klaim berbeda: updateProject-drop + mode-equality re-open;
+  tidak tumpang tindih verdict pagi).
+- Insiden preservasi (jujur tercatat): `cp` laporan Hunter/Skeptic sore ke
+  docs/evidence/vs-hunt-20260913-projects/ sempat MENIMPA hunter_report.md /
+  skeptic_report.md milik rantai pagi. TERPULIHKAN penuh via
+  `git checkout HEAD -- <3 file>` sebelum commit apa pun; verifikasi
+  `git status` bersih untuk file itu; laporan sore disimpan berlabel
+  *_run282 + scope_files.txt. Lesson: direktori bukti antar-rantai WAJIB
+  berlabel run sebelum tulis.
+- Referee sore (otoritas on-disk referee_report_run282.md): Hunter 4 temuan;
+  BUG-1 Medium REAL (ProjectLocalDataSource.updateProject mode memory diam-
+  diam buang update id tak dikenal; registry mode upsert — kontrak asimetri);
+  BUG-2 Medium REAL (ProjectSessionController.openProject bandingkan mode
+  ekuialensi -> permintaan readOnly atas sesi readWrite hidup menutup DB di
+  bawah pemanggil aslinya); BUG-3 NOT A BUG (ProjectPackageService.create
+  bersih-bersih sendiri); BUG-4 NOT A BUG (Riverpod onDispose sinkron).
+- Eksekusi TDD: RED BUG-1 reproduced (getProject null pasca updateProject).
+  GREEN: upsert simetris mode memory. RED BUG-2 reproduced via identical()
+  gagal + PathNotFoundException re-open. GREEN: helper _modeSatisfies —
+  readWrite=superset readOnly (reuse, tanpa close); upgrade readOnly->
+  readWrite tetap re-open penuh (write lock tak bisa warisan). Fixture
+  teardown dirapikan (closeProject awaited sebelum hapus root — preseden
+  addTearDown LIFO sqlite).
+- Gates: fokus 8 PASS; region test/features/projects 29 PASS 0 FAIL; regresi
+  test/app/shell + test/features/project_resilience 267 PASS / 1 platform-
+  skip / 0 FAIL; dart analyze lib+test/projects No issues; dart format gate
+  exit 0; git diff --check exit 0; flutter build windows --debug PASS 32,2s.
+  Native GUI UNVERIFIABLE (cron tanpa desktop interaktif). Commit scoped
+  2e6d3b6 (8 file, nol path sibling).
+- Risiko: mode-superset membuat sesi readOnly tak pernah downgrade eksplisit;
+  aman karena readWrite tidak pernah melemahkan kontrak pembaca. Reachability
+  produksi dua jalur ini tipis hari ini (memory-fallback hanya dipakai test
+  shell-less; caller readOnly belum ada di lib/) — fix ini menutup contract
+  trap sebelum jalur produksi memakainya.
+- Status: pointer 145.27 tetap PARTIAL (acceptance worldbuilding-reduction
+  belum terpetakan penuh); stream corrective_core_mvp; push menunggu Choi
+  (local ahead 11 + origin master punya 7 commit CI/deps bumps — divergensi
+  tercatat, JANGAN pull di tree kotor; rekonsiliasi saat izin push).
+- Next action: (1) keputusan Choi: routing REF-BUG-2/WLD-PARENT-01/02 + UI
+  export/import karakter (145.35) + push/merge divergensi origin; (2) run
+  berikut eligible: hunt region settings shell ATAU lanjut peta acceptance
+  145.27; (3) lab hardware utk 145.42 power_loss/device_validation menunggu
+  Choi.
+
 ### 2026-09-13 - nephthys (cron run281): INS-BUG-06 DIVERIFIKASI TUTUP di HEAD — guard rekonsiliasi build() sudah self-heal; kontrak dikunci 2 regresi; antrean hunt inspector HABIS
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

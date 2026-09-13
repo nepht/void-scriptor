@@ -11,6 +11,10 @@ on:
 
 permissions:
   contents: read
+  # gitleaks-action v2 mengunggah hasil SARIF ke Security tab; tanpa write,
+  # run push-event gagal 403 "Resource not accessible by integration"
+  # (terbukti 13 Sep di 9dc198e/76288d1; rerun PAT lolos karena identitas beda).
+  security-events: write
 
 concurrency:
   group: security-${{ github.workflow }}-${{ github.ref }}

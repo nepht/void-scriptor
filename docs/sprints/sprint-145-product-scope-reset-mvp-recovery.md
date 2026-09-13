@@ -1,3 +1,31 @@
+### 2026-09-13 - nephthys (cron run275): REF-BUG-3 antrean run274 ditutup e3e5ca7
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk 822c0e0 (run274
+  closeout). Conflict markers nihil; flutter_tester/void_scriptor nihil.
+  Single-writer RELEASED_TO_HERMES diakui kembali. Region sibling journal
+  (4 file character/story M + 2 test untracked, mtime terakhir 08:52) tetap
+  idle >4 jam dan DIPRESERVASI TANPA SENTUH.
+- Seleksi: satu-satunya antrean konkret dari run274 = vs-hunt-20260913-references
+  REF-BUG-3 (Low, production-reachable via ReferenceLibraryScreen:174).
+  REF-BUG-2 tetap gap tercatat (screen tanpa rute; butuh metode toggle repo +
+  keputusan routing - bukan slice cron).
+- TDD: RED reproduksi mekanismenya persis (tap Import dengan field kosong ->
+  dialog beku, 0 label error) di test/features/references/
+  reference_library_screen_test.dart -> GREEN: _submit menyetel errorText
+  per-field ('Source file path is required.' / 'Name is required.') yang
+  pulih independen saat diisi; teks-first, bukan warna-saja (antislop-human).
+- Gates: fokus reference_library 4/4; regression test/features/references
+  22 PASS / 0 FAIL; dart analyze lib+test references No issues; dart format
+  gate 0 changed; git diff --check exit 0; flutter build windows --debug
+  exit 0 (27,8s). Native UNVERIFIABLE (perubahan feedback-level; dibuktikan
+  di widget test nyata, bukan build). Commit scoped e3e5ca7 (2 path eksplisit).
+- Sisa antrean references hunt: REF-BUG-2 (butuh keputusan routing + metode
+  toggle; dilaporkan ke pengguna). Pointer 145.27 tetap PARTIAL; tidak ada
+  pergerakan pointer. Next: region references hunt tertutup penuh untuk
+  temuan production-reachable; pilih gap acceptance 145.27/145.42 berikutnya
+  atau region hunt baru sesuai otorisasi berulang.
+
 ### 2026-09-13 - nephthys (cron run274): hunt region references LULUS 3-TAHAP penuh + REF-BUG-1 fixed bf05986
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

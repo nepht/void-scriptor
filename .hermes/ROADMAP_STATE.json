@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run274 vs-hunt-20260913-references RANTAI 3-TAHAP LULUS penuh (Hunter 3 temuan -> Skeptic ACCEPT 3/3 -> Referee 3 REAL/0 dismissed; Medium 2 Low 1). REF-BUG-1 (Medium) fixed bf05986: replaceFile snapshot+saveVersion hanya saat target ada, source.copy mendahului saveVersion; RED FileSystemException:397 -> GREEN fokus 2/2; references dir 21 PASS; analyze No issues; format 0; diff-check 0; build windows debug PASS 33.1s. REF-BUG-2 (lock switch onChanged:null) terverifikasi NON-PRODUCTION: ReferenceManagementScreen tanpa rute (caller nol) -> gap tercatat, fix butuh metode toggle repo + keputusan routing. REF-BUG-3 (Low, dialog import diam saat field kosong) production-reachable via ReferenceLibraryScreen:174 -> antrean. Pointer 145.27 tetap PARTIAL; sibling journal region direservasi.",
+  "last_verified_step": "run275 REF-BUG-3 (antrean run274) ditutup e3e5ca7: ReferenceImportDialog _submit kini menyetel errorText per-field utk path/nama kosong (teks-first, pulih saat diisi; RED dialog beku -> GREEN). Gate: references dir 22 PASS; analyze No issues; format 0; diff-check 0; build windows debug PASS 27.8s; guard PASS. Native UNVERIFIABLE (feedback-level, bukti widget test). REF-BUG-2 tetap gap tercatat (ReferenceManagementScreen tanpa rute; butuh metode toggle repo + keputusan routing Choi). Region references hunt tertutup utk temuan production-reachable. Pointer 145.27 tetap PARTIAL; sibling journal region (mtime 08:41-08:52) DIPRESERVASI tanpa sentuh.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T13:15:00+07:00",
-  "updated_by": "nephthys-cron-run274",
+  "updated_at": "2026-09-13T13:25:00+07:00",
+  "updated_by": "nephthys-cron-run275",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

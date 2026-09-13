@@ -17,7 +17,9 @@ void main() {
   );
 
   Future<String> writePortrait(WidgetTester tester, String name) async {
-    final dir = await tester.runAsync(() => Directory.systemTemp.createTemp('portrait-card-'));
+    final dir = await tester.runAsync(
+      () => Directory.systemTemp.createTemp('portrait-card-'),
+    );
     final file = File(p.join(dir!.path, name));
     await tester.runAsync(() => file.writeAsBytes(pngBytes));
     addTearDown(() => dir.delete(recursive: true));
@@ -48,7 +50,9 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets('renders the bound portrait file instead of the empty state', (tester) async {
+  testWidgets('renders the bound portrait file instead of the empty state', (
+    tester,
+  ) async {
     final path = await writePortrait(tester, 'portrait.png');
     await pumpCard(tester, imagePath: path);
 
@@ -67,10 +71,15 @@ void main() {
     await tester.pump();
     expect(calls, 1);
     // No snackbar guidance when a real action is wired.
-    expect(find.text('Portrait upload is available from the project asset folder.'), findsNothing);
+    expect(
+      find.text('Portrait upload is available from the project asset folder.'),
+      findsNothing,
+    );
   });
 
-  testWidgets('keeps the honest guidance snackbar without a bound action', (tester) async {
+  testWidgets('keeps the honest guidance snackbar without a bound action', (
+    tester,
+  ) async {
     await pumpCard(tester);
 
     await tester.tap(find.text('Add Portrait'));

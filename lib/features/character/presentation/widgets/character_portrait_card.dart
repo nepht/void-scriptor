@@ -6,11 +6,7 @@ import '../../../../design_system/widgets/void_card.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class CharacterPortraitCard extends StatelessWidget {
-  const CharacterPortraitCard({
-    super.key,
-    this.imagePath,
-    this.onAddPortrait,
-  });
+  const CharacterPortraitCard({super.key, this.imagePath, this.onAddPortrait});
   final String? imagePath;
 
   /// Bound production action that imports a local image into the project

@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run270 vs-hunt-20260913-world PARTIAL-rantai (Hunter delegate LULUS lalu 429; Skeptic delegate 429 total; Referee=audit induk) - 6/6 klaim Hunter DISPROVED (2 fabrikasi), 3 REAL Low; WLD-PARENT-03 kontrak StateError wordById TEPIK TypeError -> RED _TypeError terekam -> GREEN fokus 10/10; regresi world 99 PASS; analyzer No issues; commit 26f9c7b; WLD-PARENT-01/02 terbuka (non-production-reachable); pointer 145.27 tetap PARTIAL",
+  "last_verified_step": "run271 vs-hunt-20260913-environment PARTIAL-rantai (Hunter+Skeptic delegate LULUS; Referee delegate 429 -> audit induk) - 2 REAL/2 dismissed; ENV-BUG-002 Medium kartu LIGHTING/WEATHER/ZONES/CONTINUITY stub 'Noon'/'Clear'/'Normal' -> data-driven via environmentWorkspaceDataProvider + repository getWorkspaceData; ENV-BUG-004 Low _orDash fallback dash; RED->GREEN fokus 4; regresi environment 16 + workspaces 132 PASS; analyze No issues; commit ed9022c; ENV-BUG-001 dismissed documented Sprint-14 convention; ENV-BUG-003 dead-code housekeeping; pointer 145.27 tetap PARTIAL",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T09:40:00+07:00",
-  "updated_by": "nephthys-cron-run270",
+  "updated_at": "2026-09-13T10:20:00+07:00",
+  "updated_by": "nephthys-cron-run271",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -186,5 +186,13 @@
     "dismissed": "WLD-BUG-01 climate division-by-zero (tak ada pembagian); WLD-BUG-02 registry mutable (unmodifiable/baru); WLD-BUG-03 unnormalized keys (sudah lowercase di index/search); WLD-BUG-04 coordinate clamping (Planet clamp; GeoCoordinate isValid by-design dipin test); WLD-BUG-05 JSON deserialization (FABRIKASI - file tak punya parser); WLD-BUG-06 unbounded loop (guard limit ada)",
     "region_note": "domain world 109.17-109.19/110 UNROUTED ke shell (grep import luar-region = nol) -> semua temuan non-production-reachable kecuali API publik registry",
     "delegation_note": "pin gemini flash-lite 429 stage 2/3 lagi (preseden run267). Jangan cabut permanen; probe era kuota (run262 LULUS penuh)."
+  },
+  "environment_hunt_2026_09_13": {
+    "status": "hunt COMPLETE (rantai PARTIAL: Hunter+Skeptic delegate, Referee = audit induk) + ENV-BUG-002/004 fixed ed9022c; QUEUE EMPTY untuk region ini",
+    "hunt": "docs/evidence/vs-hunt-20260913-environment/ (scope 7 file, sha256 di scope_hashes.txt, HEAD 902bc57)",
+    "confirmed": "ENV-BUG-002 Medium stub cards; ENV-BUG-004 Low empty-string dash",
+    "dismissed": "ENV-BUG-001 DB-then-folder documented convention; ENV-BUG-003 domain SceneEnvironmentContext zero importers (housekeeping)",
+    "delegation_note": "pin gemini flash-lite 429 di stage 3 (preseden run267/270); probe era kuota, jangan cabut permanen",
+    "next_unscanned_regions": "features/references (10 file) atau features/inspector (9 file)"
   }
 }

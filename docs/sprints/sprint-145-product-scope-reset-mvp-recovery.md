@@ -1,3 +1,43 @@
+### 2026-09-13 - nephthys (interaktif run273): PILOT PARALEL-FIX 2 KANBAN WORKER (cx/gpt-6-astra) - overflow run249 + WLD-PARENT-01/02 CLOSED
+
+- Otorisasi: Choi "coba terapkan usulanmu" (usulan: pilot 2 worker kanban + 1 integrator).
+- Arsitektur: 2 kartu kanban (t_e0d31435 character overflow, t_43b054f9 world contract),
+  assignee default, pinned cx/gpt-6-astra (probe teks OK), worktree temp detach di 902bc57
+  (vs_w_char / vs_w_world), batas keras: DILARANG commit/push/ubah test di luar scope;
+  output = patch artefak. Integrator (nephthys utama) satu-satunya penulis master.
+- Worker WORLD (t_43b054f9) done 8m: WLD-PARENT-02 FloatingOrigin range+finite validation
+  (const->non-const demi ArgumentError runtime, pola Planet.coordinateAt, NaN ditolak eksplisit)
+  + WLD-PARENT-01 PredatorPressure escapeRoutes>0 finite; TDD dua slice; regresi world 116
+  lulus, analyzer bersih; patch pilot_world_contract.patch 6497B. INTEGRATOR VERIFIKASI
+  INDEPENDEN: apply bersih di vs_integrate + world 116 PASS + analyze No issues + diff-check 0.
+- Worker CHARACTER (t_e0d31435) blocked jujur (bernilai): render dump membuktikan pelaku
+  BUKAN kandidat 'top' milik integrator, melainkan Row tanpa Flexible di
+  lib/design_system/widgets/void_button.dart:28-32 (maxWidth 318, label 'Ekstraksi ciri dari
+  naskah'); dia MENOLAK edit design_system (patuh batas kartu), tidak bikin workaround kotor,
+  worktree dibiarkan bersih. Keputusan integrator: ambil alih slice design_system -
+  RED test kontrak sendiri (void_button_test.dart: 318px ellipsis + short label), fix
+  Flexible+maxLines:1+ellipsis, test fokus 2/2, character_section_ownership 4/4 LULUS
+  (overflow 74px hilang), analyzer No issues, diff-check bersih.
+- Gate full-suite di vs_integrate (basis 902bc57 + kedua patch): 4303 PASS / 1 skip / 2 fail
+  = keduanya artefak environment (loader 'Connection closed' proyek_session_provider + flaky
+  I/O story_txt_export_ui); keduanya standalone 3/3 PASS -> nol regresi nyata.
+- Integrasi ke master: rebase atas 058d796 (run271 sibling mendarat di tengah) bersih, gate
+  fokus environment+design_system+world+character_ownership 146/146 PASS, push dual-remote
+  d41dc20 (GitHub+GitLab sinkron).
+- REKONSILIASI KONFLIK KEBERUNTUNGAN (dicatat, pola baru): cron sibling run272 SEDANG MENGERJAKAN
+  bug yang sama secara paralel tanpa koordinasi (pelakunya sama! void_button overflow, ditemukan
+  via loadout hunt) dalam bentuk WIP uncommitted + menimpa test lama. WIP disalini utuh ke
+  run272_sibling_voidbutton_wip.patch (jaring), checkout -- 2 file (aman: patch ada + push kita
+  supersede fix), lalu test run272 (tap + 390px ellipsis, komentar run272 utuh) DIGABUNG ke
+  void_button_test + 1 test kontrak maxLines pilot = 3/3 PASS; commit 9a040ae (test-only,
+  scoped). Fix lib run272 tidak dipakai karena kita sudah push varian setara (maxLines eksplisit).
+- Lesson pilot (masuk skill): (1) worker jujur-blocked > worker nebak - protokol batas keras
+  bekerja; (2) paralelisasi HANYA aman dengan wilayah disjunk + integrator tunggal - kasus
+  run272 membuktikan bug yang sama bisa dikerjakan dua jalur sekaligus; koordinasi = cek
+  ledger/antrean cron sebelum spawn worker di region aktif; (3) patch artefak = unit integrasi,
+  klaim worker diverifikasi independen sebelum apply; (4) full-suite gate sekali di worktree
+  integrasi, bukan per-worker; (5) pub get WAJIB per worktree baru (--no-pub setelahnya).
+- Sisa pilot: wave berikutnya menunggu Choi (sisa antrean Low + 145.43+ masih butuh arah/izin).
 ### 2026-09-13 - nephthys (cron run271): hunt region environment (rantai PARTIAL: Referee = audit induk) + ENV-BUG-002/004 GREEN
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

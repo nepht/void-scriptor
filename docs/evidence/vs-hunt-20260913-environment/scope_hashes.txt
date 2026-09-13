@@ -1,0 +1,7 @@
+4E5640903B75EA51  lib\features\environment\application\create_environment_service.dart
+93B3A8C6D9EE5641  lib\features\environment\data\environment_repository_impl.dart
+484975ECAB898221  lib\features\environment\domain\environment_model.dart
+5624630E80982E3B  lib\features\environment\domain\environment_type.dart
+7A0EFF55F48F421E  lib\features\environment\domain\scene_environment_context.dart
+E8AB853F6CAAF309  lib\features\environment\presentation\environment_inspector.dart
+8984646926676CD6  lib\features\environment\presentation\environment_workspace_screen.dart

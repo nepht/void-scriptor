@@ -3,6 +3,7 @@ import 'dart:io';
 import '../../../core/persistence/project_paths.dart';
 import '../../../database/project/project_database.dart';
 import '../domain/environment_model.dart';
+import '../domain/environment_workspace_data.dart';
 
 class EnvironmentRepositoryImpl {
   EnvironmentRepositoryImpl({
@@ -23,6 +24,37 @@ class EnvironmentRepositoryImpl {
   Future<EnvironmentModel?> getEnvironment(String assetId) async {
     final row = await database.environmentDao.getEnvironment(assetId);
     return row == null ? null : _map(row);
+  }
+
+  /// Persisted profile data for the workspace cards (ENV-BUG-002): default
+  /// weather profile, first lighting profile, ordered zone names, and the
+  /// most recent continuity state — all read back from the project database
+  /// instead of hardcoded stub values.
+  Future<EnvironmentWorkspaceData> getWorkspaceData(String assetId) async {
+    final weather = await database.environmentDao.getWeatherProfiles(assetId);
+    final lighting = await database.environmentDao.getLightingProfiles(assetId);
+    final zones = await database.environmentDao.getZones(assetId);
+    final continuity = await database.environmentDao.getContinuityStates(
+      assetId,
+    );
+    return EnvironmentWorkspaceData(
+      weather: weather.isEmpty
+          ? null
+          : EnvironmentWeatherData(
+              condition: weather.first.weatherPreset,
+              intensity: weather.first.intensity,
+              visibility: weather.first.visibility,
+            ),
+      lighting: lighting.isEmpty
+          ? null
+          : EnvironmentLightingData(
+              time: lighting.first.timePreset,
+              keyLight: lighting.first.keyLight,
+              fogDensity: lighting.first.fogDensity,
+            ),
+      zones: [for (final zone in zones) zone.name],
+      continuityStateName: continuity.isEmpty ? null : continuity.last.name,
+    );
   }
 
   Future<void> deleteEnvironment(String assetId) async {

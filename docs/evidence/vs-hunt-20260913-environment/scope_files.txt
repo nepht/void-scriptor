@@ -1,0 +1,7 @@
+./application/create_environment_service.dart
+./data/environment_repository_impl.dart
+./domain/environment_model.dart
+./domain/environment_type.dart
+./domain/scene_environment_context.dart
+./presentation/environment_inspector.dart
+./presentation/environment_workspace_screen.dart

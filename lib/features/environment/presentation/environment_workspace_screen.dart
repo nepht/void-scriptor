@@ -5,6 +5,7 @@ import '../../assets/presentation/widgets/asset_thumbnail_card.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 import '../data/environment_repository_impl.dart';
 import '../domain/environment_model.dart';
+import '../domain/environment_workspace_data.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 final environmentWorkspaceProvider =
@@ -20,6 +21,23 @@ final environmentWorkspaceProvider =
       ).getEnvironment(environmentId);
     });
 
+/// Persisted profile data behind the LIGHTING/WEATHER/ZONES/CONTINUITY cards
+/// (vs-hunt-20260913-environment ENV-BUG-002): the cards must render real
+/// database values, never hardcoded stubs. Without a session the honest empty
+/// state applies.
+final environmentWorkspaceDataProvider =
+    FutureProvider.family<EnvironmentWorkspaceData, String>((
+      ref,
+      environmentId,
+    ) async {
+      final session = ref.watch(projectSessionProvider).valueOrNull;
+      if (session == null) return const EnvironmentWorkspaceData();
+      return EnvironmentRepositoryImpl(
+        database: session.database,
+        projectId: session.manifest.id,
+      ).getWorkspaceData(environmentId);
+    });
+
 class EnvironmentWorkspaceScreen extends ConsumerWidget {
   const EnvironmentWorkspaceScreen({super.key, required this.environmentId});
   final String environmentId;
@@ -28,6 +46,9 @@ class EnvironmentWorkspaceScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final model = ref
         .watch(environmentWorkspaceProvider(environmentId))
+        .valueOrNull;
+    final workspaceData = ref
+        .watch(environmentWorkspaceDataProvider(environmentId))
         .valueOrNull;
     final width = MediaQuery.sizeOf(context).width;
     return ColoredBox(
@@ -68,26 +89,38 @@ class EnvironmentWorkspaceScreen extends ConsumerWidget {
                   ),
                 const SizedBox(height: 12),
                 if (width < 760)
-                  const Column(
+                  Column(
                     children: [
-                      _EnvironmentLightingCard(),
-                      SizedBox(height: 12),
-                      _EnvironmentWeatherCard(),
+                      _EnvironmentLightingCard(
+                        lighting: workspaceData?.lighting,
+                      ),
+                      const SizedBox(height: 12),
+                      _EnvironmentWeatherCard(weather: workspaceData?.weather),
                     ],
                   )
                 else
-                  const Row(
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(child: _EnvironmentLightingCard()),
-                      SizedBox(width: 12),
-                      Expanded(child: _EnvironmentWeatherCard()),
+                      Expanded(
+                        child: _EnvironmentLightingCard(
+                          lighting: workspaceData?.lighting,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _EnvironmentWeatherCard(
+                          weather: workspaceData?.weather,
+                        ),
+                      ),
                     ],
                   ),
                 const SizedBox(height: 12),
-                const _EnvironmentZonesCard(),
+                _EnvironmentZonesCard(zones: workspaceData?.zones ?? const []),
                 const SizedBox(height: 12),
-                const _EnvironmentContinuityCard(),
+                _EnvironmentContinuityCard(
+                  stateName: workspaceData?.continuityStateName,
+                ),
               ],
             ),
           ),
@@ -154,65 +187,107 @@ class _EnvironmentInfoCard extends StatelessWidget {
     title: 'ENVIRONMENT INFO',
     child: Column(
       children: [
-        _PropertyRow('Type', model?.environmentType ?? '—'),
-        _PropertyRow('Location', model?.location ?? '—'),
-        _PropertyRow('Architecture', model?.architecture ?? '—'),
-        _PropertyRow('Terrain', model?.terrain ?? '—'),
-        _PropertyRow('Notes', model?.notes ?? '—'),
+        // ENV-BUG-004: the model defaults its strings to '' (and the DB
+        // columns default to empty), so `?? '—'` alone rendered blank rows.
+        _PropertyRow('Type', _orDash(model?.environmentType)),
+        _PropertyRow('Location', _orDash(model?.location)),
+        _PropertyRow('Architecture', _orDash(model?.architecture)),
+        _PropertyRow('Terrain', _orDash(model?.terrain)),
+        _PropertyRow('Notes', _orDash(model?.notes)),
       ],
     ),
   );
 }
 
+/// Null or blank values render the visible dash fallback.
+String _orDash(String? value) {
+  if (value == null || value.trim().isEmpty) return '—';
+  return value;
+}
+
+/// Renders a stored profile enum name ('goldenHour') as a readable label.
+String _humanize(String raw) {
+  if (raw.isEmpty) return '—';
+  final spaced = raw.replaceAllMapped(
+    RegExp(r'([a-z])([A-Z])'),
+    (match) => '${match.group(1)} ${match.group(2)}',
+  );
+  return spaced
+      .split(' ')
+      .map(
+        (word) =>
+            word.isEmpty ? word : word[0].toUpperCase() + word.substring(1),
+      )
+      .join(' ');
+}
+
 class _EnvironmentLightingCard extends StatelessWidget {
-  const _EnvironmentLightingCard();
+  const _EnvironmentLightingCard({required this.lighting});
+  final EnvironmentLightingData? lighting;
   @override
-  Widget build(BuildContext context) => const _EnvironmentCard(
+  Widget build(BuildContext context) => _EnvironmentCard(
     title: 'LIGHTING',
     child: Column(
       children: [
-        _PropertyRow('Time', 'Noon'),
-        _PropertyRow('Key', '—'),
-        _PropertyRow('Fog', '0.0'),
+        _PropertyRow('Time', _humanize(lighting?.time ?? '')),
+        _PropertyRow('Key', _orDash(lighting?.keyLight)),
+        _PropertyRow(
+          'Fog',
+          lighting == null ? '—' : lighting!.fogDensity.toString(),
+        ),
       ],
     ),
   );
 }
 
 class _EnvironmentWeatherCard extends StatelessWidget {
-  const _EnvironmentWeatherCard();
+  const _EnvironmentWeatherCard({required this.weather});
+  final EnvironmentWeatherData? weather;
   @override
-  Widget build(BuildContext context) => const _EnvironmentCard(
+  Widget build(BuildContext context) => _EnvironmentCard(
     title: 'WEATHER',
     child: Column(
       children: [
-        _PropertyRow('Condition', 'Clear'),
-        _PropertyRow('Intensity', '1.0'),
-        _PropertyRow('Visibility', '1.0'),
+        _PropertyRow('Condition', _humanize(weather?.condition ?? '')),
+        _PropertyRow(
+          'Intensity',
+          weather == null ? '—' : weather!.intensity.toString(),
+        ),
+        _PropertyRow(
+          'Visibility',
+          weather == null ? '—' : weather!.visibility.toString(),
+        ),
       ],
     ),
   );
 }
 
 class _EnvironmentZonesCard extends StatelessWidget {
-  const _EnvironmentZonesCard();
+  const _EnvironmentZonesCard({required this.zones});
+  final List<String> zones;
   @override
-  Widget build(BuildContext context) => const _EnvironmentCard(
+  Widget build(BuildContext context) => _EnvironmentCard(
     title: 'ZONES',
     child: Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: [Chip(label: Text('No zones yet'))],
+      children: [
+        if (zones.isEmpty)
+          const Chip(label: Text('No zones yet'))
+        else
+          for (final zone in zones) Chip(label: Text(zone)),
+      ],
     ),
   );
 }
 
 class _EnvironmentContinuityCard extends StatelessWidget {
-  const _EnvironmentContinuityCard();
+  const _EnvironmentContinuityCard({required this.stateName});
+  final String? stateName;
   @override
-  Widget build(BuildContext context) => const _EnvironmentCard(
+  Widget build(BuildContext context) => _EnvironmentCard(
     title: 'CONTINUITY',
-    child: _PropertyRow('Current State', 'Normal'),
+    child: _PropertyRow('Current State', _orDash(stateName)),
   );
 }
 

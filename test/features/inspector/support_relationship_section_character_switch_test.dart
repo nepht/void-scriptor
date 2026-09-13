@@ -9,6 +9,7 @@ import 'package:void_scriptor/core/project_package/project_package_service.dart'
 import 'package:void_scriptor/database/project/project_database.dart';
 import 'package:void_scriptor/features/character/data/character_repository_impl.dart';
 import 'package:void_scriptor/features/inspector/presentation/inspectors/character_inspector.dart';
+import 'package:void_scriptor/features/inspector/presentation/widgets/support_relationship_section.dart';
 import 'package:void_scriptor/features/project_resilience/application/project_session_manager.dart';
 import 'package:void_scriptor/features/projects/presentation/project_persistence_providers.dart';
 import 'package:void_scriptor/features/workspaces/application/narrative_assignment_repository.dart';
@@ -161,8 +162,18 @@ void main() {
       await tester.pumpAndSettle();
 
       // Character B has no support relationships; A's row must be gone.
+      // Scoped to the support section: vs-hunt-20260913-inspector INS-BUG-01
+      // fixed the header to show the character's real name, so 'Byte' now
+      // legitimately appears as B's own header on B's screen. The invariant
+      // this test pins is A's stale SUPPORT ROW, not every 'Byte' label.
       expect(find.text('No support relationships yet'), findsOneWidget);
-      expect(find.text('Byte'), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byType(SupportRelationshipSection),
+          matching: find.text('Byte'),
+        ),
+        findsNothing,
+      );
     },
   );
 

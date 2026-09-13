@@ -17,7 +17,9 @@ jobs:
   verify-linux-web-android:
     name: Analyze, test, Linux, Web, Android
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # 13 Sep: era billing-hidup membuktikan job ini butuh ~31 mnt penuh
+    # (Test 4326 lolos, lalu Android build kena cut 30 mnt) -> 45 mnt.
+    timeout-minutes: 45
 
     steps:
       - name: Checkout repository

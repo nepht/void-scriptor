@@ -1,3 +1,49 @@
+### 2026-09-13 - nephthys (cron run268): hunt region projects (rantai 3-tahap LULUS) + PRJ-BUG-02 localPath GREEN
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk 648d9bf (run267
+  ter-commit; ahead 3 - push tetap keputusan Choi). Conflict markers nihil;
+  proses flutter/dart/void_scriptor nihil (codex PID 21408 = pembaca pasif,
+  single-writer RELEASED_TO_HERMES diakui kembali). Sibling dirty DIPRESERVASI
+  TANPA SENTUH: autosave vertical story (coordinator/story_dao/project_database/
+  repository_impl/screen + test untracked durable_autosave_empty_ack; mtime
+  00:39-01:10, idle >6 jam; A3 ACCEPT tetap antri setelah mereka commit) +
+  character region 3 file.
+- Seleksi slice: antrean hunt region lama kering (timeline+relations run267,
+  importer/bible/autosave kelar). Region features/projects (10 file, 1.037
+  baris, fingerprint sha256 di docs/evidence/vs-hunt-20260913-projects/
+  scope_hashes.txt) belum pernah dipindai - wilayah acceptance 145.27
+  (project create/open/move = jalur hidup pengguna) -> otorisasi hunt berulang
+  2026-09-07.
+- Rantai: Hunter delegate LULUS (4 temuan skor 12, 52 dtk) -> Skeptic delegate
+  LULUS (01 DISPROVE 95, 02 KEEP 100, 03/04 DISPROVE, 39 dtk) -> Referee
+  delegate LULUS (REAL 1 Low, dismissed 3, 25 dtk). Pin gemini flash-lite
+  sehat era ini; tidak perlu fallback parent-self-audit. Status rantai VERIFIED.
+- Verdict: PRJ-BUG-02 REAL Low - createProject parameter `localPath` required
+  tetapi tak dirujuk di body (selalu paths.root()); Referee konfirmasi satu-satunya
+  caller produksi (create_project_screen:75-81) meneruskan root yang sama jadi
+  netral UI hari ini - defect = contract trap kelas BUG-7 (pemanggil lokasi
+  mendatang dapat paket di root SALAH tanpa error). PRJ-BUG-01/03/04 NOT A BUG
+  (close-before-relocate prasyarat Windows lock didokumentasikan a8072b8;
+  serialization mutex; resolver murni + downstream handling sudah dipin test).
+- TDD: RED test/features/projects/project_create_localpath_test.dart gagal
+  persis gejala (paket jatuh ke managed root bukan chosen root) -> GREEN:
+  rootDirectory = localPath.isEmpty ? paths.root() : Directory(localPath);
+  tes fallback root terkelola (kontrak web-guard localPath '') ikut dipasang.
+- Regresi/gates: fokus 2 PASS; test/features/projects 25 PASS/0 FAIL (sequential,
+  setelah dart format menstabilkan file tes baru - gate format exit 0); konsumen
+  luar-region controller.createProject (marker-delete 6 + recent_projects 1)
+  7 PASS; dart analyze lib+test projects No issues; git diff --check exit 0;
+  flutter build windows --debug PASS 25,3s (working tree termasuk WIP sibling -
+  label dirty-scope). Commit scoped 0fa679b (6 path eksplisit, tanpa -A).
+- Status: 145.27 tetap PARTIAL; pointer tidak bergerak. Native UNVERIFIABLE
+  dari cron (perubahan netral bagi satu-satunya caller produksi; dibuktikan
+  deterministik di ProviderContainer tests). Sisa antrean region ini: nihil REAL.
+- Next action: run berikutnya (1) jika sibling autosave sudah commit: A3 ACCEPT
+  review (fokus coordinator/repository + regresi test/features/story); (2) bila
+  masih dirty: region belum terpindai = features/world (34 file, pecah <=20)
+  ATAU features/settings; (3) push backlog menunggu keputusan Choi.
+
 ### 2026-09-13 - nephthys (cron run267): hunt region timeline+relations (PARTIAL chain) + BUG-004 clamp crash GREEN
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

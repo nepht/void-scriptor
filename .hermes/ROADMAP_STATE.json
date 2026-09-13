@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run267 vs-hunt-20260913-timeline-relations BUG-004 VERIFIED — drag clip berdurasi > scene melempar ArgumentError clamp(0.0,negatif) di timeline workspace; RED gejala terukur -> GREEN upperBound pin 0; fokus 2 + timeline 15 + relations 12 PASS; analyzer scoped clean; build windows debug 20,2s; commit aa961f9; rantai PARTIAL (Hunter delegate lulus, Skeptic 429 2x, verifikasi parent); 4 temuan lain NOT A BUG; pointer 145.27 tetap PARTIAL",
+  "last_verified_step": "run268 vs-hunt-20260913-projects PRJ-BUG-02 VERIFIED — createProject localPath non-kosong dipakai sbg root paket (kontrak trap required-param diabaikan); rantai 3-tahap delegate LULUS penuh (4 temuan -> 1 REAL Low, 3 NOT A BUG); RED->GREEN fokus 2 PASS; region projects 25 PASS; konsumen luar 7 PASS; analyzer scoped clean; format gate exit 0; build windows debug 25,3s; commit 0fa679b; pointer 145.27 tetap PARTIAL",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",

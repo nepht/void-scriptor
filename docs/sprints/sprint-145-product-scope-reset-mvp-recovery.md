@@ -1,3 +1,49 @@
+### 2026-09-13 - nephthys (cron run288): zombie DB-BUG-04 DIBERSIHKAN + regression lock fabricated data (tabrakan tengah-run dengan wave-4 interaktif, terselesaikan tanpa kerusakan)
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk 5d3d128; tree
+  bersih (9 untracked artefak lama dipreservasi); nol proses flutter/dart.
+  Single-writer RELEASED_TO_HERMES diakui kembali.
+- Seleksi: antrean dashboard run286 tersisa DB-BUG-04; kandidat lain
+  (145.34 rollback-failure, matriks 145.42) diverifikasi read-only TERLEBIH
+  DULU dan ternyata sudah tertutup/diario lengkap
+  (docs/evidence/145.42-resilience-matrix.json: 13 kasus VERIFIED/PASS,
+  power_loss + min-spec = UNVERIFIABLE hardware-bound keputusan Choi;
+  backup_rollback_failure_test 2f14ea1+0dfe64c).
+- TABRAKAN RADAR (kedua kalinya, resolusi bersih): cron spawn 22:2x membaca
+  HEAD 5d3d128 di mana RecentAssets MASIH ADA; wave-4 interaktif (entri
+  "run287", commit 44bfa04 + ledger 9dae3a4) mendarat tengah-run dan sudah
+  menghapus widget yang sama + menyatakan antrean NOL. Cron tidak salah
+  (snapshot awal valid); lesson: queue window masih terbuka utk region yang
+  sama. Yang SALAH di sisi wave-4: commit docs 9dae3a4 tanpa sengaja
+  MENGHIDUPKAN LAGI widgets/recent_assets.dart (+73 baris, `new file mode`)
+  saat mengcommit working tree yang masih menyimpan artefak pra-rebase —
+  zombie dead-code ter-push ke origin+gitlab (ls-remote kedua remote =
+  9dae3a428019, memuat file mati yang diklaim sudah dihapus 44bfa04).
+- Eksekusi satu slice: RED dashboard_no_fabricated_data_test.dart (2 test:
+  label fabrikasi 'Qowner'/'Void Coat'/'Dual Dagger' di lib/features/dashboard
+  + eksistensi file & rujukan menggantung) gagal tepat 2/2 pada HEAD zombie.
+  GREEN: `git rm` recent_assets.dart (isi identik snapshot
+  %LOCALAPPDATA%/Temp/vs-run287-recent_assets-snapshot.dart; nol importer
+  diverifikasi ulang independen: grep lib+test = 0 rujukan di luar dirinya).
+  Regression lock permanen mencegah zombie & fabricated tile kembali, apa pun
+  jalur merge/rebase berikutnya.
+- Gates aktual: focused 2/2 PASS; region test/features/dashboard 16 PASS
+  0 FAIL; `dart analyze` scoped No issues; `flutter analyze --no-pub` full
+  repo No issues (13,3s); format owned 0 changed (satu reformat style-only
+  sebelum gate); `git diff --check` exit 0; `flutter build windows --debug
+  --no-pub` PASS 22,3s. Guard PASS post-state (lihat bawah). Native GUI
+  UNVERIFIABLE (cron; nol perubahan user-visible — widget tak pernah ter-mount).
+- Komit: e1b9e71 (2 file path eksplisit: hapus zombie + test lock). Push
+  standing-auth gates-hijau dual-remote: origin+gitlab FF 9dae3a4 -> e1b9e71.
+- Status: antrean vs-hunt-20260913-dashboard TUTUP TOTAL dengan bukti di HEAD
+  (01/03/07/08/04 closed; 02 DEFERRED arsitektur provider). Pointer 145.27
+  tetap PARTIAL; stream corrective_core_mvp. Next action: keputusan Choi
+  (billing GitHub utk CI, dependabot policy, migrasi riverpod 3, routing
+  REF-BUG-2/WLD-PARENT-01/02, UI export/import character 145.35, lab hardware
+  145.42, 145.43-50) — run cron berikutnya akan NO-OP/monitor bila tidak ada
+  gap implementasi baru yang aman.
+
 ### 2026-09-13 - nephthys (wave-4 integrasi: pilot dashboard 07/08/04 — tabrakan radar dgn cron run286, resolusi = slice residual)
 - Wave-4 SATU worker (bukan N, region sama = wilayah disjunk): kartu t_08b9aba0 (luna, goal_mode OFF) region dashboard utuh. Worker selesai 6 menit; jujur mengaku RED tidak dieksekusi -> INTEGRATOR buktikan sendiri: stash-only-lib test fail tepat 2 test baru (retry + auth manusiawi), 12 lain hijau = TEST EFEKTIF; GREEN +14 pass; analyze/format/diff-check OK.
 - TABRAKAN RADAR (pertama kalinya, terdokumentasi): cron tick 22:14 mendarat f7c835d DB-BUG-07/08 SEBELUM kartu spawn 22:19 — cron tidak salah (papan masih kosong); pelajari urutan: SPAWN KARTU SEBELUM resume cron / sebelum queue window terbuka. Rebase beacbaa konflik di dashboard_screen (cron versi ringkas vs worker richer Card+ExpansionTile) -> PUTUSAN integrator: cron landed = final utk 07/08 (test cron lebih ketat: Assert.assertFalse raw-dump TIDAK muncul di UI mana pun, termasuk ExpansionTile — versi worker justru MENAMPILKAN raw via SelectableText; pilihan cron lebih setia ke intent referee "jangan bocor exception"), slice worker direduksi ke residual BUG-04.

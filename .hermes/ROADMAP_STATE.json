@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run286 (cron): DB-BUG-07 + DB-BUG-08 antrean dashboard DIPERBAIKI TDD. RED->GREEN di test/features/dashboard (statistics retry via ref.invalidate pola RecentProjects; auth error builder pesan tetap, tanpa raw $error dump). Bukti run ini: dashboard 14 PASS 0 FAIL; analyze scoped + full No issues; format 0; diff-check 0; build windows debug PASS 26,6s; guard PASS pre+post. Commit f7c835d (4 file scoped). Native GUI UNVERIFIABLE (cron). Forensik: flutter test yatim 19:59 dari wave-3 interaktif (CPU flat, orkestrator mati, worktree Temp/vs_w3_c) - bukan eksekutor aktif, tidak disentuh. Pitfall: find.textContaining findSubString dihapus di Flutter ini (compile error). Antrean dashboard tersisa: DB-BUG-04 (RecentAssets hardcoded - wire/hapus = keputusan kontrak data). Pointer 145.27 tetap PARTIAL; stream corrective_core_mvp. Push: tidak dilakukan dari run ini tanpa need; keputusan Choi (routing REF-BUG-2/WLD-PARENT-01/02, UI export/import 145.35, migrasi Riverpod 3, dependabot policy, lab hardware 145.42).",
+  "last_verified_step": "run288 (cron): zombie DB-BUG-04 DIBERSIHKAN + regression lock. Wave-4 interaktif (44bfa04) menghapus RecentAssets tapi commit ledger-nya 9dae3a4 menghidupkan file mati lagi (+73 new-file mode, ter-push dual-remote). Cron run288 TDD ulang: RED 2/2 -> git rm (snapshot Temp/vs-run287) + test lock dashboard_no_fabricated_data_test.dart (label fabrikasi + referensi menggantung dilarang). GREEN: dashboard 16 PASS; analyze repo No issues; format 0; diff-check 0; build windows debug PASS 22,3s; guard PASS pre+post. Commit e1b9e71; push FF dual-remote 9dae3a4->e1b9e71. Antrean vs-hunt-20260913-dashboard TUTUP TOTAL (02 DEFERRED provider). Pointer 145.27 tetap PARTIAL; stream corrective_core_mvp. Sisa teknis Core aman = NOL per matriks 145.42 (power_loss/min-spec hardware-bound). Next = keputusan Choi: billing CI, dependabot policy, migrasi riverpod 3, routing REF-BUG-2/WLD-PARENT-01/02, UI export/import 145.35, 145.43-50.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T22:55:00+07:00",
-  "updated_by": "cron-run286",
+  "updated_at": "2026-09-13T22:50:00+07:00",
+  "updated_by": "cron-run288",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

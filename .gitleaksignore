@@ -1,3 +1,8 @@
 # Synthetic credential fixture used to verify SecretRedactor.
 # Exact historical fingerprint only; new findings remain blocking.
 f52c70c56503840c8a6fb36a4d5e68884330df1b:test/core/security/secret_vault_test.dart:generic-api-key:56
+#
+# Scan riwayat 13 Sep (v8.30.1): fixture dummy sk-tes... pada
+# portable_secret_exclusion_test.dart (menguji EKSKLUSI secret) — bukan kredensial nyata.
+fb575340039867dfe1363d23dd66b9107289c679:test/features/project_resilience/portable_secret_exclusion_test.dart:generic-api-key:72
+fb575340039867dfe1363d23dd66b9107289c679:test/features/project_resilience/portable_secret_exclusion_test.dart:generic-api-key:75

@@ -11,10 +11,6 @@ on:
 
 permissions:
   contents: read
-  # gitleaks-action v2 mengunggah hasil SARIF ke Security tab; tanpa write,
-  # run push-event gagal 403 "Resource not accessible by integration"
-  # (terbukti 13 Sep di 9dc198e/76288d1; rerun PAT lolos karena identitas beda).
-  security-events: write
 
 concurrency:
   group: security-${{ github.workflow }}-${{ github.ref }}
@@ -32,7 +28,16 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      # gitleaks-action selalu mencoba menulis hasil (SARIF/check) via
+      # GITHUB_TOKEN -> 403 "Resource not accessible by integration" pada
+      # push/dependabot-event (terbukti 13 Sep 9dc198e/0393423) dan
+      # bertabrakan dengan policy verify_repository_hardening.py yang
+      # mewajibkan seluruh workflow read-only. CLI murni memberi kekuatan
+      # scan + exit-code gate yang sama tanpa kebutuhan write apa pun;
+      # .gitleaksignore tetap dihormati native.
       - name: Scan repository history
-        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/repo" \
+            ghcr.io/gitleaks/gitleaks:v8.30.1 \
+            detect --source /repo -v --redact --exit-code 1

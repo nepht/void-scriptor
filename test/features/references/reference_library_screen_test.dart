@@ -99,4 +99,47 @@ void main() {
     expect(submitted?.name, 'Master Face');
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('import dialog shows validation feedback for empty fields', (
+    tester,
+  ) async {
+    ReferenceImportDraft? submitted;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ReferenceLibraryScreen(
+          references: references,
+          onImport: (draft) async => submitted = draft,
+        ),
+      ),
+    );
+    await tester.tap(find.byTooltip('Import reference'));
+    await tester.pumpAndSettle();
+    expect(find.text('Import Reference'), findsOneWidget);
+
+    // vs-hunt-20260913-references REF-BUG-3: submitting empty required
+    // fields must surface a visible reason, not silently no-op.
+    await tester.tap(find.widgetWithText(FilledButton, 'Import'));
+    await tester.pump();
+    expect(find.text('Import Reference'), findsOneWidget);
+    expect(submitted, isNull);
+    expect(find.text('Source file path is required.'), findsOneWidget);
+    expect(find.text('Name is required.'), findsOneWidget);
+
+    // Filling the field clears its own error on the next submit attempt.
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Source file path'),
+      '/tmp/face.png',
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Import'));
+    await tester.pump();
+    expect(find.text('Source file path is required.'), findsNothing);
+    expect(find.text('Name is required.'), findsOneWidget);
+
+    await tester.enterText(find.widgetWithText(TextField, 'Name'), 'Face A');
+    await tester.tap(find.widgetWithText(FilledButton, 'Import'));
+    await tester.pumpAndSettle();
+    expect(submitted?.sourcePath, '/tmp/face.png');
+    expect(submitted?.name, 'Face A');
+    expect(tester.takeException(), isNull);
+  });
 }

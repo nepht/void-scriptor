@@ -18,6 +18,8 @@ class _ReferenceImportDialogState extends State<ReferenceImportDialog> {
   final priority = TextEditingController(text: '0');
   ReferenceType type = ReferenceType.face;
   bool primary = false;
+  String? pathError;
+  String? nameError;
 
   @override
   void dispose() {
@@ -40,11 +42,17 @@ class _ReferenceImportDialogState extends State<ReferenceImportDialog> {
           children: [
             TextField(
               controller: path,
-              decoration: const InputDecoration(labelText: 'Source file path'),
+              decoration: InputDecoration(
+                labelText: 'Source file path',
+                errorText: pathError,
+              ),
             ),
             TextField(
               controller: name,
-              decoration: const InputDecoration(labelText: 'Name'),
+              decoration: InputDecoration(
+                labelText: 'Name',
+                errorText: nameError,
+              ),
             ),
             TextField(
               controller: owner,
@@ -96,7 +104,15 @@ class _ReferenceImportDialogState extends State<ReferenceImportDialog> {
   );
 
   void _submit(BuildContext context) {
-    if (path.text.trim().isEmpty || name.text.trim().isEmpty) return;
+    final missingPath = path.text.trim().isEmpty;
+    final missingName = name.text.trim().isEmpty;
+    if (missingPath || missingName) {
+      setState(() {
+        pathError = missingPath ? 'Source file path is required.' : null;
+        nameError = missingName ? 'Name is required.' : null;
+      });
+      return;
+    }
     Navigator.pop(
       context,
       ReferenceImportDraft(

@@ -29,7 +29,11 @@ class VoidButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[Icon(icon, size: 17), const SizedBox(width: 8)],
-          Text(label),
+          // Long labels must shrink (ellipsis) instead of overflowing the
+          // flex at narrow viewports (pilot paralel-fix 2026-09-13).
+          Flexible(
+            child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+          ),
         ],
       ),
     );

@@ -1,0 +1,10 @@
+lib/features/projects/data/project_local_data_source.dart
+lib/features/projects/data/project_repository_impl.dart
+lib/features/projects/domain/project_model.dart
+lib/features/projects/domain/project_repository.dart
+lib/features/projects/presentation/create_project_screen.dart
+lib/features/projects/presentation/project_controller.dart
+lib/features/projects/presentation/project_list_screen.dart
+lib/features/projects/presentation/project_persistence_providers.dart
+lib/features/projects/presentation/widgets/project_card.dart
+lib/features/projects/presentation/widgets/project_empty_state.dart

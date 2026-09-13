@@ -50,6 +50,25 @@ void main() {
     },
   );
 
+  test(
+    'ProjectLocalDataSource updateProject upserts an unknown project in memory mode',
+    () async {
+      // vs-hunt-20260913-projects BUG-1: registry mode upserts, so the memory
+      // fallback must not silently drop updates for ids it has never seen.
+      final source = ProjectLocalDataSource();
+      final project = _project('project-ghost');
+
+      await source.updateProject(project);
+
+      expect(await source.getProject('project-ghost'), project);
+      expect(await source.getProjects(), hasLength(1));
+
+      await source.updateProject(project.copyWith(name: 'Later'));
+      expect(await source.getProjects(), hasLength(1));
+      expect((await source.getProject('project-ghost'))!.name, 'Later');
+    },
+  );
+
   test('ProjectLocalDataSource keeps project ids unique', () async {
     final source = ProjectLocalDataSource();
 

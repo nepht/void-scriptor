@@ -87,7 +87,9 @@ class ProjectSessionController extends AsyncNotifier<ProjectSession?> {
     if (pending != null) {
       if (_pendingProjectId == projectId) {
         final session = await pending;
-        if (session.mode == mode) return session;
+        if (_modeSatisfies(sessionMode: session.mode, requestedMode: mode)) {
+          return session;
+        }
       } else {
         // Serialize project switches; never open two writers concurrently.
         try {
@@ -99,8 +101,14 @@ class ProjectSessionController extends AsyncNotifier<ProjectSession?> {
       return openProject(projectId, mode: mode);
     }
     final active = _session;
-    if (active?.package.projectId == projectId && active?.mode == mode) {
-      return active!;
+    // vs-hunt-20260913-projects BUG-2: a live readWrite session already
+    // satisfies a readOnly request. Re-opening to "downgrade" the mode would
+    // close the database out from under the readWrite caller, so the mode
+    // check is a superset test, not an equality test.
+    if (active != null &&
+        active.package.projectId == projectId &&
+        _modeSatisfies(sessionMode: active.mode, requestedMode: mode)) {
+      return active;
     }
     _pendingProjectId = projectId;
     final operation = _openProject(projectId, mode);
@@ -163,6 +171,18 @@ class ProjectSessionController extends AsyncNotifier<ProjectSession?> {
     String projectId, {
     ProjectOpenMode mode = ProjectOpenMode.readWrite,
   }) => openProject(projectId, mode: mode);
+
+  /// A readWrite session is a superset of readOnly: it can serve reads
+  /// without a destructive close/re-open cycle. The reverse never holds —
+  /// write access always requires a fresh readWrite open.
+  static bool _modeSatisfies({
+    required ProjectOpenMode sessionMode,
+    required ProjectOpenMode requestedMode,
+  }) {
+    if (sessionMode == requestedMode) return true;
+    return sessionMode == ProjectOpenMode.readWrite &&
+        requestedMode == ProjectOpenMode.readOnly;
+  }
 
   /// Wiring sprint Task 2 (BUG-12): passphrase prompt-and-retry contract.
   /// Verifies the passphrase through [ProjectSessionManager.unlockProject]

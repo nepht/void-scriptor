@@ -41,8 +41,15 @@ class ProjectLocalDataSource {
       await registry.upsert(project);
       return;
     }
+    // vs-hunt-20260913-projects BUG-1: registry mode upserts, so the memory
+    // fallback must apply the same contract — an unknown id is added rather
+    // than silently dropped.
     final index = _memoryProjects.indexWhere((item) => item.id == project.id);
-    if (index != -1) _memoryProjects[index] = project;
+    if (index != -1) {
+      _memoryProjects[index] = project;
+    } else {
+      _memoryProjects.add(project);
+    }
   }
 
   Future<void> deleteProject(String projectId) async {

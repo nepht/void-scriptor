@@ -1,3 +1,44 @@
+### 2026-09-13 - nephthys (cron run280): INS-BUG-02+03 DIPERBAIKI — Wardrobe/Weapon inspector tak render UUID mentah; antrean inspector tersisa 06
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk 69c6bf6; tree
+  bersih kecuali artefak untracked lama (tak disentuh). Tidak ada proses
+  flutter/dart/void_scriptor lain; worktree vs_w2_integrate sibling tidak
+  disentuh. Kanban tak tersedia di sesi ini — radar ledger: run279 close,
+  nol executor aktif terdokumentasi. Single-writer RELEASED_TO_HERMES diakui
+  kembali (re-acknowledgement).
+- Seleksi: next action run279 eksplisit = slice INS-BUG-02+03 sekali jalan
+  (pola identik — Wardrobe/Weapon inspector fallback UUID mentah saat
+  loading/error/missing; verdict on-disk Referee vs-hunt-20260913-inspector =
+  otoritas, keduanya REAL BUG Medium).
+- TDD: RED asset_inspector_state_test.dart (8 test: loading indikator + tanpa
+  token, error tampak + tanpa token, null -> 'Unknown asset', resolved -> nama
+  nyata) — 6 gagal sesuai mekanisme klaim, 2 resolved-data pass sebagai
+  penjaga intent. GREEN: .when(loading/error/data) eksplisit di
+  wardrobe_inspector.dart + weapon_inspector.dart (pola pendukung:
+  supporting_asset_workspace_screen); _Panel helper wardrobe; label loading
+  'Loading wardrobe.../weapon...' + sublabel type dipertahankan supaya test
+  struktur lama tetap membuktikan panel penuh.
+- Rekonsiliasi intent-preserving test lama yang mem-pin token mentah (bukan
+  penghapusan): inspector_resolver_test 'weapon-1' -> byType(WeaponInspector)
+  + findsNothing token; inspector_cross_project_test 'weapon-tesnovel' ->
+  mount + no-token (state AsyncValue spesifik dibebaskan dari test resolver);
+  weapon_inspector_test +1 pump agar melewati cabang loading baru sebelum
+  assert Properties/Relations. Komentarnya menunjuk INS-BUG-03.
+- Gates: fokus 14 PASS; regression test/features/inspector + weapon +
+  wardrobe = 49 PASS; relations journey 1 PASS; dart analyze seluruh repo
+  No issues (104 dtk); dart format owned 3 changed lalu 0; diff-check exit 0;
+  flutter build windows --debug PASS 28,4s. Native UNVERIFIABLE (cron;
+  deterministik di widget test). Commit scoped 9ef1e2b (6 path).
+- Antrean inspector tersisa: INS-BUG-06 (guard _load setState vs sesi ganti di
+  support_relationship_section). Next: slice INS-BUG-06, lalu kembali ke
+  acceptance 145.27 (peta bukti 145.24/28/30 + matriks 145.42 yang belum
+  terbukti) bila antrean hunt habis.
+- Status: 145.27 tetap PARTIAL; stream corrective_core_mvp; push menunggu
+  Choi (divergensi master 9ef1e2b vs origin f3c3bc4 tetap ranah sesi
+  interaktif — jangan pull di tree berisi WIP).
+
+
 ### 2026-09-13 - nephthys (cron run279): INS-BUG-01 DIPERBAIKI — nama karakter di InspectorBody, antrean inspector tersisa 02/03/06
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

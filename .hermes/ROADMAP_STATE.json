@@ -219,5 +219,7 @@
     "dismissed": "BUG-02 (Riverpod FutureProvider auto AsyncValue.error), BUG-05 (stub donasi jujur = by-design deferred payment), BUG-06 (sort list kecil di build = negligible), BUG-09 (errorBuilder thumbnail menangani file error)",
     "evidence": "RED dashboard_create_character_no_session_test Actual '/studio' -> GREEN; fokus 1 PASS; test/features/dashboard 13 PASS; shell+routing 69 PASS; analyze No issues; build windows debug 64,5s; guard PASS",
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
-  }
+  },
+  "last_worker_run": "run287",
+  "note": "run287 wave-4 integrasi: pilot 07/08 cron-run286 (landed), 04 dead-code 44bfa04 dual-remote; radar-collision lesson: spawn sebelum resume cron; antrean dashboard NOL"
 }

@@ -24,7 +24,15 @@ class BootstrapPlan {
   final List<BootstrapStep> steps;
 
   List<BootstrapStep> get orderedSteps {
-    final sorted = [...steps]..sort((a, b) => a.order.compareTo(b.order));
+    // vs-hunt-20260914-platform PLAT-BUG-05: sort tunggal pada `order` tidak
+    // deterministik untuk order kembar (List.sort Dart tidak stabil).
+    // Tie-breaker `id` membuat urutan eksekusi bootstrap dapat direproduksi.
+    final sorted = [...steps]
+      ..sort((a, b) {
+        final byOrder = a.order.compareTo(b.order);
+        if (byOrder != 0) return byOrder;
+        return a.id.compareTo(b.id);
+      });
     return sorted;
   }
 }

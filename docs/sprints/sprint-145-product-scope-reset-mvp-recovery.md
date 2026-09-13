@@ -1,3 +1,24 @@
+### 2026-09-13 - nephthys (interaktif run277): WAVE-2 PILOT PARALEL-FIX 3 KANBAN WORKER + PROTOKOL TERPASANG KE SEMUA EKSEKUTOR
+
+**Objektif**: lanjut pilot (user: "ok lannjut dan jika memurutmu sudah sesuai terapkan di cron v4") — wave-2 = fan-out 3 kartu kanban (wilayah disjunk) + integrasi patch oleh integrator, DAN adopsi protokol ke cron v4.
+
+**Protokol cron v4 (TERPASANG)**:
+- Kontrak ditulis ke `AGENTS.md` repo (bagian "Parallel-fix zone radar", commit `6c826e8` ter-push) — jalur andal karena cron membaca AGENTS.md tiap tick; percobaan update prompt via API gagal (`add_prompt` ditolak tool bridge), file temp `PARALEL_FIX_PROTOCOL.md` dihapus demi satu sumber.
+- Aturan inti: radar papan+worktree sebelum mutasi; wilayah kartu `running` TERKUNCI utk cron; tabrakan run272 = akar yang diradarkan; worker dilarang commit/push; klaim anak diverifikasi independen; kartu wajib ditutup.
+- Cron di-pause saat spawn (12:41), di-resume saat patch mulai masuk (13:1x). BUKTI RADAR BEKERJA: cron run274/275 (references region, `bf05986`/`e3e5ca7`) mendarat paralel TANPA satu pun benturan file dengan 3 worker wave-2 (disjunk total).
+- Skill `kanban-parallel-bugfix-pilot` di-patch: wave-2,AGENTS.md contract,cron pause/resume,review-round ke-2 boros kredit (cukup 1 run implementasi; integrator = review final).
+
+**Kartu & hasil (semua VERIFIED-INTEGRATED, `d15ce46`)**:
+- `t_ab87d1ff` A (LDT-BUG-04 + LDT-BUG-02): patch 9177 B. -04: query stillUsed removeSlot join entries→modes + filter characterId (ghost relations lintas karakter hilang); -02: CharacterModeReferencesCard watch projectAssetsProvider (invalidasi caller existing menyegarkan kartu). RED→GREEN jujur (red_04 0/2, red_02 0/1), regresi character_mode 33/33, analyze bersih, reviewer-run byte-compare patch = live diff.
+- `t_7746c767` B (BUG-2 autosave Critical): REKONSILIASI PENTING — guard coordinator SUDAH closed di `d22e112` (pending sinkron sebelum await + _changeGeneration); worker jujur TIDAK merekayasa RED, artefak = test-only regresi reverse-completion 2843 B (focused 4/4; story 204/204 concurrency=1). CATATAN BARU utk antrean: komentar coordinator menyebut FIFO journal tetapi publikasi journal belum terbukti FIFO — kandidat slice hunt autosave berikutnya (belum ada kartu; milik integrator/Choi).
+- `t_874094a4` C (ENV-BUG-003): hapus dead-code domain scene_environment_context.dart 670 B; nol-importer diverifikasi ganda (worker + reviewer); class Drift & konsumen story_dao tetap utuh; env 12/12.
+
+**Gate integrasi (worktree temp `vs_w2i` di 6c826e8, 3 patch lolos --check + apply bersih)**: analyze 3 region No issues; character_mode+environment 45/45; story 204/204 (concurrency=1); full-suite run#1 4316 +1skip +1fail(export); run#2 `+4316 ~1 -2` — 2 fail (export story_txt + projects core_without_internet) KEDUANYA flaky terdokumentasi, standalone `+4 All tests passed!` 00:04. Rebase atas cron run274/275 bersih (wilayah disjunk), push `d15ce46` GitHub+GitLab.
+
+**Biaya & batas wave-2**: 3 worker astra ~13 mnt implementasi paralel; review-round-2 dispatcher memboroskan kredit API (ketiga kartu akhirnya `blocked` di run review kedua setelah kerja sah selesai — lesson: goal_mode memicu review-loop; kandidat non-goal utk wave berikutnya ATAU set reviewer profile terpisah). Kartu ditutup integrator `kanban_complete` VERIFIED-INTEGRATED. Working tree utama tak tersentuh (WIP story/login agen lain utuh); 4 worktree worker dibersihkan; vs_w2i dipertahankan s/d ledger.
+
+**Verdict**: WAVE-2 TUNTAS. Protokol paralel-fix kini KONTRAK SEMUA EKSEKUTOR (cron v4 + worker + interaktif) via AGENTS.md. Antrean tersisa known-real: journal-FIFO autosave (baru), REF-BUG-2 routing decision (menunggu Choi), 145.43-50 (keputusan produk), batch fix autosave run254 (izin Choi).
+
 ### 2026-09-13 - nephthys (cron run276): C-block vs-hunt-20260912-autosave DITUTUP + resepsi WIP sibling idle
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

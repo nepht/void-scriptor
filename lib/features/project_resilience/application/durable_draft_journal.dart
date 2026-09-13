@@ -28,12 +28,20 @@ import 'package:path/path.dart' as p;
 /// yang dihapus, sehingga jendela tulis writer hidup tidak pernah
 /// tersentuh dan file final tidak pernah menjadi sasaran sweep.
 class DurableDraftJournal {
-  DurableDraftJournal({required this._dir, DateTime Function()? clock})
-    : _clock = clock ?? DateTime.now;
+  DurableDraftJournal({
+    required this._dir,
+    DateTime Function()? clock,
+    this.beforePublish,
+  }) : _clock = clock ?? DateTime.now;
 
   final Directory _dir;
   final DateTime Function() _clock;
+  final Future<void> Function(String sceneId, String content)? beforePublish;
   bool _closed = false;
+
+  /// Per-scene publication tails. Each stage joins the prior tail before
+  /// renaming its unique temporary file into the shared final entry.
+  final Map<String, Future<void>> _publicationTails = <String, Future<void>>{};
 
   /// Salt acak per-instance untuk nama `.tmp` (bug-hunt-20260912-autosave
   /// BUG-1): salt + serial membuat path temporer unik per panggilan stage(),
@@ -124,7 +132,26 @@ class DurableDraftJournal {
       }
       rethrow;
     }
-    await _renameWithWindowsSharingRetry(temp, _entryFile(sceneId).path);
+    await _publishInOrder(sceneId: sceneId, content: content, temp: temp);
+  }
+
+  Future<void> _publishInOrder({
+    required String sceneId,
+    required String content,
+    required File temp,
+  }) {
+    final previous = _publicationTails[sceneId] ?? Future<void>.value();
+    final publication = previous.then<void>((_) async {
+      await beforePublish?.call(sceneId, content);
+      await _renameWithWindowsSharingRetry(temp, _entryFile(sceneId).path);
+    });
+    // A failed publication must not permanently poison this scene's queue;
+    // the failing future is still returned to its stage() caller.
+    _publicationTails[sceneId] = publication.then<void>(
+      (_) {},
+      onError: (Object _) {},
+    );
+    return publication;
   }
 
   /// Rename yang tahan terhadap ERROR_SHARING_VIOLATION/ERROR_ACCESS_DENIED

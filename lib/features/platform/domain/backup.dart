@@ -29,7 +29,10 @@ class HealthCheck {
   final String id;
   final Map<String, bool> checks;
 
-  bool get allPassed => checks.values.every((v) => v);
+  // Fail-closed (PLAT-hunt-20260914 PLAT-BUG-01): `every` bernilai true secara
+  // vacuous pada koleksi kosong — health check yang belum dijalankan bukan
+  // "sehat". Butuh minimal satu pemeriksaan sebelum boleh meluluskan.
+  bool get allPassed => checks.isNotEmpty && checks.values.every((v) => v);
 }
 
 class RepairAction {

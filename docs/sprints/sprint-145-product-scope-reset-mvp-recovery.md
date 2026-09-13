@@ -13,6 +13,53 @@
 
 **Eksekusi recovery (bukti):** rantai dbf646a revert + c3e52bb/80e5? fifo+test + f08e95f settings + cherry-pick 12 (skip b617086 patch-id duplikat) = 3cc9204; push FF origin+gitlab `3cc9204` TANPA force (ls-remote kedua remote = 3cc9204b); master lokal disegmentasi via update-ref + read-tree + checkout 14 file rantai (0 tumpang tindih dengan WIP sibling, comm -12 = 0) -> tree bersih 9 untracked. Cron v4 masih PAUSED (incident) -> resume setelah entri ini.
 
+### 2026-09-13 - nephthys (cron run285): DB-BUG-01 DIPERBAIKI TDD — SQL-scoped asset count (vs-hunt-20260913-dashboard antrean; renumber dari 284, bentrok entri interaktif sibling 8b18581 ter-push lebih dulu)
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk ff21c4d. Tree
+  bersih dr conflict markers; nol proses flutter/dart/void_scriptor saat mulai.
+  Single-writer RELEASED_TO_HERMES diakui kembali. Run283 eksplisit: kerjakan
+  antrean dashboard (BUG-01 pertama). Nomor 284 dicek bebas saat mulai (grep
+  tail 283) tapi BENTROK dgn entri interaktif run284 sibling yang ter-push
+  tengah-run -> entri ini renumber 285 (milik sendiri, bukan theirs).
+- Verifikasi independen sebelum fix: laporan Referee on-disk run283 = otoritas
+  numbering. DB-BUG-01 CONFIRMED di HEAD live: dashboard_repository.dart
+  loadProjectSnapshot panggil getAllAssets() (full-table, tanpa WHERE) lalu
+  .where(projectId).length in-memory — persis pola hunt-run171 BUG-10 yang
+  sudah dibuang di explorer.
+- Eksekusi TDD satu slice: RED = 2 test baru di
+  test/database/asset_dao_scoped_query_test.dart (countByProject SQL-scoped +
+  interceptor yang mencatat SETIAP full-table SELECT "assets" tanpa WHERE, plus
+  regresi konsumen DashboardRepository snapshot lintas-proyek) -> gagal
+  compile 'countByProject isn't defined' (RED benar: symbol belum ada).
+  GREEN minimal: AssetDao.countByProject pakai selectOnly+id.count() (pola
+  mapan countCharacterModes) + DashboardRepository pakai countByProject.
+- Gates: fokus 4 PASS; regresi test/features/dashboard + test/database 61 PASS
+  0 FAIL; dart analyze scoped (asset_dao + dashboard + test) No issues;
+  dart format owned files exit 0; git diff --check exit 0; flutter analyze
+  (scoped, repo full tidak diulang — HEAD ff21c4d diverifikasi run283, region
+  lain tak disentuh); flutter build windows --debug --no-pub PASS 48,8s;
+  guard PASS post. Native GUI UNVERIFIABLE (cron). Commit scoped 8513fd3
+  (3 file path eksplisit, tanpa git add -A).
+- Concurrency: selama run, working tree mengakumulasi M sibling tak dikenal
+  (ci.yml, release-train.yml, security.yml, pubspec, character_mode refs card,
+  durable_draft_journal, storage_locations_screen, 2 test DELETED). BUKAN milik
+  run ini; tidak disentuh/di-commit/di-restore. Run berikutnya: audit diff
+  sibling itu sebelum memilih slice yang menumpang region-nya.
+- Antrean vs-hunt-20260913-dashboard TERBUKA: DB-BUG-07 Low (retry/invalidate
+  StatisticsPanel error state), DB-BUG-08 Low (error UI auth manusiawi),
+  DB-BUG-04 Low (RecentAssets dead code — hapus/rewire terpisah).
+- Risiko: nol perubahan perilaku user-visible (angka snapshot identik; hanya
+  jalur data access). Interleaved futures tetap (count jalan paralel dgn list
+  lain). Reachability: dashboard = landing screen default.
+- Status: pointer 145.27 tetap PARTIAL; stream corrective_core_mvp. Push:
+  recovery rantai sibling interaktif (8b18581) sudah membawa 8513fd3 ke
+  origin+gitlab FF; verifikasi ls-remote: origin/master = 8b18581 memuat
+  8513fd3. Sisa lokal-only = commit ledger ini saja (amend renumber, belum
+  push).
+- Next action: selesaikan antrean dashboard 07/08/04 ATAU putuskan sibling WIP
+  di atas ATAU keputusan Choi (routing REF-BUG-2/WLD-PARENT-01/02, UI
+  export/import 145.35, push divergensi, lab hardware 145.42).
 ### 2026-09-13 - nephthys (cron run283): hunt region dashboard rantai 3-tahap LULUS + DB-BUG-03 DIPERBAIKI TDD (vs-hunt-20260913-dashboard)
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

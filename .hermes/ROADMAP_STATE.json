@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run283 (cron): hunt region dashboard (16 file, HEAD 4027dcd) rantai 3-tahap delegate LULUS penuh; Referee on-disk otoritas: 9 -> REAL 5 (BUG-01 Medium, BUG-03 Medium, BUG-04/07/08 Low) / dismissed 4. DB-BUG-03 DIPERBAIKI TDD: session==null Create Character kini ke /projects (bukan /studio shell mati) — RED Actual '/studio' -> GREEN; Gates: fokus 1, dashboard 13, shell+routing 69, bootstrap 1, analyze No issues, format 0, diff-check 0, build windows debug PASS 64,5s, guard PASS post. BUG-04 RecentAssets = dead code (nol importer) dijadwalkan terpisah. Antrean terbuka: DB-BUG-01 (DAO countByProject), 07 (retry statistik), 08 (error auth), 04. Native GUI UNVERIFIABLE (cron). Pointer 145.27 tetap PARTIAL; stream corrective_core_mvp; push menunggu Choi (ahead 13; origin +10 bumps). Next: antrean dashboard ATAU keputusan Choi (routing REF-BUG-2/WLD-PARENT-01/02, UI export/import 145.35, push divergensi, lab hardware 145.42).",
+  "last_verified_step": "run285 (cron; renumber dari 284 — bentrok entri interaktif sibling 8b18581 ter-push tengah-run): DB-BUG-01 antrean dashboard DIPERBAIKI TDD — AssetDao.countByProject (selectOnly+count, pola countCharacterModes) dipakai DashboardRepository; full-table getAllAssets()+filter in-memory dibuang dari snapshot. RED compile-fail symbol -> GREEN. Gates: fokus 4, regresi dashboard+database 61 PASS 0 FAIL, analyze scoped No issues, format 0, diff-check 0, build windows debug PASS 48,8s, guard PASS post. Commit 8513fd3 (3 file scoped). Native GUI UNVERIFIABLE (cron). Sibling WIP tak dikenal terakumulasi saat run (ci/workflows, pubspec, character_mode refs, durable_draft_journal, storage_locations, 2 test deleted) — tak disentuh; audit dulu sebelum slice yang menumpang. Antrean dashboard tersisa: DB-BUG-07/08/04 (Low). Pointer 145.27 tetap PARTIAL; stream corrective_core_mvp; push: fix 8513fd3 sudah di origin+gitlab via recovery rantai sibling (8b18581 memuat 8513fd3); sisa lokal-only = ledger renumber ini. Next: antrean 07/08/04 ATAU keputusan Choi (routing REF-BUG-2/WLD-PARENT-01/02, UI export/import 145.35, push divergensi, lab hardware 145.42).",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T23:58:00+07:00",
-  "updated_by": "cron-run283",
+  "updated_at": "2026-09-14T00:05:00+07:00",
+  "updated_by": "cron-run285",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

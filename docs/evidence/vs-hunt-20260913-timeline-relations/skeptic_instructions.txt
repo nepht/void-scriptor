@@ -1,0 +1,20 @@
+SKEPTIC TASK (Stage 2 of 3, scan-only) — Void Scriptor timeline+relations hunt.
+
+FIRST read C:\Users\nepht\AppData\Local\hermes\skills\software-development\adversarial-bug-hunt\references\skeptic.md and follow it exactly.
+
+REPO: D:\VoidScriptor\void_scriptor_multiplatform (HEAD 9ef59dd). Scope: 12 files under
+lib/features/timeline and lib/features/relations (see hunter report for exact files).
+
+Hunter report file — READ IT FIRST: D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260913-timeline-relations\hunter_report.md
+
+For EVERY finding: independently read the actual file and the cited lines plus surrounding
+context and the production callers before judging. Dismiss only when your own expected-value
+rule says so (penalized 2x for wrong dismissal). Also critique the Hunter's method: note
+findings that lack reachability evidence, and check whether the claim survives the local-first
+trust boundary (DB/backup-controlled paths are out of scope).
+
+TOOLS: read_file, search_files, terminal READ-ONLY (no edits, no code execution, no network).
+
+WRITE YOUR FULL REPORT to: D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260913-timeline-relations\skeptic_report.md
+Give per-finding verdict CONFIRMED / DISPROVE / UNCERTAIN with the code you read as evidence.
+End with: TOTAL REVIEWED: <n>, CONFIRMED: <n>, DISPROVED: <n>, UNCERTAIN: <n>.

@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run266 vs-hunt-20260913-importer BUG-5 VERIFIED — antrean KELAR (reference_bulk_importer rollback salinan yatim saat insert gagal; RED trigger RAISE(ABORT) pada tabel quoted \"references\" (reserved keyword pitfall) -> GREEN; fokus 1 PASS + region references 19 PASS; analyzer scoped clean; build windows debug 20,4s; commit 01ab45f; pointer 145.27 tetap PARTIAL)",
+  "last_verified_step": "run267 vs-hunt-20260913-timeline-relations BUG-004 VERIFIED — drag clip berdurasi > scene melempar ArgumentError clamp(0.0,negatif) di timeline workspace; RED gejala terukur -> GREEN upperBound pin 0; fokus 2 + timeline 15 + relations 12 PASS; analyzer scoped clean; build windows debug 20,2s; commit aa961f9; rantai PARTIAL (Hunter delegate lulus, Skeptic 429 2x, verifikasi parent); 4 temuan lain NOT A BUG; pointer 145.27 tetap PARTIAL",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T06:45:00+07:00",
-  "updated_by": "nephthys-cron-run266",
+  "updated_at": "2026-09-13T07:05:00+07:00",
+  "updated_by": "nephthys-cron-run267",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -158,5 +158,24 @@
     "hunt": "docs/evidence/vs-hunt-20260913-importer/",
     "dismissed": "BUG-1 character_reference_binder (copy sebelum delete + fresh UUID), BUG-2/BUG-6 traversal via id UUID lokal = luar batas local-first",
     "delegation_note": "Referee attempt#1 429 upstream (gemini flash-lite); attempt#2 compact brief PASS"
+  },
+  "timeline_relations_hunt_2026_09_13": {
+    "status": "hunt COMPLETE (rantai PARTIAL: Hunter delegate + verifikasi parent Skeptic/Referee) + BUG-004 fixed aa961f9; QUEUE EMPTY untuk region ini",
+    "hunt": "docs/evidence/vs-hunt-20260913-timeline-relations/ (12 file, fingerprint sha256 di scope_hashes.txt, HEAD 9ef59dd)",
+    "confirmed": "BUG-004 Medium: timeline_workspace_screen _moveClip clamp(0.0, negative maxStart) throw ArgumentError; reachabel via ensureTimelineForScene beat-duration tanpa validasi silang",
+    "dismissed": "BUG-001 (fromRecord baca payload bukan undoPayload), BUG-002 (validateTimeline tanpa caller produksi; desain gap), BUG-003 (command-id vs relation-id namespace sengaja), BUG-005 (action track dijamin transaksi yang sama)",
+    "delegation_note": "Skeptic delegate GAGAL 2x HTTP 429 (pin gemini/gemini-3.5-flash-lite habis, preseden run260). Butuh Choi: pulihkan/cabut pin delegation untuk rantai 3-tahap penuh.",
+    "cosmetic_debt": "undoPayload MoveTimelineClipCommand memakai key 'startSeconds' tak pernah dikonsumsi — bukan bug, jangan di-escalate sebagai defect",
+    "next_unscanned_regions": "features/projects (10 file/1037 baris) atau features/world (34 file — wajib dipecah <=20)",
+    "sibling_dirty_fingerprint": {
+      "story_dao": "12a3e5f65c60",
+      "project_database": "bb9d67697642",
+      "coordinator": "d1c3dd192c6e",
+      "story_repository_impl": "8d70d87eaf96",
+      "story_workspace_screen": "c1ee3dfb7c4d",
+      "character_controller": "8e573ee222e3",
+      "character_portrait_card": "852ca32732d6",
+      "character_portrait_test": "5bdaf8c54733"
+    }
   }
 }

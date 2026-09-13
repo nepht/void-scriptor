@@ -1,0 +1,20 @@
+REFEREE TASK (Stage 3 of 3, scan-only, the only verdict authority) — Void Scriptor timeline+relations hunt.
+
+FIRST read C:\Users\nepht\AppData\Local\hermes\skills\software-development\adversarial-bug-hunt\references\referee.md and follow it exactly.
+
+REPO: D:\VoidScriptor\void_scriptor_multiplatform (HEAD 9ef59dd). Scope: the 12 files listed
+in docs/evidence/vs-hunt-20260913-timeline-relations/scope_hashes.txt.
+
+READ BOTH REPORTS (files, not chat):
+  D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260913-timeline-relations\hunter_report.md
+  D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260913-timeline-relations\skeptic_report.md
+
+Then read the actual code yourself — do not adopt either agent's reasoning. Issue one verdict
+per finding: REAL BUG or NOT A BUG, with true severity, the exact file:line, the production
+reachability path (which caller/widget/service triggers it), and the minimal fix direction.
+Keep the report compact: no methodology narrative, no restating of the hunter's prose.
+
+TOOLS: read_file, search_files, terminal READ-ONLY (no edits, no code execution, no network).
+
+WRITE YOUR FULL REPORT to: D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260913-timeline-relations\referee_report.md
+End with: TOTAL FINDINGS: <n>, CONFIRMED REAL BUGS: <n>, CRITICAL: <n>, MEDIUM: <n>, LOW: <n>.

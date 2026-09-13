@@ -1,3 +1,50 @@
+### 2026-09-13 - nephthys (cron run267): hunt region timeline+relations (PARTIAL chain) + BUG-004 clamp crash GREEN
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk 9ef59dd (run266
+  ter-commit; ahead 9 - push tetap keputusan Choi). Conflict markers nihil; proses
+  flutter/dart/void_scriptor nihil. Single-writer RELEASED_TO_HERMES diakui kembali.
+  Sibling dirty DIPRESERVASI TANPA SENTUH: autosave vertical story (coordinator
+  d1c3dd19, story_dao 12a3e5f6, project_database bb9d6769, repository_impl 8d70d87e,
+  screen c1ee3dfb, test untracked; mtime 00:39-01:11, idle >5,5 jam - A3 ACCEPT tetap
+  antri setelah mereka commit) + character region 3 file (8e573ee2/852ca327/5bdaf8c5).
+- Seleksi slice: antrean hunt lama kering; region timeline+relations (12 file,
+  1.083 baris, fingerprint sha256 di docs/evidence/vs-hunt-20260913-timeline-relations/
+  scope_hashes.txt) belum pernah dipindai - wilayah acceptance 145.27 (Timeline core
+  + Relationship Map) -> otorisasi hunt berulang 2026-09-07.
+- Rantai: Stage 1 Hunter delegate LULUS (5 temuan skor 31; 93 dtk). Stage 2 Skeptic
+  delegate GAGAL 2x beruntun HTTP 429 (pin gemini flash-lite habis; percobaan #1 mati
+  tanpa menulis laporan) -> ganti strategi sesuai aturan anti-berputar (preseden
+  run260): verifikasi independen parent per-temuan (Skeptic+Referee digabung,
+  scan-only). Status rantai PARTIAL, tercatat di referee_report.md.
+- Verdict: BUG-004 REAL Medium - _moveClip clamp(0.0, maxStart) melempar ArgumentError
+  saat clip duration > scene duration (reachabel: ensureTimelineForScene impor beat
+  duration tanpa validasi silang thdp estimatedDuration ?? 10; probe empiris
+  clamp(0,-5) THROWS di toolchain ini). BUG-001/002/003/005 NOT A BUG - mekanisme
+  gugur: fromRecord baca payload bukan undoPayload; validateTimeline tanpa caller
+  produksi; command-id vs relation-id namespace sengaja; action track dijamin loop
+  transaksi yang sama. 0 Critical.
+- TDD: RED test/features/timeline/timeline_workspace_oversized_clip_drag_test.dart -
+  percobaan pertama LOLOS-PALSU (chip di luar hit-test bounds Stack + assertif
+  longgar); loop diperketat (start=0, hard expect(updated, isNotNull)) -> gagal
+  persis 'ArgumentError: Invalid argument(s): 0.0' (gejala terukur). GREEN: upperBound
+  dipaku 0 saat maxStart<0, clip parkir di detik 0 tanpa melempar.
+- Regresi/gates: fokus 2 PASS; test/features/timeline 15 PASS/0 FAIL;
+  test/features/relations 12 PASS/0 FAIL (sequential); dart analyze lib+test timeline
+  No issues; dart format gate exit 0; git diff --check exit 0; flutter build windows
+  --debug PASS 20,2s (working tree termasuk WIP sibling - label dirty-scope). Commit
+  scoped aa961f9 (5 path eksplisit, tanpa -A; dirty sibling tak tersentuh).
+- Status: 145.27 tetap PARTIAL; pointer tidak bergerak. Native interaction
+  UNVERIFIABLE dari cron (bug crash-drag terbukti deterministik di gesture tester;
+  tidak ada perubahan layout). Sisa antrean region ini: nihil REAL. Catatan hutang
+  kosmetik (BUKAN bug): bentuk undoPayload move_timeline_clip tak pernah dikonsumsi.
+- Next action: run berikutnya (1) jika sibling autosave sudah commit: A3 ACCEPT
+  review (fokus coordinator/repository + regresi test/features/story); (2) bila masih
+  dirty: region belum terpindai berikutnya = features/world (34 file, perlu pemecahan
+  <=20) ATAU features/projects (10 file) sesuai kuota delegation Choi (restore/cabut
+  pin delegation.model - bila 429 terus, rantai parent-self-audit lagi, label PARTIAL);
+  (3) push backlog menunggu keputusan Choi.
+
 ### 2026-09-13 - nephthys (cron run266): vs-hunt-20260913-importer BUG-5 GREEN — antrean KELAR
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

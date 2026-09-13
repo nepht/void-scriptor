@@ -1,0 +1,31 @@
+HUNT TASK (Stage 1 of 3, scan-only) — Void Scriptor region: timeline + relations vertical.
+
+FIRST read C:\Users\nepht\AppData\Local\hermes\skills\software-development\adversarial-bug-hunt\references\hunter.md and follow it exactly.
+
+REPO: D:\VoidScriptor\void_scriptor_multiplatform (canonical Windows checkout, branch master, HEAD 9ef59dd).
+SCOPE: EXACTLY these 12 files, read every one of them completely, no speculation about unread files:
+  lib/features/relations/application/character_relation_map_service.dart
+  lib/features/relations/application/create_relation_service.dart
+  lib/features/relations/application/relation_command.dart
+  lib/features/relations/application/relation_display_service.dart
+  lib/features/relations/data/relation_repository_impl.dart
+  lib/features/relations/domain/asset_relation.dart
+  lib/features/relations/domain/relation_repository.dart
+  lib/features/timeline/application/create_timeline_service.dart
+  lib/features/timeline/application/move_timeline_clip_command.dart
+  lib/features/timeline/application/timeline_context_service.dart
+  lib/features/timeline/domain/timeline_model.dart
+  lib/features/timeline/presentation/timeline_workspace_screen.dart
+
+You MAY read callers, DAOs, models, and existing tests outside the scope to judge whether a
+defect is reachable in production wiring (read-only). Do not report out-of-scope files as findings.
+
+TOOLS: read_file, search_files, and terminal for READ-ONLY inspection only (git log/blame, ls).
+NO file edits, NO installs, NO network, NO executing target code.
+
+WRITE YOUR FULL REPORT to this exact path (create it): D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260913-timeline-relations\hunter_report.md
+End the file with lines: TOTAL FINDINGS: <n> and TOTAL SCORE: <n>. Then return the same report as your final answer.
+
+Priority: data loss / silent wrong results / broken persistence in a local-first novel IDE.
+This codebase's trust boundary is local-first: path traversal that requires a malicious DB or
+backup file is OUT OF SCOPE. Report reachability honestly.

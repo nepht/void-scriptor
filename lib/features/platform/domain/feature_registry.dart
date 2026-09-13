@@ -34,12 +34,19 @@ class ModuleBoundary {
   final String module;
   final List<String> dependsOn;
 
+  /// Iterative DFS across [all]: true when any dependency path starting at
+  /// this module revisits this module (direct, self, or transitive cycles).
+  /// vs-hunt-20260914-platform PLAT-BUG-02: the old 2-node back-edge check
+  /// missed cycles of length 3+ (A -> B -> C -> A).
   bool hasCircularDependency(Map<String, ModuleBoundary> all) {
-    for (final dep in dependsOn) {
-      final depBoundary = all[dep];
-      if (depBoundary != null && depBoundary.dependsOn.contains(module)) {
-        return true;
-      }
+    final stack = [...dependsOn];
+    final visited = <String>{};
+    while (stack.isNotEmpty) {
+      final node = stack.removeLast();
+      if (node == module) return true;
+      if (!visited.add(node)) continue;
+      final boundary = all[node];
+      if (boundary != null) stack.addAll(boundary.dependsOn);
     }
     return false;
   }

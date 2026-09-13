@@ -1,0 +1,11 @@
+HEAD: aac59484226d9e8a7c07a2035294c971759fe46d  branch master  date 2026-09-13
+
+lib/features/inspector/presentation/inspector_panel.dart 49L sha256:1922128450dc9b65
+lib/features/inspector/presentation/inspector_resolver.dart 47L sha256:48069eca84de54ba
+lib/features/inspector/presentation/inspectors/character_inspector.dart 25L sha256:889673225a9b9a93
+lib/features/inspector/presentation/inspectors/empty_inspector.dart 31L sha256:dfb08b021e953f12
+lib/features/inspector/presentation/inspectors/inspector_body.dart 38L sha256:4fa72f55584b52d8
+lib/features/inspector/presentation/inspectors/wardrobe_inspector.dart 154L sha256:a06bea087a2b8e8e
+lib/features/inspector/presentation/inspectors/weapon_inspector.dart 142L sha256:23d80422f7fc95ff
+lib/features/inspector/presentation/widgets/relation_section.dart 272L sha256:3c835a1b1f30d188
+lib/features/inspector/presentation/widgets/support_relationship_section.dart 665L sha256:590e4a835f993083

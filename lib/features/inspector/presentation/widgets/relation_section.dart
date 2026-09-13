@@ -191,6 +191,16 @@ class RelationSection extends ConsumerWidget {
       builder: (dialogContext) => _AddRelationDialog(assets: assets),
     );
     if (result == null || !context.mounted) return;
+    // Dialog await can straddle a project switch (vs-hunt-20260913-inspector
+    // INS-BUG-04, same class as hunt-run157 BUG-04 already guarded in
+    // SupportRelationshipSection): the asset list and the captured `session`
+    // belong to the project the user was in when the dialog opened. Writing
+    // through them after a switch lands the relation in the previous
+    // project's database. Re-validate before mutating.
+    final current = ref.read(projectSessionProvider).valueOrNull;
+    if (current == null || !identical(current.database, session.database)) {
+      return;
+    }
     final repository = RelationRepositoryImpl(database: session.database);
     await session.mutationRuntime.bus.execute(
       RelationCommand.create(

@@ -1,3 +1,48 @@
+### 2026-09-13 - nephthys (cron run278): hunt features/inspector (9 file) + INS-BUG-04 (Critical) DIPERBAIKI
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk aac5948; saat
+  closeout master bergerak ke b617086 (ledger interaktif run277 — tidak
+  disentuh, nomor diambil 278). Single-writer RELEASED_TO_HERMES diakui kembali.
+  Dua worker `flutter test` (vs_w2i, punya run277) masih hidup saat seleksi →
+  mutasi ditunda sampai proses nihil; tidak ada yang dihentikan.
+- Seleksi: next action run276 eksplisit = hunt region features/inspector
+  (9 file non-generated, 1423 LOC, kandidat run275). Scope+sha256 di
+  docs/evidence/vs-hunt-20260913-inspector/scope_hashes.txt (HEAD aac5948).
+- Rantai 3-TAHAP LULUS penuh (pin gemini flash-lite sehat): Hunter 6 temuan
+  (skor 31) -> Skeptic ACCEPT 5 / DISPROVE 1 -> Referee 5 REAL / 1 dismissed.
+  Verdict on-disk referee_report_inspector.md = otoritas (INS-BUG-N).
+  INS-BUG-05 (wildcard switch resolver) NOT A BUG.
+- INS-BUG-04 (CRITICAL per Referee, verdict induk: Medium — jendela tulis ke DB
+  proyek sebelumnya, bukan korup data aktif): _addRelation RelationSection
+  capture session SEBELUM await showDialog lalu menulis lewat handle basi —
+  kelas bug hunt-run157 BUG-04 yang sudah ditutup di SupportRelationshipSection
+  tapi belum di sini. Jalur delete terbukti fail-closed (baca ulang session
+  post-dialog + getById UUID asing -> null -> abort). Referee klaim delete
+  rentan = overstated; induk koreksi via pembacaan kode.
+- TDD: RED reproduksi mekanismenya persis (dua proyek temporer; switch project
+  saat dialog Add terbuka; Expected empty / Actual [AssetRelation] di A) ->
+  GREEN: revalidasi identical(current.database, session.database) sebelum
+  mutate (pola _isCurrentRepository). INS-BUG-01/02/03/06 = antrean: 01 butuh
+  provider nama karakter (kontrak loadout UX raw-UUID), 02/03 loading/error
+  state AsyncValue, 06 guard _load (build() sudah reload-on-switch; dampak
+  sempit). Belum diperbaiki run ini.
+- Gates: fokus guard test 1/1; regression test/features/inspector 27 PASS +
+  test/features/relations 12 PASS; dart analyze lib+test inspector/relations
+  No issues; dart format owned 0 changed; git diff --check exit 0; flutter
+  build windows --debug PASS 29,0s. Native UNVERIFIABLE (cron; deterministik
+  di widget test). Commit scoped 2 path source/test + evidence.
+- REKONSILIASI DIVERGENSI: origin/master memuat d15ce46 (wave-2 terintegrasi
+  via worktree vs_w2i oleh run277) + ledger-nya sendiri; master lokal berisi
+  b617086 tanpa d15ce46. ahead 4 / behind 3. Bukan keputusan cron: pull/rebase
+  = ranah sesi interaktif/Choi; wilayah inspector disjoin dari wave-2 jadi
+  risiko konflik rendah. Pointer 145.27 tetap PARTIAL; push menunggu Choi.
+- Next action: (1) resolve divergensi master vs origin oleh pemilik sesi
+  interaktif; (2) slice antrean INS-BUG-01 (nama karakter di InspectorBody —
+  bagian kontrak loadout UX) atau INS-BUG-02/03 loading/error state; (3)
+  journal-FIFO autosave dari run277.
+
+
 ### 2026-09-13 - nephthys (interaktif run277): WAVE-2 PILOT PARALEL-FIX 3 KANBAN WORKER + PROTOKOL TERPASANG KE SEMUA EKSEKUTOR
 
 **Objektif**: lanjut pilot (user: "ok lannjut dan jika memurutmu sudah sesuai terapkan di cron v4") — wave-2 = fan-out 3 kartu kanban (wilayah disjunk) + integrasi patch oleh integrator, DAN adopsi protokol ke cron v4.

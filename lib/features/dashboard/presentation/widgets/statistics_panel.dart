@@ -29,9 +29,18 @@ class StatisticsPanel extends ConsumerWidget {
               'Calculating project statistics...',
               style: VoidTypography.body,
             ),
-            error: (error, stack) => const Text(
-              'Project statistics are unavailable.',
-              style: VoidTypography.body,
+            error: (error, stack) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Project statistics are unavailable.',
+                  style: VoidTypography.body,
+                ),
+                TextButton(
+                  onPressed: () => ref.invalidate(dashboardSnapshotProvider),
+                  child: const Text('Try again'),
+                ),
+              ],
             ),
           ),
         ],

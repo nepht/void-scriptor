@@ -74,7 +74,15 @@ class DashboardScreen extends ConsumerWidget {
       body: SafeArea(
         child: session.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(child: Text('$error')),
+          error: (error, stack) => const Center(
+            child: Text(
+              // DB-BUG-08 (vs-hunt-20260913-dashboard): jangan menginterpolasi
+              // teks exception mentah ke UI.
+              'Your session could not be loaded. Please restart Void Scriptor.',
+              textAlign: TextAlign.center,
+              style: VoidTypography.body,
+            ),
+          ),
           data: (authSession) => LayoutBuilder(
             builder: (context, constraints) {
               final desktop = constraints.maxWidth >= 1200;

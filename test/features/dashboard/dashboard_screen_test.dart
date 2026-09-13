@@ -72,4 +72,42 @@ void main() {
     expect(find.text('Recent Projects'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  group('auth error', _authErrorCase);
+}
+
+// vs-hunt-20260913-dashboard DB-BUG-08: the auth error state must never
+// interpolate raw exception text into the UI.
+class _FailingAuthController extends AuthController {
+  @override
+  Future<AuthSession> build() async {
+    throw StateError('auth-provider-raw-dump-9c2f');
+  }
+}
+
+void _authErrorCase() {
+  testWidgets('auth failure shows a friendly message, not raw error text', (
+    tester,
+  ) async {
+    tester.view
+      ..physicalSize = const Size(1440, 1200)
+      ..devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authControllerProvider.overrideWith(_FailingAuthController.new),
+        ],
+        child: const MaterialApp(home: DashboardScreen()),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(find.textContaining('auth-provider-raw-dump-9c2f'), findsNothing);
+    expect(find.textContaining('Bad state: StateError'), findsNothing);
+    expect(find.textContaining('session could not be loaded'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }

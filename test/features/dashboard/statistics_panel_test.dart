@@ -54,4 +54,34 @@ void main() {
       expect(find.text(value), findsOneWidget);
     }
   });
+
+  group('error state', _statisticsErrorCases);
+}
+
+// vs-hunt-20260913-dashboard DB-BUG-07: statistics error state must offer a
+// retry (invalidate) instead of a dead-end static message.
+void _statisticsErrorCases() {
+  testWidgets('error state names the cause and offers a retry action', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          dashboardSnapshotProvider.overrideWith(
+            (ref) => throw StateError('statistics-fixture-7f3a'),
+          ),
+        ],
+        child: const MaterialApp(home: Scaffold(body: StatisticsPanel())),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text('Project statistics are unavailable.'), findsOneWidget);
+    expect(find.text('Try again'), findsOneWidget);
+
+    await tester.tap(find.text('Try again'));
+    await tester.pump();
+    expect(find.text('Project statistics are unavailable.'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }

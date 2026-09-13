@@ -13,5 +13,6 @@
     "lib/database/project/daos/story_dao.dart": "6e2b56ff5aaf7806",
     "lib/database/project/tables/scene_draft_snapshots.dart": "c2ba0d1bd7670861"
   },
-  "notes": "story_workspace_screen.dart excluded (caller surface, 1900 lines); hunter must read all listed files fully"
+  "notes": "story_workspace_screen.dart excluded (caller surface, 1900 lines); hunter must read all listed files fully | executed 2026-09-12 21:40 interactive (pin delegation dicabut izin Choi); 6 file hashes diverifikasi cocok di HEAD baru",
+  "head_executed": "4d905ed206303e3ea7f535268a6f9e9b31d23b80"
 }

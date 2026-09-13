@@ -69,10 +69,19 @@ class StoryDao extends DatabaseAccessor<ProjectDatabase> with _$StoryDaoMixin {
             ..orderBy([(t) => OrderingTerm(expression: t.sortOrder)]))
           .get();
 
+  /// Urutan kronologis snapshot scene. vs-hunt-20260912-autosave BUG-9
+  /// (Low): tie-breaker rowid — clock mundur/duplikat timestamp tidak lagi
+  /// membuat urutan prune nondeterministik (rowid = urutan insert monotonik
+  /// pada tabel rowid SQLite).
+  static const _rowId = CustomExpression<int>('rowid');
+
   Future<List<SceneDraftSnapshot>> getSceneDraftSnapshots(String sceneId) =>
       (select(sceneDraftSnapshots)
             ..where((t) => t.sceneId.equals(sceneId))
-            ..orderBy([(t) => OrderingTerm(expression: t.createdAt)]))
+            ..orderBy([
+              (t) => OrderingTerm(expression: t.createdAt),
+              (t) => OrderingTerm(expression: _rowId),
+            ]))
           .get();
 
   Future<void> insertSceneDraftSnapshot(SceneDraftSnapshotsCompanion entry) =>

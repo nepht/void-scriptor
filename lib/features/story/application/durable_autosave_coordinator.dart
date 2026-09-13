@@ -181,8 +181,19 @@ class DurableAutosaveCoordinator {
       // lama dari teks sebelum delete-all tidak boleh tetap dipulihkan
       // (menghidupkan kembali teks yang sudah dihapus). Acknowledge
       // unconditional hanya untuk transisi kosong tersimpan ini.
+      //
+      // vs-hunt-20260912-autosave BUG-4 (Medium): ack unconditional hanya
+      // sah bila transisi kosong MASIH menjadi draf aktif setelah await
+      // persist. Jika selama await pengguna mengetik teks baru untuk scene
+      // sama (pending tergantikan), entri jurnal baru wajib dipertahankan —
+      // autosave berikutnya yang menyimpan dan meng-ack-nya.
       if (savedContent.trim().isEmpty) {
-        await _journal?.acknowledge(savedSceneId);
+        if (_pendingSceneId == savedSceneId &&
+            _pendingContent == savedContent) {
+          await _journal?.acknowledge(savedSceneId);
+        }
+        // Terkantikan: JANGAN hapus entri stage baru; ack content-aware
+        // konten kosong pun tidak sah (disk memuat teks lain).
       } else {
         await _journal?.acknowledge(savedSceneId, content: savedContent);
       }
@@ -212,6 +223,40 @@ class DurableAutosaveCoordinator {
       _retryRequested = false;
       _schedule();
     }
+  }
+
+  /// vs-hunt-20260912-autosave BUG-5 (Critical): tulis eksternal yang
+  /// MENGGANTIKAN konten draft (snapshot restore) wajib berkoordinasi
+  /// dengan autosave pending, jika tidak debounce berikutnya menimpa hasil
+  /// restore secara diam-diam.
+  ///
+  /// Urutan: flush pending scene lebih dulu (teks user tersimpan dan menjadi
+  /// bahan cadangan pra-restore di repository), baru jalankan [write].
+  /// Bila flush GAGAL (persist error — pending masih terpasang), pending
+  /// dibuang TANPA acknowledge jurnal: entri jurnal adalah satu-satunya
+  /// salinan teks itu dan recovery panel tetap menawarkan restore.
+  /// Suntingan BARU yang datang selama [write] berjalan tidak disentuh —
+  /// itu intensi pengguna pasca-restore.
+  Future<T> aroundExternalDraftWrite<T>(
+    String sceneId,
+    Future<T> Function() write,
+  ) async {
+    final flushedContent = _pendingSceneId == sceneId ? _pendingContent : null;
+    if (flushedContent != null) {
+      await saveNow();
+    }
+    final result = await write();
+    if (flushedContent != null &&
+        _pendingSceneId == sceneId &&
+        _pendingContent == flushedContent) {
+      // Flush gagal — pending basi terhadap hasil restore. Buang dari
+      // autosave; JANGAN hapus entri jurnalnya (satu-satunya salinan).
+      _changeGeneration++;
+      _pendingSceneId = null;
+      _pendingContent = null;
+      _timer?.cancel();
+    }
+    return result;
   }
 
   bool _disposed = false;

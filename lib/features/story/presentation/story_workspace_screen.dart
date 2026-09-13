@@ -1475,9 +1475,16 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     _restoringSnapshotId = snapshotId;
     try {
       try {
-        final content = await repository.restoreSceneDraftSnapshot(
+        // vs-hunt-20260912-autosave BUG-5 (Critical): flush autosave
+        // pending scene ini SEBELUM restore. Tanpa ini, draf yang masih
+        // menunggu debounce menimpa hasil restore secara diam-diam pada
+        // tick berikutnya (restore kalah oleh stale pending).
+        final content = await _autosave.aroundExternalDraftWrite(
           sceneId,
-          snapshotId: snapshotId,
+          () => repository.restoreSceneDraftSnapshot(
+            sceneId,
+            snapshotId: snapshotId,
+          ),
         );
         if (!mounted) return;
         _draft.value = TextEditingValue(text: content);

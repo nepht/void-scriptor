@@ -66,32 +66,21 @@ class StoryRepositoryImpl {
   final ProjectDatabase database;
   final String projectId;
 
-  /// Batas retensi per scene (sesi berjalan; snapshot itu sendiri persisten).
-  final Map<String, int> _retentionLimits = <String, int>{};
-
+  /// vs-hunt-20260912-autosave BUG-8 (Medium): dulu select-then-insert
+  /// tanpa transaction — dua penulis paralel sama-sama melihat null lalu
+  /// yang kedua kena SqliteException PK-collision ('<scene>_draft').
+  /// Upsert atomik menutup window TOCTOU (id deterministik per scene).
   Future<void> saveSceneDraft(String sceneId, String content) async {
-    final existing =
-        await (database.select(database.sceneBeats)..where(
-              (row) =>
-                  row.sceneId.equals(sceneId) & row.beatType.equals('draft'),
-            ))
-            .getSingleOrNull();
-    if (existing == null) {
-      await database
-          .into(database.sceneBeats)
-          .insert(
-            SceneBeatsCompanion.insert(
-              id: '${sceneId}_draft',
-              sceneId: sceneId,
-              beatType: const Value('draft'),
-              content: content,
-            ),
-          );
-    } else {
-      await (database.update(database.sceneBeats)
-            ..where((row) => row.id.equals(existing.id)))
-          .write(SceneBeatsCompanion(content: Value(content)));
-    }
+    await database
+        .into(database.sceneBeats)
+        .insertOnConflictUpdate(
+          SceneBeatsCompanion.insert(
+            id: '${sceneId}_draft',
+            sceneId: sceneId,
+            beatType: const Value('draft'),
+            content: content,
+          ),
+        );
   }
 
   Future<String?> getSceneDraft(String sceneId) async {
@@ -102,6 +91,36 @@ class StoryRepositoryImpl {
             ))
             .getSingleOrNull();
     return draft?.content;
+  }
+
+  /// Retention limit per scene; cache dari project_metadata agar batas
+  /// tidak hilang saat resolver me-rebuild repository (bug-hunt-20260912
+  /// BUG-10 Medium). Nilai ditulis durable via insertSceneDraftSnapshot.
+  final Map<String, int> _retentionCache = <String, int>{};
+
+  Future<int?> _retentionLimitFor(String sceneId) async {
+    if (_retentionCache.containsKey(sceneId)) {
+      return _retentionCache[sceneId];
+    }
+    final key = 'draft_retention:$sceneId';
+    final row = await (database.select(
+      database.projectMetadata,
+    )..where((t) => t.key.equals(key))).getSingleOrNull();
+    final limit = int.tryParse(row?.value ?? '');
+    if (limit != null && limit > 0) _retentionCache[sceneId] = limit;
+    return limit;
+  }
+
+  Future<void> _persistRetentionLimit(String sceneId, int limit) async {
+    _retentionCache[sceneId] = limit;
+    await database
+        .into(database.projectMetadata)
+        .insertOnConflictUpdate(
+          ProjectMetadataCompanion.insert(
+            key: 'draft_retention:$sceneId',
+            value: limit.toString(),
+          ),
+        );
   }
 
   Future<StorySceneNode?> getScene(String sceneId) async {
@@ -311,12 +330,23 @@ class StoryRepositoryImpl {
   }
 
   Future<void> _enforceRetention(String sceneId) async {
-    final limit = _retentionLimits[sceneId];
+    final limit = await _retentionLimitFor(sceneId);
     if (limit == null || limit <= 0) return;
     final all = await database.storyDao.getSceneDraftSnapshots(sceneId);
     if (all.length <= limit) return;
-    final excess = all.length - limit;
-    final toDelete = all.take(excess).map((s) => s.id).toList();
+    // Prune target = non-backup tertua dulu (restoreBackup adalah satu-
+    // satunya salinan teks pra-restore — no-silent-loss menang atas batas
+    // jumlah; pola sama dengan arah fix BUG-11 referee). Tie-breaker
+    // rowid (BUG-9): createdAt identik saat clock mundur tak lagi
+    // menentukan siapa yang dipangkas.
+    var excess = all.length - limit;
+    final toDelete = <String>[];
+    for (final s in all) {
+      if (excess <= 0) break;
+      if (s.kind == 'restoreBackup') continue;
+      toDelete.add(s.id);
+      excess--;
+    }
     if (toDelete.isEmpty) return;
     await database.storyDao.deleteSceneDraftSnapshotByIds(toDelete);
   }
@@ -337,14 +367,20 @@ class StoryRepositoryImpl {
     return result;
   }
 
-  DraftSnapshotKind _kindFromDb(String dbKind) {
+  /// vs-hunt-20260912-autosave BUG-20 (Low): kind tak dikenal TIDAK lagi
+  /// dilapaskan diam-diam ke restoreBackup (menyembunyikan korupsi/migration
+  /// typo dan salah melindungi baris dari prune). Null = tidak kompatibel
+  /// dengan filter enum apa pun; tampilan tetap memakai string DB mentah.
+  DraftSnapshotKind? _kindFromDb(String dbKind) {
     switch (dbKind) {
       case 'auto':
         return DraftSnapshotKind.auto;
       case 'manual':
         return DraftSnapshotKind.manual;
-      default:
+      case 'restoreBackup':
         return DraftSnapshotKind.restoreBackup;
+      default:
+        return null;
     }
   }
 
@@ -388,7 +424,11 @@ class StoryRepositoryImpl {
     if (maxSnapshots <= 0) {
       throw ArgumentError('maxSnapshots must be positive');
     }
-    _retentionLimits[sceneId] = maxSnapshots;
+    // vs-hunt-20260912-autosave BUG-10 (Medium): batas disimpan durable di
+    // project_metadata (bukan map per-instance) — resolver me-rebuild
+    // repository tiap build; setelah restart/prune berikutnya limit masih
+    // berlaku.
+    await _persistRetentionLimit(sceneId, maxSnapshots);
     await _enforceRetention(sceneId);
   }
 }

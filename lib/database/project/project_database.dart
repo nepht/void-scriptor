@@ -764,6 +764,10 @@ class ProjectDatabase extends _$ProjectDatabase {
           'ON timeline_clips (track_id)',
       'CREATE INDEX IF NOT EXISTS idx_timeline_clips_start_seconds '
           'ON timeline_clips (start_seconds)',
+      // vs-hunt-20260912-autosave BUG-19 (Low): snapshot draft difilter
+      // sceneId + diurutkan created_at pada tiap query snapshot/retensi.
+      'CREATE INDEX IF NOT EXISTS idx_scene_draft_snapshots_scene_created '
+          'ON scene_draft_snapshots (scene_id, created_at)',
     ];
     for (final statement in indexStatements) {
       await customStatement(statement);
@@ -771,6 +775,11 @@ class ProjectDatabase extends _$ProjectDatabase {
   }
 
   Future<void> initialize() async {
+    // vs-hunt-20260912-autosave BUG-19: indeks bersifat idempoten
+    // (CREATE INDEX IF NOT EXISTS) dan dijamin ada pada SETIAP open, bukan
+    // hanya pada onCreate/wave upgrade — DB yang sudah berhenti di versi
+    // antara tanpa indeks lama tetap tertutup tanpa bump schema.
+    await _createIndexes();
     await customStatement(
       'INSERT INTO project_metadata (key, value) VALUES (?, ?) '
       'ON CONFLICT(key) DO UPDATE SET value = excluded.value',

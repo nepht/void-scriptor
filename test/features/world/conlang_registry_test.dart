@@ -149,6 +149,38 @@ void main() {
       expect(restored.words(), isEmpty);
     });
   });
+
+  // vs-hunt-20260913-world WLD-PARENT-03: dokumentasi publik berjanji
+  // "[StateError] bila ID tak dikenal"; implementasi lama melempar TypeError
+  // dari `_words[id]!`. Test ini mengunci kontrak terdokumentasi.
+  group('unknown_word_id_contract (WLD-PARENT-03)', () {
+    test('wordById ID tak dikenal melempar StateError, bukan TypeError', () {
+      final registry = _seeded();
+      expect(() => registry.wordById('w-tak-ada'), throwsA(isA<StateError>()));
+    });
+
+    test('addVariant kata tak dikenal melempar StateError', () {
+      final registry = _seeded();
+      expect(
+        () => registry.addVariant(
+          wordId: 'w-tak-ada',
+          variant: const ConlangVariantForm(id: 'vf-x', form: 'x'),
+        ),
+        throwsA(isA<StateError>()),
+      );
+    });
+
+    test('addExample kata tak dikenal melempar StateError', () {
+      final registry = _seeded();
+      expect(
+        () => registry.addExample(
+          wordId: 'w-tak-ada',
+          example: const ConlangUsageExample(text: 'x'),
+        ),
+        throwsA(isA<StateError>()),
+      );
+    });
+  });
 }
 
 ConlangRegistry _seeded() {

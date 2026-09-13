@@ -206,7 +206,15 @@ class ConlangRegistry {
   ];
 
   /// Mengambil satu kata; [StateError] bila ID tak dikenal.
-  ConlangWord wordById(String id) => _words[id]!;
+  /// (vs-hunt-20260913-world WLD-PARENT-03: kontrak terdokumentasi ditegakkan —
+  /// bukan TypeError dari null-check operator.)
+  ConlangWord wordById(String id) {
+    final word = _words[id];
+    if (word == null) {
+      throw StateError('unknown conlang word id: $id');
+    }
+    return word;
+  }
 
   /// Pencarian kamus case-insensitive atas istilah, arti, dan bentuk
   /// varian; [term] kosong/null berarti tanpa filter teks.

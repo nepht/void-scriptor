@@ -1,3 +1,11 @@
+### 2026-09-14 - nephthys (interaktif run294): SERTIFIKASI CI PENUH PERTAMA ERA CI-HIDUP — 4/4 ALL_GREEN di tip 22449b7 (run292 nomor direbut cron STU-BUG-08; pakai 294)
+- Bukti API check-runs di origin/master: Gitleaks history scan=success, Analyze test Linux Web Android=success, Build Windows debug=success, Build macOS+iOS=success. Nol pending, nol non-success.
+- Rantai lima root-cause era CI-mati, KINI SEMUA TERDANNA TERPAGARI: (1) billing mati [Choi buka 13 Sep]; (2) Security gitleaks-action 403 SARIF-upload vs policy read-only [66d4cad -> CLI docker v8.30.1 exit-code gate]; (3) 2 fingerprint fixture dummy sk-tes di portable_secret_exclusion_test [allowlist eksak, rescan 1360 commits no-leaks]; (4) golden login_desktop.png dilahirkan Windows vs Linux 24.14% pixel [7e203a8 pisahkan test perilaku + golden skip non-Windows; Test Linux = 4326 pass 41 skip]; (5) timeout job besar 30 mnt vs kebutuhan ~31-35 mnt [22449b7 -> 45 mnt; Android build kini selesai].
+- Pagar dependabot mayor flutter_riverpod >=3 (788df7a) terpasang SEBELUM sertifikasi; bump minor 16:55-16:57 telanjur masuk dan lolos CI di tip.
+- Implikasi: setiap push master kini tersertifikasi CI nyata (Windows+macOS+Android+web-test+security). Branch protection required-checks = kandidat berikutnya (keputusan Choi; check terbukti = 4 nama di atas).
+- Sisa terbuka: proyek migrasi riverpod 3 terjadwal; opsi golden cross-platform (ci.yml kini Linux-hijau karena golden skip non-Windows — bila mau golden dijaga lintas OS, perlu golden-branch/tooling terpisah atas nama Choi).
+- Next action: laporkan ke Choi: gerbang CI selesai; menangkan 4 check itu sbg required status checks bila diizinkan.
+
 ### 2026-09-14 - nephthys (cron run293): STU-BUG-07 (Low) ditutup TDD — AttentionQueue urut saat insert, next() tanpa re-sort (vs-hunt-20260913-studio)
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53, stream corrective_core_mvp, stability gate PASS). HEAD masuk 16c7f57 (ahead 1 dari origin — commit ledger run292 belum di-push, keputusan push milik Choi). Tree nol M source milik orang lain; 9 untracked artefak lama dipreservasi; conflict markers nihil; nol proses flutter/dart/void_scriptor hidup saat seleksi. Single-writer RELEASED_TO_HERMES (handoff 2026-09-08) diakui kembali.

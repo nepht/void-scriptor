@@ -1,3 +1,11 @@
+### 2026-09-14 - nephthys (interaktif run300): BRANCH PROTECTION master terpasang — gerbang dependabot tertutup permanen (izin 'lanjutkan' pasca-ALL_GREEN run294; nomor 295-299 direbut cron STU/PLAT/EXP selaras)
+- PUT /branches/master/protection = 200; baca-balik: required contexts = [Analyze, test, Linux, Web, Android | Build Windows debug | Build macOS and iOS simulator | Gitleaks history scan]; strict=false; enforce_admins=false => cron/direct-push admin tetap jalan, yang terkunci jalur PR/merge.
+- Bukti berfungsi: PR #15 (drift) mergeable_state=BLOCKED tanpa keempat check hijau. Auto-merge dependabot keenam PR open = OFF (GraphQL). Celah insiden run284 kini butuh 2 kunci: CI hijau DAN merge manual.
+- 6 PR dependabot open (10,12-16): sebagian konten SUDAH ada di master via merge langsung 16:55-16:57; TIDAK kukutup (komunikasi eksternal = hak Choi; rekom: biarkan disupersede / tutup massal manual).
+- Push ini juga menyalurkan 10 commit cron lokal (run295-299: STU-BUG-07/08? — lihat entri mereka) ke origin (standing auth gates-hijau; origin masih di b82ac60).
+- Peta pagar final: billing on + dependabot mayor riverpod blokir + Security read-only + golden platform-safe + timeout 45m + REQUIRED CHECKS. Insiden tipe run284 tak dapat terulang.
+- Next action: keputusan Choi tinggal: proyek migrasi riverpod 3, REF-BUG-2, 145.43-50, nasib 6 PR dependabot.
+
 ### 2026-09-14 - nephthys (cron run299): adversarial-bug-hunt region features/export/domain SELESAI + EXP-BUG-04 (Low) ditutup TDD — _preview surrogate-safe (vs-hunt-20260914-export)
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53, stream corrective_core_mvp ACTIVE, stability gate PASS). HEAD masuk 3136225 (ledger run298; ahead 8 dari origin — push tetap milik Choi). Tree nol M source milik orang lain; 9 untracked artefak lama dipreservasi; conflict markers nihil; nol proses flutter/dart/void_scriptor hidup saat seleksi. Single-writer RELEASED_TO_HERMES diakui kembali. Nomor run 299 bebas bentrok (grep nol di ledger).

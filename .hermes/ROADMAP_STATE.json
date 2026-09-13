@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run268 vs-hunt-20260913-projects PRJ-BUG-02 VERIFIED — createProject localPath non-kosong dipakai sbg root paket (kontrak trap required-param diabaikan); rantai 3-tahap delegate LULUS penuh (4 temuan -> 1 REAL Low, 3 NOT A BUG); RED->GREEN fokus 2 PASS; region projects 25 PASS; konsumen luar 7 PASS; analyzer scoped clean; format gate exit 0; build windows debug 25,3s; commit 0fa679b; pointer 145.27 tetap PARTIAL",
+  "last_verified_step": "run270 vs-hunt-20260913-world PARTIAL-rantai (Hunter delegate LULUS lalu 429; Skeptic delegate 429 total; Referee=audit induk) - 6/6 klaim Hunter DISPROVED (2 fabrikasi), 3 REAL Low; WLD-PARENT-03 kontrak StateError wordById TEPIK TypeError -> RED _TypeError terekam -> GREEN fokus 10/10; regresi world 99 PASS; analyzer No issues; commit 26f9c7b; WLD-PARENT-01/02 terbuka (non-production-reachable); pointer 145.27 tetap PARTIAL",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T08:05:00+07:00",
-  "updated_by": "nephthys-cron-run269",
+  "updated_at": "2026-09-13T09:40:00+07:00",
+  "updated_by": "nephthys-cron-run270",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -178,5 +178,13 @@
       "character_portrait_card": "852ca32732d6",
       "character_portrait_test": "5bdaf8c54733"
     }
+  },
+  "world_hunt_2026_09_13": {
+    "status": "hunt COMPLETE (rantai PARTIAL: Hunter delegate + Referee audit induk; Skeptic delegate 429) + WLD-PARENT-03 fixed 26f9c7b",
+    "hunt": "docs/evidence/vs-hunt-20260913-world/ (scope_files 18, scope_hashes.txt sha256, hunter_report.md, referee_report_world.md; HEAD f1c49b4)",
+    "confirmed": "WLD-PARENT-03 Low: doc kontrak [StateError] vs impl null-check TypeError di ConlangRegistry.wordById (addVariant/addExample ikut) -> FIXED TDD; WLD-PARENT-01 PredatorPressure escapeRoutes=0 (non-prod, OPEN); WLD-PARENT-02 FloatingOrigin tanpa validasi rentang (non-prod, OPEN)",
+    "dismissed": "WLD-BUG-01 climate division-by-zero (tak ada pembagian); WLD-BUG-02 registry mutable (unmodifiable/baru); WLD-BUG-03 unnormalized keys (sudah lowercase di index/search); WLD-BUG-04 coordinate clamping (Planet clamp; GeoCoordinate isValid by-design dipin test); WLD-BUG-05 JSON deserialization (FABRIKASI - file tak punya parser); WLD-BUG-06 unbounded loop (guard limit ada)",
+    "region_note": "domain world 109.17-109.19/110 UNROUTED ke shell (grep import luar-region = nol) -> semua temuan non-production-reachable kecuali API publik registry",
+    "delegation_note": "pin gemini flash-lite 429 stage 2/3 lagi (preseden run267). Jangan cabut permanen; probe era kuota (run262 LULUS penuh)."
   }
 }

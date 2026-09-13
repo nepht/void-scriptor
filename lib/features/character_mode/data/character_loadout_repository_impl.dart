@@ -56,12 +56,17 @@ class CharacterLoadoutRepositoryImpl implements CharacterLoadoutRepository {
     }
 
     await database.transaction(() async {
-      if (slot.multiplicity == LoadoutSlotMultiplicity.single) {
-        await (database.delete(database.characterLoadoutEntries)..where(
-              (row) => row.modeId.equals(modeId) & row.slot.equals(slot.value),
-            ))
-            .go();
-      }
+      // vs-hunt-20260913-loadout LDT-BUG-03: setSlot adalah operasi SET per
+      // (modeId, slot) untuk SEMUA multiplicity. Branch 'single only' yang
+      // lama membuat replace pada accessory/carried_item menyisipkan baris
+      // kedua sambil meninggalkan ikatan lama — penumpukan senyap yang tidak
+      // pernah terlihat dialog (editor menyimpan satu nilai per slot).
+      // Kontrak 'no duplicates for multiple slots' yang sudah dikunci
+      // updateQuantity kini ditegakkan di jalur set juga.
+      await (database.delete(database.characterLoadoutEntries)..where(
+            (row) => row.modeId.equals(modeId) & row.slot.equals(slot.value),
+          ))
+          .go();
       await database.characterModeDao.insertLoadoutEntry(
         db.CharacterLoadoutEntriesCompanion.insert(
           id: const Uuid().v4(),

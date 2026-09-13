@@ -44,6 +44,14 @@ LoadoutSlotChange loadoutSlotChange({
   return LoadoutSlotChange.replace;
 }
 
+/// vs-hunt-20260913-loadout LDT-BUG-03b: the quantity stepper may only appear
+/// for slots whose validator accepts quantity > 1. The old UI gate was looser
+/// than the repository (`multiple` multiplicity), so tapping '+' on an
+/// accessory and saving threw ArgumentError('accessory supports quantity 1
+/// only'). One source of truth = validateLoadoutQuantity.
+bool loadoutSlotSupportsQuantity(LoadoutSlot slot) =>
+    validateLoadoutQuantity(slot, 2) == null;
+
 class CharacterModeSection extends ConsumerWidget {
   const CharacterModeSection({
     super.key,
@@ -372,9 +380,7 @@ class _ModeLoadoutCard extends ConsumerWidget {
   }
 
   bool _slotSupportsQuantity(LoadoutSlot slot) =>
-      slot.multiplicity == LoadoutSlotMultiplicity.multiple ||
-      slot == LoadoutSlot.primaryWeapon ||
-      slot == LoadoutSlot.secondaryWeapon;
+      loadoutSlotSupportsQuantity(slot);
 
   Future<db.Asset?> _createAsset(
     BuildContext context,

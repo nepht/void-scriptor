@@ -279,6 +279,14 @@ class ExportPreflightValidator {
 
   static String _preview(String text, int limit) {
     if (text.length <= limit) return text;
-    return '${text.substring(0, limit - 1)}…';
+    var end = limit - 1;
+    // vs-hunt-20260914-export EXP-BUG-04: jangan membelah surrogate pair —
+    // high surrogate sebagai unit terakhir yang disertakan pasti kehilangan
+    // pasangannya (low ada di `end`, tidak ikut terpotong).
+    if (end > 0) {
+      final last = text.codeUnitAt(end - 1);
+      if (last >= 0xD800 && last <= 0xDBFF) end -= 1;
+    }
+    return '${text.substring(0, end)}…';
   }
 }

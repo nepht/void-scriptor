@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run280 (cron): INS-BUG-02+03 closed via 9ef1e2b - Wardrobe/Weapon inspector kini .when eksplisit (loading=indikator+label, error=tampil, null='Unknown asset'); token UUID mentah tak pernah dirender (kontrak loadout UX). RED 8 test (6 gagal sesuai mekanisme) -> GREEN 8/8; fokus 14 PASS; regression inspector+weapon+wardrobe 49 PASS; relations journey 1 PASS; analyze repo No issues; format owned 0 changed; diff-check 0; build windows debug PASS 28,4s; guard PASS. Test lama yang mem-pin token (resolver/cross-project/weapon_inspector) adaptasi intent-preserving. Antrean inspector tersisa INS-BUG-06 (guard _load). Divergensi master 9ef1e2b vs origin f3c3bc4 ranah interaktif/Choi; push menunggu Choi. Pointer 145.27 tetap PARTIAL. Next: slice INS-BUG-06.",
+  "last_verified_step": "run281 (cron): INS-BUG-06 DIVERIFIKASI TUTUP di HEAD (bukan fix baru) - guard rekonsiliasi sessionId!=_loadedSessionId di SupportRelationshipSection.build() sudah ada sejak 265b49d (pra-scan hunt aac5948) sehingga stale _load() self-heal; dua regresi temporer-proyek (close-mid-flight + switch A->B mid-flight) PASS tanpa patch lib; probe negatif confirms bug tidak tereproduksi (preseden run241 BUG-09 NOT A GAP). Kontrak dikunci durable di test/features/inspector/support_relationship_section_stale_load_guard_test.dart. Gates: fokus 2 PASS; region inspector 39 PASS; analyze No issues; format owned 0; diff-check 0; build windows debug PASS 21.8s; guard PASS. Antrean hunt inspector HABIS (01/02/03/04/05/06 closed). Nol mutasi lib. Pointer 145.27 tetap PARTIAL; stream corrective_core_mvp; push menunggu Choi. Next: acceptance kanonis 145.27 - peta bukti 145.24/28/30 + sisa matriks 145.42 (fault injection rollback-gagal terbuka per handoff 145.34); keputusan Choi: routing REF-BUG-2/WLD-PARENT-01/02 non-prod + UI export/import karakter.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T17:05:00+07:00",
-  "updated_by": "nephthys-cron-run280",
+  "updated_at": "2026-09-13T21:40:00+07:00",
+  "updated_by": "nephthys-cron-run281",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

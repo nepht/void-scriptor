@@ -1,3 +1,57 @@
+### 2026-09-13 - nephthys (cron run281): INS-BUG-06 DIVERIFIKASI TUTUP di HEAD — guard rekonsiliasi build() sudah self-heal; kontrak dikunci 2 regresi; antrean hunt inspector HABIS
+
+- Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,
+  stream corrective_core_mvp, stability gate PASS). HEAD masuk d3900c36; tree
+  bersih kecuali artefak untracked lama (tak disentuh). Nol proses
+  flutter/dart/void_scriptor lain. Kanban tak tersedia di sesi ini — radar
+  ledger: run280 close, nol executor aktif terdokumentasi. Single-writer
+  RELEASED_TO_HERMES diakui kembali (re-acknowledgement).
+- Seleksi: next action run280 eksplisit = slice INS-BUG-06 (guard _load setState
+  vs sesi ganti di support_relationship_section; verdict on-disk Referee
+  vs-hunt-20260913-inspector = otoritas, REAL BUG Medium, disarankan capture
+  session-id di _load).
+- Audit HEAD (Phase 1 systematic-debugging, bukan terapkan patch buta): grep
+  `git log -S` menunjuk guard "Project switched under this section" sudah ada
+  di support_relationship_section.dart sejak 265b49d (run151) — SEBELUM scan
+  hunt (HEAD aac5948 diverifikasi: baris 185-194 berisi rekonsiliasi
+  sessionId != _loadedSessionId + reset _supports=null + reload post-frame).
+  Mekanisme klaim (setState tanpa re-check sesi) memang ada secara harfiah di
+  _load, tapi hasil akhir UI self-heal: build() berikutnya selalu membuang
+  state sesi lama sebelum frame merender.
+- Repro loop 2 skenario (test baru
+  support_relationship_section_stale_load_guard_test.dart, dua proyek
+  temporer, provider session di-swap mid-flight di dalam runAsync):
+  (1) load in-flight + proyek ditutup -> baris 'Byte' proyek lama TIDAK
+  pernah dirender (probe negatif findsOneWidget GAGAL = bug tidak
+  tereproduksi; hasil benar findsNothing PASS), state tetap 'Loading...'
+  not-ready sesuai kontrak hunt-run157 BUG-07; (2) switch A->B mid-flight ->
+  hasil A basi tertelan reload B; 'Sable' tampil, 'Byte' nol, DB kedua
+  proyek utuh (readback repository.listSupports = 1 baris milik sendiri).
+  Kedua tes PASS TANPA patch lib apa pun -> verdict: INS-BUG-06 = sudah
+  tertutup guard yang ada di HEAD; klasifikasi preseden run241 BUG-09
+  (claim Medium -> NOT A GAP at HEAD), bukan fix baru.
+- Deliverable slice = kunci kontrak durable (2 regresi) supaya guard build()
+  yang menutupi gap _load tidak bisa hilang tanpa tes ini merah. Nol mutasi
+  lib/ — net diff region = nol; implementasi Referee-suggested (capture id di
+  _load) TIDAK diterapkan: tidak mengubah perilaku yang bisa diamati dan
+  akan jadi dead code berdampingan dengan guard yang sudah terbukti.
+- Gates: fokus 2 PASS; regression test/features/inspector SELURUHNYA 39 PASS
+  0 FAIL; dart analyze seluruh repo No issues; dart format owned (1 changed ->
+  0); git diff --check exit 0; flutter build windows --debug --no-pub PASS
+  21,8s; roadmap_guard PASS. Native UNVERIFIABLE (cron; deterministik di
+  widget test dua proyek). Commit scoped (2 path: test baru + ledger + state).
+- Antrean hunt inspector: HABIS (01 run279, 02+03 run280, 04 run278, 05
+  dismissed/verified, 06 run281 verified-closed). Next: kembali ke acceptance
+  kanonis 145.27 — petakan bukti slice 145.24/28/30 yang berjalan + sisa
+  matriks 145.42 (fault injection rollback-gagal masih terbuka per handoff
+  145.34), region non-prod WLD-PARENT-01/02 dan REF-BUG-2 butuh keputusan
+  routing Choi, product decision character export/import UI masih menunggu.
+- Status: 145.27 tetap PARTIAL; stream corrective_core_mvp; push menunggu
+  Choi (divergensi master d3900c36 vs origin tetap ranah interaktif — jangan
+  pull di tree untracked artefak).
+
+
+
 ### 2026-09-13 - nephthys (cron run280): INS-BUG-02+03 DIPERBAIKI — Wardrobe/Weapon inspector tak render UUID mentah; antrean inspector tersisa 06
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53,

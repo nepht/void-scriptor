@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run290 (cron): STU-BUG-01 (Medium, vs-hunt-20260913-studio) CLOSED TDD - UnknownProductionTaskException typed di production_pipeline.dart (firstWhere tanpa orElse bocor StateError mentah). RED gagal tepat mekanisme klaim; GREEN; region studio 38 PASS; full suite +4359 ~1 exit 0 (+5 dari baseline run289); analyze No issues; format 0; diff-check 0; build windows debug PASS 27,7s; guard PASS pre+post. ANTREAN terbuka: STU-BUG-03 (Medium - butuh keputusan bentuk kontrak repository append-only) + STU-BUG-06/07/08 (Low); region hunt berikutnya features/platform (20 file). Zombie flutter_tester/dart 19:59 diaudit idle-total (CPU 0,05 dtk) - bukan eksekutor, tidak dihentikan. Pointer 145.27 PARTIAL; stream corrective_core_mvp. Keputusan Choi menunggu: routing REF-BUG-2/WLD-PARENT, UI export/import character, 145.43-50, lab hardware 145.42.",
+  "last_verified_step": "run292 (cron): STU-BUG-08 (Low, vs-hunt-20260913-studio) CLOSED TDD - ModelRouter.select kini case-insensitive + mengembalikan nama model terdaftar (bukan string statis 'local'). RED gagal tepat mekanisme (Local Model/LOCAL -> 'remote'); GREEN; region studio 44 PASS; full suite +4365 ~1 exit 0 (+6 dari baseline run290 +4359); analyze No issues; format 0; diff-check 0; build windows debug PASS 25,2s; guard PASS pre+post. Commit kode d5eb18a scoped, TIDAK di-push (keputusan push milik Choi). Tabrakan nomor run291 dgn sibling interaktif (7e203a8/1fbb575 wilayah disjunk) -> entri cron direnumber run292. STU-BUG-01 diverifikasi CLOSED di HEAD (fac447d), tidak diulang. ANTREAN terbuka: STU-BUG-03 (Medium - butuh keputusan bentuk kontrak repository) + STU-BUG-06/07 (Low); region hunt berikutnya features/platform (20 file). Pointer 145.27 PARTIAL; stream corrective_core_mvp. Keputusan Choi menunggu: routing REF-BUG-2/WLD-PARENT, UI export/import character, 145.43-50, lab hardware 145.42, pemetaan scope 145.27.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-13T23:55:00+07:00",
-  "updated_by": "cron-run289",
+  "updated_at": "2026-09-14",
+  "updated_by": "nephthys cron run292",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -223,7 +223,7 @@
   "last_worker_run": "run291",
   "note": "run291: golden Windows-vs-Linux 24.14% = satu-satunya CI fail; dipisah+skip non-Windows (7e203a8); run besar 4319/1/40; sertifikasi tip menunggu poller",
   "studio_hunt_2026_09_13_run289": {
-    "status": "hunt COMPLETE (rantai 3-tahap delegate penuh LULUS) + STU-BUG-02 fixed; QUEUE: STU-BUG-01/03 Medium + 06/07/08 Low (semua domain-only)",
+    "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",
     "confirmed": "02 Critical (bypass guard delete via case/whitespace) FIXED; 01 Medium firstWhere tanpa orElse; 03 Medium map overwrite lead; 06/07/08 Low",
     "dismissed": "04 heuristik injection filter by-design (dipin operations_safety_test); 05 penolakan tipe chat by-design (dipin studio_communication_test)",

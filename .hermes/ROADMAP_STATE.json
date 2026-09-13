@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run292 (cron): STU-BUG-08 (Low, vs-hunt-20260913-studio) CLOSED TDD - ModelRouter.select kini case-insensitive + mengembalikan nama model terdaftar (bukan string statis 'local'). RED gagal tepat mekanisme (Local Model/LOCAL -> 'remote'); GREEN; region studio 44 PASS; full suite +4365 ~1 exit 0 (+6 dari baseline run290 +4359); analyze No issues; format 0; diff-check 0; build windows debug PASS 25,2s; guard PASS pre+post. Commit kode d5eb18a scoped, TIDAK di-push (keputusan push milik Choi). Tabrakan nomor run291 dgn sibling interaktif (7e203a8/1fbb575 wilayah disjunk) -> entri cron direnumber run292. STU-BUG-01 diverifikasi CLOSED di HEAD (fac447d), tidak diulang. ANTREAN terbuka: STU-BUG-03 (Medium - butuh keputusan bentuk kontrak repository) + STU-BUG-06/07 (Low); region hunt berikutnya features/platform (20 file). Pointer 145.27 PARTIAL; stream corrective_core_mvp. Keputusan Choi menunggu: routing REF-BUG-2/WLD-PARENT, UI export/import character, 145.43-50, lab hardware 145.42, pemetaan scope 145.27.",
+  "last_verified_step": "run293 (cron): STU-BUG-07 (Low, vs-hunt-20260913-studio) CLOSED TDD - AttentionQueue tidak lagi re-sort tiap next(); add() binary-insert menjaga invariant descending-priority (equal priority FIFO), next() tinggal removeAt(0). RED probe _CountingItem menghitung pembacaan prioritas: drain 24 item Expected 0 Actual 816 (tepat mekanisme re-sort); GREEN; 3 test penjaga intent hijau sejak awal tanpa pelemahan. Region test/features/studio 48 PASS / 0 FAIL (dua eksekusi independen exit 0); full suite +4370 ~1 exit 0 (+4 slice ini, +1 split golden sibling 7e203a8); analyze No issues; format 0 changed; diff-check 0; build windows debug PASS 19,9s; guard PASS pre+post. Commit 2da4623 scoped 2 file, TIDAK di-push (keputusan push milik Choi). Sibling 22449b7 (ci timeout 30->45m) wilayah disjunk dipreservasi. 145.34 rollback-failure diverifikasi ulang sudah CLOSED run227, tidak diulang. ANTREAN terbuka: STU-BUG-03 (butuh keputusan kontrak repository) + STU-BUG-06 (butuh keputusan normalisasi latency); region hunt berikutnya features/platform (20 file). Keputusan Choi menunggu: routing REF-BUG-2/WLD-PARENT, UI export/import character, 145.43-50, lab hardware 145.42, pemetaan scope 145.27, STU-BUG-03/06. Pointer 145.27 PARTIAL; stream corrective_core_mvp.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-14",
-  "updated_by": "nephthys cron run292",
+  "updated_by": "nephthys cron run293",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

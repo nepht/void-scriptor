@@ -485,6 +485,12 @@ class _CrashWindowProbeMoveService implements ProjectMoveService {
 
   final Future<void> Function(Directory moved) _onMoved;
 
+  // The probe never injects a rename; it delegates to the real service and
+  // only observes the journal after the move lands.
+  @override
+  final Future<Directory> Function(String from, String to)? renameOverride =
+      null;
+
   @override
   Future<Directory> movePackage({
     required Directory package,

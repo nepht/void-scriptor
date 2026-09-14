@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-14T10:30:00+07:00",
-  "updated_by": "cron run304 (nephthys)",
+  "updated_at": "2026-09-14T10:55:00+07:00",
+  "updated_by": "nephthys (cron run305)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -221,7 +221,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run301",
-  "note": "run302: region pov/spoiler/lore domain selesai; antrean CT nol. Delegation model dipindah ke cx/gpt-5.6-luna (flash-lite 429 quota). Keputusan Choi menunggu: REF-BUG-2 routing, STU/PLAT-BUG, DB-BUG-04, 145.43-50, lab hardware 145.42, wrangler login, PR dependabot, riverpod3.",
+  "note": "run305: vs-hunt-20260914-wardrobe-weapon selesai, WBUG-5/6 closed (41c01f3). Keputusan Choi menunggu: routing REF-BUG-2/WLD-PARENT, UI export/import character, 145.43-50, lab hardware 145.42, pemetaan scope 145.27, BUI-BUG-01/02, STU-BUG-03/06, PLAT-BUG-03/04, wrangler login, 6 PR dependabot, migrasi riverpod 3.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",
@@ -252,6 +252,19 @@
     ],
     "fixed_later": [
       "BUI-BUG-04 (commit bb5c4f2, run304, TDD RED->GREEN; gates full suite 4414 PASS)"
+    ]
+  },
+  "wardrobe_weapon_hunt_2026_09_14_run305": {
+    "scope": "lib/features/wardrobe + lib/features/weapon (16 non-generated Dart files)",
+    "head_at_hunt": "b17dd6e9968af71018fd14b20472c1be29e795f0",
+    "chain": "Hunter 6 -> Skeptic disproved 4 -> Referee 2 REAL (WBUG-5 wardrobe, WBUG-6 weapon; both Medium) / 4 dismissed",
+    "reports": "docs/evidence/vs-hunt-20260914-wardrobe-weapon/ (committed 69be48f)",
+    "fixed_this_run": [
+      "WBUG-5+WBUG-6 (commit 41c01f3, TDD RED->GREEN; focused 13 PASS; regions wardrobe 60 + weapon 65 PASS; consumers 124 PASS; flutter analyze full No issues; build windows debug PASS; git diff --check 0)"
+    ],
+    "queue_remaining": [
+      "optional Low debt: project-ownership scoping on dismissed BUG-1..4 (defense-in-depth; per-project DB blocks claimed path)",
+      "native Windows journey wardrobe/weapon workspace UNVERIFIABLE dari cron"
     ]
   }
 }

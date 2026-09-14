@@ -38,10 +38,21 @@ class WordTargetDayStamp {
 
   /// Menurunkan kunci hari dari instan UTC plus offset menit eksplisit
   /// zona penulis; tidak pernah membaca zona jam host.
+  ///
+  /// [utcInstant] wajib berstatus UTC ([ArgumentError] bila non-UTC):
+  /// `DateTime` lokal sudah membawa offset host sehingga hasil pergeseran
+  /// menjadi salah basis (vs-hunt-20260914-story STORY-08).
   static WordTargetDayStamp fromUtcInstant(
     DateTime utcInstant, {
     required int offsetMinutes,
   }) {
+    if (!utcInstant.isUtc) {
+      throw ArgumentError.value(
+        utcInstant,
+        'utcInstant',
+        'must be UTC; use DateTime.utc or toUtc()',
+      );
+    }
     final shifted = utcInstant.add(Duration(minutes: offsetMinutes));
     final y = shifted.year.toString().padLeft(4, '0');
     final m = shifted.month.toString().padLeft(2, '0');
@@ -123,12 +134,16 @@ class WordTargetTracker {
   }
 
   /// Menambah hitungan kata tertulis pada satu lingkup; [ArgumentError]
-  /// bila count bukan bilangan positif.
+  /// bila scopeKey kosong/blank (setidaknya satu non-spasi) atau count
+  /// bukan bilangan positif — guard yang sama dengan [setTarget].
   void recordWords({
     required WordTargetLevel level,
     required String scopeKey,
     required int count,
   }) {
+    if (scopeKey.trim().isEmpty) {
+      throw ArgumentError('scopeKey must not be blank');
+    }
     if (count <= 0) {
       throw ArgumentError('count must be positive');
     }

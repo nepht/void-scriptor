@@ -170,14 +170,28 @@ class ContradictionAnalysisPipeline {
 
   /// Menjalankan [rules] atas [subjects] dalam [scope], menyaring temuan
   /// yang sedang di-dismiss, dan mengembalikan laporan deterministik.
+  ///
+  /// Prasyarat: setiap [SubjectSnapshot.subjectId] datang tepat sekali.
+  /// Dua snapshot berbeda dengan ID sama melempar [ArgumentError] alih-alih
+  /// membuang salah satunya diam-diam (vs-hunt-20260914-story STORY-01);
+  /// pengulangan instance yang sama identik di-idempotent-kan.
   ContradictionAnalysisResult scan({
     required Iterable<ContradictionRule> rules,
     required Iterable<SubjectSnapshot> subjects,
     ContradictionScanScope scope = const ContradictionScanScope(),
   }) {
-    final byId = <String, SubjectSnapshot>{
-      for (final subject in subjects) subject.subjectId: subject,
-    };
+    final byId = <String, SubjectSnapshot>{};
+    for (final subject in subjects) {
+      final previous = byId.putIfAbsent(subject.subjectId, () => subject);
+      if (!identical(previous, subject)) {
+        throw ArgumentError.value(
+          subject.subjectId,
+          'subjects',
+          'memuat subjectId duplikat dengan snapshot berbeda; '
+              'satu subjek harus datang tepat sekali',
+        );
+      }
+    }
     final scopedSubjects = scope.isFullScan
         ? byId.values.toList(growable: false)
         : [

@@ -26,7 +26,8 @@ class FidelityReport {
 ///             dengan teks yang sudah di-unescape dari XML.
 ///
 /// Prasyarat yang diperiksa (no-break 145.24):
-///   1. judul story muncul sekali, di posisi pertama;
+///   1. judul story berada di posisi pertama sebagai heading/paragraf
+///      Title (bukan penghitungan substring mentah di seluruh dokumen);
 ///   2. hunk terstruktur [chapter -> [scene -> [draft-line]]];
 ///   3. urutan mengikuti ordering yang diberikan pemanggil (dari database);
 ///   4. tidak ada kehilangan konten (setiap baris draft hadir utuh).
@@ -47,9 +48,15 @@ class StoryExportFidelity {
       expectHunks,
     );
 
-    final titleCount = expectTitle.allMatches(markdown).length;
-    if (titleCount != 1) {
-      failures.add('judul story muncul $titleCount kali (harus tepat 1)');
+    // Prasyarat 1 diverifikasi struktural: baris pertama wajib heading
+    // judul yang diharapkan. Penghitungan substring mentah atas seluruh
+    // dokumen (vs-hunt-20260914-story STORY-07) salah menolak export sah
+    // ketika teks judul muncul ulang di sinopsis/draf.
+    if (lines.isEmpty || lines.first != '# $expectTitle') {
+      failures.add(
+        'markdown: baris pertama "${lines.isEmpty ? '' : lines.first}" '
+        'bukan "# $expectTitle"',
+      );
     }
     if (lines.length != expected.length) {
       failures.add(
@@ -107,9 +114,20 @@ class StoryExportFidelity {
     final failures = <String>[];
     final paragraphs = _parseParagraphs(documentXml);
 
-    final titleCount = expectTitle.allMatches(documentXml).length;
-    if (titleCount != 1) {
-      failures.add('judul story muncul $titleCount kali (harus tepat 1)');
+    // Prasyarat 1 diverifikasi struktural atas paragraf ter-parse (teks
+    // sudah di-unescape): posisi pertama harus paragraf Title berjodoh
+    // dengan judul. Penghitungan substring mentah pada XML (vs-hunt-20260914-story
+    // STORY-07) menghitung 0 untuk judul ber-entitas XML dan salah menolak
+    // saat teks judul berulang di isi.
+    if (paragraphs.isEmpty ||
+        paragraphs.first.style != 'Title' ||
+        paragraphs.first.text != expectTitle) {
+      final got = paragraphs.isEmpty ? '<kosong>' : paragraphs.first.text;
+      failures.add(
+        'docx: paragraf pertama (style: '
+        '${paragraphs.isEmpty ? null : paragraphs.first.style}, text: "$got") '
+        'bukan Title "$expectTitle"',
+      );
     }
 
     final expected = <_DocxParagraph>[

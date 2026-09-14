@@ -1,0 +1,23 @@
+adversarial-bug-hunt STAGE 1/3 — HUNTER
+
+Target repo (canonical, Windows): D:\VoidScriptor\void_scriptor_multiplatform
+HEAD at scan start: b17dd6e9968af71018fd14b20472c1be29e795f0
+Scope: EXACTLY the 16 files listed in:
+  D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260914-wardrobe-weapon\scope_files.txt
+(lib/features/wardrobe/** and lib/features/weapon/** — domain, data, application, presentation)
+
+FIRST: read C:\Users\nepht\AppData\Local\hermes\skills\software-development\adversarial-bug-hunt\references\hunter.md and follow it exactly.
+
+Rules:
+- Read every file in scope before claiming anything about it. Do not speculate about unread files.
+- You MAY read (not edit) callers/repositories/DAOs/tests outside scope to verify reachability and contracts, but findings MUST be located in a scope file.
+- Tools: read_file, search_files, terminal for read-only inspection only (git log/blame/diff, listing). NO edits, NO installs, NO executing project code, NO network.
+- Priority areas: silent error swallowing, stale/incorrect async state, wrong repository mapping (row->model field drops), delete/update races, transaction boundaries, null handling, wrong ID keys (cross-project collision), widget lifecycle (didUpdateWidget/initState async gaps), data-loss on save path.
+- This is VOID SCRIPTOR (Flutter desktop, local-first, Riverpod + GoRouter). Do not report style/naming; only defects with real consequences.
+
+Output: write your FULL structured report to
+  D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260914-wardrobe-weapon\hunter_report.md
+Each finding: WBUG-<n> ID, file:line, category, claim, QUOTED evidence from the actual code, severity (Critical/High/Medium/Low), confidence, points. End with TOTAL FINDINGS: and TOTAL SCORE:.
+If zero findings, still write the file with TOTAL FINDINGS: 0.
+
+Your final chat summary must state: report file path, TOTAL FINDINGS, TOTAL SCORE, and one line per finding (ID + severity + file:line + 6-word claim).

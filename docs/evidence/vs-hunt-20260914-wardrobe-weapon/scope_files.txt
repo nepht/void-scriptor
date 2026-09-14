@@ -1,0 +1,16 @@
+lib/features/wardrobe/application/create_wardrobe_service.dart
+lib/features/wardrobe/data/wardrobe_repository_impl.dart
+lib/features/wardrobe/domain/wardrobe_model.dart
+lib/features/wardrobe/domain/wardrobe_repository.dart
+lib/features/wardrobe/presentation/wardrobe_workspace_controller.dart
+lib/features/wardrobe/presentation/wardrobe_workspace_screen.dart
+lib/features/wardrobe/presentation/widgets/wardrobe_detail_cards.dart
+lib/features/wardrobe/presentation/widgets/wardrobe_header.dart
+lib/features/weapon/application/create_weapon_service.dart
+lib/features/weapon/data/weapon_repository_impl.dart
+lib/features/weapon/domain/weapon_model.dart
+lib/features/weapon/domain/weapon_repository.dart
+lib/features/weapon/presentation/weapon_workspace_controller.dart
+lib/features/weapon/presentation/weapon_workspace_screen.dart
+lib/features/weapon/presentation/widgets/weapon_detail_cards.dart
+lib/features/weapon/presentation/widgets/weapon_header.dart

@@ -1,0 +1,20 @@
+adversarial-bug-hunt STAGE 2/3 — SKEPTIC
+
+Target repo: D:\VoidScriptor\void_scriptor_multiplatform
+HEAD: b17dd6e9968af71018fd14b20472c1be29e795f0
+
+FIRST: read C:\Users\nepht\AppData\Local\hermes\skills\software-development\adversarial-bug-hunt\references\skeptic.md and follow it exactly.
+
+Hunter report (read it from disk): D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260914-wardrobe-weapon\hunter_report.md
+Scope list: docs\evidence\vs-hunt-20260914-wardrobe-weapon\scope_files.txt (16 files, lib/features/wardrobe + lib/features/weapon)
+
+Context you must check independently (do not trust this framing — verify or refute it):
+- VOID SCRIPTOR uses a PER-PROJECT SQLite database file (one project.db per project package; see lib/core/persistence + ProjectDatabase.open). If true, BUG-3/BUG-4 "cross-project ID" claims may be unreachable through a repository instance, since each repository holds a project-bound database handle. Check how WardrobeRepositoryImpl/WeaponRepositoryImpl are constructed and whether the assetId space is shared across projects in one DB file.
+- BUG-1/2: check whether "create DB rows in transaction, then create filesystem package, delete package on failure" is the repo's DOCUMENTED convention (references: create_environment / create_character services, docs/architecture, existing tests like environment create-failure tests, and the dismissed ENV-BUG-001 precedent in docs/evidence/vs-hunt-20260913-environment/). A DB row with missing folder that the app tolerates/heals may be by-design, not a defect.
+- BUG-5/6: verify the hardcoded cards are actually reachable in production UI (routed workspace screens) vs dead code.
+
+Rules: read_file each reported location yourself before judging. Only DISPROVE when your expected-value rule (confidence > 67%) says so. Terminal is read-only. No edits except writing your report.
+
+Output: write FULL structured report (per finding: BUG-n, verdict CONFIRMED/DISPROVED, your reasoning, quoted code you independently read, corrected severity if needed) to
+  D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260914-wardrobe-weapon\skeptic_report.md
+Final summary: report path + verdict per BUG-id + counts.

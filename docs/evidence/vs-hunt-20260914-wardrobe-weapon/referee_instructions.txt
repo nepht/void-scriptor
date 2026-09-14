@@ -1,0 +1,27 @@
+adversarial-bug-hunt STAGE 3/3 — REFEREE (sole verdict authority)
+
+Target repo: D:\VoidScriptor\void_scriptor_multiplatform
+HEAD: b17dd6e9968af71018fd14b20472c1be29e795f0
+
+FIRST: read C:\Users\nepht\AppData\Local\hermes\skills\software-development\adversarial-bug-hunt\references\referee.md and follow it exactly.
+
+Then read BOTH reports from disk:
+- Hunter (6 findings, 30 pts): D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260914-wardrobe-weapon\hunter_report.md
+- Skeptic (4 disproved / 2 confirmed): D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260914-wardrobe-weapon\skeptic_report.md
+
+Scope = the 16 files in docs\evidence\vs-hunt-20260914-wardrobe-weapon\scope_files.txt (lib/features/wardrobe + lib/features/weapon).
+
+You must read the actual code yourself for EVERY finding (scope files + the DAOs, services, tables, callers, prior hunt evidence the two agents cite) and issue the only binding verdict: REAL BUG or NOT A BUG, with true severity and a concrete fix direction. Do not side with either agent by default.
+
+Specific adjudication leads to verify with your own eyes:
+1. BUG-1/2 (create service DB-then-folder): is a committed DB row with a missing filesystem package actually harmful (does anything assume the folder exists later? grep for wardrobeDirectory usage, thumbnail/reference writers), and does the repo document this as convention (compare create_environment_service.dart, dismissed ENV-BUG-001 in docs/evidence/vs-hunt-20260913-environment/)? Decide: convention-tolerated gap, or real orphan-row defect worth fixing (e.g. DB rollback on folder failure)?
+2. BUG-3/4 (missing projectId predicate): confirm the database is physically per-project (project_database_service.dart opens <package>/database/project.db) so cross-project exposure through one repository handle is impossible. Then judge whether the unenforced projectId field still matters within a single project (e.g. a stale selection from a different project's UUID simply finds nothing). Verdict accordingly.
+3. BUG-5/6 (hardcoded detail cards): confirm the screens are production-routed (workspace_resolver / explorer selection for wardrobe/weapon asset types) and that real persisted child tables (wardrobe_components/colors/variants/references, weapon_*) exist with DAO methods that could populate them. Judge severity as user-visible misleading data (antislop: fake data in real fields).
+
+Rules: READ-ONLY except writing your report. Terminal read-only only. Quote code independently.
+
+Output: write FULL referee report (per BUG: verdict REAL BUG / NOT A BUG, true severity, evidence you personally read with file:line, fix direction; plus final confirmed table ordered by severity, dismissed section, and stats) to
+  D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260914-wardrobe-weapon\referee_report_wardrobe_weapon.md
+Header must state: head_at_verdict + date.
+
+Final summary: report path + confirmed count + dismissed count + one line per REAL BUG (ID, severity, file:line, fix direction in 8 words).

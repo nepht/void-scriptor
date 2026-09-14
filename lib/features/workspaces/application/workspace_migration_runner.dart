@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
@@ -142,7 +143,10 @@ final class WorkspaceMigrationRunner {
     }
 
     // Phase 2: pre-migration backup (manifest + db + assets + workspaces).
-    await backups.create(
+    // BUG-6 (vs-hunt-20260914-workspaces): capture the exact backup identity;
+    // re-discovering one by lexicographic path order can pick an unrelated
+    // UUID-named backup taken by someone else.
+    final Directory preMigrationBackup = await backups.create(
       package: package,
       type: 'pre-workspace-migration',
       note: 'Automatic backup before ADR-WS-001 mixed-storage migration',
@@ -222,7 +226,7 @@ final class WorkspaceMigrationRunner {
     }
 
     // Phase 8: rollback drill on a disposable copy using backup contents.
-    final rollbackDrillPassed = await _runRollbackDrill();
+    final rollbackDrillPassed = await _runRollbackDrill(preMigrationBackup);
 
     return WorkspaceMigrationReport(
       backupCreated: true,
@@ -309,7 +313,19 @@ final class WorkspaceMigrationRunner {
     return actual == expected;
   }
 
-  Future<bool> _runRollbackDrill() async {
+  Future<bool> _runRollbackDrill(Directory backup) async {
+    // BUG-6 (vs-hunt-20260914-workspaces): operate on the exact backup this
+    // migration created. A vanished backup fails the drill; it must never
+    // fall back to whichever UUID-named directory sorts last on disk.
+    if (!await backup.exists()) return false;
+    final metadata = File(p.join(backup.path, 'backup.json'));
+    if (await metadata.exists()) {
+      final decoded = jsonDecode(await metadata.readAsString());
+      if (decoded is! Map<String, dynamic> ||
+          decoded['projectId'] != package.projectId) {
+        return false;
+      }
+    }
     final drill = await Directory.systemTemp.createTemp('ws-migration-drill-');
     try {
       final drillPackage = ProjectPackage(
@@ -339,16 +355,7 @@ final class WorkspaceMigrationRunner {
         Directory(p.join(mutatedWorkspaces.path, 'workspaces')),
       );
 
-      // Restore from the real pre-migration backup onto the drill copy.
-      final backupRoots = <Directory>[];
-      if (await package.backupDirectory.exists()) {
-        await for (final entity in package.backupDirectory.list()) {
-          if (entity is Directory) backupRoots.add(entity);
-        }
-      }
-      if (backupRoots.isEmpty) return false;
-      backupRoots.sort((left, right) => left.path.compareTo(right.path));
-      final backup = backupRoots.last;
+      // Restore from the captured pre-migration backup onto the drill copy.
       final restoredWorkspaces = Directory(
         p.join(mutatedWorkspaces.path, 'workspaces'),
       );

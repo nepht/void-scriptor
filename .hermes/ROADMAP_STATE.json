@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run308 (cron): vs-hunt-20260914-workspaces selesai - Referee on-disk 7 REAL/0 dismissed (HEAD 141e86e, severity dikoreksi High x4/Med x2/Low x1). BUG-2/3/4 CLOSED TDD: WorkspaceMigrationRunner Phase 1 tolak target novel duplikat + linkId collision + novelWorkspaceId divalidasi ke SET target (bug adjacent key-vs-target), seenPairs (novel,char) bukan characterId global, pra-backup _assertNoSymlinkedContent (list followLinks:false, Link->ArgumentError; probe runtime Windows: default follow melahap 14 byte luar paket), salin karakter sekali per id, _copyInto/_verifyCopy followLinks:false. focused RED->GREEN 5/5; region workspaces 137 PASS; live_cutover PASS; analyze full No issues; diff-check 0; FULL SUITE 4444 PASS/1 FAIL/1 skip - fail story_txt_export_ui flake terdokumentasi, solo 2/2 PASS, lib/features/export clean. Windows build gate BLOCKED (app pengguna PID 8112); native UNVERIFIABLE. Antrean: BUG-1 transaksi+kompensasi, BUG-5 arah ikut BUG-1, BUG-6 identitas backup API, BUG-7 keputusan arah token representasi. Commit scoped TIDAK di-push.",
+  "last_verified_step": "run310 (cron): vs-hunt-20260914-workspaces BUG-6 ditutup - _runRollbackDrill kini memakai identitas backup persis yang dikembalikan backups.create (Directory), enumerate+sort leksikografis dibuang, guard: backup hilang/backup.json projectId cocok-gagal -> drill FAIL. RED 2 test (harness _ControlledBackupService, fixture temporer) -> GREEN 2/2; region workspaces 139 PASS; live_cutover PASS; flutter analyze full No issues; diff-check 0; FULL SUITE 4447 PASS/0 FAIL/1 skip exit 0 (flake story_txt_export_ui lolos). Windows build BLOCKED (app pengguna PID 13856); native UNVERIFIABLE. Antrean region: BUG-1 High transaksi+kompensasi (prasyarat BUG-5), BUG-7 keputusan arah token Choi. Commit scoped TIDAK di-push.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-14T15:55:00+07:00",
-  "updated_by": "nephthys (cron run308)",
+  "updated_at": "2026-09-14T17:15:00+07:00",
+  "updated_by": "nephthys (cron run310)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

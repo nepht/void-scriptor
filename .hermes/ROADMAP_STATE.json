@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run302 (cron): vs-hunt-20260914-content SELESAI - 5 REAL BUG CLOSED TDD (CT-BUG-01/02/03 Medium + 05/06 Low; CT-04 dismissed Referee) - buildView large-graph fallback kini menghormati filter; addNode id sama memperbarui; dedup hint per pasangan (sumber,tujuan); markUnlocked tolak unlock ganda; KnowledgeTime ordinal numerik + campur tipe UnsupportedError. RED 10 FAIL tepat mekanisme + 9 penjaga; focused 19/19; region lore+pov+spoiler+world_logic 1241 PASS; analyze No issues; format owned 0 changed; diff-check 0; build windows debug PASS 21,8s; FULL SUITE +4412 ~1 exit 0 (delta +19 cocok baseline run299 +4393). Run301 direbut interaktif -> renumber run302.",
+  "last_verified_step": "run303 (cron): vs-hunt-20260914-bible-ui region features/bible domain+presentation SELESAI - Referee 4 REAL Medium (BUI-BUG-01..04). BUI-BUG-03 CLOSED TDD (53d722c): listener reload saat manifest.id berubah + clear-to-null + stale-guard async; RED Expected 'Belum ada faksi' Actual 'Menara A'; region bible 57 PASS; analyze owned No issues; build windows debug PASS 28,9s. Antrean tersisa: BUI-01 (keputusan UX), BUI-02 (sumber metrik nyata), BUI-04 (arah Referee konkret, kandidat slice berikutnya).",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-14",
-  "updated_by": "nephthys cron run302",
+  "updated_by": "nephthys cron run303",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -237,5 +237,19 @@
     "dismissed": "none",
     "reachability": "AboutScreen/UpdateScreen/WelcomeScreen/KeyboardNav/OptionalTour: nol rute produksi (hanya ThemeSettingsScreen ter-route); domain getters tanpa caller UI",
     "next_unscanned_regions": "belum diantrikan - kandidat dari lib/features tanpa vs-hunt: cek daftar vs-hunt-* vs lib/features/*/ sebelum memilih"
+  },
+  "bible_ui_hunt_2026_09_14_run303": {
+    "scope": "lib/features/bible/domain + presentation (14 non-generated files, 1388 lines)",
+    "head_at_hunt": "67aeec6a27210f3297ad78957c47cf1d278f8a86",
+    "chain": "Hunter 4 (score 20) -> Skeptic 4 CONFIRMED -> Referee 4 REAL / 0 dismissed (all Medium)",
+    "reports": "docs/evidence/vs-hunt-20260914-bible-ui/{scope_hashes.txt,hunter_report.md,skeptic_report.md,referee_report_bible_ui.md}",
+    "fixed_this_run": [
+      "BUI-BUG-03 (commit 53d722c, TDD RED->GREEN, region bible 57 PASS, analyze/format/diff-check/build windows PASS)"
+    ],
+    "queue_remaining": [
+      "BUI-BUG-01 (Medium; section tabs/dropdown inert -- arah: peta kontrol ke render/scroll ATAU buang/relabel; butuh keputusan UX Choi)",
+      "BUI-BUG-02 (Medium; Overview metrics hard-coded 'Void Universe'/0 -- arah: query manifest+repository nyata, placeholder jujur)",
+      "BUI-BUG-04 (Medium; WorldImageCard tak reload saat callback sesi berganti tanpa entityId berubah -- arah Referee konkret: projectId eksplisit/key + stale-guard; kandidat slice run berikutnya)"
+    ]
   }
 }

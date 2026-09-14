@@ -6,10 +6,10 @@
     "adr_0002": "ACCEPTED: retain Windows-first local-first foundation D1-D7",
     "adr_0003": "ACCEPTED: Option B, stabilize existing Core with safety-first sequencing",
     "source": "docs/adr/ADR-0003-core-mvp-recovery-decision.md",
-    "next_action": "Continue 145.42 explicit disk_full/permission_loss on disposable fixtures, then interrupted move/import/restore and SQLite WAL process-crash recovery; inspect existing coverage first",
-    "following_actions": "Exact-snapshot restore and scoped reconciliation; explicit deferred route mapping/gating; consistent regression/build evidence; user-assisted native journey; then pilot preparation",
+    "next_action": "Hold at canonical recovery candidate 145.30 Autosave Snapshot and Crash Recovery; do not open a new bug-hunt or feature until Choirudin selects the next product decision.",
+    "following_actions": "145.28 and 145.29 are already VERIFIED in the canonical ledger; continue from 145.30 only after the next product decision. Preserve 145.43-145.47 external pilot evidence as later contracts.",
     "constraints": "No new modules, broad refactor, automatic release/push, user-data fault tests, or fabricated physical power-loss/device proof. Do not block independent safety work on route mapping or the now-decided ADR choice.",
-    "acceptance": "145.27 PARTIAL; 145.42 IN_PROGRESS; 145.49 direction decided only; native/device checks pending; 145.43-145.47 and 145.50 not closed"
+    "acceptance": "145.27 VERIFIED run317. Ledger already marks 145.28 and 145.29 VERIFIED, so guard recovery candidate is 145.30. Separate 145.42 process-kill fixture bundle 7/7 PASS; 145.43-145.47 and 145.50 remain later contracts."
   },
   "session_lock_safety_review": {
     "status": "PARTIAL",
@@ -28,8 +28,8 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run312 (cron): vs-hunt-20260914-workspaces BUG-1 (High) + BUG-5 (Medium) ditutup TDD — WorkspaceMigrationRunner kini all-or-fail: seluruh insert link dalam SATU links.transaction (seam NovelCharacterLinkRepository.transaction<R>), ledger instalasi presisi (file tracked hanya jika belum ada; direktori ber-flag fresh) => kompensasi tak pernah hapus konten pre-existing, verifikasi pindah SEBELUM DB write dan jadi gate (throw WorkspaceMigrationFailure, stage backup|copy|verification|database), kegagalan backup fail-closed, backup pra-migrasi selalu dipertahankan. Rollback drill TETAP diagnostik sesuai kontrak run310 (2 test-nya tetap hijau). RED compile-fail tepat -> GREEN 3/3; region workspaces 142/0 (delta +3 eksak); consumers 11/0; dart analyze FULL No issues; format owned exit 0; diff-check 0; FULL SUITE 4456 PASS/0 FAIL/1 skip (4449 baseline + 4 test commit 53ce459 + 3 slice ini = eksak). Windows build BLOCKED (app pengguna PID 14280->23700); native UNVERIFIABLE cron. Sisa antrean workspaces: BUG-7 (keputusan arah token Choi). Commit scoped TIDAK di-push.",
-  "next_step": "145.27",
+  "last_verified_step": "145.29 (ledger): 145.27 newly VERIFIED run317 with six Core + deferred route gating 46/46 PASS; 145.28 Writing Room Focus and 145.29 Lore Linking and Search were already VERIFIED in the canonical ledger. Separate 145.42 three-file process-kill matrix bundle 7/7 PASS.",
+  "next_step": "145.30",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-15T00:45:00+07:00",
-  "updated_by": "nephthys (cron run315, note merged dgn interaktif run315)",
+  "updated_at": "2026-09-14T23:17:27+07:00",
+  "updated_by": "nephthys (interaktif run317)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -221,7 +221,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run301",
-  "note": "run316: 145.42 process_kill cross-volume convergence (4162afa): staging residue purge pra-publish / byte-equal-drop pasca-publish / divergen-keep; RED->GREEN; 139 pass. USB hardware journey + disk_full/permission_loss preflight VERIFIED (run313-315). Sisa matriks murni: kill saat import/export/restore. Keputusan Choi: Journey303 di G:, 6 PR dependabot, jadwal riverpod 3.",
+  "note": "run317: 145.27 VERIFIED after provenance reconciliation; six Core + route gating 46/46 PASS. 145.28-145.29 already VERIFIED; guard recovery candidate 145.30. 145.42 three-file process-kill fixture bundle 7/7 PASS. No bug-hunt or new feature opened.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",

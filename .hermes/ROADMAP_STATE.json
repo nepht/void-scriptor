@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-15T01:19:27+07:00",
-  "updated_by": "nephthys (cron run319)",
+  "updated_at": "2026-09-15T02:25+07:00",
+  "updated_by": "nephthys cron run320",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -303,6 +303,14 @@
     "head": "d3c5b9fc9e9dd94619774d9b76467982d182a839",
     "gates": "focused test/features/story + 11 journal/resilience files = 247 PASS/0 FAIL exit 0; flutter analyze --no-pub No issues (18.4s); git diff --check 0; build windows --debug PASS 43.5s",
     "remaining_145_30": "power-loss live UNVERIFIABLE (fsync boundary terdokumentasi); disk-full eksplisit pada jalur journal draft masih injeksi (preflight nyata baru jalur move 145.42 run315) -> status PARTIAL",
+    "pointer": "TIDAK berubah (next_step tetap 145.30 per guard)"
+  },
+  "resilience_hunt_2026_09_15_run320": {
+    "hunt": "vs-hunt-20260915-resilience (18 file lib/features/project_resilience, durable_draft_journal.dart excluded - sudah punya bukti run248)",
+    "chain": "Hunter 10/71 -> Skeptic 6C/4D -> Referee on-disk referee_report_resilience_run320.md: 6 REAL / 4 dismissed (otoritas)",
+    "fixed": "BUG-3 Critical (PID-reuse lock) commit 03f4cad: processStartMs identity probe + _holderProvesPidReuse (grace 60s, fail-closed on ambiguity); RED compile-fail -> GREEN 7/7; region 232 PASS/1 skip; analyze No issues; build windows PASS 37,1s",
+    "queue": "BUG-8 prune-ordering (Medium), BUG-6 portable/orphan (Medium), BUG-7 external backup count (Medium), BUG-4 competing-create re-read (Medium), BUG-9 deep JSON compare (Low) - arahan Referee konkret, tanpa keputusan Choi",
+    "head_at_hunt": "762ed7f5b5af9a1dce8d867ed1ce395a75295b27",
     "pointer": "TIDAK berubah (next_step tetap 145.30 per guard)"
   }
 }

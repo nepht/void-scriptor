@@ -82,10 +82,14 @@ class PovLedger {
   }
 
   /// Membuka kunci satu adegan; hanya sah dari status locked
-  /// ([StateError] bila belum ada kunci).
+  /// ([StateError] bila belum ada kunci ATAU sudah berstatus unlocked —
+  /// vs-hunt-20260914-content CT-BUG-05).
   void markUnlocked(String sceneId) {
     if (!_sceneLocks.containsKey(sceneId)) {
       throw StateError('scene has no lock to unlock: $sceneId');
+    }
+    if (_unlockedScenes.contains(sceneId)) {
+      throw StateError('scene already unlocked: $sceneId');
     }
     _unlockedScenes.add(sceneId);
   }

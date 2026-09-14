@@ -110,8 +110,10 @@ class LoreGraph {
   /// Jumlah seluruh node pada graf.
   int get nodeCount => _nodes.length;
 
-  /// Menambah/memperbarui node; urutan pertama dipertahankan.
-  void addNode(LoreNode node) => _nodes.putIfAbsent(node.id, () => node);
+  /// Menambah/memperbarui node; urutan penyusunan pertama dipertahankan
+  /// (vs-hunt-20260914-content CT-BUG-02: id yang sama kini benar-benar
+  /// memperbarui nilai, bukan dibuang diam-diam).
+  void addNode(LoreNode node) => _nodes[node.id] = node;
 
   /// Menambah edge; kedua ujung wajib sudah ada ([StateError]).
   void addEdge(LoreEdge edge) {
@@ -129,16 +131,15 @@ class LoreGraph {
   List<LoreEdge> get edges => List.unmodifiable(_edges);
 
   /// Menyusun tampilan dengan filtrasi opsional; deterministik.
+  /// Kontrak sprint_109: fallback graf besar TIDAK mengabaikan filter —
+  /// penyaring node/edge berjalan lebih dulu dan pusat fallback dipilih
+  /// dari node yang lolos (vs-hunt-20260914-content CT-BUG-01).
   LoreGraphView buildView({
     LoreDomain? domainFilter,
     bool canonOnly = false,
     String? projectFilter,
     String? relationFilter,
   }) {
-    if (_nodes.length > maxRenderNodes) {
-      final ids = _nodes.keys.toList();
-      return _neighborhood(ids[ids.length ~/ 2], fallbackActive: true);
-    }
     final survivors = <String, LoreNode>{
       for (final node in _nodes.values)
         if ((domainFilter == null || node.domain == domainFilter) &&
@@ -146,16 +147,25 @@ class LoreGraph {
             (projectFilter == null || node.projectId == projectFilter))
           node.id: node,
     };
-    final edges = <LoreEdge>[
+    final filteredEdges = <LoreEdge>[
       for (final edge in _edges)
         if (survivors.containsKey(edge.sourceId) &&
             survivors.containsKey(edge.targetId) &&
             (relationFilter == null || edge.relation == relationFilter))
           edge,
     ];
+    if (survivors.length > maxRenderNodes) {
+      final ids = survivors.keys.toList();
+      return _neighborhood(
+        ids[ids.length ~/ 2],
+        fallbackActive: true,
+        allowedNodes: survivors,
+        candidateEdges: filteredEdges,
+      );
+    }
     return LoreGraphView(
       nodes: List.unmodifiable(survivors.values),
-      edges: List.unmodifiable(edges),
+      edges: List.unmodifiable(filteredEdges),
       focusNodeId: null,
       fallbackActive: false,
     );
@@ -170,12 +180,18 @@ class LoreGraph {
     return _neighborhood(entityId, fallbackActive: false);
   }
 
-  LoreGraphView _neighborhood(String centerId, {required bool fallbackActive}) {
-    final center = _nodes[centerId]!;
-    final nodes = <LoreNode>[center];
+  LoreGraphView _neighborhood(
+    String centerId, {
+    required bool fallbackActive,
+    Map<String, LoreNode>? allowedNodes,
+    List<LoreEdge>? candidateEdges,
+  }) {
+    final nodes = allowedNodes ?? _nodes;
+    final center = nodes[centerId]!;
+    final result = <LoreNode>[center];
     final seen = <String>{centerId};
     final edges = <LoreEdge>[];
-    for (final edge in _edges) {
+    for (final edge in candidateEdges ?? _edges) {
       var other = '';
       if (edge.sourceId == centerId) {
         other = edge.targetId;
@@ -185,13 +201,13 @@ class LoreGraph {
         continue;
       }
       edges.add(edge);
-      final neighbor = _nodes[other];
+      final neighbor = nodes[other];
       if (neighbor != null && seen.add(other)) {
-        nodes.add(neighbor);
+        result.add(neighbor);
       }
     }
     return LoreGraphView(
-      nodes: List.unmodifiable(nodes),
+      nodes: List.unmodifiable(result),
       edges: List.unmodifiable(edges),
       focusNodeId: centerId,
       fallbackActive: fallbackActive,

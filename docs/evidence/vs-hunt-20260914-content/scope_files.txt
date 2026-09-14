@@ -1,0 +1,8 @@
+lib/features/lore/domain/lore_graph.dart
+lib/features/lore/domain/lore_integrity.dart
+lib/features/pov/domain/head_hop_analysis.dart
+lib/features/pov/domain/knowledge_boundary.dart
+lib/features/pov/domain/pov_lock.dart
+lib/features/spoiler/domain/reader_redaction.dart
+lib/features/spoiler/domain/share_export.dart
+lib/features/spoiler/domain/spoiler_classification.dart

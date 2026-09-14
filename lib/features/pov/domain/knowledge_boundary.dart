@@ -21,11 +21,33 @@ class KnowledgeTime {
   final String? sceneId;
   final String? chapterId;
 
-  /// Urutan pembanding dalam satu proyek: id adegan dipakai langsung
-  /// karena konvensi repo memakai 'sc-<angka>' monoton.
+  /// Urutan pembanding dalam satu proyek dan satu tipe waktu: digit
+  /// akhir id dibandingkan sebagai angka sehingga 'sc-2' mendahului
+  /// 'sc-10' (konvensi repo 'sc-<angka>' tidak menjamin urutan
+  /// leksikografis tanpa nol-padding); tanpa digit akhir, urutan
+  /// leksikografis dipakai. Campuran scene vs chapter tidak memiliki
+  /// ordinal bersama dan ditolak [UnsupportedError] alih-alih
+  /// menghasilkan angka palsu
+  /// (vs-hunt-20260914-content CT-BUG-06).
   int compareTo(KnowledgeTime other) {
     final a = sceneId ?? chapterId ?? '';
     final b = other.sceneId ?? other.chapterId ?? '';
+    if ((sceneId == null) != (other.sceneId == null)) {
+      throw UnsupportedError(
+        'cannot order scene time against chapter time: $a vs $b',
+      );
+    }
+    final ta = RegExp(r'^(.*?)(\d+)$').firstMatch(a);
+    final tb = RegExp(r'^(.*?)(\d+)$').firstMatch(b);
+    if (ta != null && tb != null) {
+      final byPrefix = ta.group(1)!.compareTo(tb.group(1)!);
+      if (byPrefix != 0) return byPrefix;
+      final byNumber = int.parse(
+        ta.group(2)!,
+      ).compareTo(int.parse(tb.group(2)!));
+      if (byNumber != 0) return byNumber;
+      return a.compareTo(b);
+    }
     return a.compareTo(b);
   }
 

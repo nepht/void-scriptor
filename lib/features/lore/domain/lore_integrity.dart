@@ -154,10 +154,14 @@ class LoreIntegrityAnalyzer {
       final a = edge.sourceId;
       final b = edge.targetId;
       for (final c in forward[b] ?? const <String>{}) {
-        if (c == a || hinted.contains(c)) continue;
+        // vs-hunt-20260914-content CT-BUG-03: dedup memakai identitas
+        // temuan (sumber,tujuan) — bukan tujuan saja — supaya celah dari
+        // sumber lain ke tujuan yang sama tidak ikut teredam.
+        final hintKey = '$a>$c';
+        if (c == a || hinted.contains(hintKey)) continue;
         if (forward[a]?.contains(c) ?? false) continue;
         if (backward[c]?.contains(a) ?? false) continue;
-        hinted.add(c);
+        hinted.add(hintKey);
         findings.add(
           LoreInsight(
             id: 'hint:$a>$c',

@@ -83,11 +83,19 @@ class ProjectResilienceController {
     final backupRows = (await session.database.projectResilienceRepository
         .backupsFor(session.package.projectId));
     backupRows.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    final backupItems = (await _backupDirectories()).length;
+    // vs-hunt-20260915-BUG-7: the count comes from recorded rows whose
+    // storage currently exists — the package-internal scan alone missed
+    // backups written to a configured custom (external) root.
+    var availableBackups = 0;
+    for (final row in backupRows) {
+      if (await _resolveBackupDirectory(row.relativePath).exists()) {
+        availableBackups++;
+      }
+    }
     return ProjectResilienceSnapshot(
       integrity: integrity,
       storage: storage,
-      backupItems: backupItems,
+      backupItems: availableBackups,
       trashItems: trashItems,
       orphanPaths: actual.difference(referencedPaths),
       backups: backupRows,
@@ -361,15 +369,6 @@ class ProjectResilienceController {
   Directory _resolveBackupDirectory(String storedPath) {
     if (p.isAbsolute(storedPath)) return Directory(storedPath);
     return Directory(session.package.resolve(storedPath));
-  }
-
-  Future<List<Directory>> _backupDirectories() async {
-    if (!await session.package.backupDirectory.exists()) return const [];
-    return session.package.backupDirectory
-        .list()
-        .where((entity) => entity is Directory)
-        .cast<Directory>()
-        .toList();
   }
 
   Future<List<_TrashMetadata>> _trashMetadata() async {

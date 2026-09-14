@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run303 (cron): vs-hunt-20260914-bible-ui region features/bible domain+presentation SELESAI - Referee 4 REAL Medium (BUI-BUG-01..04). BUI-BUG-03 CLOSED TDD (53d722c): listener reload saat manifest.id berubah + clear-to-null + stale-guard async; RED Expected 'Belum ada faksi' Actual 'Menara A'; region bible 57 PASS; analyze owned No issues; build windows debug PASS 28,9s. Antrean tersisa: BUI-01 (keputusan UX), BUI-02 (sumber metrik nyata), BUI-04 (arah Referee konkret, kandidat slice berikutnya).",
+  "last_verified_step": "run304 (cron): BUI-BUG-04 CLOSED TDD (bb5c4f2) - WorldImageCard reload saat projectId berubah + stale-guard async + clear-to-null; RED dua proyek temp assetId sama gagal persis mekanisme (path A menempel di B), GREEN 1 PASS; region bible 58 PASS; workspace 35 PASS; analyze full No issues; FULL SUITE 4414 PASS/0 FAIL/1 skip exit 0; build windows debug PASS 30,1s; diff-check 0; guard PASS. Antrean bible-ui tersisa = keputusan Choi saja: BUI-01 (nav vs dashboard), BUI-02 (sumber metrik).",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-14",
-  "updated_by": "nephthys cron run303",
+  "updated_at": "2026-09-14T10:30:00+07:00",
+  "updated_by": "cron run304 (nephthys)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -248,8 +248,10 @@
     ],
     "queue_remaining": [
       "BUI-BUG-01 (Medium; section tabs/dropdown inert -- arah: peta kontrol ke render/scroll ATAU buang/relabel; butuh keputusan UX Choi)",
-      "BUI-BUG-02 (Medium; Overview metrics hard-coded 'Void Universe'/0 -- arah: query manifest+repository nyata, placeholder jujur)",
-      "BUI-BUG-04 (Medium; WorldImageCard tak reload saat callback sesi berganti tanpa entityId berubah -- arah Referee konkret: projectId eksplisit/key + stale-guard; kandidat slice run berikutnya)"
+      "BUI-BUG-02 (Medium; Overview metrics hard-coded 'Void Universe'/0 -- arah: query manifest+repository nyata, placeholder jujur)"
+    ],
+    "fixed_later": [
+      "BUI-BUG-04 (commit bb5c4f2, run304, TDD RED->GREEN; gates full suite 4414 PASS)"
     ]
   }
 }

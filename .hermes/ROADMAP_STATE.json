@@ -221,7 +221,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run301",
-  "note": "run314: 145.42 USB NYATA SELESAI end-to-end (fix 53ce459 + journey run313/314): move D:->G: FAT32, autosave tembus USB (signature HIT DB), cold-eject fail-closed, reinstall fisik -> hot-reconnect (Coba lagi) sukses, Pulihkan Draft portabel bekerja, BUG-303-01 tidak berulang di 53ce459, registry stabil entri=2 tanpa tombstone sepanjang sesi bersih. Keputusan Choi: nasib objek uji Journey303 di G: (hapus/pindah pulang) + jadwal sisa 145.42 (disk_full/permission_loss fixture) + 6 PR dependabot + riverpod 3.",
+  "note": "run315: 145.42 failure-matrix move = preflight disk_full/permission_loss (b76d974, RED->GREEN, 136 pass) + audit-journal registry yatim terintegrasi (3272944) sbg instrumen atribusi insiden 19:07. USB hardware journey 145.42 VERIFIED penuh (run313/314). Keputusan Choi menunggu: nasib Journey303 di G:, 6 PR dependabot, jadwal riverpod 3, baris matriks berikutnya (process_kill/power_loss formal).",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",

@@ -4,6 +4,7 @@ import '../../../core/persistence/project_paths.dart';
 import '../../../database/project/project_database.dart';
 import '../domain/weapon_model.dart';
 import '../domain/weapon_repository.dart';
+import '../domain/weapon_workspace_data.dart';
 
 class WeaponRepositoryImpl implements WeaponRepository {
   WeaponRepositoryImpl({
@@ -24,6 +25,50 @@ class WeaponRepositoryImpl implements WeaponRepository {
   Future<WeaponModel?> getWeapon(String assetId) async {
     final row = await database.weaponDao.getWeapon(assetId);
     return row == null ? null : _map(row);
+  }
+
+  @override
+  Future<WeaponWorkspaceData> getWorkspaceData(String assetId) async {
+    final components = await database.weaponDao.getComponents(assetId);
+    final measurements = await database.weaponDao.getMeasurements(assetId);
+    final energy = await database.weaponDao.getEnergyProfile(assetId);
+    final variants = await database.weaponDao.getVariants(assetId);
+    final references = await database.weaponDao.getReferences(assetId);
+    return WeaponWorkspaceData(
+      components: [
+        for (final component in components)
+          WeaponComponentInfo(
+            name: component.name,
+            componentType: component.componentType,
+          ),
+      ],
+      measurements: [
+        for (final measurement in measurements)
+          WeaponMeasurementInfo(
+            label: measurement.label,
+            value: measurement.value,
+            unit: measurement.unit,
+          ),
+      ],
+      energy: energy == null
+          ? null
+          : WeaponEnergyInfo(
+              activation: energy.activation,
+              emissionColor: energy.emissionColor,
+              behavior: energy.behavior,
+            ),
+      variants: [
+        for (final variant in variants)
+          WeaponVariantInfo(name: variant.name, isDefault: variant.isDefault),
+      ],
+      references: [
+        for (final reference in references)
+          WeaponReferenceInfo(
+            referenceType: reference.referenceType,
+            filePath: reference.filePath,
+          ),
+      ],
+    );
   }
 
   @override

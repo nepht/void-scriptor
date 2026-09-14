@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
 
+import '../../domain/weapon_workspace_data.dart';
+
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
+
+/// Honest fallback for missing persisted values (vs-hunt-20260914-wardrobe-
+/// weapon WBUG-6: absent data must never be papered over with sample text —
+/// mirrors the ENV-BUG-002 dash convention from run271).
+String weaponValue(String? value) =>
+    (value == null || value.isEmpty) ? _dash : value;
+
+String weaponNumber(double? value, String unit) {
+  if (value == null) return _dash;
+  final text = value % 1 == 0 ? value.toInt().toString() : value.toString();
+  return '$text $unit';
+}
+
+const String _dash = '—';
 
 class WeaponTechnicalViewCard extends StatelessWidget {
   const WeaponTechnicalViewCard({super.key});
@@ -63,33 +79,40 @@ class WeaponSpecificationData {
 }
 
 class WeaponComponentsCard extends StatelessWidget {
-  const WeaponComponentsCard({super.key});
+  const WeaponComponentsCard({super.key, required this.components});
+
+  final List<WeaponComponentInfo> components;
+
   @override
-  Widget build(BuildContext context) => const _WeaponCard(
+  Widget build(BuildContext context) => _WeaponCard(
     title: 'Components',
-    child: Wrap(
-      spacing: 10,
-      runSpacing: 10,
-      children: [
-        _Chip('Blade'),
-        _Chip('Edge'),
-        _Chip('Guard'),
-        _Chip('Handle'),
-        _Chip('Core'),
-        _Chip('Energy Channel'),
-      ],
-    ),
+    child: components.isEmpty
+        ? const _EmptyNote(text: 'Belum ada komponen tersimpan.')
+        : Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              for (final component in components)
+                _Chip(weaponValue(component.name)),
+            ],
+          ),
   );
 }
 
+/// Overall length/weight come from the scalar model; every sub-part row is a
+/// persisted weaponMeasurements record (WBUG-6: the old card invented fixed
+/// 'Blade: 260 mm' / 'Handle: 145 mm' rows).
 class WeaponDimensionsCard extends StatelessWidget {
   const WeaponDimensionsCard({
     super.key,
     required this.length,
     required this.weight,
+    required this.measurements,
   });
   final String length;
   final String weight;
+  final List<WeaponMeasurementInfo> measurements;
+
   @override
   Widget build(BuildContext context) => _WeaponCard(
     title: 'Dimensions',
@@ -97,58 +120,100 @@ class WeaponDimensionsCard extends StatelessWidget {
       children: [
         _PropertyRow(label: 'Overall', value: length),
         _PropertyRow(label: 'Weight', value: weight),
-        const _PropertyRow(label: 'Blade', value: '260 mm'),
-        const _PropertyRow(label: 'Handle', value: '145 mm'),
+        for (final measurement in measurements)
+          _PropertyRow(
+            label: weaponValue(measurement.label),
+            value: weaponNumber(measurement.value, measurement.unit),
+          ),
+        if (measurements.isEmpty)
+          const _EmptyNote(text: 'Belum ada pengukuran tersimpan.'),
       ],
     ),
   );
 }
 
 class WeaponEnergyCard extends StatelessWidget {
-  const WeaponEnergyCard({super.key, required this.energy, required this.core});
+  const WeaponEnergyCard({
+    super.key,
+    required this.energy,
+    required this.core,
+    this.profile,
+  });
   final String energy;
   final String core;
+  final WeaponEnergyInfo? profile;
+
   @override
-  Widget build(BuildContext context) => _WeaponCard(
-    title: 'Energy / Core',
-    child: Column(
-      children: [
-        _PropertyRow(label: 'Energy', value: energy),
-        _PropertyRow(label: 'Core', value: core),
-        const _PropertyRow(label: 'Emission', value: 'Violet'),
-        const _PropertyRow(label: 'Activation', value: 'Grip Recognition'),
-      ],
-    ),
-  );
+  Widget build(BuildContext context) {
+    final info = profile;
+    return _WeaponCard(
+      title: 'Energy / Core',
+      child: Column(
+        children: [
+          _PropertyRow(label: 'Energy Type', value: energy),
+          _PropertyRow(label: 'Core Type', value: core),
+          _PropertyRow(
+            label: 'Emission',
+            value: weaponValue(info?.emissionColor),
+          ),
+          _PropertyRow(
+            label: 'Activation',
+            value: weaponValue(info?.activation),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class WeaponVariantsCard extends StatelessWidget {
-  const WeaponVariantsCard({super.key});
+  const WeaponVariantsCard({super.key, required this.variants});
+
+  final List<WeaponVariantInfo> variants;
+
   @override
-  Widget build(BuildContext context) => const _WeaponCard(
+  Widget build(BuildContext context) => _WeaponCard(
     title: 'Variants',
-    child: Wrap(
-      spacing: 10,
-      children: [
-        _Chip('Normal'),
-        _Chip('Combat'),
-        _Chip('Overcharged'),
-        _Chip('Prototype'),
-      ],
-    ),
+    child: variants.isEmpty
+        ? const _EmptyNote(text: 'Belum ada varian tersimpan.')
+        : Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              for (final variant in variants) _Chip(weaponValue(variant.name)),
+            ],
+          ),
   );
 }
 
 class WeaponReferencesCard extends StatelessWidget {
-  const WeaponReferencesCard({super.key});
+  const WeaponReferencesCard({super.key, required this.references});
+
+  final List<WeaponReferenceInfo> references;
+
   @override
   Widget build(BuildContext context) => _WeaponCard(
     title: 'References',
-    child: Text(
-      'Front, Side, Back, Top, Close-up, Blade, Handle, Core, Effects',
-      style: TextStyle(color: context.palette.textMuted),
-    ),
+    child: references.isEmpty
+        ? const _EmptyNote(text: 'Belum ada referensi tersimpan.')
+        : Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              for (final reference in references)
+                _Chip(weaponValue(reference.referenceType)),
+            ],
+          ),
   );
+}
+
+class _EmptyNote extends StatelessWidget {
+  const _EmptyNote({required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) =>
+      Text(text, style: TextStyle(color: context.palette.textMuted));
 }
 
 class _WeaponCard extends StatelessWidget {

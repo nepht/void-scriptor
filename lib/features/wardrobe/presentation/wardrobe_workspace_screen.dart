@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../assets/presentation/widgets/asset_thumbnail_card.dart';
 import '../domain/wardrobe_model.dart';
+import '../domain/wardrobe_workspace_data.dart';
 import 'wardrobe_workspace_controller.dart';
 import 'widgets/wardrobe_detail_cards.dart';
 import 'widgets/wardrobe_header.dart';
@@ -16,6 +17,11 @@ class WardrobeWorkspaceScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(wardrobeWorkspaceProvider(wardrobeId));
     final model = state.valueOrNull;
+    // vs-hunt-20260914-wardrobe-weapon WBUG-5: child rows come from the
+    // repository; the detail cards are data-driven with honest empty states.
+    final details =
+        ref.watch(wardrobeWorkspaceDetailsProvider(wardrobeId)).valueOrNull ??
+        const WardrobeWorkspaceData();
     return Container(
       color: context.palette.backgroundSecondary,
       child: Column(
@@ -33,8 +39,16 @@ class WardrobeWorkspaceScreen extends ConsumerWidget {
                 return SingleChildScrollView(
                   padding: const EdgeInsets.all(18),
                   child: wide
-                      ? _DesktopWardrobe(wardrobeId: wardrobeId, model: model)
-                      : _CompactWardrobe(wardrobeId: wardrobeId, model: model),
+                      ? _DesktopWardrobe(
+                          wardrobeId: wardrobeId,
+                          model: model,
+                          details: details,
+                        )
+                      : _CompactWardrobe(
+                          wardrobeId: wardrobeId,
+                          model: model,
+                          details: details,
+                        ),
                 );
               },
             ),
@@ -45,10 +59,24 @@ class WardrobeWorkspaceScreen extends ConsumerWidget {
   }
 }
 
+Widget _wardrobeSpecification(WardrobeModel? model) =>
+    WardrobeSpecificationCard(
+      category: wardrobeValue(model?.category),
+      material: wardrobeValue(model?.primaryMaterial),
+      fabric: wardrobeValue(model?.fabric),
+      fit: wardrobeValue(model?.fit),
+      style: wardrobeValue(model?.style),
+    );
+
 class _DesktopWardrobe extends StatelessWidget {
-  const _DesktopWardrobe({required this.wardrobeId, required this.model});
+  const _DesktopWardrobe({
+    required this.wardrobeId,
+    required this.model,
+    required this.details,
+  });
   final String wardrobeId;
   final WardrobeModel? model;
+  final WardrobeWorkspaceData details;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -65,35 +93,32 @@ class _DesktopWardrobe extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          Expanded(
-            child: WardrobeSpecificationCard(
-              category: model?.category ?? 'Outerwear',
-              material: model?.primaryMaterial ?? 'Technical Synthetic',
-              fabric: model?.fabric ?? 'Waterproof Fabric',
-              fit: model?.fit ?? 'Oversized',
-              style: model?.style ?? 'Futuristic Tactical',
-            ),
-          ),
+          Expanded(child: _wardrobeSpecification(model)),
         ],
       ),
       const SizedBox(height: 16),
-      const WardrobeComponentsCard(),
+      WardrobeComponentsCard(components: details.components),
       const SizedBox(height: 16),
-      const WardrobeColorPaletteCard(),
+      WardrobeColorPaletteCard(colors: details.colors),
       const SizedBox(height: 16),
-      const WardrobeMaterialCard(),
+      WardrobeMaterialCard(components: details.components),
       const SizedBox(height: 16),
-      const WardrobeVariantsCard(),
+      WardrobeVariantsCard(variants: details.variants),
       const SizedBox(height: 16),
-      const WardrobeReferencesCard(),
+      WardrobeReferencesCard(references: details.references),
     ],
   );
 }
 
 class _CompactWardrobe extends StatelessWidget {
-  const _CompactWardrobe({required this.wardrobeId, required this.model});
+  const _CompactWardrobe({
+    required this.wardrobeId,
+    required this.model,
+    required this.details,
+  });
   final String wardrobeId;
   final WardrobeModel? model;
+  final WardrobeWorkspaceData details;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -103,18 +128,12 @@ class _CompactWardrobe extends StatelessWidget {
         title: 'Product View',
         placeholderIcon: Icons.checkroom_outlined,
       ),
-      WardrobeSpecificationCard(
-        category: model?.category ?? 'Outerwear',
-        material: model?.primaryMaterial ?? 'Technical Synthetic',
-        fabric: model?.fabric ?? 'Waterproof Fabric',
-        fit: model?.fit ?? 'Oversized',
-        style: model?.style ?? 'Futuristic Tactical',
-      ),
-      const WardrobeComponentsCard(),
-      const WardrobeColorPaletteCard(),
-      const WardrobeMaterialCard(),
-      const WardrobeVariantsCard(),
-      const WardrobeReferencesCard(),
+      _wardrobeSpecification(model),
+      WardrobeComponentsCard(components: details.components),
+      WardrobeColorPaletteCard(colors: details.colors),
+      WardrobeMaterialCard(components: details.components),
+      WardrobeVariantsCard(variants: details.variants),
+      WardrobeReferencesCard(references: details.references),
     ],
   );
 }

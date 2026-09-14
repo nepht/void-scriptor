@@ -4,6 +4,7 @@ import '../../../core/persistence/project_paths.dart';
 import '../../../database/project/project_database.dart';
 import '../domain/wardrobe_model.dart';
 import '../domain/wardrobe_repository.dart';
+import '../domain/wardrobe_workspace_data.dart';
 
 class WardrobeRepositoryImpl implements WardrobeRepository {
   WardrobeRepositoryImpl({
@@ -24,6 +25,40 @@ class WardrobeRepositoryImpl implements WardrobeRepository {
   Future<WardrobeModel?> getWardrobe(String assetId) async {
     final row = await database.wardrobeDao.getWardrobe(assetId);
     return row == null ? null : _map(row);
+  }
+
+  @override
+  Future<WardrobeWorkspaceData> getWorkspaceData(String assetId) async {
+    final components = await database.wardrobeDao.getComponents(assetId);
+    final colors = await database.wardrobeDao.getColors(assetId);
+    final variants = await database.wardrobeDao.getVariants(assetId);
+    final references = await database.wardrobeDao.getReferences(assetId);
+    return WardrobeWorkspaceData(
+      components: [
+        for (final component in components)
+          WardrobeComponentInfo(
+            name: component.name,
+            componentType: component.componentType,
+            material: component.material,
+            fabric: component.fabric,
+          ),
+      ],
+      colors: [
+        for (final color in colors)
+          WardrobeColorInfo(name: color.name, hexValue: color.hexValue),
+      ],
+      variants: [
+        for (final variant in variants)
+          WardrobeVariantInfo(name: variant.name, isDefault: variant.isDefault),
+      ],
+      references: [
+        for (final reference in references)
+          WardrobeReferenceInfo(
+            referenceType: reference.referenceType,
+            filePath: reference.filePath,
+          ),
+      ],
+    );
   }
 
   @override

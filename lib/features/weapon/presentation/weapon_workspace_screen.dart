@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../assets/presentation/widgets/asset_thumbnail_card.dart';
 import '../domain/weapon_model.dart';
+import '../domain/weapon_workspace_data.dart';
 import 'weapon_workspace_controller.dart';
 import 'widgets/weapon_detail_cards.dart';
 import 'widgets/weapon_header.dart';
@@ -15,12 +16,19 @@ class WeaponWorkspaceScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final model = ref.watch(weaponWorkspaceProvider(weaponId)).valueOrNull;
+    // vs-hunt-20260914-wardrobe-weapon WBUG-6: child rows come from the
+    // repository; detail cards are data-driven with honest empty states.
+    final details =
+        ref.watch(weaponWorkspaceDetailsProvider(weaponId)).valueOrNull ??
+        const WeaponWorkspaceData();
+    // WBUG-6: while a session/model is still resolving, scalar fields render
+    // the dash placeholder — never invented sample numbers like '420 mm'.
     final specification = WeaponSpecificationData(
-      type: _value(model?.weaponType, 'Weapon'),
-      length: model?.lengthMm == null ? '420 mm' : '${model!.lengthMm} mm',
-      weight: model?.weightKg == null ? '0.82 kg' : '${model!.weightKg} kg',
-      material: _value(model?.primaryMaterial, 'Void Alloy'),
-      energy: _value(model?.energyType, 'Void Energy'),
+      type: weaponValue(model?.weaponType),
+      length: weaponNumber(model?.lengthMm, 'mm'),
+      weight: weaponNumber(model?.weightKg, 'kg'),
+      material: weaponValue(model?.primaryMaterial),
+      energy: weaponValue(model?.energyType),
     );
     return Container(
       color: context.palette.backgroundSecondary,
@@ -41,11 +49,13 @@ class WeaponWorkspaceScreen extends ConsumerWidget {
                           weaponId: weaponId,
                           model: model,
                           specification: specification,
+                          details: details,
                         )
                       : _WeaponCompact(
                           weaponId: weaponId,
                           model: model,
                           specification: specification,
+                          details: details,
                         ),
                 );
               },
@@ -65,10 +75,12 @@ class _WeaponDesktop extends StatelessWidget {
     required this.weaponId,
     required this.model,
     required this.specification,
+    required this.details,
   });
   final String weaponId;
   final WeaponModel? model;
   final WeaponSpecificationData specification;
+  final WeaponWorkspaceData details;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -92,30 +104,29 @@ class _WeaponDesktop extends StatelessWidget {
       Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Expanded(child: WeaponComponentsCard()),
+          Expanded(child: WeaponComponentsCard(components: details.components)),
           const SizedBox(width: 16),
           Expanded(
             child: WeaponDimensionsCard(
               length: specification.length,
               weight: specification.weight,
+              measurements: details.measurements,
             ),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: WeaponEnergyCard(
               energy: specification.energy,
-              core: WeaponWorkspaceScreen._value(
-                model?.coreType,
-                'Crystalline Void Core',
-              ),
+              core: weaponValue(model?.coreType),
+              profile: details.energy,
             ),
           ),
         ],
       ),
       const SizedBox(height: 16),
-      const WeaponVariantsCard(),
+      WeaponVariantsCard(variants: details.variants),
       const SizedBox(height: 16),
-      const WeaponReferencesCard(),
+      WeaponReferencesCard(references: details.references),
     ],
   );
 }
@@ -125,10 +136,12 @@ class _WeaponCompact extends StatelessWidget {
     required this.weaponId,
     required this.model,
     required this.specification,
+    required this.details,
   });
   final String weaponId;
   final WeaponModel? model;
   final WeaponSpecificationData specification;
+  final WeaponWorkspaceData details;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -139,20 +152,19 @@ class _WeaponCompact extends StatelessWidget {
         placeholderIcon: Icons.auto_fix_high_outlined,
       ),
       WeaponSpecificationCard(model: specification),
-      const WeaponComponentsCard(),
+      WeaponComponentsCard(components: details.components),
       WeaponDimensionsCard(
         length: specification.length,
         weight: specification.weight,
+        measurements: details.measurements,
       ),
       WeaponEnergyCard(
         energy: specification.energy,
-        core: WeaponWorkspaceScreen._value(
-          model?.coreType,
-          'Crystalline Void Core',
-        ),
+        core: weaponValue(model?.coreType),
+        profile: details.energy,
       ),
-      const WeaponVariantsCard(),
-      const WeaponReferencesCard(),
+      WeaponVariantsCard(variants: details.variants),
+      WeaponReferencesCard(references: details.references),
     ],
   );
 }

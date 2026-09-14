@@ -110,6 +110,13 @@ class StoryWorkspaceScreen extends StatefulWidget {
 
 class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
   final _draft = TextEditingController();
+
+  /// vs-native-20260914-run309 BUG-303-01: node fokus editor draf. Restore
+  /// dari panel DRAFT RECOVERY memindahkan fokus ke TextButton; tanpa node
+  /// eksplisit layar tidak bisa mengembalikan fokus ke TextField sehingga
+  /// ketikan pasca-restore tidak mencapai kontrol di Windows (IME hanya
+  /// mengirim ke fokus aktif).
+  final _editorFocus = FocusNode(debugLabel: 'scene-draft-editor');
   late final DurableAutosaveCoordinator _autosave;
 
   /// Step 145.30 Autosave Snapshot and Crash Recovery: journal draf
@@ -314,6 +321,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
           .then((_) => _draftJournal?.close()),
     );
     _draft.dispose();
+    _editorFocus.dispose();
     super.dispose();
   }
 
@@ -1276,22 +1284,39 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
     if (repository == null || _recoveryBusy) return;
     setState(() => _recoveryBusy = true);
     try {
-      await repository.saveSceneDraft(entry.sceneId, entry.content);
-      // vs-hunt-20260912-autosave BUG-6 (Medium): acknowledge WAJIB
-      // content-aware. Selama await save di atas, pengguna bisa mengetik
-      // lagi dan autosave men-stage konten BARU ke jurnal; ack blind akan
-      // menghapus entri yang belum pernah di-persist (silent loss). Bila
-      // entri masih persis konten yang direstore, ia dihapus seperti
-      // sebelumnya; bila tergantikan, entri baru dipertahankan dan autosave
-      // berikutnya yang menyimpan serta meng-ack-nya. Jalur 'Buang' tetap
-      // blind — keputusan eksplisit pengguna.
-      await widget.draftJournal?.acknowledge(
-        entry.sceneId,
-        content: entry.content,
-      );
+      // vs-native-20260914-run309 BUG-303-01 (Medium): restore wajib
+      // dikoordinasikan dengan autosave pending lewat kontrak BUG-5
+      // (vs-hunt-20260912-autosave) — sama seperti snapshot restore. Tanpa
+      // ini, konten yang masih menunggu debounce persist SETELAH restore
+      // dan menimpa hasil restore secara diam-diam.
+      await _autosave.aroundExternalDraftWrite<void>(entry.sceneId, () async {
+        await repository.saveSceneDraft(entry.sceneId, entry.content);
+        // vs-hunt-20260912-autosave BUG-6 (Medium): acknowledge WAJIB
+        // content-aware. Selama await save di atas, pengguna bisa mengetik
+        // lagi dan autosave men-stage konten BARU ke jurnal; ack blind akan
+        // menghapus entri yang belum pernah di-persist (silent loss). Bila
+        // entri masih persis konten yang direstore, ia dihapus seperti
+        // sebelumnya; bila tergantikan, entri baru dipertahankan dan autosave
+        // berikutnya yang menyimpan serta meng-ack-nya. Jalur 'Buang' tetap
+        // blind — keputusan eksplisit pengguna.
+        await widget.draftJournal?.acknowledge(
+          entry.sceneId,
+          content: entry.content,
+        );
+      });
       if (!mounted) return;
       if (_selectedSceneId == entry.sceneId) {
-        _draft.value = TextEditingValue(text: entry.content);
+        // BUG-303-01: pasang caret valid di akhir teks dan kembalikan fokus
+        // ke editor. Tap 'Pulihkan Draft' memindahkan fokus ke TextButton;
+        // `_draft.value` tanpa selection meninggalkan baseOffset -1 yang
+        // tidak pernah dinormalkan EditState — di WindowsTextField yang
+        // tidak fokus + caret invalid membuat ketikan pasca-restore tidak
+        // pernah mencapai kontrol (editor bisu, label beku).
+        _draft.value = TextEditingValue(
+          text: entry.content,
+          selection: TextSelection.collapsed(offset: entry.content.length),
+        );
+        _editorFocus.requestFocus();
         setState(() {
           _updateWordCount(entry.content);
           _pendingRecovery = List<PendingDraftEntry>.from(_pendingRecovery)
@@ -1708,6 +1733,7 @@ class _StoryWorkspaceScreenState extends State<StoryWorkspaceScreen> {
                             link: _layerLink,
                             child: TextField(
                               controller: _draft,
+                              focusNode: _editorFocus,
                               minLines: 7,
                               maxLines: 14,
                               onChanged: _onDraftChanged,

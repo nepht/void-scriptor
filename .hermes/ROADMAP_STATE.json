@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run310 (cron): vs-hunt-20260914-workspaces BUG-6 ditutup - _runRollbackDrill kini memakai identitas backup persis yang dikembalikan backups.create (Directory), enumerate+sort leksikografis dibuang, guard: backup hilang/backup.json projectId cocok-gagal -> drill FAIL. RED 2 test (harness _ControlledBackupService, fixture temporer) -> GREEN 2/2; region workspaces 139 PASS; live_cutover PASS; flutter analyze full No issues; diff-check 0; FULL SUITE 4447 PASS/0 FAIL/1 skip exit 0 (flake story_txt_export_ui lolos). Windows build BLOCKED (app pengguna PID 13856); native UNVERIFIABLE. Antrean region: BUG-1 High transaksi+kompensasi (prasyarat BUG-5), BUG-7 keputusan arah token Choi. Commit scoped TIDAK di-push.",
+  "last_verified_step": "run311 (cron): vs-native-20260914-run309 BUG-303-01 ditutup TDD (disetujui Choi a4bf7d2) — _restorePendingDraft kini membungkus save+ack content-aware lewat _autosave.aroundExternalDraftWrite (kontrak BUG-5 vs-hunt-20260912-autosave, sebelumnya hanya untuk snapshot restore) dan memasang caret TextSelection.collapsed di akhir teks + fokus editor via FocusNode baru _editorFocus (akar editor bisu pasca 'Pulihkan Draft' di native run309: selection baseOffset -1 + fokus tertinggal di TextButton). RED 2 test tepat mekanisme (selection.isValid false; stale debounce 'Ketik baru pengguna' menimpa restore) -> GREEN 2/2; region story 216 PASS; regression export+journal+coordinator 69 PASS; flutter analyze full No issues; format owned exit 0; diff-check 0; FULL SUITE 4449 PASS/0 FAIL/1 skip exit 0 (delta +2 = slice ini, cocok eksak vs run310). Windows build BLOCKED (app pengguna PID 3364); native UNVERIFIABLE cron — konfirmasi penutup = journey run309 diulang Choi. Antrean tetap: workspaces BUG-1 (prasyarat BUG-5), BUG-7 keputusan Choi; 145.43-145.50 menunggu. Commit scoped TIDAK di-push.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-14T17:15:00+07:00",
-  "updated_by": "nephthys (cron run310)",
+  "updated_at": "2026-09-14T22:45:00+07:00",
+  "updated_by": "nephthys (cron run311)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {

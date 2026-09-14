@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-14T23:17:27+07:00",
-  "updated_by": "nephthys (interaktif run317)",
+  "updated_at": "2026-09-15T00:34:11+07:00",
+  "updated_by": "nephthys (cron run318)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -221,7 +221,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run301",
-  "note": "run317: 145.27 VERIFIED after provenance reconciliation; six Core + route gating 46/46 PASS. 145.28-145.29 already VERIFIED; guard recovery candidate 145.30. 145.42 three-file process-kill fixture bundle 7/7 PASS. No bug-hunt or new feature opened.",
+  "note": "run318 (cron): 145.42 interrupted_restore upgraded VERIFIED(domain)->VERIFIED(real process kill) — restore backup kini dua-fase + jurnal roll-forward; bukti OS hard-kill child nyata (bukan simulasi). Gates: focused 7/7, region 228/1skip/0FAIL, analyze bersih, build Windows PASS. Pointer tetap 145.30 (guard). run317: 145.27 VERIFIED; 145.28-29 VERIFIED; antrean keputusan Choi tetap (PLAT-03/04, STU-03, 145.43-50).",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",
@@ -288,5 +288,13 @@
     "closed": "BUG-2/3/4 (run308) vs_hunt_20260914_workspaces_migration_test.dart + workspace_migration_runner.dart + BUG-1/BUG-5 (run312: transaksi DB + kompensasi filesystem presisi + verifikasi sebagai gate; test/features/workspaces/vs_hunt_20260914_migration_atomicity_run312_test.dart; post_fix_notes_run312_BUG1_BUG5.md)",
     "queue": "BUG-7 (keputusan arah kontrak token representasi import vs export - butuh Choi). Hanya ini sisa region workspaces.",
     "next_action": "Run berikutnya: tutup gap build Windows saat app pengguna tertutup ATAU region hunt unscanned baru ATAU eksekusi keputusan Choi bila tiba."
+  },
+  "restore_two_phase_run318": {
+    "date": "2026-09-15",
+    "slice": "145.42 interrupted_restore -> VERIFIED(real process kill): restoreWithRollback dua-fase (stage semua area + jurnal recovery/restore-staging.json) + RestoreCrashRecovery jurnal-aware + OS kill child nyata via fixtures/restore_two_phase_kill_child.dart",
+    "head": "979f80e60e0d2a090617d50db431aca6ac4c3073",
+    "gates": "focused 7/7 PASS; region project_resilience 228 PASS/1 skip/0 FAIL; analyze No issues; format owned 0 changed; diff-check 0; build windows --debug PASS 33.0s",
+    "sibling_adaptation": "backup_rollback_failure_test.dart kasus-2: trigger file terkunci dipindah dari workspaces-luar-payload ke asset-dalam-payload (premis jadi mustahil oleh dua-fase); nol assertion dihapus",
+    "pointer": "TIDAK berubah (next_step tetap 145.30 per guard)"
   }
 }

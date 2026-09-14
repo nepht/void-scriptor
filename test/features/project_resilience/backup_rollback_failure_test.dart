@@ -131,16 +131,21 @@ void main() {
       ).create(name: 'RollbackAllFail');
       final portrait = File('${package.assetsDirectory.path}/portrait.txt');
       await portrait.writeAsString('snapshot portrait');
-      final service = AllAreasFailingRollbackService();
-      final backup = await service.create(package: package, type: 'manual');
-      await portrait.writeAsString('current portrait');
-
-      // A locked live workspace file makes the forward restore fail so the
-      // all-areas rollback injection is exercised.
+      // The workspace payload exists BEFORE the backup so the restore
+      // actually has a workspaces area to place; the file locked below then
+      // blocks that placement. (A two-phase restore of a backup without a
+      // workspaces payload must legitimately leave live workspaces
+      // untouched — the snapshot cannot represent content it never stored.)
       final workspace = Directory('${package.root.path}/workspaces');
       await workspace.create(recursive: true);
       final locked = File('${workspace.path}/locked.txt');
       await locked.writeAsString('live locked');
+      final service = AllAreasFailingRollbackService();
+      final backup = await service.create(package: package, type: 'manual');
+      await portrait.writeAsString('current portrait');
+
+      // A locked live workspace file makes the forward placement fail so
+      // the all-areas rollback injection is exercised.
       final lock = await locked.open(mode: FileMode.append);
       addTearDown(lock.close);
 

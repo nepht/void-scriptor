@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
+import '../../../core/persistence/restore_staging_journal.dart';
 import '../../../core/project_package/project_package.dart';
 import '../../../core/project_package/void_project_format.dart';
 import '../../../database/project/project_database.dart';
@@ -175,6 +176,12 @@ class ProjectBackupService {
   /// Path of the most recent emergency backup created during restore,
   /// retained for the user even when the rollback itself fails.
   String? lastEmergencyBackupPath;
+
+  /// 145.42 two-phase restore test seam: invoked once after every payload
+  /// area has been staged and journaled but BEFORE any live byte is moved.
+  /// Throwing here must leave the live payload byte-identical.
+  @visibleForTesting
+  Future<void> Function()? onStagingCompleteForTesting;
 
   Future<String> _sha256(File file) async =>
       sha256.convert(await file.readAsBytes()).toString();
@@ -381,10 +388,15 @@ class ProjectBackupService {
     );
   }
 
-  /// Restores the backup payload with a rollback guarantee, using the
-  /// already-created emergency snapshot when provided. Every payload area
-  /// is restored independently; a failing area rolls back from the
-  /// emergency backup without aborting the other areas.
+  /// Restores the backup payload in two phases with a rollback guarantee,
+  /// using the already-created emergency snapshot when provided. Phase one
+  /// stages every backup area inside the package and journals the staged
+  /// fingerprints; phase two swaps each staged copy into its live position
+  /// through a rename window. A hard kill therefore either leaves the live
+  /// payload byte-intact (before placement) or a journaled, verifiable
+  /// staged copy that the next [RestoreCrashRecovery.recover] rolls forward.
+  /// Every payload area that fails mid-placement still rolls back
+  /// independently from the emergency backup without aborting the others.
   @visibleForTesting
   Future<void> restoreWithRollback({
     required ProjectPackage package,
@@ -399,39 +411,78 @@ class ProjectBackupService {
           note: 'Emergency backup before restore',
         );
     lastEmergencyBackupPath = emergency.path;
+    // ---- Phase 1: stage + journal. No live byte changes here. ----
+    final workspacesRoot = Directory(p.join(package.root.path, 'workspaces'));
+    final stagedManifest = File('${package.manifestFile.path}.tmp');
+    final stagedDatabase = File('${package.databaseFile.path}.tmp');
+    final stagedAssets = Directory('${package.assetsDirectory.path}.tmp');
+    final stagedWorkspaces = Directory('${workspacesRoot.path}.tmp');
+    await stagedManifest.parent.create(recursive: true);
+    await stagedDatabase.parent.create(recursive: true);
+    await stagedManifest.writeAsBytes(
+      await File(p.join(backup.path, 'project.json')).readAsBytes(),
+      flush: true,
+    );
+    await stagedDatabase.writeAsBytes(
+      await File(p.join(backup.path, 'project.db')).readAsBytes(),
+      flush: true,
+    );
+    final backupAssets = Directory(p.join(backup.path, 'assets'));
+    final hasBackupAssets = await backupAssets.exists();
+    if (hasBackupAssets) {
+      await _copyDirectory(backupAssets, stagedAssets);
+    }
+    final backupWorkspaces = Directory(p.join(backup.path, 'workspaces'));
+    if (await backupWorkspaces.exists()) {
+      await _copyDirectory(backupWorkspaces, stagedWorkspaces);
+    } else if (await stagedWorkspaces.exists()) {
+      await stagedWorkspaces.delete(recursive: true);
+    }
+    final staged = <String, FileSystemEntity>{
+      RestoreStagingJournal.manifestArea: stagedManifest,
+      RestoreStagingJournal.databaseArea: stagedDatabase,
+      if (hasBackupAssets) RestoreStagingJournal.assetsArea: stagedAssets,
+      RestoreStagingJournal.workspacesArea: stagedWorkspaces,
+    };
+    staged.removeWhere((area, entity) => !_entityOnDisk(entity.path));
+    final journal = await RestoreStagingJournal.create(package, staged: staged);
+    final seam = onStagingCompleteForTesting;
+    if (seam != null) {
+      try {
+        await seam();
+      } on Object {
+        // The seam throws while the live payload is still untouched: drop
+        // the scratch, never leave a journal that could be mistaken for an
+        // interrupted placement.
+        await _purgeStaging(package, journal);
+        rethrow;
+      }
+    }
+    // ---- Phase 2: place each journaled area through the rename window.
     try {
-      await package.manifestFile.writeAsBytes(
-        await File(p.join(backup.path, 'project.json')).readAsBytes(),
-      );
-      await package.databaseFile.writeAsBytes(
-        await File(p.join(backup.path, 'project.db')).readAsBytes(),
-      );
-      // Sprint 145.42 exact-snapshot restore: a successful restore is a
-      // snapshot switch, not a merge. Files created after the backup
-      // must not silently survive a rollback to a known-good snapshot.
-      // Only when the backup actually carries an assets payload (its
-      // assets directory exists) does the live assets directory get
-      // replaced wholesale; legacy backups without one keep their
-      // live assets untouched because the snapshot cannot represent
-      // content it never stored.
-      final backupAssets = Directory(p.join(backup.path, 'assets'));
-      if (await backupAssets.exists()) {
-        if (await package.assetsDirectory.exists()) {
-          await package.assetsDirectory.delete(recursive: true);
-        }
-        await _copyDirectory(backupAssets, package.assetsDirectory);
+      for (final area in RestoreStagingJournal.areaOrder) {
+        if (!journal.areas.containsKey(area)) continue;
+        await placeStagedEntity(
+          staged: journal.stagedEntity(area),
+          live: _liveEntityFor(package, area),
+        );
       }
-      final workspaceTarget = Directory(
-        p.join(package.root.path, 'workspaces'),
-      );
-      if (await workspaceTarget.exists()) {
-        await workspaceTarget.delete(recursive: true);
-      }
-      await _copyDirectory(
-        Directory(p.join(backup.path, 'workspaces')),
-        workspaceTarget,
-      );
+      await journal.consume();
     } catch (restoreError) {
+      // Undo any swap displacement left inside a placement window: each
+      // area's `<live>.restore-old` (pre-placement content) returns to the
+      // live path, after which the emergency rollback below rewrites every
+      // area to the same durable state. No stray scratch may survive.
+      for (final area in journal.areas.keys) {
+        try {
+          await restoreDisplacedOriginal(
+            livePath: _liveEntityFor(package, area).path,
+          );
+        } on FileSystemException {
+          // Best-effort: rollbackPayloadAreas still rebuilds the area from
+          // the emergency snapshot; that failure is reported per-area.
+        }
+      }
       final failures = await rollbackPayloadAreas(
         package,
         emergency,
@@ -449,9 +500,10 @@ class ProjectBackupService {
         ),
         workspaces: () => _restoreDirectorySnapshot(
           Directory(p.join(emergency.path, 'workspaces')),
-          Directory(p.join(package.root.path, 'workspaces')),
+          workspacesRoot,
         ),
       );
+      await _purgeStaging(package, journal);
       if (failures.isNotEmpty) {
         throw BackupRollbackException(
           emergencyBackupPath: emergency.path,
@@ -461,6 +513,35 @@ class ProjectBackupService {
       }
       rethrow;
     }
+  }
+
+  static bool _entityOnDisk(String path) =>
+      FileSystemEntity.typeSync(path) != FileSystemEntityType.notFound;
+
+  static FileSystemEntity _liveEntityFor(ProjectPackage package, String area) =>
+      restoreLiveEntityFor(package, area);
+
+  /// Drops the journal and every staged scratch entity it names. Only ever
+  /// called while the live payload is provably untouched or already fully
+  /// rolled back.
+  Future<void> _purgeStaging(
+    ProjectPackage package,
+    RestoreStagingJournal journal,
+  ) async {
+    for (final area in RestoreStagingJournal.areaOrder) {
+      if (!journal.areas.containsKey(area)) continue;
+      final entity = journal.stagedEntity(area);
+      try {
+        if (entity is Directory) {
+          if (await entity.exists()) await entity.delete(recursive: true);
+        } else if (entity is File) {
+          if (await entity.exists()) await entity.delete();
+        }
+      } on FileSystemException {
+        // Best-effort: RestoreCrashRecovery sweeps leftovers next open.
+      }
+    }
+    await journal.consume();
   }
 
   /// Restores every payload area from [emergency] independently so a
@@ -493,22 +574,54 @@ class ProjectBackupService {
   }
 }
 
-/// Crash-window recovery for interrupted backup restores. A restore that
-/// is killed between the emergency snapshot and the final area write leaves
-/// staging files (*.tmp) or half-written areas behind. On the next session
-/// open the recovery hook removes every staging artifact so the package
-/// surfaces its on-disk payload; the emergency pre-restore snapshot is
-/// deliberately preserved for user-driven recovery decisions.
+/// Crash-window recovery for interrupted backup restores. A two-phase
+/// restore that is killed leaves a `recovery/restore-staging.json` journal
+/// naming its staged payload copies. On the next session open (or before
+/// the next restore) recovery completes the interrupted operation: every
+/// staged copy that still matches its journaled fingerprint is rolled
+/// forward into the live payload; staged copies that diverged or vanished
+/// are discarded scratch and can never overwrite live content. Without a
+/// journal, legacy '<final>.tmp' staging residue is swept as before. The
+/// emergency pre-restore snapshot is deliberately preserved for
+/// user-driven recovery decisions.
 class RestoreCrashRecovery {
   RestoreCrashRecovery(this.package);
   final ProjectPackage package;
 
-  /// Removes staging artifacts from an interrupted [ProjectBackupService]
-  /// restore. Staging files follow the '<final>.tmp' convention used by
-  /// the registry, manifest, exporter, and importer journal. Returns the
-  /// number of staging artifacts that were removed.
+  /// Removes or rolls forward staging artifacts from an interrupted
+  /// [ProjectBackupService] restore. Returns the number of staging
+  /// artifacts that were healed or swept.
   static Future<int> recover(ProjectPackage package) async {
     var removed = 0;
+    final journal = await RestoreStagingJournal.load(package);
+    if (journal != null) {
+      for (final area in RestoreStagingJournal.areaOrder) {
+        if (!journal.areas.containsKey(area)) continue;
+        final staged = journal.stagedEntity(area);
+        if (await journal.stagedMatches(area)) {
+          // The corpse on disk is provably the exact copy the restore was
+          // about to place: complete the interrupted restore.
+          await placeStagedEntity(
+            staged: staged,
+            live: restoreLiveEntityFor(package, area),
+          );
+          removed++;
+        } else if (await _stagedExists(staged)) {
+          // Divergent scratch is never authoritative; live content stays.
+          await _deleteStaged(staged);
+          removed++;
+        }
+      }
+      await journal.consume();
+      return removed;
+    }
+    final journalFile = File(RestoreStagingJournal.journalPathFor(package));
+    if (await journalFile.exists()) {
+      // Structurally invalid journal: it cannot direct a roll-forward, and
+      // leaving it would re-block every later restore. Sweep it with the
+      // scratch below without counting it as a healed artifact.
+      await journalFile.delete();
+    }
     final manifestTmp = File('${package.manifestFile.path}.tmp');
     if (await manifestTmp.exists()) {
       await manifestTmp.delete();
@@ -531,6 +644,17 @@ class RestoreCrashRecovery {
       removed++;
     }
     return removed;
+  }
+
+  static Future<bool> _stagedExists(FileSystemEntity staged) async =>
+      FileSystemEntity.typeSync(staged.path) != FileSystemEntityType.notFound;
+
+  static Future<void> _deleteStaged(FileSystemEntity staged) async {
+    if (staged is Directory) {
+      await staged.delete(recursive: true);
+    } else if (staged is File) {
+      await staged.delete();
+    }
   }
 }
 

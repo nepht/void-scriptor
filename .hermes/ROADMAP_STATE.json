@@ -221,7 +221,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run301",
-  "note": "run305: vs-hunt-20260914-wardrobe-weapon selesai, WBUG-5/6 closed (41c01f3). Keputusan Choi menunggu: routing REF-BUG-2/WLD-PARENT, UI export/import character, 145.43-50, lab hardware 145.42, pemetaan scope 145.27, BUI-BUG-01/02, STU-BUG-03/06, PLAT-BUG-03/04, wrangler login, 6 PR dependabot, migrasi riverpod 3.",
+  "note": "run313: 145.42 USB NYATA VERIFIED end-to-end (fix 53ce459): move lintas-volume ke flashdisk G: FAT32 sukses (paket utuh + integrity ok + registry ter-repoint + sumber hilang), autosave menembus USB (DB signature HIT mtime 20:22), cold-start drive-ter-eject fail-closed (registry utuh, open ditolak 'Coba lagi'). Sisa: reinsert fisik (admin ditolak; butuh tangan Choi) -> Probe -> buka proyek. Registry dipulihkan manual ke 2 entri; insiden prune 5->1 19:07 TERBATAS: mekanismenya 4x remove() resmi (tombstone-append), BUKAN startup-load (repro 90 dtk bersih) dan BUKAN patch 53ce459; aktor pemanggil masih misterius, diawasi per-operasi saat sesi reinsert.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",

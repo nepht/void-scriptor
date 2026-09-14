@@ -1,4 +1,17 @@
 ### 2026-09-14 - nephthys (cron run312): vs-hunt-20260914-workspaces BUG-1 + BUG-5 ditutup TDD (migrasi workspace all-or-fail: transaksi DB + kompensasi filesystem presisi + verifikasi sebagai gate)
+## run313 - nephthys (interaktif): 145.42 USB NYATA — bug cross-volume ditemukan lewat hardware, fix 53ce459 terverifikasi end-to-end
+
+- Perangkat: flashdisk ADATA 15GB G: FAT32 (CPRA_X64FRE), biner Debug 53ce459.
+- BUG REAL (VERIFIED, akar: errno 17 via probe replika 17MB): Move Project ke USB gagal senyap — Directory.rename menolak lintas volume; komentar lama 'out of scope' kalah vs use-case kanonik 145.42.
+- FIX 53ce459 (TDD; gate: persistence +127, move-UI +3, analyze clean): fallback staged copy-verify-place-delete + flush marker; rename tetap jalur cepat; errno non-17/18 tak memicu fallback; jurnal kontrak tak berubah.
+- VERIFIED end-to-end di USB: paket 5f55bb9c mendarat utuh G:/VS_USB_Journey (sqlite integrity ok, 166 tabel, jurnal ter-drain), registry ter-repoint, sumber D:/VS_MoveTest kosong.
+- VERIFIED autosave ke USB: ketik 'Tulis-USB-145-42' -> UI 'Tersimpan 20:22', DB scene_beats.content HIT 1, mtime 20:22:24 di flashdisk.
+- VERIFIED cold-start drive-hilang (eject software Shell Keluarkan, G_GONE): startup normal, registry UTUH (tanpa prune/tombstone), buka proyek ditolak fail-closed (layar 'Coba lagi'/'Kembali ke Projects'), bukan corrupt.
+- DEFERRED (butuh tangan Choi): colok ulang fisik -> Probe Storage Locations -> remount -> buka proyek (jalur software re-enable butuh admin/diskpart; volume sengaja dibiarkan ter-eject).
+- INSIDEN TERBUKA (prioritas slice berikutnya): 19:07:52-53 sesi dua-instance Debug, projects.json ter-prune 5->1 + tombstone 4 ID (mkn remove resmi run197 BUG-19). Paket Tes Novel & UJI Download & Journey303 UTUH di disk; Journey186 memang yatim dari sebelumnya. Registry dipulihkan manual dari .bak -> 2 entri (Saga-UJI + Journey303). Reproduksi startup-murni GAGAL (90 dtk bersih, tanpa klik; tombstone tidak muncul lagi). Akar belum terbukti — butuh investigasi targeted (kandidan: race dua instance + sinkronisasi listing lama via save penuh). Kronologi lengkap: C:/Users/nepht/AppData/Local/Temp/vs_stdout_repro.log.
+- UX minor (bukan blocker): picker getDirectoryPath menolak ketik path folder baru ('Nama folder tidak valid'; 'd' nyempil dari Alt+D); navigasi tree/konfirmasi berjalan.
+- Objek uji Journey303 kini hidup di USB Choi; jangan format G: sebelum keputusan bersih-bersih.
+
 
 - Preflight: guard PASS exit 0 (recommended_step 145.27, canonical sha 86af6a53, stream corrective_core_mvp ACTIVE, stability gate PASS). HEAD masuk 53ce459 = origin/master (backlog lama sudah ter-push antar-run; ahead 0 saat start — koreksi dari draft 'ahead 16'; commit Move-Project USB dipreservasi). Nol M source milik orang lain; 9 untracked artefak lama dipreservasi; conflict markers nihil; satu proses Flutter pada satu waktu dijaga. Nomor run312 grep-nol sebelum tulis. Aplikasi pengguna HIDUP sejak seleksi (PID 14280 start 19:23, berganti 23700 saat suite selesai — build Debug kanonik) -> gate Windows build BLOCKED (preseden run307/310/311; tidak dibunuh).
 - Seleksi slice (anti-berputar): antrean eksplisit run310 untuk region workspaces. BUG-1 (High) + BUG-5 (Medium) = satu desain (transaksi + kompensasi), keduanya di `workspace_migration_runner.dart`; arah Referee on-disk konkret, tidak butuh keputusan Choi (BUG-7 tetap antre). Grep: runner tidak punya caller produksi di shell (hanya test) -> perubahan additive aman, bukan jalur live pengguna.

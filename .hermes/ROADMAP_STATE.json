@@ -220,8 +220,8 @@
     "evidence": "RED dashboard_create_character_no_session_test Actual '/studio' -> GREEN; fokus 1 PASS; test/features/dashboard 13 PASS; shell+routing 69 PASS; analyze No issues; build windows debug 64,5s; guard PASS",
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
-  "last_worker_run": "run300",
-  "note": "run300: branch protection master = 4 required checks (PR blocked terbukti; admin/cron tetap bisa push direct); 6 PR dependabot open dibiarkan (hak Choi)",
+  "last_worker_run": "run301",
+  "note": "run301: CI ALL_GREEN 4/4 di bc96094 = run pertama tersertifikasi branch protection penuh; era CI-mati RESMI tertutup; tersisa keputusan Choi (PR dependabot, riverpod3, REF-BUG-2, 145.43-50)",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",

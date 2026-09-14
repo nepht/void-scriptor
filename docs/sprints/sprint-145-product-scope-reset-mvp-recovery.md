@@ -1,3 +1,9 @@
+### 2026-09-14 - nephthys (interaktif run301): PENUTUP ERA CI-HIDUP — run pertama di bawah branch protection penuh = ALL_GREEN 4/4 di bc96094
+- Poller API: Analyze-test-Linux-Web-Android, Windows, macOS-iOS, Gitleaks = success semua; nol non-success. Tip bc96094 memuat 5 slice hunt cron (run295-299) + ledger pagar run300 -> bukti kelas: pipeline cron-lokale -> push -> CI-sertified kini satu alur utuh.
+- Status pagar permanen: required-checks 4 nama (protection API 200, PR #15=blocked sebagai uji hidup) + dependabot mayor riverpod diblokir + auto-merge OFF 6 PR. Insiden run284 (merge merah tanpa sertifikasi) tidak dapat terulang tanpa sengaja mematikan protection.
+- Papan kerja bersih: antrean hunt 7 region NOL/terdan; board kanban 8/8 done; worktree = 1 kanonik; memory+state sinkron.
+- Hanya tersisa keputusan Choi: nasib 6 PR dependabot open, jadwal migrasi riverpod 3, REF-BUG-2, 145.43-50, item produk tema/UX.
+
 ### 2026-09-14 - nephthys (interaktif run300): BRANCH PROTECTION master terpasang — gerbang dependabot tertutup permanen (izin 'lanjutkan' pasca-ALL_GREEN run294; nomor 295-299 direbut cron STU/PLAT/EXP selaras)
 - PUT /branches/master/protection = 200; baca-balik: required contexts = [Analyze, test, Linux, Web, Android | Build Windows debug | Build macOS and iOS simulator | Gitleaks history scan]; strict=false; enforce_admins=false => cron/direct-push admin tetap jalan, yang terkunci jalur PR/merge.
 - Bukti berfungsi: PR #15 (drift) mergeable_state=BLOCKED tanpa keempat check hijau. Auto-merge dependabot keenam PR open = OFF (GraphQL). Celah insiden run284 kini butuh 2 kunci: CI hijau DAN merge manual.

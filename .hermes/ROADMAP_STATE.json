@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run306 (cron): vs-hunt-20260914-story selesai - 5 REAL/3 dismissed (Referee on-disk; 04/05/06 dibantah probe runtime File.rename Windows, parent_verification_run306.md). STORY-01/03/07/08 CLOSED TDD: scan() tolak subjectId duplikat, recordWords guard scopeKey blank, fromUtcInstant wajib isUtc, fidelity prasyarat-1 struktural (heading/paragraf Title). focused 8 PASS; region story 214 PASS; analyze No issues; FULL SUITE 4435 PASS/0 FAIL/1 skip exit 0; build windows debug PASS 42,7s; diff-check 0; guard PASS. Antrean story tersisa = STORY-02 (keputusan bentuk kontrak JSON).",
+  "last_verified_step": "run307 (cron): vs-hunt-20260914-explorer-selection selesai - Referee on-disk 3 REAL/2 dismissed (HEAD fea57ba). BUG-2/3/4 CLOSED TDD: recovery provider bedakan ids==null vs empty-sukses (discard memori aset terhapus; guard remembersWorkspace + token onDispose), baris error Character/Creature kini punya retry 'Coba lagi' -> ref.invalidate (paritas pola BUG-8 hunt-run171). focused 5/5; region explorer 46; core/selection 8; test/app 163; workspace+character+creatures 140; FULL SUITE 4440 PASS/0 FAIL/1 skip exit 0 (+5 cocok eksak); analyze No issues; diff-check 0; guard PASS. Windows build gate BLOCKED (void_scriptor.exe PID 8112 app pengguna aktif dari build Debug canonical); native UNVERIFIABLE run ini. Antrean tetap: keputusan Choi + STORY-02. Commit cb059ab tidak di-push.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-14T10:55:00+07:00",
-  "updated_by": "nephthys (cron run305)",
+  "updated_at": "2026-09-14T14:05:00+07:00",
+  "updated_by": "nephthys (cron run307)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -266,5 +266,19 @@
       "optional Low debt: project-ownership scoping on dismissed BUG-1..4 (defense-in-depth; per-project DB blocks claimed path)",
       "native Windows journey wardrobe/weapon workspace UNVERIFIABLE dari cron"
     ]
+  },
+  "explorer_selection_hunt_2026_09_14_run307": {
+    "scope": "lib/features/explorer (6 file) + lib/core/selection (1 file), 7 file non-generated, SHA-256 beku di docs/evidence/vs-hunt-20260914-explorer-selection/scope_hashes_run307.txt",
+    "head_at_scan": "fea57ba",
+    "chain": "Hunter 5 temuan/26 -> Skeptic 4C/1D -> Referee on-disk OTORITATIF 3 REAL/2 dismissed (BUG-1 stale-async + BUG-5 persist dibantah)",
+    "fixed": [
+      "BUG-2 recovery ids==null vs empty-sukses + remembersWorkspace guard + onDispose token",
+      "BUG-3 creature error-row retry (invalidate creatureExplorerProvider)",
+      "BUG-4 character error-row retry (invalidate characterControllerProvider)"
+    ],
+    "evidence": "focused 5/5; explorer 46; core/selection 8; app 163; workspace+character+creatures 140; FULL 4440/0/1skip exit 0; analyze No issues; diff-check 0",
+    "build_gate": "BLOCKED - void_scriptor.exe (app pengguna, PID 8112, path build Debug canonical) aktif; native UNVERIFIABLE run ini",
+    "commit": "cb059ab (scoped, tidak di-push)",
+    "next": "re-scan region ini hanya bila hash scope berubah; kandidat region unscanned berikutnya asset_browser / worldbuilding UI (cek inventaris vs-hunt+hash)"
   }
 }

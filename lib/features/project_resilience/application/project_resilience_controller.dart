@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:path/path.dart' as p;
 
 import '../../../database/project/project_database.dart';
@@ -258,7 +259,15 @@ class ProjectResilienceController {
   /// BackupRetentionService (Step 24.26): removes both the on-disk
   /// backup directory and its ProjectBackups row. Manual and
   /// automatic categories are budgeted independently.
+  ///
+  /// vs-hunt-20260915-resilience BUG-8: the deletion is irreversible, so a
+  /// durable pending marker is written BEFORE the directory delete and only
+  /// removed after the row delete succeeds. [reconcileInterruptedPrunes]
+  /// (run here at the start of every prune pass) finishes or unwinds any
+  /// marker left behind by an interruption, so a row can never outlive its
+  /// deleted directory indefinitely.
   Future<void> _enforceBackupRetention() async {
+    await reconcileInterruptedPrunes();
     final repository = session.database.projectResilienceRepository;
     final rows = await repository.backupsFor(session.package.projectId);
     final candidates = rows
@@ -273,12 +282,79 @@ class ProjectResilienceController {
     for (final victim in toPrune) {
       final row = rows.firstWhere((r) => r.id == victim.id);
       final directory = _resolveBackupDirectory(row.relativePath);
+      final marker = _pruneMarkerFile(victim.id);
+      await marker.parent.create(recursive: true);
+      await marker.writeAsString(
+        jsonEncode({
+          'backupId': victim.id,
+          'relativePath': row.relativePath,
+          'stage': 'pending',
+        }),
+      );
       if (await directory.exists()) {
         await directory.delete(recursive: true);
       }
+      await debugFailRemoveBackupForTest?.call(victim.id);
       await repository.removeBackup(victim.id);
+      await marker.delete();
     }
   }
+
+  /// Scratch marker proving a retention prune for [backupId] is mid-flight.
+  File _pruneMarkerFile(String backupId) => File(
+    p.join(session.package.backupDirectory.path, '.prune-$backupId.json'),
+  );
+
+  /// Reconciles interrupted retention prunes (vs-hunt-20260915-resilience
+  /// BUG-8). For every `.prune-<id>.json` marker in the backups directory:
+  /// a still-present backup directory is deleted, the recorded row is
+  /// removed, and the marker is cleared. Structurally invalid markers are
+  /// swept without touching any recorded backup. Returns the number of
+  /// markers repaired or swept.
+  Future<int> reconcileInterruptedPrunes() async {
+    if (!await session.package.backupDirectory.exists()) return 0;
+    final repository = session.database.projectResilienceRepository;
+    var repaired = 0;
+    for (final entity in session.package.backupDirectory.listSync()) {
+      if (entity is! File) continue;
+      final name = p.basename(entity.path);
+      if (!name.startsWith('.prune-') || !name.endsWith('.json')) continue;
+      String? backupId;
+      String? relativePath;
+      try {
+        final json = jsonDecode(await entity.readAsString());
+        if (json is Map<String, dynamic>) {
+          final id = json['backupId'];
+          final path = json['relativePath'];
+          if (id is String && id.isNotEmpty && path is String) {
+            backupId = id;
+            relativePath = path;
+          }
+        }
+      } on Object {
+        backupId = null;
+      }
+      if (backupId == null || relativePath == null) {
+        // Inert scratch: never produced by a real prune or unreadable.
+        await entity.delete();
+        repaired++;
+        continue;
+      }
+      final directory = _resolveBackupDirectory(relativePath);
+      if (await directory.exists()) {
+        await directory.delete(recursive: true);
+      }
+      await repository.removeBackup(backupId);
+      await entity.delete();
+      repaired++;
+    }
+    return repaired;
+  }
+
+  /// Test-only seam: invoked with the victim id immediately BEFORE its
+  /// ProjectBackups row is removed, to inject an interruption mid-prune.
+  @visibleForTesting
+  Future<void> Function(String backupId)? debugFailRemoveBackupForTest;
 
   /// Resolves a stored backup path: absolute paths are custom-location
   /// backups (read/written as-is), relative paths live inside the package.

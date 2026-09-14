@@ -1,425 +1,450 @@
 {
-  "schema_version": 1,
-  "title": "Sprint 145.42 resilience failure matrix - durable evidence registry",
-  "created": "2026-09-08",
-  "created_by": "nephthys (cron db1e27da79d8)",
-  "authority_mapping": "Permintaan pengguna 2026-09-08 poin #3 (matriks durable); tidak mengubah acceptance kanonis 145.42; EVIDENCE-only, NON_BINDING untuk scope; pointer tetap 145.27",
-  "user_reported_pass_policy": "Empat kasus laporan pengguna (normal close, force-kill app, restart PC, shutdown PC) dipertahankan sebagai USER_REPORTED_PASS dengan field unknown dicatat apa adanya; tidak dianggap bukti pelepasan listrik atau titik-putus WAL",
-  "head_at_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
-  "fresh_verification_this_run": {
-    "date": "2026-09-08",
-    "reason": "re-verification dibenarkan: commit 1f34f35 (persistence admission) menyentuh region yang sama + adopsi region dirilis",
-    "results": [
-      {
-        "command": "flutter test --no-pub test/features/workspace test/features/character",
-        "exit_code": 0,
-        "result": "90 PASS"
-      },
-      {
-        "command": "flutter test --no-pub test/core/persistence",
-        "exit_code": 0,
-        "result": "96 PASS"
-      },
-      {
-        "command": "flutter test --no-pub test/database/project/{process_kill,corrupt_open,future_schema_guard}",
-        "exit_code": 0,
-        "result": "7 PASS"
-      },
-      {
-        "command": "flutter test --no-pub test/features/project_resilience",
-        "exit_code": 0,
-        "result": "192 PASS / 0 FAIL / 1 skip"
-      }
-    ]
+ "schema_version": 1,
+ "title": "Sprint 145.42 resilience failure matrix - durable evidence registry",
+ "created": "2026-09-08",
+ "created_by": "nephthys (cron db1e27da79d8)",
+ "authority_mapping": "Permintaan pengguna 2026-09-08 poin #3 (matriks durable); tidak mengubah acceptance kanonis 145.42; EVIDENCE-only, NON_BINDING untuk scope; pointer tetap 145.27",
+ "user_reported_pass_policy": "Empat kasus laporan pengguna (normal close, force-kill app, restart PC, shutdown PC) dipertahankan sebagai USER_REPORTED_PASS dengan field unknown dicatat apa adanya; tidak dianggap bukti pelepasan listrik atau titik-putus WAL",
+ "head_at_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
+ "fresh_verification_this_run": {
+  "date": "2026-09-08",
+  "reason": "re-verification dibenarkan: commit 1f34f35 (persistence admission) menyentuh region yang sama + adopsi region dirilis",
+  "results": [
+   {
+    "command": "flutter test --no-pub test/features/workspace test/features/character",
+    "exit_code": 0,
+    "result": "90 PASS"
+   },
+   {
+    "command": "flutter test --no-pub test/core/persistence",
+    "exit_code": 0,
+    "result": "96 PASS"
+   },
+   {
+    "command": "flutter test --no-pub test/database/project/{process_kill,corrupt_open,future_schema_guard}",
+    "exit_code": 0,
+    "result": "7 PASS"
+   },
+   {
+    "command": "flutter test --no-pub test/features/project_resilience",
+    "exit_code": 0,
+    "result": "192 PASS / 0 FAIL / 1 skip"
+   }
+  ]
+ },
+ "cases": [
+  {
+   "case_id": "normal_close",
+   "status": "PASS",
+   "evidence_type": "USER_REPORTED_PASS",
+   "date": "2026-09-08",
+   "source": "Choirudin, percakapan Cron Job db1e27da79d8 (tercatat di prompt job 2026-09-08)",
+   "commit": "tidak diketahui",
+   "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
+   "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
+   "fixture": "proyek pengguna nyata (dataset & versi/build tidak dicatat pengguna)",
+   "command": "tidak ada (laporan pengguna)",
+   "exit_code": null,
+   "expected": "draf/pekerjaan tidak hilang setelah menutup aplikasi normal",
+   "actual": "pengguna melaporkan pekerjaan tidak hilang",
+   "evidence_paths": [
+    "prompt job cron 2026-09-08 (bagian 'Permintaan pengguna - rekonsiliasi 145.27 dan 145.42')"
+   ],
+   "limitations": "versi/build, waktu, dataset, dan hash sebelum/sesudah tidak diberikan pengguna (unknown)",
+   "next_action": "tidak ada; kasus dipertahankan apa adanya",
+   "retest_reason": ""
   },
-  "cases": [
-    {
-      "case_id": "normal_close",
-      "status": "PASS",
-      "evidence_type": "USER_REPORTED_PASS",
-      "date": "2026-09-08",
-      "source": "Choirudin, percakapan Cron Job db1e27da79d8 (tercatat di prompt job 2026-09-08)",
-      "commit": "tidak diketahui",
-      "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
-      "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
-      "fixture": "proyek pengguna nyata (dataset & versi/build tidak dicatat pengguna)",
-      "command": "tidak ada (laporan pengguna)",
-      "exit_code": null,
-      "expected": "draf/pekerjaan tidak hilang setelah menutup aplikasi normal",
-      "actual": "pengguna melaporkan pekerjaan tidak hilang",
-      "evidence_paths": [
-        "prompt job cron 2026-09-08 (bagian 'Permintaan pengguna - rekonsiliasi 145.27 dan 145.42')"
-      ],
-      "limitations": "versi/build, waktu, dataset, dan hash sebelum/sesudah tidak diberikan pengguna (unknown)",
-      "next_action": "tidak ada; kasus dipertahankan apa adanya",
-      "retest_reason": ""
-    },
-    {
-      "case_id": "forced_process_termination_app_level",
-      "status": "PASS",
-      "evidence_type": "USER_REPORTED_PASS",
-      "date": "2026-09-08",
-      "source": "Choirudin, percakapan Cron Job db1e27da79d8",
-      "commit": "tidak diketahui",
-      "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
-      "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
-      "fixture": "proyek pengguna nyata (metode penghentian tidak dicatat)",
-      "command": "tidak ada (laporan pengguna)",
-      "exit_code": null,
-      "expected": "draf tidak hilang setelah aplikasi dimatikan paksa",
-      "actual": "pengguna melaporkan pekerjaan tidak hilang",
-      "evidence_paths": [
-        "prompt job cron 2026-09-08"
-      ],
-      "limitations": "belum membuktikan transaksi WAL terputus pada titik tertentu; bukti titik-putus ada di case process_crash_wal",
-      "next_action": "tidak ada; kasus dipertahankan",
-      "retest_reason": ""
-    },
-    {
-      "case_id": "os_restart_shutdown",
-      "status": "PASS",
-      "evidence_type": "USER_REPORTED_PASS",
-      "date": "2026-09-08",
-      "source": "Choirudin, percakapan Cron Job db1e27da79d8",
-      "commit": "tidak diketahui",
-      "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
-      "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
-      "fixture": "PC pengguna (log OS tidak diverifikasi)",
-      "command": "tidak ada (laporan pengguna)",
-      "exit_code": null,
-      "expected": "draf tidak hilang setelah restart PC dan mematikan PC",
-      "actual": "pengguna melaporkan pekerjaan tidak hilang",
-      "evidence_paths": [
-        "prompt job cron 2026-09-08"
-      ],
-      "limitations": "mematikan PC tidak membuktikan pencabutan listrik mendadak; event log OS tidak diperiksa",
-      "next_action": "tidak ada; kasus dipertahankan",
-      "retest_reason": ""
-    },
-    {
-      "case_id": "process_crash_wal",
-      "status": "VERIFIED(domain)",
-      "evidence_type": "automated_test_fresh_rerun",
-      "date": "2026-09-08",
-      "source": "re-run Hermes cron db1e27da (run ini), HEAD 734645385",
-      "commit": "76248c2 (test) / diverifikasi ulang di HEAD 734645385",
-      "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
-      "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
-      "fixture": "Directory.systemTemp 's14542-db-prockill-*' + child dart.exe test harness (fixture dibuat & dihancurkan test)",
-      "command": "flutter test --no-pub test/database/project/project_database_process_kill_test.dart test/database/project/project_database_corrupt_open_test.dart test/database/project/project_database_future_schema_guard_test.dart",
-      "exit_code": 0,
-      "expected": "data committed sebelum hard-kill selamat, transaksi terbuka rollback, open path produksi memulihkan DB; DB robek (torn write) ditolak",
-      "actual": "7/7 PASS (2 process-kill + 3 corrupt-open + 2 future-schema), All tests passed",
-      "evidence_paths": [
-        "test/database/project/project_database_process_kill_test.dart",
-        "$LOCALAPPDATA/Temp (log run ini tidak disimpan permanen; bukti = exit code 0 saat ini)"
-      ],
-      "limitations": "harness child process, bukan proses aplikasi UI pengguna; kill point tunggal",
-      "next_action": "tidak ada; retest hanya jika harness/logika recovery berubah",
-      "retest_reason": ""
-    },
-    {
-      "case_id": "explicit_disk_full",
-      "status": "VERIFIED(engine)",
-      "evidence_type": "engine_path_test",
-      "date": "2026-09-06 (slice fdd9970, injeksi extended code); 2026-09-11 (run194: bukti engine-path SQLite asli)",
-      "source": "ledger run89 (SQLITE_FULL -> ProjectDatabaseWriteFailedException, injeksi kode) + ledger run194 (engine SQLITE_FULL asli via max_page_count)",
-      "commit": "fdd9970 (injeksi) / run194 (engine-path, dicatat di entri ledger run194)",
-      "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
-      "head_at_engine_upgrade": "76a211d5f0bb38fbcaa62b6a33cd64ed6d258e21",
-      "dirty_scope": "worktree bersih kecuali slice run194 (test baru project_database_disk_full_engine_test.dart + matriks ini + entri ledger run194)",
-      "fixture": "Directory.systemTemp 'hermes-dbfull-*': DB produksi 3 halaman dibuat ProjectDatabaseService.create(); batas alokasi diberlakukan per-koneksi via PRAGMA max_page_count (fixture dibuat & dihancurkan test)",
-      "command": "flutter test --no-pub test/database/project/project_database_disk_full_engine_test.dart (run194: 3/3 PASS; gigi dibuktikan lewat inversi cabang classifier 13 -> tepat 2 test gagal, pulih identik git diff 0); regresi test/database 37/37 + test/features/project_resilience 198 PASS / 1 skip / 0 FAIL",
-      "exit_code": 0,
-      "expected": "SQLITE_FULL (13) asli dari engine SQLite (bukan kode ter-inject) diklasifikasikan typed ProjectDatabaseWriteFailedException; kegagalan allokasi tidak merusak data committed dan tidak menyisakan residu",
-      "actual": "3/3 PASS: (1) engine memancarkan extendedResultCode 13 asli saat CREATE TABLE melebihi max_page_count; (2) exception engine asli tersebut diklasifikasikan ProjectDatabaseWriteFailedException oleh cabang produksi yang sama dengan injeksi (gigi: cabang 13 direvert -> test ini + case sintetis 13 gagal); (3) INSERT overflow pada DB terbatas gagal dengan 13, integrity_check ok, seed utuh, nol baris bocor, file tetap <= batas halaman",
-      "evidence_paths": [
-        "test/database/project/project_database_disk_full_engine_test.dart",
-        "lib/database/project/project_database_service.dart (classifyProjectDatabaseOpenError cabang 13, tidak berubah)",
-        "lib/database/project/project_database_service.dart (probeWrite -> ProjectDatabaseWriteFailedException untuk semua SqliteException tulis)"
-      ],
-      "limitations": "volume-level live (VFS write() ENOSPC pada media nyata) tetap tidak dieksekusi: max_page_count mereplikasi permukaan error SQLITE_FULL di dalam engine, bukan kehabisan byte di disk fisik; media virtual terisolasi belum tersedia. Open-path wiring (drift init melempar 13 -> typed) tercakup oleh exception yang identik; wiring open() engine-real untuk kode 8 sudah dibuktikan terpisah oleh project_database_write_failure_test.dart (attrib +R).",
-      "next_action": "tidak ada wajib; opsi retesifikasi volume-level hanya bila media virtual terisolasi aman tersedia",
-      "retest_reason": ""
-    },
-    {
-      "case_id": "permission_loss",
-      "status": "VERIFIED",
-      "evidence_type": "live_windows_test + posix_proxy_classification",
-      "date": "2026-09-06 (slice fdd9970); dicatat ulang 2026-09-08; fresh re-verification 2026-09-09 (run155 cron)",
-      "source": "ledger run89 (SQLITE_READONLY -> ProjectDatabaseWriteFailedException)",
-      "commit": "fdd9970",
-      "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
-      "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
-      "fixture": "injection extended result code 8 (SQLITE_READONLY) di unit test",
-      "command": "flutter test --no-pub test/database/project/project_database_write_failure_test.dart test/database/project/project_database_write_probe_purity_test.dart test/database/project/project_database_open_error_classification_test.dart --reporter expanded (2026-09-09, exit 0, 11/11 PASS; mencakup live attrib +R pada fixture disposable -> ProjectDatabaseWriteFailedException). POSIX proxy: WSL python3.14 sqlite3, chmod a-w pada fixture -> sqlite_errorcode 8 (SQLITE_READONLY), readonly_confirmed=true",
-      "exit_code": 0,
-      "expected": "DB write-protected diklasifikasi typed, tidak salah dikira korut",
-      "actual": "terverifikasi saat slice (run89)",
-      "evidence_paths": [
-        "lib/core/database/project_database_service.dart (per ledger run89)",
-        "lib/database/project/project_database_service.dart",
-        "test/database/project/project_database_open_error_classification_test.dart",
-        "test/database/project/project_database_write_failure_test.dart",
-        "test/database/project/project_database_write_probe_purity_test.dart"
-      ],
-      "limitations": "POSIX side = proxy (WSL sqlite), bukan eksekusi produksi Dart di POSIX; CI Linux sudah menjalankan branch chmod pada runner asli (test 46af198). Kasus ini TIDAK mencakup drive-level removal (kasus terpisah).",
-      "next_action": "tidak ada; retest hanya bila classifier open()/probeWrite berubah",
-      "retest_reason": "fresh re-verification diminta next_action lama: live fixture disposable + verifikasi POSIX classification reachable — keduanya tuntas",
-      "head_at_fresh_verification": "cf9095025b982515819fdb5d043c7ebcf226a3e7",
-      "regression": "flutter test --no-pub test/features/project_resilience: 196 PASS / 1 skip / 0 FAIL, exit 0 (2026-09-09)",
-      "posix_proxy": {
-        "method": "WSL Ubuntu python3 3.14.4 + sqlite3 3.46.1, fixture disposable di /tmp (dihapus setelahnya)",
-        "injection": "os.chmod(db, S_IRUSR|S_IRGRP|S_IROTH) setelah seed table+row",
-        "observed": "attempt to write a readonly database, sqlite_errorcode=8, sqlite_errorname=SQLITE_READONLY",
-        "link_to_production": "lib/database/project/project_database_service.dart mengklasifikasikan extendedResultCode==8 -> ProjectDatabaseWriteFailedException; kode 8 terbukti reachable pada POSIX, jadi branch chmod POSIX pada test committed (46af198) memakai permukaan error yang benar",
-        "limitation": "proxy narrowest: produksi Dart tidak dieksekusi di POSIX; bukan pengganti CI Linux yang sudah menjalankan branch chmod pada runner asli"
-      }
-    },
-    {
-      "case_id": "unavailable_removed_drive",
-      "status": "VERIFIED(domain)",
-      "evidence_type": "automated_test_plus_probe + live_virtual_drive_lifecycle",
-      "date": "2026-09-06 (slice 937298c); dicatat ulang 2026-09-08; upgrade 2026-09-11 (run196) via drive virtual subst",
-      "source": "ledger run86 (ProjectDatabaseUnavailableException: errno 3 & CANTOPEN 14)",
-      "commit": "937298c",
-      "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
-      "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
-      "fixture": "drive Q:/ absen (probe empiris host) + unit test klasifikasi",
-      "command": "flutter test --no-pub test/database/project/project_database_drive_removal_lifecycle_test.dart --reporter expanded (2026-09-11, exit 0, 2/2 PASS; subst T:/ -> %TEMP%\\hermes-subst-* disposable)",
-      "exit_code": 0,
-      "expected": "drive dilepas/jalur hilang -> ProjectDatabaseUnavailableException, bukan raw PathNotFoundException atau salah korut",
-      "actual": "lifecycle nyata pada media virtual: subst mount -> service.create+open produksi sukses (project_metadata terisi) -> subst /D detach -> Directory/File drive tidak terlihat -> open() melempar ProjectDatabaseUnavailableException (bukan Unreadable/FileSystemException) -> remount -> schemaVersion terbaca, open sukses, jumlah baris metadata sama, integrity_check ok",
-      "evidence_paths": [
-        "lib/core/database/project_database_service.dart (per ledger run86)"
-      ],
-      "limitations": "subst mereplikasi lapisan resolve jalur OS (letter berhenti resolve, errno 3 / CANTOPEN) — BUKAN pelepasan USB fisik, power-off device, atau kegagalan kontroler; hardware-bound removal tetap UNVERIFIABLE menunggu keputusan Choi (2026-09-08)",
-      "next_action": "tidak ada; retest hanya bila classifier open()/probeWrite atau pemetaan errno berubah",
-      "retest_reason": "",
-      "virtual_media_upgrade": {
-        "method": "subst per-logon (media virtual terisolasi, user-level, reversible) pada backing %TEMP% disposable; TIDAK menyentuh drive/volume fisik pengguna",
-        "tooth_red": "gigi via inversi (pola run190/194): guard missing-file + klasifikasi CANTOPEN dinonaktifkan sementara -> kedua test RED persis pada mekanisme (PathNotFoundException mentah bocor; SqliteException(14) salah jadi ProjectDatabaseUnreadableException); lib dipulihkan identik (git diff lib/ = 0 baris) -> GREEN 2/2",
-        "regression": "flutter test --no-pub test/database: 39/39 PASS exit 0 (2026-09-11)",
-        "regression_resilience": "flutter test --no-pub test/features/project_resilience: 198 PASS / 1 skip / 0 FAIL exit 0 (2026-09-11)",
-        "analyze": "dart analyze test/database/project lib/database/project: No issues found!",
-        "build": "flutter build windows --debug --no-pub: PASS (23,7s)",
-        "head_at_upgrade": "4a1e17f017f932987b5780af3c8258a01020fbdd"
-      },
-      "head_at_fresh_verification": "4a1e17f017f932987b5780af3c8258a01020fbdd"
-    },
-    {
-      "case_id": "interrupted_export",
-      "status": "VERIFIED(domain)",
-      "evidence_type": "automated_test",
-      "date": "2026-09-05 (slice 7e642e6); dicatat ulang 2026-09-08",
-      "source": "ledger run66 (story_export_interrupt_safety_test 7 test, RED terverifikasi)",
-      "commit": "7e642e6",
-      "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
-      "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
-      "fixture": "temp dir test; simulasikan kegagalan tulis mid-stream",
-      "command": "flutter test --no-pub test/features/story (run138: 178 PASS)",
-      "exit_code": 0,
-      "expected": "ekspor terpotong tidak pernah ditinggalkan sebagai file final; ekspor valid sebelumnya terjaga (staging .tmp + rename atomik)",
-      "actual": "run138 cron: test/features/story 178 PASS / 0 FAIL exit 0 (bukti historis tercatat ledger)",
-      "evidence_paths": [
-        "test/features/story/story_export_interrupt_safety_test.dart"
-      ],
-      "limitations": "kegagalan I/O disimulasikan di test, bukan pencabutan kabel/USB nyata",
-      "next_action": "tidak ada; retest bila exporter berubah",
-      "retest_reason": ""
-    },
-    {
-      "case_id": "interrupted_import_move",
-      "status": "VERIFIED(domain)",
-      "evidence_type": "automated_test",
-      "date": "2026-09-04 (run3 + run53); dicatat ulang 2026-09-08",
-      "source": "ledger run3 (collision rollback stash/restore) + run53 (rollback-failure injection)",
-      "commit": "2da4498 / 991dd53",
-      "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
-      "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
-      "fixture": "temp dirs; kegagalan ekstraksi & registry dipicu test",
-      "command": "flutter test --no-pub test/features/project_resilience (run ini: 192 PASS)",
-      "exit_code": 0,
-      "expected": "import gagal tidak merusak paket asli (stash rename-back), registry failure rollback, rollback yang ikut gagal dilaporkan per-area dgn emergency backup dipertahankan",
-      "actual": "run ini: project_resilience 192 PASS / 0 FAIL / 1 skip exit 0 @ HEAD 734645385 (termasuk backup_rollback_failure_test 2 test: failed rollback reports failing area..., rollback failure in every area is aggregated...)",
-      "evidence_paths": [
-        "test/features/project_resilience/backup_rollback_failure_test.dart",
-        "test/features/project_resilience/portable_collision_rollback_test.dart (per ledger run3)"
-      ],
-      "limitations": "perpindahan via OS file explorer tidak diuji; coverage di level service/repository",
-      "next_action": "tidak ada",
-      "retest_reason": ""
-    },
-    {
-      "case_id": "interrupted_restore",
-      "status": "VERIFIED(real process kill)",
-      "evidence_type": "automated_test + OS hard-kill harness (TerminateProcess)",
-      "date": "2026-09-15",
-      "source": "ledger run318 (nephthys cron): restore dua-fase + jurnal roll-forward + kill child nyata",
-      "commit": "slice run318 (restore_staging_journal.dart + project_recovery_services.dart dua-fase)",
-      "head_at_matrix_update": "979f80e60e0d2a090617d50db431aca6ac4c3073",
-      "dirty_scope": "slice ini saja: 2 file M + 4 file baru (lib/core/persistence/restore_staging_journal.dart, fixtures/restore_two_phase_kill_child.dart, restore_two_phase_staging_test.dart, restore_two_phase_process_kill_test.dart); artefak docs untracked lama dipreservasi",
-      "fixture": "Directory.systemTemp 'hermes-restore-kill-*': package .voidproject nyata + backup manual + emergency pre-restore; child Dart murni me-replay staging+jurnal+swap pertama memakai primitif produksi Flutter-free, di-kill OS saat live workspaces terhapus sebelum rename penempatan",
-      "command": "flutter test --no-pub test/features/project_resilience/restore_two_phase_staging_test.dart (4) + restore_two_phase_process_kill_test.dart (1 kill nyata) + backup_rollback_failure_test.dart (2) => 7/7 PASS; regresi test/features/project_resilience 228 PASS / 1 skip / 0 FAIL; flutter analyze --no-pub No issues; dart format gate owned 0 changed; flutter build windows --debug --no-pub PASS 33.0s; git diff --check exit 0",
-      "exit_code": 0,
-      "expected": "kill OS di tengah jendela swap restore: jurnal staging names the verified copy; pemulihan berikutnya (jalur produksi RestoreCrashRecovery.recover, sama dengan session open) menggulirkan restore selesai tanpa corrupt live; kegagalan di seam staging = nol byte live berubah; staging divergen = dibuang, live tak pernah tertimpa",
-      "actual": "RED (setter/journal/class belum ada) -> GREEN: seam throw = 4 area byte-identik + staging+jurnal musnah + emergency retained; kill nyata mid-window = workspaces hilang dipulihkan roll-forward ke konten backup, jurnal dikonsumsi, staging musnah; staging terkorupsi pasca-jurnal tidak pernah di-roll-forward; restore sukses bersih tanpa residu",
-      "evidence_paths": [
-        "test/features/project_resilience/restore_two_phase_staging_test.dart",
-        "test/features/project_resilience/restore_two_phase_process_kill_test.dart",
-        "test/features/project_resilience/fixtures/restore_two_phase_kill_child.dart",
-        "lib/core/persistence/restore_staging_journal.dart",
-        "lib/features/project_resilience/application/project_recovery_services.dart"
-      ],
-      "limitations": "kill harness memakai child Dart murni dengan primitif produksi yang sama (bukan proses void_scriptor.exe utuh — flutter/foundation tidak dapat dijalankan dart run; proyek tetap .voidproject nyata). In-place write manifest/database kini staging+rename atomik; torn-write live hanya mungkin bila rename OS sendiri gagal sebagian (tidak dapat disimulasikan). Roll-forward recovery dipanggil pada session open readWrite dan sebelum restore berikutnya, sama seperti sebelumnya. Sisa jendela kill yang lebih kecil (di dalam swap satu area, antara rename staged->live) tetap tercover jurnal: area itu matched->placed, area lain divirifikasi.",
-      "next_action": "tidak ada; retest bila jalur restore/jurnal/session open berubah",
-      "retest_reason": ""
-    },
-    {
-      "case_id": "corruption",
-      "status": "VERIFIED(domain)",
-      "evidence_type": "automated_test_plus_probe",
-      "date": "2026-09-03..08; verifikasi ulang 2026-09-08",
-      "source": "ledger run2-2026-09-03 (UnreadableException 5cd2589), run82 (manifest .bak recovery 697279a), run109 (scratch probe)",
-      "commit": "5cd2589 / 697279a",
-      "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
-      "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
-      "fixture": "DB korut offset 4096 (salinan scratch, non-destruktif) + unit test manifest korut/torn DB",
-      "command": "flutter test --no-pub test/database/project/project_database_corrupt_open_test.dart test/database/project/project_database_process_kill_test.dart (run ini: 7/7 PASS)",
-      "exit_code": 0,
-      "expected": "DB korut ditolak dgn typed ProjectDatabaseUnreadableException; manifest korut dipulihkan dari .bak; korupsi terdeteksi SQLite pada salinan",
-      "actual": "run ini: corrupt-open 3/3 + torn-DB rejection 2/2 PASS @ HEAD; probe scratch run109 tercatat corrupt-db-probe.json",
-      "evidence_paths": [
-        "test/database/project/project_database_corrupt_open_test.dart",
-        "docs/evidence/145.44-repeat-20260907/corrupt-db-probe.json"
-      ],
-      "limitations": "in-app recovery UX untuk korupsi tetap future work (ledger run109)",
-      "next_action": "tidak ada",
-      "retest_reason": ""
-    },
-    {
-      "case_id": "power_loss_physical",
-      "status": "UNVERIFIABLE",
-      "evidence_type": "hardware_bound",
-      "date": "2026-09-08",
-      "source": "konfirmasi batas: otorisasi pengguna 2026-09-08 melarang pemutusan listrik",
-      "commit": "-",
-      "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
-      "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
-      "fixture": "-",
-      "command": "tidak dapat dijalankan",
-      "exit_code": null,
-      "expected": "pencabutan listrik mendadak saat WAL aktif",
-      "actual": "tidak dieksekusi; tidak diotorisasi",
-      "evidence_paths": [
-        "docs/roadmap/ROADMAP_POLICY.json (stability gate PASS)"
-      ],
-      "limitations": "butuh perangkat/uji fisik terpisah; proxy yang tersedia = process-kill + torn-DB (case process_crash_wal) dan power-loss window recovery registry/manifest (c93e718, VERIFIED domain)",
-      "next_action": "keputusan Choi: lab hardware atau terima proxy sebagai batas kontrak",
-      "retest_reason": ""
-    },
-    {
-      "case_id": "device_validation_min_spec",
-      "status": "UNVERIFIABLE",
-      "evidence_type": "hardware_bound",
-      "date": "2026-09-07 (run109); dicatat ulang 2026-09-08",
-      "source": "device-matrix.json run109 (rekomendasi Win11 Pro, i5-4570, 31.9GB, RX590 GME)",
-      "commit": "7e21844",
-      "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
-      "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
-      "fixture": "windowed 1264x711 proxy tercatat sebagai bukti tambahan",
-      "command": "tidak dapat dijalankan dari cron",
-      "exit_code": null,
-      "expected": "eksekusi native pada mesin minimum-spec",
-      "actual": "tidak dieksekusi; butuh mesin terpisah",
-      "evidence_paths": [
-        "docs/evidence/145.44-repeat-20260907/device-matrix.json"
-      ],
-      "limitations": "hardware-bound; windowed proxy hanya bukti tambahan, tidak menaikkan status",
-      "next_action": "Choi menyediakan mesin minimum-spec atau menerima PARTIAL permanen",
-      "retest_reason": ""
-    },
-    {
-      "case_id": "concurrent_open",
-      "status": "VERIFIED(domain)",
-      "evidence_type": "automated_test_fresh_rerun",
-      "date": "2026-09-11",
-      "head_at_verification": "f685ecfcaed19b0f45c6c38cca515df26255f856",
-      "dirty_scope": "worktree bersih (tracked); hanya untracked docs sibling: .hermes/AUTONOMOUS_ROADMAP_PROMPT.md, docs/MASTER_SPRINT.md, docs/backlog/, docs/evidence/website-source-reconciliation-2026-09-08.json (dipreservasi)",
-      "source": "run195-nephthys cron (bukti segar di HEAD live)",
-      "commit": "5cdfb75 (test + classifier; diverifikasi ulang di HEAD f685ecf)",
-      "fixture": "Directory.systemTemp 'hermes-dblock-*': DB produksi dibuat service.create(); writer kedua sqlite3 native dengan BEGIN IMMEDIATE memegang RESERVED lock (fixture dibuat & dihancurkan test)",
-      "command": "flutter test --no-pub test/database/project/project_database_concurrent_open_test.dart test/database/project/project_database_unavailable_open_test.dart",
-      "exit_code": 0,
-      "expected": "open kedua saat writer lain memegang file ditolak typed ProjectDatabaseLockedException (bukan salah korut); setelah kontender rilis, open produksi pulih dan migration selesai; drive/jalur absen -> ProjectDatabaseUnavailableException",
-      "actual": "4/4 PASS 'All tests passed!': 2 concurrent-open (locked typed + recovery+completion migration) + 2 unavailable-open (errno 3 path tidak ada + CANTOPEN 14)",
-      "evidence_paths": [
-        "test/database/project/project_database_concurrent_open_test.dart",
-        "test/database/project/project_database_unavailable_open_test.dart",
-        "lib/database/project/project_database_service.dart (classifier extended code 5)",
-        "lib/app/shell/void_app_shell.dart (pesan ramah locked)"
-      ],
-      "limitations": "simulasi lock via koneksi SQLite asli BEGIN IMMEDIATE di harness test, bukan dua instance aplikasi UI; retest bila classifier open berubah",
-      "next_action": "tidak ada wajib",
-      "retest_reason": "",
-      "provenance_note": "Kontrak canonical 145.42 menunjuk test/database/project/project_database_service_test.dart yang TIDAK ADA di pohon live (git log --all tanpa riwayat). Coverage live-nya adalah project_database_concurrent_open_test.dart (commit 5cdfb75). Kedua test yang dirujuk kontrak dijalankan ulang dari file live yang setara; matriks tidak mengubah acceptance kanonis."
-    },
-    {
-      "case_id": "different_project_isolation",
-      "status": "VERIFIED(domain)",
-      "evidence_type": "automated_test_fresh_rerun",
-      "date": "2026-09-11",
-      "head_at_verification": "f685ecfcaed19b0f45c6c38cca515df26255f856",
-      "dirty_scope": "worktree bersih (tracked); hanya untracked docs sibling: .hermes/AUTONOMOUS_ROADMAP_PROMPT.md, docs/MASTER_SPRINT.md, docs/backlog/, docs/evidence/website-source-reconciliation-2026-09-08.json (dipreservasi)",
-      "source": "run195-nephthys cron (bukti segar di HEAD live)",
-      "commit": "test/features/character/character_repository_test.dart (clean di HEAD f685ecf; diverifikasi segar)",
-      "fixture": "Directory.systemTemp 's08-isolation-*': dua project DB dibuat ProjectDatabaseService.create() di root test (fixture dibuat & dihancurkan test)",
-      "command": "flutter test --no-pub test/features/character/character_repository_test.dart",
-      "exit_code": 0,
-      "expected": "karakter yang dibuat di database project-1 tidak terlihat di database project-2 (isolasi antar-project)",
-      "actual": "6/6 PASS 'All tests passed!'; kasus kunci 'characters stay isolated across project databases'",
-      "evidence_paths": [
-        "test/features/character/character_repository_test.dart"
-      ],
-      "limitations": "level repository/database; bukan dua jendela aplikasi native",
-      "next_action": "tidak ada wajib",
-      "retest_reason": ""
-    }
-  ],
-  "last_verified_run": "run220 (2026-09-11): fresh re-verification penuh keluarga kasus 145.42 di HEAD 31d6485 pasca 5 commit region (run200/201/212/217/218) — resilience 208 PASS/1 skip/0 FAIL, database 47 PASS, isolation 6/6, analyze No issues, build windows debug PASS",
-  "fresh_verification_run220": {
-    "date": "2026-09-11",
-    "reason": "retest condition 'bila jalur restore/session/registry/lock berubah' terpenuhi: run200 session-close guard (8fac67e), run201 openReadOnly classifier (58a84a1), run212 roll-forward interrupted-move di _loadUnlocked (ce28d9a), run217 unlock pre-migration backup (9c3ef10), run218 durability-first move journal drain (3f59e28) — region yang sama dengan 9 kasus matriks; bukti terakhir matriks masih HEAD 4a1e17f (run196)",
-    "head": "31d648535b86a823841bf8f3b130316cd249443d",
-    "dirty_scope": "2 tracked M sibling codex (login_screen.dart WIP UI, project_persistence_providers.dart) + 8 untracked sibling (shell_unlock_flow_hardening_test, storage_locations WIP, project_open_path_registry_resolution_test, docs) — dipreservasi; tidak ada overlap dengan region yang diuji",
-    "commands": [
-      {
-        "command": "flutter test --no-pub test/features/project_resilience",
-        "exit_code": 0,
-        "result": "208 PASS / 1 skip / 0 FAIL 'All tests passed!' — mencakup 9/13 kasus matriks: process_crash_wal, interrupted_import_move (termasuk backup_rollback_failure 2 test rollback-failure injection), interrupted_restore, corruption (corrupt_open + torn-DB), unavailable_removed_drive, interrupted_export (staging atomik), permission_loss, explicit_disk_full, concurrent_open"
-      },
-      {
-        "command": "flutter test --no-pub test/database",
-        "exit_code": 0,
-        "result": "47 PASS / 0 FAIL — process-kill, corrupt-open, disk-full engine, drive-removal lifecycle, concurrent/unavailable open"
-      },
-      {
-        "command": "flutter test --no-pub test/features/character/character_repository_test.dart",
-        "exit_code": 0,
-        "result": "6/6 PASS — different_project_isolation"
-      },
-      {
-        "command": "flutter analyze --no-pub",
-        "exit_code": 0,
-        "result": "No issues found! (23.8s)"
-      },
-      {
-        "command": "flutter build windows --debug --no-pub",
-        "exit_code": 0,
-        "result": "Built build/windows/x64/runner/Debug/void_scriptor.exe (56,0s)"
-      }
-    ],
-    "limitations": "verifikasi level test/service di HEAD baru; power_loss_physical dan device_validation_min_spec tetap UNVERIFIABLE (hardware-bound); 1 skip = platform-guard test yang memang diskip pada runner ini",
-    "next_action": "tidak ada wajib; retest berikutnya hanya bila region resilience/lock/registry berubah lagi"
+  {
+   "case_id": "forced_process_termination_app_level",
+   "status": "PASS",
+   "evidence_type": "USER_REPORTED_PASS",
+   "date": "2026-09-08",
+   "source": "Choirudin, percakapan Cron Job db1e27da79d8",
+   "commit": "tidak diketahui",
+   "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
+   "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
+   "fixture": "proyek pengguna nyata (metode penghentian tidak dicatat)",
+   "command": "tidak ada (laporan pengguna)",
+   "exit_code": null,
+   "expected": "draf tidak hilang setelah aplikasi dimatikan paksa",
+   "actual": "pengguna melaporkan pekerjaan tidak hilang",
+   "evidence_paths": [
+    "prompt job cron 2026-09-08"
+   ],
+   "limitations": "belum membuktikan transaksi WAL terputus pada titik tertentu; bukti titik-putus ada di case process_crash_wal",
+   "next_action": "tidak ada; kasus dipertahankan",
+   "retest_reason": ""
+  },
+  {
+   "case_id": "os_restart_shutdown",
+   "status": "PASS",
+   "evidence_type": "USER_REPORTED_PASS",
+   "date": "2026-09-08",
+   "source": "Choirudin, percakapan Cron Job db1e27da79d8",
+   "commit": "tidak diketahui",
+   "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
+   "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
+   "fixture": "PC pengguna (log OS tidak diverifikasi)",
+   "command": "tidak ada (laporan pengguna)",
+   "exit_code": null,
+   "expected": "draf tidak hilang setelah restart PC dan mematikan PC",
+   "actual": "pengguna melaporkan pekerjaan tidak hilang",
+   "evidence_paths": [
+    "prompt job cron 2026-09-08"
+   ],
+   "limitations": "mematikan PC tidak membuktikan pencabutan listrik mendadak; event log OS tidak diperiksa",
+   "next_action": "tidak ada; kasus dipertahankan",
+   "retest_reason": ""
+  },
+  {
+   "case_id": "process_crash_wal",
+   "status": "VERIFIED(domain)",
+   "evidence_type": "automated_test_fresh_rerun",
+   "date": "2026-09-08",
+   "source": "re-run Hermes cron db1e27da (run ini), HEAD 734645385",
+   "commit": "76248c2 (test) / diverifikasi ulang di HEAD 734645385",
+   "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
+   "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
+   "fixture": "Directory.systemTemp 's14542-db-prockill-*' + child dart.exe test harness (fixture dibuat & dihancurkan test)",
+   "command": "flutter test --no-pub test/database/project/project_database_process_kill_test.dart test/database/project/project_database_corrupt_open_test.dart test/database/project/project_database_future_schema_guard_test.dart",
+   "exit_code": 0,
+   "expected": "data committed sebelum hard-kill selamat, transaksi terbuka rollback, open path produksi memulihkan DB; DB robek (torn write) ditolak",
+   "actual": "7/7 PASS (2 process-kill + 3 corrupt-open + 2 future-schema), All tests passed",
+   "evidence_paths": [
+    "test/database/project/project_database_process_kill_test.dart",
+    "$LOCALAPPDATA/Temp (log run ini tidak disimpan permanen; bukti = exit code 0 saat ini)"
+   ],
+   "limitations": "harness child process, bukan proses aplikasi UI pengguna; kill point tunggal",
+   "next_action": "tidak ada; retest hanya jika harness/logika recovery berubah",
+   "retest_reason": ""
+  },
+  {
+   "case_id": "explicit_disk_full",
+   "status": "VERIFIED(engine)",
+   "evidence_type": "engine_path_test",
+   "date": "2026-09-06 (slice fdd9970, injeksi extended code); 2026-09-11 (run194: bukti engine-path SQLite asli)",
+   "source": "ledger run89 (SQLITE_FULL -> ProjectDatabaseWriteFailedException, injeksi kode) + ledger run194 (engine SQLITE_FULL asli via max_page_count)",
+   "commit": "fdd9970 (injeksi) / run194 (engine-path, dicatat di entri ledger run194)",
+   "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
+   "head_at_engine_upgrade": "76a211d5f0bb38fbcaa62b6a33cd64ed6d258e21",
+   "dirty_scope": "worktree bersih kecuali slice run194 (test baru project_database_disk_full_engine_test.dart + matriks ini + entri ledger run194)",
+   "fixture": "Directory.systemTemp 'hermes-dbfull-*': DB produksi 3 halaman dibuat ProjectDatabaseService.create(); batas alokasi diberlakukan per-koneksi via PRAGMA max_page_count (fixture dibuat & dihancurkan test)",
+   "command": "flutter test --no-pub test/database/project/project_database_disk_full_engine_test.dart (run194: 3/3 PASS; gigi dibuktikan lewat inversi cabang classifier 13 -> tepat 2 test gagal, pulih identik git diff 0); regresi test/database 37/37 + test/features/project_resilience 198 PASS / 1 skip / 0 FAIL",
+   "exit_code": 0,
+   "expected": "SQLITE_FULL (13) asli dari engine SQLite (bukan kode ter-inject) diklasifikasikan typed ProjectDatabaseWriteFailedException; kegagalan allokasi tidak merusak data committed dan tidak menyisakan residu",
+   "actual": "3/3 PASS: (1) engine memancarkan extendedResultCode 13 asli saat CREATE TABLE melebihi max_page_count; (2) exception engine asli tersebut diklasifikasikan ProjectDatabaseWriteFailedException oleh cabang produksi yang sama dengan injeksi (gigi: cabang 13 direvert -> test ini + case sintetis 13 gagal); (3) INSERT overflow pada DB terbatas gagal dengan 13, integrity_check ok, seed utuh, nol baris bocor, file tetap <= batas halaman",
+   "evidence_paths": [
+    "test/database/project/project_database_disk_full_engine_test.dart",
+    "lib/database/project/project_database_service.dart (classifyProjectDatabaseOpenError cabang 13, tidak berubah)",
+    "lib/database/project/project_database_service.dart (probeWrite -> ProjectDatabaseWriteFailedException untuk semua SqliteException tulis)"
+   ],
+   "limitations": "volume-level live (VFS write() ENOSPC pada media nyata) tetap tidak dieksekusi: max_page_count mereplikasi permukaan error SQLITE_FULL di dalam engine, bukan kehabisan byte di disk fisik; media virtual terisolasi belum tersedia. Open-path wiring (drift init melempar 13 -> typed) tercakup oleh exception yang identik; wiring open() engine-real untuk kode 8 sudah dibuktikan terpisah oleh project_database_write_failure_test.dart (attrib +R).",
+   "next_action": "tidak ada wajib; opsi retesifikasi volume-level hanya bila media virtual terisolasi aman tersedia",
+   "retest_reason": ""
+  },
+  {
+   "case_id": "permission_loss",
+   "status": "VERIFIED",
+   "evidence_type": "live_windows_test + posix_proxy_classification",
+   "date": "2026-09-06 (slice fdd9970); dicatat ulang 2026-09-08; fresh re-verification 2026-09-09 (run155 cron)",
+   "source": "ledger run89 (SQLITE_READONLY -> ProjectDatabaseWriteFailedException)",
+   "commit": "fdd9970",
+   "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
+   "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
+   "fixture": "injection extended result code 8 (SQLITE_READONLY) di unit test",
+   "command": "flutter test --no-pub test/database/project/project_database_write_failure_test.dart test/database/project/project_database_write_probe_purity_test.dart test/database/project/project_database_open_error_classification_test.dart --reporter expanded (2026-09-09, exit 0, 11/11 PASS; mencakup live attrib +R pada fixture disposable -> ProjectDatabaseWriteFailedException). POSIX proxy: WSL python3.14 sqlite3, chmod a-w pada fixture -> sqlite_errorcode 8 (SQLITE_READONLY), readonly_confirmed=true",
+   "exit_code": 0,
+   "expected": "DB write-protected diklasifikasi typed, tidak salah dikira korut",
+   "actual": "terverifikasi saat slice (run89)",
+   "evidence_paths": [
+    "lib/core/database/project_database_service.dart (per ledger run89)",
+    "lib/database/project/project_database_service.dart",
+    "test/database/project/project_database_open_error_classification_test.dart",
+    "test/database/project/project_database_write_failure_test.dart",
+    "test/database/project/project_database_write_probe_purity_test.dart"
+   ],
+   "limitations": "POSIX side = proxy (WSL sqlite), bukan eksekusi produksi Dart di POSIX; CI Linux sudah menjalankan branch chmod pada runner asli (test 46af198). Kasus ini TIDAK mencakup drive-level removal (kasus terpisah).",
+   "next_action": "tidak ada; retest hanya bila classifier open()/probeWrite berubah",
+   "retest_reason": "fresh re-verification diminta next_action lama: live fixture disposable + verifikasi POSIX classification reachable — keduanya tuntas",
+   "head_at_fresh_verification": "cf9095025b982515819fdb5d043c7ebcf226a3e7",
+   "regression": "flutter test --no-pub test/features/project_resilience: 196 PASS / 1 skip / 0 FAIL, exit 0 (2026-09-09)",
+   "posix_proxy": {
+    "method": "WSL Ubuntu python3 3.14.4 + sqlite3 3.46.1, fixture disposable di /tmp (dihapus setelahnya)",
+    "injection": "os.chmod(db, S_IRUSR|S_IRGRP|S_IROTH) setelah seed table+row",
+    "observed": "attempt to write a readonly database, sqlite_errorcode=8, sqlite_errorname=SQLITE_READONLY",
+    "link_to_production": "lib/database/project/project_database_service.dart mengklasifikasikan extendedResultCode==8 -> ProjectDatabaseWriteFailedException; kode 8 terbukti reachable pada POSIX, jadi branch chmod POSIX pada test committed (46af198) memakai permukaan error yang benar",
+    "limitation": "proxy narrowest: produksi Dart tidak dieksekusi di POSIX; bukan pengganti CI Linux yang sudah menjalankan branch chmod pada runner asli"
+   }
+  },
+  {
+   "case_id": "unavailable_removed_drive",
+   "status": "VERIFIED(domain)",
+   "evidence_type": "automated_test_plus_probe + live_virtual_drive_lifecycle",
+   "date": "2026-09-06 (slice 937298c); dicatat ulang 2026-09-08; upgrade 2026-09-11 (run196) via drive virtual subst",
+   "source": "ledger run86 (ProjectDatabaseUnavailableException: errno 3 & CANTOPEN 14)",
+   "commit": "937298c",
+   "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
+   "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
+   "fixture": "drive Q:/ absen (probe empiris host) + unit test klasifikasi",
+   "command": "flutter test --no-pub test/database/project/project_database_drive_removal_lifecycle_test.dart --reporter expanded (2026-09-11, exit 0, 2/2 PASS; subst T:/ -> %TEMP%\\hermes-subst-* disposable)",
+   "exit_code": 0,
+   "expected": "drive dilepas/jalur hilang -> ProjectDatabaseUnavailableException, bukan raw PathNotFoundException atau salah korut",
+   "actual": "lifecycle nyata pada media virtual: subst mount -> service.create+open produksi sukses (project_metadata terisi) -> subst /D detach -> Directory/File drive tidak terlihat -> open() melempar ProjectDatabaseUnavailableException (bukan Unreadable/FileSystemException) -> remount -> schemaVersion terbaca, open sukses, jumlah baris metadata sama, integrity_check ok",
+   "evidence_paths": [
+    "lib/core/database/project_database_service.dart (per ledger run86)"
+   ],
+   "limitations": "subst mereplikasi lapisan resolve jalur OS (letter berhenti resolve, errno 3 / CANTOPEN) — BUKAN pelepasan USB fisik, power-off device, atau kegagalan kontroler; hardware-bound removal tetap UNVERIFIABLE menunggu keputusan Choi (2026-09-08)",
+   "next_action": "tidak ada; retest hanya bila classifier open()/probeWrite atau pemetaan errno berubah",
+   "retest_reason": "",
+   "virtual_media_upgrade": {
+    "method": "subst per-logon (media virtual terisolasi, user-level, reversible) pada backing %TEMP% disposable; TIDAK menyentuh drive/volume fisik pengguna",
+    "tooth_red": "gigi via inversi (pola run190/194): guard missing-file + klasifikasi CANTOPEN dinonaktifkan sementara -> kedua test RED persis pada mekanisme (PathNotFoundException mentah bocor; SqliteException(14) salah jadi ProjectDatabaseUnreadableException); lib dipulihkan identik (git diff lib/ = 0 baris) -> GREEN 2/2",
+    "regression": "flutter test --no-pub test/database: 39/39 PASS exit 0 (2026-09-11)",
+    "regression_resilience": "flutter test --no-pub test/features/project_resilience: 198 PASS / 1 skip / 0 FAIL exit 0 (2026-09-11)",
+    "analyze": "dart analyze test/database/project lib/database/project: No issues found!",
+    "build": "flutter build windows --debug --no-pub: PASS (23,7s)",
+    "head_at_upgrade": "4a1e17f017f932987b5780af3c8258a01020fbdd"
+   },
+   "head_at_fresh_verification": "4a1e17f017f932987b5780af3c8258a01020fbdd"
+  },
+  {
+   "case_id": "interrupted_export",
+   "status": "VERIFIED(domain)",
+   "evidence_type": "automated_test",
+   "date": "2026-09-05 (slice 7e642e6); dicatat ulang 2026-09-08",
+   "source": "ledger run66 (story_export_interrupt_safety_test 7 test, RED terverifikasi)",
+   "commit": "7e642e6",
+   "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
+   "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
+   "fixture": "temp dir test; simulasikan kegagalan tulis mid-stream",
+   "command": "flutter test --no-pub test/features/story (run138: 178 PASS)",
+   "exit_code": 0,
+   "expected": "ekspor terpotong tidak pernah ditinggalkan sebagai file final; ekspor valid sebelumnya terjaga (staging .tmp + rename atomik)",
+   "actual": "run138 cron: test/features/story 178 PASS / 0 FAIL exit 0 (bukti historis tercatat ledger)",
+   "evidence_paths": [
+    "test/features/story/story_export_interrupt_safety_test.dart"
+   ],
+   "limitations": "kegagalan I/O disimulasikan di test, bukan pencabutan kabel/USB nyata",
+   "next_action": "tidak ada; retest bila exporter berubah",
+   "retest_reason": ""
+  },
+  {
+   "case_id": "interrupted_import_move",
+   "status": "VERIFIED(domain)",
+   "evidence_type": "automated_test",
+   "date": "2026-09-04 (run3 + run53); dicatat ulang 2026-09-08",
+   "source": "ledger run3 (collision rollback stash/restore) + run53 (rollback-failure injection)",
+   "commit": "2da4498 / 991dd53",
+   "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
+   "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
+   "fixture": "temp dirs; kegagalan ekstraksi & registry dipicu test",
+   "command": "flutter test --no-pub test/features/project_resilience (run ini: 192 PASS)",
+   "exit_code": 0,
+   "expected": "import gagal tidak merusak paket asli (stash rename-back), registry failure rollback, rollback yang ikut gagal dilaporkan per-area dgn emergency backup dipertahankan",
+   "actual": "run ini: project_resilience 192 PASS / 0 FAIL / 1 skip exit 0 @ HEAD 734645385 (termasuk backup_rollback_failure_test 2 test: failed rollback reports failing area..., rollback failure in every area is aggregated...)",
+   "evidence_paths": [
+    "test/features/project_resilience/backup_rollback_failure_test.dart",
+    "test/features/project_resilience/portable_collision_rollback_test.dart (per ledger run3)"
+   ],
+   "limitations": "perpindahan via OS file explorer tidak diuji; coverage di level service/repository",
+   "next_action": "tidak ada",
+   "retest_reason": ""
+  },
+  {
+   "case_id": "interrupted_restore",
+   "status": "VERIFIED(real process kill)",
+   "evidence_type": "automated_test + OS hard-kill harness (TerminateProcess)",
+   "date": "2026-09-15",
+   "source": "ledger run318 (nephthys cron): restore dua-fase + jurnal roll-forward + kill child nyata",
+   "commit": "slice run318 (restore_staging_journal.dart + project_recovery_services.dart dua-fase)",
+   "head_at_matrix_update": "979f80e60e0d2a090617d50db431aca6ac4c3073",
+   "dirty_scope": "slice ini saja: 2 file M + 4 file baru (lib/core/persistence/restore_staging_journal.dart, fixtures/restore_two_phase_kill_child.dart, restore_two_phase_staging_test.dart, restore_two_phase_process_kill_test.dart); artefak docs untracked lama dipreservasi",
+   "fixture": "Directory.systemTemp 'hermes-restore-kill-*': package .voidproject nyata + backup manual + emergency pre-restore; child Dart murni me-replay staging+jurnal+swap pertama memakai primitif produksi Flutter-free, di-kill OS saat live workspaces terhapus sebelum rename penempatan",
+   "command": "flutter test --no-pub test/features/project_resilience/restore_two_phase_staging_test.dart (4) + restore_two_phase_process_kill_test.dart (1 kill nyata) + backup_rollback_failure_test.dart (2) => 7/7 PASS; regresi test/features/project_resilience 228 PASS / 1 skip / 0 FAIL; flutter analyze --no-pub No issues; dart format gate owned 0 changed; flutter build windows --debug --no-pub PASS 33.0s; git diff --check exit 0",
+   "exit_code": 0,
+   "expected": "kill OS di tengah jendela swap restore: jurnal staging names the verified copy; pemulihan berikutnya (jalur produksi RestoreCrashRecovery.recover, sama dengan session open) menggulirkan restore selesai tanpa corrupt live; kegagalan di seam staging = nol byte live berubah; staging divergen = dibuang, live tak pernah tertimpa",
+   "actual": "RED (setter/journal/class belum ada) -> GREEN: seam throw = 4 area byte-identik + staging+jurnal musnah + emergency retained; kill nyata mid-window = workspaces hilang dipulihkan roll-forward ke konten backup, jurnal dikonsumsi, staging musnah; staging terkorupsi pasca-jurnal tidak pernah di-roll-forward; restore sukses bersih tanpa residu",
+   "evidence_paths": [
+    "test/features/project_resilience/restore_two_phase_staging_test.dart",
+    "test/features/project_resilience/restore_two_phase_process_kill_test.dart",
+    "test/features/project_resilience/fixtures/restore_two_phase_kill_child.dart",
+    "lib/core/persistence/restore_staging_journal.dart",
+    "lib/features/project_resilience/application/project_recovery_services.dart"
+   ],
+   "limitations": "kill harness memakai child Dart murni dengan primitif produksi yang sama (bukan proses void_scriptor.exe utuh — flutter/foundation tidak dapat dijalankan dart run; proyek tetap .voidproject nyata). In-place write manifest/database kini staging+rename atomik; torn-write live hanya mungkin bila rename OS sendiri gagal sebagian (tidak dapat disimulasikan). Roll-forward recovery dipanggil pada session open readWrite dan sebelum restore berikutnya, sama seperti sebelumnya. Sisa jendela kill yang lebih kecil (di dalam swap satu area, antara rename staged->live) tetap tercover jurnal: area itu matched->placed, area lain divirifikasi.",
+   "next_action": "tidak ada; retest bila jalur restore/jurnal/session open berubah",
+   "retest_reason": ""
+  },
+  {
+   "case_id": "corruption",
+   "status": "VERIFIED(domain)",
+   "evidence_type": "automated_test_plus_probe",
+   "date": "2026-09-03..08; verifikasi ulang 2026-09-08",
+   "source": "ledger run2-2026-09-03 (UnreadableException 5cd2589), run82 (manifest .bak recovery 697279a), run109 (scratch probe)",
+   "commit": "5cd2589 / 697279a",
+   "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
+   "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
+   "fixture": "DB korut offset 4096 (salinan scratch, non-destruktif) + unit test manifest korut/torn DB",
+   "command": "flutter test --no-pub test/database/project/project_database_corrupt_open_test.dart test/database/project/project_database_process_kill_test.dart (run ini: 7/7 PASS)",
+   "exit_code": 0,
+   "expected": "DB korut ditolak dgn typed ProjectDatabaseUnreadableException; manifest korut dipulihkan dari .bak; korupsi terdeteksi SQLite pada salinan",
+   "actual": "run ini: corrupt-open 3/3 + torn-DB rejection 2/2 PASS @ HEAD; probe scratch run109 tercatat corrupt-db-probe.json",
+   "evidence_paths": [
+    "test/database/project/project_database_corrupt_open_test.dart",
+    "docs/evidence/145.44-repeat-20260907/corrupt-db-probe.json"
+   ],
+   "limitations": "in-app recovery UX untuk korupsi tetap future work (ledger run109)",
+   "next_action": "tidak ada",
+   "retest_reason": ""
+  },
+  {
+   "case_id": "power_loss_physical",
+   "status": "UNVERIFIABLE",
+   "evidence_type": "hardware_bound",
+   "date": "2026-09-08",
+   "source": "konfirmasi batas: otorisasi pengguna 2026-09-08 melarang pemutusan listrik",
+   "commit": "-",
+   "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
+   "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
+   "fixture": "-",
+   "command": "tidak dapat dijalankan",
+   "exit_code": null,
+   "expected": "pencabutan listrik mendadak saat WAL aktif",
+   "actual": "tidak dieksekusi; tidak diotorisasi",
+   "evidence_paths": [
+    "docs/roadmap/ROADMAP_POLICY.json (stability gate PASS)"
+   ],
+   "limitations": "butuh perangkat/uji fisik terpisah; proxy yang tersedia = process-kill + torn-DB (case process_crash_wal) dan power-loss window recovery registry/manifest (c93e718, VERIFIED domain)",
+   "next_action": "keputusan Choi: lab hardware atau terima proxy sebagai batas kontrak",
+   "retest_reason": ""
+  },
+  {
+   "case_id": "device_validation_min_spec",
+   "status": "UNVERIFIABLE",
+   "evidence_type": "hardware_bound",
+   "date": "2026-09-07 (run109); dicatat ulang 2026-09-08",
+   "source": "device-matrix.json run109 (rekomendasi Win11 Pro, i5-4570, 31.9GB, RX590 GME)",
+   "commit": "7e21844",
+   "head_at_matrix_creation": "734645385d62a6d3d188a481c52f3d2de3887c00",
+   "dirty_scope": "worktree dirty saat pembuatan matriks: .hermes/SPRINT_PROGRESS.md (M, sibling), lib/features/character/presentation/character_workspace_screen.dart (M, sibling dirilis), 3 untracked planning/doc",
+   "fixture": "windowed 1264x711 proxy tercatat sebagai bukti tambahan",
+   "command": "tidak dapat dijalankan dari cron",
+   "exit_code": null,
+   "expected": "eksekusi native pada mesin minimum-spec",
+   "actual": "tidak dieksekusi; butuh mesin terpisah",
+   "evidence_paths": [
+    "docs/evidence/145.44-repeat-20260907/device-matrix.json"
+   ],
+   "limitations": "hardware-bound; windowed proxy hanya bukti tambahan, tidak menaikkan status",
+   "next_action": "Choi menyediakan mesin minimum-spec atau menerima PARTIAL permanen",
+   "retest_reason": ""
+  },
+  {
+   "case_id": "concurrent_open",
+   "status": "VERIFIED(domain)",
+   "evidence_type": "automated_test_fresh_rerun",
+   "date": "2026-09-11",
+   "head_at_verification": "f685ecfcaed19b0f45c6c38cca515df26255f856",
+   "dirty_scope": "worktree bersih (tracked); hanya untracked docs sibling: .hermes/AUTONOMOUS_ROADMAP_PROMPT.md, docs/MASTER_SPRINT.md, docs/backlog/, docs/evidence/website-source-reconciliation-2026-09-08.json (dipreservasi)",
+   "source": "run195-nephthys cron (bukti segar di HEAD live)",
+   "commit": "5cdfb75 (test + classifier; diverifikasi ulang di HEAD f685ecf)",
+   "fixture": "Directory.systemTemp 'hermes-dblock-*': DB produksi dibuat service.create(); writer kedua sqlite3 native dengan BEGIN IMMEDIATE memegang RESERVED lock (fixture dibuat & dihancurkan test)",
+   "command": "flutter test --no-pub test/database/project/project_database_concurrent_open_test.dart test/database/project/project_database_unavailable_open_test.dart",
+   "exit_code": 0,
+   "expected": "open kedua saat writer lain memegang file ditolak typed ProjectDatabaseLockedException (bukan salah korut); setelah kontender rilis, open produksi pulih dan migration selesai; drive/jalur absen -> ProjectDatabaseUnavailableException",
+   "actual": "4/4 PASS 'All tests passed!': 2 concurrent-open (locked typed + recovery+completion migration) + 2 unavailable-open (errno 3 path tidak ada + CANTOPEN 14)",
+   "evidence_paths": [
+    "test/database/project/project_database_concurrent_open_test.dart",
+    "test/database/project/project_database_unavailable_open_test.dart",
+    "lib/database/project/project_database_service.dart (classifier extended code 5)",
+    "lib/app/shell/void_app_shell.dart (pesan ramah locked)"
+   ],
+   "limitations": "simulasi lock via koneksi SQLite asli BEGIN IMMEDIATE di harness test, bukan dua instance aplikasi UI; retest bila classifier open berubah",
+   "next_action": "tidak ada wajib",
+   "retest_reason": "",
+   "provenance_note": "Kontrak canonical 145.42 menunjuk test/database/project/project_database_service_test.dart yang TIDAK ADA di pohon live (git log --all tanpa riwayat). Coverage live-nya adalah project_database_concurrent_open_test.dart (commit 5cdfb75). Kedua test yang dirujuk kontrak dijalankan ulang dari file live yang setara; matriks tidak mengubah acceptance kanonis."
+  },
+  {
+   "case_id": "different_project_isolation",
+   "status": "VERIFIED(domain)",
+   "evidence_type": "automated_test_fresh_rerun",
+   "date": "2026-09-11",
+   "head_at_verification": "f685ecfcaed19b0f45c6c38cca515df26255f856",
+   "dirty_scope": "worktree bersih (tracked); hanya untracked docs sibling: .hermes/AUTONOMOUS_ROADMAP_PROMPT.md, docs/MASTER_SPRINT.md, docs/backlog/, docs/evidence/website-source-reconciliation-2026-09-08.json (dipreservasi)",
+   "source": "run195-nephthys cron (bukti segar di HEAD live)",
+   "commit": "test/features/character/character_repository_test.dart (clean di HEAD f685ecf; diverifikasi segar)",
+   "fixture": "Directory.systemTemp 's08-isolation-*': dua project DB dibuat ProjectDatabaseService.create() di root test (fixture dibuat & dihancurkan test)",
+   "command": "flutter test --no-pub test/features/character/character_repository_test.dart",
+   "exit_code": 0,
+   "expected": "karakter yang dibuat di database project-1 tidak terlihat di database project-2 (isolasi antar-project)",
+   "actual": "6/6 PASS 'All tests passed!'; kasus kunci 'characters stay isolated across project databases'",
+   "evidence_paths": [
+    "test/features/character/character_repository_test.dart"
+   ],
+   "limitations": "level repository/database; bukan dua jendela aplikasi native",
+   "next_action": "tidak ada wajib",
+   "retest_reason": ""
+  },
+  {
+   "case_id": "interrupted_import_process_kill",
+   "status": "LITERAL_PASS",
+   "evidence_type": "automated_test_real_os_kill",
+   "date": "2026-09-15 (cron run321)",
+   "source": "nephthys cron run321; kontrak 145.42 interrupted-import; sisa gap 'kill literal import' run316/run317/run320",
+   "commit": "6b5ceb5",
+   "head_before_slice": "e191d86bf79b37c7e91a9af4b5e5a33678a0102c",
+   "dirty_scope": "nol M source orang lain saat seleksi; 10 untracked artefak lama dipreservasi; slice menyentuh import_claim.dart (baru), project_recovery_service.dart, portable_project_service.dart + 3 file test baru",
+   "fixture": "temp dirs penuh disposable (hermes-import-kill-*); child Dart murni replay urutan produksi (claim -> stash rename -> scratch) di-TerminateProcess mid-extraction oleh parent; nol data pengguna",
+   "command": "flutter test --no-pub test/features/project_resilience/portable_import_kill_recovery_test.dart",
+   "exit_code": 0,
+   "expected": "OS kill saat ekstraksi import meninggalkan claim sentinel; pemulihan lintas-proses (registry load) wajib mengembalikan paket asli byte-identik ke path canonical, mengkarantina scratch (rename bukan hapus), memakan stash + claim, proyek tetap terlihat",
+   "actual": "1/1 PASS exit 0 - semua assertion terpenuhi pada corpse nyata (manifest hash identik, scratch terkarantina di .import-scratch-* (tetap ada), exit child != 0). Ditambah 4 test aturan claim in-process (portable_import_claim_recovery_test.dart) 4/4 PASS",
+   "evidence_paths": [
+    "test/features/project_resilience/portable_import_kill_recovery_test.dart",
+    "test/features/project_resilience/fixtures/import_kill_child.dart",
+    "test/features/project_resilience/portable_import_claim_recovery_test.dart",
+    "lib/core/persistence/import_claim.dart"
+   ],
+   "regression": "flutter test --no-pub test/features/project_resilience = 237 PASS / 1 platform-skip / 0 FAIL; test/core/persistence = 136 PASS; flutter analyze --no-pub No issues; dart format owned 6 file 0 changed; git diff --check exit 0; flutter build windows --debug --no-pub PASS 40,6s",
+   "limitations": "child kill = replika urutan produksi Flutter-free (bukan void_scriptor.exe utuh); kill tepat pada satu jendela (claim-written-after-extraction-scratch); titik-putus lain (rename stash vs claim write) tertutup argumen klaim-sebelum-rename; GUI native UNVERIFIABLE dari cron",
+   "next_action": "kill literal EXPORT sebagai slice 145.42 berikutnya (pola sama dapat dipakai)",
+   "retest_reason": ""
   }
+ ],
+ "last_verified_run": "run220 (2026-09-11): fresh re-verification penuh keluarga kasus 145.42 di HEAD 31d6485 pasca 5 commit region (run200/201/212/217/218) — resilience 208 PASS/1 skip/0 FAIL, database 47 PASS, isolation 6/6, analyze No issues, build windows debug PASS",
+ "fresh_verification_run220": {
+  "date": "2026-09-11",
+  "reason": "retest condition 'bila jalur restore/session/registry/lock berubah' terpenuhi: run200 session-close guard (8fac67e), run201 openReadOnly classifier (58a84a1), run212 roll-forward interrupted-move di _loadUnlocked (ce28d9a), run217 unlock pre-migration backup (9c3ef10), run218 durability-first move journal drain (3f59e28) — region yang sama dengan 9 kasus matriks; bukti terakhir matriks masih HEAD 4a1e17f (run196)",
+  "head": "31d648535b86a823841bf8f3b130316cd249443d",
+  "dirty_scope": "2 tracked M sibling codex (login_screen.dart WIP UI, project_persistence_providers.dart) + 8 untracked sibling (shell_unlock_flow_hardening_test, storage_locations WIP, project_open_path_registry_resolution_test, docs) — dipreservasi; tidak ada overlap dengan region yang diuji",
+  "commands": [
+   {
+    "command": "flutter test --no-pub test/features/project_resilience",
+    "exit_code": 0,
+    "result": "208 PASS / 1 skip / 0 FAIL 'All tests passed!' — mencakup 9/13 kasus matriks: process_crash_wal, interrupted_import_move (termasuk backup_rollback_failure 2 test rollback-failure injection), interrupted_restore, corruption (corrupt_open + torn-DB), unavailable_removed_drive, interrupted_export (staging atomik), permission_loss, explicit_disk_full, concurrent_open"
+   },
+   {
+    "command": "flutter test --no-pub test/database",
+    "exit_code": 0,
+    "result": "47 PASS / 0 FAIL — process-kill, corrupt-open, disk-full engine, drive-removal lifecycle, concurrent/unavailable open"
+   },
+   {
+    "command": "flutter test --no-pub test/features/character/character_repository_test.dart",
+    "exit_code": 0,
+    "result": "6/6 PASS — different_project_isolation"
+   },
+   {
+    "command": "flutter analyze --no-pub",
+    "exit_code": 0,
+    "result": "No issues found! (23.8s)"
+   },
+   {
+    "command": "flutter build windows --debug --no-pub",
+    "exit_code": 0,
+    "result": "Built build/windows/x64/runner/Debug/void_scriptor.exe (56,0s)"
+   }
+  ],
+  "limitations": "verifikasi level test/service di HEAD baru; power_loss_physical dan device_validation_min_spec tetap UNVERIFIABLE (hardware-bound); 1 skip = platform-guard test yang memang diskip pada runner ini",
+  "next_action": "tidak ada wajib; retest berikutnya hanya bila region resilience/lock/registry berubah lagi"
+ }
 }

@@ -6,10 +6,10 @@
     "adr_0002": "ACCEPTED: retain Windows-first local-first foundation D1-D7",
     "adr_0003": "ACCEPTED: Option B, stabilize existing Core with safety-first sequencing",
     "source": "docs/adr/ADR-0003-core-mvp-recovery-decision.md",
-    "next_action": "Hold at canonical recovery candidate 145.30 Autosave Snapshot and Crash Recovery; do not open a new bug-hunt or feature until Choirudin selects the next product decision.",
+    "next_action": "Kerjakan kill literal 145.42 EXPORT sebagai slice cron berikutnya (pola ImportClaim/staging), lalu antrean keputusan Choi (STORY-02, BUG-7, PLAT-03/04, STU-03/06, routing, 145.43-50, push).",
     "following_actions": "145.28 and 145.29 are already VERIFIED in the canonical ledger; continue from 145.30 only after the next product decision. Preserve 145.43-145.47 external pilot evidence as later contracts.",
     "constraints": "No new modules, broad refactor, automatic release/push, user-data fault tests, or fabricated physical power-loss/device proof. Do not block independent safety work on route mapping or the now-decided ADR choice.",
-    "acceptance": "145.27 VERIFIED run317. Ledger already marks 145.28 and 145.29 VERIFIED, so guard recovery candidate is 145.30. Separate 145.42 process-kill fixture bundle 7/7 PASS; 145.43-145.47 and 145.50 remain later contracts."
+    "acceptance": "145.27 VERIFIED run317 (direkonsiliasi ulang run321: audit + USER_REPORTED_PASS + native run309/313/314 + gate 46/46). 145.28/145.29 VERIFIED ledger. Guard recovery candidate = 145.30. 145.42: import+restore kill literal PASS (run321 e627734->6b5ceb5); export kill literal tersisa; hardware-bound tetap."
   },
   "session_lock_safety_review": {
     "status": "PARTIAL",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-15T02:25+07:00",
-  "updated_by": "nephthys cron run320",
+  "updated_at": "2026-09-15T03:05+07:00",
+  "updated_by": "nephthys cron run321",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -221,7 +221,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run301",
-  "note": "run319 (cron): 145.30 rekonsiliasi bukti native Windows (run309/311/313/314) ke dokumen audit - baris Visible save/recovery status + User-controlled restore naik VERIFIED(domain+UI+native). Gate fresh HEAD d3c5b9f: focused 145.30 247 PASS/0 FAIL, analyze No issues, diff-check 0, build windows debug PASS 43.5s. Nol perubahan kode. Sisa 145.30: power-loss UNVERIFIABLE, disk-full eksplisit jalur journal draft masih model injeksi. run318: 145.42 interrupted_restore VERIFIED(real process kill). run317: 145.27 VERIFIED; 145.28-29 VERIFIED; antrean keputusan Choi tetap (PLAT-03/04, STU-03, STORY-02, BUG-7, 145.43-50).",
+  "note": "run321 (cron): 145.42 interrupted-import LITERAL_PASS via kill OS nyata - claim sentinel ImportClaim (.import-claim-<projectId>.json ditulis SEBELUM stash rename) memulihkan paket asli yang terkubur bila proses mati saat ekstraksi (scratch canonical dikkarantina, bukan dihapus; aturan safe-by-default tanpa claim utuh). Commit 6b5ceb5 scoped 6 file. Gates: fokus import 13/13; region project_resilience 237 PASS/1 skip; core/persistence 136 PASS; analyze No issues; format owned 0 changed; diff-check 0; build windows debug PASS 40.6s. Rekonsiliasi 145.27: VERIFIED (audit run317 + USER_REPORTED_PASS Choi 2026-09-08 + native run309/313/314 + gate 46/46 @ a2c8659) - baris PARTIAL di entri run315-320 = narasi basi, koreksi di ledger run321; guard sudah di 145.30. Sisa 145.42: kill literal EXPORT = kandidat slice berikutnya; power-loss nyata + USB cold-eject tetap hardware-bound (Choi). TIDAK di-push (ahead 5, keputusan Choi).",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",
@@ -312,5 +312,13 @@
     "queue": "BUG-8 prune-ordering (Medium), BUG-6 portable/orphan (Medium), BUG-7 external backup count (Medium), BUG-4 competing-create re-read (Medium), BUG-9 deep JSON compare (Low) - arahan Referee konkret, tanpa keputusan Choi",
     "head_at_hunt": "762ed7f5b5af9a1dce8d867ed1ce395a75295b27",
     "pointer": "TIDAK berubah (next_step tetap 145.30 per guard)"
+  },
+  "import_kill_literal_run321": {
+    "case": "145.42 interrupted-import",
+    "status": "LITERAL_PASS (real OS TerminateProcess, cross-process recovery)",
+    "mechanism": "ImportClaim sentinel + quarantine rule in recoverInterruptedImportStashes; coordinator writes claim before stash rename, releases only after final discard/rollback",
+    "commit": "6b5ceb5",
+    "evidence": "test/features/project_resilience/portable_import_kill_recovery_test.dart + fixtures/import_kill_child.dart; region 237 PASS/1 skip; analyze clean; windows debug build PASS",
+    "remaining_14542": "export kill literal (next slice candidate); power-loss true UNVERIFIABLE; USB cold-eject needs Choi hands"
   }
 }

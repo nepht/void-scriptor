@@ -1,0 +1,34 @@
+run308 — vs-hunt-20260914-workspaces (region features/workspaces application+domain, 15 file, HEAD masuk 141e86e)
+
+Rantai: Hunter 7 temuan (skor 55) -> Skeptic 7 CONFIRMED -> Referee on-disk OTORITATIF (head_at_verdict 141e86e): 7 REAL (BUG-1..4 High, BUG-5/6 Medium, BUG-7 Low).
+
+Slice run ini = BUG-2 + BUG-3 + BUG-4 (validasi pre-mutasi murni; deterministik; tanpa keputusan kontrak).
+Antrean tersisa = BUG-1 (butuh desain transaksi+kompensasi), BUG-5 (validasi gagal -> throw: bergantung arah rollback BUG-1), BUG-6 (identitas backup drill: butuh API backup mengembalikan identitas), BUG-7 (kontrak representasi import: keputusan arah format).
+
+Verifikasi parent independen sebelum patch:
+- workspace_migration_runner.dart dibaca utuh di HEAD; mekanisme BUG-2 (list(recursive:true) default follow-links), BUG-3 (seenCharacters key characterId saja), BUG-4 (Map membolehkan target duplikat; linkId deterministik dash-ambiguous) terbukti di baris 73-94, 124-158, 206-218.
+- BUG-3 mengungkap bug adjacent: validasi containsKey membandingkan novelWorkspaceId terhadap KEY storyWorkspaceIds (id legacy), padahal Phase 5 memakai nilai sebagai id target — dua konsumen berbeda untuk satu field. Diperbaiki intent-preserving: validasi terhadap SET target (uniqueTargets).
+- Probe runtime symlink di Windows (dart run, file disposable, self-clean): list(recursive:true) default Melaporkan _File untuk symlink (bytes luar ikut terbaca = 14); followLinks:false melaporkan _Link. BUG-2 bukan spekulatif.
+
+RED (test/features/workspaces/vs_hunt_20260914_workspaces_migration_test.dart, 5 test):
+- 3 FAIL tepat mekanisme: BUG-2 emitted report (tanpa guard), BUG-3 ArgumentError 'not a mapped Story workspace: novel-a' (validasi key-vs-target salah), BUG-4 emitted report (target duplikat diterima).
+- 2 penjaga: pair duplikat ditolak (hijau sejak awal, perilaku lama dipertahankan), dan setelah guard linkId collision masuk.
+- Catatan fixture: pasangan linkId collision adalah (novel 'a-b', char 'c') vs (novel 'a', char 'b-c') → keduanya 'migration-a-b-c'; fixture awal salah pasangan, dikoreksi (bukan pelonggaran assert).
+
+GREEN (lib/features/workspaces/application/workspace_migration_runner.dart):
+- Phase 1: tolak target novel duplikat; seenPairs key (novelWorkspaceId,char) pakai \u0000 separator; seenLinkIds preflight 'migration-<novel>-<char>'; _assertNoSymlinkedContent untuk tiap direktori legacy yang terpetakan (stories + characters) via list(followLinks:false), Link -> ArgumentError SEBELUM backup/mutasi.
+- Phase 4: salin direktori karakter sekali per characterId (toSet) — bug lama menyalin ulang per assignment (duplikat bytes kerja saat karakter di-link ke banyak novel).
+- _copyInto + _verifyCopy traversal followLinks:false (pertahanan berlapis terhadap race pasca-preflight).
+- storiesRoot/charactersRoot dinaikkan ke Phase 1 (dibaca ulang di Phase 3; komentar penunjuk dipertahankan).
+
+Gates:
+- focused RED->GREEN 5/5 PASS (7s).
+- regression test/features/workspaces penuh: 137 PASS / 0 FAIL (exit 0, 1m12s).
+- test/live_cutover_test.dart (no-op tanpa env gate): PASS.
+- dart analyze lib/features/workspaces test/features/workspaces: No issues.
+- flutter analyze --no-pub FULL REPO: No issues found! (13.9s).
+- dart format owned 2 file; git diff --check exit 0.
+- Full suite: lihat entri ledger (dijalankan background pasca-analyzer).
+- Windows build gate: BLOCKED — void_scriptor.exe PID 8112 app pengguna aktif dari path build Debug canonical; build akan menimpa .exe yang berjalan. Native interaction: UNVERIFIABLE run ini.
+
+Commit: scoped path eksplisit; TIDAK di-push (keputusan push milik Choi).

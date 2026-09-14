@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run307 (cron): vs-hunt-20260914-explorer-selection selesai - Referee on-disk 3 REAL/2 dismissed (HEAD fea57ba). BUG-2/3/4 CLOSED TDD: recovery provider bedakan ids==null vs empty-sukses (discard memori aset terhapus; guard remembersWorkspace + token onDispose), baris error Character/Creature kini punya retry 'Coba lagi' -> ref.invalidate (paritas pola BUG-8 hunt-run171). focused 5/5; region explorer 46; core/selection 8; test/app 163; workspace+character+creatures 140; FULL SUITE 4440 PASS/0 FAIL/1 skip exit 0 (+5 cocok eksak); analyze No issues; diff-check 0; guard PASS. Windows build gate BLOCKED (void_scriptor.exe PID 8112 app pengguna aktif dari build Debug canonical); native UNVERIFIABLE run ini. Antrean tetap: keputusan Choi + STORY-02. Commit cb059ab tidak di-push.",
+  "last_verified_step": "run308 (cron): vs-hunt-20260914-workspaces selesai - Referee on-disk 7 REAL/0 dismissed (HEAD 141e86e, severity dikoreksi High x4/Med x2/Low x1). BUG-2/3/4 CLOSED TDD: WorkspaceMigrationRunner Phase 1 tolak target novel duplikat + linkId collision + novelWorkspaceId divalidasi ke SET target (bug adjacent key-vs-target), seenPairs (novel,char) bukan characterId global, pra-backup _assertNoSymlinkedContent (list followLinks:false, Link->ArgumentError; probe runtime Windows: default follow melahap 14 byte luar paket), salin karakter sekali per id, _copyInto/_verifyCopy followLinks:false. focused RED->GREEN 5/5; region workspaces 137 PASS; live_cutover PASS; analyze full No issues; diff-check 0; FULL SUITE 4444 PASS/1 FAIL/1 skip - fail story_txt_export_ui flake terdokumentasi, solo 2/2 PASS, lib/features/export clean. Windows build gate BLOCKED (app pengguna PID 8112); native UNVERIFIABLE. Antrean: BUG-1 transaksi+kompensasi, BUG-5 arah ikut BUG-1, BUG-6 identitas backup API, BUG-7 keputusan arah token representasi. Commit scoped TIDAK di-push.",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-14T14:05:00+07:00",
-  "updated_by": "nephthys (cron run307)",
+  "updated_at": "2026-09-14T15:55:00+07:00",
+  "updated_by": "nephthys (cron run308)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -280,5 +280,13 @@
     "build_gate": "BLOCKED - void_scriptor.exe (app pengguna, PID 8112, path build Debug canonical) aktif; native UNVERIFIABLE run ini",
     "commit": "cb059ab (scoped, tidak di-push)",
     "next": "re-scan region ini hanya bila hash scope berubah; kandidat region unscanned berikutnya asset_browser / worldbuilding UI (cek inventaris vs-hunt+hash)"
+  },
+  "workspaces_hunt_2026_09_14_run308": {
+    "hunt": "vs-hunt-20260914-workspaces",
+    "scope": "docs/evidence/vs-hunt-20260914-workspaces/scope_files.txt (15 file, HEAD 141e86e, hashes scope_hashes_run308.txt)",
+    "verdict": "Referee on-disk referee_report_workspaces_run308.md: 7 REAL / 0 dismissed (BUG-1..4 High, BUG-5/6 Medium, BUG-7 Low/Medium-boundary)",
+    "closed": "BUG-2/3/4 (run308) vs_hunt_20260914_workspaces_migration_test.dart + workspace_migration_runner.dart",
+    "queue": "BUG-1 (transaksi DB + kompensasi FS terikat backup), BUG-5 (gated on arah BUG-1), BUG-6 (backups.create harus kembalikan identitas), BUG-7 (keputusan arah kontrak token representasi import vs export)",
+    "next_action": "Run berikutnya: slice BUG-1+BUG-5+BUG-6 satu desain kompensasi migration, ATAU region hunt baru (features/assets UI residu / features/workspaces/presentation), ATAU eksekusi keputusan Choi bila tiba; tutup gate build Windows saat app pengguna tertutup."
   }
 }

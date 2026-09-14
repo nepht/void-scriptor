@@ -1,0 +1,15 @@
+lib/features/workspaces/application/create_novel_character_link_service.dart
+lib/features/workspaces/application/novel_character_link_service.dart
+lib/features/workspaces/application/workspace_projection_cache.dart
+lib/features/workspaces/application/workspace_permission_policy.dart
+lib/features/workspaces/application/workspace_character_deletion_service.dart
+lib/features/workspaces/application/story_cast_loader.dart
+lib/features/workspaces/application/novel_character_link_repository.dart
+lib/features/workspaces/application/workspace_file_namespace.dart
+lib/features/workspaces/application/narrative_assignment_repository.dart
+lib/features/workspaces/application/workspace_migration_runner.dart
+lib/features/workspaces/application/workspace_export_service.dart
+lib/features/workspaces/application/workspace_import_service.dart
+lib/features/workspaces/domain/narrative_assignment.dart
+lib/features/workspaces/domain/novel_character_link.dart
+lib/features/workspaces/domain/narrative_character_filter.dart

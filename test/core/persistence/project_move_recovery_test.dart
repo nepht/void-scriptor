@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:void_scriptor/core/domain/project_model.dart';
+import 'package:void_scriptor/core/persistence/custom_storage_location.dart';
 import 'package:void_scriptor/core/persistence/project_manifest.dart';
 import 'package:void_scriptor/core/persistence/project_move_service.dart';
 import 'package:void_scriptor/core/persistence/project_recovery_service.dart';
@@ -490,6 +491,11 @@ class _CrashWindowProbeMoveService implements ProjectMoveService {
   @override
   final Future<Directory> Function(String from, String to)? renameOverride =
       null;
+
+  // 145.42 failure-matrix parameter: the probe mirrors the production
+  // default so its delegated movePackage keeps the same preflight wiring.
+  @override
+  final HostDriveSpaceReader? spaceReader = const PlatformDriveSpaceReader();
 
   @override
   Future<Directory> movePackage({

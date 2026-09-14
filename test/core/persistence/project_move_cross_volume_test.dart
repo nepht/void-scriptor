@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
+import 'package:void_scriptor/core/persistence/custom_storage_location.dart';
 import 'package:void_scriptor/core/persistence/project_manifest.dart';
 import 'package:void_scriptor/core/persistence/project_move_service.dart';
 import 'package:void_scriptor/core/persistence/project_recovery_service.dart';
+import 'package:void_scriptor/core/persistence/project_registry_service.dart';
 
 // 145.42 USB-real session finding (2026-09-14): Directory.rename refuses to
 // cross volume boundaries (Windows errno 17, POSIX EXDEV 18), so "Move
@@ -207,4 +209,108 @@ void main() {
       reason: 'errno 5 must never start a staged copy',
     );
   });
+
+  // 145.42 failure matrix (kanonik: remaining disk_full, permission_loss):
+  // the staged cross-volume copy must refuse BEFORE it touches the journal
+  // or copies a single byte when the destination cannot hold or accept the
+  // package. Source untouched, no staging, no marker, human-readable cause.
+  test('disk-full destination refuses the move before writing the journal: '
+      'source untouched, no staging, explicit cause', () async {
+    final packageBytes = await totalBytes(package);
+    final service = ProjectMoveService(
+      renameOverride: (from, to) => throw crossVolumeError(from),
+      spaceReader: _FixedSpaceReader(packageBytes - 1),
+    );
+    await expectLater(
+      service.movePackage(package: package, destinationRoot: destinationRoot),
+      throwsA(
+        isA<FileSystemException>().having(
+          (e) => e.message,
+          'message',
+          contains('space'),
+        ),
+      ),
+    );
+    expect(await Directory(package.path).exists(), isTrue);
+    expect(
+      await File(markerPath(package.path)).exists(),
+      isFalse,
+      reason: 'a refused preflight must not leave a journal behind',
+    );
+    expect(
+      await Directory(
+        p.join(destinationRoot.path, '$projectId.voidproject'),
+      ).exists(),
+      isFalse,
+    );
+    expect(
+      await Directory(
+        p.join(destinationRoot.path, '$projectId.voidproject.xvol-staging'),
+      ).exists(),
+      isFalse,
+    );
+  });
+
+  test('space reader that cannot measure does NOT block the move', () async {
+    final service = ProjectMoveService(
+      renameOverride: (from, to) => throw crossVolumeError(from),
+      spaceReader: const _FixedSpaceReader(-1),
+    );
+    final moved = await service.movePackage(
+      package: package,
+      destinationRoot: destinationRoot,
+    );
+    expect(await moved.exists(), isTrue);
+  });
+
+  test('write-permission probe on the destination refuses the move before '
+      'any copy: source untouched, explicit permission cause', () async {
+    // Simulate a read-only destination the way the matrix simulates disk
+    // full: occupy the exact probe path with a directory so its create()
+    // fails like an access denial would.
+    await Directory(
+      p.join(destinationRoot.path, ProjectMoveService.writeProbeName),
+    ).create();
+    final service = ProjectMoveService(
+      renameOverride: (from, to) => throw crossVolumeError(from),
+    );
+    await expectLater(
+      service.movePackage(package: package, destinationRoot: destinationRoot),
+      throwsA(
+        isA<FileSystemException>().having(
+          (e) => e.message,
+          'message',
+          contains('permission'),
+        ),
+      ),
+    );
+    expect(await Directory(package.path).exists(), isTrue);
+    expect(
+      await File(markerPath(package.path)).exists(),
+      isFalse,
+      reason: 'a refused preflight must not leave a journal behind',
+    );
+  });
+
+  test('default relocation wiring carries the platform space reader', () {
+    final relocation = ProjectRelocationService(
+      registry: ProjectRegistryService(rootDirectory: Directory('nowhere')),
+    );
+    expect(
+      relocation.moveService.spaceReader,
+      isA<PlatformDriveSpaceReader>(),
+      reason:
+          'production movePackage must run the disk-full preflight by '
+          'default; a null reader here means the 145.42 preflight was '
+          'silently dropped from the UI path',
+    );
+  });
+}
+
+class _FixedSpaceReader implements HostDriveSpaceReader {
+  const _FixedSpaceReader(this.free);
+  final int free;
+
+  @override
+  Future<int> freeBytes(String location) async => free;
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
+import 'package:void_scriptor/core/persistence/custom_storage_location.dart';
 import '../domain/project_model.dart';
 import 'project_recovery_service.dart';
 import 'project_registry_service.dart';
@@ -34,12 +35,27 @@ import 'project_registry_service.dart';
 /// before the registry repoint stays recoverable, and a failed attempt
 /// leaves the source untouched with its journal consumed.
 class ProjectMoveService {
-  const ProjectMoveService({this.renameOverride});
+  const ProjectMoveService({
+    this.renameOverride,
+    this.spaceReader = const PlatformDriveSpaceReader(),
+  });
 
   /// Test seam for the rename step; production leaves it null. The USB-real
   /// session (2026-09-14) proved the cross-device branch cannot be reached
-  /// on CI without a second volume, so the rename error is injectable.
+  /// by any same-volume test, so the seam reproduces errno 17 directly.
   final Future<Directory> Function(String from, String to)? renameOverride;
+
+  /// 145.42 failure matrix (disk_full row): destination free-space reader.
+  /// Defaults to the platform reader so the staged copy refuses up-front
+  /// when the target volume clearly cannot hold the package; a reader that
+  /// cannot measure (-1) lets the copy proceed and OS errors still run the
+  /// existing mid-copy discard contract.
+  final HostDriveSpaceReader? spaceReader;
+
+  /// Name of the write probe placed in the destination root before any copy
+  /// (145.42 permission_loss row). Same file name the storage-location
+  /// probe uses, deliberately: one convention for "can we write here".
+  static const String writeProbeName = '.vs_move_write_probe';
 
   /// `ERROR_NOT_SAME_DEVICE` on Windows; EXDEV (18) on POSIX.
   static bool _isCrossDeviceError(FileSystemException error) {
@@ -139,6 +155,7 @@ class ProjectMoveService {
       );
     }
     try {
+      await _preflightStagedCopy(package: package, destination: destination);
       await _copyTree(package, staging);
       await _verifyTree(package, staging);
       await staging.rename(destination);
@@ -159,6 +176,57 @@ class ProjectMoveService {
       rethrow;
     }
     return Directory(destination);
+  }
+
+  /// 145.42 failure-matrix preflight (disk_full / permission_loss rows):
+  /// refuse a staged cross-volume copy BEFORE the first byte leaves the
+  /// source when the destination volume cannot accept (probe write fails)
+  /// or cannot hold (free space < package size) the package. A space
+  /// reader that cannot measure (-1 or none) never blocks — an ENOSPC that
+  /// races the check is still handled by the mid-copy discard contract.
+  Future<void> _preflightStagedCopy({
+    required Directory package,
+    required String destination,
+  }) async {
+    final destinationRoot = p.dirname(destination);
+    final probe = File(p.join(destinationRoot, writeProbeName));
+    try {
+      await probe.writeAsString('ok', flush: true);
+    } on FileSystemException {
+      throw FileSystemException(
+        'Destination volume does not accept writes (permission denied)',
+        destinationRoot,
+      );
+    }
+    try {
+      final reader = spaceReader;
+      if (reader != null) {
+        final needed = await _treeBytes(package);
+        final free = await reader.freeBytes(destinationRoot);
+        if (free >= 0 && free < needed) {
+          throw FileSystemException(
+            'Destination volume has not enough space for the project '
+            '($free bytes free, $needed bytes needed)',
+            destinationRoot,
+          );
+        }
+      }
+    } finally {
+      try {
+        await probe.delete();
+      } on FileSystemException {
+        // Best effort: an undeletable probe is as harmless as the storage
+        // probe file itself and must not mask the preflight verdict.
+      }
+    }
+  }
+
+  Future<int> _treeBytes(Directory root) async {
+    var total = 0;
+    await for (final entity in root.list(recursive: true)) {
+      if (entity is File) total += await entity.length();
+    }
+    return total;
   }
 
   Future<void> _copyTree(Directory from, Directory to) async {

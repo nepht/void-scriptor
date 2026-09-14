@@ -20,6 +20,38 @@ final class CharacterNovelAssignment {
   final String novelWorkspaceId;
 }
 
+/// BUG-1 + BUG-5 (vs-hunt-20260914-workspaces): a migration that cannot
+/// complete leaves no partial state. Every stage that mutates data runs
+/// inside one database transaction with filesystem compensation, so a
+/// failure is always reported through this type rather than as a raw
+/// IO/SQLite error or — worse — a success-shaped report.
+final class WorkspaceMigrationFailure implements Exception {
+  const WorkspaceMigrationFailure({
+    required this.stage,
+    required this.message,
+    required this.compensated,
+    this.compensationErrors = const [],
+    this.cause,
+  });
+
+  /// 'backup' | 'copy' | 'verification' | 'database'.
+  final String stage;
+  final String message;
+
+  /// True when every installed filesystem artifact was rolled back. When
+  /// false, [compensationErrors] names what is still on disk.
+  final bool compensated;
+  final List<String> compensationErrors;
+  final Object? cause;
+
+  @override
+  String toString() =>
+      'WorkspaceMigrationFailure(stage: $stage, message: $message, '
+      'compensated: $compensated'
+      '${compensationErrors.isEmpty ? '' : ', compensationErrors: $compensationErrors'}'
+      ')';
+}
+
 final class WorkspaceMigrationReport {
   const WorkspaceMigrationReport({
     required this.backupCreated,
@@ -142,15 +174,74 @@ final class WorkspaceMigrationRunner {
       );
     }
 
+    // BUG-1 (vs-hunt-20260914-workspaces): every artifact this run installs
+    // is tracked, and any later failure compensates exactly those artifacts —
+    // pre-existing content is never deleted. Database link writes run in one
+    // transaction so no link survives without its full set.
+    final installedFiles = <File>[];
+    final installedDirectories = <({Directory directory, bool fresh})>[];
+    Future<Directory> trackWorkspace(Directory directory) async {
+      final fresh = !await directory.exists();
+      await directory.create(recursive: true);
+      installedDirectories.add((directory: directory, fresh: fresh));
+      return directory;
+    }
+
+    Future<WorkspaceMigrationFailure> compensate(
+      String stage,
+      String message,
+      Object cause,
+      StackTrace trace,
+    ) async {
+      final compensationErrors = <String>[];
+      for (final file in installedFiles.reversed) {
+        try {
+          if (await file.exists()) await file.delete();
+        } catch (error) {
+          compensationErrors.add('${file.path}: $error');
+        }
+      }
+      for (final entry in installedDirectories.reversed) {
+        if (!entry.fresh) continue;
+        try {
+          if (await entry.directory.exists()) {
+            await entry.directory.delete(recursive: true);
+          }
+        } catch (error) {
+          compensationErrors.add('${entry.directory.path}: $error');
+        }
+      }
+      final failure = WorkspaceMigrationFailure(
+        stage: stage,
+        message: message,
+        compensated: compensationErrors.isEmpty,
+        compensationErrors: compensationErrors,
+        cause: cause,
+      );
+      Error.throwWithStackTrace(failure, trace);
+    }
+
     // Phase 2: pre-migration backup (manifest + db + assets + workspaces).
     // BUG-6 (vs-hunt-20260914-workspaces): capture the exact backup identity;
     // re-discovering one by lexicographic path order can pick an unrelated
     // UUID-named backup taken by someone else.
-    final Directory preMigrationBackup = await backups.create(
-      package: package,
-      type: 'pre-workspace-migration',
-      note: 'Automatic backup before ADR-WS-001 mixed-storage migration',
-    );
+    final Directory preMigrationBackup;
+    try {
+      preMigrationBackup = await backups.create(
+        package: package,
+        type: 'pre-workspace-migration',
+        note: 'Automatic backup before ADR-WS-001 mixed-storage migration',
+      );
+    } catch (error) {
+      // The backup precedes every mutation: nothing was changed, but the
+      // runner must still refuse to proceed (BUG-1 fail-closed contract).
+      throw WorkspaceMigrationFailure(
+        stage: 'backup',
+        message: 'pre-migration backup failed; no data was changed',
+        compensated: true,
+        cause: error,
+      );
+    }
 
     // Phase 3: inventory legacy mixed storage from disk.
     // (storiesRoot / charactersRoot were resolved during Phase 1 validation.)
@@ -170,11 +261,19 @@ final class WorkspaceMigrationRunner {
     var copiedStoryFiles = 0;
     for (final entry in storyWorkspaceIds.entries) {
       final source = Directory(p.join(storiesRoot.path, entry.key));
-      final target = _files.novelDirectory(entry.value);
-      // DB-only packages keep an empty legacy scaffold; the migrated Novel
-      // still needs its home on disk for later exports.
-      await target.create(recursive: true);
-      copiedStoryFiles += await _copyInto(source, target);
+      try {
+        // DB-only packages keep an empty legacy scaffold; the migrated Novel
+        // still needs its home on disk for later exports.
+        final target = await trackWorkspace(_files.novelDirectory(entry.value));
+        copiedStoryFiles += await _copyInto(source, target, installedFiles);
+      } catch (error, trace) {
+        await compensate(
+          'copy',
+          'failed copying legacy story ${entry.key}',
+          error,
+          trace,
+        );
+      }
     }
     var copiedCharacterFiles = 0;
     // One character may be linked to several novels; its legacy directory is
@@ -182,41 +281,82 @@ final class WorkspaceMigrationRunner {
     for (final characterId
         in characterAssignments.map((a) => a.characterId).toSet()) {
       final source = Directory(p.join(charactersRoot.path, characterId));
-      copiedCharacterFiles += await _copyInto(
-        source,
-        _files.characterDirectory(characterId),
-      );
+      try {
+        final target = await trackWorkspace(
+          _files.characterDirectory(characterId),
+        );
+        copiedCharacterFiles += await _copyInto(source, target, installedFiles);
+      } catch (error, trace) {
+        await compensate(
+          'copy',
+          'failed copying legacy character $characterId',
+          error,
+          trace,
+        );
+      }
     }
 
-    // Phase 5: explicit links only, deterministic IDs, reference mode.
-    var createdLinks = 0;
-    for (final assignment in characterAssignments) {
-      await links.create(
-        NovelCharacterLink.create(
-          linkId:
-              'migration-${assignment.novelWorkspaceId}-${assignment.characterId}',
-          novelWorkspaceId: assignment.novelWorkspaceId,
-          characterWorkspaceId: assignment.characterId,
-          characterId: assignment.characterId,
-          role: 'migrated',
-          visibility: 'visible',
-        ),
-      );
-      createdLinks++;
-    }
-
-    // Phase 6: validate copied counts and checksums against sources.
-    var validatedCounts = true;
+    // Phase 5 (BUG-5, vs-hunt-20260914-workspaces): validate the copy BEFORE
+    // any database write. A mismatch is a failure that aborts the migration
+    // — it never degrades into a success-shaped report.
     for (final entry in storyWorkspaceIds.entries) {
-      validatedCounts &= await _verifyCopy(
+      final verified = await _verifyCopy(
         Directory(p.join(storiesRoot.path, entry.key)),
         _files.novelDirectory(entry.value),
       );
+      if (!verified) {
+        await compensate(
+          'verification',
+          'story copy verification failed for ${entry.key} -> '
+              '${entry.value}',
+          StateError('checksum/count mismatch'),
+          StackTrace.current,
+        );
+      }
     }
     for (final assignment in characterAssignments) {
-      validatedCounts &= await _verifyCopy(
+      final verified = await _verifyCopy(
         Directory(p.join(charactersRoot.path, assignment.characterId)),
         _files.characterDirectory(assignment.characterId),
+      );
+      if (!verified) {
+        await compensate(
+          'verification',
+          'character copy verification failed for '
+              '${assignment.characterId}',
+          StateError('checksum/count mismatch'),
+          StackTrace.current,
+        );
+      }
+    }
+
+    // Phase 6: explicit links only, deterministic IDs, reference mode.
+    // BUG-1: one database transaction — a conflict on any link rolls the
+    // whole link set back, then filesystem output is compensated too.
+    var createdLinks = 0;
+    try {
+      await links.transaction(() async {
+        for (final assignment in characterAssignments) {
+          await links.create(
+            NovelCharacterLink.create(
+              linkId:
+                  'migration-${assignment.novelWorkspaceId}-${assignment.characterId}',
+              novelWorkspaceId: assignment.novelWorkspaceId,
+              characterWorkspaceId: assignment.characterId,
+              characterId: assignment.characterId,
+              role: 'migrated',
+              visibility: 'visible',
+            ),
+          );
+          createdLinks++;
+        }
+      });
+    } catch (error, trace) {
+      await compensate(
+        'database',
+        'link transaction failed; database rolled back',
+        error,
+        trace,
       );
     }
 
@@ -226,7 +366,15 @@ final class WorkspaceMigrationRunner {
     }
 
     // Phase 8: rollback drill on a disposable copy using backup contents.
-    final rollbackDrillPassed = await _runRollbackDrill(preMigrationBackup);
+    // A drill failure never reverts a committed migration (the drill is
+    // diagnostic only — run310 contract): it is surfaced as
+    // rollbackDrillPassed == false while the compensation ledger stays clean.
+    var rollbackDrillPassed = false;
+    try {
+      rollbackDrillPassed = await _runRollbackDrill(preMigrationBackup);
+    } catch (_) {
+      rollbackDrillPassed = false;
+    }
 
     return WorkspaceMigrationReport(
       backupCreated: true,
@@ -235,7 +383,7 @@ final class WorkspaceMigrationRunner {
       copiedStoryFiles: copiedStoryFiles,
       copiedCharacterFiles: copiedCharacterFiles,
       createdLinks: createdLinks,
-      validatedCounts: validatedCounts,
+      validatedCounts: true,
       projectionRebuilt: true,
       rollbackDrillPassed: rollbackDrillPassed,
     );
@@ -264,7 +412,11 @@ final class WorkspaceMigrationRunner {
     return names;
   }
 
-  Future<int> _copyInto(Directory? source, Directory target) async {
+  Future<int> _copyInto(
+    Directory? source,
+    Directory target, [
+    List<File>? installedFiles,
+  ]) async {
     if (source == null || !await source.exists()) return 0;
     var count = 0;
     await for (final entity in source.list(
@@ -276,8 +428,12 @@ final class WorkspaceMigrationRunner {
       if (entity is! File) continue;
       final relative = p.relative(entity.path, from: source.path);
       final destination = File(p.join(target.path, 'legacy', relative));
+      final alreadyPresent = await destination.exists();
       await destination.parent.create(recursive: true);
       await entity.copy(destination.path);
+      // BUG-1: compensation removes only files this run actually installed;
+      // content that was already at the destination is never deleted.
+      if (!alreadyPresent) installedFiles?.add(destination);
       count++;
     }
     return count;

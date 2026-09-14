@@ -12,6 +12,13 @@ class NovelCharacterLinkRepository {
   final data.ProjectDatabase database;
   final String projectId;
 
+  /// BUG-1 (vs-hunt-20260914-workspaces): exposes the Drift transaction
+  /// boundary so callers (the workspace migration runner) can commit a whole
+  /// link set atomically. Every [create]/[unlink] issued inside [action]
+  /// participates in the same SQLite transaction and rolls back together.
+  Future<R> transaction<R>(Future<R> Function() action) =>
+      database.transaction(action);
+
   Future<domain.NovelCharacterLink> create(
     domain.NovelCharacterLink link,
   ) async {

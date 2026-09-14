@@ -6,10 +6,10 @@
     "adr_0002": "ACCEPTED: retain Windows-first local-first foundation D1-D7",
     "adr_0003": "ACCEPTED: Option B, stabilize existing Core with safety-first sequencing",
     "source": "docs/adr/ADR-0003-core-mvp-recovery-decision.md",
-    "next_action": "Kerjakan kill literal 145.42 EXPORT sebagai slice cron berikutnya (pola ImportClaim/staging), lalu antrean keputusan Choi (STORY-02, BUG-7, PLAT-03/04, STU-03/06, routing, 145.43-50, push).",
+    "next_action": "Eksekusi antrean bug terkonfirmasi run320 yang tersisa sebagai slice cron: BUG-7 (Medium — Available backups mengabaikan root eksternal tercatat; audit apakah murni bug observability atau butuh arah produk dulu), lalu BUG-4 (Medium, competing-create re-read), BUG-9 (Low, JSON compare). Selanjutnya antrean keputusan Choi (STORY-02, PLAT-03/04, STU-03/06, routing, 145.43-50, push).",
     "following_actions": "145.28 and 145.29 are already VERIFIED in the canonical ledger; continue from 145.30 only after the next product decision. Preserve 145.43-145.47 external pilot evidence as later contracts.",
     "constraints": "No new modules, broad refactor, automatic release/push, user-data fault tests, or fabricated physical power-loss/device proof. Do not block independent safety work on route mapping or the now-decided ADR choice.",
-    "acceptance": "145.27 VERIFIED run317 (direkonsiliasi ulang run321: audit + USER_REPORTED_PASS + native run309/313/314 + gate 46/46). 145.28/145.29 VERIFIED ledger. Guard recovery candidate = 145.30. 145.42: import+restore kill literal PASS (run321 e627734->6b5ceb5); export kill literal tersisa; hardware-bound tetap."
+    "acceptance": "145.27 VERIFIED run321. 145.28/145.29 VERIFIED ledger. Guard recovery candidate = 145.30. 145.42 interrupted_* TUTUP SEMUA level kill literal (move 316, restore 318, import 321, export 322); hardware-bound tetap. Hunt run320: BUG-3 fixed (03f4cad), BUG-8 fixed (bf43716), BUG-6 fixed (d185d4e); tersisa BUG-7/BUG-4/BUG-9."
   },
   "session_lock_safety_review": {
     "status": "PARTIAL",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-15",
-  "updated_by": "cron run323 nephthys",
+  "updated_by": "cron run324 nephthys",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -309,7 +309,7 @@
     "hunt": "vs-hunt-20260915-resilience (18 file lib/features/project_resilience, durable_draft_journal.dart excluded - sudah punya bukti run248)",
     "chain": "Hunter 10/71 -> Skeptic 6C/4D -> Referee on-disk referee_report_resilience_run320.md: 6 REAL / 4 dismissed (otoritas)",
     "fixed": "BUG-3 Critical (PID-reuse lock) commit 03f4cad: processStartMs identity probe + _holderProvesPidReuse (grace 60s, fail-closed on ambiguity); RED compile-fail -> GREEN 7/7; region 232 PASS/1 skip; analyze No issues; build windows PASS 37,1s",
-    "queue": "BUG-8 prune-ordering (Medium), BUG-6 portable/orphan (Medium), BUG-7 external backup count (Medium), BUG-4 competing-create re-read (Medium), BUG-9 deep JSON compare (Low) - arahan Referee konkret, tanpa keputusan Choi",
+    "queue": "BUG-7 external backup count (Medium, cek arah produk dulu), BUG-4 competing-create re-read (Medium), BUG-9 deep JSON compare (Low) - arahan Referee konkret, tanpa keputusan Choi. FIXED: BUG-3 03f4cad, BUG-8 bf43716, BUG-6 d185d4e (run324).",
     "head_at_hunt": "762ed7f5b5af9a1dce8d867ed1ce395a75295b27",
     "pointer": "TIDAK berubah (next_step tetap 145.30 per guard)"
   },
@@ -346,5 +346,19 @@
     "untracked_triage": "priority #5 done read-only: 10 artifacts all with clear provenance (1 BINDING registry file sha-match, 1 NON_BINDING index, 8 legacy hunt/evidence notes); none deleted or mass-adopted",
     "pointer": "unchanged 145.30 (guard authority); 145.30 remains PARTIAL hardware-bound",
     "push": "not authorized (ahead 9 after closeout commit; decision belongs to Choi)"
+  },
+  "bug6_portable_orphan_run324": {
+    "date": "2026-09-15",
+    "run": "cron run324 nephthys",
+    "verdict": "vs-hunt-20260915-resilience BUG-6 (Medium, Referee REAL/High) CLOSED TDD",
+    "commit": "d185d4e",
+    "mechanism": "ProjectIntegrityReport.portable now requires orphanFiles == 0; sole production consumer is the diagnostics presentation line (grep .portable\\b verified) so no other path changed",
+    "evidence": "RED domain Expected:false/Actual:true + presentation finder 0 -> GREEN focused 2/2 (post-format rerun 4/4); region test/features/project_resilience 243 PASS / 1 skip / 0 FAIL; analyze No issues; CI format gate exit 0; diff --check exit 0; windows debug build PASS",
+    "native": "UNVERIFIABLE from cron (Portable row not driven in native GUI this run); no GUI claim",
+    "queue_remaining_run320": [
+      "BUG-7 external backup count (check product direction first)",
+      "BUG-4 competing-create re-read sessionId",
+      "BUG-9 deep JSON compare (Low)"
+    ]
   }
 }

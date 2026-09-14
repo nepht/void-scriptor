@@ -25,6 +25,7 @@ class TimelineEraImageCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(projectSessionProvider).valueOrNull;
     return WorldImageCard(
+      projectId: session?.manifest.id ?? '',
       entityId: eraId,
       title: 'ERA IMAGE',
       placeholderIcon: Icons.timeline,

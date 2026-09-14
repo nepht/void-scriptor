@@ -23,6 +23,7 @@ import '../../../projects/presentation/project_persistence_providers.dart';
 class WorldImageCard extends ConsumerStatefulWidget {
   const WorldImageCard({
     super.key,
+    required this.projectId,
     required this.entityId,
     required this.title,
     required this.placeholderIcon,
@@ -31,6 +32,11 @@ class WorldImageCard extends ConsumerStatefulWidget {
     this.aspectRatio = 16 / 9,
   });
 
+  /// vs-hunt-20260914-bible-ui BUI-BUG-04: identitas proyek aktif ikut
+  /// menjadi kontrak reload. `readImage`/`importImage` milik [projectId],
+  /// jadi switch sesi A -> B dengan entityId yang sama (dua proyek bisa
+  /// sah memakai UUID entitas identik) wajib memicu ulang pembacaan.
+  final String projectId;
   final String entityId;
   final String title;
   final IconData placeholderIcon;
@@ -46,6 +52,10 @@ class _WorldImageCardState extends ConsumerState<WorldImageCard> {
   String? _path;
   Future<void>? _loading;
 
+  /// Identitas pembacaan yang sedang berlangsung; hasil async yang tidak
+  /// lagi cocok dengan widget dibuang agar proyek lama tidak menimpa baru.
+  String _loadKey = '';
+
   @override
   void initState() {
     super.initState();
@@ -55,13 +65,22 @@ class _WorldImageCardState extends ConsumerState<WorldImageCard> {
   @override
   void didUpdateWidget(WorldImageCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.entityId != widget.entityId) _reload();
+    // BUI-BUG-04: callback baca/import milik sesi proyek, jadi perubahan
+    // identitas proyek (bukan hanya entitas) wajib memicu reload.
+    if (oldWidget.projectId != widget.projectId ||
+        oldWidget.entityId != widget.entityId) {
+      _reload();
+    }
   }
 
   Future<void> _reload() {
+    final key = '${widget.projectId}|${widget.entityId}';
+    _loadKey = key;
+    // Putuskan tampilan milik identitas lama sebelum hasil baru tiba.
+    if (_path != null) setState(() => _path = null);
     final future = () async {
       final raw = await widget.readImage(widget.entityId);
-      if (!mounted) return;
+      if (!mounted || _loadKey != key) return;
       setState(() {
         // Path basi (file sudah dihapus/pindah) = kosong, bukan gambar pecah.
         _path = (raw == null || raw.isEmpty || !File(raw).existsSync())

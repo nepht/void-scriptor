@@ -26,6 +26,7 @@ class FactionImageCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(projectSessionProvider).valueOrNull;
     return WorldImageCard(
+      projectId: session?.manifest.id ?? '',
       entityId: factionId,
       title: 'FACTION IMAGE',
       placeholderIcon: Icons.groups_outlined,

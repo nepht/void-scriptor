@@ -137,6 +137,19 @@ class ProjectMoveService {
   }) async {
     final staging = Directory('$destination.xvol-staging');
     if (await Directory(destination).exists()) {
+      // process_kill convergence (post-publish residue): a staging copy
+      // that verifies byte-equal to the already-published destination is
+      // provably the corpse of the rename that succeeded — drop it. A
+      // divergent or unverifiable staging stays for inspection; guessing
+      // it away could delete the only surviving copy of newer bytes.
+      try {
+        if (await staging.exists()) {
+          await _verifyTree(Directory(destination), staging);
+          await staging.delete(recursive: true);
+        }
+      } on FileSystemException {
+        // Verification mismatch (or an IO error while inspecting): keep.
+      }
       // Same guard the rename path inherits from the OS: never overwrite an
       // occupied destination. Consume the journal and fail like a refused
       // rename would.
@@ -156,6 +169,13 @@ class ProjectMoveService {
     }
     try {
       await _preflightStagedCopy(package: package, destination: destination);
+      // process_kill convergence (pre-publish residue): with no published
+      // destination, any surviving staging is a never-completed scratch
+      // tree — provably garbage. A retry always copies from zero, or the
+      // corpse would poison verifyTree forever.
+      if (await staging.exists()) {
+        await staging.delete(recursive: true);
+      }
       await _copyTree(package, staging);
       await _verifyTree(package, staging);
       await staging.rename(destination);

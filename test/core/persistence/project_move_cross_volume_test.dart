@@ -305,6 +305,90 @@ void main() {
           'silently dropped from the UI path',
     );
   });
+
+  // 145.42 process_kill row on the cross-volume route: a hard kill mid-copy
+  // leaves a `*.xvol-staging` directory beside the destination. Nothing in
+  // the current contract ever removes it, so the next move attempt copies
+  // INTO the corpse and verifyTree fails on the leftovers — the user can
+  // never complete the move to that folder again. The retry must converge.
+  test('killed mid-copy: leftover staging is purged and the next move '
+      'completes cleanly', () async {
+    final staging = Directory(
+      p.join(destinationRoot.path, '$projectId.voidproject.xvol-staging'),
+    )..createSync();
+    await File(p.join(staging.path, 'partial.bin')).writeAsBytes([1, 2, 3]);
+    final service = ProjectMoveService(
+      renameOverride: (from, to) => throw crossVolumeError(from),
+    );
+    final moved = await service.movePackage(
+      package: package,
+      destinationRoot: destinationRoot,
+    );
+    expect(await moved.exists(), isTrue);
+    expect(
+      await staging.exists(),
+      isFalse,
+      reason: 'pre-publish staging is never authoritative; retry starts clean',
+    );
+    expect(
+      await countFiles(moved),
+      4,
+      reason:
+          'the 3 fixture files plus the travelled move journal; '
+          'no corpse leftovers',
+    );
+  });
+
+  test('post-publish crash residue: staging byte-equal to destination is '
+      'dropped before the occupied-destination refusal', () async {
+    final target = Directory(
+      p.join(destinationRoot.path, '$projectId.voidproject'),
+    )..createSync();
+    await seedCompletePackage(target);
+    final staging = Directory(
+      p.join(destinationRoot.path, '$projectId.voidproject.xvol-staging'),
+    )..createSync();
+    await seedCompletePackage(staging);
+    final service = ProjectMoveService(
+      renameOverride: (from, to) => throw crossVolumeError(from),
+    );
+    await expectLater(
+      service.movePackage(package: package, destinationRoot: destinationRoot),
+      throwsA(isA<FileSystemException>()),
+    );
+    expect(
+      await staging.exists(),
+      isFalse,
+      reason:
+          'a staging verified identical to the published destination is '
+          'garbage and must not linger forever',
+    );
+    expect(await Directory(package.path).exists(), isTrue);
+  });
+
+  test('unverifiable staging next to an occupied destination is left for '
+      'inspection (never guessed away)', () async {
+    final target = Directory(
+      p.join(destinationRoot.path, '$projectId.voidproject'),
+    )..createSync();
+    await seedCompletePackage(target);
+    final staging = Directory(
+      p.join(destinationRoot.path, '$projectId.voidproject.xvol-staging'),
+    )..createSync();
+    await File(p.join(staging.path, 'corrupted.bin')).writeAsBytes([9]);
+    final service = ProjectMoveService(
+      renameOverride: (from, to) => throw crossVolumeError(from),
+    );
+    await expectLater(
+      service.movePackage(package: package, destinationRoot: destinationRoot),
+      throwsA(isA<FileSystemException>()),
+    );
+    expect(
+      await staging.exists(),
+      isTrue,
+      reason: 'divergent staging cannot be proven garbage; keep it on disk',
+    );
+  });
 }
 
 class _FixedSpaceReader implements HostDriveSpaceReader {

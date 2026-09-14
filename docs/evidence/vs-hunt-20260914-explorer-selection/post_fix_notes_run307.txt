@@ -1,0 +1,9 @@
+# run307 — bukti pasca-fix (hash artefak saat laporan dibuat)
+# Catatan gate Windows build: BLOCKED — void_scriptor.exe PID 8112 milik pengguna
+# berjalan sejak 14/09/2026 13:43 (build debug akan menimpa .exe terproteksi).
+# Native interaksi: UNVERIFIABLE dari cron (desktop dipakai pengguna; slice ini
+# UI-shell region Explorer — widget test deterministik = bukti otoritatif,
+# sesuai preseden pitfall #14/#18 skill void-scriptor-development).
+bfd647cfc3551c56318165d3988cff07d95ab4e6cc24aa0a3d571c37543712bc *lib/features/explorer/presentation/explorer_panel.dart
+8c286029f208d2305a87d514d713c62797e7dffdfcc13d01a8c51cf707b695e1 *lib/core/selection/selection_controller.dart
+f48dd183e4eb176722e3489db549ad38db65c8a50e0715c5bef8bcc97e44c528 *test/features/explorer/explorer_selection_hunt_run307_test.dart

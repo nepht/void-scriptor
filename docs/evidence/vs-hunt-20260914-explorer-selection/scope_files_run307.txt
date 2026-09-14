@@ -1,0 +1,7 @@
+lib/core/selection/selection_controller.dart
+lib/core/selection/selection_memory_snapshot.dart
+lib/core/selection/selection_model.dart
+lib/features/explorer/application/project_sidebar_module_preferences.dart
+lib/features/explorer/presentation/explorer_environment_group.dart
+lib/features/explorer/presentation/explorer_panel.dart
+lib/features/explorer/presentation/explorer_story_group.dart

@@ -94,6 +94,18 @@ class SelectionController extends Notifier<SelectionModel?> {
 
   void clear() => state = null;
 
+  /// Whether a workspace still carries a remembered asset id. The Explorer
+  /// catalog recovery uses this to skip scheduling a restore microtask for
+  /// a successful empty catalog that has nothing left to discard (vs-hunt
+  /// -20260914-explorer-selection BUG-2): the empty-ids branch below must
+  /// only run when a stale/deleted remembered entry actually needs to be
+  /// removed, so an empty workspace never mutates providers from a queued
+  /// microtask.
+  bool remembersWorkspace({
+    required String projectId,
+    required AssetType type,
+  }) => _workspaceSelections.containsKey((projectId, type));
+
   void focusWorkspace({required String projectId, required AssetType type}) {
     ref.read(workspaceIntentProvider.notifier).state = (projectId, type);
     if (state?.projectId != projectId || state?.assetType != type) clear();

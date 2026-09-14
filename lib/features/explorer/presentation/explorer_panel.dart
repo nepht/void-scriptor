@@ -325,11 +325,9 @@ final explorerCatalogRecoveryProvider = Provider<void>((ref) {
       return;
   }
   final ids = idsOf(catalog);
-  if (ids == null || ids.isEmpty) {
-    // Still loading, failed, or nothing to select: keep waiting; this
-    // provider re-evaluates whenever the catalog, intent, or selection
-    // changes. Writing here on an empty catalog would loop through the
-    // intent provider without ever changing state.
+  if (ids == null) {
+    // Still loading or failed: keep waiting; this provider re-evaluates
+    // whenever the catalog, intent, or selection changes.
     //
     // BUG-8 (hunt-run171): a failed catalog never re-emits on its own;
     // the user-visible retry lives on the Explorer group error rows
@@ -337,10 +335,32 @@ final explorerCatalogRecoveryProvider = Provider<void>((ref) {
     // that retry (or any other invalidation) re-runs the catalog.
     return;
   }
+  // vs-hunt-20260914-explorer-selection BUG-2 (Referee REAL BUG Medium): a
+  // SUCCESSFUL empty catalog is not a waiting state — a remembered
+  // (deleted-asset) id must be discarded so the typed intent resolves via
+  // selectWorkspace's empty branch. When there is nothing to restore and
+  // nothing to discard, skip entirely: running the restore for an empty
+  // catalog with no memory mutates providers from the queued microtask and
+  // re-triggers this provider without ever changing state (the loop the
+  // old blanket guard was originally preventing).
+  if (ids.isEmpty &&
+      !ref
+          .read(selectionProvider.notifier)
+          .remembersWorkspace(projectId: projectId, type: type)) {
+    return;
+  }
   // Never mutate other providers synchronously while building: schedule
   // the restore and re-guard inside the microtask so a user selection or
   // an intent change that happened meanwhile always wins.
+  //
+  // A refresh queued by Riverpod's vsync scheduler can rebuild this
+  // provider during container disposal; its microtask must not read
+  // providers from an already-disposed container (Bad state). The active
+  // flag is cleared by onDispose before that can happen.
+  var active = true;
+  ref.onDispose(() => active = false);
   Future<void>.microtask(() {
+    if (!active) return;
     final currentIntent = ref.read(workspaceIntentProvider);
     if (currentIntent == null ||
         currentIntent.$1 != projectId ||
@@ -589,6 +609,14 @@ class ExplorerPanel extends ConsumerWidget {
                     focused: effectiveFocusedType == AssetType.character,
                     selectedId: ref.watch(selectionProvider)?.assetId,
 
+                    // vs-hunt-20260914-explorer-selection BUG-4: catalog
+                    // error rows retry through invalidation (BUG-8
+                    // hunt-run171 pattern).
+                    onRetry: projectId == null
+                        ? null
+                        : () => ref.invalidate(
+                            characterControllerProvider(projectId),
+                          ),
                     onSelected: (character) => ref
                         .read(selectionProvider.notifier)
                         .select(
@@ -607,6 +635,13 @@ class ExplorerPanel extends ConsumerWidget {
                       onFocused: () =>
                           focusExplorerAsset(ref, AssetType.creature),
                       selectedId: ref.watch(selectionProvider)?.assetId,
+                      // vs-hunt-20260914-explorer-selection BUG-3: parity
+                      // with the BUG-8 (hunt-run171) retry rows.
+                      onRetry: projectId == null
+                          ? null
+                          : () => ref.invalidate(
+                              creatureExplorerProvider(projectId),
+                            ),
                       onSelected: (creature) => ref
                           .read(selectionProvider.notifier)
                           .select(
@@ -757,6 +792,7 @@ class _CreatureGroup extends StatelessWidget {
     required this.onSelected,
     this.focused = false,
     this.onFocused,
+    this.onRetry,
   });
   final AsyncValue<List<CreatureModel>> creatures;
   final String? selectedId;
@@ -767,6 +803,13 @@ class _CreatureGroup extends StatelessWidget {
   /// branch of focusExplorerAsset becomes reachable from the UI.
   final bool focused;
   final VoidCallback? onFocused;
+
+  /// vs-hunt-20260914-explorer-selection BUG-3 (Referee REAL BUG Medium):
+  /// parity with the BUG-8 (hunt-run171) Story/Environment pattern — a
+  /// failed creature catalog must offer a retry on its error row, because
+  /// FutureProviders never re-emit after an error and the recovery provider
+  /// intentionally keeps waiting on error states.
+  final VoidCallback? onRetry;
   @override
   Widget build(BuildContext context) => ExpansionTile(
     onExpansionChanged: (_) => onFocused?.call(),
@@ -787,7 +830,23 @@ class _CreatureGroup extends StatelessWidget {
     ),
     children: creatures.when(
       loading: () => const [ListTile(dense: true, title: Text('Loading...'))],
-      error: (error, _) => [ListTile(dense: true, title: Text('$error'))],
+      error: (error, _) => [
+        ListTile(
+          dense: true,
+          minTileHeight: 30,
+          title: Text(
+            '$error',
+            style: TextStyle(color: context.palette.danger, fontSize: 11),
+          ),
+          trailing: onRetry == null
+              ? null
+              : IconButton(
+                  tooltip: 'Coba lagi',
+                  icon: const Icon(Icons.refresh),
+                  onPressed: onRetry,
+                ),
+        ),
+      ],
       data: (items) => items.isEmpty
           ? const [ListTile(dense: true, title: Text('No creatures yet'))]
           : [
@@ -1293,12 +1352,20 @@ class _CharacterGroup extends ConsumerStatefulWidget {
     required this.onSelected,
     this.focused = false,
     this.onFocused,
+    this.onRetry,
   });
   final AsyncValue<List<CharacterModel>> characters;
   final String? selectedId;
   final bool focused;
   final VoidCallback? onFocused;
   final ValueChanged<CharacterModel> onSelected;
+
+  /// vs-hunt-20260914-explorer-selection BUG-4 (Referee REAL BUG Medium):
+  /// parity with the BUG-8 (hunt-run171) Story/Environment pattern — a
+  /// failed character catalog must offer a retry on its error row; the
+  /// narrative-assignment warning above it is a separate concern and
+  /// cannot re-run this catalog.
+  final VoidCallback? onRetry;
   @override
   ConsumerState<_CharacterGroup> createState() => _CharacterGroupState();
 }
@@ -1521,7 +1588,23 @@ class _CharacterGroupState extends ConsumerState<_CharacterGroup> {
           loading: () => [
             const ListTile(dense: true, title: Text('Loading...')),
           ],
-          error: (error, _) => [ListTile(dense: true, title: Text('$error'))],
+          error: (error, _) => [
+            ListTile(
+              dense: true,
+              minTileHeight: 30,
+              title: Text(
+                '$error',
+                style: TextStyle(color: context.palette.danger, fontSize: 11),
+              ),
+              trailing: widget.onRetry == null
+                  ? null
+                  : IconButton(
+                      tooltip: 'Coba lagi',
+                      icon: const Icon(Icons.refresh),
+                      onPressed: widget.onRetry,
+                    ),
+            ),
+          ],
           data: (items) => items.isEmpty
               ? [const ListTile(dense: true, title: Text('No characters yet'))]
               : (filtered ?? items)

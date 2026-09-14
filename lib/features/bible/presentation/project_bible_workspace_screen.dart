@@ -408,11 +408,20 @@ class _FactionsSectionState extends ConsumerState<_FactionsSection> {
 
   Future<void> _reload() async {
     final session = ref.read(projectSessionProvider).valueOrNull;
-    if (session == null) return;
+    if (session == null) {
+      if (mounted && _factions != null) setState(() => _factions = null);
+      return;
+    }
+    final projectId = session.manifest.id;
     final factions = await FactionRepository(
       session.database,
-    ).listForProject(session.manifest.id);
+    ).listForProject(projectId);
     if (!mounted) return;
+    // Reject a late result from a project that is no longer active.
+    if (ref.read(projectSessionProvider).valueOrNull?.manifest.id !=
+        projectId) {
+      return;
+    }
     setState(() => _factions = factions);
   }
 
@@ -437,12 +446,16 @@ class _FactionsSectionState extends ConsumerState<_FactionsSection> {
   @override
   Widget build(BuildContext context) {
     // The session provider resolves asynchronously; reload once it appears so
-    // the first frame never permanently shows the loading state.
+    // the first frame never permanently shows the loading state. Reload again
+    // whenever the active project identity changes (BUI-BUG-03: a direct
+    // A -> B switch must never leave project A's rows on screen).
     ref.listen<AsyncValue<ProjectSession?>>(projectSessionProvider, (
       previous,
       next,
     ) {
-      if (previous?.valueOrNull == null && next.valueOrNull != null) {
+      final previousId = previous?.valueOrNull?.manifest.id;
+      final nextId = next.valueOrNull?.manifest.id;
+      if (previousId != nextId) {
         _reload();
       }
     });
@@ -662,24 +675,36 @@ class _RelationMapSectionState extends ConsumerState<_RelationMapSection> {
 
   Future<void> _reload() async {
     final session = ref.read(projectSessionProvider).valueOrNull;
-    if (session == null) return;
+    if (session == null) {
+      if (mounted && _entries != null) setState(() => _entries = null);
+      return;
+    }
+    final projectId = session.manifest.id;
     final entries = await const CharacterRelationMapService().mapForProject(
       session.database,
-      projectId: session.manifest.id,
+      projectId: projectId,
     );
     if (!mounted) return;
+    // Reject a late result from a project that is no longer active.
+    if (ref.read(projectSessionProvider).valueOrNull?.manifest.id !=
+        projectId) {
+      return;
+    }
     setState(() => _entries = entries);
   }
 
   @override
   Widget build(BuildContext context) {
     // The session provider resolves asynchronously; reload once it appears so
-    // the first frame never permanently shows the loading state.
+    // the first frame never permanently shows the loading state. Reload again
+    // whenever the active project identity changes (BUI-BUG-03).
     ref.listen<AsyncValue<ProjectSession?>>(projectSessionProvider, (
       previous,
       next,
     ) {
-      if (previous?.valueOrNull == null && next.valueOrNull != null) {
+      final previousId = previous?.valueOrNull?.manifest.id;
+      final nextId = next.valueOrNull?.manifest.id;
+      if (previousId != nextId) {
         _reload();
       }
     });

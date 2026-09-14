@@ -1,0 +1,17 @@
+HEAD: 67aeec6a27210f3297ad78957c47cf1d278f8a86
+date: Sen, 14 Sep 2026 07.54.02
+scope: lib/features/bible/domain + presentation (non-generated .dart, 14 files, 1388 lines) — previously unscanned (vs-hunt-20260913-bible = application/ only)
+ada13e9cc18c28fb1b042c081ef0221845fdb88a05fc3c4b86555caf12bfefc1 *lib/features/bible/domain/bible_entry.dart
+19071a98673169a53bee29e9fc575bb70d6ec044832e7d453a4b6fd25ee189e6 *lib/features/bible/domain/canon_conflict.dart
+c4b9acc2e030cc6736af5037e1b54e3ff2836cea7db59464dcf71fd5061a583f *lib/features/bible/domain/canon_rule.dart
+02437d460282ecacf1ebae9ae6ffdc6304da32397d5b44d6e5e2509d0e91264a *lib/features/bible/domain/faction.dart
+33a64717d148174479bcf5a81ed92428e599d44a1f78a8816ceb68ab39203766 *lib/features/bible/domain/historical_event.dart
+2a3d6db8cfaf4e10384c365ab579ba08ae7da4e85c31273eb71650426ec61729 *lib/features/bible/domain/power_system.dart
+7895733825be324786b8cb7b7d296801d5333e6c92e6dd36da7683ca86365d74 *lib/features/bible/domain/species.dart
+f5e435fe06109ddd876ffb099a097447238429439c1a18f838c236d9a01a90f2 *lib/features/bible/domain/technology.dart
+c6ed9c0a7920a9e9f6f095c0194037b7779c2eb514ffda72dbd1f95aedb8f1e9 *lib/features/bible/domain/terminology.dart
+1fba55eff634a5b194f633088ad3b16c98453a1389745f4155754862a8234645 *lib/features/bible/domain/timeline_era.dart
+424ee4503d5003d0990664cb469958ffba3ff01cf7a04a6ea0ed3c6c6ef6c408 *lib/features/bible/presentation/project_bible_workspace_screen.dart
+d2cb9044e5ff3d14abf364fdd6f5d2898848d90b80b4f49738e368115350d250 *lib/features/bible/presentation/widgets/faction_image_card.dart
+9d44da0cc7752809a6710a0dbf439aa26b2ecddae0767e84f3cfbffc216ac8e8 *lib/features/bible/presentation/widgets/timeline_era_image_card.dart
+d702d93c6c6fd7bb9c530daf3258cd13ab1f9586511a2a6647af4730fbe95280 *lib/features/bible/presentation/widgets/world_image_card.dart

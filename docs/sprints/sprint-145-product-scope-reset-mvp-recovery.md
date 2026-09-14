@@ -1,4 +1,14 @@
 ### 2026-09-14 - nephthys (cron run312): vs-hunt-20260914-workspaces BUG-1 + BUG-5 ditutup TDD (migrasi workspace all-or-fail: transaksi DB + kompensasi filesystem presisi + verifikasi sebagai gate)
+## run314 - nephthys (interaktif): 145.42 USB NYATA SELESAI — reinstall fisik -> hot-reconnect -> autosave -> draft-journey, registry stabil
+
+- Reinsert: Choi mencolok kembali ADATA; volume kembali tanpa restart app.
+- VERIFIED hot-reconnect: layar 'drive hilang' -> klik 'Coba lagi' (UIA Invoke) -> proyek Journey303 LANGSUNG terbuka penuh (sidebar Novel Uji 303, Uji-A/B) tanpa restart.
+- VERIFIED draft portabel: banner 'Pulihkan Draft' muncul dari jurnal move-pending yang ikut mengembara ke USB; klik Pulihkan Draft -> 33 kata masuk editor (BUG-303-01 TIDAK berulang di build 53ce459: field menerima teks, 'Belum tersimpan' aktif).
+- VERIFIED autosave pasca-reinstall: ketik 'Reinsert-USB-tersimpan' -> HIT di scene_beats.content DB di flashdisk (db mtime 21:10:10 maju), registry entri=2 tombstone=absent selama seluruh operasi -> anomali 19:07 TIDAK tereproduksi di sesi tunggal bersih.
+- 145.42 use-case kanonik (sprint_145.json): Move Project ke USB = LULUS end-to-end dengan hardware nyata (run313 + run314). Catatan: Journey303 kini permanen di G: sampai Choi putuskan (objek sekali-pakai).
+- Sisa 145.42 (label state lama): disk_full/permission_loss eksplisit pada fixture, belum disentuh.
+- Ledger run313+314 = penutup sesi USB; tidak ada perubahan kode sesi ini.
+
 ## run313 - nephthys (interaktif): 145.42 USB NYATA — bug cross-volume ditemukan lewat hardware, fix 53ce459 terverifikasi end-to-end
 
 - Perangkat: flashdisk ADATA 15GB G: FAT32 (CPRA_X64FRE), biner Debug 53ce459.

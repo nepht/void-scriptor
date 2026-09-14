@@ -1,6 +1,7 @@
 ### 2026-09-15 - nephthys (cron run315): forensik insiden registry 5->1 run313 — audit journal terverifikasi penuh di HEAD 3272944 + gate build Windows VERIFIED lagi
-## run316 - nephthys (interaktif): 145.42 process_kill jalur cross-volume — konvergensi staging pasca-kill (4162afa)
+## run316 - nephthys (interaktif): 145.42 residu process_kill jalur cross-volume — konvergensi staging pasca-kill (4162afa)
 
+- Label jujur (hasil review ulang): test = SIMULASI state residu (staging di-seed lebih dulu), BUKAN child-process yang benar-benar di-kill di tengah copy; yang dibuktikan adalah konvergensi kontrak SETELAH kill, bukan mekanik kill-nya. Harness kill nyata sudah ada sebagai preseden (test/database/project/project_database_process_kill_test.dart + fixtures/db_process_kill_child.dart) dan jadi template bila matriks menuntut kill literal utk move.
 - Celah matriks: hard-kill di tengah staged copy menyisakan `*.xvol-staging`; kontrak lama tak pernah membuangnya -> retry berikutnya copy INTO bangkai, verifyTree gagal permanen, move ke folder itu mati selamanya.
 - GREEN (3 aturan): (1) destinasi belum ada + staging ada = sampah pra-publish provable -> purge sebelum copy; (2) destinasi terpublikasi + staging byte-equal (verifyTree lolos) = mayat rename yang sukses -> buang sebelum refusal; (3) staging divergen/tak-terverifikasi berdampingan destinasi = TIDAK ditebak, disimpan utk inspeksi (kontrak never-guess recovery).
 - Jurnal move TIDAK dikonsumsi saat destinasi terisi: journey publikasi run313 punya jurnal sendiri; jalur crash-registry tak boleh merampasnya.

@@ -34,8 +34,17 @@ class ProjectIntegrityReport {
   final int missingFiles;
   final int externalFiles;
   final int orphanFiles;
+
+  /// vs-hunt-20260915-resilience BUG-6: orphan asset files are a repair
+  /// condition (the repair view offers "Move Orphans to Trash"), so a
+  /// package containing them is not portable. Omitting this made an
+  /// orphan-only project display `Portable: yes` in diagnostics.
   bool get portable =>
-      manifestValid && databaseValid && missingFiles == 0 && externalFiles == 0;
+      manifestValid &&
+      databaseValid &&
+      missingFiles == 0 &&
+      externalFiles == 0 &&
+      orphanFiles == 0;
 }
 
 class BackupRetentionPolicy {

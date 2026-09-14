@@ -1,0 +1,6 @@
+# Post-fix scope hashes run306 (patched files vs HEAD)
+fbe567627e4d40fedef47082a004d9355f16d2a274a3c8a117631b13ed57bd17 *lib/features/story/domain/word_targets.dart
+9628ce8d20f9ed24307428d35ddceb096c8126805755f657147a69084a51f7bd *lib/features/story/domain/contradiction_analysis.dart
+1efa9d8b1d6ec3b51e2bb6be5b98ba1ae477881027192608bba9c54970c6f138 *lib/features/story/application/story_export_fidelity.dart
+1c690ccaa0ffa10cdd5f6d1e827197cddf271860a8af73786dd8e4f0653e060d *test/features/story/vs_hunt_20260914_story_fixes_test.dart
+HEAD=9a549f4d8c7ffb5a53419db4bd78b96728625209

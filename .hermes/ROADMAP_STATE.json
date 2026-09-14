@@ -28,7 +28,7 @@
   "active_sprint": 145,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
   "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "run304 (cron): BUI-BUG-04 CLOSED TDD (bb5c4f2) - WorldImageCard reload saat projectId berubah + stale-guard async + clear-to-null; RED dua proyek temp assetId sama gagal persis mekanisme (path A menempel di B), GREEN 1 PASS; region bible 58 PASS; workspace 35 PASS; analyze full No issues; FULL SUITE 4414 PASS/0 FAIL/1 skip exit 0; build windows debug PASS 30,1s; diff-check 0; guard PASS. Antrean bible-ui tersisa = keputusan Choi saja: BUI-01 (nav vs dashboard), BUI-02 (sumber metrik).",
+  "last_verified_step": "run306 (cron): vs-hunt-20260914-story selesai - 5 REAL/3 dismissed (Referee on-disk; 04/05/06 dibantah probe runtime File.rename Windows, parent_verification_run306.md). STORY-01/03/07/08 CLOSED TDD: scan() tolak subjectId duplikat, recordWords guard scopeKey blank, fromUtcInstant wajib isUtc, fidelity prasyarat-1 struktural (heading/paragraf Title). focused 8 PASS; region story 214 PASS; analyze No issues; FULL SUITE 4435 PASS/0 FAIL/1 skip exit 0; build windows debug PASS 42,7s; diff-check 0; guard PASS. Antrean story tersisa = STORY-02 (keputusan bentuk kontrak JSON).",
   "next_step": "145.27",
   "stability_gate": {
     "status": "PASS",

@@ -1,4 +1,12 @@
 ### 2026-09-15 - nephthys (cron run315): forensik insiden registry 5->1 run313 — audit journal terverifikasi penuh di HEAD 3272944 + gate build Windows VERIFIED lagi
+## run316 - nephthys (interaktif): 145.42 process_kill jalur cross-volume — konvergensi staging pasca-kill (4162afa)
+
+- Celah matriks: hard-kill di tengah staged copy menyisakan `*.xvol-staging`; kontrak lama tak pernah membuangnya -> retry berikutnya copy INTO bangkai, verifyTree gagal permanen, move ke folder itu mati selamanya.
+- GREEN (3 aturan): (1) destinasi belum ada + staging ada = sampah pra-publish provable -> purge sebelum copy; (2) destinasi terpublikasi + staging byte-equal (verifyTree lolos) = mayat rename yang sukses -> buang sebelum refusal; (3) staging divergen/tak-terverifikasi berdampingan destinasi = TIDAK ditebak, disimpan utk inspeksi (kontrak never-guess recovery).
+- Jurnal move TIDAK dikonsumsi saat destinasi terisi: journey publikasi run313 punya jurnal sendiri; jalur crash-registry tak boleh merampasnya.
+- TDD: RED 2 kasus gagal tepat (kasus-3 sudah cocok perilaku lama) -> GREEN; koreksi ekspektasi jumlah file (3 fixture + 1 jurnal = 4). Gate: analyze No issues, format ok, persistence+move-UI 139 pass.
+- 145.42 remaining kini: process_kill formal utk move = TERPUKI di level kontrak recovery; power_loss = covered (atomicWrite .bak + jurnal); drive_removal = VERIFIED hardware run313/314 + lifecycle test; interrupted_* = VERIFIED; installed_device = VERIFIED run313. Baris murni-sisa matriks utk slice mendatang: kill saat import/export/restore (bukan move).
+
 ## run315 - nephthys (interaktif): 145.42 failure-matrix — preflight disk_full/permission_loss di move cross-volume (b76d974) + integrasi audit-journal registry yatim (3272944)
 
 - Kanonik sprint_145.json remaining[2,3] (disk_full, permission_loss) untuk jalur move: ProjectMoveService._preflightStagedCopy — probe tulis .vs_move_write_probe + free-space vs ukuran paket SEBELUM byte pertama; tolak = sumber & jurnal tak tersentuh, pesan penyebab eksplisit; reader tak-terukur (-1) tidak pernah memblokir (ENOSPC rasial tetap ditangani kontrak discard mid-copy yang sudah ada).

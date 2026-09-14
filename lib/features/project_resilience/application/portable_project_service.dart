@@ -6,6 +6,7 @@ import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 import '../../../core/project_package/project_package.dart';
+import '../../../core/persistence/import_claim.dart';
 import '../../../core/persistence/project_manifest.dart';
 import '../../../core/persistence/project_registry_service.dart';
 import '../../../database/project/project_database_service.dart';
@@ -312,11 +313,20 @@ class PortableProjectImportCoordinator {
     // overwrite it file-by-file, destroying the original on any failure.
     // Stash the existing package with an O(1) same-volume rename first, put
     // it back on any failure, and discard it only after full success.
-    final stashDirectory = await _stashExistingPackage(
+    //
+    // 145.42 interrupted-import claim: the claim sentinel is written BEFORE
+    // the stash rename and released only after the final discard or the
+    // rollback completes. An OS kill inside any window therefore leaves
+    // proof that the canonical path's content (if any) is this dead
+    // attempt's scratch, so the next registry load restores the user's
+    // buried original instead of refusing forever.
+    final stashAttempt = await _stashExistingPackage(
       archive: archive,
       destination: destination,
       asCopy: asCopy,
     );
+    final stashDirectory = stashAttempt?.stash;
+    final claim = stashAttempt?.claim;
     try {
       final package = await _importAndRegisterInner(
         archive,
@@ -324,9 +334,11 @@ class PortableProjectImportCoordinator {
         asCopy: asCopy,
       );
       await _discardImportBackup(stashDirectory);
+      await claim?.release();
       return package;
     } catch (_) {
       await _restoreImportBackup(stashDirectory, destination: destination);
+      await claim?.release();
       rethrow;
     }
   }
@@ -373,11 +385,17 @@ class PortableProjectImportCoordinator {
 /// Sprint 145.33 destination-collision rollback helpers (top-level so the
 /// coordinator stays thin; they never touch instance state).
 ///
+/// Outcome of the collision-stash step: the hidden stash plus the 145.42
+/// claim sentinel that proves an interrupted attempt owned [stash].
+typedef _StashAttempt = ({Directory stash, ImportClaim claim});
+
 /// Renames an existing `<projectId>.voidproject` directory to a hidden sibling
 /// stash directory before a non-copy import touches the volume. Returns null
 /// when there is nothing to stash (fresh destination or a copy import that
-/// always writes a brand-new package directory).
-Future<Directory?> _stashExistingPackage({
+/// always writes a brand-new package directory). The claim sentinel is
+/// written BEFORE the rename so a kill in the rename-vs-extract gap is
+/// provable to recovery.
+Future<_StashAttempt?> _stashExistingPackage({
   required File archive,
   required Directory destination,
   required bool asCopy,
@@ -400,8 +418,18 @@ Future<Directory?> _stashExistingPackage({
       '.${manifest.id}.voidproject.import-backup-${const Uuid().v4()}',
     ),
   );
-  await existing.rename(stash.path);
-  return stash;
+  final claim = await ImportClaim.create(
+    destination: destination,
+    projectId: manifest.id,
+    stashPath: stash.path,
+  );
+  try {
+    await existing.rename(stash.path);
+  } on Object {
+    await claim.release();
+    rethrow;
+  }
+  return (stash: stash, claim: claim);
 }
 
 /// Puts a stashed package back to its original path after a failed import.

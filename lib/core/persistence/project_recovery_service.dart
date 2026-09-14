@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 import 'async_mutex.dart';
 import '../project_package/project_package.dart';
 
+import 'import_claim.dart';
 import 'project_manifest.dart';
 import '../domain/project_model.dart';
 
@@ -428,8 +429,16 @@ class ProjectRecoveryService {
   /// package directory no longer exists, this restores the stash to
   /// `<projectId>.voidproject`. When the canonical directory exists again
   /// (the import had already completed) the stash is left untouched:
-  /// recovery must not guess between two complete copies. Returns the
-  /// number of restored packages.
+  /// recovery must not guess between two complete copies.
+  ///
+  /// 145.42 claim exception: a live `.import-claim-<projectId>.json` naming
+  /// this stash proves the import never reached its final discard, so any
+  /// content at the canonical path is in-progress scratch from the dead
+  /// attempt. Recovery quarantines that scratch (hidden rename, never
+  /// delete) and restores the original, then consumes the claim. A claim
+  /// owned by an import running in this very process is skipped: the live
+  /// extraction still owns its destination. Returns the number of restored
+  /// packages.
   Future<int> recoverInterruptedImportStashes(Directory ownerDirectory) async {
     if (!await ownerDirectory.exists()) return 0;
     final stashes = <Directory>[];
@@ -462,10 +471,65 @@ class ProjectRecoveryService {
       final canonical = Directory(
         p.join(ownerDirectory.path, '${manifest.id}.voidproject'),
       );
-      if (await canonical.exists()) continue;
+      final claim = await ImportClaim.load(
+        ImportClaim.fileFor(
+          destination: ownerDirectory,
+          projectId: manifest.id,
+        ),
+      );
+      if (claim != null && ImportClaim.isActiveInProcess(manifest.id)) {
+        // A live in-process import owns this destination and stash.
+        continue;
+      }
+      if (await canonical.exists()) {
+        if (claim == null) continue;
+        // Claim + surviving stash prove the canonical content is scratch
+        // from the dead attempt: quarantine it (rename, never delete) so
+        // the user's original can reclaim its canonical path.
+        final quarantine = Directory(
+          p.join(
+            ownerDirectory.path,
+            '.import-scratch-${manifest.id}-${DateTime.now().microsecondsSinceEpoch}',
+          ),
+        );
+        await canonical.rename(quarantine.path);
+      }
       await stash.rename(canonical.path);
+      await claim?.release();
       restored++;
     }
+    await _sweepStaleImportClaims(ownerDirectory);
     return restored;
+  }
+
+  /// Removes claim sentinels whose named stash no longer exists (import
+  /// completed and discarded the stash, then died before releasing the
+  /// claim) or whose payload is no longer recoverable. Never touches the
+  /// live package.
+  Future<void> _sweepStaleImportClaims(Directory ownerDirectory) async {
+    await for (final entity in ownerDirectory.list(followLinks: false)) {
+      if (entity is! File) continue;
+      final name = p.basename(entity.path);
+      if (!name.startsWith('.import-claim-') || !name.endsWith('.json')) {
+        continue;
+      }
+      final claim = await ImportClaim.load(entity);
+      if (claim == null) {
+        // Structurally invalid sentinel is inert scratch.
+        try {
+          await entity.delete();
+        } on FileSystemException {
+          // Best-effort sweep.
+        }
+        continue;
+      }
+      if (ImportClaim.isActiveInProcess(claim.projectId)) continue;
+      if (await claim.stashStillExists()) continue;
+      try {
+        await entity.delete();
+      } on FileSystemException {
+        // Best-effort sweep.
+      }
+    }
   }
 }

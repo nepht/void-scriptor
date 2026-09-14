@@ -1,324 +1,332 @@
 {
-  "schema_version": 2,
-  "architecture_recovery_decision": {
-    "recorded_on": "2026-09-05",
-    "authority": "Choirudin authorized Codex to choose the current direction and apply it in conversation",
-    "adr_0002": "ACCEPTED: retain Windows-first local-first foundation D1-D7",
-    "adr_0003": "ACCEPTED: Option B, stabilize existing Core with safety-first sequencing",
-    "source": "docs/adr/ADR-0003-core-mvp-recovery-decision.md",
-    "next_action": "Kerjakan kill literal 145.42 EXPORT sebagai slice cron berikutnya (pola ImportClaim/staging), lalu antrean keputusan Choi (STORY-02, BUG-7, PLAT-03/04, STU-03/06, routing, 145.43-50, push).",
-    "following_actions": "145.28 and 145.29 are already VERIFIED in the canonical ledger; continue from 145.30 only after the next product decision. Preserve 145.43-145.47 external pilot evidence as later contracts.",
-    "constraints": "No new modules, broad refactor, automatic release/push, user-data fault tests, or fabricated physical power-loss/device proof. Do not block independent safety work on route mapping or the now-decided ADR choice.",
-    "acceptance": "145.27 VERIFIED run317 (direkonsiliasi ulang run321: audit + USER_REPORTED_PASS + native run309/313/314 + gate 46/46). 145.28/145.29 VERIFIED ledger. Guard recovery candidate = 145.30. 145.42: import+restore kill literal PASS (run321 e627734->6b5ceb5); export kill literal tersisa; hardware-bound tetap."
+ "schema_version": 2,
+ "architecture_recovery_decision": {
+  "recorded_on": "2026-09-05",
+  "authority": "Choirudin authorized Codex to choose the current direction and apply it in conversation",
+  "adr_0002": "ACCEPTED: retain Windows-first local-first foundation D1-D7",
+  "adr_0003": "ACCEPTED: Option B, stabilize existing Core with safety-first sequencing",
+  "source": "docs/adr/ADR-0003-core-mvp-recovery-decision.md",
+  "next_action": "Kerjakan kill literal 145.42 EXPORT sebagai slice cron berikutnya (pola ImportClaim/staging), lalu antrean keputusan Choi (STORY-02, BUG-7, PLAT-03/04, STU-03/06, routing, 145.43-50, push).",
+  "following_actions": "145.28 and 145.29 are already VERIFIED in the canonical ledger; continue from 145.30 only after the next product decision. Preserve 145.43-145.47 external pilot evidence as later contracts.",
+  "constraints": "No new modules, broad refactor, automatic release/push, user-data fault tests, or fabricated physical power-loss/device proof. Do not block independent safety work on route mapping or the now-decided ADR choice.",
+  "acceptance": "145.27 VERIFIED run317 (direkonsiliasi ulang run321: audit + USER_REPORTED_PASS + native run309/313/314 + gate 46/46). 145.28/145.29 VERIFIED ledger. Guard recovery candidate = 145.30. 145.42: import+restore kill literal PASS (run321 e627734->6b5ceb5); export kill literal tersisa; hardware-bound tetap."
+ },
+ "session_lock_safety_review": {
+  "status": "PARTIAL",
+  "supersedes": "run54 age-only recovery safety claim (ab27fc4)",
+  "finding": "RED reproduced takeover of aged owned marker and 12 simultaneous successful acquisitions. Age and heartbeat are not ownership evidence.",
+  "correction": "Exclusive atomic marker creation; no age-based recovery or heartbeat; unknown/crash markers remain blocked pending explicit offline recovery.",
+  "focused_evidence": "Atomic ownership correction: 10 tests PASS; independent process tests OWNED then BLOCKED after owner exit without release. Close-race follow-up: 13 focused PASS; scoped regression 193 PASS / 1 helper SKIP; analyzer clean; Windows debug build PASS 29.5s; diff-check and roadmap guard PASS. Hermes run64 full suite at related baseline: 3674 PASS / 0 FAIL / 1 SKIP.",
+  "remaining": "Full suite stability refresh and native sleep/crash/two-window testing remain required; do not advance 145.27 on this evidence alone.",
+  "user_data": "No user project or marker modified during this safety correction."
+ },
+ "product": "Void Scriptor",
+ "repository": "D:\\VoidScriptor\\void_scriptor_multiplatform",
+ "flutter_sdk": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat",
+ "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
+ "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
+ "active_sprint": 145,
+ "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
+ "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
+ "last_verified_step": "145.29 (ledger): 145.27 newly VERIFIED run317 with six Core + deferred route gating 46/46 PASS; 145.28 Writing Room Focus and 145.29 Lore Linking and Search were already VERIFIED in the canonical ledger. Separate 145.42 three-file process-kill matrix bundle 7/7 PASS.",
+ "next_step": "145.30",
+ "stability_gate": {
+  "status": "PASS",
+  "resume_step": "145.25",
+  "previous_result": {
+   "verified_at": "2026-09-01 (145.25 evidence-closure cron)",
+   "roadmap_guard": "PASS pre-run; post-state check follows state update (pointer 145.26)",
+   "flutter_analyze": "PASS (No issues found!, 14.8s)",
+   "focused_core_regression": "PASS (test/features/character + test/features/relations + lore links + workspace resolver journey = 98 PASS)",
+   "full_flutter_test": "PASS (3267 PASS / 1 FAIL concurrent-owned 145.20: app_bootstrap_test vs uncommitted main.dart/app_router sibling; root-caused, not touched)",
+   "windows_debug_build": "PASS (26.4s)",
+   "head_at_verification": "abdc6b8",
+   "note": "145.25 voice/notes UI+editor gap closed via TDD; screen file staged mine-only to preserve concurrent deletion-review slice on disk"
   },
-  "session_lock_safety_review": {
-    "status": "PARTIAL",
-    "supersedes": "run54 age-only recovery safety claim (ab27fc4)",
-    "finding": "RED reproduced takeover of aged owned marker and 12 simultaneous successful acquisitions. Age and heartbeat are not ownership evidence.",
-    "correction": "Exclusive atomic marker creation; no age-based recovery or heartbeat; unknown/crash markers remain blocked pending explicit offline recovery.",
-    "focused_evidence": "Atomic ownership correction: 10 tests PASS; independent process tests OWNED then BLOCKED after owner exit without release. Close-race follow-up: 13 focused PASS; scoped regression 193 PASS / 1 helper SKIP; analyzer clean; Windows debug build PASS 29.5s; diff-check and roadmap guard PASS. Hermes run64 full suite at related baseline: 3674 PASS / 0 FAIL / 1 SKIP.",
-    "remaining": "Full suite stability refresh and native sleep/crash/two-window testing remain required; do not advance 145.27 on this evidence alone.",
-    "user_data": "No user project or marker modified during this safety correction."
-  },
-  "product": "Void Scriptor",
-  "repository": "D:\\VoidScriptor\\void_scriptor_multiplatform",
-  "flutter_sdk": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat",
-  "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
-  "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
-  "active_sprint": 145,
-  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_145.json",
-  "active_ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-  "last_verified_step": "145.29 (ledger): 145.27 newly VERIFIED run317 with six Core + deferred route gating 46/46 PASS; 145.28 Writing Room Focus and 145.29 Lore Linking and Search were already VERIFIED in the canonical ledger. Separate 145.42 three-file process-kill matrix bundle 7/7 PASS.",
-  "next_step": "145.30",
-  "stability_gate": {
-    "status": "PASS",
-    "resume_step": "145.25",
-    "previous_result": {
-      "verified_at": "2026-09-01 (145.25 evidence-closure cron)",
-      "roadmap_guard": "PASS pre-run; post-state check follows state update (pointer 145.26)",
-      "flutter_analyze": "PASS (No issues found!, 14.8s)",
-      "focused_core_regression": "PASS (test/features/character + test/features/relations + lore links + workspace resolver journey = 98 PASS)",
-      "full_flutter_test": "PASS (3267 PASS / 1 FAIL concurrent-owned 145.20: app_bootstrap_test vs uncommitted main.dart/app_router sibling; root-caused, not touched)",
-      "windows_debug_build": "PASS (26.4s)",
-      "head_at_verification": "abdc6b8",
-      "note": "145.25 voice/notes UI+editor gap closed via TDD; screen file staged mine-only to preserve concurrent deletion-review slice on disk"
-    },
-    "required_checks": [
-      "dart run tool/roadmap_guard.dart",
-      "flutter analyze",
-      "focused Core MVP regression",
-      "full flutter test",
-      "Windows debug build"
-    ]
-  },
-  "selection_rules": [
-    "Repository evidence and the active sprint ledger override stale narrative status text.",
-    "Never skip a pending step or invent acceptance criteria.",
-    "A reproducible regression blocks roadmap feature work until it is fixed and verified.",
-    "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
-    "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
-  ],
-  "updated_at": "2026-09-15T03:05+07:00",
-  "updated_by": "nephthys cron run321",
-  "active_stream": "corrective_core_mvp",
-  "suspended_streams": {
-    "sequential_expansion": {
-      "status": "SUSPENDED",
-      "priority": 2,
-      "sprint": 111,
-      "resume_step": "111.21",
-      "contract": "sprint_111.json",
-      "ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
-      "resume_condition": "corrective_core_mvp exit_gate is satisfied and recorded."
-    }
-  },
-  "novel_io_hunt_2026_09_12": {
-    "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
-    "hunt": "vs-hunt-20260912n; Hunter 25 -> Referee confirmed 14 (0 Critical), dismissed 11; parent corrected BUG-18/19 as false positive (RadioGroup exists in SDK). Reports: docs/evidence/vs-hunt-20260912n/",
-    "fix": "BUG-05 embedded character payload missing -> silent blank character on import. RED->GREEN in test/features/workspaces/workspace_import_missing_payload_test.dart; pre-mutation FormatException gate. Commit d130b18. Gates: workspaces 99 PASS, novel_io 4 PASS, analyzer scoped clean, diff-check 0, Windows debug build PASS.",
-    "queue_next_runs": [],
-    "scope_do_not_rescan": "novel export/import vertical; hashes in docs/evidence/vs-hunt-20260912n/novel_io_scope.json are PRE-run237..243 - refresh before any new hunt on this region",
-    "pointer_note": "145.27 remains PARTIAL; hunt+fix recorded under 145.33 area; no pointer movement.",
-    "fixed_run236": {
-      "id": "vs-hunt-20260912n BUG-01 (Medium, data-safety)",
-      "defect": "embedded character materialization + link inserts + directory move ran outside any transaction; failure after character inserts left ghost canonical characters",
-      "commit": "20c5ef2",
-      "evidence": "test/features/workspaces/workspace_import_atomicity_test.dart RED->GREEN; workspaces dir 100 PASS; build windows debug PASS"
-    },
-    "fixed_run239": {
-      "id": "vs-hunt-20260912n BUG-04 (Medium, export integrity/leak)",
-      "defect": "_copy used source.list(recursive:true) with default followLinks: symlinked file archived external content or crashed export (PathNotFoundException); symlinked dirs were recursed",
-      "commit": "b3e17a6",
-      "evidence": "test/features/workspaces/workspace_export_symlink_test.dart RED->GREEN (novel+character paths, anti-leak scan); workspaces dir 106 PASS; build windows debug PASS 93.7s"
-    },
-    "fixed_run240": {
-      "id": "vs-hunt-20260912n BUG-07 + BUG-20 (Medium, one root cause)",
-      "defect": "early expectedWorkspaceId collision throw fired for every collisionChoice before archive validation; skip/adopt unreachable with an explicit ID; collision error masked corrupt-archive error on non-fail choices",
-      "commit": "b9d69fe",
-      "evidence": "test/features/workspaces/workspace_import_collision_precheck_test.dart RED(3 fail)->GREEN(4/4); workspaces dir 110 PASS; fail-contract test preserved; build windows debug PASS 92.3s (isolated worktree at f99600f)"
-    },
-    "updated_at_note": "run247 2026-09-12T18:55+07:00 (pointer 145.27 unchanged; BUG-10 closed b29b4af; hunt queue drained; sibling dirty character/project_resilience/ai preserved)",
-    "fixed_run241": {
-      "id": "vs-hunt-20260912n BUG-12 (Medium, zip-bomb/memory DoS)",
-      "defect": "restoreNovel + peekManifest did readAsBytes()+decode with no size bound; oversized archive exhausted memory before validation",
-      "commit": "d29fa2c",
-      "evidence": "test/features/workspaces/workspace_import_archive_size_cap_test.dart RED->GREEN 4/4; workspaces region 114 PASS; focused import suites 14 PASS; build windows debug PASS 41.0s"
-    },
-    "verified_run241": {
-      "id": "vs-hunt-20260912n BUG-09 (Medium claim) -> NOT A GAP at HEAD",
-      "note": "export snackbar success+error present in story_workspace_screen.dart:774-799 since 58ea3e7; test-pinned; reran 4/4 PASS 2026-09-12"
-    },
-    "product_decision_pending_choi": "character import/restore UI wiring: engine path restoreCharacter landed (run243) but no UI button exposes it yet; exportCharacter itself also has no production caller. Decide whether character workspace deserves an Export/Import action pair.",
-    "fixed_run243": {
-      "id": "vs-hunt-20260912n BUG-17 (Medium, dead-end artifact)",
-      "defect": "exportCharacter produced character-*.voidworkspace archives no import path could read; restoreNovel hard-rejects workspaceType != novel",
-      "commit": "f545d5c",
-      "evidence": "test/features/workspaces/workspace_import_character_restore_test.dart RED compile-fail -> GREEN 8/8; workspaces dir 118 PASS; isolated-worktree Windows debug build PASS 102.7s"
-    },
-    "fixed_run245": {
-      "id": "vs-hunt-20260912n BUG-16 (Low, robustness)",
-      "defect": "NovelCharacterLink.fromJson used raw DateTime.parse on created_at/updated_at; malformed archive threw FormatException without field name (TypeError for non-String/null) and aborted the whole import",
-      "commit": "f6cff69",
-      "evidence": "test/features/workspaces/novel_character_link_test.dart RED(field-nameless FormatException reproduced)->GREEN 7/7; workspaces dir 124 PASS; analyze scoped clean; Windows debug build PASS 27.9s on main worktree; native UNVERIFIABLE (cron)"
-    },
-    "fixed_run246": {
-      "id": "vs-hunt-20260912n BUG-13 (Low, determinism)",
-      "defect": "exportNovel embedded provenance used raw DateTime.now().toUtc().toIso8601String(); microsecond fractions made repeated exports of unchanged bytes non-identical and untestable",
-      "commit": "ec8f9e3",
-      "evidence": "test/features/workspaces/workspace_export_timestamp_determinism_test.dart RED compile-fail -> GREEN 3/3 (explicit exportedAt verbatim; default second-precision; pinned double export byte-identical payload); workspaces dir 127 PASS/0 FAIL; analyze scoped clean; format clean; diff-check 0; Windows debug build PASS 27.9s on main worktree; native UNVERIFIABLE (cron)"
-    },
-    "fixed_run247": {
-      "id": "vs-hunt-20260912n BUG-10 (Low, robustness/code-quality)",
-      "defect": "production import decoded the archive twice (peekCharacterRepresentation via peekManifest, then restoreNovel); two reads of a mutable file meant the manifest confirmed in the dialog was not necessarily the manifest restored",
-      "commit": "b29b4af",
-      "evidence": "test/features/workspaces/workspace_import_single_decode_test.dart RED compile-fail -> GREEN 5/5 (single decode, bounded cap, corrupt-after-peek cannot change restore, mismatched-file preflight rejected before mutation, manifest validation intact); regression test/features/workspaces 132 PASS + test/features/story 189 PASS / 0 FAIL; scoped analyze No issues; format clean; diff-check 0; Windows debug build PASS 34.7s on main worktree; native UNVERIFIABLE (cron)"
-    }
-  },
-  "autosave_hunt_2026_09_12": {
-    "status": "hunt COMPLETE + A/B/C block CLOSED (C-block run276 eacf3aa; native journey run259 VERIFIED); queue autosave EMPTY",
-    "scope": "docs/evidence/vs-hunt-20260912-autosave/autosave_scope.json (6 file, HEAD b2ca031; region belum pernah di-hunt)",
-    "failure": "delegate_task Hunter gagal 2x: upstream cbai/kimi-k2.7 429 code14018 Credits exhausted; nol mutasi repo",
-    "next_action": "ulangi Hunter->Skeptic->Referee saat kuota delegation pulih ATAU Choi cabut pin delegation.model; JANGAN tandai scope sebagai clean",
-    "run248_note": "run248 = NO-OP mutasi; queue vs-hunt-20260912n tetap kosong; push backlog f366a7a..b2ca031 terverifikasi dual-remote (ahead 0)",
-    "run253_note": "sibling hunt masih hidup di working tree (hunter report 22:04, skeptic/referee instructions 22:06, referee report BELUM ada); cron run253 tidak menyentuh scope/region karakter sibling",
-    "queue_A3_status": "run269 ACCEPT: WIP penulis idle sejak 01:10 diresepsi + diuji (bukan ditulis ulang) - BUG-4/5/8/9/10/19/20 referee on-disk masuk via commit 6a2c41e; 4 test baru durable_autosave_restore_coordination_test PASS; regresi story 203 PASS, project_resilience 219 PASS/1 SKIP, analyzer No issues.",
-    "run258_note": "Gate format CI merah utk working tree (story_repository_impl.dart dirty belum di-format). Author wajib 'dart format' sebelum commit agar 'Verify formatting' tidak menjatuhkan seluruh push (pola run252).",
-    "run260_note": "Delegation pin gemini/gemini-3.5-flash-lite KUOTA HABIS (429 dua stage beruntun pada hunt shell/settings; Hunter stage pertama sempat lulus). Butuh Choi: ganti/cabut pin delegation. Evidence: docs/evidence/vs-hunt-20260913-shell-settings/ (verdict self-audit: BUG-02 push-vs-go kandidat slice berikutnya; BUG-08 not-production).",
-    "run269_note": "Sisa antrean: rekonsiliasi item B-block vs referee on-disk (dispose/retention sebagian sudah masuk WIP), C-block fsync documented-limitation + close-lifecycle, native journey restore (sesi Choi). Pointer 145.27 tetap PARTIAL, stream tidak berubah.",
-    "run276_note": "C-block ditutup via resepsi WIP idle terverifikasi (close-after-ack produksi + corrupt-discard pin + fsync documented limitation). Snapshot pre-aksi %LOCALAPPDATA%/Temp/vs-run276-sibling-snap-133624."
-  },
-  "native_restore_journey_run253": {
-    "status": "VERIFIED (cron run259 2026-09-13 02:35 WIB - sesi desktop hidup, computer_use foreground delivery OK)",
-    "journey": "build windows --debug exit 0 (29.8s, working tree 9074716 + dirty sibling fingerprint sha256 6c03e925) -> launch pid 27612 -> project UJI 7e90b57b -> Continue writing -> Project-context 'Backup & Export' -> /project-backups render -> Create Backup (44d73da9, count 2->3) -> Restore Latest Backup -> dialog 'Restore this backup?' (emergency-backup statement) -> Confirm -> 'Restored latest backup.' tanpa error",
-    "readback": "close jendela bersih: session.lock/.project.lock hilang; DB read-only integrity_check ok, user_version 61, 166 tables; disk: add44f12 type=pre-restore note='Emergency backup before restore' 02:32:39",
-    "evidence": "docs/evidence/native-restore-journey-run259/ (4 screenshots berurutan)",
-    "scope_note": "rute restore UI kini terbukti terhubung native; sisa 145.34 = fault injection rollback-gagal + exact-snapshot vs merge (test-level, bukan GUI)",
-    "next_action": "JANGAN ulangi attempt buta; journey ini closed"
-  },
-  "importer_hunt_2026_09_13": {
-    "status": "hunt COMPLETE (VERIFIED scan-only, 3 stages) + BUG-3/BUG-4 fixed 06a3a3f + BUG-5 fixed 01ab45f; QUEUE EMPTY",
-    "hunt": "docs/evidence/vs-hunt-20260913-importer/",
-    "dismissed": "BUG-1 character_reference_binder (copy sebelum delete + fresh UUID), BUG-2/BUG-6 traversal via id UUID lokal = luar batas local-first",
-    "delegation_note": "Referee attempt#1 429 upstream (gemini flash-lite); attempt#2 compact brief PASS"
-  },
-  "timeline_relations_hunt_2026_09_13": {
-    "status": "hunt COMPLETE (rantai PARTIAL: Hunter delegate + verifikasi parent Skeptic/Referee) + BUG-004 fixed aa961f9; QUEUE EMPTY untuk region ini",
-    "hunt": "docs/evidence/vs-hunt-20260913-timeline-relations/ (12 file, fingerprint sha256 di scope_hashes.txt, HEAD 9ef59dd)",
-    "confirmed": "BUG-004 Medium: timeline_workspace_screen _moveClip clamp(0.0, negative maxStart) throw ArgumentError; reachabel via ensureTimelineForScene beat-duration tanpa validasi silang",
-    "dismissed": "BUG-001 (fromRecord baca payload bukan undoPayload), BUG-002 (validateTimeline tanpa caller produksi; desain gap), BUG-003 (command-id vs relation-id namespace sengaja), BUG-005 (action track dijamin transaksi yang sama)",
-    "delegation_note": "Skeptic delegate GAGAL 2x HTTP 429 (pin gemini/gemini-3.5-flash-lite habis, preseden run260). Butuh Choi: pulihkan/cabut pin delegation untuk rantai 3-tahap penuh.",
-    "cosmetic_debt": "undoPayload MoveTimelineClipCommand memakai key 'startSeconds' tak pernah dikonsumsi — bukan bug, jangan di-escalate sebagai defect",
-    "next_unscanned_regions": "features/projects (10 file/1037 baris) atau features/world (34 file — wajib dipecah <=20)",
-    "sibling_dirty_fingerprint": {
-      "story_dao": "12a3e5f65c60",
-      "project_database": "bb9d67697642",
-      "coordinator": "d1c3dd192c6e",
-      "story_repository_impl": "8d70d87eaf96",
-      "story_workspace_screen": "c1ee3dfb7c4d",
-      "character_controller": "8e573ee222e3",
-      "character_portrait_card": "852ca32732d6",
-      "character_portrait_test": "5bdaf8c54733"
-    }
-  },
-  "world_hunt_2026_09_13": {
-    "status": "hunt COMPLETE (rantai PARTIAL: Hunter delegate + Referee audit induk; Skeptic delegate 429) + WLD-PARENT-03 fixed 26f9c7b",
-    "hunt": "docs/evidence/vs-hunt-20260913-world/ (scope_files 18, scope_hashes.txt sha256, hunter_report.md, referee_report_world.md; HEAD f1c49b4)",
-    "confirmed": "WLD-PARENT-03 Low: doc kontrak [StateError] vs impl null-check TypeError di ConlangRegistry.wordById (addVariant/addExample ikut) -> FIXED TDD; WLD-PARENT-01 PredatorPressure escapeRoutes=0 (non-prod, OPEN); WLD-PARENT-02 FloatingOrigin tanpa validasi rentang (non-prod, OPEN)",
-    "dismissed": "WLD-BUG-01 climate division-by-zero (tak ada pembagian); WLD-BUG-02 registry mutable (unmodifiable/baru); WLD-BUG-03 unnormalized keys (sudah lowercase di index/search); WLD-BUG-04 coordinate clamping (Planet clamp; GeoCoordinate isValid by-design dipin test); WLD-BUG-05 JSON deserialization (FABRIKASI - file tak punya parser); WLD-BUG-06 unbounded loop (guard limit ada)",
-    "region_note": "domain world 109.17-109.19/110 UNROUTED ke shell (grep import luar-region = nol) -> semua temuan non-production-reachable kecuali API publik registry",
-    "delegation_note": "pin gemini flash-lite 429 stage 2/3 lagi (preseden run267). Jangan cabut permanen; probe era kuota (run262 LULUS penuh)."
-  },
-  "environment_hunt_2026_09_13": {
-    "status": "hunt COMPLETE (rantai PARTIAL: Hunter+Skeptic delegate, Referee = audit induk) + ENV-BUG-002/004 fixed ed9022c; QUEUE EMPTY untuk region ini",
-    "hunt": "docs/evidence/vs-hunt-20260913-environment/ (scope 7 file, sha256 di scope_hashes.txt, HEAD 902bc57)",
-    "confirmed": "ENV-BUG-002 Medium stub cards; ENV-BUG-004 Low empty-string dash",
-    "dismissed": "ENV-BUG-001 DB-then-folder documented convention; ENV-BUG-003 domain SceneEnvironmentContext zero importers (housekeeping)",
-    "delegation_note": "pin gemini flash-lite 429 di stage 3 (preseden run267/270); probe era kuota, jangan cabut permanen",
-    "next_unscanned_regions": "features/references (10 file) atau features/inspector (9 file)"
-  },
-  "references_hunt_2026_09_13": {
-    "status": "hunt COMPLETE (VERIFIED scan-only, rantai 3-tahap penuh LULUS) + REF-BUG-1 fixed bf05986; QUEUE: REF-BUG-3 kecil + REF-BUG-2 butuh keputusan routing",
-    "hunt": "docs/evidence/vs-hunt-20260913-references/ (10 file scope, sha256+HEAD da2df61, hunter/skeptic/referee reports on-disk)",
-    "confirmed": "REF-BUG-1 Medium FIXED (replaceFile FileSystemException file hilang + saveVersion sebelum copy); REF-BUG-2 Medium non-production (unrouted screen, no toggle method exists); REF-BUG-3 Low import dialog silent-empty reachable via library screen",
-    "delegation_note": "pin gemini flash-lite LULUS 3 stage beruntun (references + loadout era yang sama) — era kuota sehat, jangan cabut pin",
-    "sibling_dirty_fingerprint": "character/story 4 file M + 2 test untracked journal lifecycle mtime 08:41-08:52 direservasi tanpa sentuh",
-    "next_unscanned_regions": "features/inspector (9 file) atau features/settings shell (cek overlap run260)"
-  },
-  "projects_hunt_2026_09_13_run282": {
-    "status": "hunt COMPLETE (rantai 3-tahap penuh LULUS, gemini flash-lite sehat) + BUG-1/BUG-2 fixed 2e6d3b6; QUEUE EMPTY untuk fork ini",
-    "hunt": "docs/evidence/vs-hunt-20260913-projects/ (laporan fork sore berlabel *_run282; fork pagi run268 PRJ-BUG-01..04 tercatat terpisah, PRJ-BUG-02 fix 0fa679b sudah di HEAD)",
-    "confirmed": "run282 BUG-1 Medium updateProject memory drop; BUG-2 Medium mode-equality re-open destruktif",
-    "dismissed": "BUG-3 (ProjectPackageService.create cleanup internal), BUG-4 (Riverpod onDispose sinkron)",
-    "collision_note": "DUA rantai hunt memakai direktori bukti sama pada hari sama; cp sore sempat menimpa laporan pagi -> pulih via git checkout. Konvensi baru: file laporan wajib suffiks _run<N> sebelum tulis ke direktori bukti yang sudah ada.",
-    "next_unscanned_regions": "features/settings shell (cek overlap run260) atau domain world/advanced non-routed (keputusan routing Choi dulu)"
-  },
-  "dashboard_hunt_2026_09_13_run283": {
-    "status": "hunt COMPLETE + DB-BUG-03 fixed (run283-era), DB-BUG-01 fixed (run285 8513fd3), DB-BUG-07 + DB-BUG-08 fixed (run286 f7c835d); QUEUE tersisa: DB-BUG-04 (Low)",
-    "hunt": "docs/evidence/vs-hunt-20260913-dashboard/ (scope.json sha256+HEAD 4027dcd, hunter/skeptic/referee laporan *_run283.md)",
-    "confirmed": "DB-BUG-01 Medium getAllAssets in-memory scan di DashboardRepository; DB-BUG-03 Medium session-null Create Character -> /studio shell mati (FIXED, navigasi ke /projects per kontrak shell); DB-BUG-04 Low RecentAssets hardcoded = DEAD CODE nol importer (hapus/rewire terpisah); DB-BUG-07 Low statistik error tanpa retry; DB-BUG-08 Low raw $error auth UI",
-    "dismissed": "BUG-02 (Riverpod FutureProvider auto AsyncValue.error), BUG-05 (stub donasi jujur = by-design deferred payment), BUG-06 (sort list kecil di build = negligible), BUG-09 (errorBuilder thumbnail menangani file error)",
-    "evidence": "RED dashboard_create_character_no_session_test Actual '/studio' -> GREEN; fokus 1 PASS; test/features/dashboard 13 PASS; shell+routing 69 PASS; analyze No issues; build windows debug 64,5s; guard PASS",
-    "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
-  },
-  "last_worker_run": "run301",
-  "note": "run321 (cron): 145.42 interrupted-import LITERAL_PASS via kill OS nyata - claim sentinel ImportClaim (.import-claim-<projectId>.json ditulis SEBELUM stash rename) memulihkan paket asli yang terkubur bila proses mati saat ekstraksi (scratch canonical dikkarantina, bukan dihapus; aturan safe-by-default tanpa claim utuh). Commit 6b5ceb5 scoped 6 file. Gates: fokus import 13/13; region project_resilience 237 PASS/1 skip; core/persistence 136 PASS; analyze No issues; format owned 0 changed; diff-check 0; build windows debug PASS 40.6s. Rekonsiliasi 145.27: VERIFIED (audit run317 + USER_REPORTED_PASS Choi 2026-09-08 + native run309/313/314 + gate 46/46 @ a2c8659) - baris PARTIAL di entri run315-320 = narasi basi, koreksi di ledger run321; guard sudah di 145.30. Sisa 145.42: kill literal EXPORT = kandidat slice berikutnya; power-loss nyata + USB cold-eject tetap hardware-bound (Choi). TIDAK di-push (ahead 5, keputusan Choi).",
-  "studio_hunt_2026_09_13_run289": {
-    "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
-    "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",
-    "confirmed": "02 Critical (bypass guard delete via case/whitespace) FIXED; 01 Medium firstWhere tanpa orElse; 03 Medium map overwrite lead; 06/07/08 Low",
-    "dismissed": "04 heuristik injection filter by-design (dipin operations_safety_test); 05 penolakan tipe chat by-design (dipin studio_communication_test)",
-    "reachability": "nol caller produksi luar region (hanya app_router->StudioCommandCenter DemoStudio); severity = kontrak API publik domain",
-    "next_unscanned_regions": "features/platform (20 file, 1317 baris)"
-  },
-  "platform_hunt_2026_09_14_run295": {
-    "status": "hunt COMPLETE + PLAT-BUG-01/02 fixed; QUEUE: PLAT-BUG-03 Medium (butuh keputusan navigasi Choi) + 04/05/06 Low dormant",
-    "hunt": "docs/evidence/vs-hunt-20260914-platform/ (20 file scope lib/features/platform, sha256+HEAD a01d265, laporan on-disk referee_report_platform.md = otoritas 6 REAL / 0 dismissed)",
-    "confirmed": "01 Medium allPassed vacuous-true FIXED fail-closed (87788d4); 02 Medium cycle-check 2-node FIXED DFS transitive (21ba2ea run296); 03 Medium AboutScreen 4 link tanpa onTap + nol rute (butuh keputusan tujuan); 04 Low inverted PluginApiVersion dormant (kontradiksi core/plugin versi canonical, nol caller); 05 Low sort tie-breaker; 06 Low divide-by-zero",
-    "dismissed": "none",
-    "reachability": "AboutScreen/UpdateScreen/WelcomeScreen/KeyboardNav/OptionalTour: nol rute produksi (hanya ThemeSettingsScreen ter-route); domain getters tanpa caller UI",
-    "next_unscanned_regions": "belum diantrikan - kandidat dari lib/features tanpa vs-hunt: cek daftar vs-hunt-* vs lib/features/*/ sebelum memilih"
-  },
-  "bible_ui_hunt_2026_09_14_run303": {
-    "scope": "lib/features/bible/domain + presentation (14 non-generated files, 1388 lines)",
-    "head_at_hunt": "67aeec6a27210f3297ad78957c47cf1d278f8a86",
-    "chain": "Hunter 4 (score 20) -> Skeptic 4 CONFIRMED -> Referee 4 REAL / 0 dismissed (all Medium)",
-    "reports": "docs/evidence/vs-hunt-20260914-bible-ui/{scope_hashes.txt,hunter_report.md,skeptic_report.md,referee_report_bible_ui.md}",
-    "fixed_this_run": [
-      "BUI-BUG-03 (commit 53d722c, TDD RED->GREEN, region bible 57 PASS, analyze/format/diff-check/build windows PASS)"
-    ],
-    "queue_remaining": [
-      "BUI-BUG-01 (Medium; section tabs/dropdown inert -- arah: peta kontrol ke render/scroll ATAU buang/relabel; butuh keputusan UX Choi)",
-      "BUI-BUG-02 (Medium; Overview metrics hard-coded 'Void Universe'/0 -- arah: query manifest+repository nyata, placeholder jujur)"
-    ],
-    "fixed_later": [
-      "BUI-BUG-04 (commit bb5c4f2, run304, TDD RED->GREEN; gates full suite 4414 PASS)"
-    ]
-  },
-  "wardrobe_weapon_hunt_2026_09_14_run305": {
-    "scope": "lib/features/wardrobe + lib/features/weapon (16 non-generated Dart files)",
-    "head_at_hunt": "b17dd6e9968af71018fd14b20472c1be29e795f0",
-    "chain": "Hunter 6 -> Skeptic disproved 4 -> Referee 2 REAL (WBUG-5 wardrobe, WBUG-6 weapon; both Medium) / 4 dismissed",
-    "reports": "docs/evidence/vs-hunt-20260914-wardrobe-weapon/ (committed 69be48f)",
-    "fixed_this_run": [
-      "WBUG-5+WBUG-6 (commit 41c01f3, TDD RED->GREEN; focused 13 PASS; regions wardrobe 60 + weapon 65 PASS; consumers 124 PASS; flutter analyze full No issues; build windows debug PASS; git diff --check 0)"
-    ],
-    "queue_remaining": [
-      "optional Low debt: project-ownership scoping on dismissed BUG-1..4 (defense-in-depth; per-project DB blocks claimed path)",
-      "native Windows journey wardrobe/weapon workspace UNVERIFIABLE dari cron"
-    ]
-  },
-  "explorer_selection_hunt_2026_09_14_run307": {
-    "scope": "lib/features/explorer (6 file) + lib/core/selection (1 file), 7 file non-generated, SHA-256 beku di docs/evidence/vs-hunt-20260914-explorer-selection/scope_hashes_run307.txt",
-    "head_at_scan": "fea57ba",
-    "chain": "Hunter 5 temuan/26 -> Skeptic 4C/1D -> Referee on-disk OTORITATIF 3 REAL/2 dismissed (BUG-1 stale-async + BUG-5 persist dibantah)",
-    "fixed": [
-      "BUG-2 recovery ids==null vs empty-sukses + remembersWorkspace guard + onDispose token",
-      "BUG-3 creature error-row retry (invalidate creatureExplorerProvider)",
-      "BUG-4 character error-row retry (invalidate characterControllerProvider)"
-    ],
-    "evidence": "focused 5/5; explorer 46; core/selection 8; app 163; workspace+character+creatures 140; FULL 4440/0/1skip exit 0; analyze No issues; diff-check 0",
-    "build_gate": "BLOCKED - void_scriptor.exe (app pengguna, PID 8112, path build Debug canonical) aktif; native UNVERIFIABLE run ini",
-    "commit": "cb059ab (scoped, tidak di-push)",
-    "next": "re-scan region ini hanya bila hash scope berubah; kandidat region unscanned berikutnya asset_browser / worldbuilding UI (cek inventaris vs-hunt+hash)"
-  },
-  "workspaces_hunt_2026_09_14_run308": {
-    "hunt": "vs-hunt-20260914-workspaces",
-    "scope": "docs/evidence/vs-hunt-20260914-workspaces/scope_files.txt (15 file, HEAD 141e86e, hashes scope_hashes_run308.txt)",
-    "verdict": "Referee on-disk referee_report_workspaces_run308.md: 7 REAL / 0 dismissed (BUG-1..4 High, BUG-5/6 Medium, BUG-7 Low/Medium-boundary)",
-    "closed": "BUG-2/3/4 (run308) vs_hunt_20260914_workspaces_migration_test.dart + workspace_migration_runner.dart + BUG-1/BUG-5 (run312: transaksi DB + kompensasi filesystem presisi + verifikasi sebagai gate; test/features/workspaces/vs_hunt_20260914_migration_atomicity_run312_test.dart; post_fix_notes_run312_BUG1_BUG5.md)",
-    "queue": "BUG-7 (keputusan arah kontrak token representasi import vs export - butuh Choi). Hanya ini sisa region workspaces.",
-    "next_action": "Run berikutnya: tutup gap build Windows saat app pengguna tertutup ATAU region hunt unscanned baru ATAU eksekusi keputusan Choi bila tiba."
-  },
-  "restore_two_phase_run318": {
-    "date": "2026-09-15",
-    "slice": "145.42 interrupted_restore -> VERIFIED(real process kill): restoreWithRollback dua-fase (stage semua area + jurnal recovery/restore-staging.json) + RestoreCrashRecovery jurnal-aware + OS kill child nyata via fixtures/restore_two_phase_kill_child.dart",
-    "head": "979f80e60e0d2a090617d50db431aca6ac4c3073",
-    "gates": "focused 7/7 PASS; region project_resilience 228 PASS/1 skip/0 FAIL; analyze No issues; format owned 0 changed; diff-check 0; build windows --debug PASS 33.0s",
-    "sibling_adaptation": "backup_rollback_failure_test.dart kasus-2: trigger file terkunci dipindah dari workspaces-luar-payload ke asset-dalam-payload (premis jadi mustahil oleh dua-fase); nol assertion dihapus",
-    "pointer": "TIDAK berubah (next_step tetap 145.30 per guard)"
-  },
-  "autosave_14530_reconciliation_run319": {
-    "date": "2026-09-15",
-    "slice": "145.30 evidence reconciliation ONLY (no production code): native bukti run309/311/313/314 (BUG-303-01 closed a4bf7d2; Pulihkan Draft + autosave HIT + hot-reconnect pada USB nyata) dipetakan ke docs/audits/autosave-snapshot-crash-recovery.md; dua baris acceptance -> VERIFIED(domain+UI+native)",
-    "head": "d3c5b9fc9e9dd94619774d9b76467982d182a839",
-    "gates": "focused test/features/story + 11 journal/resilience files = 247 PASS/0 FAIL exit 0; flutter analyze --no-pub No issues (18.4s); git diff --check 0; build windows --debug PASS 43.5s",
-    "remaining_145_30": "power-loss live UNVERIFIABLE (fsync boundary terdokumentasi); disk-full eksplisit pada jalur journal draft masih injeksi (preflight nyata baru jalur move 145.42 run315) -> status PARTIAL",
-    "pointer": "TIDAK berubah (next_step tetap 145.30 per guard)"
-  },
-  "resilience_hunt_2026_09_15_run320": {
-    "hunt": "vs-hunt-20260915-resilience (18 file lib/features/project_resilience, durable_draft_journal.dart excluded - sudah punya bukti run248)",
-    "chain": "Hunter 10/71 -> Skeptic 6C/4D -> Referee on-disk referee_report_resilience_run320.md: 6 REAL / 4 dismissed (otoritas)",
-    "fixed": "BUG-3 Critical (PID-reuse lock) commit 03f4cad: processStartMs identity probe + _holderProvesPidReuse (grace 60s, fail-closed on ambiguity); RED compile-fail -> GREEN 7/7; region 232 PASS/1 skip; analyze No issues; build windows PASS 37,1s",
-    "queue": "BUG-8 prune-ordering (Medium), BUG-6 portable/orphan (Medium), BUG-7 external backup count (Medium), BUG-4 competing-create re-read (Medium), BUG-9 deep JSON compare (Low) - arahan Referee konkret, tanpa keputusan Choi",
-    "head_at_hunt": "762ed7f5b5af9a1dce8d867ed1ce395a75295b27",
-    "pointer": "TIDAK berubah (next_step tetap 145.30 per guard)"
-  },
-  "import_kill_literal_run321": {
-    "case": "145.42 interrupted-import",
-    "status": "LITERAL_PASS (real OS TerminateProcess, cross-process recovery)",
-    "mechanism": "ImportClaim sentinel + quarantine rule in recoverInterruptedImportStashes; coordinator writes claim before stash rename, releases only after final discard/rollback",
-    "commit": "6b5ceb5",
-    "evidence": "test/features/project_resilience/portable_import_kill_recovery_test.dart + fixtures/import_kill_child.dart; region 237 PASS/1 skip; analyze clean; windows debug build PASS",
-    "remaining_14542": "export kill literal (next slice candidate); power-loss true UNVERIFIABLE; USB cold-eject needs Choi hands"
+  "required_checks": [
+   "dart run tool/roadmap_guard.dart",
+   "flutter analyze",
+   "focused Core MVP regression",
+   "full flutter test",
+   "Windows debug build"
+  ]
+ },
+ "selection_rules": [
+  "Repository evidence and the active sprint ledger override stale narrative status text.",
+  "Never skip a pending step or invent acceptance criteria.",
+  "A reproducible regression blocks roadmap feature work until it is fixed and verified.",
+  "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
+  "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
+ ],
+ "updated_at": "2026-09-15",
+ "updated_by": "nephthys cron run322",
+ "active_stream": "corrective_core_mvp",
+ "suspended_streams": {
+  "sequential_expansion": {
+   "status": "SUSPENDED",
+   "priority": 2,
+   "sprint": 111,
+   "resume_step": "111.21",
+   "contract": "sprint_111.json",
+   "ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
+   "resume_condition": "corrective_core_mvp exit_gate is satisfied and recorded."
   }
+ },
+ "novel_io_hunt_2026_09_12": {
+  "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
+  "hunt": "vs-hunt-20260912n; Hunter 25 -> Referee confirmed 14 (0 Critical), dismissed 11; parent corrected BUG-18/19 as false positive (RadioGroup exists in SDK). Reports: docs/evidence/vs-hunt-20260912n/",
+  "fix": "BUG-05 embedded character payload missing -> silent blank character on import. RED->GREEN in test/features/workspaces/workspace_import_missing_payload_test.dart; pre-mutation FormatException gate. Commit d130b18. Gates: workspaces 99 PASS, novel_io 4 PASS, analyzer scoped clean, diff-check 0, Windows debug build PASS.",
+  "queue_next_runs": [],
+  "scope_do_not_rescan": "novel export/import vertical; hashes in docs/evidence/vs-hunt-20260912n/novel_io_scope.json are PRE-run237..243 - refresh before any new hunt on this region",
+  "pointer_note": "145.27 remains PARTIAL; hunt+fix recorded under 145.33 area; no pointer movement.",
+  "fixed_run236": {
+   "id": "vs-hunt-20260912n BUG-01 (Medium, data-safety)",
+   "defect": "embedded character materialization + link inserts + directory move ran outside any transaction; failure after character inserts left ghost canonical characters",
+   "commit": "20c5ef2",
+   "evidence": "test/features/workspaces/workspace_import_atomicity_test.dart RED->GREEN; workspaces dir 100 PASS; build windows debug PASS"
+  },
+  "fixed_run239": {
+   "id": "vs-hunt-20260912n BUG-04 (Medium, export integrity/leak)",
+   "defect": "_copy used source.list(recursive:true) with default followLinks: symlinked file archived external content or crashed export (PathNotFoundException); symlinked dirs were recursed",
+   "commit": "b3e17a6",
+   "evidence": "test/features/workspaces/workspace_export_symlink_test.dart RED->GREEN (novel+character paths, anti-leak scan); workspaces dir 106 PASS; build windows debug PASS 93.7s"
+  },
+  "fixed_run240": {
+   "id": "vs-hunt-20260912n BUG-07 + BUG-20 (Medium, one root cause)",
+   "defect": "early expectedWorkspaceId collision throw fired for every collisionChoice before archive validation; skip/adopt unreachable with an explicit ID; collision error masked corrupt-archive error on non-fail choices",
+   "commit": "b9d69fe",
+   "evidence": "test/features/workspaces/workspace_import_collision_precheck_test.dart RED(3 fail)->GREEN(4/4); workspaces dir 110 PASS; fail-contract test preserved; build windows debug PASS 92.3s (isolated worktree at f99600f)"
+  },
+  "updated_at_note": "run247 2026-09-12T18:55+07:00 (pointer 145.27 unchanged; BUG-10 closed b29b4af; hunt queue drained; sibling dirty character/project_resilience/ai preserved)",
+  "fixed_run241": {
+   "id": "vs-hunt-20260912n BUG-12 (Medium, zip-bomb/memory DoS)",
+   "defect": "restoreNovel + peekManifest did readAsBytes()+decode with no size bound; oversized archive exhausted memory before validation",
+   "commit": "d29fa2c",
+   "evidence": "test/features/workspaces/workspace_import_archive_size_cap_test.dart RED->GREEN 4/4; workspaces region 114 PASS; focused import suites 14 PASS; build windows debug PASS 41.0s"
+  },
+  "verified_run241": {
+   "id": "vs-hunt-20260912n BUG-09 (Medium claim) -> NOT A GAP at HEAD",
+   "note": "export snackbar success+error present in story_workspace_screen.dart:774-799 since 58ea3e7; test-pinned; reran 4/4 PASS 2026-09-12"
+  },
+  "product_decision_pending_choi": "character import/restore UI wiring: engine path restoreCharacter landed (run243) but no UI button exposes it yet; exportCharacter itself also has no production caller. Decide whether character workspace deserves an Export/Import action pair.",
+  "fixed_run243": {
+   "id": "vs-hunt-20260912n BUG-17 (Medium, dead-end artifact)",
+   "defect": "exportCharacter produced character-*.voidworkspace archives no import path could read; restoreNovel hard-rejects workspaceType != novel",
+   "commit": "f545d5c",
+   "evidence": "test/features/workspaces/workspace_import_character_restore_test.dart RED compile-fail -> GREEN 8/8; workspaces dir 118 PASS; isolated-worktree Windows debug build PASS 102.7s"
+  },
+  "fixed_run245": {
+   "id": "vs-hunt-20260912n BUG-16 (Low, robustness)",
+   "defect": "NovelCharacterLink.fromJson used raw DateTime.parse on created_at/updated_at; malformed archive threw FormatException without field name (TypeError for non-String/null) and aborted the whole import",
+   "commit": "f6cff69",
+   "evidence": "test/features/workspaces/novel_character_link_test.dart RED(field-nameless FormatException reproduced)->GREEN 7/7; workspaces dir 124 PASS; analyze scoped clean; Windows debug build PASS 27.9s on main worktree; native UNVERIFIABLE (cron)"
+  },
+  "fixed_run246": {
+   "id": "vs-hunt-20260912n BUG-13 (Low, determinism)",
+   "defect": "exportNovel embedded provenance used raw DateTime.now().toUtc().toIso8601String(); microsecond fractions made repeated exports of unchanged bytes non-identical and untestable",
+   "commit": "ec8f9e3",
+   "evidence": "test/features/workspaces/workspace_export_timestamp_determinism_test.dart RED compile-fail -> GREEN 3/3 (explicit exportedAt verbatim; default second-precision; pinned double export byte-identical payload); workspaces dir 127 PASS/0 FAIL; analyze scoped clean; format clean; diff-check 0; Windows debug build PASS 27.9s on main worktree; native UNVERIFIABLE (cron)"
+  },
+  "fixed_run247": {
+   "id": "vs-hunt-20260912n BUG-10 (Low, robustness/code-quality)",
+   "defect": "production import decoded the archive twice (peekCharacterRepresentation via peekManifest, then restoreNovel); two reads of a mutable file meant the manifest confirmed in the dialog was not necessarily the manifest restored",
+   "commit": "b29b4af",
+   "evidence": "test/features/workspaces/workspace_import_single_decode_test.dart RED compile-fail -> GREEN 5/5 (single decode, bounded cap, corrupt-after-peek cannot change restore, mismatched-file preflight rejected before mutation, manifest validation intact); regression test/features/workspaces 132 PASS + test/features/story 189 PASS / 0 FAIL; scoped analyze No issues; format clean; diff-check 0; Windows debug build PASS 34.7s on main worktree; native UNVERIFIABLE (cron)"
+  }
+ },
+ "autosave_hunt_2026_09_12": {
+  "status": "hunt COMPLETE + A/B/C block CLOSED (C-block run276 eacf3aa; native journey run259 VERIFIED); queue autosave EMPTY",
+  "scope": "docs/evidence/vs-hunt-20260912-autosave/autosave_scope.json (6 file, HEAD b2ca031; region belum pernah di-hunt)",
+  "failure": "delegate_task Hunter gagal 2x: upstream cbai/kimi-k2.7 429 code14018 Credits exhausted; nol mutasi repo",
+  "next_action": "ulangi Hunter->Skeptic->Referee saat kuota delegation pulih ATAU Choi cabut pin delegation.model; JANGAN tandai scope sebagai clean",
+  "run248_note": "run248 = NO-OP mutasi; queue vs-hunt-20260912n tetap kosong; push backlog f366a7a..b2ca031 terverifikasi dual-remote (ahead 0)",
+  "run253_note": "sibling hunt masih hidup di working tree (hunter report 22:04, skeptic/referee instructions 22:06, referee report BELUM ada); cron run253 tidak menyentuh scope/region karakter sibling",
+  "queue_A3_status": "run269 ACCEPT: WIP penulis idle sejak 01:10 diresepsi + diuji (bukan ditulis ulang) - BUG-4/5/8/9/10/19/20 referee on-disk masuk via commit 6a2c41e; 4 test baru durable_autosave_restore_coordination_test PASS; regresi story 203 PASS, project_resilience 219 PASS/1 SKIP, analyzer No issues.",
+  "run258_note": "Gate format CI merah utk working tree (story_repository_impl.dart dirty belum di-format). Author wajib 'dart format' sebelum commit agar 'Verify formatting' tidak menjatuhkan seluruh push (pola run252).",
+  "run260_note": "Delegation pin gemini/gemini-3.5-flash-lite KUOTA HABIS (429 dua stage beruntun pada hunt shell/settings; Hunter stage pertama sempat lulus). Butuh Choi: ganti/cabut pin delegation. Evidence: docs/evidence/vs-hunt-20260913-shell-settings/ (verdict self-audit: BUG-02 push-vs-go kandidat slice berikutnya; BUG-08 not-production).",
+  "run269_note": "Sisa antrean: rekonsiliasi item B-block vs referee on-disk (dispose/retention sebagian sudah masuk WIP), C-block fsync documented-limitation + close-lifecycle, native journey restore (sesi Choi). Pointer 145.27 tetap PARTIAL, stream tidak berubah.",
+  "run276_note": "C-block ditutup via resepsi WIP idle terverifikasi (close-after-ack produksi + corrupt-discard pin + fsync documented limitation). Snapshot pre-aksi %LOCALAPPDATA%/Temp/vs-run276-sibling-snap-133624."
+ },
+ "native_restore_journey_run253": {
+  "status": "VERIFIED (cron run259 2026-09-13 02:35 WIB - sesi desktop hidup, computer_use foreground delivery OK)",
+  "journey": "build windows --debug exit 0 (29.8s, working tree 9074716 + dirty sibling fingerprint sha256 6c03e925) -> launch pid 27612 -> project UJI 7e90b57b -> Continue writing -> Project-context 'Backup & Export' -> /project-backups render -> Create Backup (44d73da9, count 2->3) -> Restore Latest Backup -> dialog 'Restore this backup?' (emergency-backup statement) -> Confirm -> 'Restored latest backup.' tanpa error",
+  "readback": "close jendela bersih: session.lock/.project.lock hilang; DB read-only integrity_check ok, user_version 61, 166 tables; disk: add44f12 type=pre-restore note='Emergency backup before restore' 02:32:39",
+  "evidence": "docs/evidence/native-restore-journey-run259/ (4 screenshots berurutan)",
+  "scope_note": "rute restore UI kini terbukti terhubung native; sisa 145.34 = fault injection rollback-gagal + exact-snapshot vs merge (test-level, bukan GUI)",
+  "next_action": "JANGAN ulangi attempt buta; journey ini closed"
+ },
+ "importer_hunt_2026_09_13": {
+  "status": "hunt COMPLETE (VERIFIED scan-only, 3 stages) + BUG-3/BUG-4 fixed 06a3a3f + BUG-5 fixed 01ab45f; QUEUE EMPTY",
+  "hunt": "docs/evidence/vs-hunt-20260913-importer/",
+  "dismissed": "BUG-1 character_reference_binder (copy sebelum delete + fresh UUID), BUG-2/BUG-6 traversal via id UUID lokal = luar batas local-first",
+  "delegation_note": "Referee attempt#1 429 upstream (gemini flash-lite); attempt#2 compact brief PASS"
+ },
+ "timeline_relations_hunt_2026_09_13": {
+  "status": "hunt COMPLETE (rantai PARTIAL: Hunter delegate + verifikasi parent Skeptic/Referee) + BUG-004 fixed aa961f9; QUEUE EMPTY untuk region ini",
+  "hunt": "docs/evidence/vs-hunt-20260913-timeline-relations/ (12 file, fingerprint sha256 di scope_hashes.txt, HEAD 9ef59dd)",
+  "confirmed": "BUG-004 Medium: timeline_workspace_screen _moveClip clamp(0.0, negative maxStart) throw ArgumentError; reachabel via ensureTimelineForScene beat-duration tanpa validasi silang",
+  "dismissed": "BUG-001 (fromRecord baca payload bukan undoPayload), BUG-002 (validateTimeline tanpa caller produksi; desain gap), BUG-003 (command-id vs relation-id namespace sengaja), BUG-005 (action track dijamin transaksi yang sama)",
+  "delegation_note": "Skeptic delegate GAGAL 2x HTTP 429 (pin gemini/gemini-3.5-flash-lite habis, preseden run260). Butuh Choi: pulihkan/cabut pin delegation untuk rantai 3-tahap penuh.",
+  "cosmetic_debt": "undoPayload MoveTimelineClipCommand memakai key 'startSeconds' tak pernah dikonsumsi — bukan bug, jangan di-escalate sebagai defect",
+  "next_unscanned_regions": "features/projects (10 file/1037 baris) atau features/world (34 file — wajib dipecah <=20)",
+  "sibling_dirty_fingerprint": {
+   "story_dao": "12a3e5f65c60",
+   "project_database": "bb9d67697642",
+   "coordinator": "d1c3dd192c6e",
+   "story_repository_impl": "8d70d87eaf96",
+   "story_workspace_screen": "c1ee3dfb7c4d",
+   "character_controller": "8e573ee222e3",
+   "character_portrait_card": "852ca32732d6",
+   "character_portrait_test": "5bdaf8c54733"
+  }
+ },
+ "world_hunt_2026_09_13": {
+  "status": "hunt COMPLETE (rantai PARTIAL: Hunter delegate + Referee audit induk; Skeptic delegate 429) + WLD-PARENT-03 fixed 26f9c7b",
+  "hunt": "docs/evidence/vs-hunt-20260913-world/ (scope_files 18, scope_hashes.txt sha256, hunter_report.md, referee_report_world.md; HEAD f1c49b4)",
+  "confirmed": "WLD-PARENT-03 Low: doc kontrak [StateError] vs impl null-check TypeError di ConlangRegistry.wordById (addVariant/addExample ikut) -> FIXED TDD; WLD-PARENT-01 PredatorPressure escapeRoutes=0 (non-prod, OPEN); WLD-PARENT-02 FloatingOrigin tanpa validasi rentang (non-prod, OPEN)",
+  "dismissed": "WLD-BUG-01 climate division-by-zero (tak ada pembagian); WLD-BUG-02 registry mutable (unmodifiable/baru); WLD-BUG-03 unnormalized keys (sudah lowercase di index/search); WLD-BUG-04 coordinate clamping (Planet clamp; GeoCoordinate isValid by-design dipin test); WLD-BUG-05 JSON deserialization (FABRIKASI - file tak punya parser); WLD-BUG-06 unbounded loop (guard limit ada)",
+  "region_note": "domain world 109.17-109.19/110 UNROUTED ke shell (grep import luar-region = nol) -> semua temuan non-production-reachable kecuali API publik registry",
+  "delegation_note": "pin gemini flash-lite 429 stage 2/3 lagi (preseden run267). Jangan cabut permanen; probe era kuota (run262 LULUS penuh)."
+ },
+ "environment_hunt_2026_09_13": {
+  "status": "hunt COMPLETE (rantai PARTIAL: Hunter+Skeptic delegate, Referee = audit induk) + ENV-BUG-002/004 fixed ed9022c; QUEUE EMPTY untuk region ini",
+  "hunt": "docs/evidence/vs-hunt-20260913-environment/ (scope 7 file, sha256 di scope_hashes.txt, HEAD 902bc57)",
+  "confirmed": "ENV-BUG-002 Medium stub cards; ENV-BUG-004 Low empty-string dash",
+  "dismissed": "ENV-BUG-001 DB-then-folder documented convention; ENV-BUG-003 domain SceneEnvironmentContext zero importers (housekeeping)",
+  "delegation_note": "pin gemini flash-lite 429 di stage 3 (preseden run267/270); probe era kuota, jangan cabut permanen",
+  "next_unscanned_regions": "features/references (10 file) atau features/inspector (9 file)"
+ },
+ "references_hunt_2026_09_13": {
+  "status": "hunt COMPLETE (VERIFIED scan-only, rantai 3-tahap penuh LULUS) + REF-BUG-1 fixed bf05986; QUEUE: REF-BUG-3 kecil + REF-BUG-2 butuh keputusan routing",
+  "hunt": "docs/evidence/vs-hunt-20260913-references/ (10 file scope, sha256+HEAD da2df61, hunter/skeptic/referee reports on-disk)",
+  "confirmed": "REF-BUG-1 Medium FIXED (replaceFile FileSystemException file hilang + saveVersion sebelum copy); REF-BUG-2 Medium non-production (unrouted screen, no toggle method exists); REF-BUG-3 Low import dialog silent-empty reachable via library screen",
+  "delegation_note": "pin gemini flash-lite LULUS 3 stage beruntun (references + loadout era yang sama) — era kuota sehat, jangan cabut pin",
+  "sibling_dirty_fingerprint": "character/story 4 file M + 2 test untracked journal lifecycle mtime 08:41-08:52 direservasi tanpa sentuh",
+  "next_unscanned_regions": "features/inspector (9 file) atau features/settings shell (cek overlap run260)"
+ },
+ "projects_hunt_2026_09_13_run282": {
+  "status": "hunt COMPLETE (rantai 3-tahap penuh LULUS, gemini flash-lite sehat) + BUG-1/BUG-2 fixed 2e6d3b6; QUEUE EMPTY untuk fork ini",
+  "hunt": "docs/evidence/vs-hunt-20260913-projects/ (laporan fork sore berlabel *_run282; fork pagi run268 PRJ-BUG-01..04 tercatat terpisah, PRJ-BUG-02 fix 0fa679b sudah di HEAD)",
+  "confirmed": "run282 BUG-1 Medium updateProject memory drop; BUG-2 Medium mode-equality re-open destruktif",
+  "dismissed": "BUG-3 (ProjectPackageService.create cleanup internal), BUG-4 (Riverpod onDispose sinkron)",
+  "collision_note": "DUA rantai hunt memakai direktori bukti sama pada hari sama; cp sore sempat menimpa laporan pagi -> pulih via git checkout. Konvensi baru: file laporan wajib suffiks _run<N> sebelum tulis ke direktori bukti yang sudah ada.",
+  "next_unscanned_regions": "features/settings shell (cek overlap run260) atau domain world/advanced non-routed (keputusan routing Choi dulu)"
+ },
+ "dashboard_hunt_2026_09_13_run283": {
+  "status": "hunt COMPLETE + DB-BUG-03 fixed (run283-era), DB-BUG-01 fixed (run285 8513fd3), DB-BUG-07 + DB-BUG-08 fixed (run286 f7c835d); QUEUE tersisa: DB-BUG-04 (Low)",
+  "hunt": "docs/evidence/vs-hunt-20260913-dashboard/ (scope.json sha256+HEAD 4027dcd, hunter/skeptic/referee laporan *_run283.md)",
+  "confirmed": "DB-BUG-01 Medium getAllAssets in-memory scan di DashboardRepository; DB-BUG-03 Medium session-null Create Character -> /studio shell mati (FIXED, navigasi ke /projects per kontrak shell); DB-BUG-04 Low RecentAssets hardcoded = DEAD CODE nol importer (hapus/rewire terpisah); DB-BUG-07 Low statistik error tanpa retry; DB-BUG-08 Low raw $error auth UI",
+  "dismissed": "BUG-02 (Riverpod FutureProvider auto AsyncValue.error), BUG-05 (stub donasi jujur = by-design deferred payment), BUG-06 (sort list kecil di build = negligible), BUG-09 (errorBuilder thumbnail menangani file error)",
+  "evidence": "RED dashboard_create_character_no_session_test Actual '/studio' -> GREEN; fokus 1 PASS; test/features/dashboard 13 PASS; shell+routing 69 PASS; analyze No issues; build windows debug 64,5s; guard PASS",
+  "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
+ },
+ "last_worker_run": "run301",
+ "note": "run322 (cron): 145.42 interrupted-export LITERAL_PASS via kill OS nyata TANPA perubahan produksi (jalur staging .tmp + verifikasi + rename atomik lama sudah literal-safe; corpse parsial dimakan retry lintas-proses, bukti test-only + region 238 PASS/1 skip, analyze bersih, build win debug PASS). interrupted_* 145.42 TUTUP SEMUA (move/restore/import/export). Sisa 145.42 murni hardware-bound (power-loss nyata, USB cold-eject = tangan Choi). 145.27 sudah VERIFIED run321 - tidak diulang. Pointer guard tetap 145.30. Push TIDAK (keputusan Choi; ahead 8 pasca commit closeout). Run sebelumnya (run321): claim sentinel import + rekonsiliasi 145.27 VERIFIED.",
+ "studio_hunt_2026_09_13_run289": {
+  "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
+  "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",
+  "confirmed": "02 Critical (bypass guard delete via case/whitespace) FIXED; 01 Medium firstWhere tanpa orElse; 03 Medium map overwrite lead; 06/07/08 Low",
+  "dismissed": "04 heuristik injection filter by-design (dipin operations_safety_test); 05 penolakan tipe chat by-design (dipin studio_communication_test)",
+  "reachability": "nol caller produksi luar region (hanya app_router->StudioCommandCenter DemoStudio); severity = kontrak API publik domain",
+  "next_unscanned_regions": "features/platform (20 file, 1317 baris)"
+ },
+ "platform_hunt_2026_09_14_run295": {
+  "status": "hunt COMPLETE + PLAT-BUG-01/02 fixed; QUEUE: PLAT-BUG-03 Medium (butuh keputusan navigasi Choi) + 04/05/06 Low dormant",
+  "hunt": "docs/evidence/vs-hunt-20260914-platform/ (20 file scope lib/features/platform, sha256+HEAD a01d265, laporan on-disk referee_report_platform.md = otoritas 6 REAL / 0 dismissed)",
+  "confirmed": "01 Medium allPassed vacuous-true FIXED fail-closed (87788d4); 02 Medium cycle-check 2-node FIXED DFS transitive (21ba2ea run296); 03 Medium AboutScreen 4 link tanpa onTap + nol rute (butuh keputusan tujuan); 04 Low inverted PluginApiVersion dormant (kontradiksi core/plugin versi canonical, nol caller); 05 Low sort tie-breaker; 06 Low divide-by-zero",
+  "dismissed": "none",
+  "reachability": "AboutScreen/UpdateScreen/WelcomeScreen/KeyboardNav/OptionalTour: nol rute produksi (hanya ThemeSettingsScreen ter-route); domain getters tanpa caller UI",
+  "next_unscanned_regions": "belum diantrikan - kandidat dari lib/features tanpa vs-hunt: cek daftar vs-hunt-* vs lib/features/*/ sebelum memilih"
+ },
+ "bible_ui_hunt_2026_09_14_run303": {
+  "scope": "lib/features/bible/domain + presentation (14 non-generated files, 1388 lines)",
+  "head_at_hunt": "67aeec6a27210f3297ad78957c47cf1d278f8a86",
+  "chain": "Hunter 4 (score 20) -> Skeptic 4 CONFIRMED -> Referee 4 REAL / 0 dismissed (all Medium)",
+  "reports": "docs/evidence/vs-hunt-20260914-bible-ui/{scope_hashes.txt,hunter_report.md,skeptic_report.md,referee_report_bible_ui.md}",
+  "fixed_this_run": [
+   "BUI-BUG-03 (commit 53d722c, TDD RED->GREEN, region bible 57 PASS, analyze/format/diff-check/build windows PASS)"
+  ],
+  "queue_remaining": [
+   "BUI-BUG-01 (Medium; section tabs/dropdown inert -- arah: peta kontrol ke render/scroll ATAU buang/relabel; butuh keputusan UX Choi)",
+   "BUI-BUG-02 (Medium; Overview metrics hard-coded 'Void Universe'/0 -- arah: query manifest+repository nyata, placeholder jujur)"
+  ],
+  "fixed_later": [
+   "BUI-BUG-04 (commit bb5c4f2, run304, TDD RED->GREEN; gates full suite 4414 PASS)"
+  ]
+ },
+ "wardrobe_weapon_hunt_2026_09_14_run305": {
+  "scope": "lib/features/wardrobe + lib/features/weapon (16 non-generated Dart files)",
+  "head_at_hunt": "b17dd6e9968af71018fd14b20472c1be29e795f0",
+  "chain": "Hunter 6 -> Skeptic disproved 4 -> Referee 2 REAL (WBUG-5 wardrobe, WBUG-6 weapon; both Medium) / 4 dismissed",
+  "reports": "docs/evidence/vs-hunt-20260914-wardrobe-weapon/ (committed 69be48f)",
+  "fixed_this_run": [
+   "WBUG-5+WBUG-6 (commit 41c01f3, TDD RED->GREEN; focused 13 PASS; regions wardrobe 60 + weapon 65 PASS; consumers 124 PASS; flutter analyze full No issues; build windows debug PASS; git diff --check 0)"
+  ],
+  "queue_remaining": [
+   "optional Low debt: project-ownership scoping on dismissed BUG-1..4 (defense-in-depth; per-project DB blocks claimed path)",
+   "native Windows journey wardrobe/weapon workspace UNVERIFIABLE dari cron"
+  ]
+ },
+ "explorer_selection_hunt_2026_09_14_run307": {
+  "scope": "lib/features/explorer (6 file) + lib/core/selection (1 file), 7 file non-generated, SHA-256 beku di docs/evidence/vs-hunt-20260914-explorer-selection/scope_hashes_run307.txt",
+  "head_at_scan": "fea57ba",
+  "chain": "Hunter 5 temuan/26 -> Skeptic 4C/1D -> Referee on-disk OTORITATIF 3 REAL/2 dismissed (BUG-1 stale-async + BUG-5 persist dibantah)",
+  "fixed": [
+   "BUG-2 recovery ids==null vs empty-sukses + remembersWorkspace guard + onDispose token",
+   "BUG-3 creature error-row retry (invalidate creatureExplorerProvider)",
+   "BUG-4 character error-row retry (invalidate characterControllerProvider)"
+  ],
+  "evidence": "focused 5/5; explorer 46; core/selection 8; app 163; workspace+character+creatures 140; FULL 4440/0/1skip exit 0; analyze No issues; diff-check 0",
+  "build_gate": "BLOCKED - void_scriptor.exe (app pengguna, PID 8112, path build Debug canonical) aktif; native UNVERIFIABLE run ini",
+  "commit": "cb059ab (scoped, tidak di-push)",
+  "next": "re-scan region ini hanya bila hash scope berubah; kandidat region unscanned berikutnya asset_browser / worldbuilding UI (cek inventaris vs-hunt+hash)"
+ },
+ "workspaces_hunt_2026_09_14_run308": {
+  "hunt": "vs-hunt-20260914-workspaces",
+  "scope": "docs/evidence/vs-hunt-20260914-workspaces/scope_files.txt (15 file, HEAD 141e86e, hashes scope_hashes_run308.txt)",
+  "verdict": "Referee on-disk referee_report_workspaces_run308.md: 7 REAL / 0 dismissed (BUG-1..4 High, BUG-5/6 Medium, BUG-7 Low/Medium-boundary)",
+  "closed": "BUG-2/3/4 (run308) vs_hunt_20260914_workspaces_migration_test.dart + workspace_migration_runner.dart + BUG-1/BUG-5 (run312: transaksi DB + kompensasi filesystem presisi + verifikasi sebagai gate; test/features/workspaces/vs_hunt_20260914_migration_atomicity_run312_test.dart; post_fix_notes_run312_BUG1_BUG5.md)",
+  "queue": "BUG-7 (keputusan arah kontrak token representasi import vs export - butuh Choi). Hanya ini sisa region workspaces.",
+  "next_action": "Run berikutnya: tutup gap build Windows saat app pengguna tertutup ATAU region hunt unscanned baru ATAU eksekusi keputusan Choi bila tiba."
+ },
+ "restore_two_phase_run318": {
+  "date": "2026-09-15",
+  "slice": "145.42 interrupted_restore -> VERIFIED(real process kill): restoreWithRollback dua-fase (stage semua area + jurnal recovery/restore-staging.json) + RestoreCrashRecovery jurnal-aware + OS kill child nyata via fixtures/restore_two_phase_kill_child.dart",
+  "head": "979f80e60e0d2a090617d50db431aca6ac4c3073",
+  "gates": "focused 7/7 PASS; region project_resilience 228 PASS/1 skip/0 FAIL; analyze No issues; format owned 0 changed; diff-check 0; build windows --debug PASS 33.0s",
+  "sibling_adaptation": "backup_rollback_failure_test.dart kasus-2: trigger file terkunci dipindah dari workspaces-luar-payload ke asset-dalam-payload (premis jadi mustahil oleh dua-fase); nol assertion dihapus",
+  "pointer": "TIDAK berubah (next_step tetap 145.30 per guard)"
+ },
+ "autosave_14530_reconciliation_run319": {
+  "date": "2026-09-15",
+  "slice": "145.30 evidence reconciliation ONLY (no production code): native bukti run309/311/313/314 (BUG-303-01 closed a4bf7d2; Pulihkan Draft + autosave HIT + hot-reconnect pada USB nyata) dipetakan ke docs/audits/autosave-snapshot-crash-recovery.md; dua baris acceptance -> VERIFIED(domain+UI+native)",
+  "head": "d3c5b9fc9e9dd94619774d9b76467982d182a839",
+  "gates": "focused test/features/story + 11 journal/resilience files = 247 PASS/0 FAIL exit 0; flutter analyze --no-pub No issues (18.4s); git diff --check 0; build windows --debug PASS 43.5s",
+  "remaining_145_30": "power-loss live UNVERIFIABLE (fsync boundary terdokumentasi); disk-full eksplisit pada jalur journal draft masih injeksi (preflight nyata baru jalur move 145.42 run315) -> status PARTIAL",
+  "pointer": "TIDAK berubah (next_step tetap 145.30 per guard)"
+ },
+ "resilience_hunt_2026_09_15_run320": {
+  "hunt": "vs-hunt-20260915-resilience (18 file lib/features/project_resilience, durable_draft_journal.dart excluded - sudah punya bukti run248)",
+  "chain": "Hunter 10/71 -> Skeptic 6C/4D -> Referee on-disk referee_report_resilience_run320.md: 6 REAL / 4 dismissed (otoritas)",
+  "fixed": "BUG-3 Critical (PID-reuse lock) commit 03f4cad: processStartMs identity probe + _holderProvesPidReuse (grace 60s, fail-closed on ambiguity); RED compile-fail -> GREEN 7/7; region 232 PASS/1 skip; analyze No issues; build windows PASS 37,1s",
+  "queue": "BUG-8 prune-ordering (Medium), BUG-6 portable/orphan (Medium), BUG-7 external backup count (Medium), BUG-4 competing-create re-read (Medium), BUG-9 deep JSON compare (Low) - arahan Referee konkret, tanpa keputusan Choi",
+  "head_at_hunt": "762ed7f5b5af9a1dce8d867ed1ce395a75295b27",
+  "pointer": "TIDAK berubah (next_step tetap 145.30 per guard)"
+ },
+ "import_kill_literal_run321": {
+  "case": "145.42 interrupted-import",
+  "status": "LITERAL_PASS (real OS TerminateProcess, cross-process recovery)",
+  "mechanism": "ImportClaim sentinel + quarantine rule in recoverInterruptedImportStashes; coordinator writes claim before stash rename, releases only after final discard/rollback",
+  "commit": "6b5ceb5",
+  "evidence": "test/features/project_resilience/portable_import_kill_recovery_test.dart + fixtures/import_kill_child.dart; region 237 PASS/1 skip; analyze clean; windows debug build PASS",
+  "remaining_14542": "export kill literal (next slice candidate); power-loss true UNVERIFIABLE; USB cold-eject needs Choi hands"
+ },
+ "export_kill_literal_run322": {
+  "case": "145.42 interrupted-export",
+  "status": "LITERAL_PASS (real OS TerminateProcess mid-zip; zero production change)",
+  "mechanism": "Existing staging contract proved literal-safe: '<final>.tmp' partial corpse in exports namespace is reclaimed by the next exportPortable in a fresh process (FileHandle FileMode.write truncates; verify+rename only after complete archive). No claim sentinel needed: export never relocates user data, unlike import.",
+  "evidence": "test/features/project_resilience/portable_export_kill_recovery_test.dart + fixtures/export_kill_child.dart (production-identical ZipFileEncoder.zipDirectory call, 100MB incompressible filler, kill at 4MB staging); focused 1/1 PASS; region 238 PASS/1 skip/0 FAIL; analyze clean; build windows debug PASS 29.7s; commit e3dda53",
+  "interrupted_14542_closure": "move run316 (4162afa) + restore run318 (e627734) + import run321 (6b5ceb5) + export run322 = ALL LITERAL_PASS",
+  "remaining_14542": "hardware-bound only: true power-loss UNVERIFIABLE (dart:io flush != fsync), USB cold-eject follow-up needs Choi's hands (hot-reconnect VERIFIED run313/314); native GUI journey UNVERIFIABLE from cron"
+ }
 }

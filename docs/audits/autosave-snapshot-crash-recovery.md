@@ -320,3 +320,34 @@ Langkah lanjutan yang diperlukan bila kontrak failure-injection disetujui:
 - Status step 145.30 tetap PARTIAL hanya karena: power-loss filesystem
   live UNVERIFIABLE, disk-full nyata BLOCKED (tanpa disk virtual),
   native interaction UNVERIFIABLE (butuh sesi interaktif).
+
+## Update 2026-09-15 (nephthys cron run319: rekonsiliasi bukti native + gate fresh HEAD d3c5b9f)
+
+- Gap pencatatan ditutup: baris "native interaction UNVERIFIABLE" pada
+  Update 2026-09-04 kini punya bukti NATIF aktual dari ledger run309/311/313/314
+  (sumber: docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md):
+  - BUG-303-01 (editor bisu input pasca "Pulihkan Draft") ditemukan via sesi
+    native run309, ditutup TDD oleh cron run311 (commit a4bf7d2, disetujui
+    Choi), test regresi recovery_restore_editor_selection_run311_test.dart.
+  - VERIFIED native Windows UI: banner "Pulihkan Draft" muncul dari jurnal
+    move-pending di USB; klik -> 33 kata masuk editor, field menerima teks,
+    label "Belum tersimpan" aktif (run314, build 53ce459, hardware ADATA FAT32 G:).
+  - VERIFIED native autosave ke USB nyata: ketik -> HIT di scene_beats.content
+    di database flashdisk (run313 'Tulis-USB-145-42', run314 'Reinsert-USB-tersimpan').
+  - VERIFIED native hot-reconnect: drive hilang -> layar fail-closed -> 'Coba
+    lagi' -> proyek terbuka penuh tanpa restart; recovery prompt terbukti hidup
+    di build nyata, bukan hanya widget test.
+- Status baris acceptance: "Visible save/recovery status" dan
+  "User-controlled restore" naik dari VERIFIED(domain+UI) menjadi
+  VERIFIED(domain+UI+native Windows) dengan bukti di atas.
+- Gate FRESH pada HEAD d3c5b9fc (pasca restore dua-fase run318 — memastikan
+  tidak ada regresi ke jalur autosave/journal):
+  `flutter test --no-pub test/features/story + 11 file journal/resilience fokus 145.30`
+  = 247 PASS / 0 FAIL, exit 0 (~2 mnt); `flutter analyze --no-pub` =
+  No issues found! (18,4 s). Nol perubahan kode produksi pada run ini.
+- Sisa gap JUJUR 145.30 (tidak dapat dinaikkan oleh bukti apa pun yang ada):
+  power-loss filesystem live UNVERIFIABLE (butuh pemutusan listrik nyata —
+  flush dart:io tidak menjamin fsync, tercatat di dokumen kelas
+  DurableDraftJournal); disk-full EKSPISIT pada journal draft masih model
+  injeksi kegagalan (preflight nyata baru tercakup di jalur move 145.42
+  run315, bukan jalur autosave). 145.30 tetap PARTIAL atas dua baris itu.

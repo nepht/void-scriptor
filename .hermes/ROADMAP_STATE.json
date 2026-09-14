@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-15T00:34:11+07:00",
-  "updated_by": "nephthys (cron run318)",
+  "updated_at": "2026-09-15T01:19:27+07:00",
+  "updated_by": "nephthys (cron run319)",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -221,7 +221,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run301",
-  "note": "run318 (cron): 145.42 interrupted_restore upgraded VERIFIED(domain)->VERIFIED(real process kill) — restore backup kini dua-fase + jurnal roll-forward; bukti OS hard-kill child nyata (bukan simulasi). Gates: focused 7/7, region 228/1skip/0FAIL, analyze bersih, build Windows PASS. Pointer tetap 145.30 (guard). run317: 145.27 VERIFIED; 145.28-29 VERIFIED; antrean keputusan Choi tetap (PLAT-03/04, STU-03, 145.43-50).",
+  "note": "run319 (cron): 145.30 rekonsiliasi bukti native Windows (run309/311/313/314) ke dokumen audit - baris Visible save/recovery status + User-controlled restore naik VERIFIED(domain+UI+native). Gate fresh HEAD d3c5b9f: focused 145.30 247 PASS/0 FAIL, analyze No issues, diff-check 0, build windows debug PASS 43.5s. Nol perubahan kode. Sisa 145.30: power-loss UNVERIFIABLE, disk-full eksplisit jalur journal draft masih model injeksi. run318: 145.42 interrupted_restore VERIFIED(real process kill). run317: 145.27 VERIFIED; 145.28-29 VERIFIED; antrean keputusan Choi tetap (PLAT-03/04, STU-03, STORY-02, BUG-7, 145.43-50).",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",
@@ -295,6 +295,14 @@
     "head": "979f80e60e0d2a090617d50db431aca6ac4c3073",
     "gates": "focused 7/7 PASS; region project_resilience 228 PASS/1 skip/0 FAIL; analyze No issues; format owned 0 changed; diff-check 0; build windows --debug PASS 33.0s",
     "sibling_adaptation": "backup_rollback_failure_test.dart kasus-2: trigger file terkunci dipindah dari workspaces-luar-payload ke asset-dalam-payload (premis jadi mustahil oleh dua-fase); nol assertion dihapus",
+    "pointer": "TIDAK berubah (next_step tetap 145.30 per guard)"
+  },
+  "autosave_14530_reconciliation_run319": {
+    "date": "2026-09-15",
+    "slice": "145.30 evidence reconciliation ONLY (no production code): native bukti run309/311/313/314 (BUG-303-01 closed a4bf7d2; Pulihkan Draft + autosave HIT + hot-reconnect pada USB nyata) dipetakan ke docs/audits/autosave-snapshot-crash-recovery.md; dua baris acceptance -> VERIFIED(domain+UI+native)",
+    "head": "d3c5b9fc9e9dd94619774d9b76467982d182a839",
+    "gates": "focused test/features/story + 11 journal/resilience files = 247 PASS/0 FAIL exit 0; flutter analyze --no-pub No issues (18.4s); git diff --check 0; build windows --debug PASS 43.5s",
+    "remaining_145_30": "power-loss live UNVERIFIABLE (fsync boundary terdokumentasi); disk-full eksplisit pada jalur journal draft masih injeksi (preflight nyata baru jalur move 145.42 run315) -> status PARTIAL",
     "pointer": "TIDAK berubah (next_step tetap 145.30 per guard)"
   }
 }

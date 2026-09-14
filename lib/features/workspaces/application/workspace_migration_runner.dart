@@ -70,27 +70,75 @@ final class WorkspaceMigrationRunner {
         throw ArgumentError.value(entry.value, 'storyWorkspaceIds value');
       }
     }
-    final seenCharacters = <String>{};
+    // BUG-4 (vs-hunt-20260914-workspaces): one target Novel workspace fed by
+    // two legacy story IDs would merge two independent directories into the
+    // same typed namespace. Merging needs an explicit policy, so refuse.
+    final uniqueTargets = storyWorkspaceIds.values.toSet();
+    if (uniqueTargets.length != storyWorkspaceIds.length) {
+      throw ArgumentError.value(
+        storyWorkspaceIds.values.toList(),
+        'storyWorkspaceIds',
+        'duplicate target novel workspace',
+      );
+    }
+    final seenPairs = <String>{};
+    final seenLinkIds = <String>{};
     for (final assignment in characterAssignments) {
       if (!WorkspaceFileNamespace.isValidWorkspaceIdentifier(
         assignment.characterId,
       )) {
         throw ArgumentError.value(assignment.characterId, 'characterId');
       }
-      if (!storyWorkspaceIds.containsKey(assignment.novelWorkspaceId)) {
+      // A Character assignment names the TARGET novel workspace (the same
+      // identifier links and projections use), not the legacy story id.
+      if (!uniqueTargets.contains(assignment.novelWorkspaceId)) {
         throw ArgumentError.value(
           assignment.novelWorkspaceId,
           'novelWorkspaceId',
           'not a mapped Story workspace',
         );
       }
-      if (!seenCharacters.add(assignment.characterId)) {
+      // BUG-3 (vs-hunt-20260914-workspaces): one character may legitimately
+      // be assigned to several novels; only the exact pair is a duplicate.
+      final pairKey =
+          '${assignment.novelWorkspaceId}\u0000${assignment.characterId}';
+      if (!seenPairs.add(pairKey)) {
         throw ArgumentError.value(
           assignment.characterId,
           'characterId',
           'duplicated assignment',
         );
       }
+      // BUG-4 (vs-hunt-20260914-workspaces): link ids join dash-containing
+      // identifiers, so 'a-b'+'c' and 'a'+'b-c' collide; preflight uniqueness.
+      final linkId =
+          'migration-${assignment.novelWorkspaceId}-${assignment.characterId}';
+      if (!seenLinkIds.add(linkId)) {
+        throw ArgumentError.value(
+          linkId,
+          'characterAssignments',
+          'duplicate deterministic link id',
+        );
+      }
+    }
+    // BUG-2 (vs-hunt-20260914-workspaces): a legacy tree with symlinked
+    // content could pull bytes from outside the package into migrated
+    // workspaces. Refuse before any backup or mutation.
+    final storiesRoot = Directory(
+      p.join(package.assetsDirectory.path, 'stories'),
+    );
+    final charactersRoot = Directory(
+      p.join(package.assetsDirectory.path, 'characters'),
+    );
+    for (final legacyStoryId in storyWorkspaceIds.keys) {
+      await _assertNoSymlinkedContent(
+        Directory(p.join(storiesRoot.path, legacyStoryId)),
+      );
+    }
+    for (final assignment in characterAssignments) {
+      await _assertNoSymlinkedContent(
+        Directory(p.join(charactersRoot.path, assignment.characterId)),
+      );
     }
 
     // Phase 2: pre-migration backup (manifest + db + assets + workspaces).
@@ -101,12 +149,7 @@ final class WorkspaceMigrationRunner {
     );
 
     // Phase 3: inventory legacy mixed storage from disk.
-    final storiesRoot = Directory(
-      p.join(package.assetsDirectory.path, 'stories'),
-    );
-    final charactersRoot = Directory(
-      p.join(package.assetsDirectory.path, 'characters'),
-    );
+    // (storiesRoot / charactersRoot were resolved during Phase 1 validation.)
     final inventoriedStories = await _listChildDirectories(storiesRoot);
     final inventoriedCharacters = await _listChildDirectories(charactersRoot);
     for (final assignment in characterAssignments) {
@@ -130,13 +173,14 @@ final class WorkspaceMigrationRunner {
       copiedStoryFiles += await _copyInto(source, target);
     }
     var copiedCharacterFiles = 0;
-    for (final assignment in characterAssignments) {
-      final source = Directory(
-        p.join(charactersRoot.path, assignment.characterId),
-      );
+    // One character may be linked to several novels; its legacy directory is
+    // copied once into its typed Character workspace.
+    for (final characterId
+        in characterAssignments.map((a) => a.characterId).toSet()) {
+      final source = Directory(p.join(charactersRoot.path, characterId));
       copiedCharacterFiles += await _copyInto(
         source,
-        _files.characterDirectory(assignment.characterId),
+        _files.characterDirectory(characterId),
       );
     }
 
@@ -193,6 +237,19 @@ final class WorkspaceMigrationRunner {
     );
   }
 
+  Future<void> _assertNoSymlinkedContent(Directory? root) async {
+    if (root == null || !await root.exists()) return;
+    await for (final entity in root.list(recursive: true, followLinks: false)) {
+      if (entity is Link) {
+        throw ArgumentError.value(
+          entity.path,
+          'legacy content',
+          'workspace migration refuses symlinked content',
+        );
+      }
+    }
+  }
+
   Future<List<String>> _listChildDirectories(Directory? parent) async {
     if (parent == null || !await parent.exists()) return const [];
     final names = <String>[];
@@ -206,7 +263,12 @@ final class WorkspaceMigrationRunner {
   Future<int> _copyInto(Directory? source, Directory target) async {
     if (source == null || !await source.exists()) return 0;
     var count = 0;
-    await for (final entity in source.list(recursive: true)) {
+    await for (final entity in source.list(
+      recursive: true,
+      followLinks: false,
+    )) {
+      // Never import link-resolved bytes; the preflight already refuses
+      // symlinked trees, this keeps the copy loop safe against races.
       if (entity is! File) continue;
       final relative = p.relative(entity.path, from: source.path);
       final destination = File(p.join(target.path, 'legacy', relative));
@@ -220,7 +282,10 @@ final class WorkspaceMigrationRunner {
   Future<bool> _verifyCopy(Directory source, Directory target) async {
     if (!await source.exists()) return true;
     var expected = 0;
-    await for (final entity in source.list(recursive: true)) {
+    await for (final entity in source.list(
+      recursive: true,
+      followLinks: false,
+    )) {
       if (entity is! File) continue;
       expected++;
       final relative = p.relative(entity.path, from: source.path);

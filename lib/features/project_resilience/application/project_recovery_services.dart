@@ -11,12 +11,24 @@ import '../../../database/project/project_database.dart';
 
 typedef ProcessLivenessProbe = Future<bool> Function(int processId);
 
+/// Identity probe: wall-clock start time (epoch ms) of the process that
+/// CURRENTLY holds [processId], or null when unknowable (vs-hunt-20260915-
+/// resilience BUG-3). Liveness alone cannot distinguish the recorded owner
+/// from an unrelated process that reused the PID; start time can, because a
+/// PID reborn AFTER the marker was written cannot be the marker's author.
+typedef ProcessStartProbe = Future<int?> Function(int processId);
+
 class ProjectSessionLock {
-  ProjectSessionLock(this.package, {ProcessLivenessProbe? isProcessAlive})
-    : _isProcessAlive = isProcessAlive ?? _platformProcessIsAlive;
+  ProjectSessionLock(
+    this.package, {
+    ProcessLivenessProbe? isProcessAlive,
+    ProcessStartProbe? processStartMs,
+  }) : _isProcessAlive = isProcessAlive ?? _platformProcessIsAlive,
+       _processStartMs = processStartMs ?? _platformProcessStartMs;
 
   final ProjectPackage package;
   final ProcessLivenessProbe _isProcessAlive;
+  final ProcessStartProbe _processStartMs;
   String? _ownedSessionId;
 
   Future<void> acquire({String? appVersion}) async {
@@ -47,6 +59,17 @@ class ProjectSessionLock {
     _ownedSessionId = sessionId;
   }
 
+  /// vs-hunt-20260915-resilience BUG-3 (REAL BUG, Critical): liveness PID
+  /// saja bukan bukti kepemilikan. Windows dapat mengembalikan sebuah PID ke
+  /// proses lain setelah pemilik marker mati; tanpa identitas start-time,
+  /// holder hasil reuse dianggap 'owner hidup' dan proyek terkunci selama
+  /// proses tak terkait itu hidup. Sebaliknya, holder yang terbukti DIMULAI
+  /// setelah marker ditulis tidak mungkin penulis marker itu — PID-nya
+  /// direbut, jadi recovery sah. Ambiguitas (probe gagal, waktu tak diketahui,
+  /// clock skew dalam [pidReuseGrace]) selalu berpihak pada pemilik:
+  /// fail-closed.
+  static const Duration pidReuseGrace = Duration(seconds: 60);
+
   Future<bool> _recoverDeadOwnerMarker() async {
     Map<String, dynamic> marker;
     try {
@@ -57,7 +80,11 @@ class ProjectSessionLock {
       return false;
     }
     final ownerPid = marker['processId'];
-    if (ownerPid is! int || ownerPid <= 0 || await _isProcessAlive(ownerPid)) {
+    if (ownerPid is! int || ownerPid <= 0) {
+      return false;
+    }
+    if (await _isProcessAlive(ownerPid) &&
+        !await _holderProvesPidReuse(marker['openedAt'], ownerPid)) {
       return false;
     }
 
@@ -95,6 +122,72 @@ class ProjectSessionLock {
     } on Object {
       // Probe failure must never displace an owner.
       return true;
+    }
+  }
+
+  /// True only when the OS proves the CURRENT holder of [ownerPid] started
+  /// strictly after the marker's `openedAt` (+ [pidReuseGrace]) — i.e. the
+  /// recorded PID was recycled by an unrelated process and the real owner is
+  /// gone. Unknown times, unparsable markers, and results inside the grace
+  /// window all return false so recovery stays fail-closed.
+  Future<bool> _holderProvesPidReuse(Object? rawOpenedAt, int ownerPid) async {
+    if (rawOpenedAt is! String) return false;
+    final openedAt = DateTime.tryParse(rawOpenedAt);
+    if (openedAt == null) return false;
+    int? startMs;
+    try {
+      startMs = await _processStartMs(ownerPid);
+    } on Object {
+      return false;
+    }
+    if (startMs == null) return false;
+    final threshold =
+        openedAt.toUtc().millisecondsSinceEpoch + pidReuseGrace.inMilliseconds;
+    // Clamp against the local clock: if the recorded write time is in the
+    // future (clock skew), the comparison proves nothing — protect.
+    if (openedAt.toUtc().millisecondsSinceEpoch >
+        DateTime.now().toUtc().millisecondsSinceEpoch) {
+      return false;
+    }
+    return startMs > threshold;
+  }
+
+  /// Platform start time (epoch ms) of the current holder of [processId],
+  /// or null when unknowable. Windows CIM `CreationDate` is local wall-clock
+  /// time with no UTC offset, so the rendered digits are parsed as local
+  /// before converting to epoch UTC; the format string is numeric-only
+  /// (no month names), so culture cannot garble the digits. Any failure
+  /// reports null — never a guess. Non-Windows hosts report null: this
+  /// session-lock failure mode is the Windows local-first path, and an
+  /// unknown identity must stay fail-closed like the legacy behavior.
+  static Future<int?> _platformProcessStartMs(int processId) async {
+    if (!Platform.isWindows) return null;
+    try {
+      final result = await Process.run('powershell.exe', [
+        '-NoProfile',
+        '-NonInteractive',
+        '-Command',
+        '\$ErrorActionPreference="SilentlyContinue";'
+            "(Get-CimInstance Win32_Process -Filter 'ProcessId=$processId')"
+            '.CreationDate.ToString("yyyyMMddHHmmss")',
+      ]);
+      if (result.exitCode != 0) return null;
+      final out = result.stdout.toString().trim();
+      final match = RegExp(
+        r'^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$',
+      ).firstMatch(out);
+      if (match == null) return null;
+      final local = DateTime(
+        int.parse(match.group(1)!),
+        int.parse(match.group(2)!),
+        int.parse(match.group(3)!),
+        int.parse(match.group(4)!),
+        int.parse(match.group(5)!),
+        int.parse(match.group(6)!),
+      );
+      return local.toUtc().millisecondsSinceEpoch;
+    } on Object {
+      return null;
     }
   }
 

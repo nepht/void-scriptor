@@ -140,9 +140,12 @@ void main() {
     final foreign = await ProjectPackageService(
       rootDirectory: root,
     ).create(name: 'Foreign');
+    // Live-owner fixture: openedAt must post-date the owner process start
+    // (see companion_guard test note) — a past stamp plus this PID reads as
+    // PID reuse under vs-hunt-20260915-resilience BUG-3.
     await foreign.sessionFile.writeAsString(
       '{"sessionId":"x","projectId":"${foreign.projectId}",'
-      '"processId":$pid,"openedAt":"2026-09-11T00:00:00.000Z"}',
+      '"processId":$pid,"openedAt":"${DateTime.now().toUtc().toIso8601String()}"}',
       flush: true,
     );
     await foreign.lockFile.writeAsString('owner marker', flush: true);

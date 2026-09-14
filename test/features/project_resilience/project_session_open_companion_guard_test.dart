@@ -23,10 +23,14 @@ void main() {
 
       // The live owner holds both markers; its recorded PID is this test
       // process, so dead-owner recovery must not touch the session marker.
+      // openedAt is written dynamically: a live owner can only stamp a time
+      // AFTER its own process started (a past-dated stamp plus a live PID is
+      // exactly the PID-reuse pattern vs-hunt-20260915-resilience BUG-3 must
+      // recover from, so a static past date would no longer prove ownership).
       await package.sessionFile.writeAsString(
         '{"sessionId":"owner-session","projectId":"${package.projectId}",'
         '"processId":$pid,'
-        '"openedAt":"2026-09-06T00:00:00.000Z"}',
+        '"openedAt":"${DateTime.now().toUtc().toIso8601String()}"}',
         flush: true,
       );
       await package.lockFile.writeAsString(

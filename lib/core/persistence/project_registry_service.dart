@@ -37,6 +37,50 @@ class ProjectRegistryService {
   final ProjectRecoveryService _recovery = const ProjectRecoveryService();
   final AsyncMutex _mutex = AsyncMutex();
 
+  /// Run313 incident forensics: append-only journal beside the registry
+  /// recording every durable mutation (op, payload id, resulting listing
+  /// size, timestamp, per-process instance nonce). The 5->1 prune with four
+  /// tombstoned ids in ~2s was never attributed — the UI delete path cannot
+  /// emit four removals that fast and pure-startup reproduction is clean —
+  /// so the next occurrence must name its actor itself: two racing instances
+  /// carry distinct nonces, and a stale full-listing `save` is visible as an
+  /// op that shrinks `after` without matching `remove` records. Best-effort:
+  /// a failed audit write must NEVER break the registry mutation itself.
+  static const String auditSuffix = '.audit.log';
+  static const int auditMaxLines = 500;
+  static final String _instanceNonce =
+      '$pid-${DateTime.now().microsecondsSinceEpoch.toRadixString(16)}';
+
+  Future<void> _appendAudit(String op, int after, {String? id}) async {
+    try {
+      final journal = File('${(await _registryFile).path}$auditSuffix');
+      final record = <String, Object?>{
+        'ts': DateTime.now().toUtc().toIso8601String(),
+        'instance': _instanceNonce,
+        'op': op,
+        if (id != null) 'id': id,
+        'after': after,
+      };
+      await journal.writeAsString(
+        '${jsonEncode(record)}\n',
+        mode: FileMode.append,
+        flush: true,
+      );
+      // Bound growth: rewrite (keeping the newest records) only once the
+      // journal actually exceeds the cap, so the common path is a single
+      // cheap append instead of an O(n) rewrite per mutation.
+      final lines = await journal.readAsLines();
+      if (lines.length > auditMaxLines) {
+        await journal.writeAsString(
+          '${lines.sublist(lines.length - auditMaxLines).join('\n')}\n',
+          flush: true,
+        );
+      }
+    } on Object {
+      // Forensics must never block or reverse a durable registry mutation.
+    }
+  }
+
   Future<File> get _registryFile async {
     final configuredPaths = paths;
     final configuredFile = file;
@@ -314,6 +358,7 @@ class ProjectRegistryService {
       target: file,
       content: '${const JsonEncoder.withIndent('  ').convert(json)}\n',
     );
+    await _appendAudit('save', projects.length);
     // run197 BUG-19: a persisted listing that still contains a previously
     // removed id supersedes the deletion intent (re-creating under the same
     // id is a newer decision). Best-effort: a stale tombstone only filters
@@ -347,6 +392,7 @@ class ProjectRegistryService {
       projects[index] = project;
     }
     await _saveUnlocked(projects);
+    await _appendAudit('upsert', projects.length, id: project.id);
     // The crash window (package finished, registration pending) closes
     // here: only after the registration is durable is the creation
     // marker consumed. A crash before the save leaves the marker for
@@ -382,9 +428,11 @@ class ProjectRegistryService {
       flush: true,
     );
     try {
-      await _saveUnlocked(
-        (await _loadUnlocked()).where((item) => item.id != projectId).toList(),
-      );
+      final remaining = (await _loadUnlocked())
+          .where((item) => item.id != projectId)
+          .toList();
+      await _saveUnlocked(remaining);
+      await _appendAudit('remove', remaining.length, id: projectId);
     } on Object {
       // The registry rewrite failed loudly; do not leave a tombstone that
       // hides a project the registry still lists. The compensation itself

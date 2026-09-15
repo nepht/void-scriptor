@@ -1,3 +1,10 @@
+### 2026-09-15 - nephthys (interaktif): KEPUTUSAN CHOI — 145.30 diterima DEFERRED (hardware-bound), stream corrective_core_mvp dijeda; sequential_expansion DIAMBIL ALIH jadi stream aktif mulai 111.21
+
+- Keputusan Choi (verbatim): "Ok tutup dan menerima defer 145.30 kemudian lanjutka stream yang dihentikan mulai 111.21". Ini override eksplisit atas resume_condition exit_gate di pointer suspended_streams.
+- Konsekuensi: 145.30 TETAP PARTIAL hardware-bound, dicatat DEFERRED di ROADMAP_STATE.json (deferred_streams.corrective_core_mvp) — BUKAN dinaikkan, BUKAN difabrikasi. Sisa acceptance: power-loss nyata + USB cold-eject lanjutan (butuh tangan Choi). Antrean bug hunt-20260915 sudah HABIS (run323-327); tidak ada slice cron baru di stream ini sampai Choi buka kembali.
+- Stream aktif = sequential_expansion, Sprint 111, resume step 111.21 (Ownership Lineage & Historical Events; acceptance canonical: ownership_periods, custody, transfer_events, loss_and_recovery, location_history, provenance). Baseline: 111.20 VERIFIED-LOCAL fddae18; ledger docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md.
+- Implikasi worker cron v4: pembacaan ledger per-run mengikuti `next_step` baru; NO-OP 145.30 tidak lagi relevan selama stream aktif = sequential_expansion. Push: TIDAK dilakukan di commit ini (keputusan push milik Choi; backlog ahead bertambah 1 docs commit).
+
 ### 2026-09-15 - nephthys (cron run327): vs-hunt-20260915-resilience BUG-9 (Low) ditutup TDD — `compare` pakai kesamaan JSON struktural; antrean hunt run320 HABIS
 
 - Preflight: guard PASS exit 0 (recommended_step 145.30, canonical sha 86af6a53, stream corrective_core_mvp ACTIVE, stability gate PASS). HEAD masuk 9b8c353 (ahead 16); conflict markers nihil; nol proses flutter_tester/dart.exe; 10 untracked artefak terprovenance dipreservasi; satu writer (cron v4 ini sendiri).

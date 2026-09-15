@@ -28,8 +28,8 @@
   "active_sprint": 111,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_111.json",
   "active_ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
-  "last_verified_step": "111.21 VERIFIED-LOCAL (Ownership Lineage; 56/56 fokus, regresi 1274/1274, analyzer bersih, guard PASS)",
-  "next_step": "111.22",
+  "last_verified_step": "111.22",
+  "next_step": "111.23",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-15",
-  "updated_by": "nephthys-interactive (keputusan Choi 15 Sep)",
+  "updated_by": "nephthys-cron run362",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -156,8 +156,8 @@
     "confirmed": "BUG-004 Medium: timeline_workspace_screen _moveClip clamp(0.0, negative maxStart) throw ArgumentError; reachabel via ensureTimelineForScene beat-duration tanpa validasi silang",
     "dismissed": "BUG-001 (fromRecord baca payload bukan undoPayload), BUG-002 (validateTimeline tanpa caller produksi; desain gap), BUG-003 (command-id vs relation-id namespace sengaja), BUG-005 (action track dijamin transaksi yang sama)",
     "delegation_note": "Skeptic delegate GAGAL 2x HTTP 429 (pin gemini/gemini-3.5-flash-lite habis, preseden run260). Butuh Choi: pulihkan/cabut pin delegation untuk rantai 3-tahap penuh.",
-    "cosmetic_debt": "undoPayload MoveTimelineClipCommand memakai key 'startSeconds' tak pernah dikonsumsi \u2014 bukan bug, jangan di-escalate sebagai defect",
-    "next_unscanned_regions": "features/projects (10 file/1037 baris) atau features/world (34 file \u2014 wajib dipecah <=20)",
+    "cosmetic_debt": "undoPayload MoveTimelineClipCommand memakai key 'startSeconds' tak pernah dikonsumsi — bukan bug, jangan di-escalate sebagai defect",
+    "next_unscanned_regions": "features/projects (10 file/1037 baris) atau features/world (34 file — wajib dipecah <=20)",
     "sibling_dirty_fingerprint": {
       "story_dao": "12a3e5f65c60",
       "project_database": "bb9d67697642",
@@ -189,7 +189,7 @@
     "status": "hunt COMPLETE (VERIFIED scan-only, rantai 3-tahap penuh LULUS) + REF-BUG-1 fixed bf05986; QUEUE: REF-BUG-3 kecil + REF-BUG-2 butuh keputusan routing",
     "hunt": "docs/evidence/vs-hunt-20260913-references/ (10 file scope, sha256+HEAD da2df61, hunter/skeptic/referee reports on-disk)",
     "confirmed": "REF-BUG-1 Medium FIXED (replaceFile FileSystemException file hilang + saveVersion sebelum copy); REF-BUG-2 Medium non-production (unrouted screen, no toggle method exists); REF-BUG-3 Low import dialog silent-empty reachable via library screen",
-    "delegation_note": "pin gemini flash-lite LULUS 3 stage beruntun (references + loadout era yang sama) \u2014 era kuota sehat, jangan cabut pin",
+    "delegation_note": "pin gemini flash-lite LULUS 3 stage beruntun (references + loadout era yang sama) — era kuota sehat, jangan cabut pin",
     "sibling_dirty_fingerprint": "character/story 4 file M + 2 test untracked journal lifecycle mtime 08:41-08:52 direservasi tanpa sentuh",
     "next_unscanned_regions": "features/inspector (9 file) atau features/settings shell (cek overlap run260)"
   },
@@ -207,7 +207,7 @@
     "confirmed": "DB-BUG-01 Medium getAllAssets in-memory scan di DashboardRepository; DB-BUG-03 Medium session-null Create Character -> /studio shell mati (FIXED, navigasi ke /projects per kontrak shell); DB-BUG-04 Low RecentAssets hardcoded = DEAD CODE nol importer (hapus/rewire terpisah); DB-BUG-07 Low statistik error tanpa retry; DB-BUG-08 Low raw $error auth UI",
     "dismissed": "BUG-02 (Riverpod FutureProvider auto AsyncValue.error), BUG-05 (stub donasi jujur = by-design deferred payment), BUG-06 (sort list kecil di build = negligible), BUG-09 (errorBuilder thumbnail menangani file error)",
     "evidence": "RED dashboard_create_character_no_session_test Actual '/studio' -> GREEN; fokus 1 PASS; test/features/dashboard 13 PASS; shell+routing 69 PASS; analyze No issues; build windows debug 64,5s; guard PASS",
-    "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) \u2014 cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
+    "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run301",
   "note": "run322 (cron): 145.42 interrupted-export LITERAL_PASS via kill OS nyata TANPA perubahan produksi (jalur staging .tmp + verifikasi + rename atomik lama sudah literal-safe; corpse parsial dimakan retry lintas-proses, bukti test-only + region 238 PASS/1 skip, analyze bersih, build win debug PASS). interrupted_* 145.42 TUTUP SEMUA (move/restore/import/export). Sisa 145.42 murni hardware-bound (power-loss nyata, USB cold-eject = tangan Choi). 145.27 sudah VERIFIED run321 - tidak diulang. Pointer guard tetap 145.30. Push TIDAK (keputusan Choi; ahead 8 pasca commit closeout). Run sebelumnya (run321): claim sentinel import + rekonsiliasi 145.27 VERIFIED. | 2026-09-15 switch stream: corrective_core_mvp DEFERRED di 145.30 (keputusan Choi), sequential_expansion AKTIF resume dari 111.21.",
@@ -411,7 +411,7 @@
       "status": "DEFERRED",
       "deferred_step": "145.30",
       "deferred_on": "2026-09-15",
-      "authority": "KEPUTUSAN CHOI 15 Sep: 'terima defer 145.30' \u2014 145.30 tetap PARTIAL hardware-bound (power-loss nyata + USB cold-eject lanjutan butuh tangan Choi); BUG queue hunt-20260915 HABIS; JANGAN fabrikasi slice; resume atas perintah Choi",
+      "authority": "KEPUTUSAN CHOI 15 Sep: 'terima defer 145.30' — 145.30 tetap PARTIAL hardware-bound (power-loss nyata + USB cold-eject lanjutan butuh tangan Choi); BUG queue hunt-20260915 HABIS; JANGAN fabrikasi slice; resume atas perintah Choi",
       "state_at_defer": {
         "last_verified_step": "145.29 (ledger): 145.27 newly VERIFIED run317 with six Core + deferred route gating 46/46 PASS; 145.28 Writing Room Focus and 145.29 Lore Linking and Search were already VERIFIED in the canonical ledger. Separate 145.42 three-file process-kill matrix bundle 7/7 PASS.",
         "head": "719043a",
@@ -429,5 +429,15 @@
     "resumed_on": "2026-09-15",
     "authority": "KEPUTUSAN CHOI 15 Sep override resume_condition exit_gate (145.30 diterima DEFERRED hardware-bound)",
     "last_completed_step": "111.20 VERIFIED-LOCAL (commit fddae18, 2026-09-01)"
+  },
+  "activation_rules_11122_run362": {
+    "status": "VERIFIED-LOCAL",
+    "scope": "sprint 111.22 Activation, Cost, Curse & Limitation Rules (domain-only, 7 acceptance canonical)",
+    "files": [
+      "lib/features/world_logic/domain/encyclopedia_activation_rules.dart",
+      "test/features/world_logic/domain/encyclopedia_activation_rules_test.dart"
+    ],
+    "evidence": "RED compile fail -> GREEN fokus 51/51; regresi world_logic+simulation+feature_flags 1325/1325; dart format 0 changed; dart analyze scoped No issues; git diff --check PASS; flutter build windows --debug PASS 42.0s; roadmap guard PASS",
+    "note": "111.21 diintegrasikan sesi interaktif (ce48720) dan diverifikasi independen cron run362: fokus 56/56, regresi 1274/1274 saat itu. Run362 juga menyelesaikan half-committed wave: file domain/test 111.21 untracked padahal ledger VERIFIED-LOCAL ter-commit di b3bab44 - commit ce48720 oleh penulis interaktif mendarat lebih dulu; cron tidak mengadopsi ulang."
   }
 }

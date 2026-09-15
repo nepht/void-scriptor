@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:void_scriptor/database/project/project_database.dart'
+    show ProjectDatabase;
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/bible/application/canon_rule_repository.dart';
 import 'package:void_scriptor/features/bible/domain/canon_rule.dart';
@@ -44,7 +46,7 @@ void main() {
       second,
     ).conditionsFor('rule-1');
 
-    expect(second.schemaVersion, 61);
+    expect(second.schemaVersion, ProjectDatabase.currentSchemaVersion);
     expect(rules.single.scope, CanonRuleScope.powerSystem);
     expect(rules.single.scopeTargetId, 'power-void-black');
     expect(conditions.single.validatorType, CanonValidatorType.forbiddenValue);

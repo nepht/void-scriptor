@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:void_scriptor/database/project/project_database.dart'
+    show ProjectDatabase;
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/bible/application/bible_repository.dart';
 import 'package:void_scriptor/features/bible/domain/bible_entry.dart';
@@ -34,7 +36,7 @@ void main() {
     addTearDown(second.close);
     final entries = await BibleRepository(second).listEntries('project-1');
 
-    expect(second.schemaVersion, 61);
+    expect(second.schemaVersion, ProjectDatabase.currentSchemaVersion);
     expect(entries.single.title, 'Clan Kokuen');
     expect(entries.single.type, BibleEntryType.faction);
     expect(entries.single.tags, ['clan', 'void']);

@@ -151,7 +151,10 @@ void main() {
       expect(rows.single.orderIndex, 3);
       expect(rows.single.imagePath, '');
       final version = await db.customSelect('PRAGMA user_version').get();
-      expect(version.single.data['user_version'], 61);
+      expect(
+        version.single.data['user_version'],
+        ProjectDatabase.currentSchemaVersion,
+      );
     },
   );
 }

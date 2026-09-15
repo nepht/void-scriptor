@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:void_scriptor/database/project/project_database.dart'
+    show ProjectDatabase;
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/bible/application/bible_timeline_repository.dart';
 import 'package:void_scriptor/features/bible/domain/historical_event.dart';
@@ -60,7 +62,7 @@ void main() {
       final eras = await reopened.listEras('project-1');
       final participants = await reopened.participantsFor('event-1');
 
-      expect(second.schemaVersion, 61);
+      expect(second.schemaVersion, ProjectDatabase.currentSchemaVersion);
       expect(eras.single.name, 'Neo Era');
       expect(participants.single.role, 'survivor');
       expect(participants.single.assetId, 'reika-1');

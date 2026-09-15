@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:void_scriptor/database/project/project_database.dart'
+    show ProjectDatabase;
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/bible/application/worldbuilding_repository.dart';
 import 'package:void_scriptor/features/bible/domain/power_system.dart';
@@ -58,7 +60,7 @@ void main() {
     final power = await reopened.getPowerSystem('power-1');
     final abilities = await reopened.abilitiesFor('power-1');
 
-    expect(second.schemaVersion, 61);
+    expect(second.schemaVersion, ProjectDatabase.currentSchemaVersion);
     expect(species?.origin, 'The Abyss');
     expect(power?.source, 'Abyssal');
     expect(abilities.single.name, 'Void Blade');

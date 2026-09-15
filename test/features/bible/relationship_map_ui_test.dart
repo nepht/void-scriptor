@@ -110,6 +110,70 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+    'RELATIONSHIP MAP creates and deletes an edge without deleting characters',
+    (tester) async {
+      final session = await seed(tester, 'edit');
+      await tester.runAsync(() async {
+        final paths = ProjectPaths(rootDirectory: session.package.root);
+        await CreateCharacterService(
+          database: session.database,
+          paths: paths,
+        ).create(projectId: session.manifest.id, name: 'Raka');
+        await CreateCharacterService(
+          database: session.database,
+          paths: paths,
+        ).create(projectId: session.manifest.id, name: 'Sinta');
+      });
+
+      await pumpBible(tester, session);
+      expect(find.widgetWithText(FilledButton, 'Add Relation'), findsOneWidget);
+
+      await tester.tap(find.widgetWithText(FilledButton, 'Add Relation'));
+      await tester.pumpAndSettle();
+      expect(find.text('Create Relationship'), findsOneWidget);
+
+      final dropdowns = find.byType(DropdownButtonFormField<String>);
+      expect(dropdowns, findsNWidgets(3));
+      await tester.tap(dropdowns.at(0));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Raka').last);
+      await tester.pumpAndSettle();
+      await tester.tap(dropdowns.at(1));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Sinta').last);
+      await tester.pumpAndSettle();
+      await tester.tap(dropdowns.at(2));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('ally_of').last);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.widgetWithText(FilledButton, 'Create Relation'));
+      await tester.pumpAndSettle();
+      expect(find.text('Raka'), findsOneWidget);
+      expect(find.text('Sinta'), findsOneWidget);
+      expect(find.text('ally_of'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Delete relation'));
+      await tester.pumpAndSettle();
+      expect(find.text('Delete relation?'), findsOneWidget);
+      await tester.tap(find.widgetWithText(FilledButton, 'Delete relation'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Belum ada relasi karakter'), findsOneWidget);
+      await tester.runAsync(() async {
+        final characters = await session.database.characterDao.getAllCharacters(
+          session.manifest.id,
+        );
+        expect(
+          characters.map((entry) => entry.displayName),
+          containsAll(['Raka', 'Sinta']),
+        );
+      });
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('RELATIONSHIP MAP renders at narrow width without overflow', (
     tester,
   ) async {

@@ -13,7 +13,10 @@ import '../application/create_faction_service.dart';
 import '../application/faction_repository.dart';
 import '../domain/timeline_era.dart';
 import '../domain/faction.dart';
+import '../../assets/domain/asset_relation_type.dart';
 import '../../relations/application/character_relation_map_service.dart';
+import '../../relations/application/relation_command.dart';
+import '../../relations/data/relation_repository_impl.dart';
 
 const _projectBibleSections = <String>[
   'Universe Overview',
@@ -716,6 +719,15 @@ class _RelationMapSectionState extends ConsumerState<_RelationMapSection> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: FilledButton.icon(
+              onPressed: _createRelation,
+              icon: const Icon(Icons.add, size: 18),
+              label: const Text('Add Relation'),
+            ),
+          ),
+          const SizedBox(height: 12),
           if (entries == null)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 8),
@@ -727,20 +739,103 @@ class _RelationMapSectionState extends ConsumerState<_RelationMapSection> {
             for (final entry in entries)
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: _RelationMapCard(entry: entry, narrow: narrow),
+                child: _RelationMapCard(
+                  entry: entry,
+                  narrow: narrow,
+                  onDelete: () => _deleteRelation(entry),
+                ),
               ),
           ],
         ],
       ),
     );
   }
+
+  Future<void> _createRelation() async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null) return;
+    final projectId = session.manifest.id;
+    final characters = await session.database.characterDao.getAllCharacters(
+      projectId,
+    );
+    if (!mounted) return;
+    final result = await showDialog<(String, String, AssetRelationType)>(
+      context: context,
+      builder: (dialogContext) =>
+          _CreateRelationshipDialog(characters: characters),
+    );
+    if (result == null || !mounted) return;
+    final current = ref.read(projectSessionProvider).valueOrNull;
+    if (current == null ||
+        current.manifest.id != projectId ||
+        !identical(current.database, session.database)) {
+      return;
+    }
+    final repository = RelationRepositoryImpl(database: session.database);
+    await session.mutationRuntime.bus.execute(
+      RelationCommand.create(
+        id: 'relation.create:${result.$1}:${DateTime.now().microsecondsSinceEpoch}',
+        projectId: projectId,
+        repository: repository,
+        sourceAssetId: result.$1,
+        targetAssetId: result.$2,
+        type: result.$3,
+      ),
+    );
+    await _reload();
+  }
+
+  Future<void> _deleteRelation(CharacterRelationMapEntry entry) async {
+    final confirmed =
+        await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            title: const Text('Delete relation?'),
+            content: Text(
+              'This removes only the relation between ${entry.sourceName} and '
+              '${entry.targetName}. The characters will not be deleted.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(dialogContext, true),
+                child: const Text('Delete relation'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+    if (!confirmed || !mounted) return;
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null) return;
+    final repository = RelationRepositoryImpl(database: session.database);
+    final relation = await repository.getById(entry.relationId);
+    if (relation == null || relation.projectId != session.manifest.id) return;
+    await session.mutationRuntime.bus.execute(
+      RelationCommand.delete(
+        id: 'relation.delete:${entry.relationId}:${DateTime.now().microsecondsSinceEpoch}',
+        projectId: session.manifest.id,
+        repository: repository,
+        relation: relation,
+      ),
+    );
+    await _reload();
+  }
 }
 
 class _RelationMapCard extends StatelessWidget {
-  const _RelationMapCard({required this.entry, required this.narrow});
+  const _RelationMapCard({
+    required this.entry,
+    required this.narrow,
+    required this.onDelete,
+  });
 
   final CharacterRelationMapEntry entry;
   final bool narrow;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -790,10 +885,105 @@ class _RelationMapCard extends StatelessWidget {
               ],
             ),
           ),
+          IconButton(
+            tooltip: 'Delete relation',
+            onPressed: onDelete,
+            icon: const Icon(Icons.delete_outline),
+          ),
         ],
       ),
     );
   }
+}
+
+class _CreateRelationshipDialog extends StatefulWidget {
+  const _CreateRelationshipDialog({required this.characters});
+
+  final List<Character> characters;
+
+  @override
+  State<_CreateRelationshipDialog> createState() =>
+      _CreateRelationshipDialogState();
+}
+
+class _CreateRelationshipDialogState extends State<_CreateRelationshipDialog> {
+  String? _sourceId;
+  String? _targetId;
+  AssetRelationType _type = AssetRelationType.relatedTo;
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: const Text('Create Relationship'),
+    content: SizedBox(
+      width: 440,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          DropdownButtonFormField<String>(
+            initialValue: _sourceId,
+            isExpanded: true,
+            decoration: const InputDecoration(labelText: 'Source character'),
+            items: _characterItems(),
+            onChanged: (value) => setState(() => _sourceId = value),
+          ),
+          const SizedBox(height: 12),
+          DropdownButtonFormField<String>(
+            initialValue: _targetId,
+            isExpanded: true,
+            decoration: const InputDecoration(labelText: 'Target character'),
+            items: _characterItems(),
+            onChanged: (value) => setState(() => _targetId = value),
+          ),
+          const SizedBox(height: 12),
+          DropdownButtonFormField<String>(
+            initialValue: _type.value,
+            isExpanded: true,
+            decoration: const InputDecoration(labelText: 'Relationship type'),
+            items: AssetRelationType.values
+                .map(
+                  (type) => DropdownMenuItem<String>(
+                    value: type.value,
+                    child: Text(type.value),
+                  ),
+                )
+                .toList(growable: false),
+            onChanged: (value) {
+              if (value == null) return;
+              setState(() {
+                _type = AssetRelationType.values.firstWhere(
+                  (candidate) => candidate.value == value,
+                );
+              });
+            },
+          ),
+        ],
+      ),
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: const Text('Cancel'),
+      ),
+      FilledButton(
+        onPressed: _canSubmit
+            ? () => Navigator.pop(context, (_sourceId!, _targetId!, _type))
+            : null,
+        child: const Text('Create Relation'),
+      ),
+    ],
+  );
+
+  bool get _canSubmit =>
+      _sourceId != null && _targetId != null && _sourceId != _targetId;
+
+  List<DropdownMenuItem<String>> _characterItems() => widget.characters
+      .map(
+        (character) => DropdownMenuItem<String>(
+          value: character.assetId,
+          child: Text(character.displayName),
+        ),
+      )
+      .toList(growable: false);
 }
 
 class _BibleCard extends StatelessWidget {

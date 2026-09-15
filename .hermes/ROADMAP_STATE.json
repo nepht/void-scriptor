@@ -28,8 +28,8 @@
   "active_sprint": 111,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_111.json",
   "active_ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
-  "last_verified_step": "111.26",
-  "next_step": "111.27",
+  "last_verified_step": "111.27",
+  "next_step": "111.28",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",

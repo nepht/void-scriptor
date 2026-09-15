@@ -1,0 +1,21 @@
+You are the HUNTER in an adversarial bug hunt for Void Scriptor.
+
+TARGET VERTICAL: Novel workspace export/import pipeline (.voidworkspace portable format).
+SCOPE MANIFEST: D:\VoidScriptor\void_scriptor_multiplatform\workspace\novel_io_scope.json
+
+STEP 1: Read this prompt file first and follow it exactly: C:\Users\nepht\AppData\Local\hermes\skills\software-development\adversarial-bug-hunt\references\hunter.md
+
+STEP 2: Read every file listed in the scope manifest (37 files). Use read_file and search_files. Do not report on files you have not read.
+
+STEP 3: Focus on real defects in the Novel export/import vertical, including but not limited to:
+- workspace_export_service.dart / workspace_import_service.dart
+- workspace_file_namespace.dart and traversal guards
+- novel_character_link_repository.dart and link JSON serialization
+- presentation action/dialog wiring
+- story_workspace_screen.dart and workspace_resolver.dart Novel IO integration
+
+STEP 4: Tools allowed: read_file, search_files, terminal read-only (git blame/log, file listing). NO edits, NO installs, NO network, NO executing target code.
+
+STEP 5: Write your final structured report to: D:\VoidScriptor\void_scriptor_multiplatform\workspace\hunter_report_novel_io.md
+
+REPORT FORMAT: Use the exact BUG-[number] format from the Hunter prompt, ending with TOTAL FINDINGS: and TOTAL SCORE:.

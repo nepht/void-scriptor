@@ -1,0 +1,21 @@
+You are the SKEPTIC in an adversarial bug hunt for Void Scriptor.
+
+INPUT REPORT (from the Hunter, 21 findings): D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260912-autosave\hunter_report_autosave.md
+
+STEP 1: Read this prompt file first and follow it exactly: C:\Users\nepht\AppData\Local\hermes\skills\software-development\adversarial-bug-hunt\references\skeptic.md
+
+STEP 2: Read the Hunter report in full, then read the actual code under suspicion (HEAD 4d905ed):
+- lib/features/story/application/durable_autosave_coordinator.dart
+- lib/features/story/domain/draft_snapshots.dart
+- lib/features/project_resilience/application/durable_draft_journal.dart
+- lib/features/story/data/story_repository_impl.dart
+- lib/database/project/daos/story_dao.dart
+- lib/database/project/tables/scene_draft_snapshots.dart
+You may also read callers/tests read-only (story_workspace_screen.dart, workspace_resolver.dart, test/features/story + project_resilience) to check whether a claimed race/path is reachable in production wiring — several Hunter claims (e.g. BUG-15 never wired, BUG-19 close() never called) hinge on callsite evidence, so grep the callsites before dismissing or accepting.
+
+STEP 3: Challenge EVERY BUG-1..BUG-21 individually with the exact skeptic.md output format (Counter-argument / Evidence / Confidence / Risk calc / Decision). Calculate EV per the prompt; only DISPROVE above 67% confidence.
+
+STEP 4: Tools allowed: read_file, search_files, terminal read-only (git grep/blame/log, file listing). NO edits to any file except your own report, NO installs, NO network, NO executing target code. Other agents work in this repo — touch NOTHING that writes besides the report path below.
+
+STEP 5: Write your full per-bug verdicts to: D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260912-autosave\skeptic_report_autosave.md
+End with the SUMMARY block and ACCEPTED BUG LIST exactly as skeptic.md requires.

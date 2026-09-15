@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "case_id": "website_source_reconciliation",
+  "status": "VERIFIED(read-only)",
+  "date": "2026-09-08T21:15:00+07:00",
+  "run": "cron run143 nephthys",
+  "authority": "HERMES_WEBSITE_DOWNLOAD_HANDOFF_2026-09-08.md (langkah 1-2: identitas + rekonsiliasi sumber, tanpa deploy)",
+  "questions": {
+    "live_identity": "Project Pages mana yang melayani voidscriptor.pages.dev?",
+    "live_source": "Di mana checkout sumber live?",
+    "candidate_status": "Apakah D:\\Hermes_Storage\\void-scriptor-website-source-v1 adalah sumber live?"
+  },
+  "findings": {
+    "live_identity": {
+      "project_name": "voidscriptor",
+      "subdomain": "voidscriptor.pages.dev",
+      "domains": ["voidscriptor.pages.dev"],
+      "production_branch": "main",
+      "source_type": "direct_upload (API: source.type == null; TIDAK ada repo git terhubung)",
+      "latest_production_deployment": "c35422bf-51d3-469c-87d8-aea9e7f0089d (~2 minggu lalu, branch main)",
+      "deployments_seen": ["c35422bf (b33ab06)", "7300223c (84285b7)", "b9dacebb (84285b7)"],
+      "note_source_sha": "Label 'Source b33ab06/84285b7' pada direct upload BUKAN SHA git yang dapat di-checkout; tidak ada repo sumber yang dapat dilacak dari API.",
+      "auth": "wrangler 4.129.1 OAuth refresh BERFUNGSI; whoami + pages project/deployment list + REST GET project sukses (read-only)."
+    },
+    "live_content": {
+      "probe": "GET https://voidscriptor.pages.dev/ -> HTTP 200, 29013 bytes (disimpan saat run; bukan mirror permanen)",
+      "markers": ["data-i18n (i18n id/EN: btn-id, btn-en, btn-masuk, btn-daftar, flagship, foot-brand, ...)",
+        "notice download: 'Installer akan tersedia pada rilis publik.'",
+        "produk: Void Scriptor Studio, Qowner Quiz Maker"],
+      "conclusion": "Live adalah generasi website yang lebih baru dari kandidat v1."
+    },
+    "candidate_v1": {
+      "path": "D:\\Hermes_Storage\\void-scriptor-website-source-v1",
+      "created": "2026-08-24 00:25 WIB (mtime file inti)",
+      "stack": "vinext/Next 16.2.6 + React 19 + Tailwind 4 + wrangler 4.92 (devDependencies), node >=22.13",
+      "git": "BUKAN repo git; tidak ada provenance commit",
+      "mismatch_vs_live": [
+        "0 kemunculan 'data-i18n' di app/page.tsx (live: puluhan)",
+        "0 kemunculan 'Installer' (live: notice 'Installer akan tersedia pada rilis publik.')",
+        "notice kandidat: showDownloadNotice -> '<product> akan tersedia pada rilis publik.'"
+      ],
+      "verdict": "BUKAN checkout sumber live; snapshot pra-deploy 2026-08-24 (live ter-deploy ~2026-08-25)"
+    },
+    "other_candidates_ruled_out": [
+      "D:\\Hermes_Storage\\void-scriptor-website-source-v1.0.0.zip = salinan identik direktori v1 (page.tsx sama, 0 data-i18n/Installer) - bukan sumber berbeda",
+      "C:\\Users\\nepht\\void-scriptor-site = direktori statis (sketsa HTML + build Flutter Web site/app/main.dart.js) - bukan Next.js live",
+      "D:\\VoidScriptor dan D:\\DevTools: tidak ada checkout website",
+      "GitHub API (nepht, nephthyssilentz) dan GitLab API (user id 42016962): tidak ada repo website publik"
+    ],
+    "cache_forensics": "npm-cache kandidat hanya memuat log 'npm exec wrangler' milik run142 sendiri (20:36-20:40 WIB: whoami, pages project list, r2 bucket list, pages deployment list) - BUKAN aktivitas penulis ketiga."
+  },
+  "implications": [
+    "Satu-satunya sumber live terverifikasi = artefak deployment c35422bf itu sendiri (bisa diunduh via dashboard Cloudflare / REST download deployment).",
+    "Edit berkelanjutan website memerlukan keputusan Choi (produk, bukan cron): (A) rekonsiliasi sumber dari deployment live sebagai basis, atau (B) mendeklarasikan kandidat v1 sebagai basis baru dengan konsekuensi menimpa konten live (kehilangan i18n id/EN + notice baru) kecuali di-merge manual.",
+    "Tidak ada deploy dilakukan run ini; tidak ada file website yang diubah."
+  ],
+  "commands": [
+    "curl -sS https://voidscriptor.pages.dev/ (HTTP 200, 29013 bytes)",
+    "npx wrangler@4.129.1 whoami | pages deployment list --project-name voidscriptor",
+    "REST GET /accounts/a5ffcf...27f/pages/projects/voidscriptor (token wrangler lokal, GET saja, tidak dicetak)",
+    "grep data-i18n / Installer pada app/page.tsx kandidat vs live-root.html",
+    "git rev-parse (kandidat: bukan repo); zip listing python zipfile"
+  ],
+  "limitations": "Konten live hanya diprobe root HTML (bukan seluruh aset); deployment download belum diambil (menunggu keputusan basis).",
+  "next_action": "Keputusan Choi: basis sumber website (A live-deployment vs B kandidat v1) + izin deploy Preview; setelah itu struktur download dan wiring tombol bisa dikerjakan pada checkout yang disepakati."
+}

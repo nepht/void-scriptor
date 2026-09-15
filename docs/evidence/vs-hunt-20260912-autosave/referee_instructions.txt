@@ -1,0 +1,25 @@
+You are the REFEREE in an adversarial bug hunt for Void Scriptor.
+
+INPUTS (read both in full):
+- Hunter report: D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260912-autosave\hunter_report_autosave.md (21 findings, TOTAL SCORE 113)
+- Skeptic report: D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260912-autosave\skeptic_report_autosave.md
+
+STEP 1: Read this prompt file first and follow it exactly: C:\Users\nepht\AppData\Local\hermes\skills\software-development\adversarial-bug-hunt\references\referee.md
+
+STEP 2: For every BUG-1..BUG-21, adjudicate between Hunter and Skeptic by reading the REAL code at HEAD 4d905ed yourself (never decide on rhetoric):
+- lib/features/story/application/durable_autosave_coordinator.dart
+- lib/features/story/domain/draft_snapshots.dart
+- lib/features/project_resilience/application/durable_draft_journal.dart
+- lib/features/story/data/story_repository_impl.dart
+- lib/database/project/daos/story_dao.dart
+- lib/database/project/tables/scene_draft_snapshots.dart
+plus callsites (story_workspace_screen.dart, workspace_resolver.dart) and existing tests under test/features/story and test/features/project_resilience.
+
+STEP 3: Produce the FINAL adjudication per the referee.md format, and for each REAL bug add a fix-queue entry with: severity, reproduction sketch (what a RED test would assert), and the smallest owning file(s).
+HEAD CONTEXT: Hunter and Skeptic scanned at 4d905ed; the 6 scoped files are byte-identical through current HEAD 86a96da (verified via git diff --stat), so findings stay valid — but note that the project_resilience restore wiring (feat 321de25, run251) is now COMMITTED, so the former sibling-WIP hold is lifted; do not mark entries DEFER-WIP for those files anymore, instead check whether the new committed wiring changes reachability of any finding (e.g. BUG-6/BUG-19/BUG-20 around journal drain and restore).
+Pay special attention to the Skeptic's DISPROVE reasons that lean on production wiring (BUG-7, BUG-11, BUG-12 'store not used in production') cross-checked against the Hunter's BUG-15 ('automatic_snapshot never wired'): if the store/journal truly has no production caller, several findings change severity — adjudicate reachability with callsite evidence, and state clearly which claims you verified against current HEAD.
+
+STEP 4: Tools allowed: read_file, search_files, terminal read-only. NO edits except your own report, NO network, NO executing target code.
+
+STEP 5: Write your final report to: D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260912-autosave\referee_report_autosave.md
+End with REAL / NOT A BUG / DEFER-WIP lists and a total confirmed score.

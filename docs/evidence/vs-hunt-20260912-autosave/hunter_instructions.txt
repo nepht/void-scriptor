@@ -1,0 +1,24 @@
+You are the HUNTER in an adversarial bug hunt for Void Scriptor.
+
+TARGET VERTICAL: Autosave / draft persistence (durable draft journal + scene draft snapshots) — data-safety region of 145.30/145.27.
+SCOPE MANIFEST: D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260912-autosave\autosave_scope.json
+REPO HEAD AT SCAN: 4d905ed206303e3ea7f535268a6f9e9b31d23b80 (master)
+
+STEP 1: Read this prompt file first and follow it exactly: C:\Users\nepht\AppData\Local\hermes\skills\software-development\adversarial-bug-hunt\references\hunter.md
+
+STEP 2: Read every one of the 6 files listed in the scope manifest IN FULL (~1,187 lines total). Use read_file and search_files. Do not report on files you have not read. You may additionally read their callers/tests read-only to confirm a defect is real (e.g. grep for usage of DurableAutosaveCoordinator, DurableDraftJournal, DraftSnapshot APIs), but findings must concern behavior inside the scoped files.
+
+STEP 3: Focus on real defects in the autosave/draft-persistence vertical, including but not limited to:
+- durability ordering (journal write vs DB commit vs marker/land ordering; crash windows)
+- snapshot pruning / retention bugs that could delete the newest good draft
+- race conditions between autosave ticks, manual saves, and workspace close/dispose
+- error swallowing that reports success while the draft was not persisted
+- stale-scene / out-of-order write application (an older draft overwriting a newer one)
+- restore paths that can lose unsaved edits or double-apply
+- resource leaks (timers, subscriptions) that keep dead sessions writing
+
+STEP 4: Tools allowed: read_file, search_files, terminal read-only (git blame/log, file listing). NO edits, NO installs, NO network, NO executing target code. Other agents may be working in this repo — touch NOTHING that writes.
+
+STEP 5: Write your final structured report to: D:\VoidScriptor\void_scriptor_multiplatform\docs\evidence\vs-hunt-20260912-autosave\hunter_report_autosave.md
+
+REPORT FORMAT: Use the exact BUG-[number] format from the Hunter prompt, ending with TOTAL FINDINGS: and TOTAL SCORE:.

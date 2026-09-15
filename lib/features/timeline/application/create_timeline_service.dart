@@ -25,7 +25,10 @@ class CreateTimelineService {
     required String sceneId,
   }) async {
     final existing = await database.timelineDao.getTimelineForScene(sceneId);
-    if (existing != null) return existing.id;
+    if (existing != null) {
+      await _reconcileSceneBeats(timelineId: existing.id, sceneId: sceneId);
+      return existing.id;
+    }
     final scene = await database.storyDao.getScene(sceneId);
     if (scene == null) throw StateError('Scene not found');
     final timelineId = const Uuid().v4();
@@ -85,6 +88,59 @@ class CreateTimelineService {
       }
     });
     return timelineId;
+  }
+
+  Future<void> _reconcileSceneBeats({
+    required String timelineId,
+    required String sceneId,
+  }) async {
+    await database.transaction(() async {
+      final actionTrack =
+          await (database.select(database.timelineTracks)..where(
+                (row) =>
+                    row.timelineId.equals(timelineId) &
+                    row.trackType.equals(TimelineTrackType.action.name),
+              ))
+              .getSingle();
+      final beats = await database.storyDao.getSceneBeats(sceneId);
+      final clips = await database.timelineDao.getClips(timelineId);
+      final clipsBySource = <String, TimelineClip>{
+        for (final clip in clips)
+          if (clip.sourceId != null) clip.sourceId!: clip,
+      };
+
+      for (var index = 0; index < beats.length; index++) {
+        final beat = beats[index];
+        final clip = clipsBySource[beat.id];
+        if (clip == null) {
+          await database
+              .into(database.timelineClips)
+              .insert(
+                TimelineClipsCompanion.insert(
+                  id: const Uuid().v4(),
+                  timelineId: timelineId,
+                  trackId: actionTrack.id,
+                  clipType: beat.beatType,
+                  label: beat.content,
+                  startSeconds: beat.startSecond ?? 0,
+                  durationSeconds: beat.durationSeconds ?? 1,
+                  sourceId: Value(beat.id),
+                  sortOrder: Value(index),
+                ),
+              );
+          continue;
+        }
+        await (database.update(
+          database.timelineClips,
+        )..where((row) => row.id.equals(clip.id))).write(
+          TimelineClipsCompanion(
+            clipType: Value(beat.beatType),
+            label: Value(beat.content),
+            sortOrder: Value(index),
+          ),
+        );
+      }
+    });
   }
 
   Future<List<TimelineTrack>> getTracks(String timelineId) =>

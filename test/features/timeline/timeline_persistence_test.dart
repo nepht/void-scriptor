@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/persistence/project_paths.dart';
+import 'package:void_scriptor/database/project/project_database.dart'
+    show ProjectDatabase;
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/story/application/create_story_service.dart';
 import 'package:void_scriptor/features/timeline/application/create_timeline_service.dart';
@@ -53,6 +55,6 @@ void main() {
     final restarted = CreateTimelineService(database: second);
     expect((await restarted.getTracks(timelineId)).length, 11);
     expect((await restarted.getClips(timelineId)).single.label, 'Descend');
-    expect(second.schemaVersion, 61);
+    expect(second.schemaVersion, ProjectDatabase.currentSchemaVersion);
   });
 }

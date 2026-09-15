@@ -7,24 +7,32 @@
   "document_registry": "docs/roadmap/DOCUMENT_REGISTRY.json",
   "executor_policy": ".hermes/AUTONOMOUS_ROADMAP_PROMPT.md",
   "runtime_state": ".hermes/ROADMAP_STATE.json",
-  "active_stream": "corrective_core_mvp",
+  "active_stream": "sequential_expansion",
   "streams": {
     "corrective_core_mvp": {
-      "status": "ACTIVE",
+      "status": "DEFERRED",
       "priority": 1,
       "sprint": 145,
       "contract": "sprint_145.json",
       "ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-      "exit_gate": "All 145.1-145.50 steps resolved or explicitly blocked/deferred with evidence; Core MVP vertical slice and data-safety gates green."
+      "exit_gate": "All 145.1-145.50 steps resolved or explicitly blocked/deferred with evidence; Core MVP vertical slice and data-safety gates green.",
+      "deferred_on": "2026-09-15",
+      "defer_authority": "KEPUTUSAN CHOI 15 Sep: terima defer 145.30 (hardware-bound; power-loss nyata + USB cold-eject lanjutan). Antrean bug hunt-20260915 habis run327. Buka kembali hanya atas perintah Choi.",
+      "state_at_defer": {
+        "next_step": "145.30",
+        "remaining": "acceptance hardware-bound; JANGAN fabrikasi slice"
+      }
     },
     "sequential_expansion": {
-      "status": "SUSPENDED",
+      "status": "ACTIVE",
       "priority": 2,
       "sprint": 111,
       "resume_step": "111.21",
       "contract": "sprint_111.json",
       "ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
-      "resume_condition": "corrective_core_mvp exit_gate is satisfied and recorded."
+      "resume_condition": "corrective_core_mvp exit_gate is satisfied and recorded.",
+      "resumed_on": "2026-09-15",
+      "resume_authority": "KEPUTUSAN CHOI 15 Sep: 'lanjutka stream yang dihentikan mulai 111.21' \u2014 override eksplisit resume_condition exit_gate."
     }
   },
   "precedence": [

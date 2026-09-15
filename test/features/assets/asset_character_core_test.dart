@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/persistence/project_paths.dart';
+import 'package:void_scriptor/database/project/project_database.dart';
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/assets/domain/asset_model.dart';
 import 'package:void_scriptor/features/assets/domain/asset_relation_type.dart';
@@ -55,7 +56,7 @@ void main() {
     final database = await ProjectDatabaseService().open(databasePath);
     addTearDown(database.close);
 
-    expect(database.schemaVersion, 61);
+    expect(database.schemaVersion, ProjectDatabase.currentSchemaVersion);
     expect(await database.select(database.assets).get(), isEmpty);
     expect(await database.select(database.characters).get(), isEmpty);
   });

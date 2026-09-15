@@ -879,6 +879,789 @@ class AssetsCompanion extends UpdateCompanion<Asset> {
   }
 }
 
+class $SupportingAssetProfilesTable extends SupportingAssetProfiles
+    with TableInfo<$SupportingAssetProfilesTable, SupportingAssetProfile> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SupportingAssetProfilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _assetIdMeta = const VerificationMeta(
+    'assetId',
+  );
+  @override
+  late final GeneratedColumn<String> assetId = GeneratedColumn<String>(
+    'asset_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _assetTypeMeta = const VerificationMeta(
+    'assetType',
+  );
+  @override
+  late final GeneratedColumn<String> assetType = GeneratedColumn<String>(
+    'asset_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _protectionMeta = const VerificationMeta(
+    'protection',
+  );
+  @override
+  late final GeneratedColumn<String> protection = GeneratedColumn<String>(
+    'protection',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _materialMeta = const VerificationMeta(
+    'material',
+  );
+  @override
+  late final GeneratedColumn<String> material = GeneratedColumn<String>(
+    'material',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _conditionMeta = const VerificationMeta(
+    'condition',
+  );
+  @override
+  late final GeneratedColumn<String> condition = GeneratedColumn<String>(
+    'condition',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _significanceMeta = const VerificationMeta(
+    'significance',
+  );
+  @override
+  late final GeneratedColumn<String> significance = GeneratedColumn<String>(
+    'significance',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _purposeMeta = const VerificationMeta(
+    'purpose',
+  );
+  @override
+  late final GeneratedColumn<String> purpose = GeneratedColumn<String>(
+    'purpose',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _usageRulesMeta = const VerificationMeta(
+    'usageRules',
+  );
+  @override
+  late final GeneratedColumn<String> usageRules = GeneratedColumn<String>(
+    'usage_rules',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _itemStateMeta = const VerificationMeta(
+    'itemState',
+  );
+  @override
+  late final GeneratedColumn<String> itemState = GeneratedColumn<String>(
+    'item_state',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hairStyleMeta = const VerificationMeta(
+    'hairStyle',
+  );
+  @override
+  late final GeneratedColumn<String> hairStyle = GeneratedColumn<String>(
+    'hair_style',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hairColorMeta = const VerificationMeta(
+    'hairColor',
+  );
+  @override
+  late final GeneratedColumn<String> hairColor = GeneratedColumn<String>(
+    'hair_color',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _hairLengthMeta = const VerificationMeta(
+    'hairLength',
+  );
+  @override
+  late final GeneratedColumn<String> hairLength = GeneratedColumn<String>(
+    'hair_length',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    assetId,
+    assetType,
+    protection,
+    material,
+    condition,
+    category,
+    significance,
+    purpose,
+    usageRules,
+    itemState,
+    hairStyle,
+    hairColor,
+    hairLength,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'supporting_asset_profiles';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SupportingAssetProfile> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('asset_id')) {
+      context.handle(
+        _assetIdMeta,
+        assetId.isAcceptableOrUnknown(data['asset_id']!, _assetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetIdMeta);
+    }
+    if (data.containsKey('asset_type')) {
+      context.handle(
+        _assetTypeMeta,
+        assetType.isAcceptableOrUnknown(data['asset_type']!, _assetTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assetTypeMeta);
+    }
+    if (data.containsKey('protection')) {
+      context.handle(
+        _protectionMeta,
+        protection.isAcceptableOrUnknown(data['protection']!, _protectionMeta),
+      );
+    }
+    if (data.containsKey('material')) {
+      context.handle(
+        _materialMeta,
+        material.isAcceptableOrUnknown(data['material']!, _materialMeta),
+      );
+    }
+    if (data.containsKey('condition')) {
+      context.handle(
+        _conditionMeta,
+        condition.isAcceptableOrUnknown(data['condition']!, _conditionMeta),
+      );
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    }
+    if (data.containsKey('significance')) {
+      context.handle(
+        _significanceMeta,
+        significance.isAcceptableOrUnknown(
+          data['significance']!,
+          _significanceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('purpose')) {
+      context.handle(
+        _purposeMeta,
+        purpose.isAcceptableOrUnknown(data['purpose']!, _purposeMeta),
+      );
+    }
+    if (data.containsKey('usage_rules')) {
+      context.handle(
+        _usageRulesMeta,
+        usageRules.isAcceptableOrUnknown(data['usage_rules']!, _usageRulesMeta),
+      );
+    }
+    if (data.containsKey('item_state')) {
+      context.handle(
+        _itemStateMeta,
+        itemState.isAcceptableOrUnknown(data['item_state']!, _itemStateMeta),
+      );
+    }
+    if (data.containsKey('hair_style')) {
+      context.handle(
+        _hairStyleMeta,
+        hairStyle.isAcceptableOrUnknown(data['hair_style']!, _hairStyleMeta),
+      );
+    }
+    if (data.containsKey('hair_color')) {
+      context.handle(
+        _hairColorMeta,
+        hairColor.isAcceptableOrUnknown(data['hair_color']!, _hairColorMeta),
+      );
+    }
+    if (data.containsKey('hair_length')) {
+      context.handle(
+        _hairLengthMeta,
+        hairLength.isAcceptableOrUnknown(data['hair_length']!, _hairLengthMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {assetId};
+  @override
+  SupportingAssetProfile map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SupportingAssetProfile(
+      assetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_id'],
+      )!,
+      assetType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}asset_type'],
+      )!,
+      protection: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}protection'],
+      ),
+      material: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}material'],
+      ),
+      condition: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}condition'],
+      ),
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      ),
+      significance: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}significance'],
+      ),
+      purpose: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}purpose'],
+      ),
+      usageRules: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}usage_rules'],
+      ),
+      itemState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}item_state'],
+      ),
+      hairStyle: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hair_style'],
+      ),
+      hairColor: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hair_color'],
+      ),
+      hairLength: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hair_length'],
+      ),
+    );
+  }
+
+  @override
+  $SupportingAssetProfilesTable createAlias(String alias) {
+    return $SupportingAssetProfilesTable(attachedDatabase, alias);
+  }
+}
+
+class SupportingAssetProfile extends DataClass
+    implements Insertable<SupportingAssetProfile> {
+  final String assetId;
+  final String assetType;
+  final String? protection;
+  final String? material;
+  final String? condition;
+  final String? category;
+  final String? significance;
+  final String? purpose;
+  final String? usageRules;
+  final String? itemState;
+  final String? hairStyle;
+  final String? hairColor;
+  final String? hairLength;
+  const SupportingAssetProfile({
+    required this.assetId,
+    required this.assetType,
+    this.protection,
+    this.material,
+    this.condition,
+    this.category,
+    this.significance,
+    this.purpose,
+    this.usageRules,
+    this.itemState,
+    this.hairStyle,
+    this.hairColor,
+    this.hairLength,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['asset_id'] = Variable<String>(assetId);
+    map['asset_type'] = Variable<String>(assetType);
+    if (!nullToAbsent || protection != null) {
+      map['protection'] = Variable<String>(protection);
+    }
+    if (!nullToAbsent || material != null) {
+      map['material'] = Variable<String>(material);
+    }
+    if (!nullToAbsent || condition != null) {
+      map['condition'] = Variable<String>(condition);
+    }
+    if (!nullToAbsent || category != null) {
+      map['category'] = Variable<String>(category);
+    }
+    if (!nullToAbsent || significance != null) {
+      map['significance'] = Variable<String>(significance);
+    }
+    if (!nullToAbsent || purpose != null) {
+      map['purpose'] = Variable<String>(purpose);
+    }
+    if (!nullToAbsent || usageRules != null) {
+      map['usage_rules'] = Variable<String>(usageRules);
+    }
+    if (!nullToAbsent || itemState != null) {
+      map['item_state'] = Variable<String>(itemState);
+    }
+    if (!nullToAbsent || hairStyle != null) {
+      map['hair_style'] = Variable<String>(hairStyle);
+    }
+    if (!nullToAbsent || hairColor != null) {
+      map['hair_color'] = Variable<String>(hairColor);
+    }
+    if (!nullToAbsent || hairLength != null) {
+      map['hair_length'] = Variable<String>(hairLength);
+    }
+    return map;
+  }
+
+  SupportingAssetProfilesCompanion toCompanion(bool nullToAbsent) {
+    return SupportingAssetProfilesCompanion(
+      assetId: Value(assetId),
+      assetType: Value(assetType),
+      protection: protection == null && nullToAbsent
+          ? const Value.absent()
+          : Value(protection),
+      material: material == null && nullToAbsent
+          ? const Value.absent()
+          : Value(material),
+      condition: condition == null && nullToAbsent
+          ? const Value.absent()
+          : Value(condition),
+      category: category == null && nullToAbsent
+          ? const Value.absent()
+          : Value(category),
+      significance: significance == null && nullToAbsent
+          ? const Value.absent()
+          : Value(significance),
+      purpose: purpose == null && nullToAbsent
+          ? const Value.absent()
+          : Value(purpose),
+      usageRules: usageRules == null && nullToAbsent
+          ? const Value.absent()
+          : Value(usageRules),
+      itemState: itemState == null && nullToAbsent
+          ? const Value.absent()
+          : Value(itemState),
+      hairStyle: hairStyle == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hairStyle),
+      hairColor: hairColor == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hairColor),
+      hairLength: hairLength == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hairLength),
+    );
+  }
+
+  factory SupportingAssetProfile.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SupportingAssetProfile(
+      assetId: serializer.fromJson<String>(json['assetId']),
+      assetType: serializer.fromJson<String>(json['assetType']),
+      protection: serializer.fromJson<String?>(json['protection']),
+      material: serializer.fromJson<String?>(json['material']),
+      condition: serializer.fromJson<String?>(json['condition']),
+      category: serializer.fromJson<String?>(json['category']),
+      significance: serializer.fromJson<String?>(json['significance']),
+      purpose: serializer.fromJson<String?>(json['purpose']),
+      usageRules: serializer.fromJson<String?>(json['usageRules']),
+      itemState: serializer.fromJson<String?>(json['itemState']),
+      hairStyle: serializer.fromJson<String?>(json['hairStyle']),
+      hairColor: serializer.fromJson<String?>(json['hairColor']),
+      hairLength: serializer.fromJson<String?>(json['hairLength']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'assetId': serializer.toJson<String>(assetId),
+      'assetType': serializer.toJson<String>(assetType),
+      'protection': serializer.toJson<String?>(protection),
+      'material': serializer.toJson<String?>(material),
+      'condition': serializer.toJson<String?>(condition),
+      'category': serializer.toJson<String?>(category),
+      'significance': serializer.toJson<String?>(significance),
+      'purpose': serializer.toJson<String?>(purpose),
+      'usageRules': serializer.toJson<String?>(usageRules),
+      'itemState': serializer.toJson<String?>(itemState),
+      'hairStyle': serializer.toJson<String?>(hairStyle),
+      'hairColor': serializer.toJson<String?>(hairColor),
+      'hairLength': serializer.toJson<String?>(hairLength),
+    };
+  }
+
+  SupportingAssetProfile copyWith({
+    String? assetId,
+    String? assetType,
+    Value<String?> protection = const Value.absent(),
+    Value<String?> material = const Value.absent(),
+    Value<String?> condition = const Value.absent(),
+    Value<String?> category = const Value.absent(),
+    Value<String?> significance = const Value.absent(),
+    Value<String?> purpose = const Value.absent(),
+    Value<String?> usageRules = const Value.absent(),
+    Value<String?> itemState = const Value.absent(),
+    Value<String?> hairStyle = const Value.absent(),
+    Value<String?> hairColor = const Value.absent(),
+    Value<String?> hairLength = const Value.absent(),
+  }) => SupportingAssetProfile(
+    assetId: assetId ?? this.assetId,
+    assetType: assetType ?? this.assetType,
+    protection: protection.present ? protection.value : this.protection,
+    material: material.present ? material.value : this.material,
+    condition: condition.present ? condition.value : this.condition,
+    category: category.present ? category.value : this.category,
+    significance: significance.present ? significance.value : this.significance,
+    purpose: purpose.present ? purpose.value : this.purpose,
+    usageRules: usageRules.present ? usageRules.value : this.usageRules,
+    itemState: itemState.present ? itemState.value : this.itemState,
+    hairStyle: hairStyle.present ? hairStyle.value : this.hairStyle,
+    hairColor: hairColor.present ? hairColor.value : this.hairColor,
+    hairLength: hairLength.present ? hairLength.value : this.hairLength,
+  );
+  SupportingAssetProfile copyWithCompanion(
+    SupportingAssetProfilesCompanion data,
+  ) {
+    return SupportingAssetProfile(
+      assetId: data.assetId.present ? data.assetId.value : this.assetId,
+      assetType: data.assetType.present ? data.assetType.value : this.assetType,
+      protection: data.protection.present
+          ? data.protection.value
+          : this.protection,
+      material: data.material.present ? data.material.value : this.material,
+      condition: data.condition.present ? data.condition.value : this.condition,
+      category: data.category.present ? data.category.value : this.category,
+      significance: data.significance.present
+          ? data.significance.value
+          : this.significance,
+      purpose: data.purpose.present ? data.purpose.value : this.purpose,
+      usageRules: data.usageRules.present
+          ? data.usageRules.value
+          : this.usageRules,
+      itemState: data.itemState.present ? data.itemState.value : this.itemState,
+      hairStyle: data.hairStyle.present ? data.hairStyle.value : this.hairStyle,
+      hairColor: data.hairColor.present ? data.hairColor.value : this.hairColor,
+      hairLength: data.hairLength.present
+          ? data.hairLength.value
+          : this.hairLength,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SupportingAssetProfile(')
+          ..write('assetId: $assetId, ')
+          ..write('assetType: $assetType, ')
+          ..write('protection: $protection, ')
+          ..write('material: $material, ')
+          ..write('condition: $condition, ')
+          ..write('category: $category, ')
+          ..write('significance: $significance, ')
+          ..write('purpose: $purpose, ')
+          ..write('usageRules: $usageRules, ')
+          ..write('itemState: $itemState, ')
+          ..write('hairStyle: $hairStyle, ')
+          ..write('hairColor: $hairColor, ')
+          ..write('hairLength: $hairLength')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    assetId,
+    assetType,
+    protection,
+    material,
+    condition,
+    category,
+    significance,
+    purpose,
+    usageRules,
+    itemState,
+    hairStyle,
+    hairColor,
+    hairLength,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SupportingAssetProfile &&
+          other.assetId == this.assetId &&
+          other.assetType == this.assetType &&
+          other.protection == this.protection &&
+          other.material == this.material &&
+          other.condition == this.condition &&
+          other.category == this.category &&
+          other.significance == this.significance &&
+          other.purpose == this.purpose &&
+          other.usageRules == this.usageRules &&
+          other.itemState == this.itemState &&
+          other.hairStyle == this.hairStyle &&
+          other.hairColor == this.hairColor &&
+          other.hairLength == this.hairLength);
+}
+
+class SupportingAssetProfilesCompanion
+    extends UpdateCompanion<SupportingAssetProfile> {
+  final Value<String> assetId;
+  final Value<String> assetType;
+  final Value<String?> protection;
+  final Value<String?> material;
+  final Value<String?> condition;
+  final Value<String?> category;
+  final Value<String?> significance;
+  final Value<String?> purpose;
+  final Value<String?> usageRules;
+  final Value<String?> itemState;
+  final Value<String?> hairStyle;
+  final Value<String?> hairColor;
+  final Value<String?> hairLength;
+  final Value<int> rowid;
+  const SupportingAssetProfilesCompanion({
+    this.assetId = const Value.absent(),
+    this.assetType = const Value.absent(),
+    this.protection = const Value.absent(),
+    this.material = const Value.absent(),
+    this.condition = const Value.absent(),
+    this.category = const Value.absent(),
+    this.significance = const Value.absent(),
+    this.purpose = const Value.absent(),
+    this.usageRules = const Value.absent(),
+    this.itemState = const Value.absent(),
+    this.hairStyle = const Value.absent(),
+    this.hairColor = const Value.absent(),
+    this.hairLength = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SupportingAssetProfilesCompanion.insert({
+    required String assetId,
+    required String assetType,
+    this.protection = const Value.absent(),
+    this.material = const Value.absent(),
+    this.condition = const Value.absent(),
+    this.category = const Value.absent(),
+    this.significance = const Value.absent(),
+    this.purpose = const Value.absent(),
+    this.usageRules = const Value.absent(),
+    this.itemState = const Value.absent(),
+    this.hairStyle = const Value.absent(),
+    this.hairColor = const Value.absent(),
+    this.hairLength = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : assetId = Value(assetId),
+       assetType = Value(assetType);
+  static Insertable<SupportingAssetProfile> custom({
+    Expression<String>? assetId,
+    Expression<String>? assetType,
+    Expression<String>? protection,
+    Expression<String>? material,
+    Expression<String>? condition,
+    Expression<String>? category,
+    Expression<String>? significance,
+    Expression<String>? purpose,
+    Expression<String>? usageRules,
+    Expression<String>? itemState,
+    Expression<String>? hairStyle,
+    Expression<String>? hairColor,
+    Expression<String>? hairLength,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (assetId != null) 'asset_id': assetId,
+      if (assetType != null) 'asset_type': assetType,
+      if (protection != null) 'protection': protection,
+      if (material != null) 'material': material,
+      if (condition != null) 'condition': condition,
+      if (category != null) 'category': category,
+      if (significance != null) 'significance': significance,
+      if (purpose != null) 'purpose': purpose,
+      if (usageRules != null) 'usage_rules': usageRules,
+      if (itemState != null) 'item_state': itemState,
+      if (hairStyle != null) 'hair_style': hairStyle,
+      if (hairColor != null) 'hair_color': hairColor,
+      if (hairLength != null) 'hair_length': hairLength,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SupportingAssetProfilesCompanion copyWith({
+    Value<String>? assetId,
+    Value<String>? assetType,
+    Value<String?>? protection,
+    Value<String?>? material,
+    Value<String?>? condition,
+    Value<String?>? category,
+    Value<String?>? significance,
+    Value<String?>? purpose,
+    Value<String?>? usageRules,
+    Value<String?>? itemState,
+    Value<String?>? hairStyle,
+    Value<String?>? hairColor,
+    Value<String?>? hairLength,
+    Value<int>? rowid,
+  }) {
+    return SupportingAssetProfilesCompanion(
+      assetId: assetId ?? this.assetId,
+      assetType: assetType ?? this.assetType,
+      protection: protection ?? this.protection,
+      material: material ?? this.material,
+      condition: condition ?? this.condition,
+      category: category ?? this.category,
+      significance: significance ?? this.significance,
+      purpose: purpose ?? this.purpose,
+      usageRules: usageRules ?? this.usageRules,
+      itemState: itemState ?? this.itemState,
+      hairStyle: hairStyle ?? this.hairStyle,
+      hairColor: hairColor ?? this.hairColor,
+      hairLength: hairLength ?? this.hairLength,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (assetId.present) {
+      map['asset_id'] = Variable<String>(assetId.value);
+    }
+    if (assetType.present) {
+      map['asset_type'] = Variable<String>(assetType.value);
+    }
+    if (protection.present) {
+      map['protection'] = Variable<String>(protection.value);
+    }
+    if (material.present) {
+      map['material'] = Variable<String>(material.value);
+    }
+    if (condition.present) {
+      map['condition'] = Variable<String>(condition.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (significance.present) {
+      map['significance'] = Variable<String>(significance.value);
+    }
+    if (purpose.present) {
+      map['purpose'] = Variable<String>(purpose.value);
+    }
+    if (usageRules.present) {
+      map['usage_rules'] = Variable<String>(usageRules.value);
+    }
+    if (itemState.present) {
+      map['item_state'] = Variable<String>(itemState.value);
+    }
+    if (hairStyle.present) {
+      map['hair_style'] = Variable<String>(hairStyle.value);
+    }
+    if (hairColor.present) {
+      map['hair_color'] = Variable<String>(hairColor.value);
+    }
+    if (hairLength.present) {
+      map['hair_length'] = Variable<String>(hairLength.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SupportingAssetProfilesCompanion(')
+          ..write('assetId: $assetId, ')
+          ..write('assetType: $assetType, ')
+          ..write('protection: $protection, ')
+          ..write('material: $material, ')
+          ..write('condition: $condition, ')
+          ..write('category: $category, ')
+          ..write('significance: $significance, ')
+          ..write('purpose: $purpose, ')
+          ..write('usageRules: $usageRules, ')
+          ..write('itemState: $itemState, ')
+          ..write('hairStyle: $hairStyle, ')
+          ..write('hairColor: $hairColor, ')
+          ..write('hairLength: $hairLength, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $AssetTagsTable extends AssetTags
     with TableInfo<$AssetTagsTable, AssetTag> {
   @override
@@ -73855,6 +74638,8 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
     this,
   );
   late final $AssetsTable assets = $AssetsTable(this);
+  late final $SupportingAssetProfilesTable supportingAssetProfiles =
+      $SupportingAssetProfilesTable(this);
   late final $AssetTagsTable assetTags = $AssetTagsTable(this);
   late final $CharactersTable characters = $CharactersTable(this);
   late final $CharacterNarrativeAssignmentsTable characterNarrativeAssignments =
@@ -74196,6 +74981,7 @@ abstract class _$ProjectDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     projectMetadata,
     assets,
+    supportingAssetProfiles,
     assetTags,
     characters,
     characterNarrativeAssignments,
@@ -74827,6 +75613,385 @@ typedef $$AssetsTableProcessedTableManager =
       $$AssetsTableUpdateCompanionBuilder,
       (Asset, BaseReferences<_$ProjectDatabase, $AssetsTable, Asset>),
       Asset,
+      PrefetchHooks Function()
+    >;
+typedef $$SupportingAssetProfilesTableCreateCompanionBuilder =
+    SupportingAssetProfilesCompanion Function({
+      required String assetId,
+      required String assetType,
+      Value<String?> protection,
+      Value<String?> material,
+      Value<String?> condition,
+      Value<String?> category,
+      Value<String?> significance,
+      Value<String?> purpose,
+      Value<String?> usageRules,
+      Value<String?> itemState,
+      Value<String?> hairStyle,
+      Value<String?> hairColor,
+      Value<String?> hairLength,
+      Value<int> rowid,
+    });
+typedef $$SupportingAssetProfilesTableUpdateCompanionBuilder =
+    SupportingAssetProfilesCompanion Function({
+      Value<String> assetId,
+      Value<String> assetType,
+      Value<String?> protection,
+      Value<String?> material,
+      Value<String?> condition,
+      Value<String?> category,
+      Value<String?> significance,
+      Value<String?> purpose,
+      Value<String?> usageRules,
+      Value<String?> itemState,
+      Value<String?> hairStyle,
+      Value<String?> hairColor,
+      Value<String?> hairLength,
+      Value<int> rowid,
+    });
+
+class $$SupportingAssetProfilesTableFilterComposer
+    extends Composer<_$ProjectDatabase, $SupportingAssetProfilesTable> {
+  $$SupportingAssetProfilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get assetType => $composableBuilder(
+    column: $table.assetType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get protection => $composableBuilder(
+    column: $table.protection,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get material => $composableBuilder(
+    column: $table.material,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get condition => $composableBuilder(
+    column: $table.condition,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get significance => $composableBuilder(
+    column: $table.significance,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get purpose => $composableBuilder(
+    column: $table.purpose,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get usageRules => $composableBuilder(
+    column: $table.usageRules,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get itemState => $composableBuilder(
+    column: $table.itemState,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hairStyle => $composableBuilder(
+    column: $table.hairStyle,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hairColor => $composableBuilder(
+    column: $table.hairColor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hairLength => $composableBuilder(
+    column: $table.hairLength,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SupportingAssetProfilesTableOrderingComposer
+    extends Composer<_$ProjectDatabase, $SupportingAssetProfilesTable> {
+  $$SupportingAssetProfilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get assetId => $composableBuilder(
+    column: $table.assetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get assetType => $composableBuilder(
+    column: $table.assetType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get protection => $composableBuilder(
+    column: $table.protection,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get material => $composableBuilder(
+    column: $table.material,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get condition => $composableBuilder(
+    column: $table.condition,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get significance => $composableBuilder(
+    column: $table.significance,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get purpose => $composableBuilder(
+    column: $table.purpose,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get usageRules => $composableBuilder(
+    column: $table.usageRules,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get itemState => $composableBuilder(
+    column: $table.itemState,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hairStyle => $composableBuilder(
+    column: $table.hairStyle,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hairColor => $composableBuilder(
+    column: $table.hairColor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hairLength => $composableBuilder(
+    column: $table.hairLength,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SupportingAssetProfilesTableAnnotationComposer
+    extends Composer<_$ProjectDatabase, $SupportingAssetProfilesTable> {
+  $$SupportingAssetProfilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get assetId =>
+      $composableBuilder(column: $table.assetId, builder: (column) => column);
+
+  GeneratedColumn<String> get assetType =>
+      $composableBuilder(column: $table.assetType, builder: (column) => column);
+
+  GeneratedColumn<String> get protection => $composableBuilder(
+    column: $table.protection,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get material =>
+      $composableBuilder(column: $table.material, builder: (column) => column);
+
+  GeneratedColumn<String> get condition =>
+      $composableBuilder(column: $table.condition, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get significance => $composableBuilder(
+    column: $table.significance,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get purpose =>
+      $composableBuilder(column: $table.purpose, builder: (column) => column);
+
+  GeneratedColumn<String> get usageRules => $composableBuilder(
+    column: $table.usageRules,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get itemState =>
+      $composableBuilder(column: $table.itemState, builder: (column) => column);
+
+  GeneratedColumn<String> get hairStyle =>
+      $composableBuilder(column: $table.hairStyle, builder: (column) => column);
+
+  GeneratedColumn<String> get hairColor =>
+      $composableBuilder(column: $table.hairColor, builder: (column) => column);
+
+  GeneratedColumn<String> get hairLength => $composableBuilder(
+    column: $table.hairLength,
+    builder: (column) => column,
+  );
+}
+
+class $$SupportingAssetProfilesTableTableManager
+    extends
+        RootTableManager<
+          _$ProjectDatabase,
+          $SupportingAssetProfilesTable,
+          SupportingAssetProfile,
+          $$SupportingAssetProfilesTableFilterComposer,
+          $$SupportingAssetProfilesTableOrderingComposer,
+          $$SupportingAssetProfilesTableAnnotationComposer,
+          $$SupportingAssetProfilesTableCreateCompanionBuilder,
+          $$SupportingAssetProfilesTableUpdateCompanionBuilder,
+          (
+            SupportingAssetProfile,
+            BaseReferences<
+              _$ProjectDatabase,
+              $SupportingAssetProfilesTable,
+              SupportingAssetProfile
+            >,
+          ),
+          SupportingAssetProfile,
+          PrefetchHooks Function()
+        > {
+  $$SupportingAssetProfilesTableTableManager(
+    _$ProjectDatabase db,
+    $SupportingAssetProfilesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SupportingAssetProfilesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$SupportingAssetProfilesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SupportingAssetProfilesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> assetId = const Value.absent(),
+                Value<String> assetType = const Value.absent(),
+                Value<String?> protection = const Value.absent(),
+                Value<String?> material = const Value.absent(),
+                Value<String?> condition = const Value.absent(),
+                Value<String?> category = const Value.absent(),
+                Value<String?> significance = const Value.absent(),
+                Value<String?> purpose = const Value.absent(),
+                Value<String?> usageRules = const Value.absent(),
+                Value<String?> itemState = const Value.absent(),
+                Value<String?> hairStyle = const Value.absent(),
+                Value<String?> hairColor = const Value.absent(),
+                Value<String?> hairLength = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SupportingAssetProfilesCompanion(
+                assetId: assetId,
+                assetType: assetType,
+                protection: protection,
+                material: material,
+                condition: condition,
+                category: category,
+                significance: significance,
+                purpose: purpose,
+                usageRules: usageRules,
+                itemState: itemState,
+                hairStyle: hairStyle,
+                hairColor: hairColor,
+                hairLength: hairLength,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String assetId,
+                required String assetType,
+                Value<String?> protection = const Value.absent(),
+                Value<String?> material = const Value.absent(),
+                Value<String?> condition = const Value.absent(),
+                Value<String?> category = const Value.absent(),
+                Value<String?> significance = const Value.absent(),
+                Value<String?> purpose = const Value.absent(),
+                Value<String?> usageRules = const Value.absent(),
+                Value<String?> itemState = const Value.absent(),
+                Value<String?> hairStyle = const Value.absent(),
+                Value<String?> hairColor = const Value.absent(),
+                Value<String?> hairLength = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SupportingAssetProfilesCompanion.insert(
+                assetId: assetId,
+                assetType: assetType,
+                protection: protection,
+                material: material,
+                condition: condition,
+                category: category,
+                significance: significance,
+                purpose: purpose,
+                usageRules: usageRules,
+                itemState: itemState,
+                hairStyle: hairStyle,
+                hairColor: hairColor,
+                hairLength: hairLength,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SupportingAssetProfilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ProjectDatabase,
+      $SupportingAssetProfilesTable,
+      SupportingAssetProfile,
+      $$SupportingAssetProfilesTableFilterComposer,
+      $$SupportingAssetProfilesTableOrderingComposer,
+      $$SupportingAssetProfilesTableAnnotationComposer,
+      $$SupportingAssetProfilesTableCreateCompanionBuilder,
+      $$SupportingAssetProfilesTableUpdateCompanionBuilder,
+      (
+        SupportingAssetProfile,
+        BaseReferences<
+          _$ProjectDatabase,
+          $SupportingAssetProfilesTable,
+          SupportingAssetProfile
+        >,
+      ),
+      SupportingAssetProfile,
       PrefetchHooks Function()
     >;
 typedef $$AssetTagsTableCreateCompanionBuilder =
@@ -114359,6 +115524,11 @@ class $ProjectDatabaseManager {
       $$ProjectMetadataTableTableManager(_db, _db.projectMetadata);
   $$AssetsTableTableManager get assets =>
       $$AssetsTableTableManager(_db, _db.assets);
+  $$SupportingAssetProfilesTableTableManager get supportingAssetProfiles =>
+      $$SupportingAssetProfilesTableTableManager(
+        _db,
+        _db.supportingAssetProfiles,
+      );
   $$AssetTagsTableTableManager get assetTags =>
       $$AssetTagsTableTableManager(_db, _db.assetTags);
   $$CharactersTableTableManager get characters =>

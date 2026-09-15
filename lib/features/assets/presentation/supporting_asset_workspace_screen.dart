@@ -15,6 +15,18 @@ final supportingAssetProvider = FutureProvider.family<Asset?, String>((
   return session?.database.assetDao.getById(assetId);
 });
 
+final supportingAssetProfileProvider =
+    FutureProvider.family<SupportingAssetProfile?, String>((
+      ref,
+      assetId,
+    ) async {
+      final session = ref.watch(projectSessionProvider).valueOrNull;
+      if (session == null) return null;
+      return (session.database.select(
+        session.database.supportingAssetProfiles,
+      )..where((row) => row.assetId.equals(assetId))).getSingleOrNull();
+    });
+
 class SupportingAssetWorkspaceScreen extends ConsumerWidget {
   const SupportingAssetWorkspaceScreen({
     super.key,
@@ -154,6 +166,13 @@ class _AssetDetails extends ConsumerWidget {
                             icon: const Icon(Icons.edit_outlined),
                             label: const Text('Edit details'),
                           ),
+                          if (_hasSpecializedEditor(asset.type)) ...[
+                            const SizedBox(height: 20),
+                            _SupportingSpecificationEditor(
+                              assetId: asset.id,
+                              assetType: asset.type,
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -266,6 +285,176 @@ class _AssetDetails extends ConsumerWidget {
     onChanged();
   }
 }
+
+class _SupportingSpecificationEditor extends ConsumerStatefulWidget {
+  const _SupportingSpecificationEditor({
+    required this.assetId,
+    required this.assetType,
+  });
+
+  final String assetId;
+  final String assetType;
+
+  @override
+  ConsumerState<_SupportingSpecificationEditor> createState() =>
+      _SupportingSpecificationEditorState();
+}
+
+class _SupportingSpecificationEditorState
+    extends ConsumerState<_SupportingSpecificationEditor> {
+  final _first = TextEditingController();
+  final _second = TextEditingController();
+  final _third = TextEditingController();
+  var _loaded = false;
+
+  @override
+  void dispose() {
+    _first.dispose();
+    _second.dispose();
+    _third.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final spec = _specificationFor(widget.assetType);
+    final profile = ref.watch(supportingAssetProfileProvider(widget.assetId));
+    final existing = profile.valueOrNull;
+    if (!_loaded && !profile.isLoading) {
+      _loaded = true;
+      final values = _valuesFor(widget.assetType, existing);
+      _first.text = values.$1;
+      _second.text = values.$2;
+      _third.text = values.$3;
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(spec.heading, style: Theme.of(context).textTheme.labelMedium),
+        const SizedBox(height: 12),
+        TextField(
+          controller: _first,
+          decoration: InputDecoration(labelText: spec.labels.$1),
+        ),
+        const SizedBox(height: 10),
+        TextField(
+          controller: _second,
+          decoration: InputDecoration(labelText: spec.labels.$2),
+        ),
+        const SizedBox(height: 10),
+        TextField(
+          controller: _third,
+          decoration: InputDecoration(labelText: spec.labels.$3),
+        ),
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: FilledButton(onPressed: _save, child: Text(spec.saveLabel)),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _save() async {
+    final session = ref.read(projectSessionProvider).valueOrNull;
+    if (session == null) return;
+    final first = Value(_nullable(_first.text));
+    final second = Value(_nullable(_second.text));
+    final third = Value(_nullable(_third.text));
+    final fields = switch (widget.assetType) {
+      'armor' => SupportingAssetProfilesCompanion(
+        protection: first,
+        material: second,
+        condition: third,
+      ),
+      'accessory' => SupportingAssetProfilesCompanion(
+        category: first,
+        material: second,
+        significance: third,
+      ),
+      'prop' => SupportingAssetProfilesCompanion(
+        purpose: first,
+        usageRules: second,
+        itemState: third,
+      ),
+      'hair_variant' => SupportingAssetProfilesCompanion(
+        hairStyle: first,
+        hairColor: second,
+        hairLength: third,
+      ),
+      _ => const SupportingAssetProfilesCompanion(),
+    };
+    await session.database
+        .into(session.database.supportingAssetProfiles)
+        .insertOnConflictUpdate(
+          fields.copyWith(
+            assetId: Value(widget.assetId),
+            assetType: Value(widget.assetType),
+          ),
+        );
+    ref.invalidate(supportingAssetProfileProvider(widget.assetId));
+  }
+
+  String? _nullable(String value) {
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? null : trimmed;
+  }
+}
+
+bool _hasSpecializedEditor(String type) =>
+    const {'armor', 'accessory', 'prop', 'hair_variant'}.contains(type);
+
+({String heading, String saveLabel, (String, String, String) labels})
+_specificationFor(String type) => switch (type) {
+  'armor' => (
+    heading: 'ARMOR SPECIFICATION',
+    saveLabel: 'Save Armor',
+    labels: ('Protection', 'Material', 'Condition'),
+  ),
+  'accessory' => (
+    heading: 'ACCESSORY SPECIFICATION',
+    saveLabel: 'Save Accessory',
+    labels: ('Category', 'Material', 'Narrative significance'),
+  ),
+  'prop' => (
+    heading: 'ITEM SPECIFICATION',
+    saveLabel: 'Save Item',
+    labels: ('Purpose', 'Usage rules', 'State'),
+  ),
+  'hair_variant' => (
+    heading: 'HAIR VARIATION SPECIFICATION',
+    saveLabel: 'Save Hair Variation',
+    labels: ('Style', 'Color', 'Length / shape'),
+  ),
+  _ => throw ArgumentError.value(type, 'type', 'unsupported editor type'),
+};
+
+(String, String, String) _valuesFor(
+  String type,
+  SupportingAssetProfile? profile,
+) => switch (type) {
+  'armor' => (
+    profile?.protection ?? '',
+    profile?.material ?? '',
+    profile?.condition ?? '',
+  ),
+  'accessory' => (
+    profile?.category ?? '',
+    profile?.material ?? '',
+    profile?.significance ?? '',
+  ),
+  'prop' => (
+    profile?.purpose ?? '',
+    profile?.usageRules ?? '',
+    profile?.itemState ?? '',
+  ),
+  'hair_variant' => (
+    profile?.hairStyle ?? '',
+    profile?.hairColor ?? '',
+    profile?.hairLength ?? '',
+  ),
+  _ => ('', '', ''),
+};
 
 class _TypeIcon extends StatelessWidget {
   const _TypeIcon({required this.type});

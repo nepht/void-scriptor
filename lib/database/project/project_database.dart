@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'tables/asset_tags.dart';
 import 'tables/asset_relations.dart';
 import 'tables/assets.dart';
+import 'tables/supporting_asset_profiles.dart';
 import 'tables/character_identity_profiles.dart';
 import 'tables/character_references.dart';
 import 'tables/character_modes.dart';
@@ -147,6 +148,7 @@ class ProjectMetadata extends Table {
   tables: [
     ProjectMetadata,
     Assets,
+    SupportingAssetProfiles,
     AssetTags,
     Characters,
     CharacterNarrativeAssignments,
@@ -344,7 +346,7 @@ class ProjectMetadata extends Table {
 class ProjectDatabase extends _$ProjectDatabase {
   ProjectDatabase(super.executor);
 
-  static const currentSchemaVersion = 61;
+  static const currentSchemaVersion = 62;
 
   @override
   int get schemaVersion => currentSchemaVersion;
@@ -723,6 +725,9 @@ class ProjectDatabase extends _$ProjectDatabase {
         if (!await _columnExists('timeline_eras', 'image_path')) {
           await m.addColumn(timelineEras, timelineEras.imagePath);
         }
+      }
+      if (from < 62) {
+        await m.createTable(supportingAssetProfiles);
       }
     },
   );

@@ -101,7 +101,7 @@ class ProjectVersionControlService {
     for (final key in second.data.keys) {
       if (!first.data.containsKey(key)) {
         added[key] = second.data[key];
-      } else if (first.data[key] != second.data[key]) {
+      } else if (!_jsonEquals(first.data[key], second.data[key])) {
         changed[key] = {'before': first.data[key], 'after': second.data[key]};
       }
     }
@@ -134,6 +134,34 @@ class ProjectVersionControlService {
 
   Future<ProjectSnapshot> _readById(String id) async =>
       _read(File(p.join(_directory.path, '$id.json')));
+
+  /// Structural JSON equality (vs-hunt-20260915-resilience BUG-9).
+  ///
+  /// Snapshot data is decoded from separate JSON files, so nested maps and
+  /// lists never share identity even when their contents are equal. Dart's
+  /// default `==` on collections is identity-based, so a shallow `!=` marked
+  /// unchanged nested structures as modified. This compares recursively:
+  /// maps match key-wise regardless of insertion order, lists match
+  /// position-wise, and every other value falls back to plain equality.
+  static bool _jsonEquals(Object? first, Object? second) {
+    if (identical(first, second)) return true;
+    if (first is Map && second is Map) {
+      if (first.length != second.length) return false;
+      for (final entry in first.entries) {
+        if (!second.containsKey(entry.key)) return false;
+        if (!_jsonEquals(entry.value, second[entry.key])) return false;
+      }
+      return true;
+    }
+    if (first is List && second is List) {
+      if (first.length != second.length) return false;
+      for (var i = 0; i < first.length; i++) {
+        if (!_jsonEquals(first[i], second[i])) return false;
+      }
+      return true;
+    }
+    return first == second;
+  }
 
   Future<ProjectSnapshot> _read(File file) async {
     if (!await file.exists()) {

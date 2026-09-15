@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-15T00:12:56Z",
-  "updated_by": "nephthys-cron-run326",
+  "updated_at": "2026-09-15T07:40:00+07:00",
+  "updated_by": "nephthys-cron-run327",
   "active_stream": "corrective_core_mvp",
   "suspended_streams": {
     "sequential_expansion": {
@@ -394,5 +394,26 @@
     "native_gui": "UNVERIFIABLE (real OS two-process race not executed; seam-injected temp fixtures + legacy process-worker harness pass)",
     "next_queue": "BUG-9 (Low, structural JSON compare in ProjectVersionControlService.compare) is the last cron-safe item from run320 queue; after it 145.30 remains hardware-bound only - do not fabricate slices, do not rescan project_resilience",
     "push": "NOT pushed (push decision belongs to Choi; ahead 15 after this run)"
+  },
+  "bug9_structural_json_compare_run327": {
+    "date": "2026-09-15",
+    "hunt": "vs-hunt-20260915-resilience",
+    "finding": "BUG-9 (Low, Referee REAL): ProjectVersionControlService.compare used shallow != on decoded snapshot values; nested maps/lists from separate JSON files never share identity, so equal nested data was reported as changed (false diff)",
+    "fix_commit": "3793e5c",
+    "fix": "recursive _jsonEquals helper: maps compared key-wise (insertion-order insensitive), lists position-wise, identical() short-circuit, scalars via ==",
+    "evidence": {
+      "red": "focused test failed with exact Referee mechanism: Expected ['name'] Actual ['name','traits']",
+      "focused": "2/2 PASS version_compare_structural_bug9_test.dart",
+      "regression": "test/features/project_resilience + test/features/character = 354 PASS / 1 platform-skip / 0 FAIL",
+      "analyze": "flutter analyze --no-pub: No issues found",
+      "format_gate": "dart format --output=none --set-exit-if-changed on 2 slice files: exit 0",
+      "diff_check": "exit 0",
+      "windows_build": "flutter build windows --debug --no-pub PASS",
+      "guard": "PASS recommended_step 145.30 (pre and post)",
+      "notes_file": "docs/evidence/vs-hunt-20260915-resilience/post_fix_notes_run327_BUG9.md"
+    },
+    "native_gui": "UNVERIFIABLE (diff-row presentation in native GUI not exercised this run; service-level proof only)",
+    "next_queue": "run320 hunt queue EXHAUSTED (BUG-8/6/7/4/9 all closed runs323-327). 145.30 remains hardware-bound PARTIAL (real power-loss + USB cold-eject need Choi's hands) - do not fabricate slices, do not rescan project_resilience. Next run = short NO-OP unless Choi decision or new regression evidence.",
+    "push": "NOT pushed (push decision belongs to Choi; ahead 17 after this run)"
   }
 }

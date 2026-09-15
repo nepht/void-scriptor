@@ -23,6 +23,7 @@ class ProjectSessionLock {
     this.package, {
     ProcessLivenessProbe? isProcessAlive,
     ProcessStartProbe? processStartMs,
+    this.afterDeadOwnerMarkerRecoveredForTest,
   }) : _isProcessAlive = isProcessAlive ?? _platformProcessIsAlive,
        _processStartMs = processStartMs ?? _platformProcessStartMs;
 
@@ -31,18 +32,55 @@ class ProjectSessionLock {
   final ProcessStartProbe _processStartMs;
   String? _ownedSessionId;
 
+  /// Test-only seam (vs-hunt-20260915-resilience BUG-4): invoked after a
+  /// dead-owner marker was recovered and BEFORE the next exclusive create,
+  /// so a test can inject a competing creator into the window real processes
+  /// only hit through OS scheduling.
+  @visibleForTesting
+  final Future<void> Function()? afterDeadOwnerMarkerRecoveredForTest;
+
+  /// Bounded recovery attempts against a competing creator: after the first
+  /// exclusive-create loss the marker is re-read and classified (live owner
+  /// protected / dead owner recovered) at most this many extra times before
+  /// failing closed, so a persistently contended package cannot livelock.
+  static const int _maxRecoveryAttempts = 3;
+
   Future<void> acquire({String? appVersion}) async {
     // Atomic create: checking exists before writing allows concurrent writers.
     // Age alone is never evidence that an owner died. A marker may only be
     // recovered automatically when it carries a PID that the OS proves dead.
-    try {
-      await package.sessionFile.create(exclusive: true);
-    } on FileSystemException {
-      if (!await package.sessionFile.exists()) rethrow;
-      if (!await _recoverDeadOwnerMarker()) {
-        throw StateError('Project has an active or stale session');
+    //
+    // vs-hunt-20260915-resilience BUG-4 (REAL BUG, Medium): the ORIGINAL code
+    // ran the post-recovery create exactly once with no protection. If a
+    // competing process claimed the freed window, that create threw a raw
+    // FileSystemException (no classification of who now owns the marker, no
+    // retry, no reconciliation). Now: every failed exclusive create re-reads
+    // the marker and distinguishes a legitimate NEW live owner (protect it,
+    // fail closed as StateError) from another dead/stale marker (archive and
+    // retry within [_maxRecoveryAttempts]).
+    var attempt = 0;
+    while (true) {
+      try {
+        await package.sessionFile.create(exclusive: true);
+        break;
+      } on FileSystemException {
+        if (!await package.sessionFile.exists()) rethrow;
+        // Give up BEFORE touching anyone's marker once the bounded budget is
+        // spent: throwing after a successful recovery would mean the last
+        // contender's marker was already archived, silently unlocking the
+        // package while we report failure.
+        if (attempt >= _maxRecoveryAttempts) {
+          throw StateError(
+            'Project session lock stayed contested after $attempt recovery '
+            'attempts',
+          );
+        }
+        if (!await _recoverDeadOwnerMarker()) {
+          throw StateError('Project has an active or stale session');
+        }
+        attempt++;
+        await afterDeadOwnerMarkerRecoveredForTest?.call();
       }
-      await package.sessionFile.create(exclusive: true);
     }
     final sessionId = const Uuid().v4();
     // If metadata writing fails, preserve the marker and fail closed.

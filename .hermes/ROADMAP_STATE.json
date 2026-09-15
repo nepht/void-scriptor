@@ -28,8 +28,8 @@
   "active_sprint": 111,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_111.json",
   "active_ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
-  "last_verified_step": "111.37",
-  "next_step": "111.39",
+  "last_verified_step": "111.39",
+  "next_step": "111.40",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-15",
-  "updated_by": "nephthys cron run371",
+  "updated_at": "2026-09-16",
+  "updated_by": "nephthys cron run379",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -210,7 +210,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run301",
-  "note": "run322 (cron): 145.42 interrupted-export LITERAL_PASS via kill OS nyata TANPA perubahan produksi (jalur staging .tmp + verifikasi + rename atomik lama sudah literal-safe; corpse parsial dimakan retry lintas-proses, bukti test-only + region 238 PASS/1 skip, analyze bersih, build win debug PASS). interrupted_* 145.42 TUTUP SEMUA (move/restore/import/export). Sisa 145.42 murni hardware-bound (power-loss nyata, USB cold-eject = tangan Choi). 145.27 sudah VERIFIED run321 - tidak diulang. Pointer guard tetap 145.30. Push TIDAK (keputusan Choi; ahead 8 pasca commit closeout). Run sebelumnya (run321): claim sentinel import + rekonsiliasi 145.27 VERIFIED. | 2026-09-15 switch stream: corrective_core_mvp DEFERRED di 145.30 (keputusan Choi), sequential_expansion AKTIF resume dari 111.21.",
+  "note": "run379 (cron): 111.39 Import, Export & Portability VERIFIED-LOCAL via bukti independen (fokus 47/47, regresi world_logic -j 1 2051/2051, format 0, analyze No issues, diff-check 0, build win debug 23,1s). PROVENANSI: modul+tes sudah mendarat untracked oleh penulis interaktif (mtime 03:51/03:52) sebelum fire cron = RED tak bisa direproduksi, cron TIDAK klaim RED palsu; koreksi nyata = _stringMap & import tak terpakai + typo CJK di doc. NEXT 111.40 Automated Test Matrix (unit/property/integration/migration/contract/ui/generator_replay/end_to_end/regression). D-SCHEMA-01 tetap OPEN (domain-only, tanpa persistence). Push TIDAK diizinkan (ahead 3 pasca commit closeout; origin tip 6f2d03a; keputusan Choi). | Run sebelumnya (run378): 111.38 Editor, Graph & Story Integration VERIFIED-LOCAL (1dbbcee). | 2026-09-15 switch stream: corrective_core_mvp DEFERRED di 145.30 (keputusan Choi), sequential_expansion AKTIF resume dari 111.21.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",

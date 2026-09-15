@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/persistence/project_manifest.dart';
+import 'package:void_scriptor/database/project/project_database.dart'
+    show ProjectDatabase;
 import 'package:void_scriptor/core/project_package/project_package_service.dart';
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/core/project_package/void_project_format.dart';
@@ -42,7 +44,7 @@ void main() {
       package.databaseFile.path,
     );
     addTearDown(second.close);
-    expect(second.schemaVersion, 61);
+    expect(second.schemaVersion, ProjectDatabase.currentSchemaVersion);
     expect(second.schemaVersion, greaterThan(0));
   });
 }

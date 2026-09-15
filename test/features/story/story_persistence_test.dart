@@ -4,6 +4,8 @@ import 'package:path/path.dart' as p;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/persistence/project_paths.dart';
+import 'package:void_scriptor/database/project/project_database.dart'
+    show ProjectDatabase;
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/story/application/create_story_service.dart';
 import 'package:void_scriptor/features/story/application/story_docx_exporter.dart';
@@ -115,6 +117,6 @@ void main() {
     final docxBytes = await docxFile.readAsBytes();
     expect(docxBytes.take(2), orderedEquals([0x50, 0x4b]));
     expect(docxBytes.length, greaterThan(500));
-    expect(second.schemaVersion, 61);
+    expect(second.schemaVersion, ProjectDatabase.currentSchemaVersion);
   });
 }

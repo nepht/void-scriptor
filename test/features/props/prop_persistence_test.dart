@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/persistence/project_paths.dart';
+import 'package:void_scriptor/database/project/project_database.dart'
+    show ProjectDatabase;
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/props/application/create_prop_service.dart';
 import 'package:void_scriptor/features/props/data/prop_repository.dart';
@@ -49,7 +51,7 @@ void main() {
     final second = await service.open(path);
     addTearDown(second.close);
     final restored = PropRepository(second);
-    expect(second.schemaVersion, 61);
+    expect(second.schemaVersion, ProjectDatabase.currentSchemaVersion);
     expect((await second.assetDao.getById(id))?.type, 'prop');
     expect((await restored.getProp(id))?.storyCritical, isTrue);
     expect((await restored.getSpecification(id))?.material, 'Paper');

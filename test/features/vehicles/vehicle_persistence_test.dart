@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/persistence/project_paths.dart';
+import 'package:void_scriptor/database/project/project_database.dart'
+    show ProjectDatabase;
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/vehicles/application/create_vehicle_service.dart';
 import 'package:void_scriptor/features/vehicles/data/vehicle_repository.dart';
@@ -57,7 +59,7 @@ void main() {
     final second = await service.open(dbPath);
     addTearDown(second.close);
     final restored = VehicleRepository(second);
-    expect(second.schemaVersion, 61);
+    expect(second.schemaVersion, ProjectDatabase.currentSchemaVersion);
     expect((await second.assetDao.getById(id))?.type, 'vehicle');
     expect(
       (await restored.getVehicle(id))?.category,

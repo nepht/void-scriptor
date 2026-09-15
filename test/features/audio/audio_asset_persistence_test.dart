@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/persistence/project_paths.dart';
+import 'package:void_scriptor/database/project/project_database.dart'
+    show ProjectDatabase;
 import 'package:void_scriptor/database/project/project_database_service.dart';
 import 'package:void_scriptor/features/audio/application/audio_asset_repository.dart';
 import 'package:void_scriptor/features/audio/domain/audio_models.dart';
@@ -95,7 +97,7 @@ void main() {
     final second = await service.open(dbPath);
     addTearDown(second.close);
     final restored = AudioAssetRepository(second);
-    expect(second.schemaVersion, 61);
+    expect(second.schemaVersion, ProjectDatabase.currentSchemaVersion);
     expect(
       (await restored.getSoundEffect('sfx-portal'))?.category,
       SoundEffectCategory.voidEffect,

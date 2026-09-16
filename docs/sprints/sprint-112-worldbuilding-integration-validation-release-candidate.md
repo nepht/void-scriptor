@@ -7,7 +7,7 @@
 
 | Step | Title | Status | Evidence |
 |---|---|---|---|
-| 112.1 | Release Candidate Entry Gate | PENDING | Canonical objective: Memastikan Wave 1-3 memiliki keputusan penerimaan, bukti pengujian, dan risiko yang dimiliki. |
+| 112.1 | Release Candidate Entry Gate | VERIFIED-LOCAL | `lib/features/world_logic/domain/release_candidate_entry_gate.dart` + `test/features/world_logic/sprint_112_01_entry_gate_test.dart`; lima required_evidence kanonik lengkap dan fail-closed (missing/duplicate/blocked ditolak). Sprint 109 dicatat jujur `acceptedWithRisk` karena 109.52 masih PENDING; Sprint 110 acceptance+closure dan Sprint 111 beta+closure dievaluasi lewat API produksi; 5 open/deferred risks punya owner+mitigasi; migration readiness `readyWithLimits` dengan D-SCHEMA-01 eksplisit. TDD RED: library/simbol belum ada -> GREEN fokus 4/4. Gate: acceptance/closure 110-112 PASS; `test/features/world_logic -j 1` 2221/2221 PASS; full `flutter analyze --no-pub` No issues (168,6 s); roadmap guard PASS; `git diff --check` PASS. Verdict `READY_WITH_OWNED_RISK`, bukan izin rilis/tag/publish. |
 | 112.2 | Scope Freeze & Non-Goals | PENDING | Canonical objective: Membekukan 29 konsep unik dan menolak perluasan fitur baru selama stabilisasi RC. |
 | 112.3 | Feature Evidence Inventory | PENDING | Canonical objective: Menghubungkan setiap fitur dengan implementasi, tests, dokumentasi, flag, owner, dan known issues. |
 | 112.4 | Architecture Conformance Review | PENDING | Canonical objective: Memastikan boundary, ownership, dependency, dan event contract tidak menyimpang setelah tiga wave. |
@@ -65,3 +65,5 @@
 ## Activation Ledger
 
 - 2026-09-16 — nephthys: Sprint 112 diaktifkan atas perintah eksplisit Choirudin; Core Worker v4 dipause selama switch; langkah pertama 112.1.
+
+- 2026-09-16 — nephthys: 112.1 selesai VERIFIED-LOCAL; pointer maju ke 112.2 Scope Freeze & Non-Goals. Hosted CI tetap UNVERIFIABLE karena gate billing akun yang terdokumentasi.

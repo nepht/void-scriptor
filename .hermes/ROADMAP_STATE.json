@@ -28,8 +28,8 @@
   "active_sprint": 111,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_111.json",
   "active_ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
-  "last_verified_step": "111.43",
-  "next_step": "111.44",
+  "last_verified_step": "111.44",
+  "next_step": "111.45",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-16",
-  "updated_by": "nephthys cron run382",
+  "updated_by": "nephthys cron run421",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -210,7 +210,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run301",
-  "note": "run382 (cron): 111.42 Security, Privacy & Content Safety Verification VERIFIED-LOCAL (TDD RED compile fail -> GREEN fokus 17/17; regresi world_logic -j 1 2135/2135; format gate 0; analyze scoped No issues; diff-check 0; build win debug 22,2s). Harness domain-only 13 threat + 22 check nyata atas API 111.6/7/8/31/37/39/41 + fix_status; FIX BUG NYATA th-import-checksum-bypass: validateJson fail-open pada payload tanpa checksum -> kind checksumMissing blocking + importText melempar; 1 tes 111.39 diadaptasi intent-preserving. th-power-loss-integrity = deferredHardware UNVERIFIABLE (hardware-bound, preseden 145.30). NEXT 111.43 Accessibility & Localization Verification (keyboard_results, screen_reader_results, scaling_results, multiscript_results, locale_results, fix_status). Push TIDAK diizinkan (ahead 7 pasca commit closeout; origin tip 6f2d03a; keputusan Choi).",
+  "note": "run421 (cron): closeout 111.44 Documentation & Worldbuilding Guidance VERIFIED-LOCAL (slice ditulis run420; re-verify run421 fokus 23/23 PASS, konten file tidak berubah sejak run420). STATE diperbarui: last_verified_step 111.43->111.44, next_step->111.45 Beta 1 Acceptance Gate. Commit scoped 4 path (lib encyclopedia_wave3_docs.dart + test sprint_111_44_docs_test + ledger sprint-111 + STATE). NEXT 111.45: audit required_evidence 8 kanonik dulu sebelum eksekusi; jangan fabrikasi bukti hardware-bound. Push TIDAK diizinkan (keputusan Choi).",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",

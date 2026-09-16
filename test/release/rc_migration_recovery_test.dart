@@ -58,7 +58,7 @@ void main() {
     test('fresh RC install creates the current schema directly', () async {
       final database = ProjectDatabase(NativeDatabase(dbFile()));
       await database.customSelect('SELECT 1').get();
-      expect(ProjectDatabase.currentSchemaVersion, 61);
+      expect(ProjectDatabase.currentSchemaVersion, 62);
       final version = await database
           .customSelect('PRAGMA user_version')
           .getSingle();

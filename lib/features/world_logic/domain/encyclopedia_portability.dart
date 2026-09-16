@@ -448,7 +448,8 @@ enum PortabilityValidationKind {
   mediaUnsanitized,
   mediaUnknownAsset,
   sanitizationIntegrity,
-  checksumMismatch;
+  checksumMismatch,
+  checksumMissing;
 
   String get label {
     switch (this) {
@@ -470,6 +471,8 @@ enum PortabilityValidationKind {
         return 'laporan sanitasi tidak konsisten dengan dokumen';
       case PortabilityValidationKind.checksumMismatch:
         return 'checksum tidak cocok dengan payload';
+      case PortabilityValidationKind.checksumMissing:
+        return 'checksum wajib ada; payload tanpa checksum ditolak';
     }
   }
 
@@ -835,16 +838,26 @@ class EncyclopediaPortabilityService {
     _validateSanitization(parsed['spoilerSanitization'], documents, issues);
 
     final checksumRaw = parsed['checksum'];
-    if (checksumRaw != null) {
-      if (checksumRaw is! String || !verifyChecksum(jsonText)) {
-        issues.add(
-          PortabilityValidationIssue.validated(
-            kind: PortabilityValidationKind.checksumMismatch,
-            path: 'checksum',
-            message: 'checksum does not match the canonical payload',
-          ),
-        );
-      }
+    if (checksumRaw == null) {
+      // Fail-closed 111.42: payload TANPA checksum tidak pernah dianggap
+      // utuh. Sebelumnya hanya diverifikasi bila ada (fail-open).
+      issues.add(
+        PortabilityValidationIssue.validated(
+          kind: PortabilityValidationKind.checksumMissing,
+          path: 'checksum',
+          message:
+              'checksum is required; unverified payload cannot be '
+              'imported',
+        ),
+      );
+    } else if (checksumRaw is! String || !verifyChecksum(jsonText)) {
+      issues.add(
+        PortabilityValidationIssue.validated(
+          kind: PortabilityValidationKind.checksumMismatch,
+          path: 'checksum',
+          message: 'checksum does not match the canonical payload',
+        ),
+      );
     }
 
     return PortabilityValidationReport.of(issues);

@@ -709,29 +709,25 @@ void main() {
     });
 
     test('license for unknown asset is a warning, not blocking', () {
-      final report = validate({
-        'formatVersion': '1.0',
-        'documents': <Object?>[],
-        'mediaManifest': {
-          'assetIds': <Object?>[],
-          'missingAssetIds': <Object?>[],
-          'sanitizationApplied': true,
-          'creditsByAsset': <String, Object?>{},
-          'licensesByAsset': {
-            'ghost': {
-              'tag': 'cc0',
-              'requiresAttribution': false,
-              'allowCommercial': true,
-              'notes': '',
-            },
-          },
+      // Payload dibangun lewat bundel nyata agar checksumnya SAH — dengan
+      // fail-closed 111.42 (checksum wajib), satu-satunya temuan yang boleh
+      // tersisa adalah warning mediaUnknownAsset itu sendiri.
+      final manifest = ExportMediaManifest.validated(
+        assetIds: const ['m1'],
+        licensesByAsset: {
+          'ghost': MediaLicense.validated(tag: MediaLicenseTag.cc0),
         },
-        'spoilerSanitization': {
-          'mode': 'keep',
-          'maskedRecordIds': <Object?>[],
-          'droppedRecordIds': <Object?>[],
-        },
-      });
+      );
+      final bundle = EncyclopediaPortabilityBundle.validated(
+        documents: const [],
+        mediaManifest: manifest,
+        spoilerSanitization: SpoilerSanitizationSection.validated(
+          mode: SpoilerSanitizationMode.keep,
+        ),
+      );
+      final report = EncyclopediaPortabilityService.validateJsonText(
+        EncyclopediaPortabilityService.exportText(bundle),
+      );
       expect(report.hasBlockingIssues, isFalse);
       expect(report.warnings, isNotEmpty);
       expect(

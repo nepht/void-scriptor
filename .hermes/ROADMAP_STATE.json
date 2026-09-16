@@ -28,8 +28,8 @@
   "active_sprint": 111,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_111.json",
   "active_ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
-  "last_verified_step": "111.41",
-  "next_step": "111.42",
+  "last_verified_step": "111.42",
+  "next_step": "111.43",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-16",
-  "updated_by": "nephthys cron run379",
+  "updated_by": "nephthys cron run382",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -210,7 +210,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run301",
-  "note": "run380 (cron): 111.40 Automated Test Matrix VERIFIED-LOCAL (TDD RED terbukti 38 undefined -> GREEN fokus 32/32; regresi world_logic -j 1 2083/2083; format gate 0; analyze No issues; diff-check 0; build win debug 21,3s). Matriks 9 suite = objek teraudit EncyclopediaWave3TestMatrix + agregat deterministik; golden replay vectors dari PROBE terukur (bukan karangan); migration=domain SchemaCompatibilityCheck (Drift tetap D-SCHEMA-01 OPEN), ui=kontrak keyboard atas hasil pencarian nyata (widget layer tersendiri). NEXT 111.41 Performance & Scale Validation (datasets, budgets, results, index_strategy, bottlenecks, mitigations). Push TIDAK diizinkan (ahead 5 pasca commit closeout; origin tip 6f2d03a; keputusan Choi). | Run sebelumnya (run379): 111.39 Import/Export/Portability VERIFIED (83f100e). | 2026-09-15 switch stream: corrective_core_mvp DEFERRED di 145.30 (keputusan Choi), sequential_expansion AKTIF resume dari 111.21.",
+  "note": "run382 (cron): 111.42 Security, Privacy & Content Safety Verification VERIFIED-LOCAL (TDD RED compile fail -> GREEN fokus 17/17; regresi world_logic -j 1 2135/2135; format gate 0; analyze scoped No issues; diff-check 0; build win debug 22,2s). Harness domain-only 13 threat + 22 check nyata atas API 111.6/7/8/31/37/39/41 + fix_status; FIX BUG NYATA th-import-checksum-bypass: validateJson fail-open pada payload tanpa checksum -> kind checksumMissing blocking + importText melempar; 1 tes 111.39 diadaptasi intent-preserving. th-power-loss-integrity = deferredHardware UNVERIFIABLE (hardware-bound, preseden 145.30). NEXT 111.43 Accessibility & Localization Verification (keyboard_results, screen_reader_results, scaling_results, multiscript_results, locale_results, fix_status). Push TIDAK diizinkan (ahead 7 pasca commit closeout; origin tip 6f2d03a; keputusan Choi).",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",

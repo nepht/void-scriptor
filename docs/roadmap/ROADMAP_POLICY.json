@@ -26,13 +26,19 @@
     "sequential_expansion": {
       "status": "ACTIVE",
       "priority": 2,
-      "sprint": 111,
-      "resume_step": "111.21",
-      "contract": "sprint_111.json",
-      "ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
+      "sprint": 112,
+      "resume_step": "112.1",
+      "contract": "sprint_112.json",
+      "ledger": "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md",
       "resume_condition": "corrective_core_mvp exit_gate is satisfied and recorded.",
-      "resumed_on": "2026-09-15",
-      "resume_authority": "KEPUTUSAN CHOI 15 Sep: 'lanjutka stream yang dihentikan mulai 111.21' \u2014 override eksplisit resume_condition exit_gate."
+      "resumed_on": "2026-09-16",
+      "resume_authority": "KEPUTUSAN CHOI 16 Sep: 'Aktifkan Sprint 112 dan mulai dari 112.1.'",
+      "previous_sprint": {
+        "sprint": 111,
+        "final_step": "111.46",
+        "status": "CLOSED-VERIFIED-LOCAL",
+        "commit": "b34f317"
+      }
     }
   },
   "precedence": [

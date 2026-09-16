@@ -32,18 +32,19 @@
       "authority": "BINDING",
       "status": "ACTIVE",
       "integrity": "IMMUTABLE",
-      "sha256": "0f06a72e9b22c22fbb232639ec84e0ae740961664799a5b48d98d46a8cd3917b",
+      "sha256": "042f0fcdd3ecd438b5f77dc31356418c858081e719b5152c0d4257ca1b3a9652",
       "owner": "product-governance",
       "effective_date": "2026-09-01",
       "linked_sprints": [
-        145,
-        111
+        111,
+        112,
+        145
       ],
       "may_create_scope": false,
       "may_mark_implementation_complete": false,
       "may_change_runtime_pointer": true,
-      "re_pinned_on": "2026-09-15",
-      "re_pin_reason": "KEPUTUSAN CHOI 15 Sep: switch active_stream corrective_core_mvp->DEFERRED(145.30 hardware-bound), sequential_expansion->ACTIVE resume 111.21"
+      "re_pinned_on": "2026-09-16",
+      "re_pin_reason": "KEPUTUSAN CHOI 16 Sep: Sprint 111 CLOSED-VERIFIED-LOCAL; aktifkan Sprint 112 dari 112.1"
     },
     {
       "path": "docs/roadmap/README.md",

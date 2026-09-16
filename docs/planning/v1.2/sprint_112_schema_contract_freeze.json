@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.5",
+  "title": "Schema & Contract Freeze",
+  "release_channel": "v1.2.0-rc.1",
+  "claim_boundary": "This manifest freezes local RC contracts and evolution rules. It does not prove native platform compatibility, hosted CI, signing, or public release readiness.",
+  "schema_manifest": {
+    "project_format_major": 1,
+    "project_format_schema": 16,
+    "database_schema": 62,
+    "plugin_api_major": 1,
+    "workflow_schema": 1,
+    "automation_rule_schema": 1,
+    "trigger_schema": 1,
+    "execution_record_schema": 1
+  },
+  "contract_versions": {
+    "project_format": "project-format/v1",
+    "database_schema": "project-database/v62",
+    "plugin_api": "plugin-api/v1",
+    "workflow_automation": "workflow-automation/v1"
+  },
+  "compatibility_policy": {
+    "future_versions": "reject_without_guessing",
+    "database_upgrade": "backup_then_forward_migrate",
+    "database_downgrade": "restore_backup_or_safe_export",
+    "unknown_fields": "preserve_when_reading",
+    "unknown_enum_values": "reject_at_validation_boundary",
+    "project_format_major": "same_major_only",
+    "plugin_api_major": "same_major_only"
+  },
+  "deprecation_policy": {
+    "breaking_changes_in_rc": false,
+    "notice_required": true,
+    "removal_requires_major": true,
+    "replacement_required_before_removal": true,
+    "silent_contract_changes": false
+  },
+  "post_release_evolution": {
+    "schema_changes": "next_migration_only",
+    "contract_changes": "additive_until_next_major",
+    "rollback": "pre_migration_backup",
+    "format_versioning": "bump_only_with_compatibility_plan",
+    "migration_requirement": "guarded_reversible_or_documented_boundary",
+    "release_exception": "record_decision_and_owner_before_merge"
+  },
+  "open_boundaries": [
+    "Native Windows, macOS, Web, and Mobile compatibility require their own evidence.",
+    "Typed WS-EVENTS v1 and uniform WorkspaceFailure remain architecture follow-up contracts from 112.4.",
+    "RC signing, hosted CI, and public release approval remain later gates."
+  ]
+}

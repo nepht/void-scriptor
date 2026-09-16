@@ -14,6 +14,21 @@ Urutan wajib setiap run:
 7. Setelah VERIFIED, perbarui ledger aktif lebih dulu lalu runtime state. Jalankan roadmap guard lagi; jangan mengubah policy stream/priority dari cron.
 8. Setelah corrective exit gate terpenuhi, laporkan BLOCKED menunggu keputusan stream transition. Cron tidak boleh mengaktifkan sequential stream sendiri.
 
+## Otorisasi tetap adopsi WIP kanonik (Choirudin, 2026-09-16)
+
+Status `M` atau `??` bukan veto dan tidak boleh membuat cron berputar NO-OP tanpa batas. Untuk setiap run sekarang dan seterusnya, pengguna memberi izin eksplisit kepada satu-satunya Core Worker untuk mengadopsi, memperbaiki, menguji, merekonsiliasi, dan commit WIP yang memenuhi SEMUA syarat berikut:
+
+1. file tersebut tepat berada dalam scope `next_step` kanonik aktif dan tidak memperluas acceptance;
+2. tidak ada writer hidup yang terbukti sedang menulis file tersebut (keberadaan PID umum, file dirty, atau mtime lama saja bukan bukti kepemilikan aktif);
+3. HEAD, `git status`, path, mtime, dan SHA-256 file direkam sebelum mutasi, lalu snapshot recoverable file terkait dibuat di luar source tree;
+4. semua perubahan existing dipertahankan dan diperbaiki secara patch minimal; dilarang `reset`, `restore`, `clean`, adopsi massal, atau menyentuh sibling di luar slice;
+5. scratch/probe hanya boleh dihapus setelah seluruh temuan atau assertion yang masih bernilai dipindahkan ke test resmi dan penghapusannya dicatat;
+6. TDD/gate slice, ledger -> state -> roadmap guard, dan explicit-path commit tetap wajib.
+
+Bila keenam syarat terpenuhi, JANGAN meminta izin adopsi/reparasi lagi dan JANGAN menunggu penulis yang tidak aktif. Jika writer benar-benar aktif, tunggu/handoff dan laporkan blocker sekali; run berikutnya wajib memeriksa ulang bukti aktual, bukan menyalin status lama. Otorisasi tetap ini tidak mengizinkan push, release, pembayaran, perubahan akun/keamanan, penghapusan project pengguna, atau fault test destruktif.
+
+Instruksi segera untuk WIP 111.43: adopsi empat file Accessibility & Localization yang terdaftar oleh preflight, perbaiki compile error dan kontrak enum/test yang tidak cocok, konsolidasikan dua probe bertanda `DELETE` ke test resmi lalu hapus probe bila aman, jalankan gate lengkap, perbarui ledger dan state, jalankan roadmap guard, commit hanya path slice 111.43, lalu biarkan run berikutnya melanjutkan pointer kanonik.
+
 Core yang dilindungi: project registry/database, novel/chapter/scene/character/lore, autosave/snapshot, backup/restore, import/export, migrations, Windows local-first startup, dan seluruh file pengguna. Community, Reader Network, Publishing Network, payment/payout, marketplace, provider expansion, XR, Metaverse, serta sistem non-Core tetap dipreservasi tetapi tidak boleh diperluas sebelum Core gate.
 
 Satu proses Flutter pada satu waktu. Warning database tidak boleh disembunyikan tanpa bukti lifecycle aman. Timeout bukan PASS. Laporan wajib berbahasa Indonesia dengan status VERIFIED/PARTIAL/BLOCKED/DEFERRED/NO-OP, command+exit, file, risiko, dan next action konkret.

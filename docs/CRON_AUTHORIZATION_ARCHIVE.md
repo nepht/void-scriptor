@@ -2,6 +2,12 @@
 
 Dokumen ini adalah salinan verbatim (dengan perbaikan encoding) dari seluruh instruksi historis yang pernah ditumpuk ke prompt cron `Void Scriptor Core Worker v4`. Isinya BUKAN instruksi default: baca bagian yang relevan hanya ketika slice menyentuh region tersebut. Aturan wajib setiap run tetap `.hermes/AUTONOMOUS_ROADMAP_PROMPT.md`. Tidak ada hak veto, otorisasi, atau fakta bukti yang dihapus dari sini; pemindahan ke arsip bukan pencabutan izin.
 
+## 2026-09-16 — Otorisasi tetap adopsi dan reparasi WIP kanonik
+
+Pengguna memerintahkan Hermes melakukan adopsi dan perbaikan dengan izin eksplisit yang selalu diizinkan. Otorisasi ini berlaku sekarang dan pada run berikutnya untuk WIP yang tepat sesuai `next_step` kanonik aktif, setelah worker membuktikan tidak ada penulis hidup, merekam fingerprint, dan membuat snapshot recoverable. Dirty/untracked atau PID umum saja bukan alasan menunggu tanpa batas. Worker wajib mempertahankan perubahan existing, melakukan patch minimal, menguji, merekonsiliasi ledger/state/guard, dan commit hanya path slice. Scratch/probe boleh dihapus hanya setelah bukti berguna dipindahkan ke test resmi. Jika syarat aman terpenuhi, Hermes tidak perlu meminta izin adopsi/reparasi lagi. Push, release, perubahan akun/keamanan, penghapusan data pengguna, dan fault test destruktif tetap tidak diizinkan.
+
+Instruksi langsung saat otorisasi diberikan: selesaikan WIP 111.43 Accessibility & Localization yang terdiri dari satu file domain dan tiga file test/probe; perbaiki kegagalan compile, selaraskan kontrak enum/test, konsolidasikan probe bertanda DELETE, jalankan gate, update ledger/state, roadmap guard, dan commit scoped.
+
 ---
 
 PROSEDUR PRIORITAS PENGGUNA — 2026-09-04: menuntaskan hambatan 145.27

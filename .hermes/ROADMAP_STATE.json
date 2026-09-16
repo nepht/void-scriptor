@@ -28,8 +28,8 @@
   "active_sprint": 112,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_112.json",
   "active_ledger": "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md",
-  "last_verified_step": "112.2",
-  "next_step": "112.3",
+  "last_verified_step": "112.3",
+  "next_step": "112.4",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-17",
-  "updated_by": "nephthys cron 112.2 closeout",
+  "updated_by": "nephthys cron 112.3 closeout",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -210,7 +210,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run302",
-  "note": "112.2 VERIFIED-LOCAL: scope freeze contract covers 29 unique concepts, F30 alias F24, non-goals/deferred/exception process; focused 1/1, release+entry regression 43/43, analyzer clean; next 112.3.",
+  "note": "112.3 VERIFIED-LOCAL: 29-feature inventory has all 8 canonical fields; 19 EVIDENCED_LOCAL, 10 Wave-2 PARTIAL due to missing dedicated per-feature flags; F30 remains alias F24; focused 1/1, release+entry regression 44/44, analyzer/build clean; next 112.4.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",

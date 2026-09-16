@@ -1,0 +1,707 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.3",
+  "title": "Feature Evidence Inventory",
+  "claim_boundary": "This is an inventory of current local implementation, test, documentation, flag, owner, and known-issue references; it is not integration, native, hosted-CI, or release approval evidence.",
+  "features": [
+    {
+      "feature": "F1",
+      "title": "Inline Lore Linking",
+      "implementation_refs": [
+        "lib/features/story/domain/inline_lore_links.dart"
+      ],
+      "test_refs": [
+        "test/features/story/domain/inline_lore_links_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "vs12_lore_links",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "writer-story-lore",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 109
+    },
+    {
+      "feature": "F2",
+      "title": "Story Contradiction Detector",
+      "implementation_refs": [
+        "lib/features/story/domain/contradiction_analysis.dart"
+      ],
+      "test_refs": [
+        "test/features/story/contradiction_analysis_pipeline_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "vs12_contradictions",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "writer-story-lore",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 109
+    },
+    {
+      "feature": "F3",
+      "title": "Travel & Logistics Simulation",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/route_network.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/route_network_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-110-world-logic-simulation-tools.md"
+      ],
+      "feature_flag": {
+        "mode": "shared_kill_switch_only",
+        "id": "FeatureFlagRegistry.engageKillSwitch",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "world-logic-simulation",
+      "known_issues": [
+        "No dedicated per-feature flag; only the shared v1.2 kill switch is evidenced. Rollout granularity remains PARTIAL."
+      ],
+      "status": "PARTIAL",
+      "source_sprint": 110
+    },
+    {
+      "feature": "F4",
+      "title": "Character Voice Interview",
+      "implementation_refs": [
+        "lib/features/character/domain/character_interview.dart"
+      ],
+      "test_refs": [
+        "test/features/character/character_interview_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "vs12_voice_interview",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "writer-story-lore",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 109
+    },
+    {
+      "feature": "F5",
+      "title": "Custom Calendar & Celestial Time",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/custom_calendar.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/custom_calendar_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-110-world-logic-simulation-tools.md"
+      ],
+      "feature_flag": {
+        "mode": "shared_kill_switch_only",
+        "id": "FeatureFlagRegistry.engageKillSwitch",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "world-logic-simulation",
+      "known_issues": [
+        "No dedicated per-feature flag; only the shared v1.2 kill switch is evidenced. Rollout granularity remains PARTIAL."
+      ],
+      "status": "PARTIAL",
+      "source_sprint": 110
+    },
+    {
+      "feature": "F6",
+      "title": "Genealogy Tree",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/genealogy_tree_builder.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/genealogy_tree_builder_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-110-world-logic-simulation-tools.md"
+      ],
+      "feature_flag": {
+        "mode": "shared_kill_switch_only",
+        "id": "FeatureFlagRegistry.engageKillSwitch",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "world-logic-simulation",
+      "known_issues": [
+        "No dedicated per-feature flag; only the shared v1.2 kill switch is evidenced. Rollout granularity remains PARTIAL."
+      ],
+      "status": "PARTIAL",
+      "source_sprint": 110
+    },
+    {
+      "feature": "F7",
+      "title": "Constructed Language Dictionary",
+      "implementation_refs": [
+        "lib/features/world/domain/conlang_registry.dart"
+      ],
+      "test_refs": [
+        "test/features/world/conlang_registry_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "vs12_conlang",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "writer-story-lore",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 109
+    },
+    {
+      "feature": "F8",
+      "title": "Focus Writing, Word Targets & Draft Snapshots",
+      "implementation_refs": [
+        "lib/features/story/domain/focus_writing_mode.dart"
+      ],
+      "test_refs": [
+        "test/features/story/focus_writing_mode_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "vs12_focus_writing",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "writer-story-lore",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 109
+    },
+    {
+      "feature": "F9",
+      "title": "Global Lore Graph",
+      "implementation_refs": [
+        "lib/features/lore/domain/lore_graph.dart"
+      ],
+      "test_refs": [
+        "test/features/lore/lore_graph_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "vs12_lore_graph",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "writer-story-lore",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 109
+    },
+    {
+      "feature": "F10",
+      "title": "Kanban Plot Board",
+      "implementation_refs": [
+        "lib/features/plot/domain/plot_board.dart"
+      ],
+      "test_refs": [
+        "test/features/plot/plot_board_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "vs12_plot_board",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "writer-story-lore",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 109
+    },
+    {
+      "feature": "F11",
+      "title": "Temporal World Map",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/temporal_map_state.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/temporal_map_state_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-110-world-logic-simulation-tools.md"
+      ],
+      "feature_flag": {
+        "mode": "shared_kill_switch_only",
+        "id": "FeatureFlagRegistry.engageKillSwitch",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "world-logic-simulation",
+      "known_issues": [
+        "No dedicated per-feature flag; only the shared v1.2 kill switch is evidenced. Rollout granularity remains PARTIAL."
+      ],
+      "status": "PARTIAL",
+      "source_sprint": 110
+    },
+    {
+      "feature": "F12",
+      "title": "Character Visual Moodboard",
+      "implementation_refs": [
+        "lib/features/character/domain/character_moodboard.dart"
+      ],
+      "test_refs": [
+        "test/features/character/character_moodboard_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "vs12_moodboard",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "writer-story-lore",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 109
+    },
+    {
+      "feature": "F13",
+      "title": "Faction Diplomacy Grid",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/faction_diplomacy.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/faction_diplomacy_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-110-world-logic-simulation-tools.md"
+      ],
+      "feature_flag": {
+        "mode": "shared_kill_switch_only",
+        "id": "FeatureFlagRegistry.engageKillSwitch",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "world-logic-simulation",
+      "known_issues": [
+        "No dedicated per-feature flag; only the shared v1.2 kill switch is evidenced. Rollout granularity remains PARTIAL."
+      ],
+      "status": "PARTIAL",
+      "source_sprint": 110
+    },
+    {
+      "feature": "F14",
+      "title": "Automatic Character Age & Location Tracker",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/character_age_at_time.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/character_age_at_time_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-110-world-logic-simulation-tools.md"
+      ],
+      "feature_flag": {
+        "mode": "shared_kill_switch_only",
+        "id": "FeatureFlagRegistry.engageKillSwitch",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "world-logic-simulation",
+      "known_issues": [
+        "No dedicated per-feature flag; only the shared v1.2 kill switch is evidenced. Rollout granularity remains PARTIAL."
+      ],
+      "status": "PARTIAL",
+      "source_sprint": 110
+    },
+    {
+      "feature": "F15",
+      "title": "Power-System Guardrails",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/power_rulebook.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/power_rulebook_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-110-world-logic-simulation-tools.md"
+      ],
+      "feature_flag": {
+        "mode": "shared_kill_switch_only",
+        "id": "FeatureFlagRegistry.engageKillSwitch",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "world-logic-simulation",
+      "known_issues": [
+        "No dedicated per-feature flag; only the shared v1.2 kill switch is evidenced. Rollout granularity remains PARTIAL."
+      ],
+      "status": "PARTIAL",
+      "source_sprint": 110
+    },
+    {
+      "feature": "F16",
+      "title": "Spoiler-Aware Sharing",
+      "implementation_refs": [
+        "lib/features/spoiler/domain/spoiler_classification.dart"
+      ],
+      "test_refs": [
+        "test/features/spoiler/spoiler_classification_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "vs12_spoiler_sharing",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "writer-story-lore",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 109
+    },
+    {
+      "feature": "F17",
+      "title": "POV Consistency Tracker",
+      "implementation_refs": [
+        "lib/features/pov/domain/pov_lock.dart"
+      ],
+      "test_refs": [
+        "test/features/pov/pov_lock_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "vs12_pov",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "writer-story-lore",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 109
+    },
+    {
+      "feature": "F18",
+      "title": "Pacing & Tension Heatmap",
+      "implementation_refs": [
+        "lib/features/pacing/domain/pacing_heatmap.dart"
+      ],
+      "test_refs": [
+        "test/features/pacing/pacing_heatmap_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "vs12_pacing",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "writer-story-lore",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 109
+    },
+    {
+      "feature": "F19",
+      "title": "Clean Manuscript Export",
+      "implementation_refs": [
+        "lib/features/export/domain/clean_export.dart"
+      ],
+      "test_refs": [
+        "test/features/export/clean_export_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "vs12_export",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "writer-story-lore",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 109
+    },
+    {
+      "feature": "F20",
+      "title": "Fiction Economy & Inflation Calculator",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/writer_economy_calculator.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/writer_economy_calculator_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-110-world-logic-simulation-tools.md"
+      ],
+      "feature_flag": {
+        "mode": "shared_kill_switch_only",
+        "id": "FeatureFlagRegistry.engageKillSwitch",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "world-logic-simulation",
+      "known_issues": [
+        "No dedicated per-feature flag; only the shared v1.2 kill switch is evidenced. Rollout granularity remains PARTIAL."
+      ],
+      "status": "PARTIAL",
+      "source_sprint": 110
+    },
+    {
+      "feature": "F21",
+      "title": "Rumor Propagation",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/rumor_propagation.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/rumor_propagation_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-110-world-logic-simulation-tools.md"
+      ],
+      "feature_flag": {
+        "mode": "shared_kill_switch_only",
+        "id": "FeatureFlagRegistry.engageKillSwitch",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "world-logic-simulation",
+      "known_issues": [
+        "No dedicated per-feature flag; only the shared v1.2 kill switch is evidenced. Rollout granularity remains PARTIAL."
+      ],
+      "status": "PARTIAL",
+      "source_sprint": 110
+    },
+    {
+      "feature": "F22",
+      "title": "Technology Tree & Civilization Limits",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/tech_tree_workspace.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/tech_tree_workspace_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-110-world-logic-simulation-tools.md"
+      ],
+      "feature_flag": {
+        "mode": "shared_kill_switch_only",
+        "id": "FeatureFlagRegistry.engageKillSwitch",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "world-logic-simulation",
+      "known_issues": [
+        "No dedicated per-feature flag; only the shared v1.2 kill switch is evidenced. Rollout granularity remains PARTIAL."
+      ],
+      "status": "PARTIAL",
+      "source_sprint": 110
+    },
+    {
+      "feature": "F23",
+      "title": "Herbology & Alchemy Database",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/encyclopedia_ingredient.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/domain/encyclopedia_ingredient_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "F23",
+        "default": "OFF",
+        "ref": "lib/features/world_logic/domain/encyclopedia_spoiler_accessibility.dart"
+      },
+      "owner": "lore-encyclopedias",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 111
+    },
+    {
+      "feature": "F24",
+      "title": "Bestiary Journal",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/encyclopedia_creature.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/domain/encyclopedia_creature_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "F24",
+        "default": "OFF",
+        "ref": "lib/features/world_logic/domain/encyclopedia_spoiler_accessibility.dart"
+      },
+      "owner": "lore-encyclopedias",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 111
+    },
+    {
+      "feature": "F25",
+      "title": "Subplot, Mission & Quest Tracker",
+      "implementation_refs": [
+        "lib/features/subplot/domain/story_quest.dart"
+      ],
+      "test_refs": [
+        "test/features/subplot/story_quest_model_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "vs12_quests",
+        "default": "OFF",
+        "ref": "lib/core/feature_flags/feature_flag_registry.dart"
+      },
+      "owner": "writer-story-lore",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 109
+    },
+    {
+      "feature": "F26",
+      "title": "Artifacts & Ancient Relics",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/encyclopedia_artifact.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/domain/encyclopedia_artifact_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "F26",
+        "default": "OFF",
+        "ref": "lib/features/world_logic/domain/encyclopedia_spoiler_accessibility.dart"
+      },
+      "owner": "lore-encyclopedias",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 111
+    },
+    {
+      "feature": "F27",
+      "title": "Myth, Legend & Theology Archive",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/encyclopedia_myth.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/domain/encyclopedia_myth_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "F27",
+        "default": "OFF",
+        "ref": "lib/features/world_logic/domain/encyclopedia_spoiler_accessibility.dart"
+      },
+      "owner": "lore-encyclopedias",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 111
+    },
+    {
+      "feature": "F28",
+      "title": "Syllable-Based Name Generator",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/encyclopedia_seeded_name_generation.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/domain/encyclopedia_seeded_name_generation_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "F28",
+        "default": "OFF",
+        "ref": "lib/features/world_logic/domain/encyclopedia_spoiler_accessibility.dart"
+      },
+      "owner": "lore-encyclopedias",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 111
+    },
+    {
+      "feature": "F29",
+      "title": "Local Idiom & Proverb Bank",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/encyclopedia_idiom_registry.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/domain/encyclopedia_idiom_registry_test.dart"
+      ],
+      "documentation_refs": [
+        "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md"
+      ],
+      "feature_flag": {
+        "mode": "dedicated",
+        "id": "F29",
+        "default": "OFF",
+        "ref": "lib/features/world_logic/domain/encyclopedia_spoiler_accessibility.dart"
+      },
+      "owner": "lore-encyclopedias",
+      "known_issues": [],
+      "status": "EVIDENCED_LOCAL",
+      "source_sprint": 111
+    }
+  ],
+  "alias": {
+    "feature": "F30",
+    "canonical_feature": "F24",
+    "separate_inventory_entry": false,
+    "reason": "Bestiary Creature Profile is part of Bestiary Journal."
+  },
+  "summary": {
+    "unique_features": 29,
+    "evidenced_local": 19,
+    "partial": 10,
+    "known_rollout_gap": "Wave 2 has no dedicated per-feature flags in the live registry."
+  }
+}

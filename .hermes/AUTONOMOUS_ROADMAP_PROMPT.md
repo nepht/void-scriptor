@@ -10,7 +10,7 @@ Urutan wajib setiap run:
 3. Cari `next_step` dalam canonical `steps`. Baca objective, requirements, outputs, acceptance, required_evidence, ledger gap, dan bukti repository. Jangan mengarang kriteria, melompati langkah, atau menghidupkan deferred scope.
 4. Jika `stability_gate.status` bukan `PASS`, kerjakan hanya quality gate atau kegagalan yang dapat direproduksi. Jangan mulai fitur roadmap sampai analyzer, focused Core regression, full test, dan Windows build yang diwajibkan kembali hijau.
 5. Jika gate PASS, kerjakan tepat `next_step` dengan TDD: RED relevan -> implementasi minimal -> GREEN -> regression -> analyzer/format scoped -> `git diff --check` -> applicable Windows evidence.
-6. Commit hanya file slice dengan path eksplisit. Dilarang `git add -A`, reset, restore, clean, menghapus data pengguna, atau menimpa perubahan lain. Jangan push tanpa izin eksplisit pengguna.
+6. Commit lokal hanya file slice dengan path eksplisit. Dilarang `git add -A`, reset, restore, clean, menghapus data pengguna, atau menimpa perubahan lain. Selama kebijakan hemat-CI aktif, jangan push meskipun sebuah sprint selesai; push memerlukan izin eksplisit baru dari pengguna.
 7. Setelah VERIFIED, perbarui ledger aktif lebih dulu lalu runtime state. Jalankan roadmap guard lagi; jangan mengubah policy stream/priority dari cron.
 8. Setelah corrective exit gate terpenuhi, laporkan BLOCKED menunggu keputusan stream transition. Cron tidak boleh mengaktifkan sequential stream sendiri.
 
@@ -27,7 +27,21 @@ Status `M` atau `??` bukan veto dan tidak boleh membuat cron berputar NO-OP tanp
 
 Bila keenam syarat terpenuhi, JANGAN meminta izin adopsi/reparasi lagi dan JANGAN menunggu penulis yang tidak aktif. Jika writer benar-benar aktif, tunggu/handoff dan laporkan blocker sekali; run berikutnya wajib memeriksa ulang bukti aktual, bukan menyalin status lama. Otorisasi tetap ini tidak mengizinkan push, release, pembayaran, perubahan akun/keamanan, penghapusan project pengguna, atau fault test destruktif.
 
-Instruksi segera untuk WIP 111.43: adopsi empat file Accessibility & Localization yang terdaftar oleh preflight, perbaiki compile error dan kontrak enum/test yang tidak cocok, konsolidasikan dua probe bertanda `DELETE` ke test resmi lalu hapus probe bila aman, jalankan gate lengkap, perbarui ledger dan state, jalankan roadmap guard, commit hanya path slice 111.43, lalu biarkan run berikutnya melanjutkan pointer kanonik.
+Instruksi WIP 111.43 telah selesai dan tidak lagi menjadi tugas aktif. Ikuti `next_step` kanonik terkini pada setiap run; jangan mengulang instruksi langkah lama.
+
+## Kebijakan tetap checkpoint lokal dan hemat CI (Choirudin, 2026-09-16)
+
+Sampai pengguna mencabut kebijakan ini secara eksplisit:
+
+1. setiap step VERIFIED tetap WAJIB dibuatkan commit lokal scoped dengan path eksplisit; jangan menumpuk banyak sprint dalam dirty working tree;
+2. DILARANG menjalankan `git push` ke remote mana pun, push melalui MCP/API, membuat atau memperbarui pull/merge request, membuat/mendorong tag, membuat release, atau memicu/rerun CI remote;
+3. selesainya sprint, bertambahnya commit `ahead`, atau gate lokal hijau BUKAN izin push;
+4. verifikasi harian memakai test fokus, regression yang diwajibkan kontrak, analyzer/format/diff-check, roadmap guard, dan build lokal yang applicable;
+5. CI remote hanya boleh dijalankan pada milestone yang dipilih pengguna atau setelah izin push/rilis baru yang eksplisit;
+6. ledger/state harus mencatat commit lokal dan jumlah `ahead` secara ringkas, tanpa menjadikan backlog push sebagai blocker roadmap;
+7. jika remote backup dibutuhkan, laporkan kebutuhan itu kepada pengguna; jangan menyiasati larangan dengan remote, branch, tag, bundle upload, atau provider lain.
+
+Tujuan kebijakan ini adalah menjaga checkpoint dan rollback granular untuk kestabilan cron sambil mencegah konsumsi billing CI selama implementasi sprint. Commit lokal tidak boleh dihapus atau digantikan oleh satu commit raksasa di akhir.
 
 Core yang dilindungi: project registry/database, novel/chapter/scene/character/lore, autosave/snapshot, backup/restore, import/export, migrations, Windows local-first startup, dan seluruh file pengguna. Community, Reader Network, Publishing Network, payment/payout, marketplace, provider expansion, XR, Metaverse, serta sistem non-Core tetap dipreservasi tetapi tidak boleh diperluas sebelum Core gate.
 

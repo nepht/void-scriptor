@@ -183,3 +183,20 @@ USER REQUEST 2026-09-08: Read and execute C:\Users\nepht\Documents\Codex\2026-08
 
 USER-APPROVED COORDINATION OVERRIDE: Before any mutation or codex exec, obey C:\Users\nepht\Documents\Codex\2026-08-22\referenced-chatgpt-conversation-this-is-an-2\HERMES_SINGLE_WRITER_HANDOFF.md. Current status RELEASED_TO_HERMES (2026-09-08): interactive owner stopped source edits; read the updated handoff and baseline, acknowledge acceptance, then continue. Codex PID or dirty files alone do not block. No duplicate writer in same worktree; no PID/mtime takeover; preserve all changes. Do not bypass paused writer job. Earlier autonomous continuation instructions remain subordinate to this admission rule.
 Follow notification policy: C:\Users\nepht\Documents\Codex\2026-08-22\referenced-chatgpt-conversation-this-is-an-2\HERMES_PROGRESS_DELTA_POLICY.md . Report only new results; no repeated completed evidence.
+
+# Otorisasi pengguna 2026-09-16 — checkpoint lokal, seluruh push ditahan
+
+Choirudin memerintahkan Hermes menghemat billing CI selama implementasi sprint.
+Kebijakan efektif sampai dicabut eksplisit:
+
+- tetap buat commit lokal scoped setelah step VERIFIED agar rollback, provenance,
+  dan kestabilan cron terjaga;
+- jangan push ke GitHub, GitLab, atau remote lain; jangan membuat PR/MR, tag,
+  release, atau memicu/rerun CI remote;
+- sprint selesai, commit ahead, dan gate lokal hijau bukan izin push;
+- jalankan gate yang diwajibkan secara lokal dan lanjutkan roadmap walaupun
+  commit lokal belum tersalur ke remote;
+- push/CI remote berikutnya hanya pada milestone yang dipilih Choirudin melalui
+  izin baru yang eksplisit.
+
+Larangan ini tidak menunda commit lokal dan tidak mengubah acceptance sprint.

@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.4",
+  "title": "Architecture Conformance Review",
+  "claim_boundary": "This is a local architecture review of live source and executable contracts. It does not prove native behavior, hosted CI, release packaging, or public release readiness.",
+  "baseline": {
+    "workspace_decision": "ADR-WS-001",
+    "core_dependency_decision": "ADR-0001",
+    "reviewed_waves": [109, 110, 111]
+  },
+  "reviews": [
+    {
+      "area": "module_boundaries",
+      "status": "CONFORMANT",
+      "evidence": [
+        {
+          "path": "test/core/architecture/core_dependency_direction_test.dart",
+          "mechanism": "Scans every production Dart file under lib/core and rejects imports or exports into lib/features."
+        },
+        {
+          "path": "docs/adr/ADR-0001-core-shared-type-ownership.md",
+          "mechanism": "Defines ownership of shared ProjectModel, AssetType, and command-history contracts in Core."
+        }
+      ],
+      "findings": [
+        "The standing dependency-direction gate prevents Core from regressing into feature-owned layers.",
+        "Application composition remains allowed to know feature modules; this review does not treat router and shell orchestration as a Core dependency violation."
+      ]
+    },
+    {
+      "area": "data_ownership",
+      "status": "CONFORMANT",
+      "evidence": [
+        {
+          "path": "lib/features/workspaces/domain/novel_character_link.dart",
+          "mechanism": "Stores typed cross-workspace references instead of co-owning Character canon."
+        },
+        {
+          "path": "test/features/workspaces/workspace_permission_policy_test.dart",
+          "mechanism": "Pins read and write permission checks across workspace boundaries."
+        },
+        {
+          "path": "test/features/workspaces/workspace_character_deletion_service_test.dart",
+          "mechanism": "Pins affected-Novel review before Character deletion."
+        },
+        {
+          "path": "test/features/workspaces/workspace_file_namespace_test.dart",
+          "mechanism": "Pins separate filesystem namespaces and identifier validation."
+        }
+      ],
+      "findings": [
+        "Novel and Character ownership remain distinct; links carry identity, role, visibility, and representation mode rather than a second canonical Character record.",
+        "Destructive Character lifecycle operations retain an explicit affected-Novel review boundary."
+      ]
+    },
+    {
+      "area": "dependency_cycles",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "test/core/architecture/core_dependency_direction_test.dart",
+          "mechanism": "Proves the highest-risk Core-to-feature edge is absent."
+        },
+        {
+          "path": "docs/planning/v1.2/dependency_map.md",
+          "mechanism": "Documents logical Wave 1 dependency levels and workspace prerequisites."
+        }
+      ],
+      "findings": [
+        "No Core-to-feature import is permitted by the executable gate.",
+        "There is no repository-wide directed import-graph cycle gate for feature-to-feature edges, so absence of all dependency cycles is not yet executable evidence."
+      ]
+    },
+    {
+      "area": "event_contracts",
+      "status": "NON_CONFORMANT",
+      "evidence": [
+        {
+          "path": "lib/core/commands/command_event_bus.dart",
+          "mechanism": "The live event payload exposes projectId, commandType, sequence, event type, and source."
+        },
+        {
+          "path": "test/core/commands/command_event_bus_test.dart",
+          "mechanism": "Proves command events are published after mutation execution."
+        },
+        {
+          "path": "docs/planning/v1.2/architecture_ownership_review.md",
+          "mechanism": "Defines the intended WS-EVENTS v1 names and no-canon-payload rule."
+        }
+      ],
+      "findings": [
+        "The universal command bus is implemented and consumed, but the documented WS-EVENTS v1 names (ws.link.*, ws.projection.*, ws.character.*) are not represented by a typed production contract.",
+        "ProjectMutationEvent has no stable workspace event name or entity identifier, so consumers cannot implement the documented link/projection lifecycle contract without interpreting commandType strings.",
+        "This is a release-candidate architecture blocker to be resolved by a later implementation step; 112.4 records it and does not fabricate conformance."
+      ]
+    },
+    {
+      "area": "plugin_boundaries",
+      "status": "CONFORMANT",
+      "evidence": [
+        {
+          "path": "test/core/plugin/plugin_sdk_test.dart",
+          "mechanism": "Pins the public plugin SDK contract."
+        },
+        {
+          "path": "test/core/plugin/plugin_sandbox_test.dart",
+          "mechanism": "Pins sandbox permission and isolation behavior."
+        },
+        {
+          "path": "test/core/plugin/plugin_host_test.dart",
+          "mechanism": "Pins host lifecycle and boundary behavior."
+        }
+      ],
+      "findings": [
+        "Plugin SDK, sandbox, repository, host, model, and UI boundaries have dedicated local test surfaces.",
+        "External third-party plugin compatibility remains outside this local conformance claim and belongs to Sprint 112.40."
+      ]
+    },
+    {
+      "area": "failure_isolation",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "test/features/workspaces/workspace_import_atomicity_test.dart",
+          "mechanism": "Pins transactional import rollback so failed cross-workspace materialization does not leave partial canonical data."
+        },
+        {
+          "path": "test/features/workspaces/workspace_projection_cache_test.dart",
+          "mechanism": "Pins rebuildable projection behavior rather than treating cache data as canonical truth."
+        },
+        {
+          "path": "docs/planning/v1.2/architecture_ownership_review.md",
+          "mechanism": "Defines FISO-01 and the intended WorkspaceFailure taxonomy."
+        }
+      ],
+      "findings": [
+        "Critical import atomicity, rebuildable projections, namespaces, and deletion review provide concrete failure containment.",
+        "The documented WorkspaceFailure validation/notFound/conflict/permissionDenied family is absent from production; service failures still use mixed exception types.",
+        "Failure isolation is therefore locally evidenced for selected workflows but not conformant as a uniform contract across all three waves."
+      ]
+    }
+  ],
+  "summary": {
+    "reviewed_areas": 6,
+    "conformant": 3,
+    "partial": 2,
+    "non_conformant": 1,
+    "blocking_findings": [
+      "WS-EVENTS v1 is documented but not implemented as a typed workspace event contract.",
+      "Repository-wide feature import cycles are not covered by an executable graph gate.",
+      "FISO-01 typed WorkspaceFailure taxonomy is not uniformly implemented."
+    ],
+    "release_decision": "NO_GO",
+    "next_contract_step": "112.5"
+  }
+}

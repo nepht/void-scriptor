@@ -28,7 +28,7 @@
   "active_sprint": 111,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_111.json",
   "active_ledger": "docs/sprints/sprint-111-lore-encyclopedias-bestiary-cultural-generators.md",
-  "last_verified_step": "111.45",
+  "last_verified_step": "111.46",
   "next_step": "111.46",
   "stability_gate": {
     "status": "PASS",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-16",
-  "updated_by": "nephthys cron run422",
+  "updated_by": "nephthys cron run423",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",

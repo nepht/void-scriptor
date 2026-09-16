@@ -120,7 +120,13 @@ class CollapsedTreeState {
   }
 
   CollapsedTreeState withExpanded(String rootId) {
-    final newCollapsed = collapsedRootIds.where((id) => id != rootId).toList();
+    // Expand membuka seluruh subtree rootId, jadi akar collapse di DALAM
+    // subtree itu tidak lagi berlaku collapsed (invarian: akar collapsed =>
+    // turunannya hidden; setelah expand, turunannya visible).
+    final subtree = _descendantClosure([rootId], childMap).toSet();
+    final newCollapsed = collapsedRootIds
+        .where((id) => id != rootId && !subtree.contains(id))
+        .toList();
     final hidden = <String>{...hiddenNodeIds}..remove(rootId);
     for (final d in _descendantClosure([rootId], childMap)) {
       hidden.remove(d);

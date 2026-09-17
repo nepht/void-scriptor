@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.8",
+  "title": "Reference Projects & Golden Data",
+  "production_data": false,
+  "golden_policy": "Dataset identities, seeds, shape counts, and expected invariant labels are deterministic test contracts; fixtures are disposable and must never point at user projects.",
+  "fixture_root": "test/fixtures/reference_projects",
+  "datasets": [
+    {
+      "id": "ref-small-v1",
+      "kind": "small_project",
+      "seed": 112801,
+      "record_counts": {"projects": 1, "characters": 3, "chapters": 2, "scenes": 4, "media": 1},
+      "golden_results": {"required": ["opens_offline", "round_trip_ids", "empty_optional_fields_safe"]},
+      "fixture_policy": "Minimal disposable project for smoke and migration probes."
+    },
+    {
+      "id": "ref-large-v1",
+      "kind": "large_project",
+      "seed": 112802,
+      "record_counts": {"projects": 1, "characters": 250, "chapters": 80, "scenes": 640, "media": 32},
+      "golden_results": {"required": ["stable_counts", "bounded_index_rebuild", "deterministic_export"]},
+      "fixture_policy": "Generated records only; no copied production content."
+    },
+    {
+      "id": "ref-long-timeline-v1",
+      "kind": "long_timeline",
+      "seed": 112803,
+      "record_counts": {"projects": 1, "eras": 12, "events": 1200, "chapters": 24, "scenes": 240},
+      "golden_results": {"required": ["ordered_events", "stable_absolute_time", "branch_scope"]},
+      "fixture_policy": "Synthetic chronology with explicit branch identifiers."
+    },
+    {
+      "id": "ref-multilingual-v1",
+      "kind": "multilingual_project",
+      "seed": 112804,
+      "record_counts": {"projects": 1, "characters": 8, "chapters": 6, "scenes": 18, "scripts": 5},
+      "golden_results": {"required": ["unicode_round_trip", "normalized_search_keys", "text_expansion_safe"]},
+      "fixture_policy": "Synthetic names and labels covering Latin, Arabic, Cyrillic, Han, and Devanagari scripts."
+    },
+    {
+      "id": "ref-branched-world-v1",
+      "kind": "branched_world",
+      "seed": 112805,
+      "record_counts": {"projects": 1, "branches": 4, "characters": 20, "locations": 14, "relations": 96},
+      "golden_results": {"required": ["branch_isolation", "shared_identity_resolution", "merge_conflict_visible"]},
+      "fixture_policy": "Synthetic alternate-history branches; source entities remain explicit."
+    },
+    {
+      "id": "ref-media-heavy-v1",
+      "kind": "media_heavy_project",
+      "seed": 112806,
+      "record_counts": {"projects": 1, "characters": 40, "chapters": 20, "scenes": 120, "media": 500},
+      "golden_results": {"required": ["manifest_integrity", "missing_media_state", "metadata_sanitization"]},
+      "fixture_policy": "Media metadata and generated placeholders only; binary payloads are disposable test artifacts."
+    }
+  ]
+}

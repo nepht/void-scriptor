@@ -1,0 +1,15 @@
+{
+  "step": "112.22",
+  "title": "Myth, Theology, Culture & Foreshadowing Integration",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Menghubungkan narasi publik, kebenaran sejarah, kepercayaan, simbol, idiom, budaya, clues, dan reveal.",
+  "acceptance": [
+    {"id": "belief_variants", "implementationRefs": ["lib/features/world_logic/domain/myth_theology_culture_foreshadowing_integration.dart", "lib/features/world_logic/domain/encyclopedia_belief_truth.dart"], "testRefs": ["test/features/world_logic/sprint_112_22_myth_theology_culture_foreshadowing_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "historical_truth", "implementationRefs": ["lib/features/world_logic/domain/myth_theology_culture_foreshadowing_integration.dart", "lib/features/world_logic/domain/encyclopedia_belief_truth.dart"], "testRefs": ["test/features/world_logic/sprint_112_22_myth_theology_culture_foreshadowing_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "culture_links", "implementationRefs": ["lib/features/world_logic/domain/myth_theology_culture_foreshadowing_integration.dart", "lib/features/world_logic/domain/encyclopedia_idiom_usage.dart"], "testRefs": ["test/features/world_logic/sprint_112_22_myth_theology_culture_foreshadowing_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "symbol_links", "implementationRefs": ["lib/features/world_logic/domain/myth_theology_culture_foreshadowing_integration.dart", "lib/features/world_logic/domain/encyclopedia_reveal_links.dart"], "testRefs": ["test/features/world_logic/sprint_112_22_myth_theology_culture_foreshadowing_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "idiom_context", "implementationRefs": ["lib/features/world_logic/domain/myth_theology_culture_foreshadowing_integration.dart", "lib/features/world_logic/domain/encyclopedia_idiom_usage.dart"], "testRefs": ["test/features/world_logic/sprint_112_22_myth_theology_culture_foreshadowing_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "reveal_integrity", "implementationRefs": ["lib/features/world_logic/domain/myth_theology_culture_foreshadowing_integration.dart", "lib/features/world_logic/domain/encyclopedia_reveal_links.dart"], "testRefs": ["test/features/world_logic/sprint_112_22_myth_theology_culture_foreshadowing_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"}
+  ],
+  "limitations": "Bukti ini membuktikan domain/local contract; tidak membuktikan UI/native GUI, persistence migration, hosted CI, signing, hardware, atau public release."
+}

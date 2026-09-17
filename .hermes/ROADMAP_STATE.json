@@ -28,8 +28,8 @@
   "active_sprint": 112,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_112.json",
   "active_ledger": "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md",
-  "last_verified_step": "112.20",
-  "next_step": "112.21",
+  "last_verified_step": "112.21",
+  "next_step": "112.22",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-17",
-  "updated_by": "nephthys cron 112.20 closeout",
+  "updated_by": "nephthys cron 112.21 closeout",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -493,5 +493,19 @@
     ],
     "evidence": "TDD RED missing integration/test -> GREEN focused 4/4; regression faction diplomacy + rumor 20/20; flutter analyze --no-pub No issues; Windows debug build PASS 24.6s; format/diff-check PASS",
     "limitations": "UI/native GUI, persistence migration, hosted CI, signing, hardware, and public release remain UNVERIFIABLE."
+  },
+  "sprint_112_step_11221": {
+    "status": "VERIFIED-LOCAL",
+    "manifest": "docs/planning/v1.2/sprint_112_herbology_alchemy_bestiary_ecology_integration.json",
+    "acceptance": [
+      "ingredient_sources",
+      "harvest_materials",
+      "habitat_links",
+      "seasonal_availability",
+      "recipe_effects",
+      "ecological_consequences"
+    ],
+    "evidence": "focused integration 1/1 PASS; manifest 1/1 PASS; scoped analyzer No issues; format/diff-check PASS",
+    "limitations": "domain/local only; UI/native GUI, persistence migration, hosted CI, signing, hardware, and public release remain UNVERIFIABLE"
   }
 }

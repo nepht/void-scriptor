@@ -1,0 +1,15 @@
+{
+  "step": "112.21",
+  "title": "Herbology, Alchemy, Bestiary & Ecology Integration",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Menghubungkan bahan, resep, makhluk, material panen, habitat, musim, efek, dan dampak ekologi.",
+  "acceptance": [
+    {"id": "ingredient_sources", "implementationRefs": ["lib/features/world_logic/domain/herbology_alchemy_bestiary_ecology_integration.dart", "lib/features/world_logic/domain/encyclopedia_ingredient.dart"], "testRefs": ["test/features/world_logic/sprint_112_21_herbology_alchemy_bestiary_ecology_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "harvest_materials", "implementationRefs": ["lib/features/world_logic/domain/herbology_alchemy_bestiary_ecology_integration.dart", "lib/features/world_logic/domain/encyclopedia_harvest.dart", "lib/features/world_logic/domain/encyclopedia_harvestable_material.dart"], "testRefs": ["test/features/world_logic/sprint_112_21_herbology_alchemy_bestiary_ecology_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "habitat_links", "implementationRefs": ["lib/features/world_logic/domain/herbology_alchemy_bestiary_ecology_integration.dart", "lib/features/world_logic/domain/encyclopedia_ecology.dart"], "testRefs": ["test/features/world_logic/sprint_112_21_herbology_alchemy_bestiary_ecology_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "seasonal_availability", "implementationRefs": ["lib/features/world_logic/domain/herbology_alchemy_bestiary_ecology_integration.dart", "lib/features/world_logic/domain/encyclopedia_harvest.dart"], "testRefs": ["test/features/world_logic/sprint_112_21_herbology_alchemy_bestiary_ecology_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "recipe_effects", "implementationRefs": ["lib/features/world_logic/domain/herbology_alchemy_bestiary_ecology_integration.dart", "lib/features/world_logic/domain/encyclopedia_alchemy.dart", "lib/features/world_logic/domain/encyclopedia_effect.dart"], "testRefs": ["test/features/world_logic/sprint_112_21_herbology_alchemy_bestiary_ecology_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "ecological_consequences", "implementationRefs": ["lib/features/world_logic/domain/herbology_alchemy_bestiary_ecology_integration.dart", "lib/features/world_logic/domain/encyclopedia_harvestable_material.dart"], "testRefs": ["test/features/world_logic/sprint_112_21_herbology_alchemy_bestiary_ecology_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"}
+  ],
+  "limitations": "Bukti ini membuktikan domain/local contract; tidak membuktikan UI/native GUI, persistence migration, hosted CI, signing, hardware, atau public release."
+}

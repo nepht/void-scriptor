@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-18",
-  "updated_by": "nephthys cron: 112.32 writer workflow closeout",
+  "updated_by": "nephthys cron: 112.33 evidence staged; guard awaiting canonical resolution",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -549,5 +549,13 @@
     "evidence": "focused workflow/persistence/screen/evidence suite 5/5 PASS; regression snapshot + writer workflow 7/7 PASS; flutter analyze --no-pub No issues; format/diff-check PASS; Windows debug build PASS 20.4s",
     "limitations": "native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE",
     "next_step": "112.33"
+  },
+  "sprint_112_step_11233": {
+    "status": "VERIFIED-LOCAL",
+    "manifest": "docs/planning/v1.2/sprint_112_end_to_end_worldbuilding_workflow.json",
+    "new_evidence": "lib/features/world_logic/domain/end_to_end_worldbuilding_workflow.dart; test/release/sprint_112_worldbuilding_workflow_integration_test.dart",
+    "evidence": "RED missing workflow/test -> GREEN focused 2/2 PASS; scoped analyzer No issues; format 0 changed; git diff --check PASS",
+    "limitations": "synthetic/local contract only; native GUI, persistence migration, hosted CI, signing, hardware, and public release remain UNVERIFIABLE",
+    "next_step": "112.34 pending canonical pointer resolution"
   }
 }

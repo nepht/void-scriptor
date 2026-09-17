@@ -1,0 +1,15 @@
+{
+  "step": "112.20",
+  "title": "Power Systems, Artifacts & Consequences Integration",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Menghubungkan rule kekuatan, artefak, aktivasi, biaya, kutukan, penggunaan, pemilik, dan consequences.",
+  "acceptance": [
+    {"id": "shared_power_rules", "implementationRefs": ["lib/features/world_logic/domain/power_systems_artifacts_consequences_integration.dart", "lib/features/world_logic/domain/power_rulebook.dart"], "testRefs": ["test/features/world_logic/sprint_112_20_power_systems_artifacts_consequences_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "activation_validation", "implementationRefs": ["lib/features/world_logic/domain/power_systems_artifacts_consequences_integration.dart", "lib/features/world_logic/domain/encyclopedia_artifact_validation.dart"], "testRefs": ["test/features/world_logic/sprint_112_20_power_systems_artifacts_consequences_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "owner_validation", "implementationRefs": ["lib/features/world_logic/domain/power_systems_artifacts_consequences_integration.dart", "lib/features/world_logic/domain/encyclopedia_ownership_lineage.dart"], "testRefs": ["test/features/world_logic/sprint_112_20_power_systems_artifacts_consequences_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "usage_ledger", "implementationRefs": ["lib/features/world_logic/domain/power_systems_artifacts_consequences_integration.dart", "lib/features/world_logic/domain/power_usage_ledger.dart"], "testRefs": ["test/features/world_logic/sprint_112_20_power_systems_artifacts_consequences_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "cost_application", "implementationRefs": ["lib/features/world_logic/domain/power_systems_artifacts_consequences_integration.dart", "lib/features/world_logic/domain/encyclopedia_activation_rules.dart"], "testRefs": ["test/features/world_logic/sprint_112_20_power_systems_artifacts_consequences_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "consequence_links", "implementationRefs": ["lib/features/world_logic/domain/power_systems_artifacts_consequences_integration.dart", "lib/features/world_logic/domain/power_usage_ledger.dart"], "testRefs": ["test/features/world_logic/sprint_112_20_power_systems_artifacts_consequences_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"}
+  ],
+  "limitations": "Bukti ini membuktikan domain/local contract; tidak membuktikan UI/native GUI, persistence migration, hosted CI, signing, hardware, atau public release."
+}

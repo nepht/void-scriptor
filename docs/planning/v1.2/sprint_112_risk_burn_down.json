@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.7",
+  "title": "Risk Burn-Down",
+  "release_channel": "v1.2.0-rc.1",
+  "claim_boundary": "This register records local risk decisions for the RC. It does not prove native GUI, hosted CI, signing, public release, or hardware failure behavior.",
+  "decision_policy": "A risk is mitigated only by executable local evidence; unavailable gates remain explicitly accepted or deferred with an owner.",
+  "risks": [
+    {
+      "id": "R112-01",
+      "category": "product",
+      "risk": "Worldbuilding capabilities may be exposed beyond their verified integration boundary during RC validation.",
+      "severity": "high",
+      "likelihood": "medium",
+      "mitigation": "Keep scope frozen to F1-F29, default flags OFF, and preserve deferred Wave 2 capabilities behind the shared kill switch.",
+      "owner": "product-governance",
+      "evidence": ["docs/planning/v1.2/sprint_112_scope_contract.md", "docs/planning/v1.2/sprint_112_feature_flag_rollout_matrix.json", "test/release/sprint_112_feature_flag_rollout_matrix_test.dart"],
+      "residual_risk": "Feature-level rollout isolation is incomplete for deferred features using the shared flag.",
+      "decision": "accept"
+    },
+    {
+      "id": "R112-02",
+      "category": "data",
+      "risk": "Schema or contract evolution could make an existing project unreadable or unsafe to migrate.",
+      "severity": "critical",
+      "likelihood": "medium",
+      "mitigation": "Freeze format and contract versions, reject unsupported future versions, require backup before forward migration, and keep downgrade as a documented boundary.",
+      "owner": "data-platform",
+      "evidence": ["docs/planning/v1.2/sprint_112_schema_contract_freeze.json", "test/release/sprint_112_schema_contract_freeze_test.dart"],
+      "residual_risk": "A complete reference-project migration rehearsal is still pending in step 112.27.",
+      "decision": "defer"
+    },
+    {
+      "id": "R112-03",
+      "category": "security",
+      "risk": "Private worldbuilding or workspace data could cross ownership or export boundaries.",
+      "severity": "high",
+      "likelihood": "medium",
+      "mitigation": "Enforce workspace ownership and permission projections, use deny-by-default sharing/redaction contracts, and preserve the explicit no-public-release boundary.",
+      "owner": "security-owner",
+      "evidence": ["docs/planning/v1.2/security_privacy_verification.md", "docs/planning/v1.2/permission_privacy_model.md", "docs/planning/v1.2/sprint_112_architecture_conformance_review.json"],
+      "residual_risk": "Dependency scanning and full release export threat-model evidence remain later-gate work.",
+      "decision": "defer"
+    },
+    {
+      "id": "R112-04",
+      "category": "performance",
+      "risk": "Large graph, timeline, media, or world datasets may exceed responsiveness or storage budgets.",
+      "severity": "high",
+      "likelihood": "medium",
+      "mitigation": "Retain bounded background-job/performance primitives and require measured budgets in the dedicated performance and memory gates before release.",
+      "owner": "runtime-owner",
+      "evidence": ["docs/planning/v1.2/performance_scale_validation.md", "lib/core/performance/", "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md"],
+      "residual_risk": "No Sprint 112 large-project benchmark result is claimed by this register.",
+      "decision": "defer"
+    },
+    {
+      "id": "R112-05",
+      "category": "accessibility",
+      "risk": "Keyboard, focus, scaling, screen-reader, and nonvisual paths may regress across the integrated surfaces.",
+      "severity": "high",
+      "likelihood": "medium",
+      "mitigation": "Keep accessibility and localization as explicit release gates; preserve the existing local verification matrix and do not infer native assistive-technology certification from widget tests.",
+      "owner": "accessibility-owner",
+      "evidence": ["docs/planning/v1.2/accessibility_localization_verification.md", "docs/planning/v1.2/sprint_112_scope_contract.md"],
+      "residual_risk": "Native screen-reader and full input-mode coverage are not available in this local cron gate.",
+      "decision": "defer"
+    },
+    {
+      "id": "R112-06",
+      "category": "compatibility",
+      "risk": "Local green tests may be mistaken for hosted CI, signed artifact, platform, or public-release compatibility.",
+      "severity": "critical",
+      "likelihood": "high",
+      "mitigation": "Label all evidence VERIFIED-LOCAL, keep hosted CI/signing/native boundaries explicit, and block release claims until the applicable gates produce evidence.",
+      "owner": "release-owner",
+      "evidence": ["docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md", "docs/planning/v1.2/sprint_112_architecture_conformance_review.json", ".hermes/AUTONOMOUS_ROADMAP_PROMPT.md"],
+      "residual_risk": "Hosted CI billing and native release validation remain unavailable in this run.",
+      "decision": "accept"
+    }
+  ]
+}

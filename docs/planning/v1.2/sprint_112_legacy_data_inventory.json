@@ -1,0 +1,2662 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.26",
+  "title": "Legacy Data Inventory",
+  "inventory_scope": "local_project_package",
+  "production_data": false,
+  "source_of_truth": {
+    "database_class": "lib/database/project/project_database.dart",
+    "current_schema_version": 62,
+    "table_count": 166,
+    "migration_strategy": "guarded onUpgrade blocks"
+  },
+  "schema_versions": {
+    "current_database_schema": 62,
+    "migration_range": "1..62",
+    "migration_strategy": "guarded_forward_migrations",
+    "unknown_future_versions": "reject_without_guessing"
+  },
+  "table_inventory": [
+    {
+      "name": "project_metadata",
+      "dart_type": "ProjectMetadata",
+      "category": "core_identity",
+      "source": "lib/database/project/project_database.dart",
+      "fields": [],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "assets",
+      "dart_type": "Assets",
+      "category": "core_identity",
+      "source": "lib/database/project/tables/assets.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "name",
+        "description",
+        "type",
+        "version",
+        "thumbnailPath",
+        "favorite",
+        "createdAt",
+        "updatedAt",
+        "lastOpenedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "supporting_asset_profiles",
+      "dart_type": "SupportingAssetProfiles",
+      "category": "assets",
+      "source": "lib/database/project/tables/supporting_asset_profiles.dart",
+      "fields": [
+        "assetId",
+        "assetType",
+        "protection",
+        "material",
+        "condition",
+        "category",
+        "significance",
+        "purpose",
+        "usageRules",
+        "itemState",
+        "hairStyle",
+        "hairColor",
+        "hairLength"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "asset_tags",
+      "dart_type": "AssetTags",
+      "category": "assets",
+      "source": "lib/database/project/tables/asset_tags.dart",
+      "fields": [
+        "id",
+        "assetId",
+        "tag"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "characters",
+      "dart_type": "Characters",
+      "category": "core_identity",
+      "source": "lib/database/project/tables/characters.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "displayName",
+        "alias",
+        "biography",
+        "personality",
+        "gender",
+        "age",
+        "heightCm",
+        "hair",
+        "eyes",
+        "skin",
+        "voice"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "character_narrative_assignments",
+      "dart_type": "CharacterNarrativeAssignments",
+      "category": "assets",
+      "source": "lib/database/project/tables/character_narrative_assignments.dart",
+      "fields": [
+        "projectId",
+        "novelWorkspaceId",
+        "characterId",
+        "roles",
+        "importance",
+        "pov"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "character_support_relationships",
+      "dart_type": "CharacterSupportRelationships",
+      "category": "assets",
+      "source": "lib/database/project/tables/character_narrative_assignments.dart",
+      "fields": [
+        "projectId",
+        "sourceCharacterId",
+        "supportedId",
+        "storyNovelWorkspaceId",
+        "type",
+        "duration",
+        "status",
+        "purpose",
+        "separationReason"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "novel_character_links",
+      "dart_type": "NovelCharacterLinks",
+      "category": "core_identity",
+      "source": "lib/database/project/tables/novel_character_links.dart",
+      "fields": [
+        "linkId",
+        "projectId",
+        "novelWorkspaceId",
+        "characterWorkspaceId",
+        "characterId",
+        "linkMode",
+        "role",
+        "visibility",
+        "createdAt",
+        "updatedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "workflow_definitions",
+      "dart_type": "WorkflowDefinitions",
+      "category": "assets",
+      "source": "lib/database/project/tables/workflow_persistence.dart",
+      "fields": [
+        "definitionId",
+        "version",
+        "name",
+        "payloadJson",
+        "createdAt",
+        "updatedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "workflow_run_records",
+      "dart_type": "WorkflowRunRecords",
+      "category": "assets",
+      "source": "lib/database/project/tables/workflow_persistence.dart",
+      "fields": [
+        "executionId",
+        "definitionId",
+        "definitionVersion",
+        "state",
+        "checkpointJson",
+        "startedAt",
+        "finishedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "character_identity_profiles",
+      "dart_type": "CharacterIdentityProfiles",
+      "category": "assets",
+      "source": "lib/database/project/tables/character_identity_profiles.dart",
+      "fields": [
+        "characterId",
+        "faceLock",
+        "hairLock",
+        "bodyLock",
+        "colorLock",
+        "outfitLock",
+        "weaponLock",
+        "accessoryLock",
+        "notes"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "character_references",
+      "dart_type": "CharacterReferences",
+      "category": "assets",
+      "source": "lib/database/project/tables/character_references.dart",
+      "fields": [
+        "id",
+        "characterId",
+        "type",
+        "filePath",
+        "priority",
+        "primaryReference"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "character_modes",
+      "dart_type": "CharacterModes",
+      "category": "assets",
+      "source": "lib/database/project/tables/character_modes.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "characterId",
+        "name",
+        "description",
+        "isDefault",
+        "thumbnailPath",
+        "accentColor",
+        "tagsJson",
+        "referenceSetId",
+        "createdAt",
+        "updatedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "character_loadout_entries",
+      "dart_type": "CharacterLoadoutEntries",
+      "category": "assets",
+      "source": "lib/database/project/tables/character_loadout_entries.dart",
+      "fields": [
+        "id",
+        "modeId",
+        "assetId",
+        "slot",
+        "quantity",
+        "sortOrder",
+        "enabled"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "character_mode_identity_overrides",
+      "dart_type": "CharacterModeIdentityOverrides",
+      "category": "assets",
+      "source": "lib/database/project/tables/character_mode_identity_overrides.dart",
+      "fields": [
+        "modeId",
+        "faceLock",
+        "hairLock",
+        "bodyLock",
+        "colorLock",
+        "outfitLock",
+        "weaponLock"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "character_mode_references",
+      "dart_type": "CharacterModeReferences",
+      "category": "assets",
+      "source": "lib/database/project/tables/character_mode_references.dart",
+      "fields": [
+        "id",
+        "modeId",
+        "referenceType",
+        "filePath",
+        "priority",
+        "primaryReference"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "character_canonical_scopes",
+      "dart_type": "CharacterCanonicalScopes",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/character_scope_layers.dart",
+      "fields": [
+        "characterId",
+        "identity",
+        "baseVoice",
+        "baseVisualProfile",
+        "baseRelationReferences"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "character_universe_timeline_overrides",
+      "dart_type": "CharacterUniverseTimelineOverrides",
+      "category": "story",
+      "source": "lib/database/project/tables/character_scope_layers.dart",
+      "fields": [
+        "characterId",
+        "alternateHistory",
+        "alternateRelationships",
+        "eraSpecificFacts"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "character_novel_states",
+      "dart_type": "CharacterNovelStates",
+      "category": "story",
+      "source": "lib/database/project/tables/character_scope_layers.dart",
+      "fields": [
+        "characterId",
+        "role",
+        "arc",
+        "currentLocation",
+        "currentAge",
+        "currentStatus",
+        "scenePov",
+        "novelRelationState"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "asset_relations",
+      "dart_type": "AssetRelations",
+      "category": "assets",
+      "source": "lib/database/project/tables/asset_relations.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "sourceAssetId",
+        "targetAssetId",
+        "relationType",
+        "relationOrigin",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "wardrobes",
+      "dart_type": "Wardrobes",
+      "category": "assets",
+      "source": "lib/database/project/tables/wardrobes.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "name",
+        "category",
+        "description",
+        "primaryMaterial",
+        "fabric",
+        "fit",
+        "style",
+        "notes"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "wardrobe_components",
+      "dart_type": "WardrobeComponents",
+      "category": "assets",
+      "source": "lib/database/project/tables/wardrobe_components.dart",
+      "fields": [
+        "id",
+        "wardrobeId",
+        "name",
+        "componentType",
+        "material",
+        "fabric",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "wardrobe_colors",
+      "dart_type": "WardrobeColors",
+      "category": "assets",
+      "source": "lib/database/project/tables/wardrobe_colors.dart",
+      "fields": [
+        "id",
+        "wardrobeId",
+        "name",
+        "hexValue",
+        "usage",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "wardrobe_variants",
+      "dart_type": "WardrobeVariants",
+      "category": "assets",
+      "source": "lib/database/project/tables/wardrobe_variants.dart",
+      "fields": [
+        "id",
+        "wardrobeId",
+        "name",
+        "description",
+        "isDefault"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "wardrobe_references",
+      "dart_type": "WardrobeReferences",
+      "category": "assets",
+      "source": "lib/database/project/tables/wardrobe_references.dart",
+      "fields": [
+        "id",
+        "wardrobeId",
+        "referenceType",
+        "filePath",
+        "priority"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "weapons",
+      "dart_type": "Weapons",
+      "category": "assets",
+      "source": "lib/database/project/tables/weapons.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "name",
+        "weaponType",
+        "description",
+        "primaryMaterial",
+        "secondaryMaterial",
+        "energyType",
+        "coreType",
+        "lengthMm",
+        "weightKg",
+        "notes"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "weapon_components",
+      "dart_type": "WeaponComponents",
+      "category": "assets",
+      "source": "lib/database/project/tables/weapon_components.dart",
+      "fields": [
+        "id",
+        "weaponId",
+        "name",
+        "componentType",
+        "material",
+        "description",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "weapon_measurements",
+      "dart_type": "WeaponMeasurements",
+      "category": "assets",
+      "source": "lib/database/project/tables/weapon_measurements.dart",
+      "fields": [
+        "id",
+        "weaponId",
+        "label",
+        "value",
+        "unit",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "weapon_colors",
+      "dart_type": "WeaponColors",
+      "category": "assets",
+      "source": "lib/database/project/tables/weapon_colors.dart",
+      "fields": [
+        "id",
+        "weaponId",
+        "name",
+        "hexValue",
+        "usage",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "weapon_energy_profiles",
+      "dart_type": "WeaponEnergyProfiles",
+      "category": "assets",
+      "source": "lib/database/project/tables/weapon_energy_profiles.dart",
+      "fields": [
+        "weaponId",
+        "energyType",
+        "coreType",
+        "activation",
+        "emissionColor",
+        "behavior"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "weapon_variants",
+      "dart_type": "WeaponVariants",
+      "category": "assets",
+      "source": "lib/database/project/tables/weapon_variants.dart",
+      "fields": [
+        "id",
+        "weaponId",
+        "name",
+        "description",
+        "isDefault"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "weapon_references",
+      "dart_type": "WeaponReferences",
+      "category": "assets",
+      "source": "lib/database/project/tables/weapon_references.dart",
+      "fields": [
+        "id",
+        "weaponId",
+        "referenceType",
+        "filePath",
+        "priority",
+        "primaryReference"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "weapon_preservation_profiles",
+      "dart_type": "WeaponPreservationProfiles",
+      "category": "assets",
+      "source": "lib/database/project/tables/weapon_preservation_profiles.dart",
+      "fields": [
+        "weaponId",
+        "geometryLock",
+        "materialLock",
+        "colorLock",
+        "coreLock",
+        "scaleLock",
+        "effectLock"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "environments",
+      "dart_type": "Environments",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/environments.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "name",
+        "environmentType",
+        "description",
+        "location",
+        "architecture",
+        "terrain",
+        "notes"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "environment_zones",
+      "dart_type": "EnvironmentZones",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/environment_zones.dart",
+      "fields": [
+        "id",
+        "environmentId",
+        "name",
+        "description",
+        "zoneType",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "environment_architectures",
+      "dart_type": "EnvironmentArchitectures",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/environment_architectures.dart",
+      "fields": [
+        "environmentId",
+        "style",
+        "structure",
+        "materials",
+        "scale",
+        "condition"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "environment_weather_profiles",
+      "dart_type": "EnvironmentWeatherProfiles",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/environment_weather_profiles.dart",
+      "fields": [
+        "id",
+        "environmentId",
+        "name",
+        "weatherPreset",
+        "intensity",
+        "windStrength",
+        "visibility",
+        "isDefault"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "environment_lighting_profiles",
+      "dart_type": "EnvironmentLightingProfiles",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/environment_lighting_profiles.dart",
+      "fields": [
+        "id",
+        "environmentId",
+        "name",
+        "timePreset",
+        "keyLight",
+        "fillLight",
+        "rimLight",
+        "environmentLight",
+        "practicalLights",
+        "fogDensity",
+        "bloomIntensity"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "environment_colors",
+      "dart_type": "EnvironmentColors",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/environment_colors.dart",
+      "fields": [
+        "id",
+        "environmentId",
+        "name",
+        "hexValue",
+        "usage",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "environment_props",
+      "dart_type": "EnvironmentProps",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/environment_props.dart",
+      "fields": [
+        "id",
+        "environmentId",
+        "zoneId",
+        "name",
+        "propType",
+        "state",
+        "positionNote"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "environment_continuity_states",
+      "dart_type": "EnvironmentContinuityStates",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/environment_continuity_states.dart",
+      "fields": [
+        "id",
+        "environmentId",
+        "name",
+        "description",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "environment_physics_profiles",
+      "dart_type": "EnvironmentPhysicsProfiles",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/environment_physics_profiles.dart",
+      "fields": [
+        "environmentId",
+        "gravityMultiplier",
+        "floatingObjects",
+        "dimensionalDistortion",
+        "portalBehavior",
+        "notes"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "environment_references",
+      "dart_type": "EnvironmentReferences",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/environment_references.dart",
+      "fields": [
+        "id",
+        "environmentId",
+        "referenceType",
+        "filePath",
+        "priority",
+        "primaryReference"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "stories",
+      "dart_type": "Stories",
+      "category": "assets",
+      "source": "lib/database/project/tables/stories.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "title",
+        "synopsis",
+        "genre",
+        "status",
+        "notes"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "story_arcs",
+      "dart_type": "StoryArcs",
+      "category": "story",
+      "source": "lib/database/project/tables/story_arcs.dart",
+      "fields": [
+        "id",
+        "storyId",
+        "title",
+        "description",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "story_chapters",
+      "dart_type": "StoryChapters",
+      "category": "story",
+      "source": "lib/database/project/tables/story_chapters.dart",
+      "fields": [
+        "id",
+        "storyId",
+        "arcId",
+        "title",
+        "summary",
+        "chapterNumber",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "story_scenes",
+      "dart_type": "StoryScenes",
+      "category": "story",
+      "source": "lib/database/project/tables/story_scenes.dart",
+      "fields": [
+        "id",
+        "storyId",
+        "chapterId",
+        "title",
+        "summary",
+        "sceneType",
+        "sceneNumber",
+        "sortOrder",
+        "estimatedDurationSeconds",
+        "referenceSetId",
+        "createdAt",
+        "updatedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "scene_characters",
+      "dart_type": "SceneCharacters",
+      "category": "story",
+      "source": "lib/database/project/tables/scene_characters.dart",
+      "fields": [
+        "id",
+        "sceneId",
+        "characterId",
+        "modeId",
+        "role",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "scene_environment_contexts",
+      "dart_type": "SceneEnvironmentContexts",
+      "category": "story",
+      "source": "lib/database/project/tables/scene_environment_contexts.dart",
+      "fields": [
+        "sceneId",
+        "environmentId",
+        "zoneId",
+        "weatherProfileId",
+        "lightingProfileId",
+        "continuityStateId",
+        "timePreset"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "scene_beats",
+      "dart_type": "SceneBeats",
+      "category": "story",
+      "source": "lib/database/project/tables/scene_beats.dart",
+      "fields": [
+        "id",
+        "sceneId",
+        "beatType",
+        "content",
+        "startSecond",
+        "durationSeconds",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "scene_draft_snapshots",
+      "dart_type": "SceneDraftSnapshots",
+      "category": "story",
+      "source": "lib/database/project/tables/scene_draft_snapshots.dart",
+      "fields": [
+        "id",
+        "sceneId",
+        "projectId",
+        "kind",
+        "content",
+        "label",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "scene_continuity_changes",
+      "dart_type": "SceneContinuityChanges",
+      "category": "story",
+      "source": "lib/database/project/tables/scene_continuity_changes.dart",
+      "fields": [
+        "id",
+        "sceneId",
+        "targetAssetId",
+        "changeType",
+        "beforeState",
+        "afterState"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "story_bible_sections",
+      "dart_type": "StoryBibleSections",
+      "category": "story",
+      "source": "lib/database/project/tables/story_bible_sections.dart",
+      "fields": [
+        "id",
+        "storyId",
+        "sectionType",
+        "title",
+        "content",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "timelines",
+      "dart_type": "Timelines",
+      "category": "story",
+      "source": "lib/database/project/tables/timelines.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "sceneId",
+        "durationSeconds",
+        "frameRate",
+        "createdAt",
+        "updatedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "timeline_tracks",
+      "dart_type": "TimelineTracks",
+      "category": "story",
+      "source": "lib/database/project/tables/timeline_tracks.dart",
+      "fields": [
+        "id",
+        "timelineId",
+        "trackType",
+        "name",
+        "sortOrder",
+        "muted",
+        "locked",
+        "visible"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "timeline_clips",
+      "dart_type": "TimelineClips",
+      "category": "story",
+      "source": "lib/database/project/tables/timeline_clips.dart",
+      "fields": [
+        "id",
+        "timelineId",
+        "trackId",
+        "clipType",
+        "label",
+        "startSeconds",
+        "durationSeconds",
+        "sourceId",
+        "payload",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "prompt_templates",
+      "dart_type": "PromptTemplates",
+      "category": "ai",
+      "source": "lib/database/project/tables/prompt_templates.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "name",
+        "target",
+        "content",
+        "builtIn",
+        "createdAt",
+        "updatedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "ai_prompt_history",
+      "dart_type": "AiPromptHistory",
+      "category": "story",
+      "source": "lib/database/project/tables/ai_prompt_history.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "sceneId",
+        "assetId",
+        "target",
+        "prompt",
+        "negativePrompt",
+        "provider",
+        "model",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "prompt_revisions",
+      "dart_type": "PromptRevisions",
+      "category": "ai",
+      "source": "lib/database/project/tables/prompt_revisions.dart",
+      "fields": [
+        "id",
+        "promptHistoryId",
+        "revision",
+        "content",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "ai_generations",
+      "dart_type": "AiGenerations",
+      "category": "ai",
+      "source": "lib/database/project/tables/ai_generations.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "promptHistoryId",
+        "provider",
+        "model",
+        "status",
+        "outputPath",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "ai_generation_jobs",
+      "dart_type": "AiGenerationJobs",
+      "category": "ai",
+      "source": "lib/database/project/tables/ai_generation_jobs.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "providerId",
+        "modelId",
+        "promptHistoryId",
+        "status",
+        "progress",
+        "error",
+        "priority",
+        "createdAt",
+        "startedAt",
+        "completedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "ai_generation_outputs",
+      "dart_type": "AiGenerationOutputs",
+      "category": "ai",
+      "source": "lib/database/project/tables/ai_generation_outputs.dart",
+      "fields": [
+        "id",
+        "jobId",
+        "outputType",
+        "localPath",
+        "remoteUrl",
+        "mimeType",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "ai_generation_inputs",
+      "dart_type": "AiGenerationInputs",
+      "category": "ai",
+      "source": "lib/database/project/tables/ai_generation_inputs.dart",
+      "fields": [
+        "id",
+        "jobId",
+        "inputType",
+        "sourceId",
+        "filePath",
+        "snapshotData",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "tags",
+      "dart_type": "Tags",
+      "category": "assets",
+      "source": "lib/database/project/tables/tags.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "name"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "asset_tag_links",
+      "dart_type": "AssetTagLinks",
+      "category": "assets",
+      "source": "lib/database/project/tables/tags.dart",
+      "fields": [
+        "assetId",
+        "tagId"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "asset_collections",
+      "dart_type": "AssetCollections",
+      "category": "assets",
+      "source": "lib/database/project/tables/asset_collections.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "name",
+        "description",
+        "query",
+        "isSmart",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "asset_collection_items",
+      "dart_type": "AssetCollectionItems",
+      "category": "assets",
+      "source": "lib/database/project/tables/asset_collections.dart",
+      "fields": [
+        "collectionId",
+        "assetId",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "references",
+      "dart_type": "References",
+      "category": "assets",
+      "source": "lib/database/project/tables/references.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "ownerAssetId",
+        "type",
+        "source",
+        "name",
+        "filePath",
+        "description",
+        "priority",
+        "primaryReference",
+        "enabled",
+        "contentHash",
+        "createdAt",
+        "updatedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "reference_sets",
+      "dart_type": "ReferenceSets",
+      "category": "assets",
+      "source": "lib/database/project/tables/reference_sets.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "ownerAssetId",
+        "name",
+        "description",
+        "defaultSet",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "reference_set_items",
+      "dart_type": "ReferenceSetItems",
+      "category": "assets",
+      "source": "lib/database/project/tables/reference_sets.dart",
+      "fields": [
+        "referenceSetId",
+        "referenceId",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "reference_versions",
+      "dart_type": "ReferenceVersions",
+      "category": "assets",
+      "source": "lib/database/project/tables/reference_identity.dart",
+      "fields": [
+        "id",
+        "referenceId",
+        "version",
+        "filePath",
+        "contentHash",
+        "changeNote",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "preservation_locks",
+      "dart_type": "PreservationLocks",
+      "category": "assets",
+      "source": "lib/database/project/tables/reference_identity.dart",
+      "fields": [
+        "id",
+        "assetId",
+        "type",
+        "enabled",
+        "instruction",
+        "priority"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "consistency_rules",
+      "dart_type": "ConsistencyRules",
+      "category": "assets",
+      "source": "lib/database/project/tables/consistency.dart",
+      "fields": [
+        "id",
+        "assetId",
+        "type",
+        "description",
+        "severity",
+        "enabled"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "consistency_reviews",
+      "dart_type": "ConsistencyReviews",
+      "category": "assets",
+      "source": "lib/database/project/tables/consistency.dart",
+      "fields": [
+        "id",
+        "generationOutputId",
+        "assetId",
+        "status",
+        "notes",
+        "reviewedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "consistency_review_items",
+      "dart_type": "ConsistencyReviewItems",
+      "category": "assets",
+      "source": "lib/database/project/tables/consistency.dart",
+      "fields": [
+        "id",
+        "reviewId",
+        "ruleId",
+        "status",
+        "note"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "bible_entries",
+      "dart_type": "BibleEntries",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/bible_entries.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "type",
+        "title",
+        "content",
+        "canonStatus",
+        "tagsJson",
+        "createdAt",
+        "updatedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "canon_rules",
+      "dart_type": "CanonRules",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/canon_rules.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "title",
+        "ruleText",
+        "severity",
+        "scope",
+        "scopeTargetId",
+        "canonStatus",
+        "enabled"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "canon_rule_conditions",
+      "dart_type": "CanonRuleConditions",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/canon_rules.dart",
+      "fields": [
+        "id",
+        "ruleId",
+        "validatorType",
+        "targetField",
+        "operator",
+        "expectedValue"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "factions",
+      "dart_type": "Factions",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/factions.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "name",
+        "description",
+        "ideology",
+        "status",
+        "headquarters",
+        "imagePath"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "faction_units",
+      "dart_type": "FactionUnits",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/faction_units.dart",
+      "fields": [
+        "id",
+        "factionId",
+        "parentUnitId",
+        "name",
+        "description"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "canon_conflicts",
+      "dart_type": "CanonConflicts",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/canon_conflicts.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "ruleId",
+        "targetId",
+        "message",
+        "severity",
+        "resolved",
+        "resolutionNote",
+        "detectedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "canon_rule_exceptions",
+      "dart_type": "CanonRuleExceptions",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/canon_conflicts.dart",
+      "fields": [
+        "id",
+        "ruleId",
+        "targetId",
+        "reason",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "species",
+      "dart_type": "Species",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/worldbuilding_entities.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "name",
+        "origin",
+        "description",
+        "lifespan",
+        "traits"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "technologies",
+      "dart_type": "Technologies",
+      "category": "assets",
+      "source": "lib/database/project/tables/worldbuilding_entities.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "name",
+        "category",
+        "description",
+        "creator",
+        "limitations"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "power_systems",
+      "dart_type": "PowerSystems",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/worldbuilding_entities.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "name",
+        "description",
+        "source",
+        "rules",
+        "limitations",
+        "visualLanguage"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "power_abilities",
+      "dart_type": "PowerAbilities",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/worldbuilding_entities.dart",
+      "fields": [
+        "id",
+        "powerSystemId",
+        "name",
+        "description",
+        "limitations",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "terminology_entries",
+      "dart_type": "TerminologyEntries",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/bible_timeline.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "term",
+        "definition",
+        "category",
+        "alternateTerms",
+        "caseSensitive"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "timeline_eras",
+      "dart_type": "TimelineEras",
+      "category": "story",
+      "source": "lib/database/project/tables/bible_timeline.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "name",
+        "description",
+        "orderIndex",
+        "startLabel",
+        "endLabel",
+        "imagePath"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "historical_events",
+      "dart_type": "HistoricalEvents",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/bible_timeline.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "eraId",
+        "title",
+        "description",
+        "orderIndex",
+        "canonStatus"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "historical_event_participants",
+      "dart_type": "HistoricalEventParticipants",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/bible_timeline.dart",
+      "fields": [
+        "id",
+        "eventId",
+        "assetId",
+        "role"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "creatures",
+      "dart_type": "Creatures",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/creatures.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "name",
+        "category",
+        "speciesId",
+        "description",
+        "behavior",
+        "abilities",
+        "origin"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "creature_physical_profiles",
+      "dart_type": "CreaturePhysicalProfiles",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/creatures.dart",
+      "fields": [
+        "creatureId",
+        "heightCm",
+        "lengthCm",
+        "weightKg",
+        "bodyStructure",
+        "skinMaterial",
+        "eyeDescription",
+        "distinguishingFeatures"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "creature_abilities",
+      "dart_type": "CreatureAbilities",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/creatures.dart",
+      "fields": [
+        "id",
+        "creatureId",
+        "name",
+        "description",
+        "powerSystemId",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "creature_modes",
+      "dart_type": "CreatureModes",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/creatures.dart",
+      "fields": [
+        "id",
+        "creatureId",
+        "name",
+        "description",
+        "referenceSetId",
+        "defaultMode"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "creature_ecology_states",
+      "dart_type": "CreatureEcologyStates",
+      "category": "worldbuilding",
+      "source": "lib/database/project/tables/creature_ecology_states.dart",
+      "fields": [
+        "creatureId",
+        "speciesId",
+        "genomeJson",
+        "phenotypeJson",
+        "needsJson",
+        "lineageId",
+        "simulationTick",
+        "updatedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "vehicles",
+      "dart_type": "Vehicles",
+      "category": "assets",
+      "source": "lib/database/project/tables/vehicles.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "name",
+        "category",
+        "description",
+        "manufacturer",
+        "role"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "vehicle_specifications",
+      "dart_type": "VehicleSpecifications",
+      "category": "assets",
+      "source": "lib/database/project/tables/vehicles.dart",
+      "fields": [
+        "vehicleId",
+        "lengthMeters",
+        "widthMeters",
+        "heightMeters",
+        "crew",
+        "passengers",
+        "propulsion",
+        "powerSource",
+        "maximumSpeed"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "vehicle_components",
+      "dart_type": "VehicleComponents",
+      "category": "assets",
+      "source": "lib/database/project/tables/vehicles.dart",
+      "fields": [
+        "id",
+        "vehicleId",
+        "name",
+        "category",
+        "description",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "vehicle_weapon_mounts",
+      "dart_type": "VehicleWeaponMounts",
+      "category": "assets",
+      "source": "lib/database/project/tables/vehicles.dart",
+      "fields": [
+        "id",
+        "vehicleId",
+        "weaponId",
+        "mountName",
+        "quantity"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "vehicle_variants",
+      "dart_type": "VehicleVariants",
+      "category": "assets",
+      "source": "lib/database/project/tables/vehicles.dart",
+      "fields": [
+        "id",
+        "vehicleId",
+        "name",
+        "description",
+        "referenceSetId"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "props",
+      "dart_type": "Props",
+      "category": "assets",
+      "source": "lib/database/project/tables/props.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "name",
+        "category",
+        "description",
+        "function",
+        "storyCritical"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "prop_specifications",
+      "dart_type": "PropSpecifications",
+      "category": "assets",
+      "source": "lib/database/project/tables/props.dart",
+      "fields": [
+        "propId",
+        "widthCm",
+        "heightCm",
+        "depthCm",
+        "weightKg",
+        "material",
+        "color"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "prop_states",
+      "dart_type": "PropStates",
+      "category": "assets",
+      "source": "lib/database/project/tables/props.dart",
+      "fields": [
+        "id",
+        "propId",
+        "name",
+        "description",
+        "referenceSetId",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "scene_asset_instances",
+      "dart_type": "SceneAssetInstances",
+      "category": "story",
+      "source": "lib/database/project/tables/scene_asset_instances.dart",
+      "fields": [
+        "id",
+        "sceneId",
+        "assetId",
+        "assetType",
+        "stateId",
+        "parentInstanceId",
+        "contextPriority",
+        "notes"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "scene_instance_transforms",
+      "dart_type": "SceneInstanceTransforms",
+      "category": "story",
+      "source": "lib/database/project/tables/scene_asset_instances.dart",
+      "fields": [
+        "instanceId",
+        "positionX",
+        "positionY",
+        "positionZ",
+        "rotationX",
+        "rotationY",
+        "rotationZ"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "scene_instance_properties",
+      "dart_type": "SceneInstanceProperties",
+      "category": "story",
+      "source": "lib/database/project/tables/scene_asset_instances.dart",
+      "fields": [
+        "id",
+        "instanceId",
+        "key",
+        "value"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "scene_continuity_snapshots",
+      "dart_type": "SceneContinuitySnapshots",
+      "category": "story",
+      "source": "lib/database/project/tables/scene_asset_instances.dart",
+      "fields": [
+        "id",
+        "sceneId",
+        "instanceId",
+        "snapshotData",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "vfx_assets",
+      "dart_type": "VfxAssets",
+      "category": "media",
+      "source": "lib/database/project/tables/vfx.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "name",
+        "category",
+        "description",
+        "visualBehavior",
+        "colorPalette"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "vfx_behavior_profiles",
+      "dart_type": "VfxBehaviorProfiles",
+      "category": "media",
+      "source": "lib/database/project/tables/vfx.dart",
+      "fields": [
+        "vfxId",
+        "originBehavior",
+        "movementBehavior",
+        "dissipationBehavior",
+        "environmentalInteraction",
+        "defaultDurationSeconds",
+        "emitsLight"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "vfx_states",
+      "dart_type": "VfxStates",
+      "category": "media",
+      "source": "lib/database/project/tables/vfx.dart",
+      "fields": [
+        "id",
+        "vfxId",
+        "name",
+        "description",
+        "referenceSetId",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "vfx_timeline_clips",
+      "dart_type": "VfxTimelineClips",
+      "category": "story",
+      "source": "lib/database/project/tables/vfx.dart",
+      "fields": [
+        "id",
+        "sceneId",
+        "vfxAssetId",
+        "startSeconds",
+        "durationSeconds",
+        "stateId",
+        "attachedInstanceId"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "vfx_keyframes",
+      "dart_type": "VfxKeyframes",
+      "category": "media",
+      "source": "lib/database/project/tables/vfx.dart",
+      "fields": [
+        "id",
+        "clipId",
+        "timeSeconds",
+        "property",
+        "value"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "audio_files",
+      "dart_type": "AudioFiles",
+      "category": "media",
+      "source": "lib/database/project/tables/audio_assets.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "filePath",
+        "contentHash",
+        "durationSeconds",
+        "sampleRate",
+        "channels",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "sound_effects",
+      "dart_type": "SoundEffects",
+      "category": "assets",
+      "source": "lib/database/project/tables/audio_assets.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "audioFileId",
+        "name",
+        "category",
+        "description",
+        "loopable"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "sound_effect_variations",
+      "dart_type": "SoundEffectVariations",
+      "category": "assets",
+      "source": "lib/database/project/tables/audio_assets.dart",
+      "fields": [
+        "id",
+        "soundEffectId",
+        "audioFileId",
+        "label",
+        "weight"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "ambience_assets",
+      "dart_type": "AmbienceAssets",
+      "category": "assets",
+      "source": "lib/database/project/tables/audio_assets.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "audioFileId",
+        "name",
+        "description",
+        "loopable"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "ambience_layers",
+      "dart_type": "AmbienceLayers",
+      "category": "assets",
+      "source": "lib/database/project/tables/audio_assets.dart",
+      "fields": [
+        "id",
+        "ambienceId",
+        "audioFileId",
+        "name",
+        "defaultGainDb",
+        "sortOrder"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "ambience_variants",
+      "dart_type": "AmbienceVariants",
+      "category": "assets",
+      "source": "lib/database/project/tables/audio_assets.dart",
+      "fields": [
+        "id",
+        "ambienceId",
+        "name",
+        "referenceAudioFileId",
+        "conditions"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "music_cues",
+      "dart_type": "MusicCues",
+      "category": "media",
+      "source": "lib/database/project/tables/audio_assets.dart",
+      "fields": [
+        "assetId",
+        "projectId",
+        "audioFileId",
+        "name",
+        "mood",
+        "bpm",
+        "musicalKey",
+        "description",
+        "loopable"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "music_sections",
+      "dart_type": "MusicSections",
+      "category": "media",
+      "source": "lib/database/project/tables/audio_assets.dart",
+      "fields": [
+        "id",
+        "musicId",
+        "name",
+        "startSeconds",
+        "endSeconds",
+        "mood"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "voice_profiles",
+      "dart_type": "VoiceProfiles",
+      "category": "media",
+      "source": "lib/database/project/tables/dialogue.dart",
+      "fields": [
+        "characterId",
+        "displayName",
+        "language",
+        "vocalTexture",
+        "deliveryNotes"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "voice_references",
+      "dart_type": "VoiceReferences",
+      "category": "media",
+      "source": "lib/database/project/tables/dialogue.dart",
+      "fields": [
+        "id",
+        "characterId",
+        "audioFileId",
+        "name",
+        "primary"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "dialogue_lines",
+      "dart_type": "DialogueLines",
+      "category": "story",
+      "source": "lib/database/project/tables/dialogue.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "sceneId",
+        "characterId",
+        "lineText",
+        "startSeconds",
+        "durationSeconds",
+        "subtitleText"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "dialogue_takes",
+      "dart_type": "DialogueTakes",
+      "category": "story",
+      "source": "lib/database/project/tables/dialogue.dart",
+      "fields": [
+        "id",
+        "lineId",
+        "audioFileId",
+        "label",
+        "selected",
+        "notes"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "audio_timeline_clips",
+      "dart_type": "AudioTimelineClips",
+      "category": "story",
+      "source": "lib/database/project/tables/audio_timeline.dart",
+      "fields": [
+        "id",
+        "timelineId",
+        "trackType",
+        "audioFileId",
+        "startSeconds",
+        "durationSeconds",
+        "fadeInSeconds",
+        "fadeOutSeconds",
+        "gainDb",
+        "pan",
+        "intent"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "audio_automation_keyframes",
+      "dart_type": "AudioAutomationKeyframes",
+      "category": "media",
+      "source": "lib/database/project/tables/audio_timeline.dart",
+      "fields": [
+        "id",
+        "clipId",
+        "timeSeconds",
+        "parameter",
+        "value"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "audio_waveform_caches",
+      "dart_type": "AudioWaveformCaches",
+      "category": "media",
+      "source": "lib/database/project/tables/audio_waveform.dart",
+      "fields": [
+        "id",
+        "audioFileId",
+        "sampleCount",
+        "peaksJson",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "external_files",
+      "dart_type": "ExternalFiles",
+      "category": "assets",
+      "source": "lib/database/project/tables/project_resilience.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "absolutePath",
+        "contentHash",
+        "available"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "project_backups",
+      "dart_type": "ProjectBackups",
+      "category": "operations",
+      "source": "lib/database/project/tables/project_resilience.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "type",
+        "relativePath",
+        "schemaVersion",
+        "sizeBytes",
+        "createdAt",
+        "note"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "cache_entries",
+      "dart_type": "CacheEntries",
+      "category": "operations",
+      "source": "lib/database/project/tables/project_resilience.dart",
+      "fields": [
+        "key",
+        "relativePath",
+        "cacheType",
+        "sizeBytes",
+        "createdAt",
+        "lastAccessedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "trash_entries",
+      "dart_type": "TrashEntries",
+      "category": "operations",
+      "source": "lib/database/project/tables/project_resilience.dart",
+      "fields": [
+        "id",
+        "originalPath",
+        "trashPath",
+        "entityId",
+        "deletedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "project_migration_history",
+      "dart_type": "ProjectMigrationHistory",
+      "category": "story",
+      "source": "lib/database/project/tables/project_resilience.dart",
+      "fields": [
+        "id",
+        "fromVersion",
+        "toVersion",
+        "appVersion",
+        "migratedAt",
+        "successful"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "command_history_entries",
+      "dart_type": "CommandHistoryEntries",
+      "category": "story",
+      "source": "lib/database/project/tables/command_history_entries.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "commandType",
+        "label",
+        "payload",
+        "undoPayload",
+        "sequence",
+        "source",
+        "status",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "background_jobs",
+      "dart_type": "BackgroundJobs",
+      "category": "operations",
+      "source": "lib/database/project/tables/background_jobs.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "type",
+        "label",
+        "status",
+        "priority",
+        "progress",
+        "payload",
+        "error",
+        "createdAt",
+        "startedAt",
+        "completedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "job_dependencies",
+      "dart_type": "JobDependencies",
+      "category": "operations",
+      "source": "lib/database/project/tables/job_dependencies.dart",
+      "fields": [
+        "jobId",
+        "dependsOnId"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "layout_presets",
+      "dart_type": "LayoutPresets",
+      "category": "operations",
+      "source": "lib/database/project/tables/layout_presets.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "name",
+        "json"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "project_layout_states",
+      "dart_type": "ProjectLayoutStates",
+      "category": "operations",
+      "source": "lib/database/project/tables/project_layout_states.dart",
+      "fields": [
+        "projectId",
+        "json"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "ai_usage_logs",
+      "dart_type": "AiUsageLogs",
+      "category": "assets",
+      "source": "lib/database/project/tables/ai_usage_logs.dart",
+      "fields": [
+        "id",
+        "generationId",
+        "provider",
+        "model",
+        "promptTokens",
+        "completionTokens",
+        "cost",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "ai_model_catalog",
+      "dart_type": "AiModelCatalog",
+      "category": "assets",
+      "source": "lib/database/project/tables/ai_model_catalog.dart",
+      "fields": [
+        "providerId",
+        "modelId",
+        "capabilitiesJson",
+        "cachedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "ai_output_reviews",
+      "dart_type": "AiOutputReviews",
+      "category": "assets",
+      "source": "lib/database/project/tables/ai_output_reviews.dart",
+      "fields": [
+        "generationId",
+        "status",
+        "feedback",
+        "createdAt",
+        "updatedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "sync_logs",
+      "dart_type": "SyncLogs",
+      "category": "operations",
+      "source": "lib/database/project/tables/sync_logs.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "kind",
+        "status",
+        "message",
+        "startedAt",
+        "finishedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "sync_conflicts",
+      "dart_type": "SyncConflicts",
+      "category": "operations",
+      "source": "lib/database/project/tables/sync_conflicts.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "entityKey",
+        "baseJson",
+        "oursJson",
+        "theirsJson",
+        "resolution",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "project_collaborators",
+      "dart_type": "ProjectCollaborators",
+      "category": "assets",
+      "source": "lib/database/project/tables/project_collaborators.dart",
+      "fields": [
+        "projectId",
+        "userId",
+        "role",
+        "invitedAt",
+        "acceptedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "project_comments",
+      "dart_type": "ProjectComments",
+      "category": "assets",
+      "source": "lib/database/project/tables/project_comments.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "authorId",
+        "targetType",
+        "targetId",
+        "body",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "activity_events",
+      "dart_type": "ActivityEvents",
+      "category": "operations",
+      "source": "lib/database/project/tables/activity_events.dart",
+      "fields": [
+        "id",
+        "projectId",
+        "actorId",
+        "kind",
+        "payload",
+        "createdAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "security_settings",
+      "dart_type": "SecuritySettings",
+      "category": "operations",
+      "source": "lib/database/project/tables/security_settings.dart",
+      "fields": [
+        "projectId",
+        "encryptionEnabled",
+        "kdfIterations",
+        "passphraseSalt",
+        "passphraseHash",
+        "locked",
+        "updatedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "plugins",
+      "dart_type": "Plugins",
+      "category": "operations",
+      "source": "lib/database/project/tables/plugins.dart",
+      "fields": [
+        "id",
+        "name",
+        "version",
+        "author",
+        "apiVersion",
+        "manifestJson",
+        "enabled",
+        "installedAt",
+        "updatedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "plugin_settings",
+      "dart_type": "PluginSettings",
+      "category": "operations",
+      "source": "lib/database/project/tables/plugins.dart",
+      "fields": [
+        "pluginId",
+        "key",
+        "value"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "animation_tracks",
+      "dart_type": "AnimationTracks",
+      "category": "assets",
+      "source": "lib/database/project/tables/animation.dart",
+      "fields": [
+        "id",
+        "clipId",
+        "name",
+        "targetProperty",
+        "interpolation",
+        "durationSeconds"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "animation_keyframes",
+      "dart_type": "AnimationKeyframes",
+      "category": "assets",
+      "source": "lib/database/project/tables/animation.dart",
+      "fields": [
+        "id",
+        "trackId",
+        "timeSeconds",
+        "value"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "audio_automation_curves",
+      "dart_type": "AudioAutomationCurves",
+      "category": "media",
+      "source": "lib/database/project/tables/audio_automation_curves.dart",
+      "fields": [
+        "id",
+        "clipId",
+        "parameter",
+        "interpolation",
+        "timeSeconds",
+        "value"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "shots",
+      "dart_type": "Shots",
+      "category": "media",
+      "source": "lib/database/project/tables/shots.dart",
+      "fields": [
+        "id",
+        "name",
+        "startSeconds",
+        "durationSeconds",
+        "cameraId"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "takes",
+      "dart_type": "Takes",
+      "category": "media",
+      "source": "lib/database/project/tables/shots.dart",
+      "fields": [
+        "id",
+        "shotId",
+        "takeNumber",
+        "state",
+        "notes"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "publish_records",
+      "dart_type": "PublishRecords",
+      "category": "operations",
+      "source": "lib/database/project/tables/publish_records.dart",
+      "fields": [
+        "id",
+        "channel",
+        "version",
+        "state",
+        "checksum",
+        "changelog",
+        "publishedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "studio_members",
+      "dart_type": "StudioMembers",
+      "category": "assets",
+      "source": "lib/database/project/tables/studio.dart",
+      "fields": [
+        "userId",
+        "studioId",
+        "role",
+        "status"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "audit_events",
+      "dart_type": "AuditEvents",
+      "category": "assets",
+      "source": "lib/database/project/tables/studio.dart",
+      "fields": [
+        "id",
+        "actor",
+        "action",
+        "target",
+        "timestamp"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "knowledge_entities",
+      "dart_type": "KnowledgeEntities",
+      "category": "assets",
+      "source": "lib/database/project/tables/knowledge.dart",
+      "fields": [
+        "id",
+        "type",
+        "title",
+        "factsJson"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "knowledge_relations",
+      "dart_type": "KnowledgeRelations",
+      "category": "assets",
+      "source": "lib/database/project/tables/knowledge.dart",
+      "fields": [
+        "id",
+        "sourceId",
+        "targetId",
+        "kind"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "agents",
+      "dart_type": "Agents",
+      "category": "assets",
+      "source": "lib/database/project/tables/agents.dart",
+      "fields": [
+        "id",
+        "name",
+        "systemPrompt",
+        "toolNamesJson"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "agent_tool_calls",
+      "dart_type": "AgentToolCalls",
+      "category": "assets",
+      "source": "lib/database/project/tables/agents.dart",
+      "fields": [
+        "id",
+        "agentId",
+        "toolName",
+        "input",
+        "output",
+        "timestamp"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "creative_briefs",
+      "dart_type": "CreativeBriefs",
+      "category": "assets",
+      "source": "lib/database/project/tables/creative.dart",
+      "fields": [
+        "id",
+        "title",
+        "genre",
+        "tone",
+        "goalsJson"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "creative_ideas",
+      "dart_type": "CreativeIdeas",
+      "category": "assets",
+      "source": "lib/database/project/tables/creative.dart",
+      "fields": [
+        "id",
+        "briefId",
+        "title",
+        "description",
+        "tagsJson"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "xr_sessions",
+      "dart_type": "XrSessions",
+      "category": "assets",
+      "source": "lib/database/project/tables/xr.dart",
+      "fields": [
+        "id",
+        "state",
+        "startedAt",
+        "endedAt"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "spatial_anchors",
+      "dart_type": "SpatialAnchors",
+      "category": "assets",
+      "source": "lib/database/project/tables/xr.dart",
+      "fields": [
+        "id",
+        "sessionId",
+        "contentId",
+        "x",
+        "y",
+        "z"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "metaverse_worlds",
+      "dart_type": "MetaverseWorlds",
+      "category": "assets",
+      "source": "lib/database/project/tables/metaverse.dart",
+      "fields": [
+        "id",
+        "name",
+        "description"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    },
+    {
+      "name": "metaverse_zones",
+      "dart_type": "MetaverseZones",
+      "category": "assets",
+      "source": "lib/database/project/tables/metaverse.dart",
+      "fields": [
+        "id",
+        "worldId",
+        "regionId",
+        "name",
+        "x",
+        "y",
+        "z"
+      ],
+      "field_usage": "column declarations in canonical Drift table"
+    }
+  ],
+  "unknown_variants": [
+    {
+      "variant": "unknown asset type or enum value",
+      "detected_by": "repository/parser validation",
+      "handling": "preserve raw value and surface a validation warning; never guess a canonical type"
+    },
+    {
+      "variant": "future schema version",
+      "detected_by": "project package open",
+      "handling": "fail closed before mutation and request an explicit migration"
+    },
+    {
+      "variant": "missing optional column in legacy row",
+      "detected_by": "Drift migration/read adapter",
+      "handling": "use the declared backward-compatible default and record a warning"
+    }
+  ],
+  "corrupt_samples": [
+    {
+      "sample": "malformed project manifest JSON",
+      "safe_action": "quarantine the manifest, preserve the original bytes, and show repair preview"
+    },
+    {
+      "sample": "SQLite integrity failure or unreadable database",
+      "safe_action": "do not overwrite; require backup selection and recovery diagnostics"
+    },
+    {
+      "sample": "orphaned media/reference path",
+      "safe_action": "retain metadata, report missing-file state, and avoid silent deletion"
+    }
+  ],
+  "migration_classes": [
+    {
+      "class": "additive table or column",
+      "verification": "open a disposable copy, run guarded migration, compare schema and row counts"
+    },
+    {
+      "class": "normalization/backfill",
+      "verification": "compare stable IDs, links, and deterministic counts before/after"
+    },
+    {
+      "class": "legacy/unknown data preservation",
+      "verification": "round-trip representative unknown values without guessing or data loss"
+    },
+    {
+      "class": "corruption boundary",
+      "verification": "fail closed, preserve source, and emit a recovery record"
+    }
+  ],
+  "limitations": [
+    "Inventory is source/schema metadata, not a scan of user project databases.",
+    "Corrupt samples are contract classes, not injected production damage.",
+    "Migration dry-run and backup/restore are separate canonical steps 112.27 and 112.28."
+  ]
+}

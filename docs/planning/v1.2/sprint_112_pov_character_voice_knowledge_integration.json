@@ -1,0 +1,82 @@
+{
+  "step": "112.13",
+  "title": "POV, Character Voice & Knowledge Integration",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Menghubungkan POV lock, pengetahuan tokoh, voice profile, interview, timeline, rumor, dan spoiler.",
+  "acceptance": [
+    {
+      "id": "pov_lock",
+      "implementationRefs": ["lib/features/pov/domain/pov_lock.dart"],
+      "testRefs": ["test/features/pov/pov_lock_test.dart"],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "knowledge_at_time",
+      "implementationRefs": ["lib/features/pov/domain/knowledge_boundary.dart"],
+      "testRefs": [
+        "test/features/pov/knowledge_boundary_test.dart",
+        "test/features/pov/knowledge_time_ordering_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "voice_rules",
+      "implementationRefs": ["lib/features/dialogue/domain/voice_consistency.dart"],
+      "testRefs": ["test/features/dialogue/voice_consistency_test.dart"],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "rumor_knowledge",
+      "implementationRefs": [
+        "lib/features/world_logic/domain/rumor_propagation.dart",
+        "lib/features/world_logic/domain/scene_knowledge_preview.dart"
+      ],
+      "testRefs": [
+        "test/features/world_logic/rumor_propagation_test.dart",
+        "test/features/world_logic/scene_knowledge_preview_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "secret_handling",
+      "implementationRefs": [
+        "lib/features/pov/domain/knowledge_boundary.dart",
+        "lib/features/world_logic/domain/security_privacy.dart"
+      ],
+      "testRefs": [
+        "test/features/pov/knowledge_boundary_test.dart",
+        "test/features/world_logic/security_privacy_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "explain_warning",
+      "implementationRefs": [
+        "lib/features/dialogue/domain/voice_consistency.dart",
+        "lib/features/pov/domain/head_hop_analysis.dart"
+      ],
+      "testRefs": [
+        "test/features/dialogue/voice_consistency_test.dart",
+        "test/features/pov/head_hop_analysis_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    }
+  ],
+  "relatedContracts": {
+    "interview": {
+      "implementationRefs": ["lib/features/character/domain/character_interview.dart"],
+      "testRefs": ["test/features/character/character_interview_test.dart"]
+    },
+    "spoiler": {
+      "implementationRefs": [
+        "lib/features/world_logic/domain/encyclopedia_spoiler_accessibility.dart",
+        "lib/features/spoiler/domain/spoiler_classification.dart"
+      ],
+      "testRefs": [
+        "test/features/world_logic/encyclopedia_spoiler_accessibility_test.dart",
+        "test/features/spoiler/spoiler_classification_test.dart"
+      ]
+    }
+  },
+  "limitations": "Bukti ini memetakan kontrak domain/local yang sudah live; tidak membuktikan wiring UI/native GUI, persistence migration, hosted CI, signing, hardware, atau public release."
+}

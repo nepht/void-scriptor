@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.10",
+  "title": "Editor, Lore Links & Contradiction Integration",
+  "claim_boundary": "Local contract and integration evidence only; native GUI, hosted CI, hardware, signing, and public release remain unverified.",
+  "acceptance": {
+    "link_round_trip": {
+      "status": "VERIFIED-LOCAL",
+      "paths": [
+        "lib/features/story/domain/inline_lore_links.dart",
+        "test/features/story/domain/inline_lore_links_test.dart"
+      ],
+      "mechanism": "InlineLoreLinkParser and InlineLoreLinkRenderer preserve prose, escaped syntax, and valid links byte-for-byte."
+    },
+    "backlink_consistency": {
+      "status": "VERIFIED-LOCAL",
+      "paths": [
+        "lib/features/bible/application/lore_backlink_service.dart",
+        "lib/features/story/domain/lore_backlinks.dart",
+        "test/features/story/lore_backlinks_test.dart",
+        "test/features/story/lore_backlinks_query_scope_test.dart"
+      ],
+      "mechanism": "Backlinks and integrity scans use the project-scoped scene source set, classify resolved/broken/ambiguous targets, and exclude foreign scenes."
+    },
+    "source_citations": {
+      "status": "VERIFIED-LOCAL",
+      "paths": [
+        "lib/features/story/domain/contradiction_analysis.dart",
+        "test/features/story/contradiction_analysis_pipeline_test.dart"
+      ],
+      "mechanism": "Contradiction findings retain ordered source citations and render deterministic explanations."
+    },
+    "incremental_analysis": {
+      "status": "VERIFIED-LOCAL",
+      "paths": [
+        "lib/features/story/domain/contradiction_analysis.dart",
+        "test/features/story/contradiction_analysis_pipeline_test.dart"
+      ],
+      "mechanism": "ContradictionAnalysisPipeline scopes evaluation to requested subject IDs, skips invalid rules fail-closed, and preserves stable fingerprints."
+    },
+    "repair_flow": {
+      "status": "VERIFIED-LOCAL",
+      "paths": [
+        "lib/features/bible/application/lore_backlink_service.dart",
+        "lib/features/story/domain/lore_backlinks.dart",
+        "lib/features/story/domain/contradiction_inbox.dart",
+        "test/features/story/lore_backlinks_test.dart",
+        "test/features/story/contradiction_inbox_test.dart"
+      ],
+      "mechanism": "Retarget repairs only inline link segments; contradiction inbox resolve/dismiss/restore keeps shared dismissal state and does not mutate manuscript text."
+    }
+  }
+}

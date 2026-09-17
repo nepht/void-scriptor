@@ -3,7 +3,7 @@ name: Release Train
 on:
   push:
     tags:
-      - 'v1.1.0-rc.*'
+      - 'v1.2.0-rc.*'
   workflow_dispatch:
     inputs:
       candidate_ref:

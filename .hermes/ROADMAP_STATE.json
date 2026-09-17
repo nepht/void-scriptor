@@ -28,8 +28,8 @@
   "active_sprint": 112,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_112.json",
   "active_ledger": "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md",
-  "last_verified_step": "112.17",
-  "next_step": "112.18",
+  "last_verified_step": "112.18",
+  "next_step": "112.19",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-17",
-  "updated_by": "nephthys cron 112.17 closeout",
+  "updated_by": "nephthys cron 112.18 closeout",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -429,7 +429,7 @@
     "resumed_on": "2026-09-16",
     "authority": "KEPUTUSAN CHOI 16 Sep: Aktifkan Sprint 112 dan mulai dari 112.1",
     "previous_sprint": "111.46 CLOSED-VERIFIED-LOCAL commit b34f317",
-    "next_step": "112.17"
+    "next_step": "112.19"
   },
   "activation_rules_11122_run362": {
     "status": "VERIFIED-LOCAL",
@@ -480,5 +480,18 @@
     ],
     "evidence": "RED missing integration/test -> GREEN focused integration 5/5; regression temporal route + location history + travel modes 48/48; scoped analyzer No issues; Windows debug build PASS 34.5s; diff-check PASS",
     "limitations": "Domain/local evidence only; native GUI, persistence migration, hosted CI, signing, hardware, and public release remain UNVERIFIABLE/DEFERRED."
+  },
+  "sprint_112_step_11218": {
+    "status": "VERIFIED-LOCAL",
+    "manifest": "docs/planning/v1.2/sprint_112_faction_diplomacy_rumor_integration.json",
+    "acceptance": [
+      "diplomacy_at_time",
+      "secret_clearance",
+      "event_driven_change",
+      "rumor_spread",
+      "faction_knowledge"
+    ],
+    "evidence": "TDD RED missing integration/test -> GREEN focused 4/4; regression faction diplomacy + rumor 20/20; flutter analyze --no-pub No issues; Windows debug build PASS 24.6s; format/diff-check PASS",
+    "limitations": "UI/native GUI, persistence migration, hosted CI, signing, hardware, and public release remain UNVERIFIABLE."
   }
 }

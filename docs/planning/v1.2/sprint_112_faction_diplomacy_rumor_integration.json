@@ -1,0 +1,14 @@
+{
+  "step": "112.18",
+  "title": "Faction, Diplomacy & Rumor Integration",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Menghubungkan hubungan publik/rahasia, treaty, konflik, komunikasi, rumor, dan pengetahuan kelompok.",
+  "acceptance": [
+    {"id": "diplomacy_at_time", "implementationRefs": ["lib/features/world_logic/domain/faction_diplomacy_rumor_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_18_faction_diplomacy_rumor_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "secret_clearance", "implementationRefs": ["lib/features/world_logic/domain/faction_diplomacy.dart", "lib/features/world_logic/domain/faction_diplomacy_rumor_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_18_faction_diplomacy_rumor_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "event_driven_change", "implementationRefs": ["lib/features/world_logic/domain/faction_diplomacy_rumor_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_18_faction_diplomacy_rumor_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "rumor_spread", "implementationRefs": ["lib/features/world_logic/domain/rumor_propagation.dart", "lib/features/world_logic/domain/faction_diplomacy_rumor_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_18_faction_diplomacy_rumor_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "faction_knowledge", "implementationRefs": ["lib/features/world_logic/domain/faction_diplomacy_rumor_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_18_faction_diplomacy_rumor_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"}
+  ],
+  "limitations": "Bukti ini membuktikan domain/local contract; tidak membuktikan UI/native GUI, persistence migration, hosted CI, signing, hardware, atau public release."
+}

@@ -28,8 +28,8 @@
   "active_sprint": 112,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_112.json",
   "active_ledger": "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md",
-  "last_verified_step": "112.26",
-  "next_step": "112.27",
+  "last_verified_step": "112.27",
+  "next_step": "112.28",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-17",
-  "updated_by": "nephthys cron run: 112.26 legacy data inventory",
+  "updated_at": "2026-09-18",
+  "updated_by": "nephthys cron run: 112.27 migration dry run",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -429,7 +429,7 @@
     "resumed_on": "2026-09-16",
     "authority": "KEPUTUSAN CHOI 16 Sep: Aktifkan Sprint 112 dan mulai dari 112.1",
     "previous_sprint": "111.46 CLOSED-VERIFIED-LOCAL commit b34f317",
-    "next_step": "112.27"
+    "next_step": "112.28"
   },
   "activation_rules_11122_run362": {
     "status": "VERIFIED-LOCAL",
@@ -534,5 +534,12 @@
     ],
     "evidence": "TDD RED missing manifest -> GREEN focused 1/1; release suite 54/54 PASS; flutter analyze --no-pub No issues; format/diff-check PASS.",
     "limitations": "local schema metadata only; no production project scan, migration dry run, backup/restore, native GUI, hosted CI, signing, hardware, or public release evidence."
+  },
+  "sprint_112_step_11227": {
+    "status": "VERIFIED-LOCAL",
+    "manifest": "docs/planning/v1.2/sprint_112_migration_dry_run.json",
+    "test": "test/release/sprint_112_migration_dry_run_test.dart",
+    "evidence": "TDD RED missing service -> GREEN focused 1/1 PASS; scoped analyzer No issues; format 0 changed; git diff --check PASS.",
+    "limitations": "synthetic/local single reference package; multi-dataset runtime, native GUI, hosted CI, signing, and release remain UNVERIFIABLE."
   }
 }

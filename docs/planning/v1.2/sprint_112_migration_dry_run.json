@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.27",
+  "title": "Migration Dry Run",
+  "production_data": false,
+  "objective": "Menjalankan migrasi pada salinan reference projects dan membandingkan data sebelum/sesudah.",
+  "implementation": {
+    "service": "lib/features/project_resilience/application/migration_dry_run_service.dart",
+    "test": "test/release/sprint_112_migration_dry_run_test.dart",
+    "database_open_path": "ProjectDatabaseService.open",
+    "source_mutation_policy": "copy_before_open; source package is never opened for writing"
+  },
+  "required_outputs": {
+    "migration_logs": "Ordered log entries identify copy and production open phases.",
+    "record_counts": "Every non-internal SQLite table is counted before and after the dry run.",
+    "link_counts": "Link, relation, and reference table counts are reported separately.",
+    "checksum_results": "Manifest SHA-256 is compared between source and disposable target.",
+    "warnings": "Count changes are surfaced as warnings; they are not silently repaired.",
+    "repair_actions": "No automatic repair is performed during a dry run."
+  },
+  "fixture_policy": "Uses a disposable ProjectPackage created under the OS temp directory; never reads or writes user projects.",
+  "limits": [
+    "This slice proves one synthetic reference package and local migration/open behavior.",
+    "Native GUI, hosted CI, signing, and release publication remain outside this evidence."
+  ]
+}

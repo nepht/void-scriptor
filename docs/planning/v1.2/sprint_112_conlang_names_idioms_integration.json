@@ -1,0 +1,15 @@
+{
+  "step": "112.23",
+  "title": "Conlang, Names & Idioms Integration",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Menghubungkan bahasa, fonologi, generator nama, ejaan, idiom, karakter, budaya, dan era.",
+  "acceptance": [
+    {"id": "phonotactic_reuse", "implementationRefs": ["lib/features/world_logic/domain/conlang_names_idioms_integration.dart", "lib/features/world_logic/domain/encyclopedia_syllable_phonotactics.dart"], "testRefs": ["test/features/world_logic/sprint_112_23_conlang_names_idioms_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "culture_profiles", "implementationRefs": ["lib/features/world_logic/domain/conlang_names_idioms_integration.dart", "lib/features/world_logic/domain/encyclopedia_name_profiles.dart"], "testRefs": ["test/features/world_logic/sprint_112_23_conlang_names_idioms_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "language_links", "implementationRefs": ["lib/features/world_logic/domain/conlang_names_idioms_integration.dart", "lib/features/world_logic/domain/encyclopedia_syllable_phonotactics.dart", "lib/features/world_logic/domain/encyclopedia_idiom_registry.dart"], "testRefs": ["test/features/world_logic/sprint_112_23_conlang_names_idioms_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "name_collision", "implementationRefs": ["lib/features/world_logic/domain/conlang_names_idioms_integration.dart", "lib/features/world_logic/domain/encyclopedia_name_collision.dart"], "testRefs": ["test/features/world_logic/sprint_112_23_conlang_names_idioms_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "idiom_usage", "implementationRefs": ["lib/features/world_logic/domain/conlang_names_idioms_integration.dart", "lib/features/world_logic/domain/encyclopedia_idiom_usage.dart"], "testRefs": ["test/features/world_logic/sprint_112_23_conlang_names_idioms_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "anachronism_checks", "implementationRefs": ["lib/features/world_logic/domain/conlang_names_idioms_integration.dart", "lib/features/world_logic/domain/encyclopedia_idiom_consistency.dart"], "testRefs": ["test/features/world_logic/sprint_112_23_conlang_names_idioms_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"}
+  ],
+  "limitations": "Bukti ini membuktikan domain/local contract; tidak membuktikan UI/native GUI, persistence migration, hosted CI, signing, hardware, atau public release."
+}

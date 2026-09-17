@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/database/project/project_database.dart' as db;
 
 /// Sprint 103 / 103.22 — workflow persistence through the canonical
-/// project database (schema v57, additive on top of user-owned v55).
+/// project database (schema v62, additive on top of user-owned v55).
 void main() {
   late Directory dir;
   setUp(() => dir = Directory.systemTemp.createTempSync('vs_wf_persist'));
@@ -15,13 +15,13 @@ void main() {
     } catch (_) {}
   });
 
-  test('schema migrates to v57 and creates workflow tables', () async {
+  test('schema migrates to v62 and creates workflow tables', () async {
     final database = db.ProjectDatabase(
       NativeDatabase(File('${dir.path}/project.db')),
     );
     await database.customSelect('SELECT 1').get();
-    // Pin versi: naik bersama currentSchemaVersion (61 = gambar faksi/era run236).
-    expect(db.ProjectDatabase.currentSchemaVersion, 61);
+    // Pin versi: naik bersama currentSchemaVersion (62 = supporting asset profiles).
+    expect(db.ProjectDatabase.currentSchemaVersion, 62);
     final tables = await database
         .customSelect("SELECT name FROM sqlite_master WHERE type='table'")
         .get();

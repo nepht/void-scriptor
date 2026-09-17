@@ -1,0 +1,15 @@
+{
+  "step": "112.19",
+  "title": "Economy, Technology & Civilization Integration",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Menghubungkan sumber daya, harga, produksi, infrastruktur, teknologi, perdagangan, dan dampak peristiwa.",
+  "acceptance": [
+    {"id": "resource_dependencies", "implementationRefs": ["lib/features/world_logic/domain/economy_technology_civilization_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_19_economy_technology_civilization_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "production_scale", "implementationRefs": ["lib/features/world_logic/domain/economy_technology_civilization_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_19_economy_technology_civilization_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "price_effects", "implementationRefs": ["lib/features/world_logic/domain/economy_technology_civilization_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_19_economy_technology_civilization_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "technology_prerequisites", "implementationRefs": ["lib/features/world_logic/domain/economy_technology_civilization_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_19_economy_technology_civilization_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "trade_effects", "implementationRefs": ["lib/features/world_logic/domain/economy_technology_civilization_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_19_economy_technology_civilization_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "era_validation", "implementationRefs": ["lib/features/world_logic/domain/economy_technology_civilization_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_19_economy_technology_civilization_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"}
+  ],
+  "limitations": "Bukti ini membuktikan domain/local contract; tidak membuktikan UI/native GUI, persistence migration, hosted CI, signing, hardware, atau public release."
+}

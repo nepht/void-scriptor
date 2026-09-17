@@ -1,0 +1,14 @@
+{
+  "step": "112.15",
+  "title": "Calendar, Timeline & World Clock Integration",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Memastikan semua modul menggunakan waktu absolut, adapter kalender, era, season, dan branch yang sama.",
+  "acceptance": [
+    {"id": "shared_clock", "implementationRefs": ["lib/features/world_logic/domain/shared_world_clock_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_15_calendar_timeline_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "calendar_round_trip", "implementationRefs": ["lib/features/world_logic/domain/shared_world_clock_integration.dart", "lib/features/world_logic/domain/custom_calendar.dart"], "testRefs": ["test/features/world_logic/sprint_112_15_calendar_timeline_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "era_consistency", "implementationRefs": ["lib/features/world_logic/domain/shared_world_clock_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_15_calendar_timeline_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "season_consistency", "implementationRefs": ["lib/features/world_logic/domain/shared_world_clock_integration.dart", "lib/features/world_logic/domain/custom_calendar.dart"], "testRefs": ["test/features/world_logic/sprint_112_15_calendar_timeline_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "branch_awareness", "implementationRefs": ["lib/features/world_logic/domain/shared_world_clock_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_15_calendar_timeline_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"}
+  ],
+  "limitations": "Bukti ini membuktikan domain/local contract; tidak membuktikan wiring UI/native GUI, persistence migration, hosted CI, signing, hardware, atau public release."
+}

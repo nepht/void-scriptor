@@ -28,8 +28,8 @@
   "active_sprint": 112,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_112.json",
   "active_ledger": "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md",
-  "last_verified_step": "112.14",
-  "next_step": "112.15",
+  "last_verified_step": "112.15",
+  "next_step": "112.16",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-17",
-  "updated_by": "nephthys cron 112.14 closeout",
+  "updated_by": "nephthys cron 112.15 closeout",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -210,7 +210,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run303",
-  "note": "112.14 VERIFIED-LOCAL: pacing/focus-writing/snapshot integration manifest maps six acceptance items; focused 24 PASS, analyzer clean, Windows debug build PASS, format/diff-check clean. Native GUI, hosted CI, signing, hardware, and public release remain unverified.",
+  "note": "112.15 VERIFIED-LOCAL: shared clock, calendar round-trip, era, season, and branch integration manifest maps five acceptance items; focused domain 5 PASS, manifest 1 PASS, format/diff-check PASS. Native GUI, persistence migration, hosted CI, signing, hardware, and public release remain unverified.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",
@@ -429,7 +429,7 @@
     "resumed_on": "2026-09-16",
     "authority": "KEPUTUSAN CHOI 16 Sep: Aktifkan Sprint 112 dan mulai dari 112.1",
     "previous_sprint": "111.46 CLOSED-VERIFIED-LOCAL commit b34f317",
-    "next_step": "112.15"
+    "next_step": "112.16"
   },
   "activation_rules_11122_run362": {
     "status": "VERIFIED-LOCAL",
@@ -454,5 +454,18 @@
     ],
     "evidence": "manifest focused 1/1; pacing + focus writing + draft snapshots/persistence 24/24 PASS; flutter analyze --no-pub No issues; Windows debug build PASS 68.7s; format/diff-check PASS; roadmap guard PASS",
     "limitations": "native GUI, additional migration, hosted CI, signing, hardware, public release UNVERIFIABLE"
+  },
+  "sprint_112_step_11215": {
+    "status": "VERIFIED-LOCAL",
+    "manifest": "docs/planning/v1.2/sprint_112_calendar_timeline_world_clock_integration.json",
+    "acceptance": [
+      "shared_clock",
+      "calendar_round_trip",
+      "era_consistency",
+      "season_consistency",
+      "branch_awareness"
+    ],
+    "evidence": "focused domain 5/5 PASS; manifest 1/1 PASS; format/diff-check PASS",
+    "limitations": "native GUI, persistence migration, hosted CI, signing, hardware, public release UNVERIFIABLE"
   }
 }

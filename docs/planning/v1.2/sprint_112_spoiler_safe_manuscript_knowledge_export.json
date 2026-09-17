@@ -1,0 +1,15 @@
+{
+  "step": "112.25",
+  "title": "Spoiler-Safe Manuscript & Knowledge Export",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Mengintegrasikan clearance pembaca, redaction, clean manuscript export, encyclopedia export, dan preflight.",
+  "acceptance": [
+    {"id": "reader_preview", "implementationRefs": ["lib/features/spoiler/domain/reader_redaction.dart", "lib/features/world_logic/domain/spoiler_safe_manuscript_knowledge_export.dart"], "testRefs": ["test/features/world_logic/sprint_112_25_spoiler_safe_export_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "redacted_links", "implementationRefs": ["lib/features/spoiler/domain/reader_redaction.dart", "lib/features/world_logic/domain/spoiler_safe_manuscript_knowledge_export.dart"], "testRefs": ["test/features/world_logic/sprint_112_25_spoiler_safe_export_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "private_note_removal", "implementationRefs": ["lib/features/world_logic/domain/spoiler_safe_manuscript_knowledge_export.dart"], "testRefs": ["test/features/world_logic/sprint_112_25_spoiler_safe_export_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "format_profiles", "implementationRefs": ["lib/features/world_logic/domain/spoiler_safe_manuscript_knowledge_export.dart"], "testRefs": ["test/features/world_logic/sprint_112_25_spoiler_safe_export_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "preflight_report", "implementationRefs": ["lib/features/world_logic/domain/spoiler_safe_manuscript_knowledge_export.dart"], "testRefs": ["test/features/world_logic/sprint_112_25_spoiler_safe_export_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "no_metadata_leak", "implementationRefs": ["lib/features/spoiler/domain/reader_redaction.dart", "lib/features/world_logic/domain/spoiler_safe_manuscript_knowledge_export.dart"], "testRefs": ["test/features/world_logic/sprint_112_25_spoiler_safe_export_test.dart"], "evidenceClass": "DOMAIN-LOCAL"}
+  ],
+  "limitations": "Bukti ini membuktikan domain/local contract dan Windows debug compilation; tidak membuktikan UI/native GUI journey, persistence migration, hosted CI, signing, hardware, atau public release."
+}

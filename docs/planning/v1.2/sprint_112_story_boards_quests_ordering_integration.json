@@ -1,0 +1,71 @@
+{
+  "step": "112.12",
+  "title": "Story Boards, Quests & Ordering Integration",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Menyinkronkan bab, adegan, plot board, subplot, quest, dependencies, dan consequences.",
+  "acceptance": [
+    {
+      "id": "story_order",
+      "implementationRefs": [
+        "lib/features/plot/domain/plot_order_sync.dart"
+      ],
+      "testRefs": [
+        "test/features/plot/plot_order_sync_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "board_order",
+      "implementationRefs": [
+        "lib/features/plot/domain/plot_board.dart"
+      ],
+      "testRefs": [
+        "test/features/plot/plot_board_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "quest_links",
+      "implementationRefs": [
+        "lib/features/subplot/domain/story_quest.dart"
+      ],
+      "testRefs": [
+        "test/features/subplot/story_quest_model_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "dependency_warning",
+      "implementationRefs": [
+        "lib/features/plot/domain/plot_order_sync.dart",
+        "lib/features/subplot/domain/story_quest.dart"
+      ],
+      "testRefs": [
+        "test/features/plot/plot_order_sync_test.dart",
+        "test/features/subplot/story_quest_model_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "unresolved_report",
+      "implementationRefs": [
+        "lib/features/subplot/domain/subplot_alerts.dart"
+      ],
+      "testRefs": [
+        "test/features/subplot/subplot_alerts_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "undo",
+      "implementationRefs": [
+        "lib/features/plot/domain/plot_order_sync.dart"
+      ],
+      "testRefs": [
+        "test/features/plot/plot_order_sync_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    }
+  ],
+  "limitations": "Bukti ini hanya mencakup domain/local contract dan tidak membuktikan native GUI, hosted CI, signing, hardware, persistence migration, atau public release."
+}

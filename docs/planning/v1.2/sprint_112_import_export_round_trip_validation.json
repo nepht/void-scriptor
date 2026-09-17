@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.31",
+  "title": "Import & Export Round-Trip Validation",
+  "production_data": false,
+  "objective": "Memastikan JSON, knowledge package, dan manuscript export mempertahankan data yang dijanjikan.",
+  "acceptance": [
+    {
+      "id": "schema_validation",
+      "implementationRefs": [
+        "lib/features/workspaces/application/workspace_export_service.dart",
+        "lib/features/workspaces/application/workspace_import_service.dart"
+      ],
+      "testRefs": [
+        "test/features/workspaces/workspace_export_service_test.dart",
+        "test/features/workspaces/workspace_import_version_test.dart"
+      ],
+      "evidenceClass": "LOCAL-CONTRACT"
+    },
+    {
+      "id": "round_trip",
+      "implementationRefs": [
+        "lib/features/workspaces/application/workspace_export_service.dart",
+        "lib/features/workspaces/application/workspace_import_service.dart"
+      ],
+      "testRefs": [
+        "test/features/workspaces/workspace_export_service_test.dart",
+        "test/features/workspaces/workspace_import_archive_size_cap_test.dart"
+      ],
+      "evidenceClass": "LOCAL-CONTRACT"
+    },
+    {
+      "id": "media_manifest",
+      "implementationRefs": [
+        "lib/features/workspaces/application/workspace_export_service.dart",
+        "lib/features/project_resilience/application/archive_secret_policy.dart"
+      ],
+      "testRefs": [
+        "test/features/workspaces/workspace_export_service_test.dart",
+        "test/release/sprint_112_backup_restore_verification_test.dart"
+      ],
+      "evidenceClass": "LOCAL-CONTRACT"
+    },
+    {
+      "id": "stable_ids",
+      "implementationRefs": [
+        "lib/features/workspaces/application/workspace_export_service.dart",
+        "lib/features/workspaces/application/workspace_import_service.dart"
+      ],
+      "testRefs": [
+        "test/features/workspaces/workspace_export_service_test.dart",
+        "test/features/workspaces/vs_hunt_20260914_workspaces_migration_test.dart"
+      ],
+      "evidenceClass": "LOCAL-CONTRACT"
+    },
+    {
+      "id": "sanitized_share",
+      "implementationRefs": [
+        "lib/features/world_logic/domain/spoiler_safe_manuscript_knowledge_export.dart",
+        "lib/features/export/domain/clean_export.dart",
+        "lib/features/project_resilience/application/archive_secret_policy.dart"
+      ],
+      "testRefs": [
+        "test/features/spoiler/share_export_test.dart",
+        "test/features/export/clean_export_test.dart",
+        "test/features/export/export_protection_test.dart"
+      ],
+      "evidenceClass": "LOCAL-CONTRACT"
+    },
+    {
+      "id": "deterministic_output",
+      "implementationRefs": [
+        "lib/features/world_logic/domain/spoiler_safe_manuscript_knowledge_export.dart",
+        "lib/features/export/domain/clean_export.dart",
+        "lib/features/workspaces/application/workspace_export_service.dart"
+      ],
+      "testRefs": [
+        "test/features/export/clean_export_test.dart",
+        "test/features/workspaces/workspace_export_service_test.dart"
+      ],
+      "evidenceClass": "LOCAL-CONTRACT"
+    }
+  ],
+  "limits": [
+    "Bukti ini memetakan kontrak JSON, workspace package, dan manuscript/knowledge export ke implementasi serta test lokal; tidak membuktikan semua kombinasi data produksi.",
+    "Native GUI, hosted CI, signing, hardware, dan public release tetap di luar evidence langkah ini."
+  ]
+}

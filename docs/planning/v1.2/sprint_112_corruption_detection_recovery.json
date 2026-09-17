@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.30",
+  "title": "Corruption Detection & Recovery",
+  "production_data": false,
+  "objective": "Mendeteksi schema rusak, link yatim, media hilang, index tidak sinkron, dan menyediakan recovery tanpa overwrite diam-diam.",
+  "implementation": {
+    "service": "lib/features/project_resilience/application/corruption_detection_recovery.dart",
+    "test": "test/release/sprint_112_corruption_detection_recovery_test.dart",
+    "dependencies": [
+      "ProjectIntegrityService",
+      "ProjectBackupService",
+      "ProjectDatabaseService"
+    ]
+  },
+  "acceptance": {
+    "integrity_scan": "Read-only scan reports unreadable schema/manifest, missing referenced paths, orphan asset files, and index mismatch.",
+    "quarantine": "Explicit repair preview moves only orphan paths into the package trash area; source assets are not deleted.",
+    "repair_preview": "Scan returns a reviewable CorruptionRepairPreview before any mutation.",
+    "backup_before_repair": "Recovery creates a complete pre-corruption-repair backup before quarantine or reindex.",
+    "reindex": "An out-of-sync index is rebuilt from the explicitly supplied referenced paths.",
+    "recovery_log": "Recovery appends a secret-free JSONL record containing backup path, quarantined paths, and reindex decision."
+  },
+  "fixture_policy": "Synthetic disposable package under the OS temp directory; no user project is read or modified.",
+  "limits": [
+    "This slice verifies local service behavior only.",
+    "Automatic repair, native GUI, hosted CI, signing, hardware, and public release remain outside this evidence."
+  ]
+}

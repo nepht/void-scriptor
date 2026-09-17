@@ -1,0 +1,15 @@
+{
+  "step": "112.24",
+  "title": "Moodboard, Media & Spoiler Integration",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Memastikan referensi visual, deskripsi canon, media lokal, kredit, spoiler, dan paket berbagi aman.",
+  "acceptance": [
+    {"id": "media_links", "implementationRefs": ["lib/features/world_logic/domain/moodboard_media_spoiler_integration.dart", "lib/features/world_logic/domain/encyclopedia_media_rights.dart"], "testRefs": ["test/features/world_logic/sprint_112_24_moodboard_media_spoiler_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "visual_continuity", "implementationRefs": ["lib/features/world_logic/domain/moodboard_media_spoiler_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_24_moodboard_media_spoiler_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "source_credit", "implementationRefs": ["lib/features/world_logic/domain/moodboard_media_spoiler_integration.dart", "lib/features/world_logic/domain/encyclopedia_media_rights.dart"], "testRefs": ["test/features/world_logic/sprint_112_24_moodboard_media_spoiler_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "spoiler_redaction", "implementationRefs": ["lib/features/world_logic/domain/moodboard_media_spoiler_integration.dart", "lib/features/world_logic/domain/encyclopedia_spoiler_accessibility.dart"], "testRefs": ["test/features/world_logic/sprint_112_24_moodboard_media_spoiler_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "metadata_sanitization", "implementationRefs": ["lib/features/world_logic/domain/moodboard_media_spoiler_integration.dart", "lib/features/world_logic/domain/encyclopedia_media_rights.dart"], "testRefs": ["test/features/world_logic/sprint_112_24_moodboard_media_spoiler_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "missing_file_state", "implementationRefs": ["lib/features/world_logic/domain/moodboard_media_spoiler_integration.dart", "lib/features/world_logic/domain/encyclopedia_media_rights.dart"], "testRefs": ["test/features/world_logic/sprint_112_24_moodboard_media_spoiler_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"}
+  ],
+  "limitations": "Bukti ini membuktikan domain/local contract; tidak membuktikan UI/native GUI, persistence migration, hosted CI, signing, hardware, atau public release."
+}

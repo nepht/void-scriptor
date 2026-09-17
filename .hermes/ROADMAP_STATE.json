@@ -28,8 +28,8 @@
   "active_sprint": 112,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_112.json",
   "active_ledger": "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md",
-  "last_verified_step": "112.23",
-  "next_step": "112.24",
+  "last_verified_step": "112.24",
+  "next_step": "112.25",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-17",
-  "updated_by": "nephthys cron 112.23 closeout",
+  "updated_by": "nephthys cron 112.24 closeout",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -429,7 +429,7 @@
     "resumed_on": "2026-09-16",
     "authority": "KEPUTUSAN CHOI 16 Sep: Aktifkan Sprint 112 dan mulai dari 112.1",
     "previous_sprint": "111.46 CLOSED-VERIFIED-LOCAL commit b34f317",
-    "next_step": "112.19"
+    "next_step": "112.25"
   },
   "activation_rules_11122_run362": {
     "status": "VERIFIED-LOCAL",
@@ -506,6 +506,20 @@
       "ecological_consequences"
     ],
     "evidence": "focused integration 1/1 PASS; manifest 1/1 PASS; scoped analyzer No issues; format/diff-check PASS",
+    "limitations": "domain/local only; UI/native GUI, persistence migration, hosted CI, signing, hardware, and public release remain UNVERIFIABLE"
+  },
+  "sprint_112_step_11224": {
+    "status": "VERIFIED-LOCAL",
+    "manifest": "docs/planning/v1.2/sprint_112_moodboard_media_spoiler_integration.json",
+    "acceptance": [
+      "media_links",
+      "visual_continuity",
+      "source_credit",
+      "spoiler_redaction",
+      "metadata_sanitization",
+      "missing_file_state"
+    ],
+    "evidence": "TDD RED missing integration -> GREEN focused 1/1 PASS; scoped analyzer No issues; Windows debug build PASS 21.7s; format/diff-check PASS",
     "limitations": "domain/local only; UI/native GUI, persistence migration, hosted CI, signing, hardware, and public release remain UNVERIFIABLE"
   }
 }

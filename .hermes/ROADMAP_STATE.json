@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-18",
-  "updated_by": "nephthys cron: 112.32 screen contract evidence",
+  "updated_by": "nephthys cron: 112.32 evidence contract",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -545,8 +545,8 @@
   "sprint_112_step_11232": {
     "status": "PARTIAL",
     "manifest": "docs/planning/v1.2/sprint_112_end_to_end_writer_workflow.json",
-    "new_evidence": "test/release/sprint_112_writer_workflow_screen_contract_test.dart",
-    "evidence": "focused screen contract 1/1 PASS at 390x844; tester.takeException() null; existing domain workflow 2/2 and snapshot/export regression 11/11 are prior local evidence",
+    "new_evidence": "test/release/sprint_112_writer_workflow_screen_contract_test.dart; test/release/sprint_112_writer_workflow_evidence_contract_test.dart",
+    "evidence": "focused workflow + screen + evidence contract suite 4/4 PASS; screen contract 390x844 tester.takeException() null; flutter analyze --no-pub No issues; Windows debug build PASS 20.4s; diff-check PASS",
     "limitations": "production persistence integration, native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE",
     "next_step": "112.32 remains active until canonical required_evidence is complete"
   }

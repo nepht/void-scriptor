@@ -1,7 +1,7 @@
 {
   "canonical_step": "112.32",
   "title": "End-to-End Writer Workflow",
-  "status": "PARTIAL",
+  "status": "VERIFIED-LOCAL",
   "objective": "Menguji penulis dari perencanaan, drafting, linking, validation, revision, snapshot, hingga clean export.",
   "production_data": false,
   "workflowScript": "test/release/sprint_112_end_to_end_writer_workflow_test.dart",

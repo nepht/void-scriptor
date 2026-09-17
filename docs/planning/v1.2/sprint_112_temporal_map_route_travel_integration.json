@@ -1,0 +1,14 @@
+{
+  "step": "112.16",
+  "title": "Temporal Map, Route & Travel Integration",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Menghubungkan state peta, rute, medan, cuaca, perjalanan, lokasi tokoh, dan scene.",
+  "acceptance": [
+    {"id": "map_at_time", "implementationRefs": ["lib/features/world_logic/domain/temporal_map_state.dart", "lib/features/world_logic/domain/temporal_map_route_travel_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_16_temporal_map_route_travel_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "route_at_time", "implementationRefs": ["lib/features/world_logic/domain/temporal_location_route_validator.dart", "lib/features/world_logic/domain/temporal_map_route_travel_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_16_temporal_map_route_travel_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "travel_estimate", "implementationRefs": ["lib/features/world_logic/domain/route_network.dart", "lib/features/world_logic/domain/travel_mode_profiles.dart", "lib/features/world_logic/domain/temporal_map_route_travel_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_16_temporal_map_route_travel_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "location_events", "implementationRefs": ["lib/features/world_logic/domain/character_location_history.dart", "lib/features/world_logic/domain/temporal_map_route_travel_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_16_temporal_map_route_travel_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "scene_feasibility", "implementationRefs": ["lib/features/world_logic/domain/temporal_location_route_validator.dart", "lib/features/world_logic/domain/temporal_map_route_travel_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_16_temporal_map_route_travel_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"}
+  ],
+  "limitations": "Bukti ini membuktikan domain/local contract; tidak membuktikan wiring UI/native GUI, persistence migration, hosted CI, signing, hardware, atau public release."
+}

@@ -1,0 +1,75 @@
+{
+  "step": "112.14",
+  "title": "Pacing, Focus Writing & Snapshot Integration",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Memastikan statistik sesi, label tensi, perubahan draft, snapshot, restore, dan heatmap tetap konsisten.",
+  "acceptance": [
+    {
+      "id": "session_metrics",
+      "implementationRefs": [
+        "lib/features/story/domain/focus_writing_mode.dart"
+      ],
+      "testRefs": [
+        "test/features/story/focus_writing_mode_test.dart",
+        "test/features/story/writing_room_focus_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "tension_history",
+      "implementationRefs": [
+        "lib/features/pacing/domain/tension_labels.dart"
+      ],
+      "testRefs": [
+        "test/features/pacing/tension_labels_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "snapshot_diff",
+      "implementationRefs": [
+        "lib/features/story/domain/draft_snapshots.dart"
+      ],
+      "testRefs": [
+        "test/features/story/draft_snapshots_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "safe_restore",
+      "implementationRefs": [
+        "lib/features/story/data/story_repository_impl.dart",
+        "lib/features/story/domain/draft_snapshots.dart"
+      ],
+      "testRefs": [
+        "test/features/story/draft_snapshot_persistence_test.dart",
+        "test/features/story/snapshot_restore_missing_feedback_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "heatmap_refresh",
+      "implementationRefs": [
+        "lib/features/pacing/domain/pacing_heatmap.dart",
+        "lib/features/pacing/domain/tension_labels.dart"
+      ],
+      "testRefs": [
+        "test/features/pacing/pacing_heatmap_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "no_data_loss",
+      "implementationRefs": [
+        "lib/features/story/data/story_repository_impl.dart",
+        "lib/database/project/tables/scene_draft_snapshots.dart"
+      ],
+      "testRefs": [
+        "test/features/story/draft_snapshot_persistence_test.dart",
+        "test/features/story/draft_snapshots_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    }
+  ],
+  "limitations": "Bukti ini memetakan kontrak domain/local yang sudah live; tidak membuktikan wiring UI/native GUI, persistence migration di luar test yang dirujuk, hosted CI, signing, hardware, atau public release."
+}

@@ -1,0 +1,26 @@
+{
+  "canonical_step": "112.32",
+  "title": "End-to-End Writer Workflow",
+  "status": "PARTIAL",
+  "objective": "Menguji penulis dari perencanaan, drafting, linking, validation, revision, snapshot, hingga clean export.",
+  "production_data": false,
+  "workflowScript": "test/release/sprint_112_end_to_end_writer_workflow_test.dart",
+  "implementationRefs": [
+    "lib/features/story/domain/end_to_end_writer_workflow.dart",
+    "lib/features/story/domain/inline_lore_links.dart",
+    "lib/features/story/domain/draft_snapshots.dart",
+    "lib/features/world_logic/domain/spoiler_safe_manuscript_knowledge_export.dart"
+  ],
+  "testRefs": [
+    "test/release/sprint_112_end_to_end_writer_workflow_test.dart",
+    "test/features/story/draft_snapshots_test.dart",
+    "test/features/world_logic/sprint_112_25_spoiler_safe_export_test.dart"
+  ],
+  "results": {
+    "phases": ["planning", "drafting", "linking", "validation", "revision", "snapshot", "cleanExport"],
+    "recovery": "snapshot restore creates a backup of the revised text",
+    "evidenceClass": "LOCAL-CONTRACT"
+  },
+  "issues": [],
+  "acceptance": "VERIFIED-LOCAL only; native screens, hosted CI, signing, hardware, and public release are not proven by this synthetic domain workflow."
+}

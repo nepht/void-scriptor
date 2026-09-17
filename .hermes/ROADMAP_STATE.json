@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-18",
-  "updated_by": "nephthys cron: 112.31 import export round-trip validation",
+  "updated_by": "nephthys cron: 112.32 writer workflow partial local validation",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -541,5 +541,17 @@
     "test": "test/release/sprint_112_migration_dry_run_test.dart",
     "evidence": "TDD RED missing service -> GREEN focused 1/1 PASS; scoped analyzer No issues; format 0 changed; git diff --check PASS.",
     "limitations": "synthetic/local single reference package; multi-dataset runtime, native GUI, hosted CI, signing, and release remain UNVERIFIABLE."
+  },
+  "sprint_112_step_11232": {
+    "status": "PARTIAL",
+    "manifest": "docs/planning/v1.2/sprint_112_end_to_end_writer_workflow.json",
+    "implementation": [
+      "lib/features/story/domain/end_to_end_writer_workflow.dart"
+    ],
+    "tests": [
+      "test/release/sprint_112_end_to_end_writer_workflow_test.dart"
+    ],
+    "evidence": "focused writer workflow 2/2 PASS; snapshot/export regression 11/11 PASS; flutter analyze --no-pub No issues; git diff --check PASS",
+    "limitations": "Required screens, production persistence integration, native GUI, hosted CI, signing, hardware, and release acceptance remain unverified; pointer stays 112.32"
   }
 }

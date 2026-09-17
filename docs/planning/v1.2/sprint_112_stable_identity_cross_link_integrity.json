@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.9",
+  "title": "Stable Identity & Cross-Link Integrity",
+  "claim_boundary": "Local contract and integration evidence only; native GUI, hosted CI, hardware, signing, and public release remain unverified.",
+  "acceptance": {
+    "distinct_workspace_ids": {
+      "status": "VERIFIED-LOCAL",
+      "paths": [
+        "lib/features/workspaces/domain/novel_character_link.dart",
+        "test/features/workspaces/workspace_file_namespace_test.dart",
+        "test/features/workspaces/novel_character_link_test.dart"
+      ],
+      "mechanism": "Novel and Character workspace IDs are required, non-empty, distinct, and filesystem namespaces reject unsafe identifiers."
+    },
+    "stable_character_refs": {
+      "status": "VERIFIED-LOCAL",
+      "paths": [
+        "lib/features/workspaces/domain/novel_character_link.dart",
+        "test/features/workspaces/novel_character_link_persistence_test.dart"
+      ],
+      "mechanism": "A persisted link carries characterWorkspaceId and characterId without duplicating Character canon."
+    },
+    "rename_safe": {
+      "status": "VERIFIED-LOCAL",
+      "paths": [
+        "lib/features/world_logic/domain/encyclopedia_integration.dart",
+        "test/features/world_logic/domain/encyclopedia_integration_test.dart"
+      ],
+      "mechanism": "StableLoreLink keeps targetEntityId and linkId when display text is renamed."
+    },
+    "unlink_does_not_delete_source": {
+      "status": "VERIFIED-LOCAL",
+      "paths": [
+        "lib/features/workspaces/application/novel_character_link_repository.dart",
+        "test/features/workspaces/workspace_character_deletion_service_test.dart"
+      ],
+      "mechanism": "Unlink deletes only the relation row; source deletion is a separate injected operation."
+    },
+    "novel_delete_does_not_delete_character": {
+      "status": "VERIFIED-LOCAL",
+      "paths": [
+        "lib/features/workspaces/application/novel_character_link_repository.dart",
+        "test/features/workspaces/novel_character_link_persistence_test.dart"
+      ],
+      "mechanism": "Novel-character links are owned by the Novel side and deleting a link does not cascade to Character source data."
+    },
+    "character_delete_reviews_affected_novels": {
+      "status": "VERIFIED-LOCAL",
+      "paths": [
+        "lib/features/workspaces/application/workspace_character_deletion_service.dart",
+        "test/features/workspaces/workspace_character_deletion_service_test.dart"
+      ],
+      "mechanism": "Character deletion requires an explicit decision and reports sorted affected Novel workspaces first."
+    },
+    "restore_links": {
+      "status": "VERIFIED-LOCAL",
+      "paths": [
+        "lib/features/workspaces/application/workspace_import_service.dart",
+        "test/features/workspaces/workspace_import_service_test.dart",
+        "test/features/workspaces/workspace_import_character_restore_test.dart"
+      ],
+      "mechanism": "Validated Novel archive restore reconstructs links, checks workspace provenance, and supports collision policy without silent overwrite."
+    },
+    "branch_scope": {
+      "status": "VERIFIED-LOCAL",
+      "paths": [
+        "lib/features/world_logic/domain/shared_world_data_schema.dart",
+        "test/features/world_logic/domain/shared_world_data_schema_test.dart"
+      ],
+      "mechanism": "World data records retain explicit branchId and resolution remains scoped by stable workspace-qualified identity."
+    }
+  }
+}

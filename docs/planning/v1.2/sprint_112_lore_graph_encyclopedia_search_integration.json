@@ -1,0 +1,76 @@
+{
+  "step": "112.11",
+  "title": "Lore Graph, Encyclopedia & Search Integration",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Menyatukan graph, taxonomy, pencarian, filters, aliases, canon, waktu, budaya, dan spoiler clearance.",
+  "acceptance": [
+    {
+      "id": "cross_domain_search",
+      "implementationRefs": [
+        "lib/features/world_logic/domain/encyclopedia_unified_search.dart"
+      ],
+      "testRefs": [
+        "test/features/world_logic/domain/encyclopedia_unified_search_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "graph_consistency",
+      "implementationRefs": [
+        "lib/features/lore/domain/lore_graph.dart"
+      ],
+      "testRefs": [
+        "test/features/lore/lore_graph_test.dart",
+        "test/features/world_logic/domain/encyclopedia_integration_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "alias_resolution",
+      "implementationRefs": [
+        "lib/features/world_logic/domain/shared_encyclopedia_taxonomy.dart",
+        "lib/features/world_logic/domain/encyclopedia_unified_search.dart"
+      ],
+      "testRefs": [
+        "test/features/world_logic/shared_encyclopedia_taxonomy_test.dart",
+        "test/features/world_logic/domain/encyclopedia_unified_search_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "time_filter",
+      "implementationRefs": [
+        "lib/features/world_logic/domain/encyclopedia_unified_search.dart",
+        "lib/features/world_logic/domain/encyclopedia_scope.dart"
+      ],
+      "testRefs": [
+        "test/features/world_logic/domain/encyclopedia_unified_search_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "culture_filter",
+      "implementationRefs": [
+        "lib/features/world_logic/domain/encyclopedia_unified_search.dart"
+      ],
+      "testRefs": [
+        "test/features/world_logic/domain/encyclopedia_unified_search_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    },
+    {
+      "id": "spoiler_filter",
+      "implementationRefs": [
+        "lib/features/world_logic/domain/encyclopedia_unified_search.dart",
+        "lib/features/world_logic/domain/encyclopedia_spoiler_accessibility.dart",
+        "lib/features/spoiler/domain/reader_redaction.dart"
+      ],
+      "testRefs": [
+        "test/features/world_logic/domain/encyclopedia_unified_search_test.dart",
+        "test/features/spoiler/reader_redaction_test.dart"
+      ],
+      "evidenceClass": "DOMAIN-LOCAL"
+    }
+  ],
+  "limitations": "Bukti ini hanya mencakup domain/local contract dan tidak membuktikan native GUI, hosted CI, signing, hardware, persistence migration, atau public release."
+}

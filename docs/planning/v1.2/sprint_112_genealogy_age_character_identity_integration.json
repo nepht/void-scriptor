@@ -1,0 +1,15 @@
+{
+  "step": "112.17",
+  "title": "Genealogy, Age & Character Identity Integration",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Memastikan kelahiran, kematian, hubungan keluarga, usia, nama, gelar, dan identitas historis konsisten.",
+  "acceptance": [
+    {"id": "birth_death_dates", "implementationRefs": ["lib/features/world_logic/domain/genealogy_age_character_identity_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_17_genealogy_age_character_identity_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "age_at_scene", "implementationRefs": ["lib/features/world_logic/domain/genealogy_age_character_identity_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_17_genealogy_age_character_identity_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "family_rules", "implementationRefs": ["lib/features/world_logic/domain/genealogy_age_character_identity_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_17_genealogy_age_character_identity_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "historical_names", "implementationRefs": ["lib/features/world_logic/domain/genealogy_age_character_identity_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_17_genealogy_age_character_identity_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "inheritance_order", "implementationRefs": ["lib/features/world_logic/domain/genealogy_age_character_identity_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_17_genealogy_age_character_identity_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"},
+    {"id": "identity_links", "implementationRefs": ["lib/features/world_logic/domain/genealogy_age_character_identity_integration.dart"], "testRefs": ["test/features/world_logic/sprint_112_17_genealogy_age_character_identity_integration_test.dart"], "evidenceClass": "DOMAIN-LOCAL"}
+  ],
+  "limitations": "Bukti ini membuktikan domain/local contract; tidak membuktikan UI/native GUI, persistence migration, hosted CI, signing, hardware, atau public release."
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.29",
+  "title": "Rollback & Downgrade Boundary",
+  "production_data": false,
+  "objective": "Mendokumentasikan apa yang dapat di-rollback, apa yang tidak, dan jalur ekspor aman untuk downgrade.",
+  "implementation": {
+    "service": "lib/features/project_resilience/application/rollback_downgrade_boundary.dart",
+    "test": "test/release/sprint_112_rollback_downgrade_boundary_test.dart",
+    "compatibility_source": "ProjectBackupRestorePreview + ProjectDatabaseService future-schema guard"
+  },
+  "outputs": {
+    "rollback_test": "Current-schema backup is restored into a disposable alternate package and verified without changing the live package.",
+    "downgrade_limits": "Newer schema is blocked; older schema may only migrate forward through the production open path.",
+    "safe_export": "A JSON downgrade-safe export carries manifest, base64 database, and base64 asset payloads without writing to the live package.",
+    "user_warnings": "Future-schema rollback returns explicit warnings and leaves the probe destination empty.",
+    "support_procedure": "Six ordered support actions cover close, inspect, no manual edits, export/upgrade, interrupted restore, and escalation copy."
+  },
+  "fixture_policy": "Synthetic disposable package and backup under the OS temp directory; no user project is read or modified.",
+  "limits": [
+    "This slice verifies local service behavior only.",
+    "Native GUI, hosted CI, signing, hardware, and public release remain outside this evidence."
+  ]
+}

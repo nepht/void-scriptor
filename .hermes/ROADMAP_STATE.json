@@ -209,8 +209,8 @@
     "evidence": "RED dashboard_create_character_no_session_test Actual '/studio' -> GREEN; fokus 1 PASS; test/features/dashboard 13 PASS; shell+routing 69 PASS; analyze No issues; build windows debug 64,5s; guard PASS",
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
-  "last_worker_run": "run303",
-  "note": "112.39 PARTIAL: matrix contract and release regression evidence recorded; full regression timed out without exit result and several suites remain unrun independently.",
+  "last_worker_run": "run304",
+  "note": "112.39 PARTIAL: unit 2937, property 44, contract 2, integration/release 78, accessibility 23, end-to-end 1, security 68 PASS; UI and full regression timed out after 420s without exit result; matrix remains partial.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",
@@ -578,8 +578,8 @@
     "status": "PARTIAL",
     "manifest": "docs/planning/v1.2/sprint_112_full_automated_test_matrix.json",
     "test": "test/release/sprint_112_full_automated_test_matrix_test.dart",
-    "evidence": "Matrix contract 1/1 PASS; release suite 78/78 PASS; simulation 2/2 PASS; flutter analyze No issues; Windows debug build PASS; format/diff-check PASS. Full flutter test timed out after 420s without exit result.",
-    "limitations": "Unit/property/contract/UI/accessibility/end-to-end/security suites not independently run in this slice; native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
+    "evidence": "Matrix contract 1/1 PASS; unit 2937 PASS; property 44 PASS; contract 2 PASS; release/integration 78 PASS; migration covered by release suite; accessibility 23 PASS; end-to-end 1 PASS; security 68 PASS; flutter analyze No issues; Windows debug build PASS; format/diff-check PASS. UI and full flutter test timed out after 420s without exit result.",
+    "limitations": "UI and full regression did not produce an exit result within 420s; native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.39"
   }
 }

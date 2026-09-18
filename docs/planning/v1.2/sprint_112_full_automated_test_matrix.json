@@ -2,28 +2,122 @@
   "step": "112.39",
   "title": "Full Automated Test Matrix",
   "objective": "Menjalankan unit, property, contract, integration, migration, UI, accessibility, end-to-end, security, dan regression suites.",
-  "required_suites": ["unit", "property", "contract", "integration", "migration", "ui", "accessibility", "end_to_end", "security", "regression"],
+  "required_suites": [
+    "unit",
+    "property",
+    "contract",
+    "integration",
+    "migration",
+    "ui",
+    "accessibility",
+    "end_to_end",
+    "security",
+    "regression"
+  ],
   "suites": [
-    {"name":"unit","command":"flutter test test/features/world_logic test/core","result":"NOT RUN in this slice","evidence":["test/features/world_logic","test/core"]},
-    {"name":"property","command":"flutter test test/core/security/secret_redaction_property_test.dart test/features/world_logic/sprint_111_40_test_matrix_test.dart","result":"NOT RUN in this slice","evidence":["test/core/security/secret_redaction_property_test.dart","test/features/world_logic/sprint_111_40_test_matrix_test.dart"]},
-    {"name":"contract","command":"flutter test test/release/sprint_112_scope_contract_test.dart test/release/sprint_112_schema_contract_freeze_test.dart","result":"NOT RUN in this slice","evidence":["test/release/sprint_112_scope_contract_test.dart","test/release/sprint_112_schema_contract_freeze_test.dart"]},
-    {"name":"integration","command":"flutter test --no-pub test/release","result":"PASS: 78 tests","evidence":["test/release"]},
-    {"name":"migration","command":"flutter test test/release/sprint_112_migration_dry_run_test.dart test/release/rc_migration_recovery_test.dart","result":"COVERED by release suite: PASS","evidence":["test/release/sprint_112_migration_dry_run_test.dart","test/release/rc_migration_recovery_test.dart"]},
-    {"name":"ui","command":"flutter test test/features test/app","result":"NOT RUN in this slice","evidence":["test/features","test/app"]},
-    {"name":"accessibility","command":"flutter test test/features/world_logic/sprint_111_43_a11y_l10n_test.dart","result":"NOT RUN in this slice","evidence":["test/features/world_logic/sprint_111_43_a11y_l10n_test.dart"]},
-    {"name":"end_to_end","command":"flutter test test/e2e test/release","result":"NOT RUN in this slice","evidence":["test/e2e","test/release"]},
-    {"name":"security","command":"flutter test test/core/security test/workflow/workflow_security_test.dart","result":"NOT RUN in this slice","evidence":["test/core/security","test/workflow/workflow_security_test.dart"]},
-    {"name":"regression","command":"flutter test --no-pub","result":"TIMEOUT after 420s; no exit result","evidence":["test"]}
+    {
+      "name": "unit",
+      "command": "flutter test --no-pub test/features/world_logic test/core",
+      "result": "PASS: 2937 tests (world_logic + core)",
+      "evidence": [
+        "test/features/world_logic",
+        "test/core"
+      ]
+    },
+    {
+      "name": "property",
+      "command": "flutter test --no-pub test/core/security/secret_redaction_property_test.dart test/features/world_logic/sprint_111_40_test_matrix_test.dart",
+      "result": "PASS: 44 tests",
+      "evidence": [
+        "test/core/security/secret_redaction_property_test.dart",
+        "test/features/world_logic/sprint_111_40_test_matrix_test.dart"
+      ]
+    },
+    {
+      "name": "contract",
+      "command": "flutter test --no-pub test/release/sprint_112_scope_contract_test.dart test/release/sprint_112_schema_contract_freeze_test.dart",
+      "result": "PASS: 2 tests",
+      "evidence": [
+        "test/release/sprint_112_scope_contract_test.dart",
+        "test/release/sprint_112_schema_contract_freeze_test.dart"
+      ]
+    },
+    {
+      "name": "integration",
+      "command": "flutter test --no-pub test/release",
+      "result": "PASS: 78 tests",
+      "evidence": [
+        "test/release"
+      ]
+    },
+    {
+      "name": "migration",
+      "command": "flutter test test/release/sprint_112_migration_dry_run_test.dart test/release/rc_migration_recovery_test.dart",
+      "result": "COVERED by release suite: PASS",
+      "evidence": [
+        "test/release/sprint_112_migration_dry_run_test.dart",
+        "test/release/rc_migration_recovery_test.dart"
+      ]
+    },
+    {
+      "name": "ui",
+      "command": "flutter test --no-pub test/features test/app",
+      "result": "TIMEOUT after 420s; no exit result",
+      "evidence": [
+        "test/features",
+        "test/app"
+      ]
+    },
+    {
+      "name": "accessibility",
+      "command": "flutter test --no-pub test/features/world_logic/sprint_111_43_a11y_l10n_test.dart",
+      "result": "PASS: 23 tests",
+      "evidence": [
+        "test/features/world_logic/sprint_111_43_a11y_l10n_test.dart"
+      ]
+    },
+    {
+      "name": "end_to_end",
+      "command": "flutter test --no-pub test/e2e",
+      "result": "PASS: 1 test",
+      "evidence": [
+        "test/e2e",
+        "test/release"
+      ]
+    },
+    {
+      "name": "security",
+      "command": "flutter test --no-pub test/core/security test/workflow/workflow_security_test.dart",
+      "result": "PASS: 68 tests",
+      "evidence": [
+        "test/core/security",
+        "test/workflow/workflow_security_test.dart"
+      ]
+    },
+    {
+      "name": "regression",
+      "command": "flutter test --no-pub test",
+      "result": "TIMEOUT after 420s; no exit result",
+      "evidence": [
+        "test"
+      ]
+    }
   ],
   "verified_commands": [
-    "flutter test --no-pub test/release/sprint_112_full_automated_test_matrix_test.dart: PASS (1 test)",
+    "flutter test --no-pub test/features/world_logic test/core: PASS (2937 tests)",
+    "flutter test --no-pub test/core/security/secret_redaction_property_test.dart test/features/world_logic/sprint_111_40_test_matrix_test.dart: PASS (44 tests)",
+    "flutter test --no-pub test/release/sprint_112_scope_contract_test.dart test/release/sprint_112_schema_contract_freeze_test.dart: PASS (2 tests)",
+    "flutter test --no-pub test/features/world_logic/sprint_111_43_a11y_l10n_test.dart: PASS (23 tests)",
+    "flutter test --no-pub test/e2e: PASS (1 test)",
+    "flutter test --no-pub test/core/security test/workflow/workflow_security_test.dart: PASS (68 tests)",
     "flutter test --no-pub test/release: PASS (78 tests)",
-    "flutter test --no-pub test/release/sprint_112_simulation_workflow_integration_test.dart: PASS (2 tests)",
     "flutter analyze --no-pub: PASS (No issues found)",
     "flutter build windows --debug --no-pub: PASS (void_scriptor.exe built)",
-    "dart format --set-exit-if-changed ...: exit 1 because the new matrix test was formatted; rerun required",
+    "dart format --set-exit-if-changed: PASS",
     "git diff --check: PASS"
   ],
-  "limitations": ["Full regression command timed out without an exit result; unit/property/contract/UI/accessibility/end-to-end/security suites were not independently run in this slice. Native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE."],
+  "limitations": [
+    "UI suite timed out after 420s without an exit result; full regression also timed out after 420s. Native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE."
+  ],
   "status": "PARTIAL"
 }

@@ -1,0 +1,22 @@
+{
+  "step": "112.36",
+  "title": "End-to-End Publishing Workflow",
+  "objective": "Menguji preflight dan ekspor DOCX, plain text, serta web novel tanpa metadata internal.",
+  "implementation_refs": [
+    "lib/features/world_logic/domain/end_to_end_publishing_workflow.dart",
+    "lib/features/export/domain/clean_export.dart",
+    "lib/features/export/domain/export_profiles.dart"
+  ],
+  "test_refs": [
+    "test/release/sprint_112_publishing_workflow_integration_test.dart"
+  ],
+  "evidence": {
+    "export_profiles": "Workflow menghasilkan output terpisah untuk DOCX-compatible XML, plain text, dan web-novel HTML.",
+    "preflight_results": "Judul, author, chapter, dan metadata-shaped input divalidasi fail-closed sebelum render.",
+    "render_results": "Semua tiga format dirender deterministik dari input yang sama.",
+    "format_validation": "Fokus 2/2 PASS; output memuat signature format yang sesuai.",
+    "metadata_validation": "PRIVATE/internal markers tidak muncul pada output publik; clean transformer menghapus private notes dan lore links.",
+    "acceptance": "Local deterministic synthetic tracer; persistence, native GUI, hosted CI, signing, hardware, dan public release tetap di luar evidence."
+  },
+  "status": "VERIFIED-LOCAL"
+}

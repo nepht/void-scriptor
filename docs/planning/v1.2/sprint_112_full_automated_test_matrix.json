@@ -61,12 +61,12 @@
     },
     {
       "name": "ui",
-      "command": "flutter test --no-pub test/features test/app",
-      "result": "TIMEOUT after 420s; no exit result",
-      "evidence": [
-        "test/features",
-        "test/app"
-      ]
+      "command": "flutter test --no-pub test/app; flutter test --no-pub test/features -j 1",
+            "result": "PASS: 163 tests (test/app); TIMEOUT after 420s without exit result (test/features -j 1)",
+            "evidence": [
+              "test/features",
+              "test/app"
+            ]
     },
     {
       "name": "accessibility",
@@ -105,6 +105,8 @@
   ],
   "verified_commands": [
     "flutter test --no-pub test/features/world_logic test/core: PASS (2937 tests)",
+    "flutter test --no-pub test/app: PASS (163 tests)",
+    "flutter test --no-pub test/features -j 1: TIMEOUT after 420s without exit result",
     "flutter test --no-pub test/core/security/secret_redaction_property_test.dart test/features/world_logic/sprint_111_40_test_matrix_test.dart: PASS (44 tests)",
     "flutter test --no-pub test/release/sprint_112_scope_contract_test.dart test/release/sprint_112_schema_contract_freeze_test.dart: PASS (2 tests)",
     "flutter test --no-pub test/features/world_logic/sprint_111_43_a11y_l10n_test.dart: PASS (23 tests)",

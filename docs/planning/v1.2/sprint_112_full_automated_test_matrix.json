@@ -62,11 +62,12 @@
     {
       "name": "ui",
       "command": "flutter test --no-pub test/app; flutter test --no-pub test/features -j 1",
-            "result": "PASS: 163 tests (test/app); focused feature suites continue passing; aggregate test/features -j 1 remains TIMEOUT after 420s without exit result",
-            "evidence": [
-              "test/features",
-              "test/app"
-            ]
+      "result": "PASS: 163 tests (test/app); focused feature suites continue passing, including test/features/ai 128 tests; aggregate test/features -j 1 remains TIMEOUT after 420s without exit result",
+      "evidence": [
+        "test/features",
+        "test/features/ai",
+        "test/app"
+      ]
     },
     {
       "name": "accessibility",

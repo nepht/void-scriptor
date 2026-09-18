@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-18",
-  "updated_by": "nephthys: 112.39 cinematic production continuation",
+  "updated_by": "nephthys: 112.39 collaboration shard continuation",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -581,6 +581,6 @@
     "evidence": "focused story 216 + resilience 251 (1 skip) + world 116 + character 103 + projects 29 + assets 61 + environment 12 + AI 128 PASS; aggregate features/full regression no exit result",
     "limitations": "UI aggregate and full regression did not produce an exit result within 420s; native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.39",
-    "new_evidence": "Focused deterministic shards: test/features/dialogue 9/9 PASS; test/features/account 4/4 PASS; test/features/audio 5/5 PASS; test/features/audio_import 1/1 PASS; test/features/audio_timeline 1/1 PASS; test/features/authentication 3/3 PASS; test/app/auth 11/11 PASS; test/core/auth 12/12 PASS. Aggregate features and full regression remain without exit result. Focused deterministic shard: test/features/cinema 48/48 PASS (domain/controller plus responsive preview/workspace/dashboard UI). Focused deterministic shard: test/features/cinematic_production 2/2 PASS (responsive workspace and validation-center states)."
+    "new_evidence": "Focused deterministic shards: test/features/dialogue 9/9 PASS; test/features/account 4/4 PASS; test/features/audio 5/5 PASS; test/features/audio_import 1/1 PASS; test/features/audio_timeline 1/1 PASS; test/features/authentication 3/3 PASS; test/app/auth 11/11 PASS; test/core/auth 12/12 PASS. Aggregate features and full regression remain without exit result. Focused deterministic shard: test/features/cinema 48/48 PASS (domain/controller plus responsive preview/workspace/dashboard UI). Focused deterministic shard: test/features/cinematic_production 2/2 PASS (responsive workspace and validation-center states). Focused deterministic shard: test/features/collaboration 53/53 PASS after test-only schema assertion correction 61->62; scoped collaboration analyzer No issues."
   }
 }

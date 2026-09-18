@@ -27,9 +27,8 @@ void main() {
     expect(logs.single.message, 'ok');
   });
 
-  test('schema version is 57', () {
-    // Pin mengikuti currentSchemaVersion; 60 = workspaces 145.25/145.26
-    // (822fd8b). Naikkan bersama tiap migrasi baru.
-    expect(ProjectDatabase.currentSchemaVersion, 61);
+  test('schema version matches the live database contract', () {
+    // Keep this assertion synchronized with the current migration contract.
+    expect(ProjectDatabase.currentSchemaVersion, 62);
   });
 }

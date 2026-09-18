@@ -581,6 +581,6 @@
     "evidence": "focused story 216 + resilience 251 (1 skip) + world 116 + character 103 + projects 29 + assets 61 + environment 12 + AI 128 PASS; aggregate features/full regression no exit result",
     "limitations": "UI aggregate and full regression did not produce an exit result within 420s; native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.39",
-    "new_evidence": "Focused deterministic shards: test/features/dialogue 9/9 PASS; test/features/account 4/4 PASS; aggregate features and full regression remain without exit result. D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/audio -j 1 exit 0; 5/5 PASS."
+    "new_evidence": "Focused deterministic shards: test/features/dialogue 9/9 PASS; test/features/account 4/4 PASS; aggregate features and full regression remain without exit result. D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/audio -j 1 exit 0; 5/5 PASS. D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/audio_import -j 1 exit 0; 1/1 PASS."
   }
 }

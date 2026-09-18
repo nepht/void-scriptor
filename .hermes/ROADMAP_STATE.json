@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-19",
-  "updated_by": "nephthys: 112.39 scene_assets shard evidence",
+  "updated_by": "nephthys: 112.39 settings shard evidence",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -212,11 +212,11 @@
   "last_worker_run": {
     "step": "112.39",
     "status": "PARTIAL",
-    "evidence": "test/features/scene_assets 2 PASS; deterministic shards continue; aggregate features/full regression no exit result",
+    "evidence": "test/features/scene_assets 2 PASS; test/features/settings 22 PASS; deterministic shards continue; aggregate features/full regression no exit result",
     "commit_pending": true,
     "next_step": "112.39"
   },
-  "note": "112.39 PARTIAL: deterministic feature shards continue; scene_assets 2/2 PASS; aggregate UI/features and full regression remain without exit result.",
+  "note": "112.39 PARTIAL: deterministic feature shards continue; scene_assets 2/2 PASS; settings 22/22 PASS; aggregate UI/features and full regression remain without exit result.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",

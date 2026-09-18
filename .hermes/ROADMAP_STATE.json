@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-19",
-  "updated_by": "nephthys: 112.39 relations and POV shard continuation",
+  "updated_by": "nephthys: 112.39 production_assets shard continuation",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -209,8 +209,8 @@
     "evidence": "RED dashboard_create_character_no_session_test Actual '/studio' -> GREEN; fokus 1 PASS; test/features/dashboard 13 PASS; shell+routing 69 PASS; analyze No issues; build windows debug 64,5s; guard PASS",
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
-  "last_worker_run": "run-cron-20260919-plot-shard",
-  "note": "112.39 PARTIAL: deterministic feature shards continue; plot shard 14/14 PASS; aggregate UI/features and full regression remain without exit result.",
+  "last_worker_run": "run-cron 20260919: production-assets-shard",
+  "note": "112.39 PARTIAL: deterministic feature shards continue; production_assets 7/7 PASS; scoped analyzer clean; aggregate UI/features and full regression remain without exit result.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",

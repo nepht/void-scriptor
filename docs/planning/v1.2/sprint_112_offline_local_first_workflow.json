@@ -1,0 +1,21 @@
+{
+  "step": "112.38",
+  "title": "Offline & Local-First Workflow",
+  "objective": "Menguji seluruh fungsi inti tanpa jaringan dan menangani provider eksternal yang tidak tersedia.",
+  "implementation_refs": [
+    "lib/features/world_logic/domain/offline_local_first_workflow.dart"
+  ],
+  "test_refs": [
+    "test/release/sprint_112_offline_local_first_workflow_integration_test.dart"
+  ],
+  "acceptance": {
+    "offline_open": "Local project identity opens without a provider.",
+    "offline_edit": "Draft editing produces a deterministic local result.",
+    "offline_analysis": "Analysis is explicitly local and does not require a network provider.",
+    "local_export": "Export is produced from local input without external services.",
+    "queued_optional_actions": "Unavailable optional provider work is queued instead of blocking core work.",
+    "graceful_provider_failure": "Provider unavailability is represented as a recoverable result, not an uncaught failure."
+  },
+  "evidence": "Focused deterministic domain test covers all six acceptance fields and fail-closed blank identity validation. Synthetic/local evidence only; production project session wiring, native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
+  "status": "VERIFIED-LOCAL"
+}

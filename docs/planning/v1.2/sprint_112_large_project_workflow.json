@@ -1,0 +1,24 @@
+{
+  "step": "112.37",
+  "title": "Large Project Workflow",
+  "objective": "Menguji project besar dengan dokumen panjang, banyak entitas, media, timeline, graph, dan relasi.",
+  "implementation_refs": [
+    "lib/features/world_logic/domain/large_project_workflow.dart",
+    "lib/core/performance/large_project_benchmark.dart",
+    "lib/core/performance/project_benchmark_runner.dart"
+  ],
+  "test_refs": [
+    "test/release/sprint_112_large_project_workflow_integration_test.dart",
+    "test/core/performance/large_project_benchmark_test.dart",
+    "test/core/performance/project_benchmark_runner_test.dart"
+  ],
+  "evidence": {
+    "dataset_manifest": "Workflow manifest mencatat project identity, dokumen panjang, entitas, media, timeline clips, dan graph relations.",
+    "latency_results": "Tracer menghasilkan hasil bounded untuk document index dan graph query; benchmark runner mengukur reference listing dan timeline range.",
+    "memory_results": "Workflow mencatat working set bounded sebagai kontrak fail-closed lokal.",
+    "storage_results": "Workflow mencatat media manifest dan timeline index complete.",
+    "failure_results": "Missing media dan index rebuild dinyatakan recoverable/non-destructive.",
+    "acceptance": "Fokus 2/2 PASS; regression benchmark 4/4 PASS; scoped analyzer No issues; format dan diff-check PASS. Evidence local deterministic/synthetic; native GUI, production-scale endurance, hosted CI, signing, hardware, dan public release tetap UNVERIFIABLE."
+  },
+  "status": "VERIFIED-LOCAL"
+}

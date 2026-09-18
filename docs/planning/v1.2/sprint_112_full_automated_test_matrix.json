@@ -117,6 +117,7 @@
     "flutter test --no-pub test/features/character -j 1: PASS (103 tests)",
     "flutter test --no-pub test/e2e: PASS (1 test)",
     "flutter test --no-pub test/core/security test/workflow/workflow_security_test.dart: PASS (68 tests)",
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/lore -j 1: PASS (19 tests)",
     "flutter test --no-pub test/release: PASS (78 tests)",
     "flutter analyze --no-pub: PASS (No issues found)",
     "flutter build windows --debug --no-pub: PASS (void_scriptor.exe built)",

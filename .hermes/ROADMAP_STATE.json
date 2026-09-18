@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-18",
-  "updated_by": "nephthys: 112.39 focused projects-assets-environment suites",
+  "updated_by": "nephthys: 112.39 focused workspaces suite",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -210,7 +210,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run304",
-  "note": "112.39 PARTIAL: unit 2937, property 44, contract 2, integration/release 78, accessibility 23, end-to-end 1, security 68 PASS; focused story 216, resilience 251 (1 expected skip), world 116, character 103, projects 29, assets 61, environment 12 PASS; UI/features and full regression remain without exit result after timeout evidence; matrix remains partial.",
+  "note": "112.39 PARTIAL: unit 2937, property 44, contract 2, integration/release 78, accessibility 23, end-to-end 1, security 68 PASS; focused app 163, story 216, resilience 251 (1 expected skip), world 116, character 103, projects 29, assets 61, environment 12, inspector 40, studio 48, workspaces 143 PASS; UI/features aggregate and full regression remain without exit result after timeout evidence; matrix remains partial.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",

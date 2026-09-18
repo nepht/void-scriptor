@@ -111,6 +111,7 @@
     "flutter test --no-pub test/release/sprint_112_scope_contract_test.dart test/release/sprint_112_schema_contract_freeze_test.dart: PASS (2 tests)",
     "flutter test --no-pub test/features/world_logic/sprint_111_43_a11y_l10n_test.dart: PASS (23 tests)",
     "flutter test --no-pub test/features/project_resilience -j 1: PASS (251 tests, 1 expected skip)",
+    "flutter test --no-pub test/features/workspaces -j 1: PASS (143 tests)",
     "flutter test --no-pub test/features/world -j 1: PASS (116 tests)",
     "flutter test --no-pub test/features/character -j 1: PASS (103 tests)",
     "flutter test --no-pub test/e2e: PASS (1 test)",

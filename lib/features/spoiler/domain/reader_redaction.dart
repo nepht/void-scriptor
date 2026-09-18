@@ -116,6 +116,9 @@ class ReaderRedactor {
 
   final Map<String, String> _grants = <String, String>{};
 
+  /// True bila pembaca masih memiliki grant aktif.
+  bool hasAccess(String readerId) => _grants.containsKey(readerId);
+
   /// Memberi (atau memperbarui) akses satu pembaca; audiens harus
   /// terdaftar ([StateError]).
   void grant({required String readerId, required String audience}) {

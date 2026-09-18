@@ -1,0 +1,23 @@
+{
+  "step": "112.35",
+  "title": "End-to-End Beta Reader Workflow",
+  "objective": "Menguji clearance, spoiler preview, paket berbagi, komentar, revoke, dan sanitasi metadata.",
+  "implementation_refs": [
+    "lib/features/world_logic/domain/end_to_end_beta_reader_workflow.dart",
+    "lib/features/world_logic/domain/spoiler_safe_manuscript_knowledge_export.dart",
+    "lib/features/spoiler/domain/reader_redaction.dart"
+  ],
+  "test_refs": [
+    "test/release/sprint_112_beta_reader_workflow_integration_test.dart",
+    "test/features/world_logic/sprint_112_25_spoiler_safe_export_test.dart"
+  ],
+  "evidence": {
+    "audience_profiles": "Registered beta audience is bound to the reader grant.",
+    "redaction_results": "Major spoiler content is replaced with [disensor] for a clean beta audience.",
+    "share_results": "Encyclopedia JSON share contains only reader-visible entries.",
+    "revocation_results": "Revoked reader access is rejected before a new workflow run.",
+    "leakage_tests": "Internal reader ID and metadata keys are absent from the sanitized share.",
+    "acceptance": "Local deterministic synthetic tracer; native GUI, hosted CI, signing, hardware, and public release remain outside this evidence."
+  },
+  "status": "VERIFIED-LOCAL"
+}

@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-18",
-  "updated_by": "nephthys: verify 112.38 offline local-first workflow",
+  "updated_by": "nephthys: 112.39 full automated test matrix partial evidence",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -210,7 +210,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "run303",
-  "note": "112.38 VERIFIED-LOCAL; offline/local-first tracer covers offline open/edit/analysis, local export, queued optional provider work, and graceful provider failure. Native/hosted-CI/signing/hardware/release remain unverified.",
+  "note": "112.39 PARTIAL: matrix contract and release regression evidence recorded; full regression timed out without exit result and several suites remain unrun independently.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",
@@ -572,6 +572,14 @@
     "new_evidence": "lib/features/world_logic/domain/offline_local_first_workflow.dart; test/release/sprint_112_offline_local_first_workflow_integration_test.dart",
     "evidence": "RED missing workflow/test -> GREEN focused 2/2 PASS; regression offline + large-project + publishing 6/6 PASS; scoped analyzer No issues; format 0 changed; git diff --check PASS",
     "limitations": "local deterministic/synthetic evidence; production project session wiring, native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE",
+    "next_step": "112.39"
+  },
+  "sprint_112_step_11239": {
+    "status": "PARTIAL",
+    "manifest": "docs/planning/v1.2/sprint_112_full_automated_test_matrix.json",
+    "test": "test/release/sprint_112_full_automated_test_matrix_test.dart",
+    "evidence": "Matrix contract 1/1 PASS; release suite 78/78 PASS; simulation 2/2 PASS; flutter analyze No issues; Windows debug build PASS; format/diff-check PASS. Full flutter test timed out after 420s without exit result.",
+    "limitations": "Unit/property/contract/UI/accessibility/end-to-end/security suites not independently run in this slice; native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.39"
   }
 }

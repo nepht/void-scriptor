@@ -62,14 +62,18 @@
     {
       "name": "ui",
       "command": "flutter test --no-pub test/app; flutter test --no-pub test/features -j 1",
-      "result": "PASS: 163 tests (test/app); focused feature suites continue passing, including test/features/ai 128 tests; aggregate test/features -j 1 remains TIMEOUT after 420s without exit result",
+      "result": "PASS: 163 tests (test/app); deterministic feature shards continue passing, including test/features/subplot 19 tests; aggregate test/features -j 1 remains TIMEOUT after 420s without exit result",
       "evidence": [
-        "test/features",
-        "test/features/ai",
         "test/app",
-        "test/features/dialogue",
+        "test/features",
         "test/features/account",
-        "test/features/spoiler"
+        "test/features/authentication",
+        "test/features/ai",
+        "test/features/dialogue",
+        "test/features/workflow",
+        "test/features/spoiler",
+        "test/features/subplot",
+        "test/features/weapon"
       ]
     },
     {
@@ -134,7 +138,15 @@
     "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/vehicles -j 1: PASS (1 test)",
     "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/timeline -j 1: PASS (16 tests)",
     "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/vfx -j 1: PASS (1 test)",
-    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/cinema -j 1: PASS (48 tests)"
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/cinema -j 1: PASS (48 tests)",
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/splash -j 1: PASS (5 tests)",
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/assets -j 1: PASS (60 tests)",
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/subplot -j 1: PASS (19 tests)",
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/wardrobe -j 1: PASS (11 tests)",
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/weapon -j 1: PASS (14 tests)",
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/workflow -j 1: PASS (14 tests)",
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/ai -j 1: PASS (128 tests)",
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/authentication -j 1: PASS (3 tests)"
   ],
   "limitations": [
     "UI aggregate suite timed out after 420s without an exit result; full regression also has no exit result. Deterministic feature shards continue to pass, including audio_timeline 1 test. Native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE."

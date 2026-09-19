@@ -62,10 +62,11 @@
     {
       "name": "ui",
       "command": "flutter test --no-pub test/app; flutter test --no-pub test/features -j 1",
-      "result": "PASS: 163 tests (test/app); deterministic feature shards continue passing, including test/features/subplot 19 tests; aggregate test/features -j 1 remains TIMEOUT after 420s without exit result",
+      "result": "PASS: 163 tests (test/app); deterministic feature shards continue passing, including test/features/inspector 39 tests; aggregate test/features -j 1 remains TIMEOUT after 420s without exit result",
       "evidence": [
         "test/app",
         "test/features",
+        "test/features/inspector",
         "test/features/account",
         "test/features/authentication",
         "test/features/ai",
@@ -114,6 +115,7 @@
   "verified_commands": [
     "flutter test --no-pub test/features/world_logic test/core: PASS (2937 tests)",
     "flutter test --no-pub test/app: PASS (163 tests)",
+    "flutter test --no-pub test/features/inspector -j 1: PASS (39 tests)",
     "flutter test --no-pub test/features -j 1: TIMEOUT after 420s without exit result",
     "flutter test --no-pub test/core/security/secret_redaction_property_test.dart test/features/world_logic/sprint_111_40_test_matrix_test.dart: PASS (44 tests)",
     "flutter test --no-pub test/release/sprint_112_scope_contract_test.dart test/release/sprint_112_schema_contract_freeze_test.dart: PASS (2 tests)",

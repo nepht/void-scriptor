@@ -1,0 +1,13 @@
+step=112.39
+shard=test/features/assets
+command=D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/assets -j 1
+started_at=2026-09-19T19:54:23Z
+finished_at=2026-09-19T19:55:44Z
+duration_seconds=81
+exit_code=0
+status=PASS
+result=COMPLETED
+pass_count=unknown
+fail_count=unknown
+skip_count=unknown
+log=D:/VoidScriptor/void_scriptor_multiplatform/docs/evidence/sprint-112-39-test-features-assets-20260920.log

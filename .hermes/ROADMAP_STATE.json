@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-19",
-  "updated_by": "nephthys: 112.39 splash shard evidence",
+  "updated_by": "nephthys: 112.39 spoiler shard evidence",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -212,7 +212,7 @@
   "last_worker_run": {
     "step": "112.39",
     "status": "PARTIAL",
-    "evidence": "test/features/scene_assets 2 PASS; test/features/settings 22 PASS; deterministic shards continue; aggregate features/full regression no exit result",
+    "evidence": "test/features/spoiler 19 PASS; deterministic shards continue; aggregate features/full regression no exit result",
     "commit_pending": true,
     "next_step": "112.39"
   },

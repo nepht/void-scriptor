@@ -131,7 +131,10 @@
     "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/audio_timeline -j 1: PASS (1 test)",
     "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/game -j 1: PASS (39 tests)",
     "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/spoiler -j 1: PASS (19 tests)",
-    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/vehicles -j 1: PASS (1 test)"
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/vehicles -j 1: PASS (1 test)",
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/timeline -j 1: PASS (16 tests)",
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/vfx -j 1: PASS (1 test)",
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/cinema -j 1: PASS (48 tests)"
   ],
   "limitations": [
     "UI aggregate suite timed out after 420s without an exit result; full regression also has no exit result. Deterministic feature shards continue to pass, including audio_timeline 1 test. Native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE."

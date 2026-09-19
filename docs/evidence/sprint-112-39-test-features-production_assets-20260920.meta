@@ -1,0 +1,10 @@
+command=D:\DevTools\Flutter SDK\flutter\bin\flutter.bat test --no-pub test/features/production_assets -j 1
+started_at=2026-09-20T06:00:00+0700
+finished_at=2026-09-20T06:04:00+0700
+duration_seconds=4.000
+exit_code=0
+status=PASS
+pass_count=7
+fail_count=0
+skip_count=0
+log=docs/evidence/sprint-112-39-test-features-production_assets-20260920.log

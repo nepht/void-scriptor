@@ -1,0 +1,182 @@
+{
+  "canonical_step": "112.47",
+  "title": "Accessibility Gate",
+  "scope": "Local deterministic verification of keyboard navigation, screen-reader semantics, text scaling, contrast preferences, and locale support on the canonical Windows repository.",
+  "required_outputs": [
+    "keyboard_results",
+    "screen_reader_results",
+    "scaling_results",
+    "contrast_results",
+    "locale_results",
+    "fix_status"
+  ],
+  "budgets": [
+    {
+      "id": "keyboard_results",
+      "metric": "keyboard navigation: Tab/Shift+Tab traversal, shortcuts, Enter/Escape actions, keyboard reorder",
+      "ceiling": 1,
+      "unit": "all interactive elements reachable via keyboard",
+      "source": "docs/planning/v1.2/accessibility_localization_verification.md"
+    },
+    {
+      "id": "screen_reader_results",
+      "metric": "screen-reader semantics: structural labels and deterministic action announcements for interactive editor/control widgets",
+      "ceiling": 1,
+      "unit": "semantics present for tested scope",
+      "source": "docs/planning/v1.2/accessibility_localization_verification.md"
+    },
+    {
+      "id": "scaling_results",
+      "metric": "text scaling: UI validated at 1.3x and 2.0x text scale factor without overflow; narrow 390px layout tested",
+      "ceiling": 1,
+      "unit": "no RenderFlex overflow at tested scales",
+      "source": "docs/planning/v1.2/accessibility_localization_verification.md"
+    },
+    {
+      "id": "contrast_results",
+      "metric": "contrast/high-contrast: accessibility state and high-contrast preference model covered by platform UX tests",
+      "ceiling": 1,
+      "unit": "highContrast preference model tested",
+      "source": "lib/features/platform/domain/accessibility.dart; test/features/platform/domain/platform_ux_test.dart"
+    },
+    {
+      "id": "locale_results",
+      "metric": "localization: English and Indonesian localization loading, delegate support, parity, and fallback tested",
+      "ceiling": 1,
+      "unit": "en and id resources load without raw keys",
+      "source": "docs/planning/v1.2/accessibility_localization_verification.md"
+    }
+  ],
+  "baseline": [
+    {
+      "id": "keyboard_results",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "Keyboard Navigation Screen + tab traversal",
+      "evidence": "test/features/platform/presentation/keyboard_navigation_screen_test.dart"
+    },
+    {
+      "id": "screen_reader_results",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "Semantics/state coverage",
+      "evidence": "test/features/world_logic/sprint_111_43_a11y_l10n_test.dart"
+    },
+    {
+      "id": "scaling_results",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "Widget tests at 1.3x and 2.0x text scale",
+      "evidence": "test/features/world_logic/sprint_110_47_accessibility_localization_test.dart"
+    },
+    {
+      "id": "contrast_results",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "Platform UX high-contrast state model",
+      "evidence": "test/features/platform/domain/platform_ux_test.dart"
+    },
+    {
+      "id": "locale_results",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "en/id localization loading and delegate support",
+      "evidence": "test/features/world_logic/sprint_111_43_a11y_l10n_test.dart"
+    }
+  ],
+  "results": [
+    {
+      "id": "keyboard_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/platform/presentation/keyboard_navigation_screen.dart",
+        "lib/features/platform/domain/accessibility.dart"
+      ],
+      "test_refs": [
+        "test/features/platform/presentation/keyboard_navigation_screen_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/platform/presentation/keyboard_navigation_screen_test.dart -j 1"
+    },
+    {
+      "id": "screen_reader_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/platform/domain/accessibility.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/sprint_111_43_a11y_l10n_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/sprint_111_43_a11y_l10n_test.dart -j 1"
+    },
+    {
+      "id": "scaling_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "docs/planning/v1.2/accessibility_localization_verification.md"
+      ],
+      "test_refs": [
+        "test/features/world_logic/sprint_110_47_accessibility_localization_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/sprint_110_47_accessibility_localization_test.dart -j 1"
+    },
+    {
+      "id": "contrast_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/platform/domain/accessibility.dart"
+      ],
+      "test_refs": [
+        "test/features/platform/domain/platform_ux_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/platform/domain/platform_ux_test.dart -j 1"
+    },
+    {
+      "id": "locale_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "docs/planning/v1.2/accessibility_localization_verification.md"
+      ],
+      "test_refs": [
+        "test/features/world_logic/sprint_111_43_a11y_l10n_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/sprint_111_43_a11y_l10n_test.dart -j 1"
+    }
+  ],
+  "regressions": [],
+  "bottlenecks": [
+    {
+      "id": "native_screen_reader_certification_not_captured",
+      "status": "DEFERRED",
+      "impact": "Widget-level semantics are tested; native OS screen-reader AT certification is not captured from cron.",
+      "next_gate": "Native AT certification on release-candidate hardware with human verification."
+    },
+    {
+      "id": "physical_contrast_measurement_not_captured",
+      "status": "DEFERRED",
+      "impact": "High-contrast state model is tested; physical-device contrast measurement is not captured from cron.",
+      "next_gate": "Hardware display contrast verification on release-candidate hardware."
+    }
+  ],
+  "findings": [
+    {
+      "id": "no_accessibility_finding_in_executed_matrix",
+      "severity": "none",
+      "status": "VERIFIED",
+      "summary": "No failure or overflow exception occurred in the executed accessibility matrix; keyboard navigation, screen-reader semantics, text scaling, contrast state, and locale loading are all verified at test level.",
+      "evidence": "docs/planning/v1.2/accessibility_localization_verification.md"
+    }
+  ],
+  "remediations": [],
+  "residual_risk_acceptance": [
+    {
+      "id": "native_at_certification_deferred",
+      "severity": "deferred",
+      "owner": "Choirudin",
+      "acceptance": "Native OS screen-reader AT certification and physical hardware contrast measurement deferred to release-candidate operational validation per accessibility_localization_verification.md.",
+      "evidence": "docs/planning/v1.2/accessibility_localization_verification.md"
+    }
+  ],
+  "fix_status": "VERIFIED for tested scope",
+  "decision": "PASS_LOCAL_WITH_EXTERNAL_GATES_DEFERRED",
+  "limits": [
+    "Native OS screen-reader AT certification is not captured from cron; screen-reader semantics are verified at widget/test level only.",
+    "Physical-device contrast measurement is not captured; high-contrast state model is tested via platform UX tests.",
+    "Platform-specific IME behavior and full locale translation review remain release follow-ups.",
+    "This decision is not a production accessibility certification; native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE."
+  ]
+}

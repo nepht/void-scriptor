@@ -9,11 +9,8 @@ import 'package:void_scriptor/features/relations/application/relation_display_se
 import 'package:void_scriptor/core/persistence/project_paths.dart';
 import 'package:void_scriptor/core/project_package/project_package.dart';
 import 'package:void_scriptor/core/project_package/project_package_service.dart';
-import 'package:void_scriptor/core/selection/selection_controller.dart';
-import 'package:void_scriptor/core/selection/selection_model.dart';
-import 'package:void_scriptor/features/assets/domain/asset_type.dart';
 import 'package:void_scriptor/features/character/data/character_repository_impl.dart';
-import 'package:void_scriptor/features/inspector/presentation/inspector_resolver.dart';
+import 'package:void_scriptor/features/character/presentation/character_workspace_screen.dart';
 import 'package:void_scriptor/features/project_resilience/application/project_session_manager.dart';
 import 'package:void_scriptor/features/projects/presentation/project_persistence_providers.dart';
 import 'package:void_scriptor/features/relations/application/relation_command.dart';
@@ -92,7 +89,8 @@ void main() {
         expect(items.first.assetName, 'Void Dagger');
       });
 
-      // Render inspector with character selected
+      // Relations live in the Character workspace sidebar section. The
+      // Inspector is intentionally summary-only to avoid duplicate surfaces.
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -100,24 +98,19 @@ void main() {
               () => _FakeProjectSessionController(session),
             ),
           ],
-          child: const MaterialApp(home: InspectorResolver()),
+          child: MaterialApp(
+            home: Scaffold(
+              body: CharacterWorkspaceScreen(
+                characterId: characterId,
+                activeSection: 'Relations',
+              ),
+            ),
+          ),
         ),
       );
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(InspectorResolver)),
-      );
-      container
-          .read(selectionProvider.notifier)
-          .select(
-            SelectionModel(
-              assetId: characterId,
-              assetType: AssetType.character,
-            ),
-          );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pumpAndSettle();
 
-      // RelationSection widget is present in the tree
+      // RelationSection is present on its single editing surface.
       expect(find.byType(RelationSection), findsOneWidget);
       expect(tester.takeException(), isNull);
 

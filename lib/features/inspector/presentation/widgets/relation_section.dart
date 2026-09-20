@@ -93,83 +93,89 @@ class RelationSection extends ConsumerWidget {
               : Column(
                   children: items
                       .map(
-                        (item) => ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          leading: Icon(
-                            item.incoming
-                                ? Icons.arrow_back_outlined
-                                : Icons.arrow_forward_outlined,
-                            size: 16,
-                            color: context.palette.primaryBright,
-                          ),
-                          title: Text(
-                            item.label,
-                            style: TextStyle(color: context.palette.textMuted),
-                          ),
-                          subtitle: Text(
-                            item.assetName,
-                            style: TextStyle(
-                              color: context.palette.textPrimary,
+                        (item) => Material(
+                          color: Colors.transparent,
+                          child: ListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(
+                              item.incoming
+                                  ? Icons.arrow_back_outlined
+                                  : Icons.arrow_forward_outlined,
+                              size: 16,
+                              color: context.palette.primaryBright,
                             ),
-                          ),
-                          trailing: IconButton(
-                            tooltip: 'Delete relation',
-                            icon: const Icon(Icons.delete_outline, size: 16),
-                            color: context.palette.textMuted,
-                            onPressed: () async {
-                              final confirmed = await confirmRelationDeletion(
-                                context,
-                                targetName: item.assetName,
-                              );
-                              if (!confirmed || !context.mounted) return;
+                            title: Text(
+                              item.label,
+                              style: TextStyle(
+                                color: context.palette.textMuted,
+                              ),
+                            ),
+                            subtitle: Text(
+                              item.assetName,
+                              style: TextStyle(
+                                color: context.palette.textPrimary,
+                              ),
+                            ),
+                            trailing: IconButton(
+                              tooltip: 'Delete relation',
+                              icon: const Icon(Icons.delete_outline, size: 16),
+                              color: context.palette.textMuted,
+                              onPressed: () async {
+                                final confirmed = await confirmRelationDeletion(
+                                  context,
+                                  targetName: item.assetName,
+                                );
+                                if (!confirmed || !context.mounted) return;
+                                final session = ref
+                                    .read(projectSessionProvider)
+                                    .valueOrNull;
+                                if (session == null) return;
+                                final repository = RelationRepositoryImpl(
+                                  database: session.database,
+                                );
+                                final snapshotRepository = repository;
+                                final relation = await snapshotRepository
+                                    .getById(item.relationId);
+                                if (relation == null) return;
+                                await session.mutationRuntime.bus.execute(
+                                  RelationCommand.delete(
+                                    id: 'relation.delete:${item.relationId}:${DateTime.now().microsecondsSinceEpoch}',
+                                    projectId: session.manifest.id,
+                                    repository: repository,
+                                    relation: relation,
+                                  ),
+                                );
+                                ref.invalidate(
+                                  relationDisplayProvider(assetId),
+                                );
+                              },
+                            ),
+                            onTap: () async {
                               final session = ref
                                   .read(projectSessionProvider)
                                   .valueOrNull;
                               if (session == null) return;
-                              final repository = RelationRepositoryImpl(
-                                database: session.database,
-                              );
-                              final snapshotRepository = repository;
-                              final relation = await snapshotRepository.getById(
-                                item.relationId,
-                              );
-                              if (relation == null) return;
-                              await session.mutationRuntime.bus.execute(
-                                RelationCommand.delete(
-                                  id: 'relation.delete:${item.relationId}:${DateTime.now().microsecondsSinceEpoch}',
-                                  projectId: session.manifest.id,
-                                  repository: repository,
-                                  relation: relation,
-                                ),
-                              );
-                              ref.invalidate(relationDisplayProvider(assetId));
+                              final asset = await session.database.assetDao
+                                  .getById(item.assetId);
+                              if (!context.mounted || asset == null) return;
+                              final type = switch (asset.type) {
+                                'character' => AssetType.character,
+                                'wardrobe' => AssetType.wardrobe,
+                                'weapon' => AssetType.weapon,
+                                _ => AssetType.reference,
+                              };
+                              ref
+                                  .read(selectionProvider.notifier)
+                                  .select(
+                                    SelectionModel(
+                                      assetId: asset.id,
+                                      assetType: type,
+                                      projectId: asset.projectId,
+                                    ),
+                                  );
                             },
                           ),
-                          onTap: () async {
-                            final session = ref
-                                .read(projectSessionProvider)
-                                .valueOrNull;
-                            if (session == null) return;
-                            final asset = await session.database.assetDao
-                                .getById(item.assetId);
-                            if (!context.mounted || asset == null) return;
-                            final type = switch (asset.type) {
-                              'character' => AssetType.character,
-                              'wardrobe' => AssetType.wardrobe,
-                              'weapon' => AssetType.weapon,
-                              _ => AssetType.reference,
-                            };
-                            ref
-                                .read(selectionProvider.notifier)
-                                .select(
-                                  SelectionModel(
-                                    assetId: asset.id,
-                                    assetType: type,
-                                    projectId: asset.projectId,
-                                  ),
-                                );
-                          },
                         ),
                       )
                       .toList(),

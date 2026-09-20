@@ -177,7 +177,7 @@ class _DesktopWardrobe extends StatelessWidget {
               width: 320,
               child: AssetThumbnailCard(
                 assetId: wardrobeId,
-                title: 'Main Wardrobe',
+                title: 'Product View',
                 placeholderIcon: Icons.checkroom_outlined,
               ),
             ),

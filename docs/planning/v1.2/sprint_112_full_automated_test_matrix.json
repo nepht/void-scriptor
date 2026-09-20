@@ -62,7 +62,7 @@
     {
       "name": "ui",
       "command": "flutter test --no-pub test/app; flutter test --no-pub test/features -j 1",
-      "result": "PASS: 163 tests (test/app); deterministic feature shards continue passing, including test/features/inspector 39 tests; aggregate test/features -j 1 remains TIMEOUT after 420s without exit result",
+      "result": "PASS: 163 tests (test/app); deterministic feature shards continue passing, including test/features/inspector 39 tests; aggregate test/features -j 1 TIMEOUT exit 124 after 540s (last observed +609; dashboard/storage_card_test.dart connection closed before suite loaded)",
       "evidence": [
         "test/app",
         "test/features",
@@ -106,7 +106,7 @@
     {
       "name": "regression",
       "command": "flutter test --no-pub test",
-      "result": "TIMEOUT after 420s; no exit result",
+      "result": "TIMEOUT exit 124 after 540s (last observed +966; database project regression still running when wrapper timeout elapsed)",
       "evidence": [
         "test"
       ]
@@ -116,7 +116,7 @@
     "flutter test --no-pub test/features/world_logic test/core: PASS (2937 tests)",
     "flutter test --no-pub test/app: PASS (163 tests)",
     "flutter test --no-pub test/features/inspector -j 1: PASS (39 tests)",
-    "flutter test --no-pub test/features -j 1: TIMEOUT after 420s without exit result",
+    "flutter test --no-pub test/features -j 1: TIMEOUT exit 124 after 540s; last observed +609; dashboard/storage_card_test.dart connection closed before suite loaded",
     "flutter test --no-pub test/core/security/secret_redaction_property_test.dart test/features/world_logic/sprint_111_40_test_matrix_test.dart: PASS (44 tests)",
     "flutter test --no-pub test/release/sprint_112_scope_contract_test.dart test/release/sprint_112_schema_contract_freeze_test.dart: PASS (2 tests)",
     "flutter test --no-pub test/features/world_logic/sprint_111_43_a11y_l10n_test.dart: PASS (23 tests)",
@@ -148,10 +148,12 @@
     "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/weapon -j 1: PASS (14 tests)",
     "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/workflow -j 1: PASS (14 tests)",
     "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/ai -j 1: PASS (128 tests)",
-    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/authentication -j 1: PASS (3 tests)"
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/authentication -j 1: PASS (3 tests)",
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/simulation -j 1: PASS (22 tests)",
+    "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/vehicles -j 1: PASS (3 tests)"
   ],
   "limitations": [
-    "UI aggregate suite timed out after 420s without an exit result; full regression also has no exit result. Deterministic feature shards continue to pass, including audio_timeline 1 test. Native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE."
+    "UI aggregate suite TIMEOUT exit 124 after 540s (last observed +609; dashboard/storage_card_test.dart connection closed before suite loaded); full regression TIMEOUT exit 124 after 540s (last observed +966 during database project tests). Deterministic feature shards continue to pass. Native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE."
   ],
   "status": "PARTIAL"
 }

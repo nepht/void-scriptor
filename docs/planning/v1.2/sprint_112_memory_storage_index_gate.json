@@ -1,0 +1,167 @@
+{
+  "canonical_step": "112.44",
+  "title": "Memory, Storage & Index Gate",
+  "scope": "Local deterministic measurement of project memory footprint, storage growth, snapshot retention, cache health, and database index/reindex operations on the canonical Windows repository.",
+  "required_outputs": [
+    "memory_results",
+    "storage_growth",
+    "retention_results",
+    "cache_results",
+    "reindex_results",
+    "decision"
+  ],
+  "budgets": [
+    {
+      "id": "memory",
+      "metric": "project-scoped memory footprint (database size + thumbnail cache bytes) reported via PerformanceDiagnosticsSnapshot",
+      "ceiling": 1,
+      "unit": "snapshot reports deterministic, non-negative values for assetCount, databaseSizeBytes, thumbnailCacheBytes",
+      "source": "PerformanceDiagnosticsSnapshot over a disposable in-memory Drift database"
+    },
+    {
+      "id": "storage_growth",
+      "metric": "storage grows proportionally to written assets and is categorized without overlap",
+      "ceiling": 1,
+      "unit": "zero category misattribution",
+      "source": "ProjectStorageAnalyzer over a temp project package"
+    },
+    {
+      "id": "retention",
+      "metric": "snapshot/automatic backup retention budget prunes oldest automatic backups without evicting manual backups",
+      "ceiling": 1,
+      "unit": "policy-selectForPrune correctness",
+      "source": "BackupRetentionService over seeded BackupInfo fixtures"
+    },
+    {
+      "id": "cache",
+      "metric": "thumbnail cache and search index remain bounded and evict deterministically",
+      "ceiling": 1,
+      "unit": "MemoryCachePolicy.shouldEvict at boundary",
+      "source": "ThumbnailMemoryCache and SearchIndex bounded cache tests"
+    },
+    {
+      "id": "reindex",
+      "metric": "database integrity check, ANALYZE, OPTIMIZE, and VACUUM run without error and corruption detection reports index synchronization state",
+      "ceiling": 1,
+      "unit": "service contract returns expected result",
+      "source": "DatabaseMaintenanceService + CorruptionDetectionRecoveryService over disposable DB"
+    }
+  ],
+  "baseline": [
+    {
+      "id": "memory",
+      "status": "CONTRACT_TESTED",
+      "profile": "PerformanceDiagnosticsSnapshot construction with assetCount, databaseSizeBytes, thumbnailCacheBytes, searchIndexHealthy, runningJobs, recentQueryMs, lastProjectOpenMs",
+      "evidence": "test/core/performance/performance_snapshot_test.dart"
+    },
+    {
+      "id": "storage_growth",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "image and cache file categorization with largest-file reporting",
+      "evidence": "test/features/project_resilience/project_storage_analyzer_test.dart"
+    },
+    {
+      "id": "retention",
+      "status": "CONTRACT_TESTED",
+      "profile": "automatic vs manual backup retention with maxAutomatic=20, maxManual=50 budgets",
+      "evidence": "test/features/project_resilience/backup_retention_service_test.dart"
+    },
+    {
+      "id": "cache",
+      "status": "CONTRACT_TESTED",
+      "profile": "ThumbnailMemoryCache LRU eviction and MemoryCachePolicy boundary",
+      "evidence": "test/core/jobs/thumbnail_memory_cache_test.dart"
+    },
+    {
+      "id": "reindex",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "integrity_check, analyze, optimize, vacuum operations and CorruptionScanReport.indexSynchronized",
+      "evidence": "test/core/performance/database_maintenance_service_test.dart; test/features/project_resilience/project_integrity_service_test.dart"
+    }
+  ],
+  "results": [
+    {
+      "id": "memory",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/performance/performance_diagnostics.dart",
+        "lib/core/performance/performance_runtime.dart"
+      ],
+      "test_refs": [
+        "test/core/performance/performance_snapshot_test.dart",
+        "test/core/performance/performance_runtime_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/performance/performance_snapshot_test.dart test/core/performance/performance_runtime_test.dart -j 1"
+    },
+    {
+      "id": "storage_growth",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/project_resilience/application/project_storage_analyzer.dart"
+      ],
+      "test_refs": [
+        "test/features/project_resilience/project_storage_analyzer_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/project_resilience/project_storage_analyzer_test.dart -j 1"
+    },
+    {
+      "id": "retention",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/project_resilience/application/backup_retention_service.dart"
+      ],
+      "test_refs": [
+        "test/features/project_resilience/backup_retention_service_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/project_resilience/backup_retention_service_test.dart -j 1"
+    },
+    {
+      "id": "cache",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/jobs/thumbnail_pipeline.dart",
+        "lib/core/performance/performance_runtime.dart"
+      ],
+      "test_refs": [
+        "test/core/jobs/thumbnail_memory_cache_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/jobs/thumbnail_memory_cache_test.dart -j 1"
+    },
+    {
+      "id": "reindex",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/performance/database_maintenance_service.dart",
+        "lib/features/project_resilience/application/corruption_detection_recovery.dart"
+      ],
+      "test_refs": [
+        "test/core/performance/database_maintenance_service_test.dart",
+        "test/features/project_resilience/project_integrity_service_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/performance/database_maintenance_service_test.dart test/features/project_resilience/project_integrity_service_test.dart -j 1"
+    }
+  ],
+  "regressions": [],
+  "bottlenecks": [
+    {
+      "id": "process_heap_not_captured",
+      "status": "DEFERRED",
+      "impact": "Diagnostics snapshot reports database and cache byte metrics, not live process heap/RSS. Profile-mode DevTools heap inspection is required for true memory-bound detection.",
+      "next_gate": "Capture Dart VM heap metrics in a disposable native journey on release-candidate hardware."
+    },
+    {
+      "id": "storage_growth_projection_not_captured",
+      "status": "DEFERRED",
+      "impact": "ProjectStorageAnalyzer reports current categorized usage; long-term growth projection across large-project lifecycle is not modeled here.",
+      "next_gate": "Integrate storage growth projection into LargeProjectWorkflow benchmark fixtures."
+    }
+  ],
+  "decision": "PASS_LOCAL_WITH_EXTERNAL_GATES_DEFERRED",
+  "limits": [
+    "Process heap / Dart VM RSS is not captured by this local test gate.",
+    "Profile-mode FrameTiming and cold-start Native GUI responsiveness remain deferred.",
+    "Long-term storage growth projection across production-scale projects is not modeled.",
+    "hosted CI, signing, hardware, and public release remain UNVERIFIABLE and belong to dedicated later gates.",
+    "This decision is not signing or public release approval."
+  ]
+}

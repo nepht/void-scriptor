@@ -6,10 +6,10 @@ import 'package:void_scriptor/features/workspace_layout/domain/workspace_tab.dar
 
 void main() {
   group('PanelLayout', () {
-    test('defaults match blueprint (245 / 310 / not collapsed)', () {
+    test('defaults match compact reference (245 / 280 / not collapsed)', () {
       const layout = PanelLayout.defaults;
       expect(layout.leftWidth, 245);
-      expect(layout.rightWidth, 310);
+      expect(layout.rightWidth, 280);
       expect(layout.leftCollapsed, isFalse);
       expect(layout.rightCollapsed, isFalse);
       expect(layout.splitRatio, 0.5);
@@ -30,7 +30,7 @@ void main() {
       const b = PanelLayout.defaults;
       const c = PanelLayout(
         leftWidth: 245,
-        rightWidth: 310,
+        rightWidth: 280,
         leftCollapsed: false,
         rightCollapsed: false,
         splitRatio: 0.5,

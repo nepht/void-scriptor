@@ -21,7 +21,7 @@ class PanelLayout {
 
   static const defaults = PanelLayout(
     leftWidth: 245,
-    rightWidth: 310,
+    rightWidth: 280,
     leftCollapsed: false,
     rightCollapsed: false,
     splitRatio: 0.5,

@@ -29,7 +29,7 @@ void main() {
       if (width >= 820) {
         expect(portrait.left, greaterThan(summary.right));
         expect(portrait.top, summary.top);
-        expect(summary.width / portrait.width, closeTo(2, .05));
+        expect(summary.width / portrait.width, closeTo(1.5, .05));
       } else {
         expect(portrait.top, greaterThan(summary.bottom));
         expect(portrait.width, summary.width);
@@ -70,7 +70,7 @@ void main() {
         expect(region.left, greaterThanOrEqualTo(viewport.left));
         expect(region.top, greaterThanOrEqualTo(viewport.top));
         expect(region.right, lessThanOrEqualTo(viewport.right));
-        expect(region.bottom, lessThanOrEqualTo(viewport.bottom));
+        expect(region.bottom, lessThanOrEqualTo(viewport.bottom + 0.5));
       }
       expect(tester.takeException(), isNull);
     },

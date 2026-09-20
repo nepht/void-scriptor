@@ -8,10 +8,12 @@ import 'package:flutter/material.dart';
 class CharacterDesignSheetLayoutSpec {
   const CharacterDesignSheetLayoutSpec({
     this.desktopBreakpoint = 820,
-    this.leftColumnFlex = 2,
-    this.rightColumnFlex = 1,
-    this.columnGap = 8,
-    this.cardGap = 8,
+    // A 3:2 split keeps the portrait/details column readable instead of
+    // compressing it into a narrow rail on the desktop workspace.
+    this.leftColumnFlex = 3,
+    this.rightColumnFlex = 2,
+    this.columnGap = 12,
+    this.cardGap = 10,
     this.summaryFlex = 2,
     this.turnaroundFlex = 5,
     this.detailsFlex = 2,

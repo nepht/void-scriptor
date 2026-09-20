@@ -22,6 +22,7 @@ class CharacterIdentityCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text('CHARACTER CONCEPT', style: VoidTypography.headingMedium),
+        const Text('Character Identity', style: VoidTypography.caption),
         const SizedBox(height: 6),
         Text(
           name.isEmpty ? '—' : name,

@@ -1,0 +1,62 @@
+00:00 +0: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/character_section_ownership_test.dart
+00:00 +0: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/character_section_ownership_test.dart: Appearance reference composition fits 900.0
+00:01 +1: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/character_section_ownership_test.dart: Appearance reference composition fits 1200.0
+00:01 +2: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/character_section_ownership_test.dart: Profile owns only its relevant tools on narrow screens
+00:01 +3: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/character_section_ownership_test.dart: Appearance owns only its relevant tools on narrow screens
+00:01 +4: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/character_section_ownership_test.dart: Relationships owns only its relevant tools on narrow screens
+00:01 +5: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/character_section_ownership_test.dart: Notes owns only its relevant tools on narrow screens
+00:02 +6: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/empty_workspace_navigation_test.dart
+00:03 +6: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/empty_workspace_navigation_test.dart: empty Character and World navigation does not fall back to Novel
+00:06 +7: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/global_search_faction_navigation_test.dart
+00:07 +7: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/global_search_faction_navigation_test.dart: BUG-02: faction hit in production resolver search navigates to faction workspace without any explicit callback
+00:10 +8: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/global_search_faction_navigation_test.dart: BUG-02: unmappable storage rows (hair_variant) are excluded from results instead of dead-ending on the faction callback
+00:11 +9: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/global_search_journey_test.dart
+00:12 +9: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/global_search_journey_test.dart: global search journey: character select opens typed workspace
+00:16 +10: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/global_search_journey_test.dart: global search journey: faction select invokes nav callback
+00:17 +11: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/global_search_launcher_test.dart
+00:18 +11: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/global_search_launcher_test.dart: launcher merges characters, environments, stories, and factions in one query
+00:20 +12: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/hunt171_creation_refresh_test.dart
+00:21 +12: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/hunt171_creation_refresh_test.dart: BUG-5: novel created from ProjectOverview reaches the explorer story catalog immediately
+00:24 +13: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/hunt171_creation_refresh_test.dart: BUG-6: faction created from the worldbuilding body appears in the Factions list immediately
+00:26 +14: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/story_draft_switch_journey_test.dart
+00:26 +14: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/story_draft_switch_journey_test.dart: T1: typing in Novel survives switching to Character and back (production resolver journey)
+00:36 +15: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/story_draft_switch_journey_test.dart: T2: real persist failure shows banner; reopening project offers user-controlled recovery
+00:45 +16: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/story_draft_switch_journey_test.dart: T3: story A -> story B keeps both drafts on their own scenes
+00:47 +17: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/story_link_creation_wiring_test.dart
+00:48 +17: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/story_link_creation_wiring_test.dart: aksi link dari kartu persist dan menampilkan link baru
+00:52 +18: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/story_link_creation_wiring_test.dart: katalog karakter kosong: aksi tidak membuat dialog
+00:53 +19: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/story_switch_state_reuse_test.dart
+00:54 +19: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/story_switch_state_reuse_test.dart: BUG-22: switching stories must not carry the previous story draft State (production resolver journey)
+01:14 +20: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_outline_empty_state_test.dart
+01:15 +20: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_outline_empty_state_test.dart: Outline without selection shows guided empty state
+01:16 +21: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_outline_empty_state_test.dart: non-Outline empty state does not show outline guidance
+01:16 +22: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_panel_test.dart
+01:17 +22: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_panel_test.dart: workspace chrome follows the selected work domain
+01:19 +23: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_character_journey_test.dart
+01:20 +23: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_character_journey_test.dart: resolver journey: selectionProvider mutation opens live character workspace
+01:22 +24: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_creature_intent_recovery_test.dart
+01:23 +24: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_creature_intent_recovery_test.dart: creature intent with an empty catalog shows a typed creature empty state, not WorldbuildingBody
+01:25 +25: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_creature_intent_recovery_test.dart: creature selection released by a project switch is restored from catalog recovery
+01:27 +26: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_import_wiring_test.dart
+01:27 +26: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_import_wiring_test.dart: resolver wires the import picker into the story screen
+01:30 +27: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_locations_relations_test.dart
+01:31 +27: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_locations_relations_test.dart: worldbuilding body renders Locations and Relationship Map from live project data
+01:33 +28: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_vehicle_selection_test.dart
+01:34 +28: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_vehicle_selection_test.dart: vehicle selection opens the supporting asset workspace
+01:37 +29: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_wiring_test.dart
+01:38 +29: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_wiring_test.dart: resolver wires live export actions into story screen
+01:41 +30: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_worldbuilding_body_test.dart
+01:42 +30: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_worldbuilding_body_test.dart: worldbuilding intent without selection opens worldbuilding body, not Novel fallback
+01:44 +31: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_resolver_worldbuilding_body_test.dart: selected faction renders worldbuilding body with project data, not Novel fallback
+01:45 +32: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_section_alias_test.dart
+01:46 +32: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_section_alias_test.dart: legacy navigation maps to the current owning section
+01:46 +33: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_section_content_test.dart
+01:47 +33: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_section_content_test.dart: Planning retains live chapter controls
+01:48 +34: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_section_content_test.dart: novel section shows only its relevant workspace content
+01:48 +35: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_section_content_test.dart: lore links can return directly to the manuscript
+01:48 +36: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/workspace_section_content_test.dart: worldbuilding section filters unrelated collections
+01:48 +37: All tests passed!
+
+EXIT_CODE=0
+STARTED_AT=2026-09-20T21:16:38+07:00
+FINISHED_AT=2026-09-20T21:18:35+07:00

@@ -8,6 +8,38 @@ import 'package:void_scriptor/features/character_mode/presentation/widgets/chara
 import 'package:void_scriptor/features/character_mode/domain/loadout_slot.dart';
 
 void main() {
+  for (final width in [900.0, 1200.0]) {
+    testWidgets('Appearance reference composition fits $width', (tester) async {
+      await tester.binding.setSurfaceSize(Size(width, 900));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            characterWorkspaceProvider('c').overrideWith(
+              (ref) async => const CharacterModel(
+                assetId: 'c',
+                projectId: 'p',
+                displayName: 'Real character',
+              ),
+            ),
+          ],
+          child: const MaterialApp(
+            home: Scaffold(
+              body: CharacterWorkspaceScreen(
+                characterId: 'c',
+                activeSection: 'Appearance',
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.text('Real character'), findsWidgets);
+      expect(find.text('Void Violet'), findsNothing);
+      expect(find.text('Necklace'), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+  }
   for (final section in ['Profile', 'Appearance', 'Relationships', 'Notes']) {
     testWidgets('$section owns only its relevant tools on narrow screens', (
       tester,

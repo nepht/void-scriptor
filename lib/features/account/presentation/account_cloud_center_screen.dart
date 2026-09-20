@@ -6,81 +6,358 @@ import '../../../app/routing/app_routes.dart';
 import '../../../core/auth/auth_controller.dart';
 import '../../../design_system/typography/void_typography.dart';
 import '../../../design_system/theme/void_theme_context.dart';
+import '../application/account_operational_metrics.dart';
 import '../domain/account_cloud_snapshot.dart';
 
-class AccountCloudCenterScreen extends ConsumerWidget {
-  const AccountCloudCenterScreen({super.key, this.snapshot, this.onSignIn});
+enum _AccountCenterArea {
+  overview('Overview'),
+  account('Account'),
+  connections('Connections'),
+  cloudStorage('Cloud Storage'),
+  aiCenter('AI Center'),
+  developer('Developer'),
+  team('Team'),
+  security('Security'),
+  billing('Billing');
+
+  const _AccountCenterArea(this.label);
+  final String label;
+}
+
+class AccountCloudCenterScreen extends ConsumerStatefulWidget {
+  const AccountCloudCenterScreen({
+    super.key,
+    this.snapshot,
+    this.operationalMetrics,
+    this.onSignIn,
+    this.onSearch,
+    this.onNotifications,
+    this.onSyncNow,
+    this.onBackupProject,
+    this.onOpenAiProviders,
+  });
 
   final AccountCloudSnapshot? snapshot;
+  final AccountOperationalMetrics? operationalMetrics;
   final VoidCallback? onSignIn;
+  final VoidCallback? onSearch;
+  final VoidCallback? onNotifications;
+  final VoidCallback? onSyncNow;
+  final VoidCallback? onBackupProject;
+  final VoidCallback? onOpenAiProviders;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AccountCloudCenterScreen> createState() =>
+      _AccountCloudCenterScreenState();
+}
+
+class _AccountCloudCenterScreenState
+    extends ConsumerState<AccountCloudCenterScreen> {
+  _AccountCenterArea _area = _AccountCenterArea.overview;
+
+  @override
+  Widget build(BuildContext context) {
     final data =
-        snapshot ??
+        widget.snapshot ??
         AccountCloudSnapshot.localOnly(
           session: ref.watch(authControllerProvider).valueOrNull,
         );
+    final operationalMetrics =
+        widget.snapshot != null || widget.operationalMetrics != null
+        ? AsyncData<AccountOperationalMetrics?>(widget.operationalMetrics)
+        : ref.watch(accountOperationalMetricsProvider);
     return Scaffold(
       backgroundColor: context.palette.background,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final contentWidth = constraints.maxWidth - 48;
-            final cardWidth = contentWidth >= 820
-                ? (contentWidth - 16) / 2
-                : contentWidth;
             return SingleChildScrollView(
               padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'ACCOUNT & CLOUD CENTER',
-                    style: VoidTypography.displayMedium,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Connection states reflect services available now.',
-                    style: VoidTypography.body.copyWith(
-                      color: context.palette.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  _AccountSummary(
-                    snapshot: data,
-                    onSignIn:
-                        data.service('email-sign-in').state ==
-                            AccountCloudConnectionState.connected
-                        ? null
-                        : onSignIn ??
-                              () => context.push(
-                                '${AppRoutes.login}?from=account-cloud',
+              child: LayoutBuilder(
+                builder: (context, shellConstraints) {
+                  final wide = shellConstraints.maxWidth >= 980;
+                  final mainWidth = wide
+                      ? shellConstraints.maxWidth * 0.75 - 8
+                      : shellConstraints.maxWidth;
+                  final railWidth = wide
+                      ? shellConstraints.maxWidth * 0.25 - 8
+                      : shellConstraints.maxWidth;
+                  return Wrap(
+                    spacing: 16,
+                    runSpacing: 24,
+                    children: [
+                      SizedBox(
+                        width: mainWidth,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: context.palette.primary.withValues(
+                                      alpha: 0.14,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Icon(
+                                    Icons.cloud_outlined,
+                                    color: context.palette.primaryBright,
+                                    size: 28,
+                                  ),
+                                ),
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'ACCOUNT & CLOUD CENTER',
+                                        style: VoidTypography.displayMedium,
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        'Manage your accounts, cloud services, and integrations in one place',
+                                        style: VoidTypography.body.copyWith(
+                                          color: context.palette.textSecondary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  tooltip: widget.onSearch == null
+                                      ? 'Search (coming soon)'
+                                      : 'Search',
+                                  onPressed: widget.onSearch,
+                                  icon: const Icon(Icons.search),
+                                ),
+                                IconButton(
+                                  tooltip: widget.onNotifications == null
+                                      ? 'Notifications (coming soon)'
+                                      : 'Notifications',
+                                  onPressed: widget.onNotifications,
+                                  icon: const Icon(Icons.notifications_none),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  for (final area in _AccountCenterArea.values)
+                                    _CenterTab(
+                                      label: area.label,
+                                      active: area == _area,
+                                      onTap: () => setState(() => _area = area),
+                                    ),
+                                ],
                               ),
-                  ),
-                  const SizedBox(height: 28),
-                  for (final group in AccountCloudServiceGroup.values) ...[
-                    Text(
-                      _groupLabel(group),
-                      style: VoidTypography.headingMedium,
-                    ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 16,
-                      runSpacing: 16,
-                      children: [
-                        for (final service in data.services.where(
-                          (service) => service.group == group,
-                        ))
-                          SizedBox(
-                            width: cardWidth,
-                            child: _ServiceCard(service: service),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                  ],
-                ],
+                            ),
+                            const SizedBox(height: 24),
+                            LayoutBuilder(
+                              builder: (context, bodyConstraints) {
+                                final mainWidth = bodyConstraints.maxWidth;
+                                final mainCardWidth = mainWidth >= 820
+                                    ? (mainWidth - 16) / 2
+                                    : mainWidth;
+                                final main = Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (_area != _AccountCenterArea.overview)
+                                      _FocusedAccountArea(
+                                        area: _area,
+                                        snapshot: data,
+                                        onSignIn:
+                                            data
+                                                    .service('email-sign-in')
+                                                    .state ==
+                                                AccountCloudConnectionState
+                                                    .connected
+                                            ? null
+                                            : widget.onSignIn ??
+                                                  () => context.push(
+                                                    '${AppRoutes.login}?from=account-cloud',
+                                                  ),
+                                        onOpenAiProviders:
+                                            widget.onOpenAiProviders ??
+                                            () => context.push(
+                                              AppRoutes.aiProviders,
+                                            ),
+                                        onOpenSecurity: () =>
+                                            context.push(AppRoutes.security),
+                                      ),
+                                    if (_area ==
+                                        _AccountCenterArea.overview) ...[
+                                      Wrap(
+                                        spacing: 16,
+                                        runSpacing: 16,
+                                        children: [
+                                          SizedBox(
+                                            width: mainCardWidth,
+                                            child: _DashboardCard(
+                                              title: 'AUTHENTICATION',
+                                              subtitle:
+                                                  'Manage your account access',
+                                              child: _AccountSummary(
+                                                snapshot: data,
+                                                onSignIn:
+                                                    data
+                                                            .service(
+                                                              'email-sign-in',
+                                                            )
+                                                            .state ==
+                                                        AccountCloudConnectionState
+                                                            .connected
+                                                    ? null
+                                                    : widget.onSignIn ??
+                                                          () => context.push(
+                                                            '${AppRoutes.login}?from=account-cloud',
+                                                          ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: mainCardWidth,
+                                            child: _DashboardCard(
+                                              title: 'QUICK CONNECT',
+                                              subtitle:
+                                                  'Connect services available to this workspace',
+                                              child: Column(
+                                                children: [
+                                                  for (final service
+                                                      in data.services
+                                                          .where(
+                                                            (service) =>
+                                                                service.group ==
+                                                                AccountCloudServiceGroup
+                                                                    .cloudStorage,
+                                                          )
+                                                          .take(4))
+                                                    _ServiceRow(
+                                                      service: service,
+                                                    ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: mainCardWidth,
+                                            child: const _OverviewCapabilityCard(
+                                              title: 'CLOUD STORAGE USAGE',
+                                              subtitle:
+                                                  'Storage metering by provider',
+                                              icon: Icons.cloud_queue_outlined,
+                                              message:
+                                                  'No connected provider is reporting quota or usage.',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 24),
+                                      Wrap(
+                                        spacing: 16,
+                                        runSpacing: 16,
+                                        children: [
+                                          for (final card in const [
+                                            (
+                                              'CONNECTED SERVICES',
+                                              'Connection summary',
+                                              Icons.hub_outlined,
+                                              'Connected services appear here after provider verification.',
+                                            ),
+                                            (
+                                              'API PROVIDERS',
+                                              'AI model gateways',
+                                              Icons.api_outlined,
+                                              'Configure and test OpenAI or Gemini from AI Providers.',
+                                            ),
+                                            (
+                                              'DEVELOPER TOOLS',
+                                              'Source control and development services',
+                                              Icons.code_outlined,
+                                              'No developer service is connected.',
+                                            ),
+                                            (
+                                              'CREATIVE TOOLS',
+                                              'Design and media integrations',
+                                              Icons.palette_outlined,
+                                              'No creative tool is connected.',
+                                            ),
+                                            (
+                                              'PAYMENT METHODS',
+                                              'Billing service connections',
+                                              Icons.payment_outlined,
+                                              'No payment method is configured.',
+                                            ),
+                                            (
+                                              'API KEYS',
+                                              'Credential inventory',
+                                              Icons.key_outlined,
+                                              'Credentials remain protected in the operating-system vault.',
+                                            ),
+                                            (
+                                              'TEAM & COLLABORATION',
+                                              'Members, roles, and invitations',
+                                              Icons.groups_outlined,
+                                              'Team management is not configured.',
+                                            ),
+                                            (
+                                              'ACTIVITY LOG',
+                                              'Recent account and integration events',
+                                              Icons.history_outlined,
+                                              'No account activity has been recorded.',
+                                            ),
+                                            (
+                                              'BACKUP & SYNC',
+                                              'Data protection and synchronization',
+                                              Icons.sync_outlined,
+                                              'No cloud backup destination is configured.',
+                                            ),
+                                            (
+                                              'SECURITY CENTER',
+                                              'Sessions and account protection',
+                                              Icons.security_outlined,
+                                              'Security telemetry is not available locally.',
+                                            ),
+                                          ])
+                                            SizedBox(
+                                              width: mainCardWidth,
+                                              child: _OverviewCapabilityCard(
+                                                title: card.$1,
+                                                subtitle: card.$2,
+                                                icon: card.$3,
+                                                message: card.$4,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ],
+                                  ],
+                                );
+                                return main;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: railWidth,
+                        child: _AccountSummaryRail(
+                          snapshot: data,
+                          operationalMetrics: operationalMetrics,
+                          onSyncNow: widget.onSyncNow,
+                          onBackupProject: widget.onBackupProject,
+                          onOpenAiProviders: widget.onOpenAiProviders,
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             );
           },
@@ -88,13 +365,671 @@ class AccountCloudCenterScreen extends ConsumerWidget {
       ),
     );
   }
+}
 
-  String _groupLabel(AccountCloudServiceGroup group) => switch (group) {
-    AccountCloudServiceGroup.signIn => 'SIGN-IN METHODS',
-    AccountCloudServiceGroup.localStorage => 'LOCAL STORAGE',
-    AccountCloudServiceGroup.cloudStorage => 'CLOUD STORAGE',
-    AccountCloudServiceGroup.sync => 'BACKUP & SYNC',
-  };
+class _AccountSummaryRail extends StatelessWidget {
+  const _AccountSummaryRail({
+    required this.snapshot,
+    required this.operationalMetrics,
+    this.onSyncNow,
+    this.onBackupProject,
+    this.onOpenAiProviders,
+  });
+
+  final AccountCloudSnapshot snapshot;
+  final AsyncValue<AccountOperationalMetrics?> operationalMetrics;
+  final VoidCallback? onSyncNow;
+  final VoidCallback? onBackupProject;
+  final VoidCallback? onOpenAiProviders;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final compact = constraints.maxWidth < 760;
+      final width = compact
+          ? constraints.maxWidth
+          : (constraints.maxWidth - 16) / 2;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'ACCOUNT SUMMARY',
+                  style: VoidTypography.headingMedium,
+                ),
+              ),
+              Icon(Icons.unfold_more, color: context.palette.textMuted),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            children: [
+              SizedBox(
+                width: width,
+                child: _PlanSummaryCard(snapshot: snapshot),
+              ),
+              SizedBox(width: width, child: const _CreditsCard()),
+              SizedBox(
+                width: width,
+                child: _QuickActionsCard(
+                  onSyncNow: onSyncNow,
+                  onOpenAiProviders:
+                      onOpenAiProviders ??
+                      () => context.push(AppRoutes.aiProviders),
+                  onBackupProject:
+                      onBackupProject ??
+                      () => context.push(AppRoutes.projectBackups),
+                ),
+              ),
+              SizedBox(
+                width: constraints.maxWidth,
+                child: _OperationalMetricsCards(
+                  metrics: operationalMetrics,
+                  cardWidth: width,
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
+}
+
+class _OperationalMetricsCards extends StatelessWidget {
+  const _OperationalMetricsCards({
+    required this.metrics,
+    required this.cardWidth,
+  });
+
+  final AsyncValue<AccountOperationalMetrics?> metrics;
+  final double cardWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    final value = metrics.valueOrNull;
+    final loading = metrics.isLoading && value == null;
+    final failed = metrics.hasError && value == null;
+    final usageMessage = loading
+        ? 'Loading usage from the active project...'
+        : failed
+        ? 'Could not read active project metrics. Retry after checking the project session.'
+        : value == null
+        ? 'Open a project to inspect locally recorded AI usage.'
+        : '${_formatInteger(value.totalTokens)} tokens\n'
+              '\$${value.estimatedCost.toStringAsFixed(2)} estimated';
+    final storageMessage = loading
+        ? 'Indexing storage for the active project...'
+        : failed
+        ? 'Could not read active project metrics. Retry after checking the project session.'
+        : value == null
+        ? 'Open a project to inspect its local storage distribution.'
+        : _storageMessage(value);
+
+    return Wrap(
+      spacing: 16,
+      runSpacing: 16,
+      children: [
+        SizedBox(
+          width: cardWidth,
+          child: _OverviewCapabilityCard(
+            title: 'AI USAGE THIS MONTH',
+            subtitle: 'Locally recorded usage and estimated provider cost',
+            icon: Icons.show_chart_outlined,
+            message: usageMessage,
+          ),
+        ),
+        SizedBox(
+          width: cardWidth,
+          child: _OverviewCapabilityCard(
+            title: 'STORAGE DISTRIBUTION',
+            subtitle: 'Active project files by media category',
+            icon: Icons.donut_large_outlined,
+            message: storageMessage,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static String _storageMessage(AccountOperationalMetrics metrics) {
+    final total = metrics.totalStorageBytes;
+    if (total <= 0) return '0 B indexed\nNo project files were found.';
+    final categories = metrics.storageBytesByCategory.entries.toList()
+      ..sort((left, right) => right.value.compareTo(left.value));
+    final shares = categories
+        .map((entry) => '${entry.key} ${(entry.value * 100 / total).round()}%')
+        .join('\n');
+    return '${_formatBytes(total)} indexed${shares.isEmpty ? '' : '\n$shares'}';
+  }
+}
+
+String _formatInteger(int value) {
+  final digits = value.toString();
+  final buffer = StringBuffer();
+  for (var index = 0; index < digits.length; index++) {
+    if (index > 0 && (digits.length - index) % 3 == 0) buffer.write(',');
+    buffer.write(digits[index]);
+  }
+  return buffer.toString();
+}
+
+String _formatBytes(int bytes) {
+  if (bytes < 1024) return '$bytes B';
+  if (bytes < 1024 * 1024) {
+    final value = bytes / 1024;
+    return '${value == value.roundToDouble() ? value.toStringAsFixed(0) : value.toStringAsFixed(1)} KB';
+  }
+  if (bytes < 1024 * 1024 * 1024) {
+    final value = bytes / (1024 * 1024);
+    return '${value == value.roundToDouble() ? value.toStringAsFixed(0) : value.toStringAsFixed(1)} MB';
+  }
+  final value = bytes / (1024 * 1024 * 1024);
+  return '${value == value.roundToDouble() ? value.toStringAsFixed(0) : value.toStringAsFixed(1)} GB';
+}
+
+class _PlanSummaryCard extends StatelessWidget {
+  const _PlanSummaryCard({required this.snapshot});
+
+  final AccountCloudSnapshot snapshot;
+
+  @override
+  Widget build(BuildContext context) => _DashboardCard(
+    title: 'PLAN',
+    subtitle: 'Current account access',
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          Icons.workspace_premium_outlined,
+          size: 36,
+          color: context.palette.primaryBright,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                snapshot.accountModeLabel,
+                style: VoidTypography.headingMedium,
+              ),
+              const SizedBox(height: 4),
+              Text(snapshot.accountDisplayName, style: VoidTypography.body),
+              const SizedBox(height: 8),
+              const Text(
+                'Subscription details are not available locally.',
+                style: VoidTypography.caption,
+              ),
+              const SizedBox(height: 12),
+              _ConnectionBadge(state: snapshot.service('email-sign-in').state),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _CreditsCard extends StatelessWidget {
+  const _CreditsCard();
+
+  @override
+  Widget build(BuildContext context) => const _DashboardCard(
+    title: 'CREDITS & TOKENS',
+    subtitle: 'Live balances from connected services',
+    child: Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        _MetricTile(label: 'AI Credits', value: 'Unavailable'),
+        _MetricTile(label: 'Render Credits', value: 'Unavailable'),
+        _MetricTile(label: 'Cloud Storage', value: 'Local only'),
+        _MetricTile(label: 'Team Seats', value: 'Unavailable'),
+      ],
+    ),
+  );
+}
+
+class _MetricTile extends StatelessWidget {
+  const _MetricTile({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 142,
+    padding: const EdgeInsets.all(10),
+    decoration: BoxDecoration(
+      color: context.palette.background,
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: context.palette.border),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: VoidTypography.caption),
+        const SizedBox(height: 6),
+        Text(value, style: VoidTypography.body),
+      ],
+    ),
+  );
+}
+
+class _QuickActionsCard extends StatelessWidget {
+  const _QuickActionsCard({
+    required this.onOpenAiProviders,
+    required this.onBackupProject,
+    this.onSyncNow,
+  });
+
+  final VoidCallback? onSyncNow;
+  final VoidCallback onOpenAiProviders;
+  final VoidCallback onBackupProject;
+
+  @override
+  Widget build(BuildContext context) => _DashboardCard(
+    title: 'QUICK ACTIONS',
+    subtitle: 'Available local account actions',
+    child: Column(
+      children: [
+        _ActionRow(
+          label: 'Sync Now',
+          description: onSyncNow == null
+              ? 'Connect a sync provider to enable this action'
+              : 'Synchronize connected services',
+          onPressed: onSyncNow,
+        ),
+        _ActionRow(
+          label: 'Backup Project',
+          description: 'Open local project backups',
+          onPressed: onBackupProject,
+        ),
+        _ActionRow(
+          label: 'AI Providers',
+          description: 'Connect and test OpenAI or Gemini',
+          onPressed: onOpenAiProviders,
+        ),
+      ],
+    ),
+  );
+}
+
+class _ActionRow extends StatelessWidget {
+  const _ActionRow({
+    required this.label,
+    required this.description,
+    this.onPressed,
+  });
+
+  final String label;
+  final String description;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: Colors.transparent,
+    child: ListTile(
+      contentPadding: EdgeInsets.zero,
+      onTap: onPressed,
+      leading: Icon(
+        onPressed == null ? Icons.block_outlined : Icons.arrow_forward_ios,
+        size: 14,
+        color: onPressed == null ? context.palette.textMuted : null,
+      ),
+      title: Text(
+        label,
+        style: VoidTypography.body.copyWith(
+          color: onPressed == null ? context.palette.textMuted : null,
+        ),
+      ),
+      subtitle: Text(description, style: VoidTypography.caption),
+      trailing: onPressed == null ? null : const Icon(Icons.chevron_right),
+    ),
+  );
+}
+
+class _OverviewCapabilityCard extends StatelessWidget {
+  const _OverviewCapabilityCard({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.message,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) => _DashboardCard(
+    title: title,
+    subtitle: subtitle,
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: context.palette.primaryBright),
+        const SizedBox(width: 12),
+        Expanded(child: Text(message, style: VoidTypography.body)),
+      ],
+    ),
+  );
+}
+
+class _FocusedAccountArea extends StatelessWidget {
+  const _FocusedAccountArea({
+    required this.area,
+    required this.snapshot,
+    this.onSignIn,
+    this.onOpenAiProviders,
+    this.onOpenSecurity,
+  });
+
+  final _AccountCenterArea area;
+  final AccountCloudSnapshot snapshot;
+  final VoidCallback? onSignIn;
+  final VoidCallback? onOpenAiProviders;
+  final VoidCallback? onOpenSecurity;
+
+  @override
+  Widget build(BuildContext context) {
+    final cards = switch (area) {
+      _AccountCenterArea.account => const [
+        (
+          'AUTHENTICATION',
+          'Account identity and sign-in state',
+          Icons.person_outline,
+          'Account access reflects the configured authentication provider.',
+        ),
+      ],
+      _AccountCenterArea.connections => const [
+        (
+          'CONNECTED SERVICES',
+          'Verified service connections',
+          Icons.hub_outlined,
+          'Services appear as connected only after provider verification.',
+        ),
+      ],
+      _AccountCenterArea.cloudStorage => const [
+        (
+          'CLOUD STORAGE USAGE',
+          'Storage metering by provider',
+          Icons.cloud_queue_outlined,
+          'No connected provider is reporting quota or usage.',
+        ),
+        (
+          'BACKUP & SYNC',
+          'Data protection and synchronization',
+          Icons.sync_outlined,
+          'No cloud backup destination is configured.',
+        ),
+      ],
+      _AccountCenterArea.aiCenter => const [
+        (
+          'API PROVIDERS',
+          'AI model gateways',
+          Icons.api_outlined,
+          'Configure and test OpenAI or Gemini from AI Providers.',
+        ),
+        (
+          'AI USAGE THIS MONTH',
+          'Usage and estimated provider cost',
+          Icons.show_chart_outlined,
+          'No metering data is available from connected providers.',
+        ),
+      ],
+      _AccountCenterArea.developer => const [
+        (
+          'DEVELOPER TOOLS',
+          'Source control and development services',
+          Icons.code_outlined,
+          'No developer service is connected.',
+        ),
+        (
+          'CREATIVE TOOLS',
+          'Design and media integrations',
+          Icons.palette_outlined,
+          'No creative tool is connected.',
+        ),
+        (
+          'API KEYS',
+          'Credential inventory',
+          Icons.key_outlined,
+          'Credentials remain protected in the operating-system vault.',
+        ),
+      ],
+      _AccountCenterArea.team => const [
+        (
+          'TEAM & COLLABORATION',
+          'Members, roles, and invitations',
+          Icons.groups_outlined,
+          'Team management is not configured.',
+        ),
+      ],
+      _AccountCenterArea.security => const [
+        (
+          'SECURITY CENTER',
+          'Sessions and account protection',
+          Icons.security_outlined,
+          'Security telemetry is not available locally.',
+        ),
+        (
+          'ACTIVITY LOG',
+          'Recent account and integration events',
+          Icons.history_outlined,
+          'No account activity has been recorded.',
+        ),
+      ],
+      _AccountCenterArea.billing => const [
+        (
+          'PAYMENT METHODS',
+          'Billing service connections',
+          Icons.payment_outlined,
+          'No payment method is configured.',
+        ),
+      ],
+      _AccountCenterArea.overview => const [],
+    };
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final cardWidth = constraints.maxWidth >= 820
+            ? (constraints.maxWidth - 16) / 2
+            : constraints.maxWidth;
+        return Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          children: [
+            for (final card in cards)
+              SizedBox(
+                width: cardWidth,
+                child: _OverviewCapabilityCard(
+                  title: card.$1,
+                  subtitle: card.$2,
+                  icon: card.$3,
+                  message: card.$4,
+                ),
+              ),
+            if (area == _AccountCenterArea.account)
+              SizedBox(
+                width: cardWidth,
+                child: _DashboardCard(
+                  title: 'ACCOUNT ACCESS',
+                  subtitle: 'Current authentication state',
+                  child: _AccountSummary(
+                    snapshot: snapshot,
+                    onSignIn: onSignIn,
+                  ),
+                ),
+              ),
+            if (area == _AccountCenterArea.connections)
+              for (final service in snapshot.services)
+                SizedBox(
+                  width: cardWidth,
+                  child: _ServiceCard(service: service),
+                ),
+            if (area == _AccountCenterArea.cloudStorage)
+              for (final service in snapshot.services.where(
+                (service) =>
+                    service.group == AccountCloudServiceGroup.cloudStorage,
+              ))
+                SizedBox(
+                  width: cardWidth,
+                  child: _ServiceCard(service: service),
+                ),
+            if (area == _AccountCenterArea.aiCenter)
+              SizedBox(
+                width: cardWidth,
+                child: _DestinationActionCard(
+                  label: 'Open AI Providers',
+                  description:
+                      'Configure credentials and run real provider connection tests.',
+                  icon: Icons.arrow_forward,
+                  onPressed: onOpenAiProviders,
+                ),
+              ),
+            if (area == _AccountCenterArea.security)
+              SizedBox(
+                width: cardWidth,
+                child: _DestinationActionCard(
+                  label: 'Open Security Center',
+                  description:
+                      'Review the project security tools available in this build.',
+                  icon: Icons.security_outlined,
+                  onPressed: onOpenSecurity,
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _DestinationActionCard extends StatelessWidget {
+  const _DestinationActionCard({
+    required this.label,
+    required this.description,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final String label;
+  final String description;
+  final IconData icon;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) => _DashboardCard(
+    title: label.toUpperCase(),
+    subtitle: description,
+    child: Align(
+      alignment: Alignment.centerLeft,
+      child: TextButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon),
+        label: Text(label),
+      ),
+    ),
+  );
+}
+
+class _CenterTab extends StatelessWidget {
+  const _CenterTab({
+    required this.label,
+    required this.onTap,
+    this.active = false,
+  });
+
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(right: 22),
+    child: InkWell(
+      onTap: onTap,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: active
+                  ? context.palette.primaryBright
+                  : Colors.transparent,
+              width: 2,
+            ),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(
+            label,
+            style: VoidTypography.body.copyWith(
+              color: active
+                  ? context.palette.primaryBright
+                  : context.palette.textSecondary,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+class _DashboardCard extends StatelessWidget {
+  const _DashboardCard({
+    required this.title,
+    required this.subtitle,
+    required this.child,
+  });
+
+  final String title;
+  final String subtitle;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: context.palette.surface,
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(color: context.palette.border),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: VoidTypography.headingMedium),
+        const SizedBox(height: 4),
+        Text(subtitle, style: VoidTypography.caption),
+        const SizedBox(height: 14),
+        child,
+      ],
+    ),
+  );
+}
+
+class _ServiceRow extends StatelessWidget {
+  const _ServiceRow({required this.service});
+
+  final AccountCloudService service;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 10),
+    child: Row(
+      children: [
+        Expanded(child: Text(service.label, style: VoidTypography.body)),
+        _ConnectionBadge(state: service.state),
+      ],
+    ),
+  );
 }
 
 class _AccountSummary extends StatelessWidget {

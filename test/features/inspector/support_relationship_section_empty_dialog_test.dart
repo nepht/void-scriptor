@@ -8,7 +8,7 @@ import 'package:void_scriptor/core/project_package/project_package.dart';
 import 'package:void_scriptor/core/project_package/project_package_service.dart';
 import 'package:void_scriptor/database/project/project_database.dart';
 import 'package:void_scriptor/features/character/data/character_repository_impl.dart';
-import 'package:void_scriptor/features/inspector/presentation/inspectors/character_inspector.dart';
+import 'package:void_scriptor/features/inspector/presentation/widgets/support_relationship_section.dart';
 import 'package:void_scriptor/features/project_resilience/application/project_session_manager.dart';
 import 'package:void_scriptor/features/projects/presentation/project_persistence_providers.dart';
 
@@ -99,7 +99,7 @@ void main() {
             body: SizedBox(
               width: 1280,
               height: 900,
-              child: CharacterInspector(characterId: characterId),
+              child: SupportRelationshipSection(assetId: characterId),
             ),
           ),
         ),

@@ -32,6 +32,7 @@ import '../../features/production_assets/presentation/production_asset_workspace
 import '../../features/cinematic_production/presentation/cinematic_production_workspace_screen.dart';
 import '../../features/project_resilience/presentation/project_resilience_center_screen.dart';
 import '../shell/void_app_shell.dart';
+import '../shell/desktop/void_desktop_shell.dart';
 import '../shell/desktop/collaboration_comments_screen.dart';
 import '../../core/security/presentation/project_lock_screen.dart';
 import '../../core/security/presentation/security_settings_screen.dart';
@@ -86,7 +87,9 @@ GoRouter createAppRouter({
             ),
             AppRoutes.collaborationComments =>
               const CollaborationCommentsScreen(),
-            AppRoutes.accountCloud => const AccountCloudCenterScreen(),
+            AppRoutes.accountCloud => const ProviderScope(
+              child: VoidDesktopShell(content: AccountCloudCenterScreen()),
+            ),
             AppRoutes.security => const SecuritySettingsScreen(),
             AppRoutes.securityLock => const ProjectLockScreen(
               projectName: 'Proyek',
@@ -386,7 +389,9 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
     GoRoute(
       path: AppRoutes.accountCloud,
-      builder: (_, __) => const AccountCloudCenterScreen(),
+      builder: (_, __) => const ProviderScope(
+        child: VoidDesktopShell(content: AccountCloudCenterScreen()),
+      ),
     ),
     GoRoute(
       path: AppRoutes.settings,

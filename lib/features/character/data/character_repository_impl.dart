@@ -142,6 +142,8 @@ class CharacterRepositoryImpl implements CharacterRepository {
             bodyLock: row.bodyLock,
             colorLock: row.colorLock,
             outfitLock: row.outfitLock,
+            weaponLock: row.weaponLock,
+            accessoryLock: row.accessoryLock,
             notes: row.notes,
           );
   }
@@ -156,6 +158,8 @@ class CharacterRepositoryImpl implements CharacterRepository {
           bodyLock: Value(profile.bodyLock),
           colorLock: Value(profile.colorLock),
           outfitLock: Value(profile.outfitLock),
+          weaponLock: Value(profile.weaponLock),
+          accessoryLock: Value(profile.accessoryLock),
           notes: Value(profile.notes),
         ),
       );

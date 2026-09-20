@@ -439,9 +439,6 @@ class ExplorerPanel extends ConsumerWidget {
     final storyItems = projectId == null
         ? const AsyncValue<List<PropModel>>.data([])
         : ref.watch(propExplorerProvider(projectId));
-    final creatures = projectId == null
-        ? const AsyncValue<List<CreatureModel>>.data([])
-        : ref.watch(creatureExplorerProvider(projectId));
     final armors = projectId == null
         ? const AsyncValue<List<Asset>>.data([])
         : ref.watch(
@@ -573,7 +570,7 @@ class ExplorerPanel extends ConsumerWidget {
                               ),
                       ),
                     ),
-                  const _ExplorerSectionLabel('NOVEL & STORY'),
+                  const _ExplorerSectionLabel('STORY'),
                   _ExplorerItem(
                     icon: Icons.auto_stories_outlined,
                     label: 'Novel Workspace',
@@ -601,8 +598,16 @@ class ExplorerPanel extends ConsumerWidget {
                           ),
                         ),
                   ),
-                  const _ExplorerSectionLabel('CAST & CHARACTERS'),
+                  _ExplorerItem(
+                    icon: Icons.timeline_outlined,
+                    label: 'Timeline',
+                    onTap:
+                        onTimelineSelected ??
+                        () => focusExplorerAsset(ref, AssetType.timeline),
+                  ),
+                  const _ExplorerSectionLabel('CHARACTERS'),
                   _CharacterGroup(
+                    title: 'Main Characters',
                     onFocused: () =>
                         focusExplorerAsset(ref, AssetType.character),
                     characters: characters,
@@ -627,31 +632,35 @@ class ExplorerPanel extends ConsumerWidget {
                           ),
                         ),
                   ),
-                  const _ExplorerSectionLabel('WORLD & CREATURES'),
-                  if (modulePreferences.creatures)
-                    _CreatureGroup(
-                      creatures: creatures,
-                      focused: effectiveFocusedType == AssetType.creature,
-                      onFocused: () =>
-                          focusExplorerAsset(ref, AssetType.creature),
-                      selectedId: ref.watch(selectionProvider)?.assetId,
-                      // vs-hunt-20260914-explorer-selection BUG-3: parity
-                      // with the BUG-8 (hunt-run171) retry rows.
-                      onRetry: projectId == null
-                          ? null
-                          : () => ref.invalidate(
-                              creatureExplorerProvider(projectId),
-                            ),
-                      onSelected: (creature) => ref
-                          .read(selectionProvider.notifier)
-                          .select(
-                            SelectionModel(
-                              assetId: creature.assetId,
-                              assetType: AssetType.creature,
-                              projectId: creature.projectId,
-                            ),
-                          ),
+                  const _ExplorerCategoryPlaceholder('Supporting Characters'),
+                  const _ExplorerCategoryPlaceholder('Enemies'),
+                  const _ExplorerCategoryPlaceholder('NPC'),
+                  const _ExplorerCategoryPlaceholder('Creatures'),
+                  const _ExplorerCategoryPlaceholder('Character Templates'),
+                  const _ExplorerCategoryPlaceholder('Favorites'),
+                  const _ExplorerCategoryPlaceholder('Trash'),
+                  const _ExplorerSectionLabel('WORLD'),
+                  _ExplorerItem(
+                    icon: Icons.location_on_outlined,
+                    label: 'Locations',
+                    onTap: () => focusExplorerAsset(ref, AssetType.environment),
+                  ),
+                  _ExplorerItem(
+                    icon: Icons.account_tree_outlined,
+                    label: 'Factions',
+                    onTap: () => focusWorldbuildingSection(
+                      ref,
+                      WorldbuildingExplorerSection.factions,
                     ),
+                  ),
+                  _ExplorerItem(
+                    icon: Icons.groups_outlined,
+                    label: 'Organizations',
+                    onTap: () => focusWorldbuildingSection(
+                      ref,
+                      WorldbuildingExplorerSection.relationshipMap,
+                    ),
+                  ),
                   EnvironmentGroup(
                     onFocused: () =>
                         focusExplorerAsset(ref, AssetType.environment),
@@ -676,15 +685,8 @@ class ExplorerPanel extends ConsumerWidget {
                           ),
                         ),
                   ),
-                  _ExplorerItem(
-                    icon: Icons.timeline_outlined,
-                    label: 'Timeline',
-                    onTap:
-                        onTimelineSelected ??
-                        () => focusExplorerAsset(ref, AssetType.timeline),
-                  ),
                   if (modulePreferences.hasLoadout)
-                    const _ExplorerSectionLabel('OBJECTS & LOADOUT'),
+                    const _ExplorerSectionLabel('DATABASE'),
                   if (modulePreferences.wardrobe)
                     _WardrobeGroup(
                       wardrobes: wardrobes,
@@ -733,6 +735,8 @@ class ExplorerPanel extends ConsumerWidget {
                             ),
                           ),
                     ),
+                  const _ExplorerCategoryPlaceholder('Vehicles'),
+                  const _ExplorerCategoryPlaceholder('VFX & Effects'),
                   if (modulePreferences.storyItems)
                     _StoryItemGroup(
                       items: storyItems,
@@ -781,97 +785,6 @@ class _ExplorerSectionLabel extends StatelessWidget {
         fontWeight: FontWeight.w800,
         letterSpacing: 1.1,
       ),
-    ),
-  );
-}
-
-class _CreatureGroup extends StatelessWidget {
-  const _CreatureGroup({
-    required this.creatures,
-    required this.selectedId,
-    required this.onSelected,
-    this.focused = false,
-    this.onFocused,
-    this.onRetry,
-  });
-  final AsyncValue<List<CreatureModel>> creatures;
-  final String? selectedId;
-  final ValueChanged<CreatureModel> onSelected;
-
-  /// BUG-18 (hunt-run171): parity with Story/Character/Environment groups —
-  /// the header tap re-focuses the creature workspace so the sync-restore
-  /// branch of focusExplorerAsset becomes reachable from the UI.
-  final bool focused;
-  final VoidCallback? onFocused;
-
-  /// vs-hunt-20260914-explorer-selection BUG-3 (Referee REAL BUG Medium):
-  /// parity with the BUG-8 (hunt-run171) Story/Environment pattern — a
-  /// failed creature catalog must offer a retry on its error row, because
-  /// FutureProviders never re-emit after an error and the recovery provider
-  /// intentionally keeps waiting on error states.
-  final VoidCallback? onRetry;
-  @override
-  Widget build(BuildContext context) => ExpansionTile(
-    onExpansionChanged: (_) => onFocused?.call(),
-    initiallyExpanded: true,
-    backgroundColor: focused
-        ? context.palette.primary.withValues(alpha: 0.08)
-        : null,
-    tilePadding: const EdgeInsets.symmetric(horizontal: 9),
-    childrenPadding: const EdgeInsets.only(left: 28),
-    leading: Icon(
-      Icons.pets_outlined,
-      size: 16,
-      color: context.palette.textMuted,
-    ),
-    title: Text(
-      'Creatures & Companions',
-      style: TextStyle(color: context.palette.textSecondary, fontSize: 12),
-    ),
-    children: creatures.when(
-      loading: () => const [ListTile(dense: true, title: Text('Loading...'))],
-      error: (error, _) => [
-        ListTile(
-          dense: true,
-          minTileHeight: 30,
-          title: Text(
-            '$error',
-            style: TextStyle(color: context.palette.danger, fontSize: 11),
-          ),
-          trailing: onRetry == null
-              ? null
-              : IconButton(
-                  tooltip: 'Coba lagi',
-                  icon: const Icon(Icons.refresh),
-                  onPressed: onRetry,
-                ),
-        ),
-      ],
-      data: (items) => items.isEmpty
-          ? const [ListTile(dense: true, title: Text('No creatures yet'))]
-          : [
-              for (final item in items)
-                ListTile(
-                  dense: true,
-                  minTileHeight: 36,
-                  leading: Icon(
-                    item.category == CreatureCategory.companion
-                        ? Icons.favorite_outline
-                        : Icons.cruelty_free_outlined,
-                    size: 15,
-                  ),
-                  title: Text(
-                    item.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: item.category == CreatureCategory.companion
-                      ? const Text('Companion')
-                      : null,
-                  selected: selectedId == item.assetId,
-                  onTap: () => onSelected(item),
-                ),
-            ],
     ),
   );
 }
@@ -1345,8 +1258,24 @@ class _ExplorerItem extends StatelessWidget {
   );
 }
 
+class _ExplorerCategoryPlaceholder extends StatelessWidget {
+  const _ExplorerCategoryPlaceholder(this.label);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) => ListTile(
+    dense: true,
+    enabled: false,
+    leading: const Icon(Icons.folder_outlined, size: 16),
+    title: Text(label),
+    subtitle: const Text('Belum ada sumber kategori kanonik'),
+  );
+}
+
 class _CharacterGroup extends ConsumerStatefulWidget {
   const _CharacterGroup({
+    required this.title,
     required this.characters,
     required this.selectedId,
     required this.onSelected,
@@ -1354,6 +1283,7 @@ class _CharacterGroup extends ConsumerStatefulWidget {
     this.onFocused,
     this.onRetry,
   });
+  final String title;
   final AsyncValue<List<CharacterModel>> characters;
   final String? selectedId;
   final bool focused;
@@ -1548,7 +1478,7 @@ class _CharacterGroupState extends ConsumerState<_CharacterGroup> {
         children: [
           Expanded(
             child: Text(
-              'Characters',
+              widget.title,
               style: TextStyle(
                 color: context.palette.textSecondary,
                 fontSize: 12,

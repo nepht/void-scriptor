@@ -17,7 +17,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('ACCOUNT & CLOUD CENTER'), findsOneWidget);
-    expect(find.text('Local project storage'), findsOneWidget);
+    expect(find.text('ACCOUNT SUMMARY'), findsOneWidget);
+    expect(find.text('Connections'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

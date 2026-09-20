@@ -189,6 +189,7 @@ class WorkspaceResolver extends ConsumerWidget {
       ),
       AssetType.wardrobe => WardrobeWorkspaceScreen(
         wardrobeId: selection.assetId,
+        activeSection: activeSection,
       ),
       AssetType.weapon => WeaponWorkspaceScreen(weaponId: selection.assetId),
       AssetType.armor ||
@@ -331,7 +332,14 @@ Future<File?> _pickNovelImportArchive() async {
 }
 
 bool _opensWorldbuildingCollection(String? section) => switch (section) {
-  'Factions' || 'Relationships' || 'Timeline' || 'Lore Notes' => true,
+  'Location' ||
+  'Locations' ||
+  'Faction' ||
+  'Factions' ||
+  'Relationships' ||
+  'Timeline' ||
+  'Lore Notes' ||
+  'Organizations' => true,
   _ => false,
 };
 
@@ -740,12 +748,20 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
         };
     final showOverview =
         requestedSection == null || requestedSection == 'Overview';
-    final showFactions = showOverview || requestedSection == 'Factions';
+    final showFactions =
+        showOverview ||
+        requestedSection == 'Faction' ||
+        requestedSection == 'Factions';
     final showRelationships =
         showOverview || requestedSection == 'Relationships';
     final showTimeline = showOverview || requestedSection == 'Timeline';
     final showLore = showOverview || requestedSection == 'Lore Notes';
-    final showLocations = showOverview || requestedSection == 'Locations';
+    final showLocations =
+        showOverview ||
+        requestedSection == 'Location' ||
+        requestedSection == 'Locations';
+    final showOrganizations =
+        showOverview || requestedSection == 'Organizations';
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -817,9 +833,17 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
                   FactionImageCard(factionId: widget.assetId!),
                   const SizedBox(height: 16),
                 ],
+                if (showOrganizations) ...[
+                  const SizedBox(height: 16),
+                  const _WorldSection(
+                    title: 'Organizations',
+                    emptyLabel: 'Belum ada organisasi pada proyek ini.',
+                    items: [],
+                  ),
+                ],
                 if (showFactions)
                   _WorldSection(
-                    title: 'Factions',
+                    title: 'Faction',
                     emptyLabel: 'Belum ada faksi. Buat faksi pertama.',
                     items: [
                       for (final faction in _factions ?? const [])

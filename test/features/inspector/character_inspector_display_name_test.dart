@@ -35,14 +35,19 @@ void main() {
     return ProjectSessionManager().open(package);
   }
 
-  Future<void> seedAsset(ProjectDatabase db, String id, String name) async {
+  Future<void> seedAsset(
+    ProjectDatabase db,
+    String projectId,
+    String id,
+    String name,
+  ) async {
     final now = DateTime.now();
     await db
         .into(db.assets)
         .insert(
           AssetsCompanion.insert(
             id: id,
-            projectId: id,
+            projectId: projectId,
             name: name,
             type: 'character',
             createdAt: now,
@@ -61,7 +66,12 @@ void main() {
       addTearDown(() => root.delete(recursive: true));
       session = await openSession(root, 'Character Inspector Name');
       addTearDown(session.database.close);
-      await seedAsset(session.database, 'char-1', 'Qowner');
+      await seedAsset(
+        session.database,
+        session.manifest.id,
+        'char-1',
+        'Qowner',
+      );
     });
     await tester.binding.setSurfaceSize(const Size(1280, 900));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -83,10 +93,11 @@ void main() {
         ),
       ),
     );
-    await tester.runAsync(() async {
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 300));
-    });
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 100)),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
     return session;
   }
 

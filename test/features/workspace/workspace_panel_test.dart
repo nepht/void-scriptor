@@ -62,13 +62,15 @@ void main() {
       find.text('Identity, voice, relationships, and references'),
       findsOneWidget,
     );
-    expect(find.text('Relationships'), findsOneWidget);
-    expect(find.text('Appearance'), findsOneWidget);
+    expect(find.text('Overview'), findsOneWidget);
+    expect(find.text('Character Sheet'), findsOneWidget);
+    expect(find.text('Expressions Library'), findsOneWidget);
+    expect(find.text('AI Assets'), findsOneWidget);
+    expect(find.text('Relations'), findsOneWidget);
+    expect(find.text('Appearance'), findsNothing);
     expect(find.text('Identity'), findsNothing);
     expect(find.text('Companions & Carry'), findsNothing);
-    final visualsTab = find.byKey(
-      const ValueKey('workspace-section-Appearance'),
-    );
+    final visualsTab = find.byKey(const ValueKey('workspace-section-Wardrobe'));
     await tester.drag(
       find.byType(SingleChildScrollView).first,
       const Offset(-220, 0),
@@ -80,7 +82,7 @@ void main() {
       container
           .read(workspaceSectionProvider)
           .activeFor(WorkspaceKind.character),
-      'Appearance',
+      'Wardrobe',
     );
 
     container

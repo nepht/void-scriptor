@@ -6,9 +6,21 @@ enum WorkspaceKind { novel, character, worldbuilding, asset }
 String canonicalWorkspaceSection(WorkspaceKind kind, String section) =>
     switch ((kind, section)) {
       (WorkspaceKind.novel, 'Outline') => 'Planning',
-      (WorkspaceKind.character, 'Identity') => 'Profile',
-      (WorkspaceKind.character, 'Appearance & Gear') => 'Appearance',
-      (WorkspaceKind.character, 'Companions & Carry') => 'Relationships',
+      // Character workspace navigation uses the product vocabulary directly.
+      (WorkspaceKind.character, 'Profile') => 'Overview',
+      (WorkspaceKind.character, 'Identity') => 'Overview',
+      (WorkspaceKind.character, 'Overview Character') => 'Overview',
+      (WorkspaceKind.character, 'Appearance') => 'Wardrobe',
+      (WorkspaceKind.character, 'Appearance & Gear') => 'Wardrobe',
+      (WorkspaceKind.character, 'Weapon') => 'Weapons',
+      (WorkspaceKind.character, 'Expressions') => 'Expressions Library',
+      (WorkspaceKind.character, 'Relationships') => 'Relations',
+      (WorkspaceKind.character, 'Companions & Carry') => 'Relations',
+      (WorkspaceKind.worldbuilding, 'Location') => 'Location',
+      (WorkspaceKind.worldbuilding, 'Locations') => 'Location',
+      (WorkspaceKind.worldbuilding, 'Faction') => 'Faction',
+      (WorkspaceKind.worldbuilding, 'Factions') => 'Faction',
+      (WorkspaceKind.worldbuilding, 'Organizations') => 'Organizations',
       _ => section,
     };
 

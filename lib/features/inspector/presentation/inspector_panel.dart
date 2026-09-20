@@ -7,7 +7,7 @@ class InspectorPanel extends StatelessWidget {
   const InspectorPanel({super.key});
   @override
   Widget build(BuildContext context) => Container(
-    width: 310,
+    width: 280,
     decoration: BoxDecoration(
       color: context.palette.panel,
       border: Border(left: BorderSide(color: context.palette.borderSoft)),

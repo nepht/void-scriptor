@@ -31,6 +31,8 @@ void main() {
       bodyLock: oldValue.bodyLock,
       colorLock: oldValue.colorLock,
       outfitLock: oldValue.outfitLock,
+      weaponLock: true,
+      accessoryLock: true,
     );
     final command = UpdateCharacterIdentityCommand(
       id: 'identity-1',
@@ -41,10 +43,10 @@ void main() {
     );
 
     await command.execute();
-    expect(
-      (await repository.getIdentity(character.assetId))!.faceLock,
-      newValue.faceLock,
-    );
+    final executed = (await repository.getIdentity(character.assetId))!;
+    expect(executed.faceLock, newValue.faceLock);
+    expect(executed.weaponLock, isTrue);
+    expect(executed.accessoryLock, isTrue);
     await command.undo();
     expect(
       (await repository.getIdentity(character.assetId))!.faceLock,

@@ -14,14 +14,14 @@ class TurnaroundCard extends StatelessWidget {
         const SizedBox(height: 14),
         LayoutBuilder(
           builder: (context, c) {
-            final count = c.maxWidth >= 650 ? 4 : 2;
+            final count = c.maxWidth >= 440 ? 4 : 2;
             return GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               crossAxisCount: count,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
-              childAspectRatio: .72,
+              childAspectRatio: .65,
               children: const [
                 _Slot('Front'),
                 _Slot('Side'),
@@ -52,6 +52,8 @@ class _Slot extends StatelessWidget {
         Icon(Icons.accessibility_new, color: context.palette.textMuted),
         const SizedBox(height: 8),
         Text(label, style: VoidTypography.caption),
+        const SizedBox(height: 4),
+        const Text('No image', style: VoidTypography.caption),
       ],
     ),
   );

@@ -10,8 +10,13 @@ import 'widgets/wardrobe_header.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class WardrobeWorkspaceScreen extends ConsumerWidget {
-  const WardrobeWorkspaceScreen({super.key, required this.wardrobeId});
+  const WardrobeWorkspaceScreen({
+    super.key,
+    required this.wardrobeId,
+    this.activeSection,
+  });
   final String wardrobeId;
+  final String? activeSection;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

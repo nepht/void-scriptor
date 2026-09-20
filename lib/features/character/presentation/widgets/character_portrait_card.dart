@@ -48,7 +48,15 @@ class CharacterPortraitCard extends StatelessWidget {
                   )
                 : ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.file(File(imagePath!), fit: BoxFit.cover),
+                    child: Image.file(
+                      File(imagePath!),
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stack) => const Center(
+                        child: Text(
+                          'Image unavailable. Import a new portrait.',
+                        ),
+                      ),
+                    ),
                   ),
           ),
         ),

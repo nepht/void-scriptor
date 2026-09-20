@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
-import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class AccessoriesCard extends StatelessWidget {
   const AccessoriesCard({super.key});
@@ -14,26 +13,10 @@ class AccessoriesCard extends StatelessWidget {
       children: [
         const Text('Accessories', style: VoidTypography.headingMedium),
         const SizedBox(height: 14),
-        const _Item(Icons.diamond_outlined, 'Necklace'),
-        const _Item(Icons.circle_outlined, 'Bracelet'),
-        const _Item(Icons.watch_outlined, 'Watch'),
-      ],
-    ),
-  );
-}
-
-class _Item extends StatelessWidget {
-  const _Item(this.icon, this.label);
-  final IconData icon;
-  final String label;
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 7),
-    child: Row(
-      children: [
-        Icon(icon, size: 17, color: context.palette.textMuted),
-        const SizedBox(width: 9),
-        Text(label, style: VoidTypography.body),
+        const Text(
+          'Open Appearance & Gear to manage linked accessories.',
+          style: VoidTypography.caption,
+        ),
       ],
     ),
   );

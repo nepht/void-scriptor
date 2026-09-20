@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+
+import '../infrastructure/providers/gemini/gemini_http_client.dart';
+import '../infrastructure/providers/openai/openai_http_client.dart';
 
 import '../../../core/security/credential_store.dart';
 import '../domain/ai_provider_settings.dart';
@@ -42,7 +46,29 @@ class _AiProviderWorkspaceScreenState extends State<AiProviderWorkspaceScreen> {
       widget.credentialStore ??
       const SecureCredentialStore(FlutterSecureStorage());
   final Map<String, String?> _values = {};
+  final Map<String, String> _testStates = {};
   bool _loading = true;
+
+  Future<void> _testConnection(_ProviderDefinition provider) async {
+    if (!_isConfigured(provider)) return;
+    setState(() => _testStates[provider.name] = 'Testing...');
+    final key = _values[provider.storageKey]!;
+    try {
+      final client = http.Client();
+      final models = provider.name == 'OpenAI'
+          ? await HttpOpenAiClient(client: client).listModels(apiKey: key)
+          : await HttpGeminiClient(client: client).listModels(apiKey: key);
+      client.close();
+      if (!mounted) return;
+      setState(
+        () => _testStates[provider.name] =
+            'Connected (${models.length} models discovered)',
+      );
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _testStates[provider.name] = 'Connection failed');
+    }
+  }
 
   @override
   void initState() {
@@ -98,10 +124,13 @@ class _AiProviderWorkspaceScreenState extends State<AiProviderWorkspaceScreen> {
                             : 'Not configured')
                       : 'Local endpoint',
                   detail: provider.isCloud
-                      ? 'Cloud provider'
+                      ? (_testStates[provider.name] ?? 'Cloud provider')
                       : (_values[provider.storageKey] ??
                             provider.defaultEndpoint!),
                   onConfigure: () => _configure(provider),
+                  onTest: provider.isCloud && _isConfigured(provider)
+                      ? () => _testConnection(provider)
+                      : null,
                 ),
             ],
           ),
@@ -210,12 +239,14 @@ class _ProviderTile extends StatelessWidget {
     required this.status,
     required this.detail,
     required this.onConfigure,
+    this.onTest,
   });
 
   final String name;
   final String status;
   final String detail;
   final VoidCallback onConfigure;
+  final VoidCallback? onTest;
 
   @override
   Widget build(BuildContext context) => Card(
@@ -226,9 +257,19 @@ class _ProviderTile extends StatelessWidget {
         children: [Text(status), Text(detail)],
       ),
       isThreeLine: true,
-      trailing: OutlinedButton(
-        onPressed: onConfigure,
-        child: const Text('Configure'),
+      trailing: Wrap(
+        spacing: 8,
+        children: [
+          if (onTest != null)
+            OutlinedButton(
+              onPressed: onTest,
+              child: const Text('Test connection'),
+            ),
+          OutlinedButton(
+            onPressed: onConfigure,
+            child: const Text('Configure'),
+          ),
+        ],
       ),
     ),
   );

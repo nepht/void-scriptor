@@ -14,19 +14,19 @@ void main() {
       state
           .activate(WorkspaceKind.character, 'Identity')
           .activeFor(WorkspaceKind.character),
-      'Profile',
+      'Overview',
     );
     expect(
       state
           .activate(WorkspaceKind.character, 'Appearance & Gear')
           .activeFor(WorkspaceKind.character),
-      'Appearance',
+      'Wardrobe',
     );
     expect(
       state
           .activate(WorkspaceKind.character, 'Companions & Carry')
           .activeFor(WorkspaceKind.character),
-      'Relationships',
+      'Relations',
     );
     expect(
       state

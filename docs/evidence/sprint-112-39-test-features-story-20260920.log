@@ -1,0 +1,7 @@
+Captured execution result for step 112.39 test/features/story.
+Command: D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/story -j 1
+Exit code: 0
+Result: All tests passed.
+Count: 216 passed, 0 failed, 0 skipped.
+Duration: 197.73 seconds (tool-reported).
+Observed non-fatal output: existing Drift multiple-database diagnostic warnings from test fixtures. No test failure was reported.

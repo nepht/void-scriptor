@@ -1,0 +1,13 @@
+step: 112.39
+shard: test/features/story
+command: D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/story -j 1
+started_at: UNAVAILABLE (terminal result did not expose wall-clock timestamps)
+finished_at: UNAVAILABLE (terminal result did not expose wall-clock timestamps)
+duration_seconds: 197.73
+exit_code: 0
+status: PASS
+passed: 216
+failed: 0
+skipped: 0
+log: docs/evidence/sprint-112-39-test-features-story-20260920.log
+notes: Flutter output included existing Drift multiple-database diagnostic warnings; process ended with All tests passed.

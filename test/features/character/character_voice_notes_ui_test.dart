@@ -74,17 +74,27 @@ void main() {
       expect(find.text('Tenang, berwibawa, sedikit serak'), findsOneWidget);
       expect(find.text('Voice'), findsOneWidget);
 
-      // Private notes editor must be reachable from the workspace.
-      final scrollable = find
-          .descendant(
-            of: find.byType(CharacterWorkspaceScreen),
-            matching: find.byType(Scrollable),
-          )
-          .first;
-      await tester.scrollUntilVisible(
-        find.text('Character Private Notes'),
-        200,
-        scrollable: scrollable,
+      // Private notes are owned by the canonical Notes section.
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            projectSessionProvider.overrideWith(
+              () => _FakeProjectSessionController(session),
+            ),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: SizedBox(
+                width: 1280,
+                height: 900,
+                child: CharacterWorkspaceScreen(
+                  characterId: characterId,
+                  activeSection: 'Notes',
+                ),
+              ),
+            ),
+          ),
+        ),
       );
       await tester.pumpAndSettle();
       await tester.tap(find.text('Character Private Notes'));
@@ -96,12 +106,6 @@ void main() {
       expect(fieldFinder, findsOneWidget);
       await tester.enterText(fieldFinder, 'Jangan ubah warna mata');
       await tester.pump();
-      await tester.scrollUntilVisible(
-        find.text('Save'),
-        200,
-        scrollable: scrollable,
-      );
-      await tester.pumpAndSettle();
       await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();
 
@@ -127,22 +131,38 @@ void main() {
       expect(stored!.notes, 'Jangan ubah warna mata');
       final initialFaceLock = stored!.faceLock;
 
-      // Toggle a lock: the saved notes must NOT be silently dropped.
-      // Scope to the character-level IdentityPreservationCard; the mode
-      // section above also renders its own override switches.
+      // Continuity locks are owned by Wardrobe; switching owners must preserve
+      // the notes written through the Notes section.
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            projectSessionProvider.overrideWith(
+              () => _FakeProjectSessionController(session),
+            ),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: SizedBox(
+                width: 1280,
+                height: 1200,
+                child: CharacterWorkspaceScreen(
+                  characterId: characterId,
+                  activeSection: 'Wardrobe',
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
       final switchFinder = find
           .descendant(
             of: find.byType(IdentityPreservationCard),
             matching: find.byType(Switch),
           )
           .first;
-      await tester.scrollUntilVisible(
-        switchFinder,
-        200,
-        scrollable: scrollable,
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(switchFinder, warnIfMissed: false);
+      final lockSwitch = tester.widget<Switch>(switchFinder);
+      lockSwitch.onChanged!(!lockSwitch.value);
       await tester.pumpAndSettle();
       var toggleLanded = false;
       await tester.runAsync(() async {

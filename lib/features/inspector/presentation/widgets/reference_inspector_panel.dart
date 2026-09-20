@@ -90,11 +90,11 @@ class ReferenceInspectorPanel extends StatelessWidget {
       for (final action in actionLabels)
         ListTile(
           dense: true,
+          enabled: false,
           contentPadding: EdgeInsets.zero,
-          title: Text(
-            action,
-            style: TextStyle(color: context.palette.textSecondary),
-          ),
+          leading: const Icon(Icons.hourglass_empty_outlined, size: 16),
+          title: Text(action),
+          trailing: const Text('Coming soon'),
         ),
     ],
   );

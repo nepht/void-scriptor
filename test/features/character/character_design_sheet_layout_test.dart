@@ -37,4 +37,42 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  testWidgets(
+    'desktop overview fits every result region in one visible panel',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1000, 620));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: CharacterDesignSheetLayout(
+              summary: SizedBox(key: Key('summary'), height: 160),
+              turnaround: SizedBox(key: Key('turnaround'), height: 360),
+              details: SizedBox(key: Key('details'), height: 220),
+              portrait: SizedBox(key: Key('portrait'), height: 600),
+              closeUpDetail: SizedBox(key: Key('close-up'), height: 180),
+            ),
+          ),
+        ),
+      );
+
+      final viewport = tester.getRect(find.byType(Scaffold));
+      for (final key in const [
+        'summary',
+        'turnaround',
+        'details',
+        'portrait',
+        'close-up',
+      ]) {
+        final region = tester.getRect(find.byKey(Key(key)));
+        expect(region.left, greaterThanOrEqualTo(viewport.left));
+        expect(region.top, greaterThanOrEqualTo(viewport.top));
+        expect(region.right, lessThanOrEqualTo(viewport.right));
+        expect(region.bottom, lessThanOrEqualTo(viewport.bottom));
+      }
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

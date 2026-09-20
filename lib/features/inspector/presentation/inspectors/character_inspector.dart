@@ -8,7 +8,6 @@ import '../../../character/presentation/character_workspace_controller.dart';
 import '../../../project_resilience/application/project_version_control_service.dart';
 import '../../../projects/presentation/project_persistence_providers.dart';
 import '../widgets/reference_inspector_panel.dart';
-import '../widgets/relation_section.dart';
 
 String _heightLabel(double? heightCm) {
   if (heightCm == null) return '';
@@ -145,86 +144,58 @@ class _CharacterInspectorBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final value = character;
-    return Column(
-      children: [
-        RelationSection(assetId: characterId),
-        const SizedBox(height: 16),
-        Expanded(
-          child: ReferenceInspectorPanel(
-            properties: [
-              InspectorProperty(
-                'Name',
-                value?.displayName ??
-                    assetName ??
-                    (details.assetName.isEmpty
-                        ? 'Unknown asset'
-                        : details.assetName),
-              ),
-              InspectorProperty('Role', value?.alias ?? ''),
-              const InspectorProperty('Affiliation', ''),
-              InspectorProperty('Gender', value?.gender ?? ''),
-              InspectorProperty('Age', value?.age?.toString() ?? ''),
-              InspectorProperty('Height', _heightLabel(value?.heightCm)),
-              InspectorProperty('Version', details.version),
-              InspectorProperty('Created', _dateLabel(details.createdAt)),
-              InspectorProperty('Modified', _dateLabel(details.updatedAt)),
-            ],
-            tags: details.tags,
-            quickNotes: identity?.notes ?? '',
-            aiPrompt: '',
-            locks: [
-              InspectorLockState('Face Lock', identity?.faceLock ?? false),
-              InspectorLockState(
-                'Hair Geometry Lock',
-                identity?.hairLock ?? false,
-              ),
-              InspectorLockState(
-                'Body Proportion Lock',
-                identity?.bodyLock ?? false,
-              ),
-              InspectorLockState('Color Lock', identity?.colorLock ?? false),
-              InspectorLockState(
-                'Wardrobe Lock',
-                identity?.outfitLock ?? false,
-              ),
-              InspectorLockState('Weapon Lock', identity?.weaponLock ?? false),
-              InspectorLockState(
-                'Accessory Lock',
-                identity?.accessoryLock ?? false,
-              ),
-            ],
-            linkedAssets: [
-              const InspectorAssetCount(
-                'Wardrobe',
-                '—',
-                Icons.checkroom_outlined,
-              ),
-              const InspectorAssetCount('Weapons', '—', Icons.gavel_outlined),
-              const InspectorAssetCount(
-                'Expressions',
-                '—',
-                Icons.face_outlined,
-              ),
-              const InspectorAssetCount(
-                'Poses',
-                '—',
-                Icons.accessibility_new_outlined,
-              ),
-              const InspectorAssetCount(
-                'AI Assets',
-                '—',
-                Icons.settings_outlined,
-              ),
-              InspectorAssetCount(
-                'References',
-                details.referenceCount.toString(),
-                Icons.description_outlined,
-              ),
-            ],
-            versionHistory: details.versions,
-            actionLabels: const [],
-          ),
+    return ReferenceInspectorPanel(
+      properties: [
+        InspectorProperty(
+          'Name',
+          value?.displayName ??
+              assetName ??
+              (details.assetName.isEmpty ? 'Unknown asset' : details.assetName),
         ),
+        InspectorProperty('Role', value?.alias ?? ''),
+        const InspectorProperty('Affiliation', ''),
+        InspectorProperty('Gender', value?.gender ?? ''),
+        InspectorProperty('Age', value?.age?.toString() ?? ''),
+        InspectorProperty('Height', _heightLabel(value?.heightCm)),
+        InspectorProperty('Version', details.version),
+        InspectorProperty('Created', _dateLabel(details.createdAt)),
+        InspectorProperty('Modified', _dateLabel(details.updatedAt)),
+      ],
+      tags: details.tags,
+      quickNotes: identity?.notes ?? '',
+      aiPrompt: '',
+      locks: [
+        InspectorLockState('Face Lock', identity?.faceLock ?? false),
+        InspectorLockState('Hair Geometry Lock', identity?.hairLock ?? false),
+        InspectorLockState('Body Proportion Lock', identity?.bodyLock ?? false),
+        InspectorLockState('Color Lock', identity?.colorLock ?? false),
+        InspectorLockState('Wardrobe Lock', identity?.outfitLock ?? false),
+        InspectorLockState('Weapon Lock', identity?.weaponLock ?? false),
+        InspectorLockState('Accessory Lock', identity?.accessoryLock ?? false),
+      ],
+      linkedAssets: [
+        const InspectorAssetCount('Wardrobe', '—', Icons.checkroom_outlined),
+        const InspectorAssetCount('Weapons', '—', Icons.gavel_outlined),
+        const InspectorAssetCount('Expressions', '—', Icons.face_outlined),
+        const InspectorAssetCount(
+          'Poses',
+          '—',
+          Icons.accessibility_new_outlined,
+        ),
+        const InspectorAssetCount('AI Assets', '—', Icons.settings_outlined),
+        InspectorAssetCount(
+          'References',
+          details.referenceCount.toString(),
+          Icons.description_outlined,
+        ),
+      ],
+      versionHistory: details.versions,
+      actionLabels: const [
+        'AI Generate',
+        'Create Variation',
+        'Duplicate',
+        'Export Character',
+        'Delete Character',
       ],
     );
   }

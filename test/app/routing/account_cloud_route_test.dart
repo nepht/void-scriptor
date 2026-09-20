@@ -18,7 +18,7 @@ void main() {
 
     expect(find.text('ACCOUNT & CLOUD CENTER'), findsOneWidget);
     expect(find.text('ACCOUNT SUMMARY'), findsOneWidget);
-    expect(find.text('Connections'), findsOneWidget);
+    expect(find.text('Connected Accounts'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

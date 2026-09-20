@@ -63,7 +63,10 @@ void main() {
               body: SizedBox(
                 width: 1280,
                 height: 1400,
-                child: CharacterWorkspaceScreen(characterId: characterId),
+                child: CharacterWorkspaceScreen(
+                  characterId: characterId,
+                  activeSection: 'Story',
+                ),
               ),
             ),
           ),

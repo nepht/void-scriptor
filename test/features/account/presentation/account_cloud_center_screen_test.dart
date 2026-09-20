@@ -51,25 +51,25 @@ void main() {
     expect(notifications.onPressed, isNull);
     for (final tab in [
       'Overview',
-      'Account',
-      'Connections',
+      'Connected Accounts',
       'Cloud Storage',
-      'AI Center',
-      'Developer',
-      'Team',
+      'AI Providers',
+      'API Keys',
+      'Team & Collaboration',
       'Security',
+      'Backup & Sync',
       'Billing',
     ]) {
       expect(find.text(tab), findsWidgets, reason: tab);
     }
     for (final title in [
       'CLOUD STORAGE USAGE',
-      'CONNECTED SERVICES',
-      'API PROVIDERS',
+      'CONNECTED SERVICES OVERVIEW',
+      'AI PROVIDERS',
       'DEVELOPER TOOLS',
       'CREATIVE TOOLS',
       'PAYMENT METHODS',
-      'API KEYS',
+      'API KEYS MANAGER',
       'TEAM & COLLABORATION',
       'ACTIVITY LOG',
       'BACKUP & SYNC',
@@ -191,11 +191,11 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('Account'));
+    await tester.tap(find.text('Connected Accounts'));
     await tester.pump();
     expect(find.text('Sign in or connect account'), findsOneWidget);
 
-    await tester.tap(find.text('AI Center'));
+    await tester.tap(find.text('AI Providers').first);
     await tester.pump();
     final openProviders = tester.widget<TextButton>(
       find.widgetWithText(TextButton, 'Open AI Providers'),
@@ -215,16 +215,23 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('AI Center'));
+    await tester.tap(find.text('AI Providers').first);
     await tester.pump();
 
     expect(find.text('API PROVIDERS'), findsOneWidget);
     expect(find.text('CONNECTED SERVICES'), findsNothing);
     expect(find.text('Overview'), findsOneWidget);
 
-    await tester.tap(find.text('Connections'));
+    final backupSyncTab = tester.widget<InkWell>(
+      find.ancestor(
+        of: find.text('Backup & Sync'),
+        matching: find.byType(InkWell),
+      ),
+    );
+    backupSyncTab.onTap!();
     await tester.pump();
 
+    expect(find.text('BACKUP & SYNC'), findsOneWidget);
     expect(find.text('Local project storage'), findsOneWidget);
     expect(find.text('Available locally'), findsWidgets);
   });

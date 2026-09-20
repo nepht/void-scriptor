@@ -18,6 +18,9 @@ void main() {
   testWidgets('character workspace renders desktop identity sections', (
     tester,
   ) async {
+    await tester.binding.setSurfaceSize(const Size(1280, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
     const character = CharacterModel(
       assetId: 'qowner-1',
       projectId: 'project-1',
@@ -56,6 +59,31 @@ void main() {
     expect(find.text('Identity Preservation'), findsNothing);
     expect(find.text('Primary References'), findsNothing);
     expect(find.text('Character Relationships'), findsNothing);
+
+    final panel = find.byKey(
+      const ValueKey('character-overview-visible-panel'),
+    );
+    expect(panel, findsOneWidget);
+    expect(
+      find.ancestor(of: panel, matching: find.byType(SingleChildScrollView)),
+      findsNothing,
+    );
+    final viewport = tester.getRect(find.byType(CharacterWorkspaceScreen));
+    for (final label in const [
+      'CHARACTER CONCEPT',
+      'Turnaround',
+      'Silhouette',
+      'Color Palette',
+      'Accessories',
+      'MAIN PORTRAIT',
+      'CLOSE UP DETAIL',
+    ]) {
+      final labelFinder = find.text(label);
+      expect(labelFinder, findsWidgets, reason: label);
+      final region = tester.getRect(labelFinder.first);
+      expect(region.top, greaterThanOrEqualTo(viewport.top), reason: label);
+      expect(region.bottom, lessThanOrEqualTo(viewport.bottom), reason: label);
+    }
     expect(tester.takeException(), isNull);
   });
 
@@ -92,9 +120,22 @@ void main() {
       'Turnaround',
       'Silhouette',
       'Portrait',
-      'Expression Reference',
+      'Expressions',
       'Pose',
       'Details',
+    ]) {
+      expect(find.text(label), findsWidgets, reason: label);
+    }
+    for (final label in [
+      'FRONT VIEW',
+      'SIDE VIEW',
+      'BACK VIEW',
+      '3/4 VIEW',
+      'NEUTRAL',
+      'ACTION',
+      'COMBAT',
+      'MAIN PORTRAIT',
+      'CLOSE UP DETAIL',
     ]) {
       expect(find.text(label), findsWidgets, reason: label);
     }

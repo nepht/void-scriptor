@@ -1,32 +1,39 @@
 import 'package:flutter/material.dart';
+
+import '../../../../design_system/theme/void_theme_context.dart';
 import '../../../../design_system/typography/void_typography.dart';
 import '../../../../design_system/widgets/void_card.dart';
-import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class TurnaroundCard extends StatelessWidget {
-  const TurnaroundCard({super.key});
+  const TurnaroundCard({super.key, this.imagePaths = const {}});
+
+  final Map<String, String> imagePaths;
+
   @override
   Widget build(BuildContext context) => VoidCard(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text('Turnaround', style: VoidTypography.headingMedium),
-        const SizedBox(height: 14),
+        const SizedBox(height: 12),
         LayoutBuilder(
-          builder: (context, c) {
-            final count = c.maxWidth >= 440 ? 4 : 2;
+          builder: (context, constraints) {
+            final columns = constraints.maxWidth >= 440 ? 4 : 2;
             return GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: count,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              childAspectRatio: .65,
-              children: const [
-                _Slot('Front'),
-                _Slot('Side'),
-                _Slot('Back'),
-                _Slot('3/4'),
+              crossAxisCount: columns,
+              crossAxisSpacing: 6,
+              mainAxisSpacing: 6,
+              childAspectRatio: .62,
+              children: [
+                for (final label in const [
+                  'FRONT VIEW',
+                  'SIDE VIEW',
+                  'BACK VIEW',
+                  '3/4 VIEW',
+                ])
+                  _ReferenceSlot(label: label, imagePath: imagePaths[label]),
               ],
             );
           },
@@ -36,24 +43,45 @@ class TurnaroundCard extends StatelessWidget {
   );
 }
 
-class _Slot extends StatelessWidget {
-  const _Slot(this.label);
+class _ReferenceSlot extends StatelessWidget {
+  const _ReferenceSlot({required this.label, this.imagePath});
+
   final String label;
+  final String? imagePath;
+
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) => DecoratedBox(
     decoration: BoxDecoration(
       color: context.palette.surfaceElevated,
-      borderRadius: BorderRadius.circular(8),
       border: Border.all(color: context.palette.borderSoft),
+      borderRadius: BorderRadius.circular(6),
     ),
     child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.accessibility_new, color: context.palette.textMuted),
-        const SizedBox(height: 8),
-        Text(label, style: VoidTypography.caption),
-        const SizedBox(height: 4),
-        const Text('No image', style: VoidTypography.caption),
+        Expanded(
+          child: Center(
+            child: Icon(
+              Icons.accessibility_new,
+              size: 38,
+              color: context.palette.textDisabled,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(7),
+          child: Column(
+            children: [
+              Text(label, style: VoidTypography.caption),
+              if (imagePath == null)
+                Text(
+                  'No image',
+                  style: VoidTypography.caption.copyWith(
+                    color: context.palette.textMuted,
+                  ),
+                ),
+            ],
+          ),
+        ),
       ],
     ),
   );

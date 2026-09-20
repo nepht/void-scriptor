@@ -11,13 +11,13 @@ import '../domain/account_cloud_snapshot.dart';
 
 enum _AccountCenterArea {
   overview('Overview'),
-  account('Account'),
-  connections('Connections'),
+  connectedAccounts('Connected Accounts'),
   cloudStorage('Cloud Storage'),
-  aiCenter('AI Center'),
-  developer('Developer'),
-  team('Team'),
+  aiProviders('AI Providers'),
+  apiKeys('API Keys'),
+  teamCollaboration('Team & Collaboration'),
   security('Security'),
+  backupSync('Backup & Sync'),
   billing('Billing');
 
   const _AccountCenterArea(this.label);
@@ -120,7 +120,7 @@ class _AccountCloudCenterScreenState
                                       ),
                                       const SizedBox(height: 6),
                                       Text(
-                                        'Manage your accounts, cloud services, and integrations in one place',
+                                        'Kelola akun, koneksi, cloud, dan integrasi layanan Anda',
                                         style: VoidTypography.body.copyWith(
                                           color: context.palette.textSecondary,
                                         ),
@@ -162,8 +162,8 @@ class _AccountCloudCenterScreenState
                             LayoutBuilder(
                               builder: (context, bodyConstraints) {
                                 final mainWidth = bodyConstraints.maxWidth;
-                                final mainCardWidth = mainWidth >= 820
-                                    ? (mainWidth - 16) / 2
+                                final mainCardWidth = mainWidth >= 760
+                                    ? (mainWidth - 32) / 3
                                     : mainWidth;
                                 final main = Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,13 +265,13 @@ class _AccountCloudCenterScreenState
                                         children: [
                                           for (final card in const [
                                             (
-                                              'CONNECTED SERVICES',
+                                              'CONNECTED SERVICES OVERVIEW',
                                               'Connection summary',
                                               Icons.hub_outlined,
                                               'Connected services appear here after provider verification.',
                                             ),
                                             (
-                                              'API PROVIDERS',
+                                              'AI PROVIDERS',
                                               'AI model gateways',
                                               Icons.api_outlined,
                                               'Configure and test OpenAI or Gemini from AI Providers.',
@@ -295,7 +295,7 @@ class _AccountCloudCenterScreenState
                                               'No payment method is configured.',
                                             ),
                                             (
-                                              'API KEYS',
+                                              'API KEYS MANAGER',
                                               'Credential inventory',
                                               Icons.key_outlined,
                                               'Credentials remain protected in the operating-system vault.',
@@ -476,19 +476,12 @@ class _OperationalMetricsCards extends StatelessWidget {
       children: [
         SizedBox(
           width: cardWidth,
-          child: _OverviewCapabilityCard(
-            title: 'AI USAGE THIS MONTH',
-            subtitle: 'Locally recorded usage and estimated provider cost',
-            icon: Icons.show_chart_outlined,
-            message: usageMessage,
-          ),
+          child: _AiUsageMetricsCard(metrics: value, message: usageMessage),
         ),
         SizedBox(
           width: cardWidth,
-          child: _OverviewCapabilityCard(
-            title: 'STORAGE DISTRIBUTION',
-            subtitle: 'Active project files by media category',
-            icon: Icons.donut_large_outlined,
+          child: _StorageDistributionCard(
+            metrics: value,
             message: storageMessage,
           ),
         ),
@@ -506,6 +499,168 @@ class _OperationalMetricsCards extends StatelessWidget {
         .join('\n');
     return '${_formatBytes(total)} indexed${shares.isEmpty ? '' : '\n$shares'}';
   }
+}
+
+class _AiUsageMetricsCard extends StatelessWidget {
+  const _AiUsageMetricsCard({required this.metrics, required this.message});
+
+  final AccountOperationalMetrics? metrics;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final value = metrics;
+    final promptShare = value == null || value.totalTokens == 0
+        ? 0.0
+        : value.promptTokens / value.totalTokens;
+    return _DashboardCard(
+      title: 'AI USAGE THIS MONTH',
+      subtitle: 'Locally recorded usage and estimated provider cost',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 72,
+            child: CustomPaint(
+              key: const ValueKey('account-ai-usage-chart'),
+              painter: _UsageCompositionPainter(
+                promptShare: promptShare,
+                color: context.palette.primaryBright,
+                trackColor: context.palette.borderSoft,
+              ),
+              child: const SizedBox.expand(),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(message, style: VoidTypography.body),
+        ],
+      ),
+    );
+  }
+}
+
+class _StorageDistributionCard extends StatelessWidget {
+  const _StorageDistributionCard({
+    required this.metrics,
+    required this.message,
+  });
+
+  final AccountOperationalMetrics? metrics;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final entries =
+        metrics?.storageBytesByCategory.entries.toList() ?? const [];
+    return _DashboardCard(
+      title: 'STORAGE DISTRIBUTION',
+      subtitle: 'Active project files by media category',
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 68,
+            height: 68,
+            child: CustomPaint(
+              key: const ValueKey('account-storage-donut'),
+              painter: _StorageDonutPainter(
+                values: entries.map((entry) => entry.value).toList(),
+                colors: [
+                  context.palette.primaryBright,
+                  context.palette.info,
+                  context.palette.warning,
+                  context.palette.success,
+                  context.palette.textMuted,
+                ],
+                trackColor: context.palette.borderSoft,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(child: Text(message, style: VoidTypography.body)),
+        ],
+      ),
+    );
+  }
+}
+
+class _UsageCompositionPainter extends CustomPainter {
+  const _UsageCompositionPainter({
+    required this.promptShare,
+    required this.color,
+    required this.trackColor,
+  });
+
+  final double promptShare;
+  final Color color;
+  final Color trackColor;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final baseline = size.height - 12;
+    final track = Paint()
+      ..color = trackColor
+      ..strokeWidth = 2;
+    canvas.drawLine(Offset(0, baseline), Offset(size.width, baseline), track);
+    final progress = Paint()
+      ..color = color
+      ..strokeWidth = 4
+      ..strokeCap = StrokeCap.round;
+    final safeShare = promptShare.clamp(0.0, 1.0);
+    canvas.drawLine(
+      Offset(0, baseline),
+      Offset(size.width * safeShare, 12),
+      progress,
+    );
+    canvas.drawCircle(
+      Offset(size.width * safeShare, 12),
+      4,
+      Paint()..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_UsageCompositionPainter oldDelegate) =>
+      oldDelegate.promptShare != promptShare || oldDelegate.color != color;
+}
+
+class _StorageDonutPainter extends CustomPainter {
+  const _StorageDonutPainter({
+    required this.values,
+    required this.colors,
+    required this.trackColor,
+  });
+
+  final List<int> values;
+  final List<Color> colors;
+  final Color trackColor;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    final total = values.fold<int>(0, (sum, value) => sum + value);
+    final stroke = size.shortestSide * .18;
+    final base = Paint()
+      ..color = trackColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke;
+    canvas.drawArc(rect.deflate(stroke / 2), 0, 6.283185, false, base);
+    if (total == 0) return;
+    var start = -1.570796;
+    for (var index = 0; index < values.length; index++) {
+      final sweep = values[index] / total * 6.283185;
+      final paint = Paint()
+        ..color = colors[index % colors.length]
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke;
+      canvas.drawArc(rect.deflate(stroke / 2), start, sweep, false, paint);
+      start += sweep;
+    }
+  }
+
+  @override
+  bool shouldRepaint(_StorageDonutPainter oldDelegate) =>
+      oldDelegate.values.toString() != values.toString();
 }
 
 String _formatInteger(int value) {
@@ -740,7 +895,7 @@ class _FocusedAccountArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cards = switch (area) {
-      _AccountCenterArea.account => const [
+      _AccountCenterArea.connectedAccounts => const [
         (
           'AUTHENTICATION',
           'Account identity and sign-in state',
@@ -748,12 +903,12 @@ class _FocusedAccountArea extends StatelessWidget {
           'Account access reflects the configured authentication provider.',
         ),
       ],
-      _AccountCenterArea.connections => const [
+      _AccountCenterArea.backupSync => const [
         (
-          'CONNECTED SERVICES',
-          'Verified service connections',
-          Icons.hub_outlined,
-          'Services appear as connected only after provider verification.',
+          'BACKUP & SYNC',
+          'Data protection and synchronization',
+          Icons.sync_outlined,
+          'Local project backups are available. Cloud sync remains unavailable until a provider is connected.',
         ),
       ],
       _AccountCenterArea.cloudStorage => const [
@@ -770,7 +925,7 @@ class _FocusedAccountArea extends StatelessWidget {
           'No cloud backup destination is configured.',
         ),
       ],
-      _AccountCenterArea.aiCenter => const [
+      _AccountCenterArea.aiProviders => const [
         (
           'API PROVIDERS',
           'AI model gateways',
@@ -784,7 +939,7 @@ class _FocusedAccountArea extends StatelessWidget {
           'No metering data is available from connected providers.',
         ),
       ],
-      _AccountCenterArea.developer => const [
+      _AccountCenterArea.apiKeys => const [
         (
           'DEVELOPER TOOLS',
           'Source control and development services',
@@ -804,7 +959,7 @@ class _FocusedAccountArea extends StatelessWidget {
           'Credentials remain protected in the operating-system vault.',
         ),
       ],
-      _AccountCenterArea.team => const [
+      _AccountCenterArea.teamCollaboration => const [
         (
           'TEAM & COLLABORATION',
           'Members, roles, and invitations',
@@ -856,7 +1011,7 @@ class _FocusedAccountArea extends StatelessWidget {
                   message: card.$4,
                 ),
               ),
-            if (area == _AccountCenterArea.account)
+            if (area == _AccountCenterArea.connectedAccounts)
               SizedBox(
                 width: cardWidth,
                 child: _DashboardCard(
@@ -868,7 +1023,7 @@ class _FocusedAccountArea extends StatelessWidget {
                   ),
                 ),
               ),
-            if (area == _AccountCenterArea.connections)
+            if (area == _AccountCenterArea.backupSync)
               for (final service in snapshot.services)
                 SizedBox(
                   width: cardWidth,
@@ -883,7 +1038,7 @@ class _FocusedAccountArea extends StatelessWidget {
                   width: cardWidth,
                   child: _ServiceCard(service: service),
                 ),
-            if (area == _AccountCenterArea.aiCenter)
+            if (area == _AccountCenterArea.aiProviders)
               SizedBox(
                 width: cardWidth,
                 child: _DestinationActionCard(

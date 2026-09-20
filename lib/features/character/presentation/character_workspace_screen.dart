@@ -15,6 +15,7 @@ import 'widgets/character_empty_state.dart';
 import 'widgets/character_deletion_review_dialog.dart';
 import 'widgets/character_header.dart';
 import 'widgets/character_design_sheet_layout.dart';
+import 'widgets/character_close_up_detail_card.dart';
 import 'widgets/character_identity_card.dart';
 import 'widgets/character_portrait_card.dart';
 import 'widgets/character_trait_extraction_sheet.dart';
@@ -92,14 +93,32 @@ class _CharacterWorkspaceScreenState
         child: LayoutBuilder(
           builder: (context, constraints) {
             final desktop = constraints.maxWidth >= 820;
-            final body = SingleChildScrollView(
+            final section = widget.activeSection == null
+                ? 'Overview'
+                : canonicalWorkspaceSection(
+                    WorkspaceKind.character,
+                    widget.activeSection!,
+                  );
+            final content = _content(
+              character,
+              identity,
+              desktop,
+              portraitPath,
+            );
+            if (desktop && section == 'Overview') {
+              return Padding(
+                key: const ValueKey('character-overview-visible-panel'),
+                padding: const EdgeInsets.all(8),
+                child: content,
+              );
+            }
+            return SingleChildScrollView(
               padding: const EdgeInsets.all(8),
               child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: double.infinity),
-                child: _content(character, identity, desktop, portraitPath),
+                constraints: const BoxConstraints(maxWidth: double.infinity),
+                child: content,
               ),
             );
-            return body;
           },
         ),
       ),
@@ -293,14 +312,12 @@ class _CharacterWorkspaceScreenState
       ],
     );
     final section = widget.activeSection == null
-        ? null
+        ? 'Overview'
         : canonicalWorkspaceSection(
             WorkspaceKind.character,
             widget.activeSection!,
           );
-    final extensionBuilder = section == null
-        ? null
-        : widget.sectionBuilders[section];
+    final extensionBuilder = widget.sectionBuilders[section];
     if (extensionBuilder != null) return extensionBuilder(context);
 
     if (section == 'Overview') {
@@ -310,6 +327,7 @@ class _CharacterWorkspaceScreenState
           imagePath: portraitPath,
           onAddPortrait: () => _importPortrait(character.assetId),
         ),
+        closeUpDetail: const CharacterCloseUpDetailCard(),
         turnaround: const TurnaroundCard(),
         details: visual,
       );
@@ -341,11 +359,12 @@ class _CharacterWorkspaceScreenState
                 ReferencesCard(characterId: character.assetId),
               ],
             ),
-            'Expression Reference' ||
+            'Expressions' ||
             'Pose' => _UnavailableSheetSection(title: _characterSheetSection),
             _ => CharacterDesignSheetLayout(
               summary: identityCard,
               portrait: portrait,
+              closeUpDetail: const CharacterCloseUpDetailCard(),
               turnaround: const TurnaroundCard(),
               details: visual,
             ),
@@ -424,7 +443,7 @@ class _CharacterWorkspaceScreenState
     }
     if (section == 'Notes') return notes;
     if (const ['Expressions Library', 'Timeline'].contains(section)) {
-      return _UnavailableSheetSection(title: section ?? 'Character section');
+      return _UnavailableSheetSection(title: section);
     }
     return CharacterDesignSheetLayout(
       summary: identityCard,
@@ -454,7 +473,7 @@ class _CharacterSheetNavigation extends StatelessWidget {
     'Turnaround',
     'Silhouette',
     'Portrait',
-    'Expression Reference',
+    'Expressions',
     'Pose',
     'Details',
   ];

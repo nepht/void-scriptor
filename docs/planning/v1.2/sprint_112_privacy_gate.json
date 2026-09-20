@@ -1,0 +1,217 @@
+{
+  "canonical_step": "112.46",
+  "title": "Privacy Gate",
+  "scope": "Local deterministic verification of local-first data flow, consent/telemetry opt-in, metadata redaction, retention, sharing, and deletion contracts on the canonical Windows repository.",
+  "required_outputs": [
+    "data_flow",
+    "consent_tests",
+    "telemetry_review",
+    "metadata_tests",
+    "retention_tests",
+    "deletion_tests",
+    "decision"
+  ],
+  "budgets": [
+    {
+      "id": "data_flow",
+      "metric": "creative content (manuskrip/karakter/lore/media) is local-only and never auto-exports; no network upload without explicit user action",
+      "ceiling": 1,
+      "unit": "zero auto-upload / auto-scan paths outside package",
+      "source": "permission_privacy_model.md PM1-PM4"
+    },
+    {
+      "id": "consent_tests",
+      "metric": "telemetry/diagnostics metrics are opt-in, default OFF, deny-by-default on unknown flags",
+      "ceiling": 1,
+      "unit": "PrivacySafeMetrics default-off and unknown-flag rejection",
+      "source": "lib/core/observability/privacy_safe_metrics.dart"
+    },
+    {
+      "id": "telemetry_review",
+      "metric": "metrics snapshot contains only whitelisted keys (flag, surface, outcome, count); no creative-content fields",
+      "ceiling": 1,
+      "unit": "metadata-only field invariant",
+      "source": "test/core/observability/privacy_safe_metrics_test.dart"
+    },
+    {
+      "id": "metadata_tests",
+      "metric": "share/export sanitization drops internal metadata and applies spoiler redaction before output",
+      "ceiling": 1,
+      "unit": "no internal metadata leak in export",
+      "source": "test/features/spoiler/reader_redaction_test.dart, test/features/spoiler/share_export_test.dart"
+    },
+    {
+      "id": "retention_tests",
+      "metric": "backup retention enforces automatic vs manual budget without cross-eviction",
+      "ceiling": 1,
+      "unit": "BackupRetentionService selectForPrune correctness",
+      "source": "test/features/project_resilience/backup_retention_service_test.dart"
+    },
+    {
+      "id": "deletion_tests",
+      "metric": "character deletion reviews affected novels and unlink does not delete source; asset unequip deletes only assignment row",
+      "ceiling": 1,
+      "unit": "deletion boundary fail-closed",
+      "source": "test/features/relations/, test/features/character_mode/"
+    }
+  ],
+  "baseline": [
+    {
+      "id": "data_flow",
+      "status": "DOCUMENTED",
+      "profile": "local-first single-user model, media in-package, no auto-upload",
+      "evidence": "docs/planning/v1.2/permission_privacy_model.md"
+    },
+    {
+      "id": "consent_tests",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "PrivacySafeMetrics opt-in + KillSwitch",
+      "evidence": "test/core/observability/privacy_safe_metrics_test.dart"
+    },
+    {
+      "id": "telemetry_review",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "metadata-only snapshot, no creative-content fields",
+      "evidence": "test/core/observability/privacy_safe_metrics_test.dart"
+    },
+    {
+      "id": "metadata_tests",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "sanitized share/export, spoiler redaction",
+      "evidence": "test/features/spoiler/reader_redaction_test.dart; test/features/spoiler/share_export_test.dart"
+    },
+    {
+      "id": "retention_tests",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "automatic vs manual backup retention budget",
+      "evidence": "test/features/project_resilience/backup_retention_service_test.dart"
+    },
+    {
+      "id": "deletion_tests",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "deletion boundary and unlink-source separation",
+      "evidence": "test/features/relations/; test/features/character_mode/"
+    }
+  ],
+  "results": [
+    {
+      "id": "data_flow",
+      "status": "PASS",
+      "implementation_refs": [
+        "docs/planning/v1.2/permission_privacy_model.md"
+      ],
+      "test_refs": [],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/dart.bat run tool/roadmap_guard.dart"
+    },
+    {
+      "id": "consent_tests",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/observability/privacy_safe_metrics.dart"
+      ],
+      "test_refs": [
+        "test/core/observability/privacy_safe_metrics_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/observability/privacy_safe_metrics_test.dart -j 1"
+    },
+    {
+      "id": "telemetry_review",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/observability/privacy_safe_metrics.dart"
+      ],
+      "test_refs": [
+        "test/core/observability/privacy_safe_metrics_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/observability/privacy_safe_metrics_test.dart -j 1"
+    },
+    {
+      "id": "metadata_tests",
+      "status": "PASS",
+      "implementation_refs": [
+        "docs/planning/v1.2/security_privacy_verification.md"
+      ],
+      "test_refs": [
+        "test/features/spoiler/reader_redaction_test.dart",
+        "test/features/spoiler/share_export_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/spoiler/ -j 1"
+    },
+    {
+      "id": "retention_tests",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/project_resilience/application/backup_retention_service.dart"
+      ],
+      "test_refs": [
+        "test/features/project_resilience/backup_retention_service_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/project_resilience/backup_retention_service_test.dart -j 1"
+    },
+    {
+      "id": "deletion_tests",
+      "status": "PASS",
+      "implementation_refs": [
+        "docs/planning/v1.2/permission_privacy_model.md"
+      ],
+      "test_refs": [
+        "test/features/relations/",
+        "test/features/character_mode/"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/relations/ test/features/character_mode/ -j 1"
+    }
+  ],
+  "regressions": [],
+  "bottlenecks": [
+    {
+      "id": "network_activity_audit_not_captured",
+      "status": "DEFERRED",
+      "impact": "Data-flow model is verified by documentation and local tests; runtime network-call instrumentation to prove zero auto-egress in a native journey is not captured.",
+      "next_gate": "Capture network egress in a disposable native journey on release-candidate hardware."
+    },
+    {
+      "id": "deletion_native_journey_not_captured",
+      "status": "DEFERRED",
+      "impact": "Deletion boundary contracts are proven at test level; the actual user-facing character-delete reviews-affected-novels native dialog is not exercised from cron.",
+      "next_gate": "Verify character/story deletion review dialog via computer-use native journey."
+    }
+  ],
+  "findings": [
+    {
+      "id": "no_privacy_finding_in_executed_matrix",
+      "severity": "none",
+      "status": "VERIFIED",
+      "summary": "No failing privacy finding was produced by the executed local privacy matrix; telemetry is opt-in default OFF with metadata-only whitelist; exports are sanitized.",
+      "evidence": "test/core/observability/privacy_safe_metrics_test.dart; test/features/spoiler/"
+    }
+  ],
+  "remediations": [
+    {
+      "id": "opt_in_default_off",
+      "status": "VERIFIED",
+      "summary": "PrivacySafeMetrics increments are silently dropped until optIn is set; unknown flags and unknown outcomes are denied by default.",
+      "evidence": "lib/core/observability/privacy_safe_metrics.dart"
+    },
+    {
+      "id": "metadata_whitelist_invariant",
+      "status": "VERIFIED",
+      "summary": "Snapshot keys are exactly {flag, surface, outcome, count}; no creative-content fields are ever recorded.",
+      "evidence": "test/core/observability/privacy_safe_metrics_test.dart"
+    }
+  ],
+  "residual_risk_acceptance": [
+    {
+      "id": "network_egress_native_audit",
+      "severity": "deferred",
+      "owner": "Choirudin",
+      "acceptance": "Runtime network-egress instrumentation and native deletion-journey verification deferred to release-candidate operational validation per permission_privacy_model.md PM4.",
+      "evidence": "docs/planning/v1.2/permission_privacy_model.md"
+    }
+  ],
+  "decision": "PASS_LOCAL_WITH_EXTERNAL_GATES_DEFERRED",
+  "limits": [
+    "Runtime network egress is not instrumented in this local test gate; the data-flow model is documented and tested at contract level.",
+    "Native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE and belong to dedicated later gates.",
+    "This decision is not a production privacy certification."
+  ]
+}

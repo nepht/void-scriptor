@@ -1,0 +1,307 @@
+{
+  "canonical_step": "112.50",
+  "title": "Failure Injection & Recovery Gate",
+  "scope": "Local deterministic failure-injection and recovery proof across crash, power-loss, disk-full, permission-loss, missing-file, corrupt-index, and interrupted-migration scenarios on the canonical Windows repository. All evidence is synthetic/disposable (temp directories, in-memory or file-backed SQLite) or classified as native/operational gates that require interactive desktop or CI.",
+  "required_evidence": [
+    "failure_scenarios",
+    "data_loss_results",
+    "recovery_results",
+    "repair_results",
+    "user_guidance",
+    "decision"
+  ],
+  "scenarios": [
+    {
+      "id": "crash",
+      "metric": "application crash produces a structured diagnostic and does not corrupt the last clean state",
+      "ceiling": 1,
+      "unit": "zero data corruption from crash",
+      "source": "CrashDiagnostics handler + StartupRecoveryPolicy"
+    },
+    {
+      "id": "power_loss",
+      "metric": "atomic rename sequence survives an interrupted rename with no data loss",
+      "ceiling": 1,
+      "unit": "survivors restored after simulated power-loss window",
+      "source": "ProjectRecoveryService.atomicWrite + ProjectRegistryService/ProjectManifestService"
+    },
+    {
+      "id": "disk_full",
+      "metric": "disk-full at the SQLite engine level is classified as a typed write-failure, not corruption",
+      "ceiling": 1,
+      "unit": "SQLITE_FULL classified as ProjectDatabaseWriteFailedException",
+      "source": "ProjectDatabaseService.classifyProjectDatabaseOpenError"
+    },
+    {
+      "id": "permission_loss",
+      "metric": "transient marker-delete permission failure does not propagate out of upsert or break project listing",
+      "ceiling": 1,
+      "unit": "transient delete errno does not destroy the package",
+      "source": "ProjectRegistryService._loadUnlocked + ProjectController.createProject"
+    },
+    {
+      "id": "missing_file",
+      "metric": "missing manifest/project file is reported cleanly without crash",
+      "ceiling": 1,
+      "unit": "fail-closed error with actionable guidance",
+      "source": "ProjectOpenService.read + ProjectRecoveryService"
+    },
+    {
+      "id": "corrupt_index",
+      "metric": "corrupt database file is detected by health/open paths without crashing",
+      "ceiling": 1,
+      "unit": "schemaVersion returns null on corrupt fixture; open throws typed",
+      "source": "ProjectDatabaseService.open + CorruptionDetectionRecoveryService"
+    },
+    {
+      "id": "interrupted_migration",
+      "metric": "half-applied migration wave with stale user_version reopens cleanly and preserves Core rows",
+      "ceiling": 1,
+      "unit": "forward recovery on every entry v1..58 preserves data",
+      "source": "ProjectDatabaseService migration + MigrationDryRunService"
+    }
+  ],
+  "baseline": [
+    {
+      "id": "crash",
+      "status": "INSTRUMENTED_CONTRACT",
+      "profile": "CrashDiagnostics writes structured JSON logs; StartupRecoveryPolicy decides normal/safe/recovery modes",
+      "evidence": "lib/app/bootstrap/crash_diagnostics.dart; lib/app/bootstrap/startup_recovery_policy.dart"
+    },
+    {
+      "id": "power_loss",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "atomicWrite rename sequence; registry/manifest survivors restored after interrupted rename",
+      "evidence": "lib/core/persistence/project_recovery_service.dart; lib/core/persistence/project_registry_service.dart; lib/core/persistence/project_manifest_service.dart"
+    },
+    {
+      "id": "disk_full",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "PRAGMA max_page_count injection; SQLITE_FULL (13) from engine classified as typed write failure",
+      "evidence": "lib/database/project/project_database_service.dart; lib/database/project/project_database_platform_io.dart"
+    },
+    {
+      "id": "permission_loss",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "transient marker-delete errno stages via OS attrib/chmod; upsert completes; package not destroyed",
+      "evidence": "lib/core/persistence/project_registry_service.dart; lib/features/projects/presentation/project_controller.dart; lib/core/persistence/project_recovery_service.dart"
+    },
+    {
+      "id": "missing_file",
+      "status": "INSTRUMENTED_CONTRACT",
+      "profile": "ProjectOpenService returns typed failure for missing manifest/database",
+      "evidence": "lib/core/persistence/project_open_service.dart"
+    },
+    {
+      "id": "corrupt_index",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "corrupt database fixture detected without crash; integrity_check and CorruptionScanReport",
+      "evidence": "lib/database/project/project_database_service.dart; lib/features/project_resilience/application/corruption_detection_recovery.dart"
+    },
+    {
+      "id": "interrupted_migration",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "v1..58 entry versions forward-recover to current schema with Core rows preserved",
+      "evidence": "lib/database/project/project_database.dart; lib/features/project_resilience/application/migration_dry_run_service.dart"
+    }
+  ],
+  "data_loss_results": [
+    {
+      "scenario": "power_loss",
+      "status": "PASS",
+      "evidence": "test/core/persistence/project_power_loss_recovery_test.dart: registry and manifest survivors restored after interrupted rename window"
+    },
+    {
+      "scenario": "permission_loss",
+      "status": "PASS",
+      "evidence": "test/core/persistence/project_creation_marker_delete_failure_test.dart: transient marker-delete failure does not propagate out of upsert; complete package survives createProject"
+    },
+    {
+      "scenario": "disk_full",
+      "status": "PASS",
+      "evidence": "test/database/project/project_database_disk_full_engine_test.dart: committed data preserved; integrity_check ok; no residue beyond page cap"
+    },
+    {
+      "scenario": "interrupted_migration",
+      "status": "PASS",
+      "evidence": "test/features/project_resilience/schema_migration_fixtures_test.dart: every entry v1..58 forward-recovers with Core row intact"
+    }
+  ],
+  "recovery_results": [
+    {
+      "scenario": "crash",
+      "status": "PASS",
+      "evidence": "test/app/bootstrap/startup_recovery_policy_test.dart: failure streak 0/1/2/3+ resolves to normal/safe/recovery modes; corrupt state file falls back to clean slate"
+    },
+    {
+      "scenario": "crash",
+      "status": "PASS",
+      "evidence": "test/app/bootstrap/crash_diagnostics_test.dart: structured log files written for flutter errors and zone errors; idempotent install/restore; crash signatures grouped"
+    },
+    {
+      "scenario": "corrupt_index",
+      "status": "PASS",
+      "evidence": "test/features/project_resilience/schema_migration_fixtures_test.dart: CORRUPT fixture detected without crash; schemaVersion returns null"
+    },
+    {
+      "scenario": "interrupted_migration",
+      "status": "PASS",
+      "evidence": "test/features/project_resilience/schema_migration_fixtures_test.dart: half-applied wave with stale user_version reopens cleanly"
+    }
+  ],
+  "repair_results": [
+    {
+      "id": "corruption_detection",
+      "status": "PASS",
+      "evidence": "lib/features/project_resilience/application/corruption_detection_recovery.dart; test/features/project_resilience/project_integrity_service_test.dart"
+    },
+    {
+      "id": "disk_full_classification",
+      "status": "PASS",
+      "evidence": "lib/database/project/project_database_service.dart classifyProjectDatabaseOpenError typed classification"
+    },
+    {
+      "id": "migration_forward_recovery",
+      "status": "PASS",
+      "evidence": "lib/database/project/project_database.dart guarded addColumn waves with _columnExists"
+    }
+  ],
+  "user_guidance": [
+    {
+      "scenario": "crash",
+      "status": "PASS",
+      "evidence": "CrashDiagnostics writes CrashLogEntry with kind, signature, occurredAt, message, and stack; StartupRecoveryPolicy returns suggestDiagnostics=true for 3+ consecutive failures"
+    },
+    {
+      "scenario": "missing_file",
+      "status": "PASS",
+      "evidence": "lib/core/persistence/project_open_service.dart returns typed ProjectOpenFailure with actionable message; test/app/shell/project_open_typed_failure_test.dart"
+    },
+    {
+      "scenario": "disk_full",
+      "status": "PASS",
+      "evidence": "ProjectDatabaseWriteFailedException surfaces with errno/resultCode classification"
+    }
+  ],
+  "results": [
+    {
+      "id": "crash",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/app/bootstrap/crash_diagnostics.dart",
+        "lib/app/bootstrap/startup_recovery_policy.dart"
+      ],
+      "test_refs": [
+        "test/app/bootstrap/crash_diagnostics_test.dart",
+        "test/app/bootstrap/startup_recovery_policy_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/app/bootstrap/crash_diagnostics_test.dart test/app/bootstrap/startup_recovery_policy_test.dart -j 1"
+    },
+    {
+      "id": "power_loss",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/persistence/project_recovery_service.dart",
+        "lib/core/persistence/project_registry_service.dart"
+      ],
+      "test_refs": [
+        "test/core/persistence/project_power_loss_recovery_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/persistence/project_power_loss_recovery_test.dart -j 1"
+    },
+    {
+      "id": "disk_full",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/database/project/project_database_service.dart",
+        "lib/database/project/project_database_platform_io.dart"
+      ],
+      "test_refs": [
+        "test/database/project/project_database_disk_full_engine_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/database/project/project_database_disk_full_engine_test.dart -j 1"
+    },
+    {
+      "id": "permission_loss",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/persistence/project_registry_service.dart",
+        "lib/features/projects/presentation/project_controller.dart"
+      ],
+      "test_refs": [
+        "test/core/persistence/project_creation_marker_delete_failure_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/persistence/project_creation_marker_delete_failure_test.dart -j 1"
+    },
+    {
+      "id": "missing_file",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/persistence/project_open_service.dart"
+      ],
+      "test_refs": [
+        "test/app/shell/project_open_typed_failure_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/app/shell/project_open_typed_failure_test.dart -j 1"
+    },
+    {
+      "id": "corrupt_index",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/project_resilience/application/corruption_detection_recovery.dart"
+      ],
+      "test_refs": [
+        "test/features/project_resilience/project_integrity_service_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/project_resilience/project_integrity_service_test.dart -j 1"
+    },
+    {
+      "id": "interrupted_migration",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/database/project/project_database.dart",
+        "lib/features/project_resilience/application/migration_dry_run_service.dart"
+      ],
+      "test_refs": [
+        "test/features/project_resilience/schema_migration_fixtures_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/project_resilience/schema_migration_fixtures_test.dart -j 1"
+    }
+  ],
+  "regressions": [],
+  "bottlenecks": [
+    {
+      "id": "native_crash_dump_unverifiable",
+      "status": "DEFERRED",
+      "impact": "Real process crash-dump capture and recovery dialog are exercised only via interactive desktop; cron cannot launch native crash flows.",
+      "next_gate": "Native computer-use journey on release-candidate hardware for crash dump + recovery dialog proof."
+    },
+    {
+      "id": "true_power_loss_unverifiable",
+      "status": "DEFERRED",
+      "impact": "Power-loss proof is simulated via the rename-window injection, not actual hardware power-cut. True power-loss recovery requires physical device control.",
+      "next_gate": "Hands-on power-cut test with Choi on real hardware per 145.42."
+    },
+    {
+      "id": "volume_level_disk_full_unverifiable",
+      "status": "DEFERRED",
+      "impact": "Disk-full is proven at the SQLite engine level via PRAGMA max_page_count, not at the filesystem ENOSPC level on a real full volume.",
+      "next_gate": "Virtual volume ENOSPC injection in isolated media if a safe harness becomes available."
+    },
+    {
+      "id": "usb_cold_eject_unverifiable",
+      "status": "DEFERRED",
+      "impact": "USB cold-eject and hot-reconnect behavior requires physical device action.",
+      "next_gate": "Hands-on USB eject/reinsert verification (run313/314 pattern)."
+    }
+  ],
+  "decision": "PASS_LOCAL_WITH_EXTERNAL_GATES_DEFERRED",
+  "limits": [
+    "All data-loss, recovery, and repair evidence is synthetic/disposable (temp directories, in-memory or file-backed SQLite via PRAGMA injection).",
+    "True hardware power-loss (actual power-cut) is not executed; proof is via rename-window crash simulation.",
+    "Volume-level ENOSPC (real full disk) is not executed; proof is via SQLite engine SQLITE_FULL injection.",
+    "Native GUI crash dialog, recovery prompt, and USB cold-eject/reinsert are UNVERIFIABLE from cron.",
+    "hosted CI, signing, hardware, and public release remain UNVERIFIABLE and belong to dedicated later gates.",
+    "This decision is not signing or public release approval."
+  ]
+}

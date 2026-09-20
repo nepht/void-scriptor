@@ -28,8 +28,8 @@
   "active_sprint": 112,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_112.json",
   "active_ledger": "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md",
-  "last_verified_step": "112.47",
-  "next_step": "112.48",
+  "last_verified_step": "112.48",
+  "next_step": "112.49",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -210,11 +210,11 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": {
-    "step": "112.47",
+    "step": "112.48",
     "status": "VERIFIED-LOCAL",
     "evidence": "manifest 1/1 PASS; focused refs 42/42 PASS; scoped analyzer No issues; format/diff-check PASS; roadmap guard PASS",
     "commit_pending": true,
-    "next_step": "112.48"
+    "next_step": "112.49"
   },
   "note": "112.40 VERIFIED-LOCAL: Wave 1-3 frozen format/plugin contracts remain compatible; typed ws-events/v1 added additively with legacy ProjectMutationEvent constructors preserved. Pointer advanced to 112.41.",
   "studio_hunt_2026_09_13_run289": {
@@ -435,7 +435,7 @@
     "resumed_on": "2026-09-16",
     "authority": "KEPUTUSAN CHOI 16 Sep: Aktifkan Sprint 112 dan mulai dari 112.1",
     "previous_sprint": "111.46 CLOSED-VERIFIED-LOCAL commit b34f317",
-    "next_step": "112.48"
+    "next_step": "112.49"
   },
   "activation_rules_11122_run362": {
     "status": "VERIFIED-LOCAL",
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "112.47",
+  "current_step": "112.48",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "112.47 VERIFIED-LOCAL: manifest 1/1 PASS; focused refs 42/42 PASS (keyboard_navigation 2/2, sprint_111_43 25/25, sprint_110_47 6/6, platform_ux 9/9); scoped analyzer No issues; format 1 file 0 changed; git diff-check PASS; roadmap guard PASS (recommended 112.48). Native OS screen-reader AT certification, physical-device contrast, IME, full locale translation, hosted CI, signing, hardware, public release UNVERIFIABLE.",
+  "last_run_summary": "112.48 VERIFIED-LOCAL: manifest 1/1 PASS; focused refs 42/42 PASS (app_localizations 3/3, sprint_110_47 6/6, sprint_111_43 25/25, calendar_conversion 8/8); scoped analyzer No issues; format 1 file 0 changed; git diff-check PASS; roadmap guard PASS (recommended 112.49). Native RTL layout, native screen-reader AT, physical contrast, hosted CI, signing, hardware, public release UNVERIFIABLE.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -684,5 +684,13 @@
     "evidence": "TDD RED manifest belum ada -> GREEN 1/1 PASS; focused refs 42/42 PASS (keyboard_navigation 2/2, sprint_111_43 25/25, sprint_110_47 6/6, platform_ux 9/9); scoped analyzer No issues; format 1 file 0 changed; git diff-check PASS; roadmap guard PASS (recommended 112.48).",
     "limitations": "Native OS screen-reader AT certification, physical-device contrast, IME, full locale translation, hosted CI, signing, hardware, dan public release tetap UNVERIFIABLE.",
     "next_step": "112.48"
+  },
+  "sprint_112_step_11248": {
+    "status": "VERIFIED-LOCAL",
+    "manifest": "docs/planning/v1.2/sprint_112_localization_gate.json",
+    "test": "test/release/sprint_112_localization_gate_test.dart",
+    "evidence": "TDD RED manifest belum ada -> GREEN 1/1 PASS; focused refs 42/42 PASS (app_localizations 3/3, sprint_110_47 6/6, sprint_111_43 25/25, calendar_conversion 8/8); scoped analyzer No issues; format 1 file 0 changed; git diff-check PASS; roadmap guard PASS (recommended 112.49).",
+    "limitations": "Native RTL layout mirroring, native OS screen-reader AT certification, physical-device contrast, hosted CI, signing, hardware, dan public release tetap UNVERIFIABLE.",
+    "next_step": "112.49"
   }
 }

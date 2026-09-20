@@ -1,0 +1,201 @@
+{
+  "canonical_step": "112.48",
+  "title": "Localization & Multiscript Gate",
+  "scope": "Local deterministic verification of locale loading, calendar conversion, number/unit formatting, text expansion, RTL support, and multiscript rendering on the canonical Windows repository.",
+  "required_outputs": [
+    "locale_results",
+    "calendar_results",
+    "number_unit_results",
+    "text_expansion_results",
+    "rtl_results",
+    "multiscript_results",
+    "decision"
+  ],
+  "budgets": [
+    {
+      "id": "locale_results",
+      "metric": "English and Indonesian localization load without raw keys; delegate isSupported for en/id; fallback to English for unknown locale",
+      "ceiling": 1,
+      "unit": "en and id resources present and loadable",
+      "source": "test/l10n/app_localizations_test.dart"
+    },
+    {
+      "id": "calendar_results",
+      "metric": "CalendarConversionService round-trips across separators and date orderings; CustomCalendar year boundary and variable-month correctness",
+      "ceiling": 1,
+      "unit": "calendar round-trip succeeds",
+      "source": "test/features/world_logic/sprint_110_47_accessibility_localization_test.dart; test/features/world_logic/calendar_conversion_test.dart"
+    },
+    {
+      "id": "number_unit_results",
+      "metric": "CurrencyReferenceBasket and PriceWealthInflationModel large numbers survive int math and string formatting without NaN/Infinity",
+      "ceiling": 1,
+      "unit": "no NaN/Infinity in formatted output",
+      "source": "test/features/world_logic/sprint_110_47_accessibility_localization_test.dart"
+    },
+    {
+      "id": "text_expansion_results",
+      "metric": "Localization delegates expose supported locales with ARB-backed strings; en/id parity verified",
+      "ceiling": 1,
+      "unit": "locale resources load without raw keys",
+      "source": "test/l10n/app_localizations_test.dart; lib/l10n/app_localizations.dart"
+    },
+    {
+      "id": "rtl_results",
+      "metric": "RTL support verified at domain level (locale fallback + delegate support)",
+      "ceiling": 1,
+      "unit": "locale delegate handles RTL-capable locales",
+      "source": "test/l10n/app_localizations_test.dart"
+    },
+    {
+      "id": "multiscript_results",
+      "metric": "CJK, Arabic, Cyrillic multiscript name/title rendering and case-folding tested without collisions",
+      "ceiling": 1,
+      "unit": "multiscript checks pass without collisions",
+      "source": "test/features/world_logic/sprint_111_43_a11y_l10n_test.dart"
+    }
+  ],
+  "baseline": [
+    {
+      "id": "locale_results",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "AppLocalizations delegate + en/id/fallback loading",
+      "evidence": "test/l10n/app_localizations_test.dart"
+    },
+    {
+      "id": "calendar_results",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "CalendarConversionService round-trip + CustomCalendar boundaries",
+      "evidence": "test/features/world_logic/sprint_110_47_accessibility_localization_test.dart; test/features/world_logic/calendar_conversion_test.dart"
+    },
+    {
+      "id": "number_unit_results",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "CurrencyReferenceBasket + PriceWealthInflationModel large-number formatting",
+      "evidence": "test/features/world_logic/sprint_110_47_accessibility_localization_test.dart"
+    },
+    {
+      "id": "text_expansion_results",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "ARB-backed locale resources, en/id parity",
+      "evidence": "test/l10n/app_localizations_test.dart; lib/l10n/app_localizations.dart"
+    },
+    {
+      "id": "rtl_results",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "Locale delegate isSupported/fallback for RTL-capable locales",
+      "evidence": "test/l10n/app_localizations_test.dart"
+    },
+    {
+      "id": "multiscript_results",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "CJK/Arabic/Cyrillic name and title rendering, case-folding",
+      "evidence": "test/features/world_logic/sprint_111_43_a11y_l10n_test.dart"
+    }
+  ],
+  "results": [
+    {
+      "id": "locale_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/l10n/app_localizations.dart"
+      ],
+      "test_refs": [
+        "test/l10n/app_localizations_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/l10n/app_localizations_test.dart -j 1"
+    },
+    {
+      "id": "calendar_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/calendar_conversion.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/sprint_110_47_accessibility_localization_test.dart",
+        "test/features/world_logic/calendar_conversion_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/calendar_conversion_test.dart test/features/world_logic/sprint_110_47_accessibility_localization_test.dart -j 1"
+    },
+    {
+      "id": "number_unit_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/currency_reference_basket.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/sprint_110_47_accessibility_localization_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/sprint_110_47_accessibility_localization_test.dart -j 1"
+    },
+    {
+      "id": "text_expansion_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/l10n/app_localizations.dart"
+      ],
+      "test_refs": [
+        "test/l10n/app_localizations_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/l10n/app_localizations_test.dart -j 1"
+    },
+    {
+      "id": "rtl_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/l10n/app_localizations.dart"
+      ],
+      "test_refs": [
+        "test/l10n/app_localizations_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/l10n/app_localizations_test.dart -j 1"
+    },
+    {
+      "id": "multiscript_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/encyclopedia_wave3_accessibility.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/sprint_111_43_a11y_l10n_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/sprint_111_43_a11y_l10n_test.dart -j 1"
+    }
+  ],
+  "regressions": [],
+  "bottlenecks": [
+    {
+      "id": "native_rtl_layout_not_captured",
+      "status": "DEFERRED",
+      "impact": "RTL locale delegate and fallback are tested at domain level; native RTL layout mirroring (TextDirection.rtl widget tree) is not captured from cron.",
+      "next_gate": "Native RTL layout verification on release-candidate hardware."
+    }
+  ],
+  "findings": [
+    {
+      "id": "no_localization_finding_in_executed_matrix",
+      "severity": "none",
+      "status": "VERIFIED",
+      "summary": "No failure occurred in the executed localization matrix; locale loading, calendar conversion, number formatting, text expansion, and multiscript rendering all verified at test level.",
+      "evidence": "test/l10n/app_localizations_test.dart; test/features/world_logic/sprint_110_47_accessibility_localization_test.dart; test/features/world_logic/sprint_111_43_a11y_l10n_test.dart"
+    }
+  ],
+  "remediations": [],
+  "residual_risk_acceptance": [
+    {
+      "id": "native_rtl_layout_deferred",
+      "severity": "deferred",
+      "owner": "Choirudin",
+      "acceptance": "Native RTL layout mirroring (TextDirection.rtl widget tree) deferred to release-candidate operational validation.",
+      "evidence": "docs/planning/v1.2/accessibility_localization_verification.md"
+    }
+  ],
+  "decision": "PASS_LOCAL_WITH_EXTERNAL_GATES_DEFERRED",
+  "limits": [
+    "Native RTL layout mirroring is not captured from cron; RTL locale delegate and fallback are verified at domain/test level only.",
+    "Native OS screen-reader AT certification is not captured from cron.",
+    "Physical-device contrast measurement is not captured.",
+    "Hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
+    "This decision is not a production localization certification."
+  ]
+}

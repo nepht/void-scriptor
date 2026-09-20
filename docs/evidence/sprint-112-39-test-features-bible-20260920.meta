@@ -1,0 +1,14 @@
+{
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/bible -j 1",
+  "started_at": "2026-09-20T21:59:35+0700",
+  "finished_at": "2026-09-20T22:00:55+0700",
+  "duration_seconds": 79.953,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count_summary": "59",
+  "fail_count": 0,
+  "skip_count": "see log",
+  "log": "docs/evidence/sprint-112-39-test-features-bible-20260920.log",
+  "aggregate_features_status": "PENDING_EXIT_RESULT",
+  "full_regression_status": "PENDING_EXIT_RESULT"
+}

@@ -1,0 +1,7 @@
+command=D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/workspace_layout -j 1
+started_at=2026-09-20T23:36:22+07:00
+finished_at=2026-09-20T23:36:47+07:00
+duration_seconds=25
+exit_code=0
+status=PASS
+log=docs/evidence/sprint-112-39-test-features-workspace_layout-20260920-233622.log

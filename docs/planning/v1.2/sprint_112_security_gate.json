@@ -1,0 +1,234 @@
+{
+  "canonical_step": "112.45",
+  "title": "Security Gate",
+  "scope": "Local deterministic verification of project isolation, secret/redaction policy, encryption/key derivation, credential storage, project-lock passphrase, integrity manifest, and dependency model on the canonical Windows repository.",
+  "required_outputs": [
+    "threat_model",
+    "security_tests",
+    "dependency_scan",
+    "findings",
+    "remediations",
+    "residual_risk_acceptance"
+  ],
+  "budgets": [
+    {
+      "id": "threat_model",
+      "metric": "secret data visibility and project isolation audited deterministically with no cross-project leakage",
+      "ceiling": 1,
+      "unit": "zero unredacted writer-only/faction/character secrets reach unauthorized observers",
+      "source": "security_privacy.dart ThreatReviewReport/ProjectIsolationAuditor/DiagnosticExportFilter over seeded SecretDataRecord fixtures"
+    },
+    {
+      "id": "isolation",
+      "metric": "project namespace auditor detects foreign-id leakage and reports clean for contained ids",
+      "ceiling": 1,
+      "unit": "fail-closed ProjectIsolationReport",
+      "source": "ProjectIsolationAuditor over disjoint ProjectNamespace fixtures"
+    },
+    {
+      "id": "encryption",
+      "metric": "encryption service and key derivation produce deterministic, non-equal ciphertext for distinct inputs and fail closed on bad passphrase",
+      "ceiling": 1,
+      "unit": "cipher round-trip correctness",
+      "source": "encryption_service_test.dart, key_derivation_test.dart, key_derivation_isolate_test.dart"
+    },
+    {
+      "id": "credential_storage",
+      "metric": "credential vault and secret redactor mask/redact secrets and never persist plaintext",
+      "ceiling": 1,
+      "unit": "redaction property holds",
+      "source": "secret_vault_test.dart, secret_redaction_property_test.dart, security_settings_encryption_toggle_test.dart"
+    },
+    {
+      "id": "project_lock",
+      "metric": "project lock enforces passphrase policy and prevents concurrent open without release",
+      "ceiling": 1,
+      "unit": "lock acquire/release correctness",
+      "source": "project_lock_test.dart, project_lock_passphrase_policy_test.dart"
+    },
+    {
+      "id": "integrity",
+      "metric": "integrity manifest detects extra/missing files and tamper",
+      "ceiling": 1,
+      "unit": "integrity_check fail-closed",
+      "source": "integrity_manifest_extra_file_test.dart"
+    }
+  ],
+  "baseline": [
+    {
+      "id": "threat_model",
+      "status": "DOCUMENTED_AND_TESTED",
+      "profile": "ThreatFinding/ThreatReviewReport/ProjectNamespace/ProjectIsolationAuditor/DiagnosticSecretView fail-closed",
+      "evidence": "docs/planning/v1.2/security_privacy_verification.md; lib/features/world_logic/domain/security_privacy.dart; test/features/world_logic/sprint_110_46_security_privacy_test.dart"
+    },
+    {
+      "id": "encryption",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "AES-GCM cipher round-trip, key derivation from passphrase",
+      "evidence": "lib/core/security/application/encryption_service.dart; lib/core/security/crypto/key_derivation.dart; test/core/security/encryption_service_test.dart; test/core/security/key_derivation_test.dart"
+    },
+    {
+      "id": "credential_storage",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "encrypted credential store, secret redaction property",
+      "evidence": "lib/core/security/application/encrypted_credential_store.dart; lib/core/security/application/secret_redactor.dart; test/core/security/secret_vault_test.dart; test/core/security/secret_redaction_property_test.dart"
+    },
+    {
+      "id": "project_lock",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "project lock with passphrase, integrity lock file",
+      "evidence": "lib/core/security/application/project_lock_service.dart; test/core/security/project_lock_test.dart; test/core/security/project_lock_passphrase_policy_test.dart"
+    },
+    {
+      "id": "integrity",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "integrity manifest extra-file detection",
+      "evidence": "lib/core/security/application/integrity_manifest.dart; test/core/security/integrity_manifest_extra_file_test.dart"
+    },
+    {
+      "id": "dependency_scan",
+      "status": "DOCUMENTED",
+      "profile": "dependency map with ownership boundaries and layer ordering",
+      "evidence": "docs/planning/v1.2/dependency_map.md"
+    }
+  ],
+  "results": [
+    {
+      "id": "threat_model",
+      "status": "PASS",
+      "implementation_refs": [
+        "docs/planning/v1.2/security_privacy_verification.md",
+        "lib/features/world_logic/domain/security_privacy.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/sprint_110_46_security_privacy_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/sprint_110_46_security_privacy_test.dart -j 1"
+    },
+    {
+      "id": "isolation",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/security_privacy.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/sprint_110_46_security_privacy_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/sprint_110_46_security_privacy_test.dart -j 1"
+    },
+    {
+      "id": "encryption",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/security/application/encryption_service.dart",
+        "lib/core/security/crypto/key_derivation.dart"
+      ],
+      "test_refs": [
+        "test/core/security/encryption_service_test.dart",
+        "test/core/security/key_derivation_test.dart",
+        "test/core/security/key_derivation_isolate_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/security/ -j 1"
+    },
+    {
+      "id": "credential_storage",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/security/application/encrypted_credential_store.dart",
+        "lib/core/security/application/secret_redactor.dart"
+      ],
+      "test_refs": [
+        "test/core/security/secret_vault_test.dart",
+        "test/core/security/secret_redaction_property_test.dart",
+        "test/core/security/security_settings_encryption_toggle_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/security/secret_vault_test.dart test/core/security/secret_redaction_property_test.dart test/core/security/security_settings_encryption_toggle_test.dart -j 1"
+    },
+    {
+      "id": "project_lock",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/security/application/project_lock_service.dart"
+      ],
+      "test_refs": [
+        "test/core/security/project_lock_test.dart",
+        "test/core/security/project_lock_passphrase_policy_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/security/project_lock_test.dart test/core/security/project_lock_passphrase_policy_test.dart -j 1"
+    },
+    {
+      "id": "integrity",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/security/application/integrity_manifest.dart"
+      ],
+      "test_refs": [
+        "test/core/security/integrity_manifest_extra_file_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/security/integrity_manifest_extra_file_test.dart -j 1"
+    },
+    {
+      "id": "dependency_scan",
+      "status": "PASS",
+      "implementation_refs": [
+        "docs/planning/v1.2/security_privacy_verification.md"
+      ],
+      "test_refs": [],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/dart.bat run tool/roadmap_guard.dart"
+    }
+  ],
+  "regressions": [],
+  "bottlenecks": [
+    {
+      "id": "formal_penetration_test_not_captured",
+      "status": "DEFERRED",
+      "impact": "Security gate is based on local deterministic unit/integration tests; formal penetration testing, OS sandbox audit, and encrypted-at-rest review require release/operational surfaces not exercised by this offline matrix.",
+      "next_gate": "Conduct formal penetration testing and OS sandbox audit during release-candidate validation window."
+    },
+    {
+      "id": "external_sharing_endpoint_review_deferred",
+      "status": "DEFERRED",
+      "impact": "Sharing/revocation/expiry are verified at the export-metadata level, not at an external sharing endpoint live review.",
+      "next_gate": "Review external sharing endpoint during release-candidate operational validation."
+    }
+  ],
+  "findings": [
+    {
+      "id": "no_security_finding_in_executed_matrix",
+      "severity": "none",
+      "status": "VERIFIED",
+      "summary": "No failing security/privacy finding was produced by the executed local security matrix.",
+      "evidence": "test/core/security/ and test/features/world_logic/sprint_110_46_security_privacy_test.dart"
+    }
+  ],
+  "remediations": [
+    {
+      "id": "redaction_default_implementations",
+      "status": "VERIFIED",
+      "summary": "DiagnosticExportFilter.standard() redacts labels with [REDACTED] token for non-authorized observers; credential store and secret redactor mask secrets deterministically.",
+      "evidence": "lib/core/security/application/secret_redactor.dart; test/core/security/secret_redaction_property_test.dart"
+    },
+    {
+      "id": "fail_closed_isolation",
+      "status": "VERIFIED",
+      "summary": "ProjectIsolationAuditor rejects same-projectId local/foreign and reports foreign-id leakage deterministically.",
+      "evidence": "lib/features/world_logic/domain/security_privacy.dart"
+    }
+  ],
+  "residual_risk_acceptance": [
+    {
+      "id": "formal_pen_test",
+      "severity": "deferred",
+      "owner": "Choirudin",
+      "acceptance": "Formal penetration testing, OS sandbox audit, encrypted-at-rest review, and external sharing endpoint review deferred to release-candidate operational validation per security_privacy_verification.md.",
+      "evidence": "docs/planning/v1.2/security_privacy_verification.md"
+    }
+  ],
+  "decision": "PASS_LOCAL_WITH_EXTERNAL_GATES_DEFERRED",
+  "limits": [
+    "Formal penetration testing is not captured by this local test gate.",
+    "OS sandbox audit, encrypted-at-rest review, and external sharing endpoint review remain deferred.",
+    "Native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE and belong to dedicated later gates.",
+    "This decision is not a production security certification."
+  ]
+}

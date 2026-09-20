@@ -439,6 +439,9 @@ class ExplorerPanel extends ConsumerWidget {
     final storyItems = projectId == null
         ? const AsyncValue<List<PropModel>>.data([])
         : ref.watch(propExplorerProvider(projectId));
+    final creatures = projectId == null
+        ? const AsyncValue<List<CreatureModel>>.data([])
+        : ref.watch(creatureExplorerProvider(projectId));
     final armors = projectId == null
         ? const AsyncValue<List<Asset>>.data([])
         : ref.watch(
@@ -605,9 +608,9 @@ class ExplorerPanel extends ConsumerWidget {
                         onTimelineSelected ??
                         () => focusExplorerAsset(ref, AssetType.timeline),
                   ),
-                  const _ExplorerSectionLabel('CHARACTERS'),
+                  const _ExplorerSectionLabel('CAST & CHARACTERS'),
                   _CharacterGroup(
-                    title: 'Main Characters',
+                    title: 'Characters',
                     onFocused: () =>
                         focusExplorerAsset(ref, AssetType.character),
                     characters: characters,
@@ -632,6 +635,29 @@ class ExplorerPanel extends ConsumerWidget {
                           ),
                         ),
                   ),
+                  const _ExplorerSectionLabel('WORLD & CREATURES'),
+                  if (modulePreferences.creatures)
+                    _CreatureGroup(
+                      creatures: creatures,
+                      focused: effectiveFocusedType == AssetType.creature,
+                      onFocused: () =>
+                          focusExplorerAsset(ref, AssetType.creature),
+                      selectedId: ref.watch(selectionProvider)?.assetId,
+                      onRetry: projectId == null
+                          ? null
+                          : () => ref.invalidate(
+                              creatureExplorerProvider(projectId),
+                            ),
+                      onSelected: (creature) => ref
+                          .read(selectionProvider.notifier)
+                          .select(
+                            SelectionModel(
+                              assetId: creature.assetId,
+                              assetType: AssetType.creature,
+                              projectId: creature.projectId,
+                            ),
+                          ),
+                    ),
                   const _ExplorerCategoryPlaceholder('Supporting Characters'),
                   const _ExplorerCategoryPlaceholder('Enemies'),
                   const _ExplorerCategoryPlaceholder('NPC'),
@@ -686,7 +712,7 @@ class ExplorerPanel extends ConsumerWidget {
                         ),
                   ),
                   if (modulePreferences.hasLoadout)
-                    const _ExplorerSectionLabel('DATABASE'),
+                    const _ExplorerSectionLabel('OBJECTS & LOADOUT'),
                   if (modulePreferences.wardrobe)
                     _WardrobeGroup(
                       wardrobes: wardrobes,
@@ -785,6 +811,89 @@ class _ExplorerSectionLabel extends StatelessWidget {
         fontWeight: FontWeight.w800,
         letterSpacing: 1.1,
       ),
+    ),
+  );
+}
+
+class _CreatureGroup extends StatelessWidget {
+  const _CreatureGroup({
+    required this.creatures,
+    required this.selectedId,
+    required this.onSelected,
+    this.focused = false,
+    this.onFocused,
+    this.onRetry,
+  });
+
+  final AsyncValue<List<CreatureModel>> creatures;
+  final String? selectedId;
+  final ValueChanged<CreatureModel> onSelected;
+  final bool focused;
+  final VoidCallback? onFocused;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) => ExpansionTile(
+    onExpansionChanged: (_) => onFocused?.call(),
+    initiallyExpanded: true,
+    backgroundColor: focused
+        ? context.palette.primary.withValues(alpha: 0.08)
+        : null,
+    tilePadding: const EdgeInsets.symmetric(horizontal: 9),
+    childrenPadding: const EdgeInsets.only(left: 28),
+    leading: Icon(
+      Icons.pets_outlined,
+      size: 16,
+      color: context.palette.textMuted,
+    ),
+    title: Text(
+      'Creatures & Companions',
+      style: TextStyle(color: context.palette.textSecondary, fontSize: 12),
+    ),
+    children: creatures.when(
+      loading: () => const [ListTile(dense: true, title: Text('Loading...'))],
+      error: (error, _) => [
+        ListTile(
+          dense: true,
+          minTileHeight: 30,
+          title: Text(
+            '$error',
+            style: TextStyle(color: context.palette.danger, fontSize: 11),
+          ),
+          trailing: onRetry == null
+              ? null
+              : IconButton(
+                  tooltip: 'Coba lagi',
+                  icon: const Icon(Icons.refresh),
+                  onPressed: onRetry,
+                ),
+        ),
+      ],
+      data: (items) => items.isEmpty
+          ? const [ListTile(dense: true, title: Text('No creatures yet'))]
+          : [
+              for (final item in items)
+                ListTile(
+                  dense: true,
+                  minTileHeight: 36,
+                  leading: Icon(
+                    item.category == CreatureCategory.companion
+                        ? Icons.favorite_outline
+                        : Icons.cruelty_free_outlined,
+                    size: 15,
+                  ),
+                  title: Text(
+                    item.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: item.category == CreatureCategory.companion
+                      ? const Text('Companion')
+                      : null,
+                  selected: selectedId == item.assetId,
+                  onTap: () => onSelected(item),
+                ),
+            ],
     ),
   );
 }

@@ -24,7 +24,7 @@ diimplementasikan dan teruji**. Modul `lib/features/workspaces/` (1.418 LOC apli
 | service_boundaries | VERIFIED | Application layer terpisah dari repository; `WorkspaceResolver` mengonsumsi service (`CreateStoryService`, workspaces actions), bukan Drift langsung. Catatan jujur: panel historis lain masih menerima database langsung — tidak disentuh sprint ini |
 | cross_workspace_link_contract | VERIFIED | `NovelCharacterLink` domain tervalidasi ketat (ID kosong ditolak, ID novel≠character dipaksa); mode REFERENCE/SNAPSHOT/FORK; owner selalu NOVEL; persistensi diuji `novel_character_link_persistence_test.dart`; skema tabel = persis `required_fields` ADR |
 | permission_boundaries | VERIFIED | `workspace_permission_policy.dart` + tes: baca lintas butuh grant ganda + link eksplisit; tulis lintas butuh owner API + grant; field privat tersembunyi tanpa grant; owner lokal mencakup dua boundary |
-| event_contracts | PARTIAL → kontrak baru WS-EVENTS v1 (bawah) | Belum ada integrasi event workspace (hanya `core/commands/command_event_bus.dart`); dirancang hari ini, pemasangan mengikuti langkah pemakainya |
+| event_contracts | PARTIAL → typed contract implemented at 112.40 | `workspace_event_contract.dart` now pins WS-EVENTS v1 names, identifier-only serialization, and fail-closed decoding; `ProjectMutationEvent.workspaceEvent` is additive/optional so existing consumers remain compatible. Feature-specific emitters still follow the consuming feature steps. |
 | failure_isolation | PARTIAL → aturan FISO-01 (bawah) | Isolasi fisik sudah ada (namespace file, cache re-buildable, review sebelum delete); taxonomy error eksplisit belum — diadopsi bertahap saat fitur Wave 1 lahir |
 
 ## Peta 10 acceptance_invariants ADR → bukti live

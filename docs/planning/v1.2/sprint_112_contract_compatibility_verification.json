@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.40",
+  "title": "Contract Compatibility Verification",
+  "claim_boundary": "Local executable compatibility evidence only; third-party plugins, hosted CI, native cross-platform behavior, signing, and public release remain outside this claim.",
+  "contract_results": [
+    {
+      "contract": "Wave 1-3 schema freeze",
+      "status": "PASS",
+      "evidence": [
+        "lib/core/project_package/void_project_format.dart",
+        "lib/database/project/project_database.dart",
+        "test/release/rc_freeze_test.dart"
+      ],
+      "result": "Project format remains schema 16 and the project database remains schema 62."
+    }
+  ],
+  "plugin_results": [
+    {
+      "contract": "plugin-api/v1",
+      "status": "PASS_LOCAL",
+      "evidence": [
+        "lib/core/plugin/domain/plugin_api_version.dart",
+        "test/core/plugin/plugin_model_test.dart",
+        "test/core/plugin/plugin_host_test.dart"
+      ],
+      "result": "Same-major plugins remain compatible when their required minor is not newer than the host; different majors remain rejected."
+    }
+  ],
+  "file_format_results": [
+    {
+      "contract": "project-format/v1",
+      "status": "PASS_LOCAL",
+      "evidence": [
+        "test/core/persistence/project_compatibility_fixtures_test.dart",
+        "test/features/project_resilience/portable_schema_compatibility_test.dart"
+      ],
+      "result": "Legacy aliases remain readable, current format stays frozen, and future schemas fail closed."
+    }
+  ],
+  "event_results": [
+    {
+      "contract": "ws-events/v1",
+      "status": "PASS_CONTRACT",
+      "evidence": [
+        "lib/core/commands/workspace_event_contract.dart",
+        "lib/core/commands/command_event_bus.dart",
+        "test/release/sprint_112_contract_compatibility_verification_test.dart"
+      ],
+      "result": "Stable typed names, schema validation, identifier-only serialization, and an additive optional bridge on ProjectMutationEvent preserve legacy constructors."
+    }
+  ],
+  "breaking_changes": [],
+  "fix_status": [
+    {
+      "finding": "112.4 recorded WS-EVENTS v1 as documented but absent from production.",
+      "status": "FIXED_CONTRACT",
+      "fix": "Added the typed identifier-only event contract and an optional additive field on ProjectMutationEvent.",
+      "residual": "Feature-specific emitters for link, projection, and character lifecycle events remain incremental wiring; no consumer is allowed to infer them from commandType strings."
+    }
+  ],
+  "decision": "PASS_LOCAL_WITH_RESIDUAL_WIRING"
+}

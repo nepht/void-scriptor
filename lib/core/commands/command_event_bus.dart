@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'command_bus.dart';
+import 'workspace_event_contract.dart';
 
 class ProjectMutationEvent {
   const ProjectMutationEvent({
@@ -9,6 +10,7 @@ class ProjectMutationEvent {
     required this.sequence,
     required this.type,
     required this.source,
+    this.workspaceEvent,
   });
 
   final String projectId;
@@ -16,6 +18,7 @@ class ProjectMutationEvent {
   final int sequence;
   final CommandEventType type;
   final String source;
+  final WorkspaceContractEvent? workspaceEvent;
 }
 
 class CommandEventBus {

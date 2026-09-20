@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-21",
-  "updated_by": "nephthys: 112.39 explorer regression repair",
+  "updated_by": "nephthys: 112.39 production_assets shard",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -212,7 +212,7 @@
   "last_worker_run": {
     "step": "112.39",
     "status": "PARTIAL",
-    "evidence": "explorer shard 46/46 PASS exit 0 after regression repair; aggregate test/features and full regression retain measured TIMEOUT exit 124; native/release gates UNVERIFIABLE",
+    "evidence": "production_assets shard 7/7 PASS exit 0; aggregate test/features and full regression measured TIMEOUT exit 124; native/release gates UNVERIFIABLE",
     "commit_pending": true,
     "next_step": "112.39"
   },
@@ -602,6 +602,13 @@
       "exit_code": 0,
       "duration_seconds": 113,
       "evidence": "docs/evidence/sprint-112-39-test-features-workspace-20260920-235751.meta"
+    },
+    "latest_production_assets_shard": {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/production_assets -j 1",
+      "result": "7/7 PASS",
+      "exit_code": 0,
+      "duration_seconds": 3,
+      "evidence": "docs/evidence/sprint-112-39-test-features-production_assets-20260921.meta"
     }
   },
   "sprint_112_step_11239_game_shard": {

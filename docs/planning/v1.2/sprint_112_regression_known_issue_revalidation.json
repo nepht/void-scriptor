@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.41",
+  "title": "Regression & Known-Issue Revalidation",
+  "claim_boundary": "Local deterministic revalidation only. Native GUI, hosted CI, signing, hardware behavior, and public release remain dedicated later gates.",
+  "regression_results": [
+    {
+      "id": "REG-11241-CHARACTER-WORKSPACE",
+      "defect": "Character selection previously rendered the workspace without the Character Identity section.",
+      "status": "PASS",
+      "test_refs": [
+        "test/features/workspace/workspace_resolver_character_journey_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/workspace/workspace_resolver_character_journey_test.dart test/features/wardrobe/wardrobe_workspace_test.dart test/features/relations/character_relations_journey_test.dart test/features/export/story_txt_export_ui_test.dart test/release/sprint_112_feature_evidence_inventory_test.dart test/release/sprint_112_feature_flag_rollout_matrix_test.dart -j 1"
+    },
+    {
+      "id": "REG-11241-WARDROBE-LABEL",
+      "defect": "Wardrobe workspace regressed from the canonical Product View label.",
+      "status": "PASS",
+      "test_refs": [
+        "test/features/wardrobe/wardrobe_workspace_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/workspace/workspace_resolver_character_journey_test.dart test/features/wardrobe/wardrobe_workspace_test.dart test/features/relations/character_relations_journey_test.dart test/features/export/story_txt_export_ui_test.dart test/release/sprint_112_feature_evidence_inventory_test.dart test/release/sprint_112_feature_flag_rollout_matrix_test.dart -j 1"
+    },
+    {
+      "id": "REG-11241-RELATIONS-JOURNEY",
+      "defect": "Character relation journey previously duplicated the Inspector contract instead of exercising the single workspace flow.",
+      "status": "PASS",
+      "test_refs": [
+        "test/features/relations/character_relations_journey_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/workspace/workspace_resolver_character_journey_test.dart test/features/wardrobe/wardrobe_workspace_test.dart test/features/relations/character_relations_journey_test.dart test/features/export/story_txt_export_ui_test.dart test/release/sprint_112_feature_evidence_inventory_test.dart test/release/sprint_112_feature_flag_rollout_matrix_test.dart -j 1"
+    },
+    {
+      "id": "REG-11241-EXPORT-SNACKBAR",
+      "defect": "Export TXT aggregate execution previously raced file visibility against snackbar scheduling.",
+      "status": "PASS",
+      "test_refs": [
+        "test/features/export/story_txt_export_ui_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/workspace/workspace_resolver_character_journey_test.dart test/features/wardrobe/wardrobe_workspace_test.dart test/features/relations/character_relations_journey_test.dart test/features/export/story_txt_export_ui_test.dart test/release/sprint_112_feature_evidence_inventory_test.dart test/release/sprint_112_feature_flag_rollout_matrix_test.dart -j 1"
+    }
+  ],
+  "known_issue_results": [
+    {
+      "id": "KI-112-WAVE2-FLAG-GRANULARITY",
+      "issue": "F3, F5, F6, F11, F13, F14, F15, F20, F21, and F22 use the shared v1.2 kill switch rather than dedicated per-feature flags.",
+      "disposition": "ACCEPTED",
+      "owner": "product-governance",
+      "evidence": [
+        "docs/planning/v1.2/sprint_112_feature_evidence_inventory.json",
+        "docs/planning/v1.2/sprint_112_feature_flag_rollout_matrix.json",
+        "test/release/sprint_112_feature_evidence_inventory_test.dart",
+        "test/release/sprint_112_feature_flag_rollout_matrix_test.dart"
+      ],
+      "reason": "The affected features remain default OFF behind the shared kill switch; rollout granularity is partial but not an RC blocker while those features stay deferred."
+    },
+    {
+      "id": "KI-112-EXTERNAL-RELEASE-GATES",
+      "issue": "Native GUI certification, hosted CI, signing, hardware-specific behavior, and public release are not proven by local tests.",
+      "disposition": "DEFERRED",
+      "owner": "release-owner",
+      "evidence": [
+        "docs/planning/v1.2/sprint_112_risk_burn_down.json",
+        "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md"
+      ],
+      "reason": "These are explicit later release gates and are not converted into local PASS claims."
+    }
+  ],
+  "reopened_issues": [],
+  "new_issues": [],
+  "release_blockers": [],
+  "decision": "PASS_LOCAL_WITH_ACCEPTED_LIMITATIONS"
+}

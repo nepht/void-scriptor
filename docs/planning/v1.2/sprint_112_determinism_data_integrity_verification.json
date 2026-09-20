@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "canonical_step": "112.42",
+  "title": "Determinism & Data Integrity Verification",
+  "claim_boundary": "Local deterministic and disposable-fixture verification only. It does not prove native GUI, hosted CI, signing, hardware behavior, or public release readiness.",
+  "results": [
+    {
+      "id": "seed_replay",
+      "status": "PASS",
+      "contract": "Equal explicit seeds and inputs reproduce the same weather, rumor, clock, calendar, age, and explanation outputs.",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/custom_calendar.dart",
+        "lib/features/world_logic/domain/rumor_propagation.dart",
+        "lib/features/world_logic/domain/world_time_state_authority.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/determinism_explainability_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/determinism_explainability_test.dart test/release/sprint_112_simulation_workflow_integration_test.dart test/features/world_logic/domain/encyclopedia_seeded_name_generation_test.dart test/core/search/search_index_service_test.dart test/features/story/domain/inline_lore_links_test.dart test/features/story/lore_backlinks_test.dart test/features/workspaces/workspace_export_timestamp_determinism_test.dart -j 1"
+    },
+    {
+      "id": "simulation_replay",
+      "status": "PASS",
+      "contract": "The same seed event reproduces travel, location, diplomacy, economy, rumor, technology, explanation, and story-query results.",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/end_to_end_simulation_workflow.dart"
+      ],
+      "test_refs": [
+        "test/release/sprint_112_simulation_workflow_integration_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/determinism_explainability_test.dart test/release/sprint_112_simulation_workflow_integration_test.dart test/features/world_logic/domain/encyclopedia_seeded_name_generation_test.dart test/core/search/search_index_service_test.dart test/features/story/domain/inline_lore_links_test.dart test/features/story/lore_backlinks_test.dart test/features/workspaces/workspace_export_timestamp_determinism_test.dart -j 1"
+    },
+    {
+      "id": "generator_replay",
+      "status": "PASS",
+      "contract": "Seeded name generation is stable across instances and repeated runs while distinct seeds can diverge.",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/encyclopedia_seeded_name_generation.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/domain/encyclopedia_seeded_name_generation_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/determinism_explainability_test.dart test/release/sprint_112_simulation_workflow_integration_test.dart test/features/world_logic/domain/encyclopedia_seeded_name_generation_test.dart test/core/search/search_index_service_test.dart test/features/story/domain/inline_lore_links_test.dart test/features/story/lore_backlinks_test.dart test/features/workspaces/workspace_export_timestamp_determinism_test.dart -j 1"
+    },
+    {
+      "id": "index_checks",
+      "status": "PASS",
+      "contract": "Search-index rebuilds and updates preserve project scope, normalized token lookup, replacement semantics, and deletion behavior.",
+      "implementation_refs": [
+        "lib/core/search/search_index_service.dart"
+      ],
+      "test_refs": [
+        "test/core/search/search_index_service_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/determinism_explainability_test.dart test/release/sprint_112_simulation_workflow_integration_test.dart test/features/world_logic/domain/encyclopedia_seeded_name_generation_test.dart test/core/search/search_index_service_test.dart test/features/story/domain/inline_lore_links_test.dart test/features/story/lore_backlinks_test.dart test/features/workspaces/workspace_export_timestamp_determinism_test.dart -j 1"
+    },
+    {
+      "id": "link_checks",
+      "status": "PASS",
+      "contract": "Inline lore links round-trip deterministically and backlink queries preserve target and project scope.",
+      "implementation_refs": [
+        "lib/features/story/domain/inline_lore_links.dart",
+        "lib/features/story/domain/lore_backlinks.dart"
+      ],
+      "test_refs": [
+        "test/features/story/domain/inline_lore_links_test.dart",
+        "test/features/story/lore_backlinks_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/determinism_explainability_test.dart test/release/sprint_112_simulation_workflow_integration_test.dart test/features/world_logic/domain/encyclopedia_seeded_name_generation_test.dart test/core/search/search_index_service_test.dart test/features/story/domain/inline_lore_links_test.dart test/features/story/lore_backlinks_test.dart test/features/workspaces/workspace_export_timestamp_determinism_test.dart -j 1"
+    },
+    {
+      "id": "export_checks",
+      "status": "PASS",
+      "contract": "A fixed export timestamp produces byte-identical embedded workspace payloads and default timestamps are normalized to whole seconds.",
+      "implementation_refs": [
+        "lib/features/workspaces/application/workspace_export_service.dart"
+      ],
+      "test_refs": [
+        "test/features/workspaces/workspace_export_timestamp_determinism_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/determinism_explainability_test.dart test/release/sprint_112_simulation_workflow_integration_test.dart test/features/world_logic/domain/encyclopedia_seeded_name_generation_test.dart test/core/search/search_index_service_test.dart test/features/story/domain/inline_lore_links_test.dart test/features/story/lore_backlinks_test.dart test/features/workspaces/workspace_export_timestamp_determinism_test.dart -j 1"
+    }
+  ],
+  "new_integrity_failures": [],
+  "local_release_blockers": [],
+  "decision": "PASS_LOCAL_WITH_EXTERNAL_GATES_DEFERRED",
+  "limits": [
+    "Native GUI was not exercised because this step verifies deterministic domain, index, link, and export contracts without a state-changing UI flow.",
+    "hosted CI remains deferred under the no-push and no-CI policy.",
+    "signing credentials and signed artifact verification belong to step 112.52.",
+    "hardware-specific behavior remains unverified.",
+    "public release remains prohibited without explicit Choirudin authorization."
+  ]
+}

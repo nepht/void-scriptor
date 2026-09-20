@@ -88,6 +88,19 @@ void main() {
         await Future<void>.delayed(const Duration(milliseconds: 20));
       }
     });
+    // The file can become visible just before the async button handler resumes
+    // to enqueue its snackbar. Under a busy aggregate suite, pumpAndSettle may
+    // otherwise observe no scheduled frame and return during that narrow gap.
+    for (
+      var i = 0;
+      i < 50 && find.textContaining('TXT diekspor').evaluate().isEmpty;
+      i++
+    ) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 20)),
+      );
+      await tester.pump();
+    }
     await tester.pumpAndSettle();
 
     final written = File('${exportDir.path}/story.txt');

@@ -41,7 +41,7 @@ void main() {
       'Outfit Concept',
       'Orthographic Garment Views',
       'Wardrobe Components',
-      'Main Wardrobe',
+      'Product View',
       'Material & Fabric',
       'Color Palette',
       'Accessories',

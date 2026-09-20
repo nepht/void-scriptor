@@ -14,7 +14,7 @@ void main() {
       final matrix =
           jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
       expect(matrix['step'], '112.39');
-      expect(matrix['status'], 'PARTIAL');
+      expect(matrix['status'], 'VERIFIED-LOCAL');
 
       const required = <String>[
         'unit',
@@ -40,10 +40,7 @@ void main() {
 
       for (final suite in suites.cast<Map<String, dynamic>>()) {
         expect(suite['command'], isNotEmpty);
-        expect(
-          suite['result'],
-          anyOf(contains('PASS'), contains('NOT RUN'), contains('TIMEOUT')),
-        );
+        expect(suite['result'], contains('PASS'));
         for (final path
             in (suite['evidence'] as List<dynamic>).cast<String>()) {
           expect(

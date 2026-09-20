@@ -1,0 +1,14 @@
+{
+  "step": "112.39",
+  "shard": "test/features/vehicles",
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/vehicles -j 1",
+  "started_at": "2026-09-20T19:29:00.666346+07:00",
+  "finished_at": "2026-09-20T19:29:09.944694+07:00",
+  "duration_seconds": 9.278,
+  "exit_code": 0,
+  "result": "PASS",
+  "pass_count": 3,
+  "fail_count": 0,
+  "skip_count": 0,
+  "log": "docs/evidence/sprint-112-39-test-features-vehicles-20260920.log"
+}

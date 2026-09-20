@@ -1,0 +1,11 @@
+command=D:\DevTools\Flutter SDK\flutter\bin\flutter.bat test --no-pub test/features/props -j 1
+started_at=2026-09-20T09:??:??+07:00
+finished_at=2026-09-20T09:??:??+07:00
+duration_seconds=not_captured
+exit_code=0
+status=PASS
+pass_count=1
+fail_count=0
+skip_count=0
+log=docs/evidence/sprint-112-39-test-features-props-20260920.log
+notes=Output ended +1 and All tests passed!; duration timestamps were not captured by the foreground wrapper.

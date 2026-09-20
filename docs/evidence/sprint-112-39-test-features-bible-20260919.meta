@@ -1,0 +1,12 @@
+{
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/bible -j 1",
+  "started_at": "2026-09-19T15:14:27.643061+00:00",
+  "finished_at": "2026-09-19T15:16:07.145713+00:00",
+  "duration_seconds": 99.515,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count": 59,
+  "fail_count": 0,
+  "skip_count": 0,
+  "log": "D:/VoidScriptor/void_scriptor_multiplatform/docs/evidence/sprint-112-39-test-features-bible-20260919.log"
+}

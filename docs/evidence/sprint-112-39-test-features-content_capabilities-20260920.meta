@@ -1,0 +1,12 @@
+{
+  "step": "112.39",
+  "shard": "test/features/content_capabilities",
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/content_capabilities -j 1",
+  "started_at": "2026-09-20T12:15:52.220993+07:00",
+  "finished_at": "2026-09-20T12:16:01.488386+07:00",
+  "duration_seconds": 9.267,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count": 6,
+  "log": "docs/evidence/sprint-112-39-test-features-content_capabilities-20260920.log"
+}

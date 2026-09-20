@@ -1,0 +1,12 @@
+{
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/app/shell -j 1",
+  "started_at": "2026-09-19T12:18:25.196561+00:00",
+  "finished_at": "2026-09-19T12:19:12.563342+00:00",
+  "duration_seconds": 47.359,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count": 45,
+  "fail_count": 0,
+  "skip_count": 0,
+  "log": "docs/evidence/sprint-112-39-test-app-shell-20260919.log"
+}

@@ -1,0 +1,12 @@
+{
+  "command": "\"D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat\" test --no-pub test/features/authentication -j 1",
+  "started_at": "2026-09-20T02:20:35.709039+00:00",
+  "finished_at": "2026-09-20T02:20:44.012464+00:00",
+  "duration_seconds": 8.297,
+  "exit_code": 0,
+  "status": "PASS",
+  "timed_out": false,
+  "log": "docs/evidence/sprint-112-39-test-features-authentication-20260920.log",
+  "step": "112.39",
+  "shard": "test/features/authentication"
+}

@@ -1,0 +1,6 @@
+command=D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/cinema -j 1
+started_at=2026-09-20T03:55:36.217059+00:00
+finished_at=2026-09-20T03:55:58.269538+00:00
+duration_seconds=22.047
+exit_code=0
+log=D:/VoidScriptor/void_scriptor_multiplatform/docs/evidence/sprint-112-39-test-features-cinema-20260920.log

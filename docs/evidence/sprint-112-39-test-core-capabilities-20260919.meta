@@ -1,0 +1,9 @@
+command=D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/capabilities -j 1
+started_at=2026-09-19T21:53:59+07:00
+finished_at=2026-09-19T21:54:08+07:00
+exit_code=0
+status=PASS
+pass_count=30
+fail_count=0
+skip_count=0
+log=D:/VoidScriptor/void_scriptor_multiplatform/docs/evidence/sprint-112-39-test-core-capabilities-20260919.log

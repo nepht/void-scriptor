@@ -1,0 +1,14 @@
+{
+  "step": "112.39",
+  "shard": "test/features/settings",
+  "command": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat test --no-pub test/features/settings -j 1",
+  "started_at": "2026-09-20T14:13:35.214189+07:00",
+  "finished_at": "2026-09-20T14:13:56.771613+07:00",
+  "duration_seconds": 21.547,
+  "exit_code": 0,
+  "result": "PASS",
+  "pass_count": 22,
+  "fail_count": 0,
+  "skip_count": 0,
+  "log": "docs/evidence/sprint-112-39-test-features-settings-20260920.log"
+}

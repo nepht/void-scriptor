@@ -1,0 +1,16 @@
+{
+  "step": "112.39",
+  "shard": "test/features/spoiler",
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/spoiler -j 1",
+  "started_at": "2026-09-20T18:25:23+0700",
+  "finished_at": "2026-09-20T18:25:32+0700",
+  "duration_seconds": 9.365,
+  "exit_code": 0,
+  "status": "PASS",
+  "passed": 19,
+  "failed": 0,
+  "skipped": 0,
+  "log": "docs/evidence/sprint-112-39-test-features-spoiler-20260920.log",
+  "aggregate_features_status": "PENDING_EXIT_RESULT",
+  "full_regression_status": "PENDING_EXIT_RESULT"
+}

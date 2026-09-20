@@ -1,0 +1,9 @@
+{
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/animation -j 1",
+  "exit_code": 0,
+  "status": "PASS",
+  "tests_passed": 22,
+  "tests_failed": 0,
+  "tests_skipped": 0,
+  "evidence_log": "docs/evidence/sprint-112-39-test-core-animation-20260919.log"
+}

@@ -1,0 +1,10 @@
+command=D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/release -j 1
+started_at=2026-09-20T08:53:44Z
+finished_at=2026-09-20T08:54:03Z
+duration_seconds=18
+exit_code=0
+result=PASS
+pass_count=33
+fail_count=0
+skip_count=0
+log=docs/evidence/sprint-112-39-test-features-release-20260920.log

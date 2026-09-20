@@ -1,0 +1,9 @@
+{
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/architecture -j 1",
+  "status": "PASS",
+  "exit_code": 0,
+  "pass_count": 1,
+  "fail_count": 0,
+  "skip_count": 0,
+  "log": "D:/VoidScriptor/void_scriptor_multiplatform/docs/evidence/sprint-112-39-test-core-architecture-20260919.log"
+}

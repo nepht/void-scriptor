@@ -1,0 +1,2 @@
+command=flutter test --no-pub test/features -j 1
+started_at=2026-09-19T07:13:25Z

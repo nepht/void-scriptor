@@ -1,0 +1,10 @@
+started_at=2026-09-20T05:44:56+07:00
+finished_at=2026-09-20T05:45:03+07:00
+duration_seconds=7
+exit_code=0
+result=PASS
+pass_count=1
+fail_count=0
+skip_mentions=0
+command=D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/audio_timeline -j 1
+log=docs/evidence/sprint-112-39-test-features-audio_timeline-20260920.log

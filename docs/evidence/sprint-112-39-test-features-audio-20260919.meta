@@ -1,0 +1,8 @@
+started_at=2026-09-19T20:35:51+07:00
+finished_at=2026-09-19T20:36:00+07:00
+duration_seconds=9
+exit_code=0
+result=PASS
+command=D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/audio -j 1
+log=docs/evidence/sprint-112-39-test-features-audio-20260919.log
+

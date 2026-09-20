@@ -1,0 +1,14 @@
+{
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/account -j 1",
+  "started_at": "2026-09-20T21:29:59+07:00",
+  "finished_at": "2026-09-20T21:30:11+07:00",
+  "exit_code": 0,
+  "status": "PASS",
+  "duration_seconds": 12.0,
+  "pass_count_summary": "9",
+  "fail_count": 0,
+  "skip_count": 0,
+  "log": "docs/evidence/sprint-112-39-test-features-account-20260920.log",
+  "aggregate_features_status": "PENDING_EXIT_RESULT",
+  "full_regression_status": "PENDING_EXIT_RESULT"
+}

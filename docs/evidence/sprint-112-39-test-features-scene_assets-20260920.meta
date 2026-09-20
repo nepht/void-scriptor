@@ -1,0 +1,12 @@
+{
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/scene_assets -j 1",
+  "started_epoch": 1789864805,
+  "finished_epoch": 1789864814,
+  "duration_seconds": 9,
+  "exit_code": 0,
+  "status": "PASS",
+  "passed": 2,
+  "failures": 0,
+  "skips": 0,
+  "log": "docs\\evidence\\sprint-112-39-test-features-scene_assets-20260920.log"
+}

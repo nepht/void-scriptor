@@ -1,0 +1,14 @@
+{
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/timeline -j 1",
+  "started_at": "2026-09-20T20:25:46+07:00",
+  "finished_at": "2026-09-20T20:26:27+07:00",
+  "duration_seconds": 40.875,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count_summary": "16",
+  "fail_count": 0,
+  "skip_count": "unknown",
+  "log": "docs/evidence/sprint-112-39-test-features-timeline-20260920.log",
+  "aggregate_features_status": "PENDING_EXIT_RESULT",
+  "full_regression_status": "PENDING_EXIT_RESULT"
+}

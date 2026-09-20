@@ -1,0 +1,12 @@
+{
+  "step": "112.39",
+  "shard": "test/features/character_mode",
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/character_mode -j 1",
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count": 33,
+  "fail_count": 0,
+  "skip_count": 0,
+  "log": "D:/VoidScriptor/void_scriptor_multiplatform/docs/evidence/sprint-112-39-test-features-character_mode-20260920.log",
+  "aggregate_status": "PENDING_EXIT_RESULT"
+}

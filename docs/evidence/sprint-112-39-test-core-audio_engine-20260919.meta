@@ -1,0 +1,14 @@
+command=D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/audio_engine -j 1
+started_at=2026-09-19T14:14:20+0000
+finished_at=2026-09-19T14:14:33+0000
+duration_seconds=12.505
+exit_code=0
+status=PASS
+pass_count=20
+fail_count=0
+skip_count=0
+log=D:/VoidScriptor/void_scriptor_multiplatform/docs/evidence/sprint-112-39-test-core-audio_engine-20260919.log
+analyzer_command=D:/DevTools/Flutter SDK/flutter/bin/flutter.bat analyze --no-pub test/core/audio_engine lib/core/audio_engine
+analyzer_exit_code=0
+analyzer_status=PASS
+analyzer_result=No issues found!

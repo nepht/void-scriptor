@@ -1,0 +1,11 @@
+{
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/ai -j 1",
+  "started_at": "2026-09-20T01:58:38.413936+07:00",
+  "finished_at": "2026-09-20T02:00:06.014725+07:00",
+  "duration_seconds": 87.609,
+  "exit_code": 0,
+  "status": "PASS",
+  "passed": null,
+  "skipped": null,
+  "log": "docs/evidence/sprint-112-39-test-features-ai-20260920.log"
+}

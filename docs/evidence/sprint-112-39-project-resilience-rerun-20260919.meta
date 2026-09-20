@@ -1,0 +1,5 @@
+command=flutter test --no-pub test/features/project_resilience -j 1
+started_at=2026-09-19T08:44:11Z
+finished_at=2026-09-19T08:49:29Z
+result=COMPLETED
+exit_code=0

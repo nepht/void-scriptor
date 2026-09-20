@@ -1,0 +1,11 @@
+{
+  "command": "\"D:/DevTools/Flutter SDK/flutter/bin/flutter.bat\" test --no-pub test/features/world_logic -j 1",
+  "started_at": "2026-09-20T20:50:24.189092+07:00",
+  "finished_at": "2026-09-20T20:52:15.471143+07:00",
+  "duration_seconds": 111.281,
+  "exit_code": 0,
+  "status": "PASS",
+  "log": "docs/evidence/sprint-112-39-test-features-world_logic-20260920.log",
+  "aggregate_features_status": "PENDING_EXIT_RESULT",
+  "full_regression_status": "PENDING_EXIT_RESULT"
+}

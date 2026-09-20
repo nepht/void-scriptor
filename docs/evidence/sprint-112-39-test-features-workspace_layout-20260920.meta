@@ -1,0 +1,14 @@
+{
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/workspace_layout -j 1",
+  "started_at": "2026-09-20T18:04:56+0700",
+  "finished_at": "2026-09-20T18:05:14+0700",
+  "duration_seconds": 18.0,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count_summary": "47",
+  "fail_count": 0,
+  "skip_count": 0,
+  "log": "docs/evidence/sprint-112-39-test-features-workspace_layout-20260920.log",
+  "aggregate_features_status": "PENDING_EXIT_RESULT",
+  "full_regression_status": "PENDING_EXIT_RESULT"
+}

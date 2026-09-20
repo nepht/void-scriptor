@@ -1,0 +1,12 @@
+STEP: 112.39
+SHARD: test/features/game
+COMMAND: "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat" test --no-pub test/features/game -j 1
+STARTED_AT_UTC: 2026-09-20T06:31:57.210877+00:00
+FINISHED_AT_UTC: 2026-09-20T06:32:19.862581+00:00
+DURATION_SECONDS: 22.656
+EXIT_CODE: 0
+RESULT: PASS
+PASS_COUNT: 39
+FAIL_COUNT: 0
+SKIP_COUNT: 0
+LOG: D:/VoidScriptor/void_scriptor_multiplatform/docs/evidence/sprint-112-39-test-features-game-20260920.log

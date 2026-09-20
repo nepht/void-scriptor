@@ -1,0 +1,13 @@
+{
+  "command": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat test --no-pub test/features/collaboration -j 1",
+  "started_at": "2026-09-20T11:55:44+0700",
+  "finished_at": "2026-09-20T11:56:15+0700",
+  "duration_seconds": 31.082,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count": 53,
+  "fail_count": 0,
+  "skip_count": null,
+  "log": "docs/evidence/sprint-112-39-test-features-collaboration-20260920.log",
+  "tail": "00:18 +45: D:/VoidScriptor/void_scriptor_multiplatform/test/features/collaboration/presentation/project_comments_panel_test.dart: renders comments and posts new ones\n00:19 +46: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/collaboration/presentation/share_project_dialog_test.dart\n00:20 +46: D:/VoidScriptor/void_scriptor_multiplatform/test/features/collaboration/presentation/share_project_dialog_test.dart: shows role picker and invite button\n00:22 +47: D:/VoidScriptor/void_scriptor_multiplatform/test/features/collaboration/presentation/share_project_dialog_test.dart: invite callback receives chosen role\n00:22 +48: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/collaboration/presentation/sync_status_denied_ui_test.dart\n00:23 +48: D:/VoidScriptor/void_scriptor_multiplatform/test/features/collaboration/presentation/sync_status_denied_ui_test.dart: denied sync surfaces the guard error state in the UI\n00:23 +49: D:/VoidScriptor/void_scriptor_multiplatform/test/features/collaboration/presentation/sync_status_denied_ui_test.dart: journal-parked denial surfaces the conflict state in the UI\n00:23 +50: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/collaboration/presentation/sync_status_indicator_test.dart\n00:24 +50: D:/VoidScriptor/void_scriptor_multiplatform/test/features/collaboration/presentation/sync_status_indicator_test.dart: shows idle icon for idle state\n00:25 +51: D:/VoidScriptor/void_scriptor_multiplatform/test/features/collaboration/presentation/sync_status_indicator_test.dart: shows sync icon for syncing state\n00:25 +52: D:/VoidScriptor/void_scriptor_multiplatform/test/features/collaboration/presentation/sync_status_indicator_test.dart: shows error icon for error state\n00:25 +53: All tests passed!"
+}

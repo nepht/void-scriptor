@@ -1,0 +1,9 @@
+{
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/agent -j 1",
+  "started_at": "2026-09-19T19:37:09+0700",
+  "finished_at": "2026-09-19T19:37:22+0700",
+  "duration_seconds": 13.442,
+  "exit_code": 0,
+  "status": "PASS",
+  "log": "docs\\evidence\\sprint-112-39-test-core-agent-20260919.log"
+}

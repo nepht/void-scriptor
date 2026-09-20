@@ -1,0 +1,14 @@
+{
+  "step": "112.39",
+  "shard": "test/features/pacing",
+  "command": "D:\\DevTools\\Flutter SDK\flutter\bin\flutter.bat test --no-pub test/features/pacing -j 1",
+  "started_at": "2026-09-20T09:32:01.128020+00:00",
+  "finished_at": "2026-09-20T09:32:23.768415+00:00",
+  "duration_seconds": 22.641,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count": 10,
+  "fail_count": 0,
+  "skip_count": 0,
+  "log": "docs/evidence/sprint-112-39-test-features-pacing-20260920.log"
+}

@@ -1,0 +1,14 @@
+{
+  "step": "112.39",
+  "shard": "test/features/weapon",
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/weapon -j 1",
+  "started_at": "2026-09-20T07:58:22+0700",
+  "finished_at": "2026-09-20T07:58:43+0700",
+  "duration_seconds": 20.219,
+  "exit_code": 0,
+  "status": "PASS",
+  "passed": 14,
+  "failed": 0,
+  "skipped": 0,
+  "log": "docs/evidence/sprint-112-39-test-features-weapon-20260920.log"
+}

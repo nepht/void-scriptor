@@ -1,0 +1,206 @@
+{
+  "canonical_step": "112.49",
+  "title": "Platform Compatibility Gate",
+  "scope": "Local deterministic verification of platform capability matrix, input mode support, filesystem behavior, packaging boundaries, upgrade/downgrade compatibility, and uninstall boundaries on the canonical Windows repository.",
+  "required_outputs": [
+    "platform_matrix",
+    "input_results",
+    "filesystem_results",
+    "package_results",
+    "upgrade_results",
+    "uninstall_results",
+    "decision"
+  ],
+  "budgets": [
+    {
+      "id": "platform_matrix",
+      "metric": "Desktop (Windows/macOS/Linux) declares localFileSystem + projectSqliteDatabase + readOnlySqlite; Web does not claim project persistence; capability gaps produce actionable typed errors",
+      "ceiling": 1,
+      "unit": "capability set honest per platform",
+      "source": "lib/features/platform/domain/platform_capability.dart"
+    },
+    {
+      "id": "input_results",
+      "metric": "Keyboard navigation: Tab/Shift+Tab traversal, keyboard shortcuts, Enter/Escape actions reachable; no overflow at narrow layout",
+      "ceiling": 1,
+      "unit": "input mode tested without overflow",
+      "source": "lib/features/platform/presentation/keyboard_navigation_screen.dart"
+    },
+    {
+      "id": "filesystem_results",
+      "metric": "Project packages use real local filesystem folders; SQLite via drift NativeDatabase; read-only SQLite access for recovery/audit; path injection available in tests",
+      "ceiling": 1,
+      "unit": "filesystem capability tested per platform",
+      "source": "lib/features/platform/domain/platform_capability.dart"
+    },
+    {
+      "id": "package_results",
+      "metric": "Windows build package integrity verified via debug build gate; packaging boundaries fail-closed for unsupported platform capabilities",
+      "ceiling": 1,
+      "unit": "package build PASS + capability fail-closed",
+      "source": "docs/planning/v1.2/sprint_112_contract_compatibility_verification.json"
+    },
+    {
+      "id": "upgrade_results",
+      "metric": "Project format major 1 / schema 16 / database schema 62 backward-compatible; migration dry-run fail-closed; future-schema rejection",
+      "ceiling": 1,
+      "unit": "contract compatibility verified via schema assertions",
+      "source": "docs/planning/v1.2/sprint_112_schema_contract_freeze.json; docs/planning/v1.2/sprint_112_contract_compatibility_verification.json"
+    },
+    {
+      "id": "uninstall_results",
+      "metric": "Uninstall boundaries: platform capability model declares Desktop vs Web honestly; no destructive uninstall action claimed without capability",
+      "ceiling": 1,
+      "unit": "capability fail-closed on unsupported boundary",
+      "source": "lib/features/platform/domain/platform_capability.dart"
+    }
+  ],
+  "baseline": [
+    {
+      "id": "platform_matrix",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "PlatformCapabilitySet desktop vs web",
+      "evidence": "test/features/platform/platform_capability_test.dart"
+    },
+    {
+      "id": "input_results",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "Keyboard Navigation Screen widget test",
+      "evidence": "test/features/platform/presentation/keyboard_navigation_screen_test.dart"
+    },
+    {
+      "id": "filesystem_results",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "Filesystem capability per platform",
+      "evidence": "test/features/platform/platform_capability_test.dart"
+    },
+    {
+      "id": "package_results",
+      "status": "DOCUMENTED",
+      "profile": "Windows debug build + contract compatibility schema freeze",
+      "evidence": "docs/planning/v1.2/sprint_112_contract_compatibility_verification.json"
+    },
+    {
+      "id": "upgrade_results",
+      "status": "DOCUMENTED",
+      "profile": "Schema/contract freeze backward-compatibility",
+      "evidence": "docs/planning/v1.2/sprint_112_schema_contract_freeze.json"
+    },
+    {
+      "id": "uninstall_results",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "Capability fail-closed on unsupported platform",
+      "evidence": "test/features/platform/platform_capability_test.dart"
+    }
+  ],
+  "results": [
+    {
+      "id": "platform_matrix",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/platform/domain/platform_capability.dart"
+      ],
+      "test_refs": [
+        "test/features/platform/platform_capability_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/platform/platform_capability_test.dart -j 1"
+    },
+    {
+      "id": "input_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/platform/presentation/keyboard_navigation_screen.dart"
+      ],
+      "test_refs": [
+        "test/features/platform/presentation/keyboard_navigation_screen_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/platform/presentation/keyboard_navigation_screen_test.dart -j 1"
+    },
+    {
+      "id": "filesystem_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/platform/domain/platform_capability.dart"
+      ],
+      "test_refs": [
+        "test/features/platform/platform_capability_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/platform/platform_capability_test.dart -j 1"
+    },
+    {
+      "id": "package_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "docs/planning/v1.2/sprint_112_contract_compatibility_verification.json"
+      ],
+      "test_refs": [
+        "test/release/sprint_112_contract_compatibility_verification_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_112_contract_compatibility_verification_test.dart -j 1"
+    },
+    {
+      "id": "upgrade_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "docs/planning/v1.2/sprint_112_schema_contract_freeze.json"
+      ],
+      "test_refs": [
+        "test/release/sprint_112_schema_contract_freeze_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_112_schema_contract_freeze_test.dart -j 1"
+    },
+    {
+      "id": "uninstall_results",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/platform/domain/platform_capability.dart"
+      ],
+      "test_refs": [
+        "test/features/platform/platform_capability_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/platform/platform_capability_test.dart -j 1"
+    }
+  ],
+  "regressions": [],
+  "bottlenecks": [
+    {
+      "id": "native_platform_matrix_not_captured",
+      "status": "DEFERRED",
+      "impact": "Desktop capabilities are tested via injected isWeb flag; actual native macOS/Linux runtime capability matrix and uninstall boundary effects are not captured from cron.",
+      "next_gate": "Native platform matrix and uninstall journey verification on release-candidate hardware."
+    },
+    {
+      "id": "native_windows_package_integrity_not_captured",
+      "status": "DEFERRED",
+      "impact": "Windows debug build compilation is verified; signed production MSI/installer packaging and uninstall registry cleanup are not captured from cron.",
+      "next_gate": "Windows installer packaging and uninstall verification on release-candidate hardware."
+    }
+  ],
+  "findings": [
+    {
+      "id": "no_platform_finding_in_executed_matrix",
+      "severity": "none",
+      "status": "VERIFIED",
+      "summary": "No failure occurred in the executed platform compatibility matrix; PlatformCapabilitySet declares Desktop vs Web honestly with actionable typed errors; keyboard navigation and contract/schema compatibility verified.",
+      "evidence": "test/features/platform/platform_capability_test.dart; test/release/sprint_112_contract_compatibility_verification_test.dart; test/release/sprint_112_schema_contract_freeze_test.dart"
+    }
+  ],
+  "remediations": [],
+  "residual_risk_acceptance": [
+    {
+      "id": "native_platform_matrix_deferred",
+      "severity": "deferred",
+      "owner": "Choirudin",
+      "acceptance": "Native macOS/Linux runtime capability matrix and Windows installer/uninstall cleanup deferred to release-candidate operational validation.",
+      "evidence": "docs/planning/v1.2/sprint_112_contract_compatibility_verification.json"
+    }
+  ],
+  "decision": "PASS_LOCAL_WITH_EXTERNAL_GATES_DEFERRED",
+  "limits": [
+    "Native macOS/Linux runtime platform matrix is not captured; Desktop vs Web capabilities are tested via injected isWeb flag only.",
+    "Windows debug build compilation is verified; signed production MSI/installer packaging is not captured.",
+    "Native uninstall boundary effects and registry cleanup are not captured from cron.",
+    "Hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
+    "This decision is not a production platform compatibility certification."
+  ]
+}

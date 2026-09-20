@@ -113,11 +113,16 @@ void main() {
       await tester.pumpAndSettle();
       expect(container.read(selectionProvider)?.assetId, characterId);
 
-      // Move to the novel workspace while its catalog reloads; the story
-      // catalog completes and restores the remembered story without a tap.
+      // Move back to the novel workspace while its catalog reloads. The
+      // Explorer is a virtualized ListView: focusing Characters can scroll
+      // the top destination out of the mounted viewport, so return to the
+      // top before resolving the destination finder.
       container.invalidate(storyExplorerProvider(projectId));
+      final explorerList = find.byType(ListView);
+      await tester.fling(explorerList, const Offset(0, 900), 1800);
+      await tester.pumpAndSettle();
       final novel = find.text('Novel Workspace');
-      await tester.ensureVisible(novel);
+      expect(novel, findsOneWidget);
       await tester.tap(novel);
       await tester.pumpAndSettle();
       expect(find.text('Loading...'), findsNothing);

@@ -1,0 +1,16 @@
+{
+  "step": "112.39",
+  "shard": "test/features/explorer",
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/explorer -j 1",
+  "started_at": "2026-09-20T17:51:35.955313+00:00",
+  "finished_at": "2026-09-20T17:52:59.923451+00:00",
+  "duration_seconds": 83.968,
+  "exit_code": 0,
+  "status": "PASS",
+  "passed": 46,
+  "failed": 0,
+  "skipped": 0,
+  "log": "docs/evidence/sprint-112-39-test-features-explorer-20260921.log",
+  "aggregate_features_status": "TIMEOUT_EXIT_124_PRIOR_EVIDENCE",
+  "full_regression_status": "TIMEOUT_EXIT_124_PRIOR_EVIDENCE"
+}

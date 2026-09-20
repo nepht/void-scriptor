@@ -45,7 +45,11 @@ class WardrobeRepositoryImpl implements WardrobeRepository {
       ],
       colors: [
         for (final color in colors)
-          WardrobeColorInfo(name: color.name, hexValue: color.hexValue),
+          WardrobeColorInfo(
+            name: color.name,
+            hexValue: color.hexValue,
+            usage: color.usage,
+          ),
       ],
       variants: [
         for (final variant in variants)

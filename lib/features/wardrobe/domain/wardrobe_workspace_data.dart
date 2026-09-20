@@ -20,10 +20,15 @@ class WardrobeComponentInfo {
 }
 
 class WardrobeColorInfo {
-  const WardrobeColorInfo({required this.name, required this.hexValue});
+  const WardrobeColorInfo({
+    required this.name,
+    required this.hexValue,
+    this.usage = '',
+  });
 
   final String name;
   final String hexValue;
+  final String usage;
 }
 
 class WardrobeVariantInfo {

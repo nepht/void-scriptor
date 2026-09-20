@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../domain/weapon_workspace_data.dart';
@@ -45,19 +47,38 @@ class WeaponTechnicalViewCard extends StatelessWidget {
 }
 
 class WeaponSpecificationCard extends StatelessWidget {
-  const WeaponSpecificationCard({super.key, required this.model});
+  const WeaponSpecificationCard({
+    super.key,
+    required this.model,
+    this.title = 'Specification',
+    this.description,
+    this.showTechnicalFields = true,
+  });
   final WeaponSpecificationData model;
+  final String title;
+  final String? description;
+  final bool showTechnicalFields;
 
   @override
   Widget build(BuildContext context) => _WeaponCard(
-    title: 'Specification',
+    title: title,
     child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _PropertyRow(label: 'Type', value: model.type),
-        _PropertyRow(label: 'Length', value: model.length),
-        _PropertyRow(label: 'Weight', value: model.weight),
-        _PropertyRow(label: 'Material', value: model.material),
-        _PropertyRow(label: 'Energy', value: model.energy),
+        if (description != null && description!.isNotEmpty) ...[
+          Text(
+            description!,
+            style: TextStyle(color: context.palette.textSecondary),
+          ),
+          const SizedBox(height: 12),
+        ],
+        if (showTechnicalFields) ...[
+          _PropertyRow(label: 'Type', value: model.type),
+          _PropertyRow(label: 'Length', value: model.length),
+          _PropertyRow(label: 'Weight', value: model.weight),
+          _PropertyRow(label: 'Material', value: model.material),
+          _PropertyRow(label: 'Energy', value: model.energy),
+        ],
       ],
     ),
   );
@@ -78,14 +99,83 @@ class WeaponSpecificationData {
   final String energy;
 }
 
-class WeaponComponentsCard extends StatelessWidget {
-  const WeaponComponentsCard({super.key, required this.components});
+class WeaponColorPaletteCard extends StatelessWidget {
+  const WeaponColorPaletteCard({super.key, required this.colors});
 
-  final List<WeaponComponentInfo> components;
+  final List<WeaponColorInfo> colors;
 
   @override
   Widget build(BuildContext context) => _WeaponCard(
-    title: 'Components',
+    title: 'Color Palette',
+    child: colors.isEmpty
+        ? const _EmptyNote(text: 'Belum ada warna tersimpan.')
+        : Wrap(
+            spacing: 12,
+            runSpacing: 10,
+            children: [
+              for (final color in colors) _WeaponColorSwatch(color: color),
+            ],
+          ),
+  );
+}
+
+class _WeaponColorSwatch extends StatelessWidget {
+  const _WeaponColorSwatch({required this.color});
+
+  final WeaponColorInfo color;
+
+  @override
+  Widget build(BuildContext context) {
+    final digits = color.hexValue.replaceFirst('#', '');
+    final parsed = int.tryParse(digits, radix: 16);
+    final swatch = parsed == null
+        ? const Color(0xFF808080)
+        : digits.length <= 6
+        ? Color(0xFF000000 | parsed)
+        : Color(parsed);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            color: swatch,
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: context.palette.borderSoft),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(weaponValue(color.name)),
+            Text(
+              color.usage.isEmpty
+                  ? color.hexValue
+                  : '${color.hexValue} · ${color.usage}',
+              style: TextStyle(color: context.palette.textMuted, fontSize: 11),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class WeaponComponentsCard extends StatelessWidget {
+  const WeaponComponentsCard({
+    super.key,
+    required this.components,
+    this.title = 'Components',
+  });
+
+  final List<WeaponComponentInfo> components;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) => _WeaponCard(
+    title: title,
     child: components.isEmpty
         ? const _EmptyNote(text: 'Belum ada komponen tersimpan.')
         : Wrap(
@@ -108,14 +198,16 @@ class WeaponDimensionsCard extends StatelessWidget {
     required this.length,
     required this.weight,
     required this.measurements,
+    this.title = 'Dimensions',
   });
   final String length;
   final String weight;
   final List<WeaponMeasurementInfo> measurements;
+  final String title;
 
   @override
   Widget build(BuildContext context) => _WeaponCard(
-    title: 'Dimensions',
+    title: title,
     child: Column(
       children: [
         _PropertyRow(label: 'Overall', value: length),
@@ -138,16 +230,18 @@ class WeaponEnergyCard extends StatelessWidget {
     required this.energy,
     required this.core,
     this.profile,
+    this.title = 'Energy / Core',
   });
   final String energy;
   final String core;
   final WeaponEnergyInfo? profile;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
     final info = profile;
     return _WeaponCard(
-      title: 'Energy / Core',
+      title: title,
       child: Column(
         children: [
           _PropertyRow(label: 'Energy Type', value: energy),
@@ -205,6 +299,94 @@ class WeaponReferencesCard extends StatelessWidget {
             ],
           ),
   );
+}
+
+class WeaponBoardPanel extends StatelessWidget {
+  const WeaponBoardPanel({super.key, required this.title, required this.child});
+
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => _WeaponCard(title: title, child: child);
+}
+
+class WeaponReferenceGalleryCard extends StatelessWidget {
+  const WeaponReferenceGalleryCard({
+    super.key,
+    required this.title,
+    required this.references,
+    required this.emptyText,
+  });
+
+  final String title;
+  final List<WeaponReferenceInfo> references;
+  final String emptyText;
+
+  @override
+  Widget build(BuildContext context) => _WeaponCard(
+    title: title,
+    child: references.isEmpty
+        ? _EmptyNote(text: emptyText)
+        : Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final reference in references)
+                _WeaponReferenceTile(reference: reference),
+            ],
+          ),
+  );
+}
+
+class _WeaponReferenceTile extends StatelessWidget {
+  const _WeaponReferenceTile({required this.reference});
+
+  final WeaponReferenceInfo reference;
+
+  @override
+  Widget build(BuildContext context) {
+    final file = reference.filePath.isEmpty ? null : File(reference.filePath);
+    final fileExists = file?.existsSync() ?? false;
+    return Container(
+      width: 132,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: context.palette.surfaceElevated,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: context.palette.borderSoft),
+      ),
+      child: Column(
+        children: [
+          SizedBox(
+            width: 116,
+            height: 76,
+            child: fileExists
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: Image.file(file!, fit: BoxFit.cover),
+                  )
+                : Icon(Icons.image_outlined, color: context.palette.textMuted),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            weaponValue(reference.referenceType),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+          if (!fileExists)
+            Text(
+              reference.filePath.isEmpty
+                  ? 'File belum ditautkan'
+                  : 'File tidak ditemukan',
+              style: TextStyle(color: context.palette.textMuted, fontSize: 11),
+              textAlign: TextAlign.center,
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 class _EmptyNote extends StatelessWidget {

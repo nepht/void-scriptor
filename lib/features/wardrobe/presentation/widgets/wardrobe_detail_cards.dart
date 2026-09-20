@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../domain/wardrobe_workspace_data.dart';
@@ -46,6 +48,8 @@ class WardrobeSpecificationCard extends StatelessWidget {
     required this.fabric,
     required this.fit,
     required this.style,
+    this.title = 'Specification',
+    this.description,
   });
 
   final String category;
@@ -53,12 +57,22 @@ class WardrobeSpecificationCard extends StatelessWidget {
   final String fabric;
   final String fit;
   final String style;
+  final String title;
+  final String? description;
 
   @override
   Widget build(BuildContext context) => _WardrobeCard(
-    title: 'Specification',
+    title: title,
     child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (description != null && description!.isNotEmpty) ...[
+          Text(
+            description!,
+            style: TextStyle(color: context.palette.textSecondary),
+          ),
+          const SizedBox(height: 12),
+        ],
         _PropertyRow(label: 'Category', value: category),
         _PropertyRow(label: 'Material', value: material),
         _PropertyRow(label: 'Fabric', value: fabric),
@@ -70,15 +84,22 @@ class WardrobeSpecificationCard extends StatelessWidget {
 }
 
 class WardrobeComponentsCard extends StatelessWidget {
-  const WardrobeComponentsCard({super.key, required this.components});
+  const WardrobeComponentsCard({
+    super.key,
+    required this.components,
+    this.title = 'Components',
+    this.emptyText = 'Belum ada komponen tersimpan.',
+  });
 
   final List<WardrobeComponentInfo> components;
+  final String title;
+  final String emptyText;
 
   @override
   Widget build(BuildContext context) => _WardrobeCard(
-    title: 'Components',
+    title: title,
     child: components.isEmpty
-        ? const _EmptyNote(text: 'Belum ada komponen tersimpan.')
+        ? _EmptyNote(text: emptyText)
         : Wrap(
             spacing: 10,
             runSpacing: 10,
@@ -126,9 +147,14 @@ class WardrobeColorPaletteCard extends StatelessWidget {
 /// card listed three invented fabrics that had no source row at all
 /// (WBUG-5).
 class WardrobeMaterialCard extends StatelessWidget {
-  const WardrobeMaterialCard({super.key, required this.components});
+  const WardrobeMaterialCard({
+    super.key,
+    required this.components,
+    this.title = 'Material / Fabric',
+  });
 
   final List<WardrobeComponentInfo> components;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +165,7 @@ class WardrobeMaterialCard extends StatelessWidget {
         if (component.fabric.isNotEmpty) component.fabric,
     };
     return _WardrobeCard(
-      title: 'Material / Fabric',
+      title: title,
       child: values.isEmpty
           ? const _EmptyNote(text: 'Belum ada material tersimpan.')
           : Wrap(
@@ -200,6 +226,99 @@ class WardrobeReferencesCard extends StatelessWidget {
             ],
           ),
   );
+}
+
+class WardrobeBoardPanel extends StatelessWidget {
+  const WardrobeBoardPanel({
+    super.key,
+    required this.title,
+    required this.child,
+  });
+
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) =>
+      _WardrobeCard(title: title, child: child);
+}
+
+class WardrobeReferenceGalleryCard extends StatelessWidget {
+  const WardrobeReferenceGalleryCard({
+    super.key,
+    required this.title,
+    required this.references,
+    required this.emptyText,
+  });
+
+  final String title;
+  final List<WardrobeReferenceInfo> references;
+  final String emptyText;
+
+  @override
+  Widget build(BuildContext context) => _WardrobeCard(
+    title: title,
+    child: references.isEmpty
+        ? _EmptyNote(text: emptyText)
+        : Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final reference in references)
+                _ReferenceTile(reference: reference),
+            ],
+          ),
+  );
+}
+
+class _ReferenceTile extends StatelessWidget {
+  const _ReferenceTile({required this.reference});
+
+  final WardrobeReferenceInfo reference;
+
+  @override
+  Widget build(BuildContext context) {
+    final file = reference.filePath.isEmpty ? null : File(reference.filePath);
+    final fileExists = file?.existsSync() ?? false;
+    return Container(
+      width: 132,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: context.palette.surfaceElevated,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: context.palette.borderSoft),
+      ),
+      child: Column(
+        children: [
+          SizedBox(
+            width: 116,
+            height: 76,
+            child: fileExists
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: Image.file(file!, fit: BoxFit.cover),
+                  )
+                : Icon(Icons.image_outlined, color: context.palette.textMuted),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            wardrobeValue(reference.referenceType),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+          if (!fileExists)
+            Text(
+              reference.filePath.isEmpty
+                  ? 'File belum ditautkan'
+                  : 'File tidak ditemukan',
+              style: TextStyle(color: context.palette.textMuted, fontSize: 11),
+              textAlign: TextAlign.center,
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 class _EmptyNote extends StatelessWidget {

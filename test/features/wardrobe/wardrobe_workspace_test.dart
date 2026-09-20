@@ -37,8 +37,21 @@ void main() {
     await tester.pump();
 
     expect(find.byType(WardrobeWorkspaceScreen), findsOneWidget);
-    expect(find.text('Product View'), findsOneWidget);
-    expect(find.text('Components'), findsOneWidget);
+    for (final label in const [
+      'Outfit Concept',
+      'Orthographic Garment Views',
+      'Wardrobe Components',
+      'Main Wardrobe',
+      'Material & Fabric',
+      'Color Palette',
+      'Accessories',
+      'Dimensions & Construction Notes',
+      'Close Up Detail',
+    ]) {
+      expect(find.text(label), findsOneWidget, reason: label);
+    }
+    expect(find.text('110 cm'), findsNothing);
+    expect(find.text('#050507'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 

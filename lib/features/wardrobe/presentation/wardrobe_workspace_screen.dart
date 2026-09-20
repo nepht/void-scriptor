@@ -84,35 +84,123 @@ class _DesktopWardrobe extends StatelessWidget {
   final WardrobeWorkspaceData details;
 
   @override
-  Widget build(BuildContext context) => Column(
-    children: [
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 300,
-            child: AssetThumbnailCard(
-              assetId: wardrobeId,
-              title: 'Product View',
-              placeholderIcon: Icons.checkroom_outlined,
+  Widget build(BuildContext context) {
+    final closeUps = details.references.where((reference) {
+      final type = reference.referenceType.toLowerCase();
+      return type.contains('detail') ||
+          type.contains('close') ||
+          type.contains('texture');
+    }).toList();
+    final orthographic = details.references
+        .where((reference) => !closeUps.contains(reference))
+        .toList();
+    final accessories = details.components.where((component) {
+      final type = component.componentType.toLowerCase();
+      return type.contains('accessory') ||
+          type.contains('jewel') ||
+          type.contains('ornament');
+    }).toList();
+
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 2,
+              child: WardrobeSpecificationCard(
+                title: 'Outfit Concept',
+                description: model?.description,
+                category: wardrobeValue(model?.category),
+                material: wardrobeValue(model?.primaryMaterial),
+                fabric: wardrobeValue(model?.fabric),
+                fit: wardrobeValue(model?.fit),
+                style: wardrobeValue(model?.style),
+              ),
             ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(child: _wardrobeSpecification(model)),
-        ],
-      ),
-      const SizedBox(height: 16),
-      WardrobeComponentsCard(components: details.components),
-      const SizedBox(height: 16),
-      WardrobeColorPaletteCard(colors: details.colors),
-      const SizedBox(height: 16),
-      WardrobeMaterialCard(components: details.components),
-      const SizedBox(height: 16),
-      WardrobeVariantsCard(variants: details.variants),
-      const SizedBox(height: 16),
-      WardrobeReferencesCard(references: details.references),
-    ],
-  );
+            const SizedBox(width: 12),
+            SizedBox(
+              width: 320,
+              child: AssetThumbnailCard(
+                assetId: wardrobeId,
+                title: 'Main Wardrobe',
+                placeholderIcon: Icons.checkroom_outlined,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 2,
+              child: WardrobeReferenceGalleryCard(
+                title: 'Orthographic Garment Views',
+                references: orthographic,
+                emptyText: details.references.isEmpty
+                    ? 'Belum ada referensi tersimpan.'
+                    : 'Belum ada tampak front, side, back, atau inside yang ditautkan.',
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: WardrobeComponentsCard(
+                title: 'Wardrobe Components',
+                components: details.components,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: WardrobeMaterialCard(
+                title: 'Material & Fabric',
+                components: details.components,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(child: WardrobeColorPaletteCard(colors: details.colors)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: WardrobeComponentsCard(
+                title: 'Accessories',
+                components: accessories,
+                emptyText: 'Belum ada aksesori tersimpan.',
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: WardrobeBoardPanel(
+                title: 'Dimensions & Construction Notes',
+                child: Text(
+                  model?.notes.isNotEmpty == true
+                      ? model!.notes
+                      : 'Belum ada dimensi atau catatan konstruksi tersimpan.',
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(child: WardrobeVariantsCard(variants: details.variants)),
+          ],
+        ),
+        const SizedBox(height: 12),
+        WardrobeReferenceGalleryCard(
+          title: 'Close Up Detail',
+          references: closeUps,
+          emptyText: 'Belum ada referensi close-up yang ditautkan.',
+        ),
+      ],
+    );
+  }
 }
 
 class _CompactWardrobe extends StatelessWidget {

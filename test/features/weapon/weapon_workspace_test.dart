@@ -36,8 +36,21 @@ void main() {
     await tester.pump();
 
     expect(find.byType(WeaponWorkspaceScreen), findsOneWidget);
-    expect(find.text('Technical View'), findsOneWidget);
-    expect(find.text('Energy / Core'), findsOneWidget);
+    for (final label in const [
+      'Concept',
+      'Orthographic Views',
+      'Exploded View',
+      'Detail Panels',
+      'Material & Texture',
+      'Color Palette',
+      'Dimensions & Construction',
+      'Function / Combat Mode',
+      'Technical Notes',
+    ]) {
+      expect(find.text(label), findsOneWidget, reason: label);
+    }
+    expect(find.text('2600 mm'), findsNothing);
+    expect(find.text('#6A00FF'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 

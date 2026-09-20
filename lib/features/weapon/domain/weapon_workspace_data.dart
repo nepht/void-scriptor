@@ -24,6 +24,18 @@ class WeaponMeasurementInfo {
   final String unit;
 }
 
+class WeaponColorInfo {
+  const WeaponColorInfo({
+    required this.name,
+    required this.hexValue,
+    this.usage = '',
+  });
+
+  final String name;
+  final String hexValue;
+  final String usage;
+}
+
 class WeaponEnergyInfo {
   const WeaponEnergyInfo({
     this.activation = '',
@@ -54,6 +66,7 @@ class WeaponWorkspaceData {
   const WeaponWorkspaceData({
     this.components = const [],
     this.measurements = const [],
+    this.colors = const [],
     this.energy,
     this.variants = const [],
     this.references = const [],
@@ -61,6 +74,7 @@ class WeaponWorkspaceData {
 
   final List<WeaponComponentInfo> components;
   final List<WeaponMeasurementInfo> measurements;
+  final List<WeaponColorInfo> colors;
   final WeaponEnergyInfo? energy;
   final List<WeaponVariantInfo> variants;
   final List<WeaponReferenceInfo> references;

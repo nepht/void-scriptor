@@ -45,6 +45,9 @@ void main() {
       WeaponMeasurementInfo(label: 'Panjang Bilah', value: 940.0, unit: 'mm'),
       WeaponMeasurementInfo(label: 'Ujung Gagang', value: 132.5, unit: 'mm'),
     ],
+    colors: [
+      WeaponColorInfo(name: 'Biru Malam', hexValue: '#112244', usage: 'Bilah'),
+    ],
     energy: WeaponEnergyInfo(
       activation: 'Sentuhan Pemilik',
       emissionColor: 'Biru Redup',
@@ -208,6 +211,17 @@ void main() {
               unit: 'mm',
             ),
           );
+      await db
+          .into(db.weaponColors)
+          .insert(
+            WeaponColorsCompanion.insert(
+              id: 'color-1',
+              weaponId: id,
+              name: 'Biru Senja',
+              hexValue: '#223366',
+              usage: const Value('Bilah'),
+            ),
+          );
       final energyProfile = await (db.select(
         db.weaponEnergyProfiles,
       )..where((row) => row.weaponId.equals(id))).getSingleOrNull();
@@ -242,6 +256,9 @@ void main() {
       expect(data.components.map((c) => c.name), ['Gagang Tulang']);
       expect(data.measurements.map((m) => m.label), ['Leher Bilah']);
       expect(data.measurements.single.value, 41.5);
+      expect(data.colors.single.name, 'Biru Senja');
+      expect(data.colors.single.hexValue, '#223366');
+      expect(data.colors.single.usage, 'Bilah');
       expect(data.energy?.activation, 'Kunci Suara');
       expect(data.energy?.emissionColor, 'Emas Padam');
       // CreateWeaponService seeds the default 'Normal' variant in the DB.

@@ -83,51 +83,184 @@ class _WeaponDesktop extends StatelessWidget {
   final WeaponWorkspaceData details;
 
   @override
-  Widget build(BuildContext context) => Column(
-    children: [
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 300,
-            child: AssetThumbnailCard(
-              assetId: weaponId,
-              title: 'Technical View',
-              placeholderIcon: Icons.auto_fix_high_outlined,
+  Widget build(BuildContext context) {
+    final detailsReferences = details.references.where((reference) {
+      final type = reference.referenceType.toLowerCase();
+      return type.contains('detail') ||
+          type.contains('close') ||
+          type.contains('texture');
+    }).toList();
+    final explodedReferences = details.references.where((reference) {
+      final type = reference.referenceType.toLowerCase();
+      return type.contains('exploded') || type.contains('component');
+    }).toList();
+    final orthographic = details.references
+        .where(
+          (reference) =>
+              !detailsReferences.contains(reference) &&
+              !explodedReferences.contains(reference),
+        )
+        .toList();
+
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 2,
+              child: WeaponSpecificationCard(
+                title: 'Concept',
+                description: model?.description,
+                model: specification,
+                showTechnicalFields: false,
+              ),
             ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(child: WeaponSpecificationCard(model: specification)),
-        ],
-      ),
-      const SizedBox(height: 16),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(child: WeaponComponentsCard(components: details.components)),
-          const SizedBox(width: 16),
-          Expanded(
-            child: WeaponDimensionsCard(
-              length: specification.length,
-              weight: specification.weight,
-              measurements: details.measurements,
+            const SizedBox(width: 12),
+            SizedBox(
+              width: 320,
+              child: AssetThumbnailCard(
+                assetId: weaponId,
+                title: 'Technical View',
+                placeholderIcon: Icons.auto_fix_high_outlined,
+              ),
             ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: WeaponEnergyCard(
-              energy: specification.energy,
-              core: weaponValue(model?.coreType),
-              profile: details.energy,
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 2,
+              child: WeaponReferenceGalleryCard(
+                title: 'Orthographic Views',
+                references: orthographic,
+                emptyText: details.references.isEmpty
+                    ? 'Belum ada referensi tersimpan.'
+                    : 'Belum ada tampak front, side, back, atau 3/4 yang ditautkan.',
+              ),
             ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: WeaponReferenceGalleryCard(
+                title: 'Exploded View',
+                references: explodedReferences,
+                emptyText: 'Belum ada exploded reference yang ditautkan.',
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        WeaponReferenceGalleryCard(
+          title: 'Detail Panels',
+          references: detailsReferences,
+          emptyText: 'Belum ada close-up component reference yang ditautkan.',
+        ),
+        const SizedBox(height: 12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: WeaponBoardPanel(
+                title: 'Material & Texture',
+                child: Column(
+                  children: [
+                    _BoardValue(
+                      label: 'Primary',
+                      value: weaponValue(model?.primaryMaterial),
+                    ),
+                    _BoardValue(
+                      label: 'Secondary',
+                      value: weaponValue(model?.secondaryMaterial),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(child: WeaponColorPaletteCard(colors: details.colors)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: WeaponComponentsCard(
+                title: 'Components',
+                components: details.components,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: WeaponDimensionsCard(
+                title: 'Dimensions & Construction',
+                length: specification.length,
+                weight: specification.weight,
+                measurements: details.measurements,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: WeaponEnergyCard(
+                title: 'Function / Combat Mode',
+                energy: specification.energy,
+                core: weaponValue(model?.coreType),
+                profile: details.energy,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: WeaponBoardPanel(
+                title: 'Technical Notes',
+                child: Text(
+                  model?.notes.isNotEmpty == true
+                      ? model!.notes
+                      : 'Belum ada technical notes tersimpan.',
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(child: WeaponVariantsCard(variants: details.variants)),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _BoardValue extends StatelessWidget {
+  const _BoardValue({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Row(
+      children: [
+        SizedBox(
+          width: 88,
+          child: Text(
+            label,
+            style: TextStyle(color: context.palette.textMuted),
           ),
-        ],
-      ),
-      const SizedBox(height: 16),
-      WeaponVariantsCard(variants: details.variants),
-      const SizedBox(height: 16),
-      WeaponReferencesCard(references: details.references),
-    ],
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: TextStyle(color: context.palette.textPrimary),
+          ),
+        ),
+      ],
+    ),
   );
 }
 

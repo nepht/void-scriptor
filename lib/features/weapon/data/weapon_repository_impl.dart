@@ -31,6 +31,7 @@ class WeaponRepositoryImpl implements WeaponRepository {
   Future<WeaponWorkspaceData> getWorkspaceData(String assetId) async {
     final components = await database.weaponDao.getComponents(assetId);
     final measurements = await database.weaponDao.getMeasurements(assetId);
+    final colors = await database.weaponDao.getColors(assetId);
     final energy = await database.weaponDao.getEnergyProfile(assetId);
     final variants = await database.weaponDao.getVariants(assetId);
     final references = await database.weaponDao.getReferences(assetId);
@@ -48,6 +49,14 @@ class WeaponRepositoryImpl implements WeaponRepository {
             label: measurement.label,
             value: measurement.value,
             unit: measurement.unit,
+          ),
+      ],
+      colors: [
+        for (final color in colors)
+          WeaponColorInfo(
+            name: color.name,
+            hexValue: color.hexValue,
+            usage: color.usage,
           ),
       ],
       energy: energy == null

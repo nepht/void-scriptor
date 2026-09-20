@@ -21,6 +21,13 @@ String canonicalWorkspaceSection(WorkspaceKind kind, String section) =>
       (WorkspaceKind.worldbuilding, 'Faction') => 'Faction',
       (WorkspaceKind.worldbuilding, 'Factions') => 'Faction',
       (WorkspaceKind.worldbuilding, 'Organizations') => 'Organizations',
+      // Stand-alone Wardrobe and Weapon workspaces share asset tabs.
+      (WorkspaceKind.asset, 'Reference') => 'References',
+      (WorkspaceKind.asset, 'Reference Files') => 'References',
+      (WorkspaceKind.asset, 'Variant') => 'Variants',
+      (WorkspaceKind.asset, 'Details') => 'Details',
+      (WorkspaceKind.asset, 'Variants') => 'Variants',
+      (WorkspaceKind.asset, 'References') => 'References',
       _ => section,
     };
 

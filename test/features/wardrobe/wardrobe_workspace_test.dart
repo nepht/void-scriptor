@@ -55,6 +55,28 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('wardrobe workspace resolves requested asset sections', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(
+          home: WardrobeWorkspaceScreen(
+            wardrobeId: 'Void Coat',
+            activeSection: 'References',
+          ),
+        ),
+      ),
+    );
+    expect(find.text('Orthographic Garment Views'), findsOneWidget);
+    expect(find.text('Close Up Detail'), findsOneWidget);
+    expect(find.text('Outfit Concept'), findsNothing);
+    expect(find.text('Wardrobe Components'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('wardrobe workspace remains single-column on narrow width', (
     tester,
   ) async {

@@ -54,6 +54,25 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('weapon workspace resolves requested asset sections', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(
+          home: WeaponWorkspaceScreen(
+            weaponId: 'Void Dual Dagger',
+            activeSection: 'Variants',
+          ),
+        ),
+      ),
+    );
+    expect(find.text('Variants'), findsOneWidget);
+    expect(find.text('Concept'), findsNothing);
+    expect(find.text('Technical Notes'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('weapon workspace remains vertical on narrow width', (
     tester,
   ) async {

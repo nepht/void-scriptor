@@ -44,7 +44,8 @@ class WardrobeWorkspaceScreen extends ConsumerWidget {
                 return SingleChildScrollView(
                   padding: const EdgeInsets.all(18),
                   child: wide
-                      ? _DesktopWardrobe(
+                      ? _WardrobeSection(
+                          section: activeSection,
                           wardrobeId: wardrobeId,
                           model: model,
                           details: details,
@@ -61,6 +62,59 @@ class WardrobeWorkspaceScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+class _WardrobeSection extends StatelessWidget {
+  const _WardrobeSection({
+    required this.section,
+    required this.wardrobeId,
+    required this.model,
+    required this.details,
+  });
+
+  final String? section;
+  final String wardrobeId;
+  final WardrobeModel? model;
+  final WardrobeWorkspaceData details;
+
+  @override
+  Widget build(BuildContext context) {
+    switch (section) {
+      case 'References':
+        final closeUps = details.references.where((reference) {
+          final type = reference.referenceType.toLowerCase();
+          return type.contains('detail') ||
+              type.contains('close') ||
+              type.contains('texture');
+        }).toList();
+        final orthographic = details.references
+            .where((reference) => !closeUps.contains(reference))
+            .toList();
+        return Column(
+          children: [
+            WardrobeReferenceGalleryCard(
+              title: 'Orthographic Garment Views',
+              references: orthographic,
+              emptyText: 'Belum ada referensi tersimpan.',
+            ),
+            const SizedBox(height: 12),
+            WardrobeReferenceGalleryCard(
+              title: 'Close Up Detail',
+              references: closeUps,
+              emptyText: 'Belum ada referensi close-up yang ditautkan.',
+            ),
+          ],
+        );
+      case 'Variants':
+        return WardrobeVariantsCard(variants: details.variants);
+      default:
+        return _DesktopWardrobe(
+          wardrobeId: wardrobeId,
+          model: model,
+          details: details,
+        );
+    }
   }
 }
 

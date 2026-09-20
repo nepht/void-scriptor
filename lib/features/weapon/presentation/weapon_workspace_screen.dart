@@ -10,8 +10,13 @@ import 'widgets/weapon_header.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class WeaponWorkspaceScreen extends ConsumerWidget {
-  const WeaponWorkspaceScreen({super.key, required this.weaponId});
+  const WeaponWorkspaceScreen({
+    super.key,
+    required this.weaponId,
+    this.activeSection,
+  });
   final String weaponId;
+  final String? activeSection;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -45,7 +50,8 @@ class WeaponWorkspaceScreen extends ConsumerWidget {
                 return SingleChildScrollView(
                   padding: const EdgeInsets.all(18),
                   child: wide
-                      ? _WeaponDesktop(
+                      ? _WeaponSection(
+                          section: activeSection,
                           weaponId: weaponId,
                           model: model,
                           specification: specification,
@@ -68,6 +74,77 @@ class WeaponWorkspaceScreen extends ConsumerWidget {
 
   static String _value(String? value, String fallback) =>
       value == null || value.isEmpty ? fallback : value;
+}
+
+class _WeaponSection extends StatelessWidget {
+  const _WeaponSection({
+    required this.section,
+    required this.weaponId,
+    required this.model,
+    required this.specification,
+    required this.details,
+  });
+
+  final String? section;
+  final String weaponId;
+  final WeaponModel? model;
+  final WeaponSpecificationData specification;
+  final WeaponWorkspaceData details;
+
+  @override
+  Widget build(BuildContext context) {
+    switch (section) {
+      case 'Variants':
+        return WeaponVariantsCard(variants: details.variants);
+      case 'References':
+        final detailReferences = details.references.where((reference) {
+          final type = reference.referenceType.toLowerCase();
+          return type.contains('detail') ||
+              type.contains('close') ||
+              type.contains('texture');
+        }).toList();
+        final explodedReferences = details.references.where((reference) {
+          final type = reference.referenceType.toLowerCase();
+          return type.contains('exploded') || type.contains('component');
+        }).toList();
+        final orthographic = details.references
+            .where(
+              (reference) =>
+                  !detailReferences.contains(reference) &&
+                  !explodedReferences.contains(reference),
+            )
+            .toList();
+        return Column(
+          children: [
+            WeaponReferenceGalleryCard(
+              title: 'Orthographic Views',
+              references: orthographic,
+              emptyText: 'Belum ada referensi tersimpan.',
+            ),
+            const SizedBox(height: 12),
+            WeaponReferenceGalleryCard(
+              title: 'Exploded View',
+              references: explodedReferences,
+              emptyText: 'Belum ada exploded reference yang ditautkan.',
+            ),
+            const SizedBox(height: 12),
+            WeaponReferenceGalleryCard(
+              title: 'Detail Panels',
+              references: detailReferences,
+              emptyText:
+                  'Belum ada close-up component reference yang ditautkan.',
+            ),
+          ],
+        );
+      default:
+        return _WeaponDesktop(
+          weaponId: weaponId,
+          model: model,
+          specification: specification,
+          details: details,
+        );
+    }
+  }
 }
 
 class _WeaponDesktop extends StatelessWidget {

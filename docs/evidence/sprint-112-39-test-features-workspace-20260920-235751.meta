@@ -1,0 +1,14 @@
+{
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/workspace -j 1",
+  "started_at": "2026-09-20T23:58:33+07:00",
+  "finished_at": "2026-09-21T00:00:26+07:00",
+  "duration_seconds": 113,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count_summary": "37",
+  "fail_count": 0,
+  "skip_count": 0,
+  "log": "docs/evidence/sprint-112-39-test-features-workspace-20260920-235751.log",
+  "aggregate_features_status": "TIMEOUT_EXIT_124_PRIOR_EVIDENCE",
+  "full_regression_status": "TIMEOUT_EXIT_124_PRIOR_EVIDENCE"
+}

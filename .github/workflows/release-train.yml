@@ -94,4 +94,102 @@ jobs:
       # Deliberately no release-publish step: Choirudin retains D6 authority.
       # The artifact and manifest are the verified handoff for that decision.
 
-      
+  windows-signed-candidate:
+    name: Build and sign Windows RC candidate
+    runs-on: windows-2022
+    timeout-minutes: 45
+    # Configure these repository/environment secrets before enabling a signed run:
+    # WINDOWS_CODESIGN_PFX_BASE64, WINDOWS_CODESIGN_PFX_PASSWORD,
+    # WINDOWS_CODESIGN_SUBJECT. Secrets are never written to logs or the repo.
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.candidate_ref || github.ref }}
+          persist-credentials: false
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          flutter-version: '3.44.9'
+          channel: stable
+          cache: true
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Verify dependency lock is unchanged
+        run: git diff --exit-code -- pubspec.lock
+
+      - name: Build Windows release candidate
+        run: flutter build windows --release --no-pub
+
+      - name: Require signing secrets
+        shell: pwsh
+        env:
+          PFX_BASE64: ${{ secrets.WINDOWS_CODESIGN_PFX_BASE64 }}
+          PFX_PASSWORD: ${{ secrets.WINDOWS_CODESIGN_PFX_PASSWORD }}
+          SIGNING_SUBJECT: ${{ secrets.WINDOWS_CODESIGN_SUBJECT }}
+        run: |
+          $missing = @(
+            if ([string]::IsNullOrWhiteSpace($env:PFX_BASE64)) { 'WINDOWS_CODESIGN_PFX_BASE64' }
+            if ([string]::IsNullOrWhiteSpace($env:PFX_PASSWORD)) { 'WINDOWS_CODESIGN_PFX_PASSWORD' }
+            if ([string]::IsNullOrWhiteSpace($env:SIGNING_SUBJECT)) { 'WINDOWS_CODESIGN_SUBJECT' }
+          )
+          if ($missing.Count -gt 0) {
+            Write-Error ('Signing is fail-closed. Configure GitHub secret(s): ' + ($missing -join ', '))
+            exit 1
+          }
+          $bytes = [Convert]::FromBase64String($env:PFX_BASE64)
+          [IO.File]::WriteAllBytes((Join-Path $env:RUNNER_TEMP 'void-scriptor-signing.pfx'), $bytes)
+          Remove-Variable PFX_BASE64 -ErrorAction SilentlyContinue
+
+      - name: Locate SignTool
+        shell: pwsh
+        run: |
+          $tool = Get-ChildItem -Path ${env:ProgramFiles(x86)}\Windows Kits\10\bin -Filter signtool.exe -Recurse -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending | Select-Object -First 1
+          if ($null -eq $tool) { throw 'signtool.exe was not found on windows-2022 runner' }
+          "SIGNTOOL=$($tool.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Sign Windows binaries
+        shell: pwsh
+        env:
+          PFX_PASSWORD: ${{ secrets.WINDOWS_CODESIGN_PFX_PASSWORD }}
+          SIGNING_SUBJECT: ${{ secrets.WINDOWS_CODESIGN_SUBJECT }}
+        run: |
+          $pfx = Join-Path $env:RUNNER_TEMP 'void-scriptor-signing.pfx'
+          $files = Get-ChildItem -Path 'build/windows/x64/runner/Release' -Include *.exe,*.dll -File -Recurse
+          if ($files.Count -eq 0) { throw 'No Windows executable or DLL was produced' }
+          foreach ($file in $files) {
+            & $env:SIGNTOOL sign /fd SHA256 /f $pfx /p $env:PFX_PASSWORD /tr http://timestamp.digicert.com /td SHA256 $file.FullName
+            if ($LASTEXITCODE -ne 0) { throw "Signing failed for $($file.FullName)" }
+            & $env:SIGNTOOL verify /pa /all $file.FullName
+            if ($LASTEXITCODE -ne 0) { throw "Signature verification failed for $($file.FullName)" }
+          }
+          $exe = Get-Item 'build/windows/x64/runner/Release/void_scriptor.exe'
+          $hash = (Get-FileHash $exe.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          $manifest = [ordered]@{
+            format = 'void-scriptor-windows-signed-rc-v1'
+            source_revision = '${{ github.sha }}'
+            artifact = $exe.FullName.Replace((Get-Location).Path + '\\', '').Replace('\\', '/')
+            sha256 = $hash
+            signing = [ordered]@{
+              status = 'SIGNED_AND_VERIFIED'
+              algorithm = 'Authenticode-SHA256'
+              subject = $env:SIGNING_SUBJECT
+            }
+          }
+          New-Item -ItemType Directory -Force build/release-metadata | Out-Null
+          $manifest | ConvertTo-Json -Depth 5 | Out-File build/release-metadata/windows-signed-rc-manifest.json -Encoding utf8
+          Remove-Item $pfx -Force
+
+      - name: Upload signed Windows candidate
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: windows-signed-release-candidate-${{ github.ref_name }}
+          path: |
+            build/windows/x64/runner/Release
+            build/release-metadata/windows-signed-rc-manifest.json
+          if-no-files-found: error
+          retention-days: 30

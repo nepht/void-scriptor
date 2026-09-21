@@ -79,7 +79,11 @@ def main() -> int:
         dependency_lock_sha256=_sha256(Path("pubspec.lock")),
         build_command="flutter build windows --debug --no-pub",
         source_revision="unknown",
-        signing={"status": "UNSIGNED_LOCAL_ONLY", "algorithm": "Ed25519"},
+        signing={
+            "status": "UNSIGNED_LOCAL_ONLY",
+            "algorithm": "Authenticode-SHA256",
+            "certificate_source": "NOT_CONFIGURED",
+        },
     )
     print(f"RC_MANIFEST_READY: {args.output_path}")
     return 0

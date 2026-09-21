@@ -1,0 +1,85 @@
+{
+  "canonical_step": "113.4",
+  "title": "Privacy-Safe Evidence Plan",
+  "version": "1.2.0-rc.1",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Menentukan bukti minimum tanpa mengumpulkan isi kreatif secara default.",
+  "evidence_types": [
+    {
+      "id": "explicit_feedback",
+      "description": "Feedback tertulis dari partisipan validasi tentang pengalaman使用 fitur",
+      "privacy_level": "LOW",
+      "collection_method": "Form atau dokumen yang diisi partisipan secara manual",
+      "includes_creative_content": false
+    },
+    {
+      "id": "local_diagnostic_export",
+      "description": "Export diagnostik lokal yang dibuat partisipan dan diberikan secara eksplisit",
+      "privacy_level": "MEDIUM",
+      "collection_method": "Partisipan mengirim file export secara manual",
+      "includes_creative_content": false
+    },
+    {
+      "id": "crash_signature",
+      "description": "Signature crash tanpa konten kreatif (stack trace, error code, environment)",
+      "privacy_level": "LOW",
+      "collection_method": "Automatic crash report tanpa creative data",
+      "includes_creative_content": false
+    },
+    {
+      "id": "performance_metrics",
+      "description": "Metrik performa agregat (startup time, memory, latency) tanpa identitas",
+      "privacy_level": "LOW",
+      "collection_method": "Aggregate metrics tanpa user identification",
+      "includes_creative_content": false
+    },
+    {
+      "id": "workflow_outcomes",
+      "description": "Hasil workflow (success/failure) tanpa detail konten",
+      "privacy_level": "LOW",
+      "collection_method": "Status success/failure per workflow action",
+      "includes_creative_content": false
+    },
+    {
+      "id": "user_provided_samples",
+      "description": "Sampel yang secara eksplisit diberikan oleh partisipan",
+      "privacy_level": "USER_CONTROLLED",
+      "collection_method": "Hanya atas permintaan eksplisit partisipan",
+      "includes_creative_content": true,
+      "requires_explicit_consent": true
+    }
+  ],
+  "collection_principles": [
+    "No creative content collected by default — isi novel, manuscript, dan worldbuilding tidak dikumpulkan",
+    "Explicit consent required before any data collection",
+    "Minimal evidence principle — hanya kumpulkan bukti yang diperlukan untuk validasi",
+    "Privacy by design — semua evidence dirancang privacy-safe sejak awal",
+    "User control — partisipan mengontrol apa yang dibagikan",
+    "Aggregation preferred — data diagregat bila memungkinkan, bukan individual"
+  ],
+  "excluded_evidence": [
+    "Isi novel atau manuscript (creative content)",
+    "Detail karakter atau worldbuilding",
+    "File proyek (.voidproject database contents)",
+    "Informasi pribadi selain yang diperlukan untuk komunikasi",
+    "Telemetri penggunaan tanpa consent eksplisit",
+    "Screenshot atau recording tanpa consent",
+    "Data login atau kredensial"
+  ],
+  "storage_policy": {
+    "location": "Local storage pada perangkat Choirudin",
+    "encryption": "AES-256 untuk data sensitif",
+    "retention_period": "6 bulan setelah validasi selesai",
+    "deletion_policy": "Semua data dihapus setelah retention period",
+    "access_control": "Hanya Choirudin dan partisipan yang memberikan consent",
+    "backup": "Encrypted backup di storage lokal Choirudin"
+  },
+  "decision": "EVIDENCE_PLAN_DEFINED",
+  "limits": [
+    "Plan ini mendefinisikan batas pengumpulan data, bukan persetujuan partisipan.",
+    "Partisipan harus memberikan consent eksplisit sebelum data dikumpulkan.",
+    "User-provided samples memerlukan consent terpisah dari consent validasi.",
+    "Plan ini tidak mengizinkan pengumpulan data secara remote atau otomatis.",
+    "Hosted CI, public release, dan distribusi eksternal tetap DEFERRED."
+  ]
+}

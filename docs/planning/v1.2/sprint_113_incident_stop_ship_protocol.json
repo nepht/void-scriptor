@@ -1,0 +1,95 @@
+{
+  "canonical_step": "113.6",
+  "title": "Incident & Stop-Ship Protocol",
+  "version": "1.2.0-rc.1",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Menentukan kapan validation dihentikan, artifact ditarik, flag dimatikan, atau rollback dilakukan.",
+  "stop_triggers": [
+    {
+      "id": "data_loss",
+      "definition": "Kehilangan atau korupsi data user yang dapat direproduksi",
+      "severity": "P0",
+      "action": "Hentikan validation, tarik artifact, mulai investigation",
+      "decision_owner": "Choirudin"
+    },
+    {
+      "id": "security_incident",
+      "definition": "Bypass boundary keamanan, credential exposure, atau akses tidak sah",
+      "severity": "P0",
+      "action": "Hentikan distribusi, hentikan validation, mulai hotfix",
+      "decision_owner": "Choirudin"
+    },
+    {
+      "id": "privacy_leak",
+      "definition": "Kebocoran konten kreatif, data pribadi, atau informasi sensitif",
+      "severity": "P0",
+      "action": "Hentikan validation, evaluasi dampak, notify partisipan",
+      "decision_owner": "Choirudin"
+    },
+    {
+      "id": "migration_failure",
+      "description": "Migration dari versi lama ke RC gagal tanpa recovery path",
+      "severity": "P1",
+      "action": "Hentikan validation untuk upgrade path, cari workaround",
+      "decision_owner": "Choirudin"
+    },
+    {
+      "id": "crash_loop",
+      "definition": "Crash loop pada clean installation atau startup yang tidak dapat dilewati",
+      "severity": "P1",
+      "action": "Hentikan validation, tarik artifact dari distribusi",
+      "decision_owner": "Choirudin"
+    },
+    {
+      "id": "core_workflow_failure",
+      "definition": "Core workflow (writing, world simulation, export) tidak berfungsi tanpa workaround",
+      "severity": "P1",
+      "action": "Evaluasi apakah stop-ship diperlukan; fix atau defer",
+      "decision_owner": "Choirudin"
+    }
+  ],
+  "rollback_protocol": {
+    "steps": [
+      "Identifikasi versi terakhir yang stabil",
+      "Siapkan rollback artifact (backup build)",
+      "Nonaktifkan fitur flags yang bermasalah",
+      "Distribusikan rollback build ke partisipan",
+      "Dokumentasikan root cause dan corrective action"
+    ],
+    "owner": "Choirudin",
+    "max_rollback_time_hours": 48,
+    "pre_rollback_checklist": [
+      "Backup current project data",
+      "Verify rollback artifact integrity",
+      "Notify all active validation participants"
+    ]
+  },
+  "flag_disable_protocol": {
+    "method": "Nonaktifkan feature flags melalui shared kill switch (vs12_world_logic_shared)",
+    "affected_flags": [
+      "vs12_world_logic_shared",
+      "world_simulation_features",
+      "advanced_timeline_features"
+    ],
+    "disable_command": "Set flag default ke OFF pada build berikutnya",
+    "verification": "Jalankan regression test setelah disable untuk memastikan core tetap berfungsi"
+  },
+  "communication_protocol": {
+    "internal": {
+      "notification": "Choirudin via preferred channel",
+      "documentation": "Update ledger sprint dan incident log"
+    },
+    "external": {
+      "participant_notification": "Notify semua partisipan validasi via support channel",
+      "public_announcement": "Hanya dengan izin eksplisit Choirudin",
+      "documentation": "Update release notes dan known issues"
+    }
+  },
+  "decision": "PROTOCOL_DEFINED",
+  "limits": [
+    "Protocol ini mendefinisikan kapan dan bagaimana stop-ship dilakukan.",
+    "Hanya Choirudin yang dapat mengaktifkan stop-ship.",
+    "Stop-ship tidak menghapus artifact yang sudah didistribusikan ke partisipan.",
+    "Rollback tidak mempengaruhi data user yang sudah ada."
+  ]
+}

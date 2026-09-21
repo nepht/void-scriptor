@@ -1,0 +1,33 @@
+{
+  "step": "113.9",
+  "title": "Clean Installation Validation",
+  "canonical_step": "113.9",
+  "status": "VERIFIED-LOCAL",
+  "started_at": "2026-09-22T00:40:00+07:00",
+  "finished_at": "2026-09-22T00:55:00+07:00",
+  "evidence": {
+    "test_file": "test/release/sprint_113_clean_installation_validation_test.dart",
+    "test_result": "17/17 PASS",
+    "test_exit_code": 0,
+    "release_regression": "191/191 PASS",
+    "release_regression_exit_code": 0,
+    "analyzer": "No issues found!",
+    "analyzer_exit_code": 0,
+    "format": "PASS (0 changed)",
+    "format_exit_code": 0,
+    "diff_check": "PASS (CRLF warning only, unrelated)",
+    "windows_debug_build": "PASS 29.4s",
+    "build_artifact": "build/windows/x64/runner/Debug/void_scriptor.exe (1.3M)"
+  },
+  "acceptance": {
+    "install": "VERIFIED (source artifacts exist, pubspec.yaml declares name/version, build artifact produced)",
+    "launch": "VERIFIED (bootstrap composes in-memory and file-backed, normal mode on first run)",
+    "first_run": "VERIFIED (empty auth store, zero failure counter, offline session round-trips)",
+    "project_create": "VERIFIED (manifest write/parse, database directory creation)",
+    "default_flags": "VERIFIED (13 flags default OFF, override store empty, persistence round-trips)",
+    "uninstall_behavior": "VERIFIED (session clear, counter reset, lock file deletion, crash dir removal, flag override removal)"
+  },
+  "decision": "VERIFIED_LOCAL_CLEAN_INSTALLATION_VALIDATION",
+  "sprint": 113,
+  "head": "3b27101"
+}

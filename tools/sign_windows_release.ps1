@@ -159,7 +159,12 @@ $manifest = [ordered]@{
   artifacts = $artifactEvidence
 }
 
-$manifestPath = [IO.Path]::GetFullPath($OutputManifest, (Get-Location).Path)
+$manifestCandidate = if ([IO.Path]::IsPathRooted($OutputManifest)) {
+  $OutputManifest
+} else {
+  Join-Path (Get-Location).Path $OutputManifest
+}
+$manifestPath = [IO.Path]::GetFullPath($manifestCandidate)
 $manifestDirectory = Split-Path -Parent $manifestPath
 New-Item -ItemType Directory -Path $manifestDirectory -Force | Out-Null
 $utf8WithoutBom = New-Object System.Text.UTF8Encoding($false)

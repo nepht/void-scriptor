@@ -28,7 +28,7 @@
   "active_sprint": 112,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_112.json",
   "active_ledger": "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md",
-  "last_verified_step": "112.53",
+  "last_verified_step": "112.54",
   "next_step": "112.54",
   "stability_gate": {
     "status": "PASS",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-21",
-  "updated_by": "nephthys: 112.53 VERIFIED-LOCAL; advance to 112.54 Sprint Closure",
+  "updated_by": "nephthys: 112.54 VERIFIED-LOCAL. Sprint 112 CLOSED locally.",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -622,8 +622,8 @@
     "next_step": "112.41"
   },
   "current_step": "112.54",
-  "current_step_status": "PENDING",
-  "last_run_summary": "2026-09-21: 112.53 VERIFIED-LOCAL. RC approval gate: local limited validation ELIGIBLE_WITH_OWNED_RISKS; external distribution gates DEFERRED. Advance to 112.54 Sprint Closure.",
+  "current_step_status": "VERIFIED-LOCAL",
+  "last_run_summary": "2026-09-21: 112.54 VERIFIED-LOCAL. Sprint 112 CLOSED locally. All 54 steps VERIFIED-LOCAL. External distribution gates DEFERRED.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -711,5 +711,12 @@
     "decision": "DEFERRED_EXTERNAL_GATES",
     "limits": "Hosted CI, public CA/timestamp, installer/uninstall, hardware/native GUI, publication, and deployment remain DEFERRED/UNVERIFIABLE.",
     "next_step": "112.54"
+  },
+  "sprint_112_step_11254": {
+    "status": "VERIFIED-LOCAL",
+    "manifest": "docs/planning/v1.2/sprint_112_sprint_closure.json",
+    "test": "test/release/sprint_112_sprint_closure_test.dart",
+    "evidence": "4/4 PASS; all 8 closure criteria verified; domain + manifest exist. Sprint 112 CLOSED locally with DEFERRED_EXTERNAL_GATES decision.",
+    "limitations": "Hosted CI, public CA/timestamp, installer/uninstall, hardware/native GUI, publication, and deployment remain DEFERRED/UNVERIFIABLE."
   }
 }

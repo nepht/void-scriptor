@@ -1,0 +1,64 @@
+{
+  "canonical_step": "113.1",
+  "title": "GA Entry Gate",
+  "version": "1.2.0-rc.1",
+  "target_version": "1.2.0",
+  "status": "PARTIAL",
+  "objective": "Memastikan RC disetujui, artifact tersedia, risiko residual tercatat, dan rollback siap.",
+  "required_evidence": {
+    "rc_approval": {
+      "path": "docs/planning/v1.2/sprint_112_rc_approval_gate.json",
+      "step": "112.53",
+      "verified": true
+    },
+    "signed_rc_artifact": {
+      "path": "docs/planning/v1.2/sprint_112_rc_artifact_reproducibility.json",
+      "step": "112.52",
+      "verified": true
+    },
+    "quality_gate_results": {
+      "gates": [
+        {"id": "full_test_matrix", "step": "112.39", "path": "docs/planning/v1.2/sprint_112_full_automated_test_matrix.json"},
+        {"id": "contract_compatibility", "step": "112.40", "path": "docs/planning/v1.2/sprint_112_contract_compatibility_verification.json"},
+        {"id": "determinism_integrity", "step": "112.42", "path": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json"},
+        {"id": "performance_responsiveness", "step": "112.43", "path": "docs/planning/v1.2/sprint_112_performance_responsiveness_gate.json"},
+        {"id": "memory_storage_index", "step": "112.44", "path": "docs/planning/v1.2/sprint_112_memory_storage_index_gate.json"},
+        {"id": "security", "step": "112.45", "path": "docs/planning/v1.2/sprint_112_security_gate.json"},
+        {"id": "privacy", "step": "112.46", "path": "docs/planning/v1.2/sprint_112_privacy_gate.json"},
+        {"id": "accessibility", "step": "112.47", "path": "docs/planning/v1.2/sprint_112_accessibility_gate.json"},
+        {"id": "localization", "step": "112.48", "path": "docs/planning/v1.2/sprint_112_localization_gate.json"}
+      ]
+    },
+    "known_issues": {
+      "path": "docs/release/v1.2.0-rc.1-known-limits.md",
+      "verified": true
+    },
+    "residual_risks": {
+      "path": "docs/planning/v1.2/sprint_112_rc_approval_gate.json",
+      "field": "residual_risks",
+      "verified": true
+    },
+    "rollback_readiness": {
+      "path": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+      "verified": true
+    }
+  },
+  "sprint_112_closure": {
+    "status": "VERIFIED_LOCAL",
+    "decision": "DEFERRED_EXTERNAL_GATES",
+    "step": "112.54",
+    "all_54_steps_verified": true
+  },
+  "build_artifacts": {
+    "release_exe": "build/windows/x64/runner/Release/void_scriptor.exe",
+    "release_verified": true,
+    "build_command": "flutter build windows --release"
+  },
+  "decision": "PASS_LOCAL_VALIDATION_READY",
+  "limits": [
+    "Entry gate memastikan fondasi untuk validasi, bukan persetujuan publik.",
+    "Hosted CI, public CA/timestamp, installer packaging, native GUI journey, hardware, dan public release tetap DEFERRED.",
+    "Choirudin harus menyetujui secara eksplisit setiap validasi terbatas, staged rollout, atau publikasi.",
+    "Artifact hanya diverifikasi lokal; tidak ada distribusi eksternal."
+  ]
+}

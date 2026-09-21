@@ -26,18 +26,18 @@
     "sequential_expansion": {
       "status": "ACTIVE",
       "priority": 2,
-      "sprint": 112,
-      "resume_step": "112.1",
-      "contract": "sprint_112.json",
-      "ledger": "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md",
-      "resume_condition": "corrective_core_mvp exit_gate is satisfied and recorded.",
-      "resumed_on": "2026-09-16",
-      "resume_authority": "KEPUTUSAN CHOI 16 Sep: 'Aktifkan Sprint 112 dan mulai dari 112.1.'",
+      "sprint": 113,
+      "resume_step": "113.1",
+      "contract": "sprint_113.json",
+      "ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
+      "resume_condition": "Sprint 112 CLOSED-VERIFIED-LOCAL and Choirudin approval.",
+      "resumed_on": "2026-09-21",
+      "resume_authority": "KEPUTUSAN CHOI 21 Sep: '1 ya dan mulai' — Aktifkan Sprint 113.",
       "previous_sprint": {
-        "sprint": 111,
-        "final_step": "111.46",
+        "sprint": 112,
+        "final_step": "112.54",
         "status": "CLOSED-VERIFIED-LOCAL",
-        "commit": "b34f317"
+        "commit": "a4c038d"
       }
     }
   },

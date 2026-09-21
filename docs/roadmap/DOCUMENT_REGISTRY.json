@@ -32,12 +32,13 @@
       "authority": "BINDING",
       "status": "ACTIVE",
       "integrity": "IMMUTABLE",
-      "sha256": "042f0fcdd3ecd438b5f77dc31356418c858081e719b5152c0d4257ca1b3a9652",
+      "sha256": "bb13cd29e78e5ee00fb42c195f8ac1caae54509aaddf145205eab6fbdbb2fd88",
       "owner": "product-governance",
       "effective_date": "2026-09-01",
       "linked_sprints": [
         111,
         112,
+        113,
         145
       ],
       "may_create_scope": false,

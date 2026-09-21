@@ -25,11 +25,11 @@
   "flutter_sdk": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat",
   "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
   "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
-  "active_sprint": 112,
-  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_112.json",
-  "active_ledger": "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md",
-  "last_verified_step": "112.54",
-  "next_step": "112.54",
+  "active_sprint": 113,
+  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
+  "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
+  "last_verified_step": "113.1",
+  "next_step": "113.2",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-21",
-  "updated_by": "nephthys: 112.54 VERIFIED-LOCAL. Sprint 112 CLOSED locally.",
+  "updated_by": "nephthys: 113.1 VERIFIED-LOCAL. Sprint 113 activated.",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -422,14 +422,20 @@
   },
   "active_stream_details": {
     "name": "sequential_expansion",
-    "sprint": 112,
-    "contract": "sprint_112.json",
-    "ledger": "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md",
-    "resume_step": "112.1",
-    "resumed_on": "2026-09-16",
+    "sprint": 113,
+    "contract": "sprint_113.json",
+    "ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
+    "resume_step": "113.1",
+    "resumed_on": "2026-09-21",
     "authority": "KEPUTUSAN CHOI 16 Sep: Aktifkan Sprint 112 dan mulai dari 112.1",
-    "previous_sprint": "111.46 CLOSED-VERIFIED-LOCAL commit b34f317",
-    "next_step": "112.54"
+    "previous_sprint": {
+      "sprint": 112,
+      "final_step": "112.54",
+      "status": "CLOSED-VERIFIED-LOCAL",
+      "commit": "a4c038d"
+    },
+    "next_step": "113.2",
+    "resume_authority": "KEPUTUSAN CHOI 21 Sep: 1 ya dan mulai"
   },
   "activation_rules_11122_run362": {
     "status": "VERIFIED-LOCAL",
@@ -621,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "112.54",
+  "current_step": "113.1",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-21: 112.54 VERIFIED-LOCAL. Sprint 112 CLOSED locally. All 54 steps VERIFIED-LOCAL. External distribution gates DEFERRED.",
+  "last_run_summary": "2026-09-21: 113.1 VERIFIED-LOCAL. Sprint 113 activated. GA Entry Gate 9/9 PASS.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",

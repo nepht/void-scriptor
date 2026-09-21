@@ -1,0 +1,87 @@
+{
+  "canonical_step": "113.3",
+  "title": "Validation Cohort & Consent",
+  "version": "1.2.0-rc.1",
+  "status": "PARTIAL",
+  "objective": "Menentukan pengguna atau project uji secara sah tanpa mengarang partisipan atau persetujuan.",
+  "selection_criteria": {
+    "primary": "Choirudin sebagai arsitek produk dan penulis yang menggunakan Void Scriptor secara langsung",
+    "secondary": "Calon beta reader yang dipilih Choirudin untuk validasi terbatas",
+    "requirements": [
+      "Akses ke Windows PC dengan Void Scriptor terinstal",
+      "Kemampuan menggunakan fitur writer workflow dasar",
+      "Kesediaan memberikan feedback tertulis",
+      "Tidak memerlukan koneksi internet untuk fitur inti"
+    ],
+    "exclusions": [
+      "Partisipan yang tidak memberikan consent eksplisit",
+      "Pengguna di platform selain Windows (belum didukung)",
+      "Partisipan yang memerlukan fitur deferred (community, payment, XR)"
+    ]
+  },
+  "consent_contract": {
+    "version": "1.0",
+    "effective_date": "2026-09-21",
+    "consent_type": "EXPLICIT_WRITTEN",
+    "required_elements": [
+      "Penjelasan tujuan validasi",
+      "Deskripsi data yang dikumpulkan",
+      "Cara data disimpan dan dilindungi",
+      "Hak untuk menarik diri kapan saja",
+      "Kontak support untuk pertanyaan",
+      "Tidak ada kewajiban untuk melanjutkan"
+    ],
+    "consent_record_path": "docs/release/v1.2-validation-consent-records.json",
+    "consent_template": "Setuju untuk berpartisipasi dalam validasi v1.2.0-rc.1 Void Scriptor. Saya memahami bahwa: (1) validasi ini terbatas pada fitur lokal, (2) tidak ada data kreatif yang dikumpulkan secara default, (3) saya dapat menarik diri kapan saja, (4) saya akan menerima kompensasi setara (Pro lifetime) sebagai ungkapan terima kasih."
+  },
+  "data_boundaries": {
+    "collected": [
+      "Explicit feedback dari partisipan",
+      "Crash signature (tanpa konten kreatif)",
+      "Performance metrics (agregat, non-identifiable)",
+      "Workflow outcome (success/failure tanpa detail konten)",
+      "Local diagnostic export (hanya jika partisipan memberikan secara eksplisit)"
+    ],
+    "not_collected": [
+      "Isi novel/manuscript",
+      "Detail karakter atau worldbuilding",
+      "Informasi pribadi selain yang diperlukan untuk komunikasi",
+      "Telemetri penggunaan tanpa consent",
+      "Data proyek secara default"
+    ],
+    "retention_period": "6 bulan setelah validasi selesai",
+    "deletion_policy": "Semua data validasi dihapus setelah retention period kecuali partisipan meminta penyimpanan lebih lama"
+  },
+  "withdrawal_process": {
+    "how": "Kirim email atau pesan ke support channel dengan subjek 'Withdrawal dari validasi v1.2'",
+    "timeline": "Penarikan diproses dalam 48 jam",
+    "consequence": "Semua data partisipan dihapus; feedback yang sudah dikumpulkan tetap dicatat secara anonim jika sudah dianalisis",
+    "no_penalty": "Penarikan tidak menghilangkan hak kompensasi yang sudah diberikan"
+  },
+  "support_channel": {
+    "primary": "[ISI: Kontak Choirudin — email/Discord/Threads]",
+    "response_time": "24 jam pada hari kerja",
+    "escalation": "[ISI: Escalation contact Choirudin]",
+    "documentation": "docs/release/v1.2.0-rc.1-support-playbook.md"
+  },
+  "compensation": {
+    "type": "EQUAL_FOR_ALL",
+    "description": "Pro lifetime license untuk setiap partisipan validasi yang menyelesaikan sesi",
+    "anti_incentive_note": "Tidak ada kontes, ranking, atau hadiah pemenang — kompensasi setara menjaga perilaku natural partisipan"
+  },
+  "no_fabricated_participants": {
+    "verified": true,
+    "note": "Semua partisipan harus memberikan consent eksplisit sebelum data validasi dikumpulkan. Tidak ada partisipan yang dibuat-buat atau diasumsikan.",
+    "current_participants": {
+      "count": 0,
+      "note": "Partisipan akan didaftarkan setelah Choirudin memilih dan menghubungi mereka."
+    }
+  },
+  "decision": "CONTRACT_DEFINED",
+  "limits": [
+    "Kontrak ini mendefinisikan kerangka consent, bukan jumlah partisipan aktual.",
+    "Jumlah partisipan aktual tergantung pilihan Choirudin.",
+    "Validation window belum dimulai; consent dikumpulkan saat dimulai.",
+    "Hosted CI, public release, dan distribusi eksternal tetap DEFERRED."
+  ]
+}

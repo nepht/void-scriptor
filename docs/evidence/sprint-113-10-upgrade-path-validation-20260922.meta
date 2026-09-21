@@ -1,0 +1,31 @@
+{
+  "step": "113.10",
+  "title": "Upgrade Path Validation",
+  "canonical_step": "113.10",
+  "status": "VERIFIED-LOCAL",
+  "started_at": "2026-09-22T00:56:00+07:00",
+  "finished_at": "2026-09-22T01:05:00+07:00",
+  "evidence": {
+    "manifest": "docs/planning/v1.2/sprint_113_upgrade_path_validation.json",
+    "test_file": "test/release/sprint_113_upgrade_path_validation_test.dart",
+    "test_result": "12/12 PASS",
+    "test_exit_code": 0,
+    "release_regression": "203/203 PASS",
+    "release_regression_exit_code": 0,
+    "analyzer": "No issues found!",
+    "analyzer_exit_code": 0,
+    "format": "PASS (0 changed)",
+    "format_exit_code": 0
+  },
+  "acceptance": {
+    "source_versions": "VERIFIED (4 source versions documented: 55, 58, 60, 61 → 62)",
+    "upgrade_results": "VERIFIED (direct migration 55→62, 58→62, 60→62, 61→62 all PASS; fresh DB at 62; future schema rejected)",
+    "migration_logs": "VERIFIED (backup-before-migrate, timestamp tracking, PRAGMA user_version, drift guard active)",
+    "data_comparison": "VERIFIED (characters, assets, stories, timeline events, settings preserved; tables survive migration)",
+    "warnings": "VERIFIED (downgrade blocked, future schema rejected, concurrent writer blocked with typed exception)",
+    "recovery_results": "VERIFIED (pre-migration backup restorable, lock contention recoverable)"
+  },
+  "decision": "VERIFIED_LOCAL_UPGRADE_PATH_VALIDATION",
+  "sprint": 113,
+  "head": "3b27101"
+}

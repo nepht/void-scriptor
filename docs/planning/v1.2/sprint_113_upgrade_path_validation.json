@@ -1,0 +1,57 @@
+{
+  "canonical_step": "113.10",
+  "title": "Upgrade Path Validation",
+  "status": "VERIFIED-LOCAL",
+  "validated_at": "2026-09-22T00:55:00+07:00",
+  "source_versions": {
+    "supported_upgrade_sources": [
+      {"schema_version": 55, "label": "pre-1.2-alpha", "migration_path": "55→62"},
+      {"schema_version": 58, "label": "1.2-alpha.1", "migration_path": "58→62"},
+      {"schema_version": 60, "label": "1.2-alpha.2", "migration_path": "60→62"},
+      {"schema_version": 61, "label": "1.2-beta.1", "migration_path": "61→62"}
+    ],
+    "current_schema_version": 62,
+    "migration_strategy": "guarded_forward_migrations",
+    "backup_before_migration": true
+  },
+  "upgrade_results": {
+    "direct_migration_55_to_62": "PASS",
+    "direct_migration_58_to_62": "PASS",
+    "direct_migration_60_to_62": "PASS",
+    "direct_migration_61_to_62": "PASS",
+    "fresh_database_at_62": "PASS",
+    "future_schema_rejection": "PASS"
+  },
+  "migration_logs": {
+    "backup_created_before_migration": true,
+    "pre_migration_backup_type": "pre-migration",
+    "migration_timestamps_recorded": true,
+    "schema_version_tracking": "PRAGMA user_version",
+    "drift_guard_active": true
+  },
+  "data_comparison": {
+    "strategy": "create_at_source → migrate → read_back_at_target",
+    "characters_preserved": true,
+    "assets_preserved": true,
+    "stories_preserved": true,
+    "timeline_events_preserved": true,
+    "settings_preserved": true,
+    "no_data_loss_detected": true
+  },
+  "warnings": {
+    "downgrade_not_supported": "restore_backup_or_safe_export",
+    "future_schema_rejected": "SchemaVersionTooNewException",
+    "concurrent_writer_blocked": "SQLITE_BUSY → ProjectDatabaseLockedException",
+    "known_limitations": [
+      "Plugin API v1 contracts not tested for upgrade",
+      "Workflow schema v1 not tested for cross-version upgrade",
+      "No real production data available for upgrade testing"
+    ]
+  },
+  "recovery_results": {
+    "pre_migration_backup_restorable": true,
+    "failed_migration_rollback": "backup_restore",
+    "corrupt_database_handled": "ProjectDatabaseUnreadableException",
+    "lock_contention_recoverable": true
+  }
+}

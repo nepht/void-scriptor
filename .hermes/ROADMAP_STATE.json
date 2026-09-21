@@ -28,8 +28,8 @@
   "active_sprint": 112,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_112.json",
   "active_ledger": "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md",
-  "last_verified_step": "112.51",
-  "next_step": "112.52",
+  "last_verified_step": "112.52",
+  "next_step": "112.53",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-21",
-  "updated_by": "nephthys cron: 112.52 reproducibility evidence",
+  "updated_by": "nephthys: 112.53 PARTIAL fail-closed approval gate",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -621,9 +621,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "112.52",
-  "current_step_status": "PARTIAL",
-  "last_run_summary": "2026-09-21: 112.52 PARTIAL — reproducibility manifest and local Windows debug artifact verified; signing remains UNSIGNED_LOCAL_ONLY.",
+  "current_step": "112.53",
+  "current_step_status": "PENDING",
+  "last_run_summary": "2026-09-21: 112.53 PARTIAL; local approval contract verified for limited validation, external distribution gates deferred.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -696,11 +696,20 @@
     "next_step": "112.52"
   },
   "sprint_112_step_11252": {
-    "status": "PARTIAL",
+    "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_rc_artifact_reproducibility.json",
     "test": "test/release/sprint_112_rc_artifact_reproducibility_test.dart",
-    "evidence": "Local Windows debug artifact build exit 0 in 42.3s; Python generator 2/2 PASS; focused contract 1/1 PASS; full flutter analyze No issues; format/diff-check PASS. Artifact manifest includes SHA-256, dependency lock SHA-256, schema 1/16/62, flags, source revision, and build command. Signing UNSIGNED_LOCAL_ONLY; no key material stored.",
-    "limitations": "Signed artifact, release packaging, hosted CI, native GUI, hardware, and public release remain UNVERIFIABLE/DEFERRED.",
-    "next_step": "112.52"
+    "evidence": "Windows release build PASS 24.2s from d5cfef9; 6 executable/DLL artifacts signed Authenticode-SHA256 and signtool /pa /all verified exit 0; Python signing/generator 5/5 PASS; focused contract 1/1 PASS. Evidence manifest includes SHA-256, dependency lock SHA-256, schema 1/16/62, flags, source revision, build command, public certificate metadata, and verification exit code. Private key remains outside repository.",
+    "limitations": "Self-signed certificate trust is CurrentUser-only and not timestamped; public CA signing, installer packaging, hosted CI, native cross-platform packaging, and publication remain 112.53 distribution gates.",
+    "next_step": "112.53"
+  },
+  "sprint_112_step_11253": {
+    "status": "PARTIAL",
+    "manifest": "docs/planning/v1.2/sprint_112_rc_approval_gate.json",
+    "test": "test/release/sprint_112_rc_approval_gate_test.dart",
+    "evidence": "RED missing approval contract -> GREEN focused 1/1 PASS; format 0 changed; git diff --check PASS.",
+    "decision": "DEFERRED_EXTERNAL_GATES",
+    "limits": "Hosted CI, public CA/timestamp, installer/uninstall, hardware/native GUI, publication, and deployment remain DEFERRED/UNVERIFIABLE.",
+    "next_step": "112.54"
   }
 }

@@ -1,0 +1,61 @@
+{
+  "canonical_step": "112.53",
+  "title": "Release Candidate Approval Gate",
+  "version": "1.2.0-rc.1",
+  "status": "PARTIAL",
+  "objective": "Menentukan apakah v1.2.0-rc.1 dapat diterbitkan untuk validasi terbatas tanpa mengubah batas klaim lokal menjadi persetujuan publik.",
+  "required_evidence": {
+    "feature_evidence": "docs/planning/v1.2/sprint_112_feature_evidence_inventory.json",
+    "integration_results": "docs/planning/v1.2/sprint_112_full_automated_test_matrix.json",
+    "migration_results": "docs/planning/v1.2/sprint_112_migration_dry_run.json",
+    "quality_gates": [
+      "docs/planning/v1.2/sprint_112_security_gate.json",
+      "docs/planning/v1.2/sprint_112_privacy_gate.json",
+      "docs/planning/v1.2/sprint_112_accessibility_gate.json",
+      "docs/planning/v1.2/sprint_112_localization_gate.json",
+      "docs/planning/v1.2/sprint_112_platform_compatibility_gate.json",
+      "docs/planning/v1.2/sprint_112_failure_injection_recovery_gate.json"
+    ],
+    "signed_artifact": "docs/planning/v1.2/sprint_112_rc_artifact_reproducibility.json"
+  },
+  "open_issues": [
+    "Hosted CI pada exact candidate SHA belum dijalankan karena billing/runner gate.",
+    "Public CA signing dan RFC3161 timestamp belum tersedia; artifact hanya trusted CurrentUser.",
+    "Installer packaging, native uninstall, native GUI, hardware power-loss, dan USB cold-eject belum diverifikasi.",
+    "Publication/deployment belum diotorisasi dan belum dilakukan."
+  ],
+  "residual_risks": [
+    {
+      "risk": "Distribusi publik dengan sertifikat self-signed",
+      "owner": "Choirudin",
+      "mitigation": "Batasi artifact pada validasi lokal terbatas sampai CA signing dan timestamp tersedia.",
+      "status": "OPEN"
+    },
+    {
+      "risk": "Perbedaan runtime native dan hardware tidak tercakup gate lokal",
+      "owner": "Choirudin",
+      "mitigation": "Jalankan validation window pada target hardware/distribution yang disetujui sebelum publikasi.",
+      "status": "DEFERRED"
+    }
+  ],
+  "rollback_readiness": {
+    "status": "READY_FOR_LIMITED_LOCAL_VALIDATION",
+    "backup_before_migration": true,
+    "recovery_guide": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+    "rollback_plan": "docs/planning/v1.2/migration_backup_rollback_plan.md",
+    "limitation": "Tidak cukup untuk menyatakan public release atau menghapus backup sebelum validation window selesai."
+  },
+  "approval_boundary": {
+    "local_limited_validation": "ELIGIBLE_WITH_OWNED_RISKS",
+    "hosted_ci": "UNVERIFIABLE",
+    "public_release": "DEFERRED",
+    "publication": "NOT_AUTHORIZED"
+  },
+  "decision": "DEFERRED_EXTERNAL_GATES",
+  "decision_basis": "Local feature, integration, migration, quality-gate, rollback, and signed-artifact evidence exist; external distribution gates remain open.",
+  "limits": [
+    "This gate records a fail-closed local decision and does not publish, push, tag, or deploy anything.",
+    "The signed artifact is locally verified but uses a CurrentUser-only self-signed certificate and is not RFC3161 timestamped.",
+    "Choirudin must explicitly approve any hosted validation, public release, installer publication, or distribution communication."
+  ]
+}

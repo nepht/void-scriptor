@@ -1,0 +1,2495 @@
+{
+  "artifacts": [
+    {
+      "path": "dartjni.dll",
+      "sha256": "45d8f71863d7ef94f00b1a55ebbabdd9efb0b6ae3873e7ad01de6889b41ad238",
+      "size": 195584
+    },
+    {
+      "path": "data/flutter_assets/AssetManifest.bin",
+      "sha256": "c2c75049d5ff8800af4d72a0343c1577d6f31933dbebd0e2c62de80dc6ce1e6a",
+      "size": 44427
+    },
+    {
+      "path": "data/flutter_assets/assets/backgrounds/auth_background.png",
+      "sha256": "91777b3cd2b1ce9aa130b87a2a1ad7dd0a997500fd48db3dc0353115136ceb4c",
+      "size": 1912244
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/alibaba_cloud_0.webp",
+      "sha256": "6a3a0746f8784e3c16df9c6c4320228133906be8fcdf9cd0b82f98ebbd1909be",
+      "size": 22714
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/alibaba_cloud_1.webp",
+      "sha256": "a890fa3731a520150139794fba2f134c3d6c92b9b945da48b82cb84bdefd411b",
+      "size": 27558
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/alibaba_cloud_2.webp",
+      "sha256": "135a38b6c6e8d865c7195301a9973e555628ebf7c9fbb210cf2c445871db5be3",
+      "size": 31826
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/alibaba_cloud_3.webp",
+      "sha256": "6eade064414e5e605cb877b1f835a5ce921a1f3c8b753c85c89d5df8924a120b",
+      "size": 18594
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/alibaba_cloud_4.webp",
+      "sha256": "00451053edec2ca4b43fa0daf2b7b023696912520215aa465af5b1cc23983db4",
+      "size": 23890
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/alibaba_cloud_5.webp",
+      "sha256": "e5fb584310772c776c3937e9e05768585b294bf64ef09893e3d5bd349d5b7f51",
+      "size": 27662
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/alibaba_cloud_6.webp",
+      "sha256": "53935b075bfaeeff3b809fb901a017dc0be430a19667c51d64da684355fc0caf",
+      "size": 26800
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/alibaba_cloud_7.webp",
+      "sha256": "9caff478c54954bff3502ee0cfdc0ab398d14284eb01e067056bb13ac3ead439",
+      "size": 22624
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/anthropic.svg",
+      "sha256": "c89653a9edd5cb712368cde82196cd50914fb9e28a77cb5723a7f71a60ac5fc0",
+      "size": 1969
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/chrome_0.webp",
+      "sha256": "959e510a1c5f8b0cd3251a645575399a5c3d25ffe67e5482a8c8ad2597b7f44b",
+      "size": 29892
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/chrome_1.webp",
+      "sha256": "61bff9999019ac29099e04a4de0223362cbdb82c31fc45f7ccbb7e42e5b220a2",
+      "size": 32580
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/chrome_2.webp",
+      "sha256": "ee85e686c588e6d0a1afe92fe3b1aba5699fcfbc9f8176a1897053b1e062a63a",
+      "size": 21778
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/chrome_3.webp",
+      "sha256": "2db10d236137d1109e272539d63591ba64871e0a1a1a59f285d122c3de6606be",
+      "size": 25782
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/chrome_4.webp",
+      "sha256": "d2022d756ed2d3a7911122b8db2ff9d4b4ed1b89457a56ce312422a08a2dfba7",
+      "size": 25882
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/chrome_5.webp",
+      "sha256": "1df1d4367d0e4cfcd87b6b1f7b6352926d082330f9ea54b27d72b4e23dab3d53",
+      "size": 29500
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/claude_ai_0.webp",
+      "sha256": "e93c740e4bb58e76bf9f38a59ec2fad1a383ba56b77eda9d113445f78d147c38",
+      "size": 27368
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/claude_ai_1.webp",
+      "sha256": "7f2b588db6c9ab62cba6f6eced4e03de91c80015ebcc8db8fc4e6924080c8359",
+      "size": 26056
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/claude_ai_2.webp",
+      "sha256": "2a06bd9eec7642d883e00046eab16fdbd6e40834587c4f53109390d0b6fd176b",
+      "size": 32942
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/claude_ai_3.webp",
+      "sha256": "3e3b5aad3c2d7e91cb3be473682683d60021680b387d5f2429d87060f1af14df",
+      "size": 32370
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/claude_ai_4.webp",
+      "sha256": "b111cddc4c37676eea0bc6b130fb19c4f8cfe46cfcba66c63ff16b35fa3bd6ca",
+      "size": 27498
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/claude_ai_5.webp",
+      "sha256": "a2e09e5f8409dd4d5386f27aac8afaac7fa314ea948488a48b56a0d7787e9845",
+      "size": 38532
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/cohere.png",
+      "sha256": "939d22b23a610f6b9405ab1ee650c9fea6c779bdd1abe2273320547cad748997",
+      "size": 25273
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/deepseek.svg",
+      "sha256": "f355e3e5d095ca4fdf4b2e30da9f202e87b48a01082f682f208071c942892e14",
+      "size": 7649
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/github_0.webp",
+      "sha256": "e6179ab0cd4207bde5cc6dccfa3c2f5bc0f8838a0d8355974037da76fb001935",
+      "size": 21182
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/github_1.webp",
+      "sha256": "79f190bc66466c137673898dee4a4be89e97350d8d9a00f977783c0ab4477df8",
+      "size": 19706
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/github_2.webp",
+      "sha256": "e4cd8ff8acdd1dfbba85abf00709fcb472af97baffdd32e810153105707492ff",
+      "size": 26276
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/github_3.webp",
+      "sha256": "e0ec694c09f85aff1759773b97f94874c10f1519836a6b6febdb3c27e7209900",
+      "size": 26652
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/github_4.webp",
+      "sha256": "a0cc343fea897a8a7b8fd80a69ce1f18a834e050f54e0877fbd28aff36fe5525",
+      "size": 21688
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/github_5.webp",
+      "sha256": "f7c640a28f3e6d378b5276021c60fdcc77779c37f1fac6b55477d44c831fab7b",
+      "size": 24892
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/github_copilot_0.webp",
+      "sha256": "b136bbeb28812a01f6324ffd6cf4d35814d3eefedb5d836ca40672cae8005401",
+      "size": 28532
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/github_copilot_1.webp",
+      "sha256": "68accd8b2b8c69e7e8a7060fd88345f88f1d5fd558e6c8a9be125a0ddff85841",
+      "size": 27122
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/github_copilot_2.webp",
+      "sha256": "8c2097b49321b031e75182c4fd204a09e6651ac2cf228e8356a335576d2ebfe1",
+      "size": 23504
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/github_copilot_3.webp",
+      "sha256": "44b71257a610c7652823fcef9e2d6167aa1ee9e1056fca78d3f79fa36765bc19",
+      "size": 28222
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/github_copilot_4.webp",
+      "sha256": "daadd8b0fdc62702bbaa38fca11ab87ed399944a47e83a2568a2d08cabf358f8",
+      "size": 24032
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/github_copilot_5.webp",
+      "sha256": "ae2927c2d371fef0b0c8c2b97145f80b8513307acc11e0e205b1a3bb4a1db6d0",
+      "size": 29746
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/github_copilot_6.webp",
+      "sha256": "20906e258a80a6a9764c8c511e78e3724c99047a3a37c60da0eccd2699d94b5c",
+      "size": 23452
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/github_copilot_7.webp",
+      "sha256": "3b0cdcd58db640540c9f21291be5fd44d9de5633123f3854770cf48b7e58df3e",
+      "size": 22614
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/gmail_0.webp",
+      "sha256": "17750566224aee45d49ed1bb5cd6c178cf14a1e7a4e784896a5a62b317f3de7f",
+      "size": 17146
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/gmail_1.webp",
+      "sha256": "3c7a8b9cfc1e83652b994ddd543a43682cd2f450a7f4a7fdaa4773bf2d044e74",
+      "size": 27028
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/gmail_2.webp",
+      "sha256": "12c3d7f0e03feb59df5dd3dadeb84e4d2a548ddf8030c868181b79eb5bab2047",
+      "size": 21782
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/gmail_3.webp",
+      "sha256": "f1b3b0e36d24aefd17f98b31ee7065870bd94f1188aebac558aa211e3540a92d",
+      "size": 28204
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/google_gemini.svg",
+      "sha256": "61dc0083657d5620d6bff22f11cdc9d99d96bd5fc7d1200405f025f343da982a",
+      "size": 15703
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/google_logo_0.webp",
+      "sha256": "1a656d54a1987465c07bb07d5666f9e15e3ec15f6829ae268d8b3335c51e3b9b",
+      "size": 20068
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/google_logo_1.webp",
+      "sha256": "b766b1551a6761d45eff993a4f5c9267eef482164d31de5ce6a9917c7709dd2c",
+      "size": 23706
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/google_logo_2.webp",
+      "sha256": "ba87a80112f0041d3614768ec7744088899b0a933aab8e9b0fd354da82ccabd8",
+      "size": 29186
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/google_logo_3.webp",
+      "sha256": "b42e817bc76ac4be94295362e0a58dc6195bcf4625dc09f02fff6b7eb32e9bed",
+      "size": 33242
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/google_logo_4.webp",
+      "sha256": "517fd1b2716bdcf5a63da0b649f878d77f5efb08efddc85c7919c137f3536fc9",
+      "size": 32254
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/google_logo_5.webp",
+      "sha256": "7eb6034900cce7df1a395bb297bb46a76e7817ae29153395e6d201576d6264b6",
+      "size": 24742
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/hugging_face.svg",
+      "sha256": "fc95837e1bacb9b2cdbff9ae5d681ed8f20233b8fc72a65cdb38321ea9ddc015",
+      "size": 46913
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/intellij_idea_0.webp",
+      "sha256": "38cd9f4e8233d5b67fd4c71b59c533c366f08ba1a16300afca180665d779d290",
+      "size": 23046
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/intellij_idea_1.webp",
+      "sha256": "a69be652c8f8f73bfdb75e2ffb77ff36b42392c29f17dda836e4781636b26b22",
+      "size": 25128
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/intellij_idea_2.webp",
+      "sha256": "de46071da33cfd6000681e210bf1777ef2b9b70868461f2bc7cd8933aaa1b77e",
+      "size": 30212
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/jaspr_0.webp",
+      "sha256": "2900f2e0fb2b073eb1e58b1875e6ec155b37b62a00abfbcd677c5a288bc28d2c",
+      "size": 39122
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/midjourney.svg",
+      "sha256": "b03b5ae5c7a541bda35412bf84103a66c18a3968ac14a05abf97e052005e3a20",
+      "size": 919
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/mistral.svg",
+      "sha256": "5d6abe5c18446f7971139b2f472b1b1d8cf29db04af332091023d018800cfbd1",
+      "size": 305
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/openai.svg",
+      "sha256": "5a28b637ffcde9e25fcac5790b7ac24fbaa3fd591f955062ec2c6021618e400a",
+      "size": 2946
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/perplexity.svg",
+      "sha256": "481c8fca3ccaabd079fa61d69301c574cb3287193a4d5bcb8f8083834f6fc199",
+      "size": 4476
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ai_tech/stability_ai.png",
+      "sha256": "944d27e753d7cdf23bf53d34aa2452eb740a30ea9c9d1332571b26748170342f",
+      "size": 63945
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/apps/apple.svg",
+      "sha256": "9d00ea77a3240f291356c36261c5f45d7fa456f29c97a2f060caf0ed4b9c3231",
+      "size": 660
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/apps/canva.svg",
+      "sha256": "5e48f562e0092f87465bba3c3b54f3334a5c2dc442c16c0639c1a95951a79622",
+      "size": 4056
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/apps/netflix.svg",
+      "sha256": "0c12d5374247e16fced565a207d010bf39f1eb55ee0394581ced67b2e6fa7b92",
+      "size": 1118
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/apps/slack.webp",
+      "sha256": "23bafa7e0cc68c94d375c181d461f00d1dae6501c14a9aeda90907c3e3e4cdd3",
+      "size": 28592
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/apps/spotify.svg",
+      "sha256": "366bb7f8086dd7c7e0d9edc4c54b0b47fd3b003f6d10a04d83c4ccff8e6f4bf5",
+      "size": 712
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/apps/trello.webp",
+      "sha256": "d53b564a6f62743f9e69854c3bc9b87fa1a8a6cf6f69eabf4c276c24bc02845a",
+      "size": 26568
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/adobe_indesign_0.webp",
+      "sha256": "9acf6084fbd29a485a041d034e08ccbaf11f8c68216eefc7388de1bb7338ab21",
+      "size": 16450
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/adobe_indesign_1.webp",
+      "sha256": "3daa81594426dcffa0ee719a65405b066383d0795056578dddd91c18cbeaacc8",
+      "size": 17720
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/adobe_indesign_2.webp",
+      "sha256": "2c1443e2bf1106d2fac1bc4556e06bc457e2f33dae7c20d3cfbf09439529f074",
+      "size": 13086
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/adobe_lightroom_0.webp",
+      "sha256": "e22fae6c938f4579e6354b441bdd027668042d6187ec4f676b84b451638d13b3",
+      "size": 15140
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/adobe_lightroom_1.webp",
+      "sha256": "33dd7e90077472d7bd209a0a3b8cd00bc887ba748b1c2099214d7834c9b5388e",
+      "size": 16774
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/adobe_lightroom_2.webp",
+      "sha256": "c30173d169ff83d0ad9179fc52119e00ec6f3a7d32e95484439bef966f8f9279",
+      "size": 11728
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/adobe_premiere_0.webp",
+      "sha256": "f27196747027d60bd7ea0fbd223fedfd3bdd0835d6424371ed254164c5677c63",
+      "size": 16304
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/adobe_premiere_1.webp",
+      "sha256": "a4b811d7f814ec8aaf478968011ba235da3af4d436c8cb0580b7f413554f5621",
+      "size": 17376
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/adobe_premiere_2.webp",
+      "sha256": "af2d9857ee646eb86959e95ed30caa142fa611efc3a817c15cd02bdd1594297b",
+      "size": 12988
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/adobeillustrator.svg",
+      "sha256": "ab1872dea99df849b65ba14ec8761723e62b2d017515276b22b2572f717ad915",
+      "size": 625
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/adobephotoshop.svg",
+      "sha256": "4e8a55358541d6acf03c0a25b1f708e1378093c7b79e331200ea23997071e127",
+      "size": 2433
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/adobepremierepro.svg",
+      "sha256": "86a3c358a2cbf300b75521a995f8337ae43cbffd5659337d0e0ba1b3729242e4",
+      "size": 1663
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/adobexd.svg",
+      "sha256": "ec83c39d9efa4d800e820ec5b90bc082e8ff7db7f7a69107f83fda3fbf2d56c7",
+      "size": 2294
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/aftereffects.svg",
+      "sha256": "dcca04acb3eb341da5af84d7089211087374b15afd72e7b445a8c4c7773a9715",
+      "size": 1918
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/autodesk_logo.webp",
+      "sha256": "f6243e1c4004b222b957208aa93b5ed6223fba9c995b68b7021c696685225d3a",
+      "size": 25630
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/blender.svg",
+      "sha256": "6c391596ec6d5a3193519e32da89b889516f013b1cb60d6b4fa0fcec74d38c8e",
+      "size": 1309
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/bootstrap.svg",
+      "sha256": "18dc49386e7f91c8a1ad316a9e6b891146c98cb4abcf80faa084c86cea1e82f3",
+      "size": 869
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/figma.svg",
+      "sha256": "b9171110637bb953781a04044d9957478ae84f6a7ac597a25c0bfdfb3292a45e",
+      "size": 1108
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/godotengine.svg",
+      "sha256": "a0ef6e3749c019e143488a8820450aa4b96355fd1f12424d41634e4130efec47",
+      "size": 2086
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/sass.svg",
+      "sha256": "e810b4905fb68272530607dc3e8a295edb48f74d2f85665a558b394f54c633a1",
+      "size": 1238
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/tailwindcss.svg",
+      "sha256": "34074570b0fbe21cad76e3bb14224945949c27f5f120d1098bb50d7837169d79",
+      "size": 617
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/unity.svg",
+      "sha256": "2924d4f3f8f2d817eac8ab3cc565411272a39c6657f45f1e797a288c533fbfa5",
+      "size": 669
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/design_tools/unrealengine.svg",
+      "sha256": "2baec7bcbf2a16b6c46aaf757511f06b86e4a2494d4835b818ff239067979222",
+      "size": 832
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ecommerce/amazon.svg",
+      "sha256": "60a60cfd55864e76a5fec5c851ca9898363bac5027e081b9ce6c4a4325fd197a",
+      "size": 5530
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ecommerce/blibli.webp",
+      "sha256": "947ac6cf99dbd97725a281ac7b1ceffb77148d2d1a19ed680b4af3d785ddc341",
+      "size": 32716
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ecommerce/bukalapak.webp",
+      "sha256": "a5b80ba2a98aa626b04cd779d17dc2fa4f2a203c9d03d4756fd9cca47aeeebdb",
+      "size": 27358
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ecommerce/lazada.webp",
+      "sha256": "20013110ebca773d64031fa41b3f535cb51df266b0380674522d5ce58ec0684f",
+      "size": 30094
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ecommerce/shopee.webp",
+      "sha256": "f8b1343b31786cb88d48f22e10fc8c5d547554433be173e2c806654e9dc5e21e",
+      "size": 33268
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ecommerce/shopify.svg",
+      "sha256": "f6512cf7a6bd1f38e3c2ab9c109f22cafe38c3e32116a7dc4062a5fee51249fd",
+      "size": 2724
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ecommerce/tokopedia.webp",
+      "sha256": "1107b3363e5c7ae8712968597655363c4fcec68406500dae3eac02c40a6657a2",
+      "size": 32450
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/ecommerce/woocommerce.svg",
+      "sha256": "256d6b27889c336961acc64b106e75e739877bce01613f251a87822002fe9c9c",
+      "size": 3589
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/adobe_0.webp",
+      "sha256": "88c6c7e99583a18776efc9f1d26df6ea17868d5e98fd2eceb584c5544a79c68a",
+      "size": 18002
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/adobe_1.webp",
+      "sha256": "fb35de5fbc96cefb38efb6c98c716f9cfb35f08c1b7434730be84d233a446261",
+      "size": 26226
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/adobe_2.webp",
+      "sha256": "9e3bc6a3ef42a62362b0311451fc51766e34fecb6b2b9eb27459c69791fa92b1",
+      "size": 21724
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/adobe_3.webp",
+      "sha256": "efff565d5d0b0f1d790ea1476b3db642e735a0165c1a638a488cf74f9c36ea23",
+      "size": 26484
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/adobe_4.webp",
+      "sha256": "ad7e710c3c39eb8b2d722b4fb13a74c439ed366f6ada29c06a9bb46c77885a31",
+      "size": 22618
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/adobe_5.webp",
+      "sha256": "0a92ce068cd670bdca29c0f8ffbc74934cbda13040ebe422fbb1fcbe27a3ccb1",
+      "size": 31044
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/dropbox_0.webp",
+      "sha256": "89bc620ad30be08d69990920b73e06b97953f28872c4f138eab96f903db10590",
+      "size": 28886
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/dropbox_1.webp",
+      "sha256": "d72ab8b3e9d13091d85b4c616f2942102178a3520b4bd24ed419f390b74b6ab4",
+      "size": 25374
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/dropbox_2.webp",
+      "sha256": "7d46b3e139c6d6b2ad86a2c4ede3f7670fff9c2a6ae5221eccc1d41d9c4ddce8",
+      "size": 25320
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/dropbox_3.webp",
+      "sha256": "c3831ae84ddf17a8addee8687242638d1d52d1d78fcba82c720e45cb7a5a11b9",
+      "size": 23844
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/dropbox_4.webp",
+      "sha256": "18aa1c4be8920441d55f7ab03e3e50f390dc7b6b227549b81910e75a82618634",
+      "size": 21126
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/dropbox_5.webp",
+      "sha256": "cddd4ffb1b828f14a268e1058fbde99d4cda477ffe69fed2a39b332af6f905a8",
+      "size": 31064
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/dropbox_6.webp",
+      "sha256": "606dcfdd8943ae91e8350af3f20a60282676e236fcfd85f416e526877cc2edf8",
+      "size": 29992
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/dropbox_7.webp",
+      "sha256": "bc27d41df4e021b5b187269172f56d0e8c108050af88496a673593230033c9ef",
+      "size": 25798
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/dropbox_8.webp",
+      "sha256": "555b0736d32b8a642ffb4a4b2ce229348b79df274edfbf31715a724b95aee70c",
+      "size": 34126
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/google_drive_0.webp",
+      "sha256": "beb7adb52efbcb4eef0ac10466ef0e90f7ab33038aefb916ec37c00d15381479",
+      "size": 28496
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/google_drive_1.webp",
+      "sha256": "d3bfdef1f8233ae03664a2eb74732519dc7a740bd9b0ea7050fc571043ca80ab",
+      "size": 27172
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/google_drive_2.webp",
+      "sha256": "84cfcaf714a278d4a82f8e10f18af8615283a367615f630b59ab576d40413f30",
+      "size": 28258
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/google_drive_3.webp",
+      "sha256": "f5abb8ad5e6e19e99ab315b1e1374809d5a62bc2ca9351f69b3a6a0c703b160c",
+      "size": 24172
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/hive.svg",
+      "sha256": "364e130d6abd4a48683fbfcddc5f311ebcb4eaff8c82d4b3e9689e2b59d9c477",
+      "size": 14000
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/markdown.svg",
+      "sha256": "9ba7e742bb1a86875587d1cc1bf5eec391f63b79ff056de032aff6a3e79365b8",
+      "size": 282
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/microsoft_word_0.webp",
+      "sha256": "78b263bfbda2ec5fb35d98a4f0814419a87082d19ab71916cc52ba010d787550",
+      "size": 27988
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/notion_0.webp",
+      "sha256": "0db3449c5bde52d206c92f75cbce5971bd6606b9a049e2d80ec4eb50652c2e44",
+      "size": 22762
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/notion_1.webp",
+      "sha256": "c63b705c3269f582667983fe7a29b01dd367ef8890a3c4240e2c4cdb15207e96",
+      "size": 22392
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/notion_2.webp",
+      "sha256": "db54ada8dcc760cdd8277a1a1f86aec5532590880f68a148f2a9d50767656e9a",
+      "size": 22486
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/notion_3.webp",
+      "sha256": "091036e466b680ab08cdb0ecda32169d0f86025c207c918de0ab190b3d63ca64",
+      "size": 24174
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/notion_4.webp",
+      "sha256": "6469cb4abd9117c96d7296f68689b354141bd8b44705d30651f30f32aaf326f9",
+      "size": 26930
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/obsidian_0.webp",
+      "sha256": "1d2f2757346d8723d71e62b02816f0781c1b66bc5c32d0a328838cb0230b3052",
+      "size": 27188
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/obsidian_1.webp",
+      "sha256": "5e284ebbe9bcb43514f6ff4aa568ee33cb7abdf930ab2e43010e6ab7095169e8",
+      "size": 22956
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/obsidian_2.webp",
+      "sha256": "97ddcf389d2cfda78fae7eaddef0f46fe646acd25e9e2f19d9b70dd5a2a0dd6e",
+      "size": 28174
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/obsidian_3.webp",
+      "sha256": "fc91f821fe6ee23c3d97f54411465ed2a874c9f0a78191fc65af795629a1dffe",
+      "size": 21810
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/obsidian_4.webp",
+      "sha256": "74371de6d54acb55142879a3c8575b7d9a39359e4bfc4afb7f65ad0c0b0ec19b",
+      "size": 27776
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/obsidian_5.webp",
+      "sha256": "787d52b5d21901b8351ab59788d6f44594cd45e1eebc9041a66900016a178f1a",
+      "size": 22322
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/obsidian_6.webp",
+      "sha256": "a22ed5d4b42cdd4435a3720f1758cc83e624da6af41ec07525a0265276539239",
+      "size": 28594
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/obsidian_7.webp",
+      "sha256": "859d3fc99887a3b9e7be7cef02c8ea67235fd857812ccd003edd6e03643e4ddd",
+      "size": 26920
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/file_formats/obsidian_8.webp",
+      "sha256": "bc84ce07d4fc57232765f1c1009ba5f043f1aa7ae3d19df32971d506b0f86eee",
+      "size": 23594
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/argentina.svg",
+      "sha256": "dafb5bc6543c59249be9c7dec2298eaeaa1fe7805a62754990315cc6db93b2f3",
+      "size": 4994
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/australia.svg",
+      "sha256": "8ccf95cf3507e88d10aa57a1e3b3853d72933c6784e6f67fe3cd3bf12ea68a4d",
+      "size": 1586
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/brazil.svg",
+      "sha256": "041479c6a955990d32c8e45b7283afcd62eacc3592eba9bbf0162299ad77ff01",
+      "size": 4243
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/canada.svg",
+      "sha256": "95b9eb0eaa176454215088c005a07df3df7564093b9f1d6475bb1fd61a16bb10",
+      "size": 699
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/china.svg",
+      "sha256": "5fce7409cd290e6b3c5ecd09c0d2c400ae459e3d59c6c0539793ac0e803d0179",
+      "size": 563
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/denmark.svg",
+      "sha256": "f27c3fa734ea66c662061219e8cc21f886cf36f798f822fca27e55c84afe8648",
+      "size": 186
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/egypt.svg",
+      "sha256": "a285f98d7a785979ed8c74652506dc180055f1035d4812e2eaf442c8eb3096e0",
+      "size": 18440
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/finland.svg",
+      "sha256": "644a2d69b1a97f4e71b4a8341916a321ef9b2666774d3e12a7c0d95f56e7f2b3",
+      "size": 241
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/france.svg",
+      "sha256": "e949902c7677422d88137d385b9edbe91323470c7933824cc968aca3965fc37c",
+      "size": 193
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/germany.svg",
+      "sha256": "44a4580e94ae11037b8983e43e37a220e72f884217dba5b33a94309db2dcd88b",
+      "size": 502
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/greece.svg",
+      "sha256": "d65b82614f0cd167a767abfda1abc1ef99e87ef48e5755f3d33e4526e3cad365",
+      "size": 284
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/india.svg",
+      "sha256": "95d7239707482165fbc0f685d5f493633639f16771c1fef9701f7ee66dcdf343",
+      "size": 848
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/indonesia.svg",
+      "sha256": "2ab57d2d418baba7b0ff55729435d0c780ca52a98b754f92d44e96cd1399dae5",
+      "size": 148
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/israel.svg",
+      "sha256": "a5732410968d238f8a506a455bd7be7fea2908d0abcf638020fbe7b58bd4ad2f",
+      "size": 398
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/italy.svg",
+      "sha256": "c939e50605c5a08df1aaf19818f74d2919a9d3c3b7aa7cd90520b8bfc9c5dddc",
+      "size": 273
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/japan.svg",
+      "sha256": "35e785339e19d1ec1987cb9c3d8e66fc97f29a287db0b0b590b8dfdd96d4766b",
+      "size": 209
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/malaysia.svg",
+      "sha256": "53b0aa224ba67a2d32be58aab6eb2e4395ac3df66e62692ac83a30bc296ee3a2",
+      "size": 683
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/mexico.svg",
+      "sha256": "bcfebaa9d94827919e65c5414e4ee35a076f89520a1b57d75e0949e1ca81c3b9",
+      "size": 117180
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/netherlands.svg",
+      "sha256": "9c2a624a9ca5a82940d8902a7b818230d7bc2efde991837d6f78bc78c1b27110",
+      "size": 223
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/new_zealand.svg",
+      "sha256": "e4b1bc62d8283cbefc000b9538d6cb58019b18651bb9e0818ccaffa9ed8716f1",
+      "size": 2406
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/nigeria.svg",
+      "sha256": "29a8a7fff1ca574873f953e086753bb2f90be55c3efac5c91f829b1a1c6c01be",
+      "size": 201
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/norway.svg",
+      "sha256": "be906b906b9063a909154d9bae757ef6aa5927c67f678200d4e846101b1adc09",
+      "size": 319
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/philippines.svg",
+      "sha256": "b0010e0b5f5945506e98b76f3469faf964c1ce30de75673186d303f9112b5454",
+      "size": 892
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/poland.svg",
+      "sha256": "c6a5131abfd6eede2c632b5b042e658266676fd072295acd4eaa6debd53755af",
+      "size": 199
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/portugal.svg",
+      "sha256": "20ddeda8a3c2960f6d8d7cf88cec827aad537143431a0828e789f55d0cd923ce",
+      "size": 13091
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/russia.svg",
+      "sha256": "eb1dbd977fdb824dcae7767ce9ec3a023e41158e81b5f524772609ddcb622025",
+      "size": 200
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/saudi_arabia.svg",
+      "sha256": "b0b36326e3e5b74624ee8b5de8273ea00f7bbe9b5ba0da6250cbe7b3c637505e",
+      "size": 28593
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/singapore.svg",
+      "sha256": "261a4507c08c834e8e335ae147bde951010d92ef05330ff39f0d0eb713d2f617",
+      "size": 591
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/south_africa.svg",
+      "sha256": "90a3147fd9e2f81d659d247d7aa518b138901f73505bd72c1e6668178f749815",
+      "size": 630
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/south_korea.svg",
+      "sha256": "d8ec2a77a317c28617cbd5e7114c3ec9697120670e343ede5ee5bd0b1b4cd110",
+      "size": 589
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/spain.svg",
+      "sha256": "af0b860424a9bd6af63dce070d7f7cb4c7b490c6269fc1cd4f35c45679a20500",
+      "size": 155900
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/sweden.svg",
+      "sha256": "350fa9d5023de2ed2fd7fd0f9d0de04e25551d6154aab859949bb7c81543f10b",
+      "size": 193
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/switzerland.svg",
+      "sha256": "900a0befb655721c1b52b5ec2754f2f553f52b230443aaf016cc224e6a0707ce",
+      "size": 213
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/thailand.svg",
+      "sha256": "f137bb494e00c3c29e9d03fbf4d15c2650d82f2a8f02cf51341f6a4557117db9",
+      "size": 259
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/turkey.svg",
+      "sha256": "5a47e932cdb371d9708d8c9a209d3acfd006cdd3ee7dd38ae44df6180e170e90",
+      "size": 324
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/ukraine.svg",
+      "sha256": "77e3eb29bbc7d4bae51f2e959d4ef4656eb1e34484cf772b4081a22f4af5256b",
+      "size": 182
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/united_arab_emirates.svg",
+      "sha256": "2eb3d53df8f3f845dfafff448fb165647c8e3ed2b2f08296af1080fece92ad35",
+      "size": 323
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/united_kingdom.svg",
+      "sha256": "b93bb15033d6c2219f290121d40c0a741765bd4b077ebcf5a5b0d917ff725a28",
+      "size": 477
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/united_states.svg",
+      "sha256": "48f0d3e4a7bf2d5c0c8d09cd975696acb2f3af601aaca80c537933ad9ec166ec",
+      "size": 823
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/flags/vietnam.svg",
+      "sha256": "175120e06bb95dda22133758395f352acb46433ff81eee449326db54e78af2c4",
+      "size": 283
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/brand_manifest.json",
+      "sha256": "f7fa96fa99790ad1a6d5b1a5b7cadb59c407a4698ab2b315aae2242170bf61f9",
+      "size": 2437
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/BRAND_SPEC.md",
+      "sha256": "2cf5f8c8af05b3114a36296a3551e45a936223eedac1490e031af7ad1e487d0f",
+      "size": 1991
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_emblem.png",
+      "sha256": "22892fe0d22d17c24a660f6d899cb68dc93c85c6ff788f0929cb46272d4d99e0",
+      "size": 1591990
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_emblem.svg",
+      "sha256": "5d855108638697a140f1d2a3798b9af6acfc22fb4f31db3bcf24369156fee33c",
+      "size": 148969
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_emblem_color.svg",
+      "sha256": "b2c4bef8f454757cff2e68be3d25909806e1e085fe8d5d3526bc1d39eeee9437",
+      "size": 784364
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_emblem_ink.png",
+      "sha256": "5265266c142658aba752acc3adb074622585c2b044713e04ceb66c29ca3602fd",
+      "size": 145687
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_emblem_ink.svg",
+      "sha256": "8c6b967154cd9306fd0d8d8dbdcc2deba7c57355ff080fa76a8a97c1a45364fc",
+      "size": 148969
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_emblem_master.png",
+      "sha256": "1be5b03cc84b6f273df1892f8f5f050a2f078b6462b6a478df324d13c62aa63e",
+      "size": 1500891
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_emblem_purple.png",
+      "sha256": "fcbda5ad1a57cd66317a4e6b8bd26c4d29be484e4499355edb7b6b58fd83bec9",
+      "size": 147266
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_emblem_purple.svg",
+      "sha256": "a3e44c83327c1e31aa1fb474ec7807b7d6ed12405d55c5cec959c1dda6191a0a",
+      "size": 148969
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_emblem_transparent.png",
+      "sha256": "707c79e889401bb70c570c2547d4433e1964a44d60018b1c544c60da104deed5",
+      "size": 951238
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_emblem_white.png",
+      "sha256": "132a1347e0e68b9c3e54fd4d083ff26984877fddd6820e71138ab571a0e1de82",
+      "size": 143611
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_emblem_white.svg",
+      "sha256": "d16a079c3b463101d6b1942fc87b3bd833552394e790d985fa676c8cd7164dcd",
+      "size": 148969
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_icon_128.png",
+      "sha256": "d7d7377d56857e984376726fbad64301cc0cce2ca6375995eb3b15efee0cd473",
+      "size": 10928
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_icon_16.png",
+      "sha256": "faddf65525a764aa358bbc2994a7434896a732e7a98d9cf5a1f0517f3b28e857",
+      "size": 515
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_icon_256.png",
+      "sha256": "ce614608e450267070f9f4611513caf66a463325d97d22f1fa0906ecb1353727",
+      "size": 35526
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_icon_32.png",
+      "sha256": "c5c24f1bb1f612661a15681116c260f756247cf865d6bd7ab09bed5eb0027c17",
+      "size": 1233
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_icon_512.png",
+      "sha256": "2b7720a61db86c2a989e99c9895e10a2d92943c05f0deea43456ad9b7307d40c",
+      "size": 118711
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_icon_64.png",
+      "sha256": "97b664e7d2983d5b9589b5fa81439efae368ee91e7b572c0c5bf145c21b86eb9",
+      "size": 3477
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_lockup_dark.png",
+      "sha256": "f1ddd53bf956381c3dda243d3a13b3f5a4a7f2721da8b916a8f929131d168868",
+      "size": 45826
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/own_brands/void_scriptor/void_scriptor_lockup_light.png",
+      "sha256": "63169957958fd5ed2ac91229a71cc1a8b8a08a458068f2b3af7f659f1381c870",
+      "size": 48684
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/alipay.svg",
+      "sha256": "132c6ea12c4eff484434a25aaf3676cab1bba444ee0d60da2da353b906e48f46",
+      "size": 817
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/americanexpress.svg",
+      "sha256": "f0d53a3d01a88f64539523cffce1c8d4c30399fe675bd31f86ccaa4ddc1cb1e5",
+      "size": 3656
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/applepay.svg",
+      "sha256": "bac46e66310cb2eb4a87c921f7a75c588afdb87d7d1c508c73691b4033c012f5",
+      "size": 2648
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bca_0.webp",
+      "sha256": "941870ca829a89bf86b1c489216a36ae96ee155ff9992cdeff2bd08553364ea6",
+      "size": 32440
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bca_1.webp",
+      "sha256": "77df88d4d1b2c8c25284c71d23fcc103fe59d13da9ada6226bb9cf21bb32db26",
+      "size": 45318
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bca_2.webp",
+      "sha256": "e1139e2ac882cc33c9bcec4a0a553ce4c21941a1af2e8a6e1c0df44e2e664f80",
+      "size": 35072
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bca_3.webp",
+      "sha256": "57fd5c174955456bfa4b0751b33864d3b48b91ff7ef806bbb24de7d476a356e3",
+      "size": 38496
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bca_4.webp",
+      "sha256": "728461523df4701cbec181a09c26dd8846a5d7c31333cbab411577bb0360e53c",
+      "size": 33630
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bca_5.webp",
+      "sha256": "4aaaa400c7ef5a4d4ca67a741556588078f9d8bfe69642ddb7ef3d4c62f236fd",
+      "size": 27582
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bri_0.webp",
+      "sha256": "e04f981ccb3cd7700e70c91d3a9764538fb964c1acb314a8aa0041a603708f8d",
+      "size": 34202
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bri_1.webp",
+      "sha256": "eca7e641d4d3255398dc214b260832045b2d0cd4e6ea94d13b5500bea2e2a356",
+      "size": 41108
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bri_2.webp",
+      "sha256": "5d4db30af13dcf015cdb4f0e08c86a6fbf8937e5a56c860f35fa37f4639a1dfb",
+      "size": 29076
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bri_3.webp",
+      "sha256": "a9ae0fb003519bfeef9184a13e2b5cfcc25a7d21a4f0faa3bec3a67d082db1c8",
+      "size": 31980
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bri_4.webp",
+      "sha256": "f128bf4e5db983885f550794dbce3912e5dc0ffa37f928578cff7ff1af56acb6",
+      "size": 25828
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bri_5.webp",
+      "sha256": "b6fbca0e44e59117d5d6270778fe0c421a522976ae715ed6575708e0d4751c41",
+      "size": 31520
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bri_6.webp",
+      "sha256": "15a83e86e8407bc3129ffd7fbee9dd34db9193603b7b5d43840e295b254d6f41",
+      "size": 21234
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bri_7.webp",
+      "sha256": "6bf221f8c01460a5d1519ba8e82ef96e38334c1398ba6770f96b2900dc11d060",
+      "size": 30762
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bri_8.webp",
+      "sha256": "74f85a7bb6215aaa83a087b42321b4113a4411545bcf57af5be3aa27e6685f70",
+      "size": 36266
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_bri_9.webp",
+      "sha256": "87fe4f37d146a335f43af877fad87f885a6af4838bed3eecf2bef900bfd1827c",
+      "size": 25852
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_jago.webp",
+      "sha256": "309e479b0a190f19243478005e168ec42556dc7187c85267d3605fb43bbf78d2",
+      "size": 29364
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bank_mandiri.webp",
+      "sha256": "135e183032e58e0858db8ba5596462d7f8faa383f6ec20c1aadecd6233d540e3",
+      "size": 31296
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bitcoin.svg",
+      "sha256": "b780e4ec4728e5918f23d25a90ed48c57ccb3f5b54f3966291e17d5a0d0cd3d7",
+      "size": 923
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/bni.svg",
+      "sha256": "be01bba3f18303a72b7f75cea511e437868fbdcbc31220f9af9ae13617e89c91",
+      "size": 7509
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/dana.webp",
+      "sha256": "35dc3ce894e4cbcf569063a4e706dec4df90f9fd9ac6d9913af5c47511262ccc",
+      "size": 28938
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/dana_0.webp",
+      "sha256": "b1a16106f8925e5c92f49fc67373f09b9aed8b827b863a30f0b9e3febe0b21b1",
+      "size": 29526
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/dana_1.webp",
+      "sha256": "d692ba2022e8df4a7e04adcc0d22a36cb33d5c647866a5609205335e07a03a33",
+      "size": 20050
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/dana_2.webp",
+      "sha256": "35dc3ce894e4cbcf569063a4e706dec4df90f9fd9ac6d9913af5c47511262ccc",
+      "size": 28938
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/dana_3.webp",
+      "sha256": "22a321dfd55e088b65d0738dc9716e985284b2925e6c1b2f3c335bd103b8a0a0",
+      "size": 27016
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/dana_4.webp",
+      "sha256": "14fd003f89170ddf3c4738aaae45afd4b2d07e11b9c169c85b446b2f47710b8f",
+      "size": 29018
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/discover.svg",
+      "sha256": "d903681ee03ab6f1ee7e0d4a742683ac27e37d356bc03324140bac5b9d10d453",
+      "size": 1871
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/ethereum.svg",
+      "sha256": "88c4652c0c711ae19c0a5c5320e494fd839a9194adafa3165745e4d5e28df268",
+      "size": 243
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/googlepay.svg",
+      "sha256": "d0614f4fa8974370b52e47656adc9fbbdca1249cf9190869d76644509b525ba4",
+      "size": 1430
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/gopay.svg",
+      "sha256": "820f90459ed1af89b186e792b482f109bc54b92e2f5c036435e70e2b5270ee8d",
+      "size": 2529
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/indonesia_financial_group_0.webp",
+      "sha256": "1db4d9afd9a053b8f1c5661af96e2ac9bae378808228ec5a8421cdf8099e2012",
+      "size": 25388
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/indonesia_financial_group_1.webp",
+      "sha256": "7cec0d9875c5a6575e7ff84bf50de31231b43924b3abf51b26be7cf6e403d9f2",
+      "size": 28844
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/indonesia_financial_group_2.webp",
+      "sha256": "b4eed59e93bf962a51bfce3ff785ebcdee2e228110e77e0b5bee6da6e7146aff",
+      "size": 19962
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/jago.svg",
+      "sha256": "935de7ac1c322b4edeee4ab5bc31d4a6262f5ea7b9da381bc7fbb2c8480f5f3e",
+      "size": 4997
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/jcb.svg",
+      "sha256": "9de7e79d9f75c40c1fdeb5a1c1e23a6aeb3d0d8a8d4ae0a96e76c10e68be215e",
+      "size": 1114
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/livin_0.webp",
+      "sha256": "bd61539ffc63b448453a47dfaf9d02ad366b4b66bd43a4e3b15edeb2f7a7ae9c",
+      "size": 33242
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/livin_1.webp",
+      "sha256": "ab2a6e3c9cd848d9d80e9fa22c3475f85a5099787d6f4d7fcdb3bbb2ffe073a5",
+      "size": 37462
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/livin_2.webp",
+      "sha256": "034e0dfe3015db11d1bae745f35cdbf9a40f7f6978b9b7d22d334c1fc4835030",
+      "size": 35600
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/livin_3.webp",
+      "sha256": "586fb7c4b46a170983fd5644c5d61413df244be087d2e2dd7d86f5f3020a8e40",
+      "size": 28930
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/mastercard_0.webp",
+      "sha256": "395d4da1eab473ba6b7e5869ae2570c454fc40df67dc2e84743dab97f920ae8a",
+      "size": 25668
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/mastercard_1.webp",
+      "sha256": "ad173c8a5b6f74bff2ba912a8b13b03b2652cbe0abc73ce52c30ef4d188adb1c",
+      "size": 22424
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/mastercard_2.webp",
+      "sha256": "a390d7666b93e579c532e5637521fc7e876a916745731f2530b3f3c37674abf3",
+      "size": 27256
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/mastercard_3.webp",
+      "sha256": "7d63bb65759d1636e83a761fb3157491ae25adde9467e9a4d11bf6e51846f846",
+      "size": 31556
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/midtrans_0.webp",
+      "sha256": "6ac42238f9ab597c8b8bcc0455dc15e40c525f7947ae9229b1ef2d50eb7ebb17",
+      "size": 21882
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/midtrans_1.webp",
+      "sha256": "a112ed57da075e67bc43401b4459a7e77372f9f448e12fa93a1f9b615d32028b",
+      "size": 26734
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/midtrans_2.webp",
+      "sha256": "0f6f9f0b905c528cd7fb8d81ce645be35e5ed185c79aa584b4a4a3f9e6b9649c",
+      "size": 21574
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/midtrans_3.webp",
+      "sha256": "621b0eb74410395aa219e2b93e531d20559f730e98851571a1f6a79efe299f5e",
+      "size": 21604
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/midtrans_4.webp",
+      "sha256": "89b7862e7f80a119bf894069b90a24d8ffaa524cb047ec2e855e51f7a77ea96c",
+      "size": 16392
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/midtrans_5.webp",
+      "sha256": "9c98c747c966db1c781d51e4fd4ba4cf0016f3b9e7ba334f635238e9a27c506f",
+      "size": 22390
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/midtrans_6.webp",
+      "sha256": "e981e0782c3d6c6bba7470b9baff7a232859b5115971ea3fb8809c851f989eed",
+      "size": 29472
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/mybca_0.webp",
+      "sha256": "315e6907ba462540e061040bce020a97da2affb7688ab9026b3b4611636d50b8",
+      "size": 27764
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/mybca_1.webp",
+      "sha256": "d3d4937e1715b26f5fd6aa84797df800fdf9ca97ce7cc356100c317fa441fdd4",
+      "size": 34142
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/mybca_2.webp",
+      "sha256": "80f3d0edc121bb4f3a7de2dc9942714ab08ab649408049c765e9dadfa611ee9e",
+      "size": 32026
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/mybca_3.webp",
+      "sha256": "5f5c050b415f8d0291c8f9ff7423473bfe3799885353ff40f545c59baddc3189",
+      "size": 32858
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/mybca_4.webp",
+      "sha256": "d73714a827d1d80a8b6a778b0edd8aba36119c77ad27069afb3f875eff30bc85",
+      "size": 22634
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/ovo.svg",
+      "sha256": "955eb151354d51ef6fcda6a24d6ea8887987e0ef2dad8ef9810183cc7e2a56df",
+      "size": 712
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/paypal.svg",
+      "sha256": "fcca30a1996602ba4afb550174e2f3a44273194191a9476f16133c76f9028319",
+      "size": 467
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/qita_0.webp",
+      "sha256": "2e0d6c821d781c0b2f37a08e6385c9d217ee27553ad7bba29267f095c34f5056",
+      "size": 28228
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/qita_1.webp",
+      "sha256": "309ae9cee8b40b019688caad90e3d685ee2fdd29a2eb85cc08852104cbe76ab9",
+      "size": 25890
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/qita_2.webp",
+      "sha256": "0630fbd6991ebda261c02ba9dd80d4898190427391d8e369355790e1249f7a39",
+      "size": 33226
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/qita_3.webp",
+      "sha256": "e859b817604550dca2b3eed111d6652df4f20a6ad3f0760aa1e4cef3ffa22c54",
+      "size": 23952
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/qris_0.webp",
+      "sha256": "efe10ebbde305ab2f3e852785a53e5a2d2ec6200a1a46093ddc10a386d2edd05",
+      "size": 22462
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/qris_1.webp",
+      "sha256": "2834d85125ece86983cfcc4d215085938c8d979a56e2edf217f495327198436b",
+      "size": 29796
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/qris_2.webp",
+      "sha256": "b5477811120ea71afc95ba28da0b1fe51bd74760f6401440059f9ff544ee2e69",
+      "size": 17296
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/qris_3.webp",
+      "sha256": "2a361dc51c3518e6c0180a5cf2c99b25752fa988db2068f0fd86d7d3057f8d08",
+      "size": 24950
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/seabank.webp",
+      "sha256": "90e2a416904dad2ae9ecf5c4bbe727a8adcb03b679d8c9d5f3d4e7f54f062bc3",
+      "size": 35176
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/shopeepay.webp",
+      "sha256": "b46fda2855a219a1de3a7a2a4489f1416a1cd3cd9dcb6ada8ce04cbc441b019b",
+      "size": 32268
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/stripe.svg",
+      "sha256": "7576775bf9915b696bbb9162268f5c56147d2b4221a76ac6a9ca92835239b7e9",
+      "size": 603
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/unionpay.svg",
+      "sha256": "160c25ea9849cc1744251cd24cfc12b644da583160fd11a5f61c2fa7bdb92dce",
+      "size": 17610
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/visa.svg",
+      "sha256": "a9800215097d4cfa792c723af023dbcbec92cd656e0f95df62af21c78f48b060",
+      "size": 852
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/wechatpay.svg",
+      "sha256": "439de170dff232935f08357fbfb852bb302545d6125861ed6074fe6237b3f912",
+      "size": 1345
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/wondr_0.webp",
+      "sha256": "82849779c38a10c354b3dff07fbc8eb45eba04b73b9f120c723801ae4d7e41ed",
+      "size": 28282
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/wondr_1.webp",
+      "sha256": "548c41a624e72d943a58fb859b67db69b1af796aa669a507986e973ded1b48e7",
+      "size": 31840
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/payment_methods/wondr_2.webp",
+      "sha256": "b50f14e60f211de0efcfbc6ce9459b0970f07583db90935c2305091a214ab207",
+      "size": 23408
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/android_0.webp",
+      "sha256": "87dbda52231c456f57474eaaca2836e45ef9c66267c809f8fd071fd151d9ad61",
+      "size": 27872
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/android_1.webp",
+      "sha256": "9a3656733cd8e585459c6a7f42820027c6077e2167f0ead7bc5e2ac2d88f6c3e",
+      "size": 28118
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/android_2.webp",
+      "sha256": "56bc4703bbe3a7eb97839e46fe79bc0c3eeb89ec05b69fce3ee2b3afcb2bc10a",
+      "size": 23436
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/apple_app_store_badge.svg",
+      "sha256": "a26fc5b38380272c92e9019a2eb8b45542a66814b3e2b203772db8904b9fb99f",
+      "size": 10804
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/google_play_badge.png",
+      "sha256": "f72611e2df8e88204009fd896d05d5e8e83c77009c63943bbffa169559934849",
+      "size": 4904
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/microsoft_0.webp",
+      "sha256": "557332585842632904836b5e0ae2dd77975cecd18c560bdc91098ba0e8ae160d",
+      "size": 22266
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/microsoft_1.webp",
+      "sha256": "38e302691c883cfbda07f43171f21ec4e5985e23043c7f01e57e009030c09512",
+      "size": 22324
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/microsoft_2.webp",
+      "sha256": "ba0c308385437abf170378dbc6aa41a1f3c5c4667cfb28a0adbb5cbf850cba81",
+      "size": 27998
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/microsoft_3.webp",
+      "sha256": "a9a4ac6a41a7325e31760345c878d1d8269fac8bdfcec919348780c9b7c3fbc9",
+      "size": 26620
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/microsoft_4.webp",
+      "sha256": "b80ea9a64c56403dd77406aff6589f5448e7193528ce6996c1677a13b98d0f3e",
+      "size": 25882
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/microsoft_5.webp",
+      "sha256": "b6fa9461ac101d65bf1aed8fce1713f63bdf7346adfbe04398b22097910434d0",
+      "size": 14546
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/microsoft_6.webp",
+      "sha256": "29b69b1d7362c275291ced822d73156a374a6bc8790131509517f8032fbc232d",
+      "size": 25784
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/steam_0.webp",
+      "sha256": "6e9e41732e1f21c06cc14dd6726b4dd6122a1842110980acfb53a0650159b032",
+      "size": 24852
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/steam_1.webp",
+      "sha256": "928f587a5567d1e54903ebb3237e4c3e454b16a54f9f060f7275cf182e1e8527",
+      "size": 28136
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/steam_2.webp",
+      "sha256": "2d3b94acdde58fcee2121d2f0995db78c22d935174c5b9f0f77ef043302cbf2d",
+      "size": 23244
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/steam_3.webp",
+      "sha256": "6b2d789c249a7b2275466861dc59bb852b7e01d8f73a741e120e8d938fd583f8",
+      "size": 29128
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/steam_4.webp",
+      "sha256": "280f3cd888f453fad76f727e34f8dc741b20982f3013782123e4b1bb8a3bdd94",
+      "size": 23236
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/steam_5.webp",
+      "sha256": "d1ab288ee714ceb8edb2bc7b82d6bb55fd97d735eb4c22f382ef1fdabda2ee2f",
+      "size": 34316
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/platforms/ubuntu_2022.svg",
+      "sha256": "64d6ddcce4bb4495b01b16b7be3bd4219a058034c73f2f849787325513ef1b3d",
+      "size": 5515
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/bluesky.svg",
+      "sha256": "2e936b654c0ae98ea6245170d5eaf05e94977f40841e6a4803cea1d31eadde1f",
+      "size": 580
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/discord_0.webp",
+      "sha256": "09feb7a62688f5b72e0cf981f313b59901cd200eac3f6ad0719ce23005b0c317",
+      "size": 29250
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/discord_1.webp",
+      "sha256": "f3c27b1371ecf5c3ffe1e6820292e94af6491fb5913e48000fde6f1814ff1f56",
+      "size": 26660
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/discord_2.webp",
+      "sha256": "b964d2f0aacaff1604bfb4a502da1d8e47baabdad22511c732c87ae33cf402ab",
+      "size": 20442
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/discord_3.webp",
+      "sha256": "68a83fefac2441d59f4d7a18a5e0e0778ab03b054b938ab0ac580a59bbed2323",
+      "size": 27990
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/discord_4.webp",
+      "sha256": "6fa25fd072e3c02275c6d9bcb2ef582731ea575d4069798a3e0e8193de40a8d7",
+      "size": 21378
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/discord_5.webp",
+      "sha256": "e29946683cab396f6214c15439b3ea949a6a2365bdff677b371a801f2995d995",
+      "size": 24462
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/facebook_0.webp",
+      "sha256": "c4b30eeda75a019e0afcad381488ae2ee3783750f983fc6e4c519f46374e7c13",
+      "size": 18660
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/facebook_1.webp",
+      "sha256": "6027c5af31f922359ceb7cec201093b1ecfd7000ca159addfeb03d638601f3b4",
+      "size": 23222
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/facebook_2.webp",
+      "sha256": "467491786c67a376c88bd0408263bafb46ac7016684903029d03a017484e8122",
+      "size": 32974
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/facebook_3.webp",
+      "sha256": "f1903f6d55692de76368b6b3cbc797e056fb51a3ce54971515e2c4a56bb31d23",
+      "size": 25326
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/facebook_4.webp",
+      "sha256": "4bb7900f4cf63c54c878f3f124199dd780ae7145ecba8c97ceca4b70b501dc1b",
+      "size": 28126
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/facebook_5.webp",
+      "sha256": "c9d6a466c247902dabaf4e7792db898aaf94a963c928342ab7ea7404bad37306",
+      "size": 22632
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/instagram_0.webp",
+      "sha256": "7a3bb2a991e2bf925bcbf74b61c39e23c6eaf7a0e55b6d26378722e1f12a9762",
+      "size": 29894
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/instagram_1.webp",
+      "sha256": "52d1394b009cfd8a26bb04670d02951e2eb753dd4bf1924714c8f955a0ccc840",
+      "size": 41414
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/instagram_2.webp",
+      "sha256": "28c797144faebe1cc15177fe707f5fddb98868937ddebd840b732312923e43fb",
+      "size": 24892
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/instagram_3.webp",
+      "sha256": "6a70bf20785cf990da9d1711c3cdfc5f6be51be3de799a0151e5cdb17f4754af",
+      "size": 31292
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/instagram_4.webp",
+      "sha256": "a16acac8922f4f8df32a20ddfd81e1a32f9a1299c763105ce950764d4da12b7b",
+      "size": 26426
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/instagram_5.webp",
+      "sha256": "e54195211411cc06f0425a52c5a929d035d05a1bcb4ba2f66931b6528b44b130",
+      "size": 39572
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/kakaotalk.svg",
+      "sha256": "9acf03f7c5d30f1230bc94d858ef03d35a2171d6ec3c5e63790ead4736a132ba",
+      "size": 1787
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/line.svg",
+      "sha256": "b33b86ee7c335abcccb12c08188823d40eb3ddc9521362ac94d9d9c55077db68",
+      "size": 1191
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/linkedin_0.webp",
+      "sha256": "847512abc34e9ca99dfafa620e70738b29568710a0abf2b9631dd42a62445970",
+      "size": 25590
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/linkedin_1.webp",
+      "sha256": "a48dc7fe64d1f926dac224c17c69c4132bd5c56fcaa63cb9554e8898bc82bff1",
+      "size": 17572
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/linkedin_2.webp",
+      "sha256": "7599140ace4fc491bd35afec7c13045a43eaf853ecfa9589fc559619c72cbf13",
+      "size": 29002
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/linkedin_3.webp",
+      "sha256": "5531fb46d67f0b1ce34486e6fd4461c0c8d2a7ce1f4e194ccedf59ec8cbd620a",
+      "size": 20142
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/linkedin_4.webp",
+      "sha256": "1413960733e5295708ddc07234289d5492874b65b45b5138e40bc3459f27b3cd",
+      "size": 16584
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/linkedin_5.webp",
+      "sha256": "6577f3ccc7b624d1d9a1b7643b195ff1913ab2590c695c8e98a092fe36b38d39",
+      "size": 31902
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/linkedin_6.webp",
+      "sha256": "300cb9fdae3be0634f8509ef92727a6f8a5de450d57e4105e15ea567fa4b0a3d",
+      "size": 28804
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/linkedin_7.webp",
+      "sha256": "d1d9fc4da15bb0f00b477607e69f9e44de1e7eb4551d68c19b4d8b0abbc5cbdb",
+      "size": 20326
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/linkedin_8.webp",
+      "sha256": "27b6fb879c5179941a842adee0241f6e9a9b57be5c8829269ff2a0fb933e23ca",
+      "size": 31980
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/linkedin_9.webp",
+      "sha256": "fb65072d4e31375a3e8d1c6da93b0f4e1e4e406b2878859f111ac1c739780e4a",
+      "size": 24344
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/pinterest.svg",
+      "sha256": "3ddfb8bdb609e7bb419d613f940692f0d44a3c13173ea317b1cd69f339416603",
+      "size": 924
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/reddit.svg",
+      "sha256": "cc158155e9ea8119a00fd5501a86a4a0b82a9445efb2455ccfabd417e7b0fe4d",
+      "size": 1248
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/signal.svg",
+      "sha256": "72bf5e1052f7aa9605fd34139b6b6b0f5b8aeecbcec7d368375505a3be441f98",
+      "size": 1660
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/snapchat.svg",
+      "sha256": "f12938263176702963188264d32e20691a7a9bb548841b9d4a8f6bd435c0cf33",
+      "size": 1493
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/telegram_0.webp",
+      "sha256": "311a3923fb46275e0cdcb88b0caaf8b971822b7eaf293b06d5d00881f804a77a",
+      "size": 32530
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/telegram_1.webp",
+      "sha256": "7bc0fd6c4285d123ed504fea06ff94304468419851eb5546d02254408c328d97",
+      "size": 28058
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/telegram_2.webp",
+      "sha256": "112814cfd0f268a8e548348cb878d34d5238c207b53414e6327dad7d50ae32d6",
+      "size": 19320
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/telegram_3.webp",
+      "sha256": "1685d0af5996c8258c1d1ef0729f466d03a589280c10b087dc5a32fe4113b56d",
+      "size": 19912
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/telegram_4.webp",
+      "sha256": "5cca8b6254620c4e80c21c65da8cd9b19a0761cc2a700799aea80406c66cc795",
+      "size": 24916
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/telegram_5.webp",
+      "sha256": "bbc9e137d75d1d38e779e25855cac834a4e1045799a5a6515dd16173b4f67ad4",
+      "size": 23130
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/threads.svg",
+      "sha256": "8747fe5e97c5a45b7dd512c72c497be9c418c692acee74d35d5469554ab734e4",
+      "size": 1302
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/tiktok.svg",
+      "sha256": "474e542d15b871647fb7b1f7eeeebf899de7de7577c43dc9005c4ac82e2fa4a9",
+      "size": 722
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/tumblr.svg",
+      "sha256": "78ec2143b054a5b84b525369bc036aa09295893cfc6db908b56295b0444385ed",
+      "size": 408
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/twitch.svg",
+      "sha256": "9d0d871053b782a01d4ee1790281419fd3e9463dd2176d814fd80b810337ad81",
+      "size": 307
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/wechat.svg",
+      "sha256": "439de170dff232935f08357fbfb852bb302545d6125861ed6074fe6237b3f912",
+      "size": 1345
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/whatsapp.svg",
+      "sha256": "3e197e0e1f3e679ee09823c75e1c7bad3a19da9bd1ba01df395268b9ae91816f",
+      "size": 1231
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/x_(twitter)_0.webp",
+      "sha256": "f6e3ad6a42fa5d2d9a97e49c00d73e1b2b6e024dd361e1d02688ba420a87857a",
+      "size": 32132
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/x_(twitter)_1.webp",
+      "sha256": "402bc5567cfd9d26b8d11f64a2c95672a2b63a4fb4a111cf81721581b053cf63",
+      "size": 26916
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/youtube_0.webp",
+      "sha256": "fe8541bf60b715c099a702177e56290bf44ca967474f70596153a552cae087eb",
+      "size": 22400
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/youtube_1.webp",
+      "sha256": "7968c534839c7150481198713b9cbce34a51e366319458d43079b80a714e9e6f",
+      "size": 20034
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/youtube_2.webp",
+      "sha256": "d65ca392adbab226cd190cddb250235631be1d9376b5734fbd6eecafb918e684",
+      "size": 26234
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/youtube_3.webp",
+      "sha256": "a20464dd3f74ef6edd86591653e393d8a7053838d671ab9756142dc3324db356",
+      "size": 22652
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/youtube_4.webp",
+      "sha256": "fa91d501c3575c45ac60127aac97ce0389ac298a3a3497b69dfe2497afc2689f",
+      "size": 20908
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/youtube_5.webp",
+      "sha256": "f056cfdda32e58e21e8c782e2fd340000b2eeafa6a0b34fcbcf81e5aab17201d",
+      "size": 16402
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/social_media/youtube_6.webp",
+      "sha256": "0ccfafe23c3acfa5c63de2ca79e51aabc7563cbd5a28fe74d7626d0b59e3a6e0",
+      "size": 27052
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/amazonwebservices.svg",
+      "sha256": "1f52a1d5f3c11d1452aac763e53ca9e74d6635298feb077059903595ca408206",
+      "size": 3474
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/angular.svg",
+      "sha256": "16bad694769180d22b8a4ed790c4a1b1f114d00eb8f47d11b6e772af4f9ea8a1",
+      "size": 313
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/ansible.svg",
+      "sha256": "4ae33a1aa52698c026a98411b0f18cfc981a18981cbc51715d9bed4eb8123f64",
+      "size": 455
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/apachekafka.svg",
+      "sha256": "e64804c91c53daee5ab4c83f466b90b3daca2e219d91deab06e68ccae06d7d3d",
+      "size": 2739
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/bitbucket.svg",
+      "sha256": "cbefef6f884299fdded5aedcde3c6fa3164702a24ecdfe11549374b03eaaddb0",
+      "size": 299
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/bun.svg",
+      "sha256": "5e3c90b1eebf03394bb73980f838909c0ac16e126d4df583f98751a72f17f4b0",
+      "size": 1722
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/cdnetworks_0.webp",
+      "sha256": "e5bfcda83c2647f4d3afac4f69c328042e4fbc444bff295b9de9d545f1d8f261",
+      "size": 27976
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/cdnetworks_1.webp",
+      "sha256": "fda6b186b1444934da5c62e39c4ff8b80ba4ab52c9d57a1bcf3d078f5bf29a62",
+      "size": 34604
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/cdnetworks_2.webp",
+      "sha256": "8835ffaf1961f05cb965e37e9816cf8392f960bb27dc4b036d66f461a20817a5",
+      "size": 29660
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/cdnetworks_3.webp",
+      "sha256": "1400c7d3258e00945400609390a79e595a4fe71100cfafb6b064e8c2e40af1a7",
+      "size": 24976
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/cdnetworks_4.webp",
+      "sha256": "35a9b1ea66bbbf9f2560f65bfd21f2eb91e6f35fea953d4a8937e6bc3de54726",
+      "size": 23394
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/cloudflare.svg",
+      "sha256": "32876bda81542203316d67b9623818ac60986897cac79f70e03e8f31f7b7f160",
+      "size": 1193
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/commvault_0.webp",
+      "sha256": "d9e8dbfb4c455901e8adf8342d5a4b7044204769ed78dd6b3f6011af782813e6",
+      "size": 29674
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/commvault_1.webp",
+      "sha256": "5518245cb5a9de9aaa07770f6deb886a9e2c869ebd75901e377fe0c7b36357d8",
+      "size": 28666
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/commvault_2.webp",
+      "sha256": "f6b6257417ee07cff37d4a71dcebd0ddd5bb3175cd0023eae77c5b9b569a17ee",
+      "size": 27054
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/commvault_3.webp",
+      "sha256": "0050908703249251863a8fd6c6ae017df0b4c63a694aaab3e97aa432d4860593",
+      "size": 33684
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/commvault_4.webp",
+      "sha256": "55bdceec1dd5ef9cc25f875968023547ef9e4856748cc1c8a6d3fb546ed0a1ce",
+      "size": 29868
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/commvault_5.webp",
+      "sha256": "d44ca38de3b411d4d36dc684b7cda43c51bfc2a5450a0c9581e2e3278ecd0d21",
+      "size": 24658
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/commvault_6.webp",
+      "sha256": "d866f474ce18e61f5b94f32ab699e543c5b305868d6e39c5a3840aaec8a61487",
+      "size": 23510
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/commvault_7.webp",
+      "sha256": "195418eab475d98f0c5685ddc880e807177b130b31a48d2eb4fb108dee7451eb",
+      "size": 22232
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/cplusplus.svg",
+      "sha256": "945ee6813f347f7b15611f314b0b66ffa95fbf459e99a67f740dc9850a6f52ff",
+      "size": 779
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/css3.svg",
+      "sha256": "25b8fae9cc6e4d5ae96a6d5c3d2fe0951be0d9296fa059913ac609857dc99de1",
+      "size": 1494
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/dart_0.webp",
+      "sha256": "c6476df63575b644f07fe6ed0993c748361157a9dbec6911aefc074e3f715b93",
+      "size": 26416
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/dart_1.webp",
+      "sha256": "2fcb8061cf98459b66e0a8998452147fc66276fb5d2bab393d875688f0745bba",
+      "size": 18608
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/dart_2.webp",
+      "sha256": "c5e92463d1a703dca2385b612f62e7d01235ced89906fd6cf7f4dee640686b88",
+      "size": 22222
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/dart_3.webp",
+      "sha256": "13a7721a5a4639a5c7e036219ac02e5a68762a745a14ad0337568653d1a78389",
+      "size": 20268
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/dart_4.webp",
+      "sha256": "000d096489cd8ddac77f911ec3e49df4d68ecaa39b6b0aaf490d925039fd60ad",
+      "size": 21516
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/dart_5.webp",
+      "sha256": "5c78fd3e99bdc839d6e67fc94122d40464d23be33a997ffbf6a0b854c94718a8",
+      "size": 18432
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/dart_6.webp",
+      "sha256": "f6cf3e2254f4ed527530624d6e89d222bdcc42b4d6aa86222cc6cdffe139f75b",
+      "size": 22744
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/deno.svg",
+      "sha256": "c7ea60906f1e7edabd34ca7a2fb0887419ea52691c036f145a36bceeeaace30a",
+      "size": 1052
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/digitalocean.svg",
+      "sha256": "a381454d22f05a4e7034c3e869c99bcac9a6f915ccc00577ed131b604baed489",
+      "size": 446
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/docker_0.webp",
+      "sha256": "acd5b77c9f25de496b5172b4e7001eb6fe521379c21884ccecec307e31df8bbf",
+      "size": 24450
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/docker_1.webp",
+      "sha256": "359d72dedc56958667faacf43703320aaa73599939a638d8bf13c18a1884c716",
+      "size": 17564
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/docker_2.webp",
+      "sha256": "a2bf03954ee0caf7fa653f2e2a21e6a507d9e30a2f7378d068f2f38315743fe3",
+      "size": 24442
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/docker_3.webp",
+      "sha256": "87ecc5c888cb7a5027e95ab2fe17d523483b090d93dda9c12b004e0e488d8180",
+      "size": 18912
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/docker_4.webp",
+      "sha256": "ac3551995045aec75caf64bc099313ff91280c25ad5644ee4c5b03f7d1c2aa51",
+      "size": 26822
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/docker_5.webp",
+      "sha256": "a9ea46b7ebdd6fd1f3a698990d7baf30dc485247de950740fc1bc93d64f45075",
+      "size": 32124
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/docker_6.webp",
+      "sha256": "11f0c735a5936db49b6f37288b99f55081090849bb83223e0f404c7a37995602",
+      "size": 31306
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/docker_7.webp",
+      "sha256": "08057e52ae7c848793de6e8d172b502b928cc39825da786cb6f9db49db42d57e",
+      "size": 22162
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/docker_8.webp",
+      "sha256": "2037da0b7c06c956c2f01e7c2ded2a4a0ad86a635a4a9d4896b25ed63006a573",
+      "size": 22658
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/docker_9.webp",
+      "sha256": "e9d9b46df81ed957cf1ecf790f4efe42ef7af32e806a8dd709dd99fbd830ee85",
+      "size": 25312
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/dotnet.svg",
+      "sha256": "9c3a414cec70d4cbafb6d568176db019e32388c1cb0f7c1ca6379bf513ae4ae0",
+      "size": 549
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/elasticsearch.svg",
+      "sha256": "698802b0b724880c41eb3fa8715f29891debf93a85d8fb71e39f230a6a37f727",
+      "size": 492
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/firebase.svg",
+      "sha256": "abbf47a2efb5468324769adb713211d1611f16550440bb3ca9d224462e2f44c3",
+      "size": 1942
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/flutter_0.webp",
+      "sha256": "24d2616a867aae03418b02414e635fd078aea6dd1b7ece47e18af270ed0715cc",
+      "size": 26740
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/flutter_1.webp",
+      "sha256": "5309247a3f4f29a9466160b06a5b00a560dcac96b4d5e810c4954d90d29c028f",
+      "size": 25192
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/flutter_10.webp",
+      "sha256": "edae1094fe27b8fd42aea108c77d04724ce6194d66d3c5a0ba4f7d4e4e520de9",
+      "size": 24294
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/flutter_2.webp",
+      "sha256": "cca8626c44f71c9ef250660b8f1e81fe24c6437a1b8120ee1ceac69e197e83e9",
+      "size": 26110
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/flutter_3.webp",
+      "sha256": "65bcc13007074bf238bab45e7d07579a86d42fdec963a2b7a140156ba5f2af0a",
+      "size": 21186
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/flutter_4.webp",
+      "sha256": "9f74233a3b82ded52f6162a4e894f404b88e6cf009af63d07129a75564421774",
+      "size": 29290
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/flutter_5.webp",
+      "sha256": "1da2d37af2db5adce99a4e0c27f8939b40c4babbf445d709fbadf6c0cf448bd5",
+      "size": 20858
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/flutter_6.webp",
+      "sha256": "cd25a66bfd84acbabf29997b298fc0eb2c1e9fb203abf10bbd0babb92e293051",
+      "size": 28958
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/flutter_7.webp",
+      "sha256": "f6656ad663a65389f5210f7f9141bb7b3a6bc628d9ecec9c1e8e2076f6852a59",
+      "size": 19936
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/flutter_8.webp",
+      "sha256": "fcc9b7b1940686abca587a126efe164ab7ab91adeb148b317414c946842273e7",
+      "size": 28980
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/flutter_9.webp",
+      "sha256": "e8e04bbff16d27e252cdacf47163b873685788bd3d80b2d80aa785b82a4123f6",
+      "size": 22700
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/gcore_0.webp",
+      "sha256": "ba1c6373507d8398bf14a424d6dbf2265eb620d991a4b82583c9f0b6291dcb9d",
+      "size": 27072
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/gcore_1.webp",
+      "sha256": "32471b8a93ab57db6fd37a01dc9ebcaebe65cececc7fc90bd1982709cc876d1c",
+      "size": 27728
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/gcore_2.webp",
+      "sha256": "994df68a9851802a24029979b6d778bda89a46d3b2bd927faafed1a959c95d9a",
+      "size": 26496
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/gcore_3.webp",
+      "sha256": "e21e052c2b1b5ce52258ca7b24ff888c987f115be904b2eda6e042a4fb7ad5c1",
+      "size": 32430
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/gcore_4.webp",
+      "sha256": "4bd2bc547ce64c42d37c58a7a9903e38cbcf333d9d1fac07de3705029b549e9c",
+      "size": 32616
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/gcore_5.webp",
+      "sha256": "b68211a41d56937ee0c3b3b78fa5d1448e52742e9bf39e022c88ea1e81e54081",
+      "size": 31262
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/gcore_6.webp",
+      "sha256": "75dd82d569708acf1809f2b8180302623bfdc72006a7766c15a9fa791879c7f2",
+      "size": 22908
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/gcore_7.webp",
+      "sha256": "630a2667a75869bf3fb6eea10c180ff868387e00df64d6b4a34b4645edf17a51",
+      "size": 22160
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/gcore_8.webp",
+      "sha256": "ef716e12b15b60700938e62a3793008884ad724bc6da054272869c7fb9cef40e",
+      "size": 21432
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/git.svg",
+      "sha256": "ae0cc33bc3fc7c29c500c90a029e32f21fdb9297e0b3d59948da27b2607e8a2c",
+      "size": 441
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/gitlab.svg",
+      "sha256": "3bbfcd2707b9cd5bc6d68d561da605c520a707ceaecf3912aede560bb0990e27",
+      "size": 588
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/golang.svg",
+      "sha256": "33e31a3d049683755ceb07b4a6abe830b2ee02e6ffeee408fe705ef078d3849e",
+      "size": 1651
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/googlecloud.svg",
+      "sha256": "eb848405c6a1ed56510e7cc88ffe6e2e12cd8331be4b0c8c31048d0b0e6d53a9",
+      "size": 698
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/grafana.svg",
+      "sha256": "fd70ea7298d67665cae32bdf1721fa7bd0b6b79b6f7cd8da1e3f77c97bbcdcc9",
+      "size": 3832
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/html5.svg",
+      "sha256": "6dbc134a2c0ede550ef086cd5ebc5c0af7ddf6c4318d4fe54706aaf6a4e4714e",
+      "size": 342
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/java.svg",
+      "sha256": "4c4618e49d30e7d026dfda95688ae1746c68a70e4f570c7b2f796715930c1951",
+      "size": 1789
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/javascript.svg",
+      "sha256": "673a6f54d0788fccd0f0b024cc4372c98a9f1c1f43859ec6227a599630f236c7",
+      "size": 989
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/kotlin.svg",
+      "sha256": "ee939b647aac2af31b8ecc944ad9e09846e3bf18956e808613b2966289be048b",
+      "size": 145
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/kubernetes.svg",
+      "sha256": "76037c7167ffdf86e7e014871ba0f42faa38e016c4e5a40aa3b3b011ce789587",
+      "size": 3580
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/microsoftazure.svg",
+      "sha256": "77d2e821402b72fe78f6dfbc15b96707a0d0ba1e36cccc89e6be99f9c43b54c8",
+      "size": 2104
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/mongodb.svg",
+      "sha256": "cf259f556e99f2df9056e60f34ef0eed3eeb4d096dec34f251b0f7a3a5c76fdd",
+      "size": 542
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/mysql.svg",
+      "sha256": "df58ab1e11500e6862bb2c53fbbe688e21b40758cd09090f2283649268f27872",
+      "size": 3640
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/netlify.svg",
+      "sha256": "f2d591c3a629c6ff7fa122646710526ed711584890dc1aeb9e864c2746f973f1",
+      "size": 671
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/nextjs.svg",
+      "sha256": "1d806f2ddfe4eb9599dba14d79a6cc79c5fa55b93805fcd1ab186773a8c42c53",
+      "size": 337
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/nginx.svg",
+      "sha256": "14e77ea88f50ee3ebcf43919b91e545292673ec35b21bee32ad1f230ee5004bd",
+      "size": 428
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/nodejs.svg",
+      "sha256": "6c7826737490eb559312b3fdc8853db70ef48a9e035d1bac019efd6e1a1e1371",
+      "size": 1623
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/npm.svg",
+      "sha256": "9e6b35d891816f4d1a684efd30eea380aaf1b2d3905f7102871d11eeab6830f6",
+      "size": 332
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/nuxt.svg",
+      "sha256": "980dc11f571195279f97316c584d36988607b4e94b727288b1f40768be498859",
+      "size": 891
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/php.svg",
+      "sha256": "73160274ce28c2cf01020519a08c959ae1922df0548da0a895ab4baff314f0dc",
+      "size": 1142
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/postgresql.svg",
+      "sha256": "bc45b1c56d0b1501dea387dbec4fda450d2ebc35244a620791815509d8c41dba",
+      "size": 5220
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/prisma_0.webp",
+      "sha256": "906e80f41e86463a6dc747447c04b39ca8b591bfce6d8acb4e2b14a9025b62fe",
+      "size": 26310
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/prisma_1.webp",
+      "sha256": "9a7008f0223db1a239c1bbc2e06ac3ef6037197303a6769cc37549c071e580e0",
+      "size": 26892
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/prisma_2.webp",
+      "sha256": "88818979689b45ec5001811cf3856101e2262b7de41a45f58d860a786f8256c1",
+      "size": 26048
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/prisma_3.webp",
+      "sha256": "720c26240f448373e7aac370c297448e28408b06305ea0ceee3807d793723d2d",
+      "size": 21758
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/prisma_4.webp",
+      "sha256": "7f7464f941460bb69252ecc2a607351a428af4976d9eda5d69c3f249adc638c4",
+      "size": 22200
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/prisma_5.webp",
+      "sha256": "9ce7587e36ff17086efbeeeaa91aa67338fccb131465b655bf585d014e9424ad",
+      "size": 20588
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/prometheus.svg",
+      "sha256": "aae7efa90a77c233d051d1d5a8b1ed9e78f39d357364be8c2f1d9383a476d027",
+      "size": 862
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/python.svg",
+      "sha256": "a762008752dc999ad54e7e477194f12a1b2ce07c735be1f21b3b3af8f26eb7af",
+      "size": 1533
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/react.svg",
+      "sha256": "37c8c23bc6ea999ad58b7f3883fc08b7e22128ec25adcca60ae1046ff878bcc3",
+      "size": 2941
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/redis.svg",
+      "sha256": "4245419834dd111d83a8ed645a2e305c67faa0af5c5b864eb5f0991de156034c",
+      "size": 753
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/ruby.svg",
+      "sha256": "2b0b2bad04afc6b8253ecda251bb20e0627fb728837858961edd5b039cfabe0a",
+      "size": 550
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/rust.svg",
+      "sha256": "fb4ca7ef5644310355c652029408aefa7710ab59abecbe386fdd300158ebfbe6",
+      "size": 4259
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/sap_0.webp",
+      "sha256": "cb807c4fe99f177b1add003472de892d1fff8cd10a8b41199a4244e8c8028724",
+      "size": 24600
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/sap_1.webp",
+      "sha256": "1816bfddf2f3e5802ee81f20e52cafa8554c0ec910e5ed54747dec9dfc97e922",
+      "size": 30040
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/sap_2.webp",
+      "sha256": "5e646d9e18b63498500cabdcb8d2ad479d5d0d0fdb683413f2d0c3b7e0bf54f5",
+      "size": 25544
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/sap_3.webp",
+      "sha256": "7d730ee009d8d7868d1c342ebb231f456a81d4e54114b5122e845d8493c28687",
+      "size": 19858
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/servicenow_0.webp",
+      "sha256": "538562d296824b79cead36bab4678522401a7a0e0a778867c765240535423fc9",
+      "size": 26902
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/servicenow_1.webp",
+      "sha256": "ecb00099449053950dd7d1f10ed88422343ded41474c6745bd80979d57fb9ec0",
+      "size": 28384
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/servicenow_2.webp",
+      "sha256": "bed3b77ac08ac54446ff828f4667d191f7728f134de83fbbdea963dad9c7ed24",
+      "size": 23736
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/sqlite.svg",
+      "sha256": "5d6914ac86d88c380d485b219171c18cb7eff2c738851f40f3c83d4d933c7cb1",
+      "size": 1435
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/supabase.svg",
+      "sha256": "75f9566421d97d4f1d8d7f34526189fd6e727ca83987432fc2477c2fc8388086",
+      "size": 318
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/svelte.svg",
+      "sha256": "e843069dd59d9e8389371030a066cfe8ac1e393f788878c77ffbecf2d030f720",
+      "size": 1511
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/swift.svg",
+      "sha256": "61012b73dabcfc026524e0aa84135482868023e9d68f7cb4fe19ac43a82b73f2",
+      "size": 1705
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/terraform.svg",
+      "sha256": "894a34063749ee52f945fd24ec5983b79e0da9cafa16d99e2f0b6506a8908ae5",
+      "size": 268
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/typescript.svg",
+      "sha256": "662b9b049a06df067089cacc32c8a40e14b08e13b5874f397ccf3e70ef15872c",
+      "size": 1309
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/uipath_0.webp",
+      "sha256": "7abde069cf10924ed951f09145891293359357af5b21889944bfd208a52e9edf",
+      "size": 27880
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/uipath_1.webp",
+      "sha256": "424126507d3c71e57628004d12260930e4888e6a50f429af36e52f13d277b4bf",
+      "size": 22836
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/vercel.svg",
+      "sha256": "075b9d221ef5a7ea63d85f140bd2d63007f31d3ed8ceec011abc3ffd529827e3",
+      "size": 147
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/visual_studio_code_0.webp",
+      "sha256": "fecfba47b7267fc290fe922ef4c1f3c8269b43047bc610776f25d1de23f3ede5",
+      "size": 19454
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/visual_studio_code_1.webp",
+      "sha256": "a1580e368e44c0f19c2916a5a690d6bd1884eded434d90f04a11beed4323a9b4",
+      "size": 20588
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/visual_studio_code_2.webp",
+      "sha256": "db19bd81facb88fbb2cbedfa28f945a2b93c9513f4f4cca6b56761085b8808cf",
+      "size": 30514
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/visual_studio_code_3.webp",
+      "sha256": "b2bf3518587773d0b9ebb2894816f5a6cc96802e7864f3dbdb1ed52db8c71df1",
+      "size": 28992
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/tech/vue.svg",
+      "sha256": "5a106bc81911286a616a911280f185401408cae30305114481e28191ae6656ea",
+      "size": 217
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/web_platforms/squarespace.webp",
+      "sha256": "5703d384d0f7917bb9fb03618b8f8973c7f6df7f650bb1a38532429942980713",
+      "size": 29350
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/web_platforms/weebly.webp",
+      "sha256": "928fd116f7a66a93f6bbb3f538787ba94f1dac6e6dd30c271b2b28b7ace9638c",
+      "size": 32718
+    },
+    {
+      "path": "data/flutter_assets/assets/brands/web_platforms/wix.webp",
+      "sha256": "998ea1f281108573b463527a80621606dc333bf6cd145266d24aed06bae6e399",
+      "size": 28428
+    },
+    {
+      "path": "data/flutter_assets/assets/fonts/SpaceGrotesk/SpaceGrotesk-300.woff2",
+      "sha256": "a5de30e3b00eec05d96c3db37b9a90e36c6ed68f1bed5b38eb3e6871ff04a145",
+      "size": 12908
+    },
+    {
+      "path": "data/flutter_assets/assets/fonts/SpaceGrotesk/SpaceGrotesk-400.woff2",
+      "sha256": "65fd17fcbd2e2f522940b5f67ead3d23329e02891aa5495e74d11a499c0b0673",
+      "size": 13388
+    },
+    {
+      "path": "data/flutter_assets/assets/fonts/SpaceGrotesk/SpaceGrotesk-500.woff2",
+      "sha256": "1b1a8131d9edf975d9decee81e2f2bf504812f7a4f498e5500f28a613e22e64c",
+      "size": 13312
+    },
+    {
+      "path": "data/flutter_assets/assets/fonts/SpaceGrotesk/SpaceGrotesk-600.woff2",
+      "sha256": "685bbbf69fa616df1ef81847c85fc76be097ddfb3468ff2257be54511ab3130f",
+      "size": 13284
+    },
+    {
+      "path": "data/flutter_assets/assets/fonts/SpaceGrotesk/SpaceGrotesk-700.woff2",
+      "sha256": "35f8aec56cfd5cbfdb03cc68733a54a0b05bb3617ffcd5fd332badc0b045ca55",
+      "size": 12840
+    },
+    {
+      "path": "data/flutter_assets/assets/fonts/SpaceGrotesk/SpaceGrotesk-Variable.ttf",
+      "sha256": "acad6de1fc93436f5c0f1f4137751ef04f1aea3063e7036535970ffcfbd79f72",
+      "size": 136676
+    },
+    {
+      "path": "data/flutter_assets/assets/logos/void_scriptor_logo.png",
+      "sha256": "378fd64472b8e5772e62b101cbd5643120c9832f423c3561aefceb6da78a97b6",
+      "size": 199554
+    },
+    {
+      "path": "data/flutter_assets/assets/mascot/byte_startup_3d_v2.png",
+      "sha256": "67bb6ccf6aea090b7bf070016b0cdb68505315c95711c65c664ab61f6b8a0303",
+      "size": 1437064
+    },
+    {
+      "path": "data/flutter_assets/assets/mascot/byte_startup_cutout_v1.png",
+      "sha256": "d524cb6b0c03372455e3985db963ed562f9f457a98b45cc4f78b85d5f296613b",
+      "size": 1337875
+    },
+    {
+      "path": "data/flutter_assets/assets/models/byte_mascot_v1.glb",
+      "sha256": "88b853435801372f2d70a073c4634cf38d232482add1feaf0331c4e1ba7a7f75",
+      "size": 483992
+    },
+    {
+      "path": "data/flutter_assets/FontManifest.json",
+      "sha256": "d1b89ba52146a19b0daf8d3be033a178085f3adff3f2019b79e6af33c9e20c34",
+      "size": 540
+    },
+    {
+      "path": "data/flutter_assets/fonts/MaterialIcons-Regular.otf",
+      "sha256": "d9865b671a09d683d13a863089d8825e0f61a37696ce5d7d448bc8023aa62453",
+      "size": 1645184
+    },
+    {
+      "path": "data/flutter_assets/kernel_blob.bin",
+      "sha256": "8f5c034a4de8ae481418c4f7331b493ca5f2d3e08c3fc02bced279f14cc963ab",
+      "size": 100706296
+    },
+    {
+      "path": "data/flutter_assets/NativeAssetsManifest.json",
+      "sha256": "4ac70f7d67abb2ffc105d2cabfdee68c9aa138d132107e5be4949c539f7ce379",
+      "size": 131
+    },
+    {
+      "path": "data/flutter_assets/NOTICES.Z",
+      "sha256": "2ba10a948e8a5d830896b22fe3f8ad20a789f72ef9d392e2f41b6c8f3204d9a2",
+      "size": 110987
+    },
+    {
+      "path": "data/flutter_assets/packages/lucide_flutter/assets/lucide.ttf",
+      "sha256": "17dc5fd2ef603b487f8a307ca03b6c944579b214189dd21a34e98228fc8077cd",
+      "size": 882292
+    },
+    {
+      "path": "data/flutter_assets/shaders/ink_sparkle.frag",
+      "sha256": "1fe8436a743884cb65078fe8c7b38e18f5365f2a2961270916f426fd13c604af",
+      "size": 21856
+    },
+    {
+      "path": "data/flutter_assets/shaders/stretch_effect.frag",
+      "sha256": "62a899ff4e168ac6ca888ce7c2f40e5d3fbf8ca20a1c3ded781a116a6d7907e2",
+      "size": 17624
+    },
+    {
+      "path": "data/icudtl.dat",
+      "sha256": "998367809a821d595928089c197b3f7959f0420f81f79d4d0daee53378492ed5",
+      "size": 862304
+    },
+    {
+      "path": "file_selector_windows_plugin.dll",
+      "sha256": "ed1b5e62535b35216b0c2e4c23a0758821dd51b66726da5474696616aa5f4c2d",
+      "size": 1498624
+    },
+    {
+      "path": "flutter_secure_storage_windows_plugin.dll",
+      "sha256": "b43fffd2eabd9f14524e9234696ff5f52310620128b351058dcc557760415bf3",
+      "size": 1478144
+    },
+    {
+      "path": "flutter_windows.dll",
+      "sha256": "9db329733c2df76bee29bf57ae23985143ff8bc0c3a76ae56ac45e4e4f8806c0",
+      "size": 45550592
+    },
+    {
+      "path": "native_assets.json",
+      "sha256": "b1b4b9d95205c27b23ba9a5579885e8e55d17f4be7f16c836a5dc74c7798e5f8",
+      "size": 209
+    },
+    {
+      "path": "sqlite3.dll",
+      "sha256": "2bf39f2aadafdc59a90b260f582a8fccebc5b89eb94175fdbaa9148c1e1f084d",
+      "size": 1709056
+    },
+    {
+      "path": "void_scriptor.exe",
+      "sha256": "96549a0b5cb1243c4e1206f2468e9dc75a31912787d2577f3124b8053e6a7d47",
+      "size": 1354752
+    },
+    {
+      "path": "void_scriptor.pdb",
+      "sha256": "c52069900754304d95366605df432830561e4a1b1e9c94c621e85fc521c1a360",
+      "size": 8712192
+    }
+  ],
+  "build_provenance": {
+    "build_command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --debug --no-pub",
+    "source_revision": "854237fc4f98b722ce37b6f52a684ae9e5742045"
+  },
+  "dependencies": {
+    "pubspec_lock_sha256": "32e31fd31a928e20007226e720ee37a661afb5d0d224d4eb24b04463496626f8"
+  },
+  "flags": {
+    "vs12_world_logic_shared": false
+  },
+  "format": "void-scriptor-rc-reproducibility-v1",
+  "schema": {
+    "database": 62,
+    "project_format_major": 1,
+    "project_format_schema": 16
+  },
+  "signing": {
+    "algorithm": "Ed25519",
+    "status": "UNSIGNED_LOCAL_ONLY"
+  },
+  "version": "1.2.0-rc.1"
+}

@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-21",
-  "updated_by": "nephthys cron: complete 112.51 documentation gate",
+  "updated_by": "nephthys cron: 112.52 reproducibility evidence",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -621,9 +621,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "112.51",
-  "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-21: 112.51 VERIFIED-LOCAL — dedicated RC documentation for recovery, model transparency, known limits, support, and honest release notes; focused 1/1, test/release 94/94, analyzer/format/diff-check PASS. Pointer 112.52.",
+  "current_step": "112.52",
+  "current_step_status": "PARTIAL",
+  "last_run_summary": "2026-09-21: 112.52 PARTIAL — reproducibility manifest and local Windows debug artifact verified; signing remains UNSIGNED_LOCAL_ONLY.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -693,6 +693,14 @@
     "test": "test/release/sprint_112_documentation_support_release_notes_test.dart",
     "evidence": "TDD RED dedicated RC doc paths absent/generic -> GREEN 1/1; test/release 94/94 PASS; full analyzer No issues; format/diff-check PASS.",
     "limitations": "RC artifact/checksums/provenance/signing belong to 112.52; native GUI, hosted CI, hardware, public release remain UNVERIFIABLE/DEFERRED.",
+    "next_step": "112.52"
+  },
+  "sprint_112_step_11252": {
+    "status": "PARTIAL",
+    "manifest": "docs/planning/v1.2/sprint_112_rc_artifact_reproducibility.json",
+    "test": "test/release/sprint_112_rc_artifact_reproducibility_test.dart",
+    "evidence": "Local Windows debug artifact build exit 0 in 42.3s; Python generator 2/2 PASS; focused contract 1/1 PASS; full flutter analyze No issues; format/diff-check PASS. Artifact manifest includes SHA-256, dependency lock SHA-256, schema 1/16/62, flags, source revision, and build command. Signing UNSIGNED_LOCAL_ONLY; no key material stored.",
+    "limitations": "Signed artifact, release packaging, hosted CI, native GUI, hardware, and public release remain UNVERIFIABLE/DEFERRED.",
     "next_step": "112.52"
   }
 }

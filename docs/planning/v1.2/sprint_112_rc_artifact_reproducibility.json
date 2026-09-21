@@ -1,0 +1,45 @@
+{
+  "canonical_step": "112.52",
+  "title": "RC Artifact & Reproducibility",
+  "version": "1.2.0-rc.1",
+  "status": "PARTIAL",
+  "scope": "Local Windows debug artifact, deterministic checksum manifest, dependency/schema/flag inventory, and build provenance.",
+  "artifact": {
+    "path": "build/windows/x64/runner/Debug/void_scriptor.exe",
+    "status": "BUILT_LOCAL_DEBUG",
+    "signing": {
+      "status": "UNSIGNED_LOCAL_ONLY",
+      "algorithm": "Ed25519",
+      "key_material": "NOT_PRESENT_IN_REPOSITORY"
+    }
+  },
+  "manifest": {
+    "path": "docs/evidence/sprint-112-52-rc-reproducibility-manifest.json",
+    "format": "void-scriptor-rc-reproducibility-v1",
+    "checksum": "SHA-256 per artifact",
+    "dependency_source": "pubspec.lock",
+    "schema": {
+      "project_format_major": 1,
+      "project_format_schema": 16,
+      "database": 62
+    },
+    "flags": {
+      "vs12_world_logic_shared": false
+    },
+    "provenance": {
+      "source_revision": "HEAD at generation time",
+      "build_command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --debug --no-pub"
+    }
+  },
+  "evidence": [
+    "test/tools/test_generate_release_candidate.py",
+    "test/release/sprint_112_rc_artifact_reproducibility_test.dart",
+    "docs/evidence/sprint-112-52-rc-reproducibility-manifest.json"
+  ],
+  "limits": [
+    "A local debug executable is not a production release package.",
+    "No release signing credential is available to this cron run; signed_artifact remains unverified.",
+    "Hosted CI, native release packaging, and public publication remain deferred."
+  ],
+  "decision": "PARTIAL_REPRODUCIBILITY_VERIFIED_SIGNING_BLOCKED"
+}

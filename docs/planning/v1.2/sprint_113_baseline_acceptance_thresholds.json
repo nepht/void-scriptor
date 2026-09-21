@@ -1,0 +1,100 @@
+{
+  "canonical_step": "113.8",
+  "title": "Baseline & Acceptance Thresholds",
+  "version": "1.2.0-rc.1",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Membekukan baseline dan batas lulus untuk stabilitas, performa, migrasi, recovery, serta workflow.",
+  "thresholds": [
+    {
+      "id": "T-01",
+      "category": "stability",
+      "metric": "Crash-free session rate",
+      "baseline": "100% (tidak ada crash yang diketahui di HEAD saat ini)",
+      "threshold": ">= 99%",
+      "sample": "Semua sesi validasi",
+      "window": "Selama validation window",
+      "owner": "nephthys",
+      "decision_rule": "Jika crash rate > 1%, hentikan validation dan investigasi"
+    },
+    {
+      "id": "T-02",
+      "category": "stability",
+      "metric": "Data loss incidents",
+      "baseline": "0",
+      "threshold": "0",
+      "sample": "Semua project selama validasi",
+      "window": "Selama validation window",
+      "owner": "Choirudin",
+      "decision_rule": "Jika ada 1 insiden data loss, STOP-SHIP segera"
+    },
+    {
+      "id": "T-03",
+      "category": "performance",
+      "metric": "Cold start time",
+      "baseline": "5.0 detik (dari benchmark sebelumnya)",
+      "threshold": "<= 8.0 detik",
+      "sample": "10 cold starts rata-rata",
+      "window": "Benchmark session",
+      "owner": "nephthys",
+      "decision_rule": "Jika rata-rata > 8.0 detik, defect performance P2"
+    },
+    {
+      "id": "T-04",
+      "category": "performance",
+      "metric": "Search query latency (p95)",
+      "baseline": "500ms",
+      "threshold": "<= 1000ms",
+      "sample": "100 queries across project sizes",
+      "window": "Benchmark session",
+      "owner": "nephthys",
+      "decision_rule": "Jika p95 > 1000ms, defect performance P2"
+    },
+    {
+      "id": "T-05",
+      "category": "migration",
+      "metric": "Migration success rate (v1.0.x/v1.1.x ke RC)",
+      "baseline": "100%",
+      "threshold": "100%",
+      "sample": "Semua project migrasi",
+      "window": "Selama validasi upgrade path",
+      "owner": "nephthys",
+      "decision_rule": "Jika ada 1 migrasi gagal tanpa recovery, STOP-SHIP"
+    },
+    {
+      "id": "T-06",
+      "category": "recovery",
+      "metric": "Backup restore success rate",
+      "baseline": "100%",
+      "threshold": "100%",
+      "sample": "Semua restore attempts",
+      "window": "Selama validasi recovery",
+      "owner": "nephthys",
+      "decision_rule": "Jika restore gagal, defect reliability P1"
+    },
+    {
+      "id": "T-07",
+      "category": "workflow",
+      "metric": "Writer workflow completion rate",
+      "baseline": "100%",
+      "threshold": ">= 95%",
+      "sample": "Semua writer workflow attempts",
+      "window": "Selama validasi workflow",
+      "owner": "Choirudin",
+      "decision_rule": "Jika completion rate < 95%, defect workflow P1"
+    }
+  ],
+  "overall_decision_rule": "Semua threshold harus terpenuhi untuk GA Approval Gate PASS. Satu pun threshold yang melanggar = validasi GAGAL untuk kategori terkait.",
+  "measurement_notes": [
+    "Baseline diambil dari HEAD saat ini, bukan dari performa historis",
+    "Threshold ditetapkan dengan margin toleransi yang wajar",
+    "Measurement dilakukan pada hardware yang sama dengan development",
+    "Sample size bisa bertambah selama validation window"
+  ],
+  "decision": "THRESHOLDS_DEFINED",
+  "limits": [
+    "Threshold ini adalah baseline awal, bukan target final.",
+    "Choirudin dapat menyesuaikan threshold sebelum validation window dimulai.",
+    "Measurement methodology harus konsisten di seluruh sesi validasi.",
+    "Hosted CI, native GUI, hardware, dan public release tetap DEFERRED."
+  ]
+}

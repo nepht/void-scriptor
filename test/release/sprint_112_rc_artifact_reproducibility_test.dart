@@ -19,7 +19,15 @@ void main() {
     expect(document['canonical_step'], '112.52');
     expect(document['version'], '1.2.0-rc.1');
     expect(document['status'], 'PARTIAL');
-    expect(document['artifact']['signing']['status'], 'UNSIGNED_LOCAL_ONLY');
+    expect(document['artifact']['signing']['status'], 'SELF_SIGNED_LOCAL');
+    expect(
+      document['artifact']['signing']['algorithm'],
+      'Authenticode-SHA256',
+    );
+    expect(
+      document['artifact']['signing']['trust_scope'],
+      'CurrentUser Root store only',
+    );
     expect(
       document['artifact']['signing']['key_material'],
       'NOT_PRESENT_IN_REPOSITORY',

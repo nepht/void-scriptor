@@ -8,8 +8,10 @@
     "path": "build/windows/x64/runner/Debug/void_scriptor.exe",
     "status": "BUILT_LOCAL_DEBUG",
     "signing": {
-      "status": "UNSIGNED_LOCAL_ONLY",
-      "algorithm": "Ed25519",
+      "status": "SELF_SIGNED_LOCAL",
+      "algorithm": "Authenticode-SHA256",
+      "certificate_thumbprint": "E336967CB949B489B7FE320E80683780C00C4A8A",
+      "trust_scope": "CurrentUser Root store only",
       "key_material": "NOT_PRESENT_IN_REPOSITORY"
     }
   },

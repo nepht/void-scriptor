@@ -2462,8 +2462,8 @@
     },
     {
       "path": "void_scriptor.exe",
-      "sha256": "96549a0b5cb1243c4e1206f2468e9dc75a31912787d2577f3124b8053e6a7d47",
-      "size": 1354752
+      "sha256": "b6bd7684f5556a337946135e35c87e2d99fd01c54cabf0608d58dc1699a29139",
+      "size": 1356216
     },
     {
       "path": "void_scriptor.pdb",
@@ -2473,7 +2473,7 @@
   ],
   "build_provenance": {
     "build_command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --debug --no-pub",
-    "source_revision": "854237fc4f98b722ce37b6f52a684ae9e5742045"
+    "source_revision": "f0288a4b8c53cb209efea3a5088462485859c95d"
   },
   "dependencies": {
     "pubspec_lock_sha256": "32e31fd31a928e20007226e720ee37a661afb5d0d224d4eb24b04463496626f8"
@@ -2488,8 +2488,10 @@
     "project_format_schema": 16
   },
   "signing": {
-    "algorithm": "Ed25519",
-    "status": "UNSIGNED_LOCAL_ONLY"
+    "algorithm": "Authenticode-SHA256",
+    "certificate_thumbprint": "E336967CB949B489B7FE320E80683780C00C4A8A",
+    "status": "SELF_SIGNED_LOCAL",
+    "trust_scope": "CurrentUser Root store only"
   },
   "version": "1.2.0-rc.1"
 }

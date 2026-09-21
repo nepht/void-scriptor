@@ -1,0 +1,116 @@
+{
+  "canonical_step": "113.5",
+  "title": "Support & Escalation Readiness",
+  "version": "1.2.0-rc.1",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Menyiapkan intake, severity, response ownership, recovery guidance, dan escalation path.",
+  "severity_matrix": {
+    "P0": {
+      "definition": "Kehilangan/korupsi data yang dapat direproduksi, credential exposure, atau bypass boundary keamanan",
+      "response_target": "Immediate",
+      "max_response_hours": 2,
+      "resolution_target_hours": 24,
+      "owner": "Choirudin"
+    },
+    "P1": {
+      "definition": "Project tidak dapat dibuka atau core workflow terblokir tanpa workaround aman",
+      "response_target": "Urgent",
+      "max_response_hours": 8,
+      "resolution_target_hours": 72,
+      "owner": "Choirudin"
+    },
+    "P2": {
+      "definition": "Fungsi salah dengan workaround aman; tidak ada kehilangan data",
+      "response_target": "Normal",
+      "max_response_hours": 24,
+      "resolution_target_hours": 168,
+      "owner": "nephthys"
+    },
+    "P3": {
+      "definition": "Kosmetik, dokumentasi, atau friction non-blocking",
+      "response_target": "Low",
+      "max_response_hours": 72,
+      "resolution_target_hours": 336,
+      "owner": "nephthys"
+    }
+  },
+  "response_targets": {
+    "P0": {
+      "max_response_hours": 2,
+      "notification": "Choirudin langsung via preferred channel",
+      "action": "Stop distribution, hentikan kandidat, mulai investigation"
+    },
+    "P1": {
+      "max_response_hours": 8,
+      "notification": "Choirudin via preferred channel",
+      "action": "Investigate, mulai fix, document workaround jika ada"
+    },
+    "P2": {
+      "max_response_hours": 24,
+      "notification": "Async via issue tracker",
+      "action": "Schedule fix dalam sprint berikutnya"
+    },
+    "P3": {
+      "max_response_hours": 72,
+      "notification": "Backlog",
+      "action": "Fix saat ada waktu luang"
+    }
+  },
+  "recovery_guides": [
+    {
+      "scenario": "Database corruption or migration failure",
+      "guide_path": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+      "owner": "nephthys"
+    },
+    {
+      "scenario": "Crash on startup or session lock",
+      "guide_path": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+      "owner": "nephthys"
+    },
+    {
+      "scenario": "Backup restore or data recovery",
+      "guide_path": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+      "owner": "nephthys"
+    },
+    {
+      "scenario": "Security/privacy incident",
+      "guide_path": "docs/release/hotfix-runbook-v1.0.1.md",
+      "owner": "Choirudin"
+    }
+  ],
+  "escalation_paths": [
+    {
+      "trigger": "P0 data loss or security incident",
+      "action": "Immediate halt of distribution, notify Choirudin, begin hotfix",
+      "owner": "Choirudin",
+      "communication": "Direct channel, no public disclosure until resolved"
+    },
+    {
+      "trigger": "P1 core workflow blocked",
+      "action": "Investigate root cause, provide workaround or patch",
+      "owner": "Choirudin",
+      "communication": "Issue tracker, async notification"
+    },
+    {
+      "trigger": "Multiple P2 issues from same workflow",
+      "action": "Review for systemic issue, escalate to P1 if pattern found",
+      "owner": "nephthys",
+      "communication": "Issue tracker"
+    },
+    {
+      "trigger": "External dependency failure (AI provider, OS update)",
+      "action": "Document workaround, notify users via release notes",
+      "owner": "nephthys",
+      "communication": "Release notes, documentation update"
+    }
+  ],
+  "support_playbook_ref": "docs/release/v1.2.0-rc.1-support-playbook.md",
+  "recovery_guide_ref": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+  "decision": "SUPPORT_READINESS_DEFINED",
+  "limits": [
+    "Support playbook ini mendefinisikan kerangka triage dan escalation, bukan jaminan resolusi.",
+    "Choirudin adalah decision maker untuk semua P0 dan P1 keputusan.",
+    "Tidak ada public support channel yang dioperasikan — support dilakukan secara langsung.",
+    "Hosted CI, public release, dan distribusi eksternal tetap DEFERRED."
+  ]
+}

@@ -28,6 +28,25 @@ def _artifacts(artifact_dir: Path) -> list[dict[str, Any]]:
     ]
 
 
+def load_signing_evidence(path: Path) -> dict[str, Any]:
+    document = json.loads(path.read_text(encoding="utf-8"))
+    signing = document.get("signing")
+    if not isinstance(signing, dict):
+        raise ValueError("Signing evidence must contain a signing object.")
+    forbidden = {"password", "private_key", "pfx", "pfx_base64"}
+    present_forbidden = forbidden.intersection(key.lower() for key in signing)
+    if present_forbidden:
+        raise ValueError("Signing evidence contains forbidden secret fields.")
+    if signing.get("status") not in {
+        "SELF_SIGNED_LOCAL_VERIFIED",
+        "SIGNED_AND_VERIFIED",
+    }:
+        raise ValueError("Signing evidence is not verified.")
+    if signing.get("verification_exit_code") != 0:
+        raise ValueError("Signing evidence verification did not succeed.")
+    return dict(signing)
+
+
 def generate_release_candidate_manifest(
     *,
     artifact_dir: Path,
@@ -40,7 +59,7 @@ def generate_release_candidate_manifest(
     dependency_lock_sha256: str,
     build_command: str,
     source_revision: str,
-    signing: dict[str, str],
+    signing: dict[str, Any],
 ) -> None:
     document = {
         "format": "void-scriptor-rc-reproducibility-v1",
@@ -67,23 +86,35 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("artifact_dir", type=Path)
     parser.add_argument("output_path", type=Path)
+    parser.add_argument("--version", default="1.2.0-rc.1")
+    parser.add_argument("--source-revision", default="unknown")
+    parser.add_argument(
+        "--build-command",
+        default="flutter build windows --debug --no-pub",
+    )
+    parser.add_argument("--signing-manifest", type=Path)
     args = parser.parse_args()
+    signing = (
+        load_signing_evidence(args.signing_manifest)
+        if args.signing_manifest is not None
+        else {
+            "status": "UNSIGNED_LOCAL_ONLY",
+            "algorithm": "Authenticode-SHA256",
+            "certificate_source": "NOT_CONFIGURED",
+        }
+    )
     generate_release_candidate_manifest(
         artifact_dir=args.artifact_dir,
         output_path=args.output_path,
-        version="1.2.0-rc.1",
+        version=args.version,
         project_format_major=1,
         project_format_schema=16,
         database_schema=62,
         feature_flags={"vs12_world_logic_shared": False},
         dependency_lock_sha256=_sha256(Path("pubspec.lock")),
-        build_command="flutter build windows --debug --no-pub",
-        source_revision="unknown",
-        signing={
-            "status": "UNSIGNED_LOCAL_ONLY",
-            "algorithm": "Authenticode-SHA256",
-            "certificate_source": "NOT_CONFIGURED",
-        },
+        build_command=args.build_command,
+        source_revision=args.source_revision,
+        signing=signing,
     )
     print(f"RC_MANIFEST_READY: {args.output_path}")
     return 0

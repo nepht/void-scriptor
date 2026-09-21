@@ -22,6 +22,29 @@ def _load_module():
 
 
 class GenerateReleaseCandidateTest(unittest.TestCase):
+    def test_loads_verified_signing_evidence_without_private_material(self):
+        module = _load_module()
+        with tempfile.TemporaryDirectory() as temp:
+            signing_manifest = Path(temp) / "signing.json"
+            signing_manifest.write_text(
+                json.dumps(
+                    {
+                        "signing": {
+                            "status": "SELF_SIGNED_LOCAL_VERIFIED",
+                            "algorithm": "Authenticode-SHA256",
+                            "verification_exit_code": 0,
+                            "key_material": "NOT_PRESENT_IN_REPOSITORY",
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            signing = module.load_signing_evidence(signing_manifest)
+
+            self.assertEqual(signing["status"], "SELF_SIGNED_LOCAL_VERIFIED")
+            self.assertEqual(signing["verification_exit_code"], 0)
+
     def test_manifest_captures_version_dependencies_schema_flags_and_provenance(self):
         module = _load_module()
         with tempfile.TemporaryDirectory() as temp:

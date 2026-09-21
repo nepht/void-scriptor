@@ -55,7 +55,7 @@ $now = Get-Date
 if ($now -lt $certificate.NotBefore -or $now -gt $certificate.NotAfter) {
   throw "Certificate $thumbprint is outside its validity period."
 }
-$eku = @($certificate.EnhancedKeyUsageList | ForEach-Object { $_.ObjectId.Value })
+$eku = @($certificate.EnhancedKeyUsageList | ForEach-Object { [string]$_.ObjectId })
 if ($eku.Count -gt 0 -and $eku -notcontains '1.3.6.1.5.5.7.3.3') {
   throw "Certificate $thumbprint is not valid for code signing."
 }

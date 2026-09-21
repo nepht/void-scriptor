@@ -1,0 +1,126 @@
+{
+  "canonical_step": "113.2",
+  "title": "Release Validation Charter",
+  "version": "1.2.0-rc.1",
+  "status": "PARTIAL",
+  "objective": "Menetapkan pertanyaan, durasi, scope, non-goals, evidence, decision owner, dan stop conditions.",
+  "validation_questions": [
+    {
+      "id": "VQ-01",
+      "question": "Apakah RC artifact dapat diinstal dan dijalankan pada clean Windows installation?",
+      "scope": "clean_install",
+      "owner": "Choirudin"
+    },
+    {
+      "id": "VQ-02",
+      "question": "Apakah project lama (v1.0.x / v1.1.x) dapat dibuka tanpa kehilangan data?",
+      "scope": "upgrade_path",
+      "owner": "nephthys"
+    },
+    {
+      "id": "VQ-03",
+      "question": "Apakah writer workflow utama (drafting, lore links, POV, pacing) berfungsi tanpa error?",
+      "scope": "writer_workflow",
+      "owner": "Choirudin"
+    },
+    {
+      "id": "VQ-04",
+      "question": "Apakah world simulation (factions, diplomacy, economy, power systems) menghasilkan output deterministik?",
+      "scope": "world_simulation",
+      "owner": "nephthys"
+    },
+    {
+      "id": "VQ-05",
+      "question": "Apakah autosave dan crash recovery bekerja pada failure injection?",
+      "scope": "reliability",
+      "owner": "nephthys"
+    },
+    {
+      "id": "VQ-06",
+      "question": "Apakah spoiler redaction dan beta reader flow tidak membocorkan data tersembunyi?",
+      "scope": "privacy",
+      "owner": "nephthys"
+    },
+    {
+      "id": "VQ-07",
+      "question": "Apakah export DOCX, plain text, dan knowledge package menghasilkan output valid?",
+      "scope": "publishing",
+      "owner": "nephthys"
+    },
+    {
+      "id": "VQ-08",
+      "question": "Apakah aplikasi berfungsi offline tanpa koneksi internet atau provider AI?",
+      "scope": "offline_local_first",
+      "owner": "nephthys"
+    }
+  ],
+  "validation_window": {
+    "duration": "2 minggu dari GA Approval Gate PASS",
+    "start_condition": "Semua pertanyaan validasi dijawab dengan evidence yang memadai",
+    "owner": "Choirudin",
+    "extension_allowed": true,
+    "max_extension": "1 minggu"
+  },
+  "scope": {
+    "included": [
+      "v1.2.0-rc.1 artifact pada Windows",
+      "29 fitur unik F1-F29",
+      "Migration dari v1.0.x dan v1.1.x",
+      "Writer workflow, world simulation, publishing, offline mode",
+      "Security, privacy, accessibility, localization gates",
+      "Autosave, crash recovery, data integrity"
+    ],
+    "excluded": [
+      "Native macOS/Linux packaging",
+      "Hosted CI automated validation",
+      "Mobile (Android/iOS) testing",
+      "Third-party plugin ecosystem",
+      "Payment/subscription flow",
+      "Public community features",
+      "XR/metaverse integration"
+    ]
+  },
+  "non_goals": [
+    "New feature development",
+    "Unapproved scope expansion",
+    "Breaking schema change",
+    "Forced cloud dependency",
+    "Performance optimization beyond threshold",
+    "UI redesign"
+  ],
+  "evidence_format": {
+    "test_results": "PASS/FAIL with command and exit code",
+    "manual_observation": "Description with screenshots if applicable",
+    "performance_metrics": "Baseline vs actual with units",
+    "security_findings": "Severity, reproduction steps, mitigation"
+  },
+  "decision_owners": {
+    "validation_result": "Choirudin",
+    "release_blocker_fix": "nephthys",
+    "scope_expansion": "Choirudin",
+    "stop_ship": "Choirudin",
+    "rollback": "Choirudin"
+  },
+  "stop_conditions": [
+    "Data loss or corruption detected",
+    "Security incident with high severity",
+    "Core workflow unusable on supported configuration",
+    "Migration failure without recovery path",
+    "Privacy leak of creative content",
+    "Crash loop on clean installation",
+    "More than 3 release blockers unresolved after 1 week"
+  ],
+  "success_criteria": {
+    "all_questions_answered": "All VQ-01 through VQ-08 have evidence",
+    "no_release_blockers": "Zero open release blockers per 113.30 definition",
+    "quality_gates_green": "All automated gates PASS",
+    "rollback_verified": "Rollback drill completed successfully"
+  },
+  "decision": "CHARTER_DEFINED",
+  "limits": [
+    "Charter ini mendefinisikan scope validasi, bukan persetujuan rilis.",
+    "Choirudin harus menyetujui secara eksplisit setiap keputusan go/no-go.",
+    "Validation window dimulai hanya setelah GA Approval Gate PASS.",
+    "Hosted CI dan native GUI validation tetap DEFERRED sampai gate terpisah."
+  ]
+}

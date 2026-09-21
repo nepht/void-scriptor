@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.1",
-  "next_step": "113.2",
+  "last_verified_step": "113.2",
+  "next_step": "113.3",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-21",
-  "updated_by": "nephthys: 113.1 VERIFIED-LOCAL. Sprint 113 activated.",
+  "updated_by": "nephthys: 113.2 VERIFIED-LOCAL.",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -434,7 +434,7 @@
       "status": "CLOSED-VERIFIED-LOCAL",
       "commit": "a4c038d"
     },
-    "next_step": "113.2",
+    "next_step": "113.3",
     "resume_authority": "KEPUTUSAN CHOI 21 Sep: 1 ya dan mulai"
   },
   "activation_rules_11122_run362": {
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "113.1",
+  "current_step": "113.2",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-21: 113.1 VERIFIED-LOCAL. Sprint 113 activated. GA Entry Gate 9/9 PASS.",
+  "last_run_summary": "2026-09-21: 113.2 VERIFIED-LOCAL. Release Validation Charter 10/10 PASS.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -724,5 +724,13 @@
     "test": "test/release/sprint_112_sprint_closure_test.dart",
     "evidence": "4/4 PASS; all 8 closure criteria verified; domain + manifest exist. Sprint 112 CLOSED locally with DEFERRED_EXTERNAL_GATES decision.",
     "limitations": "Hosted CI, public CA/timestamp, installer/uninstall, hardware/native GUI, publication, and deployment remain DEFERRED/UNVERIFIABLE."
+  },
+  "sprint_113_step_1132": {
+    "status": "VERIFIED-LOCAL",
+    "manifest": "docs/planning/v1.2/sprint_113_release_validation_charter.json",
+    "test": "test/release/sprint_113_release_validation_charter_test.dart",
+    "evidence": "TDD RED missing charter manifest/domain -> GREEN 10/10 PASS; regression test/release 119/119 PASS; scoped analyzer No issues; format PASS.",
+    "limitations": "Hosted CI, public CA/timestamp, installer, native GUI, hardware, and public release remain DEFERRED.",
+    "next_step": "113.3"
   }
 }

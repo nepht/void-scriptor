@@ -28,8 +28,8 @@
   "active_sprint": 112,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_112.json",
   "active_ledger": "docs/sprints/sprint-112-worldbuilding-integration-validation-release-candidate.md",
-  "last_verified_step": "112.50",
-  "next_step": "112.51",
+  "last_verified_step": "112.51",
+  "next_step": "112.52",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-21",
-  "updated_by": "nephthys repair: sync runtime pointer after committed 112.50 gate",
+  "updated_by": "nephthys cron: complete 112.51 documentation gate",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -429,7 +429,7 @@
     "resumed_on": "2026-09-16",
     "authority": "KEPUTUSAN CHOI 16 Sep: Aktifkan Sprint 112 dan mulai dari 112.1",
     "previous_sprint": "111.46 CLOSED-VERIFIED-LOCAL commit b34f317",
-    "next_step": "112.50"
+    "next_step": "112.52"
   },
   "activation_rules_11122_run362": {
     "status": "VERIFIED-LOCAL",
@@ -621,9 +621,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "112.50",
+  "current_step": "112.51",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-21: 112.49 VERIFIED-LOCAL — Platform Compatibility Gate. Manifest test 1/1 PASS; focused refs 6/6 PASS. Analyzer scoped No issues; format/diff-check PASS. Native platform matrix/packaging/uninstall UNVERIFIABLE. Pointer 112.50. Began 112.50 Failure Injection & Recovery Gate.",
+  "last_run_summary": "2026-09-21: 112.51 VERIFIED-LOCAL — dedicated RC documentation for recovery, model transparency, known limits, support, and honest release notes; focused 1/1, test/release 94/94, analyzer/format/diff-check PASS. Pointer 112.52.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -686,5 +686,13 @@
     "evidence": "TDD RED manifest belum ada -> GREEN 1/1 PASS; focused refs 42/42 PASS (app_localizations 3/3, sprint_110_47 6/6, sprint_111_43 25/25, calendar_conversion 8/8); scoped analyzer No issues; format 1 file 0 changed; git diff-check PASS; roadmap guard PASS (recommended 112.49).",
     "limitations": "Native RTL layout mirroring, native OS screen-reader AT certification, physical-device contrast, hosted CI, signing, hardware, dan public release tetap UNVERIFIABLE.",
     "next_step": "112.49"
+  },
+  "sprint_112_step_11251": {
+    "status": "VERIFIED-LOCAL",
+    "manifest": "docs/planning/v1.2/sprint_112_documentation_support_release_notes.json",
+    "test": "test/release/sprint_112_documentation_support_release_notes_test.dart",
+    "evidence": "TDD RED dedicated RC doc paths absent/generic -> GREEN 1/1; test/release 94/94 PASS; full analyzer No issues; format/diff-check PASS.",
+    "limitations": "RC artifact/checksums/provenance/signing belong to 112.52; native GUI, hosted CI, hardware, public release remain UNVERIFIABLE/DEFERRED.",
+    "next_step": "112.52"
   }
 }

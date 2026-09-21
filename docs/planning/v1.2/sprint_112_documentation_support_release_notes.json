@@ -1,0 +1,106 @@
+{
+  "canonical_step": "112.51",
+  "title": "Documentation, Support & Release Notes",
+  "objective": "Menyelesaikan panduan pengguna, migration, recovery, privacy, accessibility, model transparency, known limits, dan release notes untuk v1.2.0 release candidate.",
+  "scope": "Audit dokumen eksisting, identifikasi gap dokumentasi untuk v1.2.0-rc.1, dan menyelesaikan dokumen yang diperlukan untuk RC approval gate. Semua dokumen adalah bukti lokal; native GUI, hosted CI, signing, hardware, dan public release tetap UNVERIFIABLE.",
+  "outputs": [
+    "user_guides",
+    "migration_guide",
+    "recovery_guide",
+    "privacy_notes",
+    "accessibility_notes",
+    "model_transparency",
+    "known_limits",
+    "release_notes",
+    "support_playbook"
+  ],
+  "documentation_inventory": [
+    {
+      "id": "user_guides",
+      "title": "Panduan Pengguna Void Scriptor",
+      "status": "EXISTS",
+      "path": "docs/user/void_scriptor_user_guide.md",
+      "gates": ["75 lines covering project lifecycle, story editor, character workspace, worldbuilding, AI tools, export"]
+    },
+    {
+      "id": "migration_guide",
+      "title": "Panduan Migrasi",
+      "status": "EXISTS",
+      "path": "docs/planning/v1.2/migration_backup_rollback_plan.md",
+      "gates": ["pre-migration backup, forward migration steps, rollback boundary, failure recovery"]
+    },
+    {
+      "id": "recovery_guide",
+      "title": "Panduan Recovery & Corruption Detection",
+      "status": "EXISTS",
+      "path": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+      "gates": ["pre-repair backup, session/draft recovery, interrupted import/export, corruption quarantine, reindex boundary, hardware limitations"]
+    },
+    {
+      "id": "privacy_notes",
+      "title": "Catatan Privacy & Permission Model",
+      "status": "EXISTS",
+      "path": "docs/planning/v1.2/permission_privacy_model.md",
+      "gates": ["local-first data flow, consent opt-in, metadata redaction, backup retention, deletion boundary"]
+    },
+    {
+      "id": "accessibility_notes",
+      "title": "Catatan Accessibility & Localization",
+      "status": "EXISTS",
+      "path": "docs/planning/v1.2/accessibility_localization_verification.md",
+      "gates": ["keyboard navigation, screen reader, scaling, contrast, motion, locale, multiscript"]
+    },
+    {
+      "id": "model_transparency",
+      "title": "Model Transparency & World Logic",
+      "status": "EXISTS",
+      "path": "docs/release/v1.2.0-rc.1-model-transparency.md",
+      "gates": ["world-logic inputs, assumptions, units, uncertainty, overrides, recovery, AI output review, provider boundary"]
+    },
+    {
+      "id": "known_limits",
+      "title": "Known Limitations & Known Issues",
+      "status": "EXISTS",
+      "path": "docs/release/v1.2.0-rc.1-known-limits.md",
+      "gates": ["platform/distribution, recovery/hardware, accessibility/localization, worldbuilding/AI, release boundary"]
+    },
+    {
+      "id": "release_notes",
+      "title": "Release Notes v1.2.0-rc.1",
+      "status": "EXISTS",
+      "path": "docs/release/v1.2.0-rc.1-release-notes.md",
+      "gates": ["v1.2.0-rc.1 build from candidate tree, version manifest, compatibility contracts, limitations, verification status"]
+    },
+    {
+      "id": "support_playbook",
+      "title": "Support Playbook",
+      "status": "EXISTS",
+      "path": "docs/release/v1.2.0-rc.1-support-playbook.md",
+      "gates": ["privacy-safe intake, severity, safe triage, engineering handoff, prohibited operations"]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "rc1_release_notes",
+      "finding": "v1.2.0-rc.1 release notes do not exist; only alpha.1 notes are present",
+      "required_outputs": ["release_notes"],
+      "next_gate": "Create v1.2.0-rc.1 release notes documenting all VERIFIED-LOCAL steps 112.1-112.50, compatibility contracts, and external gate deferrals",
+      "status": "RESOLVED",
+      "resolution_evidence": "docs/release/v1.2.0-rc.1-release-notes.md created with full documentation of 112.1-112.50 verification, compatibility contracts, privacy, known limitations, feature flags, native artifact evidence, and verification status"
+    }
+  ],
+  "release_artifact_manifest": {
+    "version": "1.2.0-rc.1",
+    "release_notes": "docs/release/v1.2.0-rc.1-release-notes.md",
+    "known_issues": "docs/release/v1.2.0-rc.1-known-limits.md",
+    "troubleshooting": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+    "model_transparency": "docs/release/v1.2.0-rc.1-model-transparency.md",
+    "support_playbook": "docs/release/v1.2.0-rc.1-support-playbook.md"
+  },
+  "decision": "PASS_LOCAL_WITH_EXTERNAL_GATES_DEFERRED",
+  "limits": [
+    "All documentation is local evidence; verification is structural (documents exist, required sections present, cross-references valid).",
+    "Native GUI, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
+    "This decision is not signing or public release approval."
+  ]
+}

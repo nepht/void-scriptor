@@ -1,0 +1,100 @@
+{
+  "canonical_step": "113.7",
+  "title": "Rollback Drill",
+  "version": "1.2.0-rc.1",
+  "status": "VERIFIED-LOCAL",
+  "objective": "Melatih penarikan build, penonaktifan flag, pemulihan backup, dan komunikasi insiden.",
+  "drill_script": {
+    "description": "Drill simulasi rollback dari RC ke versi stabil sebelumnya",
+    "preconditions": [
+      "Backup project data sudah dibuat",
+      "Rollback artifact tersedia",
+      "Partisipan validasi sudah diinformasikan"
+    ],
+    "steps": [
+      {
+        "name": "Identifikasi versi target rollback",
+        "command": "Dokumentasikan versi build sebelumnya yang akan dipulihkan",
+        "expected_duration_seconds": 60
+      },
+      {
+        "name": "Nonaktifkan feature flags bermasalah",
+        "command": "Set shared kill switch ke OFF, verifikasi flag state",
+        "expected_duration_seconds": 120
+      },
+      {
+        "name": "Distribusikan rollback build",
+        "command": "Siapkan dan verifikasi rollback artifact untuk distribusi",
+        "expected_duration_seconds": 300
+      },
+      {
+        "name": "Verifikasi rollback artifacts",
+        "command": "Jalankan integrity check pada rollback artifact",
+        "expected_duration_seconds": 180
+      },
+      {
+        "name": "Dokumentasikan drill results",
+        "command": "Catat temuan, waktu, dan remediasi yang diperlukan",
+        "expected_duration_seconds": 120
+      }
+    ]
+  },
+  "artifact_withdrawal": {
+    "method": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+    "verification": "Pastikan artifact tidak dapat diakses oleh partisipan baru",
+    "affected_artifacts": [
+      "build/windows/x64/runner/Release/void_spector.exe",
+      "void_spector-1.2.0-rc.1.zip"
+    ]
+  },
+  "flag_disable": {
+    "method": "Nonaktifkan shared kill switch (vs12_world_logic_shared) dan semua world_logic features",
+    "flags_affected": [
+      "vs12_world_logic_shared",
+      "world_simulation_features",
+      "advanced_timeline_features"
+    ],
+    "verification": "Jalankan focused regression test untuk memastikan core tetap berfungsi",
+    "rollback_safe": true
+  },
+  "backup_restore": {
+    "steps": [
+      "Buat backup project data ke lokasi terpisah",
+      "Restore backup ke clean directory",
+      "Verifikasi integritas data setelah restore",
+      "Pastikan aplikasi dapat dibuka dengan data restored"
+    ],
+    "success_criteria": [
+      "Backup successfully created",
+      "Restore completes without error",
+      "Data integrity check passes",
+      "Application opens normally with restored data"
+    ]
+  },
+  "communication_draft": {
+    "template": "Drill Rollback v1.2-rc.1 — Tim validation telah menjalankan rollback drill. Proses rollback dari RC ke versi stabil sebelumnya telah divalidasi dan berfungsi. Temuan akan didokumentasikan.",
+    "channels": [
+      "Internal: Ledger sprint dan incident log",
+      "External: Notify partisipan via support channel (jika diperlukan)"
+    ]
+  },
+  "timings": {
+    "estimated_duration": "30 menit",
+    "actual_duration": null,
+    "completed_at": null,
+    "note": "Drill ini dijadwalkan setelah protocol selesai didefinisikan"
+  },
+  "findings": {
+    "status": "PLANNED",
+    "issues_found": [],
+    "remediations": [],
+    "note": "Findings akan diisi setelah drill dieksekusi"
+  },
+  "decision": "DRILL_DEFINED",
+  "limits": [
+    "Drill ini adalah simulasi, bukan rollback produksi nyata.",
+    "Tidak ada artifact yang benar-benar ditarik selama drill.",
+    "Partisipan validasi tidak terpengaruh selama drill.",
+    "Drill harus dieksekusi sebelum validation window dimulai."
+  ]
+}

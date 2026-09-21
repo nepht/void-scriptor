@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.6",
-  "next_step": "113.7",
+  "last_verified_step": "113.7",
+  "next_step": "113.8",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-21",
-  "updated_by": "nephthys: 113.6 VERIFIED-LOCAL.",
+  "updated_by": "nephthys: 113.7 VERIFIED-LOCAL.",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -209,7 +209,7 @@
     "evidence": "RED dashboard_create_character_no_session_test Actual '/studio' -> GREEN; fokus 1 PASS; test/features/dashboard 13 PASS; shell+routing 69 PASS; analyze No issues; build windows debug 64,5s; guard PASS",
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
-  "last_worker_run": "2026-09-21T16:55:00Z",
+  "last_worker_run": "2026-09-21T17:05:00Z",
   "note": "112.40 VERIFIED-LOCAL: Wave 1-3 frozen format/plugin contracts remain compatible; typed ws-events/v1 added additively with legacy ProjectMutationEvent constructors preserved. Pointer advanced to 112.41.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "113.6",
+  "current_step": "113.7",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-21: 113.6 VERIFIED-LOCAL. Incident & Stop-Ship Protocol 9/9 PASS.",
+  "last_run_summary": "2026-09-21: 113.7 VERIFIED-LOCAL. Rollback Drill 10/10 PASS.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",

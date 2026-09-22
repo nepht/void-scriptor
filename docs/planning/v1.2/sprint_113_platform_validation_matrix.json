@@ -1,0 +1,33 @@
+{
+  "canonical_step": "113.20",
+  "title": "Platform Validation Matrix",
+  "objective": "Menjalankan workflow inti pada seluruh platform dan konfigurasi yang didukung.",
+  "required_evidence": {
+    "platforms": {
+      "description": "Daftar platform yang didukung (Windows, Linux, macOS, Web) dan status kesiapan.",
+      "status": "pending_validation"
+    },
+    "os_versions": {
+      "description": "Versi OS yang diuji dan hasil deteksi environment.",
+      "status": "pending_validation"
+    },
+    "hardware_profiles": {
+      "description": "Konfigurasi hardware (CPU arch, RAM tier, GPU availability) dan dampak workflow.",
+      "status": "pending_validation"
+    },
+    "input_modes": {
+      "description": "Mode input (keyboard, mouse, touch, stylus) dan dampak UX workflow.",
+      "status": "pending_validation"
+    },
+    "results": {
+      "description": "Hasil workflow core (create, edit, export, search, simulate) per platform.",
+      "status": "pending_validation"
+    },
+    "exceptions": {
+      "description": "Ketidaksesuaian atau pembatasan yang ditemukan per platform.",
+      "status": "pending_validation"
+    }
+  },
+  "limits": "Native GUI validation, hosted CI, real hardware, signing, production deployment DEFERRED. Validation is domain-level environment detection and cross-platform workflow simulation.",
+  "decision": "pending_validation_execution"
+}

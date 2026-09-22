@@ -1,0 +1,33 @@
+{
+  "canonical_step": "113.19",
+  "title": "Offline & Local-First Validation",
+  "objective": "Memastikan fungsi inti tetap dapat digunakan tanpa jaringan atau provider eksternal.",
+  "required_evidence": {
+    "offline_open": {
+      "description": "Project data dapat dibuka tanpa koneksi jaringan.",
+      "status": "pending_validation"
+    },
+    "offline_edit": {
+      "description": "Edit konten dapat dilakukan tanpa koneksi jaringan.",
+      "status": "pending_validation"
+    },
+    "offline_analysis": {
+      "description": "Analisis (pacing, voice, consistency) berjalan offline.",
+      "status": "pending_validation"
+    },
+    "offline_search": {
+      "description": "Pencarian konten berjalan lokal tanpa jaringan.",
+      "status": "pending_validation"
+    },
+    "local_export": {
+      "description": "Export DOCX/plain text/web novel berjalan lokal.",
+      "status": "pending_validation"
+    },
+    "provider_failure_fallback": {
+      "description": "Kegagalan AI provider memberikan fallback graceful tanpa crash.",
+      "status": "pending_validation"
+    }
+  },
+  "limits": "Native GUI, hosted CI, signing, hardware, public release DEFERRED. Validation bersifat domain-only.",
+  "decision": "pending_validation_execution"
+}

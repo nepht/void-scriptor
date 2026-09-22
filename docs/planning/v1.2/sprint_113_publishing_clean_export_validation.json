@@ -1,0 +1,42 @@
+{
+  "canonical_step": "113.18",
+  "title": "Publishing & Clean Export Validation",
+  "objective": "Memvalidasi preflight dan hasil DOCX, plain text, web novel, serta knowledge package.",
+  "features_validated": [19],
+  "required_evidence": {
+    "profile_results": {
+      "description": "Export profiles (DOCX, plain text, web novel) terkonfigurasi dengan benar dan menghasilkan output yang valid.",
+      "status": "pending_validation"
+    },
+    "preflight_results": {
+      "description": "Export preflight memvalidasi struktur, aset, spoiler, karakter khusus, dan render sebelum ekspor.",
+      "status": "pending_validation"
+    },
+    "render_results": {
+      "description": "Setiap format (DOCX XML, plain text, web novel HTML) dirender tanpa kehilangan konten atau marker internal.",
+      "status": "pending_validation"
+    },
+    "format_results": {
+      "description": "Clean export transformation menghapus marker internal (scene links, lore links, private notes) secara deterministik.",
+      "status": "pending_validation"
+    },
+    "metadata_results": {
+      "description": "Ownership manifest, watermark policy, dan export protection menghasilkan metadata yang konsisten dan round-trippable.",
+      "status": "pending_validation"
+    },
+    "acceptance": {
+      "description": "Semua acceptance criteria sprint 113.18 terpenuhi.",
+      "criteria": {
+        "profile_preset_round_trip": true,
+        "preflight_blocks_empty_and_missing": true,
+        "clean_export_removes_internal_markers": true,
+        "format_render_preserves_chapter_structure": true,
+        "ownership_manifest_deterministic": true,
+        "watermark_policy_applies_by_use_case": true
+      },
+      "status": "pending_validation"
+    }
+  },
+  "limits": "Native GUI, hosted CI, signing, hardware, public release DEFERRED. Validation bersifat domain-only.",
+  "decision": "pending_validation_execution"
+}

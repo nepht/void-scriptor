@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.15",
-  "next_step": "113.18",
+  "last_verified_step": "113.18",
+  "next_step": "113.19",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-22",
-  "updated_by": "nephthys: 113.15 VERIFIED-LOCAL.",
+  "updated_by": "nephthys: 113.18 VERIFIED-LOCAL.",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "113.15",
+  "current_step": "113.18",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-22: 113.14-113.15 VERIFIED-LOCAL. Writer Workflow 17/17 + Lore Encyclopedia 7/7 PASS.",
+  "last_run_summary": "2026-09-22: 113.18 VERIFIED-LOCAL. Publishing & Clean Export 26/26 PASS; regression 367/367 PASS.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -741,7 +741,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "113.17",
+  "last_resolved_step": "113.18",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",

@@ -1,0 +1,33 @@
+{
+  "canonical_step": "113.26",
+  "title": "Security Revalidation",
+  "objective": "Mengulang pemeriksaan permission, import, path handling, plugin boundary, sharing, redaction, dependency, dan packaging.",
+  "required_evidence": {
+    "security_tests": {
+      "description": "Sembilan pemeriksaan keamanan yang mengendarai subsystem nyata: WorkspacePermissionPolicy (deny-by-default link eksplisit, owner bypass, write via character-owner API, private-field membership), PortableProjectImporter (entry zip-slip checksum-valid ditolak + output parsial dibersihkan; entry secret ditolak pada archive checksum-valid), ProjectPackage.resolve (escape path ditolak) + BackupLocationPolicy (fail-safe fallback + deteksi backup external), PluginSandbox/PluginPermissionSet (deny-by-default, validasi nama permission), SharePackageBuilder (preflight, redaksi spoiler, metadata dibuang, kedaluwarsa, pencabutan), SecretRedactor/SecretScanner (redact/mask + 4 format kredensial terdeteksi tanpa false positive pada prosa).",
+      "status": "validated_integration_local"
+    },
+    "dependency_scan": {
+      "description": "Scan pubspec.lock live: setiap paket hosted memiliki sha256 (hash-pinned), nol source git, nol source path, pubspec.yaml tanpa dependency_overrides, dan tanpa secret terdeteksi oleh SecretScanner di lockfile.",
+      "status": "validated_integration_local"
+    },
+    "package_scan": {
+      "description": "ArchiveSecretPolicy pada staging/archive nyata: staging bersih diterima; file secret (.env), payload secret-like dalam konten (ghp_… pada notes.md), dan entry archive secret (.ssh/id_rsa) ditolak dengan FormatException; detection matrix filename (.env, id_rsa, .pem, .env.example sebagai template, manifest/project.json sebagai aman) sesuai kontrak.",
+      "status": "validated_integration_local"
+    },
+    "findings": {
+      "description": "Model temuan keamanan (SecurityFinding: id, area, severity, summary, status open/remediated) diuji dua arah: temuan berstatus open membuat keputusan fail; seluruh checks pada delapan area (sembilan checks, import dua kali) tercakup tanpa temuan terbuka pada revalidasi live ini (0 temuan terbuka).",
+      "status": "validated_integration_local"
+    },
+    "remediations": {
+      "description": "SecurityRemediation (findingId + action) mengikat temuan ke perbaikan; pasangan finding remediated + remediation tercatat menghasilkan keputusan pass, membuktikan jalur remediation terverifikasi dalam kontrak laporan.",
+      "status": "validated_integration_local"
+    },
+    "residual_risk": {
+      "description": "Laporan selalu menyertakan residual risk (list non-kosong) yang mencatat batas bukti: validasi berjalan sebagai fixture integrasi lokal (temp/in-memory), bukan pada proses aplikasi penuh atau data pengguna; native GUI, hosted CI, signing, hardware, dan public release DEFERRED/UNVERIFIABLE.",
+      "status": "documented_with_deferred_external_gates"
+    }
+  },
+  "limits": "Validasi dijalankan sebagai fixture integrasi lokal pada direktori temp dan file repo live (pubspec.lock/pubspec.yaml) — bukan pada proses aplikasi penuh atau data pengguna. Dependency scan berbasis lockfile (hash-pin, source, overrides), bukan audit advisory database eksternal/OSV. Native GUI, hosted CI, signing, hardware, dan public release DEFERRED/UNVERIFIABLE.",
+  "decision": "validated_integration_local_pending_native_ci_signing_hardware_public_release"
+}

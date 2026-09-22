@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.25",
-  "next_step": "113.26",
+  "last_verified_step": "113.26",
+  "next_step": "113.27",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-22",
-  "updated_by": "cron b0c2c7d744d9",
+  "updated_by": "cron-core-worker-v4",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -873,5 +873,11 @@
     "date": "2026-09-22",
     "summary": "Data Integrity Validation: domain data_integrity_validation.dart (6 area: id/link/searchIndex/timeline/alias/checksum, decision pass/fail/blocked) + manifest sprint_113_data_integrity_validation.json; TDD RED compile exit 1 -> GREEN 10/10 (repair compile-only: enum index->searchIndex, manifest key projectId); regression test/release 496/496 PASS exit 0; scoped analyzer No issues; format 0 changed; diff-check PASS; commit scoped; push tidak (kebijakan hemat CI).",
     "next_step": "113.26"
+  },
+  "sprint_113_step_11326": {
+    "status": "VERIFIED-LOCAL",
+    "date": "2026-09-22",
+    "summary": "Security Revalidation: domain security_revalidation.dart (8 area: permission/importArchive/pathHandling/pluginBoundary/sharing/redaction/dependency/packaging, decision pass/fail/blocked, finding open->fail, remediated+remediation->pass) + manifest sprint_113_security_revalidation.json; TDD RED compile exit 1 -> GREEN 13/13; regression test/release 509/509 PASS exit 0; scoped analyzer No issues; format 0 changed; diff-check PASS; commit scoped; push tidak (kebijakan hemat CI).",
+    "next_step": "113.27"
   }
 }

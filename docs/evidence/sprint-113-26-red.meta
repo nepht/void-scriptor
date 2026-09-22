@@ -1,0 +1,13 @@
+{
+  "step": "113.26",
+  "command": "flutter.bat test --no-pub test/release/sprint_113_security_revalidation_test.dart -j 1 (domain belum dibuat)",
+  "finished_at": "2026-09-22T22:02:21+0700",
+  "duration_seconds": 6,
+  "exit_code": 1,
+  "result": "FAIL",
+  "counts": {
+    "passed": 0,
+    "note": "compile load failure \\u2014 domain security_revalidation.dart tidak ada; SecurityRevalidator/SecurityArea/SecurityCheck/SecurityFinding/SecurityRemediation/SecurityRevalidationDecision undefined"
+  },
+  "log": "docs/evidence/sprint-113-26-red.log"
+}

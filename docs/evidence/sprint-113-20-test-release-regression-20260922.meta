@@ -1,0 +1,16 @@
+{
+  "step": "113.20",
+  "gate": "regression_test_release_full_dir_with_wip",
+  "command": "flutter.bat test --no-pub test/release -j 1",
+  "started_at": "2026-09-22T19:41:00+07:00",
+  "finished_at": "2026-09-22T19:43:18+07:00",
+  "duration_seconds": 138,
+  "exit_code": 1,
+  "result": "FAIL",
+  "pass": 424,
+  "fail": 1,
+  "log": "docs/evidence/sprint-113-20-test-release-regression-20260922.log",
+  "failure": "load failure sprint_113_accessibility_validation_test.dart: duplicate reducedMotion/nonvisualFallback declarations + undefined WidgetsBinding in untracked WIP lib/features/world_logic/domain/accessibility_validation.dart",
+  "classification": "orphaned sibling WIP (113.21) compile error, not a 113.20 regression",
+  "recorded_at": "2026-09-22T19:47:36+07:00"
+}

@@ -1,0 +1,15 @@
+{
+  "step": "113.20",
+  "gate": "regression_test_release_excluding_orphan_wip",
+  "command": "flutter.bat test --no-pub <77 files of test/release excluding sprint_113_accessibility_validation_test.dart> -j 1",
+  "started_at": "2026-09-22T19:44:02+07:00",
+  "finished_at": "2026-09-22T19:46:06+07:00",
+  "duration_seconds": 124,
+  "exit_code": 0,
+  "result": "PASS",
+  "pass": 424,
+  "fail": 0,
+  "log": "docs/evidence/sprint-113-20-test-release-regression-excl-wip-20260922.log",
+  "note": "Excludes untracked 113.21 WIP test that fails to compile (see companion full-run meta).",
+  "recorded_at": "2026-09-22T19:47:36+07:00"
+}

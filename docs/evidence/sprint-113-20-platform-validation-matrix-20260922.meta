@@ -1,0 +1,14 @@
+{
+  "step": "113.20",
+  "gate": "focused_test",
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_113_platform_validation_matrix_test.dart -j 1",
+  "started_at": "2026-09-22T19:39:56+07:00",
+  "finished_at": "2026-09-22T19:40:37+07:00",
+  "duration_seconds": 41,
+  "exit_code": 0,
+  "result": "PASS",
+  "pass": 29,
+  "fail": 0,
+  "log": "docs/evidence/sprint-113-20-platform-validation-matrix-20260922.log",
+  "recorded_at": "2026-09-22T19:47:36+07:00"
+}

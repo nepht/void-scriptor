@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.12",
-  "next_step": "113.13",
+  "last_verified_step": "113.13",
+  "next_step": "113.14",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-22",
-  "updated_by": "nephthys: 113.12 VERIFIED-LOCAL.",
+  "updated_by": "nephthys: 113.13 VERIFIED-LOCAL.",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "113.12",
+  "current_step": "113.13",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-22: 113.12 VERIFIED-LOCAL. Migration & Restore Validation 19/19 PASS.",
+  "last_run_summary": "2026-09-22: 113.12-113.13 VERIFIED-LOCAL. Migration & Restore 19/19 + Feature Flag Dependency 25/25 PASS.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -741,7 +741,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "113.12",
+  "last_resolved_step": "113.13",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -751,5 +751,15 @@
     "limitations": "native GUI, hosted CI, signing, hardware, public release DEFERRED.",
     "next_step": "113.13",
     "commit": "a92289b"
+  },
+  "sprint_113_step_11313": {
+    "status": "VERIFIED-LOCAL",
+    "manifest": "docs/planning/v1.2/sprint_113_feature_flag_dependency_validation.json",
+    "test": "test/release/sprint_113_feature_flag_dependency_validation_test.dart",
+    "domain": "lib/features/world_logic/domain/feature_flag_dependency_validation.dart",
+    "evidence": "TDD RED manifest/domain -> GREEN 25/25 PASS; regression test/release 255/255 PASS; scoped analyzer No issues; format PASS.",
+    "limitations": "native GUI, hosted CI, signing, hardware, public release DEFERRED.",
+    "next_step": "113.14",
+    "commit": "b3a608f"
   }
 }

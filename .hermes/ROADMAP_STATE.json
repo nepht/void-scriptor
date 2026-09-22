@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.20",
-  "next_step": "113.21",
+  "last_verified_step": "113.21",
+  "next_step": "113.22",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-22",
-  "updated_by": "nephthys: 113.20 VERIFIED-LOCAL closeout.",
+  "updated_by": "nephthys: 113.20+113.21 VERIFIED-LOCAL.",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "113.20",
+  "current_step": "113.21",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-22: 113.20 VERIFIED-LOCAL. focused 29/29 PASS; regression test/release 424/424 PASS exit 0 excl orphan 113.21 WIP (full-dir exit 1 = WIP compile error, ledger Gap); scoped analyzer No issues; format/diff-check PASS. Impl commit d34dfb6.",
+  "last_run_summary": "2026-09-22: 113.20 VERIFIED-LOCAL (closeout ffd34ec) + 113.21 VERIFIED-LOCAL (WIP yatim diadopsi; RED 8/2 -> GREEN 12/12; regression test/release 436/436 PASS exit 0; analyzer/format/diff-check PASS).",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -741,7 +741,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "113.20",
+  "last_resolved_step": "113.21",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -820,5 +820,23 @@
     "limitations": "Domain-level detection/simulation on local Windows only; other platforms, native GUI, hosted CI, signing, hardware, public release remain UNVERIFIABLE/DEFERRED. Full-dir test/release exit 1 blocked by untracked 113.21 WIP compile error (Gap).",
     "implementation_commit": "d34dfb6",
     "next_step": "113.21"
+  },
+  "sprint_113_step_11321": {
+    "status": "VERIFIED-LOCAL",
+    "manifest": "docs/planning/v1.2/sprint_113_accessibility_validation.json",
+    "domain": "lib/features/world_logic/domain/accessibility_validation.dart",
+    "test": "test/release/sprint_113_accessibility_validation_test.dart",
+    "required_evidence": [
+      "keyboard_results",
+      "screen_reader_results",
+      "scaling_results",
+      "contrast_results",
+      "motion_results",
+      "nonvisual_results"
+    ],
+    "evidence": "RED assertion 8 pass/2 fail (docs/evidence/sprint-113-21-accessibility-validation-red-20260922.meta); GREEN focused 12/12 PASS exit 0; regression test/release 436/436 PASS exit 0; scoped analyzer No issues; format 0 changed; git diff --check PASS",
+    "wip_adoption": "orphaned untracked WIP adopted per standing 6-condition authorization; snapshot %LOCALAPPDATA%/Temp/vs-run-11321-wip-snap with SHA-256; HEAD at snapshot ffd34ec; no live writer (mtime drift probe negative)",
+    "limitations": "Domain-level placeholder detection for active AT/high-contrast/reduced-motion; native AT certification, widget-level semantics, hosted CI, hardware, public release UNVERIFIABLE/DEFERRED",
+    "next_step": "113.22"
   }
 }

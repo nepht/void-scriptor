@@ -1,0 +1,22 @@
+{
+  "step": "113.21",
+  "gate": "focused_test_GREEN",
+  "command": "flutter.bat test --no-pub test/release/sprint_113_accessibility_validation_test.dart -j 1",
+  "started_at": "2026-09-22T19:57:35+07:00",
+  "finished_at": "2026-09-22T19:57:41+07:00",
+  "duration_seconds": 6,
+  "exit_code": 0,
+  "result": "PASS",
+  "pass": 12,
+  "fail": 0,
+  "log": "docs/evidence/sprint-113-21-accessibility-validation-20260922.log",
+  "green_changes": [
+    "screen reader detection now includes Windows Narrator",
+    "scalingFactor() returns numeric factor",
+    "duplicate reducedMotion/nonvisualFallback removed",
+    "undefined WidgetsBinding dead code removed",
+    "unused dart:async import removed",
+    "manifest + 6 required_evidence groups asserted"
+  ],
+  "recorded_at": "2026-09-22T19:57:41+07:00"
+}

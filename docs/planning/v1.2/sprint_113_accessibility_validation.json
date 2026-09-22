@@ -1,0 +1,33 @@
+{
+  "canonical_step": "113.21",
+  "title": "Accessibility Validation",
+  "objective": "Memvalidasi workflow nyata menggunakan keyboard, screen reader, scaling, contrast, reduced motion, dan fallback nonvisual.",
+  "required_evidence": {
+    "keyboard_results": {
+      "description": "Keyboard navigation, shortcut, dan keyboard-only mode terdeteksi per platform.",
+      "status": "validated_domain_level"
+    },
+    "screen_reader_results": {
+      "description": "Ketersediaan screen reader dan tipe reader (Narrator/VoiceOver/Orca) terdeteksi; fokus diumumkan.",
+      "status": "validated_domain_level"
+    },
+    "scaling_results": {
+      "description": "Faktor skala platform dilaporkan dalam rentang wajar (>0, <=3).",
+      "status": "validated_domain_level"
+    },
+    "contrast_results": {
+      "description": "Rasio kontras minimum memenuhi WCAG AA (>=4.5:1).",
+      "status": "validated_domain_level"
+    },
+    "motion_results": {
+      "description": "Preferensi reduced motion dan durasi animasi terdeteksi.",
+      "status": "validated_domain_level"
+    },
+    "nonvisual_results": {
+      "description": "Output nonvisual tersedia dan berlabel aksesibel per platform.",
+      "status": "validated_domain_level"
+    }
+  },
+  "limits": "Domain-level platform heuristics only. High-contrast query, reduced-motion OS query, dan deteksi screen reader aktif masih placeholder (komentar di source); verifikasi AT/NVDA/VoiceOver native, widget-level semantics, hosted CI, hardware, dan public release DEFERRED/UNVERIFIABLE.",
+  "decision": "validated_domain_level_pending_native_at_verification"
+}

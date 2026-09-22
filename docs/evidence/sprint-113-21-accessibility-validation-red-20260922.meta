@@ -1,0 +1,15 @@
+{
+  "step": "113.21",
+  "gate": "RED_assertion_stage",
+  "note": "Stage 1 RED = pre-existing compile load failure of orphaned WIP (evidence: sprint-113-20-test-release-regression-20260922.log). Stage 2 RED = after compile-only repair, test exit 1 with 2 real assertion failures: screen_reader 'supports screen reader' Expected true Actual false (Windows excluded), scaling 'reports correct scaling factor' ScalingContrastResult has no instance method '<'.",
+  "command": "flutter.bat test --no-pub test/release/sprint_113_accessibility_validation_test.dart -j 1",
+  "started_at": "2026-09-22T19:50:36+07:00",
+  "finished_at": "2026-09-22T19:50:43+07:00",
+  "duration_seconds": 7,
+  "exit_code": 1,
+  "result": "RED",
+  "pass": 8,
+  "fail": 2,
+  "log": "docs/evidence/sprint-113-21-accessibility-validation-red-20260922.log",
+  "recorded_at": "2026-09-22T19:57:41+07:00"
+}

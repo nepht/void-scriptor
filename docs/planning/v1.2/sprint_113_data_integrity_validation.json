@@ -1,0 +1,33 @@
+{
+  "canonical_step": "113.25",
+  "title": "Data Integrity Validation",
+  "objective": "Memeriksa stable IDs, links, indexes, timelines, aliases, branches, media manifests, dan export checksums.",
+  "required_evidence": {
+    "id_checks": {
+      "description": "Stable ID identity: UUID v4 uniqueness/format pada pembuatan entitas dan kestabilan ID proyek di manifest project.json melewati round-trip decode/encode (ID tidak berubah saat manifest ditulis ulang).",
+      "status": "validated_integration_local"
+    },
+    "link_checks": {
+      "description": "Cross-link integrity pada AssetRelations DAO nyata: relasi source->target terdaftar dan ter-resolve via getOutgoing/getIncoming, penghapusan relasi tidak menghapus aset sumber (unlink ≠ delete).",
+      "status": "validated_integration_local"
+    },
+    "index_checks": {
+      "description": "SQLite FTS5 search index (SqliteSearchIndex): upsert -> search menemukan dokumen, upsert idempoten (tanpa duplikat), remove -> hasil hilang; index tetap konsisten dengan data.",
+      "status": "validated_integration_local"
+    },
+    "timeline_checks": {
+      "description": "Timeline terbuat dari Scene Beats: clip.sourceId menunjuk beat yang ada, durasi tersimpan, dan data bertahan setelah close/reopen database (restart persistence).",
+      "status": "validated_integration_local"
+    },
+    "alias_checks": {
+      "description": "Route alias (AppRoutes.foundationAliases) terdaftar di GoRouter sebagai jalur eksplisit dan selalu mengarah ke route kanonis yang ikut terdaftar; alias berbeda dari target kanonisnya.",
+      "status": "validated_integration_local"
+    },
+    "checksum_results": {
+      "description": "HMAC integrity manifest (IntegrityManifest + HmacIntegrity): build -> verify TRUE pada direktori bersih; modifikasi file setelah signing terdeteksi (verify FALSE) sehingga media manifest/export checksum dapat dipercaya.",
+      "status": "validated_integration_local"
+    }
+  },
+  "limits": "Validasi dijalankan sebagai fixture integrasi lokal pada direktori temp dan database in-memory/file temp (AssetRelations, FTS5 index, timeline service, GoRouter route table, HMAC manifest) — bukan pada proses aplikasi penuh atau data pengguna. Branches (narrative branch editor) dan media manifest/export file nyata belum memiliki subsystem khusus yang dapat dikendarai pada slice ini; cakupannya lewat relasi/alias/checksum yang ada. Native GUI, hosted CI, hardware, dan public release DEFERRED/UNVERIFIABLE.",
+  "decision": "validated_integration_local_pending_native_branch_media_export_proof"
+}

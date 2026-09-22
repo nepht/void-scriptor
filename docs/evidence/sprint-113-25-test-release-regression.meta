@@ -1,0 +1,14 @@
+{
+  "step": "113.25",
+  "command": "flutter.bat test --no-pub test/release -j 1",
+  "finished_at": "2026-09-22T21:15:08+0700",
+  "duration_seconds": 126,
+  "exit_code": 0,
+  "result": "PASS",
+  "counts": {
+    "passed": 496,
+    "failed": 0,
+    "skipped": 0
+  },
+  "log": "docs/evidence/sprint-113-25-test-release-regression.log"
+}

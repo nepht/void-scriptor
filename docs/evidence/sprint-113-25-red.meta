@@ -1,0 +1,13 @@
+{
+  "step": "113.25",
+  "command": "flutter.bat test --no-pub test/release/sprint_113_data_integrity_validation_test.dart -j 1 (domain belum dibuat)",
+  "finished_at": "2026-09-22T21:15:08+0700",
+  "duration_seconds": 12,
+  "exit_code": 1,
+  "result": "FAIL",
+  "counts": {
+    "passed": 0,
+    "note": "compile load failure \u2014 domain data_integrity_validation.dart tidak ada; DataIntegrityValidator/IntegrityArea/IntegrityCheck undefined"
+  },
+  "log": "docs/evidence/sprint-113-25-red.log"
+}

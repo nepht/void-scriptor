@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.24",
-  "next_step": "113.25",
+  "last_verified_step": "113.25",
+  "next_step": "113.26",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "113.24 VERIFIED-LOCAL",
+  "current_step": "113.25 VERIFIED-LOCAL",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-22: 113.24 VERIFIED-LOCAL; adopsi WIP yatim + snapshot; RED exit 1 -> GREEN 13/13; regression test/release 486/486 PASS exit 0; analyzer/format/diff-check PASS; next 113.25 Data Integrity Validation.",
+  "last_run_summary": "2026-09-22: 113.24 + 113.25 VERIFIED-LOCAL (2 commit lokal scoped); 113.24 focused 13/13, regression test/release 486/486; 113.25 focused 10/10, regression test/release 496/496 PASS exit 0; analyzer/format/diff-check PASS; next 113.26 Security Revalidation.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -867,5 +867,11 @@
     "date": "2026-09-22",
     "summary": "Reliability & Recovery Validation: adopsi WIP yatim (snapshot %LOCALAPPDATA%/Temp/vs-run-11324-wip-snap, SHA-256 terekam, HEAD f6eee06); domain reliability_recovery_validation.dart (7 failure cases, data-loss/recovery/repair/guidance evidence, decision pass/fail/blocked) + manifest sprint_113_reliability_recovery_validation.json; TDD RED compile load failure exit 1 -> GREEN 13/13 PASS; regression test/release 486/486 PASS exit 0; scoped analyzer No issues; format 0 changed; diff-check PASS; commit scoped; push tidak (kebijakan hemat CI).",
     "next_step": "113.25"
+  },
+  "sprint_113_step_11325": {
+    "status": "VERIFIED-LOCAL",
+    "date": "2026-09-22",
+    "summary": "Data Integrity Validation: domain data_integrity_validation.dart (6 area: id/link/searchIndex/timeline/alias/checksum, decision pass/fail/blocked) + manifest sprint_113_data_integrity_validation.json; TDD RED compile exit 1 -> GREEN 10/10 (repair compile-only: enum index->searchIndex, manifest key projectId); regression test/release 496/496 PASS exit 0; scoped analyzer No issues; format 0 changed; diff-check PASS; commit scoped; push tidak (kebijakan hemat CI).",
+    "next_step": "113.26"
   }
 }

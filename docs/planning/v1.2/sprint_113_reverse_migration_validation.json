@@ -1,0 +1,35 @@
+{
+  "canonical_step": "113.11",
+  "title": "Reverse Migration Validation",
+  "status": "VERIFIED-LOCAL",
+  "validated_at": "2026-09-22T07:05:00+07:00",
+  "test_evidence": "docs/evidence/sprint-113-11-reverse-migration-validation-20260922.meta",
+  "test_result": "8/8 PASS exit 0",
+  "downgrade_results": {
+    "downgrade_62_to_61_migrated_forward": true,
+    "downgrade_62_to_55_migrated_forward": true,
+    "behavior": "Older schemas are auto-migrated forward by Drift — no SchemaVersionTooOldException exists. Only newer schemas (onDisk > currentSchemaVersion) are rejected via SchemaVersionTooNewException.",
+    "exception_type_for_older_schemas": "None — Drift migration handles forward migration",
+    "exception_type_for_newer_schemas": "SchemaVersionTooNewException",
+    "data_integrity_preserved_after_migration": true
+  },
+  "schema_preservation": {
+    "schema_version_migrates_to_62_from_61": true,
+    "schema_version_migrates_to_62_from_55": true,
+    "no_data_corruption_on_forward_migration": true
+  },
+  "backup_verification": {
+    "pre_migration_backup_via_file_copy_verifiable": true,
+    "backup_type": "file_copy",
+    "backup_from_older_schema_migrated_forward": true
+  },
+  "lock_contention_during_rollback": {
+    "concurrent_writer_blocked_open_attempt": true,
+    "exception_type": "ProjectDatabaseLockedException"
+  },
+  "known_limitations": [
+    "Older schemas are migrated forward by Drift — downgrade (opening old schema with new app) is not rejected",
+    "Backup verification uses file copy, not live DB WAL checkpoint",
+    "Downgrade rejection (SchemaVersionTooOldException) does not exist in codebase — older schemas are accepted and migrated"
+  ]
+}

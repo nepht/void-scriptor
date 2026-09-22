@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.21",
-  "next_step": "113.22",
+  "last_verified_step": "113.22",
+  "next_step": "113.23",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -59,7 +59,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-22",
-  "updated_by": "nephthys: 113.20+113.21 VERIFIED-LOCAL.",
+  "updated_by": "nephthys: 113.20+113.21+113.22 VERIFIED-LOCAL.",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "113.21",
+  "current_step": "113.22",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-22: 113.20 VERIFIED-LOCAL (closeout ffd34ec) + 113.21 VERIFIED-LOCAL (WIP yatim diadopsi; RED 8/2 -> GREEN 12/12; regression test/release 436/436 PASS exit 0; analyzer/format/diff-check PASS).",
+  "last_run_summary": "2026-09-22 run: 113.20 closeout ffd34ec + 113.21 VERIFIED-LOCAL 6068325 (WIP adopsi, RED 8/2 -> GREEN 12/12, regression 436/436) + 113.22 VERIFIED-LOCAL (RED missing domain -> GREEN 15/15, regression test/release 451/451 PASS exit 0, analyzer/format/diff-check PASS).",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -741,7 +741,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "113.21",
+  "last_resolved_step": "113.22",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -838,5 +838,22 @@
     "wip_adoption": "orphaned untracked WIP adopted per standing 6-condition authorization; snapshot %LOCALAPPDATA%/Temp/vs-run-11321-wip-snap with SHA-256; HEAD at snapshot ffd34ec; no live writer (mtime drift probe negative)",
     "limitations": "Domain-level placeholder detection for active AT/high-contrast/reduced-motion; native AT certification, widget-level semantics, hosted CI, hardware, public release UNVERIFIABLE/DEFERRED",
     "next_step": "113.22"
+  },
+  "sprint_113_step_11322": {
+    "status": "VERIFIED-LOCAL",
+    "manifest": "docs/planning/v1.2/sprint_113_localization_multiscript_validation.json",
+    "domain": "lib/features/world_logic/domain/localization_multiscript_validation.dart",
+    "test": "test/release/sprint_113_localization_multiscript_validation_test.dart",
+    "required_evidence": [
+      "locale_results",
+      "rtl_results",
+      "expansion_results",
+      "calendar_results",
+      "unit_results",
+      "multiscript_results"
+    ],
+    "evidence": "RED missing domain exit 1 (sprint-113-22-localization-multiscript-red-20260922.meta); GREEN focused 15/15 PASS exit 0; regression test/release 451/451 PASS exit 0 post-format; scoped analyzer No issues; format 0 changed; git diff --check PASS",
+    "limitations": "Fixture/domain-level only; native RTL layout mirroring, IME, full locale translation, Intl/ICU formatting, hosted CI, hardware, public release UNVERIFIABLE/DEFERRED",
+    "next_step": "113.23"
   }
 }

@@ -1,0 +1,13 @@
+{
+  "step": "113.22",
+  "gate": "RED_missing_domain",
+  "command": "flutter.bat test --no-pub test/release/sprint_113_localization_multiscript_validation_test.dart -j 1",
+  "started_at": "2026-09-22T20:02:44+07:00",
+  "finished_at": "2026-09-22T20:02:50+07:00",
+  "duration_seconds": 6,
+  "exit_code": 1,
+  "result": "RED",
+  "failure": "Error when reading lib/features/world_logic/domain/localization_multiscript_validation.dart: file not found; LocalizationMultiscriptValidator isn't a type",
+  "log": "docs/evidence/sprint-113-22-localization-multiscript-red-20260922.log",
+  "recorded_at": "2026-09-22T20:06:18+07:00"
+}

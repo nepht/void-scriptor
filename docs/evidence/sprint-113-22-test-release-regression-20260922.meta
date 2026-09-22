@@ -1,0 +1,14 @@
+{
+  "step": "113.22",
+  "gate": "regression_test_release_post_format",
+  "command": "flutter.bat test --no-pub test/release -j 1",
+  "started_at": "2026-09-22T20:03:46+07:00",
+  "finished_at": "2026-09-22T20:05:54+07:00",
+  "duration_seconds": 128,
+  "exit_code": 0,
+  "result": "PASS",
+  "pass": 451,
+  "fail": 0,
+  "log": "docs/evidence/sprint-113-22-test-release-regression-20260922.log",
+  "recorded_at": "2026-09-22T20:06:18+07:00"
+}

@@ -1,0 +1,33 @@
+{
+  "canonical_step": "113.22",
+  "title": "Localization & Multiscript Validation",
+  "objective": "Memvalidasi locale, RTL, text expansion, kalender, unit, tanggal, conlang, dan nama multiskrip.",
+  "required_evidence": {
+    "locale_results": {
+      "description": "Locale yang didukung aplikasi (en/id), deteksi locale tak didukung, dan fallback ke en.",
+      "status": "validated_domain_level"
+    },
+    "rtl_results": {
+      "description": "Deteksi locale RTL (ar/he/fa), arah teks per locale, dan kebutuhan mirror layout.",
+      "status": "validated_domain_level"
+    },
+    "expansion_results": {
+      "description": "Faktor ekspansi label UI terhadap baseline en per locale, locale terpanjang, dan anggaran 2.0x.",
+      "status": "validated_domain_level"
+    },
+    "calendar_results": {
+      "description": "Kalender kustom dirender per urutan locale (ymd/dmy) dan format-parse round-trip identik.",
+      "status": "validated_domain_level"
+    },
+    "unit_results": {
+      "description": "Konversi metrik-imperial round-trip dan pemisah desimal/puluhan per locale.",
+      "status": "validated_domain_level"
+    },
+    "multiscript_results": {
+      "description": "Nama multiskrip (Cyrillic/CJK/Arabic/Devanagari/Latin) utuh UTF-8 tanpa replacement character; nama kosong ditolak.",
+      "status": "validated_domain_level"
+    }
+  },
+  "limits": "Domain-level fixtures and heuristics only: expansion labels are a fixed sample, RTL/mirroring is locale-list driven (no live widget layout capture), calendar/unit/locale formatting is domain logic without native Intl/ICU or GUI verification. Native RTL layout mirroring, IME, full locale translation, hosted CI, hardware, and public release DEFERRED/UNVERIFIABLE.",
+  "decision": "validated_domain_level_pending_native_l10n_verification"
+}

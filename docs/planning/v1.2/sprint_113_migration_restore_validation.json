@@ -1,0 +1,62 @@
+{
+  "canonical_step": "113.12",
+  "title": "Migration & Restore Validation",
+  "objective": "Mengulang migrasi, backup, restore, repair, dan interrupted-migration recovery pada RC.",
+  "required_evidence": [
+    "migration_results",
+    "backup_results",
+    "restore_results",
+    "repair_results",
+    "interruption_results",
+    "integrity_report"
+  ],
+  "migration_results": {
+    "strategy": "guarded_forward_migrations",
+    "source_schemas": [55, 58, 60, 61],
+    "target_schema": 62,
+    "backup_before_migration": true,
+    "data_preservation_verified": true,
+    "table_survival_check": true,
+    "schema_version_tracking": "PRAGMA user_version"
+  },
+  "backup_results": {
+    "backup_method": "file_copy_pre_migration",
+    "backup_integrity_verifiable": true,
+    "backup_openable_independent": true,
+    "backup_preserves_schema_version": true,
+    "backup_wal_included": false
+  },
+  "restore_results": {
+    "restore_method": "copy_backup_to_db_path",
+    "restore_preserves_data": true,
+    "restore_schema_migrates_forward": true,
+    "restore_after_partial_write": "backup_overwrites_corrupt",
+    "restore_from_pre_migration_backup": true
+  },
+  "repair_results": {
+    "corrupt_database_detected": true,
+    "integrity_check_available": true,
+    "backup_required_for_repair": true,
+    "partial_write_recovery": "restore_from_backup"
+  },
+  "interruption_results": {
+    "migration_interrupted_midway": "backup_available_for_restore",
+    "wal_checkpoint_after_crash": "best_effort_recovery",
+    "database_lock_during_migration": "ProjectDatabaseLockedException",
+    "incomplete_migration_rollback": "restore_from_pre_migration_backup"
+  },
+  "integrity_report": {
+    "integrity_check_function": "PRAGMA integrity_check",
+    "expected_result": "ok",
+    "table_count_verification": true,
+    "schema_version_after_restore": 62,
+    "user_data_row_count_preserved": true
+  },
+  "limits": [
+    "No real power-loss simulation — interrupt simulated via file manipulation",
+    "WAL recovery depends on SQLite journal mode (not fully controllable)",
+    "Corruption repair is restore-from-backup, not in-place reconstruction"
+  ],
+  "decision": "Local automated validation only; native GUI and hosted CI remain DEFERRED",
+  "updated_at": "2026-09-22"
+}

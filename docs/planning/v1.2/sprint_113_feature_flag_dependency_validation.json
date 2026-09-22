@@ -1,0 +1,55 @@
+{
+  "canonical_step": "113.13",
+  "title": "Feature Flag Dependency Validation",
+  "objective": "Memastikan kombinasi flag aman dan dependency tidak menghasilkan state tidak valid.",
+  "acceptance": [
+    "default_matrix",
+    "dependency_matrix",
+    "enable_disable",
+    "kill_switch",
+    "state_preservation",
+    "graceful_fallback"
+  ],
+  "default_matrix": {
+    "description": "All 13 v1.2 flags default to OFF when registry is fresh.",
+    "flags_count": 13,
+    "default_state": "OFF",
+    "verified": true
+  },
+  "dependency_matrix": {
+    "description": "No cross-flag dependencies in v1.2 wave-1; each flag is independent.",
+    "cross_dependencies": "none",
+    "verified": true
+  },
+  "enable_disable": {
+    "description": "Individual flags can be enabled and disabled independently.",
+    "idempotent_enable": true,
+    "disable_removes_from_enabled": true,
+    "unknown_flag_throws": true
+  },
+  "kill_switch": {
+    "description": "Emergency kill-switch forces all flags OFF and blocks isEnabled until disengage or explicit re-enable.",
+    "engages_clears_all": true,
+    "is_enabled_false_during_kill": true,
+    "disengage_resets_to_defaults": true,
+    "explicit_enable_clears_kill_switch": true
+  },
+  "state_preservation": {
+    "description": "Registry state can be projected to and restored from an override store.",
+    "persistence_round_trip": true,
+    "unknown_flags_dropped_on_load": true,
+    "corrupt_file_returns_defaults": true
+  },
+  "graceful_fallback": {
+    "description": "Unknown flags throw ArgumentError; missing override file returns clean defaults.",
+    "unknown_flag_rejected": true,
+    "missing_override_file_clean": true
+  },
+  "limits": [
+    "No cross-feature dependency graph in v1.2 wave-1 (all flags independent)",
+    "Override persistence validated at domain level, not wired to settings UI yet",
+    "Kill-switch interaction with live project sessions not in scope"
+  ],
+  "decision": "Local automated validation only; native GUI, hosted CI, signing, hardware, public release DEFERRED",
+  "updated_at": "2026-09-22"
+}

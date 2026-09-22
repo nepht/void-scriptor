@@ -29,7 +29,7 @@
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
   "last_verified_step": "113.15",
-  "next_step": "113.17",
+  "next_step": "113.18",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -741,7 +741,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "113.16",
+  "last_resolved_step": "113.17",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",

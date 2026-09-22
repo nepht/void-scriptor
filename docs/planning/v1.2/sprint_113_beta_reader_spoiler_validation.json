@@ -1,0 +1,73 @@
+{
+  "canonical_step": "113.17",
+  "title": "Beta Reader & Spoiler Validation",
+  "objective": "Memvalidasi clearance, redaction, preview, share, revoke, dan tidak adanya kebocoran spoiler.",
+  "features_validated": [16],
+  "required_evidence": {
+    "audience_results": {
+      "description": "Audience policies dan spoiler levels bekerja dengan benar.",
+      "components": [
+        "spoiler_audience_registration",
+        "spoiler_level_classification",
+        "group_inheritance",
+        "effective_level_resolution",
+        "safe_default_major"
+      ],
+      "status": "validated"
+    },
+    "redaction_results": {
+      "description": "Redaction mengganti blok spoiler dengan placeholder, menghapus tautan internal, dan membuang metadata.",
+      "components": [
+        "reader_redactor_grant_access",
+        "preview_as_reader_visible_blocks",
+        "preview_as_reader_redacted_blocks",
+        "hidden_links_removed",
+        "metadata_never_in_output"
+      ],
+      "status": "validated"
+    },
+    "share_results": {
+      "description": "Export service menghasilkan output yang aman tanpa spoiler.",
+      "components": [
+        "spoiler_safe_export_preflight",
+        "plain_text_export",
+        "encyclopedia_json_export",
+        "private_notes_excluded",
+        "internal_links_filtered"
+      ],
+      "status": "validated"
+    },
+    "revocation_results": {
+      "description": "Akses yang dicabut menghasilkan error saat preview diminta.",
+      "components": [
+        "revoke_removes_access",
+        "preview_after_revoke_throws",
+        "grant_after_revoke_restores"
+      ],
+      "status": "validated"
+    },
+    "leakage_results": {
+      "description": "Tidak ada kebocoran spoiler atau metadata dalam output.",
+      "components": [
+        "no_spoiler_text_in_redacted_blocks",
+        "no_internal_links_in_redacted_blocks",
+        "no_metadata_in_serialized_preview",
+        "reveal_point_before_scene_hidden"
+      ],
+      "status": "validated"
+    },
+    "acceptance": {
+      "description": "Semua acceptance criteria sprint 113.17 terpenuhi.",
+      "criteria": {
+        "audience_policy_enforced": true,
+        "redaction_works": true,
+        "share_safe": true,
+        "revocation_enforced": true,
+        "no_leakage": true
+      },
+      "status": "validated"
+    }
+  },
+  "limits": "Native GUI, hosted CI, signing, hardware, public release DEFERRED. Validation bersifat domain-only: exercised components are in-memory pure Dart, not wired to live database or UI.",
+  "decision": "pending_validation_execution"
+}

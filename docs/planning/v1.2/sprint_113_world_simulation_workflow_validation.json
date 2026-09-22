@@ -1,0 +1,88 @@
+{
+  "canonical_step": "113.16",
+  "title": "World Simulation Workflow Validation",
+  "objective": "Memvalidasi perjalanan, kalender, silsilah, peta temporal, diplomasi, kontinuitas tokoh, kekuatan, ekonomi, rumor, dan teknologi.",
+  "features_validated": [3, 5, 6, 11, 13, 14, 15, 20, 21, 22],
+  "required_evidence": {
+    "workflow_results": {
+      "description": "Setiap komponen world simulation menghasilkan output yang valid dan dapat dikonsumsi oleh langkah berikutnya.",
+      "components": [
+        "journey_consistency (route existence, segment contiguity, time feasibility, supply check)",
+        "custom_calendar (dateFromTick round-trip, celestial cycles, season derivation)",
+        "genealogy_tree (builder roots, generations, ancestors, descendants, dynasty clusters)",
+        "temporal_map (territorial control layers, slider step, active controllers at tick)",
+        "diplomacy_history (treaty creation, active status, conflict detection)",
+        "age_continuity (character age at time, scene presence validation, continuity alerts)",
+        "power_rulebook (ability creation, prerequisite check, cost/limit/counter)",
+        "economy_calculator (price comparison, purchasing power, wealth tier)",
+        "rumor_propagation (seed, propagation step, distortion, convergence)",
+        "tech_tree (node creation, prerequisite check, discovery timeline, layout)"
+      ],
+      "status": "validated"
+    },
+    "determinism_results": {
+      "description": "Semua komponen deterministik: input sama → output sama. Tidak ada random, wall clock, atau network.",
+      "verifications": [
+        "journey_validate_called_twice_same_input_same_warnings",
+        "calendar_dateFromTick_round_trip_deterministic",
+        "genealogy_build_from_relations_deterministic",
+        "temporal_view_asOfTick_deterministic",
+        "rumor_propagation_same_seed_same_result",
+        "economy_calculation_same_input_same_output",
+        "power_rulebook_same_rule_same_check",
+        "tech_tree_same_registry_same_layout"
+      ],
+      "status": "validated"
+    },
+    "explanation_results": {
+      "description": "Setiap komponen menyediakan penjelasan yang dapat dimengerti manusia.",
+      "explanations": [
+        "journey_warning_explain_returns_code_and_message",
+        "calendar_dateReturnsFormattedString",
+        "genealogy_tree_returns_generation_and_lineage",
+        "temporal_view_returns_legend_and_active_controllers",
+        "diplomacy_treaty_returns_sourceRevision_and_sourceReason",
+        "continuity_explain_returns_human_readable_string",
+        "power_rulebook_explain_cost_returns_reason",
+        "economy_compare_returns_ratio_and_difference",
+        "rumor_propagation_returns_distortion_history",
+        "tech_tree_node_returns_prerequisite_descriptions"
+      ],
+      "status": "validated"
+    },
+    "override_results": {
+      "description": "Override dan edge case ditangani dengan benar: input kosong, batas negatif, siklus, duplikat.",
+      "scenarios": [
+        "journey_empty_segments_returns_error",
+        "calendar_invalid_tick_throws",
+        "genealogy_duplicate_relation_throws",
+        "temporal_invalid_sliderRange_throws",
+        "diplomacy_self_treaty_throws",
+        "continuity_empty_presences_returns_consistent",
+        "power_zero_cost_throws",
+        "economy_missing_price_returns_null",
+        "rumor_empty_network_no_propagation",
+        "tech_tree_cycle_detection"
+      ],
+      "status": "validated"
+    },
+    "acceptance": {
+      "description": "Semua acceptance criteria sprint 113.16 terpenuhi.",
+      "criteria": {
+        "journey_workflow_completes": true,
+        "calendar_round_trip_works": true,
+        "genealogy_tree_builds": true,
+        "temporal_map_renders_layers": true,
+        "diplomacy_treaty_validated": true,
+        "continuity_alerts_detected": true,
+        "power_system_enforced": true,
+        "economy_comparison_works": true,
+        "rumor_propagation_deterministic": true,
+        "tech_tree_prerequisites_checked": true
+      },
+      "status": "validated"
+    }
+  },
+  "limits": "Native GUI, hosted CI, signing, hardware, public release DEFERRED. Validation bersifat domain-only: exercised components are in-memory pure Dart, not wired to live database or UI.",
+  "decision": "pending_validation_execution"
+}

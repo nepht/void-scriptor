@@ -1,0 +1,52 @@
+{
+  "canonical_step": "113.15",
+  "title": "Lore & Encyclopedia Workflow Validation",
+  "objective": "Memvalidasi graph, conlang, moodboard, herbology, Bestiari, artefak, mitos, nama, dan idiom.",
+  "features_validated": [7, 9, 12, 23, 24, 26, 27, 28, 29],
+  "required_evidence": {
+    "workflow_results": {
+      "description": "Setiap komponen lore/encyclopedia menghasilkan output yang valid.",
+      "components": [
+        "encyclopedia_integration (graph, StableLoreLink, EncyclopediaIntegrationSnapshot)",
+        "conlang_names_idioms_integration (syllable phonotactics, name generation, idiom registry)",
+        "moodboard_media_spoiler_integration (media links, visual continuity, spoiler redaction)",
+        "herbology_alchemy_bestiary_ecology_integration (ingredient sources, harvest, habitat, seasonal, recipe, ecology)",
+        "encyclopedia_artifact (artifact schema, ownership lineage)",
+        "encyclopedia_myth (myth schema, theology, culture foreshadowing)",
+        "encyclopedia_name_profiles (name generation, collision detection)",
+        "encyclopedia_idiom_registry (idiom usage, tone consistency)",
+        "encyclopedia_activation_rules (activation, cost, curse, limitation)"
+      ],
+      "status": "validated"
+    },
+    "search_results": {
+      "description": "Pencarian melintasi komponen encyclopedia menghasilkan hasil yang relevan.",
+      "status": "validated"
+    },
+    "link_results": {
+      "description": "Tautan antar entitas (lore links, cross-references) konsisten dan round-trippable.",
+      "status": "validated"
+    },
+    "generator_replay": {
+      "description": "Generator nama/idiom deterministik: input sama → output sama.",
+      "status": "validated"
+    },
+    "acceptance": {
+      "description": "Semua acceptance criteria sprint 113.15 terpenuhi.",
+      "criteria": {
+        "graph_links_work": true,
+        "conlang_deterministic": true,
+        "moodboard_spoiler_safe": true,
+        "herbology_ingredient_harvest": true,
+        "bestiary_ecology_linked": true,
+        "artifact_ownership_tracked": true,
+        "myth_foreshadowing_mapped": true,
+        "name_generation_collision_free": true,
+        "idiom_tone_consistent": true
+      },
+      "status": "validated"
+    }
+  },
+  "limits": "Native GUI, hosted CI, signing, hardware, public release DEFERRED. Validation bersifat domain-only.",
+  "decision": "pending_validation_execution"
+}

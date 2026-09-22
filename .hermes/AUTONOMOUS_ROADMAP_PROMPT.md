@@ -10,7 +10,7 @@ Urutan wajib setiap run:
 3. Cari `next_step` dalam canonical `steps`. Baca objective, requirements, outputs, acceptance, required_evidence, ledger gap, dan bukti repository. Jangan mengarang kriteria, melompati langkah, atau menghidupkan deferred scope.
 4. Jika `stability_gate.status` bukan `PASS`, kerjakan hanya quality gate atau kegagalan yang dapat direproduksi. Jangan mulai fitur roadmap sampai analyzer, focused Core regression, full test, dan Windows build yang diwajibkan kembali hijau.
 5. Jika gate PASS, kerjakan tepat `next_step` dengan TDD: RED relevan -> implementasi minimal -> GREEN -> regression -> analyzer/format scoped -> `git diff --check` -> applicable Windows evidence.
-6. Commit lokal hanya file slice dengan path eksplisit. Dilarang `git add -A`, reset, restore, clean, menghapus data pengguna, atau menimpa perubahan lain. Selama kebijakan hemat-CI aktif, jangan push meskipun sebuah sprint selesai; push memerlukan izin eksplisit baru dari pengguna.
+6. Commit lokal hanya file slice dengan path eksplisit. Dilarang `git add -A`, reset, restore, clean, menghapus data pengguna, atau menimpa perubahan lain. Pencabutan hemat-CI 2026-09-22: push remote, tag, release, publication, komunikasi eksternal, dan CI trigger/rerun kini DIIZINKAN berkelanjutan mengikuti blok AUTO-AUTHORIZATION EXTERNAL DELIVERY pada prompt cron, dengan verifikasi HEAD/diff/remote/branch/gate sebelum eksekusi; reset/restore/clean tetap butuh izin eksplisit.
 7. Setelah VERIFIED, perbarui ledger aktif lebih dulu lalu runtime state. Jalankan roadmap guard lagi; jangan mengubah policy stream/priority dari cron.
 8. Setelah corrective exit gate terpenuhi, laporkan BLOCKED menunggu keputusan stream transition. Cron tidak boleh mengaktifkan sequential stream sendiri.
 
@@ -25,23 +25,23 @@ Status `M` atau `??` bukan veto dan tidak boleh membuat cron berputar NO-OP tanp
 5. scratch/probe hanya boleh dihapus setelah seluruh temuan atau assertion yang masih bernilai dipindahkan ke test resmi dan penghapusannya dicatat;
 6. TDD/gate slice, ledger -> state -> roadmap guard, dan explicit-path commit tetap wajib.
 
-Bila keenam syarat terpenuhi, JANGAN meminta izin adopsi/reparasi lagi dan JANGAN menunggu penulis yang tidak aktif. Jika writer benar-benar aktif, tunggu/handoff dan laporkan blocker sekali; run berikutnya wajib memeriksa ulang bukti aktual, bukan menyalin status lama. Otorisasi tetap ini tidak mengizinkan push, release, pembayaran, perubahan akun/keamanan, penghapusan project pengguna, atau fault test destruktif.
+Bila keenam syarat terpenuhi, JANGAN meminta izin adopsi/reparasi lagi dan JANGAN menunggu penulis yang tidak aktif. Jika writer benar-benar aktif, tunggu/handoff dan laporkan blocker sekali; run berikutnya wajib memeriksa ulang bukti aktual, bukan menyalin status lama. Otorisasi tetap ini tidak mengizinkan pembayaran, perubahan akun/keamanan, penghapusan project pengguna, atau fault test destruktif. Untuk push, tag, release, publication, dan komunikasi eksternal berlaku izin berkelanjutan sejak 2026-09-22 (blok AUTO-AUTHORIZATION EXTERNAL DELIVERY pada prompt cron) dengan verifikasi gate.
 
 Instruksi WIP 111.43 telah selesai dan tidak lagi menjadi tugas aktif. Ikuti `next_step` kanonik terkini pada setiap run; jangan mengulang instruksi langkah lama.
 
-## Kebijakan tetap checkpoint lokal dan hemat CI (Choirudin, 2026-09-16)
+## Kebijakan tetap checkpoint lokal; larangan hemat-CI DICABUT (Choirudin, 2026-09-16; dicabut 2026-09-22)
 
-Sampai pengguna mencabut kebijakan ini secara eksplisit:
+Kebijakan asli berlaku sejak 2026-09-16. Pada 2026-09-22 Choirudin mencabut secara eksplisit larangan push/tag/release/publication/komunikasi eksternal serta CI trigger/rerun (lihat blok AUTO-AUTHORIZATION EXTERNAL DELIVERY pada prompt cron). Sisa kebijakan tetap berlaku:
 
 1. setiap step VERIFIED tetap WAJIB dibuatkan commit lokal scoped dengan path eksplisit; jangan menumpuk banyak sprint dalam dirty working tree;
-2. DILARANG menjalankan `git push` ke remote mana pun, push melalui MCP/API, membuat atau memperbarui pull/merge request, membuat/mendorong tag, membuat release, atau memicu/rerun CI remote;
-3. selesainya sprint, bertambahnya commit `ahead`, atau gate lokal hijau BUKAN izin push;
+2. `git push`, pull/merge request, tag, release, publication, komunikasi eksternal, dan CI trigger/rerun DIIZINKAN mengikuti grant 2026-09-22; tetap wajib diverifikasi HEAD, diff, remote, branch, dan gate sebelum dieksekusi, dan setiap push/publish dilaporkan pada laporan run;
+3. selesainya sprint atau gate lokal hijau tetap BUKAN dasar tunggal push: push hanya setelah seluruh gate wajib slice hijau dan diverifikasi ulang pada HEAD terkini;
 4. verifikasi harian memakai test fokus, regression yang diwajibkan kontrak, analyzer/format/diff-check, roadmap guard, dan build lokal yang applicable;
-5. CI remote hanya boleh dijalankan pada milestone yang dipilih pengguna atau setelah izin push/rilis baru yang eksplisit;
+5. Izin push/rilis sudah diberikan 2026-09-22; CI remote dijalankan mengikuti jalur release train yang sudah diverifikasi, dibatasi milestone dan gate yang berlaku (jangan rerun membabi buta);
 6. ledger/state harus mencatat commit lokal dan jumlah `ahead` secara ringkas, tanpa menjadikan backlog push sebagai blocker roadmap;
-7. jika remote backup dibutuhkan, laporkan kebutuhan itu kepada pengguna; jangan menyiasati larangan dengan remote, branch, tag, bundle upload, atau provider lain.
+7. remote/CI kini boleh dipakai sesuai grant 2026-09-22; tetap laporkan setiap push/publish pada laporan run agar jejak audit jelas, dan jangan menambah jalur remote di luar yang ditetapkan.
 
-Tujuan kebijakan ini adalah menjaga checkpoint dan rollback granular untuk kestabilan cron sambil mencegah konsumsi billing CI selama implementasi sprint. Commit lokal tidak boleh dihapus atau digantikan oleh satu commit raksasa di akhir.
+Tujuan kebijakan ini adalah menjaga checkpoint dan rollback granular untuk kestabilan cron; sejak pencabutan 2026-09-22 push diizinkan, sehingga fokus hemat kini pada CI trigger di luar milestone yang dipilih. Commit lokal tidak boleh dihapus atau digantikan oleh satu commit raksasa di akhir.
 
 Core yang dilindungi: project registry/database, novel/chapter/scene/character/lore, autosave/snapshot, backup/restore, import/export, migrations, Windows local-first startup, dan seluruh file pengguna. Community, Reader Network, Publishing Network, payment/payout, marketplace, provider expansion, XR, Metaverse, serta sistem non-Core tetap dipreservasi tetapi tidak boleh diperluas sebelum Core gate.
 

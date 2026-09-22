@@ -1,0 +1,33 @@
+{
+  "canonical_step": "113.24",
+  "title": "Reliability & Recovery Validation",
+  "objective": "Memvalidasi autosave, crash recovery, disk full, permission loss, power loss, missing media, dan corrupt index.",
+  "required_evidence": {
+    "failure_cases": {
+      "description": "Tujuh kasus kegagalan kanonik (autosave, crash recovery, disk full, permission loss, power loss, missing media, corrupt index) tiap dengan perilaku yang diharapkan dan hasil observasi dari subsystem nyata.",
+      "status": "validated_integration_local"
+    },
+    "data_loss_results": {
+      "description": "Bukti no-silent-loss: kegagalan persist/stage mempertahankan entri journal durable, entri journal terpotong tersurface sebagai corrupt (tidak dibuang diam-diam).",
+      "status": "validated_integration_local"
+    },
+    "recovery_results": {
+      "description": "RestoreCrashRecovery membersihkan staging artefak jendela crash dan StartupRecoveryPolicy memberi ladder normal -> safe -> recovery dari streak kegagalan beruntun.",
+      "status": "validated_integration_local"
+    },
+    "repair_results": {
+      "description": "CorruptionDetectionRecoveryService: scan mendeteksi missing/orphan/index desync, recover membuat backup pra-repair, mengarantina orfan, dan me-reindex.",
+      "status": "validated_integration_local"
+    },
+    "user_guidance": {
+      "description": "Panduan tindakan pengguna yang dapat ditindaklanjuti untuk setiap kasus kegagalan, tidak kosong dan spesifik terhadap kasusnya.",
+      "status": "validated_domain_level"
+    },
+    "decision": {
+      "description": "Keputusan pass/fail/blocked: pass bila ketujuh kasus lulus tanpa data loss dan repair/recovery sukses; blocked bila belum ada kasus terekam.",
+      "status": "validated_domain_level"
+    }
+  },
+  "limits": "Failure cases dijalankan sebagai fixture integrasi lokal pada direktori temp (journal, coordinator, restore crash recovery, corruption repair, reference resolution) — bukan pada proses aplikasi penuh. Disk full disimulasikan lewat persist yang melempar error, permission loss lewat jalur tulis yang gagal di filesystem, power loss lewat file journal final terpotong; tidak ada pemadaman listrik, volume penuh nyata, atau ACL Windows yang diubah. Native GUI, hosted CI, hardware power-loss, dan public release DEFERRED/UNVERIFIABLE.",
+  "decision": "validated_integration_local_pending_native_failure_injection"
+}

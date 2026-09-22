@@ -1,0 +1,13 @@
+{
+  "step": "113.23",
+  "kind": "focused_test",
+  "command": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat test --no-pub test/release/sprint_113_performance_validation_window_test.dart -j 1",
+  "started_at": "2026-09-22T20:33:28+07:00",
+  "finished_at": "2026-09-22T20:33:36+07:00",
+  "exit_code": 0,
+  "result": "PASS",
+  "passed": 22,
+  "failed": 0,
+  "log": "docs/evidence/sprint-113-23-focused.log",
+  "note": "RED proven first: domain file temporarily moved to scratch -> compile failure exit 1 -> restored -> GREEN 22/22."
+}

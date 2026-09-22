@@ -1,0 +1,33 @@
+{
+  "canonical_step": "113.23",
+  "title": "Performance Validation Window",
+  "objective": "Membandingkan startup, latency, background work, graph, search, simulation, media, dan export dengan threshold.",
+  "required_evidence": {
+    "baseline": {
+      "description": "Baseline beku per kategori (startup, latency, background work, graph, search, simulation, media, export) berlabuh pada threshold T-03 (cold start <= 8000ms) dan T-04 (search p95 <= 1000ms) di sprint_113_baseline_acceptance_thresholds.json, ditambah budget p50/p95 untuk kategori lain.",
+      "status": "validated_domain_level"
+    },
+    "results": {
+      "description": "Sampel durasi terekam per kategori dan observasi lengkap per kategori pada window validasi.",
+      "status": "validated_domain_level"
+    },
+    "percentiles": {
+      "description": "Persentil p50/p95/p99 deterministik (nearest-rank) per kategori dari sampel terekam.",
+      "status": "validated_domain_level"
+    },
+    "regressions": {
+      "description": "Deteksi regresi ketika persentil terukur melampaui budget baseline; daftar finding memuat kategori, persentil, nilai terukur, budget, dan faktor regresi.",
+      "status": "validated_domain_level"
+    },
+    "resource_use": {
+      "description": "Puncak RSS memory dan puncak jumlah background job dibandingkan anggarannya, dengan status within-budget.",
+      "status": "validated_domain_level"
+    },
+    "decision": {
+      "description": "Keputusan pass/fail/blocked: fail jika ada regresi atau resource over-budget, blocked bila belum ada sampel, pass bila bersih.",
+      "status": "validated_domain_level"
+    }
+  },
+  "limits": "Domain-level validation dengan fixture deterministik: persentil dan resource use dihitung dari sampel yang direkam ke window, bukan dari proses aplikasi nyata; wall-clock startup, RSS proses nyata, scheduler background job, render graph, query search DB, simulasi interaktif, decode media, dan export file tidak dijalankan di sini. Measurement wall-clock nyata, profiling RSS/CPU proses asli, native GUI, hosted CI, hardware, dan public release DEFERRED/UNVERIFIABLE.",
+  "decision": "validated_domain_level_pending_native_performance_measurement"
+}

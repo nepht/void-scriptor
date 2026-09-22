@@ -1,0 +1,20 @@
+{
+  "step": "113.23",
+  "kind": "scoped_gates",
+  "analyzer": {
+    "command": "dart analyze <domain+test scoped>",
+    "exit_code": 0,
+    "result": "No issues found! (after const fix)"
+  },
+  "format": {
+    "command": "dart format --set-exit-if-changed <domain+test>",
+    "exit_code": 0,
+    "result": "0 changed"
+  },
+  "diff_check": {
+    "command": "git diff --check",
+    "exit_code": 0,
+    "result": "PASS"
+  },
+  "finished_at": "2026-09-22T20:36:00+07:00"
+}

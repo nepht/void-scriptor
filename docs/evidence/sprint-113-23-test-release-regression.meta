@@ -1,0 +1,13 @@
+{
+  "step": "113.23",
+  "kind": "regression_test_release",
+  "command": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat test --no-pub test/release -j 1",
+  "started_at": "2026-09-22T20:33:36+07:00",
+  "finished_at": "2026-09-22T20:35:47+07:00",
+  "duration_seconds": 131,
+  "exit_code": 0,
+  "result": "PASS",
+  "passed": 473,
+  "failed": 0,
+  "log": "docs/evidence/sprint-113-23-test-release-regression.log"
+}

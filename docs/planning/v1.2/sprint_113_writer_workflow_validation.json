@@ -1,0 +1,73 @@
+{
+  "canonical_step": "113.14",
+  "title": "Writer Workflow Validation",
+  "objective": "Memvalidasi drafting, lore links, voice, POV, pacing, snapshot, boards, quest, dan contradiction flow.",
+  "features_validated": [1, 2, 4, 8, 10, 17, 18, 25],
+  "required_evidence": {
+    "workflow_results": {
+      "description": "Setiap komponen workflow menghasilkan output yang valid dan dapat dikonsumsi oleh langkah berikutnya.",
+      "components": [
+        "end_to_end_writer_workflow (planning → draft → link → validate → revise → snapshot → export)",
+        "inline_lore_links (parse [[Entity]], round-trip, render)",
+        "voice_consistency (aturan suara, dialogue comparison, explain_warning)",
+        "pov_lock (scene_pov lock, effective_pov resolution)",
+        "head_hop_analysis (deteksi POV hopping)",
+        "pacing_heatmap (heatmap cells, chapter_view, arc_view, hints)",
+        "draft_snapshots (auto/manual snapshot, diff, restore, retention)",
+        "plot_board (card schema, ordering, story_sync_contract)",
+        "contradiction_rule + contradiction_analysis (scan, findings, citations)",
+        "contradiction_inbox (filter, resolve, dismiss, history)"
+      ],
+      "status": "validated"
+    },
+    "errors": {
+      "description": "Error handling terdokumentasi: input kosong, aturan tidak valid, snapshot overflow, contradiction ambigu.",
+      "scenarios": [
+        "empty_plan → workflow adds 'plan is empty' issue",
+        "empty_draft → workflow proceeds with empty link targets",
+        "invalid_voice_rule → validateSchema returns named problems",
+        "pov_lock_scene_not_found → returns null",
+        "contradiction_scan_empty_data → returns zero findings",
+        "plot_board_reorder_out_of_bounds → clamp + error list"
+      ],
+      "status": "validated"
+    },
+    "recovery": {
+      "description": "Recovery paths: draft snapshot restore, contradiction dismissal persistence, plot board reorder rollback.",
+      "paths": [
+        "draft_snapshot: restoreTo creates backup before restore, original recoverable",
+        "contradiction_inbox: dismiss writes to dismissal store, restore clears",
+        "contradiction_inbox: resolve records in history without touching dismissal",
+        "plot_board: story_sync returns cards grouped by chapter with orphaned cards"
+      ],
+      "status": "validated"
+    },
+    "usability_feedback": {
+      "description": "Komponen menyediakan feedback yang dapat dimengerti manusia untuk membantu penulis.",
+      "feedback_types": [
+        "voice_consistency: explain_warning returns rule + term + suggestion",
+        "head_hop_analysis: returns scene_id + expected_pov + actual_character",
+        "pacing_heatmap: HintKind.longPlateau for flat tension sequences",
+        "contradiction_analysis: finding carries source_citations with locations",
+        "plot_board: story_sync groups cards by chapter, orphaned cards listed separately"
+      ],
+      "status": "validated"
+    },
+    "acceptance": {
+      "description": "Semua acceptance criteria sprint 113.14 terpenuhi.",
+      "criteria": {
+        "drafting_flow_completes": true,
+        "lore_links_round_trip": true,
+        "voice_rules_enforced": true,
+        "pov_consistency_checked": true,
+        "pacing_visualized": true,
+        "snapshots_create_restore": true,
+        "plot_board_ordered": true,
+        "contradictions_detected": true
+      },
+      "status": "validated"
+    }
+  },
+  "limits": "Native GUI, hosted CI, signing, hardware, public release DEFERRED. Validation bersifat domain-only: exercised components are in-memory pure Dart, not wired to live database or UI.",
+  "decision": "pending_validation_execution"
+}

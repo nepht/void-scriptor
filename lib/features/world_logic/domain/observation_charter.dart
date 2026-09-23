@@ -23,11 +23,13 @@ class ObservationCharter {
   static ObservationCharterResult validate(Map<String, dynamic> manifest) {
     final errors = <String>[];
     for (final field in requiredFields) {
-      if (!manifest.containsKey(field))
+      if (!manifest.containsKey(field)) {
         errors.add('missing required field: $field');
+      }
     }
-    if (manifest['canonical_step'] != canonicalStep)
+    if (manifest['canonical_step'] != canonicalStep) {
       errors.add('canonical_step mismatch');
+    }
     if (manifest['path'] != 'DELAYED') errors.add('path must remain DELAYED');
     final window = manifest['window'];
     if (window is Map<String, dynamic> &&
@@ -45,22 +47,26 @@ class ObservationCharter {
       'stop_conditions',
       'exit_criteria',
     ]) {
-      if (manifest[field] is! List<dynamic>)
+      if (manifest[field] is! List<dynamic>) {
         errors.add('$field must be a list');
+      }
     }
-    if (manifest['escalation'] is! Map<String, dynamic>)
+    if (manifest['escalation'] is! Map<String, dynamic>) {
       errors.add('escalation must be an object');
-    if (manifest['external_gates'] != 'DEFERRED-EXTERNAL')
+    }
+    if (manifest['external_gates'] != 'DEFERRED-EXTERNAL') {
       errors.add('external gates must remain DEFERRED-EXTERNAL');
+    }
     return ObservationCharterResult(errors.isEmpty, errors);
   }
 
   static ObservationCharterResult validateManifest() {
     final file = File(manifestPath);
-    if (!file.existsSync())
+    if (!file.existsSync()) {
       return const ObservationCharterResult(false, <String>[
         'manifest missing',
       ]);
+    }
     return validate(
       jsonDecode(file.readAsStringSync()) as Map<String, dynamic>,
     );

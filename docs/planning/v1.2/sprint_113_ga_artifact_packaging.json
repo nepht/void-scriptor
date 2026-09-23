@@ -1,0 +1,126 @@
+{
+  "canonical_step": "113.38",
+  "title": "GA Artifact Packaging",
+  "version": "1.2.0-rc.1",
+  "status": "VERIFIED-LOCAL",
+  "source_revision": "30dda0c3389a8bd9e3cae705abd51eaecbca2630",
+  "required_outputs": {
+    "signed_artifacts": [
+      "build/windows/x64/runner/Release/dartjni.dll",
+      "build/windows/x64/runner/Release/file_selector_windows_plugin.dll",
+      "build/windows/x64/runner/Release/flutter_secure_storage_windows_plugin.dll",
+      "build/windows/x64/runner/Release/flutter_windows.dll",
+      "build/windows/x64/runner/Release/sqlite3.dll",
+      "build/windows/x64/runner/Release/void_scriptor.exe"
+    ],
+    "checksums": [
+      "docs/release/v1.2.0-rc.1-checksums.txt",
+      "build/release-metadata/artifact-manifest.json"
+    ],
+    "version_manifest": "1.2.0-rc.1",
+    "dependency_manifest": [
+      "pubspec.lock",
+      "docs/release/v1.2.0-rc.1-sbom.cdx.json"
+    ],
+    "schema_manifest": [
+      "database:62",
+      "project_format:16"
+    ],
+    "flag_manifest": [
+      "vs12_lore_links",
+      "vs12_contradictions",
+      "vs12_voice_interview",
+      "vs12_conlang",
+      "vs12_focus_writing",
+      "vs12_lore_graph",
+      "vs12_plot_board",
+      "vs12_moodboard",
+      "vs12_spoiler_sharing",
+      "vs12_pov",
+      "vs12_pacing",
+      "vs12_export",
+      "vs12_quests",
+      "kill_switch:FeatureFlagRegistry.engageKillSwitch"
+    ],
+    "licenses": [
+      "LICENSE",
+      "docs/release/v1.2.0-rc.1-third-party-notices.txt"
+    ]
+  },
+  "signing_evidence": {
+    "status": "SELF_SIGNED_LOCAL_VERIFIED",
+    "algorithm": "Authenticode-SHA256",
+    "verification_exit_code": 0,
+    "certificate_subject": "CN=Void Scriptor Local Development",
+    "certificate_thumbprint": "E336967CB949B489B7FE320E80683780C00C4A8A",
+    "trust_scope": "CurrentUser Root store only",
+    "timestamp_status": "NOT_TIMESTAMPED_LOCAL_ONLY",
+    "key_material": "NOT_PRESENT_IN_REPOSITORY",
+    "public_trust_label": "UNSIGNED_PUBLIC_TRUST",
+    "trust_label_note": "SELF_SIGNED_TEST for internal validation; this certificate does not confer public trust.",
+    "sign_manifest_path": "build/release-metadata/windows-signed-rc-manifest.json",
+    "signed_file_count": 6
+  },
+  "dependency_evidence": {
+    "pubspec_lock_sha256": "32e31fd31a928e20007226e720ee37a661afb5d0d224d4eb24b04463496626f8",
+    "sbom_components": 130,
+    "sbom_format": "CycloneDX",
+    "source": "pubspec.lock hash-pinned; tools/generate_release_metadata.py"
+  },
+  "schema_evidence": {
+    "database": 62,
+    "project_format": 16,
+    "source": "lib/database/project/project_database.dart currentSchemaVersion; lib/core/project_package/void_project_format.dart currentSchema"
+  },
+  "flag_evidence": {
+    "default_states": {
+      "vs12_lore_links": false,
+      "vs12_contradictions": false,
+      "vs12_voice_interview": false,
+      "vs12_conlang": false,
+      "vs12_focus_writing": false,
+      "vs12_lore_graph": false,
+      "vs12_plot_board": false,
+      "vs12_moodboard": false,
+      "vs12_spoiler_sharing": false,
+      "vs12_pov": false,
+      "vs12_pacing": false,
+      "vs12_export": false,
+      "vs12_quests": false
+    },
+    "kill_switch": false,
+    "source": "lib/core/feature_flags/feature_flag_registry.dart kVs12FeatureFlags (13 wave-1 ids)"
+  },
+  "license_evidence": {
+    "project_license": "LICENSE",
+    "third_party_notices": "docs/release/v1.2.0-rc.1-third-party-notices.txt",
+    "notices_bytes": 247900,
+    "hosted_packages_licensed": true,
+    "source": "tools/generate_release_metadata.py over flutter pub deps --json"
+  },
+  "build": {
+    "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --release --no-pub",
+    "exit_code": 0,
+    "duration_seconds": 102,
+    "log": "docs/evidence/sprint-113-38-build-release.log"
+  },
+  "signing_run": {
+    "command": "powershell -ExecutionPolicy Bypass -File tools/sign_windows_release.ps1 -AllowSelfSignedLocal ...",
+    "exit_code": 0,
+    "duration_seconds": 3,
+    "log": "docs/evidence/sprint-113-38-sign.log"
+  },
+  "metadata_run": {
+    "command": "python tools/generate_release_metadata.py --artifacts-dir build/windows/x64/runner/Release",
+    "exit_code": 0,
+    "duration_seconds": 5,
+    "log": "docs/evidence/sprint-113-38-metadata.log"
+  },
+  "limits": [
+    "Artifacts carry a SELF_SIGNED_TEST signature (UNSIGNED_PUBLIC_TRUST for public distribution); public CA signing and RFC3161 timestamping remain distribution gates.",
+    "Packaging ran on the local Windows toolchain; hosted CI packaging, installer bundling, and publication remain deferred gates.",
+    "Checksums are SHA-256 over the signed bytes on this machine; independent reproducibility on a second builder is not claimed by this step.",
+    "Download wiring at voidscriptor.pages.dev still points at the 1.2.0-alpha.1 artifact; updating public labels or publishing this candidate requires explicit Choirudin approval."
+  ],
+  "decision": "VERIFIED_LOCAL_SIGNED_GA_CANDIDATE"
+}

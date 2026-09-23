@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.37",
-  "next_step": "113.38",
+  "last_verified_step": "113.38",
+  "next_step": "113.39",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -58,7 +58,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-23T13:08:00+07:00",
+  "updated_at": "2026-09-23T13:22:00+07:00",
   "updated_by": "cron-core-worker-v4",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "113.37 VERIFIED-LOCAL",
+  "current_step": "113.38 VERIFIED-LOCAL",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-23: 113.37 Version, Changelog & Migration Notes VERIFIED-LOCAL. RED fase1 exit 1 (domain+manifest absen), RED fase2 1/10 gagal membuktikan mismatch versi alpha.1 vs rc.1, repair bump pubspec+applicationVersion+settings test ke 1.2.0-rc.1 (snapshot WIP pubspec dipreserve), GREEN focused 22/22 PASS exit 0, regression test/release 599/599 PASS exit 0 131s, analyzer/format/diff-check PASS. 6 output kanonik terdokumentasi dari sumber nyata di HEAD. Gap: label distribusi R2/website masih 1.2.0-alpha.1 -> 113.38. Commit: (lihat git log). Sibling WIP dipreserve semua.",
+  "last_run_summary": "2026-09-23: 113.38 GA Artifact Packaging VERIFIED-LOCAL. RED compile exit 1 (domain+manifest); build windows --release exit 0 102s; sign self-signed exit 0 (6 artefak, verify /pa 0); metadata exit 0 (SBOM 130 komponen, notices 247.9KB, 493 entri checksum pasca-tanda-tangan); GREEN focused 13/13 PASS; regression test/release 612/612 PASS exit 0 124s; analyzer/format/diff-check PASS. Output kanonik 7/7 direkam + docs/release/v1.2.0-rc.1-{checksums,sbom,third-party-notices}. Wiring unduhan situs TIDAK disentuh (Gap label alpha.1 terbuka, butuh izin Choi). Sibling WIP dipreserve semua.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -881,8 +881,8 @@
     "next_step": "113.27"
   },
   "sprint_progress": {
-    "last_verified_step": "113.37",
-    "next_step": "113.38"
+    "last_verified_step": "113.38",
+    "next_step": "113.39"
   },
   "sprint_113_step_11328": {
     "status": "VERIFIED-LOCAL",
@@ -966,5 +966,36 @@
     ],
     "manifest": "docs/planning/v1.2/sprint_113_version_changelog_migration.json",
     "known_gap": "R2/website download label masih 1.2.0-alpha.1 -> ledger Gap 2026-09-23"
+  },
+  "sprint_113_step_11338": {
+    "status": "VERIFIED-LOCAL",
+    "title": "GA Artifact Packaging",
+    "date": "2026-09-23",
+    "version": "1.2.0-rc.1",
+    "source_revision": "30dda0c3389a8bd9e3cae705abd51eaecbca2630",
+    "required_outputs": [
+      "signed_artifacts",
+      "checksums",
+      "version_manifest",
+      "dependency_manifest",
+      "schema_manifest",
+      "flag_manifest",
+      "licenses"
+    ],
+    "red_exit": 1,
+    "build": "windows --release exit 0 102s",
+    "signing": "SELF_SIGNED_LOCAL_VERIFIED 6 artefak, verify exit 0, UNSIGNED_PUBLIC_TRUST",
+    "green_focused": "13/13 exit 0 6s",
+    "regression_test_release": "612/612 exit 0 124s",
+    "analyzer": "No issues",
+    "format": "0 changed",
+    "diff_check": 0,
+    "manifest": "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json",
+    "committed_artifacts": [
+      "docs/release/v1.2.0-rc.1-checksums.txt",
+      "docs/release/v1.2.0-rc.1-sbom.cdx.json",
+      "docs/release/v1.2.0-rc.1-third-party-notices.txt"
+    ],
+    "known_gap": "label unduhan publik masih 1.2.0-alpha.1 (wiring situs butuh izin Choirudin)"
   }
 }

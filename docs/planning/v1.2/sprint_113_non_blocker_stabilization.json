@@ -1,0 +1,33 @@
+{
+  "canonical_step": "113.32",
+  "title": "Non-Blocker Stabilization",
+  "objective": "Memperbaiki defect berisiko rendah yang disetujui tanpa memperluas scope.",
+  "requirements": {
+    "risk_assessed": {
+      "description": "Penilaian risiko perbaikan terekspresi; blank dilaporkan missing oleh StabilizationLog.missingRequirements.",
+      "status": "validated_domain_fixture"
+    },
+    "minimal_change": {
+      "description": "Perubahan tetap dalam scope minimal yang disetujui; false dilaporkan missing.",
+      "status": "validated_domain_fixture"
+    },
+    "tests_added": {
+      "description": "Test yang ditambahkan untuk perbaikan; list kosong dilaporkan missing.",
+      "status": "validated_domain_fixture"
+    },
+    "reviewed": {
+      "description": "Siapa/apa yang me-review perubahan; blank dilaporkan missing.",
+      "status": "validated_domain_fixture"
+    },
+    "no_schema_break": {
+      "description": "Perubahan tidak merusak schema yang ada; false dilaporkan missing dan memaksa keputusan fail.",
+      "status": "validated_domain_fixture"
+    },
+    "documented": {
+      "description": "Tempat dokumentasi perubahan (guide/changelog/release note); blank dilaporkan missing dan teksnya dipertahankan pada keputusan pass.",
+      "status": "validated_domain_fixture"
+    }
+  },
+  "limits": "Perbaikan yang diuji adalah fixture integrasi lokal pada domain bebas-dependensi terhadap defect non-blocker nyata; log kosong menghasilkan blocked sampai satu perubahan lengkap tercatat. Native GUI, hosted CI, signing, hardware, dan public release DEFERRED/UNVERIFIABLE.",
+  "decision": "validated_domain_fixture_pending_real_non_blocker_fix"
+}

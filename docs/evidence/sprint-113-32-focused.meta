@@ -1,0 +1,14 @@
+{
+  "step": "113.32",
+  "command": "flutter.bat test --no-pub test/release/sprint_113_non_blocker_stabilization_test.dart -j 1 (GREEN, post-format)",
+  "finished_at": "2026-09-23T10:19:30+0700",
+  "duration_seconds": 5,
+  "exit_code": 0,
+  "result": "PASS",
+  "counts": {
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0
+  },
+  "log": "docs/evidence/sprint-113-32-focused.log"
+}

@@ -1,0 +1,13 @@
+{
+  "step": "113.32",
+  "command": "flutter.bat test --no-pub test/release/sprint_113_non_blocker_stabilization_test.dart -j 1 (domain+manifest belum dibuat)",
+  "finished_at": "2026-09-23T10:18:46+0700",
+  "duration_seconds": 5,
+  "exit_code": 1,
+  "result": "FAIL",
+  "counts": {
+    "passed": 0,
+    "note": "compile/load RED - domain non_blocker_stabilization.dart dan manifest sprint_113_non_blocker_stabilization.json belum ada"
+  },
+  "log": "docs/evidence/sprint-113-32-red.log"
+}

@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.39",
-  "next_step": "113.40",
+  "last_verified_step": "113.40",
+  "next_step": "113.41",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -58,7 +58,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-23T13:45:00+07:00",
+  "updated_at": "2026-09-23T14:03:00+07:00",
   "updated_by": "cron-core-worker-v4",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "113.39 VERIFIED-LOCAL",
+  "current_step": "113.40 VERIFIED-LOCAL",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-23: 113.39 Build Reproducibility & Provenance VERIFIED-LOCAL. RED compile exit 1; 2 siklus flutter clean+build windows --release exit 0 (122s/115s); verdict NOT_BIT_IDENTICAL (4/6 biner berbeda karena MSVC tanpa /Brepro, 2 biner upstream identik — limit terdokumentasi); artefak signed 113.38 di-snapshot+restore, checksum committed cocok ulang; GREEN focused 7/7 PASS; regression test/release 619/619 PASS exit 0 154s; analyzer/format/diff-check PASS. Defect domain sameKeys (Set== identity) diperbaiki TDD. Sibling WIP dipreserve.",
+  "last_run_summary": "2026-09-23: 113.40 Update Channel & Delivery Validation VERIFIED-LOCAL. RED compile exit 1; GREEN focused 10/10 PASS; regression test/release 629/629 PASS exit 0 128s; analyzer No issues; format/diff-check/guard PASS. Fakta live: signature Valid E336967C, disk D 193815MB>=120424708 required, artefak rc.1 hash cocok, download/resume/retry fixture SHA-256 match, rollback alpha.1 di-HEAD. Fix: const eval error hash literal + 4 prefer_const_constructors. Sibling WIP dipreserve.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -881,8 +881,8 @@
     "next_step": "113.27"
   },
   "sprint_progress": {
-    "last_verified_step": "113.39",
-    "next_step": "113.40"
+    "last_verified_step": "113.40",
+    "next_step": "113.41"
   },
   "sprint_113_step_11328": {
     "status": "VERIFIED-LOCAL",
@@ -1022,5 +1022,29 @@
     "domain_fix": "sameKeys Set== identity defect -> length+containsAll (TDD via RED assertions)",
     "manifest": "docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json",
     "limitations": "reproducibility mesin/sumber sama saja; signed self-signed lokal; hosted CI/SLSA/installer/publikasi DEFERRED"
+  },
+  "sprint_113_step_11340": {
+    "status": "VERIFIED-LOCAL",
+    "title": "Update Channel & Delivery Validation",
+    "date": "2026-09-23",
+    "acceptance": [
+      "update_metadata",
+      "signature_check",
+      "download",
+      "resume",
+      "retry",
+      "disk_space_check",
+      "rollback_channel"
+    ],
+    "red_exit": 1,
+    "green_focused": "10/10 exit 0 5s",
+    "regression_test_release": "629/629 exit 0 128s",
+    "analyzer": "No issues",
+    "format": "0 changed",
+    "diff_check": 0,
+    "live_signature": "Valid E336967CB949B489B7FE320E80683780C00C4A8A (self-signed local)",
+    "live_disk": "D: 193815 MB free >= 120424708 required",
+    "manifest": "docs/planning/v1.2/sprint_113_update_channel_delivery_validation.json",
+    "limitations": "download/resume/retry fixture lokal bukan live network; public trust signing, CDN range, updater rollback end-user DEFERRED"
   }
 }

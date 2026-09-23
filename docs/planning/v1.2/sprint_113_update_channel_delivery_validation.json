@@ -1,0 +1,75 @@
+{
+  "canonical_step": "113.40",
+  "title": "Update Channel & Delivery Validation",
+  "status": "VERIFIED-LOCAL",
+  "version": "1.2.0-rc.1",
+  "channel": "rc",
+  "recorded_at": "2026-09-23T13:55:00+07:00",
+  "required_evidence": {
+    "update_metadata": {
+      "version": "1.2.0-rc.1",
+      "channel": "rc",
+      "previous_version": "1.2.0-alpha.1",
+      "artifact_path": "build/windows/x64/runner/Release/void_scriptor.exe",
+      "artifact_sha256": "73101e781b3fb2341277af715fbda3ea3fbe9d750f0d5e15711b3a17c6732b7d",
+      "artifact_size_bytes": 156640,
+      "hash_algorithm": "sha256",
+      "source": "signed artifact produced by 113.38, re-hashed live this slice"
+    },
+    "signature_check": {
+      "status": "Valid",
+      "verification_exit_code": 0,
+      "thumbprint": "E336967CB949B489B7FE320E80683780C00C4A8A",
+      "method": "PowerShell Get-AuthenticodeSignature (live, 2026-09-23)",
+      "certificate_scope": "self-signed local development",
+      "trust_limit": "no public trust: status Valid only verifies the local signature integrity; Windows end-users without the dev cert will see an unknown-publisher warning",
+      "checked_at": "2026-09-23T13:49:00+07:00"
+    },
+    "download": {
+      "method": "local fixture transfer in test tempdir with SHA-256 verification",
+      "fixture_bytes": 262144,
+      "fixture_sha256": "31a1f9dea0169551092d05e8bf4a446228c8c3eb4c9b713c66adcb7fd53c89be",
+      "verified_sha256_match": true,
+      "live_network_download": false
+    },
+    "resume": {
+      "method": "partial write 40% + append remainder + SHA-256 verify in test tempdir",
+      "resume_offset_ratio": 0.4,
+      "fixture_sha256": "1b57bc9ce0e9180a191ab3132a33ae42039d0cff3ff1e9d76c485109de7bbe00",
+      "verified_sha256_match": true,
+      "live_range_request": false
+    },
+    "retry": {
+      "max_attempts": 5,
+      "backoff_base_seconds": 1,
+      "fixture_success_attempts": 3,
+      "fixture_exhaustion_blocked": true,
+      "live_network_retry": false
+    },
+    "disk_space_check": {
+      "drive": "D:",
+      "available_bytes": 203229757440,
+      "required_bytes": 120424708,
+      "available_bytes_mb": 193815,
+      "required_bytes_basis": "release dir payload 60212354 bytes x 2 headroom",
+      "sufficient": true,
+      "method": "PowerShell Get-PSDrive D (live, 2026-09-23)",
+      "checked_at": "2026-09-23T13:49:00+07:00"
+    },
+    "rollback_channel": {
+      "previous_version": "1.2.0-alpha.1",
+      "previous_manifest": "docs/release/v1.2.0-alpha.1-download-manifest.json",
+      "switch_back_tested": true,
+      "method": "RollbackChannel.resolve() returns retained previous metadata; manifest file existence asserted in HEAD"
+    }
+  },
+  "domain": "lib/features/world_logic/domain/update_channel_delivery_validation.dart",
+  "test": "test/release/sprint_113_update_channel_delivery_validation_test.dart",
+  "limits": [
+    "Download/resume/retry fixtures are local tempdir transfers, not live network round trips: artifact_url wiring to R2/website still requires Choirudin's explicit publication approval (Gap label distribusi, ledger 113.37/113.38)",
+    "signature_check status Valid is local self-signed integrity only; public-trust signing remains BLOCKED until an official certificate is provided (CERTIFICATE AUTHORIZATION boundary)",
+    "No range-request/CDN resume was exercised against a real server; only file-level resume semantics are verified",
+    "Rollback switch-back is domain-level plus HEAD metadata existence, not an end-user updater execution"
+  ],
+  "decision": "VERIFIED_LOCAL_DELIVERY_FIXTURES"
+}

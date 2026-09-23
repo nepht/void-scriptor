@@ -1,0 +1,41 @@
+{
+  "canonical_step": "113.28",
+  "title": "Feedback Collection & Evidence Log",
+  "objective": "Mencatat feedback nyata beserta konteks, sumber, consent, dampak, dan keterbatasannya.",
+  "required_fields": {
+    "feedback_id": {
+      "description": "Identifier stabil entri feedback; blank dilaporkan sebagai missing feedback_id oleh FeedbackCollectionLog.missingFields.",
+      "status": "validated_domain_fixture"
+    },
+    "source": {
+      "description": "Asal feedback: sesi partisipan, dogfood internal, issue tracker, atau thread dukungan.",
+      "status": "validated_domain_fixture"
+    },
+    "consent": {
+      "description": "Dasar persetujuan pencatatan; blank membuat keputusan log fail (tanpa consent tidak boleh pass).",
+      "status": "validated_domain_fixture"
+    },
+    "workflow": {
+      "description": "Alur kerja yang sedang dipakai saat feedback teramati.",
+      "status": "validated_domain_fixture"
+    },
+    "observation": {
+      "description": "Apa yang benar-benar diamati, dalam bahasa spesifik bukan generalisasi.",
+      "status": "validated_domain_fixture"
+    },
+    "impact": {
+      "description": "Penilaian dampak observasi terhadap pekerjaan penulis.",
+      "status": "validated_domain_fixture"
+    },
+    "evidence": {
+      "description": "Referensi artefak pendukung (path evidence/catatan sesi); list kosong dilaporkan missing.",
+      "status": "validated_domain_fixture"
+    },
+    "limitations": {
+      "description": "Keterbatasan observasi yang ikut tercatat dan dipertahankan pada keputusan pass/fail; list kosong dilaporkan missing.",
+      "status": "validated_domain_fixture"
+    }
+  },
+  "limits": "Feedback partisipan nyata belum ada: kohort dan persetujuan partisipan (step 113.3) belum dimulai, sehingga entri yang diuji adalah fixture integrasi lokal dan keputusan log kosong diblokir (blocked) sampai bukti nyata terkumpul. Native GUI, hosted CI, signing, hardware, dan public release DEFERRED/UNVERIFIABLE.",
+  "decision": "validated_domain_fixture_pending_real_pilot_feedback"
+}

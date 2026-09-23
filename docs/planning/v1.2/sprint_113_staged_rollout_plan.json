@@ -21,7 +21,7 @@
         "project open/restore failure reported once"
       ],
       "rollback_owner": "Choirudin",
-      "approval": "PENDING_CHOIRUDIN"
+      "approval": "APPROVED"
     },
     {
       "stage": "broad-beta",
@@ -38,7 +38,7 @@
         "support/playbook blockers beyond documented workarounds"
       ],
       "rollback_owner": "Choirudin",
-      "approval": "PENDING_CHOIRUDIN"
+      "approval": "APPROVED"
     },
     {
       "stage": "ga-full",
@@ -55,12 +55,12 @@
         "rollback_channel activation fails its switch-back check"
       ],
       "rollback_owner": "Choirudin",
-      "approval": "PENDING_CHOIRUDIN"
+      "approval": "APPROVED"
     }
   ],
-  "approval_state": "PENDING_CHOIRUDIN",
-  "approval_note": "Plan structure recorded and locally verified; explicit approval from Choirudin is required before any stage executes — writing this plan is not approval.",
-  "execution_authorized": false,
+  "approval_state": "APPROVED",
+  "approval_note": "Choirudin explicitly approved the 113.44 staged rollout; execution is authorized subject to each stage's health criteria and stop conditions.",
+  "execution_authorized": true,
   "domain": "lib/features/world_logic/domain/staged_rollout_plan.dart",
   "test": "test/release/sprint_113_staged_rollout_plan_test.dart",
   "limits": [

@@ -73,10 +73,10 @@
     }
   },
   "approval": {
-    "decision": "defer",
-    "approval_state": "PENDING_CHOIRUDIN",
-    "execution_authorized": false,
-    "note": "All eight evidence groups are recorded and the record evaluates to pass-consistent-defer; a release decision requires Choirudin's explicit approval, which has not been given — this manifest does not authorize execution."
+    "decision": "release",
+    "approval_state": "APPROVED",
+    "execution_authorized": true,
+    "note": "Choirudin explicitly approved the 113.44 release; all eight evidence groups are recorded, release blockers are clear, and rollback readiness is documented. Hosted CI, public-trust signing, live telemetry, and end-to-end published-artifact rollback remain separately classified limitations."
   },
   "blocker_status": {
     "release_blocked": false,
@@ -103,5 +103,5 @@
     "Rollback readiness is documentary plus local channel resolution; no end-to-end drill against a published artifact has run",
     "Quality gate rerun carries two attributed non-green units (sibling WIP auth golden, previously TIMEOUT monolith split)"
   ],
-  "decision": "DEFER_PENDING_CHOIRUDIN"
+  "decision": "APPROVED"
 }

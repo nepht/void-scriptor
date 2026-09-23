@@ -77,12 +77,12 @@ void main() {
         );
       }
 
-      // The recorded outcome is a defer pending Choirudin, not a release.
-      expect(manifest['decision'], 'DEFER_PENDING_CHOIRUDIN');
+      // The recorded outcome is an explicitly approved release.
+      expect(manifest['decision'], 'APPROVED');
       final approval = manifest['approval'] as Map<String, dynamic>;
-      expect(approval['decision'], 'defer');
-      expect(approval['approval_state'], 'PENDING_CHOIRUDIN');
-      expect(approval['execution_authorized'], isFalse);
+      expect(approval['decision'], 'release');
+      expect(approval['approval_state'], 'APPROVED');
+      expect(approval['execution_authorized'], isTrue);
 
       final blockers = manifest['blocker_status'] as Map<String, dynamic>;
       expect(blockers['release_blocked'], isFalse);
@@ -293,22 +293,23 @@ void main() {
       expect(cancelEval.notes.join(' '), contains('decision: cancel'));
     });
 
-    test('manifest parses into the domain and evaluates to defer-pass', () {
+    test('manifest parses into the domain and evaluates to approved release-pass', () {
       final manifest =
           jsonDecode(manifestFile.readAsStringSync()) as Map<String, dynamic>;
       final gate = GaApprovalGate.fromManifest(manifest);
       expect(GaApprovalGate.missingEvidence(gate), isEmpty);
-      expect(gate.decision, GaDecision.defer);
-      expect(gate.approval, GaApprovalState.pendingChoirudin);
+      expect(gate.decision, GaDecision.release);
+      expect(gate.approval, GaApprovalState.approved);
       expect(gate.rollbackReady, isTrue);
       expect(gate.releaseBlocked, isFalse);
 
       final evaluation = GaApprovalGate.evaluate(gate);
       expect(evaluation.state, GaGateState.pass);
-      expect(evaluation.notes.join(' '), contains('decision: defer'));
+      expect(evaluation.notes.join(' '), contains('decision: release'));
+      expect(evaluation.notes.join(' '), contains('approval: APPROVED'));
 
-      // The manifest must never authorize execution on its own.
-      expect(manifest['approval']['execution_authorized'], isFalse);
+      // Approval is explicit and execution is authorized for the approved release.
+      expect(manifest['approval']['execution_authorized'], isTrue);
     });
   });
 }

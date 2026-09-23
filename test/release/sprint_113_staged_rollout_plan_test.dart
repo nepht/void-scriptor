@@ -88,19 +88,19 @@ void main() {
       );
     });
 
-    test('plan approval stays pending until explicit Choi approval', () {
+    test('plan approval records explicit Choirudin approval', () {
       final manifest =
           jsonDecode(manifestFile.readAsStringSync()) as Map<String, dynamic>;
-      expect(manifest['approval_state'], 'PENDING_CHOIRUDIN');
+      expect(manifest['approval_state'], 'APPROVED');
       expect(
         manifest['approval_note'],
-        contains('explicit'),
-        reason: 'the manifest must state that explicit approval is required',
+        contains('Choirudin explicitly approved'),
+        reason: 'the manifest must record explicit approval',
       );
       expect(
         manifest['execution_authorized'],
-        isFalse,
-        reason: 'a pending plan must never authorize execution',
+        isTrue,
+        reason: 'an explicitly approved plan authorizes execution subject to stage gates',
       );
     });
 

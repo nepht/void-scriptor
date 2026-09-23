@@ -8,17 +8,17 @@ import 'package:flutter/material.dart';
 class CharacterDesignSheetLayoutSpec {
   const CharacterDesignSheetLayoutSpec({
     this.desktopBreakpoint = 820,
-    // A 3:2 split keeps the portrait/details column readable instead of
-    // compressing it into a narrow rail on the desktop workspace.
-    this.leftColumnFlex = 3,
-    this.rightColumnFlex = 2,
-    this.columnGap = 12,
-    this.cardGap = 10,
-    this.summaryFlex = 2,
-    this.turnaroundFlex = 5,
-    this.detailsFlex = 2,
-    this.portraitFlex = 4,
-    this.closeUpFlex = 2,
+    // The reference sheet gives the technical canvas roughly 64% width and
+    // the portrait rail roughly 36%, with a dominant portrait panel.
+    this.leftColumnFlex = 16,
+    this.rightColumnFlex = 9,
+    this.columnGap = 10,
+    this.cardGap = 8,
+    this.summaryFlex = 18,
+    this.turnaroundFlex = 47,
+    this.detailsFlex = 35,
+    this.portraitFlex = 77,
+    this.closeUpFlex = 23,
     this.referencesFlex = 2,
   });
 

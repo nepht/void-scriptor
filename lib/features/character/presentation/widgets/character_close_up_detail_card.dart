@@ -17,7 +17,7 @@ class CharacterCloseUpDetailCard extends StatelessWidget {
       builder: (context, constraints) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('CLOSE UP DETAIL', style: VoidTypography.headingMedium),
+          const Text('CLOSE UP DETAIL', style: VoidTypography.panelTitle),
           const SizedBox(height: 10),
           if (constraints.hasBoundedHeight)
             Expanded(child: _DetailStrip(imagePaths: imagePaths))

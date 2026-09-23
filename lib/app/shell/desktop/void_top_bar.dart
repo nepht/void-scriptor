@@ -6,6 +6,7 @@ import '../../navigation/app_navigation_registry.dart';
 import '../../../design_system/widgets/branding/brand_assets.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
+import 'package:void_scriptor/design_system/typography/void_typography.dart';
 
 class VoidTopBar extends StatelessWidget {
   const VoidTopBar({
@@ -41,7 +42,7 @@ class VoidTopBar extends StatelessWidget {
     final saveState = this.saveState;
     final projectContext = this.projectContext;
     return Container(
-      height: 58,
+      height: 52,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: context.palette.panel,
@@ -191,10 +192,7 @@ class _ProjectContextButton extends StatelessWidget {
                 summary.projectName,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: VoidTypography.appBrand,
               ),
             ),
           ),

@@ -27,6 +27,17 @@ class CharacterPortraitCard extends StatelessWidget {
     child: LayoutBuilder(
       builder: (context, constraints) {
         final image = _PortraitImage(imagePath: imagePath);
+        final VoidCallback importAction = onAddPortrait == null
+            ? () => ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Portrait upload is available from the project asset folder.',
+                  ),
+                ),
+              )
+            : () {
+                onAddPortrait!.call();
+              };
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -35,8 +46,15 @@ class CharacterPortraitCard extends StatelessWidget {
                 const Expanded(
                   child: Text(
                     'MAIN PORTRAIT',
-                    style: VoidTypography.headingMedium,
+                    style: VoidTypography.panelTitle,
                   ),
+                ),
+                _ToolbarButton(
+                  tooltip: imagePath == null
+                      ? 'Add Portrait'
+                      : 'Replace Portrait',
+                  icon: Icons.add_photo_alternate_outlined,
+                  onPressed: importAction,
                 ),
                 _ToolbarButton(
                   tooltip: onExport == null ? 'Export (coming soon)' : 'Export',
@@ -60,25 +78,6 @@ class CharacterPortraitCard extends StatelessWidget {
               Expanded(child: image)
             else
               AspectRatio(aspectRatio: 3 / 4, child: image),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed:
-                    onAddPortrait ??
-                    () => ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Portrait upload is available from the project asset folder.',
-                        ),
-                      ),
-                    ),
-                icon: const Icon(Icons.add_photo_alternate_outlined),
-                label: Text(
-                  imagePath == null ? 'Add Portrait' : 'Replace Portrait',
-                ),
-              ),
-            ),
           ],
         );
       },

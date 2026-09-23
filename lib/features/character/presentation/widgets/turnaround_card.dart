@@ -36,7 +36,7 @@ class TurnaroundCard extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Turnaround', style: VoidTypography.headingMedium),
+            const Text('Turnaround', style: VoidTypography.panelTitle),
             const SizedBox(height: 12),
             if (constraints.hasBoundedHeight) Expanded(child: grid) else grid,
           ],
@@ -66,7 +66,7 @@ class _ReferenceSlot extends StatelessWidget {
           padding: const EdgeInsets.all(7),
           child: Column(
             children: [
-              Text(label, style: VoidTypography.caption),
+              Text(label, style: VoidTypography.smallPanelLabel),
               if (imagePath == null)
                 Text(
                   'No image',

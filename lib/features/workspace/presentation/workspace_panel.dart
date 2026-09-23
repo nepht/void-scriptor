@@ -80,8 +80,8 @@ class _WorkspaceHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final resolvedProjectName = projectName?.trim();
     return Container(
-      constraints: const BoxConstraints(minHeight: 64),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      height: 36,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         color: context.palette.panelSecondary,
         border: Border(bottom: BorderSide(color: context.palette.borderSoft)),
@@ -91,28 +91,13 @@ class _WorkspaceHeader extends StatelessWidget {
           Icon(workspace.icon, size: 22, color: context.palette.primaryBright),
           const SizedBox(width: 12),
           Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  workspace.title,
-                  style: VoidTypography.title.copyWith(
-                    color: context.palette.textPrimary,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  workspace.description,
-                  style: VoidTypography.caption.copyWith(
-                    color: context.palette.textSecondary,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+            child: Text(
+              workspace.title,
+              style: VoidTypography.title.copyWith(
+                color: context.palette.textPrimary,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           if (resolvedProjectName != null && resolvedProjectName.isNotEmpty)
@@ -143,7 +128,7 @@ class _WorkspaceSections extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    constraints: const BoxConstraints(minHeight: 40),
+    constraints: const BoxConstraints(minHeight: 44),
     decoration: BoxDecoration(
       color: context.palette.panel,
       border: Border(bottom: BorderSide(color: context.palette.borderSoft)),

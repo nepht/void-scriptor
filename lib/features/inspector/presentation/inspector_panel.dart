@@ -28,15 +28,15 @@ class _InspectorHeader extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(
     height: 44,
     child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
           Text(
             'INSPECTOR',
             style: TextStyle(
               color: context.palette.textMuted,
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
               letterSpacing: 1.1,
             ),
           ),

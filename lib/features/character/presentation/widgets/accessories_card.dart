@@ -20,7 +20,7 @@ class AccessoriesCard extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Accessories', style: VoidTypography.headingMedium),
+        const Text('Accessories', style: VoidTypography.panelTitle),
         const SizedBox(height: 12),
         if (entries.isEmpty)
           const _AccessoryEmptyState()

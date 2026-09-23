@@ -16,72 +16,54 @@ class CharacterHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    height: 58,
-    padding: const EdgeInsets.symmetric(horizontal: 18),
+    height: 36,
+    padding: const EdgeInsets.symmetric(horizontal: 12),
     decoration: BoxDecoration(
       color: context.palette.panelSecondary,
       border: Border(bottom: BorderSide(color: context.palette.borderSoft)),
     ),
     child: Row(
       children: [
-        Icon(
-          Icons.person_outline,
-          size: 18,
-          color: context.palette.primaryBright,
-        ),
-        const SizedBox(width: 10),
+        Icon(Icons.chevron_right, size: 16, color: context.palette.textMuted),
+        const Text('Characters', style: VoidTypography.breadcrumb),
+        Icon(Icons.chevron_right, size: 16, color: context.palette.textMuted),
         Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: VoidTypography.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (alias.isNotEmpty)
-                Text(
-                  alias,
-                  style: VoidTypography.caption,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-            ],
+          child: Text(
+            name,
+            style: VoidTypography.breadcrumb.copyWith(
+              fontWeight: FontWeight.w600,
+              color: context.palette.textPrimary,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
         IconButton(
           tooltip: 'Favorite',
+          visualDensity: VisualDensity.compact,
           onPressed: () => _feedback(
             context,
             'Favorite is available in the next metadata slice.',
           ),
-          icon: const Icon(Icons.star_border),
+          icon: const Icon(Icons.star_border, size: 17),
         ),
         IconButton(
           tooltip: 'History',
+          visualDensity: VisualDensity.compact,
           onPressed: () =>
               _feedback(context, 'Character history is not persisted yet.'),
-          icon: const Icon(Icons.history),
+          icon: const Icon(Icons.history, size: 17),
         ),
         IconButton(
           tooltip: 'Delete',
+          visualDensity: VisualDensity.compact,
           onPressed:
               onDelete ??
               () => _feedback(
                 context,
                 'Character deletion is not available in this context.',
               ),
-          icon: const Icon(Icons.delete_outline),
-        ),
-        IconButton(
-          tooltip: 'More',
-          onPressed: () => _feedback(
-            context,
-            'Character actions menu is not available yet.',
-          ),
-          icon: const Icon(Icons.more_horiz),
+          icon: const Icon(Icons.delete_outline, size: 17),
         ),
       ],
     ),

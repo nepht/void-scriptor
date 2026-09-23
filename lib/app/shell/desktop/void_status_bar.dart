@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:void_scriptor/design_system/typography/void_typography.dart';
+
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class VoidStatusBar extends StatelessWidget {
@@ -21,7 +23,7 @@ class VoidStatusBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 26,
+      height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: context.palette.panel,
@@ -38,7 +40,9 @@ class VoidStatusBar extends StatelessWidget {
           const Spacer(),
           Text(
             'Void Scriptor 0.1 Alpha',
-            style: TextStyle(color: context.palette.textMuted, fontSize: 10),
+            style: VoidTypography.statusBar.copyWith(
+              color: context.palette.textMuted,
+            ),
           ),
         ],
       ),

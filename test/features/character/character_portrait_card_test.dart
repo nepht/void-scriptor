@@ -67,7 +67,7 @@ void main() {
     var calls = 0;
     await pumpCard(tester, onAddPortrait: () async => calls++);
 
-    await tester.tap(find.text('Add Portrait'));
+    await tester.tap(find.byTooltip('Add Portrait'));
     await tester.pump();
     expect(calls, 1);
     // No snackbar guidance when a real action is wired.
@@ -82,7 +82,7 @@ void main() {
   ) async {
     await pumpCard(tester);
 
-    await tester.tap(find.text('Add Portrait'));
+    await tester.tap(find.byTooltip('Add Portrait'));
     await tester.pump();
     expect(
       find.text('Portrait upload is available from the project asset folder.'),

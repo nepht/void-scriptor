@@ -20,8 +20,8 @@ void main() {
       addTearDown(container.dispose);
       final notifier = container.read(layoutProvider.notifier);
 
-      notifier.setLeftWidth(300); // total width leaves 176 for the other panel
-      expect(container.read(layoutProvider).leftWidth, 241);
+      notifier.setLeftWidth(300); // within the 240 / 280 desktop shell bounds
+      expect(container.read(layoutProvider).leftWidth, 300);
 
       notifier.setLeftWidth(10); // below min
       expect(container.read(layoutProvider).leftWidth, 176);

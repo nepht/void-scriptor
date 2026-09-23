@@ -7,11 +7,11 @@ import 'package:void_scriptor/features/workspace_layout/domain/workspace_tab.dar
 void main() {
   group('PanelLayout', () {
     test(
-      'defaults match character-sheet reference (240 / 177 / not collapsed)',
+      'defaults match desktop shell reference (240 / 280 / not collapsed)',
       () {
         const layout = PanelLayout.defaults;
         expect(layout.leftWidth, 240);
-        expect(layout.rightWidth, 177);
+        expect(layout.rightWidth, 280);
         expect(layout.leftCollapsed, isFalse);
         expect(layout.rightCollapsed, isFalse);
         expect(layout.splitRatio, 0.5);
@@ -33,7 +33,7 @@ void main() {
       const b = PanelLayout.defaults;
       const c = PanelLayout(
         leftWidth: 240,
-        rightWidth: 177,
+        rightWidth: 280,
         leftCollapsed: false,
         rightCollapsed: false,
         splitRatio: 0.5,

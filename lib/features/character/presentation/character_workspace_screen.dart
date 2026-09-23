@@ -55,6 +55,16 @@ class CharacterWorkspaceScreen extends ConsumerStatefulWidget {
 class _CharacterWorkspaceScreenState
     extends ConsumerState<CharacterWorkspaceScreen> {
   String _characterSheetSection = 'Design Sheet';
+  String? _primarySection;
+
+  String _resolvedPrimarySection() =>
+      _primarySection ??
+      (widget.activeSection == null
+          ? 'Overview'
+          : canonicalWorkspaceSection(
+              WorkspaceKind.character,
+              widget.activeSection!,
+            ));
 
   @override
   Widget build(BuildContext context) {
@@ -89,16 +99,15 @@ class _CharacterWorkspaceScreenState
         alias: character.alias,
         onDelete: () => _confirmDelete(character),
       ),
+      _PrimaryCharacterNavigation(
+        activeSection: _resolvedPrimarySection(),
+        onSelected: (value) => setState(() => _primarySection = value),
+      ),
       Expanded(
         child: LayoutBuilder(
           builder: (context, constraints) {
             final desktop = constraints.maxWidth >= 820;
-            final section = widget.activeSection == null
-                ? 'Overview'
-                : canonicalWorkspaceSection(
-                    WorkspaceKind.character,
-                    widget.activeSection!,
-                  );
+            final section = _resolvedPrimarySection();
             final content = _content(
               character,
               identity,
@@ -200,14 +209,9 @@ class _CharacterWorkspaceScreenState
     bool desktop,
     String? portraitPath,
   ) {
-    final section = widget.activeSection == null
-        ? 'Overview'
-        : canonicalWorkspaceSection(
-            WorkspaceKind.character,
-            widget.activeSection!,
-          );
+    final section = _resolvedPrimarySection();
     final identityCard = CharacterIdentityCard(
-      compact: widget.activeSection == 'Appearance',
+      compact: _resolvedPrimarySection() == 'Appearance',
       designSheet:
           desktop && const {'Overview', 'Character Sheet'}.contains(section),
       name: character.displayName,
@@ -467,6 +471,76 @@ class _CharacterWorkspaceScreenState
   ) => CharacterIdentityActions(ref).update(update(current));
 }
 
+class _PrimaryCharacterNavigation extends StatelessWidget {
+  const _PrimaryCharacterNavigation({
+    required this.activeSection,
+    required this.onSelected,
+  });
+
+  static const sections = [
+    'Overview',
+    'Character Sheet',
+    'Wardrobe',
+    'Weapons',
+    'Expressions',
+    'Abilities',
+    'Story',
+    'Timeline',
+    'AI Assets',
+    'Relations',
+    'Notes',
+  ];
+
+  final String activeSection;
+  final ValueChanged<String> onSelected;
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: context.palette.panel,
+    child: SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Row(
+        children: [
+          for (final section in sections)
+            InkWell(
+              key: ValueKey('character-primary-section-$section'),
+              onTap: () => onSelected(section),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 11,
+                  vertical: 7,
+                ),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: section == activeSection
+                          ? context.palette.primaryBright
+                          : Colors.transparent,
+                      width: 2,
+                    ),
+                  ),
+                ),
+                child: Text(
+                  section,
+                  style: TextStyle(
+                    color: section == activeSection
+                        ? context.palette.textPrimary
+                        : context.palette.textSecondary,
+                    fontSize: 11,
+                    fontWeight: section == activeSection
+                        ? FontWeight.w600
+                        : FontWeight.w400,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    ),
+  );
+}
+
 class _CharacterSheetNavigation extends StatelessWidget {
   const _CharacterSheetNavigation({
     required this.activeSection,
@@ -519,9 +593,9 @@ class _CharacterSheetNavigation extends StatelessWidget {
                     color: section == activeSection
                         ? context.palette.textPrimary
                         : context.palette.textSecondary,
-                    fontSize: 12,
+                    fontSize: 10,
                     fontWeight: section == activeSection
-                        ? FontWeight.w700
+                        ? FontWeight.w600
                         : FontWeight.w500,
                   ),
                 ),

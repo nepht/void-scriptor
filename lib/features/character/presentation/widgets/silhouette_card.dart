@@ -22,7 +22,7 @@ class SilhouetteCard extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Silhouette', style: VoidTypography.headingMedium),
+            const Text('Silhouette', style: VoidTypography.panelTitle),
             const SizedBox(height: 12),
             if (constraints.hasBoundedHeight)
               Expanded(child: slots)

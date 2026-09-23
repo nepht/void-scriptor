@@ -5,10 +5,11 @@ import '../domain/layout_preset.dart';
 
 /// Panel layout controller (Step 27.4).
 ///
-/// Widths are clamped to `minWidth` (176) and `maxWidth` (0.45 × total), and
-/// the split ratio to [0.25, 0.75].
+/// Widths are clamped to `minWidth` (176) while preserving the desktop shell
+/// defaults (240 px explorer / 280 px inspector). The split ratio is clamped
+/// to [0.25, 0.75].
 class LayoutController extends Notifier<PanelLayout> {
-  // The reference desktop composition keeps the inspector compact (~177 px)
+  // The reference desktop composition keeps the inspector at 280 px
   // while leaving the explorer readable at 240 px.
   static const double minWidth = 176;
   static const double minSplitRatio = 0.25;

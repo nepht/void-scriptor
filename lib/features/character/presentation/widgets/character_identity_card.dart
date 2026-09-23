@@ -152,16 +152,15 @@ class _DesignSheetIdentity extends StatelessWidget {
                 name.isEmpty ? '—' : name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: VoidTypography.headingLarge,
+                style: VoidTypography.characterName,
               ),
               const SizedBox(height: 3),
               Text(
                 alias.isEmpty ? 'Character' : alias,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: VoidTypography.caption.copyWith(
+                style: VoidTypography.characterSubtitle.copyWith(
                   color: context.palette.primaryBright,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],

@@ -58,7 +58,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-23T15:37:56+07:00",
+  "updated_at": "2026-09-23T16:15:00+07:00",
   "updated_by": "cron-core-worker-v4",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -1137,5 +1137,16 @@
     "evidence": "docs/evidence/sprint-112-39-test-*-20260923-*.meta (27) + sprint-112-39-matrix-focused-20260923.meta",
     "limitations": "aggregate monolitik historis tetap tercatat TIMEOUT exit 124; native GUI/hosted CI/signing/hardware/public release UNVERIFIABLE; 113.44 rollout tidak dijalankan (approval PENDING_CHOIRUDIN)"
   },
-  "gap_11321_accessibility_resolved_20260923": "RESOLVED recheck live di HEAD b034a44: accessibility_validation.dart tracked+clean; test/release/sprint_113_accessibility_validation_test.dart 12/12 PASS exit 0 5.1s; evidence docs/evidence/sprint-113-21-gap-recheck-accessibility-20260923.{log,meta}; gap auth golden sibling WIP tetap OPEN (login_screen.dart masih dirty)"
+  "gap_11321_accessibility_resolved_20260923": "RESOLVED recheck live di HEAD b034a44: accessibility_validation.dart tracked+clean; test/release/sprint_113_accessibility_validation_test.dart 12/12 PASS exit 0 5.1s; evidence docs/evidence/sprint-113-21-gap-recheck-accessibility-20260923.{log,meta}; gap auth golden sibling WIP tetap OPEN (login_screen.dart masih dirty)",
+  "gap_rec01_resolved_20260923": {
+    "status": "RESOLVED",
+    "date": "2026-09-23",
+    "summary": "16 identifier flag rollout matrix 112.6 disamakan ke sumber (10 shared -> FeatureFlagRegistry.engageKillSwitch, 6 Wave 3 -> F23..F29); 29/29 flag identik inventaris 112.3; inventaris 112.3 tak diubah; TDD RED exit 1 -> GREEN 32/32 exit 0 -> test/release 645/645 PASS exit 0 131s; REC-01 resolved di manifest 113.35, known_issues 113.36, dan dikeluarkan dari open_items gate 113.43; keputusan rilis tetap DEFER_PENDING_CHOIRUDIN.",
+    "evidence": [
+      "docs/evidence/sprint-rec01-focused-red-20260923.meta",
+      "docs/evidence/sprint-rec01-focused-green-20260923.meta",
+      "docs/evidence/sprint-rec01-test-release-regression-20260923.meta",
+      "docs/evidence/sprint-rec01-analyze-20260923.meta"
+    ]
+  }
 }

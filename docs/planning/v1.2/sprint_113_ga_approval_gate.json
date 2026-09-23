@@ -23,7 +23,7 @@
         "docs/planning/v1.2/sprint_113_release_blocker_triage.json",
         "docs/planning/v1.2/sprint_113_release_blocker_resolution.json"
       ],
-      "summary": "Triage + resolution contracts validated; open items are non-blockers (REC-01, download-label gap, sibling-WIP auth golden) so release_blocked stays false."
+      "summary": "Triage + resolution contracts validated; open items are non-blockers (download-label gap, sibling-WIP auth golden); REC-01 reconciled 2026-09-23 and no longer open so release_blocked stays false."
     },
     "quality_gate_rerun": {
       "present": true,
@@ -81,7 +81,6 @@
   "blocker_status": {
     "release_blocked": false,
     "open_items": [
-      "REC-01: 16 flag ids in sprint_112_feature_flag_rollout_matrix.json do not exist in lib sources (documentation reconciliation, non-blocker)",
       "Download channel label still 1.2.0-alpha.1 while source is 1.2.0-rc.1 (distribution wiring needs explicit Choirudin permission)",
       "features/authentication golden fails on live tree due to uncommitted sibling WIP login_screen.dart (passes 3/3 at clean HEAD 8c2906c)"
     ]

@@ -53,7 +53,7 @@
       "source_doc": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
       "item_count": 4,
       "items": [
-        "REC-01: kolom flag rollout matrix 112.6 memakai 16 identifier yang tidak ada di sumber lib (vs12_world_logic_shared untuk 10 fitur shared dan 6 id vs12_* Wave 3); inventaris 112.3 sisi akurat — Gap ledger 2026-09-23",
+        "REC-01: kolom flag rollout matrix 112.6 memakai 16 identifier yang tidak ada di sumber lib (vs12_world_logic_shared untuk 10 fitur shared dan 6 id vs12_* Wave 3); inventaris 112.3 sisi akurat — Gap ledger 2026-09-23 — RESOLVED 2026-09-23: kolom flag disamakan ke identifier sumber (10 shared -> FeatureFlagRegistry.engageKillSwitch, 6 Wave 3 -> F23/F24/F26/F27/F28/F29); 29/29 identik dengan inventaris 112.3, inventaris tidak diubah (Gap REC-01 ditutup, rekonsiliasi dokumentasi, bukan persetujuan rilis).",
         "10 fitur Wave 2 berstatus PARTIAL tanpa dedicated per-feature flag (REC-02; kVs12FeatureFlags masih 13 id Wave 1)",
         "features/authentication golden GAGAL di live tree karena WIP sibling login_screen.dart belum ter-commit (Gap ledger; PASS 3/3 pada HEAD bersih 8c2906c)",
         "Monolit test/core dan test/features/project_resilience melewati batas wrapper (TIMEOUT 298s) sehingga wajib dipecah deterministik; timeout bukan PASS"

@@ -1,0 +1,15 @@
+{
+  "command": "flutter.bat test --no-pub test/release/sprint_113_final_feature_evidence_reconciliation_test.dart -j 1",
+  "started_at": "2026-09-23T16:02:28+07:00",
+  "finished_at": "2026-09-23T16:02:49+07:00",
+  "duration_s": 21,
+  "exit_code": 1,
+  "result": "RED",
+  "tests_passed": 13,
+  "tests_failed": 1,
+  "note": "RED membuktikan flag matrix tak registry-backed (REC-01 terbuka)",
+  "log_file": "docs/evidence/sprint-rec01-focused-red-20260923.log",
+  "log_sha256": "80594e9b18a835c42f16ecb5654b245a8f8d5058e714654983867645dc89fd19",
+  "slice": "REC-01 flag-matrix reconciliation",
+  "recorded_at": "2026-09-23T16:12:09+07:00"
+}

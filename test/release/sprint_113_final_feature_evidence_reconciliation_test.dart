@@ -311,14 +311,12 @@ void main() {
       expect(evaluation.notes, hasLength(29));
     });
 
-    test('rollout-matrix flag ids are not registry-backed (REC-01)', () {
+    test('rollout-matrix flag ids are registry-backed (REC-01 resolved)', () {
+      // Guards against "fixing" REC-01 by inventing dedicated Wave-2/3 flags
+      // in the registry: the registry must keep its 13 Wave-1 ids only.
       final registry = File(_registryPath).readAsStringSync();
       expect(registry, isNot(contains('vs12_world_logic_shared')));
       expect(registry, isNot(contains('vs12_herbology_alchemy')));
-
-      final matrix = _readJson(_matrixPath);
-      final entries = matrix['entries'] as List<dynamic>;
-      expect(entries, hasLength(29));
 
       // Wave-3 features are gated by EncyclopediaFeatureFlags with F-labels,
       // which is what the 112.3 inventory records.
@@ -327,6 +325,53 @@ void main() {
       ).readAsStringSync();
       expect(encyclopedia, contains("'F23'"));
       expect(encyclopedia, contains("'F29'"));
+
+      final matrix = _readJson(_matrixPath);
+      final entries = matrix['entries'] as List<dynamic>;
+      expect(entries, hasLength(29));
+
+      final inventory = _readJson(_inventoryPath);
+      final flagsByFeature = <String, Map<String, dynamic>>{
+        for (final rawFeature in inventory['features'] as List<dynamic>)
+          (rawFeature as Map<String, dynamic>)['feature'] as String:
+              rawFeature['feature_flag'] as Map<String, dynamic>,
+      };
+      expect(flagsByFeature, hasLength(29));
+
+      for (final rawEntry in entries) {
+        final entry = rawEntry as Map<String, dynamic>;
+        final feature = entry['feature'] as String;
+        final flag = entry['flag'] as String;
+        final inventoryFlag = flagsByFeature[feature]!;
+
+        expect(
+          flag,
+          inventoryFlag['id'],
+          reason: '$feature flag must match the 112.3 inventory identifier',
+        );
+
+        final flagRef = File(inventoryFlag['ref'] as String);
+        expect(flagRef.existsSync(), isTrue, reason: '$feature flag ref');
+        final token = flag.contains('.') ? flag.split('.').last : flag;
+        expect(
+          flagRef.readAsStringSync(),
+          contains(token),
+          reason: '$feature flag $flag not declared in ${flagRef.path}',
+        );
+      }
+
+      final manifest = _readJson(_manifestPath);
+      final findings = (manifest['reconciliation_findings'] as List<dynamic>)
+          .cast<Map>();
+      expect(findings, isNotEmpty);
+      final rec01 = findings.first;
+      expect(rec01['id'], 'REC-01');
+      expect(
+        rec01['status'],
+        'RESOLVED',
+        reason: 'REC-01 reconciliation must be recorded as resolved',
+      );
+      expect(rec01['resolution'], isNotEmpty);
     });
 
     test('manifest records the eight required fields with live status', () {

@@ -199,7 +199,7 @@ void main() {
       );
     });
 
-    test('known_issues output carries the open REC-01 finding', () {
+    test('known_issues output carries the REC-01 finding record', () {
       final manifest = _readJson(_manifestPath);
       final knownIssues =
           (manifest['outputs']['known_issues']['items'] as List<dynamic>)
@@ -207,7 +207,14 @@ void main() {
       expect(
         knownIssues.any((item) => item.contains('REC-01')),
         isTrue,
-        reason: 'open Gap REC-01 from 113.35 must stay recorded',
+        reason:
+            'REC-01 from 113.35 must stay recorded in known_issues even '
+            'after its 2026-09-23 reconciliation',
+      );
+      expect(
+        knownIssues.firstWhere((item) => item.contains('REC-01')),
+        contains('RESOLVED'),
+        reason: 'the recorded REC-01 entry must state its resolution',
       );
     });
   });

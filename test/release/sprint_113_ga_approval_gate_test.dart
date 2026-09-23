@@ -93,7 +93,14 @@ void main() {
         isNotEmpty,
         reason: 'open non-blocker items stay listed',
       );
-      expect(openItems.join(' '), contains('REC-01'));
+      expect(
+        openItems.join(' '),
+        isNot(contains('REC-01')),
+        reason:
+            'REC-01 flag-matrix reconciliation closed 2026-09-23; resolved '
+            'findings leave the open-item list but stay recorded in the '
+            'reconciliation manifest and known_issues',
+      );
 
       final rollback = manifest['rollback_readiness'] as Map<String, dynamic>;
       expect(rollback['ready'], isTrue);

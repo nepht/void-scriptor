@@ -1,0 +1,11 @@
+{
+  "command": "flutter analyze (full)",
+  "finished_at": "2026-09-23T16:12:09+07:00",
+  "exit_code": 1,
+  "result": "UNRELATED_ISSUES",
+  "note": "24 info lint di 4 file di LUAR slice (2 sibling untracked WIP: privacy_evidence_continuation.dart, sprint_113_29_test.dart; 2 tracked: privacy_revalidation_test.dart, sprint_113_writer_workflow_validation_test.dart). dart analyze pada 3 file test milik slice = No issues exit 0.",
+  "log_file": "docs/evidence/sprint-rec01-analyze-20260923.log",
+  "log_sha256": "17789c9e9a5ea421b39a987eaa7ca290b28aa227d4e84c7daf8b87b900365fb6",
+  "slice": "REC-01 flag-matrix reconciliation",
+  "recorded_at": "2026-09-23T16:12:09+07:00"
+}

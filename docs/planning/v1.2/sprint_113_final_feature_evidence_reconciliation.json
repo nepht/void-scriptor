@@ -88,7 +88,10 @@
       "finding": "Kolom flag pada rollout matrix 112.6 memakai 16 identifier yang tidak ada di sumber lib (vs12_world_logic_shared untuk 10 fitur shared-kill-switch dan vs12_herbology_alchemy/vs12_bestiary/vs12_artifacts_relics/vs12_myth_theology/vs12_name_generator/vs12_idiom_bank untuk 6 fitur Wave 3). Identifier yang benar-benar ada di sumber: kVs12FeatureFlags (13 id Wave 1), EncyclopediaFeatureFlags.wave3Catalog (F23/F24/F26/F27/F28/F29), dan FeatureFlagRegistry.engageKillSwitch.",
       "affected": ["F3", "F5", "F6", "F11", "F13", "F14", "F15", "F20", "F21", "F22", "F23", "F24", "F26", "F27", "F28", "F29"],
       "inventory_side": "Inventaris 112.3 akurat: id flag-nya dapat ditelusuri ke file ref (29/29).",
-      "action": "Tercatat sebagai Gap pada ledger sprint 113 untuk rekonsiliasi kolom flag matrix 112.6; tidak di-repair di langkah ini karena matrix 112.6 berada di scope sprint 112 yang sudah CLOSED."
+      "action": "Tercatat sebagai Gap pada ledger sprint 113 untuk rekonsiliasi kolom flag matrix 112.6; tidak di-repair di langkah ini karena matrix 112.6 berada di scope sprint 112 yang sudah CLOSED.",
+      "status": "RESOLVED",
+      "resolved_on": "2026-09-23",
+      "resolution": "Kolom flag matrix 112.6 disamakan ke identifier sumber: 10 fitur shared-kill-switch -> FeatureFlagRegistry.engageKillSwitch, 6 fitur Wave 3 -> F23/F24/F26/F27/F28/F29 (EncyclopediaFeatureFlags.wave3Catalog). 29/29 flag kini identik dengan inventaris 112.3 dan tokennya ada di file ref; inventaris 112.3 tidak diubah dan tidak ada dedicated flag baru yang ditambahkan ke registry."
     },
     {
       "id": "REC-02",

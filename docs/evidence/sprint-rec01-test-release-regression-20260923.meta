@@ -1,0 +1,15 @@
+{
+  "command": "flutter.bat test --no-pub test/release -j 1",
+  "started_at": "2026-09-23T16:09:33+07:00",
+  "finished_at": "2026-09-23T16:11:44+07:00",
+  "duration_s": 131,
+  "exit_code": 0,
+  "result": "PASS",
+  "tests_passed": 645,
+  "tests_failed": 0,
+  "note": "regression penuh test/release pasca-rekonsiliasi REC-01",
+  "log_file": "docs/evidence/sprint-rec01-test-release-regression-20260923.log",
+  "log_sha256": "e45c6063753f9e4061e4abdec6e02adacb0358d00224334351badac19f2fa90f",
+  "slice": "REC-01 flag-matrix reconciliation",
+  "recorded_at": "2026-09-23T16:12:09+07:00"
+}

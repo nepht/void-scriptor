@@ -1,0 +1,15 @@
+{
+  "command": "flutter.bat test --no-pub <4 file: 113.35 reconciliation + 113.43 gate + 113.36 known_issues + 112.6 matrix> -j 1",
+  "started_at": "2026-09-23T16:05:20+07:00",
+  "finished_at": "2026-09-23T16:05:28+07:00",
+  "duration_s": 8,
+  "exit_code": 0,
+  "result": "PASS",
+  "tests_passed": 32,
+  "tests_failed": 0,
+  "note": "GREEN setelah 16 flag matrix disamakan ke identifier sumber",
+  "log_file": "docs/evidence/sprint-rec01-focused-green-20260923.log",
+  "log_sha256": "4d6e679914f8f0b2537f5c1d5062878eda4ca06262a67ffe87d56c0494f1d593",
+  "slice": "REC-01 flag-matrix reconciliation",
+  "recorded_at": "2026-09-23T16:12:09+07:00"
+}

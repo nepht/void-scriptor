@@ -297,6 +297,73 @@ abstract final class RoadmapGuard {
     await _writeObjectAtomically(runtimeFile, repaired);
     return inspect(repository: repository, policyFile: policyPath);
   }
+
+  static Future<RoadmapGuardResult> syncRuntimePointer({
+    required Directory repository,
+    File? policyFile,
+  }) async {
+    final policyPath =
+        policyFile ??
+        File(_join(repository.path, 'docs/roadmap/ROADMAP_POLICY.json'));
+    final inspected = await inspect(
+      repository: repository,
+      policyFile: policyPath,
+    );
+    if (inspected.ok) return inspected;
+
+    final onlyPointerDrift =
+        inspected.issues.isNotEmpty &&
+        inspected.issues.every(
+          (issue) => issue.startsWith('Runtime next_step '),
+        );
+    if (!onlyPointerDrift ||
+        inspected.canonicalSprint == null ||
+        inspected.recommendedStep == null) {
+      return inspected;
+    }
+
+    final policy =
+        jsonDecode(await policyPath.readAsString()) as Map<String, dynamic>;
+    final runtimeRelative =
+        policy['runtime_state'] as String? ?? '.hermes/ROADMAP_STATE.json';
+    final runtimeFile = File(_join(repository.path, runtimeRelative));
+    final runtime =
+        jsonDecode(await runtimeFile.readAsString()) as Map<String, dynamic>;
+    final stabilityGate = _asObject(runtime['stability_gate']);
+    if (stabilityGate?['status'] != 'PASS') {
+      return RoadmapGuardResult(
+        issues: [
+          ...inspected.issues,
+          'Runtime pointer sync requires stability_gate PASS.',
+        ],
+        warnings: inspected.warnings,
+        canonicalSprint: inspected.canonicalSprint,
+        recommendedStep: inspected.recommendedStep,
+        lastResolvedStep: inspected.lastResolvedStep,
+        canonicalHash: inspected.canonicalHash,
+      );
+    }
+
+    final activeStreamDetails = _asObject(runtime['active_stream_details']);
+    final updated = <String, dynamic>{
+      ...runtime,
+      'last_verified_step': inspected.lastResolvedStep,
+      'next_step': inspected.recommendedStep,
+      if (activeStreamDetails != null)
+        'active_stream_details': <String, dynamic>{
+          ...activeStreamDetails,
+          'next_step': inspected.recommendedStep,
+        },
+      'stability_gate': <String, dynamic>{
+        ...stabilityGate!,
+        'resume_step': inspected.recommendedStep,
+      },
+      'updated_at': DateTime.now().toUtc().toIso8601String(),
+      'updated_by': 'roadmap_guard sync-pointer',
+    };
+    await _writeObjectAtomically(runtimeFile, updated);
+    return inspect(repository: repository, policyFile: policyPath);
+  }
 }
 
 Future<void> _inspectDocumentRegistry({

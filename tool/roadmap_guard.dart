@@ -5,8 +5,11 @@ import 'package:void_scriptor/core/roadmap/roadmap_guard.dart';
 Future<void> main(List<String> arguments) async {
   final repository = Directory.current;
   final repair = arguments.contains('--repair');
+  final syncPointer = arguments.contains('--sync-pointer');
   final result = repair
       ? await RoadmapGuard.repair(repository: repository)
+      : syncPointer
+      ? await RoadmapGuard.syncRuntimePointer(repository: repository)
       : await RoadmapGuard.inspect(repository: repository);
 
   stdout.writeln('ROADMAP_GUARD: ${result.ok ? 'PASS' : 'FAIL'}');

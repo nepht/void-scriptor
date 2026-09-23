@@ -99,6 +99,54 @@ void main() {
   });
 
   test(
+    'sync pointer advances only a stale pointer and preserves PASS',
+    () async {
+      File(
+        '${archive.path}/sprint_145.json',
+      ).copySync('${references.path}/sprint_145.json');
+      _writeRuntime(root, references, sprint: 145, nextStep: '145.1');
+
+      final synced = await RoadmapGuard.syncRuntimePointer(repository: root);
+      final state =
+          jsonDecode(
+                File(
+                  '${root.path}/.hermes/ROADMAP_STATE.json',
+                ).readAsStringSync(),
+              )
+              as Map<String, dynamic>;
+
+      expect(synced.ok, isTrue);
+      expect(synced.recommendedStep, '145.2');
+      expect(state['last_verified_step'], '145.1');
+      expect(state['next_step'], '145.2');
+      expect(
+        (state['stability_gate'] as Map<String, dynamic>)['status'],
+        'PASS',
+      );
+    },
+  );
+
+  test('sync pointer refuses non-pointer roadmap drift', () async {
+    File(
+      '${archive.path}/sprint_145.json',
+    ).copySync('${references.path}/sprint_145.json');
+    _writeRuntime(root, references, sprint: 111, nextStep: '111.20');
+
+    final synced = await RoadmapGuard.syncRuntimePointer(repository: root);
+    final state =
+        jsonDecode(
+              File(
+                '${root.path}/.hermes/ROADMAP_STATE.json',
+              ).readAsStringSync(),
+            )
+            as Map<String, dynamic>;
+
+    expect(synced.ok, isFalse);
+    expect(state['active_sprint'], 111);
+    expect(state['next_step'], '111.20');
+  });
+
+  test(
     'rejects an unregistered document inside a strict authority root',
     () async {
       File(

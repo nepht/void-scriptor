@@ -1,0 +1,27 @@
+{
+  "canonical_step": "114.1",
+  "title": "Post-Release Entry Gate",
+  "status": "VERIFIED-LOCAL",
+  "path": "DELAYED",
+  "ga_decision": "DEFERRED_RELEASE",
+  "release_status": "DEFERRED_RELEASE",
+  "artifact_version": "1.2.0-rc.1",
+  "rollout_stage": "NOT_STARTED",
+  "known_issues": [
+    "Download channel label remains 1.2.0-alpha.1 while the local candidate is 1.2.0-rc.1.",
+    "Authentication golden is blocked by sibling dirty login_screen.dart worktree changes."
+  ],
+  "residual_risks": [
+    "Hosted CI is unavailable.",
+    "Public-trust signing and publication are not verified.",
+    "Live telemetry and external validation participants are unavailable.",
+    "Published-artifact rollback drill has not run."
+  ],
+  "decision": "LOCAL_CORRECTIVE_SCOPE_ONLY",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "notes": [
+    "Sprint 113 recorded CLOSED_LOCAL_DEFERRED_RELEASE.",
+    "No public GA, staged rollout, telemetry window, or external publication is claimed.",
+    "The next step may define a local observation/corrective charter without fabricating post-release measurements."
+  ]
+}

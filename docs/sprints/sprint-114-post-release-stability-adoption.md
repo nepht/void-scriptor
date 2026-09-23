@@ -7,4 +7,4 @@
 
 | Step | Title | Status | Evidence |
 |---|---|---|---|
-| 114.1 | Post-Release Entry Gate | PENDING | Menunggu eksekusi Hermes pada jalur `DELAYED`; required evidence: keputusan GA, status rilis, versi artefak, tahap rollout, known issues, dan residual risks. |
+| 114.1 | Post-Release Entry Gate | VERIFIED-LOCAL | `docs/planning/v1.2/sprint_114_post_release_entry_gate.json` + `lib/features/world_logic/domain/post_release_entry_gate.dart` + `test/release/sprint_114_post_release_entry_gate_test.dart`; jalur `DELAYED`, release `DEFERRED_RELEASE`, artifact lokal `1.2.0-rc.1`, rollout `NOT_STARTED`, known issues dan residual risks tercatat; tidak mengklaim GA/publication/telemetry. Test fokus 3/3 PASS, analyzer penuh `No issues found`, format dan diff-check PASS; blocker compile sibling `workspace_panel.dart` direkonsiliasi tanpa mengadopsi WIP lain, lalu Windows debug build PASS 34,5 detik. |

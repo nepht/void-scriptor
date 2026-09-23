@@ -1,0 +1,22 @@
+{
+  "canonical_step": "114.6",
+  "title": "Feedback & Adoption Evidence Intake",
+  "objective": "Mencatat feedback dan outcome nyata tanpa menganggap penggunaan tinggi berarti keberhasilan.",
+  "required_fields": [
+    "evidence_id",
+    "source",
+    "consent",
+    "workflow",
+    "outcome",
+    "friction",
+    "limitations",
+    "confidence"
+  ],
+  "content_collection": "excluded",
+  "external_adoption": "DEFERRED-EXTERNAL",
+  "decision_rule": "Evidence kosong atau field wajib hilang tidak boleh diklaim sebagai adoption success.",
+  "limitations": [
+    "Tidak ada production telemetry atau external adoption data.",
+    "Metadata workflow/outcome tidak memuat manuskrip, lore, prompt, atau secret."
+  ]
+}

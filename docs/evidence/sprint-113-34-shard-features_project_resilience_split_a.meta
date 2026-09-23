@@ -1,0 +1,16 @@
+{
+  "step": "113.34",
+  "shard": "features/project_resilience::split_a",
+  "command": "flutter.bat test --no-pub <38/39 deterministic project_resilience files> -j 1 (split after parent timeout)",
+  "started_at": "2026-09-23T11:32:24+0700",
+  "finished_at": "2026-09-23T11:34:22+0700",
+  "duration_seconds": 118,
+  "exit_code": 0,
+  "result": "PASS",
+  "counts": {
+    "passed": 95,
+    "failed": 0
+  },
+  "log": "docs/evidence/sprint-113-34-shard-features_project_resilience_split_a.log",
+  "file_count": 38
+}

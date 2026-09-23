@@ -1,0 +1,15 @@
+{
+  "step": "113.34",
+  "shard": "features/authentication @ clean HEAD (isolated worktree)",
+  "command": "flutter.bat test --no-pub test/features/authentication/login_screen_test.dart -j 1 (cwd=vs-11334-head-wt, detached 8c2906c)",
+  "finished_at": "2026-09-23T11:40:12+0700",
+  "duration_seconds": 23,
+  "exit_code": 0,
+  "result": "PASS",
+  "counts": {
+    "passed": 3,
+    "failed": 0
+  },
+  "log": "docs/evidence/sprint-113-34-auth-head-worktree.log",
+  "head": "8c2906c1aa5e15395d9df248ff5ce41fe873cde2"
+}

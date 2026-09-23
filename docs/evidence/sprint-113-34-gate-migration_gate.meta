@@ -1,0 +1,15 @@
+{
+  "step": "113.34",
+  "shard": "gate::migration_gate",
+  "command": "flutter.bat test --no-pub test/release/sprint_113_migration_restore_validation_test.dart -j 1 (quality gate rerun)",
+  "started_at": "2026-09-23T10:31:27+0700",
+  "finished_at": "2026-09-23T10:31:48+0700",
+  "duration_seconds": 21,
+  "exit_code": 0,
+  "result": "PASS",
+  "counts": {
+    "passed": 19,
+    "failed": 0
+  },
+  "log": "docs/evidence/sprint-113-34-gate-migration_gate.log"
+}

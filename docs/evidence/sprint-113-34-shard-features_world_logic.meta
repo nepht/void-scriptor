@@ -1,0 +1,15 @@
+{
+  "step": "113.34",
+  "shard": "features/world_logic",
+  "command": "flutter.bat test --no-pub test\\features\\world_logic -j 1 (full quality gate rerun shard)",
+  "started_at": "2026-09-23T11:19:05+0700",
+  "finished_at": "2026-09-23T11:20:55+0700",
+  "duration_seconds": 109,
+  "exit_code": 0,
+  "result": "PASS",
+  "counts": {
+    "passed": 2251,
+    "failed": 0
+  },
+  "log": "docs/evidence/sprint-113-34-shard-features_world_logic.log"
+}

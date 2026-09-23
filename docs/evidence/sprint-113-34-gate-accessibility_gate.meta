@@ -1,0 +1,15 @@
+{
+  "step": "113.34",
+  "shard": "gate::accessibility_gate",
+  "command": "flutter.bat test --no-pub test/release/sprint_112_accessibility_gate_test.dart -j 1 (quality gate rerun)",
+  "started_at": "2026-09-23T10:32:03+0700",
+  "finished_at": "2026-09-23T10:32:08+0700",
+  "duration_seconds": 4,
+  "exit_code": 0,
+  "result": "PASS",
+  "counts": {
+    "passed": 1,
+    "failed": 0
+  },
+  "log": "docs/evidence/sprint-113-34-gate-accessibility_gate.log"
+}

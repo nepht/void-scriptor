@@ -1,0 +1,58 @@
+{
+  "canonical_step": "113.34",
+  "title": "Full Quality Gate Rerun",
+  "objective": "Mengulang seluruh suite dan gerbang setelah perubahan stabilisasi terakhir.",
+  "gates": {
+    "automated_tests": {
+      "command": "per-unit: D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub <unit> -j 1 (102 unit deterministik serial: top-level dirs, 57 features/<sub>, 29 core/<sub>, 3 root files, 2 split project_resilience, 1 isolated-HEAD auth check)",
+      "exit_code": 1,
+      "shards": 102,
+      "evidence": "docs/evidence/sprint-113-34-automated-tests-summary.json",
+      "status": "rerun_complete: 100/102 unit exit 0; 2 unit non-amarin atribusi wajib di summary (sibling-WIP golden drift + parent wrapper TIMEOUT yang sudah di-split exit 0)"
+    },
+    "migration_gate": {
+      "command": "flutter.bat test --no-pub test/release/sprint_113_migration_restore_validation_test.dart -j 1 (quality gate rerun)",
+      "exit_code": 0,
+      "evidence": "docs/evidence/sprint-113-34-gate-migration_gate.meta",
+      "status": "rerun_pass"
+    },
+    "performance_gate": {
+      "command": "flutter.bat test --no-pub test/release/sprint_112_performance_responsiveness_gate_test.dart -j 1 (quality gate rerun)",
+      "exit_code": 0,
+      "evidence": "docs/evidence/sprint-113-34-gate-performance_gate.meta",
+      "status": "rerun_pass"
+    },
+    "security_gate": {
+      "command": "flutter.bat test --no-pub test/release/sprint_112_security_gate_test.dart -j 1 (quality gate rerun)",
+      "exit_code": 0,
+      "evidence": "docs/evidence/sprint-113-34-gate-security_gate.meta",
+      "status": "rerun_pass"
+    },
+    "privacy_gate": {
+      "command": "flutter.bat test --no-pub test/release/sprint_112_privacy_gate_test.dart -j 1 (quality gate rerun)",
+      "exit_code": 0,
+      "evidence": "docs/evidence/sprint-113-34-gate-privacy_gate.meta",
+      "status": "rerun_pass"
+    },
+    "accessibility_gate": {
+      "command": "flutter.bat test --no-pub test/release/sprint_112_accessibility_gate_test.dart -j 1 (quality gate rerun)",
+      "exit_code": 0,
+      "evidence": "docs/evidence/sprint-113-34-gate-accessibility_gate.meta",
+      "status": "rerun_pass"
+    },
+    "platform_gate": {
+      "command": "flutter.bat test --no-pub test/release/sprint_113_platform_validation_matrix_test.dart -j 1 (quality gate rerun)",
+      "exit_code": 0,
+      "evidence": "docs/evidence/sprint-113-34-gate-platform_gate.meta",
+      "status": "rerun_pass"
+    },
+    "recovery_gate": {
+      "command": "flutter.bat test --no-pub test/release/sprint_113_reliability_recovery_validation_test.dart -j 1 (quality gate rerun)",
+      "exit_code": 0,
+      "evidence": "docs/evidence/sprint-113-34-gate-recovery_gate.meta",
+      "status": "rerun_pass"
+    }
+  },
+  "limits": "Rerun dilakukan di working tree live: 1 unit (features/authentication golden) exit 1 karena WIP sibling yang tak ter-commit (login_screen.dart dirty) — dibuktikan PASS 3/3 di worktree HEAD bersih 8c2906c, Gap direkam di ledger untuk re-verify setelah sibling commit; parent features/project_resilience TIMEOUT wrapper 298s diganti split deterministik 2 unit exit 0 (timeout bukan PASS); monolit test/core terpotong cell kill 178s lalu dipecah 29 sub-unit exit 0. Native GUI, hosted CI, signing, hardware, public release DEFERRED/UNVERIFIABLE.",
+  "decision": "rerun_complete_with_documented_unit_exceptions"
+}

@@ -1,0 +1,15 @@
+{
+  "step": "113.34",
+  "shard": "core/security",
+  "command": "flutter.bat test --no-pub test\\core\\security -j 1 (full quality gate rerun shard)",
+  "started_at": "2026-09-23T10:56:15+0700",
+  "finished_at": "2026-09-23T10:56:40+0700",
+  "duration_seconds": 24,
+  "exit_code": 0,
+  "result": "PASS",
+  "counts": {
+    "passed": 61,
+    "failed": 0
+  },
+  "log": "docs/evidence/sprint-113-34-shard-core_security.log"
+}

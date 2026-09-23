@@ -1,0 +1,13 @@
+{
+  "step": "113.34",
+  "command": "flutter.bat test --no-pub test/release/sprint_113_full_quality_gate_rerun_test.dart -j 1 (manifest+evidence belum dibuat)",
+  "finished_at": "2026-09-23T10:31:03+0700",
+  "duration_seconds": 5,
+  "exit_code": 1,
+  "result": "FAIL",
+  "counts": {
+    "passed": 0,
+    "note": "RED - manifest sprint_113_full_quality_gate_rerun.json dan evidence gate belum ada"
+  },
+  "log": "docs/evidence/sprint-113-34-red.log"
+}

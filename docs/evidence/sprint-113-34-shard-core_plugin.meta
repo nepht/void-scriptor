@@ -1,0 +1,15 @@
+{
+  "step": "113.34",
+  "shard": "core/plugin",
+  "command": "flutter.bat test --no-pub test\\core\\plugin -j 1 (full quality gate rerun shard)",
+  "started_at": "2026-09-23T10:51:09+0700",
+  "finished_at": "2026-09-23T10:51:21+0700",
+  "duration_seconds": 12,
+  "exit_code": 0,
+  "result": "PASS",
+  "counts": {
+    "passed": 23,
+    "failed": 0
+  },
+  "log": "docs/evidence/sprint-113-34-shard-core_plugin.log"
+}

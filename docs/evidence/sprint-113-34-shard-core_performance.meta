@@ -1,0 +1,15 @@
+{
+  "step": "113.34",
+  "shard": "core/performance",
+  "command": "flutter.bat test --no-pub test\\core\\performance -j 1 (full quality gate rerun shard)",
+  "started_at": "2026-09-23T11:06:00+0700",
+  "finished_at": "2026-09-23T11:06:30+0700",
+  "duration_seconds": 29,
+  "exit_code": 0,
+  "result": "PASS",
+  "counts": {
+    "passed": 60,
+    "failed": 0
+  },
+  "log": "docs/evidence/sprint-113-34-shard-core_performance.log"
+}

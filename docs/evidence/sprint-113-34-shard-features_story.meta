@@ -1,0 +1,15 @@
+{
+  "step": "113.34",
+  "shard": "features/story",
+  "command": "flutter.bat test --no-pub test\\features\\story -j 1 (full quality gate rerun shard)",
+  "started_at": "2026-09-23T11:21:11+0700",
+  "finished_at": "2026-09-23T11:23:42+0700",
+  "duration_seconds": 150,
+  "exit_code": 0,
+  "result": "PASS",
+  "counts": {
+    "passed": 216,
+    "failed": 0
+  },
+  "log": "docs/evidence/sprint-113-34-shard-features_story.log"
+}

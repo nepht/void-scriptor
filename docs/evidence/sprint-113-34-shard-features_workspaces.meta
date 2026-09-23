@@ -1,0 +1,15 @@
+{
+  "step": "113.34",
+  "shard": "features/workspaces",
+  "command": "flutter.bat test --no-pub test\\features\\workspaces -j 1 (full quality gate rerun shard)",
+  "started_at": "2026-09-23T11:15:04+0700",
+  "finished_at": "2026-09-23T11:17:30+0700",
+  "duration_seconds": 146,
+  "exit_code": 0,
+  "result": "PASS",
+  "counts": {
+    "passed": 142,
+    "failed": 0
+  },
+  "log": "docs/evidence/sprint-113-34-shard-features_workspaces.log"
+}

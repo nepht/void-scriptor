@@ -1,0 +1,1662 @@
+{
+  "step": "113.34",
+  "kind": "automated_tests",
+  "command": "per-unit: D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub <unit> -j 1 (deterministic top-level shards; serial; project_resilience split after wrapper timeout)",
+  "finished_at": "2026-09-23T11:42:35+0700",
+  "units_total": 102,
+  "units_exit0": 100,
+  "total_passed": 5579,
+  "total_failed": 2,
+  "failed_units": [
+    {
+      "shard": "features/authentication",
+      "exit_code": 1,
+      "attribution": "sibling contract drift: dirty lib/features/authentication/presentation/login_screen.dart (uncommitted WIP) vs committed golden goldens/login_desktop.png -> 99.81% pixel diff; clean-HEAD isolated worktree rerun PASS 3/3 exit 0 (docs/evidence/sprint-113-34-auth-head-worktree.meta, HEAD 8c2906c); region sibling-owned, not patched by this slice; Gap recorded in ledger"
+    },
+    {
+      "shard": "features/project_resilience",
+      "exit_code": -9,
+      "attribution": "wrapper timeout 298s on 77-file monolith (log showed +251 tests passing at cutoff); resolved per LONG-TEST policy by deterministic file split: split_a 95/95 PASS exit 0 + split_b 156/156 PASS exit 0 (file lists in scratch/vs-run-11334-project-resilience-split.json)"
+    }
+  ],
+  "split_note": "test/core monolith cell-killed at 178s (truncated log, no exit code) -> split into 29 core/<sub> units; features/project_resilience wrapper TIMEOUT 298s -> split_a/split_b both exit 0",
+  "units": [
+    {
+      "step": "113.34",
+      "shard": "app",
+      "command": "flutter.bat test --no-pub test/app -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:35:18+0700",
+      "finished_at": "2026-09-23T10:37:14+0700",
+      "duration_seconds": 115,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 163,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-app.log",
+      "meta": "docs/evidence/sprint-113-34-shard-app.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "architecture",
+      "command": "flutter.bat test --no-pub test\\architecture -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:32:39+0700",
+      "finished_at": "2026-09-23T10:32:46+0700",
+      "duration_seconds": 6,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 4,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-architecture.log",
+      "meta": "docs/evidence/sprint-113-34-shard-architecture.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "automation",
+      "command": "flutter.bat test --no-pub test\\automation -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:32:46+0700",
+      "finished_at": "2026-09-23T10:33:02+0700",
+      "duration_seconds": 15,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 75,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-automation.log",
+      "meta": "docs/evidence/sprint-113-34-shard-automation.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/agent",
+      "command": "flutter.bat test --no-pub test\\core\\agent -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:52:35+0700",
+      "finished_at": "2026-09-23T10:52:47+0700",
+      "duration_seconds": 12,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 21,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_agent.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_agent.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/animation",
+      "command": "flutter.bat test --no-pub test\\core\\animation -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:50:07+0700",
+      "finished_at": "2026-09-23T10:50:19+0700",
+      "duration_seconds": 12,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 22,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_animation.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_animation.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/architecture",
+      "command": "flutter.bat test --no-pub test\\core\\architecture -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:44:58+0700",
+      "finished_at": "2026-09-23T10:45:03+0700",
+      "duration_seconds": 5,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 1,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_architecture.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_architecture.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/audio_engine",
+      "command": "flutter.bat test --no-pub test\\core\\audio_engine -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:50:19+0700",
+      "finished_at": "2026-09-23T10:50:32+0700",
+      "duration_seconds": 12,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 20,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_audio_engine.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_audio_engine.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/auth",
+      "command": "flutter.bat test --no-pub test\\core\\auth -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:47:03+0700",
+      "finished_at": "2026-09-23T10:47:10+0700",
+      "duration_seconds": 6,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 12,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_auth.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_auth.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/capabilities",
+      "command": "flutter.bat test --no-pub test\\core\\capabilities -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:47:55+0700",
+      "finished_at": "2026-09-23T10:48:02+0700",
+      "duration_seconds": 7,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 30,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_capabilities.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_capabilities.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/commands",
+      "command": "flutter.bat test --no-pub test\\core\\commands -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:53:38+0700",
+      "finished_at": "2026-09-23T10:53:51+0700",
+      "duration_seconds": 13,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 14,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_commands.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_commands.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/creative",
+      "command": "flutter.bat test --no-pub test\\core\\creative -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:50:32+0700",
+      "finished_at": "2026-09-23T10:50:44+0700",
+      "duration_seconds": 11,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 18,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_creative.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_creative.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/enterprise",
+      "command": "flutter.bat test --no-pub test\\core\\enterprise -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:53:04+0700",
+      "finished_at": "2026-09-23T10:53:18+0700",
+      "duration_seconds": 14,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 20,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_enterprise.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_enterprise.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/feature_flags",
+      "command": "flutter.bat test --no-pub test\\core\\feature_flags -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:47:10+0700",
+      "finished_at": "2026-09-23T10:47:16+0700",
+      "duration_seconds": 6,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 18,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_feature_flags.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_feature_flags.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/jobs",
+      "command": "flutter.bat test --no-pub test\\core\\jobs -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:58:31+0700",
+      "finished_at": "2026-09-23T10:58:49+0700",
+      "duration_seconds": 17,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 52,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_jobs.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_jobs.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/knowledge",
+      "command": "flutter.bat test --no-pub test\\core\\knowledge -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:50:44+0700",
+      "finished_at": "2026-09-23T10:50:56+0700",
+      "duration_seconds": 12,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 18,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_knowledge.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_knowledge.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/metaverse",
+      "command": "flutter.bat test --no-pub test\\core\\metaverse -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:50:56+0700",
+      "finished_at": "2026-09-23T10:51:09+0700",
+      "duration_seconds": 12,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 18,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_metaverse.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_metaverse.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/network",
+      "command": "flutter.bat test --no-pub test\\core\\network -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:45:03+0700",
+      "finished_at": "2026-09-23T10:45:08+0700",
+      "duration_seconds": 4,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 2,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_network.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_network.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/observability",
+      "command": "flutter.bat test --no-pub test\\core\\observability -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:47:16+0700",
+      "finished_at": "2026-09-23T10:47:22+0700",
+      "duration_seconds": 6,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 19,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_observability.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_observability.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/performance",
+      "command": "flutter.bat test --no-pub test\\core\\performance -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:06:00+0700",
+      "finished_at": "2026-09-23T11:06:30+0700",
+      "duration_seconds": 29,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 60,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_performance.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_performance.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/persistence",
+      "command": "flutter.bat test --no-pub test\\core\\persistence -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:11:55+0700",
+      "finished_at": "2026-09-23T11:13:11+0700",
+      "duration_seconds": 75,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 144,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_persistence.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_persistence.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/plugin",
+      "command": "flutter.bat test --no-pub test\\core\\plugin -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:51:09+0700",
+      "finished_at": "2026-09-23T10:51:21+0700",
+      "duration_seconds": 12,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 23,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_plugin.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_plugin.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/project_package",
+      "command": "flutter.bat test --no-pub test\\core\\project_package -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:47:22+0700",
+      "finished_at": "2026-09-23T10:47:34+0700",
+      "duration_seconds": 11,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 4,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_project_package.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_project_package.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/publishing",
+      "command": "flutter.bat test --no-pub test\\core\\publishing -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:51:21+0700",
+      "finished_at": "2026-09-23T10:51:34+0700",
+      "duration_seconds": 12,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 16,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_publishing.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_publishing.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/render",
+      "command": "flutter.bat test --no-pub test\\core\\render -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:54:46+0700",
+      "finished_at": "2026-09-23T10:54:59+0700",
+      "duration_seconds": 12,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 29,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_render.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_render.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/roadmap",
+      "command": "flutter.bat test --no-pub test\\core\\roadmap -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:45:08+0700",
+      "finished_at": "2026-09-23T10:45:13+0700",
+      "duration_seconds": 4,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 7,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_roadmap.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_roadmap.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/search",
+      "command": "flutter.bat test --no-pub test\\core\\search -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:46:13+0700",
+      "finished_at": "2026-09-23T10:46:22+0700",
+      "duration_seconds": 8,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 5,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_search.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_search.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/security",
+      "command": "flutter.bat test --no-pub test\\core\\security -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:56:15+0700",
+      "finished_at": "2026-09-23T10:56:40+0700",
+      "duration_seconds": 24,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 61,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_security.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_security.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/selection",
+      "command": "flutter.bat test --no-pub test\\core\\selection -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:48:02+0700",
+      "finished_at": "2026-09-23T10:48:14+0700",
+      "duration_seconds": 12,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 8,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_selection.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_selection.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/theme",
+      "command": "flutter.bat test --no-pub test\\core\\theme -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:49:31+0700",
+      "finished_at": "2026-09-23T10:49:50+0700",
+      "duration_seconds": 19,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 16,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_theme.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_theme.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/virtual_production",
+      "command": "flutter.bat test --no-pub test\\core\\virtual_production -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:51:34+0700",
+      "finished_at": "2026-09-23T10:51:45+0700",
+      "duration_seconds": 11,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 16,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_virtual_production.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_virtual_production.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/workflow",
+      "command": "flutter.bat test --no-pub test\\core\\workflow -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:45:13+0700",
+      "finished_at": "2026-09-23T10:45:22+0700",
+      "duration_seconds": 8,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 2,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_workflow.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_workflow.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "core/xr",
+      "command": "flutter.bat test --no-pub test\\core\\xr -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:51:45+0700",
+      "finished_at": "2026-09-23T10:51:58+0700",
+      "duration_seconds": 12,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 18,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-core_xr.log",
+      "meta": "docs/evidence/sprint-113-34-shard-core_xr.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "database",
+      "command": "flutter.bat test --no-pub test\\database -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:33:02+0700",
+      "finished_at": "2026-09-23T10:33:57+0700",
+      "duration_seconds": 55,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 50,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-database.log",
+      "meta": "docs/evidence/sprint-113-34-shard-database.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "design_system",
+      "command": "flutter.bat test --no-pub test\\design_system -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:33:57+0700",
+      "finished_at": "2026-09-23T10:34:08+0700",
+      "duration_seconds": 10,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 15,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-design_system.log",
+      "meta": "docs/evidence/sprint-113-34-shard-design_system.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "docs",
+      "command": "flutter.bat test --no-pub test\\docs -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:34:08+0700",
+      "finished_at": "2026-09-23T10:34:13+0700",
+      "duration_seconds": 5,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 3,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-docs.log",
+      "meta": "docs/evidence/sprint-113-34-shard-docs.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "e2e",
+      "command": "flutter.bat test --no-pub test\\e2e -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:34:13+0700",
+      "finished_at": "2026-09-23T10:34:18+0700",
+      "duration_seconds": 4,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 1,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-e2e.log",
+      "meta": "docs/evidence/sprint-113-34-shard-e2e.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/account",
+      "command": "flutter.bat test --no-pub test\\features\\account -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:45:22+0700",
+      "finished_at": "2026-09-23T10:45:30+0700",
+      "duration_seconds": 8,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 9,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_account.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_account.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/ai",
+      "command": "flutter.bat test --no-pub test\\features\\ai -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:17:51+0700",
+      "finished_at": "2026-09-23T11:19:05+0700",
+      "duration_seconds": 74,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 128,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_ai.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_ai.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/assets",
+      "command": "flutter.bat test --no-pub test\\features\\assets -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:06:30+0700",
+      "finished_at": "2026-09-23T11:07:30+0700",
+      "duration_seconds": 60,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 60,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_assets.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_assets.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/audio",
+      "command": "flutter.bat test --no-pub test\\features\\audio -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:45:30+0700",
+      "finished_at": "2026-09-23T10:45:38+0700",
+      "duration_seconds": 7,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 5,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_audio.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_audio.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/audio_import",
+      "command": "flutter.bat test --no-pub test\\features\\audio_import -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:42:25+0700",
+      "finished_at": "2026-09-23T10:42:33+0700",
+      "duration_seconds": 7,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 1,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_audio_import.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_audio_import.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/audio_timeline",
+      "command": "flutter.bat test --no-pub test\\features\\audio_timeline -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:42:33+0700",
+      "finished_at": "2026-09-23T10:42:39+0700",
+      "duration_seconds": 6,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 1,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_audio_timeline.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_audio_timeline.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/authentication",
+      "command": "flutter.bat test --no-pub test\\features\\authentication -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:42:39+0700",
+      "finished_at": "2026-09-23T10:42:49+0700",
+      "duration_seconds": 9,
+      "exit_code": 1,
+      "result": "FAIL",
+      "counts": {
+        "passed": null,
+        "failed": null
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_authentication.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_authentication.meta",
+      "attribution": "sibling contract drift: dirty lib/features/authentication/presentation/login_screen.dart (uncommitted WIP) vs committed golden goldens/login_desktop.png -> 99.81% pixel diff; clean-HEAD isolated worktree rerun PASS 3/3 exit 0 (docs/evidence/sprint-113-34-auth-head-worktree.meta, HEAD 8c2906c); region sibling-owned, not patched by this slice; Gap recorded in ledger"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/bible",
+      "command": "flutter.bat test --no-pub test\\features\\bible -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:10:32+0700",
+      "finished_at": "2026-09-23T11:11:55+0700",
+      "duration_seconds": 83,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 59,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_bible.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_bible.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/character",
+      "command": "flutter.bat test --no-pub test\\features\\character -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:08:23+0700",
+      "finished_at": "2026-09-23T11:10:10+0700",
+      "duration_seconds": 107,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 111,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_character.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_character.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/character_mode",
+      "command": "flutter.bat test --no-pub test\\features\\character_mode -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:56:56+0700",
+      "finished_at": "2026-09-23T10:57:26+0700",
+      "duration_seconds": 29,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 33,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_character_mode.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_character_mode.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/cinema",
+      "command": "flutter.bat test --no-pub test\\features\\cinema -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:58:49+0700",
+      "finished_at": "2026-09-23T10:59:12+0700",
+      "duration_seconds": 22,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 48,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_cinema.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_cinema.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/cinematic_production",
+      "command": "flutter.bat test --no-pub test\\features\\cinematic_production -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:44:22+0700",
+      "finished_at": "2026-09-23T10:44:29+0700",
+      "duration_seconds": 6,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 2,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_cinematic_production.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_cinematic_production.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/collaboration",
+      "command": "flutter.bat test --no-pub test\\features\\collaboration -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:59:54+0700",
+      "finished_at": "2026-09-23T11:00:18+0700",
+      "duration_seconds": 24,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 53,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_collaboration.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_collaboration.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/content_capabilities",
+      "command": "flutter.bat test --no-pub test\\features\\content_capabilities -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:45:38+0700",
+      "finished_at": "2026-09-23T10:45:46+0700",
+      "duration_seconds": 8,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 6,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_content_capabilities.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_content_capabilities.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/creator",
+      "command": "flutter.bat test --no-pub test\\features\\creator -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:07:48+0700",
+      "finished_at": "2026-09-23T11:08:23+0700",
+      "duration_seconds": 34,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 74,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_creator.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_creator.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/creatures",
+      "command": "flutter.bat test --no-pub test\\features\\creatures -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:45:46+0700",
+      "finished_at": "2026-09-23T10:45:54+0700",
+      "duration_seconds": 8,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 2,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_creatures.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_creatures.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/dashboard",
+      "command": "flutter.bat test --no-pub test\\features\\dashboard -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:51:58+0700",
+      "finished_at": "2026-09-23T10:52:15+0700",
+      "duration_seconds": 17,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 16,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_dashboard.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_dashboard.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/dialogue",
+      "command": "flutter.bat test --no-pub test\\features\\dialogue -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:45:54+0700",
+      "finished_at": "2026-09-23T10:46:01+0700",
+      "duration_seconds": 6,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 9,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_dialogue.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_dialogue.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/environment",
+      "command": "flutter.bat test --no-pub test\\features\\environment -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:49:50+0700",
+      "finished_at": "2026-09-23T10:50:07+0700",
+      "duration_seconds": 17,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 12,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_environment.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_environment.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/explorer",
+      "command": "flutter.bat test --no-pub test\\features\\explorer -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:02:31+0700",
+      "finished_at": "2026-09-23T11:03:50+0700",
+      "duration_seconds": 78,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 46,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_explorer.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_explorer.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/export",
+      "command": "flutter.bat test --no-pub test\\features\\export -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:59:12+0700",
+      "finished_at": "2026-09-23T10:59:54+0700",
+      "duration_seconds": 42,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 57,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_export.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_export.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/game",
+      "command": "flutter.bat test --no-pub test\\features\\game -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:53:51+0700",
+      "finished_at": "2026-09-23T10:54:07+0700",
+      "duration_seconds": 15,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 39,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_game.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_game.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/inspector",
+      "command": "flutter.bat test --no-pub test\\features\\inspector -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:00:35+0700",
+      "finished_at": "2026-09-23T11:01:46+0700",
+      "duration_seconds": 70,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 41,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_inspector.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_inspector.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/intent",
+      "command": "flutter.bat test --no-pub test\\features\\intent -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:14:04+0700",
+      "finished_at": "2026-09-23T11:14:37+0700",
+      "duration_seconds": 32,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 110,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_intent.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_intent.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/lore",
+      "command": "flutter.bat test --no-pub test\\features\\lore -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:47:34+0700",
+      "finished_at": "2026-09-23T10:47:41+0700",
+      "duration_seconds": 7,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 19,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_lore.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_lore.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/marketplace",
+      "command": "flutter.bat test --no-pub test\\features\\marketplace -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:57:26+0700",
+      "finished_at": "2026-09-23T10:57:49+0700",
+      "duration_seconds": 23,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 33,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_marketplace.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_marketplace.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/multiverse",
+      "command": "flutter.bat test --no-pub test\\features\\multiverse -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:54:59+0700",
+      "finished_at": "2026-09-23T10:55:19+0700",
+      "duration_seconds": 20,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 34,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_multiverse.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_multiverse.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/pacing",
+      "command": "flutter.bat test --no-pub test\\features\\pacing -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:46:01+0700",
+      "finished_at": "2026-09-23T10:46:07+0700",
+      "duration_seconds": 5,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 10,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_pacing.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_pacing.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/platform",
+      "command": "flutter.bat test --no-pub test\\features\\platform -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:01:46+0700",
+      "finished_at": "2026-09-23T11:02:12+0700",
+      "duration_seconds": 26,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 70,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_platform.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_platform.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/plot",
+      "command": "flutter.bat test --no-pub test\\features\\plot -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:46:22+0700",
+      "finished_at": "2026-09-23T10:46:29+0700",
+      "duration_seconds": 6,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 14,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_plot.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_plot.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/pov",
+      "command": "flutter.bat test --no-pub test\\features\\pov -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:48:14+0700",
+      "finished_at": "2026-09-23T10:48:22+0700",
+      "duration_seconds": 7,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 25,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_pov.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_pov.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/production_assets",
+      "command": "flutter.bat test --no-pub test\\features\\production_assets -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:46:29+0700",
+      "finished_at": "2026-09-23T10:46:36+0700",
+      "duration_seconds": 7,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 7,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_production_assets.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_production_assets.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/project_resilience",
+      "command": "flutter.bat test --no-pub test\\features\\project_resilience -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:23:55+0700",
+      "finished_at": "2026-09-23T11:28:54+0700",
+      "duration_seconds": 298,
+      "exit_code": -9,
+      "result": "TIMEOUT",
+      "counts": {
+        "passed": null,
+        "failed": null
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_project_resilience.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_project_resilience.meta",
+      "attribution": "wrapper timeout 298s on 77-file monolith (log showed +251 tests passing at cutoff); resolved per LONG-TEST policy by deterministic file split: split_a 95/95 PASS exit 0 + split_b 156/156 PASS exit 0 (file lists in scratch/vs-run-11334-project-resilience-split.json)"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/project_resilience::split_a",
+      "command": "flutter.bat test --no-pub <38/39 deterministic project_resilience files> -j 1 (split after parent timeout)",
+      "started_at": "2026-09-23T11:32:24+0700",
+      "finished_at": "2026-09-23T11:34:22+0700",
+      "duration_seconds": 118,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 95,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_project_resilience_split_a.log",
+      "file_count": 38,
+      "meta": "docs/evidence/sprint-113-34-shard-features_project_resilience_split_a.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/project_resilience::split_b",
+      "command": "flutter.bat test --no-pub <39 deterministic project_resilience files> -j 1 (split after parent timeout)",
+      "started_at": "2026-09-23T11:34:35+0700",
+      "finished_at": "2026-09-23T11:37:38+0700",
+      "duration_seconds": 183,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 156,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_project_resilience_split_b.log",
+      "file_count": 39,
+      "meta": "docs/evidence/sprint-113-34-shard-features_project_resilience_split_b.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/projects",
+      "command": "flutter.bat test --no-pub test\\features\\projects -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:57:49+0700",
+      "finished_at": "2026-09-23T10:58:31+0700",
+      "duration_seconds": 41,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 29,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_projects.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_projects.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/props",
+      "command": "flutter.bat test --no-pub test\\features\\props -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:44:29+0700",
+      "finished_at": "2026-09-23T10:44:36+0700",
+      "duration_seconds": 7,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 1,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_props.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_props.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/references",
+      "command": "flutter.bat test --no-pub test\\features\\references -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:55:19+0700",
+      "finished_at": "2026-09-23T10:55:52+0700",
+      "duration_seconds": 32,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 22,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_references.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_references.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/relations",
+      "command": "flutter.bat test --no-pub test\\features\\relations -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:53:18+0700",
+      "finished_at": "2026-09-23T10:53:38+0700",
+      "duration_seconds": 19,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 12,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_relations.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_relations.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/release",
+      "command": "flutter.bat test --no-pub test\\features\\release -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:54:07+0700",
+      "finished_at": "2026-09-23T10:54:24+0700",
+      "duration_seconds": 16,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 33,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_release.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_release.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/scene_assets",
+      "command": "flutter.bat test --no-pub test\\features\\scene_assets -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:44:36+0700",
+      "finished_at": "2026-09-23T10:44:44+0700",
+      "duration_seconds": 7,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 2,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_scene_assets.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_scene_assets.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/settings",
+      "command": "flutter.bat test --no-pub test\\features\\settings -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:46:36+0700",
+      "finished_at": "2026-09-23T10:46:56+0700",
+      "duration_seconds": 20,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 22,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_settings.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_settings.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/simulation",
+      "command": "flutter.bat test --no-pub test\\features\\simulation -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:47:41+0700",
+      "finished_at": "2026-09-23T10:47:48+0700",
+      "duration_seconds": 7,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 22,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_simulation.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_simulation.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/splash",
+      "command": "flutter.bat test --no-pub test\\features\\splash -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:46:07+0700",
+      "finished_at": "2026-09-23T10:46:13+0700",
+      "duration_seconds": 5,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 5,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_splash.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_splash.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/spoiler",
+      "command": "flutter.bat test --no-pub test\\features\\spoiler -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:47:48+0700",
+      "finished_at": "2026-09-23T10:47:55+0700",
+      "duration_seconds": 6,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 19,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_spoiler.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_spoiler.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/story",
+      "command": "flutter.bat test --no-pub test\\features\\story -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:21:11+0700",
+      "finished_at": "2026-09-23T11:23:42+0700",
+      "duration_seconds": 150,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 216,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_story.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_story.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/studio",
+      "command": "flutter.bat test --no-pub test\\features\\studio -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:02:12+0700",
+      "finished_at": "2026-09-23T11:02:31+0700",
+      "duration_seconds": 18,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 48,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_studio.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_studio.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/subplot",
+      "command": "flutter.bat test --no-pub test\\features\\subplot -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:46:56+0700",
+      "finished_at": "2026-09-23T10:47:03+0700",
+      "duration_seconds": 6,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 19,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_subplot.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_subplot.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/timeline",
+      "command": "flutter.bat test --no-pub test\\features\\timeline -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:54:24+0700",
+      "finished_at": "2026-09-23T10:54:46+0700",
+      "duration_seconds": 22,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 16,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_timeline.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_timeline.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/vehicles",
+      "command": "flutter.bat test --no-pub test\\features\\vehicles -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:44:44+0700",
+      "finished_at": "2026-09-23T10:44:50+0700",
+      "duration_seconds": 6,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 1,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_vehicles.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_vehicles.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/vfx",
+      "command": "flutter.bat test --no-pub test\\features\\vfx -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:44:50+0700",
+      "finished_at": "2026-09-23T10:44:58+0700",
+      "duration_seconds": 7,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 1,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_vfx.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_vfx.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/wardrobe",
+      "command": "flutter.bat test --no-pub test\\features\\wardrobe -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:48:58+0700",
+      "finished_at": "2026-09-23T10:49:17+0700",
+      "duration_seconds": 19,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 12,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_wardrobe.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_wardrobe.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/weapon",
+      "command": "flutter.bat test --no-pub test\\features\\weapon -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:52:15+0700",
+      "finished_at": "2026-09-23T10:52:35+0700",
+      "duration_seconds": 19,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 15,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_weapon.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_weapon.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/workflow",
+      "command": "flutter.bat test --no-pub test\\features\\workflow -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:49:17+0700",
+      "finished_at": "2026-09-23T10:49:31+0700",
+      "duration_seconds": 14,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 14,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_workflow.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_workflow.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/workspace",
+      "command": "flutter.bat test --no-pub test\\features\\workspace -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:04:13+0700",
+      "finished_at": "2026-09-23T11:06:00+0700",
+      "duration_seconds": 107,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 37,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_workspace.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_workspace.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/workspace_layout",
+      "command": "flutter.bat test --no-pub test\\features\\workspace_layout -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:55:52+0700",
+      "finished_at": "2026-09-23T10:56:15+0700",
+      "duration_seconds": 22,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 47,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_workspace_layout.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_workspace_layout.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/workspaces",
+      "command": "flutter.bat test --no-pub test\\features\\workspaces -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:15:04+0700",
+      "finished_at": "2026-09-23T11:17:30+0700",
+      "duration_seconds": 146,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 142,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_workspaces.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_workspaces.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/world",
+      "command": "flutter.bat test --no-pub test\\features\\world -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:13:29+0700",
+      "finished_at": "2026-09-23T11:14:04+0700",
+      "duration_seconds": 35,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 116,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_world.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_world.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/world_logic",
+      "command": "flutter.bat test --no-pub test\\features\\world_logic -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T11:19:05+0700",
+      "finished_at": "2026-09-23T11:20:55+0700",
+      "duration_seconds": 109,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 2251,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-features_world_logic.log",
+      "meta": "docs/evidence/sprint-113-34-shard-features_world_logic.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "l10n",
+      "command": "flutter.bat test --no-pub test\\l10n -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:34:18+0700",
+      "finished_at": "2026-09-23T10:34:23+0700",
+      "duration_seconds": 4,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 3,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-l10n.log",
+      "meta": "docs/evidence/sprint-113-34-shard-l10n.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "root::live_cutover_test.dart",
+      "command": "flutter.bat test --no-pub test\\live_cutover_test.dart -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:34:45+0700",
+      "finished_at": "2026-09-23T10:34:52+0700",
+      "duration_seconds": 7,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 1,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-root-live_cutover_test.log",
+      "meta": "docs/evidence/sprint-113-34-shard-root-live_cutover_test.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "root::sprint_109_test_matrix_test.dart",
+      "command": "flutter.bat test --no-pub test\\sprint_109_test_matrix_test.dart -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:34:52+0700",
+      "finished_at": "2026-09-23T10:34:58+0700",
+      "duration_seconds": 5,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 3,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-root-sprint_109_test_matrix_test.log",
+      "meta": "docs/evidence/sprint-113-34-shard-root-sprint_109_test_matrix_test.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "root::version_single_source_test.dart",
+      "command": "flutter.bat test --no-pub test\\version_single_source_test.dart -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:34:58+0700",
+      "finished_at": "2026-09-23T10:35:02+0700",
+      "duration_seconds": 4,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 1,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-root-version_single_source_test.log",
+      "meta": "docs/evidence/sprint-113-34-shard-root-version_single_source_test.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "shared",
+      "command": "flutter.bat test --no-pub test\\shared -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:34:23+0700",
+      "finished_at": "2026-09-23T10:34:30+0700",
+      "duration_seconds": 6,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 6,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-shared.log",
+      "meta": "docs/evidence/sprint-113-34-shard-shared.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "workflow",
+      "command": "flutter.bat test --no-pub test\\workflow -j 1 (full quality gate rerun shard)",
+      "started_at": "2026-09-23T10:34:30+0700",
+      "finished_at": "2026-09-23T10:34:45+0700",
+      "duration_seconds": 14,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 70,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-shard-workflow.log",
+      "meta": "docs/evidence/sprint-113-34-shard-workflow.meta"
+    },
+    {
+      "step": "113.34",
+      "shard": "features/authentication @ clean HEAD (isolated worktree)",
+      "command": "flutter.bat test --no-pub test/features/authentication/login_screen_test.dart -j 1 (cwd=vs-11334-head-wt, detached 8c2906c)",
+      "finished_at": "2026-09-23T11:40:12+0700",
+      "duration_seconds": 23,
+      "exit_code": 0,
+      "result": "PASS",
+      "counts": {
+        "passed": 3,
+        "failed": 0
+      },
+      "log": "docs/evidence/sprint-113-34-auth-head-worktree.log",
+      "head": "8c2906c1aa5e15395d9df248ff5ce41fe873cde2",
+      "meta": "docs/evidence/sprint-113-34-auth-head-worktree.meta",
+      "attribution": "isolated verification of the live-tree authentication failure at committed HEAD"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "step": "113.29",
+  "command": "flutter.bat test --no-pub test/release/sprint_113_issue_deduplication_root_cause_test.dart -j 1 (domain+manifest belum dibuat)",
+  "finished_at": "2026-09-23T09:46:39+0700",
+  "duration_seconds": 4,
+  "exit_code": 1,
+  "result": "FAIL",
+  "counts": {
+    "passed": 0,
+    "note": "compile/load RED - domain issue_deduplication_root_cause.dart dan manifest sprint_113_issue_deduplication_root_cause.json belum ada"
+  },
+  "log": "docs/evidence/sprint-113-29-red.log"
+}

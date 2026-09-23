@@ -1,0 +1,37 @@
+{
+  "canonical_step": "113.29",
+  "title": "Issue Deduplication & Root Cause",
+  "objective": "Menggabungkan laporan yang sama dan menentukan penyebab, komponen, versi, serta reproduksi.",
+  "required_fields": {
+    "issue_id": {
+      "description": "Identifier stabil laporan; blank dilaporkan sebagai missing issue_id oleh IssueRegistry.missingFields.",
+      "status": "validated_domain_fixture"
+    },
+    "duplicates": {
+      "description": "Daftar laporan yang dilipat ke laporan kanonik; kosong valid (belum ada duplikat), referensi ke id tak dikenal membuat keputusan fail.",
+      "status": "validated_domain_fixture"
+    },
+    "reproduction": {
+      "description": "Langkah reproduksi berurutan; list kosong dilaporkan missing dan digabung saat duplikat dilipat.",
+      "status": "validated_domain_fixture"
+    },
+    "component": {
+      "description": "Komponen tempat akar masalah berada; blank dilaporkan missing.",
+      "status": "validated_domain_fixture"
+    },
+    "root_cause": {
+      "description": "Penyebab akar yang ditentukan; blank membuat keputusan fail dengan nama field pada limitation.",
+      "status": "validated_domain_fixture"
+    },
+    "affected_versions": {
+      "description": "Versi terdampak; list kosong dilaporkan missing dan digabung (dedupe) saat merge.",
+      "status": "validated_domain_fixture"
+    },
+    "owner": {
+      "description": "Pemilik tindak lanjut; blank dilaporkan missing.",
+      "status": "validated_domain_fixture"
+    }
+  },
+  "limits": "Laporan yang diuji adalah fixture integrasi lokal pada domain bebas-dependensi, bukan ekspor isu tracker eksternal; registrasi kosong menghasilkan keputusan blocked sampai laporan nyata masuk. Native GUI, hosted CI, signing, hardware, dan public release DEFERRED/UNVERIFIABLE.",
+  "decision": "validated_domain_fixture_pending_real_issue_ingestion"
+}

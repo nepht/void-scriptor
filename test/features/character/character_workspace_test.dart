@@ -175,17 +175,7 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 100));
 
-    for (final label in [
-      'Design Sheet',
-      'Turnaround',
-      'Silhouette',
-      'Portrait',
-      'Expressions',
-      'Pose',
-      'Details',
-    ]) {
-      expect(find.text(label), findsWidgets, reason: label);
-    }
+    expect(find.text('Primary References'), findsOneWidget);
     for (final label in [
       'FRONT VIEW',
       'SIDE VIEW',
@@ -244,8 +234,6 @@ void main() {
     expect(find.text('Ekstraksi ciri dari naskah'), findsOneWidget);
 
     await pumpSection('Character Sheet');
-    await tester.tap(find.text('Details'));
-    await tester.pump();
     expect(find.text('Primary References'), findsOneWidget);
   });
 

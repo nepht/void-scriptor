@@ -8,12 +8,9 @@ import '../../assets/application/asset_thumbnail_importer.dart';
 import '../domain/character_model.dart';
 import '../domain/character_identity_profile.dart';
 import 'character_workspace_controller.dart';
-import 'character_controller.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 import 'widgets/accessories_card.dart';
 import 'widgets/character_empty_state.dart';
-import 'widgets/character_deletion_review_dialog.dart';
-import 'widgets/character_header.dart';
 import 'widgets/character_design_sheet_layout.dart';
 import 'widgets/character_close_up_detail_card.dart';
 import 'widgets/character_identity_card.dart';
@@ -54,7 +51,6 @@ class CharacterWorkspaceScreen extends ConsumerStatefulWidget {
 
 class _CharacterWorkspaceScreenState
     extends ConsumerState<CharacterWorkspaceScreen> {
-  String _characterSheetSection = 'Design Sheet';
   String? _primarySection;
 
   String _resolvedPrimarySection() =>
@@ -94,15 +90,6 @@ class _CharacterWorkspaceScreenState
     String? portraitPath,
   ) => Column(
     children: [
-      CharacterHeader(
-        name: character.displayName,
-        alias: character.alias,
-        onDelete: () => _confirmDelete(character),
-      ),
-      _PrimaryCharacterNavigation(
-        activeSection: _resolvedPrimarySection(),
-        onSelected: (value) => setState(() => _primarySection = value),
-      ),
       Expanded(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -143,24 +130,6 @@ class _CharacterWorkspaceScreenState
       characterName: character.displayName,
     ),
   );
-
-  Future<void> _confirmDelete(CharacterModel character) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
-    final database = session?.database;
-    if (database == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No active project session.')),
-      );
-      return;
-    }
-    final actions = CharacterActions(ref, character.projectId, database);
-    final decision = await showCharacterDeletionReviewDialog(
-      context: context,
-      loadReview: () => actions.reviewDeletion(character.assetId),
-    );
-    if (!mounted || decision == null) return;
-    await actions.delete(character.assetId, decision: decision);
-  }
 
   /// Portrait import: pick a local image and copy it into the project
   /// package via [AssetThumbnailImporter] (same durable path the asset
@@ -342,43 +311,22 @@ class _CharacterWorkspaceScreenState
       );
     }
     if (section == 'Character Sheet') {
-      final portrait = CharacterPortraitCard(
-        imagePath: portraitPath,
-        onAddPortrait: () => _importPortrait(character.assetId),
-      );
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _CharacterSheetNavigation(
-            activeSection: _characterSheetSection,
-            onSelected: (value) => setState(() {
-              _characterSheetSection = value;
-            }),
-          ),
-          const SizedBox(height: 8),
-          switch (_characterSheetSection) {
-            'Turnaround' => const TurnaroundCard(),
-            'Silhouette' => const SilhouetteCard(),
-            'Portrait' => portrait,
-            'Details' => Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                visual,
-                const SizedBox(height: 16),
-                ReferencesCard(characterId: character.assetId),
-              ],
-            ),
-            'Expressions' ||
-            'Pose' => _UnavailableSheetSection(title: _characterSheetSection),
-            _ => CharacterDesignSheetLayout(
-              summary: identityCard,
-              portrait: portrait,
-              closeUpDetail: const CharacterCloseUpDetailCard(),
-              turnaround: const TurnaroundCard(),
-              details: visual,
-            ),
-          },
-        ],
+      return CharacterDesignSheetLayout(
+        summary: identityCard,
+        portrait: CharacterPortraitCard(
+          imagePath: portraitPath,
+          onAddPortrait: () => _importPortrait(character.assetId),
+        ),
+        closeUpDetail: const CharacterCloseUpDetailCard(),
+        turnaround: const TurnaroundCard(),
+        details: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            visual,
+            const SizedBox(height: 16),
+            ReferencesCard(characterId: character.assetId),
+          ],
+        ),
       );
     }
     if (section == 'Relations' || section == 'Relationships') {
@@ -469,142 +417,6 @@ class _CharacterWorkspaceScreenState
     CharacterIdentityProfile current,
     CharacterIdentityProfile Function(CharacterIdentityProfile) update,
   ) => CharacterIdentityActions(ref).update(update(current));
-}
-
-class _PrimaryCharacterNavigation extends StatelessWidget {
-  const _PrimaryCharacterNavigation({
-    required this.activeSection,
-    required this.onSelected,
-  });
-
-  static const sections = [
-    'Overview',
-    'Character Sheet',
-    'Wardrobe',
-    'Weapons',
-    'Expressions',
-    'Abilities',
-    'Story',
-    'Timeline',
-    'AI Assets',
-    'Relations',
-    'Notes',
-  ];
-
-  final String activeSection;
-  final ValueChanged<String> onSelected;
-
-  @override
-  Widget build(BuildContext context) => Material(
-    color: context.palette.panel,
-    child: SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Row(
-        children: [
-          for (final section in sections)
-            InkWell(
-              key: ValueKey('character-primary-section-$section'),
-              onTap: () => onSelected(section),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 11,
-                  vertical: 7,
-                ),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: section == activeSection
-                          ? context.palette.primaryBright
-                          : Colors.transparent,
-                      width: 2,
-                    ),
-                  ),
-                ),
-                child: Text(
-                  section,
-                  style: TextStyle(
-                    color: section == activeSection
-                        ? context.palette.textPrimary
-                        : context.palette.textSecondary,
-                    fontSize: 11,
-                    fontWeight: section == activeSection
-                        ? FontWeight.w600
-                        : FontWeight.w400,
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    ),
-  );
-}
-
-class _CharacterSheetNavigation extends StatelessWidget {
-  const _CharacterSheetNavigation({
-    required this.activeSection,
-    required this.onSelected,
-  });
-
-  static const sections = [
-    'Design Sheet',
-    'Turnaround',
-    'Silhouette',
-    'Portrait',
-    'Expressions',
-    'Pose',
-    'Details',
-  ];
-
-  final String activeSection;
-  final ValueChanged<String> onSelected;
-
-  @override
-  Widget build(BuildContext context) => Material(
-    color: context.palette.panel,
-    child: SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Row(
-        children: [
-          for (final section in sections)
-            InkWell(
-              key: ValueKey('character-sheet-section-$section'),
-              onTap: () => onSelected(section),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: section == activeSection
-                          ? context.palette.primaryBright
-                          : Colors.transparent,
-                      width: 2,
-                    ),
-                  ),
-                ),
-                child: Text(
-                  section,
-                  style: TextStyle(
-                    color: section == activeSection
-                        ? context.palette.textPrimary
-                        : context.palette.textSecondary,
-                    fontSize: 10,
-                    fontWeight: section == activeSection
-                        ? FontWeight.w600
-                        : FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    ),
-  );
 }
 
 class _UnavailableSheetSection extends StatelessWidget {

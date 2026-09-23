@@ -24,7 +24,7 @@ class WorkspaceTabBar extends StatelessWidget {
     return Material(
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: SizedBox(
-        height: 32,
+        height: 36,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           itemCount: tabs.length,

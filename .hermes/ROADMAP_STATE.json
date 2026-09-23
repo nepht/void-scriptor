@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.35",
-  "next_step": "113.36",
+  "last_verified_step": "113.36",
+  "next_step": "113.37",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "113.35 VERIFIED-LOCAL",
+  "current_step": "113.36 VERIFIED-LOCAL",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-23 run: 113.35 Final Feature Evidence Reconciliation VERIFIED-LOCAL. Rekonsiliasi 29 fitur F1-F29 (F30 alias F24) terhadap 8 required_fields; live inventaris 112.3 di HEAD: 116/116 ref ada, 29/29 flag id telusur ke sumber, status 19 EVIDENCED_LOCAL/10 PARTIAL -> pass featureCount 29; RED exit 1 -> GREEN 14/14; regression test/release 579/579 exit 0; analyzer/format/diff PASS; Gap REC-01 dicatat (16 flag id matrix 112.6 tidak ada di sumber lib). Next 113.36 Final Scope & Known Issues.",
+  "last_run_summary": "2026-09-23 run: 113.35 Final Feature Evidence Reconciliation + 113.36 Final Scope & Known Issues VERIFIED-LOCAL. 113.35: 29 fitur F1-F29 x 8 required_fields, live inventaris 112.3 di HEAD (116/116 ref, 29/29 flag telusur, 19 EVIDENCED_LOCAL/10 PARTIAL) -> pass; RED exit 1 -> GREEN 14/14; Gap REC-01 (16 flag id matrix 112.6 tak ada di sumber lib). 113.36: 6 output kanonik dari dokumen grounding HEAD (release-notes/known-limits/recovery-guide/support-playbook/ledger), item_count cocok, REC-01 tetap tercatat; RED exit 1 -> GREEN 10/10; regression test/release 589/589 exit 0; analyzer/format/diff/guard PASS. Commits 6c0db6e (113.35) + 113.36. Next 113.37 Version, Changelog & Migration Notes.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -881,8 +881,8 @@
     "next_step": "113.27"
   },
   "sprint_progress": {
-    "last_verified_step": "113.35",
-    "next_step": "113.36"
+    "last_verified_step": "113.36",
+    "next_step": "113.37"
   },
   "sprint_113_step_11328": {
     "status": "VERIFIED-LOCAL",
@@ -931,5 +931,11 @@
     "date": "2026-09-23",
     "summary": "Final Feature Evidence Reconciliation: domain final_feature_evidence_reconciliation.dart (FeatureEvidenceEntry 8 required_fields, known_issues null=missing vs list kosong=jawaban, FeatureReconciliationLog coverage F1-F29 + tolak duplikat/entri F30/wire name tak kanonik/BLOCKS_RELEASE, state pass/fail/blocked, pass mempertahankan 29 decision) + manifest sprint_113_final_feature_evidence_reconciliation.json (verified_counts 29/116/0/29/19/10, findings REC-01/REC-02, decision_rules deterministik authority Choirudin); TDD RED compile exit 1 -> GREEN 14/14 PASS exit 0; rekonsiliasi live inventaris 112.3 di HEAD (116/116 ref, 29/29 flag id telusur, 19/10 status, 10 known_issues) pass; regression test/release 579/579 PASS exit 0 135s; scoped analyzer No issues; format 0 changed; diff-check PASS; Gap REC-01: 16 flag id rollout matrix 112.6 tidak ada di sumber lib.",
     "next_step": "113.36"
+  },
+  "sprint_113_step_11336": {
+    "status": "VERIFIED-LOCAL",
+    "date": "2026-09-23",
+    "summary": "Final Scope & Known Issues: domain final_scope_known_issues.dart (FinalScopeDocument 6 required_outputs, null=missing vs list kosong=jawaban valid, release_scope/support_notes wajib berisi item, item blank=missing, state pass/fail/blocked, pass mempertahankan hitungan + support notes) + manifest sprint_113_final_scope_known_issues.json (item bersumber dari dokumen HEAD: 11 release_scope, 8 deferred_scope, 4 known_issues termasuk REC-01, 5 workarounds, 4 residual_risks, 4 support_notes; setiap source_doc exists & item_count cocok diuji test); TDD RED compile exit 1 -> GREEN 10/10 PASS exit 0; regression test/release 589/589 PASS exit 0 136s; scoped analyzer No issues; format 0 changed; diff-check PASS.",
+    "next_step": "113.37"
   }
 }

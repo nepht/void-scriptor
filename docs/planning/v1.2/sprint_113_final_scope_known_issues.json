@@ -1,0 +1,102 @@
+{
+  "canonical_step": "113.36",
+  "title": "Final Scope & Known Issues",
+  "objective": "Mendokumentasikan isi rilis, hal yang ditunda, batas, workaround, dan risiko residual.",
+  "sources": {
+    "feature_reconciliation": "docs/planning/v1.2/sprint_113_final_feature_evidence_reconciliation.json",
+    "release_notes": "docs/release/v1.2.0-rc.1-release-notes.md",
+    "known_limits": "docs/release/v1.2.0-rc.1-known-limits.md",
+    "recovery_guide": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+    "support_playbook": "docs/release/v1.2.0-rc.1-support-playbook.md",
+    "validation_charter": "docs/planning/v1.2/sprint_113_release_validation_charter.json",
+    "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md"
+  },
+  "outputs": {
+    "release_scope": {
+      "description": "Isi rilis v1.2.0-rc.1 yang terverifikasi lokal; empty list = missing karena rilis tanpa isi bukan dokumentasi.",
+      "status": "documented_from_release_notes",
+      "source_doc": "docs/release/v1.2.0-rc.1-release-notes.md",
+      "item_count": 11,
+      "items": [
+        "Worldbuilding integration: 29 fitur unik F1-F29 (cerita, karakter, lore, faction, ekonomi, power systems, bahasa, simulation)",
+        "Contract compatibility: WS-EVENTS v1 typed contract dengan compatibility layer untuk ProjectMutationEvent legacy",
+        "Determinism & data integrity: seed replay, simulation replay, deterministic export, search-index dan lore-link checks — fail-closed",
+        "Performance & responsiveness gate: latency, throughput, rendering, background tasks, startup budgets pada proof lokal",
+        "Memory, storage & index gate: footprint, growth, retention, cache eviction, reindex terukur",
+        "Security gate: threat model, isolation, encryption, credential storage, project lock, integrity, dependency scan",
+        "Privacy gate: local-first data flow, consent opt-in, metadata redaction, share/export sanitization, deletion review",
+        "Accessibility + localization gate: keyboard, screen reader, scaling, contrast, motion, locale, calendar, unit, text expansion, RTL, multiscript",
+        "Platform compatibility gate: desktop local FS, web limited persistence, fail-closed require untuk platform tidak didukung",
+        "Failure injection & recovery gate: crash, power loss, disk full, permission loss, missing file, corrupt index, interrupted migration (local/synthetic)",
+        "Upgrade rehearsal + rollback (112.27-112.29) dan interrupted import/export dua-fase dengan sentinel claim (pola run318-run322)"
+      ]
+    },
+    "deferred_scope": {
+      "description": "Hal yang sengaja ditunda dari rilis ini; empty list = jawaban valid (tidak ada yang ditunda).",
+      "status": "documented_from_known_limits_and_charter",
+      "source_doc": "docs/release/v1.2.0-rc.1-known-limits.md",
+      "item_count": 8,
+      "items": [
+        "Native macOS/Linux/iOS packaging dan notarization",
+        "Hosted CI pada exact candidate SHA (billing/runner menjadi gate terpisah)",
+        "Mobile (Android/iOS) testing dan release signing",
+        "Installer MSI, upgrade/uninstall native, serta signing Authenticode publik",
+        "Native screen-reader certification, physical contrast measurement, native RTL mirroring, dan platform IME",
+        "True hardware power loss dan USB cold-eject (memerlukan tangan Choirudin pada hardware nyata)",
+        "Dedicated per-feature flag untuk 10 fitur Wave 2 dan 6 fitur Wave 3 (REC-02; saat ini default OFF via shared kill switch dan EncyclopediaFeatureFlags)",
+        "Public publication/distribusi kandidat (memerlukan izin eksplisit Choirudin)"
+      ]
+    },
+    "known_issues": {
+      "description": "Defect dan ketidakcocokan dokumentasi yang masih terbuka; empty list = jawaban valid (tidak ada known issue).",
+      "status": "documented_from_ledger_and_inventory",
+      "source_doc": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
+      "item_count": 4,
+      "items": [
+        "REC-01: kolom flag rollout matrix 112.6 memakai 16 identifier yang tidak ada di sumber lib (vs12_world_logic_shared untuk 10 fitur shared dan 6 id vs12_* Wave 3); inventaris 112.3 sisi akurat — Gap ledger 2026-09-23",
+        "10 fitur Wave 2 berstatus PARTIAL tanpa dedicated per-feature flag (REC-02; kVs12FeatureFlags masih 13 id Wave 1)",
+        "features/authentication golden GAGAL di live tree karena WIP sibling login_screen.dart belum ter-commit (Gap ledger; PASS 3/3 pada HEAD bersih 8c2906c)",
+        "Monolit test/core dan test/features/project_resilience melewati batas wrapper (TIMEOUT 298s) sehingga wajib dipecah deterministik; timeout bukan PASS"
+      ]
+    },
+    "workarounds": {
+      "description": "Jalur aman untuk menangani known issues dan batas yang tercatat; empty list = jawaban valid.",
+      "status": "documented_from_recovery_guide",
+      "source_doc": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+      "item_count": 5,
+      "items": [
+        "Selalu buat dan verifikasi backup sebelum upgrade; jangan menimpa satu-satunya salinan package sumber",
+        "Migration gagal: pertahankan sumber asli dan pulihkan lewat alur recovery aplikasi (emergency backup dibuat otomatis sebelum restore)",
+        "Downgrade database in-place tidak didukung: buka dengan versi aplikasi yang mendukung schema, atau pulihkan dari backup/ekspor yang didukung",
+        "Rollback cepat fitur: FeatureFlagRegistry.engageKillSwitch memaksa seluruh flag v1.2 kembali default OFF dalam satu panggilan",
+        "Import/export terputus: jalankan ulang recovery (staging/claim dua fase) alih-alih memindahkan folder staging atau menganggap .tmp sebagai hasil final"
+      ]
+    },
+    "residual_risks": {
+      "description": "Risiko yang tersisa setelah mitigasi; empty list = jawaban valid (tidak ada risiko residual).",
+      "status": "documented_from_known_limits_and_state",
+      "source_doc": "docs/release/v1.2.0-rc.1-known-limits.md",
+      "item_count": 4,
+      "items": [
+        "Hosted CI dan public release belum dijalankan pada SHA kandidat sehingga gate eksternal tetap UNVERIFIABLE",
+        "Signing RC pada 112.52 memakai sertifikat self-signed lokal (trust CurrentUser, tanpa timestamp) — bukan kepercayaan publik",
+        "Recovery power-loss nyata dan USB cold-eject belum diverifikasi (batas fsync dart:io + memerlukan pengujian fisik)",
+        "Native GUI journey, dialog crash/recovery native, dan hardware validation tetap UNVERIFIABLE dari cron"
+      ]
+    },
+    "support_notes": {
+      "description": "Panduan triage dan eskalasi untuk kandidat rilis; empty list = missing karena rilis tanpa catatan support bukan dokumentasi.",
+      "status": "documented_from_support_playbook",
+      "source_doc": "docs/release/v1.2.0-rc.1-support-playbook.md",
+      "item_count": 4,
+      "items": [
+        "Intake minimum tanpa data privat: versi+platform, langkah reproduksi dan hasil aktual, status buka read-only, kategori insiden, timestamp dan path log yang sudah diredaksi",
+        "Severity P0-P3: P0 kehilangan/korupsi data atau credential exposure atau bypass boundary; P1 core workflow terblokir tanpa workaround aman; P2 fungsi salah dengan workaround aman; P3 kosmetik/dokumentasi",
+        "Batas operasi: support tidak boleh mereset lock, menghapus quarantine/journal, SQL manual, meminta credential, atau mengunggah project tanpa izin; security/privacy P0-P1 menghentikan distribusi kandidat lalu eskalasi ke product authority",
+        "Handoff engineering wajib memuat exact commit/artifact identity, command dan exit code, reproduction, owner region, expected vs actual, serta status VERIFIED/PARTIAL/BLOCKED/UNVERIFIABLE/MISSING/DEFERRED; release/push/deploy dan komunikasi eksternal tetap butuh otorisasi Choirudin"
+      ]
+    }
+  },
+  "limits": "Dokumen ini menyusun ulang bukti lokal yang sudah ada (release notes, known limits, recovery guide, support playbook, ledger sprint 113, inventaris 112.3) menjadi enam output kanonik; ia BUKAN persetujuan rilis dan tidak menambah klaim bukti baru. Isi rilis yang tercatat tetap berstatus lokal (VERIFIED-LOCAL per langkah 112.x/113.x): native GUI, hosted CI, signing publik, hardware, dan public release tetap DEFERRED/UNVERIFIABLE; keputusan go/no-go tetap milik Choirudin per charter 113.2.",
+  "decision": "scope_documented_pending_choirudin_go_no_go"
+}

@@ -1,0 +1,33 @@
+{
+  "canonical_step": "113.33",
+  "title": "Documentation & Guidance Corrections",
+  "objective": "Memperbaiki panduan, label, pesan error, recovery steps, known limits, dan accessibility notes berdasarkan validasi.",
+  "outputs": {
+    "corrected_guides": {
+      "description": "Dokumen panduan yang diperbaiki; list kosong dilaporkan missing oleh DocumentationCorrectionLog.missingOutputs.",
+      "status": "validated_domain_fixture"
+    },
+    "ui_copy": {
+      "description": "Label/teks UI yang diperbaiki; list kosong dilaporkan missing.",
+      "status": "validated_domain_fixture"
+    },
+    "error_guidance": {
+      "description": "Pesan error/recovery yang diperbaiki untuk pengguna; blank dilaporkan missing dan teksnya dipertahankan pada keputusan pass.",
+      "status": "validated_domain_fixture"
+    },
+    "recovery_steps": {
+      "description": "Langkah pemulihan yang diperbaiki; list kosong dilaporkan missing.",
+      "status": "validated_domain_fixture"
+    },
+    "known_limits": {
+      "description": "Dokumentasi known limits yang diperbaiki; list kosong dilaporkan missing.",
+      "status": "validated_domain_fixture"
+    },
+    "accessibility_notes": {
+      "description": "Catatan aksesibilitas yang diperbaiki; blank dilaporkan missing.",
+      "status": "validated_domain_fixture"
+    }
+  },
+  "limits": "Koreksi yang diuji adalah fixture integrasi lokal pada domain bebas-dependensi terhadap temuan validasi produk nyata; log kosong menghasilkan blocked sampai satu koreksi lengkap tercatat. Native GUI, hosted CI, signing, hardware, dan public release DEFERRED/UNVERIFIABLE.",
+  "decision": "validated_domain_fixture_pending_real_validation_findings"
+}

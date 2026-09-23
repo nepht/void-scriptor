@@ -1,0 +1,31 @@
+{
+  "canonical_step": "113.46",
+  "title": "Sprint Closure",
+  "status": "VERIFIED-LOCAL",
+  "version": "1.2.0-rc.1",
+  "definition_of_done": [
+    "entry_gate_passed",
+    "validation_window_completed",
+    "release_blockers_resolved_or_release_stopped",
+    "quality_gates_passed",
+    "ga_decision_recorded",
+    "staged_rollout_controlled",
+    "observation_handoff_complete"
+  ],
+  "criteria": {
+    "entry_gate_passed": {"status": "VERIFIED-LOCAL", "evidence": ["docs/planning/v1.2/sprint_113_ga_entry_gate.json", "docs/planning/v1.2/sprint_113_ga_approval_gate.json"]},
+    "validation_window_completed": {"status": "VERIFIED-LOCAL", "evidence": ["docs/planning/v1.2/sprint_113_release_validation_charter.json", "docs/planning/v1.2/sprint_113_post_release_observation_handoff.json"], "note": "Local validation contract completed; external observation window is not fabricated."},
+    "release_blockers_resolved_or_release_stopped": {"status": "VERIFIED-LOCAL", "evidence": ["docs/planning/v1.2/sprint_113_release_blocker_triage.json", "docs/planning/v1.2/sprint_113_ga_release_execution.json"]},
+    "quality_gates_passed": {"status": "VERIFIED-LOCAL", "evidence": ["docs/planning/v1.2/sprint_113_full_quality_gate_rerun.json"]},
+    "ga_decision_recorded": {"status": "DEFERRED-RELEASE", "evidence": ["docs/planning/v1.2/sprint_113_ga_release_execution.json"], "note": "External release is stopped fail-closed; no publication is claimed."},
+    "staged_rollout_controlled": {"status": "DEFERRED-RELEASE", "evidence": ["docs/planning/v1.2/sprint_113_staged_rollout_plan.json"], "note": "Plan exists, execution_authorized is false at the external boundary."},
+    "observation_handoff_complete": {"status": "VERIFIED-LOCAL", "evidence": ["docs/planning/v1.2/sprint_113_post_release_observation_handoff.json"]}
+  },
+  "ga_decision": "DEFERRED_RELEASE",
+  "closure_decision": "CLOSED_LOCAL_DEFERRED_RELEASE",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Hosted CI, public-trust signing, live telemetry, unavailable hardware, public publication, and external communication remain deferred.",
+    "This closure does not claim GA publication, rollout telemetry, or validation participants."
+  ]
+}

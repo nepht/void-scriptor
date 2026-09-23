@@ -1,0 +1,13 @@
+{
+  "step": "113.35",
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_113_final_feature_evidence_reconciliation_test.dart -j 1 (domain+manifest belum dibuat)",
+  "finished_at": "2026-09-23T13:30:00+0700",
+  "duration_seconds": 6,
+  "exit_code": 1,
+  "result": "FAIL",
+  "counts": {
+    "passed": 0,
+    "note": "compile/load RED - domain final_feature_evidence_reconciliation.dart dan manifest sprint_113_final_feature_evidence_reconciliation.json belum ada; Error: Method not found 'FeatureReconciliationLog' / 'FeatureEvidenceEntry'"
+  },
+  "log": "docs/evidence/sprint-113-35-red.log"
+}

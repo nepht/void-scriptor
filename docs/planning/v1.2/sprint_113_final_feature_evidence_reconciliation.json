@@ -1,0 +1,103 @@
+{
+  "canonical_step": "113.35",
+  "title": "Final Feature Evidence Reconciliation",
+  "objective": "Memastikan 29 fitur unik memiliki status, bukti, flag, dokumentasi, owner, dan known issues yang akurat.",
+  "source": {
+    "inventory": "docs/planning/v1.2/sprint_112_feature_evidence_inventory.json",
+    "inventory_sha256": "2d17cf8323ad678618e41c050bfbd969c3142f6fb4dc68c31e8de03126316afd",
+    "rollout_matrix": "docs/planning/v1.2/sprint_112_feature_flag_rollout_matrix.json",
+    "charter": "docs/planning/v1.2/sprint_113_release_validation_charter.json",
+    "coverage_contract": "29 fitur unik F1-F29; F30 adalah alias F24 dan bukan entri terpisah (112.2/112.3)."
+  },
+  "required_fields": {
+    "feature": {
+      "description": "Identifier fitur unik F1-F29; blank dilaporkan missing, id di luar F1-F29 gagal sebagai unexpected id.",
+      "status": "validated_live_inventory"
+    },
+    "status": {
+      "description": "Status reconciled: EVIDENCED_LOCAL (19) atau PARTIAL (10); blank dilaporkan missing.",
+      "status": "validated_live_inventory"
+    },
+    "evidence": {
+      "description": "Referensi implementation + test yang diverifikasi ada di HEAD (87 path); list kosong dilaporkan missing.",
+      "status": "validated_live_inventory"
+    },
+    "flag": {
+      "description": "Identifier flag yang dapat ditelusuri ke sumber pada file referensinya (kVs12FeatureFlags, EncyclopediaFeatureFlags.wave3Catalog, atau engageKillSwitch); blank dilaporkan missing.",
+      "status": "validated_live_inventory"
+    },
+    "documentation": {
+      "description": "Referensi dokumen yang diverifikasi ada di HEAD (29 path); list kosong dilaporkan missing.",
+      "status": "validated_live_inventory"
+    },
+    "owner": {
+      "description": "Workstream pemilik (writer-story-lore 13, world-logic-simulation 10, lore-encyclopedias 6); blank dilaporkan missing.",
+      "status": "validated_live_inventory"
+    },
+    "known_issues": {
+      "description": "Jawaban known issues; null = field tidak ada -> missing, list kosong = tidak ada known issue (jawaban valid), isi = known issue terekam (10 fitur PARTIAL).",
+      "status": "validated_live_inventory"
+    },
+    "release_decision": {
+      "description": "Rekomendasi keputusan rilis per fitur; wire name di luar kanonik ditolak, kosong dilaporkan missing, BLOCKS_RELEASE memaksa fail.",
+      "status": "validated_domain_fixture"
+    }
+  },
+  "release_decisions": {
+    "RECOMMEND_INCLUDE": {
+      "meaning": "Evidence lokal lengkap dan tidak ada known issue blocking; fitur direkomendasikan masuk lingkup RC.",
+      "applied_to": 19
+    },
+    "RECOMMEND_DEFER": {
+      "meaning": "Status PARTIAL dengan known issue rollout granularity (shared kill switch saja); direkomendasikan ditunda dari klaim rilis ini.",
+      "applied_to": 10
+    },
+    "BLOCKS_RELEASE": {
+      "meaning": "Fitur memblokir rilis; memaksa evaluasi fail sampai direkonsiliasi.",
+      "applied_to": 0
+    }
+  },
+  "decision_rules": {
+    "EVIDENCED_LOCAL": "RECOMMEND_INCLUDE",
+    "PARTIAL": "RECOMMEND_DEFER",
+    "open_release_blocker": "BLOCKS_RELEASE",
+    "derivation": "Deterministik dari status + known_issues inventaris 112.3 yang sudah diverifikasi ulang terhadap HEAD; tanpa entri fabrikasi.",
+    "authority": "Choirudin — charter 112.2/113.2 decision_owners.validation_result; rekomendasi ini BUKAN persetujuan rilis."
+  },
+  "coverage": {
+    "unique_features": 29,
+    "expected_ids": "F1-F29",
+    "alias": "F30 = F24, bukan entri terpisah"
+  },
+  "verified_counts": {
+    "features": 29,
+    "refs_checked": 116,
+    "refs_missing": 0,
+    "flag_refs_resolvable": 29,
+    "evidenced_local": 19,
+    "partial": 10,
+    "with_known_issues": 10,
+    "dedicated_registry_flags": 13,
+    "wave3_catalog_flags": 6,
+    "shared_kill_switch_features": 10
+  },
+  "reconciliation_findings": [
+    {
+      "id": "REC-01",
+      "severity": "low",
+      "finding": "Kolom flag pada rollout matrix 112.6 memakai 16 identifier yang tidak ada di sumber lib (vs12_world_logic_shared untuk 10 fitur shared-kill-switch dan vs12_herbology_alchemy/vs12_bestiary/vs12_artifacts_relics/vs12_myth_theology/vs12_name_generator/vs12_idiom_bank untuk 6 fitur Wave 3). Identifier yang benar-benar ada di sumber: kVs12FeatureFlags (13 id Wave 1), EncyclopediaFeatureFlags.wave3Catalog (F23/F24/F26/F27/F28/F29), dan FeatureFlagRegistry.engageKillSwitch.",
+      "affected": ["F3", "F5", "F6", "F11", "F13", "F14", "F15", "F20", "F21", "F22", "F23", "F24", "F26", "F27", "F28", "F29"],
+      "inventory_side": "Inventaris 112.3 akurat: id flag-nya dapat ditelusuri ke file ref (29/29).",
+      "action": "Tercatat sebagai Gap pada ledger sprint 113 untuk rekonsiliasi kolom flag matrix 112.6; tidak di-repair di langkah ini karena matrix 112.6 berada di scope sprint 112 yang sudah CLOSED."
+    },
+    {
+      "id": "REC-02",
+      "severity": "informational",
+      "finding": "10 fitur Wave 2 tetap PARTIAL karena belum ada dedicated per-feature flag di kVs12FeatureFlags (masih 13 id Wave 1); known issue yang sama tetap berlaku di HEAD.",
+      "affected": ["F3", "F5", "F6", "F11", "F13", "F14", "F15", "F20", "F21", "F22"],
+      "action": "Dipertahankan sebagai known_issues + RECOMMEND_DEFER; keputusan rollout tetap milik Choirudin."
+    }
+  ],
+  "limits": "Rekonsiliasi dilakukan terhadap inventaris 112.3 yang sudah diverifikasi ulang di HEAD (116 referensi ada, 29 flag id dapat ditelusuri, distribusi status 19/10); rekomendasi release_decision diturunkan secara deterministik dan BUKAN persetujuan rilis — go/no-go tetap milik Choirudin per charter. Validasi native GUI, interaksi pengguna nyata, hosted CI, signing, hardware, dan public release tetap DEFERRED/UNVERIFIABLE.",
+  "decision": "reconciled_recommendations_pending_choirudin_approval"
+}

@@ -1,0 +1,17 @@
+{
+  "canonical_step": "114.3",
+  "title": "Release Health Baseline",
+  "status": "VERIFIED-LOCAL",
+  "path": "DELAYED",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "signals": [
+    {"signal":"install_success","baseline":"No local install observation recorded","threshold":">= 99% when a real collector exists","source":"local corrective contract only","window":"24h","limitations":"No production telemetry or public rollout"},
+    {"signal":"upgrade_success","baseline":"No local upgrade observation recorded","threshold":">= 99% when a real collector exists","source":"local corrective contract only","window":"24h","limitations":"No production telemetry or public rollout"},
+    {"signal":"crash_rate","baseline":"No local crash-rate observation recorded","threshold":"<= 0.5% when a real collector exists","source":"local corrective contract only","window":"24h","limitations":"No production telemetry or public rollout"},
+    {"signal":"migration_failure","baseline":"No local migration observation recorded","threshold":"<= 0.1% failure when a real collector exists","source":"local corrective contract only","window":"72h","limitations":"No production telemetry or public rollout"},
+    {"signal":"restore_failure","baseline":"No local restore observation recorded","threshold":"0 failures when a real collector exists","source":"local corrective contract only","window":"72h","limitations":"No production telemetry or public rollout"},
+    {"signal":"performance_regression","baseline":"No local performance observation recorded","threshold":"p95 startup delta <= 10% vs prior release","source":"local debug validation only","window":"48h","limitations":"No representative production hardware population"},
+    {"signal":"support_severity","baseline":"No external support observations recorded","threshold":"0 open severity-1 reports when support exists","source":"local corrective contract only","window":"168h","limitations":"No external support channel or adoption data"}
+  ],
+  "limitations": ["Baseline definitions are not observations.", "Public signing, hosted CI, live telemetry, hardware, and publication remain DEFERRED-EXTERNAL."]
+}

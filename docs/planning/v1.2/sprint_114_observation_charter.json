@@ -1,0 +1,16 @@
+{
+  "canonical_step": "114.2",
+  "title": "Observation Charter",
+  "status": "VERIFIED-LOCAL",
+  "path": "DELAYED",
+  "window": {"type": "LOCAL_CORRECTIVE", "scope": "repository_and_local_debug_validation", "not_started": true},
+  "questions": ["Apakah jalur corrective lokal dapat diverifikasi tanpa mengklaim GA?", "Apakah setiap sinyal tetap privacy-safe dan dapat direproduksi lokal?"],
+  "signals": ["focused_test_result", "analyzer_result", "build_result", "roadmap_guard_result"],
+  "owners": ["nephthys: local implementation and evidence", "Choirudin: product and external release decisions"],
+  "escalation": {"critical": "stop local change and record blocker", "regression": "reproduce, patch minimally, and add regression test", "external": "DEFERRED-EXTERNAL"},
+  "stop_conditions": ["fabricated release or telemetry evidence", "data-safety regression", "unrelated dirty-file conflict", "native writer already active"],
+  "exit_criteria": ["required fields validated", "privacy-safe local signals documented", "no public release claim", "focused gates pass"],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["No production telemetry, public signing, hosted CI, hardware, or external adoption data is available."],
+  "decision": "LOCAL_CORRECTIVE_SCOPE_ONLY"
+}

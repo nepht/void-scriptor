@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.42",
-  "next_step": "113.43",
+  "last_verified_step": "113.43",
+  "next_step": "113.44",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -58,7 +58,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-23T14:16:00+07:00",
+  "updated_at": "2026-09-23T14:45:00+07:00",
   "updated_by": "cron-core-worker-v4",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -741,7 +741,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "113.22",
+  "last_resolved_step": "113.43",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -881,8 +881,8 @@
     "next_step": "113.27"
   },
   "sprint_progress": {
-    "last_verified_step": "113.42",
-    "next_step": "113.43"
+    "last_verified_step": "113.43",
+    "next_step": "113.44"
   },
   "sprint_113_step_11328": {
     "status": "VERIFIED-LOCAL",
@@ -1094,5 +1094,39 @@
     "privacy": "pii_captured=false, identifiers=none, aggregate no PII, retention 30d",
     "manifest": "docs/planning/v1.2/sprint_113_release_health_monitoring.json",
     "limitations": "tanpa pipeline telemetry live; observed_status null by design; monitoring = readiness bukan kesehatan produksi"
+  },
+  "sprint_113_step_11343": {
+    "status": "VERIFIED-LOCAL",
+    "title": "GA Approval Gate",
+    "date": "2026-09-23",
+    "required_evidence": [
+      "validation_results",
+      "blocker_status",
+      "quality_gate_rerun",
+      "feature_reconciliation",
+      "known_issues",
+      "signed_artifacts",
+      "staged_rollout_plan",
+      "rollback_readiness"
+    ],
+    "red_exit": 1,
+    "green_focused": "7/7 exit 0 6s",
+    "regression_test_release": "645/645 exit 0 130s",
+    "analyzer": "No issues",
+    "format": "0 changed",
+    "diff_check": 0,
+    "decision": "DEFER_PENDING_CHOIRUDIN",
+    "approval_state": "PENDING_CHOIRUDIN",
+    "execution_authorized": false,
+    "manifest": "docs/planning/v1.2/sprint_113_ga_approval_gate.json",
+    "domain": "lib/features/world_logic/domain/ga_approval_gate.dart",
+    "test": "test/release/sprint_113_ga_approval_gate_test.dart",
+    "evidence": [
+      "docs/evidence/sprint-113-43-red.meta",
+      "docs/evidence/sprint-113-43-focused.meta",
+      "docs/evidence/sprint-113-43-test-release-regression.meta"
+    ],
+    "limitations": "hosted CI, native GUI validation window, public-trust signing, live telemetry, public release DEFERRED/UNVERIFIABLE; rollback readiness dokumenter + channel resolution lokal",
+    "next_step": "113.44"
   }
 }

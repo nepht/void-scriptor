@@ -1,0 +1,108 @@
+{
+  "canonical_step": "113.43",
+  "title": "GA Approval Gate",
+  "status": "VERIFIED-LOCAL",
+  "version": "1.2.0-rc.1",
+  "objective": "Memutuskan rilis, menunda, atau membatalkan berdasarkan bukti validation dan kesiapan rollback.",
+  "recorded_at": "2026-09-23T14:45:00+07:00",
+  "required_evidence": {
+    "validation_results": {
+      "present": true,
+      "sources": [
+        "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
+        "docs/planning/v1.2/sprint_113_performance_validation_window.json",
+        "docs/planning/v1.2/sprint_113_reliability_recovery_validation.json",
+        "docs/planning/v1.2/sprint_113_data_integrity_validation.json",
+        "docs/planning/v1.2/sprint_113_security_revalidation.json"
+      ],
+      "summary": "23 validation steps (113.3-113.31) recorded VERIFIED-LOCAL in the sprint ledger with per-step focused test exit results."
+    },
+    "blocker_status": {
+      "present": true,
+      "sources": [
+        "docs/planning/v1.2/sprint_113_release_blocker_triage.json",
+        "docs/planning/v1.2/sprint_113_release_blocker_resolution.json"
+      ],
+      "summary": "Triage + resolution contracts validated; open items are non-blockers (REC-01, download-label gap, sibling-WIP auth golden) so release_blocked stays false."
+    },
+    "quality_gate_rerun": {
+      "present": true,
+      "sources": [
+        "docs/planning/v1.2/sprint_113_full_quality_gate_rerun.json"
+      ],
+      "summary": "8 gates rerun 2026-09-23: 7 specialized gates exit 0, automated tests 100/102 exit 0 with two attributed non-green units, regression test/release 565/565 exit 0."
+    },
+    "feature_reconciliation": {
+      "present": true,
+      "sources": [
+        "docs/planning/v1.2/sprint_113_final_feature_evidence_reconciliation.json"
+      ],
+      "summary": "29 features x 8 required fields reconciled against HEAD: 116/116 references on disk, 19 EVIDENCED_LOCAL, 10 PARTIAL, findings REC-01/REC-02 recorded."
+    },
+    "known_issues": {
+      "present": true,
+      "sources": [
+        "docs/planning/v1.2/sprint_113_final_scope_known_issues.json",
+        "docs/release/v1.2.0-rc.1-known-limits.md"
+      ],
+      "summary": "4 known issues, 8 deferred scope items, 4 residual risks, 5 workarounds, 4 support notes documented from HEAD evidence."
+    },
+    "signed_artifacts": {
+      "present": true,
+      "sources": [
+        "docs/release/v1.2.0-rc.1-checksums.txt",
+        "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json"
+      ],
+      "summary": "6 artifacts Authenticode-SHA256 signed (self-signed local, verify exit 0) with 493-entry SHA-256 checksums; public trust unsigned by label UNSIGNED_PUBLIC_TRUST."
+    },
+    "staged_rollout_plan": {
+      "present": true,
+      "sources": [
+        "docs/planning/v1.2/sprint_113_staged_rollout_plan.json"
+      ],
+      "summary": "3 stages 5%/24h -> 50%/48h -> 100%/72h with health criteria and stop conditions; approval_state PENDING_CHOIRUDIN, execution_authorized false."
+    },
+    "rollback_readiness": {
+      "present": true,
+      "sources": [
+        "docs/planning/v1.2/sprint_113_rollback_drill.json",
+        "docs/release/v1.2.0-rc.1-recovery-guide.md",
+        "docs/planning/v1.2/migration_backup_rollback_plan.md"
+      ],
+      "summary": "Rollback drill script (5 steps + artifact withdrawal + flag disable + backup restore) defined, recovery guide and migration/backup/rollback plan present; drill execution itself stays deferred."
+    }
+  },
+  "approval": {
+    "decision": "defer",
+    "approval_state": "PENDING_CHOIRUDIN",
+    "execution_authorized": false,
+    "note": "All eight evidence groups are recorded and the record evaluates to pass-consistent-defer; a release decision requires Choirudin's explicit approval, which has not been given — this manifest does not authorize execution."
+  },
+  "blocker_status": {
+    "release_blocked": false,
+    "open_items": [
+      "REC-01: 16 flag ids in sprint_112_feature_flag_rollout_matrix.json do not exist in lib sources (documentation reconciliation, non-blocker)",
+      "Download channel label still 1.2.0-alpha.1 while source is 1.2.0-rc.1 (distribution wiring needs explicit Choirudin permission)",
+      "features/authentication golden fails on live tree due to uncommitted sibling WIP login_screen.dart (passes 3/3 at clean HEAD 8c2906c)"
+    ]
+  },
+  "rollback_readiness": {
+    "ready": true,
+    "basis": [
+      "docs/planning/v1.2/sprint_113_rollback_drill.json defines the 5-step drill, artifact withdrawal, kill-switch flag disable, and backup restore criteria",
+      "docs/release/v1.2.0-rc.1-recovery-guide.md documents end-user recovery steps",
+      "docs/planning/v1.2/migration_backup_rollback_plan.md covers schema migration rollback boundaries",
+      "docs/planning/v1.2/sprint_113_update_channel_delivery_validation.json validates rollback channel resolution to 1.2.0-alpha.1"
+    ],
+    "note": "Readiness is documentary plus channel-resolution verified; the drill has not been executed end-to-end against a published release."
+  },
+  "domain": "lib/features/world_logic/domain/ga_approval_gate.dart",
+  "test": "test/release/sprint_113_ga_approval_gate_test.dart",
+  "limits": [
+    "This gate records a local decision; it cannot grant approval — approval_state stays PENDING_CHOIRUDIN until Choirudin rules explicitly",
+    "Hosted CI, native GUI validation window, public-trust signing, live telemetry, and public release remain DEFERRED/UNVERIFIABLE",
+    "Rollback readiness is documentary plus local channel resolution; no end-to-end drill against a published artifact has run",
+    "Quality gate rerun carries two attributed non-green units (sibling WIP auth golden, previously TIMEOUT monolith split)"
+  ],
+  "decision": "DEFER_PENDING_CHOIRUDIN"
+}

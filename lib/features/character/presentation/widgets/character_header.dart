@@ -24,8 +24,25 @@ class CharacterHeader extends StatelessWidget {
     ),
     child: Row(
       children: [
+        const Flexible(
+          fit: FlexFit.loose,
+          child: Text(
+            'Character Workspace',
+            style: VoidTypography.breadcrumb,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
         Icon(Icons.chevron_right, size: 16, color: context.palette.textMuted),
-        const Text('Characters', style: VoidTypography.breadcrumb),
+        const Flexible(
+          fit: FlexFit.loose,
+          child: Text(
+            'Character',
+            style: VoidTypography.breadcrumb,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
         Icon(Icons.chevron_right, size: 16, color: context.palette.textMuted),
         Expanded(
           child: Text(

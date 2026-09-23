@@ -1,0 +1,25 @@
+{
+  "canonical_step": "114.4",
+  "title": "Privacy-Safe Monitoring Verification",
+  "status": "VERIFIED-LOCAL",
+  "path": "DELAYED",
+  "objective": "Memastikan monitoring lokal tidak mengumpulkan manuskrip, lore, profil karakter, media, prompt, atau secret.",
+  "content_excluded": true,
+  "secrets_excluded": true,
+  "consent_respected": true,
+  "data_minimized": true,
+  "retention_documented": "Aggregate counters remain local-only; bounded journal retention is 5000 entries and no production transfer is configured.",
+  "disable_control": true,
+  "controls": [
+    "opt-in default OFF",
+    "deny-by-default known flags",
+    "aggregate fields only",
+    "local-only storage",
+    "kill switch available",
+    "external gates remain DEFERRED-EXTERNAL"
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "No production telemetry, public signing, hosted CI, hardware, or external adoption data is available."
+  ]
+}

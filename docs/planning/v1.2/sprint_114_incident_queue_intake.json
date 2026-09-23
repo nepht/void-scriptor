@@ -1,0 +1,30 @@
+{
+  "canonical_step": "114.5",
+  "title": "Incident Queue Intake",
+  "path": "DELAYED",
+  "required_fields": [
+    "incident_id",
+    "source",
+    "version",
+    "impact",
+    "scope",
+    "reproduction",
+    "evidence",
+    "owner"
+  ],
+  "channels": [
+    "support",
+    "crash_reports",
+    "diagnostics",
+    "security",
+    "privacy",
+    "migration"
+  ],
+  "content_collection": "excluded",
+  "secret_collection": "excluded",
+  "external_intake": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "No public incident channel is active while release remains delayed.",
+    "Local contract validation does not prove production incident coverage."
+  ]
+}

@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.41",
-  "next_step": "113.42",
+  "last_verified_step": "113.42",
+  "next_step": "113.43",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -58,7 +58,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-23T14:10:00+07:00",
+  "updated_at": "2026-09-23T14:16:00+07:00",
   "updated_by": "cron-core-worker-v4",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "113.41 VERIFIED-LOCAL",
+  "current_step": "113.42 VERIFIED-LOCAL",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-23: 113.41 Staged Rollout Plan VERIFIED-LOCAL. RED compile exit 1; GREEN focused 5/5 PASS; regression test/release 634/634 PASS exit 0 127s; analyzer No issues; format/diff-check/guard PASS. Plan 3 stage 5/50/100 monotonik, approval_state PENDING_CHOIRUDIN execution_authorized=false. Fix: durasi double-to-int label + 2 curly_braces lint. Sibling WIP dipreserve.",
+  "last_run_summary": "2026-09-23: 113.42 Release Health Monitoring VERIFIED-LOCAL. RED compile exit 1; GREEN focused 4/4 PASS; regression test/release 638/638 PASS exit 0 134s; analyzer No issues; format/diff-check/guard PASS. 7 signals threshold+direction+window privacy-safe, pii_captured=false identifiers=none, observed_status null (tanpa pipeline). Run ini juga menutup 113.38 (2869854), 113.39 (d150973), 113.40 (4412b14), 113.41 (d5c998e). Sibling WIP dipreserve.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -881,8 +881,8 @@
     "next_step": "113.27"
   },
   "sprint_progress": {
-    "last_verified_step": "113.41",
-    "next_step": "113.42"
+    "last_verified_step": "113.42",
+    "next_step": "113.43"
   },
   "sprint_113_step_11328": {
     "status": "VERIFIED-LOCAL",
@@ -1071,5 +1071,28 @@
     "diff_check": 0,
     "manifest": "docs/planning/v1.2/sprint_113_staged_rollout_plan.json",
     "limitations": "health criteria metrik tanpa pipeline telemetry; durasi mulai setelah approval eksplisit Choi"
+  },
+  "sprint_113_step_11342": {
+    "status": "VERIFIED-LOCAL",
+    "title": "Release Health Monitoring",
+    "date": "2026-09-23",
+    "signals": [
+      "install_success",
+      "upgrade_success",
+      "crash_rate",
+      "migration_failure",
+      "restore_failure",
+      "performance_regression",
+      "support_severity"
+    ],
+    "red_exit": 1,
+    "green_focused": "4/4 exit 0 4s",
+    "regression_test_release": "638/638 exit 0 134s",
+    "analyzer": "No issues",
+    "format": "0 changed",
+    "diff_check": 0,
+    "privacy": "pii_captured=false, identifiers=none, aggregate no PII, retention 30d",
+    "manifest": "docs/planning/v1.2/sprint_113_release_health_monitoring.json",
+    "limitations": "tanpa pipeline telemetry live; observed_status null by design; monitoring = readiness bukan kesehatan produksi"
   }
 }

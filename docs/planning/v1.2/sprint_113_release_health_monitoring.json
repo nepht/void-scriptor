@@ -1,0 +1,91 @@
+{
+  "canonical_step": "113.42",
+  "title": "Release Health Monitoring",
+  "status": "VERIFIED-LOCAL",
+  "version": "1.2.0-rc.1",
+  "recorded_at": "2026-09-23T14:13:00+07:00",
+  "signals": {
+    "install_success": {
+      "threshold": ">= 99% of attempted installs complete",
+      "direction": "higher_is_better",
+      "window_hours": 24,
+      "privacy_safe": true,
+      "collection": "aggregate install-completion counters",
+      "observed_status": null,
+      "implementation": "definition_ready_pipeline_deferred"
+    },
+    "upgrade_success": {
+      "threshold": ">= 99% of attempted upgrades complete",
+      "direction": "higher_is_better",
+      "window_hours": 24,
+      "privacy_safe": true,
+      "collection": "aggregate upgrade-completion counters",
+      "observed_status": null,
+      "implementation": "definition_ready_pipeline_deferred"
+    },
+    "crash_rate": {
+      "threshold": "<= 0.5% of sessions ending in crash",
+      "direction": "lower_is_better",
+      "window_hours": 24,
+      "privacy_safe": true,
+      "collection": "aggregate crash-session counters, no stack tied to a person",
+      "observed_status": null,
+      "implementation": "definition_ready_pipeline_deferred"
+    },
+    "migration_failure": {
+      "threshold": "<= 0.1% of schema migrations fail",
+      "direction": "lower_is_better",
+      "window_hours": 72,
+      "privacy_safe": true,
+      "collection": "aggregate migration outcome counters",
+      "observed_status": null,
+      "implementation": "definition_ready_pipeline_deferred"
+    },
+    "restore_failure": {
+      "threshold": "0 failed restore attempts",
+      "direction": "lower_is_better",
+      "window_hours": 72,
+      "privacy_safe": true,
+      "collection": "aggregate restore outcome counters",
+      "observed_status": null,
+      "implementation": "definition_ready_pipeline_deferred"
+    },
+    "performance_regression": {
+      "threshold": "p95 startup delta <= 10% vs prior release",
+      "direction": "lower_is_better",
+      "window_hours": 48,
+      "privacy_safe": true,
+      "collection": "aggregate timing percentiles, device class only",
+      "observed_status": null,
+      "implementation": "definition_ready_pipeline_deferred"
+    },
+    "support_severity": {
+      "threshold": "0 open severity-1 support reports in window",
+      "direction": "lower_is_better",
+      "window_hours": 168,
+      "privacy_safe": true,
+      "collection": "severity tallies from the support playbook, text kept out",
+      "observed_status": null,
+      "implementation": "definition_ready_pipeline_deferred"
+    }
+  },
+  "privacy": {
+    "pii_captured": false,
+    "identifiers": "none",
+    "mode": "aggregate only, no PII",
+    "note": "Counters are aggregate-only by design: no PII, no stable identifiers, no message content — a breach of the telemetry store would reveal nothing about a person.",
+    "retention": "30 days rolling aggregate, then dropped"
+  },
+  "domain": "lib/features/world_logic/domain/release_health_monitoring.dart",
+  "test": "test/release/sprint_113_release_health_monitoring_test.dart",
+  "links": {
+    "staged_rollout_plan": "docs/planning/v1.2/sprint_113_staged_rollout_plan.json",
+    "known_issues": "docs/evidence via 113.36 final scope & known issues"
+  },
+  "limits": [
+    "No live telemetry pipeline ships yet: every signal is definition-ready with observed_status null, so monitoring evaluates readiness, not production health",
+    "observed_status must stay null until a real collector reports; filling it manually would fabricate observations",
+    "Thresholds reference aggregate windows only; support_severity tallies come from the support playbook without message text"
+  ],
+  "decision": "VERIFIED_LOCAL_MONITORING_DEFINITION"
+}

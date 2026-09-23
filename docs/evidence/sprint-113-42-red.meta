@@ -1,0 +1,1 @@
+{"step":"113.42","phase":"red","command":"flutter.bat test --no-pub test/release/sprint_113_release_health_monitoring_test.dart -j 1 (domain moved to scratch)","started_at":"20260923-141132","finished_at":"20260923-141138","duration_seconds":5,"exit_code":1,"result":"RED_CONFIRMED","log":"docs/evidence/sprint-113-42-red.log"}

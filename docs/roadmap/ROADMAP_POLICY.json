@@ -26,18 +26,18 @@
     "sequential_expansion": {
       "status": "ACTIVE",
       "priority": 2,
-      "sprint": 113,
-      "resume_step": "113.1",
-      "contract": "sprint_113.json",
-      "ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-      "resume_condition": "Sprint 112 CLOSED-VERIFIED-LOCAL and Choirudin approval.",
-      "resumed_on": "2026-09-21",
-      "resume_authority": "KEPUTUSAN CHOI 21 Sep: '1 ya dan mulai' — Aktifkan Sprint 113.",
+      "sprint": 114,
+      "resume_step": "114.1",
+      "contract": "sprint_114.json",
+      "ledger": "docs/sprints/sprint-114-post-release-stability-adoption.md",
+      "resume_condition": "Sprint 113 CLOSED-VERIFIED-LOCAL / DEFERRED-RELEASE and Choirudin direction to continue the roadmap.",
+      "resumed_on": "2026-09-24",
+      "resume_authority": "KEPUTUSAN CHOI 24 Sep: lanjutkan dan atasi hambatan agar semua sprint dapat diterapkan.",
       "previous_sprint": {
-        "sprint": 112,
-        "final_step": "112.54",
-        "status": "CLOSED-VERIFIED-LOCAL",
-        "commit": "a4c038d"
+        "sprint": 113,
+        "final_step": "113.46",
+        "status": "CLOSED-VERIFIED-LOCAL-DEFERRED-RELEASE",
+        "commit": "b883a84"
       }
     }
   },

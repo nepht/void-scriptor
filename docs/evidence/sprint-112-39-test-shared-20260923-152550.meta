@@ -1,0 +1,14 @@
+{
+  "step": "112.39",
+  "shard": "test/shared",
+  "command": "\"D:/DevTools/Flutter SDK/flutter/bin/flutter.bat\" test --no-pub test/shared -j 1",
+  "started_at": "2026-09-23T15:25:50+07:00",
+  "finished_at": "2026-09-23T15:25:57+07:00",
+  "duration_seconds": 7.1,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count_summary": 6,
+  "fail_count": null,
+  "expected_skip": null,
+  "log": "docs/evidence/sprint-112-39-test-shared-20260923-152550.log"
+}

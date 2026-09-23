@@ -1,0 +1,14 @@
+{
+  "step": "112.39",
+  "shard": "test/l10n",
+  "command": "\"D:/DevTools/Flutter SDK/flutter/bin/flutter.bat\" test --no-pub test/l10n -j 1",
+  "started_at": "2026-09-23T15:25:45+07:00",
+  "finished_at": "2026-09-23T15:25:50+07:00",
+  "duration_seconds": 5.0,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count_summary": 3,
+  "fail_count": null,
+  "expected_skip": null,
+  "log": "docs/evidence/sprint-112-39-test-l10n-20260923-152545.log"
+}

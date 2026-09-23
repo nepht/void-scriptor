@@ -1,0 +1,13 @@
+{
+  "step": "112.39",
+  "shard": "test/core/selection",
+  "command": "\"D:/DevTools/Flutter SDK/flutter/bin/flutter.bat\" test --no-pub test/core/selection -j 1",
+  "started_at": "2026-09-23T15:27:49+07:00",
+  "finished_at": "2026-09-23T15:28:00+07:00",
+  "duration_seconds": 10.4,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count_summary": 8,
+  "fail_count": null,
+  "log": "docs/evidence/sprint-112-39-test-core-selection-20260923-152749.log"
+}

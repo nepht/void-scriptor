@@ -1,0 +1,13 @@
+{
+  "step": "112.39",
+  "shard": "test/core/observability",
+  "command": "\"D:/DevTools/Flutter SDK/flutter/bin/flutter.bat\" test --no-pub test/core/observability -j 1",
+  "started_at": "2026-09-23T15:27:31+07:00",
+  "finished_at": "2026-09-23T15:27:37+07:00",
+  "duration_seconds": 6.9,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count_summary": 19,
+  "fail_count": null,
+  "log": "docs/evidence/sprint-112-39-test-core-observability-20260923-152731.log"
+}

@@ -1,0 +1,13 @@
+{
+  "step": "112.39",
+  "shard": "test/core/security",
+  "command": "\"D:/DevTools/Flutter SDK/flutter/bin/flutter.bat\" test --no-pub test/core/security -j 1",
+  "started_at": "2026-09-23T15:30:08+07:00",
+  "finished_at": "2026-09-23T15:30:32+07:00",
+  "duration_seconds": 23.8,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count_summary": 61,
+  "fail_count": null,
+  "log": "docs/evidence/sprint-112-39-test-core-security-20260923-153008.log"
+}

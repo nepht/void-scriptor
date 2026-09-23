@@ -1,0 +1,14 @@
+{
+  "step": "112.39",
+  "shard": "test/architecture",
+  "command": "\"D:/DevTools/Flutter SDK/flutter/bin/flutter.bat\" test --no-pub test/architecture -j 1",
+  "started_at": "2026-09-23T15:25:31+07:00",
+  "finished_at": "2026-09-23T15:25:38+07:00",
+  "duration_seconds": 7.0,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count_summary": 4,
+  "fail_count": null,
+  "expected_skip": null,
+  "log": "docs/evidence/sprint-112-39-test-architecture-20260923-152531.log"
+}

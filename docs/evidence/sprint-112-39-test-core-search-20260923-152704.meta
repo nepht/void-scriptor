@@ -1,0 +1,13 @@
+{
+  "step": "112.39",
+  "shard": "test/core/search",
+  "command": "\"D:/DevTools/Flutter SDK/flutter/bin/flutter.bat\" test --no-pub test/core/search -j 1",
+  "started_at": "2026-09-23T15:27:04+07:00",
+  "finished_at": "2026-09-23T15:27:11+07:00",
+  "duration_seconds": 7.0,
+  "exit_code": 0,
+  "status": "PASS",
+  "pass_count_summary": 5,
+  "fail_count": null,
+  "log": "docs/evidence/sprint-112-39-test-core-search-20260923-152704.log"
+}

@@ -1,0 +1,12 @@
+{
+  "step": "113.37",
+  "command": "flutter.bat test --no-pub test/release/sprint_113_version_changelog_migration_test.dart test/version_single_source_test.dart test/release/rc_freeze_test.dart test/features/settings/settings_hub_screen_test.dart -j 1",
+  "finished_at": "2026-09-23T12:57:00+07:00",
+  "duration_seconds": 21,
+  "exit_code": 0,
+  "result": "PASS",
+  "passed": 22,
+  "failed": 0,
+  "log": "docs/evidence/sprint-113-37-focused.log",
+  "note": "GREEN setelah bump: 113.37 domain 9/9 PASS, versi pubspec+applicationVersion+settings = 1.2.0-rc.1 (10/10 step test), lockstep version_single_source_test PASS, rc_freeze_test PASS, settings hub widget test PASS."
+}

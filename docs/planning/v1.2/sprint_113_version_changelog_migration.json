@@ -1,0 +1,93 @@
+{
+  "canonical_step": "113.37",
+  "title": "Version, Changelog & Migration Notes",
+  "objective": "Menyelesaikan nomor versi dan melengkapi catatan perubahan, migrasi, kompatibilitas, pemulihan, dan deprecation.",
+  "version": "1.2.0-rc.1",
+  "sources": {
+    "charter_113": "docs/planning/v1.2/sprint_113_release_validation_charter.json",
+    "rc_manifest_112_52": "docs/planning/v1.2/sprint_112_rc_artifact_reproducibility.json",
+    "release_notes": "docs/release/v1.2.0-rc.1-release-notes.md",
+    "known_limits": "docs/release/v1.2.0-rc.1-known-limits.md",
+    "recovery_guide": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+    "support_playbook": "docs/release/v1.2.0-rc.1-support-playbook.md",
+    "migration_plan": "docs/planning/v1.2/migration_backup_rollback_plan.md",
+    "schema_freeze": "docs/planning/v1.2/sprint_112_schema_contract_freeze.json",
+    "clean_export": "docs/planning/v1.2/clean_export_transformation.md",
+    "ledger_113": "docs/sprints/sprint-113-ga-release-validation-general-availability.md"
+  },
+  "outputs": {
+    "version": {
+      "description": "Nomor versi rilis kanonik yang diselesaikan pada pubspec.yaml dan VoidProjectFormat.applicationVersion (kunci uji version_single_source_test).",
+      "status": "completed_2026-09-23_pubspec_and_application_constant_bumped",
+      "value": "1.2.0-rc.1",
+      "source_doc": "docs/release/v1.2.0-rc.1-release-notes.md"
+    },
+    "changelog": {
+      "description": "Daftar perubahan nyata pada kandidat rilis, dirujuk ke langkah/gate yang menghasilkannya.",
+      "status": "documented_from_ledger_and_release_notes",
+      "source_doc": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
+      "item_count": 8,
+      "items": [
+        "Gelombang Worldbuilding integration F1-F29 (Sprint 109-111) masuk ke v1.2.0-rc.1 sebagai 29 fitur unik rilis (inventaris 112.3)",
+        "Schema database project naik ke 62 dengan forward migration terjaga; format schema project freeze di 16 dan plugin API freeze di major 1 (105.6-105.8)",
+        "Kontrak WS-EVENTS v1 typed ditambahkan dengan lapisan kompatibilitas constructor ProjectMutationEvent legacy (112.40)",
+        "Gate kualitas lokal dikerjakan ulang penuh: migration 19, performance, security, privacy, accessibility, platform, recovery — 7/7 gate exit 0 (113.34)",
+        "Determinism & data integrity mengikat seed/simulation replay, deterministic export, serta search-index/lore-link checks fail-closed (112.42)",
+        "Sprint 113 menambahkan kontrak validasi GA per topik (charter, consent, migration/restore, flag dependency, writer/lore workflow, platform/accessibility/localization matrix, performance window, reliability, integrity, security revalidation, feedback/issue/triage/resolution, stabilisasi, dokumentasi, scope, rekonsiliasi evidence)",
+        "Nomor versi diselesaikan menjadi 1.2.0-rc.1 pada pubspec.yaml dan VoidProjectFormat.applicationVersion, dikunci uji version_single_source_test (D3)",
+        "Privasi & keamanan lokal diperkaya: redaksi share/export, kill switch flags, kunci proyek atomic ownership (kampanye hunt 2026-09)"
+      ]
+    },
+    "migration_notes": {
+      "description": "Aturan upgrade/migrasi dan batasannya untuk kandidat rilis ini.",
+      "status": "documented_from_migration_plan_and_recovery_guide",
+      "source_doc": "docs/planning/v1.2/migration_backup_rollback_plan.md",
+      "item_count": 5,
+      "items": [
+        "Forward migration otomatis dengan backup sebelum migrasi: project schema 55/58/60/61 -> 62 pada langkah 113.10",
+        "Downgrade database in-place tidak didukung; jalur aman adalah backup, aplikasi kompatibel, atau ekspor yang didukung (migration_backup_rollback_plan.md:41)",
+        "Project dengan schema lebih baru dari aplikasi ditolak — SchemaVersionTooNew fail-closed (recovery-guide.md)",
+        "Backup-before-migrate diverifikasi pada dry-run disposable 112.27-112.29 sebelum kandidat dirilis",
+        "Format schema project freeze di 16 sepanjang lini RC; perubahan format hanya dengan compatibility plan (schema_contract_freeze.json)"
+      ]
+    },
+    "compatibility_notes": {
+      "description": "Kontrak kompatibilitas yang dipertahankan oleh kandidat rilis ini.",
+      "status": "documented_from_compatibility_contracts",
+      "source_doc": "docs/release/v1.1.0-compatibility-contracts.md",
+      "item_count": 4,
+      "items": [
+        "Legacy export/import surface tetap terbaca: tag lama, tag rows, dan reader session lama tervalidasi ulang 9/9 PASS (112.41)",
+        "Constructor legacy ProjectMutationEvent tetap valid di bawah WS-EVENTS v1 (112.40); contract changes additive sampai major berikutnya",
+        "Default flags OFF (13 id kVs12FeatureFlags + shared kill switch) sehingga perilaku bawaan tidak berubah bagi pengguna lama (113.9)",
+        "Project format dan plugin API dikunci same_major_only — format major 1, plugin API major 1 (105.6/105.8, schema_contract_freeze.json)"
+      ]
+    },
+    "recovery_notes": {
+      "description": "Jalur pemulihan yang wajib tetap terdokumentasi bersama rilis.",
+      "status": "documented_from_recovery_guide_and_support_playbook",
+      "source_doc": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+      "item_count": 4,
+      "items": [
+        "Backup + verifikasi paket wajib sebelum upgrade; jangan pernah menimpa satu-satunya salinan sumber (release-notes)",
+        "Restore membuat emergency backup otomatis sebelum mutasi; jangan hapus session.lock, journal, atau quarantine secara manual (support-playbook)",
+        "Startup recovery membaca journal/marker dan menawarkan pemulihan draft; marker ambigu di-fail-kan (fail-closed) (recovery-guide)",
+        "Integrity scan membedakan schema/orphan/media hilang/index sinkron; preview repair wajib sebelum mutasi; recovery log disimpan untuk handoff (recovery-guide)"
+      ]
+    },
+    "deprecation_notes": {
+      "description": "Kebijakan deprecation dan surface yang dideprekasikan pada lini rilis ini; daftar kosong berarti tidak ada.",
+      "status": "documented_no_feature_removed",
+      "source_doc": "docs/planning/v1.2/sprint_112_schema_contract_freeze.json",
+      "item_count": 4,
+      "items": [
+        "Kebijakan deprecation rilis: tanpa breaking change di RC, notice wajib, removal hanya di major berikutnya, replacement wajib sebelum removal, tanpa perubahan kontrak diam-diam (schema_contract_freeze.json)",
+        "Tidak ada fitur yang dihapus pada v1.2.0-rc.1 sehingga tidak ada deprecation notice yang harus diberitahukan ke pengguna",
+        "Bare pointer scene:id dan catatan [[PRIVATE:...]] dihapus dari ekspor bersih — perubahan format ekspor, data sumber tidak diubah (clean_export_transformation.md)",
+        "Legacy constructor ProjectMutationEvent dipertahankan dan belum didepresiasi sampai major berikutnya (112.40)"
+      ]
+    }
+  },
+  "limits": "Dokumentasi diuji terhadap file yang ada di HEAD dan teks yang ada di dalamnya, bukan terhadap perilaku runtime upgrade/downgrade nyata; dry-run migrasi kandidat 1.2.0-rc.1 dan uji restore eksternal tetap UNVERIFIABLE dari cron. Artifak yang sudah terpublikasi di R2/website masih berlabel 1.2.0-alpha.1 — label distribusi diganti hanya saat kandidat baru dikemas (113.38) dengan izin Choirudin.",
+  "decision": "Lokal cocok untuk kandidat internal; naik ke publik butuh persetujuan Choirudin dengan versi, checksum, manifest, dan dokumentasi yang konsisten."
+}

@@ -61,7 +61,7 @@ void main() {
   ) async {
     await tester.pumpWidget(wrap(const SettingsHubScreen()));
     await tester.pumpAndSettle();
-    expect(find.text('1.2.0-alpha.1'), findsOneWidget);
+    expect(find.text('1.2.0-rc.1'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

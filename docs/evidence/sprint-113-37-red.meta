@@ -1,0 +1,12 @@
+{
+  "step": "113.37",
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_113_version_changelog_migration_test.dart -j 1",
+  "finished_at": "2026-09-23T12:47:00+07:00",
+  "duration_seconds": 34,
+  "exit_code": 1,
+  "result": "FAIL",
+  "passed": 0,
+  "failed": 0,
+  "log": "docs/evidence/sprint-113-37-red.log",
+  "note": "RED tahap 1: domain final_version_changelog_migration.dart dan manifest sprint_113_version_changelog_migration.json belum ada -> compile/load failure exit 1 (Error when reading ...dart: system cannot find the file)."
+}

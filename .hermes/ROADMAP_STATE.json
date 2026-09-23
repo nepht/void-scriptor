@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.36",
-  "next_step": "113.37",
+  "last_verified_step": "113.37",
+  "next_step": "113.38",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -58,7 +58,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-23",
+  "updated_at": "2026-09-23T13:08:00+07:00",
   "updated_by": "cron-core-worker-v4",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "113.36 VERIFIED-LOCAL",
+  "current_step": "113.37 VERIFIED-LOCAL",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-23 run: 113.35 Final Feature Evidence Reconciliation + 113.36 Final Scope & Known Issues VERIFIED-LOCAL. 113.35: 29 fitur F1-F29 x 8 required_fields, live inventaris 112.3 di HEAD (116/116 ref, 29/29 flag telusur, 19 EVIDENCED_LOCAL/10 PARTIAL) -> pass; RED exit 1 -> GREEN 14/14; Gap REC-01 (16 flag id matrix 112.6 tak ada di sumber lib). 113.36: 6 output kanonik dari dokumen grounding HEAD (release-notes/known-limits/recovery-guide/support-playbook/ledger), item_count cocok, REC-01 tetap tercatat; RED exit 1 -> GREEN 10/10; regression test/release 589/589 exit 0; analyzer/format/diff/guard PASS. Commits 6c0db6e (113.35) + 113.36. Next 113.37 Version, Changelog & Migration Notes.",
+  "last_run_summary": "2026-09-23: 113.37 Version, Changelog & Migration Notes VERIFIED-LOCAL. RED fase1 exit 1 (domain+manifest absen), RED fase2 1/10 gagal membuktikan mismatch versi alpha.1 vs rc.1, repair bump pubspec+applicationVersion+settings test ke 1.2.0-rc.1 (snapshot WIP pubspec dipreserve), GREEN focused 22/22 PASS exit 0, regression test/release 599/599 PASS exit 0 131s, analyzer/format/diff-check PASS. 6 output kanonik terdokumentasi dari sumber nyata di HEAD. Gap: label distribusi R2/website masih 1.2.0-alpha.1 -> 113.38. Commit: (lihat git log). Sibling WIP dipreserve semua.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -881,8 +881,8 @@
     "next_step": "113.27"
   },
   "sprint_progress": {
-    "last_verified_step": "113.36",
-    "next_step": "113.37"
+    "last_verified_step": "113.37",
+    "next_step": "113.38"
   },
   "sprint_113_step_11328": {
     "status": "VERIFIED-LOCAL",
@@ -937,5 +937,34 @@
     "date": "2026-09-23",
     "summary": "Final Scope & Known Issues: domain final_scope_known_issues.dart (FinalScopeDocument 6 required_outputs, null=missing vs list kosong=jawaban valid, release_scope/support_notes wajib berisi item, item blank=missing, state pass/fail/blocked, pass mempertahankan hitungan + support notes) + manifest sprint_113_final_scope_known_issues.json (item bersumber dari dokumen HEAD: 11 release_scope, 8 deferred_scope, 4 known_issues termasuk REC-01, 5 workarounds, 4 residual_risks, 4 support_notes; setiap source_doc exists & item_count cocok diuji test); TDD RED compile exit 1 -> GREEN 10/10 PASS exit 0; regression test/release 589/589 PASS exit 0 136s; scoped analyzer No issues; format 0 changed; diff-check PASS.",
     "next_step": "113.37"
+  },
+  "sprint_113_step_11337": {
+    "status": "VERIFIED-LOCAL",
+    "title": "Version, Changelog & Migration Notes",
+    "completed_at": "2026-09-23T13:08:00+07:00",
+    "version": "1.2.0-rc.1",
+    "red_phase1_exit": 1,
+    "red_phase2_failed_tests": 1,
+    "green_focused": "22/22 exit 0",
+    "regression_test_release": "599/599 exit 0 131s",
+    "analyzer": "No issues",
+    "format": "0 changed",
+    "diff_check": 0,
+    "outputs": [
+      "version",
+      "changelog",
+      "migration_notes",
+      "compatibility_notes",
+      "recovery_notes",
+      "deprecation_notes"
+    ],
+    "evidence": [
+      "docs/evidence/sprint-113-37-red.meta",
+      "docs/evidence/sprint-113-37-version-red.meta",
+      "docs/evidence/sprint-113-37-focused.meta",
+      "docs/evidence/sprint-113-37-test-release-regression.meta"
+    ],
+    "manifest": "docs/planning/v1.2/sprint_113_version_changelog_migration.json",
+    "known_gap": "R2/website download label masih 1.2.0-alpha.1 -> ledger Gap 2026-09-23"
   }
 }

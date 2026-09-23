@@ -20,8 +20,8 @@ class PanelLayout {
   final int activeTabIndex;
 
   static const defaults = PanelLayout(
-    leftWidth: 245,
-    rightWidth: 280,
+    leftWidth: 240,
+    rightWidth: 177,
     leftCollapsed: false,
     rightCollapsed: false,
     splitRatio: 0.5,

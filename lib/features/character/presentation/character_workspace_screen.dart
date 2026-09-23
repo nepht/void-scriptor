@@ -239,11 +239,11 @@ class _CharacterWorkspaceScreenState
         ? Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
-              Expanded(child: SilhouetteCard()),
-              SizedBox(width: 16),
-              Expanded(child: ColorPaletteCard()),
-              SizedBox(width: 16),
-              Expanded(child: AccessoriesCard()),
+              Expanded(flex: 45, child: SilhouetteCard()),
+              SizedBox(width: 8),
+              Expanded(flex: 22, child: ColorPaletteCard()),
+              SizedBox(width: 8),
+              Expanded(flex: 33, child: AccessoriesCard()),
             ],
           )
         : const Column(

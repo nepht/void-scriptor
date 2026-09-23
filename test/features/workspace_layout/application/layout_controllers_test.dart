@@ -15,16 +15,16 @@ void main() {
       expect(container.read(layoutProvider), PanelLayout.defaults);
     });
 
-    test('setLeftWidth clamps to [200, 0.45 * total]', () {
+    test('setLeftWidth respects the compact shell bounds', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
       final notifier = container.read(layoutProvider.notifier);
 
-      notifier.setLeftWidth(300);
-      expect(container.read(layoutProvider).leftWidth, 300);
+      notifier.setLeftWidth(300); // total width leaves 176 for the other panel
+      expect(container.read(layoutProvider).leftWidth, 241);
 
       notifier.setLeftWidth(10); // below min
-      expect(container.read(layoutProvider).leftWidth, 200);
+      expect(container.read(layoutProvider).leftWidth, 176);
     });
 
     test('toggleLeft flips collapsed state', () {

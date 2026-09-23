@@ -6,21 +6,24 @@ import 'package:void_scriptor/features/workspace_layout/domain/workspace_tab.dar
 
 void main() {
   group('PanelLayout', () {
-    test('defaults match compact reference (245 / 280 / not collapsed)', () {
-      const layout = PanelLayout.defaults;
-      expect(layout.leftWidth, 245);
-      expect(layout.rightWidth, 280);
-      expect(layout.leftCollapsed, isFalse);
-      expect(layout.rightCollapsed, isFalse);
-      expect(layout.splitRatio, 0.5);
-      expect(layout.activeTabIndex, 0);
-    });
+    test(
+      'defaults match character-sheet reference (240 / 177 / not collapsed)',
+      () {
+        const layout = PanelLayout.defaults;
+        expect(layout.leftWidth, 240);
+        expect(layout.rightWidth, 177);
+        expect(layout.leftCollapsed, isFalse);
+        expect(layout.rightCollapsed, isFalse);
+        expect(layout.splitRatio, 0.5);
+        expect(layout.activeTabIndex, 0);
+      },
+    );
 
     test('copyWith produces an independent immutable instance', () {
       const layout = PanelLayout.defaults;
       final resized = layout.copyWith(leftWidth: 300);
 
-      expect(layout.leftWidth, 245);
+      expect(layout.leftWidth, 240);
       expect(resized.leftWidth, 300);
       expect(identical(layout, resized), isFalse);
     });
@@ -29,8 +32,8 @@ void main() {
       const a = PanelLayout.defaults;
       const b = PanelLayout.defaults;
       const c = PanelLayout(
-        leftWidth: 245,
-        rightWidth: 280,
+        leftWidth: 240,
+        rightWidth: 177,
         leftCollapsed: false,
         rightCollapsed: false,
         splitRatio: 0.5,

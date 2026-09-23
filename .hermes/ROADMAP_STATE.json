@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.38",
-  "next_step": "113.39",
+  "last_verified_step": "113.39",
+  "next_step": "113.40",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -58,7 +58,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-23T13:22:00+07:00",
+  "updated_at": "2026-09-23T13:45:00+07:00",
   "updated_by": "cron-core-worker-v4",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "113.38 VERIFIED-LOCAL",
+  "current_step": "113.39 VERIFIED-LOCAL",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-23: 113.38 GA Artifact Packaging VERIFIED-LOCAL. RED compile exit 1 (domain+manifest); build windows --release exit 0 102s; sign self-signed exit 0 (6 artefak, verify /pa 0); metadata exit 0 (SBOM 130 komponen, notices 247.9KB, 493 entri checksum pasca-tanda-tangan); GREEN focused 13/13 PASS; regression test/release 612/612 PASS exit 0 124s; analyzer/format/diff-check PASS. Output kanonik 7/7 direkam + docs/release/v1.2.0-rc.1-{checksums,sbom,third-party-notices}. Wiring unduhan situs TIDAK disentuh (Gap label alpha.1 terbuka, butuh izin Choi). Sibling WIP dipreserve semua.",
+  "last_run_summary": "2026-09-23: 113.39 Build Reproducibility & Provenance VERIFIED-LOCAL. RED compile exit 1; 2 siklus flutter clean+build windows --release exit 0 (122s/115s); verdict NOT_BIT_IDENTICAL (4/6 biner berbeda karena MSVC tanpa /Brepro, 2 biner upstream identik — limit terdokumentasi); artefak signed 113.38 di-snapshot+restore, checksum committed cocok ulang; GREEN focused 7/7 PASS; regression test/release 619/619 PASS exit 0 154s; analyzer/format/diff-check PASS. Defect domain sameKeys (Set== identity) diperbaiki TDD. Sibling WIP dipreserve.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -881,8 +881,8 @@
     "next_step": "113.27"
   },
   "sprint_progress": {
-    "last_verified_step": "113.38",
-    "next_step": "113.39"
+    "last_verified_step": "113.39",
+    "next_step": "113.40"
   },
   "sprint_113_step_11328": {
     "status": "VERIFIED-LOCAL",
@@ -997,5 +997,30 @@
       "docs/release/v1.2.0-rc.1-third-party-notices.txt"
     ],
     "known_gap": "label unduhan publik masih 1.2.0-alpha.1 (wiring situs butuh izin Choirudin)"
+  },
+  "sprint_113_step_11339": {
+    "status": "VERIFIED-LOCAL",
+    "title": "Build Reproducibility & Provenance",
+    "date": "2026-09-23",
+    "required_evidence": [
+      "build_inputs",
+      "toolchain_versions",
+      "dependency_lock",
+      "rebuild_results",
+      "artifact_comparison",
+      "provenance_record"
+    ],
+    "red_exit": 1,
+    "rebuild_cycles": "A exit 0 122s; B exit 0 115s (flutter clean sebelum tiap cycle)",
+    "verdict": "NOT_BIT_IDENTICAL (4/6 differ: exe, dartjni, file_selector, flutter_secure_storage; identical: flutter_windows.dll, sqlite3.dll)",
+    "toolchain": "Flutter 3.44.6 ee80f08bbf, Dart 3.12.2, VS Build Tools 2026 18.9.12105.275, Win10 SDK 10.0.26100.0",
+    "green_focused": "7/7 exit 0 5s",
+    "regression_test_release": "619/619 exit 0 154s",
+    "analyzer": "No issues",
+    "format": "0 changed",
+    "diff_check": 0,
+    "domain_fix": "sameKeys Set== identity defect -> length+containsAll (TDD via RED assertions)",
+    "manifest": "docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json",
+    "limitations": "reproducibility mesin/sumber sama saja; signed self-signed lokal; hosted CI/SLSA/installer/publikasi DEFERRED"
   }
 }

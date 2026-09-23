@@ -1,0 +1,105 @@
+{
+  "canonical_step": "113.39",
+  "title": "Build Reproducibility & Provenance",
+  "version": "1.2.0-rc.1",
+  "status": "VERIFIED-LOCAL",
+  "required_evidence": {
+    "build_inputs": [
+      "pubspec.yaml sha256 4ac4372ab08d2c561f90b959488c36508fbf5b57b72243e851c0f2e54322e6e5",
+      "pubspec.lock sha256 32e31fd31a928e20007226e720ee37a661afb5d0d224d4eb24b04463496626f8",
+      "windows/CMakeLists.txt sha256 65149b3d9e9b6992c261143d5343a48f884b23bff255b1284296f8818747817d",
+      "windows/runner/main.cpp sha256 dd5aaf17028e5ecee8dae6a8e4b7356e45f2d07f67c59d36602280082dc7b485",
+      "windows/runner/flutter_window.cpp sha256 50c91250bdf65b6c38a09cc336270579af7d443f4417839a6cd237d83c8dadcb"
+    ],
+    "toolchain_versions": [
+      "Flutter 3.44.6 channel stable revision ee80f08bbf (2026-07-08)",
+      "Engine hash d3a3293399556a85388faf8c6f0723a7a5597aa8 (revision 83675ed276)",
+      "Dart 3.12.2",
+      "DevTools 2.57.0",
+      "Visual Studio Build Tools 2026 18.9.0 version 18.9.12105.275 at C:/Program Files (x86)/Microsoft Visual Studio/18/BuildTools",
+      "Windows 10 SDK version 10.0.26100.0",
+      "Host Windows 11 x64 (MSYS bash runner)"
+    ],
+    "dependency_lock": [
+      "pubspec.lock sha256 32e31fd31a928e20007226e720ee37a661afb5d0d224d4eb24b04463496626f8",
+      "hosted dependencies hash-pinned sha256; 0 git/path source; 0 dependency_overrides (113.26 dependency_scan)"
+    ],
+    "rebuild_results": [
+      {
+        "label": "rebuild_a",
+        "exit_code": 0,
+        "started_at": "2026-09-23T13:27:45+07:00",
+        "finished_at": "2026-09-23T13:29:47+07:00",
+        "duration_seconds": 122,
+        "command": "flutter clean && D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --release",
+        "log": "docs/evidence/sprint-113-39-rebuild-a.log",
+        "artifact_hashes": {
+          "dartjni.dll": "b3254b1ee89fe354bd5da8a32abdf8ca181ae9d02ef80e0eb1e1a000af410ca1",
+          "file_selector_windows_plugin.dll": "0f1d07f1abf5e61f8e4d16f551d9fa4142bbafb2505a255c79d96e0777d0288d",
+          "flutter_secure_storage_windows_plugin.dll": "c7f331a623d97653b4f4c94ac37084a6de01165c7ab6f63b10aebdb0a227f306",
+          "flutter_windows.dll": "a5c880a4218a04cfb3e58b103160334658122c5e43d3b818b3d9af5ab3e1fc0e",
+          "sqlite3.dll": "2bf39f2aadafdc59a90b260f582a8fccebc5b89eb94175fdbaa9148c1e1f084d",
+          "void_scriptor.exe": "d3a61e2408281dd8aac89a45b9a1ab57f26bf99643ef65c17e98b532cc7f040f"
+        }
+      },
+      {
+        "label": "rebuild_b",
+        "exit_code": 0,
+        "started_at": "2026-09-23T13:30:17+07:00",
+        "finished_at": "2026-09-23T13:32:12+07:00",
+        "duration_seconds": 115,
+        "command": "flutter clean && D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --release",
+        "log": "docs/evidence/sprint-113-39-rebuild-b.log",
+        "artifact_hashes": {
+          "dartjni.dll": "f84ed2a43e75cbf77db595261df872f04fbd53bfbdb6c87197fdab8242c87e33",
+          "file_selector_windows_plugin.dll": "1bb1c1811a4e2664c21f62c920dda602005f8ea615cb159587ffec9f345e2170",
+          "flutter_secure_storage_windows_plugin.dll": "b82da33b0d146d4fd37b3f59ed2664503928a326c96cd1e977a102f77e6c4d27",
+          "flutter_windows.dll": "a5c880a4218a04cfb3e58b103160334658122c5e43d3b818b3d9af5ab3e1fc0e",
+          "sqlite3.dll": "2bf39f2aadafdc59a90b260f582a8fccebc5b89eb94175fdbaa9148c1e1f084d",
+          "void_scriptor.exe": "5035e387ab3e2f048ca6213807359824a83f905182ad3268f0cacf7f8c295f3d"
+        }
+      }
+    ],
+    "artifact_comparison": {
+      "method": "SHA-256 over the 6 exe/dll artifacts (void_scriptor.exe + dartjni.dll, file_selector_windows_plugin.dll, flutter_secure_storage_windows_plugin.dll, flutter_windows.dll, sqlite3.dll) after two independent flutter clean + flutter build windows --release cycles on the same tree and machine",
+      "verdict": "NOT_BIT_IDENTICAL",
+      "differing_artifacts": [
+        "dartjni.dll",
+        "file_selector_windows_plugin.dll",
+        "flutter_secure_storage_windows_plugin.dll",
+        "void_scriptor.exe"
+      ],
+      "identical_artifacts": [
+        "flutter_windows.dll",
+        "sqlite3.dll"
+      ],
+      "limits": [
+        "Build lokal MSVC/Flutter tidak memakai flag deterministik /Brepro: TimeDateStamp PE dan data build dapat berbeda antar siklus clean-rebuild, sehingga 4 dari 6 biner (void_scriptor.exe, dartjni.dll, file_selector_windows_plugin.dll, flutter_secure_storage_windows_plugin.dll) tidak bit-identical.",
+        "Biner upstream yang tidak dikompilasi ulang identik di kedua rebuild (flutter_windows.dll dan sqlite3.dll SHA-256 sama), bukti toolchain dan pipeline input stabil.",
+        "Perbandingan dilakukan pada biner UNSIGNED; artefak signed 113.38 dimonitor terpisah dan checksum committed-nya tetap cocok setelah restore (test 113.39 'signed release artifact remains intact').",
+        "Kedua rebuild berjalan pada source tree dan mesin yang sama; reproducibility lintas mesin, lintas SDK, dan integritas rantai pasok toolchain tidak diklaim oleh langkah ini."
+      ]
+    },
+    "provenance_record": [
+      "source_revision 30dda0c3389a8bd9e3cae705abd51eaecbca2630",
+      "build_command D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --release",
+      "rebuild_a exit_code 0 duration_seconds 122 (2026-09-23T13:27:45+07:00 .. 2026-09-23T13:29:47+07:00)",
+      "rebuild_b exit_code 0 duration_seconds 115 (2026-09-23T13:30:17+07:00 .. 2026-09-23T13:32:12+07:00)",
+      "signed_candidate docs/release/v1.2.0-rc.1-checksums.txt sha256 verified intact after restore",
+      "provenance_logs docs/evidence/sprint-113-39-rebuild-a.log docs/evidence/sprint-113-39-rebuild-b.log"
+    ]
+  },
+  "rebuild_run": {
+    "cycles": 2,
+    "method": "flutter clean before each cycle (cold rebuild, no incremental cache)",
+    "rebuild_a_duration_seconds": 122,
+    "rebuild_b_duration_seconds": 115,
+    "signed_snapshot_restore": "scratch vs-11339-signed-release + vs-11339-release-metadata restored after comparison; exe SHA-256 re-verified against committed checksum"
+  },
+  "limits": [
+    "Hasil reproducibility berupa batas terdokumentasi, bukan bit-identical: biner hasil build lokal MSVC/Flutter tidak deterministik (/Brepro tidak aktif); lihat artifact_comparison.limits.",
+    "Hosted CI build, lintas-mesin reproducibility, SLSA provenance attestation, installer packaging, dan publikasi tetap DEFERRED/UNVERIFIABLE.",
+    "Verifikasi signature dan checksum artefak signed bersifat lokal (self-signed 113.38, UNSIGNED_PUBLIC_TRUST untuk distribusi publik)."
+  ],
+  "decision": "VERIFIED_LOCAL_PROVENANCE_DOCUMENTED_REPRO_LIMITS"
+}

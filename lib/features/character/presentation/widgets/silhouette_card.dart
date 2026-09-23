@@ -9,20 +9,28 @@ class SilhouetteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => VoidCard(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Silhouette', style: VoidTypography.headingMedium),
-        const SizedBox(height: 12),
-        Row(
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        final slots = Row(
           children: [
             for (final label in const ['NEUTRAL', 'ACTION', 'COMBAT']) ...[
               if (label != 'NEUTRAL') const SizedBox(width: 6),
               Expanded(child: _SilhouetteSlot(label: label)),
             ],
           ],
-        ),
-      ],
+        );
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Silhouette', style: VoidTypography.headingMedium),
+            const SizedBox(height: 12),
+            if (constraints.hasBoundedHeight)
+              Expanded(child: slots)
+            else
+              SizedBox(height: 150, child: slots),
+          ],
+        );
+      },
     ),
   );
 }
@@ -33,7 +41,6 @@ class _SilhouetteSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    height: 150,
     decoration: BoxDecoration(
       color: context.palette.surfaceElevated,
       borderRadius: BorderRadius.circular(6),

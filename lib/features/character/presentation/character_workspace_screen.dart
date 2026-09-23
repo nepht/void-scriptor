@@ -200,8 +200,16 @@ class _CharacterWorkspaceScreenState
     bool desktop,
     String? portraitPath,
   ) {
+    final section = widget.activeSection == null
+        ? 'Overview'
+        : canonicalWorkspaceSection(
+            WorkspaceKind.character,
+            widget.activeSection!,
+          );
     final identityCard = CharacterIdentityCard(
       compact: widget.activeSection == 'Appearance',
+      designSheet:
+          desktop && const {'Overview', 'Character Sheet'}.contains(section),
       name: character.displayName,
       alias: character.alias,
       age: character.age?.toString() ?? '—',
@@ -209,6 +217,9 @@ class _CharacterWorkspaceScreenState
       hair: character.hair,
       eyes: character.eyes,
       voice: character.voice,
+      biography: character.biography,
+      personality: character.personality,
+      gender: character.gender,
     );
     final top = desktop
         ? Row(
@@ -311,12 +322,6 @@ class _CharacterWorkspaceScreenState
         ),
       ],
     );
-    final section = widget.activeSection == null
-        ? 'Overview'
-        : canonicalWorkspaceSection(
-            WorkspaceKind.character,
-            widget.activeSection!,
-          );
     final extensionBuilder = widget.sectionBuilders[section];
     if (extensionBuilder != null) return extensionBuilder(context);
 

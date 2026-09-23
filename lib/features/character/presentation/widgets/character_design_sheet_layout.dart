@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 /// Central sizing contract for the Character Overview composition.
 ///
 /// Change these values to tune every overview card from one place. The layout
-/// uses the available desktop panel height and scales a region down only when
-/// its natural content would otherwise leave the visible panel.
+/// uses the available desktop panel height without scaling the UI itself.
 class CharacterDesignSheetLayoutSpec {
   const CharacterDesignSheetLayoutSpec({
     this.desktopBreakpoint = 820,
@@ -14,11 +13,11 @@ class CharacterDesignSheetLayoutSpec {
     this.rightColumnFlex = 1,
     this.columnGap = 10,
     this.cardGap = 8,
-    this.summaryFlex = 18,
-    this.turnaroundFlex = 47,
-    this.detailsFlex = 35,
-    this.portraitFlex = 77,
-    this.closeUpFlex = 23,
+    this.summaryFlex = 20,
+    this.turnaroundFlex = 48,
+    this.detailsFlex = 32,
+    this.portraitFlex = 80,
+    this.closeUpFlex = 20,
     this.referencesFlex = 2,
   });
 
@@ -67,23 +66,12 @@ class CharacterDesignSheetLayout extends StatelessWidget {
     ],
   );
 
-  Widget _fittedRegion(Widget child, int flex) => Expanded(
-    flex: flex,
-    child: LayoutBuilder(
-      builder: (context, constraints) => FittedBox(
-        fit: BoxFit.scaleDown,
-        alignment: Alignment.topLeft,
-        child: SizedBox(width: constraints.maxWidth, child: child),
-      ),
-    ),
-  );
-
-  Widget _fittedStack(List<(Widget, int)> regions) => Column(
+  Widget _boundedStack(List<(Widget, int)> regions) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
       for (var i = 0; i < regions.length; i++) ...[
         if (i > 0) SizedBox(height: spec.cardGap),
-        _fittedRegion(regions[i].$1, regions[i].$2),
+        Expanded(flex: regions[i].$2, child: regions[i].$1),
       ],
     ],
   );
@@ -117,19 +105,21 @@ class CharacterDesignSheetLayout extends StatelessWidget {
       final hasBoundedHeight = constraints.hasBoundedHeight;
 
       return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: hasBoundedHeight
+            ? CrossAxisAlignment.stretch
+            : CrossAxisAlignment.start,
         children: [
           Expanded(
             flex: spec.leftColumnFlex,
             child: hasBoundedHeight
-                ? _fittedStack(left)
+                ? _boundedStack(left)
                 : _naturalStack([for (final region in left) region.$1]),
           ),
           SizedBox(width: spec.columnGap),
           Expanded(
             flex: spec.rightColumnFlex,
             child: hasBoundedHeight
-                ? _fittedStack(right)
+                ? _boundedStack(right)
                 : _naturalStack([for (final region in right) region.$1]),
           ),
         ],

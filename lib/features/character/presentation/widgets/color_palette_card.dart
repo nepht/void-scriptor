@@ -18,16 +18,32 @@ class ColorPaletteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => VoidCard(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Color Palette', style: VoidTypography.headingMedium),
-        const SizedBox(height: 12),
-        if (entries.isEmpty)
-          const _EmptyPalette()
-        else
-          for (final entry in entries) _PaletteRow(entry: entry),
-      ],
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        final body = entries.isEmpty
+            ? const _EmptyPalette()
+            : constraints.hasBoundedHeight
+            ? ListView(
+                padding: EdgeInsets.zero,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  for (final entry in entries) _PaletteRow(entry: entry),
+                ],
+              )
+            : Column(
+                children: [
+                  for (final entry in entries) _PaletteRow(entry: entry),
+                ],
+              );
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Color Palette', style: VoidTypography.headingMedium),
+            const SizedBox(height: 12),
+            if (constraints.hasBoundedHeight) Expanded(child: body) else body,
+          ],
+        );
+      },
     ),
   );
 }
@@ -46,6 +62,8 @@ class _EmptyPalette extends StatelessWidget {
     ),
     child: const Text(
       'No palette saved\nUse Primary References for color guidance.',
+      maxLines: 4,
+      overflow: TextOverflow.ellipsis,
       style: VoidTypography.caption,
     ),
   );

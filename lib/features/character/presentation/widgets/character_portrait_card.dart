@@ -24,93 +24,105 @@ class CharacterPortraitCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => VoidCard(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        final image = _PortraitImage(imagePath: imagePath);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Expanded(
-              child: Text('MAIN PORTRAIT', style: VoidTypography.headingMedium),
+            Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'MAIN PORTRAIT',
+                    style: VoidTypography.headingMedium,
+                  ),
+                ),
+                _ToolbarButton(
+                  tooltip: onExport == null ? 'Export (coming soon)' : 'Export',
+                  icon: Icons.download_outlined,
+                  onPressed: onExport,
+                ),
+                _ToolbarButton(
+                  tooltip: onEdit == null ? 'Edit (coming soon)' : 'Edit',
+                  icon: Icons.edit_outlined,
+                  onPressed: onEdit,
+                ),
+                _ToolbarButton(
+                  tooltip: onExpand == null ? 'Expand (coming soon)' : 'Expand',
+                  icon: Icons.open_in_full_outlined,
+                  onPressed: onExpand,
+                ),
+              ],
             ),
-            _ToolbarButton(
-              tooltip: onExport == null ? 'Export (coming soon)' : 'Export',
-              icon: Icons.download_outlined,
-              onPressed: onExport,
-            ),
-            _ToolbarButton(
-              tooltip: onEdit == null ? 'Edit (coming soon)' : 'Edit',
-              icon: Icons.edit_outlined,
-              onPressed: onEdit,
-            ),
-            _ToolbarButton(
-              tooltip: onExpand == null ? 'Expand (coming soon)' : 'Expand',
-              icon: Icons.open_in_full_outlined,
-              onPressed: onExpand,
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        AspectRatio(
-          aspectRatio: 3 / 4,
-          child: Container(
-            decoration: BoxDecoration(
-              color: context.palette.surfaceElevated,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: context.palette.borderSoft),
-            ),
-            child: imagePath == null || !File(imagePath!).existsSync()
-                ? Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.person_outline,
-                          size: 48,
-                          color: context.palette.textMuted,
-                        ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          'No portrait',
-                          style: VoidTypography.caption,
-                        ),
-                      ],
-                    ),
-                  )
-                : ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.file(
-                      File(imagePath!),
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stack) => const Center(
-                        child: Text(
-                          'Image unavailable. Import a new portrait.',
+            const SizedBox(height: 10),
+            if (constraints.hasBoundedHeight)
+              Expanded(child: image)
+            else
+              AspectRatio(aspectRatio: 3 / 4, child: image),
+            const SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed:
+                    onAddPortrait ??
+                    () => ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Portrait upload is available from the project asset folder.',
                         ),
                       ),
                     ),
-                  ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed:
-                onAddPortrait ??
-                () => ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Portrait upload is available from the project asset folder.',
-                    ),
-                  ),
+                icon: const Icon(Icons.add_photo_alternate_outlined),
+                label: Text(
+                  imagePath == null ? 'Add Portrait' : 'Replace Portrait',
                 ),
-            icon: const Icon(Icons.add_photo_alternate_outlined),
-            label: Text(
-              imagePath == null ? 'Add Portrait' : 'Replace Portrait',
+              ),
+            ),
+          ],
+        );
+      },
+    ),
+  );
+}
+
+class _PortraitImage extends StatelessWidget {
+  const _PortraitImage({this.imagePath});
+  final String? imagePath;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    decoration: BoxDecoration(
+      color: context.palette.surfaceElevated,
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: context.palette.borderSoft),
+    ),
+    child: imagePath == null || !File(imagePath!).existsSync()
+        ? Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.person_outline,
+                  size: 48,
+                  color: context.palette.textMuted,
+                ),
+                const SizedBox(height: 10),
+                const Text('No portrait', style: VoidTypography.caption),
+              ],
+            ),
+          )
+        : ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.file(
+              File(imagePath!),
+              fit: BoxFit.contain,
+              width: double.infinity,
+              errorBuilder: (context, error, stack) => const Center(
+                child: Text('Image unavailable. Import a new portrait.'),
+              ),
             ),
           ),
-        ),
-      ],
-    ),
   );
 }
 

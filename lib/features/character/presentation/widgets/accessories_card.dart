@@ -56,6 +56,8 @@ class _AccessoryEmptyState extends StatelessWidget {
     ),
     child: const Text(
       'No linked accessories\nOpen Appearance & Gear to add them.',
+      maxLines: 4,
+      overflow: TextOverflow.ellipsis,
       style: VoidTypography.caption,
     ),
   );

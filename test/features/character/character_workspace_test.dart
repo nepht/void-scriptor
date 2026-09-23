@@ -87,6 +87,66 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('desktop design sheet keeps reference panels at readable scale', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1280, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    const character = CharacterModel(
+      assetId: 'qowner-1',
+      projectId: 'project-1',
+      displayName: 'Qowner',
+      alias: 'Quiz Maker of Void',
+      biography: 'Keeps the dimensional archive and its hidden doors.',
+      gender: 'Male',
+      age: 24,
+      heightCm: 185,
+      voice: 'Calm',
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          characterWorkspaceProvider(
+            'qowner-1',
+          ).overrideWith((ref) async => character),
+        ],
+        child: const MaterialApp(
+          home: SizedBox(
+            width: 1280,
+            height: 900,
+            child: CharacterWorkspaceScreen(characterId: 'qowner-1'),
+          ),
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 100));
+
+    final panel = find.byKey(
+      const ValueKey('character-overview-visible-panel'),
+    );
+    expect(panel, findsOneWidget);
+    expect(
+      find.descendant(
+        of: panel,
+        matching: find.byWidgetPredicate(
+          (widget) =>
+              widget is FittedBox &&
+              widget.fit == BoxFit.scaleDown &&
+              widget.alignment == Alignment.topLeft,
+        ),
+      ),
+      findsNothing,
+    );
+    expect(
+      find.text('Keeps the dimensional archive and its hidden doors.'),
+      findsOneWidget,
+    );
+    expect(tester.getRect(find.text('Turnaround')).height, greaterThan(10));
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('character sheet exposes reference navigation', (tester) async {
     const character = CharacterModel(
       assetId: 'qowner-1',

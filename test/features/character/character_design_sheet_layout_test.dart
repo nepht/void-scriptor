@@ -29,7 +29,9 @@ void main() {
       if (width >= 820) {
         expect(portrait.left, greaterThan(summary.right));
         expect(portrait.top, summary.top);
-        expect(summary.width / portrait.width, closeTo(1.5, .05));
+        // The approved reference reserves about two thirds of the canvas for
+        // the technical sheet and one third for the portrait rail.
+        expect(summary.width / portrait.width, closeTo(2, .05));
       } else {
         expect(portrait.top, greaterThan(summary.bottom));
         expect(portrait.width, summary.width);

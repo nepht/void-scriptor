@@ -28,8 +28,8 @@
   "active_sprint": 113,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_113.json",
   "active_ledger": "docs/sprints/sprint-113-ga-release-validation-general-availability.md",
-  "last_verified_step": "113.29",
-  "next_step": "113.30",
+  "last_verified_step": "113.30",
+  "next_step": "113.31",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "145.25",
@@ -627,9 +627,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "113.29 VERIFIED-LOCAL",
+  "current_step": "113.30 VERIFIED-LOCAL",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-23: 113.28 (repair guard mismatch) + 113.29 VERIFIED-LOCAL dalam satu run; focused 7/7 dan 8/8, regression test/release 524/524 PASS exit 0; analyzer/format/diff-check/guard PASS; next 113.30.",
+  "last_run_summary": "2026-09-23: 113.28 (repair guard mismatch) + 113.29 + 113.30 VERIFIED-LOCAL dalam satu run; focused 7/7, 8/8, 9/9; regression test/release 533/533 PASS exit 0; analyzer/format/diff-check/guard PASS; next 113.31 Release Blocker Resolution.",
   "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -881,8 +881,8 @@
     "next_step": "113.27"
   },
   "sprint_progress": {
-    "last_verified_step": "113.29",
-    "next_step": "113.30"
+    "last_verified_step": "113.30",
+    "next_step": "113.31"
   },
   "sprint_113_step_11328": {
     "status": "VERIFIED-LOCAL",
@@ -895,5 +895,11 @@
     "date": "2026-09-23",
     "summary": "Issue Deduplication & Root Cause: domain issue_deduplication_root_cause.dart (IssueReport 7 required_fields, IssueRegistry.mergeDuplicates fold+buku duplikat, missingFields per nama kanonik dengan duplicates boleh kosong, IssueDecision pass/fail/blocked, referensi duplikat tak dikenal -> fail) + manifest sprint_113_issue_deduplication_root_cause.json; TDD RED compile exit 1 -> GREEN 8/8 PASS exit 0; regression test/release 524/524 PASS exit 0 133s; scoped analyzer No issues; format 0 changed; diff-check PASS; guard PASS. WIP yatim sprint_113_29.json/test (Privacy-Safe Evidence Continuation, non-kanonik) tidak diadopsi.",
     "next_step": "113.30"
+  },
+  "sprint_113_step_11330": {
+    "status": "VERIFIED-LOCAL",
+    "date": "2026-09-23",
+    "summary": "Release Blocker Triage: domain release_blocker_triage.dart (TriageDecision 5 wireName kanonik, aturan konsistensi blocker/defer/stop-ship/rollback/evidence, releaseBlocked gate, TriageState pass/fail/blocked) + manifest sprint_113_release_blocker_triage.json; TDD RED compile exit 1 -> GREEN 9/9 PASS exit 0; regression test/release 533/533 PASS exit 0 133s; scoped analyzer No issues; format 0 changed; diff-check PASS; guard PASS.",
+    "next_step": "113.31"
   }
 }

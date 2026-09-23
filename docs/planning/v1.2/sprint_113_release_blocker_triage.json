@@ -1,0 +1,29 @@
+{
+  "canonical_step": "113.30",
+  "title": "Release Blocker Triage",
+  "objective": "Mengklasifikasikan issue terhadap definisi blocker dan menentukan fix, defer, stop-ship, atau rollback.",
+  "decisions": {
+    "FIX_BEFORE_GA": {
+      "description": "Issue memenuhi definisi release blocker dan wajib diperbaiki sebelum GA.",
+      "status": "validated_domain_fixture"
+    },
+    "DEFER_NON_BLOCKER": {
+      "description": "Issue tidak memenuhi definisi blocker sehingga perbaikan boleh ditunda; konsistensi memaksa gagal bila diterapkan pada issue yang memenuhi blocker.",
+      "status": "validated_domain_fixture"
+    },
+    "STOP_SHIP": {
+      "description": "Rilis harus berhenti sampai blocker beres; hanya sah untuk issue yang memenuhi definisi blocker dan segera mengaktifkan releaseBlocked.",
+      "status": "validated_domain_fixture"
+    },
+    "ROLLBACK_RC": {
+      "description": "Release candidate harus di-rollback; hanya sah untuk issue yang memenuhi definisi blocker dan mengaktifkan releaseBlocked.",
+      "status": "validated_domain_fixture"
+    },
+    "NOT_REPRODUCIBLE_WITH_EVIDENCE": {
+      "description": "Issue tidak mereproduksi dan wajib menyertakan bukti percobaan; tanpa evidence keputusan gagal.",
+      "status": "validated_domain_fixture"
+    }
+  },
+  "limits": "Issue yang diklasifikasikan adalah fixture integrasi lokal pada domain bebas-dependensi, bukan hasil triage rilis publik nyata; triage kosong menghasilkan keputusan blocked sampai issue masuk. Native GUI, hosted CI, signing, hardware, dan public release DEFERRED/UNVERIFIABLE.",
+  "decision": "validated_domain_fixture_pending_real_release_triage"
+}

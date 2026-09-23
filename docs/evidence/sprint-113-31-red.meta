@@ -1,0 +1,13 @@
+{
+  "step": "113.31",
+  "command": "flutter.bat test --no-pub test/release/sprint_113_release_blocker_resolution_test.dart -j 1 (domain+manifest belum dibuat)",
+  "finished_at": "2026-09-23T09:57:20+0700",
+  "duration_seconds": 5,
+  "exit_code": 1,
+  "result": "FAIL",
+  "counts": {
+    "passed": 0,
+    "note": "compile/load RED - domain release_blocker_resolution.dart dan manifest sprint_113_release_blocker_resolution.json belum ada"
+  },
+  "log": "docs/evidence/sprint-113-31-red.log"
+}

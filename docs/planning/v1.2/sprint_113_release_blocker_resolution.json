@@ -1,0 +1,33 @@
+{
+  "canonical_step": "113.31",
+  "title": "Release Blocker Resolution",
+  "objective": "Menyelesaikan blocker dengan perubahan minimum dan bukti root-cause serta regression test.",
+  "required_outputs": {
+    "fix_refs": {
+      "description": "Referensi commit/PR ke perbaikan; list kosong dilaporkan missing oleh BlockerResolutionLog.missingOutputs.",
+      "status": "validated_domain_fixture"
+    },
+    "root_cause": {
+      "description": "Akar masalah yang ditentukan dan dinyatakan eksplisit; blank membuat keputusan fail.",
+      "status": "validated_domain_fixture"
+    },
+    "tests": {
+      "description": "Regression test yang ditambahkan/diulang untuk perbaikan; list kosong dilaporkan missing.",
+      "status": "validated_domain_fixture"
+    },
+    "review": {
+      "description": "Siapa/apa yang me-review perubahan; blank dilaporkan missing.",
+      "status": "validated_domain_fixture"
+    },
+    "risk_update": {
+      "description": "Pernyataan risiko rilis yang diperbarui pasca-perbaikan; blank dilaporkan missing.",
+      "status": "validated_domain_fixture"
+    },
+    "release_note": {
+      "description": "Catatan rilis yang ditujukan ke pengguna untuk perbaikan; blank dilaporkan missing dan teksnya dipertahankan pada keputusan pass.",
+      "status": "validated_domain_fixture"
+    }
+  },
+  "limits": "Resolusi yang diuji adalah fixture integrasi lokal pada domain bebas-dependensi terhadap SHAs dan jalur test repo nyata, bukan resolusi blocker rilis publik; log kosong menghasilkan blocked sampai satu resolusi lengkap tercatat. Native GUI, hosted CI, signing, hardware, dan public release DEFERRED/UNVERIFIABLE.",
+  "decision": "validated_domain_fixture_pending_real_blocker_resolution"
+}

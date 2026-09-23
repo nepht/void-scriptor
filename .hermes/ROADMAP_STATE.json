@@ -58,8 +58,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-23T18:00:00+07:00",
-  "updated_by": "nephthys-authorized-113.44-local-gate",
+  "updated_at": "2026-09-23T18:25:00+07:00",
+  "updated_by": "nephthys-113.45-prepared-dependency-blocked",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -1177,6 +1177,36 @@
       "docs/evidence/sprint-113-44-focused-20260923.meta"
     ],
     "limitations": "hosted CI billing block; public artifact/release-note publication, support notification, public telemetry, and published-artifact rollback remain UNVERIFIABLE/BLOCKED; no stable tag or public release",
+    "next_step": "113.44"
+  },
+  "sprint_113_step_11345": {
+    "status": "PREPARED-LOCAL / DEPENDENCY_BLOCKED",
+    "title": "Post-Release Observation Handoff",
+    "date": "2026-09-23",
+    "handoff_mode": "DEFERRED_RELEASE",
+    "outputs": [
+      "health_baseline",
+      "monitoring_owners",
+      "incident_queue",
+      "feedback_queue",
+      "risk_register",
+      "rollback_criteria",
+      "observation_window"
+    ],
+    "focused_tests": "3/3 exit 0",
+    "analyzer": "No issues",
+    "format": "0 changed for owned files",
+    "diff_check": 0,
+    "monitoring_active": false,
+    "external_communication_sent": false,
+    "manifest": "docs/planning/v1.2/sprint_113_post_release_observation_handoff.json",
+    "domain": "lib/features/world_logic/domain/post_release_observation_handoff.dart",
+    "test": "test/release/sprint_113_post_release_observation_handoff_test.dart",
+    "evidence": [
+      "docs/evidence/sprint-113-45-focused-20260923.log",
+      "docs/evidence/sprint-113-45-focused-20260923.meta"
+    ],
+    "limitations": "handoff prepared locally but cannot advance while 113.44 remains recovery candidate; observation window not started; external gates unavailable",
     "next_step": "113.44"
   }
 }

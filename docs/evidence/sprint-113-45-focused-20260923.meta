@@ -1,0 +1,13 @@
+{
+  "canonical_step": "113.45",
+  "status": "VERIFIED-LOCAL",
+  "decision": "HANDOFF_READY_FOR_DEFERRED_RELEASE",
+  "focused_tests": {"command": "flutter test test/release/sprint_113_post_release_observation_handoff_test.dart -j 1", "exit_code": 0, "passed": 3},
+  "analyzer": {"command": "dart analyze lib/features/world_logic/domain/post_release_observation_handoff.dart", "exit_code": 0, "result": "No issues found!"},
+  "format": {"command": "dart format lib/features/world_logic/domain/post_release_observation_handoff.dart test/release/sprint_113_post_release_observation_handoff_test.dart", "exit_code": 0},
+  "diff_check": {"command": "git diff --check", "exit_code": 0},
+  "handoff_mode": "DEFERRED_RELEASE",
+  "monitoring_active": false,
+  "external_communication_sent": false,
+  "evidence_log": "docs/evidence/sprint-113-45-focused-20260923.log"
+}

@@ -1,0 +1,10 @@
+command: D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test test/release/sprint_113_post_release_observation_handoff_test.dart -j 1
+exit_code: 0
+result: 3/3 PASS
+command: D:/DevTools/Flutter SDK/flutter/bin/dart.bat analyze lib/features/world_logic/domain/post_release_observation_handoff.dart
+exit_code: 0
+result: No issues found!
+command: git diff --check
+exit_code: 0
+result: PASS
+verdict: VERIFIED-LOCAL; HANDOFF_READY_FOR_DEFERRED_RELEASE

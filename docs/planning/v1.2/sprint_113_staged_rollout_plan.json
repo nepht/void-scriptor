@@ -1,0 +1,72 @@
+{
+  "canonical_step": "113.41",
+  "title": "Staged Rollout Plan",
+  "status": "VERIFIED-LOCAL",
+  "version": "1.2.0-rc.1",
+  "recorded_at": "2026-09-23T14:06:00+07:00",
+  "stages": [
+    {
+      "stage": "canary-internal",
+      "exposure": 5,
+      "duration": 24,
+      "health_criteria": [
+        "crash-free sessions >= 99.5% over the window",
+        "update install success >= 99% of attempted upgrades",
+        "signature_check Valid on every downloaded artifact",
+        "no data-integrity findings from integrity_scan jobs"
+      ],
+      "stop_conditions": [
+        "crash-free sessions < 99% in any 6h slice",
+        "any update artifact hash/signature mismatch",
+        "project open/restore failure reported once"
+      ],
+      "rollback_owner": "Choirudin",
+      "approval": "PENDING_CHOIRUDIN"
+    },
+    {
+      "stage": "broad-beta",
+      "exposure": 50,
+      "duration": 48,
+      "health_criteria": [
+        "crash-free sessions >= 99.9%",
+        "disk_space_check and resume/retry success on real network paths",
+        "zero open P0/P1 regression in release ledger"
+      ],
+      "stop_conditions": [
+        "rollback trigger hit in canary not yet cleared",
+        "any stop condition from canary recurs twice",
+        "support/playbook blockers beyond documented workarounds"
+      ],
+      "rollback_owner": "Choirudin",
+      "approval": "PENDING_CHOIRUDIN"
+    },
+    {
+      "stage": "ga-full",
+      "exposure": 100,
+      "duration": 72,
+      "health_criteria": [
+        "crash-free sessions >= 99.9% for 48 continuous hours",
+        "hosted CI green on release tag (or documented UNVERIFIABLE boundary)",
+        "download channel labels and checksums match the rc.1 manifest"
+      ],
+      "stop_conditions": [
+        "any regression reopened from fixed state",
+        "signature or checksum mismatch on the public channel",
+        "rollback_channel activation fails its switch-back check"
+      ],
+      "rollback_owner": "Choirudin",
+      "approval": "PENDING_CHOIRUDIN"
+    }
+  ],
+  "approval_state": "PENDING_CHOIRUDIN",
+  "approval_note": "Plan structure recorded and locally verified; explicit approval from Choirudin is required before any stage executes — writing this plan is not approval.",
+  "execution_authorized": false,
+  "domain": "lib/features/world_logic/domain/staged_rollout_plan.dart",
+  "test": "test/release/sprint_113_staged_rollout_plan_test.dart",
+  "limits": [
+    "Exposure percentages model audience shares; no telemetry pipeline has been verified to report these health criteria yet (hosted metrics UNVERIFIABLE)",
+    "Duration windows start only after explicit approval and a signed GA artifact exists on the channel",
+    "Rollback owner is a single named accountable human by design — no contest/incentive coupling (pilot-kit rule analog applies to rollout: approval is Choi's, not automated)"
+  ],
+  "decision": "VERIFIED_LOCAL_ROLLOUT_PLAN"
+}

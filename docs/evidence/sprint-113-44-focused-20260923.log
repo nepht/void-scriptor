@@ -1,0 +1,16 @@
+command: D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test test/release/sprint_113_ga_release_execution_test.dart -j 1
+exit_code: 0
+result: 4/4 PASS
+command: D:/DevTools/Flutter SDK/flutter/bin/dart.bat analyze lib/features/world_logic/domain/ga_release_execution.dart
+exit_code: 0
+result: No issues found!
+command: D:/DevTools/Flutter SDK/flutter/bin/dart.bat run tool/roadmap_guard.dart
+exit_code: 0
+result: ROADMAP_GUARD: PASS; canonical_sprint=113; recommended_step=113.44; last_resolved_step=113.43
+command: D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --release
+exit_code: 0
+result: Built build/windows/x64/runner/Release/void_scriptor.exe
+command: git diff --check
+exit_code: 0
+result: PASS
+verdict: VERIFIED-LOCAL / BLOCKED_EXTERNAL_GATES

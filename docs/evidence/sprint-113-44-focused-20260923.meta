@@ -1,0 +1,12 @@
+{
+  "canonical_step": "113.44",
+  "status": "VERIFIED-LOCAL",
+  "decision": "BLOCKED_EXTERNAL_GATES",
+  "focused_tests": {"command": "flutter test test/release/sprint_113_ga_release_execution_test.dart -j 1", "exit_code": 0, "passed": 4},
+  "analyzer": {"command": "dart analyze lib/features/world_logic/domain/ga_release_execution.dart", "exit_code": 0, "result": "No issues found!"},
+  "roadmap_guard": {"command": "dart run tool/roadmap_guard.dart", "exit_code": 0, "recommended_step": "113.44", "last_resolved_step": "113.43"},
+  "build": {"command": "flutter build windows --release", "exit_code": 0, "artifact": "build/windows/x64/runner/Release/void_scriptor.exe"},
+  "diff_check": {"command": "git diff --check", "exit_code": 0},
+  "external_limits": ["hosted CI billing block", "public artifact publication unverified", "public telemetry inactive/unverifiable", "support notification not sent", "published-artifact rollback drill not executed"],
+  "evidence_log": "docs/evidence/sprint-113-44-focused-20260923.log"
+}

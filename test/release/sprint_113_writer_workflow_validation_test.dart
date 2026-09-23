@@ -56,7 +56,7 @@ void main() {
     test('InlineLoreLinkRenderer round-trips parsed text', () {
       const parser = InlineLoreLinkParser();
       const renderer = InlineLoreLinkRenderer();
-      final text = 'She visited [[Valdris]] and met [[Kael]].';
+      const text = 'She visited [[Valdris]] and met [[Kael]].';
       final segments = parser.parse(text);
       final rendered = renderer.render(segments);
       expect(rendered, text);

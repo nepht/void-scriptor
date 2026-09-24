@@ -1,0 +1,7 @@
+step=114.15
+phase=RED
+date=2026-09-24
+command="D:\DevTools\Flutter SDK\flutter\bin\flutter.bat" test test/release/sprint_114_cloud_sync_conflict_health_test.dart
+exit=1
+result=compile load failure: Error: Method not found: 'CloudSyncObservation' (domain lib/features/world_logic/domain/cloud_sync_conflict_health.dart missing); "Some tests failed"
+head_before=<16e58aa>

@@ -1,0 +1,26 @@
+{
+  "canonical_step": "114.15",
+  "title": "Cloud Sync & Conflict Health",
+  "objective": "Memantau sync queue, transfer, retry, conflict, resolution, offline queue, dan duplicate effects.",
+  "required_evidence": [
+    "sync_success",
+    "queue_age",
+    "transfer_failure",
+    "retry_success",
+    "conflict_rate",
+    "resolution_success",
+    "duplicate_effect"
+  ],
+  "outcomes": [
+    "ok",
+    "failed",
+    "recovered"
+  ],
+  "decision_rule": "Tanpa observasi = BLOCKED tanpa klaim kesehatan; cakupan tujuh sinyal belum lengkap atau observasi tanpa catatan = FAIL; sync_success ok sementara transfer_failure failed = FAIL transfer_failure_ignored; sync_success ok sementara queue_age failed = FAIL stale_queue_ignored; sync_success ok sementara duplicate_effect failed = FAIL duplicate_effects_ignored; transfer_failure failed sementara retry_success tidak ok/recovered = FAIL transfer_unrecovered; sync_success failed sementara retry_success tidak ok/recovered = FAIL sync_unrecovered; conflict_rate failed sementara resolution_success failed = FAIL conflict_unresolved; kegagalan terdeteksi yang pulih jujur (retry ok/recovered tanpa pelanggaran) = PASS konsistensi; cakupan lengkap tanpa invalidasi atau pelanggaran = PASS.",
+  "live_cloud_sync_telemetry": "DEFERRED-EXTERNAL",
+  "external_sync_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Sinyal dinilai dari observasi lokal/definisi kontrak; cloud sync telemetry workspace produksi live belum diamati.",
+    "Injeksi fault jaringan nyata, verifikasi perangkat keras, hosted CI, dan publikasi distribusi tetap DEFERRED-EXTERNAL."
+  ]
+}

@@ -1,0 +1,14 @@
+step=114.15
+phase=GATES
+date=2026-09-24
+head_before=<16e58aa>
+red="flutter test test/release/sprint_114_cloud_sync_conflict_health_test.dart exit 1 (domain missing, Method not found: CloudSyncObservation); evidence sprint-114-15-red-20260924.meta"
+green_focused="flutter test ..._cloud_sync_conflict_health_test.dart exit 0; 12/12 PASS"
+format="dart format --output=none --set-exit-if-changed <owned 2 files> exit 0 (0 changed; 2 files formatted pre-rerun)"
+green_post_format="flutter test focused exit 0; 12/12 PASS"
+regression_sprint_114_1_to_15="flutter test <15 sprint_114_*_test.dart files> exit 0; 107/107 PASS (95 prior + 12 new)"
+analyzer="flutter analyze exit 0; No issues found! (ran in 10.2s)"
+diff_check="git diff --check exit 0 (CRLF warnings only on pre-existing sibling dirty files)"
+build="flutter build windows --debug exit 0; 19.2s; build\windows\x64\runner\Debug\void_scriptor.exe"
+known_gap="3 pre-existing test/release failures sprint_113.38/39/40 (Release exe hash drift from 113.44 rebuild; out of slice scope)"
+external_gates="public-trust signing, hosted CI, live cloud sync telemetry, hardware, publication = DEFERRED-EXTERNAL"

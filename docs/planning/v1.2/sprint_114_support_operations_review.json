@@ -1,0 +1,32 @@
+{
+  "canonical_step": "114.7",
+  "title": "Support Operations Review",
+  "objective": "Menilai volume, severity, response time, resolution, workaround, dan dokumentasi yang sering dibutuhkan.",
+  "dimensions": [
+    "volume",
+    "severity",
+    "response_time",
+    "resolution_time",
+    "repeat_rate",
+    "workaround",
+    "documentation_gap"
+  ],
+  "required_fields": [
+    "case_id",
+    "severity",
+    "opened_at"
+  ],
+  "optional_fields": [
+    "first_response_at",
+    "resolved_at",
+    "documentation_ref",
+    "repeat_of_case_id"
+  ],
+  "content_collection": "excluded",
+  "external_support_operations": "DEFERRED-EXTERNAL",
+  "decision_rule": "Queue kosong = BLOCKED; data tidak valid (severity kosong, timestamp tidak terbaca atau sebelum case dibuka) = FAIL; gap response/resolution/workaround/dokumentasi dilaporkan sebagai metrik berasingan, bukan ditutupi.",
+  "limitations": [
+    "Tidak ada data support produksi atau tiket pengguna nyata; semua record berasal dari input lokal terkontrol.",
+    "Field operasional tidak memuat isi tiket, manuskrip, lore, prompt, atau secret."
+  ]
+}

@@ -1,0 +1,7 @@
+step=114.13
+gate=RED
+date=2026-09-24
+command=flutter test --no-pub test/release/sprint_114_novel_character_boundary_health_test.dart -j 1
+exit=1
+result=compile load fail: Error when reading 'lib/features/world_logic/domain/novel_character_boundary_health.dart' (file not found); Method not found 'NovelCharacterBoundaryHealth'; Undefined name 'NovelCharacterBoundaryState'
+head=0b83172

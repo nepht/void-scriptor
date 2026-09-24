@@ -1,0 +1,26 @@
+{
+  "canonical_step": "114.13",
+  "title": "Novel-Character Boundary Health",
+  "objective": "Memastikan Novel dan Character Workspace tetap terpisah setelah migration, link, unlink, delete, backup, restore, dan export.",
+  "required_evidence": [
+    "distinct_namespaces",
+    "reference_integrity",
+    "override_isolation",
+    "unlink_safety",
+    "delete_safety",
+    "permission_boundary",
+    "restore_results"
+  ],
+  "outcomes": [
+    "ok",
+    "failed",
+    "recovered"
+  ],
+  "decision_rule": "Tanpa observasi = BLOCKED tanpa klaim kesehatan; cakupan tujuh sinyal belum lengkap atau observasi tanpa catatan = FAIL; distinct_namespaces failed sementara restore_results failed = FAIL namespaces_unrecovered; unlink_safety failed sementara reference_integrity failed = FAIL unlink_broke_references; reference_integrity failed sementara restore_results failed = FAIL references_unrepaired; delete_safety failed sementara restore_results failed = FAIL delete_unrecovered; override_isolation failed sementara permission_boundary failed = FAIL override_leak_uncontained; permission_boundary failed sementara restore_results failed = FAIL permission_breach_unrepaired; kegagalan terdeteksi yang pulih jujur (restore_results recovered/ok tanpa pelanggaran) = PASS konsistensi; cakupan lengkap tanpa invalidasi atau pelanggaran = PASS.",
+  "live_boundary_telemetry": "DEFERRED-EXTERNAL",
+  "external_boundary_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Sinyal dinilai dari observasi lokal/definisi kontrak; boundary telemetry workspace produksi live belum diamati.",
+    "Fault test destruktif atas data pengguna, restore end-to-end pada data nyata, verifikasi perangkat keras, dan publikasi distribusi tetap DEFERRED-EXTERNAL."
+  ]
+}

@@ -1,0 +1,12 @@
+step=114.13
+gate=GATES
+date=2026-09-24
+focused=flutter test sprint_114_novel_character_boundary_health_test.dart -> 12/12 PASS exit 0 (rerun post-format)
+regression_sprint_114=84/84 PASS exit 0 (114.1-114.13, 13 files)
+analyze=flutter analyze -> No issues found (9.8s) exit 0
+format=dart format --set-exit-if-changed owned files -> 0 changed exit 0
+diff_check=git diff --check exit 0
+build=flutter build windows --debug -> exit 0, 20.5s
+red=exit 1 compile load fail (docs/evidence/sprint-114-13-red-20260924.meta)
+head=0b83172
+known_gap=test/release full dir has 3 PRE-EXISTING failures in sprint_113 artifact-checksum tests (build/windows Release exe hash 7aa10b58 vs recorded 73101e78; drift from 113.44 rebuild; out of slice scope)

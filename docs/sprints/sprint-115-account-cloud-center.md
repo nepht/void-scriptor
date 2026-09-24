@@ -1,0 +1,65 @@
+# Sprint 115 — VOID SCRIPTOR Account & Cloud Center
+
+- **Status:** ACTIVE (2026-09-25, corrective scope after Sprint 114 local closure)
+- **Kanonik:** `sprint_115.json` — 56 langkah, sequence PASS
+- **Start condition:** Sprint 114 closure local pada jalur DELAYED dan corrective scope Account & Cloud Center disetujui; provider/payment/connector publication tetap gated.
+- **Batas klaim:** hanya corrective scope lokal yang diaktifkan; tidak mengklaim provider live, payment, connector certification, public adoption, atau full release.
+
+| Step | Title | Status | Evidence |
+|---|---|---|---|
+| 115.1 | Sprint Entry Gate | PENDING | Memastikan stabilitas v1.2, scope, provider constraints, security, privacy, dan capacity siap. |
+| 115.2 | Reference Design Audit | PENDING | Memetakan semua panel pada gambar referensi ke capability, data source, state, dan owner yang nyata. |
+| 115.3 | Global Information Architecture | PENDING | Menetapkan route, tabs, overview, detail pages, deep links, breadcrumbs, dan search behavior. |
+| 115.4 | Workspace Boundary Contract | PENDING | Menjaga Account Center di scope global tanpa memasukkannya ke Novel atau Character Workspace. |
+| 115.5 | Account Center Design Tokens | PENDING | Menerapkan ukuran, spacing, radius, typography, icon, progress, avatar, dan density dari product spec. |
+| 115.6 | Responsive Grid System | PENDING | Membangun layout wide desktop, desktop, compact desktop, tablet, dan mobile tanpa overflow. |
+| 115.7 | Accessibility Interaction Baseline | PENDING | Menetapkan focus order, keyboard behavior, semantics, text alternatives, touch targets, scaling, dan reduced motion. |
+| 115.8 | Provider Icon Registry | PENDING | Membangun registry logo provider resmi dengan versi asset, dark/light variants, dan generic fallback. |
+| 115.9 | Provider & Connector Manifest | PENDING | Mendefinisikan kategori, capability, availability, region, version, auth type, permissions, dan health endpoint. |
+| 115.10 | Connection & Health State Machine | PENDING | Menangani connecting, connected, degraded, expired, revoked, error, unavailable, rate-limited, dan outage. |
+| 115.11 | OAuth & Linked Identity Flow | PENDING | Mengimplementasikan authorization code dengan PKCE, scoped consent, callback validation, token rotation, dan unlink. |
+| 115.12 | Secure Token & Secret Vault | PENDING | Menyimpan token dan API keys di secure store dengan redaction, reauthentication, audit, dan clipboard timeout. |
+| 115.13 | Authentication & Profile Card | PENDING | Membangun avatar, display name, email, plan badge, sign-in methods, edit profile, dan account state. |
+| 115.14 | Connected Accounts Management | PENDING | Menampilkan, menambah, mengganti label, memeriksa scope, reauth, dan melepas identity connections. |
+| 115.15 | Quick Connect Panel | PENDING | Menyediakan provider tiles dengan ikon, status teks, health, dan tindakan yang sesuai manifest. |
+| 115.16 | Cloud Storage Account Model | PENDING | Mendefinisikan akun storage, capability, root scope, quota support, sync support, backup support, dan freshness. |
+| 115.17 | Provider Quota Adapters | PENDING | Membaca used, quota, available, timestamp, dan provider units dari API tanpa mengarang nilai yang hilang. |
+| 115.18 | Cloud Storage Aggregation | PENDING | Menghitung remote total hanya dari data kompatibel dan menandai partial atau stale aggregation. |
+| 115.19 | Storage Usage Cards | PENDING | Menampilkan ikon, account label, used, quota, percentage, freshness, status, dan manage action. |
+| 115.20 | Local Storage Summary | PENDING | Menampilkan project, assets, models, archive, cache, temp, backups, free space, dan scan freshness secara terpisah dari cloud. |
+| 115.21 | Cloud Transfer & Sync Controls | PENDING | Mengelola upload, download, delta sync, pause, resume, retry, bandwidth, and transfer consent. |
+| 115.22 | Backup Policies & Destinations | PENDING | Mendukung jadwal, retention, encryption, destination, Novel/Character boundary, verification, dan restore test. |
+| 115.23 | Sync Conflict Center | PENDING | Menampilkan conflict source, versions, preview, resolution, history, dan safe fallback. |
+| 115.24 | AI Provider Registry | PENDING | Mendefinisikan provider, models, modalities, endpoints, regions, costs, privacy, local/cloud mode, dan availability. |
+| 115.25 | AI Connection & Model Settings | PENDING | Mengelola provider connection, default models, fallback, timeout, budget, quality, local preference, dan health test. |
+| 115.26 | AI Usage, Credits & Cost View | PENDING | Memisahkan app credits, provider usage, estimated cost, currency, billing period, dan unavailable balance. |
+| 115.27 | API Keys Manager | PENDING | Mendukung add, replace, validate, revoke, scope, last-used metadata, masked display, dan secure copy. |
+| 115.28 | Developer Tools Connections | PENDING | Menampilkan connector developer berdasarkan manifest tanpa mengklaim GitHub, GitLab, Bitbucket, atau Azure DevOps tersedia sebelum diverifikasi. |
+| 115.29 | Creative Tools Connections | PENDING | Menampilkan connector creative berdasarkan manifest dan hak penggunaan asset. |
+| 115.30 | Team & Collaboration Summary | PENDING | Menampilkan organization, seats, members, roles, invitations, recent access, dan permission health. |
+| 115.31 | Activity & Audit Overview | PENDING | Menampilkan aktivitas akun, connections, sync, backup, security, billing, dan sensitive actions dengan redaction. |
+| 115.32 | Security Center Summary | PENDING | Menampilkan MFA, password, trusted devices, sessions, secure storage health, alerts, dan recommended actions. |
+| 115.33 | Session & Device Management | PENDING | Mendukung review, trust, rename, revoke, force logout, and suspicious-session handling. |
+| 115.34 | Subscription & Entitlement Model | PENDING | Memisahkan plan, entitlements, limits, renewal, cancellation, trial, grace period, dan offline license state. |
+| 115.35 | Billing Account & Cost Summary | PENDING | Menampilkan billing identity, currency, tax, cycle, charges, credits, estimates, and billing status. |
+| 115.36 | Payment Method Abstraction | PENDING | Mengelola payment methods melalui token provider tanpa menyimpan raw card data. |
+| 115.37 | Invoices, Receipts & Billing History | PENDING | Menampilkan invoice, receipt, status, tax information, download, refund, dan dispute path. |
+| 115.38 | Right-Rail Account Summary | PENDING | Membangun ringkasan plan, entitlements, credits, storage, seats, renewal, dan manage actions. |
+| 115.39 | Quick Actions | PENDING | Menyediakan sync, backup, API keys, invite, marketplace, dan settings dengan permission-aware state. |
+| 115.40 | AI Usage Chart & Detail Table | PENDING | Menampilkan tren usage dan cost dengan filter, textual summary, table, source, freshness, dan estimate labels. |
+| 115.41 | Storage Distribution Chart & Table | PENDING | Menampilkan distribusi storage berdasarkan kategori dengan text alternative dan unknown category handling. |
+| 115.42 | Loading, Empty & Error States | PENDING | Menyelesaikan state loading, empty, partial, offline, denied, limited, outage, unavailable, error, dan reauth. |
+| 115.43 | Token Expiry & Reauthentication UX | PENDING | Menjelaskan expired connection, affected capabilities, safe retry, reauth, revoke, dan preserved local data. |
+| 115.44 | Offline Account Center | PENDING | Menampilkan cached metadata dengan freshness, disable remote actions, dan mempertahankan local settings serta local storage details. |
+| 115.45 | Wide Desktop Visual Implementation | PENDING | Merealisasikan layout referensi 1536×1024 dengan left navigation, main grid, right summary, dan status bar. |
+| 115.46 | Desktop & Tablet Adaptation | PENDING | Mengubah right rail menjadi drawer, collapse navigation, reflow cards, dan menjaga tabs dapat diakses. |
+| 115.47 | Mobile Adaptation | PENDING | Menyediakan single-column layout, full-screen provider details, bottom-safe actions, dan chart text alternatives. |
+| 115.48 | Keyboard & Screen Reader Verification | PENDING | Memverifikasi semua tabs, cards, provider tiles, charts, menus, dialogs, forms, and sensitive actions. |
+| 115.49 | Localization & Formatting | PENDING | Memvalidasi text expansion, RTL, dates, relative times, bytes, percentages, currencies, tax, and provider names. |
+| 115.50 | Privacy & Data-Flow Review | PENDING | Mendokumentasikan semua account metadata, tokens, usage, storage, billing, diagnostics, retention, and external transfers. |
+| 115.51 | Automated Test Matrix | PENDING | Menambahkan unit, state-machine, contract, connector, security, billing, UI, accessibility, and end-to-end tests. |
+| 115.52 | Visual Regression Matrix | PENDING | Menguji ukuran referensi, breakpoints, density, themes, scaling, long text, missing icons, loading, dan error states. |
+| 115.53 | Performance & Provider Resilience | PENDING | Menguji initial render, concurrent refresh, slow APIs, rate limits, outage, many accounts, charts, and local scans. |
+| 115.54 | Security & Billing Verification | PENDING | Menguji OAuth, token storage, API keys, sessions, permissions, webhook authenticity, entitlement, payment redirects, and audit. |
+| 115.55 | Alpha Acceptance Gate | PENDING | Menilai kesiapan Account & Cloud Center untuk v1.3.0-alpha.1 tanpa mengklaim connector yang belum tersertifikasi. |
+| 115.56 | Sprint Closure | PENDING | Menutup Sprint 115 setelah keputusan alpha atau penundaan tercatat. |

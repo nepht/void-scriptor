@@ -25,23 +25,20 @@
   "flutter_sdk": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat",
   "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
   "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
-  "active_sprint": 114,
-  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_114.json",
-  "active_ledger": "docs/sprints/sprint-114-post-release-stability-adoption.md",
-  "last_verified_step": "114.43",
-  "next_step": "114.44",
+  "active_sprint": 115,
+  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_115.json",
+  "active_ledger": "docs/sprints/sprint-115-account-cloud-center.md",
+  "last_verified_step": "114.44",
+  "next_step": "115.1",
   "stability_gate": {
     "status": "PASS",
-    "resume_step": "114.44",
+    "resume_step": "115.1",
     "previous_result": {
-      "verified_at": "2026-09-01 (145.25 evidence-closure cron)",
-      "roadmap_guard": "PASS pre-run; post-state check follows state update (pointer 145.26)",
-      "flutter_analyze": "PASS (No issues found!, 14.8s)",
-      "focused_core_regression": "PASS (test/features/character + test/features/relations + lore links + workspace resolver journey = 98 PASS)",
-      "full_flutter_test": "PASS (3267 PASS / 1 FAIL concurrent-owned 145.20: app_bootstrap_test vs uncommitted main.dart/app_router sibling; root-caused, not touched)",
-      "windows_debug_build": "PASS (26.4s)",
-      "head_at_verification": "abdc6b8",
-      "note": "145.25 voice/notes UI+editor gap closed via TDD; screen file staged mine-only to preserve concurrent deletion-review slice on disk"
+      "sprint": 114,
+      "final_step": "114.44",
+      "status": "CLOSED-LOCAL-DEFERRED-EXTERNAL",
+      "commit": "ff8b913",
+      "roadmap_guard": "SPRINT_COMPLETE; canonical_sprint 114; last_resolved_step 114.44"
     },
     "required_checks": [
       "dart run tool/roadmap_guard.dart",
@@ -58,8 +55,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-24T19:36:38.153898Z",
-  "updated_by": "roadmap_guard sync-pointer",
+  "updated_at": "2026-09-25T00:00:00+07:00",
+  "updated_by": "roadmap transition Sprint 114.44 -> Sprint 115.1",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -422,20 +419,20 @@
   },
   "active_stream_details": {
     "name": "sequential_expansion",
-    "sprint": 114,
-    "contract": "sprint_114.json",
-    "ledger": "docs/sprints/sprint-114-post-release-stability-adoption.md",
-    "resume_step": "114.1",
-    "resumed_on": "2026-09-24",
-    "authority": "KEPUTUSAN CHOI 24 Sep: lanjutkan dan atasi hambatan agar semua sprint dapat diterapkan",
+    "sprint": 115,
+    "contract": "sprint_115.json",
+    "ledger": "docs/sprints/sprint-115-account-cloud-center.md",
+    "resume_step": "115.1",
+    "resumed_on": "2026-09-25",
+    "authority": "KEPUTUSAN CHOI 24 Sep: lanjutkan roadmap; 114.44 mengaktifkan corrective scope Sprint 115.",
     "previous_sprint": {
-      "sprint": 113,
-      "final_step": "113.46",
-      "status": "CLOSED-VERIFIED-LOCAL-DEFERRED-RELEASE",
-      "commit": "b883a84"
+      "sprint": 114,
+      "final_step": "114.44",
+      "status": "CLOSED-LOCAL-DEFERRED-EXTERNAL",
+      "commit": "ff8b913"
     },
-    "next_step": "114.44",
-    "resume_authority": "KEPUTUSAN CHOI 24 Sep: lanjutkan roadmap setelah closure Sprint 113"
+    "next_step": "115.1",
+    "resume_authority": "KEPUTUSAN CHOI 24 Sep: lanjutkan roadmap; 114.44 mengaktifkan corrective scope Sprint 115."
   },
   "activation_rules_11122_run362": {
     "status": "VERIFIED-LOCAL",
@@ -627,10 +624,10 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "114.1 VERIFIED-LOCAL",
-  "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-24: 114.1 Post-Release Entry Gate VERIFIED-LOCAL on DELAYED path. Focused 3/3 PASS; full analyzer clean; Windows debug build PASS after minimum sibling compile reconciliation; no publication, telemetry, rollout, or external validation claimed.",
-  "last_commit": "pending",
+  "current_step": "115.1",
+  "current_step_status": "PENDING",
+  "last_run_summary": "2026-09-25: Sprint 114.44 CLOSED-LOCAL / DEFERRED-EXTERNAL at ff8b913; guard SPRINT_COMPLETE; Sprint 115 corrective scope activated at 115.1. External gates remain deferred.",
+  "last_commit": "ff8b913",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",

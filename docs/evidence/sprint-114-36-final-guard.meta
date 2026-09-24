@@ -1,0 +1,8 @@
+{
+  "command": "dart run tool/roadmap_guard.dart (final)",
+  "started_at": "2026-09-24T15:32:09Z",
+  "ended_at": "2026-09-24T15:32:11Z",
+  "duration_seconds": 2,
+  "exit_code": 0,
+  "result": "PASS"
+}

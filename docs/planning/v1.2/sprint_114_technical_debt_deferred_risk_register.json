@@ -1,0 +1,74 @@
+{
+  "canonical_step": "114.42",
+  "title": "Technical Debt & Deferred Risk Register",
+  "status": "VERIFIED-LOCAL",
+  "release_state": "DELAYED",
+  "required_fields": [
+    "item",
+    "impact",
+    "evidence",
+    "reason_deferred",
+    "owner",
+    "target",
+    "trigger"
+  ],
+  "risks": [
+    {
+      "item_id": "RISK-114-01",
+      "kind": "externalEvidence",
+      "item": "Public release, production health, incident, and adoption evidence is unavailable.",
+      "impact": "The canonical release path remains DELAYED; GA stability, production health, and external adoption are not claimed.",
+      "evidence": [
+        "docs/planning/v1.2/sprint_114_post_release_entry_gate.json",
+        "docs/planning/v1.2/sprint_114_post_release_evidence_report.json"
+      ],
+      "reason_deferred": "No public release, live telemetry, public incident intake, or consented adoption dataset is active.",
+      "owner": "release-owner",
+      "target": "When a public release starts its observation window",
+      "trigger": "Public release evidence or a live health breach is recorded."
+    },
+    {
+      "item_id": "RISK-114-02",
+      "kind": "externalEvidence",
+      "item": "Hosted CI, public-trust signing, hardware validation, and publication remain unverified.",
+      "impact": "A local build cannot establish public distribution trust, hosted reproducibility, device coverage, or a published artifact.",
+      "evidence": [
+        "docs/planning/v1.2/sprint_114_maintenance_artifact_release_gate.json",
+        "docs/planning/v1.2/sprint_114_rollback_feature_flag_readiness.json"
+      ],
+      "reason_deferred": "The local contract is complete, but credentials, hosted services, physical hardware, and publication destination are not verified for this run.",
+      "owner": "release-engineering-owner",
+      "target": "Before any v1.2.1 public release attempt",
+      "trigger": "A release candidate is selected for hosted CI, signing, hardware qualification, or publication."
+    },
+    {
+      "item_id": "RISK-114-03",
+      "kind": "deferredRisk",
+      "item": "The historical release artifact checksum drift is retained as a maintenance follow-up.",
+      "impact": "A rebuilt local binary must not be compared to a superseded published checksum as if it were the same artifact.",
+      "evidence": [
+        "docs/sprints/sprint-114-post-release-stability-adoption.md"
+      ],
+      "reason_deferred": "The current maintenance decision is NO_PATCH; changing the release artifact is outside this register slice.",
+      "owner": "release-artifact-owner",
+      "target": "Next maintenance release candidate",
+      "trigger": "A v1.2.1 artifact is proposed for publication."
+    }
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "deferred_checks": [
+    "live_production_telemetry",
+    "public_incident_intake",
+    "external_adoption_evidence",
+    "public_release_signing",
+    "hosted_ci_validation",
+    "published_artifact_validation",
+    "hardware_validation",
+    "publication"
+  ],
+  "limitations": [
+    "Register ini hanya mendokumentasikan debt dan risiko yang tidak memblokir stabilitas lokal; register kosong tidak pernah diartikan sebagai tidak ada risiko.",
+    "Semua gate eksternal tetap DEFERRED-EXTERNAL dan tidak diubah menjadi PASS oleh kontrak lokal ini.",
+    "Owner dan target adalah handoff operasional; target tercapai belum otomatis berarti bukti eksternal tervalidasi."
+  ]
+}

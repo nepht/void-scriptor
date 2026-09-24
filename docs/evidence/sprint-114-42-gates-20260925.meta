@@ -1,0 +1,58 @@
+{
+  "step": "114.42",
+  "status": "VERIFIED-LOCAL",
+  "head_before": "e8b884d61910",
+  "release_state": "DELAYED",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "commands": [
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/dart.bat run tool/roadmap_guard.dart",
+      "exit_code": 0,
+      "result": "ROADMAP_GUARD: PASS; recommended_step 114.42; last_resolved_step 114.41; canonical_sha256 200a24d977d0808141587c9e5ebb17324ae8de5c5f792f5c4e92d07b0e8e9326"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_114_technical_debt_deferred_risk_register_test.dart -j 1",
+      "exit_code": 1,
+      "result": "RED compile/load-fail: technical_debt_deferred_risk_register_v114.dart and contract symbols absent"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_114_technical_debt_deferred_risk_register_test.dart -j 1",
+      "exit_code": 0,
+      "result": "7/7 focused tests PASS"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_114_patch_regression_matrix_test.dart test/release/sprint_114_rollback_feature_flag_readiness_test.dart test/release/sprint_114_rollout_progression_decision_test.dart test/release/sprint_114_stable_release_health_gate_test.dart test/release/sprint_114_maintenance_release_scope_test.dart test/release/sprint_114_maintenance_artifact_release_gate_test.dart test/release/sprint_114_post_release_evidence_report_test.dart test/release/sprint_114_technical_debt_deferred_risk_register_test.dart -j 1",
+      "exit_code": 0,
+      "result": "68/68 scoped regression tests PASS"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat analyze --no-pub",
+      "exit_code": 0,
+      "result": "No issues found! (17.4s; post-amend final rerun)"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/dart.bat format --output=none --set-exit-if-changed lib/features/world_logic/domain/technical_debt_deferred_risk_register_v114.dart test/release/sprint_114_technical_debt_deferred_risk_register_test.dart",
+      "exit_code": 0,
+      "result": "Formatted 2 files (0 changed)"
+    },
+    {
+      "command": "python -m json.tool docs/planning/v1.2/sprint_114_technical_debt_deferred_risk_register.json",
+      "exit_code": 0,
+      "result": "valid JSON"
+    },
+    {
+      "command": "git diff --check -- lib/features/world_logic/domain/technical_debt_deferred_risk_register_v114.dart test/release/sprint_114_technical_debt_deferred_risk_register_test.dart docs/planning/v1.2/sprint_114_technical_debt_deferred_risk_register.json",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --debug --no-pub",
+      "exit_code": 0,
+      "result": "Built build/windows/x64/runner/Debug/void_scriptor.exe (28.2s; post-amend final rerun)"
+    }
+  ],
+  "limitations": [
+    "External gates remain DEFERRED-EXTERNAL; this slice does not claim live release, telemetry, incident, adoption, signing, hosted CI, hardware, or publication evidence.",
+    "The local register is a handoff document, not a waiver of an external gate."
+  ]
+}

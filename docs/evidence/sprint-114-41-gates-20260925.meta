@@ -1,0 +1,69 @@
+{
+  "step": "114.41",
+  "status": "VERIFIED-LOCAL",
+  "head_before": "469ee202dbde48255db45718028461b34a2b1df8",
+  "release_state": "DELAYED",
+  "patch_decision": "NO_PATCH",
+  "commands": [
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/dart.bat run tool/roadmap_guard.dart",
+      "exit_code": 0,
+      "result": "ROADMAP_GUARD: PASS; recommended_step 114.41; last_resolved_step 114.40; canonical_sha256 200a24d977d0808141587c9e5ebb17324ae8de5c5f792f5c4e92d07b0e8e9326"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_114_post_release_evidence_report_test.dart -j 1",
+      "exit_code": 1,
+      "result": "RED compile/load-fail: post_release_evidence_report_v114.dart and contract symbols absent"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_114_post_release_evidence_report_test.dart -j 1",
+      "exit_code": 0,
+      "result": "9/9 focused tests PASS"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_114_patch_regression_matrix_test.dart test/release/sprint_114_rollback_feature_flag_readiness_test.dart test/release/sprint_114_rollout_progression_decision_test.dart test/release/sprint_114_stable_release_health_gate_test.dart test/release/sprint_114_maintenance_release_scope_test.dart test/release/sprint_114_maintenance_artifact_release_gate_test.dart test/release/sprint_114_post_release_evidence_report_test.dart -j 1",
+      "exit_code": 0,
+      "result": "61/61 scoped regression tests PASS"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat analyze --no-pub",
+      "exit_code": 0,
+      "result": "No issues found! (11.5s)"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/dart.bat format --output=none --set-exit-if-changed lib/features/world_logic/domain/post_release_evidence_report_v114.dart test/release/sprint_114_post_release_evidence_report_test.dart",
+      "exit_code": 0,
+      "result": "Formatted 2 files (0 changed)"
+    },
+    {
+      "command": "python -m json.tool docs/planning/v1.2/sprint_114_post_release_evidence_report.json",
+      "exit_code": 0,
+      "result": "valid JSON"
+    },
+    {
+      "command": "git diff --check -- lib/features/world_logic/domain/post_release_evidence_report_v114.dart test/release/sprint_114_post_release_evidence_report_test.dart docs/planning/v1.2/sprint_114_post_release_evidence_report.json",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --debug --no-pub",
+      "exit_code": 0,
+      "result": "Built build/windows/x64/runner/Debug/void_scriptor.exe (23.4s)"
+    }
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "external_checks": [
+    "live_production_telemetry",
+    "public_incident_intake",
+    "external_adoption_evidence",
+    "public_release_signing",
+    "hosted_ci_validation",
+    "published_artifact_validation",
+    "upgrade_validation",
+    "rollback_validation",
+    "release_notes_publication",
+    "participant_communication",
+    "hardware_validation",
+    "publication"
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "canonical_step": "114.41",
+  "title": "Post-Release Evidence Report",
+  "status": "VERIFIED-LOCAL",
+  "release_state": "DELAYED",
+  "required_sections": [
+    "release_state",
+    "health",
+    "incidents",
+    "adoption_evidence",
+    "limitations",
+    "fixes",
+    "rollout",
+    "patch_decision"
+  ],
+  "report": {
+    "release_state": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_114_post_release_entry_gate.json"
+      ],
+      "summary": "Jalur kanonik adalah DELAYED; tidak ada klaim GA atau publikasi publik."
+    },
+    "health": {
+      "status": "DEFERRED-EXTERNAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_114_stable_release_health_gate.json"
+      ],
+      "summary": "Kontrak health lokal terverifikasi, tetapi observation window dan telemetry produksi belum dijalankan."
+    },
+    "incidents": {
+      "status": "DEFERRED-EXTERNAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_114_incident_queue_intake.json"
+      ],
+      "summary": "Belum ada channel incident publik aktif; report lokal tidak mengklaim absence incident produksi."
+    },
+    "adoption_evidence": {
+      "status": "DEFERRED-EXTERNAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_114_feedback_adoption_evidence_intake.json"
+      ],
+      "summary": "Belum ada dataset adoption eksternal yang ter-konsent dan terverifikasi."
+    },
+    "limitations": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_114_post_release_entry_gate.json"
+      ],
+      "summary": "Bukti lokal tidak menggantikan telemetry, incident, adoption, signing, hosted CI, hardware, atau publication."
+    },
+    "fixes": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_114_maintenance_release_scope.json"
+      ],
+      "summary": "Approved fix list untuk v1.2.1 kosong; tidak ada fix produksi yang disetujui untuk artifact maintenance baru."
+    },
+    "rollout": {
+      "status": "DEFERRED-EXTERNAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_114_rollout_stage_verification.json"
+      ],
+      "summary": "Tahap aktual rollout adalah not_started dan belum ada exposure pengguna yang dapat diverifikasi."
+    },
+    "patch_decision": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_114_maintenance_artifact_release_gate.json"
+      ],
+      "summary": "Keputusan maintenance artifact adalah NO_PATCH; tidak ada artifact, upgrade, rollback, checksum, atau release notes v1.2.1 yang diklaim."
+    }
+  },
+  "external_gates": "DEFERRED-EXTERNAL",
+  "deferred_checks": [
+    "live_production_telemetry",
+    "public_incident_intake",
+    "external_adoption_evidence",
+    "public_release_signing",
+    "hosted_ci_validation",
+    "published_artifact_validation",
+    "upgrade_validation",
+    "rollback_validation",
+    "release_notes_publication",
+    "participant_communication",
+    "hardware_validation",
+    "publication"
+  ],
+  "limitations": [
+    "Report ini merangkum evidence lokal Sprint 114 pada jalur DELAYED; report ini tidak mengklaim v1.2.0 atau v1.2.1 sudah dipublikasikan.",
+    "Health, incidents, adoption, dan rollout produksi tidak boleh diisi dari fixture atau definisi lokal.",
+    "Public-trust signing, hosted CI, published-artifact validation, participant communication, hardware, dan publication tetap DEFERRED-EXTERNAL."
+  ]
+}

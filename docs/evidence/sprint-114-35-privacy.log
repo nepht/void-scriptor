@@ -1,0 +1,31 @@
+00:00 +0: loading D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart
+00:00 +0: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: crash artifact containment captured crashes land only inside the diagnostics directory
+00:00 +1: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: crash artifact containment artifact schema stays fixed — no hidden telemetry fields
+00:00 +2: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: crash artifact containment artifact contents carry no remote endpoint or provider marker
+00:00 +3: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: crash artifact containment startup failure state stays inside its own local file
+00:00 +4: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: diagnostic redaction & deletion (101.17 test_scope) redacts secret-looking material from captured entries
+00:00 +5: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: diagnostic redaction & deletion (101.17 test_scope) crash signatures never embed secrets
+00:00 +6: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: diagnostic redaction & deletion (101.17 test_scope) purge removes captured artifacts on demand (data deletion)
+00:00 +7: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: bootstrap dependency surface bootstrap sources import no networking or telemetry package
+00:00 +8: loading D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart
+00:01 +8: D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart: Permission evaluation (103.20) deny-by-default: unlisted capability is refused
+00:01 +9: D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart: Permission evaluation (103.20) granted capability passes
+00:01 +10: D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart: Permission evaluation (103.20) escalation is never allowed (no extra grants mid-run)
+00:01 +11: D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart: Privacy evaluation (103.21) local_only enforced by default policy
+00:01 +12: D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart: Privacy evaluation (103.21) in-process transfer under local-only is allowed and unaudited
+00:01 +13: D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart: Privacy evaluation (103.21) external transfer under permissive policy is audited
+00:01 +14: D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart: Privacy evaluation (103.21) data minimization: undeclared data kinds are rejected
+00:01 +15: loading D:/VoidScriptor/void_scriptor_multiplatform/test/core/security/secret_redaction_property_test.dart
+00:01 +15: D:/VoidScriptor/void_scriptor_multiplatform/test/core/security/secret_redaction_property_test.dart: SecretRedactor.mask properties (exhaustive lengths) empty stays empty
+00:01 +16: D:/VoidScriptor/void_scriptor_multiplatform/test/core/security/secret_redaction_property_test.dart: SecretRedactor.mask properties (exhaustive lengths) every short value (1..4) becomes four asterisks
+00:01 +17: D:/VoidScriptor/void_scriptor_multiplatform/test/core/security/secret_redaction_property_test.dart: SecretRedactor.mask properties (exhaustive lengths) every longer value keeps first 3 chars and never contains full value
+00:01 +18: D:/VoidScriptor/void_scriptor_multiplatform/test/core/security/secret_redaction_property_test.dart: SecretRedactor.mask properties (exhaustive lengths) mask is deterministic
+00:01 +19: D:/VoidScriptor/void_scriptor_multiplatform/test/core/security/secret_redaction_property_test.dart: SecretRedactor.mask properties (exhaustive lengths) masking a masked value does not throw and stays stable
+00:01 +20: D:/VoidScriptor/void_scriptor_multiplatform/test/core/security/secret_redaction_property_test.dart: SecretRedactor.redact properties replaces every occurrence of every listed secret
+00:01 +21: D:/VoidScriptor/void_scriptor_multiplatform/test/core/security/secret_redaction_property_test.dart: SecretRedactor.redact properties redact with empty secret list is identity
+00:01 +22: D:/VoidScriptor/void_scriptor_multiplatform/test/core/security/secret_redaction_property_test.dart: SecretRedactor.redact properties redact is idempotent: no [REDACTED] token is ever re-scanned
+00:01 +23: D:/VoidScriptor/void_scriptor_multiplatform/test/core/security/secret_redaction_property_test.dart: SecretRedactor.redact properties overlapping secrets: longer secret wins, no partial residue
+00:01 +24: D:/VoidScriptor/void_scriptor_multiplatform/test/core/security/secret_redaction_property_test.dart: SecretScanner detection properties detects every supported credential format inside free text
+00:01 +25: D:/VoidScriptor/void_scriptor_multiplatform/test/core/security/secret_redaction_property_test.dart: SecretScanner detection properties does not false-positive on ordinary prose
+00:01 +26: D:/VoidScriptor/void_scriptor_multiplatform/test/core/security/secret_redaction_property_test.dart: SecretScanner detection properties matches are exact and non-empty for realistic keys
+00:02 +27: All tests passed!

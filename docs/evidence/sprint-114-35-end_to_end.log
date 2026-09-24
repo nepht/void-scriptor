@@ -1,0 +1,20 @@
+00:00 +0: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/story/core_e2e_journey_test.dart
+00:00 +0: D:/VoidScriptor/void_scriptor_multiplatform/test/features/story/core_e2e_journey_test.dart: core e2e: create novel, write, search, quick ref, export, backup, restore
+00:02 +1: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/global_search_journey_test.dart
+00:03 +1: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/global_search_journey_test.dart: global search journey: character select opens typed workspace
+00:06 +2: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspace/global_search_journey_test.dart: global search journey: faction select invokes nav callback
+00:07 +3: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/relations/character_relations_journey_test.dart
+00:08 +3: D:/VoidScriptor/void_scriptor_multiplatform/test/features/relations/character_relations_journey_test.dart: character relations journey: create relation via repo, verify display service, verify UI delete
+00:11 +4: loading D:/VoidScriptor/void_scriptor_multiplatform/test/app/void_scriptor_app_test.dart
+00:13 +4: D:/VoidScriptor/void_scriptor_multiplatform/test/app/void_scriptor_app_test.dart: mengganti routerConfig ketika parent memberikan router baru
+00:14 +5: loading D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/core_mvp_navigation_test.dart
+00:15 +5: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/core_mvp_navigation_test.dart: desktop navigation exposes the ordered Core destinations
+00:16 +6: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/core_mvp_navigation_test.dart: top bar destinations map to Explorer asset focus
+00:16 +7: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/core_mvp_navigation_test.dart: mobile navigation keeps Core primary and optional tools folded
+00:17 +8: loading D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/void_desktop_shell_nav_stack_test.dart
+00:18 +8: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/void_desktop_shell_nav_stack_test.dart: BUG-02a: klik tab Dashboard berulang tidak menumpuk halaman duplikat
+00:19 +9: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/void_desktop_shell_nav_stack_test.dart: BUG-02b: destinasi berbeda tetap push (affordance back dipertahankan)
+00:19 +10: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/void_desktop_shell_nav_stack_test.dart: BUG-02c: proyek yang sedang dibuka tidak ter-push duplikat dari Workspace
+00:20 +11: loading D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/void_mobile_shell_test.dart
+00:21 +11: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/void_mobile_shell_test.dart: mobile shell destinations navigate and expose More actions
+00:23 +12: All tests passed!

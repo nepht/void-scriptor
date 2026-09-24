@@ -1,0 +1,9 @@
+{
+  "suite": "security",
+  "command": "flutter test --no-pub -j 1 <4 scoped security files>",
+  "started_at": "2026-09-24T14:37:36Z",
+  "ended_at": "2026-09-24T14:37:47Z",
+  "duration_seconds": 11,
+  "exit_code": 0,
+  "result": "PASS"
+}

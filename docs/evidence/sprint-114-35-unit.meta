@@ -1,0 +1,9 @@
+{
+  "suite": "unit",
+  "command": "flutter test --no-pub -j 1 test/features/world_logic test/core/security",
+  "started_at": "2026-09-24T14:31:02Z",
+  "ended_at": "2026-09-24T14:33:39Z",
+  "duration_seconds": 157,
+  "exit_code": 0,
+  "result": "PASS"
+}

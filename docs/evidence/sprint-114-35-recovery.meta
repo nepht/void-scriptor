@@ -1,0 +1,9 @@
+{
+  "suite": "recovery",
+  "command": "flutter test --no-pub -j 1 <16 scoped recovery files>",
+  "started_at": "2026-09-24T14:36:17Z",
+  "ended_at": "2026-09-24T14:37:27Z",
+  "duration_seconds": 70,
+  "exit_code": 0,
+  "result": "PASS"
+}

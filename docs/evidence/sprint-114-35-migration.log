@@ -1,0 +1,19 @@
+00:00 +0: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/workspace_import_single_decode_test.dart
+00:00 +0: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/workspace_import_single_decode_test.dart: preflight decodes once and exposes the declared representation
+00:03 +1: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/workspace_import_single_decode_test.dart: preflight enforces the size cap BEFORE reading the file
+00:05 +2: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/workspace_import_single_decode_test.dart: restore consumes the preflight snapshot: later file corruption cannot change what is restored
+00:08 +3: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/workspace_import_single_decode_test.dart: restore rejects a preflight bound to a different file
+00:10 +4: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/workspace_import_single_decode_test.dart: manifest validation still runs on the preflight path
+00:11 +5: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/workspace_export_symlink_test.dart
+00:12 +5: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/workspace_export_symlink_test.dart: Novel export never follows symlinks out of the workspace (vs-hunt-20260912n BUG-04)
+00:15 +6: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/workspace_export_symlink_test.dart: Character export never follows symlinks out of the workspace (vs-hunt-20260912n BUG-04)
+00:16 +7: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/workspace_migration_runner_test.dart
+00:17 +7: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/workspace_migration_runner_test.dart: migrates mixed storage into typed workspaces with verified rollback drill
+00:19 +8: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/workspace_migration_runner_test.dart: rejects unsafe identifiers before mutating anything
+00:19 +9: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/vs_hunt_20260914_migration_atomicity_run312_test.dart
+00:20 +9: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/vs_hunt_20260914_migration_atomicity_run312_test.dart: BUG-1: a filesystem copy failure mid-migration compensates earlier copied workspaces, leaves no links, and retains the backup
+00:22 +10: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/vs_hunt_20260914_migration_atomicity_run312_test.dart: BUG-1: a colliding link insert rolls back the whole link set — no earlier inserted link survives without the later one
+00:24 +11: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workspaces/vs_hunt_20260914_migration_atomicity_run312_test.dart: BUG-5: a failed copy verification aborts the migration instead of returning a success-shaped report with committed links
+00:25 +12: loading D:/VoidScriptor/void_scriptor_multiplatform/test/e2e/sprint_109_export_workspace_e2e_test.dart
+00:26 +12: D:/VoidScriptor/void_scriptor_multiplatform/test/e2e/sprint_109_export_workspace_e2e_test.dart: 109 end-to-end narrative export path composes verified contracts
+00:26 +13: All tests passed!

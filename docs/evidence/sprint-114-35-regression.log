@@ -1,0 +1,44 @@
+00:00 +0: loading D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_112_end_to_end_writer_workflow_test.dart
+00:00 +0: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_112_end_to_end_writer_workflow_test.dart: 112.32 executes planning through clean export in canonical order
+00:00 +1: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_112_end_to_end_writer_workflow_test.dart: 112.32 recovery restores the revision from its snapshot safely
+00:00 +2: loading D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_112_worldbuilding_workflow_integration_test.dart
+00:01 +2: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_112_worldbuilding_workflow_integration_test.dart: 112.33 runs the complete worldbuilding evidence chain
+00:01 +3: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_112_worldbuilding_workflow_integration_test.dart: 112.33 rejects incomplete cross-domain identity
+00:01 +4: loading D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_112_beta_reader_workflow_integration_test.dart
+00:02 +4: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_112_beta_reader_workflow_integration_test.dart: 112.35 runs clearance, sharing, comments, revoke, and sanitization
+00:02 +5: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_112_beta_reader_workflow_integration_test.dart: 112.35 fails closed for blank identity and revoked reader
+00:02 +6: loading D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart
+00:03 +6: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: manifest_validation domain class validates the manifest structure
+00:03 +7: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: manifest_validation manifest has all required evidence sections
+00:03 +8: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: audience_results audience registration works
+00:03 +9: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: audience_results effective level resolves: explicit > group > default
+00:03 +10: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: audience_results visibility respects audience level and reveal points
+00:03 +11: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: audience_results safe default: unclassified items are major
+00:03 +12: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: redaction_results preview_as_reader shows visible blocks
+00:03 +13: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: redaction_results preview_as_reader redacts spoiler blocks
+00:03 +14: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: redaction_results hidden links are removed from redacted blocks
+00:03 +15: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: share_results export preflight validates request
+00:03 +16: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: share_results export preflight catches empty document id
+00:03 +17: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: revocation_results revoke removes access
+00:03 +18: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: revocation_results preview after revoke throws
+00:03 +19: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: revocation_results grant after revoke restores access
+00:03 +20: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: leakage_results no spoiler text in redacted blocks
+00:03 +21: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: leakage_results no internal links in redacted output
+00:03 +22: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: leakage_results metadata never appears in serialized preview
+00:03 +23: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: leakage_results reveal point before scene stays hidden
+00:03 +24: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: acceptance audience_policy_enforced
+00:03 +25: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: acceptance redaction_works
+00:03 +26: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: acceptance share_safe
+00:03 +27: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: acceptance revocation_enforced
+00:03 +28: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_113_beta_reader_spoiler_validation_test.dart: acceptance no_leakage
+00:03 +29: loading D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_112_writer_workflow_persistence_integration_test.dart
+00:04 +29: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_112_writer_workflow_persistence_integration_test.dart: 112.32 persists the writer workflow through a database restart
+00:06 +30: loading D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_114_patch_regression_matrix_test.dart
+00:07 +30: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_114_patch_regression_matrix_test.dart: 114.35 Patch Regression Matrix empty matrix is blocked without claiming patch readiness
+00:07 +31: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_114_patch_regression_matrix_test.dart: 114.35 Patch Regression Matrix complete matrix covers every canonical suite exactly once
+00:07 +32: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_114_patch_regression_matrix_test.dart: 114.35 Patch Regression Matrix missing suite remains failed instead of being dropped
+00:07 +33: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_114_patch_regression_matrix_test.dart: 114.35 Patch Regression Matrix non-passing suite keeps the matrix failed with named reason
+00:07 +34: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_114_patch_regression_matrix_test.dart: 114.35 Patch Regression Matrix unexecuted or evidence-free suite is never accepted
+00:07 +35: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_114_patch_regression_matrix_test.dart: 114.35 Patch Regression Matrix duplicate suite and malformed evidence fail closed
+00:07 +36: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_114_patch_regression_matrix_test.dart: 114.35 Patch Regression Matrix manifest records all canonical suites and evidence boundary
+00:07 +37: All tests passed!

@@ -1,0 +1,9 @@
+{
+  "suite": "integration",
+  "command": "flutter test --no-pub -j 1 <16 scoped integration/recovery files>",
+  "started_at": "2026-09-24T14:33:49Z",
+  "ended_at": "2026-09-24T14:35:09Z",
+  "duration_seconds": 80,
+  "exit_code": 0,
+  "result": "PASS"
+}

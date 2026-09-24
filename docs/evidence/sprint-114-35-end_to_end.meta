@@ -1,0 +1,9 @@
+{
+  "suite": "end_to_end",
+  "command": "flutter test --no-pub -j 1 <7 critical-path end-to-end files>",
+  "started_at": "2026-09-24T14:39:31Z",
+  "ended_at": "2026-09-24T14:40:02Z",
+  "duration_seconds": 31,
+  "exit_code": 0,
+  "result": "PASS"
+}

@@ -1,0 +1,114 @@
+{
+  "canonical_step": "114.35",
+  "title": "Patch Regression Matrix",
+  "objective": "Menjalankan tests proporsional untuk setiap fix serta full critical-path regression sebelum patch.",
+  "required_suites": [
+    "unit",
+    "integration",
+    "migration",
+    "recovery",
+    "security",
+    "privacy",
+    "accessibility",
+    "ui",
+    "end_to_end",
+    "regression"
+  ],
+  "results": [
+    {
+      "suite": "unit",
+      "command": "flutter test --no-pub -j 1 test/features/world_logic test/core/security",
+      "result": "passed",
+      "evidence": [
+        "docs/evidence/sprint-114-35-unit.meta"
+      ],
+      "notes": "exit 0; 2,312 tests; 157s"
+    },
+    {
+      "suite": "integration",
+      "command": "flutter test --no-pub -j 1 test/features/project_resilience/portable_archive_security_test.dart test/features/project_resilience/portable_schema_compatibility_test.dart test/features/project_resilience/portable_corrupt_input_test.dart test/features/project_resilience/portable_import_transaction_test.dart test/features/project_resilience/portable_import_crash_recovery_test.dart test/features/project_resilience/portable_export_interrupt_safety_test.dart test/features/project_resilience/backup_full_payload_rollback_test.dart test/features/project_resilience/backup_restore_screen_wiring_test.dart test/features/project_resilience/restore_exact_snapshot_test.dart test/features/project_resilience/restore_interrupted_crash_test.dart test/app/bootstrap/privacy_regression_test.dart test/workflow/workflow_security_test.dart test/app/bootstrap/startup_recovery_policy_test.dart test/app/shell/project_open_typed_failure_test.dart test/app/shell/project_locked_prompt_retry_test.dart test/app/shell/project_open_error_test.dart",
+      "result": "passed",
+      "evidence": [
+        "docs/evidence/sprint-114-35-integration.meta"
+      ],
+      "notes": "exit 0; 60 tests; 80s"
+    },
+    {
+      "suite": "migration",
+      "command": "flutter test --no-pub -j 1 test/features/workspaces/workspace_import_single_decode_test.dart test/features/workspaces/workspace_export_symlink_test.dart test/features/workspaces/workspace_migration_runner_test.dart test/features/workspaces/vs_hunt_20260914_migration_atomicity_run312_test.dart test/e2e/sprint_109_export_workspace_e2e_test.dart",
+      "result": "passed",
+      "evidence": [
+        "docs/evidence/sprint-114-35-migration.meta"
+      ],
+      "notes": "exit 0; 13 tests; 54s"
+    },
+    {
+      "suite": "recovery",
+      "command": "flutter test --no-pub -j 1 test/features/project_resilience/portable_archive_security_test.dart test/features/project_resilience/portable_schema_compatibility_test.dart test/features/project_resilience/portable_corrupt_input_test.dart test/features/project_resilience/portable_import_transaction_test.dart test/features/project_resilience/portable_import_crash_recovery_test.dart test/features/project_resilience/portable_export_interrupt_safety_test.dart test/features/project_resilience/backup_full_payload_rollback_test.dart test/features/project_resilience/backup_restore_screen_wiring_test.dart test/features/project_resilience/restore_exact_snapshot_test.dart test/features/project_resilience/restore_interrupted_crash_test.dart test/app/bootstrap/privacy_regression_test.dart test/workflow/workflow_security_test.dart test/app/bootstrap/startup_recovery_policy_test.dart test/app/shell/project_open_typed_failure_test.dart test/app/shell/project_locked_prompt_retry_test.dart test/app/shell/project_open_error_test.dart",
+      "result": "passed",
+      "evidence": [
+        "docs/evidence/sprint-114-35-recovery.meta"
+      ],
+      "notes": "exit 0; 60 tests; 70s"
+    },
+    {
+      "suite": "security",
+      "command": "flutter test --no-pub -j 1 test/features/project_resilience/portable_archive_security_test.dart test/app/bootstrap/privacy_regression_test.dart test/workflow/workflow_security_test.dart test/core/security/secret_redaction_property_test.dart",
+      "result": "passed",
+      "evidence": [
+        "docs/evidence/sprint-114-35-security.meta"
+      ],
+      "notes": "exit 0; 28 tests; 11s"
+    },
+    {
+      "suite": "privacy",
+      "command": "flutter test --no-pub -j 1 test/app/bootstrap/privacy_regression_test.dart test/workflow/workflow_security_test.dart test/core/security/secret_redaction_property_test.dart",
+      "result": "passed",
+      "evidence": [
+        "docs/evidence/sprint-114-35-privacy.meta"
+      ],
+      "notes": "exit 0; 27 tests; 9s"
+    },
+    {
+      "suite": "accessibility",
+      "command": "flutter test --no-pub -j 1 test/app/adaptive test/app/navigation test/design_system test/features/workflow/automation_a11y_test.dart test/features/workflow/workflow_editor_screen_test.dart test/features/workflow/workflow_library_screen_test.dart",
+      "result": "passed",
+      "evidence": [
+        "docs/evidence/sprint-114-35-accessibility.meta"
+      ],
+      "notes": "exit 0; 36 tests; 31s"
+    },
+    {
+      "suite": "ui",
+      "command": "flutter test --no-pub -j 1 test/app/adaptive test/app/navigation test/design_system test/features/workflow/automation_a11y_test.dart test/features/workflow/workflow_editor_screen_test.dart test/features/workflow/workflow_library_screen_test.dart",
+      "result": "passed",
+      "evidence": [
+        "docs/evidence/sprint-114-35-ui.meta"
+      ],
+      "notes": "exit 0; 36 tests; 27s"
+    },
+    {
+      "suite": "end_to_end",
+      "command": "flutter test --no-pub -j 1 test/features/story/core_e2e_journey_test.dart test/features/workspace/global_search_journey_test.dart test/features/relations/character_relations_journey_test.dart test/app/void_scriptor_app_test.dart test/app/shell/core_mvp_navigation_test.dart test/app/shell/void_desktop_shell_nav_stack_test.dart test/app/shell/void_mobile_shell_test.dart",
+      "result": "passed",
+      "evidence": [
+        "docs/evidence/sprint-114-35-end_to_end.meta"
+      ],
+      "notes": "exit 0; 12 tests; 31s"
+    },
+    {
+      "suite": "regression",
+      "command": "flutter test --no-pub -j 1 test/release/sprint_112_end_to_end_writer_workflow_test.dart test/release/sprint_112_worldbuilding_workflow_integration_test.dart test/release/sprint_112_beta_reader_workflow_integration_test.dart test/release/sprint_113_beta_reader_spoiler_validation_test.dart test/release/sprint_112_writer_workflow_persistence_integration_test.dart test/release/sprint_114_patch_regression_matrix_test.dart",
+      "result": "passed",
+      "evidence": [
+        "docs/evidence/sprint-114-35-regression.meta"
+      ],
+      "notes": "exit 0; 37 tests; 14s"
+    }
+  ],
+  "status": "VERIFIED-LOCAL",
+  "limitations": [
+    "Matriks memverifikasi unit/integration/migration/recovery/security/privacy/accessibility/ui/end_to_end/regression pada HEAD yang sama; native critical-path runtime, hardware, hosted CI, public-trust signing, live telemetry, dan publikasi tetap DEFERRED-EXTERNAL.",
+    "Bukti suite overlap secara sengaja: beberapa shard memperbaiki jalur yang sama; setiap result dicatat sebagai PASS hanya karena command aktual exit 0 pada run ini."
+  ]
+}

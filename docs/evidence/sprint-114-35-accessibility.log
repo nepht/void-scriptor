@@ -1,0 +1,49 @@
+00:00 +0: loading D:/VoidScriptor/void_scriptor_multiplatform/test/app/adaptive/void_adaptive_scaffold_test.dart
+00:00 +0: D:/VoidScriptor/void_scriptor_multiplatform/test/app/adaptive/void_adaptive_scaffold_test.dart: displays phone layout
+00:00 +1: D:/VoidScriptor/void_scriptor_multiplatform/test/app/adaptive/void_adaptive_scaffold_test.dart: displays tablet/compact layout
+00:00 +2: D:/VoidScriptor/void_scriptor_multiplatform/test/app/adaptive/void_adaptive_scaffold_test.dart: displays desktop layout
+00:00 +3: loading D:/VoidScriptor/void_scriptor_multiplatform/test/app/adaptive/void_resolver_test.dart
+00:01 +3: D:/VoidScriptor/void_scriptor_multiplatform/test/app/adaptive/void_resolver_test.dart: resolveDeviceType returns phone for width < 600
+00:01 +4: D:/VoidScriptor/void_scriptor_multiplatform/test/app/adaptive/void_resolver_test.dart: resolveDeviceType returns tablet for width 600
+00:01 +5: D:/VoidScriptor/void_scriptor_multiplatform/test/app/adaptive/void_resolver_test.dart: resolveDeviceType returns tablet for width < 1024 (boundary 1023.9)
+00:01 +6: D:/VoidScriptor/void_scriptor_multiplatform/test/app/adaptive/void_resolver_test.dart: resolveDeviceType returns compactDesktop for width 1024
+00:01 +7: D:/VoidScriptor/void_scriptor_multiplatform/test/app/adaptive/void_resolver_test.dart: resolveDeviceType returns compactDesktop for width < 1440 (boundary 1439.9)
+00:01 +8: D:/VoidScriptor/void_scriptor_multiplatform/test/app/adaptive/void_resolver_test.dart: resolveDeviceType returns desktop for width 1440
+00:01 +9: D:/VoidScriptor/void_scriptor_multiplatform/test/app/adaptive/void_resolver_test.dart: resolveDeviceType returns desktop for width > 1440 (e.g. 1920)
+00:01 +10: loading D:/VoidScriptor/void_scriptor_multiplatform/test/app/navigation/app_navigation_registry_test.dart
+00:02 +10: D:/VoidScriptor/void_scriptor_multiplatform/test/app/navigation/app_navigation_registry_test.dart: core navigation is unique, ordered, and separated from optional tools
+00:02 +11: D:/VoidScriptor/void_scriptor_multiplatform/test/app/navigation/app_navigation_registry_test.dart: only a small thumb-friendly subset is primary on mobile
+00:02 +12: loading D:/VoidScriptor/void_scriptor_multiplatform/test/app/navigation/settings_hub_navigation_test.dart
+00:06 +12: D:/VoidScriptor/void_scriptor_multiplatform/test/app/navigation/settings_hub_navigation_test.dart: route /settings membuka Settings Hub, bukan screen theme saja
+00:08 +13: D:/VoidScriptor/void_scriptor_multiplatform/test/app/navigation/settings_hub_navigation_test.dart: destination Settings di top bar desktop terhubung ke Settings Hub
+00:09 +14: loading D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/branding/void_scriptor_brand_assets_test.dart
+00:10 +14: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/branding/void_scriptor_brand_assets_test.dart: Void Scriptor brand asset paths are declared and loadable
+00:10 +15: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/branding/void_scriptor_brand_assets_test.dart: Void Scriptor SVG traces are bundled and parseable
+00:10 +16: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/branding/void_scriptor_brand_assets_test.dart: Space Grotesk font is bundled
+00:10 +17: loading D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/theme/void_theme_contrast_test.dart
+00:11 +17: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/theme/void_theme_contrast_test.dart: VoidTheme textTheme contrast VoidTypography tidak mengunci warna (cascade-friendly)
+00:11 +18: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/theme/void_theme_contrast_test.dart: VoidTheme textTheme contrast light theme memakai tinta palet terang (bukan tinta gelap)
+00:11 +19: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/theme/void_theme_contrast_test.dart: VoidTheme textTheme contrast dark theme memakai tinta palet gelap
+00:11 +20: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/theme/void_theme_contrast_test.dart: VoidTheme textTheme contrast textTheme menutup slot inti (display/body/caption)
+00:11 +21: loading D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/theme/void_theme_variant_test.dart
+00:12 +21: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/theme/void_theme_variant_test.dart: VoidThemeVariant menyediakan 6 keluarga aksen, default voidPurple
+00:12 +22: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/theme/void_theme_variant_test.dart: VoidThemeVariant setiap preset punya aksen unik antar keluarga (light & dark)
+00:12 +23: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/theme/void_theme_variant_test.dart: VoidThemeVariant SEMUA palet preset lulus kontras teks WCAG (>=7:1 textPrimary)
+00:12 +24: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/theme/void_theme_variant_test.dart: VoidThemeVariant buildLight/buildDark memasang palette + textTheme preset masing2
+00:12 +25: loading D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/widgets/void_button_test.dart
+00:13 +25: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/widgets/void_button_test.dart: VoidButton merender label dan merespons tap
+00:14 +26: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/widgets/void_button_test.dart: VoidButton ellipsizes a long label instead of overflowing at 390px
+00:14 +27: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/widgets/void_button_test.dart: long label shrinks via single-line ellipsis instead of overflowing
+00:14 +28: loading D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/widgets/void_card_test.dart
+00:15 +28: D:/VoidScriptor/void_scriptor_multiplatform/test/design_system/widgets/void_card_test.dart: VoidCard merender child
+00:16 +29: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workflow/automation_a11y_test.dart
+00:16 +29: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workflow/automation_a11y_test.dart: automation center survives 1.3x text scaling
+00:17 +30: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workflow/automation_a11y_test.dart: automation center survives 2.0x text scaling
+00:17 +31: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workflow/automation_a11y_test.dart: editor accepts keyboard input and exposes field semantics
+00:18 +32: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workflow/workflow_editor_screen_test.dart
+00:19 +32: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workflow/workflow_editor_screen_test.dart: draft validates live; save only when clean
+00:20 +33: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workflow/workflow_editor_screen_test.dart: duplicate step ids surface validation issues
+00:20 +34: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/workflow/workflow_library_screen_test.dart
+00:21 +34: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workflow/workflow_library_screen_test.dart: lists templates and instantiates on tap
+00:22 +35: D:/VoidScriptor/void_scriptor_multiplatform/test/features/workflow/workflow_library_screen_test.dart: empty registry shows explicit state
+00:22 +36: All tests passed!

@@ -1,0 +1,77 @@
+00:00 +0: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_archive_security_test.dart
+00:00 +0: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_archive_security_test.dart: rejects an archive entry with an absolute path and cleans partial output
+00:00 +1: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_schema_compatibility_test.dart
+00:01 +1: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_schema_compatibility_test.dart: OLD v53 database archive imports and migrates on first production open
+00:02 +2: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_schema_compatibility_test.dart: OLD manifest format (schemaVersion 15) is accepted with forward migration
+00:04 +3: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_schema_compatibility_test.dart: CURRENT v59 archive round-trips without needing a migration
+00:05 +4: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_corrupt_input_test.dart
+00:06 +4: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_corrupt_input_test.dart: import rejects an archive missing the manifest entry
+00:06 +5: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_corrupt_input_test.dart: import rejects an archive missing the database entry
+00:06 +6: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_corrupt_input_test.dart: import rejects a truncated zip container
+00:06 +7: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_corrupt_input_test.dart: import rejects input that is not a zip container at all
+00:06 +8: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_corrupt_input_test.dart: import rejects a malformed manifest whose checksum matches its content
+00:06 +9: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_corrupt_input_test.dart: import rejects a manifest from an unsupported future schema
+00:06 +10: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_corrupt_input_test.dart: positive control: archive with valid computed checksum imports cleanly
+00:07 +11: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_import_transaction_test.dart
+00:08 +11: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_import_transaction_test.dart: import failure after extraction rolls back registry state and package directory
+00:10 +12: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_import_transaction_test.dart: registry upsert preserves pre-existing projects when importing a copy
+00:14 +13: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_import_crash_recovery_test.dart
+00:15 +13: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_import_crash_recovery_test.dart: crash between stash rename and import restores original on registry load
+00:16 +14: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_import_crash_recovery_test.dart: leaves a crash-window stash in place when the canonical package exists
+00:17 +15: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_export_interrupt_safety_test.dart
+00:18 +15: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_export_interrupt_safety_test.dart: failed portable export never touches the final archive path
+00:20 +16: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/portable_export_interrupt_safety_test.dart: failed re-export preserves the previous valid archive byte-identical
+00:21 +17: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/backup_full_payload_rollback_test.dart
+00:22 +17: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/backup_full_payload_rollback_test.dart: failed restore rolls back changed and introduced assets and workspace files
+00:24 +18: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/backup_full_payload_rollback_test.dart: emergency backup failure aborts before changing the live payload
+00:26 +19: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/backup_restore_screen_wiring_test.dart
+00:27 +19: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/backup_restore_screen_wiring_test.dart: backups screen without backups disables restore with a visible state
+00:31 +20: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/backup_restore_screen_wiring_test.dart: restore latest backup requires explicit confirmation before running
+00:34 +21: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/backup_restore_screen_wiring_test.dart: restore failure surfaces inline without losing the screen
+00:37 +22: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/restore_exact_snapshot_test.dart
+00:38 +22: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/restore_exact_snapshot_test.dart: successful restore replaces the assets directory with the backup contents (files created after the backup do not survive)
+00:39 +23: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/restore_exact_snapshot_test.dart: a failed restore still returns the live project to its pre-restore state including post-backup live-only files (rollback stays exact)
+00:40 +24: loading D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/restore_interrupted_crash_test.dart
+00:41 +24: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/restore_interrupted_crash_test.dart: recover removes every restore staging artifact and returns count
+00:43 +25: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/restore_interrupted_crash_test.dart: recover on a clean package is a no-op returning zero
+00:45 +26: D:/VoidScriptor/void_scriptor_multiplatform/test/features/project_resilience/restore_interrupted_crash_test.dart: next restore after a crash heals leftover staging artifacts
+00:46 +27: loading D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart
+00:47 +27: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: crash artifact containment captured crashes land only inside the diagnostics directory
+00:47 +28: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: crash artifact containment artifact schema stays fixed — no hidden telemetry fields
+00:47 +29: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: crash artifact containment artifact contents carry no remote endpoint or provider marker
+00:47 +30: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: crash artifact containment startup failure state stays inside its own local file
+00:47 +31: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: diagnostic redaction & deletion (101.17 test_scope) redacts secret-looking material from captured entries
+00:47 +32: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: diagnostic redaction & deletion (101.17 test_scope) crash signatures never embed secrets
+00:47 +33: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: diagnostic redaction & deletion (101.17 test_scope) purge removes captured artifacts on demand (data deletion)
+00:47 +34: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/privacy_regression_test.dart: bootstrap dependency surface bootstrap sources import no networking or telemetry package
+00:47 +35: loading D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart
+00:48 +35: D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart: Permission evaluation (103.20) deny-by-default: unlisted capability is refused
+00:48 +36: D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart: Permission evaluation (103.20) granted capability passes
+00:48 +37: D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart: Permission evaluation (103.20) escalation is never allowed (no extra grants mid-run)
+00:48 +38: D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart: Privacy evaluation (103.21) local_only enforced by default policy
+00:48 +39: D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart: Privacy evaluation (103.21) in-process transfer under local-only is allowed and unaudited
+00:48 +40: D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart: Privacy evaluation (103.21) external transfer under permissive policy is audited
+00:48 +41: D:/VoidScriptor/void_scriptor_multiplatform/test/workflow/workflow_security_test.dart: Privacy evaluation (103.21) data minimization: undeclared data kinds are rejected
+00:48 +42: loading D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/startup_recovery_policy_test.dart
+00:49 +42: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/startup_recovery_policy_test.dart: StartupFailureCounter a healthy shutdown clears the streak
+00:49 +43: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/startup_recovery_policy_test.dart: StartupFailureCounter corrupt state file falls back to a clean slate, not a crash
+00:49 +44: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/startup_recovery_policy_test.dart: StartupFailureCounter missing file reads as zero without creating it
+00:49 +45: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/startup_recovery_policy_test.dart: StartupRecoveryPolicy.decide first failure boots normally and records the failure
+00:49 +46: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/startup_recovery_policy_test.dart: StartupRecoveryPolicy.decide second consecutive failure drops into safe mode
+00:49 +47: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/startup_recovery_policy_test.dart: StartupRecoveryPolicy.decide third consecutive failure offers full recovery mode
+00:49 +48: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/startup_recovery_policy_test.dart: StartupRecoveryPolicy.decide fourth and later failures stay in recovery with diagnostics hint
+00:49 +49: D:/VoidScriptor/void_scriptor_multiplatform/test/app/bootstrap/startup_recovery_policy_test.dart: configuration reset reset() wipes persisted state for the configuration_reset mode
+00:49 +50: loading D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/project_open_typed_failure_test.dart
+00:50 +50: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/project_open_typed_failure_test.dart: write-failure (read-only / disk full) shows storage recovery message
+00:51 +51: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/project_open_typed_failure_test.dart: unavailable (drive missing) shows storage access message
+00:51 +52: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/project_open_typed_failure_test.dart: locked (another writer) shows busy-project message
+00:51 +53: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/project_open_typed_failure_test.dart: unreadable (possible corruption) shows backup-recovery message
+00:52 +54: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/project_open_typed_failure_test.dart: unclassified error keeps the generic recovery message
+00:52 +55: loading D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/project_locked_prompt_retry_test.dart
+00:53 +55: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/project_locked_prompt_retry_test.dart: ProjectLockedException routes to the passphrase prompt with retry
+00:54 +56: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/project_locked_prompt_retry_test.dart: submitting a correct passphrase closes the prompt into the project
+00:55 +57: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/project_locked_prompt_retry_test.dart: a rejected passphrase surfaces an inline error and keeps the prompt
+00:55 +58: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/project_locked_prompt_retry_test.dart: unlockProject unlocks a real locked package through the manager
+00:58 +59: loading D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/project_open_error_test.dart
+00:59 +59: D:/VoidScriptor/void_scriptor_multiplatform/test/app/shell/project_open_error_test.dart: project open failure is visible and retryable without uncaught error
+01:00 +60: All tests passed!

@@ -1,0 +1,29 @@
+{
+  "canonical_step": "114.21",
+  "title": "Localization & Multiscript Health",
+  "objective": "Mencatat masalah locale, RTL, text expansion, dates, calendars, units, conlang, dan multiscript names.",
+  "required_evidence": [
+    "locale_issue",
+    "rtl_issue",
+    "text_overflow",
+    "date_issue",
+    "calendar_issue",
+    "unit_issue",
+    "multiscript_issue"
+  ],
+  "outcomes": [
+    "ok",
+    "failed",
+    "recovered"
+  ],
+  "decision_rule": "Tanpa observasi = BLOCKED tanpa klaim kesehatan; cakupan tujuh sinyal belum lengkap atau observasi tanpa catatan = FAIL; sinyal failed = FAIL <signal>_unrecovered (masalah tercatat belum pulih; sinyal lain yang ok atau recovered tidak menutupinya); sinyal recovered = pemulihan sinyal itu sendiri terdeteksi dan diverifikasi ulang tanpa pelanggaran; cakupan lengkap tanpa invalidasi dan tanpa sinyal failed = PASS.",
+  "root_recovery_signal": null,
+  "recovery_model": "per_signal_self_recovery",
+  "recovery_rationale": "Kontrak 114.21 hanya memuat daftar masalah locale/RTL/multiscript tanpa mekanisme pemulihan; pemulihan hanya diakui pada sinyal yang sama (outcome recovered), sehingga misalnya pemulihan rtl_issue tidak dipakai untuk menutupi locale_issue yang masih gagal.",
+  "native_locale_verification": "DEFERRED-EXTERNAL",
+  "public_distribution_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Sinyal dinilai dari observasi lokal/definisi kontrak; verifikasi locale RTL native, IME multiscript, terjemahan penuh, serta formatting Intl/ICU end-to-end belum diamati pada sesi native.",
+    "Native GUI lintas-platform, hosted CI, signing public-trust, dan publikasi distribusi tetap DEFERRED-EXTERNAL."
+  ]
+}

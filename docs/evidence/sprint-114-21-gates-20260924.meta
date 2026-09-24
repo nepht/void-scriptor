@@ -1,0 +1,12 @@
+sprint=114.21
+title=Localization & Multiscript Health
+phase=GATES
+date=2026-09-24
+red=exit 1 compile load failure (docs/evidence/sprint-114-21-red-20260924.meta)
+green_focused="flutter test test/release/sprint_114_localization_multiscript_health_test.dart -> 13/13 PASS exit 0 (rerun pasca-format)"
+regression_sprint_114_1_to_114_21="flutter test test/release/sprint_114_*_test.dart (21 file) -> 185/185 PASS exit 0"
+analyze="flutter analyze -> No issues found! (ran in 188.0s) exit 0"
+format="dart format --set-exit-if-changed (2 file slice) -> 0 changed exit 0"
+diff_check="git diff --check -> exit 0 (CRLF warnings berasal dari file sibling dirty, bukan fail)"
+build="flutter build windows --debug -> exit 0 (34,5s) √ Built build\windows\x64\runner\Debug\void_scriptor.exe"
+limitations="verifikasi locale RTL/IME native, Intl/ICU end-to-end, native GUI lintas-platform, hosted CI, signing public-trust, publikasi distribusi = DEFERRED-EXTERNAL; gap pra-ada 3 test release 113.38/39/40 (drift checksum artefak 113.44) di luar scope slice"

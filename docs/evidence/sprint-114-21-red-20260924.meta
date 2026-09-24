@@ -1,0 +1,7 @@
+sprint=114.21
+title=Localization & Multiscript Health
+phase=RED
+command="D:/DevTools/Flutter SDK/flutter/bin/flutter.bat" test test/release/sprint_114_localization_multiscript_health_test.dart
+exit=1
+result=compile load failure: Error: Method not found: 'LocalizationObservation' / 'LocalizationSignal' (domain lib/features/world_logic/domain/localization_multiscript_health.dart missing); Some tests failed.
+date=2026-09-24

@@ -1,0 +1,15 @@
+{
+  "canonical_step": "114.27",
+  "title": "Severity & Patch Triage",
+  "objective": "Memutuskan emergency fix, maintenance fix, documentation fix, defer, flag-off, atau rollback.",
+  "decisions": [
+    "EMERGENCY_FIX",
+    "MAINTENANCE_FIX",
+    "DOCUMENTATION_FIX",
+    "DEFER",
+    "FLAG_OFF",
+    "ROLLBACK"
+  ],
+  "status": "validated_local_domain_contract",
+  "limits": "Fixture lokal dependency-free; register kosong tetap BLOCKED tanpa klaim incident atau decision. Tidak membuktikan incident nyata, tracker eksternal, native GUI, hosted CI, credential/auth expiry, signing public-trust, hardware, telemetry produksi, atau publikasi; gate eksternal DEFERRED-EXTERNAL."
+}

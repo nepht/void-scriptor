@@ -1,0 +1,32 @@
+{
+  "canonical_step": "114.37",
+  "title": "Rollout Progression Decision",
+  "objective": "Memutuskan memperluas, menahan, mengurangi, atau menarik rollout berdasarkan health evidence.",
+  "decisions": [
+    "EXPAND",
+    "HOLD",
+    "REDUCE",
+    "ROLLBACK"
+  ],
+  "health_evidence": {
+    "required": true,
+    "allowed_statuses": [
+      "healthy",
+      "failed"
+    ],
+    "rules": [
+      "health evidence, source, dan rationale tidak boleh kosong",
+      "EXPAND ditolak bila ada health evidence berstatus failed",
+      "HOLD, REDUCE, dan ROLLBACK tetap valid saat health evidence failed",
+      "lebih dari satu keputusan atau keputusan ganda gagal"
+    ]
+  },
+  "external_rollout_execution": "DEFERRED-EXTERNAL",
+  "actual_rollout_decision": "DEFERRED-EXTERNAL",
+  "status": "VERIFIED-LOCAL",
+  "limitations": [
+    "Kontrak hanya memvalidasi health evidence dan keputusan rollout lokal; bukan claim bahwa rollout eksternal berjalan.",
+    "Live telemetry, eksposur pengguna, participant communication, hosted CI, public-trust signing, hardware, dan publikasi tetap DEFERRED-EXTERNAL.",
+    "Jalur canonical Sprint 114 saat ini DELAYED; keputusan ekspansi nyata tetap menunggu gate observasi dan keputusan produk."
+  ]
+}

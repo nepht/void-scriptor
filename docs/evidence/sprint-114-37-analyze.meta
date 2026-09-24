@@ -1,0 +1,5 @@
+{
+  "command": "flutter analyze",
+  "exit_code": 0,
+  "result": "PASS: No issues found!"
+}

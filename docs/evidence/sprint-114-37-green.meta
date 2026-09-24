@@ -1,0 +1,5 @@
+{
+  "command": "flutter test --no-pub -j 1 test/release/sprint_114_rollout_progression_decision_test.dart",
+  "exit_code": 0,
+  "result": "PASS 7/7"
+}

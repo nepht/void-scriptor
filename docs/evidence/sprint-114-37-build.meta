@@ -1,0 +1,5 @@
+{
+  "command": "flutter build windows --debug --no-pub",
+  "exit_code": 0,
+  "result": "PASS: build/windows/x64/runner/Debug/void_scriptor.exe"
+}

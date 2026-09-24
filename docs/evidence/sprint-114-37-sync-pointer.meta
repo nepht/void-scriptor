@@ -1,0 +1,5 @@
+{
+  "command": "dart run tool/roadmap_guard.dart --sync-pointer",
+  "exit_code": 0,
+  "result": "PASS; last_resolved_step=114.37; recommended_step=114.38"
+}

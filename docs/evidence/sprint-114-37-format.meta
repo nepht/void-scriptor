@@ -1,0 +1,5 @@
+{
+  "command": "dart format --output=none --set-exit-if-changed lib/features/world_logic/domain/rollout_progression_decision_v114.dart test/release/sprint_114_rollout_progression_decision_test.dart",
+  "exit_code": 0,
+  "result": "PASS 2 files; 0 changed"
+}

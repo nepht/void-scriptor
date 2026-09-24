@@ -1,0 +1,12 @@
+sprint=114.17
+phase=GATES
+date=2026-09-24
+red="flutter test focused exit 1 (domain missing) — docs/evidence/sprint-114-17-red-20260924.meta"
+green_focused="flutter test --no-pub test/release/sprint_114_memory_storage_cache_health_test.dart -j 1: 13/13 PASS exit 0 (rerun pasca-format 13/13 PASS)"
+regression="flutter test --no-pub test/release/sprint_114_*.dart -j 1: 133/133 PASS exit 0 (Sprint 114.1–114.17)"
+analyzer="flutter analyze --no-pub: No issues found (11.3s) exit 0"
+format="dart format --set-exit-if-changed (owned files): 0 changed exit 0"
+diff_check="git diff --check: exit 0"
+build="flutter build windows --debug: exit 0, 21.0s, build\windows\x64\runner\Debug\void_scriptor.exe"
+known_gap="3 pre-existing test/release failures sprint_113.38/39/40 (release artifact checksum drift from 113.44 rebuild; out of slice scope)"
+external_gates="native memory profiling, live disk measurement, hosted CI, hardware verification, public distribution = DEFERRED-EXTERNAL"

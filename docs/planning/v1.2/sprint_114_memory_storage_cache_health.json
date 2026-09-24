@@ -1,0 +1,26 @@
+{
+  "canonical_step": "114.17",
+  "title": "Memory, Storage & Cache Health",
+  "objective": "Memantau memory pressure, storage growth, snapshot retention, cache eviction, temp cleanup, dan index size.",
+  "required_evidence": [
+    "memory_pressure",
+    "storage_growth",
+    "snapshot_growth",
+    "cache_pressure",
+    "temp_growth",
+    "index_growth"
+  ],
+  "outcomes": [
+    "ok",
+    "failed",
+    "recovered"
+  ],
+  "decision_rule": "Tanpa observasi = BLOCKED tanpa klaim kesehatan; cakupan enam sinyal belum lengkap atau observasi tanpa catatan = FAIL; memory_pressure/storage_growth/snapshot_growth/temp_growth/index_growth ok sementara cache_pressure failed = FAIL cache_pressure_ignored (tekanan reclaim tak dipenuhi saat klaim ruang ok); sinyal tekanan/pertumbuhan failed sementara cache_pressure bukan recovered = FAIL <signal>_unrecovered (akar reclaim tak pernah pulih); sinyal tekanan/pertumbuhan failed sementara cache_pressure recovered = PASS konsistensi (reclaim pulih jujur); cakupan lengkap tanpa invalidasi atau pelanggaran = PASS.",
+  "root_recovery_signal": "cache_pressure",
+  "live_resource_telemetry": "DEFERRED-EXTERNAL",
+  "external_resource_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Sinyal dinilai dari observasi lokal/definisi kontrak; pengukuran memori/disk runtime pada mesin produksi live belum diamati.",
+    "Profil memori native, pengukuran disk nyata, hosted CI, verifikasi perangkat keras, dan publikasi distribusi tetap DEFERRED-EXTERNAL."
+  ]
+}

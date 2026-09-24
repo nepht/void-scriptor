@@ -1,0 +1,15 @@
+{
+  "canonical_step": "114.29",
+  "title": "P1 Stability Fixes",
+  "objective": "Menyelesaikan regresi workflow, migration, sync, recovery, accessibility, dan compatibility dengan perubahan minimum.",
+  "requirements": [
+    "reproduction",
+    "minimal_change",
+    "regression_test",
+    "review",
+    "risk_update",
+    "release_note"
+  ],
+  "status": "validated_local_domain_contract",
+  "limits": "Register lokal dependency-free; register kosong tetap BLOCKED tanpa klaim regresi nyata. Tidak membuktikan incident produksi, telemetry, native GUI, hosted CI, credential, signing public-trust, hardware, atau publikasi; gate eksternal DEFERRED-EXTERNAL."
+}

@@ -1,0 +1,48 @@
+{
+  "canonical_step": "114.43",
+  "title": "Sprint 115 Readiness Gate",
+  "status": "VERIFIED-LOCAL",
+  "release_state": "DELAYED",
+  "verdict": "CORRECTIVE_SCOPE_APPROVED",
+  "required_evidence": [
+    "stable_release_health_gate",
+    "patch_decision",
+    "remaining_incidents",
+    "capacity",
+    "account_cloud_center_scope",
+    "security_privacy_constraints"
+  ],
+  "evidence": {
+    "stable_release_health_gate": "VERIFIED-LOCAL",
+    "patch_decision": "NO_PATCH",
+    "remaining_incidents": [],
+    "capacity": "VERIFIED-LOCAL",
+    "account_cloud_center_scope": "CORRECTIVE_SCOPE_APPROVED",
+    "security_privacy_constraints": "VERIFIED-LOCAL"
+  },
+  "remaining_incidents": [],
+  "account_cloud_center_scope": "CORRECTIVE_SCOPE_APPROVED",
+  "scope_conditions": [
+    "Account & Cloud Center work may begin only inside the approved corrective scope on the DELAYED path.",
+    "FULL_SCOPE_APPROVED requires a RELEASED path and a locally verified stable release health gate with no remaining incidents.",
+    "A ROLLED_BACK path is limited to corrective scope and cannot authorize full Account & Cloud Center expansion.",
+    "An unknown patch decision, failed local gate, or unapproved scope fails closed."
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "deferred_checks": [
+    "live_production_telemetry",
+    "public_incident_intake",
+    "external_adoption_evidence",
+    "public_release_signing",
+    "hosted_ci_validation",
+    "published_artifact_validation",
+    "hardware_validation",
+    "publication"
+  ],
+  "limitations": [
+    "This gate records readiness for the approved corrective scope only; it does not claim v1.2.0 was publicly released.",
+    "The local corrective verification is not production health or external adoption evidence.",
+    "Account & Cloud Center expansion beyond corrective scope remains unavailable while the release path is DELAYED.",
+    "Public-trust signing, hosted CI, live telemetry, public incident intake, external adoption, hardware, and publication remain DEFERRED-EXTERNAL."
+  ]
+}

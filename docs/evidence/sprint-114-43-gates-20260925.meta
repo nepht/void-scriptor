@@ -1,0 +1,69 @@
+{
+  "step": "114.43",
+  "status": "VERIFIED-LOCAL",
+  "head_before": "7e0278fd94586a69a4dc4906888f7f17eaaa0d28",
+  "release_state": "DELAYED",
+  "verdict": "CORRECTIVE_SCOPE_APPROVED",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "commands": [
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/dart.bat run tool/roadmap_guard.dart",
+      "exit_code": 0,
+      "result": "ROADMAP_GUARD: PASS; recommended_step 114.43; last_resolved_step 114.42; canonical_sha256 200a24d977d0808141587c9e5ebb17324ae8de5c5f792f5c4e92d07b0e8e9326"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_115_readiness_gate_test.dart -j 1",
+      "exit_code": 1,
+      "result": "RED compile/load-fail: sprint_115_readiness_gate_v114.dart and contract symbols absent"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_115_readiness_gate_test.dart -j 1",
+      "exit_code": 0,
+      "result": "10/10 focused tests PASS"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_114_patch_regression_matrix_test.dart test/release/sprint_114_rollback_feature_flag_readiness_test.dart test/release/sprint_114_rollout_progression_decision_test.dart test/release/sprint_114_stable_release_health_gate_test.dart test/release/sprint_114_maintenance_release_scope_test.dart test/release/sprint_114_maintenance_artifact_release_gate_test.dart test/release/sprint_114_post_release_evidence_report_test.dart test/release/sprint_114_technical_debt_deferred_risk_register_test.dart test/release/sprint_115_readiness_gate_test.dart -j 1",
+      "exit_code": 0,
+      "result": "78/78 scoped regression tests PASS"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat analyze --no-pub",
+      "exit_code": 0,
+      "result": "No issues found! (12.5s after one unused-import correction)"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/dart.bat format --output=none --set-exit-if-changed lib/features/world_logic/domain/sprint_115_readiness_gate_v114.dart test/release/sprint_115_readiness_gate_test.dart",
+      "exit_code": 0,
+      "result": "Formatted 2 files (0 changed)"
+    },
+    {
+      "command": "python -c validate sprint_115_readiness_gate.json",
+      "exit_code": 0,
+      "result": "valid JSON"
+    },
+    {
+      "command": "git diff --check -- owned 114.43 files",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --debug --no-pub",
+      "exit_code": 0,
+      "result": "Built build/windows/x64/runner/Debug/void_scriptor.exe (25.7s)"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/dart.bat run tool/roadmap_guard.dart --sync-pointer",
+      "exit_code": 0,
+      "result": "ROADMAP_GUARD: PASS; recommended_step 114.44; last_resolved_step 114.43"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/dart.bat run tool/roadmap_guard.dart",
+      "exit_code": 0,
+      "result": "ROADMAP_GUARD: PASS; recommended_step 114.44; last_resolved_step 114.43; canonical_sha256 200a24d977d0808141587c9e5ebb17324ae8de5c5f792f5c4e92d07b0e8e9326"
+    }
+  ],
+  "limitations": [
+    "The gate authorizes only the approved corrective scope on the DELAYED path; it does not authorize full Account & Cloud Center expansion or claim a public release.",
+    "Live production telemetry, public incident intake, external adoption, public-trust signing, hosted CI, published-artifact validation, hardware, and publication remain DEFERRED-EXTERNAL."
+  ]
+}

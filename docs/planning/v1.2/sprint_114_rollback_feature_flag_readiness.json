@@ -1,0 +1,82 @@
+{
+  "canonical_step": "114.36",
+  "title": "Rollback & Feature-Flag Readiness",
+  "objective": "Memastikan rollback artifact, kill switch, dependency flags, data compatibility, dan user guidance siap.",
+  "status": "VERIFIED-LOCAL",
+  "required_evidence": [
+    "rollback_artifact",
+    "kill_switch",
+    "flag_matrix",
+    "data_compatibility",
+    "rollback_drill",
+    "user_guidance"
+  ],
+  "evidence": {
+    "rollback_artifact": {
+      "status": "verified_local",
+      "sources": [
+        "docs/planning/v1.2/sprint_113_update_channel_delivery_validation.json",
+        "docs/release/v1.2.0-alpha.1-download-manifest.json"
+      ],
+      "claim": "Metadata rollback lokal menunjuk artifact alpha.1 yang dicatat lengkap dengan ukuran dan SHA-256;Availability byte lokal saat step ini tidak diklaim karena transfer preview timeout."
+    },
+    "kill_switch": {
+      "status": "verified_local",
+      "sources": [
+        "lib/core/feature_flags/feature_flag_registry.dart",
+        "test/core/feature_flags/feature_flag_kill_switch_test.dart",
+        "test/release/sprint_114_rollback_feature_flag_readiness_test.dart"
+      ],
+      "claim": "FeatureFlagRegistry.engageKillSwitch mengosongkan seluruh flag hidup dan membuat setiap flagTerdaftarOFF."
+    },
+    "flag_matrix": {
+      "status": "verified_local",
+      "sources": [
+        "docs/planning/v1.2/sprint_112_feature_flag_rollout_matrix.json",
+        "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json",
+        "lib/core/feature_flags/feature_flag_registry.dart"
+      ],
+      "claim": "Matrix dan packaging manifest memetakan flag serta dependency; seluruh 13 flag registry tetap default OFF."
+    },
+    "data_compatibility": {
+      "status": "verified_local",
+      "sources": [
+        "docs/planning/v1.2/sprint_113_upgrade_path_validation.json",
+        "test/release/sprint_113_upgrade_path_validation_test.dart",
+        "test/features/project_resilience/portable_schema_compatibility_test.dart",
+        "docs/planning/v1.2/migration_backup_rollback_plan.md"
+      ],
+      "claim": "Source schema 55/58/60/61 dapat dimigrasikan ke 62, manifest lama menerima jalur kompatibel, dan schema baru lebih-than-app ditolak fail-closed."
+    },
+    "rollback_drill": {
+      "status": "verified_local",
+      "sources": [
+        "docs/planning/v1.2/sprint_113_rollback_drill.json",
+        "test/release/sprint_113_rollback_drill_test.dart",
+        "test/features/project_resilience/backup_rollback_failure_test.dart",
+        "test/features/project_resilience/restore_exact_snapshot_test.dart"
+      ],
+      "claim": "Drill lokal memuat artifact verification, kill switch, backup/restore, dan rollback boundary; published-artifact withdrawal dan participant communication belum dieksekusi."
+    },
+    "user_guidance": {
+      "status": "verified_local",
+      "sources": [
+        "docs/release/v1.2.0-rc.1-recovery-guide.md",
+        "docs/planning/v1.2/migration_backup_rollback_plan.md",
+        "docs/release/v1.2.0-rc.1-support-playbook.md"
+      ],
+      "claim": "Recovery guide, migration boundary, dan support playbook memberi langkah rollback yang tidak menghendaki downgrade database in-place."
+    }
+  },
+  "decision": "READY_LOCAL_ROLLBACK_CORRECTIVE",
+  "public_trust": "DEFERRED-EXTERNAL",
+  "published_artifact_drill": "DEFERRED-EXTERNAL",
+  "hosted_ci": "DEFERRED-EXTERNAL",
+  "live_telemetry": "DEFERRED-EXTERNAL",
+  "publication": "DEFERRED-EXTERNAL",
+  "limits": [
+    "Keenam evidence di-close sebagai readiness lokal; ini bukan klaim artifact alpha.1 tersedia di disk saat step ini atau rollbackdistribution publik tervalidasi.",
+    "Public-trust signing, published-artifact rollback drill, participant communication, hosted CI, live telemetry, hardware, dan publication tetap DEFERRED-EXTERNAL.",
+    "Transfer artifact alpha.1 dari preview dicoba sebagai verifikasi tambahan tetapi timeout dua kali dan tidak mengubah status evidence metadata lokal."
+  ]
+}

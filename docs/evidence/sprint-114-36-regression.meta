@@ -1,0 +1,8 @@
+{
+  "command": "flutter test --no-pub -j 1 <9 focused rollback/flag/compatibility files>",
+  "started_at": "2026-09-24T15:25:07Z",
+  "ended_at": "2026-09-24T15:25:47Z",
+  "duration_seconds": 40,
+  "exit_code": 0,
+  "result": "PASS"
+}

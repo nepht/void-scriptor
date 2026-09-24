@@ -1,0 +1,8 @@
+{
+  "command": "flutter analyze",
+  "started_at": "2026-09-24T15:26:21Z",
+  "ended_at": "2026-09-24T15:26:38Z",
+  "duration_seconds": 17,
+  "exit_code": 0,
+  "result": "PASS"
+}

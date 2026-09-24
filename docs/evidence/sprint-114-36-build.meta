@@ -1,0 +1,8 @@
+{
+  "command": "flutter build windows --debug",
+  "started_at": "2026-09-24T15:27:17Z",
+  "ended_at": "2026-09-24T15:27:43Z",
+  "duration_seconds": 26,
+  "exit_code": 0,
+  "result": "PASS"
+}

@@ -1,0 +1,8 @@
+{
+  "command": "flutter test --no-pub -j 1 test/release/sprint_114_rollback_feature_flag_readiness_test.dart",
+  "started_at": "2026-09-24T15:24:42Z",
+  "ended_at": "2026-09-24T15:24:49Z",
+  "duration_seconds": 7,
+  "exit_code": 0,
+  "result": "PASS"
+}

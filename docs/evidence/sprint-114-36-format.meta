@@ -1,0 +1,8 @@
+{
+  "command": "dart format --output=none --set-exit-if-changed <2 scoped dart files>",
+  "started_at": "2026-09-24T15:27:00Z",
+  "ended_at": "2026-09-24T15:27:01Z",
+  "duration_seconds": 1,
+  "exit_code": 0,
+  "result": "PASS"
+}

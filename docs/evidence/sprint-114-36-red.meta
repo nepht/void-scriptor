@@ -1,0 +1,9 @@
+{
+  "command": "flutter test --no-pub -j 1 test/release/sprint_114_rollback_feature_flag_readiness_test.dart",
+  "started_at": "2026-09-24T15:19:59Z",
+  "ended_at": "2026-09-24T15:20:05Z",
+  "duration_seconds": 6,
+  "exit_code": 1,
+  "result": "RED_CONFIRMED",
+  "expected_red": "missing rollback readiness domain module"
+}

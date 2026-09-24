@@ -1,0 +1,21 @@
+{
+  "recorded_at": "2026-09-24T11:56:16.419310+00:00",
+  "head": "aa091b2d4896252f522ef27ba30a224e152692d4",
+  "files": {
+    "lib\\features\\world_logic\\domain\\support_documentation_maintenance_v114.dart": {
+      "sha256": "a64463a68d05a016a7ad67ec655c8036eb937bf27d91b286915bbc36085fc3f5",
+      "size": 3524,
+      "mtime": "2026-09-24T11:54:24.137664+00:00"
+    },
+    "test\\release\\sprint_114_support_documentation_maintenance_test.dart": {
+      "sha256": "c82784580f4bafabfcbf9ce816d517835d4512ac57aca1e8ac1e7115d8355491",
+      "size": 4840,
+      "mtime": "2026-09-24T11:54:38.126919+00:00"
+    },
+    "docs\\planning\\v1.2\\sprint_114_support_documentation_maintenance.json": {
+      "sha256": "a1924f8b55de22666d236290cccb2cca682520c0fbe7d40db101a1626c816076",
+      "size": 1154,
+      "mtime": "2026-09-24T11:54:01.368845+00:00"
+    }
+  }
+}

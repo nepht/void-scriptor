@@ -1,0 +1,26 @@
+{
+  "canonical_step": "114.34",
+  "title": "Support & Documentation Maintenance",
+  "objective": "Memperbaiki recovery guide, migration notes, known issues, troubleshooting, dan in-product guidance.",
+  "outputs": [
+    "recovery_guide",
+    "migration_notes",
+    "known_issues",
+    "troubleshooting",
+    "ui_guidance",
+    "support_macros"
+  ],
+  "sources": {
+    "recovery_guide": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+    "migration_notes": "docs/planning/v1.2/migration_backup_rollback_plan.md",
+    "known_issues": "docs/release/v1.2.0-rc.1-known-limits.md",
+    "troubleshooting": "docs/user/void_scriptor_user_guide.md",
+    "ui_guidance": "docs/user/void_scriptor_user_guide.md#in-product-guidance",
+    "support_macros": "docs/release/v1.2.0-rc.1-support-playbook.md"
+  },
+  "status": "VERIFIED-LOCAL",
+  "limits": [
+    "Kontrak ini memvalidasi registrasinya enam output pemeliharaan; isi dokumen tetap sumber operator dan tidak menjamin troubleshooting setiap insiden.",
+    "Native GUI, support channel publik, telemetry produksi, hosted CI, signing public-trust, hardware, dan publikasi distribusi tetap DEFERRED-EXTERNAL."
+  ]
+}

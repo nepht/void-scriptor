@@ -1,0 +1,29 @@
+{
+  "canonical_step": "114.20",
+  "title": "Accessibility Health",
+  "objective": "Mencatat blocker keyboard, screen reader, focus, scaling, contrast, reduced motion, dan fallback nonvisual.",
+  "required_evidence": [
+    "keyboard_blocker",
+    "screen_reader_blocker",
+    "focus_loss",
+    "scaling_break",
+    "contrast_issue",
+    "motion_issue",
+    "nonvisual_gap"
+  ],
+  "outcomes": [
+    "ok",
+    "failed",
+    "recovered"
+  ],
+  "decision_rule": "Tanpa observasi = BLOCKED tanpa klaim kesehatan; cakupan tujuh sinyal belum lengkap atau observasi tanpa catatan = FAIL; sinyal failed = FAIL <signal>_unrecovered (blocker tercatat belum pulih; sinyal lain yang ok atau recovered tidak menutupinya); sinyal recovered = pemulihan sinyal itu sendiri terdeteksi dan diverifikasi ulang tanpa pelanggaran; cakupan lengkap tanpa invalidasi dan tanpa sinyal failed = PASS.",
+  "root_recovery_signal": null,
+  "recovery_model": "per_signal_self_recovery",
+  "recovery_rationale": "Kontrak 114.20 hanya memuat blocker dan gap tanpa mekanisme pemulihan; pemulihan hanya diakui pada sinyal yang sama (outcome recovered), sehingga fallback nonvisual tidak dipakai untuk menutupi blocker keyboard, screen reader, focus, scaling, contrast, maupun motion.",
+  "native_at_verification": "DEFERRED-EXTERNAL",
+  "public_distribution_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Sinyal dinilai dari observasi lokal/definisi kontrak; pengujian assistive technology native (NVDA/Narrator/VoiceOver), widget-level semantics, serta query high-contrast/reduced-motion tingkat OS belum diamati pada sesi native.",
+    "Native GUI lintas-platform, hosted CI, signing public-trust, dan publikasi distribusi tetap DEFERRED-EXTERNAL."
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "canonical_step": "114.32",
+  "title": "Security & Privacy Maintenance",
+  "objective": "Menutup temuan security/privacy dan memutakhirkan threat, data flow, dependency, serta advisories.",
+  "outputs": [
+    "fixes",
+    "security_tests",
+    "privacy_tests",
+    "threat_update",
+    "data_flow_update",
+    "dependency_update",
+    "advisory"
+  ],
+  "status": "VERIFIED-LOCAL",
+  "limits": [
+    "Kontrak ini memvalidasi kelengkapan rencana pemeliharaan security dan privacy lokal; tidak mengklaim exploit produksi nyata atau telemetry eksternal.",
+    "Scanning vulnerability live pada remote network, hosted CI, credential eksternal, signing public-trust, hardware, dan publikasi advisory publik tetap DEFERRED-EXTERNAL."
+  ]
+}

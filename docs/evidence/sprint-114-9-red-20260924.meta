@@ -1,0 +1,7 @@
+sprint_step=114.9
+phase=RED
+date=2026-09-24
+command="D:/DevTools/Flutter SDK/flutter/bin/flutter.bat" test test/release/sprint_114_install_update_health_test.dart
+exit_code=1
+failure=compile load failure: Error when reading 'lib/features/world_logic/domain/install_update_health.dart': The system cannot find the file specified; Method not found: 'InstallUpdateHealth'; Undefined name: 'InstallUpdateHealthState'
+expectation=domain install_update_health.dart belum ada -> RED tervalidasi sebelum implementasi

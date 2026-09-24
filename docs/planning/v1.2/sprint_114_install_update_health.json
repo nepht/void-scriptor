@@ -1,0 +1,25 @@
+{
+  "canonical_step": "114.9",
+  "title": "Install & Update Health",
+  "objective": "Memantau install, download, signature, disk-space handling, retry, resume, dan update completion.",
+  "required_evidence": [
+    "install_success",
+    "download_failure",
+    "signature_failure",
+    "insufficient_space",
+    "retry_success",
+    "update_completion"
+  ],
+  "outcomes": [
+    "ok",
+    "failed",
+    "recovered"
+  ],
+  "decision_rule": "Tanpa observasi = BLOCKED tanpa klaim kesehatan; cakupan enam sinyal belum lengkap atau observasi tanpa catatan = FAIL; update_completion ok sementara signature_failure failed = FAIL signature_failure_ignored; update_completion ok sementara insufficient_space failed = FAIL space_check_ignored; update_completion ok sementara download_failure failed tanpa retry_success ok = FAIL download_failure_ignored; cakupan lengkap tanpa invalidasi atau pelanggaran = PASS.",
+  "live_install_telemetry": "DEFERRED-EXTERNAL",
+  "external_distribution_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Sinyal dinilai dari observasi lokal/devinisi kontrak; belum ada telemetri instalasi atau pembaruan produksi yang diamati.",
+    "Perilaku CDN, kepercayaan sertifikat publik, notarasi, kanal pembaruan end-user, dan publikasi distribusi tetap DEFERRED-EXTERNAL."
+  ]
+}

@@ -1,0 +1,11 @@
+sprint=114.16
+phase=GATES
+date=2026-09-24
+focused_green="flutter test --no-pub test/release/sprint_114_performance_responsiveness_health_test.dart -> 13/13 PASS exit 0 (rerun pasca-format)"
+regression="flutter test --no-pub $(ls test/release/sprint_114_*_test.dart) -> 120/120 PASS exit 0 (Sprint 114.1-114.16)"
+analyzer="flutter analyze --no-pub -> No issues found (9.8s) exit 0"
+format="dart format --set-exit-if-changed (2 files) -> 0 changed exit 0"
+diff_check="git diff --check -> exit 0"
+build="flutter build windows --debug -> exit 0 (19,7s)"
+known_gap="3 pre-existing test/release failures sprint_113.38/39/40 (release exe hash drift from 113.44 rebuild; out of slice scope)"
+status=VERIFIED-LOCAL

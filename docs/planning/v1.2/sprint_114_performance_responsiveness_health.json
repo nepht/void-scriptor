@@ -1,0 +1,26 @@
+{
+  "canonical_step": "114.16",
+  "title": "Performance & Responsiveness Health",
+  "objective": "Membandingkan startup, editor latency, search, graph, simulation, media, export, dan background work dengan baseline.",
+  "required_evidence": [
+    "startup",
+    "editor_latency",
+    "search_latency",
+    "graph_latency",
+    "simulation_latency",
+    "export_duration",
+    "background_contention"
+  ],
+  "outcomes": [
+    "ok",
+    "failed",
+    "recovered"
+  ],
+  "decision_rule": "Tanpa observasi = BLOCKED tanpa klaim kesehatan; cakupan tujuh sinyal belum lengkap atau observasi tanpa catatan = FAIL; startup/editor_latency/search_latency/graph_latency/simulation_latency/export_duration ok sementara background_contention failed = FAIL contention_ignored; sinyal kerja failed sementara background_contention failed = FAIL <signal>_unrecovered (akar contention tak pernah pulih); sinyal kerja failed sementara background_contention ok = FAIL <signal>_unrecovered (latensi gagal tanpa akar contention terpulih); kegagalan terdeteksi yang pulih jujur (background_contention recovered saat latensi kerja failed, tanpa pelanggaran) = PASS konsistensi; cakupan lengkap tanpa invalidasi atau pelanggaran = PASS.",
+  "live_performance_telemetry": "DEFERRED-EXTERNAL",
+  "external_performance_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Sinyal dinilai dari observasi lokal/definisi kontrak; pengukuran performa startup/native GUI pada mesin produksi live belum diamati.",
+    "Profile-mode FrameTiming, cold-start native GUI, hosted CI, verifikasi perangkat keras, dan publikasi distribusi tetap DEFERRED-EXTERNAL."
+  ]
+}

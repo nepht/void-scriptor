@@ -1,0 +1,7 @@
+sprint=114.16
+phase=RED
+date=2026-09-24
+command="D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_114_performance_responsiveness_health_test.dart"
+exit=1
+reason=domain missing (compile errors: PerformanceObservation/PerformanceSignal undefined)
+status=RED_VERIFIED

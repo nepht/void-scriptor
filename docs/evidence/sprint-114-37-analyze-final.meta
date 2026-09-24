@@ -1,0 +1,5 @@
+{
+  "command": "flutter analyze (post-commit)",
+  "exit_code": 0,
+  "result": "PASS: No issues found! (10.9s)"
+}

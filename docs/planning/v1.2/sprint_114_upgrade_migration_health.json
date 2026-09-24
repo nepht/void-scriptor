@@ -1,0 +1,25 @@
+{
+  "canonical_step": "114.10",
+  "title": "Upgrade & Migration Health",
+  "objective": "Memantau migration failure, duration, warning, repair, rollback, dan data comparison per source version.",
+  "required_evidence": [
+    "migration_success",
+    "migration_duration",
+    "warnings",
+    "repair_required",
+    "rollback_result",
+    "integrity_result"
+  ],
+  "outcomes": [
+    "ok",
+    "failed",
+    "recovered"
+  ],
+  "decision_rule": "Tanpa observasi = BLOCKED tanpa klaim kesehatan; cakupan enam sinyal belum lengkap atau observasi tanpa catatan = FAIL; migration_success ok sementara integrity_result failed = FAIL integrity_failure_ignored; migration_success ok sementara repair_required failed = FAIL repair_required_ignored; migration_success failed sementara rollback_result failed = FAIL migration_unrecovered; cakupan lengkap tanpa invalidasi atau pelanggaran = PASS.",
+  "live_migration_telemetry": "DEFERRED-EXTERNAL",
+  "external_upgrade_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Sinyal dinilai dari observasi lokal/definisi kontrak; belum ada telemetri upgrade atau migrasi produksi yang diamati.",
+    "Perilaku kanal update end-user, skema database produksi end-to-end, publikasi distribusi, dan verifikasi upgrade lintas versi nyata tetap DEFERRED-EXTERNAL."
+  ]
+}

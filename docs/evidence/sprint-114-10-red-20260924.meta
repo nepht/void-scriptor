@@ -1,0 +1,7 @@
+sprint_step=114.10
+phase=RED
+date=2026-09-24
+command="D:/DevTools/Flutter SDK/flutter/bin/flutter.bat" test test/release/sprint_114_upgrade_migration_health_test.dart
+exit_code=1
+failure=compile load failure: Error when reading 'lib/features/world_logic/domain/upgrade_migration_health.dart': The system cannot find the file specified; Method not found: 'UpgradeMigrationHealth'; Undefined name: 'UpgradeMigrationHealthState'
+expectation=domain upgrade_migration_health.dart belum ada -> RED tervalidasi sebelum implementasi

@@ -1,0 +1,10 @@
+sprint_step=114.10
+date=2026-09-24
+focused_green="flutter.bat test test/release/sprint_114_upgrade_migration_health_test.dart = 8/8 PASS exit 0 (rerun pasca-format 8/8)"
+regression_114_1_to_114_9="flutter.bat test <9 sprint_114 test files> = 43/43 PASS exit 0"
+format="dart format (2 files changed) -> dart format --set-exit-if-changed = 0 changed exit 0"
+diff_check="git diff --check exit 0"
+analyze="flutter analyze = No issues found! (11.0s) exit 0"
+build="flutter build windows --debug = PASS 19.7s exit 0"
+roadmap_guard_pre_run="PASS recommended_step=114.10 canonical_sha256=200a24d977d0808141587c9e5ebb17324ae8de5c5f792f5c4e92d07b0e8e9326"
+limitations="live migration telemetry, production schema end-to-end verification, end-user update channel, distribution publication = DEFERRED-EXTERNAL"

@@ -1,0 +1,16 @@
+{
+  "canonical_step": "114.28",
+  "title": "P0 & Critical Security Response",
+  "objective": "Menangani data loss, corruption, security critical, privacy leak, atau unrecoverable crash melalui emergency path.",
+  "required_outputs": [
+    "containment",
+    "user_protection",
+    "root_cause",
+    "fix",
+    "tests",
+    "advisory",
+    "rollback_or_patch"
+  ],
+  "status": "validated_local_domain_contract",
+  "limits": "Register lokal dependency-free; register kosong tetap BLOCKED tanpa klaim incident. Tidak membuktikan incident nyata, security telemetry, user-data fault injection, native GUI, hosted CI, credential, signing public-trust, hardware, atau publikasi; gate eksternal DEFERRED-EXTERNAL."
+}

@@ -58,7 +58,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-24T08:37:55.036246Z",
+  "updated_at": "2026-09-24T08:59:27.757330Z",
   "updated_by": "roadmap_guard sync-pointer",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {

@@ -1,0 +1,46 @@
+{
+  "canonical_step": "114.39",
+  "title": "Maintenance Release Scope",
+  "objective": "Menentukan isi v1.2.1 hanya dari perbaikan yang telah disetujui; jika tidak diperlukan, catat keputusan NO_PATCH.",
+  "status": "VERIFIED-LOCAL",
+  "target_version": "1.2.1",
+  "selected_decision": "NO_PATCH",
+  "decision_authority": "Choi",
+  "decision_inputs": {
+    "stable_release_health_gate": "PASS_LOCAL_CORRECTIVE_FIXTURE",
+    "rollout_decision": "HOLD",
+    "approved_fix_scope": [],
+    "rationale": [
+      "Tidak ada perbaikan produksi yang telah disetujui dan memerlukan v1.2.1 pada checkpoint lokal saat ini.",
+      "Memilih NO_PATCH mencegah feature atau fix baru masuk ke scope maintenance tanpa otorisasi dan bukti health gate yang sesuai."
+    ]
+  },
+  "allowed_decisions": [
+    "BUILD_1_2_1",
+    "NO_PATCH",
+    "EMERGENCY_RELEASE_ALREADY_ISSUED"
+  ],
+  "scope_rules": [
+    "BUILD_1_2_1 hanya boleh memuat approved fixes yang unik, lengkap, dan memiliki source serta release note.",
+    "NO_PATCH hanya boleh dipilih tanpa approved fix dalam daftar.",
+    "EMERGENCY_RELEASE_ALREADY_ISSUED tidak boleh dipakai sebagai klaim bahwa artifact emergency baru diterbitkan."
+  ],
+  "approved_fixes": [],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "deferred_checks": [
+    "public_release_signing",
+    "hosted_ci_validation",
+    "live_production_telemetry",
+    "published_artifact_validation",
+    "upgrade_validation",
+    "rollback_validation",
+    "release_notes_publication",
+    "publication"
+  ],
+  "limitations": [
+    "Keputusan ini hanyacakupan maintenance release lokal dan tidak membangun, menandatangani, menguji upgrade/rollback artifact, atau menerbitkan v1.2.1.",
+    "Stable Release Health Gate PASS pada 114.38 adalah fixture LOCAL_CORRECTIVE_ONLY, bukan observasi rilis produksi.",
+    "Public-trust signing, hosted CI, live production telemetry, published-artifact validation, upgrade/rollback validation, release notes publication, dan publication tetap DEFERRED-EXTERNAL.",
+    "Jalur Sprint 114 tetap DELAYED; NO_PATCH bukan klaim bahwa v1.2.0 sudah dipublikasikan."
+  ]
+}

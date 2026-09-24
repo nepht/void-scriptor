@@ -1,0 +1,61 @@
+{
+  "step": "114.40",
+  "status": "VERIFIED-LOCAL",
+  "head_before": "8b547917b7d09e4d144949f8f46c3412acd39243",
+  "disposition": "NO_PATCH",
+  "commands": [
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/dart.bat run tool/roadmap_guard.dart",
+      "exit_code": 0,
+      "result": "ROADMAP_GUARD: PASS; recommended_step 114.40; canonical_sha256 200a24d977d0808141587c9e5ebb17324ae8de5c5f792f5c4e92d07b0e8e9326"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test test/release/sprint_114_maintenance_artifact_release_gate_test.dart",
+      "exit_code": 1,
+      "result": "RED compile/load-fail: module and contract symbols absent"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test test/release/sprint_114_maintenance_artifact_release_gate_test.dart",
+      "exit_code": 0,
+      "result": "10/10 focused tests PASS"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test test/release/sprint_114_patch_regression_matrix_test.dart test/release/sprint_114_rollback_feature_flag_readiness_test.dart test/release/sprint_114_rollout_progression_decision_test.dart test/release/sprint_114_stable_release_health_gate_test.dart test/release/sprint_114_maintenance_release_scope_test.dart test/release/sprint_114_maintenance_artifact_release_gate_test.dart",
+      "exit_code": 0,
+      "result": "52/52 scoped regression tests PASS"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat analyze --no-pub",
+      "exit_code": 0,
+      "result": "No issues found! (10.0s)"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/dart.bat format --output=none --set-exit-if-changed lib/features/world_logic/domain/maintenance_artifact_release_gate_v114.dart test/release/sprint_114_maintenance_artifact_release_gate_test.dart",
+      "exit_code": 0,
+      "result": "Formatted 2 files (0 changed)"
+    },
+    {
+      "command": "python -m json.tool docs/planning/v1.2/sprint_114_maintenance_artifact_release_gate.json",
+      "exit_code": 0,
+      "result": "valid JSON"
+    },
+    {
+      "command": "git diff --check -- <owned slice paths>",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --debug --no-pub",
+      "exit_code": 0,
+      "result": "Built build/windows/x64/runner/Debug/void_scriptor.exe (21.0s)"
+    }
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "external_checks": [
+    "public_release_signing",
+    "hosted_ci_validation",
+    "published_artifact_validation",
+    "release_notes_publication",
+    "publication"
+  ]
+}

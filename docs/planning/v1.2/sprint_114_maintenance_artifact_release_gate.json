@@ -1,0 +1,35 @@
+{
+  "canonical_step": "114.40",
+  "title": "Maintenance Artifact & Release Gate",
+  "objective": "Jika patch diperlukan, membuat artifact bertanda tangan dan memvalidasi upgrade, rollback, checksums, serta release notes.",
+  "status": "VERIFIED-LOCAL",
+  "disposition": "NO_PATCH",
+  "artifact_required": false,
+  "artifact_path": null,
+  "approved_scope_source": "docs/planning/v1.2/sprint_114_maintenance_release_scope.json",
+  "test_results_source": "current_slice_local_gates",
+  "evidence": {
+    "approved_scope_or_no_patch": "verified_local",
+    "test_results": "verified_local",
+    "signed_artifact_if_needed": "not_applicable_no_patch",
+    "upgrade_results": "not_applicable_no_patch",
+    "rollback_results": "not_applicable_no_patch",
+    "checksums": "not_applicable_no_patch",
+    "release_notes": "not_applicable_no_patch"
+  },
+  "external_gates": "DEFERRED-EXTERNAL",
+  "deferred_checks": [
+    "public_release_signing",
+    "hosted_ci_validation",
+    "published_artifact_validation",
+    "release_notes_publication",
+    "publication"
+  ],
+  "limitations": [
+    "Keputusan 114.39 adalah NO_PATCH, sehingga langkah ini tidak membangun, menandatangani, menguji upgrade/rollback, membuat checksums v1.2.1, atau menerbitkan release notes baru.",
+    "Tidak ada artifact bertanda tangan, checksum artifact, upgrade result, rollback result, atau release note baru yang diklaim pada langkah ini.",
+    "Test results yang dicatat adalah gate lokal terotomasi untuk kontrak 114.40, bukan bukti rilis produksi.",
+    "Public-trust signing, hosted CI, published-artifact validation, release notes publication, dan publication tetap DEFERRED-EXTERNAL.",
+    "Jalur Sprint 114 tetap DELAYED; hasil ini tidak mengklaim v1.2.0 atau v1.2.1 sudah dipublikasikan."
+  ]
+}

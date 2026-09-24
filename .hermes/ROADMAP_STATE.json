@@ -28,11 +28,11 @@
   "active_sprint": 114,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_114.json",
   "active_ledger": "docs/sprints/sprint-114-post-release-stability-adoption.md",
-  "last_verified_step": "114.39",
-  "next_step": "114.40",
+  "last_verified_step": "114.40",
+  "next_step": "114.41",
   "stability_gate": {
     "status": "PASS",
-    "resume_step": "114.40",
+    "resume_step": "114.41",
     "previous_result": {
       "verified_at": "2026-09-01 (145.25 evidence-closure cron)",
       "roadmap_guard": "PASS pre-run; post-state check follows state update (pointer 145.26)",
@@ -58,7 +58,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-24T17:25:36.314599Z",
+  "updated_at": "2026-09-24T17:53:57.683353Z",
   "updated_by": "roadmap_guard sync-pointer",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -434,7 +434,7 @@
       "status": "CLOSED-VERIFIED-LOCAL-DEFERRED-RELEASE",
       "commit": "b883a84"
     },
-    "next_step": "114.40",
+    "next_step": "114.41",
     "resume_authority": "KEPUTUSAN CHOI 24 Sep: lanjutkan roadmap setelah closure Sprint 113"
   },
   "activation_rules_11122_run362": {

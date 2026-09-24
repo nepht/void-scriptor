@@ -1,0 +1,16 @@
+{
+  "canonical_step": "114.26",
+  "title": "Issue Deduplication & Root Cause",
+  "objective": "Menggabungkan laporan yang sama dan menentukan reproduction, affected scope, root cause, owner, serta fix path.",
+  "required_fields": [
+    "issue_id",
+    "duplicates",
+    "reproduction",
+    "affected_versions",
+    "root_cause",
+    "owner",
+    "fix_path"
+  ],
+  "status": "validated_local_domain_contract",
+  "limits": "Fixture lokal dependency-free; register kosong tetap BLOCKED sampai laporan nyata masuk. Tidak membuktikan tracker eksternal, native GUI, hosted CI, credential/auth expiry nyata, signing public-trust, hardware, telemetry produksi, atau publikasi; gate eksternal DEFERRED-EXTERNAL."
+}

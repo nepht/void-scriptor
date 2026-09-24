@@ -1,0 +1,35 @@
+{
+  "canonical_step": "114.8",
+  "title": "Rollout Stage Verification",
+  "objective": "Memastikan exposure aktual sesuai staged rollout dan dapat dihentikan atau dikurangi.",
+  "stages": [
+    "not_started",
+    "canary_internal",
+    "broad_beta",
+    "ga_full",
+    "halted"
+  ],
+  "exposure_caps_percent": {
+    "not_started": 0,
+    "canary_internal": 5,
+    "broad_beta": 50,
+    "ga_full": 100,
+    "halted": 0
+  },
+  "required_evidence": [
+    "current_stage",
+    "exposure",
+    "health_results",
+    "stop_conditions",
+    "rollback_owner",
+    "decision"
+  ],
+  "rollback_owner": "Choirudin",
+  "current_actual_stage": "not_started",
+  "external_rollout_execution": "DEFERRED-EXTERNAL",
+  "decision_rule": "Record tidak ada = BLOCKED tanpa klaim exposure; exposure melebihi cap tahap, rollback_owner kosong, stop_conditions kosong, health_results kosong pada tahap aktif, atau keputusan tidak konsisten = FAIL; health gagal atau stop condition terpicu sementara keputusan = lanjut = FAIL stop_condition_ignored; keputusan kurangi/henti/rollback pada health gagal = PASS sehingga rollout selalu bisa dihentikan atau dikurangi.",
+  "limitations": [
+    "Tahap aktual rollout = not_started (114.1): belum ada exposure pengguna nyata yang diverifikasi; verifikasi ini menguji kontrak kendali, bukan rollout berjalan.",
+    "Telemetry, pipeline health metrik live, eksekusi exposure, dan publikasi eksternal tetap DEFERRED-EXTERNAL."
+  ]
+}

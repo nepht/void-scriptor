@@ -1,9 +1,9 @@
 # Sprint 114 — VOID SCRIPTOR v1.2 Post-Release Stability & Adoption
 
-- **Status:** ACTIVE (2026-09-24, keputusan Choirudin untuk melanjutkan roadmap)
-- **Kanonik:** `sprint_114.json` — 44 langkah, sequence PASS
+- **Status:** CLOSED-LOCAL / DEFERRED-EXTERNAL (2026-09-25; jalur DELAYED, external gates belum diverifikasi)
+- **Kanonik:** `sprint_114.json` — 44 langkah, sequence PASS; seluruh langkah resolved lokal menurut guard
 - **Start condition:** keputusan Sprint 113 tercatat; jalur yang aktif adalah `DELAYED` dengan corrective scope lokal
-- **Batas klaim:** Sprint ini tidak mengklaim v1.2.0 sudah dipublikasikan; bukti eksternal tetap `DEFERRED-EXTERNAL`
+- **Batas klaim:** Sprint 114.44 menutup scope lokal pada jalur `DELAYED`; tidak mengklaim v1.2.0/v1.2.1 dipublikasikan. Bukti eksternal tetap `DEFERRED-EXTERNAL`. Recovery hanya corrective scope Sprint 115; full scope belum diaktifkan.
 
 | Step | Title | Status | Evidence |
 |---|---|---|---|

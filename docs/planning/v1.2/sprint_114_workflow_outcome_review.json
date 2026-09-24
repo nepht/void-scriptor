@@ -1,0 +1,43 @@
+{
+  "canonical_step": "114.23",
+  "title": "Workflow Outcome Review",
+  "objective": "Menilai apakah workflow penulis, lore, simulation, sharing, dan publishing dapat diselesaikan serta dipulihkan saat gagal.",
+  "dimensions": [
+    "completion",
+    "failure",
+    "recovery",
+    "abandonment",
+    "workaround",
+    "repeat_use",
+    "limitations"
+  ],
+  "workflows": [
+    "writer",
+    "lore",
+    "simulation",
+    "sharing",
+    "publishing"
+  ],
+  "definitions": {
+    "completion": "Workflow dapat diselesaikan pada review yang dicatat; null = field tidak ada (missing).",
+    "failure": "Kegagalan tercatat selama review; null = missing.",
+    "recovery": "ok bila kegagalan pulih, failed bila tidak pulih, not_applicable bila tidak ada kegagalan; null/kosong = missing.",
+    "abandonment": "Workflow ditinggalkan selama review; null = missing.",
+    "workaround": "Jalur sementara tersedia saat kegagalan; null = missing.",
+    "repeat_use": "Penggunaan ulang berhasil dikonfirmasi; null = missing.",
+    "limitations": "null = field tidak ada (missing); list kosong = tidak ada keterbatasan tercatat (jawaban valid); isi = keterbatasan tercatat."
+  },
+  "decision_rules": "Tanpa entri = BLOCKED tanpa klaim hasil workflow; dimensi hilang = FAIL missing dimensions per nama kanonik; coverage tidak lengkap, duplikat, atau workflow tak terduga = FAIL; failure=true dengan recovery bukan ok = FAIL unrecovered_failure; completion=false tanpa failure dan tanpa abandonment = FAIL incomplete_without_cause; repeat_use=true dengan completion bukan true = FAIL repeat_use_without_completion; seluruh syarat terpenuhi = PASS.",
+  "violations": [
+    "unrecovered_failure",
+    "incomplete_without_cause",
+    "repeat_use_without_completion"
+  ],
+  "native_workflow_execution": "DEFERRED-EXTERNAL",
+  "end_user_validation": "DEFERRED-EXTERNAL",
+  "public_distribution_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Penilaian bersifat domain atas entri review yang dicatat, bukan rekaman sesi native; eksekusi workflow pada GUI asli tetap DEFERRED-EXTERNAL.",
+    "Repeat use dan abandonment berasal dari review tercatat, bukan dari telemetri pengguna nyata; validasi end-user tetap DEFERRED-EXTERNAL."
+  ]
+}

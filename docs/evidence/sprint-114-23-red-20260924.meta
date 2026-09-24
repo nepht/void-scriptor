@@ -1,0 +1,7 @@
+sprint=114.23
+title=Workflow Outcome Review
+phase=RED
+command="D:/DevTools/Flutter SDK/flutter/bin/flutter.bat" test test/release/sprint_114_workflow_outcome_review_test.dart
+exit=1
+result=compile load failure: Error: Method not found 'WorkflowOutcomeReview' / Undefined name 'WorkflowOutcomeState' (domain lib/features/world_logic/domain/workflow_outcome_review.dart missing); Some tests failed.
+date=2026-09-24

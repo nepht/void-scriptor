@@ -1,0 +1,25 @@
+{
+  "canonical_step": "114.12",
+  "title": "Data Integrity Health",
+  "objective": "Memeriksa stable IDs, links, indexes, aliases, timelines, checksums, dan no-silent-loss reports.",
+  "required_evidence": [
+    "broken_links",
+    "orphan_records",
+    "index_mismatch",
+    "checksum_failure",
+    "silent_loss_report",
+    "repair_success"
+  ],
+  "outcomes": [
+    "ok",
+    "failed",
+    "recovered"
+  ],
+  "decision_rule": "Tanpa observasi = BLOCKED tanpa klaim kesehatan; cakupan enam sinyal belum lengkap atau observasi tanpa catatan = FAIL; broken_links failed sementara repair_success failed = FAIL broken_links_unrepaired; orphan_records failed sementara repair_success failed = FAIL orphan_records_unrepaired; index_mismatch failed sementara repair_success failed = FAIL index_mismatch_unrepaired; checksum_failure failed sementara repair_success failed = FAIL checksum_unrepaired; silent_loss_report failed sementara repair_success failed = FAIL silent_loss_unrepaired; kegagalan yang terdeteksi dan pulih jujur (repair_success recovered/ok tanpa pelanggaran) = PASS konsistensi; cakupan lengkap tanpa invalidasi atau pelanggaran = PASS.",
+  "live_integrity_telemetry": "DEFERRED-EXTERNAL",
+  "external_integrity_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Sinyal dinilai dari observasi lokal/definisi kontrak; scan integritas data produksi live belum diamati.",
+    "Fault test destruktif atas data pengguna, repair end-to-end pada data nyata, verifikasi perangkat keras, dan publikasi distribusi tetap DEFERRED-EXTERNAL."
+  ]
+}

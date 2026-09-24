@@ -1,0 +1,7 @@
+step=114.12
+gate=RED
+date=2026-09-24
+command=flutter test test/release/sprint_114_data_integrity_health_test.dart
+exit=1
+result=compile load fail: Error when reading 'lib/features/world_logic/domain/data_integrity_health.dart' (file not found); Method not found 'DataIntegrityHealth'
+head=6e437ae

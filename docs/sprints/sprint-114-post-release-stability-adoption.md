@@ -56,7 +56,7 @@
 ## Recovery History — 2026-09-25
 
 - **114.44 — Sprint Closure:** `VERIFIED-LOCAL` / `CLOSED_LOCAL_DEFERRED_EXTERNAL`; release path `DELAYED`.
-- Evidence: focused closure tests 10/10; scoped Sprint 114 regression 78/78; analyzer clean; formatter clean; JSON/diff-check clean; Windows debug build PASS.
+- Evidence: focused closure tests 6/6; scoped Sprint 114 regression 84/84; analyzer clean; formatter clean; JSON/diff-check clean; Windows debug build PASS.
 - External gates remain `DEFERRED-EXTERNAL`: production telemetry, hosted CI, public incident intake/adoption, signing, hardware, participant communication, and publication.
 - Commit chain: `b11dd8d` (closure contract) then `591f991` (ledger row).
 - Recovery handoff: Sprint 115 corrective scope only; full Account & Cloud Center expansion remains unauthorized until a released path and approved scope are recorded.

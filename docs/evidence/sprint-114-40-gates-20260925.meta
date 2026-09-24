@@ -40,7 +40,7 @@
       "result": "valid JSON"
     },
     {
-      "command": "git diff --check -- <owned slice paths>",
+      "command": "git diff --cached --check",
       "exit_code": 0,
       "result": "PASS"
     },

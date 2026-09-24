@@ -1,0 +1,24 @@
+{
+  "canonical_step": "114.11",
+  "title": "Crash & Startup Health",
+  "objective": "Mendeteksi crash loop, startup failure, project-open failure, dan recovery behavior.",
+  "required_evidence": [
+    "crash_rate",
+    "startup_failure",
+    "project_open_failure",
+    "crash_loop",
+    "recovery_success"
+  ],
+  "outcomes": [
+    "ok",
+    "failed",
+    "recovered"
+  ],
+  "decision_rule": "Tanpa observasi = BLOCKED tanpa klaim kesehatan; cakupan lima sinyal belum lengkap atau observasi tanpa catatan = FAIL; crash_rate ok sementara crash_loop failed = FAIL crash_loop_ignored; startup_failure failed sementara recovery_success failed = FAIL startup_unrecovered; project_open_failure failed sementara recovery_success failed = FAIL project_open_unrecovered; crash_loop failed sementara recovery_success failed = FAIL crash_loop_unrecovered; kegagalan yang pulih jujur (recovery_success recovered/ok tanpa pelanggaran) = PASS konsistensi; cakupan lengkap tanpa invalidasi atau pelanggaran = PASS.",
+  "live_crash_telemetry": "DEFERRED-EXTERNAL",
+  "external_startup_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Sinyal dinilai dari observasi lokal/definisi kontrak; belum ada telemetri crash atau startup produksi yang diamati.",
+    "Sesi startup/project-open native GUI, restart perangkat keras, kanal update end-user, dan publikasi distribusi tetap DEFERRED-EXTERNAL."
+  ]
+}

@@ -1,0 +1,7 @@
+step=114.11
+gate=RED
+date=2026-09-24
+command=flutter test test/release/sprint_114_crash_startup_health_test.dart
+exit=1
+result=compile load fail: Undefined name CrashStartupSignal/CrashStartupObservation (domain missing)
+head=59e456f

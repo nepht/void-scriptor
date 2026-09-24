@@ -1,0 +1,5 @@
+{
+  "command": "dart run tool/roadmap_guard.dart (post-commit)",
+  "exit_code": 0,
+  "result": "PASS; canonical_sprint=114; last_resolved_step=114.37; recommended_step=114.38"
+}

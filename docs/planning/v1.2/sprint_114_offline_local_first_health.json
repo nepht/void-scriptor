@@ -1,0 +1,26 @@
+{
+  "canonical_step": "114.18",
+  "title": "Offline & Local-First Health",
+  "objective": "Memastikan core workflows tetap tersedia tanpa jaringan dan queued actions pulih dengan benar.",
+  "required_evidence": [
+    "offline_open",
+    "offline_edit",
+    "offline_search",
+    "local_analysis",
+    "local_export",
+    "queue_recovery"
+  ],
+  "outcomes": [
+    "ok",
+    "failed",
+    "recovered"
+  ],
+  "decision_rule": "Tanpa observasi = BLOCKED tanpa klaim kesehatan; cakupan enam sinyal belum lengkap atau observasi tanpa catatan = FAIL; offline_open/offline_edit/offline_search/local_analysis/local_export ok sementara queue_recovery failed = FAIL queue_recovery_ignored (antrean aksi lokal belum pulih saat klaim workflow ok); sinyal workflow lokal failed sementara queue_recovery bukan recovered = FAIL <signal>_unrecovered (pemulihan antrean tak pernah pulih); sinyal workflow lokal failed sementara queue_recovery recovered = PASS konsistensi (antrean pulih jujur); cakupan lengkap tanpa invalidasi atau pelanggaran = PASS.",
+  "root_recovery_signal": "queue_recovery",
+  "live_offline_telemetry": "DEFERRED-EXTERNAL",
+  "external_network_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Sinyal dinilai dari observasi lokal/definisi kontrak; pembukaan, edit, pencarian, analisis, ekspor, dan pemulihan antrean nyata pada sesi produksi live tanpa jaringan belum diamati.",
+    "Injeksi offline jaringan nyata, mode pesawat native, hosted CI, verifikasi perangkat keras, dan publikasi distribusi tetap DEFERRED-EXTERNAL."
+  ]
+}

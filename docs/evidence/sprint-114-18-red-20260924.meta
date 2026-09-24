@@ -1,0 +1,6 @@
+sprint=114.18
+phase=RED
+date=2026-09-24
+command="D:\DevTools\Flutter SDK\flutter\bin\flutter.bat" test --no-pub test/release/sprint_114_offline_local_first_health_test.dart -j 1
+exit=1
+result=compile load failure: domain lib/features/world_logic/domain/offline_local_first_health.dart belum ada (file not found; Undefined name 'OfflineSignal'/'OfflineObservation'/'OfflineLocalFirstHealth'), 0 test berjalan

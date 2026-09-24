@@ -1,0 +1,18 @@
+{
+  "canonical_step": "114.33",
+  "title": "Accessibility & Localization Maintenance",
+  "objective": "Menutup blocker aksesibilitas dan lokalisasi tanpa menunggu feature sprint berikutnya.",
+  "outputs": [
+    "fixes",
+    "keyboard_tests",
+    "screen_reader_tests",
+    "scaling_tests",
+    "locale_tests",
+    "multiscript_tests"
+  ],
+  "status": "VERIFIED-LOCAL",
+  "limits": [
+    "Kontrak ini memvalidasi kelengkapan rencana pemeliharaan lokal; tidak mengklaim perbaikan UI native atau hasil uji assistive technology.",
+    "Verifikasi keyboard, screen reader, text scaling, locale/RTL/IME, multiscript native, hosted CI, signing public-trust, hardware, dan publikasi distribusi tetap DEFERRED-EXTERNAL."
+  ]
+}

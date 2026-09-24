@@ -1,0 +1,13 @@
+sprint=114.22
+title=Feature Availability Reconciliation
+phase=GATES
+date=2026-09-24
+red=exit 1 compile load failure (docs/evidence/sprint-114-22-red-20260924.meta)
+green_focused="flutter test test/release/sprint_114_feature_availability_reconciliation_test.dart -> 14/14 PASS exit 0 (rerun pasca-format dan pasca-analyzer-fix, 14/14)"
+regression_sprint_114_1_to_114_22="flutter test test/release/sprint_114_*_test.dart (22 file) -> 199/199 PASS exit 0"
+analyze="flutter analyze -> No issues found! (ran in 9.9s) exit 0"
+format="dart format --set-exit-if-changed (2 file slice) -> 0 changed exit 0"
+diff_check="git diff --check -> exit 0"
+build="flutter build windows --debug -> exit 0 (22,1s) √ Built build\windows\x64\runner\Debug\void_scriptor.exe"
+live_reconciliation="29 fitur F1-F29 dari inventaris 112.3 (sha256 2d17cf83...) + matrix 112.6; flag inventory == matrix (0 mismatch); 19 dedicated flag traceable di kVs12FeatureFlags/wave3Catalog, 10 kill-switch traceable engageKillSwitch; 87 evidence path ada di HEAD; entitlement = audience cohort 112.6; report PASS 0 missing 0 violations"
+limitations="keaktifan runtime flag (default OFF), verifikasi entitlement marketplace/licensing, native GUI, hosted CI, signing public-trust, publikasi distribusi = DEFERRED-EXTERNAL; gap pra-ada 3 test release 113.38/39/40 (drift checksum artefak 113.44) di luar scope slice"

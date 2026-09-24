@@ -1,0 +1,42 @@
+{
+  "canonical_step": "114.22",
+  "title": "Feature Availability Reconciliation",
+  "objective": "Membandingkan flag, entitlement, dokumentasi, ketersediaan aktual, dan known issues untuk 29 fitur unik F1-F29 pada HEAD.",
+  "required_fields": [
+    "feature",
+    "flag",
+    "entitlement",
+    "documented",
+    "available",
+    "known_issues",
+    "evidence"
+  ],
+  "coverage_contract": "29 fitur unik F1-F29; F30 adalah alias F24 dan bukan entri terpisah (112.2/112.3).",
+  "sources": {
+    "inventory": "docs/planning/v1.2/sprint_112_feature_evidence_inventory.json",
+    "inventory_sha256": "2d17cf8323ad678618e41c050bfbd969c3142f6fb4dc68c31e8de03126316afd",
+    "rollout_matrix": "docs/planning/v1.2/sprint_112_feature_flag_rollout_matrix.json",
+    "flag_registry": "lib/core/feature_flags/feature_flag_registry.dart",
+    "wave3_catalog": "lib/features/world_logic/domain/encyclopedia_spoiler_accessibility.dart"
+  },
+  "definitions": {
+    "flag": "Identifier flag yang dapat ditelusuri ke sumber: kVs12FeatureFlags (wave 1), EncyclopediaFeatureFlags.wave3Catalog (wave 3), atau FeatureFlagRegistry.engageKillSwitch (shared kill switch); flag inventaris wajib sama dengan flag rollout matrix 112.6.",
+    "entitlement": "Rollout cohort (audience) dari matrix 112.6 yang berhak menerima fitur pada RC; audience_policy menegaskan audience adalah rollout cohort, bukan otorisasi publikasi. Bukan entitlement lisensi marketplace.",
+    "documented": "documentation_refs tidak kosong dan seluruh path dokumentasi ada di HEAD.",
+    "available": "implementation_refs dan test_refs ada di HEAD dan flag dapat ditelusuri ke sumber; seluruh flag berdefault OFF, sehingga field ini bukan klaim fitur aktif secara runtime.",
+    "known_issues": "null = field tidak ada (missing); list kosong = tidak ada known issue (jawaban valid); isi = known issue tercatat.",
+    "evidence": "implementation_refs + documentation_refs + test_refs yang diverifikasi ada di HEAD (87 path untuk 29 fitur)."
+  },
+  "decision_rules": "Tanpa entri = BLOCKED tanpa klaim ketersediaan; field hilang atau kosong = FAIL missing_fields per nama kanonik; coverage tidak lengkap, duplikat, atau id tak terduga = FAIL; available=true dengan documented=false = FAIL available_undocumented; available=false dengan known_issues kosong = FAIL unavailable_without_known_issue; seluruh syarat terpenuhi = PASS.",
+  "violations": [
+    "available_undocumented",
+    "unavailable_without_known_issue"
+  ],
+  "runtime_availability_verification": "DEFERRED-EXTERNAL",
+  "marketplace_entitlement_verification": "DEFERRED-EXTERNAL",
+  "public_distribution_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Ketersediaan dinilai dari keberadaan jalur implementasi/test dan keterlacakan flag di HEAD, bukan dari sesi native; keaktifan runtime (flag ON, GUI) diverifikasi pada sesi native yang tetap DEFERRED-EXTERNAL.",
+    "Entitlement di sini adalah rollout cohort dari matrix 112.6; verifikasi entitlement marketplace/licensing tetap DEFERRED-EXTERNAL."
+  ]
+}

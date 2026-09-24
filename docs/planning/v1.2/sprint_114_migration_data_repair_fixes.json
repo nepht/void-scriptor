@@ -1,0 +1,18 @@
+{
+  "canonical_step": "114.31",
+  "title": "Migration & Data Repair Fixes",
+  "objective": "Memperbaiki migration atau integrity issue dengan backup, preview, verification, dan rollback.",
+  "requirements": [
+    "backup_first",
+    "repair_preview",
+    "record_comparison",
+    "checksum",
+    "rollback",
+    "audit_log"
+  ],
+  "status": "VERIFIED-LOCAL",
+  "limits": [
+    "Kontrak ini memvalidasi kelengkapan rencana perbaikan lokal; tidak menjalankan migrasi atau menulis data pengguna.",
+    "Backup produksi, repair pada data pengguna nyata, checksum artefak produksi, rollback fault test, dan audit telemetry eksternal tetap DEFERRED-EXTERNAL."
+  ]
+}

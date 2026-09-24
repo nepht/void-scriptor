@@ -1,0 +1,27 @@
+{
+  "canonical_step": "114.19",
+  "title": "Platform Compatibility Health",
+  "objective": "Membandingkan incident, performance, filesystem, input, rendering, dan packaging per platform yang didukung.",
+  "required_evidence": [
+    "platform",
+    "os_version",
+    "hardware",
+    "filesystem",
+    "input",
+    "rendering",
+    "package"
+  ],
+  "outcomes": [
+    "ok",
+    "failed",
+    "recovered"
+  ],
+  "decision_rule": "Tanpa observasi = BLOCKED tanpa klaim kesehatan; cakupan tujuh dimensi belum lengkap atau observasi tanpa catatan = FAIL; platform/os_version/hardware/filesystem/input/rendering ok sementara package failed = FAIL package_recovery_ignored (paket tak pulih saat klaim kompatibilitas ok); dimensi kompatibilitas failed sementara package bukan recovered = FAIL <signal>_unrecovered (rebuild/paket pemulihan tak pernah pulih); dimensi failed sementara package recovered = PASS konsistensi (paket pemulihan pulih jujur); cakupan lengkap tanpa invalidasi atau pelanggaran = PASS.",
+  "root_recovery_signal": "package",
+  "native_platform_validation": "DEFERRED-EXTERNAL",
+  "public_distribution_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Dimensi dinilai dari observasi lokal/definisi kontrak; perbandingan lintas platform nyata (Windows alternatif, macOS/Linux build, profil hardware berbeda) belum diamati pada produksi live.",
+    "Native GUI multi-platform, perangkat keras nyata, hosted CI, signing public-trust, dan publikasi distribusi tetap DEFERRED-EXTERNAL."
+  ]
+}

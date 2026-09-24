@@ -1,0 +1,12 @@
+sprint_step=114.19
+title=Platform Compatibility Health
+phase=GREEN+GATES
+date=2026-09-24
+red="flutter test test/release/sprint_114_platform_compatibility_health_test.dart exit 1 (domain missing)"
+green="flutter test test/release/sprint_114_platform_compatibility_health_test.dart 13/13 PASS exit 0 (post-format rerun)"
+regression_sprint_114="flutter test test/release/sprint_114_*_test.dart 159/159 PASS exit 0 (Sprint 114.1-114.19)"
+analyzer="flutter analyze: No issues found! (ran in 9.9s) exit 0"
+format="dart format --set-exit-if-changed owned 2 files: 0 changed exit 0"
+diff_check="git diff --check exit 0"
+build="flutter build windows --debug: Built build\windows\x64\runner\Debug\void_scriptor.exe 19,8s exit 0"
+known_gap="3 pre-existing test/release failures sprint_113.38/39/40 (Release exe hash drift from 113.44 rebuild; out of slice scope)"

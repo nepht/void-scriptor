@@ -1,0 +1,7 @@
+sprint_step=114.19
+title=Platform Compatibility Health
+phase=RED
+date=2026-09-24
+command="D:/DevTools/Flutter SDK/flutter/bin/flutter.bat" test test/release/sprint_114_platform_compatibility_health_test.dart
+exit_code=1
+reason=compile load failure: domain lib/features/world_logic/domain/platform_compatibility_health.dart missing (test file written first per TDD)

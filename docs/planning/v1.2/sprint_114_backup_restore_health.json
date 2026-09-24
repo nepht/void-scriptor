@@ -1,0 +1,25 @@
+{
+  "canonical_step": "114.14",
+  "title": "Backup & Restore Health",
+  "objective": "Memantau backup completion, encryption, restore, media manifest, cross-workspace links, dan recovery time.",
+  "required_evidence": [
+    "backup_success",
+    "encryption_success",
+    "restore_success",
+    "media_integrity",
+    "link_integrity",
+    "recovery_time"
+  ],
+  "outcomes": [
+    "ok",
+    "failed",
+    "recovered"
+  ],
+  "decision_rule": "Tanpa observasi = BLOCKED tanpa klaim kesehatan; cakupan enam sinyal belum lengkap atau observasi tanpa catatan = FAIL; backup_success ok sementara encryption_success failed = FAIL encryption_failure_ignored; backup_success failed sementara restore_success failed = FAIL backup_restore_unrecovered; media_integrity failed sementara restore_success failed = FAIL media_unrecovered; link_integrity failed sementara restore_success failed = FAIL links_unrepaired; recovery_time ok sementara restore_success failed = FAIL recovery_claim_without_restore; restore_success failed sementara recovery_time tidak ok = FAIL restore_unrecovered; kegagalan terdeteksi yang pulih jujur (restore_success recovered/ok tanpa pelanggaran) = PASS konsistensi; cakupan lengkap tanpa invalidasi atau pelanggaran = PASS.",
+  "live_backup_telemetry": "DEFERRED-EXTERNAL",
+  "external_backup_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Sinyal dinilai dari observasi lokal/definisi kontrak; backup telemetry workspace produksi live belum diamati.",
+    "Fault test destruktif atas data pengguna, restore end-to-end pada data nyata, verifikasi perangkat keras, dan publikasi distribusi tetap DEFERRED-EXTERNAL."
+  ]
+}

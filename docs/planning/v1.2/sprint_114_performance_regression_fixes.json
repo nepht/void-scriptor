@@ -1,0 +1,18 @@
+{
+  "canonical_step": "114.30",
+  "title": "Performance Regression Fixes",
+  "objective": "Memperbaiki regresi yang melewati budget tanpa mengubah hasil atau ownership data.",
+  "requirements": [
+    "profile",
+    "root_cause",
+    "budget",
+    "fix",
+    "before_after",
+    "regression_test"
+  ],
+  "status": "validated_domain_contract",
+  "limits": [
+    "Kontrak mencatat profile dan before/after yang disediakan caller; tidak mengklaim profiling native atau production telemetry.",
+    "Profile-mode FrameTiming, hosted CI, hardware, signing, dan publikasi tetap DEFERRED-EXTERNAL."
+  ]
+}

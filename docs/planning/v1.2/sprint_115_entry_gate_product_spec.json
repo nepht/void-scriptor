@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_ENTRY_EVIDENCE_SNAPSHOT",
+  "canonical_step": "115.1",
+  "source_document": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+  "source_sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+  "source_role": "PRODUCT_UI_TECHNICAL_SPEC",
+  "spec": {
+    "id": "ACC-001",
+    "title": "Account & Cloud Center",
+    "status": "PLANNED",
+    "implementation_status": "NOT_STARTED",
+    "purpose": "Satu pusat global untuk profil akun, identity connections, cloud storage, AI providers, API keys, team, security, backup/sync, subscription, dan billing."
+  },
+  "placement": {
+    "scope": "GLOBAL_USER",
+    "primary_route": "/account/cloud-center",
+    "navigation_label": "Account",
+    "must_not_be_nested_under": [
+      "NOVEL_WORKSPACE",
+      "CHARACTER_WORKSPACE"
+    ],
+    "profile_surface_role": "SUMMARY_AND_SHORTCUT_ONLY"
+  },
+  "information_architecture": {
+    "tabs": [
+      "overview",
+      "connected_accounts",
+      "cloud_storage",
+      "ai_providers",
+      "api_keys",
+      "team_collaboration",
+      "security",
+      "backup_sync",
+      "billing"
+    ],
+    "provider_availability_source": "connector_manifest"
+  },
+  "delivery_rules": {
+    "fabricated_provider_availability_allowed": false,
+    "mock_quota_in_production_allowed": false,
+    "mock_credit_in_production_allowed": false,
+    "official_icon_or_generic_fallback_required": true,
+    "raw_card_storage_allowed": false,
+    "plaintext_secret_storage_allowed": false,
+    "provider_api_failure_must_be_visible": true,
+    "offline_fallback_required": true,
+    "responsive_and_accessible_layout_required": true,
+    "feature_flags_default": "OFF"
+  },
+  "security_contract": {
+    "oauth": [
+      "authorization_code_with_pkce",
+      "state_validation",
+      "nonce_when_required",
+      "scoped_consent",
+      "token_rotation",
+      "revocation"
+    ],
+    "secrets": [
+      "os_secure_store",
+      "never_plaintext_database",
+      "never_full_secret_display",
+      "reauth_before_sensitive_action",
+      "clipboard_timeout",
+      "audit_redaction"
+    ],
+    "cross_workspace_rule": "Account & Cloud Center may manage global connections, but access to Novel or Character data still requires explicit workspace permission and transfer consent."
+  },
+  "privacy_contract": {
+    "prompt_or_creative_content_in_usage_analytics": false,
+    "secret_collection": false,
+    "provider_balance_fabrication_allowed": false,
+    "estimated_cost_must_be_labeled": true,
+    "local_and_remote_storage_must_remain_separate": true,
+    "credentials_in_project_export": "PROHIBITED"
+  },
+  "billing_contract": {
+    "status": "PLANNED_NOT_VERIFIED",
+    "raw_card_storage_allowed": false,
+    "availability_requires_deployment_and_region_configuration": true,
+    "entitlement_authority": "SIGNED_SERVER_OR_EXPLICIT_OFFLINE_LICENSE"
+  },
+  "acceptance_invariants": [
+    "account_cloud_center_is_global_and_not_inside_novel_or_character_workspace",
+    "profile_contains_summary_and_shortcut_only",
+    "all_provider_icons_resolve_through_provider_icon_registry_or_generic_fallback",
+    "provider_availability_comes_from_connector_manifest",
+    "storage_and_credit_values_are_api_backed_or_explicitly_unavailable",
+    "local_and_remote_storage_are_not_merged_without labeling",
+    "secrets_are_never_stored_or_displayed_in_plaintext",
+    "all provider states have loading_empty_error_and_reauth handling",
+    "desktop_tablet_and_mobile_layouts_pass_visual_and_accessibility_tests",
+    "reference_mock_values_never_reach_production_state"
+  ],
+  "evidence_boundary": "This repository snapshot supports the 115.1 local entry gate only. It does not prove connector certification, live quota or cost data, public billing, or public release."
+}

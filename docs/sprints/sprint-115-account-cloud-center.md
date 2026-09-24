@@ -7,7 +7,7 @@
 
 | Step | Title | Status | Evidence |
 |---|---|---|---|
-| 115.1 | Sprint Entry Gate | PENDING | Memastikan stabilitas v1.2, scope, provider constraints, security, privacy, dan capacity siap. |
+| 115.1 | Sprint Entry Gate | VERIFIED-LOCAL | `docs/planning/v1.2/sprint_115_entry_gate.json` + `docs/planning/v1.2/sprint_115_entry_gate_product_spec.json` + `lib/features/world_logic/domain/sprint_115_entry_gate.dart` + `test/release/sprint_115_entry_gate_test.dart`; fail-closed gate memverifikasi enam evidence kanonik (`sprint_114_readiness`, `approved_scope`, `product_spec`, `security_constraints`, `privacy_constraints`, `provider_feasibility`) dan hanya mengizinkan `CORRECTIVE_SCOPE_APPROVED` pada jalur DELAYED. RED compile-load-fail exit 1; GREEN fokus 7/7 PASS; regresi 114.44 + readiness + entry 23/23 PASS; analyzer penuh `No issues found!`; format 0 changed; JSON valid; Windows debug build PASS 21,1s. Provider/connector live, quota/cost, public billing, hosted CI, hardware, dan publication tetap `DEFERRED-EXTERNAL`. |
 | 115.2 | Reference Design Audit | PENDING | Memetakan semua panel pada gambar referensi ke capability, data source, state, dan owner yang nyata. |
 | 115.3 | Global Information Architecture | PENDING | Menetapkan route, tabs, overview, detail pages, deep links, breadcrumbs, dan search behavior. |
 | 115.4 | Workspace Boundary Contract | PENDING | Menjaga Account Center di scope global tanpa memasukkannya ke Novel atau Character Workspace. |

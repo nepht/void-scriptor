@@ -1,0 +1,83 @@
+{
+  "canonical_step": "115.1",
+  "title": "Sprint Entry Gate",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "CORRECTIVE_ENTRY_READY",
+  "active_scope": "CORRECTIVE_SCOPE_APPROVED",
+  "full_scope_approved": false,
+  "required_evidence": [
+    "sprint_114_readiness",
+    "approved_scope",
+    "product_spec",
+    "security_constraints",
+    "privacy_constraints",
+    "provider_feasibility"
+  ],
+  "evidence": {
+    "sprint_114_readiness": {
+      "status": "VERIFIED-LOCAL",
+      "sources": [
+        "docs/planning/v1.2/sprint_115_readiness_gate.json",
+        "docs/planning/v1.2/sprint_114_sprint_closure.json"
+      ],
+      "summary": "Sprint 114 closed locally on DELAYED; only corrective scope was approved."
+    },
+    "approved_scope": {
+      "status": "CORRECTIVE_SCOPE_APPROVED",
+      "sources": [
+        "docs/roadmap/ROADMAP_POLICY.json",
+        "docs/planning/v1.2/sprint_115_readiness_gate.json"
+      ],
+      "summary": "Sequential expansion may proceed only inside the locally approved corrective scope."
+    },
+    "product_spec": {
+      "status": "VERIFIED-LOCAL",
+      "sources": [
+        "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json"
+      ],
+      "summary": "Product scope, placement, delivery rules, provider constraints, and acceptance invariants are recorded."
+    },
+    "security_constraints": {
+      "status": "VERIFIED-LOCAL",
+      "sources": [
+        "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json",
+        "docs/planning/v1.2/sprint_114_security_privacy_maintenance.json"
+      ],
+      "summary": "OAuth PKCE, state/nonce validation, scoped consent, secure storage, reauthentication, redaction, and audit constraints are mandatory."
+    },
+    "privacy_constraints": {
+      "status": "VERIFIED-LOCAL",
+      "sources": [
+        "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json",
+        "docs/planning/v1.2/sprint_114_security_privacy_maintenance.json"
+      ],
+      "summary": "No prompt or creative-content analytics, no secret collection, no fabricated usage or billing data, and explicit cross-workspace consent are required."
+    },
+    "provider_feasibility": {
+      "status": "DEFERRED-EXTERNAL",
+      "sources": [
+        "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json",
+        "docs/planning/v1.2/sprint_114_provider_external_dependency_health.json"
+      ],
+      "summary": "No provider connector is claimed available before manifest-driven and live verification; feasibility is bounded by fail-closed local rules."
+    }
+  },
+  "provider_feasibility": "DEFERRED-EXTERNAL",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "deferred_checks": [
+    "live_provider_certification",
+    "live_quota_and_cost_evidence",
+    "public_billing_certification",
+    "connector_availability_claims",
+    "public_incident_intake",
+    "hosted_ci_validation",
+    "hardware_validation",
+    "publication"
+  ],
+  "limitations": [
+    "Entry gate PASS applies only to the approved corrective local scope on the DELAYED path.",
+    "Provider, connector, quota, credits, subscription, and payment integrations remain PLANNED until implementation and live verification exist.",
+    "The local gate does not claim a public v1.2 release, production health, external adoption, or connector certification.",
+    "Hosted CI, public-trust signing, live telemetry, hardware, and publication remain DEFERRED-EXTERNAL."
+  ]
+}

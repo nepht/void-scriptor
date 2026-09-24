@@ -1,0 +1,12 @@
+sprint=114.24
+title=Analysis Quality & False-Positive Review
+phase=GATES
+date=2026-09-24
+red=exit 1 compile load failure (docs/evidence/sprint-114-24-red-20260924.meta)
+green_focused="flutter test test/release/sprint_114_analysis_quality_false_positive_review_test.dart -> 18/18 PASS exit 0 (rerun pasca-format)"
+regression_sprint_114_1_to_114_24="flutter test test/release/sprint_114_*_test.dart (24 file) -> 232/232 PASS exit 0"
+analyze="flutter analyze -> No issues found! (ran in 9.8s) exit 0"
+format="dart format slice -> 2 files formatted, 1 changed exit 0"
+diff_check="git diff --check -> exit 0"
+build="flutter build windows --debug -> exit 0 (19,7s) Built build\\windows\\x64\\runner\\Debug\\void_scriptor.exe"
+limitations="penilaian domain atas entri review tercatat tanpa membaca atau mengunggah isi kreatif; unggahan isi kreatif otomatis DISABLED-BY-CONTRACT; sesi analisis native, validasi end-user, hosted CI, signing public-trust, publikasi distribusi = DEFERRED-EXTERNAL; gap pra-ada 3 test release 113.38/39/40 (drift checksum artefak 113.44) di luar scope slice"

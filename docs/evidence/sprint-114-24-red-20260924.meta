@@ -1,0 +1,7 @@
+sprint=114.24
+title=Analysis Quality & False-Positive Review
+phase=RED
+command="D:/DevTools/Flutter SDK/flutter/bin/flutter.bat" test test/release/sprint_114_analysis_quality_false_positive_review_test.dart
+exit=1
+result=compile load failure: Error: Method not found 'AnalysisQualityFalsePositiveReview' / Undefined name 'AnalysisQualityState' (domain lib/features/world_logic/domain/analysis_quality_false_positive_review.dart missing); Some tests failed.
+date=2026-09-24

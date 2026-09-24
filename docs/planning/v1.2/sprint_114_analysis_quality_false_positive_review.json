@@ -1,0 +1,51 @@
+{
+  "canonical_step": "114.24",
+  "title": "Analysis Quality & False-Positive Review",
+  "objective": "Menilai contradiction, POV, pacing, continuity, economy, power, dan anachronism warnings tanpa mengunggah isi kreatif otomatis.",
+  "categories": [
+    "contradiction",
+    "pov",
+    "pacing",
+    "continuity",
+    "economy",
+    "power",
+    "anachronism"
+  ],
+  "dimensions": [
+    "useful_warning",
+    "false_positive",
+    "false_negative_reports",
+    "explanation_quality",
+    "dismissal_use",
+    "disabled_rules"
+  ],
+  "definitions": {
+    "useful_warning": "Kategori menghasilkan setidaknya satu peringatan yang berguna selama review; null = field tidak ada (missing).",
+    "false_positive": "False positive tercatat untuk kategori selama review; null = missing.",
+    "false_negative_reports": "Laporan peringatan yang terlewat selama review; null = field tidak ada (missing); list kosong = tidak ada laporan (jawaban valid); isi = laporan tercatat.",
+    "explanation_quality": "Kualitas penjelasan peringatan kategori: clear | adequate | unclear | absent; null/kosong = missing.",
+    "dismissal_use": "Jalur dismissal direkam sebagai respons atas false positive kategori selama review; null = missing.",
+    "disabled_rules": "Nama rule yang dimatikan sebagai respons atas false positive kategori; null = field tidak ada (missing); list kosong = tidak ada rule dimatikan (jawaban valid); isi = nama rule tercatat."
+  },
+  "explanation_quality_levels": [
+    "clear",
+    "adequate",
+    "unclear",
+    "absent"
+  ],
+  "decision_rules": "Tanpa entri = BLOCKED tanpa klaim kualitas analisis; dimensi hilang = FAIL missing dimensions per nama kanonik; kategori tidak lengkap, duplikat, atau tak terduga = FAIL; explanation_quality di luar tingkat kanonik = FAIL unexpected explanation_quality; false_positive=true tanpa dismissal_use=true dan tanpa disabled_rules terisi = FAIL false_positive_unaddressed; disabled_rules terisi tanpa false_positive=true = FAIL disabled_without_false_positive; dismissal_use=true tanpa false_positive=true = FAIL dismissal_without_false_positive; seluruh syarat terpenuhi = PASS.",
+  "violations": [
+    "false_positive_unaddressed",
+    "disabled_without_false_positive",
+    "dismissal_without_false_positive"
+  ],
+  "automatic_creative_content_upload": "DISABLED-BY-CONTRACT",
+  "native_analysis_session": "DEFERRED-EXTERNAL",
+  "end_user_validation": "DEFERRED-EXTERNAL",
+  "public_distribution_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Penilaian bersifat domain atas entri review yang dicatat; model ini tidak membaca, mengirim, atau mengunggah isi kreatif apa pun — unggahan isi kreatif otomatis DISABLED-BY-CONTRACT.",
+    "Dismissal dan disabled_rules berasal dari review tercatat, bukan dari interaksi pengguna nyata pada GUI; sesi analisis native, validasi end-user, hosted CI, signing public-trust, dan publikasi distribusi tetap DEFERRED-EXTERNAL.",
+    "False negative dilaporkan dari review tercatat, bukan dari kebenaran ground truth atas naskah; sensitivitas rule terhadap naskah nyata tetap DEFERRED-EXTERNAL."
+  ]
+}

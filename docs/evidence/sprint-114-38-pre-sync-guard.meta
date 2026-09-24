@@ -1,0 +1,5 @@
+{
+  "command": "dart run tool/roadmap_guard.dart (pre-sync)",
+  "exit_code": 1,
+  "result": "EXPECTED_DRIFT: last_resolved_step=114.38; recommended_step=114.39; runtime next_step still 114.38"
+}

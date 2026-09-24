@@ -1,0 +1,5 @@
+{
+  "command": "flutter test test/release/sprint_114_patch_regression_matrix_test.dart test/release/sprint_114_rollback_feature_flag_readiness_test.dart test/release/sprint_114_rollout_progression_decision_test.dart test/release/sprint_114_stable_release_health_gate_test.dart",
+  "exit_code": 0,
+  "result": "PASS 33/33; scoped regression Steps 114.35-114.38"
+}

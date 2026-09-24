@@ -1,0 +1,5 @@
+{
+  "command": "dart format --output=none --set-exit-if-changed lib/features/world_logic/domain/stable_release_health_gate_v114.dart test/release/sprint_114_stable_release_health_gate_test.dart",
+  "exit_code": 0,
+  "result": "PASS 2 files; 0 changed"
+}

@@ -1,0 +1,5 @@
+{
+  "command": "flutter test test/release/sprint_114_stable_release_health_gate_test.dart",
+  "exit_code": 1,
+  "result": "RED: load/compile fail; missing production contract and test symbols before implementation"
+}

@@ -1,0 +1,48 @@
+{
+  "canonical_step": "114.38",
+  "title": "Stable Release Health Gate",
+  "objective": "Menentukan apakah v1.2 memenuhi exit criteria observation window.",
+  "status": "VERIFIED-LOCAL",
+  "required_evidence": [
+    "health_signals",
+    "incident_status",
+    "migration_health",
+    "recovery_health",
+    "security_privacy_status",
+    "accessibility_status",
+    "support_status",
+    "rollout_status"
+  ],
+  "required_health_signals": [
+    "install_success",
+    "upgrade_success",
+    "crash_rate",
+    "migration_failure",
+    "restore_failure",
+    "performance_regression",
+    "support_severity"
+  ],
+  "observation_window": "LOCAL_CORRECTIVE_ONLY",
+  "rules": [
+    "Absen health evidence, observation window belum selesai, atau required dimension belum tersedia menghasilkan BLOCKED tanpa klaim stable release.",
+    "Missing atau not_observed health signal menghasilkan BLOCKED dan nama signal dicatat.",
+    "Breach health signal atau status dimensi yang bukan stable menghasilkan FAIL fail-closed.",
+    "Signal/value di luar canonical contract menghasilkan FAIL dengan nama evidence.",
+    "PASS hanya untuk evidence lokal lengkap, observation window selesai, semua health signal ok, dan semua dimensi stable."
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "deferred_checks": [
+    "live_production_telemetry",
+    "hosted_ci_validation",
+    "public_release_signing",
+    "participant_communication",
+    "published_artifact_rollback_drill",
+    "hardware_validation",
+    "publication"
+  ],
+  "limitations": [
+    "Kontrak ini hanya memvalidasi exit criteria observation window secara lokal; tidak mengklaim v1.2 sudah dipublikasikan atau memiliki telemetry produksi.",
+    "Public-trust signing, hosted CI, live production telemetry, participant communication, published-artifact rollback drill, hardware, dan publication tetap DEFERRED-EXTERNAL.",
+    "Jalur canonical Sprint 114 saat ini DELAYED; hasil PASS pada fixture lokal bukan keputusan rilis publik."
+  ]
+}

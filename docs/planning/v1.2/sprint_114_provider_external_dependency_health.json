@@ -1,0 +1,21 @@
+{
+  "canonical_step": "114.25",
+  "title": "Provider & External Dependency Health",
+  "objective": "Memantau provider timeout, throttling, authentication expiry, cost visibility, fallback, dan external transfer consent.",
+  "signals": [
+    "provider_availability",
+    "timeout",
+    "throttling",
+    "auth_expiry",
+    "cost_visibility",
+    "fallback_success",
+    "consent_failure"
+  ],
+  "decision_rules": "Tanpa observasi = BLOCKED tanpa klaim; coverage tidak lengkap atau catatan kosong = FAIL; provider failure timeout/throttling/availability/auth expiry wajib dipulihkan melalui fallback_success recovered; consent_failure wajib ok atau recovered; seluruh syarat terpenuhi = PASS.",
+  "credential_collection": "DISABLED-BY-CONTRACT",
+  "external_transfer_consent": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Model menilai observasi lokal tercatat dan tidak melakukan request ke provider atau mengumpulkan credential.",
+    "Availability provider nyata, throttling live, authentication expiry aktual, biaya nyata, consent UI, hosted CI, signing, dan publikasi tetap DEFERRED-EXTERNAL."
+  ]
+}

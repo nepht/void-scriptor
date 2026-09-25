@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.15",
+  "title": "Quick Connect Panel",
+  "status": "VERIFIED-LOCAL",
+  "acceptance": [
+    "manifest_driven",
+    "provider_icon",
+    "status_text",
+    "health_state",
+    "connect_action",
+    "unsupported_state"
+  ],
+  "implementation": "lib/features/account/presentation/account_cloud_center_screen.dart",
+  "evidence": "test/features/account/presentation/account_cloud_center_quick_connect_test.dart",
+  "behavior": {
+    "manifest_driven": true,
+    "provider_icon": "Bundled provider asset when available; generic category fallback otherwise.",
+    "status_text": "Explicit availability label derived from the provider manifest.",
+    "health_state": "Unknown unless the manifest explicitly reports degraded or outage.",
+    "connect_action": "Enabled only for AVAILABLE entries with an injected action.",
+    "unsupported_state": "Disabled action with explicit unavailable or unsupported text."
+  },
+  "boundary": "Live connector execution, network health, OAuth credentials, hosted CI, signing, telemetry, hardware, adoption, and publication remain DEFERRED-EXTERNAL."
+}

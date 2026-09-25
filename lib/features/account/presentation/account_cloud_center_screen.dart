@@ -6,12 +6,15 @@ import '../../../app/routing/app_routes.dart';
 import '../../../core/auth/auth_controller.dart';
 import '../../../design_system/typography/void_typography.dart';
 import '../../../design_system/theme/void_theme_context.dart';
+import '../../../design_system/widgets/branding/brand_assets.dart';
 import '../application/account_operational_metrics.dart';
 import '../domain/account_cloud_snapshot.dart';
 import '../domain/account_center_accessibility.dart';
 import '../domain/account_center_design_tokens.dart';
 import '../domain/account_center_information_architecture.dart';
+import '../domain/account_center_provider_connector_manifest.dart';
 import '../domain/account_center_responsive_grid.dart';
+import '../domain/account_center_provider_icon_registry.dart';
 
 /// Peran tipografi 115.5 dari product spec (bobot VoidTypography dipertahankan).
 final TextStyle _pageTitle = VoidTypography.displayMedium.copyWith(
@@ -43,6 +46,8 @@ class AccountCloudCenterScreen extends ConsumerStatefulWidget {
     this.onBackupProject,
     this.onOpenAiProviders,
     this.onTabChanged,
+    this.providerManifest,
+    this.onConnectProvider,
   });
 
   final AccountCloudSnapshot? snapshot;
@@ -56,6 +61,8 @@ class AccountCloudCenterScreen extends ConsumerStatefulWidget {
   final VoidCallback? onSyncNow;
   final VoidCallback? onBackupProject;
   final VoidCallback? onOpenAiProviders;
+  final ProviderConnectorManifest? providerManifest;
+  final ValueChanged<ProviderConnectorEntry>? onConnectProvider;
 
   /// Dipanggil saat tab berubah; router memakainya untuk mencatat history entry.
   final ValueChanged<String>? onTabChanged;
@@ -352,21 +359,13 @@ class _AccountCloudCenterScreenState
                                               title: 'QUICK CONNECT',
                                               subtitle:
                                                   'Connect services available to this account',
-                                              child: Column(
-                                                children: [
-                                                  for (final service
-                                                      in data.services
-                                                          .where(
-                                                            (service) =>
-                                                                service.group ==
-                                                                AccountCloudServiceGroup
-                                                                    .cloudStorage,
-                                                          )
-                                                          .take(4))
-                                                    _ServiceRow(
-                                                      service: service,
-                                                    ),
-                                                ],
+                                              child: _QuickConnectPanel(
+                                                manifest:
+                                                    widget.providerManifest ??
+                                                    ProviderConnectorManifest
+                                                        .standard,
+                                                onConnectProvider:
+                                                    widget.onConnectProvider,
                                               ),
                                             ),
                                           ),
@@ -1420,40 +1419,165 @@ class _DashboardCard extends StatelessWidget {
   );
 }
 
-class _ServiceRow extends StatelessWidget {
-  const _ServiceRow({required this.service});
+class _QuickConnectPanel extends StatelessWidget {
+  const _QuickConnectPanel({required this.manifest, this.onConnectProvider});
 
-  final AccountCloudService service;
+  final ProviderConnectorManifest manifest;
+  final ValueChanged<ProviderConnectorEntry>? onConnectProvider;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: EdgeInsets.only(bottom: AccountCenterDesignTokens.serviceRow.gap),
-    child: ConstrainedBox(
-      constraints: BoxConstraints(
-        minHeight: AccountCenterDesignTokens.serviceRow.minHeight,
-      ),
-      // 115.7: screen reader membaca satu node "nama, status" (bukan dua
-      // node terpisah); status tetap teks sehingga warna bukan satu-satunya
-      // pembawa state.
-      child: MergeSemantics(
-        child: Semantics(
-          label: AccountCenterAccessibility.providerSemanticsLabel(
-            service.label,
-            _connectionStatusLabel(service.state),
-          ),
-          child: ExcludeSemantics(
-            child: Row(
-              children: [
-                Expanded(child: Text(service.label, style: _body)),
-                _ConnectionBadge(state: service.state),
-              ],
-            ),
-          ),
+  Widget build(BuildContext context) => Column(
+    children: [
+      for (final entry in manifest.all.where(
+        (entry) => entry.category == ProviderConnectorCategory.cloudStorage,
+      ))
+        _ProviderTile(
+          entry: entry,
+          onConnect: onConnectProvider == null
+              ? null
+              : () => onConnectProvider!(entry),
         ),
-      ),
-    ),
+    ],
   );
 }
+
+class _ProviderTile extends StatelessWidget {
+  const _ProviderTile({required this.entry, this.onConnect});
+
+  final ProviderConnectorEntry entry;
+  final VoidCallback? onConnect;
+
+  @override
+  Widget build(BuildContext context) {
+    final canConnect = entry.isConnectable && onConnect != null;
+    return Padding(
+      key: ValueKey('quick-connect-provider-${entry.providerId}'),
+      padding: EdgeInsets.only(
+        bottom: AccountCenterDesignTokens.serviceRow.gap,
+      ),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: AccountCenterDesignTokens.serviceRow.minHeight,
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final details = Semantics(
+              label: AccountCenterAccessibility.providerSemanticsLabel(
+                entry.displayName,
+                _providerConnectionLabel(entry.availability),
+              ),
+              child: ExcludeSemantics(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(entry.displayName, style: _body),
+                    Text(
+                      _providerAvailabilityLabel(entry.availability),
+                      style: _caption,
+                    ),
+                    Text(
+                      _providerHealthLabel(entry.availability),
+                      style: _caption,
+                    ),
+                  ],
+                ),
+              ),
+            );
+            final action = TextButton(
+              onPressed: canConnect ? onConnect : null,
+              child: Text(entry.isConnectable ? 'Connect' : 'Not available'),
+            );
+            final textScale = MediaQuery.textScalerOf(context).scale(1);
+
+            if (textScale > 1.3) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _ProviderIcon(entry: entry),
+                      SizedBox(width: AccountCenterDesignTokens.spacing.sm),
+                      Expanded(child: details),
+                    ],
+                  ),
+                  Align(alignment: Alignment.centerRight, child: action),
+                ],
+              );
+            }
+
+            return Row(
+              children: [
+                _ProviderIcon(entry: entry),
+                SizedBox(width: AccountCenterDesignTokens.spacing.sm),
+                Expanded(child: details),
+                action,
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _ProviderIcon extends StatelessWidget {
+  const _ProviderIcon({required this.entry});
+
+  final ProviderConnectorEntry entry;
+
+  @override
+  Widget build(BuildContext context) {
+    final icon = ProviderIconRegistry.standard.resolve(entry.providerId);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final assetPath = isDark
+        ? icon.assetDark ?? icon.assetLight
+        : icon.assetLight ?? icon.assetDark;
+    final size = AccountCenterDesignTokens.iconSizes.action;
+
+    return Semantics(
+      image: true,
+      label: icon.accessibleName,
+      child: ExcludeSemantics(
+        child: assetPath == null
+            ? Icon(Icons.cloud_queue_outlined, size: size)
+            : BrandLogo(
+                assetPath: assetPath,
+                width: size,
+                height: size,
+                fallbackIcon: Icons.cloud_queue_outlined,
+              ),
+      ),
+    );
+  }
+}
+
+String _providerAvailabilityLabel(ProviderConnectorAvailability availability) =>
+    switch (availability) {
+      ProviderConnectorAvailability.unverified => 'Provider unverified',
+      ProviderConnectorAvailability.planned => 'Planned',
+      ProviderConnectorAvailability.available => 'Ready to connect',
+      ProviderConnectorAvailability.unavailable => 'Unavailable',
+      ProviderConnectorAvailability.unsupportedRegion =>
+        'Unsupported in this region',
+      ProviderConnectorAvailability.degraded => 'Degraded',
+      ProviderConnectorAvailability.outage => 'Provider outage',
+    };
+
+String _providerHealthLabel(ProviderConnectorAvailability availability) =>
+    switch (availability) {
+      ProviderConnectorAvailability.degraded => 'Health: Degraded',
+      ProviderConnectorAvailability.outage => 'Health: Outage',
+      _ => 'Health: Unknown',
+    };
+
+String _providerConnectionLabel(ProviderConnectorAvailability availability) =>
+    switch (availability) {
+      ProviderConnectorAvailability.available ||
+      ProviderConnectorAvailability.degraded ||
+      ProviderConnectorAvailability.outage => 'Connected',
+      _ => 'Not connected',
+    };
 
 /// Label status koneksi yang diumumkan sebagai teks (spec: warna bukan satu
 ///-satunya pembawa connection/health state).

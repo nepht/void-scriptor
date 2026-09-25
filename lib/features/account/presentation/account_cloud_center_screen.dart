@@ -15,6 +15,7 @@ import '../domain/account_center_information_architecture.dart';
 import '../domain/account_center_provider_connector_manifest.dart';
 import '../domain/account_center_responsive_grid.dart';
 import '../domain/account_center_provider_icon_registry.dart';
+import 'storage_usage_card.dart';
 
 /// Peran tipografi 115.5 dari product spec (bobot VoidTypography dipertahankan).
 final TextStyle _pageTitle = VoidTypography.displayMedium.copyWith(
@@ -371,13 +372,8 @@ class _AccountCloudCenterScreenState
                                           ),
                                           SizedBox(
                                             width: mainCardWidth,
-                                            child: const _OverviewCapabilityCard(
-                                              title: 'CLOUD STORAGE USAGE',
-                                              subtitle:
-                                                  'Storage metering by provider',
-                                              icon: Icons.cloud_queue_outlined,
-                                              message:
-                                                  'No connected provider is reporting quota or usage.',
+                                            child: StorageUsageCard(
+                                              onManage: widget.onSyncNow,
                                             ),
                                           ),
                                         ],

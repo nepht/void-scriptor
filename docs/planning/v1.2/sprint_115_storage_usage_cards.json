@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.19",
+  "title": "Storage Usage Cards",
+  "status": "VERIFIED-LOCAL",
+  "acceptance": [
+    "icon",
+    "accessible_progress",
+    "quota_unknown_state",
+    "freshness",
+    "error_state",
+    "manage_action"
+  ],
+  "implementation": [
+    "lib/features/account/domain/account_center_storage_usage_card.dart",
+    "lib/features/account/presentation/storage_usage_card.dart",
+    "lib/features/account/presentation/account_cloud_center_screen.dart"
+  ],
+  "evidence": [
+    "test/features/account/domain/account_center_storage_usage_card_test.dart",
+    "test/features/account/presentation/storage_usage_card_test.dart",
+    "test/features/account/presentation/account_cloud_center_screen_test.dart"
+  ],
+  "behavior": {
+    "icon": "Provider storage icon mapping with cloud fallback.",
+    "accessible_progress": "Semantics exposes the usage summary while the visual progress bar is excluded from duplicate announcements.",
+    "quota_unknown_state": "Unknown quota remains explicit and percentage is null.",
+    "freshness": "Reading freshness is fresh, stale, or unknown based on measured timestamp.",
+    "error_state": "Missing data renders an honest unavailable state without fabricated usage.",
+    "manage_action": "Manage storage invokes the injected action and meets the 44px target."
+  },
+  "boundary": "Metadata-only local UI contract; no live provider, quota, credential, network, hosted CI, signing, telemetry, hardware, adoption, or publication claim."
+}

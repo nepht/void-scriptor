@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.13",
+  "title": "Authentication & Profile Card",
+  "acceptance": [
+    "avatar_states",
+    "identity_methods",
+    "primary_identity",
+    "plan_badge",
+    "edit_profile",
+    "account_status"
+  ],
+  "implementation": "lib/features/account/domain/account_center_authentication_profile_card.dart",
+  "evidence": "test/features/account/domain/account_center_authentication_profile_card_test.dart",
+  "boundary": "Data-only profile contract; live identity provider, credential, network, and native account wiring remain DEFERRED-EXTERNAL."
+}

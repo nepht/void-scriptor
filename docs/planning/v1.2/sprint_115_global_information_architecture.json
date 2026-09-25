@@ -1,0 +1,67 @@
+{
+  "canonical_step": "115.3",
+  "title": "Global Information Architecture",
+  "scope": "account-center-global-route-tabs-deeplinks-backnav-breadcrumb-search-profile-shortcut",
+  "sources": [
+    "docs/audits/sprint-115-2-reference-design-audit.md",
+    "docs/sprints/sprint-115-account-cloud-center.md"
+  ],
+  "global_route": {
+    "canonical": "/account/cloud-center",
+    "legacy_alias": "/account-cloud",
+    "legacy_behavior": "redirect_preserving_query",
+    "scope": "GLOBAL_USER"
+  },
+  "tabs": [
+    { "slug": "overview", "label": "Overview" },
+    { "slug": "connected_accounts", "label": "Connected Accounts" },
+    { "slug": "cloud_storage", "label": "Cloud Storage" },
+    { "slug": "ai_providers", "label": "AI Providers" },
+    { "slug": "api_keys", "label": "API Keys" },
+    { "slug": "team_collaboration", "label": "Team & Collaboration" },
+    { "slug": "security", "label": "Security" },
+    { "slug": "backup_sync", "label": "Backup & Sync" },
+    { "slug": "billing", "label": "Billing" }
+  ],
+  "deep_links": {
+    "parameter": "tab",
+    "template": "/account/cloud-center?tab=<slug>",
+    "unknown_tab": "fallback_overview"
+  },
+  "back_navigation": {
+    "tab_change": "push_history_entry",
+    "back_order": ["previous_tab", "entry_point"],
+    "entry_tab": "overview"
+  },
+  "breadcrumbs": {
+    "root": "Account & Cloud Center",
+    "separator": " / ",
+    "depth": 2
+  },
+  "search_index": {
+    "scope": "account_center_tabs",
+    "matching": "case_insensitive_substring_on_label_slug_and_keywords",
+    "blank_query": "all_tabs",
+    "entry_count": 9
+  },
+  "profile_shortcut": {
+    "navigation_key": "account-cloud",
+    "entry_points": [
+      "desktop_top_bar_account_menu",
+      "mobile_app_bar_account_menu"
+    ],
+    "route": "/account/cloud-center"
+  },
+  "acceptance_coverage": [
+    "global_route",
+    "nine_tabs",
+    "deep_links",
+    "back_navigation",
+    "search_index",
+    "profile_shortcut"
+  ],
+  "evidence_limits": [
+    "Local domain/router/widget tests only; hosted CI, telemetry, billing, signing, and publication remain DEFERRED-EXTERNAL.",
+    "Pixel-perfect parity with the reference image remains unclaimed (115.2 finding)."
+  ]
+}

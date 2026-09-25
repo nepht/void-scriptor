@@ -8,43 +8,37 @@ import '../../../design_system/typography/void_typography.dart';
 import '../../../design_system/theme/void_theme_context.dart';
 import '../application/account_operational_metrics.dart';
 import '../domain/account_cloud_snapshot.dart';
-
-enum _AccountCenterArea {
-  overview('Overview'),
-  connectedAccounts('Connected Accounts'),
-  cloudStorage('Cloud Storage'),
-  aiProviders('AI Providers'),
-  apiKeys('API Keys'),
-  teamCollaboration('Team & Collaboration'),
-  security('Security'),
-  backupSync('Backup & Sync'),
-  billing('Billing');
-
-  const _AccountCenterArea(this.label);
-  final String label;
-}
+import '../domain/account_center_information_architecture.dart';
 
 class AccountCloudCenterScreen extends ConsumerStatefulWidget {
   const AccountCloudCenterScreen({
     super.key,
     this.snapshot,
     this.operationalMetrics,
+    this.initialTab,
     this.onSignIn,
     this.onSearch,
     this.onNotifications,
     this.onSyncNow,
     this.onBackupProject,
     this.onOpenAiProviders,
+    this.onTabChanged,
   });
 
   final AccountCloudSnapshot? snapshot;
   final AccountOperationalMetrics? operationalMetrics;
+
+  /// Slug deep link `?tab=`; null/tak dikenal jatuh ke overview (fail closed).
+  final String? initialTab;
   final VoidCallback? onSignIn;
   final VoidCallback? onSearch;
   final VoidCallback? onNotifications;
   final VoidCallback? onSyncNow;
   final VoidCallback? onBackupProject;
   final VoidCallback? onOpenAiProviders;
+
+  /// Dipanggil saat tab berubah; router memakainya untuk mencatat history entry.
+  final ValueChanged<String>? onTabChanged;
 
   @override
   ConsumerState<AccountCloudCenterScreen> createState() =>
@@ -53,7 +47,46 @@ class AccountCloudCenterScreen extends ConsumerStatefulWidget {
 
 class _AccountCloudCenterScreenState
     extends ConsumerState<AccountCloudCenterScreen> {
-  _AccountCenterArea _area = _AccountCenterArea.overview;
+  AccountCenterTab _tab = AccountCenterInformationArchitecture.tabs.first;
+
+  @override
+  void initState() {
+    super.initState();
+    _tab = AccountCenterInformationArchitecture.resolveTab(widget.initialTab);
+  }
+
+  @override
+  void didUpdateWidget(covariant AccountCloudCenterScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialTab != widget.initialTab) {
+      _tab = AccountCenterInformationArchitecture.resolveTab(widget.initialTab);
+    }
+  }
+
+  void _selectTab(AccountCenterTab next) {
+    if (next == _tab) {
+      return;
+    }
+    // Mode router-driven (onTabChanged terpasang): state tab hidup di URL,
+    // halaman ini tidak boleh berubah agar target back-navigation stabil.
+    if (widget.onTabChanged != null) {
+      widget.onTabChanged!(next.slug);
+      return;
+    }
+    setState(() => _tab = next);
+  }
+
+  void _openAccountSearch() {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => _AccountCenterSearchDialog(
+        onSelected: (tab) {
+          Navigator.of(dialogContext).pop();
+          _selectTab(tab);
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,9 +163,10 @@ class _AccountCloudCenterScreenState
                                 ),
                                 IconButton(
                                   tooltip: widget.onSearch == null
-                                      ? 'Search (coming soon)'
+                                      ? 'Search account sections'
                                       : 'Search',
-                                  onPressed: widget.onSearch,
+                                  onPressed:
+                                      widget.onSearch ?? _openAccountSearch,
                                   icon: const Icon(Icons.search),
                                 ),
                                 IconButton(
@@ -144,16 +178,29 @@ class _AccountCloudCenterScreenState
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
+                            Text(
+                              AccountCenterInformationArchitecture.breadcrumbsFor(
+                                _tab,
+                              ).join(' / '),
+                              key: const ValueKey('account-center-breadcrumb'),
+                              style: VoidTypography.body.copyWith(
+                                color: context.palette.textSecondary,
+                                fontSize: 10,
+                              ),
+                            ),
+                            const SizedBox(height: 14),
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                 children: [
-                                  for (final area in _AccountCenterArea.values)
+                                  for (final tab
+                                      in AccountCenterInformationArchitecture
+                                          .tabs)
                                     _CenterTab(
-                                      label: area.label,
-                                      active: area == _area,
-                                      onTap: () => setState(() => _area = area),
+                                      label: tab.label,
+                                      active: tab == _tab,
+                                      onTap: () => _selectTab(tab),
                                     ),
                                 ],
                               ),
@@ -168,9 +215,9 @@ class _AccountCloudCenterScreenState
                                 final main = Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    if (_area != _AccountCenterArea.overview)
+                                    if (_tab.slug != 'overview')
                                       _FocusedAccountArea(
-                                        area: _area,
+                                        tab: _tab,
                                         snapshot: data,
                                         onSignIn:
                                             data
@@ -191,8 +238,7 @@ class _AccountCloudCenterScreenState
                                         onOpenSecurity: () =>
                                             context.push(AppRoutes.security),
                                       ),
-                                    if (_area ==
-                                        _AccountCenterArea.overview) ...[
+                                    if (_tab.slug == 'overview') ...[
                                       Wrap(
                                         spacing: 16,
                                         runSpacing: 16,
@@ -879,14 +925,14 @@ class _OverviewCapabilityCard extends StatelessWidget {
 
 class _FocusedAccountArea extends StatelessWidget {
   const _FocusedAccountArea({
-    required this.area,
+    required this.tab,
     required this.snapshot,
     this.onSignIn,
     this.onOpenAiProviders,
     this.onOpenSecurity,
   });
 
-  final _AccountCenterArea area;
+  final AccountCenterTab tab;
   final AccountCloudSnapshot snapshot;
   final VoidCallback? onSignIn;
   final VoidCallback? onOpenAiProviders;
@@ -894,8 +940,8 @@ class _FocusedAccountArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cards = switch (area) {
-      _AccountCenterArea.connectedAccounts => const [
+    final cards = switch (tab.slug) {
+      'connected_accounts' => const [
         (
           'AUTHENTICATION',
           'Account identity and sign-in state',
@@ -903,7 +949,7 @@ class _FocusedAccountArea extends StatelessWidget {
           'Account access reflects the configured authentication provider.',
         ),
       ],
-      _AccountCenterArea.backupSync => const [
+      'backup_sync' => const [
         (
           'BACKUP & SYNC',
           'Data protection and synchronization',
@@ -911,7 +957,7 @@ class _FocusedAccountArea extends StatelessWidget {
           'Local project backups are available. Cloud sync remains unavailable until a provider is connected.',
         ),
       ],
-      _AccountCenterArea.cloudStorage => const [
+      'cloud_storage' => const [
         (
           'CLOUD STORAGE USAGE',
           'Storage metering by provider',
@@ -925,7 +971,7 @@ class _FocusedAccountArea extends StatelessWidget {
           'No cloud backup destination is configured.',
         ),
       ],
-      _AccountCenterArea.aiProviders => const [
+      'ai_providers' => const [
         (
           'API PROVIDERS',
           'AI model gateways',
@@ -939,7 +985,7 @@ class _FocusedAccountArea extends StatelessWidget {
           'No metering data is available from connected providers.',
         ),
       ],
-      _AccountCenterArea.apiKeys => const [
+      'api_keys' => const [
         (
           'DEVELOPER TOOLS',
           'Source control and development services',
@@ -959,7 +1005,7 @@ class _FocusedAccountArea extends StatelessWidget {
           'Credentials remain protected in the operating-system vault.',
         ),
       ],
-      _AccountCenterArea.teamCollaboration => const [
+      'team_collaboration' => const [
         (
           'TEAM & COLLABORATION',
           'Members, roles, and invitations',
@@ -967,7 +1013,7 @@ class _FocusedAccountArea extends StatelessWidget {
           'Team management is not configured.',
         ),
       ],
-      _AccountCenterArea.security => const [
+      'security' => const [
         (
           'SECURITY CENTER',
           'Sessions and account protection',
@@ -981,7 +1027,7 @@ class _FocusedAccountArea extends StatelessWidget {
           'No account activity has been recorded.',
         ),
       ],
-      _AccountCenterArea.billing => const [
+      'billing' => const [
         (
           'PAYMENT METHODS',
           'Billing service connections',
@@ -989,7 +1035,7 @@ class _FocusedAccountArea extends StatelessWidget {
           'No payment method is configured.',
         ),
       ],
-      _AccountCenterArea.overview => const [],
+      _ => const [],
     };
 
     return LayoutBuilder(
@@ -1011,7 +1057,7 @@ class _FocusedAccountArea extends StatelessWidget {
                   message: card.$4,
                 ),
               ),
-            if (area == _AccountCenterArea.connectedAccounts)
+            if (tab.slug == 'connected_accounts')
               SizedBox(
                 width: cardWidth,
                 child: _DashboardCard(
@@ -1023,13 +1069,13 @@ class _FocusedAccountArea extends StatelessWidget {
                   ),
                 ),
               ),
-            if (area == _AccountCenterArea.backupSync)
+            if (tab.slug == 'backup_sync')
               for (final service in snapshot.services)
                 SizedBox(
                   width: cardWidth,
                   child: _ServiceCard(service: service),
                 ),
-            if (area == _AccountCenterArea.cloudStorage)
+            if (tab.slug == 'cloud_storage')
               for (final service in snapshot.services.where(
                 (service) =>
                     service.group == AccountCloudServiceGroup.cloudStorage,
@@ -1038,7 +1084,7 @@ class _FocusedAccountArea extends StatelessWidget {
                   width: cardWidth,
                   child: _ServiceCard(service: service),
                 ),
-            if (area == _AccountCenterArea.aiProviders)
+            if (tab.slug == 'ai_providers')
               SizedBox(
                 width: cardWidth,
                 child: _DestinationActionCard(
@@ -1049,7 +1095,7 @@ class _FocusedAccountArea extends StatelessWidget {
                   onPressed: onOpenAiProviders,
                 ),
               ),
-            if (area == _AccountCenterArea.security)
+            if (tab.slug == 'security')
               SizedBox(
                 width: cardWidth,
                 child: _DestinationActionCard(
@@ -1095,7 +1141,7 @@ class _DestinationActionCard extends StatelessWidget {
   );
 }
 
-class _CenterTab extends StatelessWidget {
+class _CenterTab extends StatefulWidget {
   const _CenterTab({
     required this.label,
     required this.onTap,
@@ -1107,15 +1153,44 @@ class _CenterTab extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
+  State<_CenterTab> createState() => _CenterTabState();
+}
+
+class _CenterTabState extends State<_CenterTab> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.active) {
+      _revealInTabStrip();
+    }
+  }
+
+  /// Tab aktif (termasuk hasil deep link) wajib terlihat di tab strip.
+  /// Hanya saat inisialisasi halaman: perubahan tab lokal tidak menggeser
+  /// strip agar target tap yang sudah terlihat tetap stabil.
+  void _revealInTabStrip() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      Scrollable.ensureVisible(
+        context,
+        duration: Duration.zero,
+        alignment: 0.2,
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(right: 22),
     child: InkWell(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: DecoratedBox(
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: active
+              color: widget.active
                   ? context.palette.primaryBright
                   : Colors.transparent,
               width: 2,
@@ -1125,9 +1200,9 @@ class _CenterTab extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: Text(
-            label,
+            widget.label,
             style: VoidTypography.body.copyWith(
-              color: active
+              color: widget.active
                   ? context.palette.primaryBright
                   : context.palette.textSecondary,
             ),
@@ -1301,6 +1376,72 @@ class _ConnectionBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(label, style: VoidTypography.caption.copyWith(color: color)),
+    );
+  }
+}
+
+/// Dialog pencarian bagian Account & Cloud Center (115.3 search index).
+class _AccountCenterSearchDialog extends StatefulWidget {
+  const _AccountCenterSearchDialog({required this.onSelected});
+
+  final ValueChanged<AccountCenterTab> onSelected;
+
+  @override
+  State<_AccountCenterSearchDialog> createState() =>
+      _AccountCenterSearchDialogState();
+}
+
+class _AccountCenterSearchDialogState
+    extends State<_AccountCenterSearchDialog> {
+  String _query = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final results = AccountCenterInformationArchitecture.search(_query);
+    return AlertDialog(
+      title: const Text('Search account sections'),
+      content: SizedBox(
+        width: 420,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              autofocus: true,
+              decoration: const InputDecoration(
+                hintText: 'Search tabs and sections',
+                prefixIcon: Icon(Icons.search),
+              ),
+              onChanged: (value) => setState(() => _query = value),
+            ),
+            const SizedBox(height: 12),
+            if (results.isEmpty)
+              const Text('No account sections match that search.')
+            else
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (final tab in results)
+                        ListTile(
+                          title: Text(tab.label),
+                          subtitle: const Text('Account section'),
+                          onTap: () => widget.onSelected(tab),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
 }

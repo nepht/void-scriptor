@@ -47,7 +47,9 @@ void main() {
     final notifications = tester.widget<IconButton>(
       find.widgetWithIcon(IconButton, Icons.notifications_none),
     );
-    expect(search.onPressed, isNull);
+    // 115.3: the search button now runs the account IA search index; the
+    // notifications action remains an honest coming-soon extension point.
+    expect(search.onPressed, isNotNull);
     expect(notifications.onPressed, isNull);
     for (final tab in [
       'Overview',
@@ -247,5 +249,150 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text('ACCOUNT & CLOUD CENTER'), findsOneWidget);
+  });
+
+  testWidgets('initial tab, breadcrumb, and tab-change callback follow IA', (
+    tester,
+  ) async {
+    String? changedTo;
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: AccountCloudCenterScreen(
+            initialTab: 'security',
+            onTabChanged: (slug) => changedTo = slug,
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.byKey(const ValueKey('account-center-breadcrumb')),
+      findsOneWidget,
+    );
+    expect(find.text('Account & Cloud Center / Security'), findsOneWidget);
+    expect(find.text('SECURITY CENTER'), findsOneWidget);
+
+    // Tab strip overflow di viewport uji 800px; ikuti idiom repo: panggil
+    // onTap tab langsung (bukan hit-test) untuk tab di luar viewport.
+    final apiKeysTab = tester.widget<InkWell>(
+      find.ancestor(of: find.text('API Keys'), matching: find.byType(InkWell)),
+    );
+    apiKeysTab.onTap!();
+    await tester.pump();
+
+    // Mode router-driven: callback menerima slug, halaman saat ini tidak
+    // berubah (tab state hidup di URL supaya back-navigation konsisten).
+    expect(changedTo, 'api_keys');
+    expect(find.text('Account & Cloud Center / Security'), findsOneWidget);
+
+    // Simulasi rebuild router dengan tab param baru (deep-link sync).
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(
+          home: AccountCloudCenterScreen(initialTab: 'billing'),
+        ),
+      ),
+    );
+
+    expect(find.text('Account & Cloud Center / Billing'), findsOneWidget);
+    expect(find.text('PAYMENT METHODS'), findsOneWidget);
+  });
+
+  testWidgets('unknown deep-link tab falls back to overview without errors', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(
+          home: AccountCloudCenterScreen(initialTab: 'does-not-exist'),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Account & Cloud Center / Overview'), findsOneWidget);
+    expect(find.text('QUICK CONNECT'), findsOneWidget);
+  });
+
+  testWidgets('account section search navigates through the IA index', (
+    tester,
+  ) async {
+    // Mode lokal (tanpa onTabChanged): pilihan hasil search mengganti tab
+    // langsung dari state screen.
+    await tester.pumpWidget(
+      const ProviderScope(child: MaterialApp(home: AccountCloudCenterScreen())),
+    );
+
+    await tester.tap(find.widgetWithIcon(IconButton, Icons.search));
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), 'billing');
+    await tester.pump();
+
+    final billingTile = find.descendant(
+      of: find.byType(AlertDialog),
+      matching: find.text('Billing'),
+    );
+    expect(billingTile, findsOneWidget);
+
+    await tester.tap(billingTile);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AlertDialog), findsNothing);
+    expect(find.text('Account & Cloud Center / Billing'), findsOneWidget);
+
+    // Empty result state stays honest instead of inventing sections.
+    await tester.tap(find.widgetWithIcon(IconButton, Icons.search));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'no-such-section');
+    await tester.pump();
+    expect(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.text('No account sections match that search.'),
+      ),
+      findsOneWidget,
+    );
+    final dismiss = find.descendant(
+      of: find.byType(AlertDialog),
+      matching: find.text('Close'),
+    );
+    expect(dismiss, findsOneWidget);
+    await tester.tap(dismiss);
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('all nine canonical tabs render in IA order', (tester) async {
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(home: Scaffold(body: AccountCloudCenterScreen())),
+      ),
+    );
+
+    const labels = [
+      'Overview',
+      'Connected Accounts',
+      'Cloud Storage',
+      'AI Providers',
+      'API Keys',
+      'Team & Collaboration',
+      'Security',
+      'Backup & Sync',
+      'Billing',
+    ];
+    var previousX = -1.0;
+    for (final label in labels) {
+      final tab = find
+          .ancestor(of: find.text(label), matching: find.byType(InkWell))
+          .first;
+      final dx = tester.getTopLeft(tab).dx;
+      expect(dx, greaterThan(previousX), reason: 'tab order before $label');
+      previousX = dx;
+    }
   });
 }

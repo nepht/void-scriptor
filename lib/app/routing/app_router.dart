@@ -9,6 +9,7 @@ import '../../core/feature_flags/feature_flag_registry.dart';
 import '../../features/authentication/presentation/forgot_password_screen.dart';
 import '../../features/authentication/presentation/login_screen.dart';
 import '../../features/authentication/presentation/register_screen.dart';
+import '../../features/account/domain/account_center_information_architecture.dart';
 import '../../features/account/presentation/account_cloud_center_screen.dart';
 import '../../features/settings/presentation/settings_hub_screen.dart';
 import '../../features/settings/presentation/storage_locations_screen.dart';
@@ -77,7 +78,7 @@ GoRouter createAppRouter({
       for (final route in AppRoutes.foundationRoutes.entries)
         GoRoute(
           path: route.value,
-          builder: (context, __) => switch (route.value) {
+          builder: (context, state) => switch (route.value) {
             AppRoutes.workspace => const ProviderScope(child: VoidAppShell()),
             AppRoutes.aiStudio => AdvancedAiStudioScreen(
               onOpenImageGenerator: () =>
@@ -87,8 +88,20 @@ GoRouter createAppRouter({
             ),
             AppRoutes.collaborationComments =>
               const CollaborationCommentsScreen(),
-            AppRoutes.accountCloud => const ProviderScope(
-              child: VoidDesktopShell(content: AccountCloudCenterScreen()),
+            AppRoutes.accountCloud => ProviderScope(
+              child: VoidDesktopShell(
+                content: AccountCloudCenterScreen(
+                  initialTab:
+                      state
+                          .uri
+                          .queryParameters[AccountCenterInformationArchitecture
+                          .tabQueryParameter],
+                  onTabChanged: (slug) => context.push(
+                    '${AppRoutes.accountCloud}'
+                    '?${AccountCenterInformationArchitecture.tabQueryParameter}=$slug',
+                  ),
+                ),
+              ),
             ),
             AppRoutes.security => const SecuritySettingsScreen(),
             AppRoutes.securityLock => const ProjectLockScreen(
@@ -97,6 +110,15 @@ GoRouter createAppRouter({
             _ => FoundationRouteScreen(label: route.key),
           },
         ),
+      GoRoute(
+        path: AppRoutes.accountCloudLegacy,
+        redirect: (_, state) {
+          final query = state.uri.query;
+          return query.isEmpty
+              ? AppRoutes.accountCloud
+              : '${AppRoutes.accountCloud}?$query';
+        },
+      ),
       GoRoute(
         path: AppRoutes.aiImageGenerator,
         builder: (_, __) => const AiGenerationQueueScreen(),
@@ -389,9 +411,28 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
     GoRoute(
       path: AppRoutes.accountCloud,
-      builder: (_, __) => const ProviderScope(
-        child: VoidDesktopShell(content: AccountCloudCenterScreen()),
+      builder: (context, state) => ProviderScope(
+        child: VoidDesktopShell(
+          content: AccountCloudCenterScreen(
+            initialTab:
+                state.uri.queryParameters[AccountCenterInformationArchitecture
+                    .tabQueryParameter],
+            onTabChanged: (slug) => context.push(
+              '${AppRoutes.accountCloud}'
+              '?${AccountCenterInformationArchitecture.tabQueryParameter}=$slug',
+            ),
+          ),
+        ),
       ),
+    ),
+    GoRoute(
+      path: AppRoutes.accountCloudLegacy,
+      redirect: (_, state) {
+        final query = state.uri.query;
+        return query.isEmpty
+            ? AppRoutes.accountCloud
+            : '${AppRoutes.accountCloud}?$query';
+      },
     ),
     GoRoute(
       path: AppRoutes.settings,

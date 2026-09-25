@@ -18,7 +18,12 @@ abstract final class AppRoutes {
   static const aiGallery = '/ai/gallery';
   static const aiProviders = '/ai/providers';
   static const donation = '/donation';
-  static const accountCloud = '/account-cloud';
+
+  /// Route global kanonik Account & Cloud Center (115.3, product spec).
+  static const accountCloud = '/account/cloud-center';
+
+  /// Alias lama yang tetap diterima dan di-redirect ke [accountCloud].
+  static const accountCloudLegacy = '/account-cloud';
   static const settings = '/settings';
   static const contentCapabilities = '/content-capabilities';
   static const workspace = '/workspace';

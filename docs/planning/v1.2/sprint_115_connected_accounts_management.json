@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.14",
+  "title": "Connected Accounts Management",
+  "acceptance": [
+    "list_connections",
+    "add_connection",
+    "scope_review",
+    "reauth",
+    "unlink_confirmation",
+    "last_checked"
+  ],
+  "implementation": "lib/features/account/domain/account_center_connected_accounts_management.dart",
+  "evidence": "test/features/account/domain/account_center_connected_accounts_management_test.dart",
+  "boundary": "Local data-only management seam. It does not claim live provider connectivity, credential storage, network revocation, hosted CI, signing, telemetry, hardware, adoption, or publication."
+}

@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_CONNECTION_HEALTH_STATE_MACHINE_MANIFEST",
+  "canonical_step": "115.10",
+  "title": "Connection & Health State Machine",
+  "sources": {
+    "canonical_steps": {
+      "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+      "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba"
+    },
+    "product_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+      "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+      "subtrees": ["provider_model", "ui_states", "security_contract"]
+    },
+    "connector_sdk_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/connector_sdk_spec.json",
+      "sha256": "052e8b240f772887bf39ce1337cef2919e52251e59c569440403cd6aa41528dc",
+      "subtrees": ["capability_contracts", "runtime", "testing_kit"]
+    }
+  },
+  "acceptance": [
+    "state_transitions",
+    "retry_policy",
+    "reauth_path",
+    "revoke_path",
+    "health_refresh",
+    "user_visible_error"
+  ],
+  "connection_states": [
+    "NOT_CONFIGURED",
+    "CONNECTING",
+    "CONNECTED",
+    "DEGRADED",
+    "EXPIRED",
+    "REVOKED",
+    "ERROR",
+    "UNAVAILABLE"
+  ],
+  "health_states": [
+    "UNKNOWN",
+    "HEALTHY",
+    "DEGRADED",
+    "OUTAGE",
+    "RATE_LIMITED"
+  ],
+  "transitions": [
+    "BEGIN_CONNECTING",
+    "CONNECT_SUCCEEDED",
+    "ERROR",
+    "UNAVAILABLE",
+    "EXPIRE",
+    "REVOKE",
+    "REFRESH_HEALTH",
+    "REAUTHENTICATE",
+    "RETRY"
+  ],
+  "policy": {
+    "state_machine": "Per-account instance; no static shared connection state.",
+    "retry_policy": "Bounded transient retry; exhausted policy fails closed.",
+    "reauth_path": "Expired/error/unavailable states expose reauthentication; successful reconnect clears the error.",
+    "revoke_path": "Revocation is explicit, visible, and terminal for the current configuration.",
+    "health_refresh": "Requires explicit health state and records the check timestamp.",
+    "user_visible_error": "Failure errors are non-empty, redacted, and never store credentials."
+  },
+  "domain": "lib/features/account/domain/account_center_connection_health_state_machine.dart",
+  "tests": [
+    "test/features/account/domain/account_center_connection_health_state_machine_test.dart"
+  ],
+  "application": {
+    "live_wiring": "Local domain seam for Account Center surfaces; no network calls or credential storage.",
+    "current_consumer": "Step 115.10 domain contract. UI actions and live connector health polling remain separately scoped.",
+    "data_source": "Caller-provided transition and health observations only."
+  },
+  "deferred_scope": {
+    "oauth_flow": "115.11",
+    "secret_vault": "115.12",
+    "quick_connect_wiring": "115.15",
+    "native_at_certification": "115.48"
+  },
+  "evidence_boundary": "Local state-machine contract for step 115.10 only. It does not claim live provider connectivity, successful authentication, healthy endpoints, quota/cost, hosted CI, signing, telemetry, hardware, adoption, or publication."
+}

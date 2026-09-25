@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_OAUTH_LINKED_IDENTITY_FLOW_MANIFEST",
+  "canonical_step": "115.11",
+  "title": "OAuth & Linked Identity Flow",
+  "sources": {
+    "canonical_steps": {
+      "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+      "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba"
+    },
+    "product_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+      "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+      "subtrees": ["security_contract", "provider_model"]
+    },
+    "connector_sdk_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/connector_sdk_spec.json",
+      "sha256": "052e8b240f772887bf39ce1337cef2919e52251e59c569440403cd6aa41528dc",
+      "subtrees": ["capability_contracts", "permission_model", "testing_kit"]
+    }
+  },
+  "acceptance": [
+    "pkce",
+    "state_validation",
+    "nonce_when_required",
+    "scoped_consent",
+    "token_rotation",
+    "revocation"
+  ],
+  "protocol": {
+    "flow_type": "authorization_code",
+    "pkce_method": "S256",
+    "state": "Cryptographically random, single-use, exact callback match.",
+    "nonce": "Generated and validated when provider configuration requires it; omitted otherwise.",
+    "scoped_consent": "Explicit approval required; granted scopes must exactly match configured requested scopes and may not escalate at token or refresh boundaries.",
+    "callback": "Absolute redirect URI must match scheme, host, and path; duplicate, missing, or conflicting query parameters fail closed.",
+    "token_rotation": "Current token generation only; a refresh must return a new refresh token, preserve account/scopes, and increment generation.",
+    "unlink": "Explicit decision and provider revocation required; local link is removed only after revocation succeeds.",
+    "secret_surface": "PKCE verifier and access/refresh tokens are never serialized by request, token grant, or result toString surfaces."
+  },
+  "domain": "lib/features/account/domain/account_center_oauth_linked_identity_flow.dart",
+  "tests": [
+    "test/features/account/domain/account_center_oauth_linked_identity_flow_test.dart"
+  ],
+  "application": {
+    "live_wiring": "Broker-injected local domain seam for Account Center identity connections.",
+    "current_consumer": "Step 115.11 domain contract only; no production provider endpoint or token vault is wired.",
+    "data_source": "Explicit provider configuration, scoped consent, callback observations, and token-broker responses only."
+  },
+  "deferred_scope": {
+    "secure_token_storage": "115.12",
+    "connected_accounts_ui": "115.14",
+    "quick_connect_ui": "115.15",
+    "native_custom_url_protocol_registration": "Native integration not claimed by the local domain contract.",
+    "provider_certification_and_live_connectivity": "DEFERRED-EXTERNAL"
+  },
+  "evidence_boundary": "Local OAuth authorization-code and PKCE contract for step 115.11 only. It does not claim live provider connectivity, registered redirect protocols, durable token storage, certified connectors, hosted CI, signing, telemetry, hardware, adoption, or publication."
+}

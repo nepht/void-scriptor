@@ -1,0 +1,736 @@
+/// Sprint 115.11 — OAuth & Linked Identity Flow.
+///
+/// A local, dependency-free authorization-code + PKCE flow contract. Network
+/// calls and revocation are delegated to an injected broker. Durable token
+/// storage belongs to step 115.12 and is intentionally not implemented here.
+library;
+
+import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:crypto/crypto.dart';
+
+import 'account_center_provider_connector_manifest.dart';
+
+enum OAuthFlowErrorCode {
+  connectorUnavailable,
+  unsupportedAuthType,
+  consentRequired,
+  scopeEscalation,
+  callbackMismatch,
+  callbackInvalid,
+  stateMismatch,
+  nonceMissing,
+  nonceMismatch,
+  authorizationDenied,
+  tokenExchangeFailed,
+  invalidTokenResponse,
+  staleTokenGeneration,
+  refreshTokenNotRotated,
+  revocationFailed,
+}
+
+final class OAuthFlowException implements Exception {
+  const OAuthFlowException(this.code, this.message);
+
+  final OAuthFlowErrorCode code;
+  final String message;
+
+  @override
+  String toString() => 'OAuthFlowException(${code.name}): $message';
+}
+
+final class OAuthProviderConfiguration {
+  OAuthProviderConfiguration({
+    required this.connector,
+    required this.authorizationEndpoint,
+    required this.redirectUri,
+    required Iterable<String> scopes,
+    this.nonceRequired = true,
+    this.supportsRefresh = true,
+  }) : scopes = _normalizeScopes(scopes) {
+    if (authorizationEndpoint.scheme != 'https' ||
+        authorizationEndpoint.host.isEmpty ||
+        authorizationEndpoint.userInfo.isNotEmpty) {
+      throw ArgumentError.value(
+        authorizationEndpoint,
+        'authorizationEndpoint',
+        'Authorization endpoint must be an absolute HTTPS URI without user info.',
+      );
+    }
+    if (redirectUri.scheme.isEmpty ||
+        redirectUri.host.isEmpty ||
+        redirectUri.path.isEmpty ||
+        redirectUri.hasQuery ||
+        redirectUri.hasFragment ||
+        redirectUri.userInfo.isNotEmpty) {
+      throw ArgumentError.value(
+        redirectUri,
+        'redirectUri',
+        'Redirect URI must be absolute and must not contain query or fragment.',
+      );
+    }
+  }
+
+  final ProviderConnectorEntry connector;
+  final Uri authorizationEndpoint;
+  final Uri redirectUri;
+  final Set<String> scopes;
+  final bool nonceRequired;
+  final bool supportsRefresh;
+
+  static Set<String> _normalizeScopes(Iterable<String> scopes) {
+    final normalized = scopes
+        .map((scope) => scope.trim())
+        .where((scope) => scope.isNotEmpty)
+        .toSet();
+    if (normalized.isEmpty) {
+      throw ArgumentError.value(
+        scopes,
+        'scopes',
+        'OAuth authorization requires at least one explicit scope.',
+      );
+    }
+    if (normalized.any((scope) => RegExp(r'[\s\x00-\x1f]').hasMatch(scope))) {
+      throw ArgumentError.value(
+        scopes,
+        'scopes',
+        'OAuth scopes must not contain whitespace or control characters.',
+      );
+    }
+    return Set<String>.unmodifiable(normalized);
+  }
+}
+
+final class OAuthScopeConsent {
+  OAuthScopeConsent({
+    required Iterable<String> requestedScopes,
+    required Iterable<String> grantedScopes,
+    required this.explicitlyApproved,
+  }) : requestedScopes = _normalizeScopes(requestedScopes),
+       grantedScopes = _normalizeScopes(grantedScopes);
+
+  final Set<String> requestedScopes;
+  final Set<String> grantedScopes;
+  final bool explicitlyApproved;
+
+  static Set<String> _normalizeScopes(Iterable<String> scopes) {
+    final normalized = scopes
+        .map((scope) => scope.trim())
+        .where((scope) => scope.isNotEmpty)
+        .toSet();
+    if (normalized.isEmpty) {
+      throw ArgumentError.value(
+        scopes,
+        'scopes',
+        'OAuth scope consent requires at least one explicit scope.',
+      );
+    }
+    return Set<String>.unmodifiable(normalized);
+  }
+}
+
+final class OAuthAuthorizationRequest {
+  OAuthAuthorizationRequest._({
+    required this.configuration,
+    required this.consent,
+    required this.state,
+    required this.nonce,
+    required this.codeVerifier,
+    required this.codeChallenge,
+    required this.createdAt,
+  });
+
+  final OAuthProviderConfiguration configuration;
+  final OAuthScopeConsent consent;
+  final String state;
+  final String? nonce;
+  final String codeVerifier;
+  final String codeChallenge;
+  final DateTime createdAt;
+
+  String get providerId => configuration.connector.providerId;
+  Uri get redirectUri => configuration.redirectUri;
+  String get redirectUriText => redirectUri.toString();
+  Uri get authorizationUri => configuration.authorizationEndpoint.replace(
+    queryParameters: <String, String>{
+      'response_type': 'code',
+      'client_id': providerId,
+      'redirect_uri': redirectUriText,
+      'scope': (consent.grantedScopes.toList()..sort()).join(' '),
+      'state': state,
+      if (nonce != null) 'nonce': nonce!,
+      'code_challenge': codeChallenge,
+      'code_challenge_method': 'S256',
+    },
+  );
+
+  Map<String, Object?> toJson() => <String, Object?>{
+    'provider_id': providerId,
+    'redirect_uri': redirectUriText,
+    'scopes': consent.grantedScopes.toList(growable: false)..sort(),
+    'state': state,
+    'nonce': nonce,
+    'code_challenge': codeChallenge,
+    'code_challenge_method': 'S256',
+    'created_at': createdAt.toUtc().toIso8601String(),
+  };
+
+  @override
+  String toString() => jsonEncode(toJson());
+}
+
+final class OAuthTokenExchangeRequest {
+  const OAuthTokenExchangeRequest({
+    required this.configuration,
+    required this.code,
+    required this.codeVerifier,
+    required this.redirectUri,
+    required this.scopes,
+  });
+
+  final OAuthProviderConfiguration configuration;
+  final String code;
+  final String codeVerifier;
+  final Uri redirectUri;
+  final Set<String> scopes;
+}
+
+final class OAuthTokenRefreshRequest {
+  const OAuthTokenRefreshRequest({required this.grant});
+
+  final OAuthTokenGrant grant;
+}
+
+final class OAuthTokenResponse {
+  OAuthTokenResponse({
+    required String providerId,
+    required String providerAccountId,
+    required String displayName,
+    required String accessToken,
+    required String refreshToken,
+    required this.accessTokenExpiresAt,
+    this.supportsRefresh = true,
+    required Iterable<String> scopes,
+  }) : providerId = providerId.trim().toLowerCase(),
+       providerAccountId = providerAccountId.trim(),
+       displayName = displayName.trim(),
+       accessToken = _requireSecret(accessToken, 'accessToken'),
+       refreshToken = refreshToken.trim(),
+       scopes = Set<String>.unmodifiable(scopes) {
+    if (this.providerId.isEmpty || this.providerAccountId.isEmpty) {
+      throw ArgumentError(
+        'Token response requires providerId and providerAccountId.',
+      );
+    }
+    if (this.displayName.isEmpty) {
+      throw ArgumentError('Token response requires a non-empty displayName.');
+    }
+    if (this.scopes.isEmpty) {
+      throw ArgumentError('Token response requires explicit granted scopes.');
+    }
+  }
+
+  final String providerId;
+  final String providerAccountId;
+  final String displayName;
+  final String accessToken;
+  final String refreshToken;
+  final DateTime accessTokenExpiresAt;
+  final bool supportsRefresh;
+  final Set<String> scopes;
+
+  static String _requireSecret(String value, String field) {
+    final normalized = value.trim();
+    if (normalized.isEmpty) {
+      throw ArgumentError.value(
+        value,
+        field,
+        'Token response field is required.',
+      );
+    }
+    return normalized;
+  }
+}
+
+final class OAuthTokenGrant {
+  OAuthTokenGrant._({
+    required this.connectionId,
+    required this.providerId,
+    required this.accessToken,
+    required this.refreshToken,
+    required this.accessTokenExpiresAt,
+    required this.supportsRefresh,
+    required this.scopes,
+    required this.generation,
+  });
+
+  final String connectionId;
+  final String providerId;
+  final String accessToken;
+  final String refreshToken;
+  final DateTime accessTokenExpiresAt;
+  final bool supportsRefresh;
+  final Set<String> scopes;
+  final int generation;
+
+  @override
+  String toString() =>
+      'OAuthTokenGrant($connectionId, generation: $generation, '
+      'access: [REDACTED], refresh: [REDACTED])';
+}
+
+final class LinkedIdentity {
+  const LinkedIdentity({
+    required this.connectionId,
+    required this.providerId,
+    required this.accountLabel,
+    required this.scopes,
+    required this.tokenGeneration,
+  });
+
+  final String connectionId;
+  final String providerId;
+  final String accountLabel;
+  final Set<String> scopes;
+  final int tokenGeneration;
+}
+
+final class LinkedIdentityResult {
+  const LinkedIdentityResult({
+    required this.identity,
+    required this.tokenGrant,
+  });
+
+  final LinkedIdentity identity;
+  final OAuthTokenGrant tokenGrant;
+
+  @override
+  String toString() => 'LinkedIdentityResult(${identity.connectionId})';
+}
+
+enum OAuthUnlinkDecision { keepLinked, unlink }
+
+abstract interface class OAuthTokenBroker {
+  Future<OAuthTokenResponse> exchange(OAuthTokenExchangeRequest request);
+
+  Future<OAuthTokenResponse> refresh(OAuthTokenRefreshRequest request);
+
+  Future<void> revoke(OAuthTokenGrant grant);
+}
+
+final class AccountOAuthFlow {
+  AccountOAuthFlow({
+    required this.broker,
+    List<int> Function(int length)? randomBytes,
+    DateTime Function()? clock,
+  }) : _randomBytes = randomBytes ?? _secureRandomBytes,
+       _clock = clock ?? (() => DateTime.now().toUtc());
+
+  static const String manifestPath =
+      'docs/planning/v1.2/sprint_115_oauth_linked_identity_flow.json';
+  static const String canonicalSprintPath =
+      'C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/'
+      'sprint_115.json';
+  static const String canonicalSprintSha256 =
+      'c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba';
+  static const List<String> canonicalAcceptance = <String>[
+    'pkce',
+    'state_validation',
+    'nonce_when_required',
+    'scoped_consent',
+    'token_rotation',
+    'revocation',
+  ];
+
+  final OAuthTokenBroker broker;
+  final List<int> Function(int length) _randomBytes;
+  final DateTime Function() _clock;
+  final Map<String, _PendingAuthorization> _pending =
+      <String, _PendingAuthorization>{};
+  final Map<String, LinkedIdentity> _identities = <String, LinkedIdentity>{};
+  final Map<String, OAuthTokenGrant> _grants = <String, OAuthTokenGrant>{};
+
+  List<LinkedIdentity> get linkedIdentities =>
+      List<LinkedIdentity>.unmodifiable(_identities.values);
+
+  OAuthAuthorizationRequest beginAuthorization({
+    required OAuthProviderConfiguration configuration,
+    required OAuthScopeConsent consent,
+  }) {
+    _validateProviderConfiguration(configuration);
+    _validateConsent(configuration: configuration, consent: consent);
+    final verifier = _randomToken(64);
+    final state = _randomToken(32);
+    final nonce = configuration.nonceRequired ? _randomToken(32) : null;
+    final challenge = _base64Url(sha256.convert(utf8.encode(verifier)).bytes);
+    final request = OAuthAuthorizationRequest._(
+      configuration: configuration,
+      consent: consent,
+      state: state,
+      nonce: nonce,
+      codeVerifier: verifier,
+      codeChallenge: challenge,
+      createdAt: _clock(),
+    );
+    _pending[state] = _PendingAuthorization(request: request, consumed: false);
+    return request;
+  }
+
+  Future<LinkedIdentityResult> completeAuthorization({
+    required Uri callback,
+  }) async {
+    final query = _validateCallbackShape(callback);
+    final state = _requiredQueryValue(
+      query,
+      'state',
+      OAuthFlowErrorCode.stateMismatch,
+    );
+    final pending = _pending[state];
+    if (pending == null || pending.consumed) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.stateMismatch,
+        'OAuth callback state is unknown or already consumed.',
+      );
+    }
+
+    if (query.containsKey('error')) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.authorizationDenied,
+        'The provider denied the authorization request.',
+      );
+    }
+    if (pending.request.nonce != null) {
+      final nonce = _requiredQueryValue(
+        query,
+        'nonce',
+        OAuthFlowErrorCode.nonceMissing,
+      );
+      if (!_constantTimeEquals(nonce, pending.request.nonce!)) {
+        throw const OAuthFlowException(
+          OAuthFlowErrorCode.nonceMismatch,
+          'OAuth callback nonce does not match the authorization request.',
+        );
+      }
+    }
+    final code = _requiredQueryValue(
+      query,
+      'code',
+      OAuthFlowErrorCode.callbackInvalid,
+    );
+    pending.consumed = true;
+    final response = await _callBroker(
+      () => broker.exchange(
+        OAuthTokenExchangeRequest(
+          configuration: pending.request.configuration,
+          code: code,
+          codeVerifier: pending.request.codeVerifier,
+          redirectUri: pending.request.configuration.redirectUri,
+          scopes: pending.request.consent.grantedScopes,
+        ),
+      ),
+    );
+    _validateTokenResponse(
+      response: response,
+      expectedProviderId: pending.request.providerId,
+      expectedAccountId: null,
+      allowedScopes: pending.request.consent.grantedScopes,
+      requireNewRefreshToken: null,
+      supportsRefresh: pending.request.configuration.supportsRefresh,
+    );
+    return _installLinkedIdentity(
+      response,
+      scopes: pending.request.consent.grantedScopes,
+      generation: 1,
+    );
+  }
+
+  Future<LinkedIdentityResult> rotateTokens({
+    required OAuthTokenGrant currentGrant,
+  }) async {
+    final current = _grants[currentGrant.connectionId];
+    if (current == null || !identical(current, currentGrant)) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.staleTokenGeneration,
+        'Only the current token generation can be rotated.',
+      );
+    }
+    final response = await _callBroker(
+      () => broker.refresh(OAuthTokenRefreshRequest(grant: current)),
+    );
+    _validateTokenResponse(
+      response: response,
+      expectedProviderId: current.providerId,
+      expectedAccountId: null,
+      allowedScopes: current.scopes,
+      requireNewRefreshToken: current.refreshToken,
+      supportsRefresh: current.supportsRefresh,
+    );
+    return _installLinkedIdentity(
+      response,
+      scopes: current.scopes,
+      generation: current.generation + 1,
+      requireKnownAccount: true,
+    );
+  }
+
+  Future<bool> unlink({
+    required OAuthTokenGrant grant,
+    required OAuthUnlinkDecision decision,
+  }) async {
+    if (decision == OAuthUnlinkDecision.keepLinked) return false;
+    final current = _grants[grant.connectionId];
+    if (current == null || !identical(current, grant)) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.staleTokenGeneration,
+        'Only the current token generation can be unlinked.',
+      );
+    }
+    try {
+      await broker.revoke(current);
+    } catch (_) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.revocationFailed,
+        'Provider revocation failed; the local link was preserved.',
+      );
+    }
+    _grants.remove(current.connectionId);
+    _identities.remove(current.connectionId);
+    return true;
+  }
+
+  LinkedIdentityResult _installLinkedIdentity(
+    OAuthTokenResponse response, {
+    required Set<String> scopes,
+    required int generation,
+    bool requireKnownAccount = false,
+  }) {
+    final connectionId = '${response.providerId}/${response.providerAccountId}';
+    if (requireKnownAccount && !_identities.containsKey(connectionId)) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.staleTokenGeneration,
+        'Token response refers to an unknown linked account.',
+      );
+    }
+    final grant = OAuthTokenGrant._(
+      connectionId: connectionId,
+      providerId: response.providerId,
+      accessToken: response.accessToken,
+      refreshToken: response.refreshToken,
+      accessTokenExpiresAt: response.accessTokenExpiresAt.toUtc(),
+      supportsRefresh: response.supportsRefresh,
+      scopes: Set<String>.unmodifiable(scopes),
+      generation: generation,
+    );
+    final identity = LinkedIdentity(
+      connectionId: connectionId,
+      providerId: response.providerId,
+      accountLabel: response.displayName,
+      scopes: Set<String>.unmodifiable(scopes),
+      tokenGeneration: generation,
+    );
+    _grants[connectionId] = grant;
+    _identities[connectionId] = identity;
+    return LinkedIdentityResult(identity: identity, tokenGrant: grant);
+  }
+
+  void _validateProviderConfiguration(
+    OAuthProviderConfiguration configuration,
+  ) {
+    if (!configuration.connector.isConnectable) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.connectorUnavailable,
+        'Connector is not explicitly certified and available.',
+      );
+    }
+    if (configuration.connector.authType != ProviderAuthType.oauth2Pkce) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.unsupportedAuthType,
+        'Only OAuth 2.0 authorization code with PKCE is supported.',
+      );
+    }
+    if (!configuration.connector.capabilities.contains(
+      ProviderConnectorCapability.identity,
+    )) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.unsupportedAuthType,
+        'Connector does not declare the identity capability.',
+      );
+    }
+  }
+
+  void _validateConsent({
+    required OAuthProviderConfiguration configuration,
+    required OAuthScopeConsent consent,
+  }) {
+    if (!consent.explicitlyApproved) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.consentRequired,
+        'OAuth scopes require explicit user approval.',
+      );
+    }
+    if (!_sameScopes(consent.requestedScopes, configuration.scopes) ||
+        !_sameScopes(consent.grantedScopes, configuration.scopes)) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.scopeEscalation,
+        'Granted scopes must exactly match the configured consent set.',
+      );
+    }
+  }
+
+  Map<String, String> _validateCallbackShape(Uri callback) {
+    if (callback.scheme.isEmpty ||
+        callback.host.isEmpty ||
+        callback.path.isEmpty) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.callbackMismatch,
+        'OAuth callback must be an absolute URI.',
+      );
+    }
+    final values = callback.queryParametersAll;
+    if (values.values.any((entries) => entries.length != 1) ||
+        (values.containsKey('code') && values.containsKey('error'))) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.callbackInvalid,
+        'OAuth callback contains duplicate or conflicting parameters.',
+      );
+    }
+    final state = values['state']?.single;
+    if (state == null) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.stateMismatch,
+        'OAuth callback is missing state.',
+      );
+    }
+    final pending = _pending[state];
+    if (pending == null) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.stateMismatch,
+        'OAuth callback state is unknown.',
+      );
+    }
+    final expected = pending.request.configuration.redirectUri;
+    if (callback.scheme != expected.scheme ||
+        callback.host != expected.host ||
+        callback.path != expected.path) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.callbackMismatch,
+        'OAuth callback does not match the registered redirect URI.',
+      );
+    }
+    return values.map((key, entries) => MapEntry(key, entries.single));
+  }
+
+  void _validateTokenResponse({
+    required OAuthTokenResponse response,
+    required String expectedProviderId,
+    required String? expectedAccountId,
+    required Set<String> allowedScopes,
+    required String? requireNewRefreshToken,
+    required bool supportsRefresh,
+  }) {
+    final missingRefreshToken =
+        supportsRefresh && response.refreshToken.isEmpty;
+    if (response.providerId != expectedProviderId ||
+        (expectedAccountId != null &&
+            response.providerId == expectedProviderId &&
+            response.providerAccountId != expectedAccountId) ||
+        response.accessTokenExpiresAt.toUtc().isBefore(_clock()) ||
+        missingRefreshToken ||
+        !_sameScopes(allowedScopes, response.scopes) ||
+        (requireNewRefreshToken != null &&
+            requireNewRefreshToken == response.refreshToken)) {
+      final sameRefreshToken =
+          requireNewRefreshToken != null &&
+          requireNewRefreshToken == response.refreshToken;
+      final wrongAccount =
+          response.providerId != expectedProviderId ||
+          (expectedAccountId != null &&
+              response.providerAccountId != expectedAccountId);
+      final expired = response.accessTokenExpiresAt.toUtc().isBefore(_clock());
+      final code = missingRefreshToken
+          ? OAuthFlowErrorCode.invalidTokenResponse
+          : sameRefreshToken
+          ? OAuthFlowErrorCode.refreshTokenNotRotated
+          : wrongAccount || expired
+          ? OAuthFlowErrorCode.invalidTokenResponse
+          : OAuthFlowErrorCode.scopeEscalation;
+      throw OAuthFlowException(
+        code,
+        'Token response violates the current link contract.',
+      );
+    }
+  }
+
+  String _requiredQueryValue(
+    Map<String, String> query,
+    String key,
+    OAuthFlowErrorCode code,
+  ) {
+    final value = query[key]?.trim();
+    if (value == null || value.isEmpty) {
+      throw OAuthFlowException(code, 'OAuth callback is missing $key.');
+    }
+    return value;
+  }
+
+  String _randomToken(int byteLength) {
+    if (byteLength < 32 || byteLength > 128) {
+      throw ArgumentError.value(
+        byteLength,
+        'byteLength',
+        'OAuth random values require 32..128 bytes.',
+      );
+    }
+    final bytes = List<int>.unmodifiable(_randomBytes(byteLength));
+    if (bytes.length != byteLength) {
+      throw StateError('Random-byte source returned the wrong length.');
+    }
+    return _base64Url(bytes);
+  }
+
+  Future<T> _callBroker<T>(Future<T> Function() action) async {
+    try {
+      return await action();
+    } on OAuthFlowException {
+      rethrow;
+    } catch (_) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.tokenExchangeFailed,
+        'OAuth broker operation failed.',
+      );
+    }
+  }
+
+  static List<int> _secureRandomBytes(int length) {
+    final random = Random.secure();
+    return List<int>.generate(length, (_) => random.nextInt(256));
+  }
+
+  static bool _sameScopes(Set<String> first, Set<String> second) =>
+      first.length == second.length && first.containsAll(second);
+
+  static bool _constantTimeEquals(String first, String second) {
+    final firstBytes = utf8.encode(first);
+    final secondBytes = utf8.encode(second);
+    var difference = firstBytes.length ^ secondBytes.length;
+    final length = max(firstBytes.length, secondBytes.length);
+    for (var index = 0; index < length; index++) {
+      final left = index < firstBytes.length ? firstBytes[index] : 0;
+      final right = index < secondBytes.length ? secondBytes[index] : 0;
+      difference |= left ^ right;
+    }
+    return difference == 0;
+  }
+
+  static String _base64Url(List<int> bytes) =>
+      base64Url.encode(bytes).replaceAll('=', '');
+}
+
+final class _PendingAuthorization {
+  _PendingAuthorization({required this.request, required this.consumed});
+
+  final OAuthAuthorizationRequest request;
+  bool consumed;
+}

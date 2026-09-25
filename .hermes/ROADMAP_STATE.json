@@ -28,11 +28,11 @@
   "active_sprint": 115,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_115.json",
   "active_ledger": "docs/sprints/sprint-115-account-cloud-center.md",
-  "last_verified_step": "115.21",
-  "next_step": "115.22",
+  "last_verified_step": "115.22",
+  "next_step": "115.23",
   "stability_gate": {
     "status": "PASS",
-    "resume_step": "115.22",
+    "resume_step": "115.23",
     "previous_result": {
       "sprint": 114,
       "final_step": "114.44",
@@ -55,7 +55,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-25T19:11:06.874905Z",
+  "updated_at": "2026-09-25T21:56:29.068885Z",
   "updated_by": "roadmap_guard sync-pointer",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -431,7 +431,7 @@
       "status": "CLOSED-LOCAL-DEFERRED-EXTERNAL",
       "commit": "ff8b913"
     },
-    "next_step": "115.22",
+    "next_step": "115.23",
     "resume_authority": "KEPUTUSAN CHOI 24 Sep: lanjutkan roadmap; 114.44 mengaktifkan corrective scope Sprint 115."
   },
   "activation_rules_11122_run362": {

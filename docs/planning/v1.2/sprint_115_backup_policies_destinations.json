@@ -1,0 +1,24 @@
+{
+  "canonical_step": "115.22",
+  "title": "Backup Policies & Destinations",
+  "objective": "Mendukung jadwal, retention, encryption, destination, Novel/Character boundary, verification, dan restore test.",
+  "acceptance": [
+    "schedule",
+    "retention",
+    "encryption",
+    "destination",
+    "workspace_boundary",
+    "verification",
+    "restore_test"
+  ],
+  "boundary": "Provider-agnostic metadata contract only; no live backup, destination availability, encryption execution, verification, or restore-test claim.",
+  "evidence": {
+    "red": "focused test load failed because the contract file was absent; exit 1",
+    "focused_tests": "5/5 PASS",
+    "scoped_regression": "380/380 PASS",
+    "analyzer": "No issues found!",
+    "format": "PASS, 0 changed after formatting",
+    "diff_check": "PASS",
+    "windows_debug_build": "PASS, 43.0s"
+  }
+}

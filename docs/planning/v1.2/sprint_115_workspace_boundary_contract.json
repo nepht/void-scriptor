@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_WORKSPACE_BOUNDARY_MANIFEST",
+  "canonical_step": "115.4",
+  "sources": {
+    "canonical_steps": {
+      "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+      "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba"
+    },
+    "product_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+      "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+      "entry_snapshot": "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json"
+    },
+    "workspace_architecture_decision": "ADR-WS-001"
+  },
+  "scope": "GLOBAL_USER",
+  "forbidden_nesting_scopes": ["NOVEL_WORKSPACE", "CHARACTER_WORKSPACE"],
+  "canonical_route": "/account/cloud-center",
+  "workspace_route_prefixes": ["/workspace", "/studio"],
+  "novel_character_data_co_ownership_allowed": false,
+  "workspace_data_namespaces": {
+    "novel": "workspaces/novels",
+    "character": "workspaces/characters"
+  },
+  "backup_boundaries": [
+    "ACCOUNT_GLOBAL",
+    "NOVEL_WORKSPACE",
+    "CHARACTER_WORKSPACE"
+  ],
+  "decision_codes": [
+    "ALLOWED_GLOBAL_SCOPE",
+    "ALLOWED_WORKSPACE_SCOPED",
+    "DENIED_WORKSPACE_PERMISSION_REQUIRED",
+    "DENIED_TRANSFER_CONSENT_REQUIRED"
+  ],
+  "violation_codes": [
+    "ACCOUNT_GLOBAL_MUST_NOT_HOLD_WORKSPACE_DATA",
+    "NOVEL_WORKSPACE_BOUNDARY_MUST_NOT_HOLD_CHARACTER_DATA",
+    "CHARACTER_WORKSPACE_BOUNDARY_MUST_NOT_HOLD_NOVEL_DATA"
+  ],
+  "acceptance": {
+    "global_user_scope": "Account & Cloud Center tetap surface GLOBAL_USER: route kanonik berada di luar prefiks workspace (/workspace, /studio), tidak ternested di NOVEL_WORKSPACE/CHARACTER_WORKSPACE, tidak menampilkan segmen workspace di dalam route account, dan copy UI memakai bahasa akun (tanpa wording workspace).",
+    "no_workspace_co_ownership": "Scope akun global tidak pernah memiliki data Novel/Character (novel_character_data_co_ownership_allowed=false); payload workspace di boundary ACCOUNT_GLOBAL dilaporkan sebagai ACCOUNT_GLOBAL_MUST_NOT_HOLD_WORKSPACE_DATA.",
+    "explicit_workspace_permission": "Akses data Novel/Character dari Account Center wajib permission eksplisit melalui resolveWorkspaceAccess, selaras dengan WorkspacePermissionPolicy yang menuntut link/grant eksplisit; tanpa permission hasilnya DENIED_WORKSPACE_PERMISSION_REQUIRED.",
+    "explicit_transfer_consent": "Transfer lintas scope (workspace <-> global) wajib transfer consent eksplisit melalui resolveTransfer dan menghasilkan DENIED_TRANSFER_CONSENT_REQUIRED tanpa consent; global -> global tetap ALLOWED_GLOBAL_SCOPE.",
+    "separate_backup_boundaries": "ACCOUNT_GLOBAL, NOVEL_WORKSPACE, dan CHARACTER_WORKSPACE adalah boundary terpisah; backupBoundaryViolations memvalidasi path relatif terhadap namespace WorkspaceFileNamespace (workspaces/novels, workspaces/characters) dan melaporkan pelanggaran pemisahan."
+  },
+  "local_boundary_sources": {
+    "route_constants": "lib/app/routing/app_routes.dart",
+    "information_architecture": "lib/features/account/domain/account_center_information_architecture.dart",
+    "workspace_file_namespace": "lib/features/workspaces/application/workspace_file_namespace.dart",
+    "workspace_permission_policy": "lib/features/workspaces/application/workspace_permission_policy.dart"
+  },
+  "evidence_boundary": "Local contract evidence for step 115.4 only. Tidak mengklaim eksekusi backup cloud, konektivitas provider, sertifikasi connector, hosted CI, signing, telemetry, atau publikasi."
+}

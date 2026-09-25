@@ -272,7 +272,7 @@ class _AccountCloudCenterScreenState
                                             child: _DashboardCard(
                                               title: 'QUICK CONNECT',
                                               subtitle:
-                                                  'Connect services available to this workspace',
+                                                  'Connect services available to this account',
                                               child: Column(
                                                 children: [
                                                   for (final service

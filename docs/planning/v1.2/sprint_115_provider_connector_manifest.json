@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_PROVIDER_CONNECTOR_MANIFEST",
+  "canonical_step": "115.9",
+  "title": "Provider & Connector Manifest",
+  "sources": {
+    "canonical_steps": {
+      "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+      "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba",
+      "step_required_fields": [
+        "provider_id",
+        "category",
+        "capabilities",
+        "availability",
+        "regions",
+        "connector_version",
+        "auth_type",
+        "permissions"
+      ]
+    },
+    "product_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+      "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+      "subtrees": [
+        "provider_icon_policy",
+        "provider_model",
+        "acceptance_invariants"
+      ]
+    },
+    "connector_sdk_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/connector_sdk_spec.json",
+      "subtrees": [
+        "manifest",
+        "permission_model",
+        "certification"
+      ]
+    }
+  },
+  "required_fields": [
+    "provider_id",
+    "category",
+    "capabilities",
+    "availability",
+    "regions",
+    "connector_version",
+    "auth_type",
+    "permissions",
+    "health_endpoint"
+  ],
+  "field_contracts": {
+    "provider_id": "Normalized non-empty identifier; unique within the manifest and joined to ProviderIconRegistry by the same id.",
+    "category": "One of identity, cloud_storage, ai, developer, creative, payment; must match the linked provider icon category.",
+    "capabilities": "Non-empty explicit capability set; identity, storage, AI, developer, creative, payment, or health. Capabilities are declarative, not live execution proof.",
+    "availability": "Explicit deployment/certification state. The shipped standard manifest is UNVERIFIED; PLANNED, AVAILABLE, UNAVAILABLE, UNSUPPORTED_REGION, DEGRADED, and OUTAGE require a separately verified source.",
+    "regions": "Non-empty explicit region set. GLOBAL is metadata intent only and is not proof of regional reachability.",
+    "connector_version": "Non-empty version label for the connector contract. manifest-v1 is the local metadata contract, not a deployed connector release.",
+    "auth_type": "One of OAUTH2_PKCE, API_KEY, OIDC, DEVICE_CODE, LOCAL_BROKER, NONE. No credential is stored by this manifest.",
+    "permissions": "Non-empty explicit permission set. Novel and Character workspace permissions are independent and absent from all standard entries.",
+    "health_endpoint": "Optional HTTP(S) URL, default null/UNVERIFIED. A URL never changes availability or proves a healthy connector."
+  },
+  "standard_manifest": {
+    "provider_source": "ProviderIconRegistry.standard",
+    "entry_count": 32,
+    "availability": "UNVERIFIED",
+    "connectable": false,
+    "health_endpoint": null,
+    "connector_version": "manifest-v1",
+    "region_default": "GLOBAL",
+    "policy": "Icons and planned metadata are not availability. No quota, cost, credential, live health, or certification claim is made."
+  },
+  "validation_policy": {
+    "lookup_key": "normalized provider_id",
+    "duplicate_provider_ids": "reject",
+    "unknown_provider": "return null or StateError via require; never synthesize a connector",
+    "empty_capability_or_region_set": "reject",
+    "empty_version_or_permission_set": "reject",
+    "malformed_health_endpoint": "reject",
+    "unverified_health_endpoint": "null plus explicit UNVERIFIED availability",
+    "json_round_trip": "required for durable manifest"
+  },
+  "domain": "lib/features/account/domain/account_center_provider_connector_manifest.dart",
+  "tests": [
+    "test/features/account/domain/account_center_provider_connector_manifest_test.dart"
+  ],
+  "application": {
+    "live_wiring": "ProviderConnectorManifest.standard is the single metadata lookup seam derived from ProviderIconRegistry.standard.",
+    "current_consumer": "Domain contract only in step 115.9. Quick Connect tile wiring is reserved for 115.15; connection state transitions are reserved for 115.10.",
+    "data_source": "Bundled local metadata only until a certified deployment/availability source is supplied."
+  },
+  "deferred_scope": {
+    "live_connector_certification": "Only CERTIFIED or LIMITED versioned connectors may become connectable under connector_sdk_spec.",
+    "live_health": "115.10 and connector certification",
+    "quick_connect_wiring": "115.15",
+    "oauth_flow": "115.11",
+    "secret_vault": "115.12"
+  },
+  "evidence_boundary": "Local metadata and validation contract for step 115.9 only. It does not claim provider/connector availability, live quota or cost, successful authentication, healthy endpoints, credentials, hosted CI, signing, telemetry, hardware, adoption, or publication."
+}

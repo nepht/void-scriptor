@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_RESPONSIVE_GRID_MANIFEST",
+  "canonical_step": "115.6",
+  "title": "Responsive Grid System",
+  "sources": {
+    "canonical_steps": {
+      "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+      "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba",
+      "step_acceptance": [
+        "1536x1024_reference",
+        "1440_plus",
+        "1180_to_1439",
+        "900_to_1179",
+        "600_to_899",
+        "under_600"
+      ]
+    },
+    "product_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+      "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+      "entry_snapshot": "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json",
+      "token_subtrees": ["layout.breakpoints", "visual_tokens.card"]
+    }
+  },
+  "acceptance_viewports": [
+    "1536x1024_reference",
+    "1440_plus",
+    "1180_to_1439",
+    "900_to_1179",
+    "600_to_899",
+    "under_600"
+  ],
+  "reference_viewport": {
+    "width_px": 1536,
+    "height_px": 1024
+  },
+  "breakpoints": [
+    { "name": "wide_desktop", "min_width_px": 1440, "max_width_px": null },
+    { "name": "desktop", "min_width_px": 1180, "max_width_px": 1439 },
+    { "name": "compact_desktop", "min_width_px": 900, "max_width_px": 1179 },
+    { "name": "tablet", "min_width_px": 600, "max_width_px": 899 },
+    { "name": "mobile", "min_width_px": null, "max_width_px": 599 }
+  ],
+  "grid_plan": [
+    {
+      "tier": "wide_desktop",
+      "max_columns": 3,
+      "summary": "side",
+      "min_width_px": 1440,
+      "max_width_px": null,
+      "behavior": "left navigation + main content + persistent right summary"
+    },
+    {
+      "tier": "desktop",
+      "max_columns": 3,
+      "summary": "stacked",
+      "min_width_px": 1180,
+      "max_width_px": 1439,
+      "behavior": "left navigation + main content; right summary becomes drawer"
+    },
+    {
+      "tier": "compact_desktop",
+      "max_columns": 2,
+      "summary": "stacked",
+      "min_width_px": 900,
+      "max_width_px": 1179,
+      "behavior": "collapsed navigation rail; overview cards use two columns"
+    },
+    {
+      "tier": "tablet",
+      "max_columns": 2,
+      "summary": "stacked",
+      "min_width_px": 600,
+      "max_width_px": 899,
+      "behavior": "top navigation; tabs scroll; cards use one or two columns"
+    },
+    {
+      "tier": "mobile",
+      "max_columns": 1,
+      "summary": "stacked",
+      "min_width_px": null,
+      "max_width_px": 599,
+      "behavior": "single column; provider details open as full-screen sheet; charts provide text alternative"
+    }
+  ],
+  "columns_rationale": "Spec menyebut kolom eksplisit hanya untuk compact_desktop (dua), tablet (satu atau dua), dan mobile (satu). wide_desktop dan desktop tidak menyebut batas kolom; grid 3 kolom implementasi kini dipertahankan dan selalu dikendalikan aturan fit card.min_width 220 sehingga tidak ada overflow pada lebar berapa pun.",
+  "fit_rule": {
+    "min_card_width_px": 220,
+    "card_gap_px": 10,
+    "rule": "kolom dikurangi sampai lebar kartu >= min_card_width; tidak pernah di bawah 1 kolom; lebar tak-positif/tak-hingga -> 1 kolom"
+  },
+  "summary_rule": "right summary berdampingan (side) hanya pada wide_desktop sesuai behavior spec 'persistent right summary'; tier lain menumpuk (stacked) pada langkah ini.",
+  "domain": "lib/features/account/domain/account_center_responsive_grid.dart",
+  "tests": [
+    "test/features/account/domain/account_center_responsive_grid_test.dart",
+    "test/features/account/presentation/account_cloud_center_responsive_grid_test.dart"
+  ],
+  "application": {
+    "live_targets": [
+      {
+        "target": "resolusi tier (outer LayoutBuilder AccountCloudCenterScreen)",
+        "before": "heuristik wide = shellConstraints.maxWidth >= 980 (angka tak berbasis spec)",
+        "after": "AccountCenterResponsiveGrid.resolve(viewport width) -> tier spec + summaryIsSideBySide (side hanya wide_desktop)"
+      },
+      {
+        "target": "grid kartu overview (Wrap AUTHENTICATION/QUICK CONNECT/capability)",
+        "before": "heuristik mainWidth >= 760 -> 3 kolom, selain itu 1 (melanggar spec: tablet boleh 1-2, compact_desktop wajib 2)",
+        "after": "plan.cardWidthFor(mainWidth) -> kolom per tier dengan aturan fit card.minWidth 220"
+      },
+      {
+        "target": "grid rail ACCOUNT SUMMARY",
+        "before": "heuristik rail maxWidth < 760 -> 1 kolom, selain itu 2",
+        "after": "plan.cardWidthFor(railWidth) -> batas kolom tier + aturan fit yang sama"
+      }
+    ],
+    "tokens_became_live": [
+      "layout.breakpoints (115.5 token_only_no_live_widget -> 115.6 live)",
+      "visual_tokens.card.minimum_width_px (fit rule)",
+      "layout.card_gap_px dan layout.page_horizontal_padding_px (perhitungan kolom)"
+    ]
+  },
+  "deferred_scope": {
+    "left_navigation_status_bar": "115.45 Wide Desktop Visual Implementation",
+    "right_summary_drawer_collapsed_nav_top_nav": "115.46 Desktop & Tablet Adaptation",
+    "mobile_full_screen_sheet_chart_alternatives": "115.47 Mobile Adaptation",
+    "accessibility_focus_keyboard_semantics": "115.7 Accessibility Interaction Baseline"
+  },
+  "evidence_boundary": "Local responsive-grid contract for step 115.6 only: enam acceptance viewport dirender tanpa overflow pada widget test lokal. Tidak mengklaim chrome left-navigation/drawer/mobile-sheet (115.45-47), pixel-perfect referensi (115.2), provider/connector live, hosted CI, signing, telemetry, hardware, native GUI journey, atau publikasi — tetap DEFERRED-EXTERNAL."
+}

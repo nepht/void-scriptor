@@ -10,6 +10,7 @@ import '../application/account_operational_metrics.dart';
 import '../domain/account_cloud_snapshot.dart';
 import '../domain/account_center_design_tokens.dart';
 import '../domain/account_center_information_architecture.dart';
+import '../domain/account_center_responsive_grid.dart';
 
 /// Peran tipografi 115.5 dari product spec (bobot VoidTypography dipertahankan).
 final TextStyle _pageTitle = VoidTypography.displayMedium.copyWith(
@@ -122,6 +123,11 @@ class _AccountCloudCenterScreenState
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
+            // 115.6: tier breakpoint diresolusi dari lebar viewport (bukan
+            // heuristik 980px) — grid mengikuti kontrak responsif spec.
+            final gridPlan = AccountCenterResponsiveGrid.resolve(
+              constraints.maxWidth,
+            );
             return SingleChildScrollView(
               padding: EdgeInsets.symmetric(
                 horizontal:
@@ -130,7 +136,7 @@ class _AccountCloudCenterScreenState
               ),
               child: LayoutBuilder(
                 builder: (context, shellConstraints) {
-                  final wide = shellConstraints.maxWidth >= 980;
+                  final wide = gridPlan.summaryIsSideBySide;
                   final mainWidth = wide
                       ? shellConstraints.maxWidth * 0.75 -
                             AccountCenterDesignTokens.layout.columnGap / 2
@@ -260,14 +266,11 @@ class _AccountCloudCenterScreenState
                             LayoutBuilder(
                               builder: (context, bodyConstraints) {
                                 final mainWidth = bodyConstraints.maxWidth;
-                                final mainCardWidth = mainWidth >= 760
-                                    ? (mainWidth -
-                                              AccountCenterDesignTokens
-                                                      .layout
-                                                      .cardGap *
-                                                  2) /
-                                          3
-                                    : mainWidth;
+                                // 115.6: kolom grid overview dari kontrak
+                                // tier + aturan fit card.minWidth (220).
+                                final mainCardWidth = gridPlan.cardWidthFor(
+                                  mainWidth,
+                                );
                                 final main = Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -462,6 +465,7 @@ class _AccountCloudCenterScreenState
                       SizedBox(
                         width: railWidth,
                         child: _AccountSummaryRail(
+                          plan: gridPlan,
                           snapshot: data,
                           operationalMetrics: operationalMetrics,
                           onSyncNow: widget.onSyncNow,
@@ -483,6 +487,7 @@ class _AccountCloudCenterScreenState
 
 class _AccountSummaryRail extends StatelessWidget {
   const _AccountSummaryRail({
+    required this.plan,
     required this.snapshot,
     required this.operationalMetrics,
     this.onSyncNow,
@@ -490,6 +495,9 @@ class _AccountSummaryRail extends StatelessWidget {
     this.onOpenAiProviders,
   });
 
+  /// Rencana grid tier (115.6) — kolom ringkasan mengikuti batas tier dan
+  /// aturan fit card.minWidth, bukan heuristik 760px.
+  final AccountCenterGridPlan plan;
   final AccountCloudSnapshot snapshot;
   final AsyncValue<AccountOperationalMetrics?> operationalMetrics;
   final VoidCallback? onSyncNow;
@@ -499,11 +507,7 @@ class _AccountSummaryRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
-      final compact = constraints.maxWidth < 760;
-      final width = compact
-          ? constraints.maxWidth
-          : (constraints.maxWidth - AccountCenterDesignTokens.layout.cardGap) /
-                2;
+      final width = plan.cardWidthFor(constraints.maxWidth);
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

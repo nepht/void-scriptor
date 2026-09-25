@@ -1,0 +1,23 @@
+{
+  "canonical_step": "115.21",
+  "title": "Cloud Transfer & Sync Controls",
+  "objective": "Mengelola upload, download, delta sync, pause, resume, retry, bandwidth, and transfer consent.",
+  "acceptance": [
+    "delta_sync",
+    "pause_resume",
+    "retry",
+    "progress",
+    "bandwidth_control",
+    "explicit_transfer_consent"
+  ],
+  "boundary": "Provider-agnostic local contract only; no live connector, network, credential, quota, or provider availability claim.",
+  "evidence": {
+    "red": "focused test load failed because the contract file was absent; exit 1",
+    "focused_tests": "4/4 PASS",
+    "scoped_regression": "197/197 PASS",
+    "analyzer": "No issues found!",
+    "format": "PASS, 0 changed",
+    "diff_check": "PASS",
+    "windows_debug_build": "PASS"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "canonical_step": "115.16",
+  "title": "Cloud Storage Account Model",
+  "acceptance": [
+    "account_id",
+    "provider_id",
+    "capabilities",
+    "root_scope",
+    "quota_support",
+    "sync_support",
+    "backup_support",
+    "freshness"
+  ],
+  "boundary": "Local metadata contract only; does not claim provider availability, live quota, sync execution, backup execution, or credentials."
+}

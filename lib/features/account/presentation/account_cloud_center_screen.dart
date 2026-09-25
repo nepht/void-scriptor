@@ -8,7 +8,25 @@ import '../../../design_system/typography/void_typography.dart';
 import '../../../design_system/theme/void_theme_context.dart';
 import '../application/account_operational_metrics.dart';
 import '../domain/account_cloud_snapshot.dart';
+import '../domain/account_center_design_tokens.dart';
 import '../domain/account_center_information_architecture.dart';
+
+/// Peran tipografi 115.5 dari product spec (bobot VoidTypography dipertahankan).
+final TextStyle _pageTitle = VoidTypography.displayMedium.copyWith(
+  fontSize: AccountCenterDesignTokens.typography.pageTitle,
+);
+final TextStyle _sectionTitle = VoidTypography.headingMedium.copyWith(
+  fontSize: AccountCenterDesignTokens.typography.sectionTitle,
+);
+final TextStyle _body = VoidTypography.body.copyWith(
+  fontSize: AccountCenterDesignTokens.typography.body,
+);
+final TextStyle _caption = VoidTypography.caption.copyWith(
+  fontSize: AccountCenterDesignTokens.typography.caption,
+);
+final TextStyle _metric = VoidTypography.headingMedium.copyWith(
+  fontSize: AccountCenterDesignTokens.typography.metric,
+);
 
 class AccountCloudCenterScreen extends ConsumerStatefulWidget {
   const AccountCloudCenterScreen({
@@ -105,19 +123,25 @@ class _AccountCloudCenterScreenState
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.symmetric(
+                horizontal:
+                    AccountCenterDesignTokens.layout.pageHorizontalPadding,
+                vertical: AccountCenterDesignTokens.layout.pageVerticalPadding,
+              ),
               child: LayoutBuilder(
                 builder: (context, shellConstraints) {
                   final wide = shellConstraints.maxWidth >= 980;
                   final mainWidth = wide
-                      ? shellConstraints.maxWidth * 0.75 - 8
+                      ? shellConstraints.maxWidth * 0.75 -
+                            AccountCenterDesignTokens.layout.columnGap / 2
                       : shellConstraints.maxWidth;
                   final railWidth = wide
-                      ? shellConstraints.maxWidth * 0.25 - 8
+                      ? shellConstraints.maxWidth * 0.25 -
+                            AccountCenterDesignTokens.layout.columnGap / 2
                       : shellConstraints.maxWidth;
                   return Wrap(
-                    spacing: 16,
-                    runSpacing: 24,
+                    spacing: AccountCenterDesignTokens.layout.columnGap,
+                    runSpacing: AccountCenterDesignTokens.layout.columnGap,
                     children: [
                       SizedBox(
                         width: mainWidth,
@@ -128,33 +152,45 @@ class _AccountCloudCenterScreenState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  padding: const EdgeInsets.all(12),
+                                  padding: EdgeInsets.all(
+                                    AccountCenterDesignTokens.spacing.md,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: context.palette.primary.withValues(
                                       alpha: 0.14,
                                     ),
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(
+                                      AccountCenterDesignTokens.radius.tile,
+                                    ),
                                   ),
                                   child: Icon(
                                     Icons.cloud_outlined,
                                     color: context.palette.primaryBright,
-                                    size: 28,
+                                    size: AccountCenterDesignTokens
+                                        .iconSizes
+                                        .page,
                                   ),
                                 ),
-                                const SizedBox(width: 14),
+                                SizedBox(
+                                  width: AccountCenterDesignTokens.spacing.md,
+                                ),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
+                                      Text(
                                         'ACCOUNT & CLOUD CENTER',
-                                        style: VoidTypography.displayMedium,
+                                        style: _pageTitle,
                                       ),
-                                      const SizedBox(height: 6),
+                                      SizedBox(
+                                        height: AccountCenterDesignTokens
+                                            .spacing
+                                            .xs,
+                                      ),
                                       Text(
                                         'Kelola akun, koneksi, cloud, dan integrasi layanan Anda',
-                                        style: VoidTypography.body.copyWith(
+                                        style: _body.copyWith(
                                           color: context.palette.textSecondary,
                                         ),
                                       ),
@@ -167,29 +203,42 @@ class _AccountCloudCenterScreenState
                                       : 'Search',
                                   onPressed:
                                       widget.onSearch ?? _openAccountSearch,
-                                  icon: const Icon(Icons.search),
+                                  icon: Icon(
+                                    Icons.search,
+                                    size: AccountCenterDesignTokens
+                                        .iconSizes
+                                        .action,
+                                  ),
                                 ),
                                 IconButton(
                                   tooltip: widget.onNotifications == null
                                       ? 'Notifications (coming soon)'
                                       : 'Notifications',
                                   onPressed: widget.onNotifications,
-                                  icon: const Icon(Icons.notifications_none),
+                                  icon: Icon(
+                                    Icons.notifications_none,
+                                    size: AccountCenterDesignTokens
+                                        .iconSizes
+                                        .action,
+                                  ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(
+                              height: AccountCenterDesignTokens.spacing.sm,
+                            ),
                             Text(
                               AccountCenterInformationArchitecture.breadcrumbsFor(
                                 _tab,
                               ).join(' / '),
                               key: const ValueKey('account-center-breadcrumb'),
-                              style: VoidTypography.body.copyWith(
+                              style: _caption.copyWith(
                                 color: context.palette.textSecondary,
-                                fontSize: 10,
                               ),
                             ),
-                            const SizedBox(height: 14),
+                            SizedBox(
+                              height: AccountCenterDesignTokens.spacing.md,
+                            ),
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(
@@ -205,12 +254,19 @@ class _AccountCloudCenterScreenState
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 24),
+                            SizedBox(
+                              height: AccountCenterDesignTokens.spacing.xl,
+                            ),
                             LayoutBuilder(
                               builder: (context, bodyConstraints) {
                                 final mainWidth = bodyConstraints.maxWidth;
                                 final mainCardWidth = mainWidth >= 760
-                                    ? (mainWidth - 32) / 3
+                                    ? (mainWidth -
+                                              AccountCenterDesignTokens
+                                                      .layout
+                                                      .cardGap *
+                                                  2) /
+                                          3
                                     : mainWidth;
                                 final main = Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,8 +296,12 @@ class _AccountCloudCenterScreenState
                                       ),
                                     if (_tab.slug == 'overview') ...[
                                       Wrap(
-                                        spacing: 16,
-                                        runSpacing: 16,
+                                        spacing: AccountCenterDesignTokens
+                                            .layout
+                                            .cardGap,
+                                        runSpacing: AccountCenterDesignTokens
+                                            .layout
+                                            .cardGap,
                                         children: [
                                           SizedBox(
                                             width: mainCardWidth,
@@ -304,10 +364,18 @@ class _AccountCloudCenterScreenState
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 24),
+                                      SizedBox(
+                                        height: AccountCenterDesignTokens
+                                            .spacing
+                                            .xl,
+                                      ),
                                       Wrap(
-                                        spacing: 16,
-                                        runSpacing: 16,
+                                        spacing: AccountCenterDesignTokens
+                                            .layout
+                                            .cardGap,
+                                        runSpacing: AccountCenterDesignTokens
+                                            .layout
+                                            .cardGap,
                                         children: [
                                           for (final card in const [
                                             (
@@ -434,25 +502,21 @@ class _AccountSummaryRail extends StatelessWidget {
       final compact = constraints.maxWidth < 760;
       final width = compact
           ? constraints.maxWidth
-          : (constraints.maxWidth - 16) / 2;
+          : (constraints.maxWidth - AccountCenterDesignTokens.layout.cardGap) /
+                2;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Expanded(
-                child: Text(
-                  'ACCOUNT SUMMARY',
-                  style: VoidTypography.headingMedium,
-                ),
-              ),
+              Expanded(child: Text('ACCOUNT SUMMARY', style: _sectionTitle)),
               Icon(Icons.unfold_more, color: context.palette.textMuted),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: AccountCenterDesignTokens.spacing.md),
           Wrap(
-            spacing: 16,
-            runSpacing: 16,
+            spacing: AccountCenterDesignTokens.layout.cardGap,
+            runSpacing: AccountCenterDesignTokens.layout.cardGap,
             children: [
               SizedBox(
                 width: width,
@@ -517,8 +581,8 @@ class _OperationalMetricsCards extends StatelessWidget {
         : _storageMessage(value);
 
     return Wrap(
-      spacing: 16,
-      runSpacing: 16,
+      spacing: AccountCenterDesignTokens.layout.cardGap,
+      runSpacing: AccountCenterDesignTokens.layout.cardGap,
       children: [
         SizedBox(
           width: cardWidth,
@@ -577,8 +641,8 @@ class _AiUsageMetricsCard extends StatelessWidget {
               child: const SizedBox.expand(),
             ),
           ),
-          const SizedBox(height: 10),
-          Text(message, style: VoidTypography.body),
+          SizedBox(height: AccountCenterDesignTokens.spacing.sm),
+          Text(message, style: _body),
         ],
       ),
     );
@@ -622,8 +686,8 @@ class _StorageDistributionCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(child: Text(message, style: VoidTypography.body)),
+          SizedBox(width: AccountCenterDesignTokens.spacing.md),
+          Expanded(child: Text(message, style: _body)),
         ],
       ),
     );
@@ -747,10 +811,10 @@ class _PlanSummaryCard extends StatelessWidget {
       children: [
         Icon(
           Icons.workspace_premium_outlined,
-          size: 36,
+          size: AccountCenterDesignTokens.iconSizes.section,
           color: context.palette.primaryBright,
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: AccountCenterDesignTokens.spacing.md),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -759,14 +823,14 @@ class _PlanSummaryCard extends StatelessWidget {
                 snapshot.accountModeLabel,
                 style: VoidTypography.headingMedium,
               ),
-              const SizedBox(height: 4),
-              Text(snapshot.accountDisplayName, style: VoidTypography.body),
-              const SizedBox(height: 8),
-              const Text(
+              SizedBox(height: AccountCenterDesignTokens.spacing.twoXs),
+              Text(snapshot.accountDisplayName, style: _body),
+              SizedBox(height: AccountCenterDesignTokens.spacing.sm),
+              Text(
                 'Subscription details are not available locally.',
-                style: VoidTypography.caption,
+                style: _caption,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: AccountCenterDesignTokens.spacing.md),
               _ConnectionBadge(state: snapshot.service('email-sign-in').state),
             ],
           ),
@@ -780,13 +844,13 @@ class _CreditsCard extends StatelessWidget {
   const _CreditsCard();
 
   @override
-  Widget build(BuildContext context) => const _DashboardCard(
+  Widget build(BuildContext context) => _DashboardCard(
     title: 'CREDITS & TOKENS',
     subtitle: 'Live balances from connected services',
     child: Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: [
+      spacing: AccountCenterDesignTokens.spacing.sm,
+      runSpacing: AccountCenterDesignTokens.spacing.sm,
+      children: const [
         _MetricTile(label: 'AI Credits', value: 'Unavailable'),
         _MetricTile(label: 'Render Credits', value: 'Unavailable'),
         _MetricTile(label: 'Cloud Storage', value: 'Local only'),
@@ -805,18 +869,20 @@ class _MetricTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     width: 142,
-    padding: const EdgeInsets.all(10),
+    padding: EdgeInsets.all(AccountCenterDesignTokens.spacing.sm),
     decoration: BoxDecoration(
       color: context.palette.background,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(
+        AccountCenterDesignTokens.radius.tile,
+      ),
       border: Border.all(color: context.palette.border),
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: VoidTypography.caption),
-        const SizedBox(height: 6),
-        Text(value, style: VoidTypography.body),
+        Text(label, style: _caption),
+        SizedBox(height: AccountCenterDesignTokens.spacing.xs),
+        Text(value, style: _metric),
       ],
     ),
   );
@@ -880,17 +946,22 @@ class _ActionRow extends StatelessWidget {
       onTap: onPressed,
       leading: Icon(
         onPressed == null ? Icons.block_outlined : Icons.arrow_forward_ios,
-        size: 14,
+        size: AccountCenterDesignTokens.iconSizes.action,
         color: onPressed == null ? context.palette.textMuted : null,
       ),
       title: Text(
         label,
-        style: VoidTypography.body.copyWith(
+        style: _body.copyWith(
           color: onPressed == null ? context.palette.textMuted : null,
         ),
       ),
-      subtitle: Text(description, style: VoidTypography.caption),
-      trailing: onPressed == null ? null : const Icon(Icons.chevron_right),
+      subtitle: Text(description, style: _caption),
+      trailing: onPressed == null
+          ? null
+          : Icon(
+              Icons.chevron_right,
+              size: AccountCenterDesignTokens.iconSizes.action,
+            ),
     ),
   );
 }
@@ -915,9 +986,13 @@ class _OverviewCapabilityCard extends StatelessWidget {
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: context.palette.primaryBright),
-        const SizedBox(width: 12),
-        Expanded(child: Text(message, style: VoidTypography.body)),
+        Icon(
+          icon,
+          size: AccountCenterDesignTokens.iconSizes.section,
+          color: context.palette.primaryBright,
+        ),
+        SizedBox(width: AccountCenterDesignTokens.spacing.md),
+        Expanded(child: Text(message, style: _body)),
       ],
     ),
   );
@@ -1041,11 +1116,13 @@ class _FocusedAccountArea extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final cardWidth = constraints.maxWidth >= 820
-            ? (constraints.maxWidth - 16) / 2
+            ? (constraints.maxWidth -
+                      AccountCenterDesignTokens.layout.cardGap) /
+                  2
             : constraints.maxWidth;
         return Wrap(
-          spacing: 16,
-          runSpacing: 16,
+          spacing: AccountCenterDesignTokens.layout.cardGap,
+          runSpacing: AccountCenterDesignTokens.layout.cardGap,
           children: [
             for (final card in cards)
               SizedBox(
@@ -1134,7 +1211,7 @@ class _DestinationActionCard extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: TextButton.icon(
         onPressed: onPressed,
-        icon: Icon(icon),
+        icon: Icon(icon, size: AccountCenterDesignTokens.iconSizes.action),
         label: Text(label),
       ),
     ),
@@ -1183,28 +1260,35 @@ class _CenterTabState extends State<_CenterTab> {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(right: 22),
-    child: InkWell(
-      onTap: widget.onTap,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: widget.active
-                  ? context.palette.primaryBright
-                  : Colors.transparent,
-              width: 2,
+    padding: EdgeInsets.only(right: AccountCenterDesignTokens.spacing.xl),
+    child: SizedBox(
+      height: AccountCenterDesignTokens.layout.tabBarHeight,
+      child: InkWell(
+        onTap: widget.onTap,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: widget.active
+                    ? context.palette.primaryBright
+                    : Colors.transparent,
+                width: 2,
+              ),
             ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Text(
-            widget.label,
-            style: VoidTypography.body.copyWith(
-              color: widget.active
-                  ? context.palette.primaryBright
-                  : context.palette.textSecondary,
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: AccountCenterDesignTokens.spacing.sm,
+              ),
+              child: Text(
+                widget.label,
+                style: _body.copyWith(
+                  color: widget.active
+                      ? context.palette.primaryBright
+                      : context.palette.textSecondary,
+                ),
+              ),
             ),
           ),
         ),
@@ -1226,19 +1310,21 @@ class _DashboardCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(16),
+    padding: EdgeInsets.all(AccountCenterDesignTokens.card.padding),
     decoration: BoxDecoration(
       color: context.palette.surface,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(
+        AccountCenterDesignTokens.radius.card,
+      ),
       border: Border.all(color: context.palette.border),
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: VoidTypography.headingMedium),
-        const SizedBox(height: 4),
-        Text(subtitle, style: VoidTypography.caption),
-        const SizedBox(height: 14),
+        Text(title, style: _sectionTitle),
+        SizedBox(height: AccountCenterDesignTokens.spacing.twoXs),
+        Text(subtitle, style: _caption),
+        SizedBox(height: AccountCenterDesignTokens.spacing.md),
         child,
       ],
     ),
@@ -1252,12 +1338,17 @@ class _ServiceRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 10),
-    child: Row(
-      children: [
-        Expanded(child: Text(service.label, style: VoidTypography.body)),
-        _ConnectionBadge(state: service.state),
-      ],
+    padding: EdgeInsets.only(bottom: AccountCenterDesignTokens.serviceRow.gap),
+    child: ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: AccountCenterDesignTokens.serviceRow.minHeight,
+      ),
+      child: Row(
+        children: [
+          Expanded(child: Text(service.label, style: _body)),
+          _ConnectionBadge(state: service.state),
+        ],
+      ),
     ),
   );
 }
@@ -1271,19 +1362,22 @@ class _AccountSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     width: double.infinity,
-    padding: const EdgeInsets.all(18),
+    padding: EdgeInsets.all(AccountCenterDesignTokens.card.padding),
     decoration: BoxDecoration(
       color: context.palette.surface,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(
+        AccountCenterDesignTokens.radius.card,
+      ),
       border: Border.all(color: context.palette.border),
     ),
     child: Row(
       children: [
         CircleAvatar(
+          radius: AccountCenterDesignTokens.avatarSizes.compact / 2,
           backgroundColor: context.palette.primary,
           child: const Icon(Icons.person_outline, color: Colors.white),
         ),
-        const SizedBox(width: 14),
+        SizedBox(width: AccountCenterDesignTokens.spacing.md),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1292,16 +1386,22 @@ class _AccountSummary extends StatelessWidget {
                 snapshot.accountDisplayName,
                 style: VoidTypography.headingMedium,
               ),
-              const SizedBox(height: 4),
-              Text(snapshot.accountModeLabel, style: VoidTypography.caption),
+              SizedBox(height: AccountCenterDesignTokens.spacing.twoXs),
+              Text(snapshot.accountModeLabel, style: _caption),
               if (onSignIn != null) ...[
-                const SizedBox(height: 12),
+                SizedBox(height: AccountCenterDesignTokens.spacing.md),
                 OutlinedButton.icon(
                   onPressed: onSignIn,
-                  icon: const Icon(Icons.login_outlined, size: 18),
+                  icon: Icon(
+                    Icons.login_outlined,
+                    size: AccountCenterDesignTokens.iconSizes.action,
+                  ),
                   label: const Text('Sign in or connect account'),
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(0, 44),
+                    minimumSize: Size(
+                      0,
+                      AccountCenterDesignTokens.density.minimumTouchTarget,
+                    ),
                   ),
                 ),
               ],
@@ -1320,10 +1420,12 @@ class _ServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(16),
+    padding: EdgeInsets.all(AccountCenterDesignTokens.card.padding),
     decoration: BoxDecoration(
       color: context.palette.surface,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(
+        AccountCenterDesignTokens.radius.card,
+      ),
       border: Border.all(color: context.palette.border),
     ),
     child: Column(
@@ -1337,11 +1439,11 @@ class _ServiceCard extends StatelessWidget {
             _ConnectionBadge(state: service.state),
           ],
         ),
-        const SizedBox(height: 8),
-        Text(service.description, style: VoidTypography.body),
+        SizedBox(height: AccountCenterDesignTokens.spacing.sm),
+        Text(service.description, style: _body),
         if (service.usageLabel case final usage?) ...[
-          const SizedBox(height: 8),
-          Text(usage, style: VoidTypography.caption),
+          SizedBox(height: AccountCenterDesignTokens.spacing.sm),
+          Text(usage, style: _caption),
         ],
       ],
     ),
@@ -1370,12 +1472,17 @@ class _ConnectionBadge extends StatelessWidget {
       ),
     };
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+      padding: EdgeInsets.symmetric(
+        horizontal: AccountCenterDesignTokens.spacing.sm,
+        vertical: AccountCenterDesignTokens.spacing.twoXs,
+      ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(
+          AccountCenterDesignTokens.radius.pill,
+        ),
       ),
-      child: Text(label, style: VoidTypography.caption.copyWith(color: color)),
+      child: Text(label, style: _caption.copyWith(color: color)),
     );
   }
 }
@@ -1399,6 +1506,11 @@ class _AccountCenterSearchDialogState
   Widget build(BuildContext context) {
     final results = AccountCenterInformationArchitecture.search(_query);
     return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(
+          AccountCenterDesignTokens.radius.dialog,
+        ),
+      ),
       title: const Text('Search account sections'),
       content: SizedBox(
         width: 420,
@@ -1414,7 +1526,7 @@ class _AccountCenterSearchDialogState
               ),
               onChanged: (value) => setState(() => _query = value),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: AccountCenterDesignTokens.spacing.md),
             if (results.isEmpty)
               const Text('No account sections match that search.')
             else

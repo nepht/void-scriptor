@@ -1,0 +1,121 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_DESIGN_TOKENS_MANIFEST",
+  "canonical_step": "115.5",
+  "title": "Account Center Design Tokens",
+  "sources": {
+    "canonical_steps": {
+      "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+      "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba"
+    },
+    "product_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+      "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+      "entry_snapshot": "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json",
+      "token_subtrees": ["layout", "visual_tokens"]
+    }
+  },
+  "required_tokens": [
+    "layout",
+    "spacing",
+    "radius",
+    "typography",
+    "icon_sizes",
+    "avatar_sizes",
+    "progress_bar",
+    "density"
+  ],
+  "tokens": {
+    "layout": {
+      "reference_desktop": {
+        "viewport_min_width_px": 1440,
+        "top_bar_height_px": 56,
+        "left_navigation_width_px": 192,
+        "right_summary_width_px": 272,
+        "bottom_status_height_px": 40,
+        "page_horizontal_padding_px": 16,
+        "page_vertical_padding_px": 12,
+        "column_gap_px": 12,
+        "card_gap_px": 10,
+        "center_content_min_width_px": 900,
+        "header_height_px": 76,
+        "tab_bar_height_px": 40
+      },
+      "breakpoints": [
+        { "name": "wide_desktop", "min_width_px": 1440, "max_width_px": null },
+        { "name": "desktop", "min_width_px": 1180, "max_width_px": 1439 },
+        { "name": "compact_desktop", "min_width_px": 900, "max_width_px": 1179 },
+        { "name": "tablet", "min_width_px": 600, "max_width_px": 899 },
+        { "name": "mobile", "min_width_px": null, "max_width_px": 599 }
+      ]
+    },
+    "spacing": { "2xs": 4, "xs": 6, "sm": 8, "md": 12, "lg": 16, "xl": 24, "2xl": 32 },
+    "radius": { "control": 6, "tile": 8, "card": 10, "dialog": 12, "pill": 999 },
+    "typography": { "page_title": 20, "section_title": 12, "body": 13, "caption": 11, "metric": 18 },
+    "icon_sizes": {
+      "navigation": 20,
+      "action": 20,
+      "section": 24,
+      "page": 36,
+      "provider_tile": 28,
+      "service_row": 24,
+      "status_dot": 8
+    },
+    "avatar_sizes": { "image": 80, "ring": 96, "compact": 40 },
+    "progress_bar": { "height_px": 8 },
+    "density": {
+      "default": "COMFORTABLE",
+      "supported": ["COMPACT", "COMFORTABLE", "SPACIOUS"],
+      "minimum_touch_target_px": 44,
+      "minimum_keyboard_target_px": 32
+    },
+    "supporting": {
+      "border_width_px": 1,
+      "divider_width_px": 1,
+      "card": { "minimum_width_px": 220, "padding_px": 14 },
+      "provider_tile": { "min_height_px": 56, "padding_x_px": 12, "padding_y_px": 10, "icon_size_px": 28, "status_dot_px": 8 },
+      "service_row": { "min_height_px": 44, "icon_size_px": 24, "gap_px": 10 }
+    }
+  },
+  "domain": "lib/features/account/domain/account_center_design_tokens.dart",
+  "tests": [
+    "test/features/account/domain/account_center_design_tokens_test.dart",
+    "test/features/account/presentation/account_cloud_center_design_tokens_test.dart"
+  ],
+  "application": {
+    "live_targets": [
+      { "group": "layout", "target": "page padding (SingleChildScrollView)", "before": "EdgeInsets.all(24)", "after": "EdgeInsets.symmetric(horizontal 16, vertical 12)" },
+      { "group": "layout", "target": "column gap main <-> right rail", "before": "spacing 16 / runSpacing 24 dan lebar kolom dikurangi 8", "after": "columnGap 12 dan lebar kolom dikurangi columnGap/2" },
+      { "group": "layout", "target": "card gap (Wrap kartu)", "before": "spacing 16 dengan lebar kartu (W-32)/3 dan (W-16)/2", "after": "cardGap 10 dengan lebar kartu (W-2*10)/3 dan (W-10)/2" },
+      { "group": "layout", "target": "tab bar height (_CenterTab)", "before": "tinggi alami ~30px", "after": "SizedBox height 40" },
+      { "group": "spacing", "target": "seluruh gap/padding mikro di account_cloud_center_screen", "before": "literal 4/5/6/9/10/12/14/16/18/22/24", "after": "skala spacing terdekat; tie diputuskan ke nilai lebih kecil (COMFORTABLE density); gap baris layanan memakai service_row.gap 10 persis" },
+      { "group": "radius", "target": "kartu (dashboard/service/account summary)", "before": "14 dan 12", "after": "radius.card 10" },
+      { "group": "radius", "target": "badge ikon header", "before": "12", "after": "radius.tile 8" },
+      { "group": "radius", "target": "dialog pencarian", "before": "default Material (~4)", "after": "RoundedRectangleBorder radius.dialog 12" },
+      { "group": "radius", "target": "badge status koneksi", "before": "999 literal", "after": "radius.pill 999" },
+      { "group": "typography", "target": "page title 'ACCOUNT & CLOUD CENTER'", "before": "VoidTypography.displayMedium 26", "after": "pageTitle 20 (bobot w700 dipertahankan)" },
+      { "group": "typography", "target": "judul kartu/judul bagian huruf besar", "before": "VoidTypography.headingMedium 18", "after": "sectionTitle 12" },
+      { "group": "typography", "target": "teks body", "before": "VoidTypography.body 14", "after": "body 13" },
+      { "group": "typography", "target": "caption + breadcrumb", "before": "caption 12 dan breadcrumb fontSize 10", "after": "caption 11" },
+      { "group": "typography", "target": "nilai _MetricTile", "before": "body 14", "after": "metric 18" },
+      { "group": "typography", "target": "nama entitas (accountDisplayName, accountModeLabel, service.label)", "before": "headingMedium 18", "after": "dipertahankan (tidak punya peran tipografi di spec; 18 = ukuran metric)" },
+      { "group": "icon_sizes", "target": "badge ikon halaman header", "before": "28", "after": "page 36" },
+      { "group": "icon_sizes", "target": "ikon kartu kapabilitas + ikon PLAN", "before": "default 24 dan 36", "after": "section 24" },
+      { "group": "icon_sizes", "target": "aksi (baris aksi, tombol sign-in, TextButton destinasi, tombol search/notifications)", "before": "14 / 18 / default 24", "after": "action 20" },
+      { "group": "avatar_sizes", "target": "CircleAvatar ringkas account summary", "before": "default radius 20", "after": "compact 40 (radius = compact/2) eksplisit dari token" },
+      { "group": "density", "target": "tombol sign-in minimumSize", "before": "Size(0, 44) literal", "after": "Size(0, minimumTouchTarget 44)" },
+      { "group": "density", "target": "tab strip", "before": "~30px", "after": "tabBarHeight 40 >= minimumKeyboardTarget 32; kepadatan tombol aksi tetap 44 (spec menetapkan tab_bar_height 40 untuk tab)" },
+      { "group": "supporting", "target": "service row min height", "before": "tanpa batas", "after": "service_row.minHeight 44" },
+      { "group": "supporting", "target": "padding kartu", "before": "16 dan 18", "after": "card.padding 14" }
+    ],
+    "token_only_no_live_widget": [
+      { "group": "progress_bar", "value": "height_px 8", "reason": "screen 115.5 belum memiliki widget progress bar; target live 115.19 (storage usage cards) dan 115.40/115.41 (chart & meter)" },
+      { "group": "icon_sizes", "keys": ["navigation", "provider_tile", "service_row", "status_dot"], "target": "115.45 left navigation dan 115.15 quick connect panel" },
+      { "group": "layout", "keys": ["breakpoints", "viewport_min_width_px", "top_bar_height_px", "left_navigation_width_px", "right_summary_width_px", "bottom_status_height_px", "center_content_min_width_px", "header_height_px"], "target": "115.6 responsive grid dan 115.45 wide desktop visual" },
+      { "group": "avatar_sizes", "keys": ["image", "ring"], "target": "115.13 authentication & profile card" },
+      { "group": "supporting", "keys": ["provider_tile", "border_width_px", "divider_width_px"], "target": "115.15/115.19" }
+    ]
+  },
+  "evidence_boundary": "Local design-token contract for step 115.5 only. Tidak mengklaim pixel-perfect terhadap gambar referensi (path referensi tidak tersedia per 115.2), provider/connector live, hosted CI, signing, telemetry, hardware, atau publikasi — tetap DEFERRED-EXTERNAL."
+}

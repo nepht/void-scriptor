@@ -1,0 +1,19 @@
+{
+  "canonical_step": "115.17",
+  "title": "Provider Quota Adapters",
+  "acceptance": [
+    "raw_bytes",
+    "provider_timestamp",
+    "unit_metadata",
+    "quota_unavailable",
+    "stale_state",
+    "refresh"
+  ],
+  "boundary": "Adapter contract preserves provider-reported values and explicitly represents unavailable or stale readings; it does not claim live provider access, credentials, or network verification.",
+  "evidence": {
+    "focused_tests": "4/4 PASS",
+    "regression": "362/362 PASS",
+    "analyzer": "No issues found!",
+    "windows_debug_build": "PASS"
+  }
+}

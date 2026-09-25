@@ -1,0 +1,24 @@
+{
+  "canonical_step": "115.23",
+  "title": "Sync Conflict Center",
+  "objective": "Menampilkan conflict source, versions, preview, resolution, history, dan safe fallback.",
+  "acceptance": [
+    "conflict_detection",
+    "version_preview",
+    "keep_local",
+    "keep_remote",
+    "merge_when_supported",
+    "history",
+    "backup_before_resolution"
+  ],
+  "boundary": "Provider-agnostic local conflict metadata contract only; no live provider sync, remote mutation, backup execution, or network claim.",
+  "evidence": {
+    "red": "focused test load failed because the contract file was absent; exit 1",
+    "focused_tests": "7/7 PASS",
+    "scoped_regression": "387/387 PASS",
+    "analyzer": "No issues found!",
+    "format": "PASS, 0 changed after formatting",
+    "diff_check": "PASS",
+    "windows_debug_build": "PASS, 21.6s"
+  }
+}

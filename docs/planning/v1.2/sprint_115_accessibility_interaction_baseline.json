@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_ACCESSIBILITY_INTERACTION_BASELINE_MANIFEST",
+  "canonical_step": "115.7",
+  "title": "Accessibility Interaction Baseline",
+  "sources": {
+    "canonical_steps": {
+      "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+      "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba",
+      "step_acceptance": [
+        "keyboard_complete",
+        "visible_focus",
+        "screen_reader_labels",
+        "chart_text_alternative",
+        "44px_touch_target",
+        "200_percent_scale"
+      ]
+    },
+    "product_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+      "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+      "entry_snapshot": "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json",
+      "token_subtrees": ["accessibility.requirements", "layout.density"]
+    }
+  },
+  "spec_requirements": [
+    "Complete keyboard navigation and visible focus.",
+    "Provider name and connection status announced as text.",
+    "Charts include data table or textual summary.",
+    "Progress bars expose used, quota, percentage, and freshness.",
+    "Color is not the only carrier of connection or health state.",
+    "UI supports 200 percent scaling and text expansion.",
+    "Reduced-motion mode disables decorative motion.",
+    "Touch targets are at least 44 by 44 px."
+  ],
+  "interaction_contract": {
+    "focus_order": [
+      "search",
+      "notifications",
+      "tab:overview",
+      "tab:connected_accounts",
+      "tab:cloud_storage",
+      "tab:ai_providers",
+      "tab:api_keys",
+      "tab:team_collaboration",
+      "tab:security",
+      "tab:backup_sync",
+      "tab:billing",
+      "sign-in"
+    ],
+    "focus_order_note": "Traversal keyboard lokal pada state default (guest, belum ada project aktif): search, notifications, sembilan tab IA sesuai AccountCenterInformationArchitecture, lalu aksi sign-in. Notifications belum punya aksi sehingga tidak dapat difokuskan (tetap di次序 agar urutan tidak bergeser) dan kini dibaca sebagai label teks non-interaktif oleh screen reader. Item setelah sign-in (action row pada kartu ringkasan) mengikuti urutan render dan diuji lewat traversal lanjutan.",
+    "activation": "Enter/Space mengaktifkan tab dan tombol lewat Focus/Actions Material bawaan; fokus tidak pernah lompat ke konten tersembunyi.",
+    "visible_focus": "Tab strip memakai focus ring 2px memakai primaryBright di sekeliling tab ketika InkWell.onFocusChange=true; tab aktif juga diumumkan sebagai selected.",
+    "screen_reader_labels": "Ikon header Search dan Notifications memiliki Semantics label eksplisit; baris provider digabung (MergeSemantics) menjadi satu node 'nama + status'; status selalu berupa teks sehingga warna bukan satu-satunya pembawa state."
+  },
+  "targets": {
+    "minimum_touch_target_px": 44,
+    "minimum_keyboard_target_px": 32,
+    "tab_strip_height_px": 40,
+    "rationale": "Spec membedakan target sentuh (44x44) dan target keyboard (32). Strip tab setinggi 40 memenuhi target keyboard; tombol Material, ikon header, dan action row diukur pada widget test lalu dipatok minimal 44."
+  },
+  "scaling": {
+    "maximum_supported_text_scale": 2.0,
+    "rule": "TextScaler linear 2.0 harus dirender tanpa exception pada mobile 390x844 dan reference 1536x1024; nilai non-finite, <= 0, atau > 2.0 ditolak fail-closed oleh domain contract.",
+    "text_expansion_note": "Label panjang (Team & Collaboration) dan teks non-Inggris dipertahankan; layout memakai Wrap/Column sehingga teks membungkus, bukan terpotong."
+  },
+  "reduced_motion": {
+    "rule": "Mode reduced motion (MediaQuery.disableAnimationsOf(context) == true) menonaktifkan gerak dekoratif.",
+    "implementation": "Account & Cloud Center tidak menjalankan animasi dekoratif (nol AnimationController/Animated* di account_cloud_center_screen.dart). Contract menyediakan AccountCenterAccessibility.reducedMotion(context) sebagai sumber keputusan tunggal ketika chrome animatif masuk pada 115.45-115.47.",
+    "decorative_motion_widget_count": 0
+  },
+  "chart_text_alternative": {
+    "rule": "Setiap CustomPaint chart diberi Semantics image dengan alternatif teks dari data nyata: judul chart + fakta yang sama dengan teks di bawahnya. Subtree CustomPaint dikecualikan agar fakta tidak diumumkan dua kali.",
+    "charts": [
+      {
+        "key": "account-ai-usage-chart",
+        "title": "AI USAGE THIS MONTH",
+        "alternative_example": "AI USAGE THIS MONTH. 1,540 tokens $1.25 estimated."
+      },
+      {
+        "key": "account-storage-donut",
+        "title": "STORAGE DISTRIBUTION",
+        "alternative_example": "STORAGE DISTRIBUTION. 4 KB indexed Images 75% Database 25%."
+      }
+    ],
+    "missing_data_rule": "Saat metrics null/loading/failed, alternatif memakai pesan honest yang sudah dirender; tidak ada angka karangan."
+  },
+  "provider_semantics": {
+    "rule": "AccountCenterAccessibility.providerSemanticsLabel(name, status) menghasilkan 'name, status'; kedua argumen kosong/whitespace ditolak ArgumentError.",
+    "status_text_required": true,
+    "color_is_not_sole_carrier": true
+  },
+  "domain": "lib/features/account/domain/account_center_accessibility.dart",
+  "tests": [
+    "test/features/account/domain/account_center_accessibility_test.dart",
+    "test/features/account/presentation/account_cloud_center_accessibility_test.dart"
+  ],
+  "application": {
+    "live_targets": [
+      {
+        "target": "ikon header Search / Notifications",
+        "before": "label semantics kosong; teks hanya ada pada Tooltip",
+        "after": "Semantics label eksplisit 'Search account sections' / 'Notifications (coming soon)'"
+      },
+      {
+        "target": "tab strip (_CenterTab)",
+        "before": "InkWell fokus tanpa indikator fokus khusus dan tanpa state selected",
+        "after": "Semantics(selected:) + focus ring 2px lewat onFocusChange"
+      },
+      {
+        "target": "baris/kartu provider (_ServiceRow/_ServiceCard)",
+        "before": "nama dan badge status terbaca sebagai node terpisah",
+        "after": "MergeSemantics -> satu node 'name, status'"
+      },
+      {
+        "target": "chart AI usage & storage distribution",
+        "before": "CustomPaint tanpa label semantics; fakta hanya pada Text terpisah",
+        "after": "Semantics image dengan alternatif teks dari data nyata"
+      },
+      {
+        "target": "TextButton (Close dialog, _DestinationActionCard)",
+        "before": "minimumSize Material 3 default 40px < target sentuh 44px",
+        "after": "minimumSize tinggi = density.minimumTouchTarget (44)"
+      }
+    ],
+    "tokens_became_live": [
+      "layout.density.minimum_touch_target_px (44) pada semua TextButton action",
+      "layout.density.minimum_keyboard_target_px (32) diverifikasi pada tab strip 40px",
+      "accessibility.requirements (delapan butir spec) dipin lewat manifest"
+    ]
+  },
+  "deferred_scope": {
+    "native_screen_reader_certification": "115.48 Keyboard & Screen Reader Verification",
+    "contrast_measurement": "115.48 (audit native)",
+    "text_expansion_localization": "115.49 Localization & Formatting",
+    "pixel_perfect_tier_chrome": "115.45-115.47"
+  },
+  "evidence_boundary": "Kontrak aksesibilitas lokal step 115.7: traversal keyboard, fokus terlihat, label semantics, alternatif teks chart, target sentuh 44px, dan render 200% diuji widget test. Tidak mengklaim sertifikasi screen reader native, kontras terukur, audit AT eksternal, hosted CI, signing, telemetry, hardware, maupun publikasi — tetap DEFERRED-EXTERNAL."
+}

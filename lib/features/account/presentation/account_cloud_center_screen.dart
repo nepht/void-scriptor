@@ -8,6 +8,7 @@ import '../../../design_system/typography/void_typography.dart';
 import '../../../design_system/theme/void_theme_context.dart';
 import '../application/account_operational_metrics.dart';
 import '../domain/account_cloud_snapshot.dart';
+import '../domain/account_center_accessibility.dart';
 import '../domain/account_center_design_tokens.dart';
 import '../domain/account_center_information_architecture.dart';
 import '../domain/account_center_responsive_grid.dart';
@@ -203,29 +204,44 @@ class _AccountCloudCenterScreenState
                                     ],
                                   ),
                                 ),
-                                IconButton(
-                                  tooltip: widget.onSearch == null
-                                      ? 'Search account sections'
-                                      : 'Search',
-                                  onPressed:
-                                      widget.onSearch ?? _openAccountSearch,
-                                  icon: Icon(
-                                    Icons.search,
-                                    size: AccountCenterDesignTokens
-                                        .iconSizes
-                                        .action,
+                                Semantics(
+                                  label: AccountCenterAccessibility
+                                      .searchSemanticsLabel,
+                                  button: true,
+                                  child: IconButton(
+                                    tooltip: widget.onSearch == null
+                                        ? AccountCenterAccessibility
+                                              .searchSemanticsLabel
+                                        : 'Search',
+                                    onPressed:
+                                        widget.onSearch ?? _openAccountSearch,
+                                    icon: Icon(
+                                      Icons.search,
+                                      size: AccountCenterDesignTokens
+                                          .iconSizes
+                                          .action,
+                                    ),
                                   ),
                                 ),
-                                IconButton(
-                                  tooltip: widget.onNotifications == null
-                                      ? 'Notifications (coming soon)'
+                                Semantics(
+                                  label: widget.onNotifications == null
+                                      ? AccountCenterAccessibility
+                                            .notificationsSemanticsLabel
                                       : 'Notifications',
-                                  onPressed: widget.onNotifications,
-                                  icon: Icon(
-                                    Icons.notifications_none,
-                                    size: AccountCenterDesignTokens
-                                        .iconSizes
-                                        .action,
+                                  button: widget.onNotifications != null,
+                                  enabled: widget.onNotifications != null,
+                                  child: IconButton(
+                                    tooltip: widget.onNotifications == null
+                                        ? AccountCenterAccessibility
+                                              .notificationsSemanticsLabel
+                                        : 'Notifications',
+                                    onPressed: widget.onNotifications,
+                                    icon: Icon(
+                                      Icons.notifications_none,
+                                      size: AccountCenterDesignTokens
+                                          .iconSizes
+                                          .action,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -633,20 +649,36 @@ class _AiUsageMetricsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 72,
-            child: CustomPaint(
-              key: const ValueKey('account-ai-usage-chart'),
-              painter: _UsageCompositionPainter(
-                promptShare: promptShare,
-                color: context.palette.primaryBright,
-                trackColor: context.palette.borderSoft,
+          // 115.7: CustomPaint tanpa label akan hilang bagi screen reader;
+          // alternatif teks dibangun dari fakta yang sama dengan teks terlihat.
+          Semantics(
+            image: true,
+            label: AccountCenterAccessibility.chartTextAlternative(
+              title: 'AI USAGE THIS MONTH',
+              facts: message.split('\n'),
+            ),
+            child: ExcludeSemantics(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 72,
+                    child: CustomPaint(
+                      key: const ValueKey('account-ai-usage-chart'),
+                      painter: _UsageCompositionPainter(
+                        promptShare: promptShare,
+                        color: context.palette.primaryBright,
+                        trackColor: context.palette.borderSoft,
+                      ),
+                      child: const SizedBox.expand(),
+                    ),
+                  ),
+                  SizedBox(height: AccountCenterDesignTokens.spacing.sm),
+                  Text(message, style: _body),
+                ],
               ),
-              child: const SizedBox.expand(),
             ),
           ),
-          SizedBox(height: AccountCenterDesignTokens.spacing.sm),
-          Text(message, style: _body),
         ],
       ),
     );
@@ -669,30 +701,41 @@ class _StorageDistributionCard extends StatelessWidget {
     return _DashboardCard(
       title: 'STORAGE DISTRIBUTION',
       subtitle: 'Active project files by media category',
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 68,
-            height: 68,
-            child: CustomPaint(
-              key: const ValueKey('account-storage-donut'),
-              painter: _StorageDonutPainter(
-                values: entries.map((entry) => entry.value).toList(),
-                colors: [
-                  context.palette.primaryBright,
-                  context.palette.info,
-                  context.palette.warning,
-                  context.palette.success,
-                  context.palette.textMuted,
-                ],
-                trackColor: context.palette.borderSoft,
+      // 115.7: donut + teks diringkas jadi satu node Semantics image dengan
+      // Judul + fakta yang sama seperti yang terlihat.
+      child: Semantics(
+        image: true,
+        label: AccountCenterAccessibility.chartTextAlternative(
+          title: 'STORAGE DISTRIBUTION',
+          facts: message.split('\n'),
+        ),
+        child: ExcludeSemantics(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 68,
+                height: 68,
+                child: CustomPaint(
+                  key: const ValueKey('account-storage-donut'),
+                  painter: _StorageDonutPainter(
+                    values: entries.map((entry) => entry.value).toList(),
+                    colors: [
+                      context.palette.primaryBright,
+                      context.palette.info,
+                      context.palette.warning,
+                      context.palette.success,
+                      context.palette.textMuted,
+                    ],
+                    trackColor: context.palette.borderSoft,
+                  ),
+                ),
               ),
-            ),
+              SizedBox(width: AccountCenterDesignTokens.spacing.md),
+              Expanded(child: Text(message, style: _body)),
+            ],
           ),
-          SizedBox(width: AccountCenterDesignTokens.spacing.md),
-          Expanded(child: Text(message, style: _body)),
-        ],
+        ),
       ),
     );
   }
@@ -1217,6 +1260,13 @@ class _DestinationActionCard extends StatelessWidget {
         onPressed: onPressed,
         icon: Icon(icon, size: AccountCenterDesignTokens.iconSizes.action),
         label: Text(label),
+        // 115.7: default Material 3 TextButton 40px < target sentuh 44px.
+        style: TextButton.styleFrom(
+          minimumSize: const Size(
+            0,
+            AccountCenterAccessibility.minimumTouchTarget,
+          ),
+        ),
       ),
     ),
   );
@@ -1238,6 +1288,8 @@ class _CenterTab extends StatefulWidget {
 }
 
 class _CenterTabState extends State<_CenterTab> {
+  bool _focused = false;
+
   @override
   void initState() {
     super.initState();
@@ -1267,30 +1319,56 @@ class _CenterTabState extends State<_CenterTab> {
     padding: EdgeInsets.only(right: AccountCenterDesignTokens.spacing.xl),
     child: SizedBox(
       height: AccountCenterDesignTokens.layout.tabBarHeight,
-      child: InkWell(
-        onTap: widget.onTap,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: widget.active
-                    ? context.palette.primaryBright
-                    : Colors.transparent,
-                width: 2,
-              ),
-            ),
-          ),
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.only(
-                bottom: AccountCenterDesignTokens.spacing.sm,
-              ),
-              child: Text(
-                widget.label,
-                style: _body.copyWith(
+      child: Semantics(
+        selected: widget.active,
+        child: InkWell(
+          onTap: widget.onTap,
+          onFocusChange: (focused) {
+            if (focused == _focused) {
+              return;
+            }
+            setState(() => _focused = focused);
+          },
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
                   color: widget.active
                       ? context.palette.primaryBright
-                      : context.palette.textSecondary,
+                      : Colors.transparent,
+                  width: 2,
+                ),
+              ),
+            ),
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  bottom: AccountCenterDesignTokens.spacing.sm,
+                ),
+                child: AnimatedContainer(
+                  duration: _focusRingDuration(context),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _focused
+                          ? context.palette.primaryBright
+                          : Colors.transparent,
+                      width: AccountCenterAccessibility.tabFocusRingWidth,
+                    ),
+                    borderRadius: BorderRadius.circular(
+                      AccountCenterDesignTokens.radius.tile,
+                    ),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AccountCenterDesignTokens.spacing.sm,
+                  ),
+                  child: Text(
+                    widget.label,
+                    style: _body.copyWith(
+                      color: widget.active
+                          ? context.palette.primaryBright
+                          : context.palette.textSecondary,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -1300,6 +1378,13 @@ class _CenterTabState extends State<_CenterTab> {
     ),
   );
 }
+
+/// 115.7: reduced-motion mematikan durasi dekoratif focus ring. Sumber
+/// keputusan tunggal = [AccountCenterAccessibility.reducedMotion].
+Duration _focusRingDuration(BuildContext context) =>
+    AccountCenterAccessibility.reducedMotion(context)
+    ? Duration.zero
+    : const Duration(milliseconds: 120);
 
 class _DashboardCard extends StatelessWidget {
   const _DashboardCard({
@@ -1347,15 +1432,37 @@ class _ServiceRow extends StatelessWidget {
       constraints: BoxConstraints(
         minHeight: AccountCenterDesignTokens.serviceRow.minHeight,
       ),
-      child: Row(
-        children: [
-          Expanded(child: Text(service.label, style: _body)),
-          _ConnectionBadge(state: service.state),
-        ],
+      // 115.7: screen reader membaca satu node "nama, status" (bukan dua
+      // node terpisah); status tetap teks sehingga warna bukan satu-satunya
+      // pembawa state.
+      child: MergeSemantics(
+        child: Semantics(
+          label: AccountCenterAccessibility.providerSemanticsLabel(
+            service.label,
+            _connectionStatusLabel(service.state),
+          ),
+          child: ExcludeSemantics(
+            child: Row(
+              children: [
+                Expanded(child: Text(service.label, style: _body)),
+                _ConnectionBadge(state: service.state),
+              ],
+            ),
+          ),
+        ),
       ),
     ),
   );
 }
+
+/// Label status koneksi yang diumumkan sebagai teks (spec: warna bukan satu
+///-satunya pembawa connection/health state).
+String _connectionStatusLabel(AccountCloudConnectionState state) =>
+    switch (state) {
+      AccountCloudConnectionState.connected => 'Connected',
+      AccountCloudConnectionState.availableLocal => 'Available locally',
+      AccountCloudConnectionState.notConnected => 'Not connected',
+    };
 
 class _AccountSummary extends StatelessWidget {
   const _AccountSummary({required this.snapshot, this.onSignIn});
@@ -1432,16 +1539,31 @@ class _ServiceCard extends StatelessWidget {
       ),
       border: Border.all(color: context.palette.border),
     ),
+    // 115.7: header kartu = satu node "nama, status"; deskripsi & usage tetap
+    // dibaca sebagai teks terpisah di bawahnya.
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(service.label, style: VoidTypography.headingMedium),
+        MergeSemantics(
+          child: Semantics(
+            label: AccountCenterAccessibility.providerSemanticsLabel(
+              service.label,
+              _connectionStatusLabel(service.state),
             ),
-            _ConnectionBadge(state: service.state),
-          ],
+            child: ExcludeSemantics(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      service.label,
+                      style: VoidTypography.headingMedium,
+                    ),
+                  ),
+                  _ConnectionBadge(state: service.state),
+                ],
+              ),
+            ),
+          ),
         ),
         SizedBox(height: AccountCenterDesignTokens.spacing.sm),
         Text(service.description, style: _body),
@@ -1555,6 +1677,13 @@ class _AccountCenterSearchDialogState
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
+          // 115.7: target sentuh 44px (default Material 3 = 40px).
+          style: TextButton.styleFrom(
+            minimumSize: const Size(
+              0,
+              AccountCenterAccessibility.minimumTouchTarget,
+            ),
+          ),
           child: const Text('Close'),
         ),
       ],

@@ -1,0 +1,22 @@
+{
+  "canonical_step": "115.20",
+  "title": "Local Storage Summary",
+  "acceptance": [
+    "local_scan",
+    "category_breakdown",
+    "free_space",
+    "protected_data",
+    "regenerable_data",
+    "scan_freshness"
+  ],
+  "boundary": "Local scan observations remain separate from cloud quota and provider data; free space and scan freshness are explicit.",
+  "categories": ["projects", "assets", "models", "archive", "cache", "temp", "backups", "other"],
+  "evidence": {
+    "focused_tests": "2/2 PASS",
+    "scoped_regression": "371/371 PASS",
+    "analyzer": "No issues found!",
+    "format": "PASS",
+    "diff_check": "PASS",
+    "windows_debug_build": "PASS"
+  }
+}

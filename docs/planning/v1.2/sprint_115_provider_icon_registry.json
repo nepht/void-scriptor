@@ -1,0 +1,120 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_PROVIDER_ICON_REGISTRY_MANIFEST",
+  "canonical_step": "115.8",
+  "title": "Provider Icon Registry",
+  "sources": {
+    "canonical_steps": {
+      "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+      "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba",
+      "step_acceptance": [
+        "provider_id_lookup",
+        "official_asset_policy",
+        "aspect_ratio",
+        "fallback_icon",
+        "accessible_name",
+        "asset_version"
+      ]
+    },
+    "product_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+      "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+      "subtree": "provider_icon_policy"
+    },
+    "bundled_asset_source": "assets/brands/"
+  },
+  "required_fields": [
+    "provider_id",
+    "display_name",
+    "category",
+    "asset_light",
+    "asset_dark",
+    "monochrome_fallback",
+    "trademark_notice",
+    "asset_version"
+  ],
+  "policy": {
+    "official_asset": "Use a bundled mark only when licensing and brand rules permit.",
+    "no_mutation": "Do not redraw, recolor, stretch, crop, or combine official marks unless provider rules explicitly allow it.",
+    "aspect_ratio": "Preserve source aspect ratio and clear space; fit is contain.",
+    "fallback": "Use a generic category icon when an official asset is unavailable or cannot be bundled.",
+    "status": "A provider icon is never the only status indicator; name and status remain text.",
+    "remote_assets": "Remote icon download is optional, safely cached, and never blocks account access."
+  },
+  "registry_contract": {
+    "lookup_key": "normalized provider_id",
+    "duplicate_policy": "reject_duplicate_provider_ids",
+    "unknown_provider": "generic_provider_fallback",
+    "unlicensed_or_unavailable_asset": "generic_category_fallback",
+    "registry_is_not_availability": true
+  },
+  "categories": {
+    "identity": [
+      "email",
+      "google",
+      "microsoft",
+      "apple",
+      "github",
+      "discord",
+      "x",
+      "facebook"
+    ],
+    "cloud_storage": [
+      "google_drive",
+      "onedrive",
+      "dropbox",
+      "mega",
+      "local_storage"
+    ],
+    "ai": [
+      "openai",
+      "gemini",
+      "anthropic",
+      "flux",
+      "openrouter",
+      "local_ai"
+    ],
+    "developer": [
+      "github",
+      "gitlab",
+      "bitbucket",
+      "azure_devops"
+    ],
+    "creative": [
+      "figma",
+      "adobe",
+      "canva",
+      "blender_cloud",
+      "sketchfab"
+    ],
+    "payment": [
+      "paypal",
+      "stripe",
+      "midtrans",
+      "saweria",
+      "kofi"
+    ]
+  },
+  "asset_policy": {
+    "light_dark_variants": "Each entry exposes asset_light and asset_dark; a mark may intentionally use the same bundled source for both themes when no separate licensed variant is established.",
+    "monochrome_fallback": "Every entry names a category fallback; no mark is rendered as a recolored generic placeholder.",
+    "versioning": "Every bundled entry records an asset version, initially bundled-v1; generic fallbacks record generic-v1.",
+    "trademark_notice": "Bundled entries retain a notice that mark use does not imply connector availability."
+  },
+  "domain": "lib/features/account/domain/account_center_provider_icon_registry.dart",
+  "tests": [
+    "test/features/account/domain/account_center_provider_icon_registry_test.dart"
+  ],
+  "application": {
+    "live_wiring": "ProviderIconRegistry.standard is the single lookup seam for provider ids. It is data-only and does not infer connection state or connector availability; 115.9 owns the manifest and 115.15 wires provider tiles.",
+    "current_consumer": "lib/features/account/presentation/account_cloud_center_screen.dart remains a local account summary/quick-connect surface until the connector manifest is live."
+  },
+  "deferred_scope": {
+    "connector_manifest": "115.9",
+    "quick_connect_tiles": "115.15",
+    "remote_cache": "Optional integration only after connector/availability contract and security review.",
+    "native_brand_certification": "115.48"
+  },
+  "evidence_boundary": "Local registry contract and filesystem asset existence for step 115.8 only. It does not claim provider licensing certification, live connector availability, live quota/cost, hosted CI, signing, telemetry, hardware, native screen-reader certification, adoption, or publication."
+}

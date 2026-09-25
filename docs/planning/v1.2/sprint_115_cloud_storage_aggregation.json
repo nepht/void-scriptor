@@ -1,0 +1,19 @@
+{
+  "canonical_step": "115.18",
+  "title": "Cloud Storage Aggregation",
+  "acceptance": [
+    "remote_only_total",
+    "partial_indicator",
+    "stale_indicator",
+    "excluded_accounts",
+    "last_updated",
+    "no_false_precision"
+  ],
+  "boundary": "Aggregates only compatible provider-reported byte readings; unavailable, provider-defined, and stale inputs remain explicit without claiming live provider access.",
+  "evidence": {
+    "focused_tests": "4/4 PASS",
+    "analyzer": "No issues found!",
+    "format": "PASS",
+    "diff_check": "PASS"
+  }
+}

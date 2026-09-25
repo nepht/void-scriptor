@@ -50,6 +50,7 @@ final class ProviderQuotaReading {
 
 final class ProviderQuotaResult {
   const ProviderQuotaResult._({
+    required this.providerId,
     required this.status,
     required this.reading,
     required this.reason,
@@ -62,6 +63,7 @@ final class ProviderQuotaResult {
   }) {
     final age = now.toUtc().difference(reading.measuredAt.toUtc());
     return ProviderQuotaResult._(
+      providerId: reading.providerId,
       status: age > staleAfter
           ? ProviderQuotaStatus.stale
           : ProviderQuotaStatus.fresh,
@@ -79,15 +81,23 @@ final class ProviderQuotaResult {
       throw ArgumentError('Unavailable quota requires provider and reason.');
     }
     return ProviderQuotaResult._(
+      providerId: _requiredProviderId(providerId),
       status: ProviderQuotaStatus.unavailable,
       reading: null,
       reason: normalizedReason,
     );
   }
 
+  final String providerId;
   final ProviderQuotaStatus status;
   final ProviderQuotaReading? reading;
   final String? reason;
+
+  static String _requiredProviderId(String value) {
+    final normalized = value.trim().toLowerCase();
+    if (normalized.isEmpty) throw ArgumentError.value(value, 'providerId');
+    return normalized;
+  }
 }
 
 abstract interface class ProviderQuotaAdapter {

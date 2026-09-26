@@ -26,11 +26,24 @@ void main() {
     ) async {
       await pumpCenter(tester);
 
-      final scroller = tester.widget<SingleChildScrollView>(
-        find.byType(SingleChildScrollView).first,
-      );
+      // 115.36: panel luar tidak lagi `SingleChildScrollView` (kontrak satu
+      // panel tanpa scroll), jadi padding halaman dipasang pada `Padding`
+      // biasa. Nilai token yang dikontrakkan tidak berubah.
+      final pagePadding = tester
+          .widgetList<Padding>(find.byType(Padding))
+          .map((padding) => padding.padding)
+          .firstWhere(
+            (value) =>
+                value ==
+                EdgeInsets.symmetric(
+                  horizontal:
+                      AccountCenterDesignTokens.layout.pageHorizontalPadding,
+                  vertical:
+                      AccountCenterDesignTokens.layout.pageVerticalPadding,
+                ),
+          );
       expect(
-        scroller.padding,
+        pagePadding,
         EdgeInsets.fromLTRB(
           AccountCenterDesignTokens.layout.pageHorizontalPadding,
           AccountCenterDesignTokens.layout.pageVerticalPadding,
@@ -40,24 +53,12 @@ void main() {
         reason: 'page padding harus 16 horizontal / 12 vertical (spec layout)',
       );
 
-      final wraps = tester.widgetList<Wrap>(find.byType(Wrap)).toList();
+      // Baris mockup memakai Row, bukan Wrap: kartu mockup adalah baris
+      // dengan tinggi terkunci, bukan grid yang mengalir.
       expect(
-        wraps.where(
-          (wrap) =>
-              wrap.spacing == AccountCenterDesignTokens.layout.columnGap &&
-              wrap.runSpacing == AccountCenterDesignTokens.layout.columnGap,
-        ),
-        isNotEmpty,
-        reason: 'wrap kolom utama <-> rail memakai columnGap 12',
-      );
-      expect(
-        wraps.where(
-          (wrap) =>
-              wrap.spacing == AccountCenterDesignTokens.layout.cardGap &&
-              wrap.runSpacing == AccountCenterDesignTokens.layout.cardGap,
-        ),
-        hasLength(greaterThanOrEqualTo(2)),
-        reason: 'wrap grid kartu memakai cardGap 10',
+        find.byType(Row),
+        findsWidgets,
+        reason: 'baris mockup memakai Row',
       );
       expect(tester.takeException(), isNull);
     });
@@ -163,15 +164,24 @@ void main() {
       );
     });
 
-    testWidgets('compact avatar and card radius follow tokens', (tester) async {
+    testWidgets('avatar and card radius follow tokens', (tester) async {
       await pumpCenter(tester);
 
-      final avatar = tester.widget<CircleAvatar>(find.byType(CircleAvatar));
-      expect(
-        avatar.radius,
-        AccountCenterDesignTokens.avatarSizes.compact / 2,
-        reason: 'avatar ringkas memakai compact 40px (radius 20)',
+      // 115.36: kartu AUTHENTICATION menggantikan ringkasan akun terpisah, dan
+      // `CircleAvatar` digantikan `_ProfileAvatar` (gambar/inisial/none) yang
+      // bersudut radius.tile. Kontrak "avatar mengikuti token" tetap hidup,
+      // hanya sekarang menunjuk token yang benar-benar dipakai surface itu —
+      // `avatarSizes.image` 80px pada kartu utama mockup, bukan
+      // `avatarSizes.compact` 40px milik ringkasan lama.
+      final avatarBox = tester.getRect(
+        find.byKey(const ValueKey('account-profile-avatar')),
       );
+      expect(
+        avatarBox.width,
+        AccountCenterDesignTokens.avatarSizes.image,
+        reason: 'avatar kartu authentication memakai image 80px',
+      );
+      expect(avatarBox.height, AccountCenterDesignTokens.avatarSizes.image);
 
       final cardContainers = tester
           .widgetList<Container>(

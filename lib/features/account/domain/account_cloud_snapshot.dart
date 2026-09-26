@@ -28,6 +28,7 @@ class AccountCloudSnapshot {
     required this.accountModeLabel,
     required this.accountDisplayName,
     required List<AccountCloudService> services,
+    this.accountEmail,
   }) : services = List.unmodifiable(services);
 
   factory AccountCloudSnapshot.localOnly({required AuthSession? session}) {
@@ -41,6 +42,7 @@ class AccountCloudSnapshot {
     return AccountCloudSnapshot(
       accountModeLabel: mode,
       accountDisplayName: session?.displayName ?? 'Local user',
+      accountEmail: session?.email,
       services: [
         AccountCloudService(
           id: 'email-sign-in',
@@ -115,6 +117,10 @@ class AccountCloudSnapshot {
 
   final String accountModeLabel;
   final String accountDisplayName;
+
+  /// 115.36: email akun untuk kartu AUTHENTICATION. Null pada sesi lokal
+  /// yang belum punya identitas terverifikasi.
+  final String? accountEmail;
   final List<AccountCloudService> services;
 
   AccountCloudService service(String id) =>

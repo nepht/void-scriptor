@@ -10,6 +10,7 @@ import '../../../design_system/widgets/branding/brand_assets.dart';
 import '../application/account_operational_metrics.dart';
 import '../domain/account_cloud_snapshot.dart';
 import '../domain/account_center_accessibility.dart';
+import '../domain/account_center_authentication_profile_card.dart';
 import '../domain/account_center_design_tokens.dart';
 import '../domain/account_center_information_architecture.dart';
 import '../domain/account_center_provider_connector_manifest.dart';
@@ -77,28 +78,10 @@ class _AccountCloudCenterScreenState
     extends ConsumerState<AccountCloudCenterScreen> {
   AccountCenterTab _tab = AccountCenterInformationArchitecture.tabs.first;
 
-  /// 115.36: panel tunggal — tab adalah anchor scroll, bukan pemisah konten.
-  /// Kunci ini mengikat posisi scroll ke tab kanonik saat deep link `?tab=`.
-  final ScrollController _panelScroll = ScrollController();
-
-  /// Offset absolut tiap anchor section terhadap panel scroll, diisi oleh
-  /// [_AccountSectionAnchor] setelah frame pertama.
-  final Map<String, double> _anchorOffsets = <String, double>{};
-
-  /// Offset anchor yang harus digulirkan setelah frame berikut.
-  ///
-  /// Disimpan, bukan langsung dipakai, supaya pengukuran anchor terjadi
-  /// setelah layout benar-benar tersedia.
-  double? _pendingAnchorOffset;
-
   @override
   void initState() {
     super.initState();
     _tab = AccountCenterInformationArchitecture.resolveTab(widget.initialTab);
-    if (widget.onTabChanged == null) {
-      _pendingAnchorOffset = double.infinity;
-    }
-    _scheduleAnchorReveal();
   }
 
   @override
@@ -110,45 +93,7 @@ class _AccountCloudCenterScreenState
           widget.initialTab,
         );
       });
-      if (widget.onTabChanged == null) {
-        _pendingAnchorOffset = double.infinity;
-        _scheduleAnchorReveal();
-      }
     }
-  }
-
-  @override
-  void dispose() {
-    _panelScroll.dispose();
-    super.dispose();
-  }
-
-  /// Menggulir ke anchor section kanonik yang terkait [_tab].
-  ///
-  /// [offset] berasal dari pengukuran nyata layout (bukan konstanta), lalu
-  /// dijepit agar tidak melewati panjang maksimum scroll.
-  void _recordAnchorOffset(String slug, double offset) {
-    _anchorOffsets[slug] = offset;
-  }
-
-  /// Dijalankan setelah frame agar offset anchor sudah terukur nyata.
-  void _scheduleAnchorReveal() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _revealAnchor();
-      }
-    });
-  }
-
-  void _revealAnchor() {
-    if (!_panelScroll.hasClients) {
-      return;
-    }
-    final target = _anchorOffsets[_tab.slug] ?? _pendingAnchorOffset ?? 0.0;
-    _panelScroll.jumpTo(
-      target.clamp(0.0, _panelScroll.position.maxScrollExtent),
-    );
-    _pendingAnchorOffset = null;
   }
 
   void _selectTab(AccountCenterTab next) {
@@ -162,8 +107,6 @@ class _AccountCloudCenterScreenState
       return;
     }
     setState(() => _tab = next);
-    _pendingAnchorOffset = double.infinity;
-    _scheduleAnchorReveal();
   }
 
   void _openAccountSearch() {
@@ -199,20 +142,12 @@ class _AccountCloudCenterScreenState
             final gridPlan = AccountCenterResponsiveGrid.resolve(
               constraints.maxWidth,
             );
-            return SingleChildScrollView(
-              controller: _panelScroll,
+            return Padding(
               padding: EdgeInsets.symmetric(
                 horizontal:
                     AccountCenterDesignTokens.layout.pageHorizontalPadding,
                 vertical: AccountCenterDesignTokens.layout.pageVerticalPadding,
               ),
-              // Panel tunggal lebih tinggi dari viewport. When the widget is
-              // hosted without a Scaffold (bare MaterialApp harness), the
-              // incoming height is unbounded; keep the column finite so every
-              // area still lays out instead of being dropped.
-              physics: constraints.hasBoundedHeight
-                  ? null
-                  : const NeverScrollableScrollPhysics(),
               child: LayoutBuilder(
                 builder: (context, shellConstraints) {
                   final wide = gridPlan.summaryIsSideBySide;
@@ -224,201 +159,577 @@ class _AccountCloudCenterScreenState
                       ? shellConstraints.maxWidth * 0.25 -
                             AccountCenterDesignTokens.layout.columnGap / 2
                       : shellConstraints.maxWidth;
-                  return Wrap(
-                    spacing: AccountCenterDesignTokens.layout.columnGap,
-                    runSpacing: AccountCenterDesignTokens.layout.columnGap,
-                    children: [
-                      SizedBox(
-                        width: mainWidth,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.all(
-                                    AccountCenterDesignTokens.spacing.md,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: context.palette.primary.withValues(
-                                      alpha: 0.14,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                      AccountCenterDesignTokens.radius.tile,
-                                    ),
-                                  ),
-                                  child: Icon(
-                                    Icons.cloud_outlined,
-                                    color: context.palette.primaryBright,
-                                    size: AccountCenterDesignTokens
-                                        .iconSizes
-                                        .page,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: AccountCenterDesignTokens.spacing.md,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'ACCOUNT & CLOUD CENTER',
-                                        style: _pageTitle,
-                                      ),
-                                      SizedBox(
-                                        height: AccountCenterDesignTokens
-                                            .spacing
-                                            .xs,
-                                      ),
-                                      Text(
-                                        'Kelola akun, koneksi, cloud, dan integrasi layanan Anda',
-                                        style: _body.copyWith(
-                                          color: context.palette.textSecondary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Semantics(
-                                  label: AccountCenterAccessibility
-                                      .searchSemanticsLabel,
-                                  button: true,
-                                  child: IconButton(
-                                    tooltip: widget.onSearch == null
-                                        ? AccountCenterAccessibility
-                                              .searchSemanticsLabel
-                                        : 'Search',
-                                    onPressed:
-                                        widget.onSearch ?? _openAccountSearch,
-                                    icon: Icon(
-                                      Icons.search,
-                                      size: AccountCenterDesignTokens
-                                          .iconSizes
-                                          .action,
-                                    ),
-                                  ),
-                                ),
-                                Semantics(
-                                  label: widget.onNotifications == null
-                                      ? AccountCenterAccessibility
-                                            .notificationsSemanticsLabel
-                                      : 'Notifications',
-                                  button: widget.onNotifications != null,
-                                  enabled: widget.onNotifications != null,
-                                  child: IconButton(
-                                    tooltip: widget.onNotifications == null
-                                        ? AccountCenterAccessibility
-                                              .notificationsSemanticsLabel
-                                        : 'Notifications',
-                                    onPressed: widget.onNotifications,
-                                    icon: Icon(
-                                      Icons.notifications_none,
-                                      size: AccountCenterDesignTokens
-                                          .iconSizes
-                                          .action,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                  // 115.36: satu panel penuh tanpa scroll vertikal. Tinggi
+                  // viewport dipakai eksplisit karena harness pengujian
+                  // tanpa Scaffold memberi tinggi tak terbatas; tanpa ini
+                  // Column/Row di bawah tidak boleh memakai Expanded.
+                  final shellHeight = shellConstraints.maxHeight.isFinite
+                      ? shellConstraints.maxHeight
+                      : MediaQuery.sizeOf(context).height;
+                  return SizedBox(
+                    height: shellHeight,
+                    // `wide_desktop`: area utama dan rail berdampingan dalam
+                    // satu baris. Tier lain: rail turun ke bawah sebagai run
+                    // kedua (kontrak 115.6 `summaryIsSideBySide`). `Wrap`
+                    // dipilih karena aman di kedua tier tanpa tinggi tak
+                    // terbatas, sedangkan `Row` selalu menumpuk dua anak
+                    // selebar viewport dan meluap.
+                    child: wide
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: _shellChildren(
+                              mainWidth: mainWidth,
+                              railWidth: railWidth,
+                              data: data,
+                              gridPlan: gridPlan,
+                              operationalMetrics: operationalMetrics,
                             ),
-                            SizedBox(
-                              height: AccountCenterDesignTokens.spacing.sm,
-                            ),
-                            Text(
-                              AccountCenterInformationArchitecture.breadcrumbsFor(
-                                _tab,
-                              ).join(' / '),
-                              key: const ValueKey('account-center-breadcrumb'),
-                              style: _caption.copyWith(
-                                color: context.palette.textSecondary,
+                          )
+                        : SingleChildScrollView(
+                            // 115.36: di tier selain `wide_desktop` seluruh
+                            // halaman (chrome + grid + rail) menjadi satu
+                            // run yang bergulir. Tinggi viewport dipakai
+                            // sebagai `minHeight` supaya panel tetap mengisi
+                            // layar, dan kedua anak memakai tinggi natural —
+                            // `Expanded` di [_AccountSummaryRail] karena itu
+                            // butuh tinggi terkunci, sehingga rail ikut diberi
+                            // tinggi viewport penuh pada jalur ini.
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight: shellHeight,
                               ),
-                            ),
-                            SizedBox(
-                              height: AccountCenterDesignTokens.spacing.md,
-                            ),
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  for (final tab
-                                      in AccountCenterInformationArchitecture
-                                          .tabs)
-                                    _CenterTab(
-                                      label: tab.label,
-                                      active: tab == _tab,
-                                      onTap: () => _selectTab(tab),
-                                    ),
+                                  _shellMain(
+                                    mainWidth: mainWidth,
+                                    data: data,
+                                    gridPlan: gridPlan,
+                                    scrollable: true,
+                                  ),
+                                  SizedBox(
+                                    height: AccountCenterDesignTokens
+                                        .layout
+                                        .columnGap,
+                                  ),
+                                  _shellRail(
+                                    railWidth: railWidth,
+                                    data: data,
+                                    gridPlan: gridPlan,
+                                    operationalMetrics: operationalMetrics,
+                                    natural: true,
+                                  ),
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              height: AccountCenterDesignTokens.spacing.xl,
-                            ),
-                            LayoutBuilder(
-                              builder: (context, bodyConstraints) {
-                                final main = Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // 115.36: panel tunggal. Semua area kanonik
-                                    // dirender sekaligus; tab hanya menentukan
-                                    // anchor scroll dan breadcrumb.
-                                    _FocusedAccountArea(
-                                      tab: _tab,
-                                      snapshot: data,
-                                      gridPlan: gridPlan,
-                                      providerManifest:
-                                          widget.providerManifest ??
-                                          ProviderConnectorManifest.standard,
-                                      onConnectProvider:
-                                          widget.onConnectProvider,
-                                      onSyncNow: widget.onSyncNow,
-                                      onAnchorMeasured: _recordAnchorOffset,
-                                      onSignIn:
-                                          data.service('email-sign-in').state ==
-                                              AccountCloudConnectionState
-                                                  .connected
-                                          ? null
-                                          : widget.onSignIn ??
-                                                () => context.push(
-                                                  '${AppRoutes.login}?from=account-cloud',
-                                                ),
-                                      onOpenAiProviders:
-                                          widget.onOpenAiProviders ??
-                                          () => context.push(
-                                            AppRoutes.aiProviders,
-                                          ),
-                                      onOpenSecurity: () =>
-                                          context.push(AppRoutes.security),
-                                    ),
-                                  ],
-                                );
-                                return main;
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: railWidth,
-                        child: _AccountSummaryRail(
-                          plan: gridPlan,
-                          snapshot: data,
-                          operationalMetrics: operationalMetrics,
-                          onSyncNow: widget.onSyncNow,
-                          onBackupProject: widget.onBackupProject,
-                          onOpenAiProviders: widget.onOpenAiProviders,
-                        ),
-                      ),
-                    ],
+                          ),
                   );
                 },
               ),
             );
           },
         ),
+      ),
+    );
+  }
+
+  /// Area utama shell: chrome atas lalu grid tiga baris mockup.
+  ///
+  /// Dipakai oleh tier `wide_desktop` (lebar 75%) dan tier lain yang
+  /// menumpuk rail di bawah lewat [Expanded].
+  Widget _shellMain({
+    required double mainWidth,
+    required AccountCloudSnapshot data,
+    required AccountCenterGridPlan gridPlan,
+    required bool scrollable,
+  }) {
+    final area = _FocusedAccountArea(
+      tab: _tab,
+      snapshot: data,
+      gridPlan: gridPlan,
+      providerManifest:
+          widget.providerManifest ?? ProviderConnectorManifest.standard,
+      onConnectProvider: widget.onConnectProvider,
+      onSyncNow: widget.onSyncNow,
+      onSignIn:
+          data.service('email-sign-in').state ==
+              AccountCloudConnectionState.connected
+          ? null
+          : widget.onSignIn ??
+                () => context.push('${AppRoutes.login}?from=account-cloud'),
+      onOpenAiProviders:
+          widget.onOpenAiProviders ?? () => context.push(AppRoutes.aiProviders),
+      onOpenSecurity: () => context.push(AppRoutes.security),
+    );
+    return SizedBox(
+      width: mainWidth,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.all(AccountCenterDesignTokens.spacing.md),
+                decoration: BoxDecoration(
+                  color: context.palette.primary.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(
+                    AccountCenterDesignTokens.radius.tile,
+                  ),
+                ),
+                child: Icon(
+                  Icons.cloud_outlined,
+                  color: context.palette.primaryBright,
+                  size: AccountCenterDesignTokens.iconSizes.page,
+                ),
+              ),
+              SizedBox(width: AccountCenterDesignTokens.spacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('ACCOUNT & CLOUD CENTER', style: _pageTitle),
+                    SizedBox(height: AccountCenterDesignTokens.spacing.xs),
+                    Text(
+                      'Kelola akun, koneksi, cloud, dan integrasi layanan Anda',
+                      style: _body.copyWith(
+                        color: context.palette.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Semantics(
+                label: AccountCenterAccessibility.searchSemanticsLabel,
+                button: true,
+                child: IconButton(
+                  tooltip: widget.onSearch == null
+                      ? AccountCenterAccessibility.searchSemanticsLabel
+                      : 'Search',
+                  onPressed: widget.onSearch ?? _openAccountSearch,
+                  icon: Icon(
+                    Icons.search,
+                    size: AccountCenterDesignTokens.iconSizes.action,
+                  ),
+                ),
+              ),
+              Semantics(
+                label: widget.onNotifications == null
+                    ? AccountCenterAccessibility.notificationsSemanticsLabel
+                    : 'Notifications',
+                button: widget.onNotifications != null,
+                enabled: widget.onNotifications != null,
+                child: IconButton(
+                  tooltip: widget.onNotifications == null
+                      ? AccountCenterAccessibility.notificationsSemanticsLabel
+                      : 'Notifications',
+                  onPressed: widget.onNotifications,
+                  icon: Icon(
+                    Icons.notifications_none,
+                    size: AccountCenterDesignTokens.iconSizes.action,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: AccountCenterDesignTokens.spacing.sm),
+          Text(
+            AccountCenterInformationArchitecture.breadcrumbsFor(
+              _tab,
+            ).join(' / '),
+            key: const ValueKey('account-center-breadcrumb'),
+            style: _caption.copyWith(color: context.palette.textSecondary),
+          ),
+          SizedBox(height: AccountCenterDesignTokens.spacing.md),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (final tab in AccountCenterInformationArchitecture.tabs)
+                  _CenterTab(
+                    label: tab.label,
+                    active: tab == _tab,
+                    onTap: () => _selectTab(tab),
+                  ),
+              ],
+            ),
+          ),
+          SizedBox(height: AccountCenterDesignTokens.spacing.xl),
+          // 115.36: grid mengisi sisa tinggi viewport sehingga seluruh panel
+          // muat tanpa scroll luar di tier `wide_desktop` — `Expanded` memberi
+          // batas keras dan kartu di dalamnya yang menyusut atau menggulir.
+          //
+          // Tier selain `wide_desktop` memakai jalur scroll: chrome boleh lebih
+          // tinggi dari viewport (textScale 200% = 812.8px pada 484.8px share
+          // `flex:3`), jadi area utama memakai tinggi natural, [_RowCards] yang
+          // menggulir, dan [_shellMain] sudah dibungkus `SingleChildScrollView`
+          // di pemanggilnya.
+          if (scrollable) area else Expanded(child: area),
+        ],
+      ),
+    );
+  }
+
+  /// Rail ringkasan shell, meluap ke bawah pada tier sempit.
+  Widget _shellRail({
+    required double railWidth,
+    required AccountCloudSnapshot data,
+    required AccountCenterGridPlan gridPlan,
+    required AsyncValue<AccountOperationalMetrics?> operationalMetrics,
+    required bool natural,
+  }) {
+    final rail = _AccountSummaryRail(
+      plan: gridPlan,
+      snapshot: data,
+      operationalMetrics: operationalMetrics,
+      onSyncNow: widget.onSyncNow,
+      onBackupProject: widget.onBackupProject,
+      onOpenAiProviders: widget.onOpenAiProviders,
+      natural: natural,
+    );
+    return SizedBox(width: railWidth, child: rail);
+  }
+
+  /// Dua anak shell pada tier `wide_desktop`: area utama lalu rail ringkasan.
+  List<Widget> _shellChildren({
+    required double mainWidth,
+    required double railWidth,
+    required AccountCloudSnapshot data,
+    required AccountCenterGridPlan gridPlan,
+    required AsyncValue<AccountOperationalMetrics?> operationalMetrics,
+  }) {
+    return [
+      _shellMain(
+        mainWidth: mainWidth,
+        data: data,
+        gridPlan: gridPlan,
+        scrollable: false,
+      ),
+      _shellRail(
+        railWidth: railWidth,
+        data: data,
+        gridPlan: gridPlan,
+        operationalMetrics: operationalMetrics,
+        natural: false,
+      ),
+    ];
+  }
+}
+
+/// Kartu AUTHENTICATION mockup: foto profil, nama akun, email, jenis
+/// subscription, aksi edit profil, dan sign-in methods beserta ikonnya —
+/// semua dalam SATU kartu.
+///
+/// 115.36: sebelum ini sign-in methods berdiri sebagai kartu terpisah di area
+/// Connected Accounts, sehingga surface autentikasi terpecah dan tidak punya
+/// foto profil maupun subscription. Aturan satu kapabilitas = satu owner
+/// kanonik tetap berlaku: daftar sign-in milik kartu ini, dan kartu
+/// CONNECTED SERVICES OVERVIEW tetap meringkas storage/sync saja.
+class _AuthenticationProfileCard extends StatelessWidget {
+  const _AuthenticationProfileCard({
+    required this.snapshot,
+    required this.onSignIn,
+    required this.onEditProfile,
+  });
+
+  final AccountCloudSnapshot snapshot;
+
+  /// Aksi "Sign in or connect account".
+  ///
+  /// 115.36: kartu ini menggantikan kartu sign-in terpisah, jadi aksi ini
+  /// pindah ke sini. Function-nya sama persis — hanya owner-nya yang
+  /// berubah, mengikuti aturan satu kapabilitas = satu owner kanonik.
+  final VoidCallback onSignIn;
+
+  final VoidCallback onEditProfile;
+
+  /// Ikon per provider sign-in.
+  ///
+  /// Tidak ada material icon resmi untuk tiap brand, jadi glyph marcap yang
+  /// dipakai konsisten untuk seluruh aplikasi (lihat [_ProviderIcon]) dipakai
+  /// ulang agar kartu ini tidak memperkenalkan kosmetik kedua.
+  IconData _iconFor(AccountCloudServiceGroup group) => switch (group) {
+    AccountCloudServiceGroup.signIn => Icons.alternate_email,
+    AccountCloudServiceGroup.cloudStorage => Icons.cloud_outlined,
+    AccountCloudServiceGroup.localStorage => Icons.folder_outlined,
+    AccountCloudServiceGroup.sync => Icons.sync_outlined,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = AuthenticationProfileCard.authenticated(
+      avatar: const ProfileAvatar.initials('VS'),
+      displayName: snapshot.accountDisplayName,
+      email: snapshot.accountEmail ?? 'No email on this local session',
+      plan: _planFrom(snapshot),
+      signInMethods: _signInMethods,
+      primaryIdentity: SignInMethod.email,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _ProfileAvatar(
+              key: const ValueKey('account-profile-avatar'),
+              avatar: profile.avatar,
+            ),
+            SizedBox(width: AccountCenterDesignTokens.spacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    profile.displayName,
+                    key: const ValueKey('account-profile-name'),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: _body.copyWith(
+                      color: context.palette.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: AccountCenterDesignTokens.spacing.xs),
+                  Text(
+                    profile.email,
+                    key: const ValueKey('account-profile-email'),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: _caption.copyWith(
+                      color: context.palette.textSecondary,
+                    ),
+                  ),
+                  SizedBox(height: AccountCenterDesignTokens.spacing.xs),
+                  _PlanBadge(
+                    key: const ValueKey('account-profile-subscription'),
+                    plan: profile.plan,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: AccountCenterDesignTokens.spacing.md),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'SIGN-IN METHODS',
+                style: _caption.copyWith(
+                  color: context.palette.textMuted,
+                  letterSpacing: 0.6,
+                ),
+              ),
+            ),
+            // `Flexible` + ellipsis: pada kartu sempit (200px di baris 2/3
+            // mockup) label dan tombol tidak bisa muat dalam Row tanpa
+            // menyusut. Tombol boleh menyusut, teks label yang dipangkas.
+            Flexible(
+              child: TextButton(
+                onPressed: onEditProfile,
+                style: TextButton.styleFrom(
+                  minimumSize: const Size(
+                    0,
+                    AccountCenterAccessibility.minimumTouchTarget,
+                  ),
+                  padding: EdgeInsets.zero,
+                ),
+                child: const Text(
+                  'Edit profile',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          ],
+        ),
+        // Aksi sign-in yang sebelumnya hidup di kartu ringkasan terpisah.
+        SizedBox(height: AccountCenterDesignTokens.spacing.md),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: onSignIn,
+            icon: Icon(
+              Icons.login_outlined,
+              size: AccountCenterDesignTokens.iconSizes.action,
+            ),
+            label: const Text('Sign in or connect account'),
+            style: OutlinedButton.styleFrom(
+              minimumSize: Size(
+                0,
+                AccountCenterDesignTokens.density.minimumTouchTarget,
+              ),
+            ),
+          ),
+        ),
+        // 115.36: kartu grid sudah digulir oleh _DashboardCard, jadi daftar
+        // metode sign-in tidak boleh membawa scroll kedua (nested viewport
+        // membuat tinggi tak terbatas dan merusak flexible child).
+        for (final service in _signInServices)
+          _SignInMethodRow(
+            icon: _iconFor(service.group),
+            label: service.label,
+            state: service.state,
+          ),
+      ],
+    );
+  }
+
+  /// Metode sign-in kanonik, diturunkan dari snapshot yang sama dengan kartu
+  /// overview lama supaya tidak ada dua sumber kebenaran.
+  List<AccountCloudService> get _signInServices => snapshot.services
+      .where((service) => service.group == AccountCloudServiceGroup.signIn)
+      .toList(growable: false);
+
+  List<SignInMethod> get _signInMethods => const [
+    SignInMethod.email,
+    SignInMethod.google,
+    SignInMethod.github,
+  ];
+
+  /// Subscription lokal dipetakan dari mode akun, karena belum ada billing
+  /// service yang terhubung pada build ini.
+  AccountPlan _planFrom(AccountCloudSnapshot snapshot) {
+    final authenticated =
+        snapshot.service('email-sign-in').state ==
+        AccountCloudConnectionState.connected;
+    return authenticated ? AccountPlan.pro : AccountPlan.free;
+  }
+}
+
+/// Avatar profil: gambar, inisial, atau placeholder tanpa gambar.
+class _ProfileAvatar extends StatelessWidget {
+  const _ProfileAvatar({super.key, required this.avatar});
+
+  final ProfileAvatar avatar;
+
+  @override
+  Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(AccountCenterDesignTokens.radius.tile);
+    return switch (avatar.kind) {
+      ProfileAvatarKind.image => ClipRRect(
+        borderRadius: radius,
+        child: Image.asset(
+          avatar.value!,
+          width: AccountCenterDesignTokens.avatarSizes.image,
+          height: AccountCenterDesignTokens.avatarSizes.image,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stack) =>
+              const _InitialsAvatar(initials: 'VS'),
+        ),
+      ),
+      ProfileAvatarKind.initials => _InitialsAvatar(initials: avatar.value!),
+      ProfileAvatarKind.none => Container(
+        width: AccountCenterDesignTokens.avatarSizes.image,
+        height: AccountCenterDesignTokens.avatarSizes.image,
+        decoration: BoxDecoration(
+          color: context.palette.surface,
+          borderRadius: radius,
+        ),
+        child: Icon(
+          Icons.person_outline,
+          color: context.palette.textMuted,
+          size: AccountCenterDesignTokens.iconSizes.page,
+        ),
+      ),
+    };
+  }
+}
+
+class _InitialsAvatar extends StatelessWidget {
+  const _InitialsAvatar({required this.initials});
+
+  final String initials;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: AccountCenterDesignTokens.avatarSizes.image,
+    height: AccountCenterDesignTokens.avatarSizes.image,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      color: context.palette.primary.withValues(alpha: 0.16),
+      borderRadius: BorderRadius.circular(
+        AccountCenterDesignTokens.radius.tile,
+      ),
+    ),
+    child: Text(
+      initials,
+      style: _body.copyWith(
+        color: context.palette.primaryBright,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+  );
+}
+
+class _PlanBadge extends StatelessWidget {
+  const _PlanBadge({super.key, required this.plan});
+
+  final AccountPlan plan;
+
+  String get _label => switch (plan) {
+    AccountPlan.free => 'FREE PLAN',
+    AccountPlan.pro => 'PRO PLAN',
+    AccountPlan.team => 'TEAM PLAN',
+    AccountPlan.enterprise => 'ENTERPRISE PLAN',
+  };
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+    decoration: BoxDecoration(
+      color: context.palette.primary.withValues(alpha: 0.16),
+      borderRadius: BorderRadius.circular(
+        AccountCenterDesignTokens.radius.pill,
+      ),
+    ),
+    child: Text(
+      _label,
+      style: _caption.copyWith(
+        color: context.palette.primaryBright,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.4,
+      ),
+    ),
+  );
+}
+
+class _SignInMethodRow extends StatelessWidget {
+  const _SignInMethodRow({
+    required this.icon,
+    required this.label,
+    required this.state,
+  });
+
+  final IconData icon;
+  final String label;
+  final AccountCloudConnectionState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(icon, size: AccountCenterDesignTokens.iconSizes.action),
+          SizedBox(width: AccountCenterDesignTokens.spacing.sm),
+          Expanded(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: _caption.copyWith(color: context.palette.textSecondary),
+            ),
+          ),
+          SizedBox(width: AccountCenterDesignTokens.spacing.twoXs),
+          // 115.36: badge ikut boleh menyusut. Pada textScale 200% di 390px,
+          // badge "Available locally" lebih lebar dari sisa ruang dan
+          // memicu overflow 5.3px kalau tidak diberi `Flexible`.
+          Flexible(child: _ConnectionBadge(state: state, shrinkToFit: true)),
+        ],
       ),
     );
   }
@@ -432,11 +743,17 @@ class _AccountSummaryRail extends StatelessWidget {
     this.onSyncNow,
     this.onBackupProject,
     this.onOpenAiProviders,
+    this.natural = false,
   });
 
   /// Rencana grid tier (115.6) — kolom ringkasan mengikuti batas tier dan
   /// aturan fit card.minWidth, bukan heuristik 760px.
   final AccountCenterGridPlan plan;
+
+  /// 115.36: saat true (jalur scroll halaman di tier selain `wide_desktop`)
+  /// rail memakai tinggi natural dan kartu di dalamnya boleh menggulir lewat
+  /// `Wrap`, bukan `Expanded` yang butuh tinggi terkunci.
+  final bool natural;
   final AccountCloudSnapshot snapshot;
   final AsyncValue<AccountOperationalMetrics?> operationalMetrics;
   final VoidCallback? onSyncNow;
@@ -447,46 +764,60 @@ class _AccountSummaryRail extends StatelessWidget {
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
       final width = plan.cardWidthFor(constraints.maxWidth);
+      final cards = Wrap(
+        spacing: AccountCenterDesignTokens.layout.cardGap,
+        runSpacing: AccountCenterDesignTokens.layout.cardGap,
+        children: [
+          SizedBox(
+            width: width,
+            child: _PlanSummaryCard(snapshot: snapshot),
+          ),
+          SizedBox(width: width, child: const _CreditsCard()),
+          SizedBox(
+            width: width,
+            child: _QuickActionsCard(
+              onSyncNow: onSyncNow,
+              onOpenAiProviders:
+                  onOpenAiProviders ??
+                  () => context.push(AppRoutes.aiProviders),
+              onBackupProject:
+                  onBackupProject ??
+                  () => context.push(AppRoutes.projectBackups),
+            ),
+          ),
+          SizedBox(
+            width: constraints.maxWidth,
+            child: _OperationalMetricsCards(
+              metrics: operationalMetrics,
+              cardWidth: width,
+            ),
+          ),
+        ],
+      );
+      final header = Row(
+        children: [
+          Expanded(child: Text('ACCOUNT SUMMARY', style: _sectionTitle)),
+          Icon(Icons.unfold_more, color: context.palette.textMuted),
+        ],
+      );
+      final gap = SizedBox(height: AccountCenterDesignTokens.spacing.md);
+      // 115.36: di tier `wide_desktop` panel luar tidak digulir, jadi rail
+      // mengisi sisa tinggi dan kartunya menggulir di dalam `Wrap`. Di jalur
+      // scroll halaman (tier sempit) rail memakai tinggi natural dan ikut
+      // bergulir bersama chrome.
+      if (natural) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [header, gap, cards],
+        );
+      }
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(child: Text('ACCOUNT SUMMARY', style: _sectionTitle)),
-              Icon(Icons.unfold_more, color: context.palette.textMuted),
-            ],
-          ),
-          SizedBox(height: AccountCenterDesignTokens.spacing.md),
-          Wrap(
-            spacing: AccountCenterDesignTokens.layout.cardGap,
-            runSpacing: AccountCenterDesignTokens.layout.cardGap,
-            children: [
-              SizedBox(
-                width: width,
-                child: _PlanSummaryCard(snapshot: snapshot),
-              ),
-              SizedBox(width: width, child: const _CreditsCard()),
-              SizedBox(
-                width: width,
-                child: _QuickActionsCard(
-                  onSyncNow: onSyncNow,
-                  onOpenAiProviders:
-                      onOpenAiProviders ??
-                      () => context.push(AppRoutes.aiProviders),
-                  onBackupProject:
-                      onBackupProject ??
-                      () => context.push(AppRoutes.projectBackups),
-                ),
-              ),
-              SizedBox(
-                width: constraints.maxWidth,
-                child: _OperationalMetricsCards(
-                  metrics: operationalMetrics,
-                  cardWidth: width,
-                ),
-              ),
-            ],
-          ),
+          header,
+          gap,
+          Expanded(child: SingleChildScrollView(child: cards)),
         ],
       );
     },
@@ -942,6 +1273,7 @@ class _OverviewCapabilityCard extends StatelessWidget {
     required this.subtitle,
     required this.icon,
     required this.message,
+    this.fillHeight = false,
   });
 
   final String title;
@@ -949,10 +1281,16 @@ class _OverviewCapabilityCard extends StatelessWidget {
   final IconData icon;
   final String message;
 
+  /// 115.36: kartu capability hidup di dalam baris mockup yang tingginya
+  /// terkunci. Tanpa flag ini kartu shrink-wrap di dalam `Row` ber-`stretch`
+  /// dan isinya meluap 9.2px (baris 2) / 103px (baris 3).
+  final bool fillHeight;
+
   @override
   Widget build(BuildContext context) => _DashboardCard(
     title: title,
     subtitle: subtitle,
+    fillHeight: fillHeight,
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -981,7 +1319,6 @@ class _FocusedAccountArea extends StatelessWidget {
     required this.providerManifest,
     required this.onConnectProvider,
     required this.onSyncNow,
-    required this.onAnchorMeasured,
     this.onSignIn,
     this.onOpenAiProviders,
     this.onOpenSecurity,
@@ -997,9 +1334,6 @@ class _FocusedAccountArea extends StatelessWidget {
   final ValueChanged<ProviderConnectorEntry>? onConnectProvider;
   final VoidCallback? onSyncNow;
 
-  /// Laporan posisi anchor ke state panel (slug tab, offset absolut).
-  final void Function(String slug, double offset) onAnchorMeasured;
-
   final VoidCallback? onSignIn;
   final VoidCallback? onOpenAiProviders;
   final VoidCallback? onOpenSecurity;
@@ -1007,17 +1341,23 @@ class _FocusedAccountArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gap = AccountCenterDesignTokens.layout.cardGap;
+
+    // 115.36: aksi sign-in pindah ke kartu AUTHENTICATION gabungan. Function
+    // ini tidak hilang saat redesign — kartu auth adalah satu-satunya owner
+    // surface autentikasi, jadi tombol sign-in hidup di sana.
     final signInAction =
         onSignIn ?? () => context.push('${AppRoutes.login}?from=account-cloud');
-    final aiProvidersAction =
-        onOpenAiProviders ?? () => context.push(AppRoutes.aiProviders);
-    final securityAction =
-        onOpenSecurity ?? () => context.push(AppRoutes.security);
 
-    // Kartu ringkas per area. Area overview memakai tiga kartu mockup
-    // (autentikasi, quick connect, storage); area lain memakai kartu
-    // ringkasan + aksi yang relevan, tetap satu panel.
-    final sections = <_AccountSection>[
+    // 115.36 — mockup 1536x1024 adalah tiga baris yang MEMUAT SELURUH panel:
+    //   row 1: AUTHENTICATION | QUICK CONNECT | CLOUD STORAGE USAGE
+    //   row 2: CONNECTED SERVICES | API PROVIDERS | DEVELOPER TOOLS |
+    //           CREATIVE TOOLS | PAYMENT METHODS
+    //   row 3: API KEYS | TEAM & COLLABORATION | ACTIVITY LOG |
+    //           BACKUP & SYNC | SECURITY CENTER
+    // Baris 1 lebar penuh tiga kolom; baris 2 dan 3 lima kolom. Tinggi tiap
+    // baris dihitung dari tinggi viewport yang tersisa, bukan dari jumlah
+    // kartu — itulah yang membuat panel muat tanpa scroll luar.
+    final rows = <_AccountSection>[
       _AccountSection(
         tab: AccountCenterInformationArchitecture.tabs[0],
         cards: [
@@ -1025,7 +1365,11 @@ class _FocusedAccountArea extends StatelessWidget {
             key: const ValueKey('account-overview-card-authentication'),
             title: 'AUTHENTICATION',
             subtitle: 'Manage your account access',
-            child: _AccountSummary(snapshot: snapshot, onSignIn: signInAction),
+            child: _AuthenticationProfileCard(
+              snapshot: snapshot,
+              onSignIn: signInAction,
+              onEditProfile: () => context.push(AppRoutes.settings),
+            ),
           ),
           _AccountSectionCard.dashboard(
             key: const ValueKey('account-overview-card-quick-connect'),
@@ -1047,134 +1391,85 @@ class _FocusedAccountArea extends StatelessWidget {
       _AccountSection(
         tab: AccountCenterInformationArchitecture.tabs[1],
         cards: [
-          // Mockup row 1: connection summary. Sign-in surface stays owned by
-          // the overview AUTHENTICATION card, so this card lists services only.
-          // 115.36 mockup baris 2: "Connected Services Overview" meringkas
-          // seluruh drive dalam SATU kartu. Memetakan satu kartu penuh per
-          // service membuat enam kartu meledak menjadi baris penuh dan
-          // menduplikasi QUICK CONNECT — melanggar mockup dan aturan
-          // satu kapabilitas = satu owner kanonik.
+          // Mockup row 2: "Connected Services Overview" meringkas seluruh
+          // drive dalam SATU kartu. Satu kartu penuh per service membuat enam
+          // kartu meledak dan menduplikasi QUICK CONNECT.
           _AccountSectionCard.dashboard(
+            key: const ValueKey('account-overview-card-connected-services'),
             title: 'CONNECTED SERVICES OVERVIEW',
             subtitle: 'Connection summary',
             icon: Icons.hub_outlined,
             child: _ServiceSummaryList(services: snapshot.services),
           ),
-        ],
-      ),
-      _AccountSection(
-        tab: AccountCenterInformationArchitecture.tabs[2],
-        cards: [
-          _AccountSectionCard.dashboard(
-            title: 'STORAGE BREAKDOWN',
-            subtitle: 'Per-provider allocation',
-            child: StorageUsageCard(onManage: onSyncNow),
-          ),
-        ],
-      ),
-      _AccountSection(
-        tab: AccountCenterInformationArchitecture.tabs[3],
-        cards: [
           const _AccountSectionCard.capability(
+            key: ValueKey('account-overview-card-api-providers'),
             title: 'API PROVIDERS',
             subtitle: 'AI model gateways',
             icon: Icons.api_outlined,
             message: 'Configure and test OpenAI or Gemini from AI Providers.',
           ),
           const _AccountSectionCard.capability(
-            title: 'AI USAGE THIS MONTH',
-            subtitle: 'Usage and estimated provider cost',
-            icon: Icons.show_chart_outlined,
-            message: 'No metering data is available from connected providers.',
-          ),
-          _AccountSectionCard.action(
-            title: 'Open AI Providers',
-            subtitle:
-                'Configure credentials and run real provider connection tests.',
-            icon: Icons.arrow_forward,
-            onPressed: aiProvidersAction,
-          ),
-        ],
-      ),
-      _AccountSection(
-        tab: AccountCenterInformationArchitecture.tabs[4],
-        cards: [
-          const _AccountSectionCard.capability(
+            key: ValueKey('account-overview-card-developer-tools'),
             title: 'DEVELOPER TOOLS',
             subtitle: 'Source control and development services',
             icon: Icons.code_outlined,
             message: 'No developer service is connected.',
           ),
           const _AccountSectionCard.capability(
+            key: ValueKey('account-overview-card-creative-tools'),
             title: 'CREATIVE TOOLS',
             subtitle: 'Design and media integrations',
             icon: Icons.palette_outlined,
             message: 'No creative tool is connected.',
           ),
           const _AccountSectionCard.capability(
-            title: 'API KEYS',
+            key: ValueKey('account-overview-card-payment-methods'),
+            title: 'PAYMENT METHODS',
+            subtitle: 'Billing service connections',
+            icon: Icons.payment_outlined,
+            message: 'No payment method is configured.',
+          ),
+        ],
+      ),
+      _AccountSection(
+        tab: AccountCenterInformationArchitecture.tabs[2],
+        cards: [
+          const _AccountSectionCard.capability(
+            key: ValueKey('account-overview-card-api-keys-manager'),
+            title: 'API KEYS MANAGER',
             subtitle: 'Credential inventory',
             icon: Icons.key_outlined,
             message:
                 'Credentials remain protected in the operating-system vault.',
           ),
-        ],
-      ),
-      _AccountSection(
-        tab: AccountCenterInformationArchitecture.tabs[5],
-        cards: [
           const _AccountSectionCard.capability(
+            key: ValueKey('account-overview-card-team-collaboration'),
             title: 'TEAM & COLLABORATION',
             subtitle: 'Members, roles, and invitations',
             icon: Icons.groups_outlined,
             message: 'Team management is not configured.',
           ),
-        ],
-      ),
-      _AccountSection(
-        tab: AccountCenterInformationArchitecture.tabs[6],
-        cards: [
           const _AccountSectionCard.capability(
-            title: 'SECURITY CENTER',
-            subtitle: 'Sessions and account protection',
-            icon: Icons.security_outlined,
-            message: 'Security telemetry is not available locally.',
-          ),
-          const _AccountSectionCard.capability(
+            key: ValueKey('account-overview-card-activity-log'),
             title: 'ACTIVITY LOG',
             subtitle: 'Recent account and integration events',
             icon: Icons.history_outlined,
             message: 'No account activity has been recorded.',
           ),
-          _AccountSectionCard.action(
-            title: 'Open Security Center',
-            subtitle:
-                'Review the project security tools available in this build.',
-            icon: Icons.security_outlined,
-            onPressed: securityAction,
-          ),
-        ],
-      ),
-      _AccountSection(
-        tab: AccountCenterInformationArchitecture.tabs[7],
-        cards: [
           const _AccountSectionCard.capability(
+            key: ValueKey('account-overview-card-backup-sync'),
             title: 'BACKUP & SYNC',
             subtitle: 'Data protection and synchronization',
             icon: Icons.sync_outlined,
             message:
                 'Local project backups are available. Cloud sync remains unavailable until a provider is connected.',
           ),
-        ],
-      ),
-      _AccountSection(
-        tab: AccountCenterInformationArchitecture.tabs[8],
-        cards: [
           const _AccountSectionCard.capability(
-            title: 'PAYMENT METHODS',
-            subtitle: 'Billing service connections',
-            icon: Icons.payment_outlined,
-            message: 'No payment method is configured.',
+            key: ValueKey('account-overview-card-security-center'),
+            title: 'SECURITY CENTER',
+            subtitle: 'Sessions and account protection',
+            icon: Icons.security_outlined,
+            message: 'Security telemetry is not available locally.',
           ),
         ],
       ),
@@ -1190,37 +1485,96 @@ class _FocusedAccountArea extends StatelessWidget {
         // Batas keras: `cardWidthFor` menjumlahkan gap untuk N-2 kolom, sehingga
         // pada N kolom diperlukan (N-1) gap. Lebar dikurung supaya baris
         // tidak pernah melewati area konten (RenderFlex overflow).
-        final columns = gridPlan.columnsFor(constraints.maxWidth);
         final contentWidth = constraints.maxWidth.isFinite
             ? constraints.maxWidth
             : gridPlan.cardWidthFor(constraints.maxWidth);
-        final cardWidth = ((contentWidth - gap * (columns - 1)) / columns)
-            .clamp(0.0, contentWidth);
+        // 115.36: tinggi baris berasal dari tinggi yang tersisa, dibagi rata ke
+        // tiga baris. Dua baris terakhir memakai lima kolom, jadi gap hanya
+        // dihitung di dalam baris yang relevan.
+        final rowGap = gap;
+        final rowCount = rows.length;
+        // Tinggi tak terbatas hanya terjadi bila panel di-host tanpa Scaffold
+        // pada harness pengujian; fallback lokal menjaga baris tetap terukur
+        // tanpa menyentuh design token yang dipaku test.
+        const fallbackHeight = 900.0;
+        final availableHeight = constraints.maxHeight.isFinite
+            ? constraints.maxHeight
+            : fallbackHeight;
+        // Tinggi baris mengikuti proporsi mockup (351 / 268 / 265 px pada
+        // 1536x1024), bukan dibagi rata: baris pertama memuat kartu
+        // Authentication, Quick Connect, dan Storage yang paling padat.
+        const rowWeights = <double>[351, 268, 265];
+        final totalWeight = rowWeights
+            .take(rowCount)
+            .fold<double>(0, (sum, weight) => sum + weight);
+        // Gap dipisah: `rowCount - 1` jarak antar baris. Padding bawah tiap
+        // baris sudah termasuk di dalam `rowHeights`.
+        final usable = (availableHeight - rowGap * (rowCount - 1)).clamp(
+          0.0,
+          availableHeight,
+        );
+        final rowHeights = <double>[
+          for (var i = 0; i < rowCount; i++)
+            totalWeight > 0
+                ? usable * rowWeights[i] / totalWeight
+                : usable / rowCount,
+        ];
+        // 115.36: tiga baris mockup hanya sah di tier `wide_desktop` (viewport
+        // referensi 1536x1024). Di tier lain, mockup tidak berlaku dan kontrak
+        // responsif 115.6 yang dipakai: kartu mengalir sesuai [maxColumns]
+        // dan halaman digulir. Memaksakan tiga baris mockup pada viewport
+        // 600-1179px hanya menghasilkan baris yang meluap isinya.
+        final mockupTier = gridPlan.tier == AccountCenterLayoutTier.wideDesktop;
+        const minRowHeight = 120.0;
+        if (!mockupTier || availableHeight < minRowHeight * rowCount) {
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final section in rows) ...[
+                  Padding(
+                    key: ValueKey('account-anchor-${section.tab.slug}'),
+                    padding: EdgeInsets.only(bottom: gap),
+                    child: _RowCards(
+                      cards: section.cards,
+                      contentWidth: contentWidth,
+                      gap: gap,
+                      maxColumns: gridPlan.maxColumns,
+                      boundedHeight: false,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          );
+        }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            for (final section in sections) ...[
+            for (var index = 0; index < rowCount; index++) ...[
               _AccountSectionAnchor(
                 // Key pada anchor = seam yang dipakai tab strip & deep link.
-                key: ValueKey('account-anchor-${section.tab.slug}'),
-                tab: section.tab,
-                active: section.tab == tab,
-                onMeasured: onAnchorMeasured,
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: gap),
-                  child: Wrap(
-                    spacing: gap,
-                    runSpacing: gap,
-                    children: [
-                      for (final card in section.cards)
-                        SizedBox(
-                          width: cardWidth,
-                          child: KeyedSubtree(
-                            key: card.key,
-                            child: card.build(context),
-                          ),
-                        ),
-                    ],
+                key: ValueKey('account-anchor-${rows[index].tab.slug}'),
+                tab: rows[index].tab,
+                active: rows[index].tab == tab,
+                child: SizedBox(
+                  // Padding baris DI DALAM tinggi baris: kalau di luar, total
+                  // tinggi menjadi 3 * rowHeight + 3 * gap dan melampaui
+                  // tinggi viewport yang tersisa.
+                  height: rowHeights[index],
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: rowGap),
+                    child: _RowCards(
+                      cards: rows[index].cards,
+                      contentWidth: contentWidth,
+                      gap: rowGap,
+                      // Mockup 1536x1024 memakai lima kolom pada baris 2 dan
+                      // 3; batas itu hanya sah di tier wide_desktop.
+                      maxColumns:
+                          gridPlan.tier == AccountCenterLayoutTier.wideDesktop
+                          ? 5
+                          : gridPlan.maxColumns,
+                    ),
                   ),
                 ),
               ),
@@ -1232,7 +1586,125 @@ class _FocusedAccountArea extends StatelessWidget {
   }
 }
 
-/// Satu area kanonik dalam panel tunggal: anchor scroll + deretan kartunya.
+/// Deretan kartu satu baris mockup, dengan fallback bertumpuk.
+///
+/// Mockup 1536x1024 memakai tiga dan lima kolom. Pada viewport sempit lima
+/// kolom tidak mungkin muat pada lebar kartu minimum, jadi baris berubah
+/// menjadi satu kolom penuh — perilaku ini milik kontrak responsif 115.6
+/// (`columnsFor`), bukan tebakan per baris.
+class _RowCards extends StatelessWidget {
+  const _RowCards({
+    required this.cards,
+    required this.contentWidth,
+    required this.gap,
+    required this.maxColumns,
+    this.boundedHeight = true,
+  });
+
+  final List<_AccountSectionCard> cards;
+  final double contentWidth;
+  final double gap;
+
+  /// Batas kolom dari rencana responsif kanonik (115.6).
+  ///
+  /// Baris mockup 3/5/5 hanya sah di tier `wide_desktop`. Tier 2 kolom
+  /// (compact_desktop, tablet) memakai [maxColumns] — TAPI kartu tidak
+  /// pernah dipotong: baris membungkus ke beberapa baris fisik, bukan
+  /// menghilangkan kartu.
+  final int maxColumns;
+
+  /// Apakah baris punya tinggi terkunci (baris mockup) atau shrink-wrap
+  /// (jalur scroll pada viewport pendek).
+  final bool boundedHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    // 115.36: mockup 1536x1024 memakai lima kolom selebar 213px, jadi
+    // ambang baris mockup adalah konstanta lokal 200px. Token desain
+    // (`card.minWidth` 220) tidak disentuh dan tetap dipakai di tier lain.
+    const mockupMinCardWidth = 200.0;
+    final minCard = maxColumns >= 5 ? mockupMinCardWidth : 220.0;
+    final perRow = cards.length < maxColumns ? cards.length : maxColumns;
+    final fits =
+        perRow > 0 && (contentWidth - gap * (perRow - 1)) / perRow >= minCard;
+
+    if (!fits) {
+      // Jalur bertumpuk memakai tinggi tak terbatas, jadi kartu di dalamnya
+      // harus shrink-wrap: `fillHeight` di sini akan melempar "non-zero flex
+      // but unbounded height".
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            for (final card in cards)
+              Padding(
+                padding: EdgeInsets.only(bottom: gap),
+                child: KeyedSubtree(
+                  key: card.key,
+                  child: card.build(context, fillHeight: false),
+                ),
+              ),
+          ],
+        ),
+      );
+    }
+
+    final cardWidth = (contentWidth - gap * (perRow - 1)) / perRow;
+    Widget card(int index) => SizedBox(
+      width: cardWidth,
+      child: KeyedSubtree(
+        key: cards[index].key,
+        child: cards[index].build(context, fillHeight: boundedHeight),
+      ),
+    );
+
+    // Baris mockup: semua kartu dalam SATU baris. Tier non-wide mengikuti
+    // kontrak 115.6: kartu membungkus ke beberapa baris, tidak ada yang
+    // dipotong.
+    if (perRow == cards.length) {
+      return Row(
+        // `stretch` memerlukan tinggi baris yang sudah ditetapkan. Di jalur
+        // scroll (tinggi tak terbatas) `stretch` memaksa tinggi tak terbatas
+        // pada tiap kartu, jadi kartu memakai `start` agar shrink-wrap.
+        crossAxisAlignment: boundedHeight
+            ? CrossAxisAlignment.stretch
+            : CrossAxisAlignment.start,
+        children: [
+          for (var index = 0; index < perRow; index++)
+            Padding(
+              padding: EdgeInsets.only(right: index == perRow - 1 ? 0 : gap),
+              child: card(index),
+            ),
+        ],
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var row = 0; row * perRow < cards.length; row++) ...[
+          Row(
+            crossAxisAlignment: boundedHeight
+                ? CrossAxisAlignment.stretch
+                : CrossAxisAlignment.start,
+            children: [
+              for (var index = 0; index < perRow; index++)
+                if (row * perRow + index < cards.length)
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: index == perRow - 1 ? 0 : gap,
+                    ),
+                    child: card(row * perRow + index),
+                  ),
+            ],
+          ),
+          if ((row + 1) * perRow < cards.length) SizedBox(height: gap),
+        ],
+      ],
+    );
+  }
+}
+
+/// Satu baris mockup: anchor section + deretan kartu selebar viewport.
 class _AccountSection {
   const _AccountSection({required this.tab, required this.cards});
 
@@ -1240,72 +1712,30 @@ class _AccountSection {
   final List<_AccountSectionCard> cards;
 }
 
-/// Anchor scroll untuk satu area kanonik.
+/// Pembungkus satu area kanonik dalam panel tunggal.
 ///
-/// Mendaftarkan posisi dirinya terhadap panel scroll supaya tab strip dan deep
-/// link `?tab=` bisa menggulir ke sini. Pengukuran terjadi setelah frame
-/// pertama, lalu dilaporkan lewat [onMeasured] (slug tab, offset absolut).
-class _AccountSectionAnchor extends StatefulWidget {
+/// 115.36: panel luar tidak lagi digulir, jadi anchor tidak perlu mengukur
+/// posisi absolut. Yang tersisa adalah seam semantik: nama section untuk
+/// pembaca layar dan identity yang dipakai tab strip & deep link `?tab=`.
+class _AccountSectionAnchor extends StatelessWidget {
   const _AccountSectionAnchor({
     super.key,
     required this.tab,
     required this.active,
     required this.child,
-    required this.onMeasured,
   });
 
   final AccountCenterTab tab;
   final bool active;
   final Widget child;
-  final void Function(String slug, double offset) onMeasured;
-
-  @override
-  State<_AccountSectionAnchor> createState() => _AccountSectionAnchorState();
-}
-
-class _AccountSectionAnchorState extends State<_AccountSectionAnchor> {
-  final GlobalKey _measureKey = GlobalKey();
-
-  @override
-  void initState() {
-    super.initState();
-    _measureAfterFrame();
-  }
-
-  @override
-  void didUpdateWidget(covariant _AccountSectionAnchor oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // Anchor aktif berubah posisi relatif setelah digulir; offset lama basi.
-    if (oldWidget.active != widget.active) {
-      _measureAfterFrame();
-    }
-  }
-
-  void _measureAfterFrame() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-      final box = _measureKey.currentContext?.findRenderObject() as RenderBox?;
-      if (box == null || !box.attached) {
-        return;
-      }
-      widget.onMeasured(widget.tab.slug, box.localToGlobal(Offset.zero).dy);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    // Semantics memberi pembaca layar nama section saat menavigasi panel
-    // tunggal yang panjang.
     return Semantics(
-      identifier: 'account-anchor-${widget.tab.slug}',
+      identifier: 'account-anchor-${tab.slug}',
       header: true,
-      label: widget.tab.label,
-      child: KeyedSubtree(
-        key: _measureKey,
-        child: Semantics(container: true, child: widget.child),
-      ),
+      label: tab.label,
+      child: Semantics(container: true, child: child),
     );
   }
 }
@@ -1327,20 +1757,10 @@ class _AccountSectionCard {
     required this.subtitle,
     required this.icon,
     required this.message,
+    this.key,
   }) : _kind = _AccountSectionCardKind.capability,
        child = null,
-       onPressed = null,
-       key = null;
-
-  const _AccountSectionCard.action({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.onPressed,
-  }) : _kind = _AccountSectionCardKind.action,
-       child = null,
-       message = null,
-       key = null;
+       onPressed = null;
 
   /// Key stabil untuk kartu baris pertama mockup; dipakai tes layout untuk
   /// mengukur baris overview, bukan kemunculan pertama sebuah judul.
@@ -1354,64 +1774,28 @@ class _AccountSectionCard {
   final String? message;
   final VoidCallback? onPressed;
 
-  Widget build(BuildContext context) => switch (_kind) {
-    _AccountSectionCardKind.dashboard => _DashboardCard(
-      title: title,
-      subtitle: subtitle,
-      icon: icon,
-      child: child!,
-    ),
-    _AccountSectionCardKind.capability => _OverviewCapabilityCard(
-      title: title,
-      subtitle: subtitle,
-      icon: icon!,
-      message: message!,
-    ),
-    _AccountSectionCardKind.action => _DestinationActionCard(
-      label: title,
-      description: subtitle,
-      icon: icon!,
-      onPressed: onPressed,
-    ),
-  };
-}
-
-enum _AccountSectionCardKind { dashboard, capability, action }
-
-class _DestinationActionCard extends StatelessWidget {
-  const _DestinationActionCard({
-    required this.label,
-    required this.description,
-    required this.icon,
-    required this.onPressed,
-  });
-
-  final String label;
-  final String description;
-  final IconData icon;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) => _DashboardCard(
-    title: label.toUpperCase(),
-    subtitle: description,
-    child: Align(
-      alignment: Alignment.centerLeft,
-      child: TextButton.icon(
-        onPressed: onPressed,
-        icon: Icon(icon, size: AccountCenterDesignTokens.iconSizes.action),
-        label: Text(label),
-        // 115.7: default Material 3 TextButton 40px < target sentuh 44px.
-        style: TextButton.styleFrom(
-          minimumSize: const Size(
-            0,
-            AccountCenterAccessibility.minimumTouchTarget,
-          ),
+  /// [fillHeight] hanya sah di dalam baris mockup yang tingginya terkunci.
+  /// Jalur bertumpuk sempit (lihat [_RowCards]) MUSTI mengoper `false`.
+  Widget build(BuildContext context, {bool fillHeight = true}) =>
+      switch (_kind) {
+        _AccountSectionCardKind.dashboard => _DashboardCard(
+          title: title,
+          subtitle: subtitle,
+          icon: icon,
+          fillHeight: fillHeight,
+          child: child!,
         ),
-      ),
-    ),
-  );
+        _AccountSectionCardKind.capability => _OverviewCapabilityCard(
+          title: title,
+          subtitle: subtitle,
+          icon: icon!,
+          message: message!,
+          fillHeight: fillHeight,
+        ),
+      };
 }
+
+enum _AccountSectionCardKind { dashboard, capability }
 
 class _CenterTab extends StatefulWidget {
   const _CenterTab({
@@ -1533,6 +1917,7 @@ class _DashboardCard extends StatelessWidget {
     required this.subtitle,
     required this.child,
     this.icon,
+    this.fillHeight = false,
   });
 
   final String title;
@@ -1542,6 +1927,14 @@ class _DashboardCard extends StatelessWidget {
   /// Ikon kategori opsional pada baris judul (ikon token scale, bukan ukuran
   /// hardcode). Kartu mockup baris pertama tetap tanpa ikon.
   final IconData? icon;
+
+  /// 115.36: apakah body kartu menyerap tinggi baris mockup.
+  ///
+  /// Hanya sah untuk kartu yang duduk di dalam baris berukuran tetap. Kartu
+  /// rail hidup di dalam `SingleChildScrollView` dengan tinggi tak
+  /// terbatas, dan `Expanded` di sana melempar "non-zero flex but unbounded
+  /// height". Karena itu ini opt-in, bukan default.
+  final bool fillHeight;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -1553,7 +1946,41 @@ class _DashboardCard extends StatelessWidget {
       ),
       border: Border.all(color: context.palette.border),
     ),
-    child: Column(
+    // 115.36: pada baris mockup body kartu menyerap tinggi sisa baris,
+    // sehingga daftar panjang (metode sign-in) menggulir di dalam kartu —
+    // bukan memanjangkan panel luar.
+    child: _DashboardCardContent(
+      fillHeight: fillHeight,
+      icon: icon,
+      title: title,
+      subtitle: subtitle,
+      child: child,
+    ),
+  );
+}
+
+/// Isi [_DashboardCard]: seluruh kartu bergulir, header termasuk.
+class _DashboardCardContent extends StatelessWidget {
+  const _DashboardCardContent({
+    required this.fillHeight,
+    required this.title,
+    required this.subtitle,
+    required this.child,
+    this.icon,
+  });
+
+  final bool fillHeight;
+  final String title;
+  final String subtitle;
+  final Widget child;
+  final IconData? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    // Kartu shrink-wrap memakai `min`: pada tinggi tak terbatas `max`
+    // membuat RenderFlex menganggap isinya meluap.
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (icon case final iconData?) ...[
@@ -1568,10 +1995,18 @@ class _DashboardCard extends StatelessWidget {
         SizedBox(height: AccountCenterDesignTokens.spacing.twoXs),
         Text(subtitle, style: _caption),
         SizedBox(height: AccountCenterDesignTokens.spacing.md),
+        // Tanpa flex: RenderFlex menolak semua flex saat tinggi tak terbatas,
+        // dan pada baris terkunci seluruh kartu sudah digulir oleh
+        // [_DashboardCardContent] sehingga isinya tidak perlu `Expanded` lagi.
         child,
       ],
-    ),
-  );
+    );
+    if (!fillHeight) return content;
+    // Baris mockup punya tinggi terkunci. Isi yang lebih tinggi — termasuk
+    // header saat textScale 200% — menggulir DI DALAM kartu, bukan
+    // memanjangkan panel luar dan bukan meluap.
+    return SingleChildScrollView(child: content);
+  }
 }
 
 class _QuickConnectPanel extends StatelessWidget {
@@ -1581,19 +2016,33 @@ class _QuickConnectPanel extends StatelessWidget {
   final ValueChanged<ProviderConnectorEntry>? onConnectProvider;
 
   @override
-  Widget build(BuildContext context) => Column(
-    children: [
-      for (final entry in manifest.all.where(
-        (entry) => entry.category == ProviderConnectorCategory.cloudStorage,
-      ))
-        _ProviderTile(
-          entry: entry,
-          onConnect: onConnectProvider == null
-              ? null
-              : () => onConnectProvider!(entry),
-        ),
-    ],
-  );
+  Widget build(BuildContext context) {
+    final entries = manifest.all
+        .where(
+          (entry) => entry.category == ProviderConnectorCategory.cloudStorage,
+        )
+        .toList(growable: false);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // 115.36: baris mockup punya tinggi tetap, jadi daftar provider yang
+        // panjang harus menggulir DI DALAM kartu. Tanpa scroll internal kartu
+        // meluap dan mendorong panel luar melewati viewport.
+        final tiles = <Widget>[
+          for (final entry in entries)
+            _ProviderTile(
+              entry: entry,
+              onConnect: onConnectProvider == null
+                  ? null
+                  : () => onConnectProvider!(entry),
+            ),
+        ];
+        if (constraints.maxHeight.isInfinite) {
+          return Column(children: tiles);
+        }
+        return SingleChildScrollView(child: Column(children: tiles));
+      },
+    );
+  }
 }
 
 class _ProviderTile extends StatelessWidget {
@@ -1638,10 +2087,25 @@ class _ProviderTile extends StatelessWidget {
                 ),
               ),
             );
-            final action = TextButton(
-              onPressed: canConnect ? onConnect : null,
-              child: Text(entry.isConnectable ? 'Connect' : 'Not available'),
+            // 115.36: pada kolom mockup yang sempit tombol aksi tidak boleh
+            // memaksa lebar minimum; ia boleh menyusut dan labelnya ellipsis.
+            // `Flexible` hanya sah di dalam `Row`, jadi di jalur `Align`
+            // (textScale tinggi) tombol dibungkus tanpa `Flexible`; `Align`
+            // sendiri yang membatasi lebarnya.
+            Widget action({bool shrink = false}) => ConstrainedBox(
+              constraints: shrink
+                  ? const BoxConstraints(maxWidth: double.infinity)
+                  : const BoxConstraints(),
+              child: TextButton(
+                onPressed: canConnect ? onConnect : null,
+                child: Text(
+                  entry.isConnectable ? 'Connect' : 'Not available',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             );
+            final rowAction = Flexible(child: action());
             final textScale = MediaQuery.textScalerOf(context).scale(1);
 
             if (textScale > 1.3) {
@@ -1656,7 +2120,7 @@ class _ProviderTile extends StatelessWidget {
                       Expanded(child: details),
                     ],
                   ),
-                  Align(alignment: Alignment.centerRight, child: action),
+                  Align(alignment: Alignment.centerRight, child: action()),
                 ],
               );
             }
@@ -1666,7 +2130,7 @@ class _ProviderTile extends StatelessWidget {
                 _ProviderIcon(entry: entry),
                 SizedBox(width: AccountCenterDesignTokens.spacing.sm),
                 Expanded(child: details),
-                action,
+                rowAction,
               ],
             );
           },
@@ -1743,72 +2207,6 @@ String _connectionStatusLabel(AccountCloudConnectionState state) =>
       AccountCloudConnectionState.notConnected => 'Not connected',
     };
 
-class _AccountSummary extends StatelessWidget {
-  const _AccountSummary({required this.snapshot, this.onSignIn});
-
-  final AccountCloudSnapshot snapshot;
-  final VoidCallback? onSignIn;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: EdgeInsets.all(AccountCenterDesignTokens.card.padding),
-    decoration: BoxDecoration(
-      color: context.palette.surface,
-      borderRadius: BorderRadius.circular(
-        AccountCenterDesignTokens.radius.card,
-      ),
-      border: Border.all(color: context.palette.border),
-    ),
-    child: Row(
-      children: [
-        CircleAvatar(
-          radius: AccountCenterDesignTokens.avatarSizes.compact / 2,
-          backgroundColor: context.palette.primary,
-          child: const Icon(Icons.person_outline, color: Colors.white),
-        ),
-        SizedBox(width: AccountCenterDesignTokens.spacing.md),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                snapshot.accountDisplayName,
-                style: VoidTypography.headingMedium,
-              ),
-              SizedBox(height: AccountCenterDesignTokens.spacing.twoXs),
-              Text(snapshot.accountModeLabel, style: _caption),
-              if (onSignIn != null) ...[
-                SizedBox(height: AccountCenterDesignTokens.spacing.md),
-                OutlinedButton.icon(
-                  onPressed: onSignIn,
-                  icon: Icon(
-                    Icons.login_outlined,
-                    size: AccountCenterDesignTokens.iconSizes.action,
-                  ),
-                  label: const Text('Sign in or connect account'),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: Size(
-                      0,
-                      AccountCenterDesignTokens.density.minimumTouchTarget,
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-/// Ringkasan service terhubung dalam satu kartu (115.36 mockup).
-///
-/// Mockup memakai SATU kartu "Connected Services Overview" yang meringkas
-/// seluruh drive sebagai baris compact. Versi sebelumnya memetakan satu kartu
-/// penuh per service; itu meledak menjadi N baris di panel tunggal dan
-/// menduplikasi kapabilitas QUICK CONNECT.
 class _ServiceSummaryList extends StatelessWidget {
   const _ServiceSummaryList({required this.services});
 
@@ -1861,9 +2259,13 @@ class _ServiceSummaryList extends StatelessWidget {
 }
 
 class _ConnectionBadge extends StatelessWidget {
-  const _ConnectionBadge({required this.state});
+  const _ConnectionBadge({required this.state, this.shrinkToFit = false});
 
   final AccountCloudConnectionState state;
+
+  /// 115.36: bila true, badge melepaskan padding horizontal saat ruang
+  /// sempit sehingga label boleh ellipsis alih-alih memaksa lebar.
+  final bool shrinkToFit;
 
   @override
   Widget build(BuildContext context) {
@@ -1883,7 +2285,9 @@ class _ConnectionBadge extends StatelessWidget {
     };
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: AccountCenterDesignTokens.spacing.sm,
+        horizontal: shrinkToFit
+            ? AccountCenterDesignTokens.spacing.twoXs
+            : AccountCenterDesignTokens.spacing.sm,
         vertical: AccountCenterDesignTokens.spacing.twoXs,
       ),
       decoration: BoxDecoration(

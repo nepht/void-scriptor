@@ -68,6 +68,7 @@ void main() {
         OutlinedButton,
         'Sign in or connect account',
       );
+      final editProfile = find.widgetWithText(TextButton, 'Edit profile');
 
       // Header search adalah stop fokus pertama.
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
@@ -99,8 +100,22 @@ void main() {
         await tester.pump();
       }
 
-      // Setelah tab terakhir: aksi sign-in.
-      expect(_focusRect(tester).overlaps(tester.getRect(signIn)), isTrue);
+      // 115.36: setelah tab ke-9, fokus masuk ke isi panel mockup. Kartu
+      // AUTHENTICATION menaruh "Edit profile" lalu aksi sign-in, jadi keduanya
+      // adalah focus stop — dan keduanya harus terjangkau keyboard, bukan
+      // hanya yang pertama.
+      expect(
+        _focusRect(tester).overlaps(tester.getRect(editProfile)),
+        isTrue,
+        reason: 'fokus pertama di panel = Edit profile',
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      expect(
+        _focusRect(tester).overlaps(tester.getRect(signIn)),
+        isTrue,
+        reason: 'fokus berikutnya = aksi sign-in',
+      );
     });
 
     testWidgets('Enter pada tab terfokus memindah tab, fokus tidak nyangkut', (
@@ -129,20 +144,21 @@ void main() {
         activeSemantics.flagsCollection.isSelected == Tristate.isTrue,
         isTrue,
       );
-      // 115.36 satu panel: tab = anchor scroll, bukan penyaring konten.
-      // Konten Overview tetap ada dan section tujuan ter-reveal ke viewport.
+      // 115.36 satu panel TANPA scroll: tab menandai anchor dan breadcrumb,
+      // bukan menyaring atau menggulir. Semua area kanonik sudah berada di
+      // dalam panel yang sama, jadi yang dikontrakkan di sini adalah:
+      // anchor section tujuan ADA dan berada di dalam panel.
       final anchorSection = find.byKey(
         ValueKey(
           'account-anchor-${AccountCenterInformationArchitecture.tabs[1].slug}',
         ),
       );
       expect(anchorSection, findsOneWidget);
-      final anchorRect = tester.getRect(anchorSection);
-      final viewport = tester.getRect(find.byType(Scrollable).first);
+      final panel = tester.getRect(find.byType(AccountCloudCenterScreen));
       expect(
-        viewport.overlaps(anchorRect),
+        panel.overlaps(tester.getRect(anchorSection)),
         isTrue,
-        reason: 'anchor section harus masuk viewport setelah tab dipilih',
+        reason: 'anchor section harus berada di dalam panel',
       );
       expect(
         find.text('QUICK CONNECT'),
@@ -227,13 +243,31 @@ void main() {
       tester,
     ) async {
       await pumpCenter(tester);
-      // QUICK CONNECT overview: tiga provider cloudStorage.
-      expect(
-        find.bySemanticsLabel('Google Drive, Not connected'),
-        findsOneWidget,
-      );
-      expect(find.bySemanticsLabel('OneDrive, Not connected'), findsOneWidget);
-      expect(find.bySemanticsLabel('Dropbox, Not connected'), findsOneWidget);
+      // 115.36: mockup menempatkan provider cloudStorage di DUA kartu —
+      // QUICK CONNECT (baris 1) dan CONNECTED SERVICES OVERVIEW (baris 2).
+      // Kontrak a11y bukan "tepat satu secara global", tapi "tepat satu di
+      // DALAM tiap kartu": tiap kartu mengumumkan provider-nya sendiri tanpa
+      // menggandakan node di dalam kartu yang sama.
+      for (final slug in const ['quick-connect', 'connected-services']) {
+        final card = find.byKey(
+          ValueKey('account-overview-card-$slug'),
+        );
+        expect(card, findsOneWidget, reason: 'kartu $slug harus ada');
+        for (final provider in const [
+          'Google Drive, Not connected',
+          'OneDrive, Not connected',
+          'Dropbox, Not connected',
+        ]) {
+          expect(
+            find.descendant(
+              of: card,
+              matching: find.bySemanticsLabel(provider),
+            ),
+            findsOneWidget,
+            reason: 'provider $provider diumumkan sekali di kartu $slug',
+          );
+        }
+      }
 
       // Status lokal "Available locally" pada tab Backup & Sync (dirender lewat
       // initialTab; tab strip horizontal, tab ke-8 berada di luar viewport

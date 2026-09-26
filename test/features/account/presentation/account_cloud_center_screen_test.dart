@@ -71,18 +71,31 @@ void main() {
       'DEVELOPER TOOLS',
       'CREATIVE TOOLS',
       'PAYMENT METHODS',
-      'API KEYS',
+      // Mockup 1536x1024: kartu area API Keys bernama "API KEYS MANAGER".
+      'API KEYS MANAGER',
       'TEAM & COLLABORATION',
       'ACTIVITY LOG',
       'BACKUP & SYNC',
       'SECURITY CENTER',
+    ]) {
+      expect(find.text(title), findsWidgets, reason: title);
+    }
+    // AI usage dan storage distribution diringkas di RAIL, bukan kartu grid
+    // — mockup tidak punya kartu grid untuk keduanya.
+    for (final title in [
       'AI USAGE THIS MONTH',
       'STORAGE DISTRIBUTION',
     ]) {
       expect(find.text(title), findsWidgets, reason: title);
     }
 
+    // 115.36: tombol sign-in kini hidup di kartu AUTHENTICATION. Di tier
+    // mobile kartu itu bisa berada di luar viewport, jadi digulir dulu
+    // (bukan mengikat posisi scroll).
+    await tester.ensureVisible(find.text('Sign in or connect account'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Sign in or connect account'));
+    await tester.pump();
     expect(signInRequested, isTrue);
   });
 
@@ -193,18 +206,29 @@ void main() {
       ),
     );
 
-    // 115.36 panel tunggal: area terhubung sudah ada di panel yang sama.
-    final openProviders = tester.widget<TextButton>(
-      find.widgetWithText(TextButton, 'Open AI Providers'),
-    );
-    openProviders.onPressed!();
+    // 115.36: aksi "AI Providers" kini hidup di rail (kartu QUICK ACTIONS),
+    // bukan sebagai kartu grid terpisah. Baris aksi memakai `ListTile`
+    // (bukan `TextButton`) supaya target sentuh 44px terpenuhi dari token
+    // density, dan label mockup adalah "AI Providers".
+    //
+    // Di tier non-wide rail berada di bawah grid tiga baris dan ikut bergulir
+    // bersama halaman (diukur y=2894 pada viewport 800x600), jadi baris ini
+    // harus digulir ke tampilan sebelum ditekan.
+    final aiProvidersRow = find.widgetWithText(ListTile, 'AI Providers');
+    expect(aiProvidersRow, findsOneWidget);
+    await tester.ensureVisible(aiProvidersRow);
+    await tester.pumpAndSettle();
+    await tester.tap(aiProvidersRow);
+    await tester.pump();
     expect(aiProvidersOpened, isTrue);
 
-    // Tab tetap menjadi anchor scroll, bukan penyaring konten.
+    // 115.36: panel tidak lagi digulir, jadi tab tidak lagi pemicu scroll —
+    // tab menandai anchor dan breadcrumb. Memilih tab tidak boleh menyaring
+    // atau menyembunyikan kartu area lain.
     await tester.tap(find.text('Cloud Storage').first);
     await tester.pump();
+    expect(find.text('CLOUD STORAGE USAGE'), findsWidgets);
     // Panel tunggal: ringkasan rail dan kartu area boleh sama-sama tampil.
-    expect(find.text('Sign in or connect account'), findsWidgets);
     expect(find.text('Google Drive'), findsWidgets);
   });
 
@@ -221,7 +245,13 @@ void main() {
     expect(find.text('API PROVIDERS'), findsOneWidget);
     expect(find.text('BACKUP & SYNC'), findsOneWidget);
 
-    await tester.tap(find.text('Backup & Sync').first);
+    // Tab strip digulir horizontal. Pada viewport 800px tab ke-8 berada di
+    // luar layar (x=1572 saat diukur), jadi harus digulir ke tampilan dulu —
+    // tab tetap reachable, hanya tidak terlihat tanpa scroll.
+    final backupTab = find.text('Backup & Sync').first;
+    await tester.ensureVisible(backupTab);
+    await tester.pumpAndSettle();
+    await tester.tap(backupTab);
     await tester.pump();
 
     expect(find.text('BACKUP & SYNC'), findsOneWidget);

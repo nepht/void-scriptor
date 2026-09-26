@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.40",
+  "title": "AI Usage Chart & Detail Table",
+  "acceptance": [
+    "chart",
+    "text_summary",
+    "data_table",
+    "filters",
+    "freshness",
+    "estimate_label",
+    "empty_state"
+  ],
+  "implementation": "lib/features/account/domain/account_center_ai_usage_report.dart",
+  "evidence": "test/features/account/domain/account_center_ai_usage_report_test.dart",
+  "boundary": "Local metadata-only AI usage trend surface built on account_center_ai_usage_credits_cost_view. Chart bars are grouped by usage type AND unit so tokens are never summed with images or seconds, gaps are never zero-filled, and a series whose maximum is zero is marked unrenderable instead of dividing by zero. Every bar carries a non-blank text alternative so the trend is readable without the chart. A textual summary is always produced, including in the empty state, and never states an exact total when an estimate is present. The detail table is one row per record with period, provider, model, usage type, quantity, cost, source, and freshness; its public field set is closed so no prompt or creative content can ride along. Totals are grouped, never summed across mixed currencies, never summed while a record in the group has no cost, and carry the reason instead. Filters narrow provider, model, usage type, billing-period range, and estimate inclusion, report how many records they hid, and fail closed on a value the data does not contain. Freshness is derived from measured_at against an injected clock: a future timestamp is flagged instead of counting as fresh forever, and rows are never presented as current when they are stale or expired. Cost cells and totals are labelled Estimated or Reported from the record's own is_estimate flag, and a missing cost reads 'Cost unavailable' rather than zero. When nothing survives the filter the report says so explicitly and distinguishes no data at all from data the filter excluded. No provider request, invoice, or balance read happens here, the product-spec billing contract stays PLANNED_NOT_VERIFIED, reference mock values cannot be produced, and public-trust signing, hosted CI, telemetry, hardware, adoption, and publication remain DEFERRED-EXTERNAL."
+}

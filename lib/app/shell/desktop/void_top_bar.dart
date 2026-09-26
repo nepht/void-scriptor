@@ -42,7 +42,10 @@ class VoidTopBar extends StatelessWidget {
     final saveState = this.saveState;
     final projectContext = this.projectContext;
     return Container(
-      height: 52,
+      // 115.37 (Choi, 2026-09-27): top bar dirapatkan ke 39px. Isi tertinggi
+      // di dalamnya adalah project-context button 34px + border bawah 1px,
+      // jadi 39px masih muat tanpa overflow.
+      height: 39,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: context.palette.panel,

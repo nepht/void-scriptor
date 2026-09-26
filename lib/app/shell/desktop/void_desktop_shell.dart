@@ -20,7 +20,6 @@ import '../../../features/workspace_layout/application/workspace_tab_controller.
 import '../../../features/workspace_layout/presentation/workspace_layout_shell.dart';
 import '../../../features/workspace_layout/presentation/workspace_tab_bar.dart';
 import '../../routing/app_routes.dart';
-import 'void_status_bar.dart';
 import 'void_top_bar.dart';
 
 /// vs-hunt-20260913-shell-settings BUG-02 (REAL Low, kontrak 145.37):
@@ -211,11 +210,9 @@ class VoidDesktopShell extends ConsumerWidget {
                   inspector: InspectorPanel(),
                 ),
           ),
-          VoidStatusBar(
-            dirty: state?.isDirty ?? false,
-            canUndo: runtime?.bus.canUndo ?? false,
-            canRedo: runtime?.bus.canRedo ?? false,
-          ),
+          // 115.37 (Choi, 2026-09-27): status bar dihapus. Konten di atasnya
+          // (Expanded) sekarang mengisi sisa tinggi, dan tinggi yang dibebaskan
+          // itu menjadi ruang kerja tambahan, bukan ruang kosong.
         ],
       ),
     );

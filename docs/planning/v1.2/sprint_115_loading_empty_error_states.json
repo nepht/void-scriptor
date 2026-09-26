@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_LOADING_EMPTY_ERROR_STATES_MANIFEST",
+  "canonical_step": "115.42",
+  "title": "Loading, Empty & Error States",
+  "required_states": ["loading", "empty", "partial", "offline", "permission_denied", "rate_limited", "outage", "unavailable", "error", "reauth"],
+  "implementation": "lib/features/account/domain/account_center_loading_empty_error_states.dart",
+  "evidence": "test/features/account/domain/account_center_loading_empty_error_states_test.dart",
+  "external_gate_status": "DEFERRED-EXTERNAL",
+  "boundary": "Metadata-only state contract; provider requests, credentials, telemetry, signing, hosted CI, hardware, adoption, and publication remain external and are not claimed."
+}

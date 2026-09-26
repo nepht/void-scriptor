@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.26",
+  "title": "AI Usage, Credits & Cost View",
+  "acceptance": [
+    "app_credits_separate",
+    "provider_usage",
+    "estimated_label",
+    "currency",
+    "billing_period",
+    "unavailable_state",
+    "no_prompt_collection"
+  ],
+  "implementation": "lib/features/account/domain/account_center_ai_usage_credits_cost_view.dart",
+  "evidence": "test/features/account/domain/account_center_ai_usage_credits_cost_view_test.dart",
+  "boundary": "Metadata-only local view contract; provider metering, balances, billing, network, credentials, and costs remain DEFERRED-EXTERNAL unless supplied by a verified connector."
+}

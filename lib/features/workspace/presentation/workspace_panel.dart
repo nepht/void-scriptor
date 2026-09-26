@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/domain/asset_type.dart';
-import '../../character/presentation/character_workspace_controller.dart';
-import '../../character/presentation/widgets/character_deletion_review_dialog.dart';
-import '../../character/presentation/character_controller.dart';
 import '../../../core/selection/selection_controller.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 import '../application/workspace_section_controller.dart';
+import 'workspace_header.dart';
 import 'workspace_resolver.dart';
 
 import '../../../design_system/typography/void_typography.dart';
@@ -30,9 +28,6 @@ class WorkspacePanel extends ConsumerWidget {
     );
     final sectionState = ref.watch(workspaceSectionProvider);
     final rememberedSection = sectionState.activeFor(workspace.kind);
-    final selectedCharacter = selection?.assetType == AssetType.character
-        ? ref.watch(characterWorkspaceProvider(selection!.assetId)).valueOrNull
-        : null;
     final activeSection =
         (workspace.sections.contains(rememberedSection) ||
             (workspace.kind == WorkspaceKind.novel &&
@@ -49,30 +44,14 @@ class WorkspacePanel extends ConsumerWidget {
       color: context.palette.backgroundSecondary,
       child: Column(
         children: [
-          _WorkspaceHeader(
-            workspace: workspace,
+          WorkspaceHeader(
+            kind: workspace.kind,
+            icon: workspace.icon,
+            title: workspace.title,
             projectName: session?.manifest.name,
-            characterName: selectedCharacter?.displayName,
-            onDeleteCharacter: selectedCharacter == null || session == null
-                ? null
-                : () async {
-                    final actions = CharacterActions(
-                      ref,
-                      selectedCharacter.projectId,
-                      session.database,
-                    );
-                    final decision = await showCharacterDeletionReviewDialog(
-                      context: context,
-                      loadReview: () =>
-                          actions.reviewDeletion(selectedCharacter.assetId),
-                    );
-                    if (decision != null) {
-                      await actions.delete(
-                        selectedCharacter.assetId,
-                        decision: decision,
-                      );
-                    }
-                  },
+            characterId: selection?.assetType == AssetType.character
+                ? selection!.assetId
+                : null,
           ),
           _WorkspaceSections(
             workspace: workspace,
@@ -94,114 +73,6 @@ class WorkspacePanel extends ConsumerWidget {
         ],
       ),
     );
-  }
-}
-
-class _WorkspaceHeader extends StatelessWidget {
-  const _WorkspaceHeader({
-    required this.workspace,
-    this.projectName,
-    this.characterName,
-    this.onDeleteCharacter,
-  });
-
-  final _WorkspacePresentation workspace;
-  final String? projectName;
-  final String? characterName;
-  final VoidCallback? onDeleteCharacter;
-
-  @override
-  Widget build(BuildContext context) {
-    final resolvedProjectName = projectName?.trim();
-    return Container(
-      height: 36,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: context.palette.panelSecondary,
-        border: Border(bottom: BorderSide(color: context.palette.borderSoft)),
-      ),
-      child: Row(
-        children: [
-          Icon(workspace.icon, size: 20, color: context.palette.primaryBright),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Row(
-              children: [
-                Flexible(
-                  child: Text(
-                    workspace.kind == WorkspaceKind.character
-                        ? 'Character'
-                        : workspace.title,
-                    style: VoidTypography.breadcrumb.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: context.palette.textPrimary,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                if (workspace.kind == WorkspaceKind.character &&
-                    characterName != null) ...[
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 6),
-                    child: Icon(Icons.chevron_right, size: 15),
-                  ),
-                  Flexible(
-                    child: Text(
-                      characterName!,
-                      style: VoidTypography.breadcrumb,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          if (resolvedProjectName != null &&
-              resolvedProjectName.isNotEmpty &&
-              workspace.kind != WorkspaceKind.character)
-            Flexible(
-              child: Text(
-                resolvedProjectName,
-                style: VoidTypography.breadcrumb,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          if (workspace.kind == WorkspaceKind.character) ...[
-            IconButton(
-              tooltip: 'Favorite',
-              visualDensity: VisualDensity.compact,
-              onPressed: () => _feedback(
-                context,
-                'Favorite is available in the next metadata slice.',
-              ),
-              icon: const Icon(Icons.star_border, size: 17),
-            ),
-            IconButton(
-              tooltip: 'History',
-              visualDensity: VisualDensity.compact,
-              onPressed: () =>
-                  _feedback(context, 'Character history is not persisted yet.'),
-              icon: const Icon(Icons.history, size: 17),
-            ),
-            IconButton(
-              tooltip: 'Delete',
-              visualDensity: VisualDensity.compact,
-              onPressed: onDeleteCharacter,
-              icon: const Icon(Icons.delete_outline, size: 17),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  void _feedback(BuildContext context, String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
   }
 }
 

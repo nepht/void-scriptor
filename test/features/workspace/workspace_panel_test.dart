@@ -21,10 +21,8 @@ void main() {
     await tester.pump();
 
     expect(find.text('Novel Workspace'), findsOneWidget);
-    expect(
-      find.text('Manuscript, chapters, scenes, and export'),
-      findsOneWidget,
-    );
+    // The workspace header is a single line by design: the domain description
+    // is intentionally not rendered (Choi's decision, 2026-09-26).
     expect(find.text('Manuscript'), findsOneWidget);
     expect(find.text('Planning'), findsOneWidget);
     expect(find.text('Export'), findsNothing);
@@ -57,11 +55,7 @@ void main() {
         );
     await tester.pump();
 
-    expect(find.text('Character Workspace'), findsOneWidget);
-    expect(
-      find.text('Identity, voice, relationships, and references'),
-      findsOneWidget,
-    );
+    expect(find.text('Character'), findsOneWidget);
     expect(find.text('Overview'), findsOneWidget);
     expect(find.text('Character Sheet'), findsOneWidget);
     expect(find.text('Expressions Library'), findsOneWidget);
@@ -97,10 +91,6 @@ void main() {
     await tester.pump();
 
     expect(find.text('Worldbuilding Workspace'), findsOneWidget);
-    expect(
-      find.text('Locations, factions, timeline, and lore'),
-      findsOneWidget,
-    );
     expect(find.text('Details'), findsOneWidget);
     expect(find.text('Overview'), findsNothing);
     expect(find.text('Locations'), findsNothing);

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.39",
+  "title": "Quick Actions",
+  "acceptance": [
+    "permission_aware",
+    "disabled_reason",
+    "confirmation",
+    "progress",
+    "result",
+    "audit"
+  ],
+  "implementation": "lib/features/account/domain/account_center_quick_actions.dart",
+  "evidence": "test/features/account/domain/account_center_quick_actions_test.dart",
+  "boundary": "Local metadata-only quick-action surface for sync, backup, API keys, team invite, marketplace, and settings. Permission state is per-action and fail-closed: an unknown permission state disables every action, a denied state disables only the action it names, and every disabled action carries a non-blank disabled reason. Consequential actions refuse to run without explicit confirmation; the one action mapped to security_contract.sensitive_actions refuses to run before reauthentication through an injected broker, and a missing broker is fail-closed. A run is an explicit idle/running/succeeded/failed/cancelled state machine whose reported progress is monotonic, clamped, and never fabricated, and whose terminal outcome is always recorded as a visible result with a non-blank message. Every attempt, including each denial, appends exactly one redacted audit event. No sync, backup, invite, marketplace, or settings execution happens here, the product-spec billing contract stays PLANNED_NOT_VERIFIED, reference mock values cannot be produced, and public-trust signing, hosted CI, telemetry, hardware, adoption, and publication remain DEFERRED-EXTERNAL."
+}

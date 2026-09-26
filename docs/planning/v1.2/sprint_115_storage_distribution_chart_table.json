@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.41",
+  "title": "Storage Distribution Chart & Table",
+  "acceptance": [
+    "category_chart",
+    "data_table",
+    "remote_local_filter",
+    "unknown_category",
+    "freshness",
+    "drill_down"
+  ],
+  "implementation": "lib/features/account/domain/account_center_storage_distribution_report.dart",
+  "evidence": "test/features/account/domain/account_center_storage_distribution_report_test.dart",
+  "boundary": "Local metadata-only storage distribution surface built on the local storage summary (115.20) and the cloud storage aggregation (115.18) metadata contracts. Slices are keyed by scope AND category, so a local and a remote category of the same name stay two slices and a single total that adds them together is only ever published with an explicit 'Local + remote combined' label and a warning; a single-scope report never publishes one. Sizes are formatted in decimal GB/TB per the product-spec display rule, and a provider-reported unit that differs from the display unit is shown as a note rather than silently converted. A quota the provider omitted reads 'Quota unavailable' and never becomes a zero, and a user-declared or unavailable reading is labelled as such instead of being passed off as a provider measurement. Unknown category labels are preserved verbatim, folded once per label, reported with their raw names in the slice, the row, and the drill-down, and never silently merged into 'other'. Freshness is derived from measured_at against an injected clock with factory-validated windows, so a future timestamp is flagged instead of counting as fresh forever and a total containing a non-current record is 'Approximate' rather than exact. The detail table publishes a closed field set with no free-text field. Drill-down is available per scope/category pair, never crosses the local/remote boundary, and a drill-down the filter removed is reported as unavailable with a reason instead of vanishing. No provider request, local scan, or quota read happens here, reference mock values cannot be produced, and public-trust signing, hosted CI, telemetry, hardware, adoption, and publication remain DEFERRED-EXTERNAL."
+}

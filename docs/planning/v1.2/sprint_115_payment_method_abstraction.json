@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.36",
+  "title": "Payment Method Abstraction",
+  "acceptance": [
+    "provider_token_only",
+    "masked_details",
+    "default_method",
+    "replace_remove",
+    "region_availability",
+    "reauth"
+  ],
+  "implementation": "lib/features/account/domain/account_center_payment_methods.dart",
+  "evidence": "test/features/account/domain/account_center_payment_methods_test.dart",
+  "boundary": "Local token-based payment method metadata only. Raw card data is never accepted, stored, or displayed; the provider token and cardholder detail live in the account secure vault and are only reachable through reauthentication. Live payment-provider redirect, checkout, PCI certification, hosted CI, and public-trust signing remain DEFERRED-EXTERNAL; the product-spec billing_contract stays PLANNED_NOT_VERIFIED and no payment-provider availability is fabricated."
+}

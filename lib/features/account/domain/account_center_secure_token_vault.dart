@@ -3,7 +3,8 @@ import 'package:void_scriptor/core/security/credential_store.dart';
 enum VaultSecretKind {
   apiKey('api_key'),
   oauthRefreshToken('oauth_refresh_token'),
-  accessToken('access_token');
+  accessToken('access_token'),
+  paymentMethodToken('payment_method');
 
   const VaultSecretKind(this.storageName);
   final String storageName;

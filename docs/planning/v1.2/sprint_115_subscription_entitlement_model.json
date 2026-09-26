@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.34",
+  "title": "Subscription & Entitlement Model",
+  "acceptance": [
+    "plan",
+    "entitlements",
+    "limits",
+    "renewal",
+    "cancellation",
+    "trial",
+    "grace_period",
+    "license_state"
+  ],
+  "implementation": "lib/features/account/domain/account_center_subscription_entitlement_model.dart",
+  "evidence": "test/features/account/domain/account_center_subscription_entitlement_model_test.dart",
+  "boundary": "Local subscription/entitlement metadata and state transitions only; live billing, signed-server entitlement checks, payment-provider redirects, hosted CI, and public-trust signing remain DEFERRED-EXTERNAL."
+}

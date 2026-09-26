@@ -14,6 +14,7 @@ import '../domain/account_center_authentication_profile_card.dart';
 import '../domain/account_center_desktop_tablet_adaptation.dart';
 import '../domain/account_center_design_tokens.dart';
 import '../domain/account_center_information_architecture.dart';
+import '../domain/account_center_mobile_adaptation.dart';
 import '../domain/account_center_provider_connector_manifest.dart';
 import '../domain/account_center_responsive_grid.dart';
 import '../domain/account_center_wide_desktop_frame.dart';
@@ -87,6 +88,15 @@ class _AccountCloudCenterScreenState
   /// hidup di `State`, berpindah viewport dari tier adaptif ke frame 115.45
   /// tidak boleh meninggalkan drawer menggantung (test mengunci itu).
   bool _summaryDrawerOpen = false;
+
+  /// 115.47 — entry connector yang detailnya dibuka sebagai sheet layar
+  /// penuh pada tier `mobile` (<600px).
+  ///
+  /// State ini milik presentation, bukan kontrak: [AccountCenterMobileLayout]
+  /// hanya menentukan bahwa detail provider disajikan sebagai full-screen
+  /// sheet. Karena state tetap hidup di `State`, berpindah viewport ke tier
+  /// lain tidak boleh meninggalkan sheet yang menggantung.
+  ProviderConnectorEntry? _providerDetailsOpen;
 
   @override
   void initState() {
@@ -187,6 +197,27 @@ class _AccountCloudCenterScreenState
                 operationalMetrics: operationalMetrics,
               );
             }
+            // 115.47: di bawah 600 tier mobile memakai chrome sendiri — satu
+            // kolom, detail provider sebagai sheet layar penuh, dan action bar
+            // menempel di bawah yang menghormati ruang aman OS. Jalur
+            // responsif yang sudah ada di bawah 600 TIDAK lagi dipakai karena
+            // ia tidak punya padanan spec untuk ketiganya.
+            final mobile = AccountCenterMobileAdaptation.resolve(
+              viewportWidth: constraints.maxWidth,
+              viewportHeight: constraints.maxHeight.isFinite
+                  ? constraints.maxHeight
+                  : MediaQuery.sizeOf(context).height,
+              safeAreaBottom: MediaQuery.viewPaddingOf(context).bottom,
+            );
+            if (mobile != null) {
+              return _buildMobileLayout(
+                context: context,
+                mobile: mobile,
+                data: data,
+                gridPlan: gridPlan,
+                operationalMetrics: operationalMetrics,
+              );
+            }
             return Padding(
               padding: EdgeInsets.symmetric(
                 horizontal:
@@ -276,6 +307,136 @@ class _AccountCloudCenterScreenState
           },
         ),
       ),
+    );
+  }
+
+  /// 115.47 — chrome tier `mobile` (<600px).
+  ///
+  /// Tiga perilaku spec ada di sini dan tidak di tempat lain: satu kolom
+  /// penuh, detail provider sebagai sheet layar penuh, dan action bar
+  /// menempel di bawah. Bar berada DI LUAR area konten scroll sehingga
+  /// `no_clipped_content` tidak bergantung pada posisi scroll saat ini.
+  ///
+  /// Ruang aman OS diambil dari [MediaQuery.viewPadding] (bukan `SafeArea`),
+  /// karena bar ini sudah menempel di luar area konten: `SafeArea` akan
+  /// menambah ruang kosong kedua kali.
+  Widget _buildMobileLayout({
+    required BuildContext context,
+    required AccountCenterMobileLayout mobile,
+    required AccountCloudSnapshot data,
+    required AccountCenterGridPlan gridPlan,
+    required AsyncValue<AccountOperationalMetrics?> operationalMetrics,
+  }) {
+    const layoutTokens = AccountCenterDesignTokens.layout;
+    // 115.47: tinggi terkunci untuk area konten. Tanpa ini `Column` chrome +
+    // grid akan melebihi viewport, dan inset bawah action bar tidak akan
+    // pernah berarti apa-apa.
+    final contentHeight = mobile.contentHeight;
+
+    // Aksi bar memakai aksi nyata yang sudah ada pada halaman: kembali ke
+    // tab overview, membuka dialog search IA, dan membuka detail provider
+    // yang bisa dihubungkan. Tidak ada aksi baru yang dikarang di sini, dan
+    // tidak ada aksi yang mati di tier ini.
+    final connectableEntries =
+        (widget.providerManifest ?? ProviderConnectorManifest.standard).all
+            .where((entry) => entry.isConnectable)
+            .toList(growable: false);
+    // Aksi 'connect' hanya hidup bila ada entry yang benar-benar connectable
+    // DAN halaman punya callback connect. Standard manifest 115.9 menyatakan
+    // seluruh entry `UNVERIFIED`, jadi tanpa syarat ini target ketiga tampil
+    // sebagai tombol aktif yang diam — persis kelas "dead control" yang
+    // acceptance `safe_actions` melarang. Slotnya tetap ada supaya geometri
+    // bar tidak berubah; yang dimatikan adalah aksi, bukan tempatnya.
+    final canOpenProviderDetails =
+        connectableEntries.isNotEmpty && widget.onConnectProvider != null;
+    final actionEntries = <({String key, IconData icon, VoidCallback? onTap})>[
+      (
+        key: 'overview',
+        icon: Icons.dashboard_outlined,
+        onTap: () => _selectTab(AccountCenterInformationArchitecture.tabs[0]),
+      ),
+      (key: 'search', icon: Icons.search, onTap: _openAccountSearch),
+      (
+        key: 'connect',
+        icon: Icons.add_link,
+        onTap: canOpenProviderDetails
+            ? () {
+                final entry = connectableEntries.first;
+                if (_providerDetailsOpen?.providerId == entry.providerId) {
+                  return;
+                }
+                setState(() => _providerDetailsOpen = entry);
+              }
+            : null,
+      ),
+    ];
+
+    // Ringkasan ditumpuk DI DALAM satu wilayah scroll yang sama dengan
+    // konten: tier mobile tidak punya band navigasi tempat rail bisa
+    // diletakkan, dan spec tier ini tidak menyebut drawer. Tinggi wilayahnya
+    // tetap terkunci (lihat `contentHeight`) sehingga hanya isinya yang
+    // bergulir, bukan halaman.
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _shellMain(
+          mainWidth: mobile.contentWidth,
+          data: data,
+          gridPlan: gridPlan,
+          scrollable: true,
+          onOpenProviderDetails: (entry) =>
+              setState(() => _providerDetailsOpen = entry),
+        ),
+        SizedBox(height: AccountCenterDesignTokens.spacing.md),
+        _shellRail(
+          railWidth: mobile.contentWidth,
+          data: data,
+          gridPlan: gridPlan,
+          operationalMetrics: operationalMetrics,
+          natural: true,
+        ),
+      ],
+    );
+
+    return Stack(
+      key: const ValueKey('account-center-mobile-layout'),
+      children: [
+        Padding(
+          // Kedua sumbu: 115.5 memverifikasi token padding ini pada widget
+          // yang dirender, jadi jalur mobile tidak boleh melompatinya.
+          padding: EdgeInsets.symmetric(
+            horizontal: layoutTokens.pageHorizontalPadding,
+            vertical: layoutTokens.pageVerticalPadding,
+          ),
+          child: SizedBox(
+            height: contentHeight,
+            child: SingleChildScrollView(
+              key: const ValueKey('account-center-mobile-content'),
+              child: content,
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: _MobileActionBar(
+            key: const ValueKey('account-center-mobile-action-bar'),
+            layout: mobile,
+            actions: actionEntries,
+          ),
+        ),
+        if (_providerDetailsOpen case final entry?)
+          _MobileProviderDetailsSheet(
+            key: const ValueKey('account-center-provider-details'),
+            entry: entry,
+            layout: mobile,
+            canConnect: widget.onConnectProvider != null,
+            onConnect: widget.onConnectProvider == null
+                ? null
+                : () => widget.onConnectProvider!(entry),
+            onClose: () => setState(() => _providerDetailsOpen = null),
+          ),
+      ],
     );
   }
 
@@ -550,12 +711,17 @@ class _AccountCloudCenterScreenState
     required AccountCenterGridPlan gridPlan,
     required bool scrollable,
     AccountCenterFrameLayout? frame,
+
+    /// 115.47: hanya diisi dari jalur tier mobile; tile provider membuka
+    /// sheet layar penuh. Tier lain membiarkan null.
+    ValueChanged<ProviderConnectorEntry>? onOpenProviderDetails,
   }) {
     final area = _FocusedAccountArea(
       tab: _tab,
       snapshot: data,
       gridPlan: gridPlan,
       frame: frame,
+      onOpenProviderDetails: onOpenProviderDetails,
       providerManifest:
           widget.providerManifest ?? ProviderConnectorManifest.standard,
       onConnectProvider: widget.onConnectProvider,
@@ -1171,6 +1337,253 @@ class _SignInMethodRow extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// 115.47 — Action bar tier `mobile` (<600px).
+///
+/// Bar menempel di tepi bawah viewport, DI LUAR wilayah scroll konten, jadi
+/// kartu terakhir tidak pernah tertutup (acceptance `safe_actions` +
+/// `no_clipped_content`). Tingginya termasuk ruang aman OS: konten's
+/// `contentBottomInset` memakai angka yang sama, jadi keduanya tidak bisa
+/// menyimpang.
+///
+/// Setiap target memakai [AccountCenterMobileLayout.actionTargetHeight] yang
+/// diturunkan dari `density.minimum_touch_target_px` (44) — bukan angka
+/// karangan di presentation ini.
+class _MobileActionBar extends StatelessWidget {
+  const _MobileActionBar({
+    super.key,
+    required this.layout,
+    required this.actions,
+  });
+
+  final AccountCenterMobileLayout layout;
+
+  /// `onTap` null berarti aksi sengaja dimatikan (mis. tidak ada provider
+  /// yang boleh dihubungkan). Slotnya tetap dirender supaya geometri bar dan
+  /// target sentuhnya tidak berubah; `IconButton.onPressed` yang null membuat
+  /// target itu non-interaktif, bukan kontrol mati.
+  final List<({String key, IconData icon, VoidCallback? onTap})> actions;
+
+  @override
+  Widget build(BuildContext context) {
+    final bar = Container(
+      height: layout.actionBarHeight,
+      color: context.palette.surface,
+      padding: EdgeInsets.symmetric(
+        horizontal: AccountCenterDesignTokens.spacing.twoXs,
+        vertical: AccountCenterDesignTokens.spacing.twoXs,
+      ),
+      child: Row(
+        children: [
+          for (final action in actions)
+            Expanded(
+              child: Semantics(
+                label: 'Account ${action.key}',
+                button: true,
+                enabled: action.onTap != null,
+                child: SizedBox(
+                  key: ValueKey('account-center-mobile-action-${action.key}'),
+                  height: layout.actionTargetHeight,
+                  child: IconButton(
+                    tooltip: 'Account ${action.key}',
+                    onPressed: action.onTap,
+                    icon: Icon(
+                      action.icon,
+                      size: AccountCenterDesignTokens.iconSizes.action,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+    // Ruang aman OS menambah tinggi total, bukan tinggi bar: bar tetap
+    // 52px (44 + 2*4) dan ruang kosongnya ada DI BAWAH bar.
+    if (layout.safeAreaBottom <= 0) {
+      return bar;
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        bar,
+        SizedBox(height: layout.safeAreaBottom),
+      ],
+    );
+  }
+}
+
+/// 115.47 — Sheet layar penuh untuk detail provider pada tier `mobile`.
+///
+/// Spec tier mobile: "provider details open as full-screen sheet". Isinya
+/// DITURUNKAN dari entry connector yang sama (manifest 115.15) — bukan
+/// ringkasan provider kedua yang dikarang di sini, dan bukan nilai provider
+/// yang dihitung ulang.
+///
+/// Baris detail memakai label yang sudah ada di [_ProviderTile] supaya isi
+/// sheet dan tile tidak bisa berbeda.
+class _MobileProviderDetailsSheet extends StatelessWidget {
+  const _MobileProviderDetailsSheet({
+    super.key,
+    required this.entry,
+    required this.layout,
+    required this.canConnect,
+    required this.onClose,
+    this.onConnect,
+  });
+
+  final ProviderConnectorEntry entry;
+  final AccountCenterMobileLayout layout;
+  final bool canConnect;
+  final VoidCallback? onConnect;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final details = <({String label, String value})>[
+      (label: 'Category', value: entry.category.wireName),
+      (label: 'Availability', value: entry.availability.wireName),
+      (
+        label: 'Connection',
+        value: _providerConnectionLabel(entry.availability),
+      ),
+      (label: 'Auth type', value: entry.authType.wireName),
+      (label: 'Connector version', value: entry.connectorVersion),
+      (
+        label: 'Regions',
+        value: entry.regions.map((region) => region.wireName).join(', '),
+      ),
+      (
+        label: 'Capabilities',
+        value: entry.capabilities
+            .map((capability) => capability.wireName)
+            .join(', '),
+      ),
+      (
+        label: 'Permissions',
+        value: entry.permissions
+            .map((permission) => permission.wireName)
+            .join(', '),
+      ),
+    ];
+    return Positioned.fill(
+      child: Semantics(
+        container: true,
+        label: AccountCenterAccessibility.providerSemanticsLabel(
+          entry.displayName,
+          _providerConnectionLabel(entry.availability),
+        ),
+        child: Material(
+          color: context.palette.background,
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  // Tanpa `const`: `layout` adalah token instan sehingga
+                  // pembacaan field-nya tidak sah dalam ekspresi konstanta
+                  // Dart (pola yang sama pada 115.5 dan 115.46).
+                  padding: EdgeInsets.symmetric(
+                    horizontal:
+                        AccountCenterDesignTokens.layout.pageHorizontalPadding,
+                    vertical: AccountCenterDesignTokens.spacing.md,
+                  ),
+                  child: Row(
+                    children: [
+                      _ProviderIcon(entry: entry),
+                      SizedBox(width: AccountCenterDesignTokens.spacing.sm),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              entry.displayName,
+                              style: _sectionTitle,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              _providerAvailabilityLabel(entry.availability),
+                              style: _caption,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Semantics(
+                        label: 'Close provider details',
+                        button: true,
+                        child: SizedBox(
+                          key: const ValueKey(
+                            'account-center-provider-details-close',
+                          ),
+                          height: layout.actionTargetHeight,
+                          width: layout.actionTargetHeight,
+                          child: IconButton(
+                            tooltip: 'Close provider details',
+                            onPressed: onClose,
+                            icon: Icon(
+                              Icons.close,
+                              size: AccountCenterDesignTokens.iconSizes.action,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: ListView(
+                    // Tanpa `const`: token instan tidak boleh dibaca dalam
+                    // ekspresi konstanta Dart (pola 115.5/115.46).
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AccountCenterDesignTokens
+                          .layout
+                          .pageHorizontalPadding,
+                    ),
+                    children: [
+                      for (final detail in details)
+                        ListTile(
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(detail.label, style: _caption),
+                          subtitle: Text(
+                            detail.value,
+                            style: _body,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      SizedBox(height: AccountCenterDesignTokens.spacing.md),
+                      // Aksi connect memakai callback yang sudah ada
+                      // (115.15). Tanpa callback, aksi tidak dibuat —
+                      // status "Not available" sudah jujur dan tombol mati
+                      // hanya menambah noise.
+                      if (onConnect != null)
+                        SizedBox(
+                          height: layout.actionTargetHeight,
+                          child: FilledButton(
+                            onPressed: canConnect && entry.isConnectable
+                                ? onConnect
+                                : null,
+                            child: Text(
+                              entry.isConnectable ? 'Connect' : 'Not available',
+                            ),
+                          ),
+                        ),
+                      SizedBox(height: AccountCenterDesignTokens.spacing.xl),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -2070,6 +2483,7 @@ class _FocusedAccountArea extends StatelessWidget {
     required this.providerManifest,
     required this.onConnectProvider,
     required this.onSyncNow,
+    this.onOpenProviderDetails,
     this.frame,
     this.onSignIn,
     this.onOpenAiProviders,
@@ -2088,6 +2502,10 @@ class _FocusedAccountArea extends StatelessWidget {
 
   final ProviderConnectorManifest providerManifest;
   final ValueChanged<ProviderConnectorEntry>? onConnectProvider;
+
+  /// 115.47: tier mobile membuka detail provider sebagai sheet layar penuh.
+  /// Null pada tier lain sehingga tile tidak punya gesture mati di sana.
+  final ValueChanged<ProviderConnectorEntry>? onOpenProviderDetails;
   final VoidCallback? onSyncNow;
 
   final VoidCallback? onSignIn;
@@ -2134,6 +2552,7 @@ class _FocusedAccountArea extends StatelessWidget {
             child: _QuickConnectPanel(
               manifest: providerManifest,
               onConnectProvider: onConnectProvider,
+              onOpenProviderDetails: onOpenProviderDetails,
             ),
           ),
           _AccountSectionCard.dashboard(
@@ -2828,10 +3247,17 @@ class _DashboardCardContent extends StatelessWidget {
 }
 
 class _QuickConnectPanel extends StatelessWidget {
-  const _QuickConnectPanel({required this.manifest, this.onConnectProvider});
+  const _QuickConnectPanel({
+    required this.manifest,
+    this.onConnectProvider,
+    this.onOpenProviderDetails,
+  });
 
   final ProviderConnectorManifest manifest;
   final ValueChanged<ProviderConnectorEntry>? onConnectProvider;
+
+  /// 115.47: tier mobile membuka detail provider sebagai sheet layar penuh.
+  final ValueChanged<ProviderConnectorEntry>? onOpenProviderDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -2852,6 +3278,9 @@ class _QuickConnectPanel extends StatelessWidget {
               onConnect: onConnectProvider == null
                   ? null
                   : () => onConnectProvider!(entry),
+              onOpenDetails: onOpenProviderDetails == null
+                  ? null
+                  : () => onOpenProviderDetails!(entry),
             ),
         ];
         if (constraints.maxHeight.isInfinite) {
@@ -2864,10 +3293,20 @@ class _QuickConnectPanel extends StatelessWidget {
 }
 
 class _ProviderTile extends StatelessWidget {
-  const _ProviderTile({required this.entry, this.onConnect});
+  const _ProviderTile({
+    required this.entry,
+    this.onConnect,
+    this.onOpenDetails,
+  });
 
   final ProviderConnectorEntry entry;
   final VoidCallback? onConnect;
+
+  /// 115.47: pada tier `mobile` spec meminta detail provider terbuka sebagai
+  /// sheet layar penuh, jadi tile jadi target ketuk. Null pada tier lain
+  /// (drail/rail desktop memakai baris penuh) sehingga tidak ada gesture
+  /// yang mati di luar tier miliknya.
+  final VoidCallback? onOpenDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -2883,11 +3322,21 @@ class _ProviderTile extends StatelessWidget {
         ),
         child: LayoutBuilder(
           builder: (context, constraints) {
+            final providerLabel =
+                AccountCenterAccessibility.providerSemanticsLabel(
+                  entry.displayName,
+                  _providerConnectionLabel(entry.availability),
+                );
             final details = Semantics(
-              label: AccountCenterAccessibility.providerSemanticsLabel(
-                entry.displayName,
-                _providerConnectionLabel(entry.availability),
-              ),
+              // 115.47: pada tier mobile baris detail dibungkus Semantics
+              // berlabel 'Provider details' (lihat `_tappableDetails`).
+              // Semantics terluar menang, jadi label provider yang sudah
+              // ada ikut dirangkai di sini agar nama + status koneksinya
+              // tidak hilang bagi pembaca layar. Di tier lain labelnya
+              // apa adanya seperti sebelum 115.47.
+              label: onOpenDetails == null
+                  ? providerLabel
+                  : '$providerLabel, Open provider details',
               child: ExcludeSemantics(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -2910,6 +3359,11 @@ class _ProviderTile extends StatelessWidget {
             // `Flexible` hanya sah di dalam `Row`, jadi di jalur `Align`
             // (textScale tinggi) tombol dibungkus tanpa `Flexible`; `Align`
             // sendiri yang membatasi lebarnya.
+            //
+            // 115.47: pada tier mobile spec meminta detail provider sebagai
+            // sheet layar penuh, jadi BARIS DETAIL (bukan tombol Connect)
+            // yang menjadi target ketuk. Tombol Connect tetap hidup dan
+            // tidak ditimpa.
             Widget action({bool shrink = false}) => ConstrainedBox(
               constraints: shrink
                   ? const BoxConstraints(maxWidth: double.infinity)
@@ -2925,6 +3379,41 @@ class _ProviderTile extends StatelessWidget {
             );
             final rowAction = Flexible(child: action());
             final textScale = MediaQuery.textScalerOf(context).scale(1);
+
+            // 115.47: pada tier mobile spec meminta detail provider sebagai
+            // sheet layar penuh. Seluruh tile jadi SATU target ketuk, dan
+            // aksi Connect pindah ke dalam sheet (lihat
+            // `_MobileProviderDetailsSheet`) — bukan tombol kedua di tile.
+            // Ini juga menghapus pusat tile yang mati: kalau tombol Connect
+            // tetap di sini, titik ketukan tengah tile bisa mendarat di
+            // tombol yang tidak melakukan apa-apa.
+            //
+            // TOKEN: setiap tile tetap punya tepat satu `Row` anak langsung
+            // dari `ConstrainedBox(minHeight: serviceRow.minHeight)`, karena
+            // 115.5 mengukur `constraints.minHeight` pada Row TERDEKAT dari
+            // teks provider. `Row` bersarang di dalam tile akan memutus
+            // rantai itu dan membuat 115.5 gagal.
+            if (onOpenDetails != null) {
+              final detailsRow = Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _ProviderIcon(entry: entry),
+                  SizedBox(width: AccountCenterDesignTokens.spacing.sm),
+                  Expanded(child: details),
+                ],
+              );
+              return Semantics(
+                button: true,
+                label: 'Provider details',
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight:
+                        AccountCenterDesignTokens.density.minimumTouchTarget,
+                  ),
+                  child: InkWell(onTap: onOpenDetails, child: detailsRow),
+                ),
+              );
+            }
 
             if (textScale > 1.3) {
               return Column(

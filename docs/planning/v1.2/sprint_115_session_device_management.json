@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.33",
+  "title": "Session & Device Management",
+  "acceptance": [
+    "list_sessions",
+    "device_details",
+    "trust_state",
+    "revoke",
+    "force_logout",
+    "security_alert"
+  ],
+  "implementation": "lib/features/account/domain/account_center_session_device_management.dart",
+  "evidence": "test/features/account/domain/account_center_session_device_management_test.dart",
+  "boundary": "Local session/device management metadata and state transitions only; live identity-provider session inventory, device discovery, revocation propagation, force-logout execution, and alert delivery remain DEFERRED-EXTERNAL."
+}

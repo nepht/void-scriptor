@@ -11,6 +11,7 @@ import '../application/account_operational_metrics.dart';
 import '../domain/account_cloud_snapshot.dart';
 import '../domain/account_center_accessibility.dart';
 import '../domain/account_center_authentication_profile_card.dart';
+import '../domain/account_center_desktop_tablet_adaptation.dart';
 import '../domain/account_center_design_tokens.dart';
 import '../domain/account_center_information_architecture.dart';
 import '../domain/account_center_provider_connector_manifest.dart';
@@ -78,6 +79,14 @@ class AccountCloudCenterScreen extends ConsumerStatefulWidget {
 class _AccountCloudCenterScreenState
     extends ConsumerState<AccountCloudCenterScreen> {
   AccountCenterTab _tab = AccountCenterInformationArchitecture.tabs.first;
+
+  /// 115.46 — ringkasan sebagai drawer pada tier `desktop` (1180-1439).
+  ///
+  /// State ini milik presentation, bukan kontrak: kontrak 115.46 hanya
+  /// menentukan bahwa ringkasan disajikan sebagai drawer. Karena state tetap
+  /// hidup di `State`, berpindah viewport dari tier adaptif ke frame 115.45
+  /// tidak boleh meninggalkan drawer menggantung (test mengunci itu).
+  bool _summaryDrawerOpen = false;
 
   @override
   void initState() {
@@ -159,6 +168,22 @@ class _AccountCloudCenterScreenState
                 context: context,
                 frame: frame,
                 data: data,
+                operationalMetrics: operationalMetrics,
+              );
+            }
+            // 115.46: 600-1439 memakai chrome adaptif — ringkasan sebagai
+            // drawer, navigasi terlipat, atau navigasi atas. Di bawah 600
+            // kontrak mengembalikan null dan jalur responsif yang sudah ada
+            // tetap dipakai apa adanya (milik 115.47).
+            final adaptive = AccountCenterDesktopTabletAdaptation.resolve(
+              constraints.maxWidth,
+            );
+            if (adaptive != null) {
+              return _buildDesktopTabletLayout(
+                context: context,
+                adaptive: adaptive,
+                data: data,
+                gridPlan: gridPlan,
                 operationalMetrics: operationalMetrics,
               );
             }
@@ -251,6 +276,177 @@ class _AccountCloudCenterScreenState
           },
         ),
       ),
+    );
+  }
+
+  /// 115.46 — chrome adaptif desktop & tablet.
+  ///
+  /// Band kiri (atau navigasi atas) dan area konten dihitung dari geometri
+  /// kontrak [AccountCenterDesktopTabletLayout], bukan dari heuristik persen
+  /// jalur lama. Ringkasan: drawer pada tier `desktop`, menumpuk di bawah
+  /// pada `compact_desktop` dan `tablet` — sesuai `behavior` product spec.
+  ///
+  /// Bila drawer dibuka, konten utama menyusut ke sisa lebar
+  /// (`mainWidthWhenDrawerOpen`) alih-alih menimpa, jadi `right_drawer`
+  /// tidak pernah menghapus konten.
+  Widget _buildDesktopTabletLayout({
+    required BuildContext context,
+    required AccountCenterDesktopTabletLayout adaptive,
+    required AccountCloudSnapshot data,
+    required AccountCenterGridPlan gridPlan,
+    required AsyncValue<AccountOperationalMetrics?> operationalMetrics,
+  }) {
+    final padding = AccountCenterDesignTokens.layout.pageHorizontalPadding;
+    final drawerOpen =
+        _summaryDrawerOpen &&
+        adaptive.summaryPresentation == AccountCenterSummaryPresentation.drawer;
+    final mainWidth = drawerOpen
+        ? adaptive.mainWidthWhenDrawerOpen
+        : adaptive.contentWidth;
+    // 115.46 `no_horizontal_overflow` punya pasangan vertikal: band navigasi
+    // memakai tinggi viewport terkunci (ListView di dalamnya butuh tinggi
+    // tak terbatas yang tidak boleh), sementara konten bergulir sendiri.
+    // Tanpa ini Column di bawah meluap melebihi viewport.
+    final shellHeight = MediaQuery.sizeOf(context).height;
+
+    final main = _shellMain(
+      mainWidth: mainWidth,
+      data: data,
+      gridPlan: gridPlan,
+      scrollable: true,
+    );
+    // Ringkasan sebagai drawer: overlay di luar band konten (bukan anak
+    // Row), jadi tidak pernah mendorong band navigasi. Tingginya terkunci
+    // viewport dan kartu di dalamnya yang bergulir — `natural: false` memakai
+    // `Expanded` yang butuh tinggi terkunci.
+    final summaryDrawer = drawerOpen
+        ? Align(
+            alignment: Alignment.topRight,
+            child: SizedBox(
+              key: const ValueKey('account-center-summary-drawer'),
+              width: adaptive.drawerWidth,
+              height: shellHeight,
+              child: _shellRail(
+                railWidth: adaptive.drawerWidth,
+                data: data,
+                gridPlan: gridPlan,
+                operationalMetrics: operationalMetrics,
+                natural: false,
+              ),
+            ),
+          )
+        : const SizedBox.shrink();
+
+    Widget navigationBand() => switch (adaptive.navigationMode) {
+      // Key sengaja BERBEDA dari band left navigation frame 115.45: chrome
+      // adaptif bukan frame wide desktop, dan test 115.45 memakai key frame
+      // itu untuk membuktikan frame tidak dipaksakan di bawah 1440.
+      AccountCenterNavigationMode.leftNavigation => _AccountLeftNavigation(
+        key: const ValueKey('account-center-desktop-left-navigation'),
+        width: adaptive.navigationWidth,
+        activeSection: _activeOverviewSection(),
+      ),
+      AccountCenterNavigationMode.collapsedRail => _AccountCollapsedNavRail(
+        key: const ValueKey('account-center-collapsed-rail'),
+        width: adaptive.navigationWidth,
+        activeSection: _activeOverviewSection(),
+      ),
+      AccountCenterNavigationMode.topNavigation => const SizedBox.shrink(),
+    };
+
+    final contentColumn = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // 115.46: tier tablet memakai navigasi di baris atas konten, bukan
+        // band kiri; label tetap terlihat karena navigasi tidak terlipat.
+        if (adaptive.usesTopNavigation) ...[
+          _AccountTopNavigation(
+            key: const ValueKey('account-center-top-navigation'),
+            activeSection: _activeOverviewSection(),
+            sections: AccountCenterWideDesktopFrame.leftNavigation,
+          ),
+          SizedBox(height: AccountCenterDesignTokens.spacing.md),
+        ],
+        main,
+        // Ringkasan menumpuk di bawah pada tier yang tidak punya drawer.
+        if (!drawerOpen &&
+            adaptive.summaryPresentation ==
+                AccountCenterSummaryPresentation.stackedBelow) ...[
+          SizedBox(height: AccountCenterDesignTokens.spacing.md),
+          _shellRail(
+            railWidth: mainWidth,
+            data: data,
+            gridPlan: gridPlan,
+            operationalMetrics: operationalMetrics,
+            natural: true,
+          ),
+        ],
+      ],
+    );
+
+    // Band navigasi kiri + konten berdampingan. Pada tier tablet band kiri
+    // nol, jadi konten memakai lebar penuh viewport (tanpa baris kosong).
+    //
+    // Tinggi terkunci viewport dipakai pada KEDUA jalur: band navigasi
+    // memakai ListView (menolak tinggi tak terbatas) dan konten memakai
+    // [_shellMain] `scrollable: true` yang butuh tinggi tak terbatas. Jadi
+    // band navigasi merebut tinggi viewport, konten bergulir di dalam
+    // Column-nya sendiri — bukan Column yang melebihi viewport.
+    final scrolledContent = SingleChildScrollView(
+      key: const ValueKey('account-center-adaptive-content'),
+      child: contentColumn,
+    );
+    final body = adaptive.navigationWidth == 0
+        ? SizedBox(height: shellHeight, child: scrolledContent)
+        : SizedBox(
+            height: shellHeight,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                navigationBand(),
+                SizedBox(width: mainWidth, child: scrolledContent),
+              ],
+            ),
+          );
+
+    return Stack(
+      children: [
+        Padding(
+          // Padding halaman memakai kedua sumbu: 115.5 memverifikasi nilai
+          // token ini pada widget yang dirender, jadi jalur adaptif tidak
+          // boleh melompati padding vertikal.
+          padding: EdgeInsets.symmetric(
+            horizontal: padding,
+            vertical: AccountCenterDesignTokens.layout.pageVerticalPadding,
+          ),
+          child: body,
+        ),
+        // 115.46 — drawer memakai lebar token ringkasan dan tidak pernah
+        // menutupi navigasi; isinya tetap [_AccountSummaryRail] yang sama
+        // dengan jalur lain, jadi tidak ada ringkasan kedua yang dikarang.
+        summaryDrawer,
+        if (adaptive.summaryPresentation ==
+            AccountCenterSummaryPresentation.drawer)
+          Align(
+            alignment: Alignment.topRight,
+            child: Semantics(
+              label: 'Account summary',
+              child: IconButton(
+                key: const ValueKey('account-center-drawer-toggle'),
+                tooltip: drawerOpen
+                    ? 'Hide account summary'
+                    : 'Show account summary',
+                onPressed: () =>
+                    setState(() => _summaryDrawerOpen = !_summaryDrawerOpen),
+                icon: Icon(
+                  drawerOpen ? Icons.close : Icons.unfold_more,
+                  size: AccountCenterDesignTokens.iconSizes.action,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -454,7 +650,11 @@ class _AccountCloudCenterScreenState
             style: _caption.copyWith(color: context.palette.textSecondary),
           ),
           SizedBox(height: AccountCenterDesignTokens.spacing.md),
+          // 115.46: `scrollable_tabs` — strip digulir mendatar pada semua
+          // tier; key stabil dipakai test adaptif untuk membuktikan tab aktif
+          // bertahan saat viewport berpindah tier.
           SingleChildScrollView(
+            key: const ValueKey('account-center-tab-strip'),
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
@@ -995,18 +1195,6 @@ class _AccountLeftNavigation extends StatelessWidget {
   /// Section kanonik yang sedang aktif; entri lain tampil netral.
   final String activeSection;
 
-  static const Map<String, IconData> _icons = <String, IconData>{
-    'badge': Icons.badge_outlined,
-    'bolt': Icons.bolt_outlined,
-    'cloud': Icons.cloud_outlined,
-    'hub': Icons.hub_outlined,
-    'key': Icons.key_outlined,
-    'groups': Icons.groups_outlined,
-    'history': Icons.history_outlined,
-    'sync': Icons.sync_outlined,
-    'shield': Icons.security_outlined,
-  };
-
   @override
   Widget build(BuildContext context) => Container(
     width: width,
@@ -1036,7 +1224,7 @@ class _AccountLeftNavigation extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    _icons[item.iconKey] ?? Icons.circle_outlined,
+                    _AccountLeftNavigationIcon.resolve(item.iconKey),
                     size: AccountCenterDesignTokens.iconSizes.navigation,
                     color: context.palette.textSecondary,
                   ),
@@ -1057,6 +1245,159 @@ class _AccountLeftNavigation extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+        ],
+      ),
+    ),
+  );
+}
+
+/// 115.46 — Navigasi terlipat untuk tier `compact_desktop` (900-1179).
+///
+/// Hanya ikon; label [_AccountLeftNavigation] disembunyikan agar rail 52px
+/// benar-benar cukup. Lebar band bukan angka karangan: nilainya
+/// dari [AccountCenterDesktopTabletAdaptation.collapsedRailWidth], yang
+/// diturunkan dari target sentuh minimum + padding.
+class _AccountCollapsedNavRail extends StatelessWidget {
+  const _AccountCollapsedNavRail({
+    super.key,
+    required this.width,
+    required this.activeSection,
+  });
+
+  final double width;
+  final String activeSection;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: width,
+    decoration: BoxDecoration(
+      border: Border(
+        right: BorderSide(
+          color: context.palette.textMuted.withValues(alpha: 0.28),
+          width: 1,
+        ),
+      ),
+    ),
+    // Navigasi terlipat: setiap entri memakai tinggi/ lebar target sentuh
+    // 44px sehingga rail masih bisa diklik dan dibaca pembaca layar.
+    padding: EdgeInsets.only(
+      right: AccountCenterDesignTokens.spacing.twoXs,
+      top: AccountCenterDesignTokens.spacing.twoXs,
+    ),
+    child: Semantics(
+      container: true,
+      label: 'Account sections',
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          for (final item in AccountCenterWideDesktopFrame.leftNavigation)
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: AccountCenterDesignTokens.spacing.twoXs,
+              ),
+              // Label disembunyikan (bukan dihapus): ikon tetap punya semantics
+              // label supaya pembaca layar tidak kehilangan nama section.
+              child: Semantics(
+                label: item.label,
+                button: true,
+                child: Tooltip(
+                  message: item.label,
+                  child: SizedBox(
+                    width: width - 2 * AccountCenterDesignTokens.spacing.twoXs,
+                    height:
+                        AccountCenterDesignTokens.density.minimumTouchTarget,
+                    child: Icon(
+                      _AccountLeftNavigationIcon.resolve(item.iconKey),
+                      size: AccountCenterDesignTokens.iconSizes.navigation,
+                      color: item.section == activeSection
+                          ? context.palette.primaryBright
+                          : context.palette.textSecondary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    ),
+  );
+}
+
+/// Pemetaan ikon navigasi yang dipakai rail terlipat dan navigasi atas.
+/// Dipisah dari [_AccountLeftNavigation] supaya kedua chrome memakai glyph
+/// yang sama — dan tidak ada peta ikon kedua yang bisa menyimpang.
+abstract final class _AccountLeftNavigationIcon {
+  static const Map<String, IconData> _icons = <String, IconData>{
+    'badge': Icons.badge_outlined,
+    'bolt': Icons.bolt_outlined,
+    'cloud': Icons.cloud_outlined,
+    'hub': Icons.hub_outlined,
+    'key': Icons.key_outlined,
+    'groups': Icons.groups_outlined,
+    'history': Icons.history_outlined,
+    'sync': Icons.sync_outlined,
+    'shield': Icons.security_outlined,
+  };
+
+  static IconData resolve(String iconKey) =>
+      _icons[iconKey] ?? Icons.circle_outlined;
+}
+
+/// 115.46 — Navigasi baris atas untuk tier `tablet` (600-899).
+///
+/// Tidak ada band kiri pada tier ini ([AccountCenterDesktopTabletLayout
+/// .navigationWidth] = 0), jadi navigasi pindah ke atas konten. Label tetap
+/// terlihat karena tier ini tidak terlipat; barisnya juga bergulir mendatar
+/// agar sembilan entri tidak memaksa lebar halaman.
+class _AccountTopNavigation extends StatelessWidget {
+  const _AccountTopNavigation({
+    super.key,
+    required this.activeSection,
+    required this.sections,
+  });
+
+  final String activeSection;
+  final List<AccountCenterLeftNavItem> sections;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    container: true,
+    label: 'Account sections',
+    child: SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (final item in sections)
+            Padding(
+              padding: EdgeInsets.only(
+                right: AccountCenterDesignTokens.spacing.sm,
+              ),
+              child: Semantics(
+                selected: item.section == activeSection,
+                button: true,
+                label: item.label,
+                child: Container(
+                  height: AccountCenterDesignTokens.layout.tabBarHeight,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AccountCenterDesignTokens.spacing.sm,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    item.label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: _caption.copyWith(
+                      color: item.section == activeSection
+                          ? context.palette.primaryBright
+                          : context.palette.textSecondary,
+                      fontWeight: item.section == activeSection
+                          ? FontWeight.w600
+                          : _caption.fontWeight,
+                    ),
+                  ),
+                ),
               ),
             ),
         ],

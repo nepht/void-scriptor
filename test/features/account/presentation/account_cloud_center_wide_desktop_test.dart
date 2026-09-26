@@ -251,10 +251,23 @@ void main() {
     ) async {
       await pumpCenter(tester, size: const Size(1180, 900));
 
+      // Band-band frame 115.45 tidak boleh muncul di bawah 1440.
       expect(frame('account-center-left-navigation'), findsNothing);
+      expect(frame('account-center-right-rail'), findsNothing);
       expect(frame('account-center-status-bar'), findsNothing);
-      // Rail tetap ada sebagai ringkasan (jalur responsif), tanpa band frame.
-      expect(find.text('ACCOUNT SUMMARY'), findsOneWidget);
+      expect(frame('account-center-main-grid'), findsNothing);
+      // Ringkasan pada tier `desktop` sejak 115.46 disajikan sebagai drawer
+      // yang tertutup secara default — bukan band kanan, bukan kartu grid.
+      // Riwayat: sebelum 115.46 jalur responsif menumpuk rail di bawah.
+      expect(
+        find.text('ACCOUNT SUMMARY'),
+        findsNothing,
+        reason: 'drawer 115.46 harus tertutup sampai tombol drawer ditekan',
+      );
+      expect(
+        find.byKey(const ValueKey('account-center-drawer-toggle')),
+        findsOneWidget,
+      );
       expect(tester.takeException(), isNull);
     });
   });

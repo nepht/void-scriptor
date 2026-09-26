@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:void_scriptor/features/account/domain/account_center_desktop_tablet_adaptation.dart';
 import 'package:void_scriptor/features/account/domain/account_center_responsive_grid.dart';
 import 'package:void_scriptor/features/account/presentation/account_cloud_center_screen.dart';
 
@@ -95,13 +96,19 @@ void main() {
       // 115.36: judul kartu kini bisa muncul di beberapa area, jadi baris
       // overview diukur lewat key stabil, bukan kemunculan pertama.
       final dyAuth = tester
-          .getTopLeft(find.byKey(const ValueKey('account-overview-card-authentication')))
+          .getTopLeft(
+            find.byKey(const ValueKey('account-overview-card-authentication')),
+          )
           .dy;
       final dyQuick = tester
-          .getTopLeft(find.byKey(const ValueKey('account-overview-card-quick-connect')))
+          .getTopLeft(
+            find.byKey(const ValueKey('account-overview-card-quick-connect')),
+          )
           .dy;
       final dyStorage = tester
-          .getTopLeft(find.byKey(const ValueKey('account-overview-card-storage')))
+          .getTopLeft(
+            find.byKey(const ValueKey('account-overview-card-storage')),
+          )
           .dy;
       switch (testCase.columns) {
         case 3:
@@ -127,20 +134,33 @@ void main() {
           );
       }
 
-      // ringkasan kanan: sisi (wide desktop) vs menumpuk — acuannya
-      // tepi kiri konten halaman (breadcrumb), bukan teks judul yang
-      // ter-indents badge ikon.
+      // Ringkasan: tier `desktop` (1180-1439) TIDAK lagi menumpuk di bawah
+      // sejak 115.46 membukanya sebagai drawer — drawer tertutup secara
+      // default, jadi judul ringkasan memang belum dirender. Aturan grid
+      // 115.6 (tier, kolom, tanpa overflow) tetap diuji di atas; presenter
+      // drawer diuji `account_cloud_center_desktop_tablet_test.dart`.
       final dxMain = tester
           .getTopLeft(find.byKey(const ValueKey('account-center-breadcrumb')))
           .dx;
-      final dxRail = tester.getTopLeft(find.text('ACCOUNT SUMMARY')).dx;
       if (testCase.sideBySide) {
+        final dxRail = tester.getTopLeft(find.text('ACCOUNT SUMMARY')).dx;
         expect(
           dxRail,
           greaterThan(dxMain),
           reason: '${testCase.name} right summary berdampingan',
         );
+      } else if (AccountCenterDesktopTabletAdaptation.resolve(
+            testCase.size.width,
+          )?.summaryPresentation ==
+          AccountCenterSummaryPresentation.drawer) {
+        expect(
+          find.text('ACCOUNT SUMMARY'),
+          findsNothing,
+          reason:
+              '${testCase.name} ringkasan drawer harus tertutup secara default',
+        );
       } else {
+        final dxRail = tester.getTopLeft(find.text('ACCOUNT SUMMARY')).dx;
         expect(
           dxRail,
           dxMain,

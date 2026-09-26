@@ -1,0 +1,164 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_DESKTOP_TABLET_ADAPTATION_MANIFEST",
+  "canonical_step": "115.46",
+  "title": "Desktop & Tablet Adaptation",
+  "sources": {
+    "canonical_steps": {
+      "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+      "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba",
+      "step_acceptance": [
+        "right_drawer",
+        "collapsed_nav",
+        "two_column",
+        "scrollable_tabs",
+        "no_horizontal_overflow",
+        "state_preserved"
+      ]
+    },
+    "product_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+      "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+      "token_subtrees": [
+        "layout.breakpoints[1]",
+        "layout.breakpoints[2]",
+        "layout.breakpoints[3]",
+        "visual_tokens.card.minimum_width_px",
+        "layout.density.minimum_touch_target_px"
+      ]
+    }
+  },
+  "viewport_range_px": {
+    "min": 600,
+    "max_exclusive": 1440,
+    "note": "600-899 tablet, 900-1179 compact_desktop, 1180-1439 desktop. >=1440 milik frame 115.45, <600 milik 115.47; di luar rentang resolve() mengembalikan null dan jalur yang sudah ada tidak dipaksa."
+  },
+  "tiers": [
+    {
+      "tier": "desktop",
+      "min_width_px": 1180,
+      "max_width_px": 1439,
+      "spec_behavior": "left navigation + main content; right summary becomes drawer",
+      "navigation_mode": "leftNavigation",
+      "navigation_width_px": 192,
+      "summary_presentation": "drawer",
+      "max_columns": 3
+    },
+    {
+      "tier": "compact_desktop",
+      "min_width_px": 900,
+      "max_width_px": 1179,
+      "spec_behavior": "collapsed navigation rail; overview cards use two columns",
+      "navigation_mode": "collapsedRail",
+      "navigation_width_px": 52,
+      "summary_presentation": "stackedBelow",
+      "max_columns": 2
+    },
+    {
+      "tier": "tablet",
+      "min_width_px": 600,
+      "max_width_px": 899,
+      "spec_behavior": "top navigation; tabs scroll; cards use one or two columns",
+      "navigation_mode": "topNavigation",
+      "navigation_width_px": 0,
+      "summary_presentation": "stackedBelow",
+      "max_columns": 2
+    }
+  ],
+  "acceptance": {
+    "right_drawer": {
+      "tier": "desktop",
+      "width_px": 349,
+      "overlay": true,
+      "main_content_rule": "main_width_when_open = content_width - drawer_width",
+      "min_main_content_width_px": 220,
+      "drawer_keeps_main_visible": true,
+      "measured_px": {
+        "1180": {
+          "content_width": 954,
+          "main_when_open": 605,
+          "columns_when_open": 2
+        },
+        "1300": {
+          "content_width": 1074,
+          "main_when_open": 725,
+          "columns_when_open": 3
+        },
+        "1439": {
+          "content_width": 1213,
+          "main_when_open": 864,
+          "columns_when_open": 3
+        }
+      },
+      "note": "Hanya tier desktop yang menyebut drawer di spec. compact_desktop dan tablet tidak menyebutnya, jadi ringkasan pada tier itu tetap menumpuk di bawah konten; drawer tidak dikarang di luar spec."
+    },
+    "collapsed_nav": {
+      "tier": "compact_desktop",
+      "collapsed_rail_width_px": 52,
+      "width_rule": "density.minimum_touch_target_px (44) + 2 * spacing.two_xs (4)",
+      "labels_visible": false,
+      "content_width_at_900_px": 814,
+      "content_width_at_1000_px": 914,
+      "tablet_note": "Pada tier tablet navigasi pindah ke baris atas sehingga navigation_width_px = 0 dan label tetap terlihat."
+    },
+    "two_column": {
+      "tiers": [
+        "compact_desktop",
+        "tablet"
+      ],
+      "max_columns": 2,
+      "column_rule": "(content_width - card_gap * (columns - 1)) / columns >= visual_tokens.card.minimum_width_px (220)",
+      "measured_card_width_px": {
+        "600": 277.5,
+        "800": 377.5,
+        "900": 401.5,
+        "1000": 451.5
+      },
+      "note": "Tier desktop tetap tiga kolom sesuai kontrak 115.6; batas dua kolom hanya untuk compact_desktop dan tablet sesuai behavior spec."
+    },
+    "scrollable_tabs": {
+      "tabs_scroll": true,
+      "canonical_tabs": 9,
+      "note": "Sembilan tab information architecture 115.3 tidak muat pada lebar 600-1439, jadi strip digulir mendatar. Kontrak mengunci ketersediaan scrollability; isi strip tetap milik 115.3."
+    },
+    "no_horizontal_overflow": {
+      "bands_fit_rule": "navigation_width + content_width <= viewport_width - 2 * page_horizontal_padding",
+      "verified_viewports_px": [
+        600,
+        800,
+        899,
+        900,
+        1000,
+        1179,
+        1180,
+        1300,
+        1439
+      ],
+      "card_width_floor_px": 220,
+      "note": "Tidak ada angka yang diubah untuk memaksa klaim PASS; setiap nilai diukur dari token dan geometri kontrak."
+    },
+    "state_preserved": {
+      "owner": "presentation (ConsumerStatefulWidget)",
+      "contract_holds_state": false,
+      "rules": [
+        "tab aktif tetap sama saat viewport berpindah tier",
+        "flag drawer tidak bocor sebagai drawer menggantung di >=1440",
+        "chrome left navigation (115.45) dan adaptif (115.46) memakai key berbeda sehingga tidak saling menggantikan"
+      ]
+    }
+  },
+  "domain": "lib/features/account/domain/account_center_desktop_tablet_adaptation.dart",
+  "tests": [
+    "test/features/account/domain/account_center_desktop_tablet_adaptation_test.dart",
+    "test/features/account/presentation/account_cloud_center_desktop_tablet_test.dart"
+  ],
+  "deferred_external": [
+    "public_trust_signing",
+    "hosted_ci",
+    "production_telemetry",
+    "hardware",
+    "adoption",
+    "publication"
+  ]
+}

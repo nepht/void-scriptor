@@ -7,7 +7,6 @@ import 'package:void_scriptor/core/selection/selection_model.dart';
 import 'package:void_scriptor/features/character/domain/character_model.dart';
 import 'package:void_scriptor/features/character/presentation/character_workspace_controller.dart';
 import 'package:void_scriptor/features/character/presentation/character_workspace_screen.dart';
-import 'package:void_scriptor/features/character/presentation/widgets/character_header.dart';
 import 'package:void_scriptor/features/workspace/presentation/workspace_panel.dart';
 import 'package:void_scriptor/features/workspace_layout/domain/workspace_tab.dart';
 import 'package:void_scriptor/features/workspace_layout/presentation/workspace_tab_bar.dart';
@@ -189,7 +188,14 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       // The removed standalone breadcrumb widget must stay gone.
-      expect(find.byType(CharacterHeader), findsNothing);
+      // Sentinel for the removed standalone breadcrumb header: matched by
+      // type name so this guard survives the widget's deletion.
+      expect(
+        find.byWidgetPredicate(
+          (widget) => widget.runtimeType.toString() == 'CharacterHeader',
+        ),
+        findsNothing,
+      );
       // Contextual sheet tabs must stay gone (main module tabs own nav now).
       for (final section in [
         'Design Sheet',

@@ -312,28 +312,24 @@ class _WorkspacePresentation {
   const _WorkspacePresentation({
     required this.kind,
     required this.title,
-    required this.description,
     required this.icon,
     required this.sections,
   });
 
   final WorkspaceKind kind;
   final String title;
-  final String description;
   final IconData icon;
   final List<String> sections;
 
   static const novel = _WorkspacePresentation(
     kind: WorkspaceKind.novel,
     title: 'Novel Workspace',
-    description: 'Manuscript, chapters, scenes, and export',
     icon: Icons.auto_stories_outlined,
     sections: ['Manuscript', 'Planning'],
   );
   static const character = _WorkspacePresentation(
     kind: WorkspaceKind.character,
     title: 'Character Workspace',
-    description: 'Identity, voice, relationships, and references',
     icon: Icons.person_outline,
     sections: [
       'Overview',
@@ -352,7 +348,6 @@ class _WorkspacePresentation {
   static const worldbuilding = _WorkspacePresentation(
     kind: WorkspaceKind.worldbuilding,
     title: 'Worldbuilding Workspace',
-    description: 'Locations, factions, timeline, and lore',
     icon: Icons.public_outlined,
     sections: [
       'Location',
@@ -365,22 +360,18 @@ class _WorkspacePresentation {
   static const location = _WorkspacePresentation(
     kind: WorkspaceKind.worldbuilding,
     title: 'Worldbuilding Workspace',
-    description: 'Locations, factions, timeline, and lore',
     icon: Icons.place_outlined,
     sections: ['Details'],
   );
   static const creature = _WorkspacePresentation(
     kind: WorkspaceKind.worldbuilding,
     title: 'Creature Workspace',
-    description:
-        'Creature and companion anatomy, abilities, forms, and ecology',
     icon: Icons.pets_outlined,
     sections: ['Profile', 'Anatomy', 'Abilities', 'Modes', 'Ecology'],
   );
   static const asset = _WorkspacePresentation(
     kind: WorkspaceKind.asset,
     title: 'Asset Workspace',
-    description: 'Project-scoped supporting assets',
     icon: Icons.inventory_2_outlined,
     sections: ['Details'],
   );
@@ -390,35 +381,30 @@ class _WorkspacePresentation {
         AssetType.wardrobe => const _WorkspacePresentation(
           kind: WorkspaceKind.asset,
           title: 'Wardrobe Workspace',
-          description: 'Outfits, variants, materials, and story use',
           icon: Icons.checkroom_outlined,
           sections: ['Details', 'Variants', 'References'],
         ),
         AssetType.weapon => const _WorkspacePresentation(
           kind: WorkspaceKind.asset,
           title: 'Weapon Workspace',
-          description: 'Weapons, variants, handling, and references',
           icon: Icons.auto_fix_high_outlined,
           sections: ['Details', 'Variants', 'References'],
         ),
         AssetType.armor => const _WorkspacePresentation(
           kind: WorkspaceKind.asset,
           title: 'Armor Workspace',
-          description: 'Protection, materials, ownership, and references',
           icon: Icons.shield_outlined,
           sections: ['Details', 'References'],
         ),
         AssetType.accessory => const _WorkspacePresentation(
           kind: WorkspaceKind.asset,
           title: 'Accessories Workspace',
-          description: 'Jewelry, wearable details, meaning, and references',
           icon: Icons.watch_outlined,
           sections: ['Details', 'References'],
         ),
         AssetType.prop => const _WorkspacePresentation(
           kind: WorkspaceKind.asset,
           title: 'Item Workspace',
-          description: 'Carried items, props, states, and story function',
           icon: Icons.inventory_2_outlined,
           sections: ['Details', 'States', 'References'],
         ),

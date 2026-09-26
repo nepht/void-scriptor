@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.25",
+  "title": "AI Connection & Model Settings",
+  "acceptance": [
+    "connect",
+    "model_select",
+    "fallback",
+    "timeout",
+    "budget",
+    "prefer_local",
+    "health_test"
+  ],
+  "implementation": "lib/features/account/domain/account_center_ai_connection_settings.dart",
+  "evidence": "test/features/account/domain/account_center_ai_connection_settings_test.dart",
+  "boundary": "Configuration and injected health-test contract only; provider credentials, network connectivity, cost, and model discovery remain DEFERRED-EXTERNAL."
+}

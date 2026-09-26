@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/auth/auth_controller.dart';
 import '../../../core/theme/theme_mode_menu.dart';
+import '../../../design_system/theme/void_theme_context.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -47,11 +48,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final auth = ref.watch(authControllerProvider);
     final dark = Theme.of(context).brightness == Brightness.dark;
     final reduced = MediaQuery.disableAnimationsOf(context);
-    final base = dark ? const Color(0xFF0C1019) : const Color(0xFFF5F3F8);
-    final ink = dark ? const Color(0xFFF2EFF8) : const Color(0xFF211A30);
-    final muted = dark ? const Color(0xFFB9B3C7) : const Color(0xFF5F566E);
-    final accent = dark ? const Color(0xFFCBB5FF) : const Color(0xFF6333B3);
-    final edge = dark ? const Color(0xFF797386) : const Color(0xFF847A92);
+    final base = dark ? context.palette.background : context.palette.surface;
+    final ink = dark ? context.palette.textPrimary : context.palette.textPrimary;
+    final muted = dark ? context.palette.textMuted : context.palette.textMuted;
+    final accent = dark ? context.palette.primaryBright : context.palette.primary;
+    final edge = dark ? context.palette.border : context.palette.border;
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
       borderSide: BorderSide(color: edge),
@@ -59,7 +60,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final theme = Theme.of(context).copyWith(
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: dark ? const Color(0xFF151A26) : Colors.white,
+        fillColor: dark ? context.palette.surfaceElevated : context.palette.surface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 18,
@@ -74,9 +75,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           backgroundColor: dark
-              ? const Color(0xFFB99AEF)
-              : const Color(0xFF6333B3),
-          foregroundColor: dark ? const Color(0xFF20132F) : Colors.white,
+              ? context.palette.primaryBright
+              : context.palette.primary,
+          foregroundColor: dark ? context.palette.background : Colors.white,
           minimumSize: const Size(0, 52),
           padding: const EdgeInsets.all(16),
           shape: RoundedRectangleBorder(

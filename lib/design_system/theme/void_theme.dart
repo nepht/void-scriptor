@@ -107,7 +107,6 @@ abstract final class VoidTheme {
       dividerColor: palette.divider,
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
-      textTheme: textThemeFrom(palette),
 
       inputDecorationTheme: InputDecorationTheme(
         filled: true,

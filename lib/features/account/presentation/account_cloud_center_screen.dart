@@ -77,18 +77,78 @@ class _AccountCloudCenterScreenState
     extends ConsumerState<AccountCloudCenterScreen> {
   AccountCenterTab _tab = AccountCenterInformationArchitecture.tabs.first;
 
+  /// 115.36: panel tunggal — tab adalah anchor scroll, bukan pemisah konten.
+  /// Kunci ini mengikat posisi scroll ke tab kanonik saat deep link `?tab=`.
+  final ScrollController _panelScroll = ScrollController();
+
+  /// Offset absolut tiap anchor section terhadap panel scroll, diisi oleh
+  /// [_AccountSectionAnchor] setelah frame pertama.
+  final Map<String, double> _anchorOffsets = <String, double>{};
+
+  /// Offset anchor yang harus digulirkan setelah frame berikut.
+  ///
+  /// Disimpan, bukan langsung dipakai, supaya pengukuran anchor terjadi
+  /// setelah layout benar-benar tersedia.
+  double? _pendingAnchorOffset;
+
   @override
   void initState() {
     super.initState();
     _tab = AccountCenterInformationArchitecture.resolveTab(widget.initialTab);
+    if (widget.onTabChanged == null) {
+      _pendingAnchorOffset = double.infinity;
+    }
+    _scheduleAnchorReveal();
   }
 
   @override
   void didUpdateWidget(covariant AccountCloudCenterScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.initialTab != widget.initialTab) {
-      _tab = AccountCenterInformationArchitecture.resolveTab(widget.initialTab);
+      setState(() {
+        _tab = AccountCenterInformationArchitecture.resolveTab(
+          widget.initialTab,
+        );
+      });
+      if (widget.onTabChanged == null) {
+        _pendingAnchorOffset = double.infinity;
+        _scheduleAnchorReveal();
+      }
     }
+  }
+
+  @override
+  void dispose() {
+    _panelScroll.dispose();
+    super.dispose();
+  }
+
+  /// Menggulir ke anchor section kanonik yang terkait [_tab].
+  ///
+  /// [offset] berasal dari pengukuran nyata layout (bukan konstanta), lalu
+  /// dijepit agar tidak melewati panjang maksimum scroll.
+  void _recordAnchorOffset(String slug, double offset) {
+    _anchorOffsets[slug] = offset;
+  }
+
+  /// Dijalankan setelah frame agar offset anchor sudah terukur nyata.
+  void _scheduleAnchorReveal() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _revealAnchor();
+      }
+    });
+  }
+
+  void _revealAnchor() {
+    if (!_panelScroll.hasClients) {
+      return;
+    }
+    final target = _anchorOffsets[_tab.slug] ?? _pendingAnchorOffset ?? 0.0;
+    _panelScroll.jumpTo(
+      target.clamp(0.0, _panelScroll.position.maxScrollExtent),
+    );
+    _pendingAnchorOffset = null;
   }
 
   void _selectTab(AccountCenterTab next) {
@@ -102,6 +162,8 @@ class _AccountCloudCenterScreenState
       return;
     }
     setState(() => _tab = next);
+    _pendingAnchorOffset = double.infinity;
+    _scheduleAnchorReveal();
   }
 
   void _openAccountSearch() {
@@ -138,11 +200,19 @@ class _AccountCloudCenterScreenState
               constraints.maxWidth,
             );
             return SingleChildScrollView(
+              controller: _panelScroll,
               padding: EdgeInsets.symmetric(
                 horizontal:
                     AccountCenterDesignTokens.layout.pageHorizontalPadding,
                 vertical: AccountCenterDesignTokens.layout.pageVerticalPadding,
               ),
+              // Panel tunggal lebih tinggi dari viewport. When the widget is
+              // hosted without a Scaffold (bare MaterialApp harness), the
+              // incoming height is unbounded; keep the column finite so every
+              // area still lays out instead of being dropped.
+              physics: constraints.hasBoundedHeight
+                  ? null
+                  : const NeverScrollableScrollPhysics(),
               child: LayoutBuilder(
                 builder: (context, shellConstraints) {
                   final wide = gridPlan.summaryIsSideBySide;
@@ -289,182 +359,40 @@ class _AccountCloudCenterScreenState
                             ),
                             LayoutBuilder(
                               builder: (context, bodyConstraints) {
-                                final mainWidth = bodyConstraints.maxWidth;
-                                // 115.6: kolom grid overview dari kontrak
-                                // tier + aturan fit card.minWidth (220).
-                                final mainCardWidth = gridPlan.cardWidthFor(
-                                  mainWidth,
-                                );
                                 final main = Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    if (_tab.slug != 'overview')
-                                      _FocusedAccountArea(
-                                        tab: _tab,
-                                        snapshot: data,
-                                        onSignIn:
-                                            data
-                                                    .service('email-sign-in')
-                                                    .state ==
-                                                AccountCloudConnectionState
-                                                    .connected
-                                            ? null
-                                            : widget.onSignIn ??
-                                                  () => context.push(
-                                                    '${AppRoutes.login}?from=account-cloud',
-                                                  ),
-                                        onOpenAiProviders:
-                                            widget.onOpenAiProviders ??
-                                            () => context.push(
-                                              AppRoutes.aiProviders,
-                                            ),
-                                        onOpenSecurity: () =>
-                                            context.push(AppRoutes.security),
-                                      ),
-                                    if (_tab.slug == 'overview') ...[
-                                      Wrap(
-                                        spacing: AccountCenterDesignTokens
-                                            .layout
-                                            .cardGap,
-                                        runSpacing: AccountCenterDesignTokens
-                                            .layout
-                                            .cardGap,
-                                        children: [
-                                          SizedBox(
-                                            width: mainCardWidth,
-                                            child: _DashboardCard(
-                                              title: 'AUTHENTICATION',
-                                              subtitle:
-                                                  'Manage your account access',
-                                              child: _AccountSummary(
-                                                snapshot: data,
-                                                onSignIn:
-                                                    data
-                                                            .service(
-                                                              'email-sign-in',
-                                                            )
-                                                            .state ==
-                                                        AccountCloudConnectionState
-                                                            .connected
-                                                    ? null
-                                                    : widget.onSignIn ??
-                                                          () => context.push(
-                                                            '${AppRoutes.login}?from=account-cloud',
-                                                          ),
-                                              ),
-                                            ),
+                                    // 115.36: panel tunggal. Semua area kanonik
+                                    // dirender sekaligus; tab hanya menentukan
+                                    // anchor scroll dan breadcrumb.
+                                    _FocusedAccountArea(
+                                      tab: _tab,
+                                      snapshot: data,
+                                      gridPlan: gridPlan,
+                                      providerManifest:
+                                          widget.providerManifest ??
+                                          ProviderConnectorManifest.standard,
+                                      onConnectProvider:
+                                          widget.onConnectProvider,
+                                      onSyncNow: widget.onSyncNow,
+                                      onAnchorMeasured: _recordAnchorOffset,
+                                      onSignIn:
+                                          data.service('email-sign-in').state ==
+                                              AccountCloudConnectionState
+                                                  .connected
+                                          ? null
+                                          : widget.onSignIn ??
+                                                () => context.push(
+                                                  '${AppRoutes.login}?from=account-cloud',
+                                                ),
+                                      onOpenAiProviders:
+                                          widget.onOpenAiProviders ??
+                                          () => context.push(
+                                            AppRoutes.aiProviders,
                                           ),
-                                          SizedBox(
-                                            width: mainCardWidth,
-                                            child: _DashboardCard(
-                                              title: 'QUICK CONNECT',
-                                              subtitle:
-                                                  'Connect services available to this account',
-                                              child: _QuickConnectPanel(
-                                                manifest:
-                                                    widget.providerManifest ??
-                                                    ProviderConnectorManifest
-                                                        .standard,
-                                                onConnectProvider:
-                                                    widget.onConnectProvider,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: mainCardWidth,
-                                            child: StorageUsageCard(
-                                              onManage: widget.onSyncNow,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: AccountCenterDesignTokens
-                                            .spacing
-                                            .xl,
-                                      ),
-                                      Wrap(
-                                        spacing: AccountCenterDesignTokens
-                                            .layout
-                                            .cardGap,
-                                        runSpacing: AccountCenterDesignTokens
-                                            .layout
-                                            .cardGap,
-                                        children: [
-                                          for (final card in const [
-                                            (
-                                              'CONNECTED SERVICES OVERVIEW',
-                                              'Connection summary',
-                                              Icons.hub_outlined,
-                                              'Connected services appear here after provider verification.',
-                                            ),
-                                            (
-                                              'AI PROVIDERS',
-                                              'AI model gateways',
-                                              Icons.api_outlined,
-                                              'Configure and test OpenAI or Gemini from AI Providers.',
-                                            ),
-                                            (
-                                              'DEVELOPER TOOLS',
-                                              'Source control and development services',
-                                              Icons.code_outlined,
-                                              'No developer service is connected.',
-                                            ),
-                                            (
-                                              'CREATIVE TOOLS',
-                                              'Design and media integrations',
-                                              Icons.palette_outlined,
-                                              'No creative tool is connected.',
-                                            ),
-                                            (
-                                              'PAYMENT METHODS',
-                                              'Billing service connections',
-                                              Icons.payment_outlined,
-                                              'No payment method is configured.',
-                                            ),
-                                            (
-                                              'API KEYS MANAGER',
-                                              'Credential inventory',
-                                              Icons.key_outlined,
-                                              'Credentials remain protected in the operating-system vault.',
-                                            ),
-                                            (
-                                              'TEAM & COLLABORATION',
-                                              'Members, roles, and invitations',
-                                              Icons.groups_outlined,
-                                              'Team management is not configured.',
-                                            ),
-                                            (
-                                              'ACTIVITY LOG',
-                                              'Recent account and integration events',
-                                              Icons.history_outlined,
-                                              'No account activity has been recorded.',
-                                            ),
-                                            (
-                                              'BACKUP & SYNC',
-                                              'Data protection and synchronization',
-                                              Icons.sync_outlined,
-                                              'No cloud backup destination is configured.',
-                                            ),
-                                            (
-                                              'SECURITY CENTER',
-                                              'Sessions and account protection',
-                                              Icons.security_outlined,
-                                              'Security telemetry is not available locally.',
-                                            ),
-                                          ])
-                                            SizedBox(
-                                              width: mainCardWidth,
-                                              child: _OverviewCapabilityCard(
-                                                title: card.$1,
-                                                subtitle: card.$2,
-                                                icon: card.$3,
-                                                message: card.$4,
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ],
+                                      onOpenSecurity: () =>
+                                          context.push(AppRoutes.security),
+                                    ),
                                   ],
                                 );
                                 return main;
@@ -1040,10 +968,20 @@ class _OverviewCapabilityCard extends StatelessWidget {
   );
 }
 
+/// 115.36 — Panel tunggal Account & Cloud Center.
+///
+/// Sembilan area kanonik dirender berurutan dalam satu panel scroll. Setiap
+/// area punya anchor yang bisa diukur, sehingga tab strip dan deep link
+/// `?tab=` menggulir ke area terkait alih-alih menyembunyikan yang lain.
 class _FocusedAccountArea extends StatelessWidget {
   const _FocusedAccountArea({
     required this.tab,
     required this.snapshot,
+    required this.gridPlan,
+    required this.providerManifest,
+    required this.onConnectProvider,
+    required this.onSyncNow,
+    required this.onAnchorMeasured,
     this.onSignIn,
     this.onOpenAiProviders,
     this.onOpenSecurity,
@@ -1051,186 +989,394 @@ class _FocusedAccountArea extends StatelessWidget {
 
   final AccountCenterTab tab;
   final AccountCloudSnapshot snapshot;
+
+  /// Rencana grid yang sudah diresolusi dari lebar viewport oleh pemanggil.
+  final AccountCenterGridPlan gridPlan;
+
+  final ProviderConnectorManifest providerManifest;
+  final ValueChanged<ProviderConnectorEntry>? onConnectProvider;
+  final VoidCallback? onSyncNow;
+
+  /// Laporan posisi anchor ke state panel (slug tab, offset absolut).
+  final void Function(String slug, double offset) onAnchorMeasured;
+
   final VoidCallback? onSignIn;
   final VoidCallback? onOpenAiProviders;
   final VoidCallback? onOpenSecurity;
 
   @override
   Widget build(BuildContext context) {
-    final cards = switch (tab.slug) {
-      'connected_accounts' => const [
-        (
-          'AUTHENTICATION',
-          'Account identity and sign-in state',
-          Icons.person_outline,
-          'Account access reflects the configured authentication provider.',
-        ),
-      ],
-      'backup_sync' => const [
-        (
-          'BACKUP & SYNC',
-          'Data protection and synchronization',
-          Icons.sync_outlined,
-          'Local project backups are available. Cloud sync remains unavailable until a provider is connected.',
-        ),
-      ],
-      'cloud_storage' => const [
-        (
-          'CLOUD STORAGE USAGE',
-          'Storage metering by provider',
-          Icons.cloud_queue_outlined,
-          'No connected provider is reporting quota or usage.',
-        ),
-        (
-          'BACKUP & SYNC',
-          'Data protection and synchronization',
-          Icons.sync_outlined,
-          'No cloud backup destination is configured.',
-        ),
-      ],
-      'ai_providers' => const [
-        (
-          'API PROVIDERS',
-          'AI model gateways',
-          Icons.api_outlined,
-          'Configure and test OpenAI or Gemini from AI Providers.',
-        ),
-        (
-          'AI USAGE THIS MONTH',
-          'Usage and estimated provider cost',
-          Icons.show_chart_outlined,
-          'No metering data is available from connected providers.',
-        ),
-      ],
-      'api_keys' => const [
-        (
-          'DEVELOPER TOOLS',
-          'Source control and development services',
-          Icons.code_outlined,
-          'No developer service is connected.',
-        ),
-        (
-          'CREATIVE TOOLS',
-          'Design and media integrations',
-          Icons.palette_outlined,
-          'No creative tool is connected.',
-        ),
-        (
-          'API KEYS',
-          'Credential inventory',
-          Icons.key_outlined,
-          'Credentials remain protected in the operating-system vault.',
-        ),
-      ],
-      'team_collaboration' => const [
-        (
-          'TEAM & COLLABORATION',
-          'Members, roles, and invitations',
-          Icons.groups_outlined,
-          'Team management is not configured.',
-        ),
-      ],
-      'security' => const [
-        (
-          'SECURITY CENTER',
-          'Sessions and account protection',
-          Icons.security_outlined,
-          'Security telemetry is not available locally.',
-        ),
-        (
-          'ACTIVITY LOG',
-          'Recent account and integration events',
-          Icons.history_outlined,
-          'No account activity has been recorded.',
-        ),
-      ],
-      'billing' => const [
-        (
-          'PAYMENT METHODS',
-          'Billing service connections',
-          Icons.payment_outlined,
-          'No payment method is configured.',
-        ),
-      ],
-      _ => const [],
-    };
+    final gap = AccountCenterDesignTokens.layout.cardGap;
+    final signInAction =
+        onSignIn ?? () => context.push('${AppRoutes.login}?from=account-cloud');
+    final aiProvidersAction =
+        onOpenAiProviders ?? () => context.push(AppRoutes.aiProviders);
+    final securityAction =
+        onOpenSecurity ?? () => context.push(AppRoutes.security);
+
+    // Kartu ringkas per area. Area overview memakai tiga kartu mockup
+    // (autentikasi, quick connect, storage); area lain memakai kartu
+    // ringkasan + aksi yang relevan, tetap satu panel.
+    final sections = <_AccountSection>[
+      _AccountSection(
+        tab: AccountCenterInformationArchitecture.tabs[0],
+        cards: [
+          _AccountSectionCard.dashboard(
+            key: const ValueKey('account-overview-card-authentication'),
+            title: 'AUTHENTICATION',
+            subtitle: 'Manage your account access',
+            child: _AccountSummary(snapshot: snapshot, onSignIn: signInAction),
+          ),
+          _AccountSectionCard.dashboard(
+            key: const ValueKey('account-overview-card-quick-connect'),
+            title: 'QUICK CONNECT',
+            subtitle: 'Connect services available to this account',
+            child: _QuickConnectPanel(
+              manifest: providerManifest,
+              onConnectProvider: onConnectProvider,
+            ),
+          ),
+          _AccountSectionCard.dashboard(
+            key: const ValueKey('account-overview-card-storage'),
+            title: 'CLOUD STORAGE USAGE',
+            subtitle: 'Storage metering by provider',
+            child: StorageUsageCard(onManage: onSyncNow),
+          ),
+        ],
+      ),
+      _AccountSection(
+        tab: AccountCenterInformationArchitecture.tabs[1],
+        cards: [
+          // Mockup row 1: connection summary. Sign-in surface stays owned by
+          // the overview AUTHENTICATION card, so this card lists services only.
+          // 115.36 mockup baris 2: "Connected Services Overview" meringkas
+          // seluruh drive dalam SATU kartu. Memetakan satu kartu penuh per
+          // service membuat enam kartu meledak menjadi baris penuh dan
+          // menduplikasi QUICK CONNECT — melanggar mockup dan aturan
+          // satu kapabilitas = satu owner kanonik.
+          _AccountSectionCard.dashboard(
+            title: 'CONNECTED SERVICES OVERVIEW',
+            subtitle: 'Connection summary',
+            icon: Icons.hub_outlined,
+            child: _ServiceSummaryList(services: snapshot.services),
+          ),
+        ],
+      ),
+      _AccountSection(
+        tab: AccountCenterInformationArchitecture.tabs[2],
+        cards: [
+          _AccountSectionCard.dashboard(
+            title: 'STORAGE BREAKDOWN',
+            subtitle: 'Per-provider allocation',
+            child: StorageUsageCard(onManage: onSyncNow),
+          ),
+        ],
+      ),
+      _AccountSection(
+        tab: AccountCenterInformationArchitecture.tabs[3],
+        cards: [
+          const _AccountSectionCard.capability(
+            title: 'API PROVIDERS',
+            subtitle: 'AI model gateways',
+            icon: Icons.api_outlined,
+            message: 'Configure and test OpenAI or Gemini from AI Providers.',
+          ),
+          const _AccountSectionCard.capability(
+            title: 'AI USAGE THIS MONTH',
+            subtitle: 'Usage and estimated provider cost',
+            icon: Icons.show_chart_outlined,
+            message: 'No metering data is available from connected providers.',
+          ),
+          _AccountSectionCard.action(
+            title: 'Open AI Providers',
+            subtitle:
+                'Configure credentials and run real provider connection tests.',
+            icon: Icons.arrow_forward,
+            onPressed: aiProvidersAction,
+          ),
+        ],
+      ),
+      _AccountSection(
+        tab: AccountCenterInformationArchitecture.tabs[4],
+        cards: [
+          const _AccountSectionCard.capability(
+            title: 'DEVELOPER TOOLS',
+            subtitle: 'Source control and development services',
+            icon: Icons.code_outlined,
+            message: 'No developer service is connected.',
+          ),
+          const _AccountSectionCard.capability(
+            title: 'CREATIVE TOOLS',
+            subtitle: 'Design and media integrations',
+            icon: Icons.palette_outlined,
+            message: 'No creative tool is connected.',
+          ),
+          const _AccountSectionCard.capability(
+            title: 'API KEYS',
+            subtitle: 'Credential inventory',
+            icon: Icons.key_outlined,
+            message:
+                'Credentials remain protected in the operating-system vault.',
+          ),
+        ],
+      ),
+      _AccountSection(
+        tab: AccountCenterInformationArchitecture.tabs[5],
+        cards: [
+          const _AccountSectionCard.capability(
+            title: 'TEAM & COLLABORATION',
+            subtitle: 'Members, roles, and invitations',
+            icon: Icons.groups_outlined,
+            message: 'Team management is not configured.',
+          ),
+        ],
+      ),
+      _AccountSection(
+        tab: AccountCenterInformationArchitecture.tabs[6],
+        cards: [
+          const _AccountSectionCard.capability(
+            title: 'SECURITY CENTER',
+            subtitle: 'Sessions and account protection',
+            icon: Icons.security_outlined,
+            message: 'Security telemetry is not available locally.',
+          ),
+          const _AccountSectionCard.capability(
+            title: 'ACTIVITY LOG',
+            subtitle: 'Recent account and integration events',
+            icon: Icons.history_outlined,
+            message: 'No account activity has been recorded.',
+          ),
+          _AccountSectionCard.action(
+            title: 'Open Security Center',
+            subtitle:
+                'Review the project security tools available in this build.',
+            icon: Icons.security_outlined,
+            onPressed: securityAction,
+          ),
+        ],
+      ),
+      _AccountSection(
+        tab: AccountCenterInformationArchitecture.tabs[7],
+        cards: [
+          const _AccountSectionCard.capability(
+            title: 'BACKUP & SYNC',
+            subtitle: 'Data protection and synchronization',
+            icon: Icons.sync_outlined,
+            message:
+                'Local project backups are available. Cloud sync remains unavailable until a provider is connected.',
+          ),
+        ],
+      ),
+      _AccountSection(
+        tab: AccountCenterInformationArchitecture.tabs[8],
+        cards: [
+          const _AccountSectionCard.capability(
+            title: 'PAYMENT METHODS',
+            subtitle: 'Billing service connections',
+            icon: Icons.payment_outlined,
+            message: 'No payment method is configured.',
+          ),
+        ],
+      ),
+    ];
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final cardWidth = constraints.maxWidth >= 820
-            ? (constraints.maxWidth -
-                      AccountCenterDesignTokens.layout.cardGap) /
-                  2
-            : constraints.maxWidth;
-        return Wrap(
-          spacing: AccountCenterDesignTokens.layout.cardGap,
-          runSpacing: AccountCenterDesignTokens.layout.cardGap,
+        // Lebar kartu mengikuti kontrak grid responsif (115.6): jumlah kolom
+        // berasal dari tier VIEWPORT (plan luar), lebar kartu dihitung dari
+        // lebar area konten. Tanpa pemisahan ini panel utama 75% salah dibaca
+        // sebagai tier yang lebih sempit dan kartu turun ke 2 kolom.
+        //
+        // Batas keras: `cardWidthFor` menjumlahkan gap untuk N-2 kolom, sehingga
+        // pada N kolom diperlukan (N-1) gap. Lebar dikurung supaya baris
+        // tidak pernah melewati area konten (RenderFlex overflow).
+        final columns = gridPlan.columnsFor(constraints.maxWidth);
+        final contentWidth = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : gridPlan.cardWidthFor(constraints.maxWidth);
+        final cardWidth = ((contentWidth - gap * (columns - 1)) / columns)
+            .clamp(0.0, contentWidth);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            for (final card in cards)
-              SizedBox(
-                width: cardWidth,
-                child: _OverviewCapabilityCard(
-                  title: card.$1,
-                  subtitle: card.$2,
-                  icon: card.$3,
-                  message: card.$4,
-                ),
-              ),
-            if (tab.slug == 'connected_accounts')
-              SizedBox(
-                width: cardWidth,
-                child: _DashboardCard(
-                  title: 'ACCOUNT ACCESS',
-                  subtitle: 'Current authentication state',
-                  child: _AccountSummary(
-                    snapshot: snapshot,
-                    onSignIn: onSignIn,
+            for (final section in sections) ...[
+              _AccountSectionAnchor(
+                // Key pada anchor = seam yang dipakai tab strip & deep link.
+                key: ValueKey('account-anchor-${section.tab.slug}'),
+                tab: section.tab,
+                active: section.tab == tab,
+                onMeasured: onAnchorMeasured,
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: gap),
+                  child: Wrap(
+                    spacing: gap,
+                    runSpacing: gap,
+                    children: [
+                      for (final card in section.cards)
+                        SizedBox(
+                          width: cardWidth,
+                          child: KeyedSubtree(
+                            key: card.key,
+                            child: card.build(context),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
-            if (tab.slug == 'backup_sync')
-              for (final service in snapshot.services)
-                SizedBox(
-                  width: cardWidth,
-                  child: _ServiceCard(service: service),
-                ),
-            if (tab.slug == 'cloud_storage')
-              for (final service in snapshot.services.where(
-                (service) =>
-                    service.group == AccountCloudServiceGroup.cloudStorage,
-              ))
-                SizedBox(
-                  width: cardWidth,
-                  child: _ServiceCard(service: service),
-                ),
-            if (tab.slug == 'ai_providers')
-              SizedBox(
-                width: cardWidth,
-                child: _DestinationActionCard(
-                  label: 'Open AI Providers',
-                  description:
-                      'Configure credentials and run real provider connection tests.',
-                  icon: Icons.arrow_forward,
-                  onPressed: onOpenAiProviders,
-                ),
-              ),
-            if (tab.slug == 'security')
-              SizedBox(
-                width: cardWidth,
-                child: _DestinationActionCard(
-                  label: 'Open Security Center',
-                  description:
-                      'Review the project security tools available in this build.',
-                  icon: Icons.security_outlined,
-                  onPressed: onOpenSecurity,
-                ),
-              ),
+            ],
           ],
         );
       },
     );
   }
 }
+
+/// Satu area kanonik dalam panel tunggal: anchor scroll + deretan kartunya.
+class _AccountSection {
+  const _AccountSection({required this.tab, required this.cards});
+
+  final AccountCenterTab tab;
+  final List<_AccountSectionCard> cards;
+}
+
+/// Anchor scroll untuk satu area kanonik.
+///
+/// Mendaftarkan posisi dirinya terhadap panel scroll supaya tab strip dan deep
+/// link `?tab=` bisa menggulir ke sini. Pengukuran terjadi setelah frame
+/// pertama, lalu dilaporkan lewat [onMeasured] (slug tab, offset absolut).
+class _AccountSectionAnchor extends StatefulWidget {
+  const _AccountSectionAnchor({
+    super.key,
+    required this.tab,
+    required this.active,
+    required this.child,
+    required this.onMeasured,
+  });
+
+  final AccountCenterTab tab;
+  final bool active;
+  final Widget child;
+  final void Function(String slug, double offset) onMeasured;
+
+  @override
+  State<_AccountSectionAnchor> createState() => _AccountSectionAnchorState();
+}
+
+class _AccountSectionAnchorState extends State<_AccountSectionAnchor> {
+  final GlobalKey _measureKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    _measureAfterFrame();
+  }
+
+  @override
+  void didUpdateWidget(covariant _AccountSectionAnchor oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Anchor aktif berubah posisi relatif setelah digulir; offset lama basi.
+    if (oldWidget.active != widget.active) {
+      _measureAfterFrame();
+    }
+  }
+
+  void _measureAfterFrame() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      final box = _measureKey.currentContext?.findRenderObject() as RenderBox?;
+      if (box == null || !box.attached) {
+        return;
+      }
+      widget.onMeasured(widget.tab.slug, box.localToGlobal(Offset.zero).dy);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Semantics memberi pembaca layar nama section saat menavigasi panel
+    // tunggal yang panjang.
+    return Semantics(
+      identifier: 'account-anchor-${widget.tab.slug}',
+      header: true,
+      label: widget.tab.label,
+      child: KeyedSubtree(
+        key: _measureKey,
+        child: Semantics(container: true, child: widget.child),
+      ),
+    );
+  }
+}
+
+/// Kartu dalam satu area, dibungkus supaya tiap jenis punya satu constructor.
+class _AccountSectionCard {
+  const _AccountSectionCard.dashboard({
+    required this.title,
+    required this.subtitle,
+    required this.child,
+    this.key,
+    this.icon,
+  }) : _kind = _AccountSectionCardKind.dashboard,
+       message = null,
+       onPressed = null;
+
+  const _AccountSectionCard.capability({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.message,
+  }) : _kind = _AccountSectionCardKind.capability,
+       child = null,
+       onPressed = null,
+       key = null;
+
+  const _AccountSectionCard.action({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.onPressed,
+  }) : _kind = _AccountSectionCardKind.action,
+       child = null,
+       message = null,
+       key = null;
+
+  /// Key stabil untuk kartu baris pertama mockup; dipakai tes layout untuk
+  /// mengukur baris overview, bukan kemunculan pertama sebuah judul.
+  final Key? key;
+
+  final String title;
+  final String subtitle;
+  final _AccountSectionCardKind _kind;
+  final Widget? child;
+  final IconData? icon;
+  final String? message;
+  final VoidCallback? onPressed;
+
+  Widget build(BuildContext context) => switch (_kind) {
+    _AccountSectionCardKind.dashboard => _DashboardCard(
+      title: title,
+      subtitle: subtitle,
+      icon: icon,
+      child: child!,
+    ),
+    _AccountSectionCardKind.capability => _OverviewCapabilityCard(
+      title: title,
+      subtitle: subtitle,
+      icon: icon!,
+      message: message!,
+    ),
+    _AccountSectionCardKind.action => _DestinationActionCard(
+      label: title,
+      description: subtitle,
+      icon: icon!,
+      onPressed: onPressed,
+    ),
+  };
+}
+
+enum _AccountSectionCardKind { dashboard, capability, action }
 
 class _DestinationActionCard extends StatelessWidget {
   const _DestinationActionCard({
@@ -1386,11 +1532,16 @@ class _DashboardCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.child,
+    this.icon,
   });
 
   final String title;
   final String subtitle;
   final Widget child;
+
+  /// Ikon kategori opsional pada baris judul (ikon token scale, bukan ukuran
+  /// hardcode). Kartu mockup baris pertama tetap tanpa ikon.
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -1405,6 +1556,14 @@ class _DashboardCard extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (icon case final iconData?) ...[
+          Icon(
+            iconData,
+            size: AccountCenterDesignTokens.iconSizes.section,
+            color: context.palette.primaryBright,
+          ),
+          SizedBox(height: AccountCenterDesignTokens.spacing.twoXs),
+        ],
         Text(title, style: _sectionTitle),
         SizedBox(height: AccountCenterDesignTokens.spacing.twoXs),
         Text(subtitle, style: _caption),
@@ -1644,56 +1803,61 @@ class _AccountSummary extends StatelessWidget {
   );
 }
 
-class _ServiceCard extends StatelessWidget {
-  const _ServiceCard({required this.service});
+/// Ringkasan service terhubung dalam satu kartu (115.36 mockup).
+///
+/// Mockup memakai SATU kartu "Connected Services Overview" yang meringkas
+/// seluruh drive sebagai baris compact. Versi sebelumnya memetakan satu kartu
+/// penuh per service; itu meledak menjadi N baris di panel tunggal dan
+/// menduplikasi kapabilitas QUICK CONNECT.
+class _ServiceSummaryList extends StatelessWidget {
+  const _ServiceSummaryList({required this.services});
 
-  final AccountCloudService service;
+  final List<AccountCloudService> services;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: EdgeInsets.all(AccountCenterDesignTokens.card.padding),
-    decoration: BoxDecoration(
-      color: context.palette.surface,
-      borderRadius: BorderRadius.circular(
-        AccountCenterDesignTokens.radius.card,
-      ),
-      border: Border.all(color: context.palette.border),
-    ),
-    // 115.7: header kartu = satu node "nama, status"; deskripsi & usage tetap
-    // dibaca sebagai teks terpisah di bawahnya.
-    child: Column(
+  Widget build(BuildContext context) {
+    if (services.isEmpty) {
+      return Text(
+        'Connected services appear here after provider verification.',
+        style: _body,
+      );
+    }
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MergeSemantics(
-          child: Semantics(
-            label: AccountCenterAccessibility.providerSemanticsLabel(
-              service.label,
-              _connectionStatusLabel(service.state),
-            ),
-            child: ExcludeSemantics(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      service.label,
-                      style: VoidTypography.headingMedium,
+        for (final service in services) ...[
+          MergeSemantics(
+            child: Semantics(
+              label: AccountCenterAccessibility.providerSemanticsLabel(
+                service.label,
+                _connectionStatusLabel(service.state),
+              ),
+              child: ExcludeSemantics(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        service.label,
+                        style: VoidTypography.headingMedium,
+                        // 115.36: baris ringkas di rail sempit; label panjang
+                        // ellipsis, bukan memicu RenderFlex overflow.
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                  _ConnectionBadge(state: service.state),
-                ],
+                    SizedBox(width: AccountCenterDesignTokens.spacing.twoXs),
+                    Flexible(child: _ConnectionBadge(state: service.state)),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        SizedBox(height: AccountCenterDesignTokens.spacing.sm),
-        Text(service.description, style: _body),
-        if (service.usageLabel case final usage?) ...[
-          SizedBox(height: AccountCenterDesignTokens.spacing.sm),
-          Text(usage, style: _caption),
+          if (service != services.last)
+            SizedBox(height: AccountCenterDesignTokens.spacing.sm),
         ],
       ],
-    ),
-  );
+    );
+  }
 }
 
 class _ConnectionBadge extends StatelessWidget {
@@ -1728,7 +1892,13 @@ class _ConnectionBadge extends StatelessWidget {
           AccountCenterDesignTokens.radius.pill,
         ),
       ),
-      child: Text(label, style: _caption.copyWith(color: color)),
+      child: Text(
+        label,
+        style: _caption.copyWith(color: color),
+        // 115.36: badge wajib ellipsis pada text scale besar.
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 }

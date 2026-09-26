@@ -67,11 +67,11 @@ void main() {
     for (final title in [
       'CLOUD STORAGE USAGE',
       'CONNECTED SERVICES OVERVIEW',
-      'AI PROVIDERS',
+      'API PROVIDERS',
       'DEVELOPER TOOLS',
       'CREATIVE TOOLS',
       'PAYMENT METHODS',
-      'API KEYS MANAGER',
+      'API KEYS',
       'TEAM & COLLABORATION',
       'ACTIVITY LOG',
       'BACKUP & SYNC',
@@ -193,48 +193,39 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('Connected Accounts'));
-    await tester.pump();
-    expect(find.text('Sign in or connect account'), findsOneWidget);
-
-    await tester.tap(find.text('AI Providers').first);
-    await tester.pump();
+    // 115.36 panel tunggal: area terhubung sudah ada di panel yang sama.
     final openProviders = tester.widget<TextButton>(
       find.widgetWithText(TextButton, 'Open AI Providers'),
     );
     openProviders.onPressed!();
     expect(aiProvidersOpened, isTrue);
 
+    // Tab tetap menjadi anchor scroll, bukan penyaring konten.
     await tester.tap(find.text('Cloud Storage').first);
     await tester.pump();
-    expect(find.text('Google Drive'), findsOneWidget);
+    // Panel tunggal: ringkasan rail dan kartu area boleh sama-sama tampil.
+    expect(find.text('Sign in or connect account'), findsWidgets);
+    expect(find.text('Google Drive'), findsWidgets);
   });
 
-  testWidgets('canonical tabs select focused account areas', (tester) async {
+  testWidgets('canonical tabs reveal their area inside the single panel', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       const ProviderScope(
         child: MaterialApp(home: Scaffold(body: AccountCloudCenterScreen())),
       ),
     );
 
-    await tester.tap(find.text('AI Providers').first);
-    await tester.pump();
-
+    // Semua area hidup bersamaan; tab menandai anchor dan breadcrumb.
     expect(find.text('API PROVIDERS'), findsOneWidget);
-    expect(find.text('CONNECTED SERVICES'), findsNothing);
-    expect(find.text('Overview'), findsOneWidget);
+    expect(find.text('BACKUP & SYNC'), findsOneWidget);
 
-    final backupSyncTab = tester.widget<InkWell>(
-      find.ancestor(
-        of: find.text('Backup & Sync'),
-        matching: find.byType(InkWell),
-      ),
-    );
-    backupSyncTab.onTap!();
+    await tester.tap(find.text('Backup & Sync').first);
     await tester.pump();
 
     expect(find.text('BACKUP & SYNC'), findsOneWidget);
-    expect(find.text('Local project storage'), findsOneWidget);
+    expect(find.text('Local project storage'), findsWidgets);
     expect(find.text('Available locally'), findsWidgets);
   });
 
@@ -319,18 +310,30 @@ void main() {
   testWidgets('account section search navigates through the IA index', (
     tester,
   ) async {
-    // Mode lokal (tanpa onTabChanged): pilihan hasil search mengganti tab
-    // langsung dari state screen.
+    // 115.36: memilih section = menggulir ke anchor. Karena itu test ini memakai
+    // seam search (bukan tap koordinat header yang bisa ter-scroll keluar).
     await tester.pumpWidget(
       const ProviderScope(child: MaterialApp(home: AccountCloudCenterScreen())),
     );
 
-    await tester.tap(find.widgetWithIcon(IconButton, Icons.search));
-    await tester.pumpAndSettle();
-    expect(find.byType(AlertDialog), findsOneWidget);
+    Future<void> openSearch(String query) async {
+      // 115.36: header ikut panel yang bisa digulir, jadi kembali ke atas dulu
+      // (menurut skill: jangan ikat test ke posisi scroll).
+      final scrollable = tester.state<ScrollableState>(
+        find.byType(Scrollable).first,
+      );
+      scrollable.position.jumpTo(0);
+      await tester.pumpAndSettle();
+      final search = find.widgetWithIcon(IconButton, Icons.search);
+      expect(search, findsOneWidget);
+      await tester.tap(search);
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), query);
+      await tester.pump();
+    }
 
-    await tester.enterText(find.byType(TextField), 'billing');
-    await tester.pump();
+    await openSearch('billing');
+    expect(find.byType(AlertDialog), findsOneWidget);
 
     final billingTile = find.descendant(
       of: find.byType(AlertDialog),
@@ -345,10 +348,7 @@ void main() {
     expect(find.text('Account & Cloud Center / Billing'), findsOneWidget);
 
     // Empty result state stays honest instead of inventing sections.
-    await tester.tap(find.widgetWithIcon(IconButton, Icons.search));
-    await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), 'no-such-section');
-    await tester.pump();
+    await openSearch('no-such-section');
     expect(
       find.descendant(
         of: find.byType(AlertDialog),

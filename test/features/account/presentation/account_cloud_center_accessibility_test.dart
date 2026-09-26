@@ -121,7 +121,6 @@ void main() {
 
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
-      expect(find.text('ACCOUNT ACCESS'), findsOneWidget);
       // Tab aktif switched ke Connected Accounts.
       final activeSemantics = tester
           .getSemantics(tabInk('Connected Accounts'))
@@ -130,8 +129,26 @@ void main() {
         activeSemantics.flagsCollection.isSelected == Tristate.isTrue,
         isTrue,
       );
-      // Fokus tidak nyangkut di konten lama (Overview cards hilang).
-      expect(find.text('QUICK CONNECT'), findsNothing);
+      // 115.36 satu panel: tab = anchor scroll, bukan penyaring konten.
+      // Konten Overview tetap ada dan section tujuan ter-reveal ke viewport.
+      final anchorSection = find.byKey(
+        ValueKey(
+          'account-anchor-${AccountCenterInformationArchitecture.tabs[1].slug}',
+        ),
+      );
+      expect(anchorSection, findsOneWidget);
+      final anchorRect = tester.getRect(anchorSection);
+      final viewport = tester.getRect(find.byType(Scrollable).first);
+      expect(
+        viewport.overlaps(anchorRect),
+        isTrue,
+        reason: 'anchor section harus masuk viewport setelah tab dipilih',
+      );
+      expect(
+        find.text('QUICK CONNECT'),
+        findsOneWidget,
+        reason: 'kartu Overview tetap hidup di panel tunggal',
+      );
     });
 
     testWidgets('fokus terlihat: focus ring 2px + Semantics isFocused', (

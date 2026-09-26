@@ -92,9 +92,17 @@ void main() {
       expect(plan.summaryIsSideBySide, testCase.sideBySide);
 
       // tiga kartu baris pertama grid overview
-      final dyAuth = tester.getTopLeft(find.text('AUTHENTICATION')).dy;
-      final dyQuick = tester.getTopLeft(find.text('QUICK CONNECT')).dy;
-      final dyStorage = tester.getTopLeft(find.text('CLOUD STORAGE USAGE')).dy;
+      // 115.36: judul kartu kini bisa muncul di beberapa area, jadi baris
+      // overview diukur lewat key stabil, bukan kemunculan pertama.
+      final dyAuth = tester
+          .getTopLeft(find.byKey(const ValueKey('account-overview-card-authentication')))
+          .dy;
+      final dyQuick = tester
+          .getTopLeft(find.byKey(const ValueKey('account-overview-card-quick-connect')))
+          .dy;
+      final dyStorage = tester
+          .getTopLeft(find.byKey(const ValueKey('account-overview-card-storage')))
+          .dy;
       switch (testCase.columns) {
         case 3:
           expect(dyQuick, dyAuth, reason: '${testCase.name} kolom 3');

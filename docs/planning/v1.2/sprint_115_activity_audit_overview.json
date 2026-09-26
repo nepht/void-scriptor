@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.31",
+  "title": "Activity & Audit Overview",
+  "acceptance": [
+    "filters",
+    "timestamps",
+    "actor",
+    "result",
+    "redaction",
+    "retention",
+    "detail_link"
+  ],
+  "implementation": "lib/features/account/domain/account_center_activity_audit_overview.dart",
+  "evidence": "test/features/account/domain/account_center_activity_audit_overview_test.dart",
+  "boundary": "Local redacted account audit metadata only; live provider telemetry, remote audit backend, billing events, authorization enforcement, hosted CI, signing, hardware, adoption, and publication remain DEFERRED-EXTERNAL."
+}

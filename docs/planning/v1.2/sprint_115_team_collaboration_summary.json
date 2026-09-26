@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.30",
+  "title": "Team & Collaboration Summary",
+  "acceptance": [
+    "organization",
+    "seat_count",
+    "member_roles",
+    "pending_invites",
+    "access_summary",
+    "permission_health"
+  ],
+  "implementation": "lib/features/account/domain/account_center_team_collaboration_summary.dart",
+  "evidence": "test/features/account/domain/account_center_team_collaboration_summary_test.dart",
+  "boundary": "Local account-level collaboration metadata only; live organization provider, invitations, authorization enforcement, audit backend, network, and external identity verification remain DEFERRED-EXTERNAL."
+}

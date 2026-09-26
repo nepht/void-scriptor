@@ -51,16 +51,12 @@ class CharacterWorkspaceScreen extends ConsumerStatefulWidget {
 
 class _CharacterWorkspaceScreenState
     extends ConsumerState<CharacterWorkspaceScreen> {
-  String? _primarySection;
-
-  String _resolvedPrimarySection() =>
-      _primarySection ??
-      (widget.activeSection == null
-          ? 'Overview'
-          : canonicalWorkspaceSection(
-              WorkspaceKind.character,
-              widget.activeSection!,
-            ));
+  String _resolvedPrimarySection() => widget.activeSection == null
+      ? 'Overview'
+      : canonicalWorkspaceSection(
+          WorkspaceKind.character,
+          widget.activeSection!,
+        );
 
   @override
   Widget build(BuildContext context) {

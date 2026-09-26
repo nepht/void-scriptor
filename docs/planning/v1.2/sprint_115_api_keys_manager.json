@@ -1,0 +1,31 @@
+{
+  "canonical_step": "115.27",
+  "title": "API Keys Manager",
+  "status": "VERIFIED-LOCAL",
+  "acceptance": [
+    "add_replace",
+    "validate",
+    "revoke",
+    "scope",
+    "last_used",
+    "masked_only",
+    "secure_copy"
+  ],
+  "implementation_boundary": {
+    "secret_storage": "AccountSecureTokenVault over injected CredentialStore",
+    "validation": "injected provider probe; no provider availability claim",
+    "public_metadata": "masked display and redacted audit only",
+    "clipboard": "reauthenticated copy with bounded expiry"
+  },
+  "deferred_external": [
+    "live_provider_validation",
+    "credential_availability",
+    "network",
+    "hosted_ci",
+    "signing",
+    "telemetry",
+    "hardware",
+    "adoption",
+    "publication"
+  ]
+}

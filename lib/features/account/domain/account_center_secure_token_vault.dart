@@ -42,30 +42,41 @@ class AccountSecureTokenVault {
 
   static DateTime _systemClock() => DateTime.now().toUtc();
 
-  String keyFor(String accountId, VaultSecretKind kind) {
+  String keyFor(String accountId, VaultSecretKind kind, {String? secretId}) {
     final normalized = accountId.trim();
     if (normalized.isEmpty || normalized.contains('/')) {
       throw ArgumentError.value(accountId, 'accountId');
     }
-    return 'account/$normalized/${kind.storageName}';
+    final normalizedSecretId = secretId?.trim();
+    if (normalizedSecretId != null &&
+        (normalizedSecretId.isEmpty || normalizedSecretId.contains('/'))) {
+      throw ArgumentError.value(secretId, 'secretId');
+    }
+    final suffix = normalizedSecretId == null ? '' : '/$normalizedSecretId';
+    return 'account/$normalized/${kind.storageName}$suffix';
   }
 
   Future<void> save({
     required String accountId,
     required String secret,
     required VaultSecretKind kind,
+    String? secretId,
   }) async {
     if (secret.isEmpty) throw ArgumentError.value(secret, 'secret');
-    await store.write(key: keyFor(accountId, kind), value: secret);
+    await store.write(
+      key: keyFor(accountId, kind, secretId: secretId),
+      value: secret,
+    );
     auditSink?.call(VaultAuditEvent(action: 'save', accountId: accountId));
   }
 
   Future<String?> read({
     required String accountId,
     required VaultSecretKind kind,
+    String? secretId,
   }) async {
     if (!await reauthenticate()) return null;
-    final value = await store.read(keyFor(accountId, kind));
+    final value = await store.read(keyFor(accountId, kind, secretId: secretId));
     auditSink?.call(VaultAuditEvent(action: 'read', accountId: accountId));
     return value;
   }
@@ -73,16 +84,22 @@ class AccountSecureTokenVault {
   Future<void> revoke({
     required String accountId,
     required VaultSecretKind kind,
+    String? secretId,
   }) async {
-    await store.delete(keyFor(accountId, kind));
+    await store.delete(keyFor(accountId, kind, secretId: secretId));
     auditSink?.call(VaultAuditEvent(action: 'revoke', accountId: accountId));
   }
 
   Future<bool> copyToClipboard({
     required String accountId,
     required VaultSecretKind kind,
+    String? secretId,
   }) async {
-    final value = await read(accountId: accountId, kind: kind);
+    final value = await read(
+      accountId: accountId,
+      kind: kind,
+      secretId: secretId,
+    );
     if (value == null || clipboardWriter == null) return false;
     await clipboardWriter!(value);
     _clipboardExpiresAt = clock().add(clipboardTimeout);

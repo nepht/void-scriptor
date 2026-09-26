@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.38",
+  "title": "Right-Rail Account Summary",
+  "acceptance": [
+    "plan",
+    "entitlements",
+    "credits",
+    "remote_storage",
+    "seats",
+    "renewal",
+    "manage_actions"
+  ],
+  "implementation": "lib/features/account/domain/account_center_right_rail_summary.dart",
+  "evidence": "test/features/account/domain/account_center_right_rail_summary_test.dart",
+  "boundary": "Local metadata-only summary rail: plan row mirrored from the subscription model, entitlement counts evaluated at an instant with expiry derived rather than stored, credit balance and seat count wrapped in availability types that throw instead of reading as zero, remote-only storage row whose every label is scope-labelled so local storage is never merged into it, renewal state derived with cancellation outranking renewal, and permission-aware manage actions where a sensitive action reauthenticate-before-run and an unknown permission state disables every action. No live billing, signed-server entitlement check, cloud quota read, payment provider, account export, or account deletion is performed; the product-spec billing contract stays PLANNED_NOT_VERIFIED, reference mock quota values cannot be produced, and public-trust signing, hosted CI, telemetry, hardware, adoption, and publication remain DEFERRED-EXTERNAL."
+}

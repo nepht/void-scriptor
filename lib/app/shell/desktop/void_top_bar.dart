@@ -42,10 +42,11 @@ class VoidTopBar extends StatelessWidget {
     final saveState = this.saveState;
     final projectContext = this.projectContext;
     return Container(
-      // 115.37 (Choi, 2026-09-27): top bar dirapatkan ke 39px. Isi tertinggi
-      // di dalamnya adalah project-context button 34px + border bawah 1px,
-      // jadi 39px masih muat tanpa overflow.
-      height: 39,
+      // 115.38 (Choi, 2026-09-27): top bar 39px -> 32px. Isi di dalamnya ikut
+      // dikecilkan supaya muat: avatar 32px, _TopMenuButton 30px
+      // (padding 6 + ikon 16 + teks 12 + padding 6), dan project-context
+      // button 28px. Border bawah 1px brings the total to 32.
+      height: 32,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: context.palette.panel,
@@ -176,7 +177,8 @@ class _ProjectContextButton extends StatelessWidget {
       PopupMenuItem(value: 'backup-export', child: Text('Backup & Export')),
     ],
     child: Container(
-      height: 34,
+      // 115.38: ikut top bar 32px.
+      height: 28,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: context.palette.panel,
@@ -254,8 +256,9 @@ class _TopMenuButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(6),
+      // 115.38: padding vertikal 8 -> 6 supaya tombol menu muat di top bar 32px.
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -435,6 +438,7 @@ class _AccountMenu extends StatelessWidget {
       PopupMenuDivider(),
       PopupMenuItem(value: 'logout', child: Text('Log out')),
     ],
+    // 115.38: avatar 32px (radius 16) pas di tinggi top bar 32px.
     icon: CircleAvatar(
       radius: 16,
       backgroundColor: context.palette.primary,

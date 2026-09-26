@@ -22,14 +22,17 @@ library;
 final class AccountCenterLayoutTokens {
   const AccountCenterLayoutTokens({
     this.viewportMinWidth = 1440,
-    this.topBarHeight = 56,
+    // 115.38 (Choi, 2026-09-27): nilai di bawah diukur ulang per-piksel dari
+    // mockup Account & Cloud Center 1536x1024.
+    this.topBarHeight = 39,
     this.leftNavigationWidth = 192,
-    this.rightSummaryWidth = 272,
+    this.rightSummaryWidth = 349,
     this.bottomStatusHeight = 40,
-    this.pageHorizontalPadding = 16,
+    this.pageHorizontalPadding = 17,
     this.pageVerticalPadding = 12,
-    this.columnGap = 12,
-    this.cardGap = 10,
+    // Mockup tidak punya celah antar kolom; yang terlihat adalah border 1px.
+    this.columnGap = 0,
+    this.cardGap = 11,
     this.centerContentMinWidth = 900,
     this.headerHeight = 76,
     this.tabBarHeight = 40,

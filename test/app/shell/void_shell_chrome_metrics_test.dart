@@ -6,7 +6,7 @@ import 'package:void_scriptor/app/shell/desktop/void_top_bar.dart';
 
 import '../../shared/theme_test_overrides.dart';
 
-/// 115.37 — Choi, 2026-09-27: top bar 39px dan status bar dihapus.
+/// 115.37/115.38 — Choi, 2026-09-27: top bar 39px lalu 32px, status bar dihapus.
 ///
 /// Dua kontrak ini mengunci keputusan shell:
 /// - tinggi top bar persis 39px (bukan 52px lama), dan isinya (project
@@ -15,9 +15,10 @@ import '../../shared/theme_test_overrides.dart';
 void _noop(String _) {}
 
 void main() {
-  const shellTopBarHeight = 39.0;
+  // 115.38: 39px -> 32px.
+  const shellTopBarHeight = 32.0;
 
-  testWidgets('top bar 39px dan tidak meluap pada viewport sempit', (
+  testWidgets('top bar 32px dan tidak meluap pada viewport sempit', (
     tester,
   ) async {
     tester.view
@@ -41,7 +42,7 @@ void main() {
     expect(
       bar.height,
       closeTo(shellTopBarHeight, 0.01),
-      reason: '115.37: top bar 39px',
+      reason: '115.38: top bar 32px',
     );
     expect(tester.takeException(), isNull);
   });

@@ -21,7 +21,10 @@
       "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
       "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
       "entry_snapshot": "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json",
-      "token_subtrees": ["layout.breakpoints", "visual_tokens.card"]
+      "token_subtrees": [
+        "layout.breakpoints",
+        "visual_tokens.card"
+      ]
     }
   },
   "acceptance_viewports": [
@@ -37,11 +40,31 @@
     "height_px": 1024
   },
   "breakpoints": [
-    { "name": "wide_desktop", "min_width_px": 1440, "max_width_px": null },
-    { "name": "desktop", "min_width_px": 1180, "max_width_px": 1439 },
-    { "name": "compact_desktop", "min_width_px": 900, "max_width_px": 1179 },
-    { "name": "tablet", "min_width_px": 600, "max_width_px": 899 },
-    { "name": "mobile", "min_width_px": null, "max_width_px": 599 }
+    {
+      "name": "wide_desktop",
+      "min_width_px": 1440,
+      "max_width_px": null
+    },
+    {
+      "name": "desktop",
+      "min_width_px": 1180,
+      "max_width_px": 1439
+    },
+    {
+      "name": "compact_desktop",
+      "min_width_px": 900,
+      "max_width_px": 1179
+    },
+    {
+      "name": "tablet",
+      "min_width_px": 600,
+      "max_width_px": 899
+    },
+    {
+      "name": "mobile",
+      "min_width_px": null,
+      "max_width_px": 599
+    }
   ],
   "grid_plan": [
     {
@@ -88,7 +111,7 @@
   "columns_rationale": "Spec menyebut kolom eksplisit hanya untuk compact_desktop (dua), tablet (satu atau dua), dan mobile (satu). wide_desktop dan desktop tidak menyebut batas kolom; grid 3 kolom implementasi kini dipertahankan dan selalu dikendalikan aturan fit card.min_width 220 sehingga tidak ada overflow pada lebar berapa pun.",
   "fit_rule": {
     "min_card_width_px": 220,
-    "card_gap_px": 10,
+    "card_gap_px": 11,
     "rule": "kolom dikurangi sampai lebar kartu >= min_card_width; tidak pernah di bawah 1 kolom; lebar tak-positif/tak-hingga -> 1 kolom"
   },
   "summary_rule": "right summary berdampingan (side) hanya pada wide_desktop sesuai behavior spec 'persistent right summary'; tier lain menumpuk (stacked) pada langkah ini.",

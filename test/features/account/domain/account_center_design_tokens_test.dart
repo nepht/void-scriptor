@@ -16,14 +16,23 @@ void main() {
     test('reference desktop sizes match the product spec', () {
       const layout = AccountCenterDesignTokens.layout;
       expect(layout.viewportMinWidth, 1440);
-      expect(layout.topBarHeight, 56);
+      // 115.38 (Choi, 2026-09-27): token di bawah diukur ulang dari mockup
+      // Account & Cloud Center (1536x1024) per-piksel, bukan dari estimasi.
+      // - topBarHeight 56 -> 39: shell nyata sudah 39px (115.37) dan mockup
+      //   juga tidak punya chrome setinggi 56.
+      // - rightSummaryWidth 272 -> 349: rail mockup x1169..1518.
+      // - pageHorizontalPadding 16 -> 17: margin mockup x=17..1518.
+      // - columnGap 12 -> 0: mockup tidak punya celah antar kolom; yang
+      //   terlihat adalah border 1px di x=484 / 941 / 1157.
+      // - cardGap 10 -> 11: jarak antar baris mockup y455 -> y466.
+      expect(layout.topBarHeight, 39);
       expect(layout.leftNavigationWidth, 192);
-      expect(layout.rightSummaryWidth, 272);
+      expect(layout.rightSummaryWidth, 349);
       expect(layout.bottomStatusHeight, 40);
-      expect(layout.pageHorizontalPadding, 16);
+      expect(layout.pageHorizontalPadding, 17);
       expect(layout.pageVerticalPadding, 12);
-      expect(layout.columnGap, 12);
-      expect(layout.cardGap, 10);
+      expect(layout.columnGap, 0);
+      expect(layout.cardGap, 11);
       expect(layout.centerContentMinWidth, 900);
       expect(layout.headerHeight, 76);
       expect(layout.tabBarHeight, 40);

@@ -63,11 +63,25 @@ class AccountCloudSnapshot {
           description: 'Google OAuth is not connected.',
         ),
         const AccountCloudService(
+          id: 'microsoft-sign-in',
+          label: 'Microsoft',
+          group: AccountCloudServiceGroup.signIn,
+          state: AccountCloudConnectionState.notConnected,
+          description: 'Microsoft OAuth is not connected.',
+        ),
+        const AccountCloudService(
           id: 'github-sign-in',
           label: 'GitHub',
           group: AccountCloudServiceGroup.signIn,
           state: AccountCloudConnectionState.notConnected,
           description: 'GitHub OAuth is not connected.',
+        ),
+        const AccountCloudService(
+          id: 'apple-sign-in',
+          label: 'Apple ID',
+          group: AccountCloudServiceGroup.signIn,
+          state: AccountCloudConnectionState.notConnected,
+          description: 'Apple ID is not connected.',
         ),
         const AccountCloudService(
           id: 'local-project-storage',

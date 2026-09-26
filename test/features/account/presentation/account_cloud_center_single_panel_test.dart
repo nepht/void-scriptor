@@ -279,9 +279,15 @@ void main() {
       );
 
       // Ikon + label tiap metode sign-in berada di dalam kartu yang sama.
-      // Label kanonik dari AccountCloudSnapshot: 'Email sign-in', 'Google',
-      // 'GitHub' (bukan 'Email' — itu ID, bukan teks yang ditampilkan).
-      for (final method in const ['Email sign-in', 'Google', 'GitHub']) {
+      // Lima provider kanonik dari mockup: Email, Google, Microsoft, GitHub,
+      // Apple ID. Label teknya persis seperti di mockup, bukan slug internal.
+      for (final method in const [
+        'Email',
+        'Google',
+        'Microsoft',
+        'GitHub',
+        'Apple ID',
+      ]) {
         expect(
           find.descendant(of: card, matching: find.text(method)),
           findsOneWidget,
@@ -295,6 +301,89 @@ void main() {
       );
     },
   );
+
+  testWidgets('lima metode sign-in punya ikon provider, bukan ikon generik', (
+    tester,
+  ) async {
+    await pumpCenter(tester);
+
+    final card = find.byKey(
+      const ValueKey('account-overview-card-authentication'),
+    );
+    // 115.36: mockup menandai tiap provider dengan brand icon-nya sendiri.
+    // Kontrak ini menolak degeneration ke satu ikon generik untuk kelima
+    // baris.
+    final rowIcons = <IconData>{};
+    for (final method in const [
+      'Email',
+      'Google',
+      'Microsoft',
+      'GitHub',
+      'Apple ID',
+    ]) {
+      final row = find.ancestor(
+        of: find.descendant(of: card, matching: find.text(method)),
+        matching: find.byType(Row),
+      );
+      final iconFinder = find.descendant(of: row, matching: find.byType(Icon));
+      expect(iconFinder, findsWidgets, reason: '$method punya ikon');
+      for (final icon in tester.widgetList<Icon>(iconFinder)) {
+        final data = icon.icon;
+        if (data != null) rowIcons.add(data);
+      }
+    }
+    expect(
+      rowIcons.length,
+      greaterThanOrEqualTo(4),
+      reason: 'lima metode harus memakai ikon provider yang berbeda, '
+          'bukan satu ikon generik: ditemukan ${rowIcons.length} ikon unik',
+    );
+  });
+
+  testWidgets('lima metode sign-in + aksi sign-in muat di dalam kartu', (
+    tester,
+  ) async {
+    // Viewport pendek: proporsi baris mockup hanya memberi 266px ke baris
+    // pertama pada 1600x900, sehingga metode ke-4 dan ke-5 terpotong. Lantai
+    // tinggi baris pertama (minFirstRowHeight) yang mencegah itu.
+    tester.view.physicalSize = const Size(1600, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await pumpCenter(tester);
+
+    final card = find.byKey(
+      const ValueKey('account-overview-card-authentication'),
+    );
+    final cardRect = tester.getRect(card);
+    for (final label in const [
+      'Email',
+      'Google',
+      'Microsoft',
+      'GitHub',
+      'Apple ID',
+    ]) {
+      final rect = tester.getRect(
+        find.descendant(of: card, matching: find.text(label)),
+      );
+      expect(
+        rect.bottom,
+        lessThanOrEqualTo(cardRect.bottom),
+        reason: 'metode $label harus di dalam kartu, bukan terpotong',
+      );
+    }
+    // Aksi sign-in juga hidup di kartu yang sama dan tidak boleh terpotong.
+    expect(
+      tester
+          .getRect(
+            find.descendant(
+              of: card,
+              matching: find.text('Sign in or connect account'),
+            ),
+          )
+          .bottom,
+      lessThanOrEqualTo(cardRect.bottom),
+    );
+  });
 
   testWidgets('tidak ada kartu sign-in terpisah di luar kartu authentication', (
     tester,

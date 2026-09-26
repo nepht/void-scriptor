@@ -456,6 +456,18 @@ class _AuthenticationProfileCard extends StatelessWidget {
     AccountCloudServiceGroup.sync => Icons.sync_outlined,
   };
 
+  /// 115.36: mockup menandai tiap metode sign-in dengan brand icon-nya sendiri,
+  /// bukan satu ikon generik per group. Ikon memakai set Material bawaan yang
+  /// sudah ada di bundle — tidak ada aset baru.
+  IconData _signInIconFor(AccountCloudService service) => switch (service.id) {
+    'email-sign-in' => Icons.mail_outline,
+    'google-sign-in' => Icons.g_mobiledata,
+    'microsoft-sign-in' => Icons.window,
+    'github-sign-in' => Icons.code,
+    'apple-sign-in' => Icons.phone_iphone,
+    _ => _iconFor(service.group),
+  };
+
   @override
   Widget build(BuildContext context) {
     final profile = AuthenticationProfileCard.authenticated(
@@ -471,7 +483,10 @@ class _AuthenticationProfileCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          // 115.36: baris profil setinggi avatar (80px) sementara isinya hanya
+          // ~60px. `center`-Isi tetap di kiri, hanya kotak avatar yang tidak
+          // menambah tinggi baris.
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _ProfileAvatar(
               key: const ValueKey('account-profile-avatar'),
@@ -502,7 +517,7 @@ class _AuthenticationProfileCard extends StatelessWidget {
                       color: context.palette.textSecondary,
                     ),
                   ),
-                  SizedBox(height: AccountCenterDesignTokens.spacing.xs),
+                  SizedBox(height: AccountCenterDesignTokens.spacing.twoXs),
                   _PlanBadge(
                     key: const ValueKey('account-profile-subscription'),
                     plan: profile.plan,
@@ -547,7 +562,7 @@ class _AuthenticationProfileCard extends StatelessWidget {
           ],
         ),
         // Aksi sign-in yang sebelumnya hidup di kartu ringkasan terpisah.
-        SizedBox(height: AccountCenterDesignTokens.spacing.md),
+        SizedBox(height: AccountCenterDesignTokens.spacing.sm),
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
@@ -570,8 +585,9 @@ class _AuthenticationProfileCard extends StatelessWidget {
         // membuat tinggi tak terbatas dan merusak flexible child).
         for (final service in _signInServices)
           _SignInMethodRow(
-            icon: _iconFor(service.group),
-            label: service.label,
+            key: ValueKey('account-sign-in-method-${service.id}'),
+            icon: _signInIconFor(service),
+            label: _signInLabelFor(service),
             state: service.state,
           ),
       ],
@@ -583,6 +599,14 @@ class _AuthenticationProfileCard extends StatelessWidget {
   List<AccountCloudService> get _signInServices => snapshot.services
       .where((service) => service.group == AccountCloudServiceGroup.signIn)
       .toList(growable: false);
+
+  /// Label persis seperti mockup. Snapshot menyimpan `Email sign-in`
+  /// sebagai ID deskriptif, sedangkan mockup menampilkan `Email`.
+  String _signInLabelFor(AccountCloudService service) => switch (service.id) {
+    'email-sign-in' => 'Email',
+    'apple-sign-in' => 'Apple ID',
+    _ => service.label,
+  };
 
   List<SignInMethod> get _signInMethods => const [
     SignInMethod.email,
@@ -699,6 +723,7 @@ class _PlanBadge extends StatelessWidget {
 
 class _SignInMethodRow extends StatelessWidget {
   const _SignInMethodRow({
+    super.key,
     required this.icon,
     required this.label,
     required this.state,
@@ -711,7 +736,12 @@ class _SignInMethodRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      // 115.36: lima metode harus muat di kartu mockup pada viewport pendek
+      // (1600x900 memberi baris pertama hanya 266px). Padding vertikal 2px
+      // saving 20px untuk lima baris, tanpa mengorbankan target sentuh —
+      // barisnya non-interaktif (hanya status), jadi tidak punya aksi yang
+      // perlu target 44px.
+      padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         children: [
           Icon(icon, size: AccountCenterDesignTokens.iconSizes.action),
@@ -1504,6 +1534,13 @@ class _FocusedAccountArea extends StatelessWidget {
         // 1536x1024), bukan dibagi rata: baris pertama memuat kartu
         // Authentication, Quick Connect, dan Storage yang paling padat.
         const rowWeights = <double>[351, 268, 265];
+        // 115.36: kartu AUTHENTICATION memuat lima baris metode sign-in dan
+        // butuh ~414px (terukur). Pada viewport pendek (1600x900) proporsi
+        // mockup hanya memberi 266px ke baris pertama, sehingga metode ke-4
+        // dan ke-5 terpotong. Baris pertama karena itu punya lantai tinggi
+        // yang cukup untuk isi kartu, dan sisanya memakai proporsi mockup atas
+        // tinggi yang tersisa.
+        const minFirstRowHeight = 430.0;
         final totalWeight = rowWeights
             .take(rowCount)
             .fold<double>(0, (sum, weight) => sum + weight);
@@ -1513,12 +1550,27 @@ class _FocusedAccountArea extends StatelessWidget {
           0.0,
           availableHeight,
         );
-        final rowHeights = <double>[
+        final weighted = <double>[
           for (var i = 0; i < rowCount; i++)
             totalWeight > 0
                 ? usable * rowWeights[i] / totalWeight
                 : usable / rowCount,
         ];
+        // Lantai baris pertama diambil dari sisa tinggi, bukan menambah tinggi
+        // total: bila viewport memang tidak cukup, [_DashboardCardContent] yang
+        // menggulir di dalam kartu.
+        if (weighted.isNotEmpty && weighted.first < minFirstRowHeight) {
+          final deficit = minFirstRowHeight - weighted.first;
+          final others = weighted.length - 1;
+          if (others > 0) {
+            final per = deficit / others;
+            for (var i = 1; i < weighted.length; i++) {
+              weighted[i] = (weighted[i] - per).clamp(80.0, weighted[i]);
+            }
+          }
+          weighted[0] = minFirstRowHeight;
+        }
+        final rowHeights = weighted;
         // 115.36: tiga baris mockup hanya sah di tier `wide_desktop` (viewport
         // referensi 1536x1024). Di tier lain, mockup tidak berlaku dan kontrak
         // responsif 115.6 yang dipakai: kartu mengalir sesuai [maxColumns]

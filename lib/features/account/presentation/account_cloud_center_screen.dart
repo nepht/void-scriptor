@@ -15,6 +15,7 @@ import '../domain/account_center_design_tokens.dart';
 import '../domain/account_center_information_architecture.dart';
 import '../domain/account_center_provider_connector_manifest.dart';
 import '../domain/account_center_responsive_grid.dart';
+import '../domain/account_center_wide_desktop_frame.dart';
 import '../domain/account_center_provider_icon_registry.dart';
 import 'storage_usage_card.dart';
 
@@ -142,6 +143,25 @@ class _AccountCloudCenterScreenState
             final gridPlan = AccountCenterResponsiveGrid.resolve(
               constraints.maxWidth,
             );
+            // 115.45: pada tier `wide_desktop` seluruh halaman memakai frame
+            // kanonik (left navigation + main grid + right rail + status bar).
+            // Di bawah 1440 frame TIDAK dipakai: drawer/collapse/reflow milik
+            // 115.46 dan 115.47 yang belum dieksekusi, sehingga jalur
+            // responsif yang ada dipertahankan apa adanya.
+            final frame = AccountCenterWideDesktopFrame.resolve(
+              width: constraints.maxWidth,
+              height: constraints.maxHeight.isFinite
+                  ? constraints.maxHeight
+                  : MediaQuery.sizeOf(context).height,
+            );
+            if (frame != null) {
+              return _buildWideDesktopFrame(
+                context: context,
+                frame: frame,
+                data: data,
+                operationalMetrics: operationalMetrics,
+              );
+            }
             return Padding(
               padding: EdgeInsets.symmetric(
                 horizontal:
@@ -234,6 +254,96 @@ class _AccountCloudCenterScreenState
     );
   }
 
+  /// 115.45 — frame `wide_desktop`: left navigation, main grid, right rail,
+  /// dan status bar, semuanya dari geometri kontrak
+  /// [AccountCenterWideDesktopFrame] (bukan heuristik piksel).
+  ///
+  /// Tinggi terkunci per band, jadi grid TIDAK pernah memanjang: kartu
+  /// menggulir di dalam dirinya dan rail menggulir di dalam bandnya
+  /// (scroll_containment).
+  Widget _buildWideDesktopFrame({
+    required BuildContext context,
+    required AccountCenterFrameLayout frame,
+    required AccountCloudSnapshot data,
+    required AsyncValue<AccountOperationalMetrics?> operationalMetrics,
+  }) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: frame.pagePaddingHorizontal,
+        vertical: frame.pagePaddingVertical,
+      ),
+      child: SizedBox(
+        height: frame.viewportHeight - 2 * frame.pagePaddingVertical,
+        child: Column(
+          children: [
+            // Baris utama: left navigation | main grid | right rail. Tinggi
+            // terkunci oleh [frame.gridHeight] sehingga halaman tidak memanjang.
+            SizedBox(
+              height: frame.gridHeight,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _AccountLeftNavigation(
+                    key: const ValueKey('account-center-left-navigation'),
+                    width: frame.leftNavigationWidth,
+                    activeSection: _activeOverviewSection(),
+                  ),
+                  SizedBox(
+                    key: const ValueKey('account-center-main-grid'),
+                    width: frame.mainWidth,
+                    child: _shellMain(
+                      mainWidth: frame.mainWidth,
+                      data: data,
+                      gridPlan: AccountCenterResponsiveGrid.resolve(
+                        frame.viewportWidth,
+                      ),
+                      scrollable: false,
+                      frame: frame,
+                    ),
+                  ),
+                  _AccountSummaryRailFrame(
+                    key: const ValueKey('account-center-right-rail'),
+                    width: frame.rightRailWidth,
+                    snapshot: data,
+                    operationalMetrics: operationalMetrics,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AccountCenterWideDesktopFrame.rowGap),
+            _AccountStatusBar(
+              key: const ValueKey('account-center-status-bar'),
+              height: frame.statusBarHeight,
+              snapshot: data,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Section overview yang sedang aktif — dipakai untuk menandai entri left
+  /// navigation. Tab aktif dipetakan ke section kanoniknya lewat urutan
+  /// [AccountCenterWideDesktopFrame.leftNavigation].
+  String _activeOverviewSection() {
+    final index = AccountCenterInformationArchitecture.tabs.indexOf(_tab);
+    final sections = <String>[
+      'authentication',
+      'connected_services',
+      'cloud_storage_usage',
+      'quick_connect',
+      'api_keys_summary',
+      'team_summary',
+      'security_summary',
+      'backup_sync_summary',
+      'security_summary',
+    ];
+    if (index < 0 || index >= sections.length) {
+      return 'authentication';
+    }
+    return sections[index];
+  }
+
   /// Area utama shell: chrome atas lalu grid tiga baris mockup.
   ///
   /// Dipakai oleh tier `wide_desktop` (lebar 75%) dan tier lain yang
@@ -243,11 +353,13 @@ class _AccountCloudCenterScreenState
     required AccountCloudSnapshot data,
     required AccountCenterGridPlan gridPlan,
     required bool scrollable,
+    AccountCenterFrameLayout? frame,
   }) {
     final area = _FocusedAccountArea(
       tab: _tab,
       snapshot: data,
       gridPlan: gridPlan,
+      frame: frame,
       providerManifest:
           widget.providerManifest ?? ProviderConnectorManifest.standard,
       onConnectProvider: widget.onConnectProvider,
@@ -864,6 +976,175 @@ class _SignInMethodRow extends StatelessWidget {
   }
 }
 
+/// 115.45 — Band left navigation frame `wide_desktop`.
+///
+/// Lebar, urutan entri, dan isi berasal dari kontrak
+/// [AccountCenterWideDesktopFrame.leftNavigation] (`overview_sections` spec).
+/// Entri bersifat struktural (seam navigasi area kanonik), bukan filter: tab
+/// strip dan baris grid tetap satu-satunya seam scroll/interaksi, jadi slice
+/// ini tidak menambah perilaku baru di luar kontrak.
+class _AccountLeftNavigation extends StatelessWidget {
+  const _AccountLeftNavigation({
+    super.key,
+    required this.width,
+    required this.activeSection,
+  });
+
+  final double width;
+
+  /// Section kanonik yang sedang aktif; entri lain tampil netral.
+  final String activeSection;
+
+  static const Map<String, IconData> _icons = <String, IconData>{
+    'badge': Icons.badge_outlined,
+    'bolt': Icons.bolt_outlined,
+    'cloud': Icons.cloud_outlined,
+    'hub': Icons.hub_outlined,
+    'key': Icons.key_outlined,
+    'groups': Icons.groups_outlined,
+    'history': Icons.history_outlined,
+    'sync': Icons.sync_outlined,
+    'shield': Icons.security_outlined,
+  };
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: width,
+    decoration: BoxDecoration(
+      border: Border(
+        right: BorderSide(
+          color: context.palette.textMuted.withValues(alpha: 0.28),
+          width: 1,
+        ),
+      ),
+    ),
+    padding: EdgeInsets.only(
+      right: AccountCenterDesignTokens.spacing.md,
+      top: AccountCenterDesignTokens.spacing.twoXs,
+    ),
+    child: Semantics(
+      container: true,
+      label: 'Account sections',
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          for (final item in AccountCenterWideDesktopFrame.leftNavigation)
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: AccountCenterDesignTokens.spacing.twoXs,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    _icons[item.iconKey] ?? Icons.circle_outlined,
+                    size: AccountCenterDesignTokens.iconSizes.navigation,
+                    color: context.palette.textSecondary,
+                  ),
+                  SizedBox(width: AccountCenterDesignTokens.spacing.sm),
+                  Expanded(
+                    child: Text(
+                      item.label,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: _caption.copyWith(
+                        color: item.section == activeSection
+                            ? context.palette.primaryBright
+                            : context.palette.textSecondary,
+                        fontWeight: item.section == activeSection
+                            ? FontWeight.w600
+                            : _caption.fontWeight,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    ),
+  );
+}
+
+/// 115.45 — Status bar frame `wide_desktop`.
+///
+/// Isi SELALU diturunkan dari snapshot lokal lewat
+/// [AccountCenterWideDesktopFrame.statusBarItems]; tidak ada nilai yang
+/// difabrikasi dan tidak ada aksi baru yang ditambahkan di sini.
+class _AccountStatusBar extends StatelessWidget {
+  const _AccountStatusBar({
+    super.key,
+    required this.height,
+    required this.snapshot,
+  });
+
+  final double height;
+  final AccountCloudSnapshot snapshot;
+
+  @override
+  Widget build(BuildContext context) {
+    final items = AccountCenterWideDesktopFrame.statusBarItems(snapshot);
+    return Container(
+      height: height,
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: context.palette.textMuted.withValues(alpha: 0.28),
+            width: 1,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          for (final item in items)
+            Padding(
+              padding: EdgeInsets.only(
+                right: AccountCenterDesignTokens.spacing.lg,
+              ),
+              child: Row(
+                children: [
+                  // Label dan nilai adalah dua `Text` terpisah supaya
+                  // pembaca layar bisa membedakan kunci dan isinya.
+                  Text(
+                    item.label,
+                    style: _caption.copyWith(color: context.palette.textMuted),
+                  ),
+                  SizedBox(width: AccountCenterDesignTokens.spacing.xs),
+                  Text(item.value, style: _caption),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 115.45 — Right rail di dalam frame: band lebar terkunci dan kartu
+/// bergulir di dalamnya, jadi panel luar tidak pernah memanjang.
+class _AccountSummaryRailFrame extends StatelessWidget {
+  const _AccountSummaryRailFrame({
+    super.key,
+    required this.width,
+    required this.snapshot,
+    required this.operationalMetrics,
+  });
+
+  final double width;
+  final AccountCloudSnapshot snapshot;
+  final AsyncValue<AccountOperationalMetrics?> operationalMetrics;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: width,
+    child: _AccountSummaryRail(
+      plan: AccountCenterResponsiveGrid.resolve(width),
+      snapshot: snapshot,
+      operationalMetrics: operationalMetrics,
+      natural: false,
+    ),
+  );
+}
+
 class _AccountSummaryRail extends StatelessWidget {
   const _AccountSummaryRail({
     required this.plan,
@@ -1448,6 +1729,7 @@ class _FocusedAccountArea extends StatelessWidget {
     required this.providerManifest,
     required this.onConnectProvider,
     required this.onSyncNow,
+    this.frame,
     this.onSignIn,
     this.onOpenAiProviders,
     this.onOpenSecurity,
@@ -1458,6 +1740,10 @@ class _FocusedAccountArea extends StatelessWidget {
 
   /// Rencana grid yang sudah diresolusi dari lebar viewport oleh pemanggil.
   final AccountCenterGridPlan gridPlan;
+
+  /// 115.45: geometri frame wide desktop. Null pada jalur responsif di bawah
+  /// 1440, yang memakai perhitungan tinggi baris lamanya.
+  final AccountCenterFrameLayout? frame;
 
   final ProviderConnectorManifest providerManifest;
   final ValueChanged<ProviderConnectorEntry>? onConnectProvider;
@@ -1622,54 +1908,48 @@ class _FocusedAccountArea extends StatelessWidget {
         // dihitung di dalam baris yang relevan.
         final rowGap = gap;
         final rowCount = rows.length;
-        // Tinggi tak terbatas hanya terjadi bila panel di-host tanpa Scaffold
-        // pada harness pengujian; fallback lokal menjaga baris tetap terukur
-        // tanpa menyentuh design token yang dipaku test.
-        const fallbackHeight = 900.0;
-        final availableHeight = constraints.maxHeight.isFinite
-            ? constraints.maxHeight
-            : fallbackHeight;
-        // Tinggi baris mengikuti proporsi mockup (351 / 268 / 265 px pada
-        // 1536x1024), bukan dibagi rata: baris pertama memuat kartu
-        // Authentication, Quick Connect, dan Storage yang paling padat.
-        const rowWeights = <double>[351, 268, 265];
-        // 115.36: kartu AUTHENTICATION memuat lima baris metode sign-in dan
-        // butuh ~414px (terukur). Pada viewport pendek (1600x900) proporsi
-        // mockup hanya memberi 266px ke baris pertama, sehingga metode ke-4
-        // dan ke-5 terpotong. Baris pertama karena itu punya lantai tinggi
-        // yang cukup untuk isi kartu, dan sisanya memakai proporsi mockup atas
-        // tinggi yang tersisa.
-        const minFirstRowHeight = 430.0;
-        final totalWeight = rowWeights
-            .take(rowCount)
-            .fold<double>(0, (sum, weight) => sum + weight);
-        // Gap dipisah: `rowCount - 1` jarak antar baris. Padding bawah tiap
-        // baris sudah termasuk di dalam `rowHeights`.
-        final usable = (availableHeight - rowGap * (rowCount - 1)).clamp(
-          0.0,
-          availableHeight,
-        );
-        final weighted = <double>[
-          for (var i = 0; i < rowCount; i++)
-            totalWeight > 0
-                ? usable * rowWeights[i] / totalWeight
-                : usable / rowCount,
-        ];
-        // Lantai baris pertama diambil dari sisa tinggi, bukan menambah tinggi
-        // total: bila viewport memang tidak cukup, [_DashboardCardContent] yang
-        // menggulir di dalam kartu.
-        if (weighted.isNotEmpty && weighted.first < minFirstRowHeight) {
-          final deficit = minFirstRowHeight - weighted.first;
-          final others = weighted.length - 1;
-          if (others > 0) {
-            final per = deficit / others;
-            for (var i = 1; i < weighted.length; i++) {
-              weighted[i] = (weighted[i] - per).clamp(80.0, weighted[i]);
-            }
-          }
-          weighted[0] = minFirstRowHeight;
+        // 115.45: tinggi baris pada frame wide desktop dihitung SATU KALI di
+        // kontrak [AccountCenterFrameLayout] (terukur dari viewport, bukan
+        // dari tinggi tak terkunci panel), sehingga chrome yang dikurangi
+        // tidak pernah membuat baris meluap. Jalur responsif di bawah 1440
+        // tetap memakai perhitungan lama agar tier 115.46/115.47 tidak
+        // ikut berubah oleh slice ini.
+        final wideFrame = frame;
+        List<double> rowHeights;
+        double availableHeight;
+        if (wideFrame != null && constraints.maxHeight.isFinite) {
+          // Band main memuat chrome (header, breadcrumb, tab strip) sebelum
+          // kartu. Tinggi yang benar untuk grid adalah sisa SETELAH chrome,
+          // jadi tinggi baris dihitung dari tinggi yang benar-benar tersedia
+          // — bukan dari tinggi band. Algoritmanya tetap milik kontrak
+          // ([rowHeightsFor]); frame hanya quiebra tinggi band dan lebar kolom.
+          availableHeight = constraints.maxHeight;
+          rowHeights = AccountCenterWideDesktopFrame.rowHeightsFor(
+            (availableHeight - rowGap * (rowCount - 1)).clamp(
+              0.0,
+              availableHeight,
+            ),
+          );
+        } else if (wideFrame != null) {
+          // Harness tanpa Scaffold memberi tinggi tak terbatas; anggaran
+          // frame dipakai sebagai gantinya agar baris tetap terukur.
+          availableHeight = wideFrame.gridHeight;
+          rowHeights = wideFrame.rowHeights;
+        } else {
+          // Tinggi tak terbatas hanya terjadi bila panel di-host tanpa
+          // Scaffold pada harness pengujian; fallback lokal menjaga baris
+          // tetap terukur tanpa menyentuh design token yang dipaku test.
+          const fallbackHeight = 900.0;
+          availableHeight = constraints.maxHeight.isFinite
+              ? constraints.maxHeight
+              : fallbackHeight;
+          rowHeights = AccountCenterWideDesktopFrame.rowHeightsFor(
+            (availableHeight - rowGap * (rowCount - 1)).clamp(
+              0.0,
+              availableHeight,
+            ),
+          );
         }
-        final rowHeights = weighted;
         // 115.36: tiga baris mockup hanya sah di tier `wide_desktop` (viewport
         // referensi 1536x1024). Di tier lain, mockup tidak berlaku dan kontrak
         // responsif 115.6 yang dipakai: kartu mengalir sesuai [maxColumns]
@@ -1677,6 +1957,9 @@ class _FocusedAccountArea extends StatelessWidget {
         // 600-1179px hanya menghasilkan baris yang meluap isinya.
         final mockupTier = gridPlan.tier == AccountCenterLayoutTier.wideDesktop;
         const minRowHeight = 120.0;
+        // 115.45: pada frame wide desktop, jumlah kolom tiap baris sudah
+        // diputuskan kontrak (aturan fit card.minWidth terhadap band main).
+        // Baris mockup hanya sah bila tinggi tersedia masih cukup.
         if (!mockupTier || availableHeight < minRowHeight * rowCount) {
           return SingleChildScrollView(
             child: Column(
@@ -1719,12 +2002,19 @@ class _FocusedAccountArea extends StatelessWidget {
                       cards: rows[index].cards,
                       contentWidth: contentWidth,
                       gap: rowGap,
+                      // Padding bawah baris ada DI DALAM tinggi baris, jadi
+                      // anggaran kartu adalah tinggi baris dikurangi padding
+                      // tersebut — kalau tidak, kartu meluap sebesar rowGap.
+                      boundedRowHeight: rowHeights[index] - rowGap,
                       // Mockup 1536x1024 memakai lima kolom pada baris 2 dan
-                      // 3; batas itu hanya sah di tier wide_desktop.
+                      // 3; batas itu hanya sah di tier wide_desktop, dan
+                      // pada frame 115.45 angka kolom berasal dari kontrak
+                      // (1536 hanya muat 4 kolom setelah nav 192px).
                       maxColumns:
-                          gridPlan.tier == AccountCenterLayoutTier.wideDesktop
-                          ? 5
-                          : gridPlan.maxColumns,
+                          frame?.rowColumns[index] ??
+                          (gridPlan.tier == AccountCenterLayoutTier.wideDesktop
+                              ? 5
+                              : gridPlan.maxColumns),
                     ),
                   ),
                 ),
@@ -1750,6 +2040,7 @@ class _RowCards extends StatelessWidget {
     required this.gap,
     required this.maxColumns,
     this.boundedHeight = true,
+    this.boundedRowHeight,
   });
 
   final List<_AccountSectionCard> cards;
@@ -1767,6 +2058,12 @@ class _RowCards extends StatelessWidget {
   /// Apakah baris punya tinggi terkunci (baris mockup) atau shrink-wrap
   /// (jalur scroll pada viewport pendek).
   final bool boundedHeight;
+
+  /// Tinggi terkunci baris ini. Bila kartu membungkus ke beberapa baris
+  /// fisik (115.45: lima kartu pada 961px hanya muat empat), tinggi ini
+  /// DIBAGI rata ke baris fisik agar tidak ada yang meluap dan tidak ada
+  /// tinggi yang hilang.
+  final double? boundedRowHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -1829,25 +2126,54 @@ class _RowCards extends StatelessWidget {
       );
     }
 
+    // Jalur beberapa baris fisik. Bila baris punya tinggi terkunci, tinggi
+    // itu dibagi rata ke baris fisik — tanpa ini lima kartu pada 961px
+    // (empat per baris + satu) akan memakai tinggi natural ~2x dan meluap.
+    // Bila tinggi tidak terkunci, `Column` meneruskan tinggi tak terbatas ke
+    // tiap `Row` anak sehingga `stretch` melempar "infinite height"; baris
+    // anak lalu shrink-wrap dan kartu bergulir di dalamnya.
+    final physicalRows = (cards.length / perRow).ceil();
+    final locked = boundedHeight && boundedRowHeight != null;
+    // Celah antar baris fisik ikut dipotong dari tinggi terkunci; tanpa itu
+    // tinggi baris fisik + celah melampaui tinggi baris mockup dan meluap.
+    final perPhysicalRow = locked
+        ? (boundedRowHeight! - gap * (physicalRows - 1)) / physicalRows
+        : null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (var row = 0; row * perRow < cards.length; row++) ...[
-          Row(
-            crossAxisAlignment: boundedHeight
-                ? CrossAxisAlignment.stretch
-                : CrossAxisAlignment.start,
-            children: [
-              for (var index = 0; index < perRow; index++)
-                if (row * perRow + index < cards.length)
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: index == perRow - 1 ? 0 : gap,
+          if (perPhysicalRow != null)
+            SizedBox(
+              height: perPhysicalRow,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var index = 0; index < perRow; index++)
+                    if (row * perRow + index < cards.length)
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: index == perRow - 1 ? 0 : gap,
+                        ),
+                        child: card(row * perRow + index),
+                      ),
+                ],
+              ),
+            )
+          else
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (var index = 0; index < perRow; index++)
+                  if (row * perRow + index < cards.length)
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: index == perRow - 1 ? 0 : gap,
+                      ),
+                      child: card(row * perRow + index),
                     ),
-                    child: card(row * perRow + index),
-                  ),
-            ],
-          ),
+              ],
+            ),
           if ((row + 1) * perRow < cards.length) SizedBox(height: gap),
         ],
       ],

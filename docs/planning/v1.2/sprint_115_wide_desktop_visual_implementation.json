@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_WIDE_DESKTOP_FRAME_MANIFEST",
+  "canonical_step": "115.45",
+  "title": "Wide Desktop Visual Implementation",
+  "sources": {
+    "canonical_steps": {
+      "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+      "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba",
+      "step_acceptance": [
+        "layout_dimensions",
+        "no_overlap",
+        "scroll_containment",
+        "consistent_cards",
+        "right_rail",
+        "status_bar"
+      ]
+    },
+    "product_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+      "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+      "entry_snapshot": "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json",
+      "token_subtrees": [
+        "layout.reference_desktop",
+        "layout.breakpoints[0]",
+        "information_architecture.overview_sections"
+      ]
+    }
+  },
+  "acceptance": {
+    "layout_dimensions": {
+      "reference_viewport": {
+        "width_px": 1536,
+        "height_px": 1024
+      },
+      "left_navigation_width_px": 192,
+      "right_summary_width_px": 349,
+      "bottom_status_height_px": 40,
+      "page_horizontal_padding_px": 17,
+      "page_vertical_padding_px": 12,
+      "row_gap_px": 11,
+      "grid_width_px": 961,
+      "grid_height_px": 960,
+      "row_heights_px": [
+        372.0,
+        284.0,
+        281.0
+      ],
+      "row_columns": [
+        3,
+        5,
+        5
+      ],
+      "tier_min_width_px": 1440,
+      "row_columns_at_reference": [
+        3,
+        4,
+        4
+      ],
+      "row_columns_mockup_intent": [
+        3,
+        5,
+        5
+      ],
+      "min_viewport_px_for_mockup_columns": 1685,
+      "column_note": "Left navigation 192px (spec layout.reference_desktop.left_navigation_width_px) diskontohkan dari band main pada viewport referensi: 1536 - 2*17 - 192 - 349 = 961px. Lima kartu pada 961px dengan gap 11 = 183.4px < visual_tokens.card.minimum_width_px 220, jadi aturan fit 115.6 menurunkan baris 2 dan 3 menjadi empat kolom. Kontrak melaporkannya apa adanya lewat preservesMockupColumns=false; mockup 3/5/5 kembali pada viewport >= 1685px. Tidak ada angka yang diubah untuk memaksa klaim PASS."
+    },
+    "no_overlap": {
+      "bands": [
+        "left_navigation",
+        "main_grid",
+        "right_rail"
+      ],
+      "horizontal_fit_rule": "nav + main + rail <= viewport - 2 * page_horizontal_padding",
+      "status_bar_separate_rule": "grid_height + 2 * page_vertical_padding <= viewport - bottom_status_height",
+      "rows_fill_grid_rule": "sum(row_heights) == grid_height"
+    },
+    "scroll_containment": {
+      "grid_height_px": 960,
+      "rule": "row heights are clamped to the viewport; overflow scrolls inside cards and rail, never extends the page"
+    },
+    "consistent_cards": {
+      "card_width_rule": "(main_width - card_gap * (columns - 1)) / columns",
+      "card_gap_px": 11,
+      "min_first_row_height_px": 430,
+      "reference_card_widths_px": [
+        313.0,
+        232.0
+      ],
+      "mockup_card_widths_px": [
+        377.0,
+        221.8
+      ]
+    },
+    "right_rail": {
+      "sections_source": "spec.information_architecture.right_summary_sections",
+      "width_px": 349,
+      "side_by_side_tier": "wide_desktop",
+      "drawer_adaptation": "115.46"
+    },
+    "status_bar": {
+      "height_px": 40,
+      "items_source": "local AccountCloudSnapshot only",
+      "items": [
+        "Mode",
+        "Services",
+        "Remote"
+      ],
+      "no_fabricated_values": true
+    }
+  },
+  "left_navigation": [
+    {
+      "section": "authentication",
+      "label": "Authentication",
+      "icon_key": "badge"
+    },
+    {
+      "section": "quick_connect",
+      "label": "Quick connect",
+      "icon_key": "bolt"
+    },
+    {
+      "section": "cloud_storage_usage",
+      "label": "Cloud storage usage",
+      "icon_key": "cloud"
+    },
+    {
+      "section": "connected_services",
+      "label": "Connected services",
+      "icon_key": "hub"
+    },
+    {
+      "section": "api_keys_summary",
+      "label": "API keys summary",
+      "icon_key": "key"
+    },
+    {
+      "section": "team_summary",
+      "label": "Team summary",
+      "icon_key": "groups"
+    },
+    {
+      "section": "activity_log",
+      "label": "Activity log",
+      "icon_key": "history"
+    },
+    {
+      "section": "backup_sync_summary",
+      "label": "Backup & sync summary",
+      "icon_key": "sync"
+    },
+    {
+      "section": "security_summary",
+      "label": "Security summary",
+      "icon_key": "shield"
+    }
+  ],
+  "domain": "lib/features/account/domain/account_center_wide_desktop_frame.dart",
+  "tests": [
+    "test/features/account/domain/account_center_wide_desktop_frame_test.dart",
+    "test/features/account/presentation/account_cloud_center_wide_desktop_test.dart"
+  ],
+  "deferred_external": [
+    "public_trust_signing",
+    "hosted_ci",
+    "production_telemetry",
+    "hardware",
+    "adoption",
+    "publication"
+  ]
+}

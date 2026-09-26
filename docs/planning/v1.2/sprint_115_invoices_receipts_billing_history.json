@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.37",
+  "title": "Invoices, Receipts & Billing History",
+  "acceptance": [
+    "invoice_list",
+    "receipt",
+    "payment_status",
+    "tax_info",
+    "download",
+    "refund_path",
+    "dispute_path"
+  ],
+  "implementation": "lib/features/account/domain/account_center_invoice_history.dart",
+  "evidence": "test/features/account/domain/account_center_invoice_history_test.dart",
+  "boundary": "Local metadata-only invoice ledger: invoice lines, tax information, explicit payment status, receipt links, download descriptors, reauth-gated refund requests, and reauth-gated dispute filing. No invoice document is generated, no payment provider is contacted, no refund is settled against a real processor, and no raw card data is ever accepted or serialized. Live billing, payment-provider refunds/disputes, public-trust signing, hosted CI, telemetry, hardware, adoption, and publication remain DEFERRED-EXTERNAL; the product-spec billing contract stays PLANNED_NOT_VERIFIED and no mock balance reaches production state."
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_OFFLINE_ACCOUNT_CENTER_MANIFEST",
+  "canonical_step": "115.44",
+  "title": "Offline Account Center",
+  "acceptance": [
+    "cached_metadata",
+    "stale_label",
+    "remote_actions_disabled",
+    "local_settings_available",
+    "local_storage_available",
+    "reconnect_refresh"
+  ],
+  "implementation": "lib/features/account/domain/account_center_offline_mode.dart",
+  "evidence": "test/features/account/domain/account_center_offline_mode_test.dart",
+  "external_gate_status": "DEFERRED-EXTERNAL",
+  "boundary": "Local metadata-only offline contract. Cached provider metadata is displayed with an explicit freshness classification derived from measured_at against an injected clock, so a cached record is never published as a live reading and a future timestamp is flagged as a data defect instead of counting as fresh. Remote actions are disabled fail-closed: every remote action returns a blocked result naming the action, and the only way out is an explicit reconnect-and-refresh plan that declares that it needs a network connection, replaces the cache, and preserves local data. Device-scoped local settings and local storage details stay available offline and are reported as unavailable when absent, never as zero. No provider request, local scan, credential access, cache write, or data deletion occurs here; provider connectivity, credentials, hosted CI, signing, telemetry, hardware, adoption, and publication remain DEFERRED-EXTERNAL."
+}

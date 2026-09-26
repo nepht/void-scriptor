@@ -1,0 +1,25 @@
+{
+  "canonical_step": "115.24",
+  "title": "AI Provider Registry",
+  "objective": "Mendefinisikan provider, models, modalities, endpoints, regions, costs, privacy, local/cloud mode, dan availability.",
+  "required_fields": [
+    "provider_id",
+    "models",
+    "modalities",
+    "endpoint",
+    "regions",
+    "pricing_metadata",
+    "privacy_metadata",
+    "availability"
+  ],
+  "boundary": "Metadata-only Account Center registry. Availability must match the connector manifest; no live provider, network, credential, model discovery, pricing, billing, or regional availability claim.",
+  "evidence": {
+    "red": "focused test load failed because the contract file was absent; exit 1",
+    "focused_tests": "7/7 PASS",
+    "scoped_regression": "401/401 PASS",
+    "analyzer": "No issues found!",
+    "format": "PASS, 0 changed after formatting",
+    "diff_check": "PASS",
+    "windows_debug_build": "PASS, 33.0s"
+  }
+}

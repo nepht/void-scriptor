@@ -255,7 +255,7 @@ void main() {
       );
       // Aksi edit profil.
       expect(
-        find.descendant(of: card, matching: find.text('Edit profile')),
+        find.descendant(of: card, matching: find.text('Edit Profile')),
         findsOneWidget,
       );
       // Avatar/foto profil.
@@ -371,17 +371,65 @@ void main() {
         reason: 'metode $label harus di dalam kartu, bukan terpotong',
       );
     }
-    // Aksi sign-in juga hidup di kartu yang sama dan tidak boleh terpotong.
+    // Aksi "Add Another Method" juga hidup di kartu yang sama dan tidak boleh
+    // terpotong. Di dua kolom, labelnya panel metode (kanan) — jadi koordinat
+    // dibandingkan terhadap panel, bukan terhadap kartu.
+    final methodsPanel = tester.getRect(
+      find.descendant(
+        of: card,
+        matching: find.byKey(const ValueKey('account-auth-methods-panel')),
+      ),
+    );
     expect(
       tester
           .getRect(
             find.descendant(
               of: card,
-              matching: find.text('Sign in or connect account'),
+              matching: find.text('+ Add Another Method'),
             ),
           )
           .bottom,
-      lessThanOrEqualTo(cardRect.bottom),
+      lessThanOrEqualTo(methodsPanel.bottom),
+    );
+  });
+
+  testWidgets('kartu authentication dua kolom: profil kiri, metode kanan', (
+    tester,
+  ) async {
+    await pumpCenter(tester);
+
+    final card = find.byKey(
+      const ValueKey('account-overview-card-authentication'),
+    );
+    // Kolom kiri: avatar, nama, email, plan, lalu Edit Profile. Kolom kanan:
+    // panel berborder dengan daftar metode dan tombol Add Another Method.
+    expect(
+      find.descendant(of: card, matching: find.byKey(
+            const ValueKey('account-auth-profile-column'),
+          )),
+      findsOneWidget,
+      reason: 'kolom profil harus ada sebagai owner sendiri',
+    );
+    expect(
+      find.descendant(of: card, matching: find.byKey(
+            const ValueKey('account-auth-methods-panel'),
+          )),
+      findsOneWidget,
+      reason: 'panel sign-in methods harus terpisah dari kolom profil',
+    );
+
+    // Edit Profile pindah dari header panel ke kolom profil sebagai tombol
+    // penuh; label mockup memakai kapitalisasi "Edit Profile", dan tombol
+    // "Sign in or connect account" digantikan "+ Add Another Method".
+    expect(find.text('Edit Profile'), findsOneWidget);
+    expect(find.text('+ Add Another Method'), findsOneWidget);
+    expect(find.text('Sign in or connect account'), findsNothing);
+    expect(find.text('Edit profile'), findsNothing);
+
+    // Subjudul mockup di panel metode.
+    expect(
+      find.text('Manage how you sign in to your account'),
+      findsOneWidget,
     );
   });
 

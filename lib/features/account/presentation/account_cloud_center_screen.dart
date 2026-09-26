@@ -479,99 +479,154 @@ class _AuthenticationProfileCard extends StatelessWidget {
       primaryIdentity: SignInMethod.email,
     );
 
-    return Column(
+    return LayoutBuilder(
+      builder: (context, cardConstraints) => Row(
+        // 115.36: mockup menaruh kartu ini dalam DUA kolom — identitas di
+        // kiri (avatar, nama, email, plan, Edit Profile) dan daftar metode
+        // sign-in di kanan (panel berborder + tombol Add Another Method).
+        // Proporsi mengikuti mockup: kolom kiri ~40%, kolom kanan ~58%.
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: cardConstraints.maxWidth * 0.4,
+            child: _profileColumn(context, profile),
+          ),
+          SizedBox(width: AccountCenterDesignTokens.spacing.md),
+          Expanded(child: _signInMethodsPanel(context, profile)),
+        ],
+      ),
+    );
+  }
+
+  /// Kolom kiri mockup: avatar besar, nama, email, badge plan, Edit Profile.
+  Widget _profileColumn(
+    BuildContext context,
+    AuthenticationProfileCard profile,
+  ) => Column(
+    key: const ValueKey('account-auth-profile-column'),
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Center(
+        child: _ProfileAvatar(
+          key: const ValueKey('account-profile-avatar'),
+          avatar: profile.avatar,
+        ),
+      ),
+      SizedBox(height: AccountCenterDesignTokens.spacing.sm),
+      Text(
+        profile.displayName,
+        key: const ValueKey('account-profile-name'),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+        style: _body.copyWith(
+          color: context.palette.textSecondary,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      SizedBox(height: AccountCenterDesignTokens.spacing.twoXs),
+      Text(
+        profile.email,
+        key: const ValueKey('account-profile-email'),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+        style: _caption.copyWith(color: context.palette.textSecondary),
+      ),
+      SizedBox(height: AccountCenterDesignTokens.spacing.sm),
+      Center(
+        child: _PlanBadge(
+          key: const ValueKey('account-profile-subscription'),
+          plan: profile.plan,
+        ),
+      ),
+      SizedBox(height: AccountCenterDesignTokens.spacing.md),
+      SizedBox(
+        height: AccountCenterDesignTokens.density.minimumTouchTarget,
+        child: OutlinedButton.icon(
+          onPressed: onEditProfile,
+          icon: Icon(
+            Icons.settings_outlined,
+            size: AccountCenterDesignTokens.iconSizes.action,
+          ),
+          label: const Text(
+            'Edit Profile',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          style: OutlinedButton.styleFrom(
+            minimumSize: Size(
+              0,
+              AccountCenterDesignTokens.density.minimumTouchTarget,
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+
+  /// Kolom kanan mockup: panel berborder berisi daftar metode sign-in dan
+  /// tombol "+ Add Another Method" di dasar panel.
+  Widget _signInMethodsPanel(
+    BuildContext context,
+    AuthenticationProfileCard profile,
+  ) => Container(
+    key: const ValueKey('account-auth-methods-panel'),
+    padding: EdgeInsets.all(AccountCenterDesignTokens.card.padding),
+    decoration: BoxDecoration(
+      color: context.palette.surface,
+      borderRadius: BorderRadius.circular(
+        AccountCenterDesignTokens.radius.tile,
+      ),
+      border: Border.all(color: context.palette.border),
+    ),
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          // 115.36: baris profil setinggi avatar (80px) sementara isinya hanya
-          // ~60px. `center`-Isi tetap di kiri, hanya kotak avatar yang tidak
-          // menambah tinggi baris.
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _ProfileAvatar(
-              key: const ValueKey('account-profile-avatar'),
-              avatar: profile.avatar,
-            ),
-            SizedBox(width: AccountCenterDesignTokens.spacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    profile.displayName,
-                    key: const ValueKey('account-profile-name'),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: _body.copyWith(
-                      color: context.palette.textSecondary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: AccountCenterDesignTokens.spacing.xs),
-                  Text(
-                    profile.email,
-                    key: const ValueKey('account-profile-email'),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: _caption.copyWith(
-                      color: context.palette.textSecondary,
-                    ),
-                  ),
-                  SizedBox(height: AccountCenterDesignTokens.spacing.twoXs),
-                  _PlanBadge(
-                    key: const ValueKey('account-profile-subscription'),
-                    plan: profile.plan,
-                  ),
-                ],
-              ),
-            ),
-          ],
+        Text(
+          'SIGN IN METHODS',
+          style: _caption.copyWith(
+            color: context.palette.primaryBright,
+            letterSpacing: 0.6,
+          ),
         ),
-        SizedBox(height: AccountCenterDesignTokens.spacing.md),
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                'SIGN-IN METHODS',
-                style: _caption.copyWith(
-                  color: context.palette.textMuted,
-                  letterSpacing: 0.6,
-                ),
-              ),
-            ),
-            // `Flexible` + ellipsis: pada kartu sempit (200px di baris 2/3
-            // mockup) label dan tombol tidak bisa muat dalam Row tanpa
-            // menyusut. Tombol boleh menyusut, teks label yang dipangkas.
-            Flexible(
-              child: TextButton(
-                onPressed: onEditProfile,
-                style: TextButton.styleFrom(
-                  minimumSize: const Size(
-                    0,
-                    AccountCenterAccessibility.minimumTouchTarget,
-                  ),
-                  padding: EdgeInsets.zero,
-                ),
-                child: const Text(
-                  'Edit profile',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ),
-          ],
+        SizedBox(height: AccountCenterDesignTokens.spacing.twoXs),
+        Text(
+          'Manage how you sign in to your account',
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: _caption.copyWith(color: context.palette.textMuted),
         ),
-        // Aksi sign-in yang sebelumnya hidup di kartu ringkasan terpisah.
+        SizedBox(height: AccountCenterDesignTokens.spacing.sm),
+        // Kartu grid digulir oleh _DashboardCard, jadi daftar ini tidak boleh
+        // membawa scroll kedua (nested viewport membuat tinggi tak terbatas).
+        for (final service in _signInServices)
+          _SignInMethodRow(
+            key: ValueKey('account-sign-in-method-${service.id}'),
+            icon: _signInIconFor(service),
+            label: _signInLabelFor(service),
+            state: service.state,
+            primary: service.id == 'email-sign-in',
+            account: service.id == 'email-sign-in'
+                ? (snapshot.accountEmail ?? profile.email)
+                : null,
+          ),
         SizedBox(height: AccountCenterDesignTokens.spacing.sm),
         SizedBox(
           width: double.infinity,
+          height: AccountCenterDesignTokens.density.minimumTouchTarget,
           child: OutlinedButton.icon(
             onPressed: onSignIn,
             icon: Icon(
-              Icons.login_outlined,
+              Icons.add,
               size: AccountCenterDesignTokens.iconSizes.action,
             ),
-            label: const Text('Sign in or connect account'),
+            label: const Text(
+              '+ Add Another Method',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
             style: OutlinedButton.styleFrom(
               minimumSize: Size(
                 0,
@@ -580,19 +635,9 @@ class _AuthenticationProfileCard extends StatelessWidget {
             ),
           ),
         ),
-        // 115.36: kartu grid sudah digulir oleh _DashboardCard, jadi daftar
-        // metode sign-in tidak boleh membawa scroll kedua (nested viewport
-        // membuat tinggi tak terbatas dan merusak flexible child).
-        for (final service in _signInServices)
-          _SignInMethodRow(
-            key: ValueKey('account-sign-in-method-${service.id}'),
-            icon: _signInIconFor(service),
-            label: _signInLabelFor(service),
-            state: service.state,
-          ),
       ],
-    );
-  }
+    ),
+  );
 
   /// Metode sign-in kanonik, diturunkan dari snapshot yang sama dengan kartu
   /// overview lama supaya tidak ada dua sumber kebenaran.
@@ -727,38 +772,92 @@ class _SignInMethodRow extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.state,
+    this.primary = false,
+    this.account,
   });
 
   final IconData icon;
   final String label;
   final AccountCloudConnectionState state;
 
+  /// 115.36: mockup menandai baris email sebagai `Primary` dan sisanya
+  /// `Connected`, memakai titik hijau + teks, bukan badge berlabel panjang.
+  final bool primary;
+
+  /// Identitas akun di baris kedua (email, handle, nama channel). Null untuk
+  /// provider yang mockup tidak menampilkan identitasnya.
+  final String? account;
+
   @override
   Widget build(BuildContext context) {
+    final connected = state == AccountCloudConnectionState.connected;
+    final statusLabel = primary
+        ? 'Primary'
+        : connected
+        ? 'Connected'
+        : 'Not connected';
+    final statusColor = connected
+        ? context.palette.success
+        : context.palette.textMuted;
     return Padding(
-      // 115.36: lima metode harus muat di kartu mockup pada viewport pendek
-      // (1600x900 memberi baris pertama hanya 266px). Padding vertikal 2px
-      // saving 20px untuk lima baris, tanpa mengorbankan target sentuh —
-      // barisnya non-interaktif (hanya status), jadi tidak punya aksi yang
-      // perlu target 44px.
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
         children: [
           Icon(icon, size: AccountCenterDesignTokens.iconSizes.action),
           SizedBox(width: AccountCenterDesignTokens.spacing.sm),
           Expanded(
-            child: Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: _caption.copyWith(color: context.palette.textSecondary),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: _caption.copyWith(
+                    color: context.palette.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                if (account case final identity?) ...[
+                  SizedBox(height: AccountCenterDesignTokens.spacing.twoXs),
+                  Text(
+                    identity,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: _caption.copyWith(color: context.palette.textMuted),
+                  ),
+                ],
+              ],
             ),
           ),
           SizedBox(width: AccountCenterDesignTokens.spacing.twoXs),
-          // 115.36: badge ikut boleh menyusut. Pada textScale 200% di 390px,
-          // badge "Available locally" lebih lebar dari sisa ruang dan
-          // memicu overflow 5.3px kalau tidak diberi `Flexible`.
-          Flexible(child: _ConnectionBadge(state: state, shrinkToFit: true)),
+          // Titik status + label, mengikuti mockup. Label boleh ellipsis
+          // di kartu sempit lewat Flexible.
+          Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: AccountCenterDesignTokens.iconSizes.statusDot,
+                  height: AccountCenterDesignTokens.iconSizes.statusDot,
+                  decoration: BoxDecoration(
+                    color: statusColor,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                SizedBox(width: AccountCenterDesignTokens.spacing.twoXs),
+                Flexible(
+                  child: Text(
+                    statusLabel,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: _caption.copyWith(color: statusColor),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

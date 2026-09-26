@@ -89,12 +89,12 @@ void main() {
       expect(find.text(title), findsWidgets, reason: title);
     }
 
-    // 115.36: tombol sign-in kini hidup di kartu AUTHENTICATION. Di tier
-    // mobile kartu itu bisa berada di luar viewport, jadi digulir dulu
-    // (bukan mengikat posisi scroll).
-    await tester.ensureVisible(find.text('Sign in or connect account'));
+    // 115.36: aksi kartu AUTHENTICATION mengikuti mockup — tombolnya
+    // "+ Add Another Method" di panel metode. Di tier mobile panel itu bisa
+    // berada di luar viewport, jadi digulir dulu (bukan mengikat posisi scroll).
+    await tester.ensureVisible(find.text('+ Add Another Method'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Sign in or connect account'));
+    await tester.tap(find.text('+ Add Another Method'));
     await tester.pump();
     expect(signInRequested, isTrue);
   });

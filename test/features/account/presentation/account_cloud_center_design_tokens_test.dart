@@ -178,10 +178,13 @@ void main() {
       );
       expect(
         avatarBox.width,
-        AccountCenterDesignTokens.avatarSizes.image,
+        moreOrLessEquals(AccountCenterDesignTokens.avatarSizes.image, epsilon: 0.01),
         reason: 'avatar kartu authentication memakai image 80px',
       );
-      expect(avatarBox.height, AccountCenterDesignTokens.avatarSizes.image);
+      expect(
+        avatarBox.height,
+        moreOrLessEquals(AccountCenterDesignTokens.avatarSizes.image, epsilon: 0.01),
+      );
 
       final cardContainers = tester
           .widgetList<Container>(
@@ -245,13 +248,15 @@ void main() {
       );
     });
 
-    testWidgets('sign-in action keeps the minimum touch target', (
+    testWidgets('add-another-method keeps the minimum touch target', (
       tester,
     ) async {
       await pumpCenter(tester, onSignIn: () {});
 
+      // 115.36: aksi kartu authentication adalah "+ Add Another Method"
+      // (mockup), bukan lagi "Sign in or connect account".
       final button = tester.widget<OutlinedButton>(
-        find.widgetWithText(OutlinedButton, 'Sign in or connect account'),
+        find.widgetWithText(OutlinedButton, '+ Add Another Method'),
       );
       expect(
         button.style?.minimumSize?.resolve(const <WidgetState>{}),

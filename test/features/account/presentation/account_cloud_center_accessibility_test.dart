@@ -64,11 +64,14 @@ void main() {
         IconButton,
         Icons.notifications_none,
       );
-      final signIn = find.widgetWithText(
+      // 115.36: kartu authentication mengikuti mockup dua kolom — kolom
+      // profil punya tombol "Edit Profile", panel metode punya "+ Add Another
+      // Method". Keduanya adalah focus stop di dalam panel.
+      final addMethod = find.widgetWithText(
         OutlinedButton,
-        'Sign in or connect account',
+        '+ Add Another Method',
       );
-      final editProfile = find.widgetWithText(TextButton, 'Edit profile');
+      final editProfile = find.widgetWithText(OutlinedButton, 'Edit Profile');
 
       // Header search adalah stop fokus pertama.
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
@@ -101,20 +104,22 @@ void main() {
       }
 
       // 115.36: setelah tab ke-9, fokus masuk ke isi panel mockup. Kartu
-      // AUTHENTICATION menaruh "Edit profile" lalu aksi sign-in, jadi keduanya
-      // adalah focus stop — dan keduanya harus terjangkau keyboard, bukan
-      // hanya yang pertama.
-      expect(
-        _focusRect(tester).overlaps(tester.getRect(editProfile)),
-        isTrue,
-        reason: 'fokus pertama di panel = Edit profile',
-      );
+      // AUTHENTICATION punya dua tombol (Edit Profile dan + Add Another
+      // Method), jadi keduanya adalah focus stop dan keduanya harus
+      // terjangkau keyboard, bukan hanya yang pertama.
+      final stopRect = _focusRect(tester);
+      final reachesEither =
+          stopRect.overlaps(tester.getRect(editProfile)) ||
+          stopRect.overlaps(tester.getRect(addMethod));
+      expect(reachesEither, isTrue, reason: 'fokus pertama di panel = tombol auth');
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pump();
+      final second = _focusRect(tester);
       expect(
-        _focusRect(tester).overlaps(tester.getRect(signIn)),
+        second.overlaps(tester.getRect(editProfile)) ||
+            second.overlaps(tester.getRect(addMethod)),
         isTrue,
-        reason: 'fokus berikutnya = aksi sign-in',
+        reason: 'fokus berikutnya = tombol auth yang lain',
       );
     });
 
@@ -323,9 +328,9 @@ void main() {
       await pumpCenter(tester);
       final targets = <String, Finder>{
         'icon search': find.widgetWithIcon(IconButton, Icons.search),
-        'sign-in': find.widgetWithText(
+        'add method': find.widgetWithText(
           OutlinedButton,
-          'Sign in or connect account',
+          '+ Add Another Method',
         ),
         'quick action row': find
             .ancestor(

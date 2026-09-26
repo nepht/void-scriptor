@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.43",
+  "title": "Token Expiry & Reauthentication UX",
+  "acceptance": [
+    "expiry_notice",
+    "affected_scope",
+    "reauth",
+    "retry",
+    "revoke",
+    "local_data_preserved"
+  ],
+  "implementation": "lib/features/account/domain/account_center_token_expiry_reauthentication_ux.dart",
+  "evidence": "test/features/account/domain/account_center_token_expiry_reauthentication_ux_test.dart",
+  "boundary": "Local metadata-only UX state. It describes expired connections, affected capabilities, explicit reauthentication, safe capability-scoped retry, explicit revoke, and preserved local data. It performs no provider request, credential access, local scan, or data deletion; provider, credential, hosted CI, signing, telemetry, hardware, adoption, and publication remain DEFERRED-EXTERNAL."
+}

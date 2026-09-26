@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.28",
+  "title": "Developer Tools Connections",
+  "acceptance": [
+    "manifest_driven",
+    "scopes",
+    "repository_access",
+    "disconnect",
+    "unavailable_state",
+    "audit"
+  ],
+  "implementation": "lib/features/account/domain/account_center_developer_tools_connections.dart",
+  "evidence": "test/features/account/domain/account_center_developer_tools_connections_test.dart",
+  "boundary": "Local manifest-driven metadata and audit only; GitHub, GitLab, Bitbucket, Azure DevOps, OAuth, credentials, repository discovery, and live provider availability remain DEFERRED-EXTERNAL."
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.32",
+  "title": "Security Center Summary",
+  "acceptance": [
+    "mfa",
+    "password_health",
+    "trusted_devices",
+    "sessions",
+    "secure_store_health",
+    "alerts",
+    "actions"
+  ],
+  "implementation": "lib/features/account/domain/account_center_security_summary.dart",
+  "evidence": "test/features/account/domain/account_center_security_summary_test.dart",
+  "boundary": "Local account-security metadata only; live identity providers, secure-storage backend checks, session revocation, alert delivery, hosted CI, signing, hardware, adoption, and publication remain DEFERRED-EXTERNAL."
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.29",
+  "title": "Creative Tools Connections",
+  "acceptance": [
+    "manifest_driven",
+    "asset_permissions",
+    "import_export_scope",
+    "disconnect",
+    "unavailable_state",
+    "attribution"
+  ],
+  "implementation": "lib/features/account/domain/account_center_creative_tools_connections.dart",
+  "evidence": "test/features/account/domain/account_center_creative_tools_connections_test.dart",
+  "boundary": "Local manifest-driven metadata and asset-rights declarations only; live creative providers, OAuth, credentials, asset transfer, license certification, and provider availability remain DEFERRED-EXTERNAL."
+}

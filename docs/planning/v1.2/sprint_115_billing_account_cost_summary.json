@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "canonical_step": "115.35",
+  "title": "Billing Account & Cost Summary",
+  "acceptance": [
+    "billing_identity",
+    "currency",
+    "tax",
+    "billing_cycle",
+    "charges",
+    "credits",
+    "estimated_label",
+    "status"
+  ],
+  "implementation": "lib/features/account/domain/account_center_billing_summary.dart",
+  "evidence": "test/features/account/domain/account_center_billing_summary_test.dart",
+  "boundary": "Local billing account/cost summary metadata only; live billing/checkout, payment-provider redirects, invoice documents, provider metering, hosted CI, and public-trust signing remain DEFERRED-EXTERNAL; the product-spec billing_contract stays PLANNED_NOT_VERIFIED and mock credits/provider availability never reach production state."
+}

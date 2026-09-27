@@ -1,0 +1,33 @@
+{
+  "canonical_step": "116.4",
+  "title": "Current API & SDK Verification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "API_SDK_VERIFICATION_SCHEMA_READY",
+  "required_outputs": [
+    "primary_sources",
+    "api_versions",
+    "sdk_versions",
+    "deprecations",
+    "auth_requirements",
+    "quota_capabilities",
+    "verification_date"
+  ],
+  "records": [
+    {
+      "provider_id": "synthetic_schema_record",
+      "primary_sources": ["local-contract-fixture"],
+      "api_version": "not-claimed",
+      "sdk_version": "not-claimed",
+      "deprecations": ["live provider documentation review deferred"],
+      "auth_requirements": ["provider-specific authorization review deferred"],
+      "quota_capabilities": ["live quota verification deferred"],
+      "verification_date": "2026-09-27",
+      "limitations": ["schema-only local evidence; no live provider certification"]
+    }
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "No live provider API, SDK, credential, quota, terms, hosted CI, hardware, or publication verification is claimed.",
+    "The record is a fail-closed local schema fixture until primary provider sources are reviewed."
+  ]
+}

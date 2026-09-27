@@ -1,0 +1,165 @@
+{
+  "step": "115.51",
+  "title": "Automated Test Matrix",
+  "objective": "Menambahkan unit, state-machine, contract, connector, security, billing, UI, accessibility, and end-to-end tests.",
+  "date": "2026-09-27",
+  "canonical_sprint": {
+    "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+    "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba",
+    "step_id": "115.51"
+  },
+  "required_suites": [
+    "unit",
+    "state_machine",
+    "contract",
+    "connector",
+    "security",
+    "billing",
+    "ui",
+    "accessibility",
+    "end_to_end",
+    "regression"
+  ],
+  "suites": [
+    {
+      "name": "unit",
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/account/domain",
+      "evidence": [
+        "test/features/account/domain"
+      ],
+      "status": "pass",
+      "tests": 584,
+      "note": ""
+    },
+    {
+      "name": "state_machine",
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_connection_health_state_machine_test.dart test/features/account/domain/account_center_loading_empty_error_states_test.dart test/features/account/domain/account_center_offline_mode_test.dart",
+      "evidence": [
+        "test/features/account/domain/account_center_connection_health_state_machine_test.dart",
+        "test/features/account/domain/account_center_loading_empty_error_states_test.dart",
+        "test/features/account/domain/account_center_offline_mode_test.dart"
+      ],
+      "status": "pass",
+      "tests": 27,
+      "note": ""
+    },
+    {
+      "name": "contract",
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/release/sprint_115_entry_gate_test.dart test/release/sprint_115_readiness_gate_test.dart test/features/account/domain/account_center_workspace_boundary_contract_test.dart test/features/account/domain/account_center_automated_test_matrix_test.dart",
+      "evidence": [
+        "test/release/sprint_115_entry_gate_test.dart",
+        "test/release/sprint_115_readiness_gate_test.dart",
+        "test/features/account/domain/account_center_workspace_boundary_contract_test.dart",
+        "test/features/account/domain/account_center_automated_test_matrix_test.dart"
+      ],
+      "status": "pass",
+      "tests": 57,
+      "note": "Contract suite for sprint 115 (entry gate, readiness gate, workspace boundary) plus this matrix test itself."
+    },
+    {
+      "name": "connector",
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_provider_connector_manifest_test.dart test/features/account/domain/account_center_connected_accounts_management_test.dart test/features/account/domain/account_center_oauth_linked_identity_flow_test.dart test/features/account/domain/account_center_cloud_transfer_controls_test.dart test/features/account/domain/account_center_provider_quota_adapter_test.dart test/features/account/domain/account_center_sync_conflict_center_test.dart",
+      "evidence": [
+        "test/features/account/domain/account_center_provider_connector_manifest_test.dart",
+        "test/features/account/domain/account_center_connected_accounts_management_test.dart",
+        "test/features/account/domain/account_center_oauth_linked_identity_flow_test.dart",
+        "test/features/account/domain/account_center_cloud_transfer_controls_test.dart",
+        "test/features/account/domain/account_center_provider_quota_adapter_test.dart",
+        "test/features/account/domain/account_center_sync_conflict_center_test.dart"
+      ],
+      "status": "pass",
+      "tests": 50,
+      "note": "Local connector contracts only; a live provider handshake stays DEFERRED-EXTERNAL."
+    },
+    {
+      "name": "security",
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_secure_token_vault_test.dart test/features/account/domain/account_center_security_summary_test.dart test/features/account/domain/account_center_privacy_data_flow_review_test.dart test/features/account/domain/account_center_api_keys_manager_test.dart test/app/bootstrap/privacy_regression_test.dart",
+      "evidence": [
+        "test/features/account/domain/account_center_secure_token_vault_test.dart",
+        "test/features/account/domain/account_center_security_summary_test.dart",
+        "test/features/account/domain/account_center_privacy_data_flow_review_test.dart",
+        "test/features/account/domain/account_center_api_keys_manager_test.dart",
+        "test/app/bootstrap/privacy_regression_test.dart"
+      ],
+      "status": "pass",
+      "tests": 42,
+      "note": ""
+    },
+    {
+      "name": "billing",
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_billing_summary_test.dart test/features/account/domain/account_center_invoice_history_test.dart test/features/account/domain/account_center_payment_methods_test.dart test/features/account/domain/account_center_subscription_entitlement_model_test.dart test/features/account/domain/account_center_ai_usage_credits_cost_view_test.dart",
+      "evidence": [
+        "test/features/account/domain/account_center_billing_summary_test.dart",
+        "test/features/account/domain/account_center_invoice_history_test.dart",
+        "test/features/account/domain/account_center_payment_methods_test.dart",
+        "test/features/account/domain/account_center_subscription_entitlement_model_test.dart",
+        "test/features/account/domain/account_center_ai_usage_credits_cost_view_test.dart"
+      ],
+      "status": "pass",
+      "tests": 56,
+      "note": "Metadata-only billing model; no processor, charge, or payout is reachable in this build."
+    },
+    {
+      "name": "ui",
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/account/presentation",
+      "evidence": [
+        "test/features/account/presentation"
+      ],
+      "status": "pass",
+      "tests": 125,
+      "note": ""
+    },
+    {
+      "name": "accessibility",
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_accessibility_test.dart test/features/account/domain/account_center_keyboard_screen_reader_verification_test.dart test/features/account/presentation/account_cloud_center_accessibility_test.dart test/features/account/presentation/account_cloud_center_keyboard_screen_reader_test.dart",
+      "evidence": [
+        "test/features/account/domain/account_center_accessibility_test.dart",
+        "test/features/account/domain/account_center_keyboard_screen_reader_verification_test.dart",
+        "test/features/account/presentation/account_cloud_center_accessibility_test.dart",
+        "test/features/account/presentation/account_cloud_center_keyboard_screen_reader_test.dart"
+      ],
+      "status": "pass",
+      "tests": 79,
+      "note": "Widget/domain accessibility assertions; native screen-reader certification stays DEFERRED-EXTERNAL."
+    },
+    {
+      "name": "end_to_end",
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/account/presentation/account_cloud_center_screen_test.dart test/features/account/presentation/account_cloud_center_single_panel_test.dart test/app/routing/account_cloud_route_test.dart test/app/routing/account_cloud_center_ia_route_test.dart",
+      "evidence": [
+        "test/features/account/presentation/account_cloud_center_screen_test.dart",
+        "test/features/account/presentation/account_cloud_center_single_panel_test.dart",
+        "test/app/routing/account_cloud_route_test.dart",
+        "test/app/routing/account_cloud_center_ia_route_test.dart"
+      ],
+      "status": "pass",
+      "tests": 34,
+      "note": "Widget-level journey (screen, panel, routing); a native desktop journey needs a live session and stays DEFERRED-EXTERNAL."
+    },
+    {
+      "name": "regression",
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/account test/app test/release/sprint_115_entry_gate_test.dart test/release/sprint_115_readiness_gate_test.dart",
+      "evidence": [
+        "test/features/account",
+        "test/app",
+        "test/release/sprint_115_entry_gate_test.dart",
+        "test/release/sprint_115_readiness_gate_test.dart"
+      ],
+      "status": "fail",
+      "tests": 896,
+      "note": "895 passed, 1 failed: test/app/auth/auth_flow_test.dart \"local user opens sign-in explicitly from Account & Cloud\" — committed regression a5ed3ae (label rewritten to '+ Add Another Method'), reproduced on clean baseline worktrees three times and outside sprint 115 scope."
+    }
+  ],
+  "verdict": "COMPLETE_9_OF_10_PASS",
+  "overlap_note": "Suites are overlapping views over one test tree by design: unit sweeps the whole domain directory, ui the presentation directory, and regression aggregates the account and app trees plus the sprint gates, so per-suite counts must never be summed into a total.",
+  "deferred_external": [
+    "provider/connector live verification",
+    "public billing, payment processing, and payout",
+    "native end-to-end journey on a live desktop session",
+    "hosted CI execution",
+    "public-trust code signing",
+    "production telemetry",
+    "hardware and native assistive-technology certification",
+    "adoption and publication"
+  ],
+  "limitations": "Every row is a local automated run pinned to the absolute Flutter toolchain; a pass certifies the local suite only, never a live connector, a payment processor, a native screen reader, or a hosted pipeline."
+}

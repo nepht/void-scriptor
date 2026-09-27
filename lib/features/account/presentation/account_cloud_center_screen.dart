@@ -18,6 +18,7 @@ import '../domain/account_center_information_architecture.dart';
 import '../domain/account_center_keyboard_screen_reader_verification.dart';
 import '../domain/account_center_localization_formatting.dart';
 import '../domain/account_center_mobile_adaptation.dart';
+import '../domain/account_center_performance_resilience.dart';
 import '../domain/account_center_provider_connector_manifest.dart';
 import '../domain/account_center_responsive_grid.dart';
 import '../domain/account_center_wide_desktop_frame.dart';
@@ -2277,7 +2278,24 @@ class _UsageCompositionPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_UsageCompositionPainter oldDelegate) =>
-      oldDelegate.promptShare != promptShare || oldDelegate.color != color;
+      oldDelegate.promptShare != promptShare ||
+      // 115.53: `trackColor` TIDAK boleh diabaikan. `RenderCustomPaint.
+      // _didUpdatePainter` melewati `markNeedsPaint()` ketika
+      // `shouldRepaint` false, jadi satu-satunya cara painter tahu palet
+      // berganti adalah lewat perbandingan di sini. Sebelumnya hanya
+      // `promptShare` dan `color` yang dibandingkan, sehinggapertukaran
+      // tema yang hanya mengubah `borderSoft` (track) meninggalkan track
+      // lama di layar sementara chrome di sekitarnya sudah mengecat ulang.
+      AccountCenterPerformanceResilience.chartPalette(
+            values: const <int>[],
+            colors: <int>[color.toARGB32()],
+            trackColor: trackColor.toARGB32(),
+          ).toString() !=
+          AccountCenterPerformanceResilience.chartPalette(
+            values: const <int>[],
+            colors: <int>[oldDelegate.color.toARGB32()],
+            trackColor: oldDelegate.trackColor.toARGB32(),
+          ).toString();
 }
 
 class _StorageDonutPainter extends CustomPainter {
@@ -2316,7 +2334,23 @@ class _StorageDonutPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_StorageDonutPainter oldDelegate) =>
-      oldDelegate.values.toString() != values.toString();
+      // 115.53: `values.toString()` saja TIDAK cukup. Irisan memakai
+      // `colors` dan track memakai `trackColor`; kalau keduanya tidak
+      // dibandingkan, `RenderCustomPaint` melewati `markNeedsPaint()` dan
+      // donut tetap memakai tinta palet LAMA setelah tema berganti —
+      // persis cacat yang step ini temukan di kedua painter chart.
+      AccountCenterPerformanceResilience.chartPalette(
+            values: values,
+            colors: colors.map((color) => color.toARGB32()).toList(),
+            trackColor: trackColor.toARGB32(),
+          ).toString() !=
+          AccountCenterPerformanceResilience.chartPalette(
+            values: oldDelegate.values,
+            colors: oldDelegate.colors
+                .map((color) => color.toARGB32())
+                .toList(),
+            trackColor: oldDelegate.trackColor.toARGB32(),
+          ).toString();
 }
 
 // 115.49: integer, byte, percentage, and money formatting live in
@@ -3561,12 +3595,14 @@ String _providerHealthLabel(ProviderConnectorAvailability availability) =>
     };
 
 String _providerConnectionLabel(ProviderConnectorAvailability availability) =>
-    switch (availability) {
-      ProviderConnectorAvailability.available ||
-      ProviderConnectorAvailability.degraded ||
-      ProviderConnectorAvailability.outage => 'Connected',
-      _ => 'Not connected',
-    };
+    // 115.53: pemetaan ini tadinya hidup di presentation dan memetakan
+    // `available`, `degraded`, DAN `outage` semuanya ke 'Connected'. String
+    // itu masuk ke TIGA permukaan sekaligus: label semantik tile provider,
+    // baris `Connection` di sheet detail mobile, dan pengumuman screen
+    // reader 115.48 — sehingga pengguna pembaca layar diberi tahu akunnya
+    // terhubung saat provider-nya sedang outage. Sekarang satu kontrak yang
+    // dipakai bersama dan outage tidak pernah diklaim sebagai terhubung.
+    AccountCenterPerformanceResilience.connectionLabel(availability.wireName);
 
 /// Label status koneksi yang diumumkan sebagai teks (spec: warna bukan satu
 ///-satunya pembawa connection/health state).
@@ -3629,13 +3665,9 @@ class _ServiceSummaryList extends StatelessWidget {
 }
 
 class _ConnectionBadge extends StatelessWidget {
-  const _ConnectionBadge({required this.state, this.shrinkToFit = false});
+  const _ConnectionBadge({required this.state});
 
   final AccountCloudConnectionState state;
-
-  /// 115.36: bila true, badge melepaskan padding horizontal saat ruang
-  /// sempit sehingga label boleh ellipsis alih-alih memaksa lebar.
-  final bool shrinkToFit;
 
   @override
   Widget build(BuildContext context) {
@@ -3655,9 +3687,7 @@ class _ConnectionBadge extends StatelessWidget {
     };
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: shrinkToFit
-            ? AccountCenterDesignTokens.spacing.twoXs
-            : AccountCenterDesignTokens.spacing.sm,
+        horizontal: AccountCenterDesignTokens.spacing.sm,
         vertical: AccountCenterDesignTokens.spacing.twoXs,
       ),
       decoration: BoxDecoration(

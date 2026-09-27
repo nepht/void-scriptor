@@ -1,0 +1,9 @@
+{
+  "canonical_step": "116.14",
+  "title": "Identity Linking & Collision Tests",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "IDENTITY_LINKING_COLLISION_CONTRACT_READY",
+  "acceptance": ["collision_detection", "safe_merge", "last_method_protection", "takeover_prevention", "unlink", "recovery"],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["provider live identity flows, credentials, external recovery delivery, hosted CI, hardware, billing, and publication remain externally deferred"]
+}

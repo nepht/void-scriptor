@@ -1,0 +1,33 @@
+{
+  "canonical_step": "116.3",
+  "title": "Provider Registry Reconciliation",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "PROVIDER_REGISTRY_RECONCILED",
+  "expected_provider_count": 32,
+  "acceptance": [
+    "unique_ids",
+    "category_mapping",
+    "capability_mapping",
+    "availability_state",
+    "no_duplicate_connectors",
+    "owner"
+  ],
+  "registry_sources": {
+    "icon_registry": "ProviderIconRegistry.standard",
+    "connector_manifest": "ProviderConnectorManifest.standard",
+    "ai_registry": "AccountCenterAiProviderRegistry"
+  },
+  "evidence": {
+    "unique_ids": "32 icon entries and 32 connector entries reconcile to 32 unique provider ids",
+    "category_mapping": "icon and connector wire categories match for every shared provider",
+    "capability_mapping": "connector capabilities match category-derived capability sets",
+    "availability_state": "all connector entries remain UNVERIFIED",
+    "no_duplicate_connectors": "connector manifest constructor and reconciliation reject duplicate provider ids",
+    "owner": "registry field ownership declarations are non-empty"
+  },
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "No live provider, quota, credential, billing, hosted CI, hardware, or publication verification is claimed.",
+    "AI registry field-level parity remains a local contract boundary until its canonical registry is available."
+  ]
+}

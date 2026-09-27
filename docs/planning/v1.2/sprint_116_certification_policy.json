@@ -1,0 +1,78 @@
+{
+  "canonical_step": "116.2",
+  "title": "Certification Policy & Evidence Schema",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "CERTIFICATION_POLICY_READY",
+  "required_fields": [
+    "provider_id",
+    "connector_version",
+    "status",
+    "evidence",
+    "reviewer",
+    "reviewed_at",
+    "expires_or_recheck_at",
+    "limitations"
+  ],
+  "certification_statuses": [
+    "UNVERIFIED",
+    "CERTIFIED",
+    "LIMITED",
+    "BLOCKED",
+    "EXPIRED"
+  ],
+  "recertification_triggers": [
+    "provider_api_change",
+    "connector_version_change",
+    "security_incident",
+    "terms_of_service_change",
+    "quota_policy_change",
+    "regional_availability_change",
+    "review_window_expired",
+    "manual_review_required"
+  ],
+  "evidence_requirements": [
+    "api_verification",
+    "sdk_verification",
+    "auth_flow_test",
+    "quota_capability_test",
+    "error_handling_test",
+    "security_review",
+    "terms_compliance_check"
+  ],
+  "evidence_records": [
+    {
+      "provider_id": "example_provider",
+      "connector_version": "1.0.0",
+      "status": "LIMITED",
+      "evidence": {
+        "api_verification": false,
+        "sdk_verification": false,
+        "auth_flow_test": false,
+        "quota_capability_test": false,
+        "error_handling_test": false,
+        "security_review": false,
+        "terms_compliance_check": false
+      },
+      "reviewer": "automation-governance",
+      "reviewed_at": "2026-09-27",
+      "expires_or_recheck_at": "2027-03-27",
+      "limitations": [
+        "synthetic_schema_validation_only",
+        "no_live_provider_certification",
+        "public_readiness_deferred"
+      ]
+    }
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "live_provider_certification",
+    "public_release_readiness",
+    "hosted_ci_validation",
+    "publication"
+  ],
+  "fail_closed_rules": {
+    "unverified_with_evidence": "UNVERIFIED status must not carry evidence",
+    "certified_requires_limitations": "CERTIFIED status requires at least one limitation",
+    "default_status": "UNVERIFIED"
+  }
+}

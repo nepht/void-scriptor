@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_PRIVACY_DATA_FLOW_REVIEW_MANIFEST",
+  "canonical_step": "115.50",
+  "title": "Privacy & Data-Flow Review",
+  "sources": {
+    "canonical_steps": {
+      "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+      "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba",
+      "objective": "Mendokumentasikan semua account metadata, tokens, usage, storage, billing, diagnostics, retention, and external transfers.",
+      "required_outputs": [
+        "data_flow",
+        "classification",
+        "consent",
+        "retention",
+        "deletion",
+        "external_transfer",
+        "redaction",
+        "privacy_defaults"
+      ]
+    },
+    "product_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+      "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+      "token_subtrees": [
+        "security_contract",
+        "billing_contract",
+        "delivery_rules",
+        "acceptance_invariants"
+      ]
+    }
+  },
+  "required_outputs": {
+    "data_flow": {
+      "verified_by": "test/features/account/domain/account_center_privacy_data_flow_review_test.dart: buildReview mewajibkan data_flow terdokumentasi untuk kedelapan subject; skrip scan sumber membuktikan lib/features/account tidak memuat package:http/dio/WebSocket/HttpClient/fetch (external_transfer=none adalah fakta source, bukan klaim dokumen)",
+      "local_result": "PASS",
+      "note": "Delapan alur didokumentasikan per subject: AuthSession JSON lokal, vault->CredentialStore, drift aiUsageLogs, ProjectStorageAnalyzer aggregates, billing belum terkumpul (PLANNED_NOT_VERIFIED), PrivacySafeMetrics lokal, retention window audit/backup, dan nol transfer eksternal di build ini."
+    },
+    "classification": {
+      "verified_by": "domain test: enum AccountDataClass dengan delapan kelas; token wajib credentialSecret (ArgumentError bila diturunkan), storage/usage/diagnostic/retention/transfer memakai kelasnya masing-masing",
+      "local_result": "PASS",
+      "note": "Klasifikasi fail-closed: record 'tokens' yang tidak berkelas credentialSecret ditolak buildReview, sehingga kelas sensitivitas tidak bisa diturunkan diam-diam di inventory."
+    },
+    "consent": {
+      "verified_by": "domain test: externalTransfer != noneLocalOnly dengan consent di luar transferConsentBases ditolak ArgumentError; basis transfer diverifikasi terhadap consent yang diizinkan (explicitUserAction/explicitOptIn/deferredScopedOAuth/workspaceTransferConsent)",
+      "local_result": "PASS",
+      "note": "Consent lokal (notRequiredLocalOnly) sah hanya untuk subject yang tidak meninggalkan peranti; jalur transfer menuntut basis eksplisit — selaras dengan resolveTransfer 115.4 (DENIED_TRANSFER_CONSENT_REQUIRED)."
+    },
+    "retention": {
+      "verified_by": "domain test: dimensi retention wajib non-kosong untuk kedelapan subject; grounding live pada AccountCenterActivityAuditOverview (retention > 0, retentionCutoff) dan BackupRetention.maxCopies",
+      "local_result": "PASS",
+      "note": "Retention dijelaskan per subject terhadap mekanisme nyata (jendela audit, cap salinan backup, umur baris usage bersama project database); tidak ada timer karangan."
+    },
+    "deletion": {
+      "verified_by": "domain test: dimensi deletion wajib non-kosong; grounding live pada AuthController.logout()->store.clear(), vault.revoke()->store.delete, penghapusan metrics.json, dan cap backup",
+      "local_result": "PASS",
+      "note": "Penghapusan terdokumentasi jujur: usage log tidak punya purge per-baris sendiri (ikut penghapusan project database) — dicatat sebagai batas, bukan ditutupi."
+    },
+    "external_transfer": {
+      "verified_by": "test scan sumber lib/features/account (recursive, 4 token jaringan) menemukan nol offender; domain test mengunci semua subject noneLocalOnly pada inventory bawaan",
+      "local_result": "PASS",
+      "note": "Build ini tidak membuka jaringan apa pun dari fitur account; klaim transfer masa depan dikunci di belakang deferredProviderApi + consent eksplisit. Sertifikasi connector live tetap DEFERRED-EXTERNAL."
+    },
+    "redaction": {
+      "verified_by": "domain test live: SecretRedactor.mask ('sk-****') dan redact ('[REDACTED]'), AccountAuditEvent.publicDetails mengganti k sensitif dengan [REDACTED] dan toPublicJson tidak memuat rahasia asli",
+      "local_result": "PASS",
+      "note": "Tiga lapis redaction nyata diverifikasi: vault maskedDisplay, SecretRedactor untuk publikasi teks, dan audit publicDetails untuk detail sensitif; AuthSessionJson punya skema empat kunci tanpa kredensial."
+    },
+    "privacy_defaults": {
+      "verified_by": "domain test live: PrivacySafeMetrics.optIn default false (increment dibuang saat OFF), allowlist key flag/surface/outcome/count, unknown flag dibuang saat opt-in dinyalakan",
+      "local_result": "PASS",
+      "note": "Default berdiri: localOnly untuk data peranti, neverPlaintextStorage untuk token/billing, optInDefaultOff untuk diagnostik, denyByDefault untuk usage/retention/transfer — konsisten dengan delivery_rules feature_flags_default OFF."
+    }
+  },
+  "data_subjects": [
+    "account_metadata",
+    "tokens",
+    "usage",
+    "storage",
+    "billing",
+    "diagnostics",
+    "retention",
+    "external_transfers"
+  ],
+  "findings_fixed_this_step": [
+    "Sebelum step ini tidak ada satu pun dokumen yang menyatukan alur data account: alur tersebar di komentar dokumen per kontrak (vault, metrics, session, audit) tanpa klasifikasi, consent, dan retention per subject — kini satu kontrak domain + manifest mengunci kedelapan subject di delapan dimensi.",
+    "Klaim 'tidak ada transfer eksternal' sebelumnya tersirat, tidak dibuktikan; kini test memindai seluruh sumber lib/features/account terhadap empat token jaringan sehingga external_transfer=none adalah fakta source yang bisa gagal kalau ada yang menambah client jaringan."
+  ],
+  "known_gaps": [
+    "Usage log (aiUsageLogs) tidak memiliki purge per-baris; penghapusan mengikuti penghapusan project database — opsi purge mandiri belum ada.",
+    "Koleksi diagnostik butuh opt-in eksplisit (PrivacySafeMetrics); permukaan chrome yang menyalakannya belum dibangun, sehingga consent opt-in diverifikasi di domain, bukan lewat UI.",
+    "Tidak ada connector live sehingga deferredProviderApi tidak dapat diverifikasi end-to-end; sertifikasi connector tetap DEFERRED-EXTERNAL.",
+    "Batas retensi angka untuk audit window dan maxCopies berasal dari pemanggil (konfigurasi runtime), bukan konstanta produk — tidak diklaim sebagai kebijakan tunggal."
+  ],
+  "domain": "lib/features/account/domain/account_center_privacy_data_flow_review.dart",
+  "tests": [
+    "test/features/account/domain/account_center_privacy_data_flow_review_test.dart"
+  ],
+  "test_counts": {
+    "new_domain": 21,
+    "scoped_regression": "test/features/account test/app + entry/readiness gate (lihat laporan run)"
+  },
+  "deferred_external": [
+    "live_connector_certification",
+    "provider_transfer_end_to_end",
+    "hosted_ci",
+    "public_trust_signing",
+    "production_telemetry",
+    "hardware",
+    "adoption",
+    "publication"
+  ]
+}

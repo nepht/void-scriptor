@@ -1,0 +1,19 @@
+{
+  "canonical_step": "116.12",
+  "title": "GitHub Identity Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "GITHUB_IDENTITY_SCHEMA_READY",
+  "required_fields": ["provider_id", "identity_flow", "identity_scopes", "developer_scopes_separation", "token_lifecycle", "revoke", "errors"],
+  "records": [{
+    "provider_id": "github",
+    "identity_flow": "synthetic identity flow fixture",
+    "identity_scopes": "synthetic identity-only scope fixture",
+    "developer_scopes_separation": "synthetic developer scope separation fixture",
+    "token_lifecycle": "synthetic lifecycle fixture",
+    "revoke": "synthetic revoke fixture",
+    "errors": "synthetic error fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live GitHub OAuth, credentials, token lifecycle, provider service, developer-scope separation, and user-flow evidence remain externally deferred"]
+}

@@ -1,0 +1,15 @@
+{
+  "canonical_step": "116.13",
+  "title": "Community Identity Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "COMMUNITY_IDENTITY_SCHEMA_READY",
+  "required_fields": ["provider_id", "identity_flow", "minimum_scopes"],
+  "providers": ["discord", "x", "facebook"],
+  "records": [
+    {"provider_id": "discord", "identity_flow": "synthetic identity flow fixture", "minimum_scopes": "synthetic minimum identity scope fixture", "status": "UNVERIFIED"},
+    {"provider_id": "x", "identity_flow": "synthetic identity flow fixture", "minimum_scopes": "synthetic minimum identity scope fixture", "status": "UNVERIFIED"},
+    {"provider_id": "facebook", "identity_flow": "synthetic identity flow fixture", "minimum_scopes": "synthetic minimum identity scope fixture", "status": "UNVERIFIED"}
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live Discord, X, and Facebook identity flows, credentials, scopes, provider services, and user-flow evidence remain externally deferred"]
+}

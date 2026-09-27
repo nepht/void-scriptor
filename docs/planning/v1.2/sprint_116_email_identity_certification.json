@@ -1,0 +1,19 @@
+{
+  "canonical_step": "116.8",
+  "title": "Email Identity Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "EMAIL_IDENTITY_SCHEMA_READY",
+  "required_fields": ["provider_id", "registration", "verification", "login", "recovery", "rate_limiting", "account_linking"],
+  "records": [{
+    "provider_id": "email",
+    "registration": "synthetic registration fixture",
+    "verification": "synthetic verification fixture",
+    "login": "synthetic login fixture",
+    "recovery": "synthetic recovery fixture",
+    "rate_limiting": "synthetic bounded-rate fixture",
+    "account_linking": "synthetic linking fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live email registration, verification delivery, authentication, recovery, rate limiting, account linking, credentials, provider service, and user-flow evidence remain externally deferred"]
+}

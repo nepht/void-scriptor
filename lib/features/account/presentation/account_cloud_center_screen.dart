@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -14,6 +15,7 @@ import '../domain/account_center_authentication_profile_card.dart';
 import '../domain/account_center_desktop_tablet_adaptation.dart';
 import '../domain/account_center_design_tokens.dart';
 import '../domain/account_center_information_architecture.dart';
+import '../domain/account_center_keyboard_screen_reader_verification.dart';
 import '../domain/account_center_mobile_adaptation.dart';
 import '../domain/account_center_provider_connector_manifest.dart';
 import '../domain/account_center_responsive_grid.dart';
@@ -120,13 +122,57 @@ class _AccountCloudCenterScreenState
     if (next == _tab) {
       return;
     }
-    // Mode router-driven (onTabChanged terpasang): state tab hidup di URL,
-    // halaman ini tidak boleh berubah agar target back-navigation stabil.
+    // 115.48: perpindahan tab WAJIB terdengar. Sebelum ini perubahan tab
+    // hanya terlihat (garis bawah + warna), jadi pengguna pembaca layar
+    // tidak pernah tahu they've berpindah section. Router-driven mode
+    // announcing di caller karena tab berubah di luar widget ini.
     if (widget.onTabChanged != null) {
       widget.onTabChanged!(next.slug);
+      _announceTabSelected(next);
       return;
     }
     setState(() => _tab = next);
+    _announceTabSelected(next);
+  }
+
+  /// 115.48 `status_announcements` — pengumuman tab memakai builder kontrak
+  /// supaya teksnya tidak bisa menyimpang dari yang diuji.
+  void _announceTabSelected(AccountCenterTab tab) {
+    // 115.48 memakai `sendAnnouncement`: `announce` sudah deprecated sejak
+    // Flutter 3.35 karena tidak kompatibel multi-window, dan pengumuman di
+    // kanal aksesibilitas yang sama persis (test capture tetap bekerja).
+    SemanticsService.sendAnnouncement(
+      View.of(context),
+      AccountCenterKeyboardScreenReader.tabSelectedAnnouncement(tab.label),
+      Directionality.of(context),
+    );
+  }
+
+  /// 115.48 `status_announcements` — buka/tutup drawer ringkasan.
+  void _announceSummaryDrawer({required bool open}) {
+    SemanticsService.sendAnnouncement(
+      View.of(context),
+      AccountCenterKeyboardScreenReader.summaryDrawerAnnouncement(open: open),
+      Directionality.of(context),
+    );
+  }
+
+  /// 115.48 `status_announcements` — sheet detail provider. Label provider
+  /// dibangun dari builder 115.7 yang sama dengan `_ProviderTile`, jadi
+  /// sheet dan tile tidak mungkin berbeda.
+  void _announceProviderDetails({
+    required ProviderConnectorEntry entry,
+    required bool opening,
+  }) {
+    SemanticsService.sendAnnouncement(
+      View.of(context),
+      AccountCenterKeyboardScreenReader.providerDetailsAnnouncement(
+        name: entry.displayName,
+        status: _providerConnectionLabel(entry.availability),
+        opening: opening,
+      ),
+      Directionality.of(context),
+    );
   }
 
   void _openAccountSearch() {
@@ -365,7 +411,10 @@ class _AccountCloudCenterScreenState
                 if (_providerDetailsOpen?.providerId == entry.providerId) {
                   return;
                 }
-                setState(() => _providerDetailsOpen = entry);
+                setState(() {
+                  _providerDetailsOpen = entry;
+                  _announceProviderDetails(entry: entry, opening: true);
+                });
               }
             : null,
       ),
@@ -434,7 +483,13 @@ class _AccountCloudCenterScreenState
             onConnect: widget.onConnectProvider == null
                 ? null
                 : () => widget.onConnectProvider!(entry),
-            onClose: () => setState(() => _providerDetailsOpen = null),
+            onClose: () => setState(() {
+              // 115.48: menutup sheet juga harus terdengar, kalau tidak
+              // pengguna pembaca layar menekan Close dan tidak tahu apa pun
+              // yang terjadi.
+              _providerDetailsOpen = null;
+              _announceProviderDetails(entry: entry, opening: false);
+            }),
           ),
       ],
     );
@@ -598,8 +653,10 @@ class _AccountCloudCenterScreenState
                 tooltip: drawerOpen
                     ? 'Hide account summary'
                     : 'Show account summary',
-                onPressed: () =>
-                    setState(() => _summaryDrawerOpen = !_summaryDrawerOpen),
+                onPressed: () => setState(() {
+                  _summaryDrawerOpen = !_summaryDrawerOpen;
+                  _announceSummaryDrawer(open: _summaryDrawerOpen);
+                }),
                 icon: Icon(
                   drawerOpen ? Icons.close : Icons.unfold_more,
                   size: AccountCenterDesignTokens.iconSizes.action,
@@ -1712,9 +1769,19 @@ class _AccountCollapsedNavRail extends StatelessWidget {
               ),
               // Label disembunyikan (bukan dihapus): ikon tetap punya semantics
               // label supaya pembaca layar tidak kehilangan nama section.
+              //
+              // 115.48: `button` DIHAPUS. Entri ini seam struktural tanpa
+              // callback apa pun, jadi mengannounced-nya sebagai "tombol"
+              // adalah affordance palsu — pembaca layar mengira ada aksi dan
+              // pengguna sempat menekan sesuatu yang tidak terjadi.
+              // `AccountCenterKeyboardScreenReader.navigationEntrySemantics`
+              // mengunci aturan yang sama; label tetap terbaca.
               child: Semantics(
-                label: item.label,
-                button: true,
+                label:
+                    AccountCenterKeyboardScreenReader.navigationEntrySemantics(
+                      label: item.label,
+                      actionable: false,
+                    ).label,
                 child: Tooltip(
                   message: item.label,
                   child: SizedBox(
@@ -1787,10 +1854,16 @@ class _AccountTopNavigation extends StatelessWidget {
               padding: EdgeInsets.only(
                 right: AccountCenterDesignTokens.spacing.sm,
               ),
+              // 115.48: navigasi atas adalah seam struktural (scroll), bukan
+              // pengalih tab — `button` tidak diklaim. Label tetap ada dan
+              // `selected` tetap menandai section aktif.
               child: Semantics(
                 selected: item.section == activeSection,
-                button: true,
-                label: item.label,
+                label:
+                    AccountCenterKeyboardScreenReader.navigationEntrySemantics(
+                      label: item.label,
+                      actionable: false,
+                    ).label,
                 child: Container(
                   height: AccountCenterDesignTokens.layout.tabBarHeight,
                   padding: EdgeInsets.symmetric(
@@ -3629,6 +3702,32 @@ class _AccountCenterSearchDialogState
     extends State<_AccountCenterSearchDialog> {
   String _query = '';
 
+  /// 115.48: jumlah hasil diumumkan setiap kali berubah, jadi pengguna
+  /// pembaca layar tahu apakah kuerinya menghasilkan apa pun. Diamnya
+  /// daftar hasil adalah kegagalan, bukan hemat.
+  void _announceResults(int count) {
+    SemanticsService.sendAnnouncement(
+      View.of(context),
+      AccountCenterKeyboardScreenReader.searchResultsAnnouncement(count),
+      Directionality.of(context),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // 115.48: dialog yang baru dibuka langsung mengumumkan statusnya saat
+    // masuk, termasuk saat kueri masih kosong. Tanpa ini pengguna pembaca
+    // layar melihat dialog berisi field tanpa tahu berapa hasil yang ada.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _announceResults(
+          AccountCenterInformationArchitecture.search(_query).length,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final results = AccountCenterInformationArchitecture.search(_query);
@@ -3647,11 +3746,19 @@ class _AccountCenterSearchDialogState
           children: [
             TextField(
               autofocus: true,
+              // 115.48: `labelText` permanen. `hintText` saja hilang begitu
+              // pengguna mengetik, jadi pembaca layar kehilangan nama field.
               decoration: const InputDecoration(
-                hintText: 'Search tabs and sections',
+                labelText: AccountCenterKeyboardScreenReader.searchFieldLabel,
+                hintText: AccountCenterKeyboardScreenReader.searchFieldHint,
                 prefixIcon: Icon(Icons.search),
               ),
-              onChanged: (value) => setState(() => _query = value),
+              onChanged: (value) => setState(() {
+                _query = value;
+                _announceResults(
+                  AccountCenterInformationArchitecture.search(_query).length,
+                );
+              }),
             ),
             SizedBox(height: AccountCenterDesignTokens.spacing.md),
             if (results.isEmpty)

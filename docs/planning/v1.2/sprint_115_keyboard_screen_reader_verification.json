@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_KEYBOARD_SCREEN_READER_VERIFICATION_MANIFEST",
+  "canonical_step": "115.48",
+  "title": "Keyboard & Screen Reader Verification",
+  "sources": {
+    "canonical_steps": {
+      "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+      "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba",
+      "objective": "Verify all tabs, cards, provider tiles, charts, menus, dialogs, forms, and sensitive actions.",
+      "required_evidence": [
+        "focus_order",
+        "keyboard_results",
+        "screen_reader_results",
+        "status_announcements",
+        "dialog_results",
+        "chart_alternatives"
+      ]
+    },
+    "product_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+      "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+      "token_subtrees": [
+        "accessibility.requirements",
+        "security_contract.sensitive_actions",
+        "information_architecture.tabs"
+      ]
+    }
+  },
+  "required_evidence": {
+    "focus_order": {
+      "verified_by": "test/features/account/presentation/account_cloud_center_keyboard_screen_reader_test.dart (sembilan tab IA >= 32px di wide_desktop, focus stop mobile) + AccountCenterKeyboardScreenReader.validateFocusOrder pada domain test",
+      "owner_step": "115.7 baseline urutan fokus; 115.48 mengunci ulang agar tidak menyimpang",
+      "local_result": "PASS"
+    },
+    "keyboard_results": {
+      "verified_by": "test/features/account/presentation/account_cloud_center_keyboard_screen_reader_test.dart (tab dapat diaktifkan keyboard, Escape menutup dialog, target sentuh 44px pada hasil dialog dan action bar mobile)",
+      "local_result": "PASS",
+      "note": "Batas keyboard-only yang diuji: tab, dialog search, action bar mobile, drawer toggle. Traversal Shift+Tab seluruh surface dan shortcuts global milik 115.51/115.55."
+    },
+    "screen_reader_results": {
+      "verified_by": "test/features/account/presentation/account_cloud_center_keyboard_screen_reader_test.dart (navigasi struktural TIDAK diklaim button tanpa aksi; node Semantics chart berlabel) + domain test navigationEntrySemantics",
+      "local_result": "PASS",
+      "note": "Node semantics dibaca lewat SemanticsHandle API flutter_test. Perilaku AT asli (NVDA/JAWS/TalkBack/VoiceOver) tetap DEFERRED-EXTERNAL."
+    },
+    "status_announcements": {
+      "verified_by": "test/features/account/presentation/account_cloud_center_keyboard_screen_reader_test.dart memakai tester.binding.takeAnnouncements() untuk tab, drawer, sheet provider, dan hasil search",
+      "local_result": "PASS",
+      "note": "Sebelum 115.48 tidak ada satu pun SemanticsService.announce di seluruh lib/features/account (probe grep kosong), sehingga perpindahan tab/drawer/sheet hanya berubah secara visual."
+    },
+    "dialog_results": {
+      "verified_by": "test/features/account/presentation/account_cloud_center_keyboard_screen_reader_test.dart (field punya semantics label, Escape menutup, hasil dialog 44px)",
+      "local_result": "PASS",
+      "note": "Field sebelumnya hanya punya hintText yang hilang saat mengetik; kini InputDecoration.labelText memakai AccountCenterKeyboardScreenReader.searchFieldLabel."
+    },
+    "chart_alternatives": {
+      "verified_by": "test/features/account/presentation/account_cloud_center_keyboard_screen_reader_test.dart + AccountCenterKeyboardScreenReader.auditChartAlternatives pada domain test",
+      "local_result": "PASS",
+      "note": "Dua chart wajib AI USAGE THIS MONTH dan STORAGE DISTRIBUTION memakai node Semantics image 115.7; alternatif wajib menyebut judul agar pembaca layar tahu card mana yang dibaca."
+    }
+  },
+  "audited_surfaces": {
+    "tab": "PASS",
+    "card": "PASS",
+    "providerTile": "PASS",
+    "chart": "PASS",
+    "menu": "PASS",
+    "dialog": "PASS",
+    "form": "PASS",
+    "sensitiveAction": "NOT_EXPOSED_NOT_VERIFIED"
+  },
+  "audit_notes": {
+    "sensitiveAction": "Tujuh aksi sensitive_actions spec BELUM diekspos di chrome 115.5-115.48, jadi AccountCenterKeyboardScreenReader.assessSensitiveActionExposure melaporkan notExposed dan isVerified=false. Audit lokal tidak pernah menyatakan PASS untuk aksi sensitif; verifikasi reauth-before-sensitive-action adalah acceptance 115.54.",
+    "menu": "Tiga chrome navigasi (rail kiri wide_desktop, rail terlipat compact_desktop, navigasi atas tablet) adalah seam STRUKTURAL tanpa callback. 115.48 menghapus klaim Semantics(button: true) pada ketiganya karena affordance palsu menuntun pengguna dan pembaca layar mengira ada aksi.",
+    "card": "Kartu memakai MergeSemantics/semantics label yang sudah ada (115.7); 115.48 menambahkan pengumuman status agar perubahan state audible."
+  },
+  "findings_fixed_this_step": [
+    "Tidak ada pengumuman status sama sekali di seluruh lib/features/account: perpindahan tab, buka/tutup drawer ringkasan, buka/tutup sheet provider, dan perubahan jumlah hasil search semuanya senyap bagi pembaca layar. Diperbaiki dengan SemanticsService.announce pada setiap transisi, dan nilainya dibangun dari builder yang sama dengan Semantics label 115.7.",
+    "Tiga navigasi struktural mengklaim Semantics(button: true) tanpa callback apa pun. Diperbaiki: Semantics(button: true) hanya menandai entri yang benar-benar dapat diaktifkan.",
+    "Field pencarian hanya punya hintText yang hilang begitu pengguna mengetik, sehingga pembaca layar tidak tahu apa yang harus diisi. Diperbaiki dengan labelText permanen dari kontrak 115.48."
+  ],
+  "domain": "lib/features/account/domain/account_center_keyboard_screen_reader_verification.dart",
+  "tests": [
+    "test/features/account/domain/account_center_keyboard_screen_reader_verification_test.dart",
+    "test/features/account/presentation/account_cloud_center_keyboard_screen_reader_test.dart"
+  ],
+  "deferred_external": [
+    "native_screen_reader_certification",
+    "measured_contrast",
+    "hosted_ci",
+    "public_trust_signing",
+    "production_telemetry",
+    "hardware",
+    "adoption",
+    "publication"
+  ]
+}

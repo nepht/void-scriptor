@@ -1,0 +1,25 @@
+sprint=115
+step=115.52
+phase=RED
+title=Visual Regression Matrix
+date=2026-09-27
+worktree=D:/tmp/wt-11552-red (detached, clean HEAD a989d28, pub get exit 0)
+command="D:/DevTools/Flutter SDK/flutter/bin/flutter.bat" test --no-pub test/features/account/domain/account_center_visual_regression_matrix_test.dart test/features/account/presentation/account_cloud_center_visual_regression_test.dart
+exit=1
+result=both test files failed to load
+errors=
+  Error when reading 'lib/features/account/domain/account_center_visual_regression_matrix.dart': The system cannot find the file specified
+  Undefined name 'AccountCenterVisualRegressionMatrix'
+  Undefined name 'AccountVisualRegressionCell' / 'AccountVisualCellStatus' / 'AccountVisualRegressionAssertion'
+  The method 'serviceOrNull' isn't defined for the type 'AccountCloudSnapshot'
+  The method 'connectionStateOf' isn't defined for the type 'AccountCloudSnapshot'
+interpretation=contract 115.52 absent AND the two snapshot accessors the degradation fix depends on absent; RED is the expected TDD entry gate
+probe_finding=The crash was found by a live widget probe before the contract existed: a snapshot whose services omit 'email-sign-in' raised StateError: Bad state: No element from the chrome, which is what the serviceOrNull/connectionStateOf fix removes.
+probe_files_removed=zz_probe_visual_test.dart, zz_probe_theme_test.dart (scratch probes deleted after their findings moved into the committed tests)
+reverified=this run copied both test files into D:/tmp/wt-11552-red (clean detached HEAD a989d28) and reproduced the identical five errors, so the RED gate is a live measurement and not a carried-over claim
+
+--- second red phase, found during the green phase of this run ---
+green_defect=pumpCenter() in the presentation test accepted a `TextScaler scaler` argument but never installed it in the widget tree, so the 200_percent_scale cell asserted at scale 1.0
+guard_added=the cell now reads MediaQuery.of() from inside the chrome subtree and expects textScaler.scale(10) == 20
+mutation_proof=forcing MediaQueryData(textScaler: TextScaler.noScaling) in the helper made exactly one test fail with Expected: <20> Actual: <10.0>; the pre-existing 44px touch-target assertion stayed GREEN at scale 1.0, proving the original cell was a rubber stamp
+restored=yes (helper reverted from the pre-mutation copy; grep confirms the scaler parameter is passed again)

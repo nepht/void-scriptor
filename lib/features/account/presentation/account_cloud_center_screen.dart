@@ -785,7 +785,10 @@ class _AccountCloudCenterScreenState
       onConnectProvider: widget.onConnectProvider,
       onSyncNow: widget.onSyncNow,
       onSignIn:
-          data.service('email-sign-in').state ==
+          // 115.52: `connectionStateOf` menggantikan `service(...)`: snapshot
+          // yang tidak memuat `email-sign-in` berarti belum terhubung, bukan
+          // error yang menjatuhkan seluruh halaman.
+          data.connectionStateOf('email-sign-in') ==
               AccountCloudConnectionState.connected
           ? null
           : widget.onSignIn ??
@@ -1199,7 +1202,7 @@ class _AuthenticationProfileCard extends StatelessWidget {
   /// service yang terhubung pada build ini.
   AccountPlan _planFrom(AccountCloudSnapshot snapshot) {
     final authenticated =
-        snapshot.service('email-sign-in').state ==
+        snapshot.connectionStateOf('email-sign-in') ==
         AccountCloudConnectionState.connected;
     return authenticated ? AccountPlan.pro : AccountPlan.free;
   }
@@ -2353,7 +2356,10 @@ class _PlanSummaryCard extends StatelessWidget {
                 style: _caption,
               ),
               SizedBox(height: AccountCenterDesignTokens.spacing.md),
-              _ConnectionBadge(state: snapshot.service('email-sign-in').state),
+              // 115.52: entri yang absen berarti "Not connected", bukan crash.
+              _ConnectionBadge(
+                state: snapshot.connectionStateOf('email-sign-in'),
+              ),
             ],
           ),
         ),

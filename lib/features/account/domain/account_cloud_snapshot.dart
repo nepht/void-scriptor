@@ -139,4 +139,24 @@ class AccountCloudSnapshot {
 
   AccountCloudService service(String id) =>
       services.firstWhere((service) => service.id == id);
+
+  /// 115.52: lookup yang tidak melempar untuk entri yang memang absen.
+  ///
+  /// Chrome menanyakan `email-sign-in` di tiga tempat (kartu AUTHENTICATION,
+  /// kartu rail, dan penentu plan). Semula semuanya memakai [service] yang
+  /// `firstWhere` tanpa `orElse`, jadi snapshot yang tidak memuat entri itu
+  /// melempar `StateError: Bad state: No element` dan SELURUH halaman hilang
+  /// — bukan hanya badge yang salah. Ketiadaan entri berarti "belum
+  /// terhubung", jadi getter ini mengembalikan null dan [connectionStateOf]
+  /// meremapkannya ke state yang jujur.
+  AccountCloudService? serviceOrNull(String id) {
+    for (final service in services) {
+      if (service.id == id) return service;
+    }
+    return null;
+  }
+
+  /// State koneksi untuk [id], atau `notConnected` bila entri tidak ada.
+  AccountCloudConnectionState connectionStateOf(String id) =>
+      serviceOrNull(id)?.state ?? AccountCloudConnectionState.notConnected;
 }

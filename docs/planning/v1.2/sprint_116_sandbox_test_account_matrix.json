@@ -1,0 +1,18 @@
+{
+  "canonical_step": "116.5",
+  "title": "Sandbox & Test Account Matrix",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "SANDBOX_MATRIX_SCHEMA_READY",
+  "required_fields": ["provider_id", "environment", "account_owner", "region", "test_data", "cleanup", "limitations"],
+  "records": [{
+    "provider_id": "example_provider",
+    "environment": "sandbox",
+    "account_owner": "automation-governance",
+    "region": "GLOBAL",
+    "test_data": ["synthetic fixtures only"],
+    "cleanup": ["delete synthetic fixtures after each run"],
+    "limitations": ["no live account", "no production credentials", "external provider verification deferred"]
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["sandbox availability and regional coverage require provider-owned accounts"]
+}

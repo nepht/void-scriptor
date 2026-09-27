@@ -7,6 +7,8 @@
 /// generic category fallback rather than silently drawing or recoloring it.
 library;
 
+import 'account_center_localization_formatting.dart';
+
 enum ProviderIconCategory {
   identity('identity'),
   cloudStorage('cloud_storage'),
@@ -67,7 +69,9 @@ class ProviderIconEntry {
     this.aspectRatioPolicy = ProviderIconAspectRatio.preserve,
     this.fit = ProviderIconFit.contain,
   }) : providerId = _normalizeId(providerId),
-       displayName = _normalizeDisplayName(displayName),
+       displayName = AccountCenterLocalizationFormatting.providerDisplayName(
+         displayName,
+       ),
        trademarkNotice = trademarkNotice.trim(),
        assetVersion = assetVersion.trim() {
     _validateAssetPath(assetLight, 'assetLight');
@@ -142,18 +146,6 @@ class ProviderIconEntry {
         value,
         'providerId',
         'Provider icon entries require a non-empty provider id.',
-      );
-    }
-    return normalized;
-  }
-
-  static String _normalizeDisplayName(String value) {
-    final normalized = value.trim();
-    if (normalized.isEmpty) {
-      throw ArgumentError.value(
-        value,
-        'displayName',
-        'Provider icon entries require a non-empty display name.',
       );
     }
     return normalized;

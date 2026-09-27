@@ -82,10 +82,7 @@ void main() {
     }
     // AI usage dan storage distribution diringkas di RAIL, bukan kartu grid
     // — mockup tidak punya kartu grid untuk keduanya.
-    for (final title in [
-      'AI USAGE THIS MONTH',
-      'STORAGE DISTRIBUTION',
-    ]) {
+    for (final title in ['AI USAGE THIS MONTH', 'STORAGE DISTRIBUTION']) {
       expect(find.text(title), findsWidgets, reason: title);
     }
 
@@ -124,7 +121,9 @@ void main() {
 
     expect(find.textContaining('1,540 tokens'), findsOneWidget);
     expect(find.textContaining(r'$1.25 estimated'), findsOneWidget);
-    expect(find.textContaining('4 KB indexed'), findsOneWidget);
+    // 115.49: 4096 B = 4,1 KB pada satuan desimal kontrak; formatter chrome
+    // sebelumnya biner dan mencetak `4 KB` di bawah label KB desimal.
+    expect(find.textContaining('4.1 KB indexed'), findsOneWidget);
     expect(find.textContaining('Images 75%'), findsOneWidget);
     expect(find.textContaining('Database 25%'), findsOneWidget);
   });

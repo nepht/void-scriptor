@@ -37,6 +37,7 @@ library;
 import 'dart:collection';
 
 import 'account_center_ai_usage_credits_cost_view.dart';
+import 'account_center_localization_formatting.dart';
 
 /// How current a record is relative to the injected clock.
 enum AiUsageFreshness {
@@ -304,8 +305,10 @@ final class AiUsageBar {
     final code = currency;
     final costPart = amount == null || code == null
         ? ' (cost unavailable)'
-        : ' (${_formatAmount(amount)} $code)';
-    return '${period.label}: ${_formatAmount(quantity!)} $unit$costPart';
+        : ' ('
+              '${AccountCenterLocalizationFormatting.formatCurrency(amount: amount, currencyCode: code)}'
+              ')';
+    return '${period.label}: ${AccountCenterLocalizationFormatting.formatAmount(quantity!)} $unit$costPart';
   }
 }
 
@@ -366,7 +369,9 @@ final class AiUsageChartSeries {
       'periods with data',
     );
     if (isRenderable) {
-      buffer.write(', peak ${_formatAmount(maxQuantity)} $unit');
+      buffer.write(
+        ', peak ${AccountCenterLocalizationFormatting.formatAmount(maxQuantity)} $unit',
+      );
     } else {
       buffer.write(', nothing to plot (every recorded quantity is zero)');
     }
@@ -485,7 +490,8 @@ final class AiUsageRow {
     final amount = costAmount;
     final currency = costCurrency;
     if (amount == null || currency == null) return 'Cost unavailable';
-    return '$costLabel ${_formatAmount(amount)} $currency';
+    return '$costLabel '
+        '${AccountCenterLocalizationFormatting.formatCurrency(amount: amount, currencyCode: currency)}';
   }
 
   Map<String, Object?> toPublicJson() => <String, Object?>{
@@ -953,7 +959,8 @@ String _summary({
     buffer.write(
       subtotal == null
           ? ' ${total1.label} cost for ${total1.currency} is unavailable.'
-          : ' ${total1.label} cost: ${_formatAmount(subtotal)} ${total1.currency}.',
+          : ' ${total1.label} cost: '
+                '${AccountCenterLocalizationFormatting.formatCurrency(amount: subtotal, currencyCode: total1.currency)}.',
     );
   }
   if (costTotals.isEmpty) {
@@ -991,21 +998,9 @@ int _distinctPeriods(List<AiUsageRow> rows) {
   return labels.length;
 }
 
-String _creditsText(double? remaining) =>
-    remaining == null ? 'unavailable' : _formatAmount(remaining);
+String _creditsText(double? remaining) => remaining == null
+    ? 'unavailable'
+    : AccountCenterLocalizationFormatting.formatAmount(remaining);
 
-/// Formats a quantity or cost without inventing precision.
-///
-/// A whole number prints without a decimal tail so `12` does not become
-/// `12.0000`; a fractional value keeps at most four decimals and drops the
-/// trailing zeros. Non-finite input is reported, never rendered as a number.
-String _formatAmount(double value) {
-  if (!value.isFinite) return 'unavailable';
-  if (value == value.roundToDouble() && value.abs() < 1e15) {
-    return value.toStringAsFixed(0);
-  }
-  var text = value.toStringAsFixed(4);
-  text = text.replaceFirst(RegExp(r'0+$'), '');
-  text = text.replaceFirst(RegExp(r'\.$'), '');
-  return text;
-}
+// 115.49: amount formatting lives in AccountCenterLocalizationFormatting
+// (currencies evidence); this file no longer owns a private formatter.

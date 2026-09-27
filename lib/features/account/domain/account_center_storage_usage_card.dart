@@ -4,6 +4,8 @@
 /// stale readings stay explicit; this type does not claim live connectivity.
 library;
 
+import 'account_center_localization_formatting.dart';
+
 enum StorageUsageCardIcon { cloud, hardDrive, archive }
 
 enum StorageUsageFreshness { fresh, stale, unknown }
@@ -73,8 +75,9 @@ final class StorageUsageCardData {
 
   double? get percentage => quotaBytes == null ? null : usedBytes / quotaBytes!;
 
-  String get quotaLabel =>
-      quotaBytes == null ? 'Quota unavailable' : _formatBytes(quotaBytes!);
+  String get quotaLabel => quotaBytes == null
+      ? 'Quota unavailable'
+      : AccountCenterLocalizationFormatting.storageUnits(quotaBytes!);
 
   String get statusLabel => switch (freshness) {
     StorageUsageFreshness.fresh => 'Fresh',
@@ -85,10 +88,15 @@ final class StorageUsageCardData {
   String get accessibleProgress {
     final quota = quotaBytes;
     if (quota == null) {
-      return '${_formatBytes(usedBytes)} used; quota unavailable';
+      return '${AccountCenterLocalizationFormatting.storageUnits(usedBytes)} used; quota unavailable';
     }
-    final percent = (percentage! * 100).round();
-    return '$percent% used, ${_formatBytes(quota - usedBytes)} available of ${_formatBytes(quota)}';
+    // 115.49: share math goes through the contract so a percentage can
+    // never be rendered outside 0..100 (percentages evidence).
+    final percent = AccountCenterLocalizationFormatting.sharePercent(
+      usedBytes,
+      quota,
+    );
+    return '$percent% used, ${AccountCenterLocalizationFormatting.storageUnits(quota - usedBytes)} available of ${AccountCenterLocalizationFormatting.storageUnits(quota)}';
   }
 
   static StorageUsageFreshness _freshness(
@@ -115,14 +123,5 @@ final class StorageUsageCardData {
       throw ArgumentError.value(value, field);
     }
     return normalized;
-  }
-
-  static String _formatBytes(int bytes) {
-    if (bytes < 1024) return '$bytes B';
-    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    if (bytes < 1024 * 1024 * 1024) {
-      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
-    }
-    return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
   }
 }

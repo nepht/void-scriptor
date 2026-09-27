@@ -29,6 +29,8 @@ library;
 
 import 'dart:collection';
 
+import 'account_center_localization_formatting.dart';
+
 import 'package:void_scriptor/features/account/domain/account_center_ai_usage_credits_cost_view.dart'
     show ApplicationCreditBalance;
 import 'package:void_scriptor/features/account/domain/account_center_cloud_storage_aggregation.dart'
@@ -209,11 +211,13 @@ final class RightRailStorageLine {
 
   bool get isAvailable => usedBytes != null && quotaBytes != null;
 
-  String get usedLabel =>
-      usedBytes == null ? 'Used unavailable' : _formatBytes(usedBytes!);
+  String get usedLabel => usedBytes == null
+      ? 'Used unavailable'
+      : AccountCenterLocalizationFormatting.storageUnits(usedBytes!);
 
-  String get quotaLabel =>
-      quotaBytes == null ? 'Quota unavailable' : _formatBytes(quotaBytes!);
+  String get quotaLabel => quotaBytes == null
+      ? 'Quota unavailable'
+      : AccountCenterLocalizationFormatting.storageUnits(quotaBytes!);
 
   String get freshnessLabel => switch (aggregationStatus) {
     CloudStorageAggregationStatus.complete => '',
@@ -244,8 +248,10 @@ final class RightRailRenewal {
   final DateTime? effectiveAt;
 
   String get label => switch (state) {
-    RightRailRenewalState.renews => 'Renews ${_date(renewsAt!)}',
-    RightRailRenewalState.cancelsOn => 'Cancels ${_date(effectiveAt!)}',
+    RightRailRenewalState.renews =>
+      'Renews ${AccountCenterLocalizationFormatting.utcDate(renewsAt!)}',
+    RightRailRenewalState.cancelsOn =>
+      'Cancels ${AccountCenterLocalizationFormatting.utcDate(effectiveAt!)}',
     RightRailRenewalState.cancelled => 'Subscription cancelled',
     RightRailRenewalState.none => 'No renewal',
     RightRailRenewalState.unknown => 'Renewal unknown',
@@ -563,19 +569,5 @@ void _requireUtc(DateTime value, String field) {
   }
 }
 
-String _date(DateTime value) =>
-    '${value.toUtc().year.toString().padLeft(4, '0')}-'
-    '${value.toUtc().month.toString().padLeft(2, '0')}-'
-    '${value.toUtc().day.toString().padLeft(2, '0')}';
-
-String _formatBytes(int bytes) {
-  if (bytes < 1024) return '$bytes B';
-  if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-  if (bytes < 1024 * 1024 * 1024) {
-    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
-  }
-  if (bytes < 1024 * 1024 * 1024 * 1024) {
-    return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
-  }
-  return '${(bytes / (1024 * 1024 * 1024 * 1024)).toStringAsFixed(1)} TB';
-}
+// 115.49: date and byte formatting live in AccountCenterLocalizationFormatting
+// (dates + storage_units evidence); this file no longer owns private formatters.

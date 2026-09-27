@@ -162,8 +162,12 @@ void main() {
       expect(storage.scope, RightRailStorageScope.remote);
       expect(storage.scopeLabel, 'Remote cloud');
       expect(storage.isAvailable, isTrue);
-      expect(storage.usedLabel, '1.0 GB');
-      expect(storage.quotaLabel, '2.0 GB');
+      // 115.49: rail memakai satuan desimal kontrak (spec
+      // `Display decimal GB/TB by default`), bukan biner. Fixture 1 GiB = 1,07
+      // desimal GB dan 2 GiB = 2,15 desimal GB; angka biner lama `1.0 GB`/
+      // `2.0 GB` menyatakan nilai yang salah di bawah label GB.
+      expect(storage.usedLabel, '1.07 GB');
+      expect(storage.quotaLabel, '2.15 GB');
       expect(storage.lastUpdated, _utc(2026, 4, 1));
       expect(storage.label, contains('Remote cloud'));
 

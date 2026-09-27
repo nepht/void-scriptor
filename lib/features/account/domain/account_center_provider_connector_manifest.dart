@@ -8,6 +8,7 @@ library;
 
 import 'dart:convert';
 
+import 'account_center_localization_formatting.dart';
 import 'account_center_provider_icon_registry.dart';
 
 enum ProviderConnectorCategory {
@@ -135,7 +136,9 @@ class ProviderConnectorEntry {
     required Iterable<ProviderPermission> permissions,
     Uri? healthEndpoint,
   }) : providerId = _normalizeProviderId(providerId),
-       displayName = _normalizeDisplayName(displayName),
+       displayName = AccountCenterLocalizationFormatting.providerDisplayName(
+         displayName,
+       ),
        capabilities = Set.unmodifiable(capabilities),
        regions = Set.unmodifiable(regions),
        connectorVersion = connectorVersion.trim(),
@@ -288,18 +291,6 @@ class ProviderConnectorEntry {
         value,
         'providerId',
         'Provider connector entries require a non-empty provider id.',
-      );
-    }
-    return normalized;
-  }
-
-  static String _normalizeDisplayName(String value) {
-    final normalized = value.trim();
-    if (normalized.isEmpty) {
-      throw ArgumentError.value(
-        value,
-        'displayName',
-        'Provider connector entries require a non-empty display name.',
       );
     }
     return normalized;

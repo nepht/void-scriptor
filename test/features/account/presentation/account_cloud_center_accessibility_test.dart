@@ -111,7 +111,11 @@ void main() {
       final reachesEither =
           stopRect.overlaps(tester.getRect(editProfile)) ||
           stopRect.overlaps(tester.getRect(addMethod));
-      expect(reachesEither, isTrue, reason: 'fokus pertama di panel = tombol auth');
+      expect(
+        reachesEither,
+        isTrue,
+        reason: 'fokus pertama di panel = tombol auth',
+      );
       await tester.sendKeyEvent(LogicalKeyboardKey.tab);
       await tester.pump();
       final second = _focusRect(tester);
@@ -254,9 +258,7 @@ void main() {
       // DALAM tiap kartu": tiap kartu mengumumkan provider-nya sendiri tanpa
       // menggandakan node di dalam kartu yang sama.
       for (final slug in const ['quick-connect', 'connected-services']) {
-        final card = find.byKey(
-          ValueKey('account-overview-card-$slug'),
-        );
+        final card = find.byKey(ValueKey('account-overview-card-$slug'));
         expect(card, findsOneWidget, reason: 'kartu $slug harus ada');
         for (final provider in const [
           'Google Drive, Not connected',
@@ -308,7 +310,9 @@ void main() {
       );
       final storage = AccountCenterAccessibility.chartTextAlternative(
         title: 'STORAGE DISTRIBUTION',
-        facts: const ['4 KB indexed', 'Images 75%', 'Database 25%'],
+        // 115.49: fakta mengikuti format kontrak — 4096 B = 4,1 KB satuan
+        // desimal (formatter biner chrome sebelumnya mencetak `4 KB`).
+        facts: const ['4.1 KB indexed', 'Images 75%', 'Database 25%'],
       );
       expect(find.bySemanticsLabel(usage), findsOneWidget);
       expect(find.bySemanticsLabel(storage), findsOneWidget);

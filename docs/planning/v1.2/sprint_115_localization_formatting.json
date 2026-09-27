@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_115_LOCALIZATION_FORMATTING_MANIFEST",
+  "canonical_step": "115.49",
+  "title": "Localization & Formatting",
+  "sources": {
+    "canonical_steps": {
+      "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+      "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba",
+      "objective": "Memvalidasi text expansion, RTL, dates, relative times, bytes, percentages, currencies, tax, and provider names.",
+      "required_evidence": [
+        "text_expansion",
+        "rtl",
+        "dates",
+        "relative_time",
+        "storage_units",
+        "percentages",
+        "currencies",
+        "tax"
+      ]
+    },
+    "product_spec": {
+      "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+      "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+      "token_subtrees": [
+        "accessibility.requirements",
+        "storage_usage_contract.display_rules",
+        "ai_usage_contract.required_fields",
+        "billing_contract.rules",
+        "billing_contract.separation"
+      ]
+    }
+  },
+  "required_evidence": {
+    "text_expansion": {
+      "verified_by": "test/features/account/presentation/account_cloud_center_localization_formatting_test.dart: chrome 1536x1024 dan 390x844 pada 200% memakai AccountCenterAccessibility.maximumSupportedTextScale yang sama dengan 115.7, tanpa overflow, dengan metrics aktif; scan seluruh widget Text wajib lolos AccountCenterLocalizationFormatting.requireWrappable; sembilan tab IA tetap ada di tree",
+      "local_result": "PASS",
+      "note": "requireWrappable menolak karakter yang memecah wrapping (NBSP, narrow-NBSP, figure space, non-breaking hyphen, word joiner, ZWSP). Skala > 200% tetap ditolak fail-closed oleh kontrak aksesibilitas 115.7."
+    },
+    "rtl": {
+      "verified_by": "test/features/account/presentation/account_cloud_center_localization_formatting_test.dart: pada Directionality RTL band wide_desktop memantul dengan kesetaraan pixel (nav.right = viewport - left.navLTR; rail.left = viewport - right.railLTR) dan baseline LTR tidak berubah; domain test textDirectionFor",
+      "local_result": "PASS",
+      "note": "textDirectionFor mengembalikan rtl untuk ar/ar-SA/he/fa/ur/ps/sd/yi/iw/ckb, ltr untuk sisanya, dan gagal untuk locale kosong. Konten locale RTL, IME, dan sertifikasi AT (NVDA/JAWS/TalkBack/VoiceOver) tetap DEFERRED-EXTERNAL karena tidak ada locale RTL yang dikirim produk."
+    },
+    "dates": {
+      "verified_by": "domain test AccountCenterLocalizationFormatting.utcDate (yyyy-MM-dd, timestamp lokal melewati nilainya ke UTC) + wiring: helper _date inline di account_center_right_rail_summary.dart (Renews/Cancels/lastUpdated) diganti kontrak",
+      "local_result": "PASS",
+      "note": "Format terlihat tidak berubah (padded UTC sama seperti sebelumnya) sehingga seluruh test right_rail_summary yang lulus sebelum slice ini tetap lulus tanpa perubahan ekspektasi tanggal."
+    },
+    "relative_time": {
+      "verified_by": "domain test relativeTime: bucket <60 dtk / 1 mnt / 5 mnt / 1 jam / 3 jam / 1 hari / 6 hari dengan pluralisasi, batas 59->just now dan 60->1 minute ago, >=7 hari jatuh ke 'on yyyy-MM-dd', timestamp masa depan ditolak ArgumentError",
+      "local_result": "PASS",
+      "note": "Chrome 115.45-115.48 belum mempunyai permukaan waktu relatif (freshness rail memakai keadaan Live/Maybe/Stale/Offline, bukan timestamp). Bucket ini memvalidasi formatter-nya; permukaan pertama yang menampilkan waktu relatif wajib memakai kontrak ini."
+    },
+    "storage_units": {
+      "verified_by": "domain test storageUnits (desimal 1000, TB ikut tercetak, negatif -> 'unavailable') + kontrak menggantikan SEMUA formatter byte privat: account_center_storage_distribution_report, account_center_right_rail_summary, account_center_storage_usage_card, account_cloud_center_screen + widget test live '4.1 KB indexed'",
+      "local_result": "PASS",
+      "note": "Sebelum 115.49 ada empat formatter privat: report memakai desimal sedangkan rail/card/presentation memakai biner 1024 tetapi tetap berlabel GB, sehingga 1 GiB tampil '1.0 GB' (sesat) dan 4096 B tampil '4 KB'. Tiga ekspektasi lama di-update dengan alasan tertulis: right_rail '1.07 GB'/'2.15 GB', screen '4.1 KB indexed', fakta chart accessibility '4.1 KB indexed'."
+    },
+    "percentages": {
+      "verified_by": "domain test sharePercent/percentLabel (boundary 0..100, total<=0/parts>total/parts<0 ditolak, 33 utk 1/3) + wiring chrome: label breakdown storage, accessibleProgress kartu storage, percentOfTotal laporan distribusi + widget test live 'Images 75%' dan 'Database 25%'",
+      "local_result": "PASS",
+      "note": "Sebelum slice ini persentase dibangun minimal empat jalur inline ((entry.value * 100 / total).round() dan (share * 100).round()) tanpa guard; kini satu jalur yang dijamin 0..100 dan gagal keras di luar itu. GridA11yTest sharing 3072/4096 tetap 75% dan 1024/4096 tetap 25% (output identik)."
+    },
+    "currencies": {
+      "verified_by": "domain test formatAmount ('12' bukan '12.0000', 4 desimal maksimum, non-finite -> 'unavailable'), formatMoney (2 desimal konvensi uang), formatCurrency (kode ISO-3 huruf wajib, case dipertahankan) + wiring: chrome '$1.25 estimated' -> formatMoney, tiga situs cost di account_center_ai_usage_report -> formatCurrency (test 115.16 yang memuat '(12 usd)' tetap lulus)",
+      "local_result": "PASS",
+      "note": "aiUsageLogRepository.aiUsageLogs tidak menyimpan field currency, sehingga ringkasan AI Usage di chrome hanya dapat memamerkan perkiraan biaya sebagai uang ('$1.25 estimated') tanpa kode ISO. Surface yang tahu kodenya wajib lewat formatCurrency; gap field currency log tercatat di known_gaps."
+    },
+    "tax": {
+      "verified_by": "domain test taxDisplay: token kanonik 'not_applicable'/'unavailable' -> 'Not applicable'/'Tax unavailable', baris 'VAT 20.00% (GB)' lolos tanpa diubah, token kosong/tak dikenal ditolak ArgumentError. Token yang sama persis dihasilkan AccountCenterInvoice.taxInformation (account_center_invoice_history.dart:336-340) dan dikunci oleh test invoice 115.37",
+      "local_result": "PASS",
+      "note": "Chrome billing/invoice belum dibangun (permukaan billing = step tersendiri), jadi taxDisplay belum dirender di UI. Bucket ini memvalidasi konversi token -> teks terbaca dan sifat fail-closed-nya, bukan klaim rendering billing."
+    }
+  },
+  "findings_fixed_this_step": [
+    "Empat formatter byte privat dengan dua aturan berbeda: report desimal, rail/card/presentation biner 1024 berlabel GB. Satu label GB biner adalah satuan yang salah dan tidak bisa dilihat pengguna; kini semua memakai satu kontrak desimal.",
+    "Nol helper tanggal/relative/currency/tax/arah di seluruh lib/features/account sebelum step ini: tanggal digenerate inline dengan padLeft di dua tempat dan biaya memakai toStringAsFixed(2) langsung di widget.",
+    "Persentase dibangun dari empat jalur inline berbeda tanpa guard rentang, dan kartu storage membagi dengan kuota sehingga kuota 0 menghasilkan NaN yang melempar UnsupportedError; kini satu sharePercent yang menolak di luar 0..100 dengan ArgumentError yang jelas.",
+    "Nama provider dinormalisasi dua kali dengan aturan berbeda (registry trim vs manifest terpisah); kini providerDisplayName tunggal dipakai keduanya, dan inventaris manifest/registry dibuktikan sudah kontrak-idempoten di test."
+  ],
+  "known_gaps": [
+    "Belum ada permukaan chrome untuk waktu relatif (bucket divalidasi lewat domain test; rendering menyusul di step yang punya timestamp relatif).",
+    "aiUsageLogs tanpa field currency: perkiraan biaya overview tampil sebagai uang '$' tanpa kode ISO; formatCurrency wajib-kode dipakai di semua surface yang tahu kodenya.",
+    "taxDisplay belum dirender karena chrome billing/invoice belum dibangun.",
+    "Provider/connector tetap availability=unverified pada manifest standard (temuan 115.47) di luar scope slice ini."
+  ],
+  "domain": "lib/features/account/domain/account_center_localization_formatting.dart",
+  "tests": [
+    "test/features/account/domain/account_center_localization_formatting_test.dart",
+    "test/features/account/presentation/account_cloud_center_localization_formatting_test.dart"
+  ],
+  "test_counts": {
+    "new_domain": 27,
+    "new_widget": 7,
+    "scoped_regression": "832 PASS / 1 FAIL (auth_flow_test regresi terkommit a5ed3ae, di luar scope)"
+  },
+  "deferred_external": [
+    "native_screen_reader_certification",
+    "rtl_locale_content_and_ime",
+    "measured_contrast",
+    "hosted_ci",
+    "public_trust_signing",
+    "production_telemetry",
+    "hardware",
+    "adoption",
+    "publication"
+  ]
+}

@@ -16,6 +16,7 @@ import '../domain/account_center_desktop_tablet_adaptation.dart';
 import '../domain/account_center_design_tokens.dart';
 import '../domain/account_center_information_architecture.dart';
 import '../domain/account_center_keyboard_screen_reader_verification.dart';
+import '../domain/account_center_localization_formatting.dart';
 import '../domain/account_center_mobile_adaptation.dart';
 import '../domain/account_center_provider_connector_manifest.dart';
 import '../domain/account_center_responsive_grid.dart';
@@ -2081,8 +2082,8 @@ class _OperationalMetricsCards extends StatelessWidget {
         ? 'Could not read active project metrics. Retry after checking the project session.'
         : value == null
         ? 'Open a project to inspect locally recorded AI usage.'
-        : '${_formatInteger(value.totalTokens)} tokens\n'
-              '\$${value.estimatedCost.toStringAsFixed(2)} estimated';
+        : '${AccountCenterLocalizationFormatting.groupedInteger(value.totalTokens)} tokens\n'
+              '\$${AccountCenterLocalizationFormatting.formatMoney(value.estimatedCost)} estimated';
     final storageMessage = loading
         ? 'Indexing storage for the active project...'
         : failed
@@ -2116,9 +2117,13 @@ class _OperationalMetricsCards extends StatelessWidget {
     final categories = metrics.storageBytesByCategory.entries.toList()
       ..sort((left, right) => right.value.compareTo(left.value));
     final shares = categories
-        .map((entry) => '${entry.key} ${(entry.value * 100 / total).round()}%')
+        .map(
+          (entry) =>
+              '${entry.key} '
+              '${AccountCenterLocalizationFormatting.percentLabel(AccountCenterLocalizationFormatting.sharePercent(entry.value, total))}',
+        )
         .join('\n');
-    return '${_formatBytes(total)} indexed${shares.isEmpty ? '' : '\n$shares'}';
+    return '${AccountCenterLocalizationFormatting.storageUnits(total)} indexed${shares.isEmpty ? '' : '\n$shares'}';
   }
 }
 
@@ -2311,29 +2316,8 @@ class _StorageDonutPainter extends CustomPainter {
       oldDelegate.values.toString() != values.toString();
 }
 
-String _formatInteger(int value) {
-  final digits = value.toString();
-  final buffer = StringBuffer();
-  for (var index = 0; index < digits.length; index++) {
-    if (index > 0 && (digits.length - index) % 3 == 0) buffer.write(',');
-    buffer.write(digits[index]);
-  }
-  return buffer.toString();
-}
-
-String _formatBytes(int bytes) {
-  if (bytes < 1024) return '$bytes B';
-  if (bytes < 1024 * 1024) {
-    final value = bytes / 1024;
-    return '${value == value.roundToDouble() ? value.toStringAsFixed(0) : value.toStringAsFixed(1)} KB';
-  }
-  if (bytes < 1024 * 1024 * 1024) {
-    final value = bytes / (1024 * 1024);
-    return '${value == value.roundToDouble() ? value.toStringAsFixed(0) : value.toStringAsFixed(1)} MB';
-  }
-  final value = bytes / (1024 * 1024 * 1024);
-  return '${value == value.roundToDouble() ? value.toStringAsFixed(0) : value.toStringAsFixed(1)} GB';
-}
+// 115.49: integer, byte, percentage, and money formatting live in
+// AccountCenterLocalizationFormatting; this file no longer owns formatters.
 
 class _PlanSummaryCard extends StatelessWidget {
   const _PlanSummaryCard({required this.snapshot});

@@ -1,0 +1,12 @@
+sprint=115
+step=115.49
+phase=RED
+title=Localization & Formatting
+date=2026-09-27
+command="D:/DevTools/Flutter SDK/flutter/bin/flutter.bat" test test/features/account/domain/account_center_localization_formatting_test.dart test/features/account/presentation/account_cloud_center_localization_formatting_test.dart
+exit=1
+result=2 test files failed to load
+errors=
+  Error when reading 'lib/features/account/domain/account_center_localization_formatting.dart': The system cannot find the file specified
+  Undefined name 'AccountCenterLocalizationFormatting'
+interpretation=contract 115.49 absent; RED is the expected TDD entry gate

@@ -37,6 +37,8 @@ library;
 
 import 'dart:collection';
 
+import 'account_center_localization_formatting.dart';
+
 /// Where a set of bytes lives.
 enum StorageDistributionScope {
   /// Bytes on this device.
@@ -424,15 +426,18 @@ final class StorageDistributionSlice {
   }
 
   int? get percentOfTotal {
-    final share = shareOfTotal;
-    return share == null ? null : (share * 100).round();
+    // 115.49: contract math. `totalBytes` is the fold of every slice's
+    // bytes, so a wedge never exceeds the distribution it belongs to and
+    // sharePercent's 0..100 precondition always holds here.
+    if (totalBytes <= 0) return null;
+    return AccountCenterLocalizationFormatting.sharePercent(bytes, totalBytes);
   }
 
   /// Readable without the chart. Always non-blank.
   String get textAlternative {
     final buffer = StringBuffer(
       '${category.label} on ${scope.label.toLowerCase()}: '
-      '${_formatBytes(bytes)} of ${_formatBytes(totalBytes)}',
+      '${AccountCenterLocalizationFormatting.storageUnits(bytes)} of ${AccountCenterLocalizationFormatting.storageUnits(totalBytes)}',
     );
     final percent = percentOfTotal;
     if (percent != null) buffer.write(' ($percent%)');
@@ -480,13 +485,13 @@ final class StorageDistributionChart {
     }
     final parts = <String>[
       for (final slice in slices)
-        '${slice.category.label} ${slice.percentOfTotal}% (${_formatBytes(slice.bytes)})',
+        '${slice.category.label} ${slice.percentOfTotal}% (${AccountCenterLocalizationFormatting.storageUnits(slice.bytes)})',
     ];
     final suffix = hasUnrecognizedCategory
         ? ' Includes categories this build does not recognise.'
         : '';
     return 'Storage distribution: ${slices.length} categor'
-        '${slices.length == 1 ? 'y' : 'ies'}, ${_formatBytes(totalBytes)} total — '
+        '${slices.length == 1 ? 'y' : 'ies'}, ${AccountCenterLocalizationFormatting.storageUnits(totalBytes)} total — '
         '${parts.join('; ')}.$suffix';
   }
 }
@@ -556,20 +561,21 @@ final class StorageDistributionRow {
   /// The unit the size is displayed in, from the spec's decimal-GB/TB rule.
   String get displayUnit {
     if (!isMeasured) return '';
-    if (bytes >= _terabyte) return 'TB';
-    if (bytes >= _gigabyte) return 'GB';
-    if (bytes >= _megabyte) return 'MB';
-    if (bytes >= _kilobyte) return 'KB';
+    if (bytes >= AccountCenterLocalizationFormatting.terabyte) return 'TB';
+    if (bytes >= AccountCenterLocalizationFormatting.gigabyte) return 'GB';
+    if (bytes >= AccountCenterLocalizationFormatting.megabyte) return 'MB';
+    if (bytes >= AccountCenterLocalizationFormatting.kilobyte) return 'KB';
     return 'B';
   }
 
   /// A human-readable size, or `Size unavailable` for an unmeasured reading.
   ///
-  /// The unit is already part of [_formatBytes]; appending [displayUnit] again
-  /// would print `1.5 GB GB`.
+  /// The unit is already part of
+  /// [AccountCenterLocalizationFormatting.storageUnits]; appending
+  /// [displayUnit] again would print `1.5 GB GB`.
   String get sizeLabel {
     if (!isMeasured) return 'Size unavailable';
-    return _formatBytes(bytes);
+    return AccountCenterLocalizationFormatting.storageUnits(bytes);
   }
 
   String get sourceLabel => source.label;
@@ -579,7 +585,7 @@ final class StorageDistributionRow {
     final quota = quotaBytes;
     if (quota == null) return 'Quota unavailable';
     if (quota < bytes) return 'Quota below reported use (inconsistent)';
-    return _formatBytes(quota);
+    return AccountCenterLocalizationFormatting.storageUnits(quota);
   }
 
   /// The share of the quota this reading uses, `null` when no quota was
@@ -594,9 +600,9 @@ final class StorageDistributionRow {
     final percent = percentOfQuota;
     final quotaPart = percent == null
         ? 'Quota unavailable'
-        : '$percent% of ${_formatBytes(quotaBytes!)} quota';
+        : '$percent% of ${AccountCenterLocalizationFormatting.storageUnits(quotaBytes!)} quota';
     if (!isMeasured) return 'Size unavailable; $quotaPart';
-    return '${_formatBytes(bytes)} used; $quotaPart';
+    return '${AccountCenterLocalizationFormatting.storageUnits(bytes)} used; $quotaPart';
   }
 
   /// Non-null only when the provider's own unit differs from the display unit.
@@ -665,7 +671,7 @@ final class StorageDistributionDrillDown {
       (sum, row) => sum + (row.isMeasured ? row.bytes : 0),
     );
     final buffer = StringBuffer(
-      '$label: $recordCount record(s), ${_formatBytes(total)} total',
+      '$label: $recordCount record(s), ${AccountCenterLocalizationFormatting.storageUnits(total)} total',
     );
     if (unrecognizedLabels.isNotEmpty) {
       buffer.write(', unrecognised as ${unrecognizedLabels.join(', ')}');
@@ -926,7 +932,7 @@ final class AccountCenterStorageDistributionReport {
 
   String? get localFreeLabel => localFreeBytes == null
       ? null
-      : '${_formatBytes(localFreeBytes!)} free on this device';
+      : '${AccountCenterLocalizationFormatting.storageUnits(localFreeBytes!)} free on this device';
 
   /// The drill-down for a `'<scope>/<category key>'` target, `null` when the
   /// filter removed it.
@@ -1139,7 +1145,9 @@ String _summary({
       buffer.write(' Unknown filter value(s): ${unknownValues.join(', ')}.');
     }
     if (localFreeBytes != null) {
-      buffer.write(' Free device space: ${_formatBytes(localFreeBytes)}.');
+      buffer.write(
+        ' Free device space: ${AccountCenterLocalizationFormatting.storageUnits(localFreeBytes)}.',
+      );
     }
     return buffer.toString();
   }
@@ -1147,7 +1155,7 @@ String _summary({
   final label = mergedLabel ?? rows.first.scope.label;
   final buffer = StringBuffer(
     'Storage distribution: ${rows.length} record(s), '
-    '${_formatBytes(chart.totalBytes)} in total'
+    '${AccountCenterLocalizationFormatting.storageUnits(chart.totalBytes)} in total'
     '${mergedTotal == null ? '' : ' (${mergedLabel!.toLowerCase()})'}.',
   );
   buffer.write(
@@ -1170,7 +1178,9 @@ String _summary({
     );
   }
   if (localFreeBytes != null) {
-    buffer.write(' Free device space: ${_formatBytes(localFreeBytes)}.');
+    buffer.write(
+      ' Free device space: ${AccountCenterLocalizationFormatting.storageUnits(localFreeBytes)}.',
+    );
   }
   buffer.write(' ${_freshnessLabel(freshnessCounts)}.');
   return buffer.toString();
@@ -1232,27 +1242,5 @@ String? _totalReason({
   return '${reasons.join('; ')}.';
 }
 
-const int _kilobyte = 1000;
-const int _megabyte = 1000 * _kilobyte;
-const int _gigabyte = 1000 * _megabyte;
-const int _terabyte = 1000 * _gigabyte;
-
-/// Formats a byte count in decimal units, per the product-spec display rule.
-///
-/// Decimal, not binary: the spec asks for GB/TB by default, and a binary unit
-/// shown under a `GB` label is a rounding lie the user cannot see.
-String _formatBytes(int bytes) {
-  if (bytes < 0) return 'unavailable';
-  if (bytes < _kilobyte) return '$bytes B';
-  if (bytes < _megabyte) return '${_trim(bytes / _kilobyte)} KB';
-  if (bytes < _gigabyte) return '${_trim(bytes / _megabyte)} MB';
-  if (bytes < _terabyte) return '${_trim(bytes / _gigabyte)} GB';
-  return '${_trim(bytes / _terabyte)} TB';
-}
-
-String _trim(double value) {
-  var text = value.toStringAsFixed(2);
-  text = text.replaceFirst(RegExp(r'0+$'), '');
-  text = text.replaceFirst(RegExp(r'\.$'), '');
-  return text;
-}
+// 115.49: byte formatting lives in AccountCenterLocalizationFormatting
+// (storage_units evidence); this file no longer owns a private formatter.

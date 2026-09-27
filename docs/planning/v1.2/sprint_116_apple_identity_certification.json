@@ -1,0 +1,18 @@
+{
+  "canonical_step": "116.11",
+  "title": "Apple Identity Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "APPLE_IDENTITY_SCHEMA_READY",
+  "required_fields": ["provider_id", "identity_flow", "private_relay_handling", "token_lifecycle", "revoke", "platform_constraints"],
+  "records": [{
+    "provider_id": "apple",
+    "identity_flow": "synthetic identity flow fixture",
+    "private_relay_handling": "synthetic private relay fixture",
+    "token_lifecycle": "synthetic lifecycle fixture",
+    "revoke": "synthetic revoke fixture",
+    "platform_constraints": "synthetic platform fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live Apple identity flow, private relay delivery, credentials, token lifecycle, provider service, platform constraints, and user-flow evidence remain externally deferred"]
+}

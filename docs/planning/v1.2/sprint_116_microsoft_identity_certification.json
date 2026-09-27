@@ -1,0 +1,20 @@
+{
+  "canonical_step": "116.10",
+  "title": "Microsoft Identity Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "MICROSOFT_IDENTITY_SCHEMA_READY",
+  "required_fields": ["provider_id", "identity_flow", "tenant_variants", "account_variants", "scopes", "token_lifecycle", "errors", "platform_constraints"],
+  "records": [{
+    "provider_id": "microsoft",
+    "identity_flow": "synthetic identity flow fixture",
+    "tenant_variants": "synthetic tenant fixture",
+    "account_variants": "synthetic account fixture",
+    "scopes": "synthetic minimum-scope fixture",
+    "token_lifecycle": "synthetic lifecycle fixture",
+    "errors": "synthetic error fixture",
+    "platform_constraints": "synthetic platform fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live Microsoft identity flow, tenant/account variants, credentials, token lifecycle, provider service, and user-flow evidence remain externally deferred"]
+}

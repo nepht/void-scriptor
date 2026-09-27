@@ -1,0 +1,20 @@
+{
+  "canonical_step": "116.15",
+  "title": "Google Drive Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "GOOGLE_DRIVE_SCHEMA_READY",
+  "required_fields": ["provider_id", "file_scope", "app_folder_root_choice", "upload_download", "delta", "quota", "revoke", "errors"],
+  "records": [{
+    "provider_id": "google_drive",
+    "file_scope": "synthetic least-scope fixture",
+    "app_folder_root_choice": "synthetic app-folder fixture",
+    "upload_download": "synthetic transfer fixture",
+    "delta": "synthetic delta fixture",
+    "quota": "synthetic quota fixture",
+    "revoke": "synthetic revoke fixture",
+    "errors": "synthetic error fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live Google Drive OAuth, file transfer, delta, quota, revocation, credentials, provider service, and user-flow evidence remain externally deferred"]
+}

@@ -1,0 +1,20 @@
+{
+  "canonical_step": "116.9",
+  "title": "Google Identity Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "GOOGLE_IDENTITY_SCHEMA_READY",
+  "required_fields": ["provider_id", "oauth", "scopes", "callback", "account_linking", "token_lifecycle", "revoke", "errors"],
+  "records": [{
+    "provider_id": "google",
+    "oauth": "synthetic OAuth fixture",
+    "scopes": "synthetic minimum-scope fixture",
+    "callback": "synthetic callback fixture",
+    "account_linking": "synthetic linking fixture",
+    "token_lifecycle": "synthetic lifecycle fixture",
+    "revoke": "synthetic revoke fixture",
+    "errors": "synthetic error fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live Google OAuth, callback delivery, account linking, token lifecycle, revocation, credentials, provider service, and user-flow evidence remain externally deferred"]
+}

@@ -1,0 +1,222 @@
+{
+  "step": "115.55",
+  "title": "Alpha Acceptance Gate",
+  "objective": "Menilai kesiapan Account & Cloud Center untuk v1.3.0-alpha.1 tanpa mengklaim connector yang belum tersertifikasi.",
+  "date": "2026-09-27",
+  "canonical_sprint": {
+    "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+    "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba",
+    "step_id": "115.55"
+  },
+  "product_spec": {
+    "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+    "token_subtrees": [
+      "acceptance_invariants",
+      "billing_contract",
+      "security_contract"
+    ]
+  },
+  "required_evidence": [
+    "product_spec_acceptance",
+    "connector_manifest",
+    "quota_evidence",
+    "icon_registry",
+    "responsive_results",
+    "accessibility_results",
+    "security_privacy_review",
+    "billing_review",
+    "known_issues"
+  ],
+  "evidence": [
+    "test/features/account/domain/account_center_alpha_acceptance_test.dart",
+    "test/features/account/domain/account_center_provider_connector_manifest_test.dart",
+    "test/features/account/domain/account_center_provider_quota_adapter_test.dart",
+    "test/features/account/domain/account_center_provider_icon_registry_test.dart",
+    "test/features/account/domain/account_center_visual_regression_matrix_test.dart",
+    "test/features/account/domain/account_center_keyboard_screen_reader_verification_test.dart",
+    "test/features/account/domain/account_center_security_billing_verification_test.dart",
+    "test/features/account/domain/account_center_privacy_data_flow_review_test.dart",
+    "test/features/account/domain/account_center_billing_summary_test.dart"
+  ],
+  "red_meta": "docs/evidence/sprint-115-55-alpha-acceptance-red-20260927.meta",
+  "buckets": [
+    {
+      "bucket": "product_spec_acceptance",
+      "status": "pass",
+      "measured": 10,
+      "checks": [
+        {
+          "name": "invariant_1_global_scope_covered",
+          "held": true
+        },
+        {
+          "name": "invariant_2_profile_summary_covered",
+          "held": true
+        },
+        {
+          "name": "invariant_3_icon_registry_covered",
+          "held": true
+        },
+        {
+          "name": "invariant_4_connector_manifest_covered",
+          "held": true
+        },
+        {
+          "name": "invariant_5_storage_credit_unavailable_covered",
+          "held": true
+        },
+        {
+          "name": "invariant_6_local_remote_labeling_covered",
+          "held": true
+        },
+        {
+          "name": "invariant_7_secrets_never_plaintext_covered",
+          "held": true
+        },
+        {
+          "name": "invariant_8_loading_empty_error_covered",
+          "held": true
+        },
+        {
+          "name": "invariant_9_responsive_accessible_covered",
+          "held": true
+        },
+        {
+          "name": "invariant_10_mock_values_blocked_covered",
+          "held": true
+        }
+      ],
+      "note": "All 10 acceptance_invariants from the product spec are covered by domain contracts. The test verifies each invariant maps to an existing contract file under lib/features/account/domain/."
+    },
+    {
+      "bucket": "connector_manifest",
+      "status": "pass",
+      "measured": 3,
+      "checks": [
+        {
+          "name": "manifest_is_unverified",
+          "held": true
+        },
+        {
+          "name": "is_connectable_false",
+          "held": true
+        },
+        {
+          "name": "no_live_connector_claim",
+          "held": true
+        }
+      ],
+      "note": "The standard connector manifest (115.9) declares availability=UNVERIFIED and isConnectable=false for all 32 providers. No live connector certification is claimed. The test verifies the manifest structure and field contracts."
+    },
+    {
+      "bucket": "quota_evidence",
+      "status": "pass",
+      "measured": 2,
+      "checks": [
+        {
+          "name": "quota_unavailable_is_explicit",
+          "held": true
+        },
+        {
+          "name": "no_zero_fabrication",
+          "held": true
+        }
+      ],
+      "note": "Provider quota adapters (115.17) preserve provider-reported values and explicitly represent unavailable. The test proves that unavailable is explicit (isAvailable=false) and never fabricated as zero."
+    },
+    {
+      "bucket": "icon_registry",
+      "status": "pass",
+      "measured": 2,
+      "checks": [
+        {
+          "name": "32_providers_registered",
+          "held": true
+        },
+        {
+          "name": "generic_fallback_exists",
+          "held": true
+        }
+      ],
+      "note": "Provider icon registry (115.8) registers 32 providers with generic fallback for unknown categories. The test verifies the registry contract and fallback behavior."
+    },
+    {
+      "bucket": "responsive_results",
+      "status": "pass",
+      "measured": 1,
+      "checks": [
+        {
+          "name": "visual_regression_all_pass",
+          "held": true
+        }
+      ],
+      "note": "Visual regression matrix (115.52) verdict is ALL_PASS across 11 cells (1536x1024, 1440, 1180, 900, 600, mobile, themes, 200_percent_scale, long_text, missing_icon, error_states)."
+    },
+    {
+      "bucket": "accessibility_results",
+      "status": "pass",
+      "measured": 2,
+      "checks": [
+        {
+          "name": "keyboard_audit_complete",
+          "held": true
+        },
+        {
+          "name": "screen_reader_audit_complete",
+          "held": true
+        }
+      ],
+      "note": "Keyboard and screen reader verification (115.48) audits 8 surfaces (tab, card, providerTile, chart, menu, dialog, form, sensitiveAction). The test verifies the audit is complete and surfaces are covered."
+    },
+    {
+      "bucket": "security_privacy_review",
+      "status": "pass",
+      "measured": 3,
+      "checks": [
+        {
+          "name": "privacy_external_transfer_none",
+          "held": true
+        },
+        {
+          "name": "security_billing_all_pass",
+          "held": true
+        },
+        {
+          "name": "no_network_offenders",
+          "held": true
+        }
+      ],
+      "note": "Privacy data-flow review (115.50) proves external_transfer=noneLocalOnly (no HTTP/Dio/WebSocket/HttpClient/url_launcher in lib/features/account). Security billing verification (115.54) verdict is ALL_PASS across 8 buckets."
+    },
+    {
+      "bucket": "billing_review",
+      "status": "blocked",
+      "measured": 0,
+      "checks": [],
+      "note": "Live billing/checkout is not reachable from this build. billing_contract.status remains PLANNED_NOT_VERIFIED. No payment provider HTTP client exists under lib/features/account. This is an external boundary that cannot be evaluated locally."
+    },
+    {
+      "bucket": "known_issues",
+      "status": "pass",
+      "measured": 2,
+      "checks": [
+        {
+          "name": "auth_flow_regression_documented",
+          "held": true
+        },
+        {
+          "name": "deferred_external_listed",
+          "held": true
+        }
+      ],
+      "note": "The auth_flow regression (commit a5ed3ae, label 'Sign in or connect account' -> '+ Add Another Method') is documented in the ledger. It is a pre-existing regression outside sprint scope, proven identical in clean worktree baseline. Deferred external gates are listed."
+    }
+  ],
+  "verdict": "COMPLETE_8_OF_9_PASS",
+  "deferred_external": [
+    "Live OAuth token exchange and revocation against a real identity provider.",
+    "Live payment-provider redirects, checkout sessions, and PCI certification.",
+    "Live identity-provider session inventory and revocation propagation.",
+    "Hosted CI, public-trust signing, telemetry, hardware, adoption, and publication gates."
+  ]
+}

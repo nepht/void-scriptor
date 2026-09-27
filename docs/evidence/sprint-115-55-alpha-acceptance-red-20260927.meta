@@ -1,0 +1,19 @@
+{
+  "step": "115.55",
+  "phase": "RED",
+  "date": "2026-09-27",
+  "head_at_capture": "a5891a0d6522753d09cfa071cd17a332fc0b609f",
+  "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_alpha_acceptance_test.dart",
+  "exit_code": 1,
+  "summary": "21 pass, 7 fail. All 7 failures are '115.55 manifest' not found — the manifest file docs/planning/v1.2/sprint_115_alpha_acceptance.json does not exist yet. The 21 passing tests prove the fail-closed matrix contract works (canonical set, ArgumentError/StateError rules, verdict computation). The 7 failing tests are the manifest validation tests that require the committed manifest to exist.",
+  "failing_tests": [
+    "committed manifest cites only test files that exist in this checkout",
+    "committed manifest cites the RED meta separately and never as test evidence",
+    "committed manifest every row is either a real pass or names its blocker",
+    "committed manifest parked external gates stay DEFERRED-EXTERNAL",
+    "committed manifest repeats the canonical identity and verdict of the live report",
+    "product_spec_acceptance grounding (10 invariants)",
+    "connector_manifest grounding (UNVERIFIED)"
+  ],
+  "root_cause": "Manifest file absent — expected for RED phase of a new step."
+}

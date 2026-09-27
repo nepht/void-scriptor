@@ -1,0 +1,14 @@
+{
+  "step": "116.1",
+  "date": "2026-09-27",
+  "head_at_capture": "b7c414b",
+  "red_exit": 1,
+  "green_exit": 0,
+  "focused_tests": "7/7 PASS",
+  "regression_tests": "24/24 PASS",
+  "analyzer": "No issues found",
+  "format": "1 file changed",
+  "diff_check": 0,
+  "build_windows_debug": "PASS 28.9s",
+  "status": "VERIFIED-LOCAL"
+}

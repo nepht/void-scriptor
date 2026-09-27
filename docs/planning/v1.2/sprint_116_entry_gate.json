@@ -1,0 +1,78 @@
+{
+  "canonical_step": "116.1",
+  "title": "Sprint Entry Gate",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "CERTIFICATION_ENTRY_READY",
+  "active_scope": "CERTIFICATION_SCOPE_APPROVED",
+  "full_scope_approved": false,
+  "required_evidence": [
+    "sprint_115_acceptance",
+    "provider_registry",
+    "connector_manifests",
+    "test_environment_plan",
+    "security_plan",
+    "brand_review_plan"
+  ],
+  "evidence": {
+    "sprint_115_acceptance": {
+      "status": "VERIFIED-LOCAL",
+      "sources": [
+        "docs/planning/v1.2/sprint_115_alpha_acceptance.json",
+        "docs/planning/v1.2/sprint_115_sprint_closure.json"
+      ],
+      "summary": "Sprint 115 Alpha Acceptance Gate PASS; Account & Cloud Center siap untuk certification."
+    },
+    "provider_registry": {
+      "status": "VERIFIED-LOCAL",
+      "sources": [
+        "docs/planning/v1.2/sprint_115_provider_icon_registry.json",
+        "docs/planning/v1.2/sprint_115_ai_provider_registry.json"
+      ],
+      "summary": "Provider registry dengan 32 provider unik, kategori, capability, dan availability."
+    },
+    "connector_manifests": {
+      "status": "VERIFIED-LOCAL",
+      "sources": [
+        "docs/planning/v1.2/sprint_115_provider_connector_manifest.json"
+      ],
+      "summary": "Connector manifests dengan required fields dan availability UNVERIFIED."
+    },
+    "test_environment_plan": {
+      "status": "VERIFIED-LOCAL",
+      "sources": [
+        "docs/planning/v1.2/sprint_115_automated_test_matrix.json"
+      ],
+      "summary": "Test environment plan dengan sandbox, fixtures, dan cleanup strategy."
+    },
+    "security_plan": {
+      "status": "VERIFIED-LOCAL",
+      "sources": [
+        "docs/planning/v1.2/sprint_115_security_billing_verification.json",
+        "docs/planning/v1.2/sprint_114_security_privacy_maintenance.json"
+      ],
+      "summary": "Security plan dengan OAuth PKCE, secure token vault, dan privacy constraints."
+    },
+    "brand_review_plan": {
+      "status": "VERIFIED-LOCAL",
+      "sources": [
+        "docs/planning/v1.2/sprint_115_provider_icon_registry.json"
+      ],
+      "summary": "Brand review plan dengan official asset policy dan trademark notice."
+    }
+  },
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "live_provider_certification",
+    "live_quota_and_cost_evidence",
+    "public_billing_certification",
+    "connector_availability_claims",
+    "hosted_ci_validation",
+    "publication"
+  ],
+  "deferred_checks": [
+    "live_provider_certification",
+    "public_billing_certification",
+    "hosted_ci_validation",
+    "publication"
+  ]
+}

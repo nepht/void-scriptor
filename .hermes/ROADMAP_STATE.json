@@ -25,11 +25,11 @@
   "flutter_sdk": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat",
   "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
   "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
-  "active_sprint": 115,
-  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_115.json",
-  "active_ledger": "docs/sprints/sprint-115-account-cloud-center.md",
-  "last_verified_step": "115.55",
-  "next_step": "115.56",
+  "active_sprint": 116,
+  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
+  "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
+  "last_verified_step": "116.1",
+  "next_step": "116.2",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "115.56",
@@ -418,21 +418,8 @@
     }
   },
   "active_stream_details": {
-    "name": "sequential_expansion",
-    "sprint": 115,
-    "contract": "sprint_115.json",
-    "ledger": "docs/sprints/sprint-115-account-cloud-center.md",
-    "resume_step": "115.1",
-    "resumed_on": "2026-09-25",
-    "authority": "KEPUTUSAN CHOI 24 Sep: lanjutkan roadmap; 114.44 mengaktifkan corrective scope Sprint 115.",
-    "previous_sprint": {
-      "sprint": 114,
-      "final_step": "114.44",
-      "status": "CLOSED-LOCAL-DEFERRED-EXTERNAL",
-      "commit": "ff8b913"
-    },
-    "next_step": "115.56",
-    "resume_authority": "KEPUTUSAN CHOI 24 Sep: lanjutkan roadmap; 114.44 mengaktifkan corrective scope Sprint 115."
+    "status": "",
+    "next_step": "116.2"
   },
   "activation_rules_11122_run362": {
     "status": "VERIFIED-LOCAL",
@@ -624,7 +611,7 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "115.1",
+  "current_step": "116.2",
   "current_step_status": "PENDING",
   "last_run_summary": "2026-09-25: Sprint 114.44 CLOSED-LOCAL / DEFERRED-EXTERNAL at ff8b913; guard SPRINT_COMPLETE; Sprint 115 corrective scope activated at 115.1. External gates remain deferred.",
   "last_commit": "ff8b913",
@@ -738,7 +725,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "113.43",
+  "last_resolved_step": "116.1",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -1205,5 +1192,33 @@
     ],
     "limitations": "handoff local complete for deferred release; observation window not started; external gates remain parked without blocking local roadmap work",
     "next_step": "113.46"
+  },
+  "sprint_116_step_1161": {
+    "status": "VERIFIED-LOCAL",
+    "title": "Sprint Entry Gate",
+    "date": "2026-09-27",
+    "outputs": [
+      "sprint_115_acceptance",
+      "provider_registry",
+      "connector_manifests",
+      "test_environment_plan",
+      "security_plan",
+      "brand_review_plan"
+    ],
+    "focused_tests": "7/7 exit 0",
+    "regression": "24/24 exit 0",
+    "analyzer": "No issues found",
+    "format": "1 file changed",
+    "diff_check": 0,
+    "build_windows_debug": "PASS 28.9s",
+    "manifest": "docs/planning/v1.2/sprint_116_entry_gate.json",
+    "domain": "lib/features/world_logic/domain/sprint_116_entry_gate.dart",
+    "test": "test/release/sprint_116_entry_gate_test.dart",
+    "evidence": [
+      "docs/evidence/sprint-116-1-focused-20260927.log",
+      "docs/evidence/sprint-116-1-focused-20260927.meta"
+    ],
+    "limitations": "provider/connector live, quota/cost, public billing, hosted CI, hardware, publication remain DEFERRED-EXTERNAL",
+    "next_step": "116.2"
   }
 }

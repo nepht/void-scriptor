@@ -26,18 +26,18 @@
     "sequential_expansion": {
       "status": "ACTIVE",
       "priority": 2,
-      "sprint": 115,
-      "resume_step": "115.1",
-      "contract": "sprint_115.json",
-      "ledger": "docs/sprints/sprint-115-account-cloud-center.md",
-      "resume_condition": "Sprint 114 CLOSED-LOCAL / DEFERRED-EXTERNAL and corrective scope for Account & Cloud Center is approved locally.",
-      "resumed_on": "2026-09-25",
-      "resume_authority": "KEPUTUSAN CHOI 24 Sep: lanjutkan roadmap; 114.44 mengaktifkan corrective scope Sprint 115.",
+      "sprint": 116,
+      "resume_step": "116.1",
+      "contract": "sprint_116.json",
+      "ledger": "docs/sprints/sprint-116-connector-certification.md",
+      "resume_condition": "Sprint 115 CLOSED-LOCAL-DEFERRED-EXTERNAL and operator instruction to advance to Sprint 116.",
+      "resumed_on": "2026-09-27",
+      "resume_authority": "OPERATOR INSTRUCTION 27 Sep: lanjutkan ke sprint berikutnya.",
       "previous_sprint": {
-        "sprint": 114,
-        "final_step": "114.44",
-        "status": "CLOSED-LOCAL-DEFERRED-EXTERNAL",
-        "commit": "ff8b913"
+        "sprint": 115,
+        "final_step": "115.56",
+        "status": "CLOSED-LOCAL_DEFERRED_EXTERNAL",
+        "commit": "b7c414b"
       }
     }
   },

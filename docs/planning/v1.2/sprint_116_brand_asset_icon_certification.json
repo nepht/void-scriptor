@@ -1,0 +1,19 @@
+{
+  "canonical_step": "116.7",
+  "title": "Brand Asset & Icon Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "BRAND_ICON_SCHEMA_READY",
+  "required_fields": ["provider_id", "asset_source", "license_or_permission", "asset_version", "theme_variants", "fallback", "accessible_name", "review_status"],
+  "records": [{
+    "provider_id": "example_provider",
+    "asset_source": "synthetic fixture",
+    "license_or_permission": "not a production mark",
+    "asset_version": "fixture-v1",
+    "theme_variants": ["light", "dark"],
+    "fallback": "generic category icon",
+    "accessible_name": "Example provider icon",
+    "review_status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["provider licensing, public brand approval, visual regression, and live connector identity remain externally deferred"]
+}

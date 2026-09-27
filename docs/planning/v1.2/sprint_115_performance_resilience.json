@@ -1,0 +1,177 @@
+{
+  "step": "115.53",
+  "title": "Performance & Provider Resilience",
+  "objective": "Menguji initial render, concurrent refresh, slow APIs, rate limits, outage, many accounts, charts, dan local scans.",
+  "date": "2026-09-27",
+  "canonical_sprint": {
+    "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+    "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba",
+    "step_id": "115.53"
+  },
+  "product_spec": {
+    "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+    "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+    "token_subtrees": [
+      "provider_model.health_states",
+      "provider_model.connection_states",
+      "ui_states"
+    ]
+  },
+  "required_outputs": [
+    "render_budget",
+    "refresh_budget",
+    "slow_api_results",
+    "rate_limit_results",
+    "outage_results",
+    "many_accounts_results",
+    "scan_results"
+  ],
+  "evidence": [
+    "test/features/account/domain/account_center_performance_resilience_test.dart",
+    "test/features/account/presentation/account_cloud_center_performance_resilience_test.dart"
+  ],
+  "red_meta": "docs/evidence/sprint-115-53-performance-resilience-red-20260927.meta",
+  "buckets": [
+    {
+      "bucket": "render_budget",
+      "status": "pass",
+      "measured": 2,
+      "measurements": [
+        {
+          "name": "initial_frame_ms",
+          "observed": 187.253,
+          "budget": 400.0,
+          "within_budget": true
+        },
+        {
+          "name": "reference_viewport_first_paint_ms",
+          "observed": 173.163,
+          "budget": 400.0,
+          "within_budget": true
+        }
+      ],
+      "note": "Locally measured widget-test first-frame cost at the 1536x1024 reference viewport, including the full chrome plus the two chart CustomPaints. This is a declared PROBE BOUND in a test harness, not a product guarantee: a widget test does not exercise the real raster pipeline, real fonts at shipped DPI, or a cold disk cache."
+    },
+    {
+      "bucket": "refresh_budget",
+      "status": "pass",
+      "measured": 2,
+      "measurements": [
+        {
+          "name": "connection_label_resolve_us",
+          "observed": 0.35628571428571426,
+          "budget": 250.0,
+          "within_budget": true
+        },
+        {
+          "name": "chart_palette_decision_us",
+          "observed": 1.686,
+          "budget": 250.0,
+          "within_budget": true
+        }
+      ],
+      "note": "The chrome has no refresh trigger wired to a provider: accountOperationalMetricsProvider is the only async input and it resolves once per project session. What is measured here is the per-refresh CPU path the refresh would drive, so the budget is anchored to real work rather than to an invented concurrent fetch."
+    },
+    {
+      "bucket": "slow_api_results",
+      "status": "blocked",
+      "measured": 0,
+      "measurements": [],
+      "note": "No provider HTTP client exists anywhere under lib/features/account (step 115.50 proved the whole feature tree is free of package:http, package:dio, HttpClient(, WebSocket.connect and url_launcher), so a genuinely slow provider response cannot be observed in this build. Recording a synthetic latency would be a fabricated measurement, so the local result is the state contract and the live timing stays DEFERRED-EXTERNAL."
+    },
+    {
+      "bucket": "rate_limit_results",
+      "status": "pass",
+      "measured": 2,
+      "measurements": [
+        {
+          "name": "retry_window_minutes",
+          "observed": 15.0,
+          "budget": 60.0,
+          "within_budget": true
+        },
+        {
+          "name": "state_is_retryable",
+          "observed": 1.0,
+          "budget": 1.0,
+          "within_budget": true
+        }
+      ],
+      "note": "115.42 owns the rate-limit surface; this step proves it is still wired to the canonical RATE_LIMITED ui_state, keeps a real retry window, and refuses a non-positive one. It does NOT claim a provider ever returned 429 in this build."
+    },
+    {
+      "bucket": "outage_results",
+      "status": "pass",
+      "measured": 3,
+      "measurements": [
+        {
+          "name": "outage_surfaces_claiming_connected",
+          "observed": 0.0,
+          "budget": 0.0,
+          "within_budget": true
+        },
+        {
+          "name": "tile_and_sheet_and_announcement_agreement",
+          "observed": 1.0,
+          "budget": 1.0,
+          "within_budget": true
+        },
+        {
+          "name": "outage_state_is_retryable",
+          "observed": 1.0,
+          "budget": 1.0,
+          "within_budget": true
+        }
+      ],
+      "note": "Real defect fixed here. _providerConnectionLabel mapped available, degraded AND outage all to the word 'Connected', and that single string reached three surfaces at once: the provider tile semantics label, the mobile sheet 'Connection' row, and the 115.48 screen-reader announcement. Outage now reads 'Not connected, provider outage' on all three, degraded reads 'Connected, provider degraded', and a second defect was fixed alongside: opening the sheet from the provider TILE only called setState, so the one path available to a user in an outage announced nothing at all."
+    },
+    {
+      "bucket": "many_accounts_results",
+      "status": "pass",
+      "measured": 1,
+      "measurements": [
+        {
+          "name": "synthesised_provider_count",
+          "observed": 48.0,
+          "budget": 48.0,
+          "within_budget": true
+        }
+      ],
+      "note": "48 synthetic cloud-storage entries, eight times the six registered providers, built through the production ProviderConnectorManifest.fromJsonString API rather than a test-only constructor. The card scrolls internally instead of pushing the page past the viewport. The count is a declared probe size, not a spec number; no test asserts a maximum supported account count, and none is claimed."
+    },
+    {
+      "bucket": "scan_results",
+      "status": "pass",
+      "measured": 2,
+      "measurements": [
+        {
+          "name": "real_tree_scan_ms",
+          "observed": 9.135,
+          "budget": 2000.0,
+          "within_budget": true
+        },
+        {
+          "name": "indexed_bytes",
+          "observed": 154.0,
+          "budget": 154.0,
+          "within_budget": true
+        }
+      ],
+      "note": "A real ProjectStorageAnalyzer walk over a real temporary tree: three files totalling exactly 154 bytes, classified into database/image/cache, with the per-category totals proven to sum back to the report total. An absent project root yields an empty report and an honest zero instead of a throw. The budget covers a 3-file tree, so it says nothing about a large project directory."
+    }
+  ],
+  "verdict": "COMPLETE_6_OF_7_PASS",
+  "defects_fixed": [
+    "_providerConnectionLabel mapped available, degraded and outage all to 'Connected'. That one string fed the provider tile semantics label, the mobile details sheet 'Connection' row, and the 115.48 screen-reader announcement, so a screen-reader user in a provider outage was told the account was connected. All three surfaces now read AccountCenterPerformanceResilience.connectionLabel, and the chrome is proven to render the same wording the contract declares.",
+    "Opening the provider details sheet from the provider TILE only called setState; _announceProviderDetails was reachable solely from the mobile action-bar slot, which requires an isConnectable entry. Since the tile is the only reachable path for a non-connectable provider, the silent path was exactly the path a user in an outage must take. Both paths now announce.",
+    "_UsageCompositionPainter.shouldRepaint compared promptShare and color but not trackColor, and _StorageDonutPainter.shouldRepaint compared only values.toString(), ignoring colors AND trackColor. RenderCustomPaint._didUpdatePainter skips markNeedsPaint() entirely when shouldRepaint returns false, so a theme swap that changed only the palette left both charts painted in the previous theme's ink while the surrounding chrome repainted. Both now compare the full painter input through the shared chartPalette contract.",
+    "Test-side defect caught by the run, not papered over: the local-scan test expected 157 bytes for files summing to 154. The analyzer was right and the expectation was a fabricated number; it now asserts the real sum and additionally proves the per-category totals add back to the report total."
+  ],
+  "deferred_external": [
+    "A live provider connector: slow-API timing, real 429 rate-limit windows, real outage propagation, and provider retry backoff cannot be measured without one, and no provider HTTP client exists under lib/features/account in this build.",
+    "Real frame budgets on shipped hardware: the render and refresh numbers here come from a widget-test harness, not the real raster pipeline, real fonts at shipped DPI, or a cold disk cache.",
+    "Production telemetry and a shipped performance baseline: no field data, no RUM, and no regression budget enforced in hosted CI.",
+    "Hosted CI running this matrix on every change, a visual/perf diff baseline across platforms, and public-trust signing, hardware, adoption, and publication remain out of scope for this local slice."
+  ],
+  "overlap_note": "render_budget and refresh_budget both measure CPU work inside one frame, and scan_results feeds the storage card that render_budget also times; their numbers overlap by design and must not be summed. many_accounts_results and outage_results both drive the provider list, one for scale and one for degraded state. slow_api_results is blocked and therefore contributes no local measurement at all."
+}

@@ -436,8 +436,16 @@ class _AccountCloudCenterScreenState
           data: data,
           gridPlan: gridPlan,
           scrollable: true,
-          onOpenProviderDetails: (entry) =>
-              setState(() => _providerDetailsOpen = entry),
+          onOpenProviderDetails: (entry) => setState(() {
+            // 115.53: membuka sheet dari TILE sebelumnya hanya mengubah
+            // state — `_announceProviderDetails` hanya dipanggil dari slot
+            // action bar, sehingga pengguna pembaca layar yang membuka
+            // detail lewat tile (jalur yang SATUNYA untuk provider yang
+            // tidak connectable, termasuk yang sedang outage) tidak
+            // mendengar apa pun. Sekarang kedua jalur mengumumkan.
+            _providerDetailsOpen = entry;
+            _announceProviderDetails(entry: entry, opening: true);
+          }),
         ),
         SizedBox(height: AccountCenterDesignTokens.spacing.md),
         _shellRail(

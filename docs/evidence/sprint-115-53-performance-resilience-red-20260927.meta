@@ -1,0 +1,53 @@
+{
+  "step": "115.53",
+  "phase": "RED",
+  "date": "2026-09-27",
+  "head_at_capture": "4675aeb",
+  "toolchain": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat",
+  "note": "RED here means: the contract and its tests were written FIRST, then run against the unmodified chrome. The failures are the defects the step found, not a missing file.",
+  "domain_suite": {
+    "command": "flutter test test/features/account/domain/account_center_performance_resilience_test.dart",
+    "exit": 1,
+    "result": "+22 -7",
+    "interpretation": "22 contract tests pass; the 7 failures are the whole '115.53 committed manifest' group, because the evidence manifest did not exist yet. The contract itself (canonical buckets, fail-closed rules, outage wording, chart palette) passed from the first run."
+  },
+  "presentation_suite_first_run": {
+    "command": "flutter test test/features/account/presentation/account_cloud_center_performance_resilience_test.dart",
+    "exit": 1,
+    "result": "+2 -3",
+    "failures": [
+      {
+        "test": "a provider in outage never reads as connected to a user",
+        "expected": "Not connected, provider outage",
+        "actual_before_fix": "Connected",
+        "defect": "_providerConnectionLabel mapped available, degraded AND outage all to 'Connected'. That single string fed the provider tile semantics label, the mobile details sheet 'Connection' row, and the 115.48 screen-reader announcement, so a screen-reader user in a provider outage was told the account was connected."
+      },
+      {
+        "test": "the screen-reader announcement refuses a false connection",
+        "expected": "non-empty announcement list",
+        "actual_before_fix": "[]",
+        "defect": "Opening the details sheet from the provider TILE only called setState. _announceProviderDetails was reached solely from the mobile action-bar slot, which requires an isConnectable entry. Since the tile is the ONLY reachable path for a non-connectable provider (an outage provider included), the silent path was exactly the path a user in an outage has to take."
+      },
+      {
+        "test": "a degraded provider says so without hiding the connection",
+        "expected": "Not connected, provider outage / degraded wording",
+        "actual_before_fix": "Connected",
+        "defect": "Same root cause as the first failure: degraded was also reported as a plain 'Connected'."
+      }
+    ]
+  },
+  "chart_defect_evidence": {
+    "defect": "_UsageCompositionPainter.shouldRepaint compared promptShare and color but NOT trackColor; _StorageDonutPainter.shouldRepaint compared only values.toString() and ignored colors AND trackColor.",
+    "mechanism": "RenderCustomPaint._didUpdatePainter (packages/flutter/lib/src/rendering/custom_paint.dart:450-461) skips markNeedsPaint() entirely when shouldRepaint returns false, so a theme swap that changed only the palette left the usage line and the storage donut painted in the PREVIOUS theme's ink while the surrounding chrome repainted.",
+    "verified_in_sdk": "D:/DevTools/Flutter SDK/flutter/packages/flutter/lib/src/rendering/custom_paint.dart"
+  },
+  "pallets_with_a_real_colour_only_swap": {
+    "why": "Not every theme pair differs in a way a value-only comparison can see; these were checked so the regression test is not vacuous.",
+    "note": "All 10 Void palettes have a distinct primaryBright, but the defect is specifically that borderSoft (trackColor) and the slice colors were never compared at all, so the swap was invisible regardless of which family was chosen."
+  },
+  "test_authoring_pitfalls_measured": [
+    "The mobile action bar's third slot only opens the sheet when the manifest has an isConnectable entry (the 115.47 dead-control fix), so an OUTAGE manifest makes that tap a no-op. The provider tile is the reachable path; the first draft of the tests tapped the dead bar and failed with 'sheet has no label' instead of for the reason under test.",
+    "Capture accessibility announcements with a single await tester.pump(), NOT pumpAndSettle(): pumpAndSettle drains the announcement queue, so the announcement under test is already gone when it is read. This is why 115.48 uses one pump() after its tap.",
+    "The 115.53 wording 'Not connected, provider outage' contains its own comma, so splitting the sheet label on the LAST ', ' returns only 'provider outage'. The parser must split on the FIRST ', ' after the provider name."
+  ]
+}

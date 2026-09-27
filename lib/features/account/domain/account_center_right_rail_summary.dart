@@ -114,13 +114,23 @@ final class RightRailEntitlementCounts {
     required this.granted,
     required this.denied,
     required this.expired,
+    this.notYetIssued = 0,
   });
 
   final int granted;
   final int denied;
   final int expired;
 
-  int get total => granted + denied + expired;
+  /// Grants whose issuance instant is still in the future.
+  ///
+  /// Counted separately rather than folded into [expired] because the two mean
+  /// opposite things to a user: an expired grant was issued and ran out, while
+  /// a not-yet-issued one has not been granted at all. Before
+  /// `EntitlementState.notYetIssued` existed, evaluating the rail before a
+  /// grant's issuance instant reported it as granted.
+  final int notYetIssued;
+
+  int get total => granted + denied + expired + notYetIssued;
 
   String get label {
     if (total == 0) return 'No entitlements';
@@ -128,6 +138,7 @@ final class RightRailEntitlementCounts {
       if (granted > 0) '$granted granted',
       if (denied > 0) '$denied denied',
       if (expired > 0) '$expired expired',
+      if (notYetIssued > 0) '$notYetIssued not yet active',
     ];
     return parts.join(', ');
   }
@@ -418,12 +429,14 @@ final class AccountCenterRightRailSummary {
     subscription.entitlements.map((grant) => grant.key),
   );
 
-  /// Tally evaluated at [at]; expiry is derived, never stored twice.
+  /// Tally evaluated at [at]; both ends of each grant's window are derived,
+  /// never stored twice.
   RightRailEntitlementCounts entitlementsAt(DateTime at) {
     _requireUtc(at, 'at');
     var granted = 0;
     var denied = 0;
     var expired = 0;
+    var notYetIssued = 0;
     for (final grant in subscription.entitlements) {
       switch (subscription.entitlementStateAt(grant.key, at)) {
         case EntitlementState.granted:
@@ -432,12 +445,15 @@ final class AccountCenterRightRailSummary {
           denied++;
         case EntitlementState.expired:
           expired++;
+        case EntitlementState.notYetIssued:
+          notYetIssued++;
       }
     }
     return RightRailEntitlementCounts(
       granted: granted,
       denied: denied,
       expired: expired,
+      notYetIssued: notYetIssued,
     );
   }
 

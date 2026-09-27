@@ -1,0 +1,60 @@
+{
+  "step": "115.54",
+  "phase": "RED",
+  "date": "2026-09-27",
+  "head_at_capture": "c0fbe2b",
+  "toolchain": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat",
+  "note": "RED here means the contract and its tests were written FIRST, then run against the unmodified code. The failures are the defects this step found, not a missing file. Both production defects were additionally reproduced by a standalone throwaway probe before any fix, and the probe output is quoted below verbatim.",
+  "capability_gap_found": {
+    "defect": "canonical bucket `webhook_tests` names a capability that did not exist anywhere under lib/features/account.",
+    "evidence": "rg -l 'webhook|Webhook|hmac|HMAC|replay|Replay|timestampTolerance' over lib/features/account and test/features/account returned zero matches for webhook/HMAC/signature at the start of this step. The only `webhook` token in lib/ was lib/core/capabilities/reactivation_dependency_map.dart, which is unrelated to provider callbacks.",
+    "consequence": "An inbound billing or provider callback had no signature check, no timestamp window, and no replay guard. Anything that reached a callback handler was trusted, and a provider retry of the same delivery could be applied twice.",
+    "fix": "lib/features/account/domain/account_center_security_billing_verification.dart adds signatureHeader/verifyWebhook over HMAC-SHA256 of a versioned `v1:<timestamp>:<body>` payload, a constant-time comparison, a declared tolerance window, and an explicit AccountWebhookReplayGuard. It reuses the `crypto` package already in pubspec and the Hmac(sha256, ...) primitive already used by lib/core/security/crypto, so no new dependency was added."
+  },
+  "probe_before_fix": {
+    "file": "test/features/account/domain/zz_probe_11554_test.dart (temporary, deleted after the run; not part of the slice)",
+    "command": "flutter test test/features/account/domain/zz_probe_11554_test.dart --no-pub",
+    "exit": 0,
+    "output_verbatim": [
+      "PROBE_A state_at_2020=EntitlementState.granted has=true",
+      "PROBE_B reauth=false -> read=rotated audit=[add, replace]"
+    ]
+  },
+  "defect_1_entitlement_issued_before_it_existed": {
+    "test": "entitlement_state refuses a time before grantedAt",
+    "expected": "EntitlementState.notYetIssued",
+    "actual_before_fix": "EntitlementState.granted",
+    "root_cause": "AccountCenterSubscriptionEntitlementModel.entitlementStateAt compared ONLY expiresAt. A grant is a signed statement with an issuance time, not a boolean, so evaluating the model at any instant earlier than grantedAt returned granted.",
+    "impact": "A caller with a skewed clock, or one replaying a cached evaluation instant, unlocked an entitlement the server had not issued yet. The only production consumer, RightRailAccountSummary.entitlementsAt, tallied it as granted, so the user-visible rail count was also wrong.",
+    "fix": "entitlementStateAt now returns the new EntitlementState.notYetIssued when at.isBefore(grant.grantedAt). The rail gained a matching notYetIssued counter rather than folding the new state into expired, because the two mean opposite things to a user."
+  },
+  "defect_2_api_key_replace_without_reauthentication": {
+    "test": "refuses to replace a key while reauthentication is denied",
+    "expected": "StateError and the stored secret unchanged",
+    "actual_before_fix": "the vault entry was overwritten with 'rotated' and the audit recorded a plain 'replace'",
+    "root_cause": "AccountCenterApiKeysManager.replace called vault.save directly. The product spec lists `reveal_or_replace_key` under security_contract.sensitive_actions, and the vault READ path (vault.read, and therefore copyToClipboard) already gated on reauthentication - so a user who could not reveal a key could still silently replace it.",
+    "fix": "replace now calls vault.reauthenticate() first; a refusal throws StateError, leaves the stored secret untouched, and is audited as `denied_replace` so the audit trail cannot be read as a successful rotation."
+  },
+  "matrix_suite_first_run": {
+    "command": "flutter test test/features/account/domain/account_center_security_billing_verification_test.dart --no-pub",
+    "exit": 1,
+    "result": "failed to load",
+    "interpretation": "The contract file did not exist, so the suite could not compile. This is the expected RED shape for a new contract and is NOT counted as a defect."
+  },
+  "live_contracts_suite_first_run": {
+    "command": "flutter test test/features/account/domain/account_center_security_billing_live_contracts_test.dart --no-pub",
+    "exit": 1,
+    "real_defect_failures": [
+      "entitlement_state refuses a time before grantedAt - got EntitlementState.granted",
+      "refuses to replace a key while reauthentication is denied - no StateError, secret was rotated"
+    ],
+    "authoring_bugs_of_my_own": [
+      "PlanPrice / EntitlementLimit / ManagedSession were written into const lists although their constructors are not const. Fixed in the test, not in production.",
+      "One keyFor assertion wrapped a throwing call in expect(...) instead of expect(() => ..., ...), so the ArgumentError escaped the matcher and failed the test. Fixed in the test."
+    ]
+  },
+  "test_authoring_pitfalls_measured": [
+    "A test file that fails to COMPILE reports its errors at the top of the output, and `tail` hides them. When a suite shows 'failed to load', read the FIRST error block, not the last lines.",
+    "The new enum value EntitlementState.notYetIssued broke the exhaustive switch in the right rail. Dart fails that at compile time, which is the desired outcome, but the rail had to gain a real counter rather than a `case _: break` that would have silently dropped the state."
+  ]
+}

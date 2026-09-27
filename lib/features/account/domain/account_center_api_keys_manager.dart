@@ -117,8 +117,21 @@ final class AccountCenterApiKeysManager {
     _record('add', normalizedId);
   }
 
+  /// Rotates the secret behind an existing key.
+  ///
+  /// Requires reauthentication, because the product spec lists
+  /// `reveal_or_replace_key` under `security_contract.sensitive_actions`.
+  /// The vault's READ path already gated on reauthentication, so a user who
+  /// could not reveal a key could still silently replace it — the audit
+  /// recorded a `replace` and the previous material was gone. A refused
+  /// reauthentication now leaves the stored secret untouched and is audited
+  /// as `denied_replace` rather than `replace`.
   Future<void> replace({required String id, required String secret}) async {
     final key = _active(id);
+    if (!await vault.reauthenticate()) {
+      _record('denied_replace', key.id);
+      throw StateError('Reauthentication is required to replace an API key.');
+    }
     await vault.save(
       accountId: accountId,
       secret: secret,

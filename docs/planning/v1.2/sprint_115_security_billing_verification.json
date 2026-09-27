@@ -1,0 +1,231 @@
+{
+  "step": "115.54",
+  "title": "Security & Billing Verification",
+  "objective": "Menguji OAuth, token storage, API keys, sessions, permissions, webhook authenticity, entitlement, payment redirects, and audit.",
+  "date": "2026-09-27",
+  "canonical_sprint": {
+    "path": "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_115.json",
+    "sha256": "c8d5166aa151fc691606540c84887ee407a574947444ae2520e5f1c7222c6aba",
+    "step_id": "115.54"
+  },
+  "product_spec": {
+    "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+    "token_subtrees": [
+      "security_contract.oauth",
+      "security_contract.secrets",
+      "security_contract.sensitive_actions",
+      "security_contract.cross_workspace_rule",
+      "billing_contract.rules"
+    ]
+  },
+  "required_outputs": [
+    "oauth_tests",
+    "vault_tests",
+    "key_tests",
+    "session_tests",
+    "permission_tests",
+    "webhook_tests",
+    "entitlement_tests",
+    "audit_tests"
+  ],
+  "evidence": [
+    "test/features/account/domain/account_center_security_billing_verification_test.dart",
+    "test/features/account/domain/account_center_security_billing_live_contracts_test.dart"
+  ],
+  "red_meta": "docs/evidence/sprint-115-54-security-billing-verification-red-20260927.meta",
+  "buckets": [
+    {
+      "bucket": "oauth_tests",
+      "status": "pass",
+      "measured": 3,
+      "checks": [
+        {
+          "name": "pkce_challenge_is_s256_of_verifier",
+          "held": true
+        },
+        {
+          "name": "callback_state_is_single_use",
+          "held": true
+        },
+        {
+          "name": "nonce_is_checked_when_required",
+          "held": true
+        }
+      ],
+      "note": "AccountOAuthFlow (115.11) re-verified live: S256 challenge derived from the verifier, callback state consumed once, nonce compared in constant time when the connector requires it. Live provider token exchange and revocation stay DEFERRED-EXTERNAL."
+    },
+    {
+      "bucket": "vault_tests",
+      "status": "pass",
+      "measured": 3,
+      "checks": [
+        {
+          "name": "read_requires_reauthentication",
+          "held": true
+        },
+        {
+          "name": "account_id_cannot_escape_key_namespace",
+          "held": true
+        },
+        {
+          "name": "audit_event_carries_no_secret",
+          "held": true
+        }
+      ],
+      "note": "AccountSecureTokenVault re-verified live: a refused reauthentication returns null and writes nothing, and an account id containing '/' is rejected so a key cannot be written outside the account namespace."
+    },
+    {
+      "bucket": "key_tests",
+      "status": "pass",
+      "measured": 4,
+      "checks": [
+        {
+          "name": "replace_requires_reauthentication",
+          "held": true
+        },
+        {
+          "name": "denied_replace_is_audited_as_denied",
+          "held": true
+        },
+        {
+          "name": "stored_secret_survives_a_denied_replace",
+          "held": true
+        },
+        {
+          "name": "rotated_key_is_marked_unverified",
+          "held": true
+        }
+      ],
+      "note": "DEFECT FIXED THIS STEP. replace() overwrote vault key material with reauthentication refused (probe: reauth=false -> read=rotated). It now refuses, leaves the secret untouched, and records denied_replace. The product spec lists reveal_or_replace_key under security_contract.sensitive_actions."
+    },
+    {
+      "bucket": "session_tests",
+      "status": "pass",
+      "measured": 3,
+      "checks": [
+        {
+          "name": "current_session_cannot_be_revoked",
+          "held": true
+        },
+        {
+          "name": "force_logout_requires_confirmation",
+          "held": true
+        },
+        {
+          "name": "suspicious_session_cannot_be_trusted",
+          "held": true
+        }
+      ],
+      "note": "AccountCenterSessionDeviceManagement re-verified live: the current session is never revoked from the list, force logout needs explicit confirmation and keeps the current session active, and a suspicious session must be revoked before it can be trusted. Live identity-provider revocation propagation stays DEFERRED-EXTERNAL."
+    },
+    {
+      "bucket": "permission_tests",
+      "status": "pass",
+      "measured": 3,
+      "checks": [
+        {
+          "name": "workspace_access_needs_explicit_permission",
+          "held": true
+        },
+        {
+          "name": "cross_workspace_transfer_needs_consent",
+          "held": true
+        },
+        {
+          "name": "account_backup_never_holds_workspace_data",
+          "held": true
+        }
+      ],
+      "note": "AccountCenterWorkspaceBoundaryContract re-verified live against security_contract.cross_workspace_rule: Novel/Character data is denied without an explicit permission, a cross-scope transfer is denied without consent, and an ACCOUNT_GLOBAL backup boundary holding workspaces/novels data is a violation."
+    },
+    {
+      "bucket": "webhook_tests",
+      "status": "pass",
+      "measured": 6,
+      "checks": [
+        {
+          "name": "matching_hmac_signature_verifies",
+          "held": true
+        },
+        {
+          "name": "altered_body_is_refused",
+          "held": true
+        },
+        {
+          "name": "wrong_secret_is_refused",
+          "held": true
+        },
+        {
+          "name": "delivery_outside_tolerance_is_stale",
+          "held": true
+        },
+        {
+          "name": "same_delivery_id_twice_is_replayed",
+          "held": true
+        },
+        {
+          "name": "malformed_signature_never_verifies",
+          "held": true
+        }
+      ],
+      "note": "CAPABILITY ADDED THIS STEP. No webhook verification existed anywhere under lib/features/account (rg for webhook/hmac/replay returned zero matches), so a provider callback was trusted unconditionally. verifyWebhook now checks an HMAC-SHA256 over a versioned v1:<timestamp>:<body> payload in constant time, enforces a declared tolerance window, and refuses a repeated delivery id."
+    },
+    {
+      "bucket": "entitlement_tests",
+      "status": "pass",
+      "measured": 4,
+      "checks": [
+        {
+          "name": "grant_is_not_live_before_grantedAt",
+          "held": true
+        },
+        {
+          "name": "grant_is_live_at_grantedAt",
+          "held": true
+        },
+        {
+          "name": "grant_without_expiry_never_lapses",
+          "held": true
+        },
+        {
+          "name": "denied_grant_stays_denied",
+          "held": true
+        }
+      ],
+      "note": "DEFECT FIXED THIS STEP. entitlementStateAt compared only expiresAt, so a grant issued 2026-10-01 evaluated at 2020-01-01 returned granted (probe: state_at_2020=granted). The new EntitlementState.notYetIssued closes the window at both ends, and the right rail counts it separately instead of as granted."
+    },
+    {
+      "bucket": "audit_tests",
+      "status": "pass",
+      "measured": 3,
+      "checks": [
+        {
+          "name": "unknown_sensitive_key_is_refused",
+          "held": true
+        },
+        {
+          "name": "redacted_key_never_reaches_public_json",
+          "held": true
+        },
+        {
+          "name": "event_outside_retention_is_not_retained",
+          "held": true
+        }
+      ],
+      "note": "AccountCenterActivityAuditOverview re-verified live: declaring a sensitive key that is not present in the details is a construction error rather than a silent no-op, a redacted value never appears in toPublicJson, and an event older than the retention window is not retained."
+    }
+  ],
+  "verdict": "ALL_PASS",
+  "defects_fixed": [
+    "entitlementStateAt compared only expiresAt, so an entitlement was reported as granted at any instant before it was issued; the new EntitlementState.notYetIssued closes the window at both ends and the right rail counts it separately.",
+    "AccountCenterApiKeysManager.replace overwrote vault key material with reauthentication refused, contradicting security_contract.sensitive_actions (reveal_or_replace_key); it now refuses, leaves the secret untouched, and audits denied_replace.",
+    "The canonical webhook_tests bucket named a capability that did not exist under lib/features/account; verifyWebhook now provides signature, tolerance, and replay checks."
+  ],
+  "deferred_external": [
+    "Live OAuth token exchange and revocation against a real identity provider (no provider HTTP client exists under lib/features/account).",
+    "Live payment-provider redirects, checkout sessions, and PCI certification; billing_contract.status remains PLANNED_NOT_VERIFIED.",
+    "Live identity-provider session inventory and revocation propagation.",
+    "Hosted CI, public-trust signing, telemetry, hardware, adoption, and publication gates."
+  ],
+  "overlap_note": "vault_tests and key_tests both exercise AccountSecureTokenVault, and key_tests drives AccountCenterApiKeysManager which stores through that same vault; their evidence overlaps by design and must not be summed. permission_tests and audit_tests both read the workspace boundary and the audit redaction rule respectively, which are also covered by the 115.4 and 115.31 manifests."
+}

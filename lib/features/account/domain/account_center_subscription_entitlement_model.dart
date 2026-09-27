@@ -15,7 +15,16 @@ enum PlanTier { free, standard, premium, custom }
 
 enum PlanBillingCycle { none, monthly, yearly }
 
-enum EntitlementState { granted, denied, expired }
+/// State of an entitlement at an explicit instant.
+///
+/// [notYetIssued] exists because a grant is a signed statement with an
+/// issuance time, not a boolean. Before this value existed the model compared
+/// only `expiresAt`, so a grant signed for 1 October evaluated on 1 January
+/// returned [granted] — a skewed clock, or a replayed evaluation time taken
+/// from a cached entitlement, unlocked a feature the server had not issued
+/// yet. [AccountCenterSubscriptionEntitlementModel.entitlementStateAt] now
+/// applies both ends of the window.
+enum EntitlementState { granted, denied, expired, notYetIssued }
 
 enum EntitlementSource { signedServer, offlineLicense, trial, manualGrant }
 
@@ -310,9 +319,20 @@ final class AccountCenterSubscriptionEntitlementModel {
     throw StateError('Unknown limit: $key');
   }
 
+  /// Resolves the entitlement at [at], applying BOTH ends of its window.
+  ///
+  /// A grant is not live before `grantedAt`. This used to compare only
+  /// `expiresAt`, so an evaluation time earlier than the grant's issuance
+  /// silently reported [EntitlementState.granted]; a caller with a skewed
+  /// clock, or one replaying a cached evaluation instant, could therefore
+  /// unlock a feature the server had not issued. The window check is
+  /// fail-closed on both ends.
   EntitlementState entitlementStateAt(String key, DateTime at) {
     _requireUtc(at, 'at');
     final grant = entitlementByKey(key);
+    if (at.isBefore(grant.grantedAt)) {
+      return EntitlementState.notYetIssued;
+    }
     if (grant.state != EntitlementState.granted) return grant.state;
     final expiresAt = grant.expiresAt;
     if (expiresAt != null && !at.isBefore(expiresAt)) {

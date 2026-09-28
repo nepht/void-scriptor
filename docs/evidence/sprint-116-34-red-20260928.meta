@@ -1,0 +1,7 @@
+step: 116.34 Blender Cloud & Sketchfab Certification
+phase: RED
+date: 2026-09-28
+command: flutter.bat test test/release/sprint_116_blender_sketchfab_certification_test.dart
+exit: 1
+result: load failure (implementation absent) - Error when reading 'lib/features/world_logic/domain/sprint_116_blender_sketchfab_certification.dart': The system cannot find the file specified
+log: docs/evidence/sprint-116-34-red-20260928.log

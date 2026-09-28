@@ -1,0 +1,41 @@
+{
+  "canonical_step": "116.34",
+  "title": "Blender Cloud & Sketchfab Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "BLENDER_CLOUD_SKETCHFAB_SCHEMA_READY",
+  "required_fields": [
+    "provider_id",
+    "integration_availability",
+    "asset_rights",
+    "download_scopes",
+    "upload_scopes",
+    "attribution",
+    "limitations"
+  ],
+  "records": [
+    {
+      "provider_id": "blender_cloud",
+      "integration_availability": "synthetic integration availability fixture",
+      "asset_rights": "synthetic asset rights fixture",
+      "download_scopes": "synthetic download scope fixture",
+      "upload_scopes": "synthetic upload scope fixture",
+      "attribution": "synthetic attribution fixture",
+      "limitations": "synthetic limitation fixture",
+      "status": "UNVERIFIED"
+    },
+    {
+      "provider_id": "sketchfab",
+      "integration_availability": "synthetic integration availability fixture",
+      "asset_rights": "synthetic asset rights fixture",
+      "download_scopes": "synthetic download scope fixture",
+      "upload_scopes": "synthetic upload scope fixture",
+      "attribution": "synthetic attribution fixture",
+      "limitations": "synthetic limitation fixture",
+      "status": "UNVERIFIED"
+    }
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "live Blender Cloud and Sketchfab integration availability, asset rights, download/upload scopes, attribution, limitations, credentials, and audit evidence remain externally deferred"
+  ]
+}

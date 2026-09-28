@@ -1,0 +1,302 @@
+{
+  "canonical_step": "116.47",
+  "title": "Brand, Visual & Accessibility Gate",
+  "status": "UNVERIFIED",
+  "live_visual_verification": false,
+  "as_of_epoch_ms": 1700000100000,
+  "acceptance_areas": [
+    "icon_review",
+    "visual_regression",
+    "breakpoints",
+    "fallbacks",
+    "keyboard",
+    "screen_reader",
+    "chart_alternatives"
+  ],
+  "icons": [
+    {
+      "icon_id": "icon_openai",
+      "provider_id": "openai",
+      "icon_origin": "official",
+      "official_reference": "https://brand.openai.example/icon.png",
+      "fallback_approved_by": "brand-owner",
+      "fallback_reason": "n/a for official mark",
+      "declared_sizes_px": [16, 24, 32, 48],
+      "rendered_size_px": 32,
+      "asset_width_px": 512,
+      "asset_height_px": 512,
+      "asset_sha256": "5f2b1c9ad4e6708b3c1a5d9e0f4b7c8a1d2e3f40516273849a5b6c7d8e9f0a1b2",
+      "is_placeholder": false,
+      "source": "synthetic_local"
+    },
+    {
+      "icon_id": "icon_google",
+      "provider_id": "google",
+      "icon_origin": "official",
+      "official_reference": "https://brand.google.example/icon.png",
+      "fallback_approved_by": "brand-owner",
+      "fallback_reason": "n/a for official mark",
+      "declared_sizes_px": [16, 24, 32, 48],
+      "rendered_size_px": 32,
+      "asset_width_px": 512,
+      "asset_height_px": 512,
+      "asset_sha256": "9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d",
+      "is_placeholder": false,
+      "source": "synthetic_local"
+    },
+    {
+      "icon_id": "icon_stripe",
+      "provider_id": "stripe",
+      "icon_origin": "approved_fallback",
+      "official_reference": "",
+      "fallback_approved_by": "brand-owner",
+      "fallback_reason": "provider publishes no icon for this billing tier",
+      "declared_sizes_px": [16, 24, 32],
+      "rendered_size_px": 24,
+      "asset_width_px": 256,
+      "asset_height_px": 256,
+      "asset_sha256": "1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f809",
+      "is_placeholder": false,
+      "source": "synthetic_local"
+    }
+  ],
+  "visuals": [
+    {
+      "surface_id": "ui_home",
+      "theme": "light",
+      "baseline_sha256": "c0ffee00c0ffee00c0ffee00c0ffee00c0ffee00c0ffee00c0ffee00c0ffee00",
+      "current_sha256": "c0ffee00c0ffee00c0ffee00c0ffee00c0ffee00c0ffee00c0ffee00c0ffee00",
+      "baseline_exists": true,
+      "diff_reviewed": false,
+      "diff_reviewed_by": "",
+      "hardcoded_color_count": 0,
+      "contrast_ratio": 8.1,
+      "captured_at_epoch_ms": 1700000013600,
+      "source": "synthetic_local"
+    },
+    {
+      "surface_id": "ui_home",
+      "theme": "dark",
+      "baseline_sha256": "badc0de0badc0de0badc0de0badc0de0badc0de0badc0de0badc0de0badc0de0",
+      "current_sha256": "badc0de0badc0de0badc0de0badc0de0badc0de0badc0de0badc0de0badc0de0",
+      "baseline_exists": true,
+      "diff_reviewed": false,
+      "diff_reviewed_by": "",
+      "hardcoded_color_count": 0,
+      "contrast_ratio": 9.4,
+      "captured_at_epoch_ms": 1700000013600,
+      "source": "synthetic_local"
+    },
+    {
+      "surface_id": "ui_account_center",
+      "theme": "light",
+      "baseline_sha256": "f00df00df00df00df00df00df00df00df00df00df00df00df00df00df00df00d",
+      "current_sha256": "f00df00df00df00df00df00df00df00df00df00df00df00df00df00df00df00d",
+      "baseline_exists": true,
+      "diff_reviewed": false,
+      "diff_reviewed_by": "",
+      "hardcoded_color_count": 0,
+      "contrast_ratio": 6.7,
+      "captured_at_epoch_ms": 1700000013600,
+      "source": "synthetic_local"
+    },
+    {
+      "surface_id": "ui_account_center",
+      "theme": "dark",
+      "baseline_sha256": "f00df00df00df00df00df00df00df00df00df00df00df00df00df00df00df00d",
+      "current_sha256": "f00df00df00df00df00df00df00df00df00df00df00df00df00df00df00df00d",
+      "baseline_exists": true,
+      "diff_reviewed": false,
+      "diff_reviewed_by": "",
+      "hardcoded_color_count": 0,
+      "contrast_ratio": 7.9,
+      "captured_at_epoch_ms": 1700000013600,
+      "source": "synthetic_local"
+    }
+  ],
+  "breakpoints": [
+    {
+      "surface_id": "ui_home",
+      "width_px": 360,
+      "min_supported_width_px": 360,
+      "render_succeeded": true,
+      "overflow_detected": false,
+      "clipped_content": false,
+      "contains_chart": false,
+      "source": "synthetic_local"
+    },
+    {
+      "surface_id": "ui_home",
+      "width_px": 1024,
+      "min_supported_width_px": 360,
+      "render_succeeded": true,
+      "overflow_detected": false,
+      "clipped_content": false,
+      "contains_chart": false,
+      "source": "synthetic_local"
+    },
+    {
+      "surface_id": "ui_home",
+      "width_px": 1920,
+      "min_supported_width_px": 360,
+      "render_succeeded": true,
+      "overflow_detected": false,
+      "clipped_content": false,
+      "contains_chart": false,
+      "source": "synthetic_local"
+    },
+    {
+      "surface_id": "ui_account_center",
+      "width_px": 360,
+      "min_supported_width_px": 360,
+      "render_succeeded": true,
+      "overflow_detected": false,
+      "clipped_content": false,
+      "contains_chart": true,
+      "source": "synthetic_local"
+    },
+    {
+      "surface_id": "ui_account_center",
+      "width_px": 1024,
+      "min_supported_width_px": 360,
+      "render_succeeded": true,
+      "overflow_detected": false,
+      "clipped_content": false,
+      "contains_chart": true,
+      "source": "synthetic_local"
+    },
+    {
+      "surface_id": "ui_account_center",
+      "width_px": 1920,
+      "min_supported_width_px": 360,
+      "render_succeeded": true,
+      "overflow_detected": false,
+      "clipped_content": false,
+      "contains_chart": true,
+      "source": "synthetic_local"
+    }
+  ],
+  "fallbacks": [
+    {
+      "asset_id": "fb_openai_icon",
+      "asset_kind": "icon",
+      "covers_id": "icon_openai",
+      "primary_asset": "icon_openai.png",
+      "declared_fallback": "icon_openai_fallback.svg",
+      "fallback_asset_sha256": "a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90",
+      "fallback_verified": true,
+      "asset_missing_at_runtime": false,
+      "error_state_declared": true,
+      "source": "synthetic_local"
+    },
+    {
+      "asset_id": "fb_google_icon",
+      "asset_kind": "icon",
+      "covers_id": "icon_google",
+      "primary_asset": "icon_google.png",
+      "declared_fallback": "icon_google_fallback.svg",
+      "fallback_asset_sha256": "b1c2d3e4f5a60718293b4c5d6e7f8091a1b2c3d4e5f60718293b4c5d6e7f8091a",
+      "fallback_verified": true,
+      "asset_missing_at_runtime": false,
+      "error_state_declared": true,
+      "source": "synthetic_local"
+    },
+    {
+      "asset_id": "fb_stripe_icon",
+      "asset_kind": "icon",
+      "covers_id": "icon_stripe",
+      "primary_asset": "icon_stripe.png",
+      "declared_fallback": "icon_stripe_fallback.svg",
+      "fallback_asset_sha256": "c1d2e3f4a5b60718293c4d5e6f7a8091b1c2d3e4a5b60718293c4d5e6f7a8091b",
+      "fallback_verified": true,
+      "asset_missing_at_runtime": false,
+      "error_state_declared": true,
+      "source": "synthetic_local"
+    }
+  ],
+  "keyboard": [
+    {
+      "surface_id": "ui_home",
+      "focusable_controls": 18,
+      "reachable_controls": 18,
+      "keyboard_trap": false,
+      "focus_visible": true,
+      "focus_order_matches_visual_order": true,
+      "dismissible": true,
+      "escape_closes": true,
+      "requires_space_activation": false,
+      "activated_by_enter": true,
+      "activated_by_space": false,
+      "source": "synthetic_local"
+    },
+    {
+      "surface_id": "ui_account_center",
+      "focusable_controls": 24,
+      "reachable_controls": 24,
+      "keyboard_trap": false,
+      "focus_visible": true,
+      "focus_order_matches_visual_order": true,
+      "dismissible": true,
+      "escape_closes": true,
+      "requires_space_activation": true,
+      "activated_by_enter": true,
+      "activated_by_space": true,
+      "source": "synthetic_local"
+    }
+  ],
+  "screen_readers": [
+    {
+      "surface_id": "ui_home",
+      "reader_name": "nvda",
+      "reader_tested": true,
+      "semantic_label": "Open workspace",
+      "label_matches_visible_text": true,
+      "control_role": "button",
+      "dynamic_status": true,
+      "status_in_live_region": true,
+      "color_only_encoding": false,
+      "source": "synthetic_local"
+    },
+    {
+      "surface_id": "ui_account_center",
+      "reader_name": "nvda",
+      "reader_tested": true,
+      "semantic_label": "Connect provider",
+      "label_matches_visible_text": true,
+      "control_role": "button",
+      "dynamic_status": true,
+      "status_in_live_region": true,
+      "color_only_encoding": false,
+      "source": "synthetic_local"
+    }
+  ],
+  "charts": [
+    {
+      "chart_id": "chart_usage",
+      "surface_id": "ui_account_center",
+      "chart_kind": "bar",
+      "data_point_count": 12,
+      "alternative_kind": "table",
+      "alternative_covers_all_points": true,
+      "alternative_up_to_date": true,
+      "empty_state_declared": true,
+      "color_only_legend": false,
+      "source": "synthetic_local"
+    },
+    {
+      "chart_id": "chart_quota",
+      "surface_id": "ui_account_center",
+      "chart_kind": "gauge",
+      "data_point_count": 4,
+      "alternative_kind": "text_summary",
+      "alternative_covers_all_points": true,
+      "alternative_up_to_date": true,
+      "empty_state_declared": true,
+      "color_only_legend": false,
+      "source": "synthetic_local"
+    }
+  ],
+  "certified_on": "2026-09-29",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": "Synthetic local fixtures only. No connector was launched, no icon file was rendered, no screenshot baseline was compared, no window was resized, no keyboard walk, screen reader pass, or axe/contrast audit was run against the running Windows build, and no chart alternative was opened in a real assistive technology. Icon origins and approval ownership are declared by this repository, not verified against provider brand guidelines. Certification status stays UNVERIFIED for every provider until per-connector live evidence with secret-free references is recorded."
+}

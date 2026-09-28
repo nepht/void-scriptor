@@ -1,0 +1,10 @@
+{
+  "canonical_step": "116.47",
+  "title": "Brand, Visual & Accessibility Gate",
+  "phase": "red",
+  "recorded_on": "2026-09-29",
+  "result": "RED load failure exit 1: implementation absent (`Sprint116IconAsset` isn't a type, `Sprint116BrandVisualControlSet` not found)",
+  "head_at_start": "410d5e1b03a3324285fcc7b9248d9791b39a4926",
+  "live_visual_verification": false,
+  "external_gates": "DEFERRED-EXTERNAL"
+}

@@ -1,0 +1,6 @@
+step: 116.44 Offline & Cached Metadata Certification
+date: 20260929
+phase: RED
+result: RED exit 1 (load failure, implementation absent: `Sprint116CacheEntry`/`Sprint116CacheClearRecord` not a type, `Method not found Sprint116OfflineCacheCertification`)
+log: docs/evidence/sprint-116-44-red-20260929.log
+log_sha256: f6b7713d2a8e07f47f155cc2f156aca26665a9a3cf99b9a02786de9582e436e5

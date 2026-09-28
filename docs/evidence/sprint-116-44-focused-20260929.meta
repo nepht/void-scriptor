@@ -1,0 +1,6 @@
+step: 116.44 Offline & Cached Metadata Certification
+date: 20260929
+phase: GREEN focused suite
+result: 18/18 PASS exit 0 after three genuine defects found and fixed
+log: docs/evidence/sprint-116-44-focused-20260929.log
+log_sha256: ed4453b7a03bede1fde9416736fe0cbf4b8442cb0e7a4847dddd47eeb6bb7534

@@ -1,0 +1,6 @@
+step: 116.44 Offline & Cached Metadata Certification
+date: 20260929
+phase: Windows debug build
+result: PASS exit 0, 21s wall (flutter 18.5s), AssetManifest.bin mtime 2026-09-29 00:53:19
+log: docs/evidence/sprint-116-44-build-windows-debug-20260929.log
+log_sha256: afe473f8f0e788208343d58327f55c27979b31eb20ec6b62a8d4f67fdf8a8d4f

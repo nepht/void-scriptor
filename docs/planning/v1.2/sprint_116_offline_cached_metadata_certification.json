@@ -1,0 +1,114 @@
+{
+  "canonical_step": "116.44",
+  "title": "Offline & Cached Metadata Certification",
+  "status": "VERIFIED-LOCAL",
+  "live_provider_verification": false,
+  "as_of_epoch_ms": 1700000100000,
+  "acceptance_areas": [
+    "freshness_label",
+    "stale_state",
+    "remote_disable",
+    "local_actions",
+    "reconnect",
+    "cache_clear"
+  ],
+  "entries": [
+    {
+      "entry_id": "ent_project_tree",
+      "provider_id": "provider_a",
+      "resource_id": "project_tree",
+      "cached_at_epoch_ms": 1700000000000,
+      "as_of_epoch_ms": 1699999990000,
+      "fresh_ttl_seconds": 3600,
+      "freshness_label": "fresh",
+      "value_available": true,
+      "offline": false,
+      "remote_action_enabled": true,
+      "local_action_enabled": true,
+      "local_actions": [
+        "open_project_tree"
+      ],
+      "reconnect_attempted": false,
+      "source": "synthetic_local"
+    },
+    {
+      "entry_id": "ent_chapter_draft",
+      "provider_id": "provider_a",
+      "resource_id": "chapter_1",
+      "cached_at_epoch_ms": 1700000050000,
+      "as_of_epoch_ms": 1700000045000,
+      "fresh_ttl_seconds": 3600,
+      "freshness_label": "fresh",
+      "value_available": true,
+      "offline": false,
+      "remote_action_enabled": true,
+      "local_action_enabled": true,
+      "local_actions": [
+        "edit_chapter",
+        "save_draft"
+      ],
+      "reconnect_attempted": true,
+      "reconnect_detected_epoch_ms": 1699999500000,
+      "reconnect_refreshed": true,
+      "reconnect_refresh_epoch_ms": 1700000050000,
+      "pending_local_edits": 1,
+      "pending_local_edits_preserved": true,
+      "source": "synthetic_local"
+    },
+    {
+      "entry_id": "ent_billing_snapshot",
+      "provider_id": "provider_b",
+      "resource_id": "billing_snapshot",
+      "cached_at_epoch_ms": 1699990000000,
+      "as_of_epoch_ms": 1699989990000,
+      "fresh_ttl_seconds": 3600,
+      "freshness_label": "stale",
+      "value_available": true,
+      "offline": true,
+      "remote_action_enabled": false,
+      "local_action_enabled": true,
+      "local_actions": [
+        "view_history"
+      ],
+      "reconnect_attempted": false,
+      "source": "synthetic_local"
+    },
+    {
+      "entry_id": "ent_avatar_metadata",
+      "provider_id": "provider_a",
+      "resource_id": "avatar_metadata",
+      "cached_at_epoch_ms": 1700000000000,
+      "as_of_epoch_ms": 1699999990000,
+      "fresh_ttl_seconds": 3600,
+      "freshness_label": "unavailable",
+      "value_available": false,
+      "offline": true,
+      "remote_action_enabled": false,
+      "local_action_enabled": true,
+      "local_actions": [
+        "view_cached_avatar"
+      ],
+      "reconnect_attempted": false,
+      "source": "synthetic_local"
+    }
+  ],
+  "cache_clears": [
+    {
+      "clear_id": "clr_orphan_sessions",
+      "entry_id": "ent_session_blob_old",
+      "cleared_at_epoch_ms": 1700000090000,
+      "entries_remaining_after_clear": 0,
+      "source": "synthetic_local"
+    },
+    {
+      "clear_id": "clr_stale_index",
+      "entry_id": "ent_partial_index",
+      "cleared_at_epoch_ms": 1700000095000,
+      "entries_remaining_after_clear": 0,
+      "source": "synthetic_local"
+    }
+  ],
+  "certified_on": "2026-09-29",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": "Synthetic local fixtures only. No provider endpoint was queried and no real offline transition, reconnect, or cache eviction was executed. Live offline detection behaviour, real TTL policy, reconnect merge semantics, actual cache invalidation, credentials, audit, hosted CI, billing settlement, and publication remain DEFERRED-EXTERNAL. No secret or API key present."
+}

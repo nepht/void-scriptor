@@ -28,8 +28,8 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.42",
-  "next_step": "116.44",
+  "last_verified_step": "116.44",
+  "next_step": "116.45",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.36",
@@ -55,7 +55,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-29T00:27:00+07:00",
+  "updated_at": "2026-09-29T00:55:00+07:00",
   "updated_by": "cron-core-worker",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -613,7 +613,7 @@
   },
   "current_step": "116.2",
   "current_step_status": "PENDING",
-  "last_run_summary": "2026-09-29: Sprint 116.43 Retry, Backoff & Circuit Breaker Certification VERIFIED-LOCAL (ledger row first, state pointer follows); two genuine failures found and fixed (test helper swallowed missing-breaker case; manifest contradicted its own open-circuit rule); RED exit 1 -> focused 8/8, scoped regression 85/85, analyzer clean, format 2 then recheck 0, diff-check 0, Windows debug build PASS 24s; commits f2292f0 + 25681dd pushed GitHub+GitLab, ahead 0. Sibling sprint-112 dirty files preserved untouched.",
+  "last_run_summary": "2026-09-29: Sprint 116.44 Offline & Cached Metadata Certification VERIFIED-LOCAL (ledger row first, state pointer follows); three genuine failures found and fixed (certification forced a reconnect refresh on every offline entry; unattributable provider collapsed into the freshness_label marker; two manifest entries claimed a completed reconnect while their writes predated the refresh); RED exit 1 load failure -> focused 18/18, scoped regression 103/103, analyzer clean, format 2 then recheck 0, diff-check 0, Windows debug build PASS 21s. Sibling sprint-112 dirty files preserved untouched.",
   "last_commit": "25681dd",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -725,7 +725,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "116.43",
+  "last_resolved_step": "116.44",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -1504,5 +1504,33 @@
     ],
     "limitations": "Synthetic local fixtures; no live provider endpoint queried and no retry loop executed against a real API. Live retry-after header semantics, real jitter distributions, circuit-breaker runtime integration, idempotency-key propagation to real endpoints, credentials, audit, hosted CI, billing settlement, publication remain DEFERRED-EXTERNAL. No secret or API key present.",
     "next_step": "116.44"
+  },
+  "sprint_116_step_11644": {
+    "step": "116.44",
+    "title": "Offline & Cached Metadata Certification",
+    "status": "VERIFIED-LOCAL",
+    "date": "2026-09-29",
+    "outputs": [
+      "docs/planning/v1.2/sprint_116_offline_cached_metadata_certification.json",
+      "lib/features/world_logic/domain/sprint_116_offline_cached_metadata_certification.dart",
+      "test/release/sprint_116_offline_cached_metadata_certification_test.dart"
+    ],
+    "acceptance_areas": [
+      "freshness_label",
+      "stale_state",
+      "remote_disable",
+      "local_actions",
+      "reconnect",
+      "cache_clear"
+    ],
+    "evidence": "docs/evidence/sprint-116-44-{red,focused,regression,analyze,build-windows-debug}-20260929.{log,meta}",
+    "tests": "RED exit 1 (load failure, implementation absent); focused 18/18 exit 0; scoped regression 103/103 exit 0; analyzer scoped 2 files 'No issues found!' exit 0; format 2 files changed then recheck 0 changed; git diff --check exit 0; Windows debug build PASS 21s wall (flutter 18.5s), AssetManifest.bin mtime 2026-09-29 00:53:19",
+    "genuine_failures_fixed": [
+      "certification forced a reconnect refresh on every offline entry, so a cache whose network had not returned yet failed; detection is not refresh",
+      "an unattributable provider collapsed into the freshness_label marker, hiding identity defects behind a freshness label",
+      "manifest ent_billing_snapshot and ent_avatar_metadata claimed a completed reconnect while their writes predated the refresh, the same contradiction 116.43 found in pol_cancelled_upload"
+    ],
+    "limitations": "Synthetic local fixtures; no live provider endpoint queried and no real offline transition, reconnect, or cache eviction executed. Live offline detection, real TTL policy, reconnect merge semantics, actual cache invalidation, credentials, audit, hosted CI, billing settlement, publication remain DEFERRED-EXTERNAL. No secret or API key present.",
+    "next_step": "116.45"
   }
 }

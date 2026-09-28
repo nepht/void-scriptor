@@ -1,0 +1,6 @@
+step: 116.44 Offline & Cached Metadata Certification
+date: 20260929
+phase: scoped sprint 116 regression
+result: 103/103 PASS exit 0 (sprint 116 chain 116 developer + Figma + Adobe&Canva + Blender&Sketchfab + rights + Stripe + PayPal + Midtrans + Saweria&Ko-fi + 116.40-116.44)
+log: docs/evidence/sprint-116-44-regression-20260929.log
+log_sha256: 24bada838fe75b09b144ee675871371fff256214c4269165f1cfa6f79297c1dc

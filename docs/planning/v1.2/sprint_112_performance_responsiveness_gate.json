@@ -1,0 +1,161 @@
+{
+  "canonical_step": "112.43",
+  "title": "Performance & Responsiveness Gate",
+  "scope": "Local deterministic and widget-level performance contracts on the canonical Windows repository.",
+  "budgets": [
+    {
+      "id": "latency",
+      "metric": "representative project database query total",
+      "ceiling": 250000,
+      "unit": "microseconds",
+      "source": "ProjectBenchmarkRunner over a disposable in-memory Drift database"
+    },
+    {
+      "id": "throughput",
+      "metric": "Wave 2 and Wave 3 scale workloads stay within their scenario hard ceilings",
+      "ceiling": 1,
+      "unit": "zero ceiling violations",
+      "source": "PerformanceScaleBenchmark and EncyclopediaWave3ScaleHarness"
+    },
+    {
+      "id": "rendering",
+      "metric": "responsive preview renders at 390x844 without Flutter exceptions",
+      "ceiling": 1,
+      "unit": "zero rendering exceptions",
+      "source": "PerformancePreviewScreen narrow widget contract plus FrameIndicators instrumentation"
+    },
+    {
+      "id": "background_tasks",
+      "metric": "CPU job concurrency",
+      "ceiling": 1,
+      "unit": "simultaneous CPU jobs at configured resource limit",
+      "source": "BackgroundJobQueue resource-limit and priority regression"
+    },
+    {
+      "id": "startup",
+      "metric": "project-open phases are measured and startup phases remain ordered",
+      "ceiling": 4,
+      "unit": "bounded named startup phases",
+      "source": "ProjectSessionManager openMetrics and StartupMetrics contract"
+    }
+  ],
+  "baseline": [
+    {
+      "id": "database_query_baseline",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "200 references and 1000 timeline clips",
+      "evidence": "test/core/performance/project_benchmark_runner_test.dart"
+    },
+    {
+      "id": "world_logic_scale_baseline",
+      "status": "MEASURED_BY_EXECUTABLE_TEST",
+      "profile": "Wave 2 six datasets and Wave 3 five canonical scenarios",
+      "evidence": "test/features/world_logic/sprint_110_45_performance_scale_test.dart; test/features/world_logic/sprint_111_41_wave3_scale_test.dart"
+    },
+    {
+      "id": "responsive_render_baseline",
+      "status": "CONTRACT_TESTED",
+      "profile": "390x844 logical pixels",
+      "evidence": "test/features/cinema/presentation/performance_preview_screen_test.dart"
+    },
+    {
+      "id": "background_queue_baseline",
+      "status": "CONTRACT_TESTED",
+      "profile": "priority queue with maxConcurrentJobs and per-resource limits",
+      "evidence": "test/core/jobs/background_job_queue_test.dart"
+    },
+    {
+      "id": "startup_baseline",
+      "status": "INSTRUMENTED_CONTRACT",
+      "profile": "manifest, database, workspace, firstFrame",
+      "evidence": "test/core/performance/startup_metrics_test.dart"
+    }
+  ],
+  "results": [
+    {
+      "id": "latency",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/performance/project_benchmark_runner.dart"
+      ],
+      "test_refs": [
+        "test/core/performance/project_benchmark_runner_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/performance/project_benchmark_runner_test.dart -j 1"
+    },
+    {
+      "id": "throughput",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/features/world_logic/domain/performance_scale_benchmark.dart",
+        "lib/features/world_logic/domain/encyclopedia_wave3_scale.dart"
+      ],
+      "test_refs": [
+        "test/features/world_logic/sprint_110_45_performance_scale_test.dart",
+        "test/features/world_logic/sprint_111_41_wave3_scale_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/features/world_logic/sprint_110_45_performance_scale_test.dart test/features/world_logic/sprint_111_41_wave3_scale_test.dart -j 1"
+    },
+    {
+      "id": "rendering",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/performance/performance_diagnostics.dart",
+        "lib/features/cinema/presentation/performance_preview_screen.dart"
+      ],
+      "test_refs": [
+        "test/core/performance/performance_snapshot_test.dart",
+        "test/features/cinema/presentation/performance_preview_screen_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/performance/performance_snapshot_test.dart test/features/cinema/presentation/performance_preview_screen_test.dart -j 1"
+    },
+    {
+      "id": "background_tasks",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/jobs/background_job_queue.dart"
+      ],
+      "test_refs": [
+        "test/core/jobs/background_job_queue_test.dart",
+        "test/core/jobs/background_job_terminal_state_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/jobs/background_job_queue_test.dart test/core/jobs/background_job_terminal_state_test.dart -j 1"
+    },
+    {
+      "id": "startup",
+      "status": "PASS",
+      "implementation_refs": [
+        "lib/core/performance/startup_metrics.dart",
+        "lib/features/project_resilience/application/project_session_manager.dart"
+      ],
+      "test_refs": [
+        "test/core/performance/startup_metrics_test.dart",
+        "test/features/project_resilience/project_session_manager_test.dart"
+      ],
+      "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test --no-pub test/core/performance/startup_metrics_test.dart test/features/project_resilience/project_session_manager_test.dart -j 1"
+    }
+  ],
+  "regressions": [],
+  "bottlenecks": [
+    {
+      "id": "native_frame_timing_not_captured",
+      "status": "DEFERRED",
+      "impact": "Widget rendering proves bounded layout, not profile-mode frame timing on a physical display.",
+      "next_gate": "Capture Flutter profile-mode FrameTiming in a dedicated disposable native journey."
+    },
+    {
+      "id": "cold_start_wall_clock_not_captured",
+      "status": "DEFERRED",
+      "impact": "Project-open phases are instrumented, but process cold-start to first frame is not measured here.",
+      "next_gate": "Measure cold launch on release-candidate hardware without mutating user projects."
+    }
+  ],
+  "decision": "PASS_LOCAL_WITH_EXTERNAL_GATES_DEFERRED",
+  "limits": [
+    "Flutter profile mode frame timing is not captured by this local test gate.",
+    "Native GUI cold-start and interaction responsiveness remain deferred.",
+    "hosted CI performance variance is not available under the current billing gate.",
+    "hardware-specific GPU, storage, and thermal behavior remains deferred.",
+    "This decision is not signing or public release approval."
+  ]
+}

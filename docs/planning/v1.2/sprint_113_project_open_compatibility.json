@@ -1,0 +1,18 @@
+{
+  "canonical_step": "113.11",
+  "title": "Project Open & Compatibility Validation",
+  "status": "PENDING",
+  "started_at": "2026-09-22T01:10:00+07:00",
+  "objective": "Memastikan project lama dapat dipisahkan menjadi Novel dan Character Workspace lalu dibuka tanpa kehilangan data.",
+  "source": "sprint_113.json",
+  "acceptance_criteria": {
+    "legacy_mixed_project_migrated": "project.json + database dapat dibaca oleh versi baru",
+    "distinct_workspace_namespaces": "Novel dan Character Workspace tidak tumpang tindih",
+    "character_links_preserved": "Character-Workspace linkage tidak hilang setelah migrasi",
+    "novel_overrides_preserved": "Character Mode override di Novel tidak hilang",
+    "large_project": "project > 1 MB terbuka tanpa error",
+    "multilingual_project": "Unicode nama karakter terbuka tanpa korupsi",
+    "media_heavy_project": "Assets terbuka tanpa timeout",
+    "no_silent_loss": "Data tidak hilang tanpa pengecatan"
+  }
+}

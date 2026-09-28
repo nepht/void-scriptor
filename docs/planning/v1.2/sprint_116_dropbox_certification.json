@@ -1,0 +1,20 @@
+{
+  "canonical_step": "116.17",
+  "title": "Dropbox Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "DROPBOX_SCHEMA_READY",
+  "required_fields": ["provider_id", "app_scope", "upload_download", "cursor_delta", "quota", "revoke", "errors", "limitations"],
+  "records": [{
+    "provider_id": "dropbox",
+    "app_scope": "synthetic app-scope fixture",
+    "upload_download": "synthetic transfer fixture",
+    "cursor_delta": "synthetic cursor fixture",
+    "quota": "synthetic quota fixture",
+    "revoke": "synthetic revoke fixture",
+    "errors": "synthetic error fixture",
+    "limitations": "synthetic limitations fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live Dropbox OAuth, app scope, file transfer, cursor/delta, quota, revocation, credentials, provider service, and user-flow evidence remain externally deferred"]
+}

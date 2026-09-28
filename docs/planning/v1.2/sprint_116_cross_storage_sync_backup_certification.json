@@ -1,0 +1,25 @@
+{
+  "canonical_step": "116.20",
+  "title": "Cross-Storage Sync & Backup Certification",
+  "status": "VERIFIED-LOCAL",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "required_outputs": [
+    "delta",
+    "retry_resume",
+    "conflict_resolution",
+    "encrypted_backup",
+    "restore",
+    "workspace_boundaries",
+    "large_assets"
+  ],
+  "record": {
+    "queue": "durable local queue contract",
+    "retry_resume": "bounded retry with resumable checkpoints",
+    "conflict_resolution": "explicit conflict review; no silent overwrite",
+    "encrypted_backup": "local-key-vault boundary; no production secret",
+    "restore": "clean-install restore verification",
+    "workspace_boundaries": ["novel", "character"],
+    "large_assets": "streamed and checksummed",
+    "limitations": ["live provider sync, hardware, telemetry, hosted CI, billing, signing, and publication remain DEFERRED-EXTERNAL"]
+  }
+}

@@ -1,0 +1,7 @@
+step: 116.40 Billing, Entitlement & Webhook Reconciliation
+phase: regression (developer chain + Figma + Adobe&Canva + Blender&Sketchfab + rights + Stripe + PayPal + Midtrans + Saweria&Ko-fi + 116.40)
+date: 2026-09-28
+command: flutter.bat test --no-pub <13 sprint_116 release test files>
+exit: 0
+result: 63/63 PASS
+log: docs/evidence/sprint-116-40-regression-20260928.log

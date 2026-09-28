@@ -1,0 +1,7 @@
+step: 116.40 Billing, Entitlement & Webhook Reconciliation
+phase: Windows debug build evidence
+date: 2026-09-28
+command: flutter.bat build windows --debug
+exit: 0
+result: PASS - Built build/windows/x64/runner/Debug/void_scriptor.exe; wall 33s (flutter 29.4s); freshness data/flutter_assets/AssetManifest.bin mtime 2026-09-28 22:37:25
+log: docs/evidence/sprint-116-40-build-windows-debug-20260928.log

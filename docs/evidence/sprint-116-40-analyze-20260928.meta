@@ -1,0 +1,7 @@
+step: 116.40 Billing, Entitlement & Webhook Reconciliation
+phase: analyzer scoped (2 files) + format recheck + git diff --check
+date: 2026-09-28
+command: flutter.bat analyze --no-pub lib/features/world_logic/domain/sprint_116_billing_entitlement_webhook_reconciliation.dart test/release/sprint_116_billing_entitlement_webhook_reconciliation_test.dart
+exit: 0
+result: No issues found! (2.3s); first run reported 12 prefer_const_constructors infos, `dart fix --apply` added 12 const modifiers, recheck clean; dart format recheck 0 changed; git diff --check exit 0 (CRLF notice belongs to sibling dirty sprint-112 file)
+log: docs/evidence/sprint-116-40-analyze-20260928.log

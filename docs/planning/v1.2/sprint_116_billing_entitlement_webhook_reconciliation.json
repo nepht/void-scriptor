@@ -1,0 +1,62 @@
+{
+  "canonical_step": "116.40",
+  "title": "Billing, Entitlement & Webhook Reconciliation",
+  "status": "VERIFIED-LOCAL",
+  "reconciled_on": "2026-09-28",
+  "live_provider_verification": false,
+  "required_acceptance": [
+    "idempotency",
+    "signature",
+    "event_order",
+    "retry",
+    "grace_period",
+    "cancellation",
+    "refund",
+    "entitlement_consistency"
+  ],
+  "max_retry_count": 5,
+  "events": [
+    {
+      "event_id": "synthetic_renewal_1",
+      "provider_id": "synthetic_local",
+      "sequence": 1,
+      "occurred_at_epoch_ms": 1700000000000,
+      "signature_status": "VERIFIED",
+      "event_type": "renewal",
+      "retry_count": 0,
+      "period_end_epoch_ms": 1702592000000
+    },
+    {
+      "event_id": "synthetic_payment_failed_2",
+      "provider_id": "synthetic_local",
+      "sequence": 2,
+      "occurred_at_epoch_ms": 1700000100000,
+      "signature_status": "VERIFIED",
+      "event_type": "payment_failed",
+      "retry_count": 1,
+      "grace_end_epoch_ms": 1700604900000
+    }
+  ],
+  "offline_entitlement": {
+    "status": "active_grace",
+    "entitlement_until_epoch_ms": 1700604900000,
+    "as_of_epoch_ms": 1700100000000
+  },
+  "reconciliation_rules": {
+    "idempotency": "an event id is consumed exactly once; duplicate delivery is recorded as deduped and never replays an effect",
+    "signature": "events without signature_status VERIFIED are rejected and fail the reconciliation",
+    "event_order": "events are applied by provider sequence then occurrence time, so arrival order cannot reorder entitlement",
+    "retry": "redelivery of a consumed id deduplicates; a delivery whose retry_count exceeds max_retry_count is dead-lettered and fails",
+    "grace_period": "payment_failed grants active_grace only up to grace_end; after that the entitlement reports lapsed",
+    "cancellation": "cancel_at_period_end keeps entitlement until period end, otherwise entitlement is revoked at the event timestamp",
+    "refund": "a refund revokes the entitlement at the refund timestamp",
+    "entitlement_consistency": "the offline snapshot must equal the reconciled status and entitlement_until; a stale or optimistic snapshot fails"
+  },
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "events and the offline snapshot are synthetic local fixtures; no live billing provider, webhook delivery, or settlement call was made",
+    "live provider webhook payload schemas, signature algorithms, replay windows, rate limits, settlement, refunds, dunning and payout behaviour remain externally deferred",
+    "hosted CI, credentials, audit trail, billing settlement and publication remain DEFERRED-EXTERNAL",
+    "no production secret, API key, or webhook endpoint is present in this manifest"
+  ]
+}

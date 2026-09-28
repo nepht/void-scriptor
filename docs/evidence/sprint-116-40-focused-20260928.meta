@@ -1,0 +1,7 @@
+step: 116.40 Billing, Entitlement & Webhook Reconciliation
+phase: GREEN (focused, post-format)
+date: 2026-09-28
+command: flutter.bat test --no-pub test/release/sprint_116_billing_entitlement_webhook_reconciliation_test.dart
+exit: 0
+result: 6/6 PASS
+log: docs/evidence/sprint-116-40-focused-20260928.log

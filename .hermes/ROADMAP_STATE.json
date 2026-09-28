@@ -28,8 +28,8 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.39",
-  "next_step": "116.40",
+  "last_verified_step": "116.40",
+  "next_step": "116.41",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.36",
@@ -55,7 +55,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-28T21:31:10",
+  "updated_at": "2026-09-28T22:39:59",
   "updated_by": "cron-core-worker",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -1396,5 +1396,31 @@
     "evidence": "docs/evidence/sprint-116-39-{red,focused,regression,analyze,build-windows-debug}-20260928.{log,meta}",
     "limitations": "no fake connector; manifest local UNVERIFIED without secret/API key; live Saweria API terms/webhook schema/rate limits/settlement/region and Ko-fi authenticated webhook/API payloads/payout-region limits, credentials, audit, hosted CI, billing settlement, publication remain DEFERRED-EXTERNAL",
     "next_step": "116.40"
+  },
+  "sprint_116_step_11640": {
+    "step": "116.40",
+    "title": "Billing, Entitlement & Webhook Reconciliation",
+    "status": "VERIFIED-LOCAL",
+    "date": "2026-09-28",
+    "outputs": [
+      "docs/planning/v1.2/sprint_116_billing_entitlement_webhook_reconciliation.json",
+      "lib/features/world_logic/domain/sprint_116_billing_entitlement_webhook_reconciliation.dart",
+      "test/release/sprint_116_billing_entitlement_webhook_reconciliation_test.dart"
+    ],
+    "acceptance": [
+      "idempotency",
+      "signature",
+      "event_order",
+      "retry",
+      "grace_period",
+      "cancellation",
+      "refund",
+      "entitlement_consistency"
+    ],
+    "tests": "RED exit 1 load failure; focused 6/6; scoped regression 63/63 exit 0 (rerun post dart-fix 12 const); analyzer No issues found!; format recheck 0 changed; git diff --check 0; Windows debug build PASS 33s wall (flutter 29.4s), AssetManifest.bin mtime 22:37:25",
+    "defect_fixed": "explicit events + missing offline snapshot used to borrow the manifest fixture and pass; manifest fallback now limited to default mode",
+    "evidence": "docs/evidence/sprint-116-40-{red,focused,regression,analyze,build-windows-debug}-20260928.{log,meta}",
+    "limitations": "synthetic local fixtures UNVERIFIED, no secret/API key/webhook endpoint; live provider webhook payload schema, signature algorithm, replay window, rate limits, dunning, refund, settlement, payout, credentials, audit, hosted CI, billing settlement, publication remain DEFERRED-EXTERNAL",
+    "next_step": "116.41"
   }
 }

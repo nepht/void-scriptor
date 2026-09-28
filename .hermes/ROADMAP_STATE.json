@@ -29,7 +29,7 @@
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
   "last_verified_step": "116.42",
-  "next_step": "116.43",
+  "next_step": "116.44",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.36",
@@ -55,7 +55,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-28T23:56:43+07:00",
+  "updated_at": "2026-09-29T00:27:00+07:00",
   "updated_by": "cron-core-worker",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -613,8 +613,8 @@
   },
   "current_step": "116.2",
   "current_step_status": "PENDING",
-  "last_run_summary": "2026-09-28: Sprint 116.41 Quota & Usage Cross-Provider Contract Tests VERIFIED-LOCAL (ledger row first, state pointer follows); guard PASS recommended 116.41->116.42; RED exit 1 -> focused 7/7, regression 70/70, analyzer clean, format 0, diff-check 0, Windows debug build PASS 32s. Sibling sprint-112 dirty files preserved untouched. slice commit 162b37e (9 files explicit paths).",
-  "last_commit": "162b37e",
+  "last_run_summary": "2026-09-29: Sprint 116.43 Retry, Backoff & Circuit Breaker Certification VERIFIED-LOCAL (ledger row first, state pointer follows); two genuine failures found and fixed (test helper swallowed missing-breaker case; manifest contradicted its own open-circuit rule); RED exit 1 -> focused 8/8, scoped regression 85/85, analyzer clean, format 2 then recheck 0, diff-check 0, Windows debug build PASS 24s; commits f2292f0 + 25681dd pushed GitHub+GitLab, ahead 0. Sibling sprint-112 dirty files preserved untouched.",
+  "last_commit": "25681dd",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -725,7 +725,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "116.38",
+  "last_resolved_step": "116.43",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -1473,5 +1473,36 @@
     "evidence": "docs/evidence/sprint-116-42-{red,focused,regression,analyze,build-windows-debug}-20260928.{log,meta}",
     "limitations": "synthetic local manifest UNVERIFIED, no secret/API key; live provider error payload shapes, status-code aliases, retry-after header formats, outage telemetry, region blocking, plan gating, credentials, audit, hosted CI, billing settlement, publication remain DEFERRED-EXTERNAL",
     "next_step": "116.43"
+  },
+  "sprint_116_step_11643": {
+    "step": "116.43",
+    "title": "Retry, Backoff & Circuit Breaker Certification",
+    "status": "VERIFIED-LOCAL",
+    "date": "2026-09-29",
+    "commit": "f2292f0",
+    "cleanup_commit": "25681dd",
+    "pushed": "GitHub nepht/void-scriptor + GitLab Void-Scriptor-group/void-scriptor, 4d0fc3a..25681dd, ahead 0",
+    "outputs": [
+      "docs/planning/v1.2/sprint_116_retry_backoff_circuit_breaker_certification.json",
+      "lib/features/world_logic/domain/sprint_116_retry_backoff_circuit_breaker_certification.dart",
+      "test/release/sprint_116_retry_backoff_circuit_breaker_certification_test.dart"
+    ],
+    "acceptance_areas": [
+      "idempotency",
+      "bounded_retry",
+      "exponential_backoff",
+      "jitter",
+      "retry_after",
+      "cancellation",
+      "circuit_breaker"
+    ],
+    "evidence": "docs/evidence/sprint-116-43-{red,focused,regression,analyze,build-windows-debug}-20260929.{log,meta}",
+    "tests": "RED exit 1 (load failure, implementation absent); focused 8/8 exit 0; scoped regression 85/85 exit 0; analyzer scoped 2 files 'No issues found!' exit 0; format 2 files changed then recheck 0 changed; git diff --check exit 0; Windows debug build PASS 24s wall (flutter 21.1s), AssetManifest.bin mtime 2026-09-29 00:23:53",
+    "genuine_failures_fixed": [
+      "test helper `breaker: null` fell through `?? _breaker('closed')`, so the missing-breaker case was never exercised",
+      "manifest pol_cancelled_upload declared an open circuit while recording attempt 1, violating its own contract"
+    ],
+    "limitations": "Synthetic local fixtures; no live provider endpoint queried and no retry loop executed against a real API. Live retry-after header semantics, real jitter distributions, circuit-breaker runtime integration, idempotency-key propagation to real endpoints, credentials, audit, hosted CI, billing settlement, publication remain DEFERRED-EXTERNAL. No secret or API key present.",
+    "next_step": "116.44"
   }
 }

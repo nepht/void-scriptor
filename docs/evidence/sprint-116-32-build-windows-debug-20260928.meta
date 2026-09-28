@@ -1,0 +1,7 @@
+step: 116.32 Figma Certification
+phase: WINDOWS DEBUG BUILD
+date: 2026-09-28
+command: flutter.bat build windows --debug
+exit: 0
+result: PASS 20.3s (Built build\windows\x64\runner\Debug\void_scriptor.exe)
+log: docs/evidence/sprint-116-32-build-windows-debug-20260928.log

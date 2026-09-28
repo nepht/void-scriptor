@@ -1,0 +1,19 @@
+{
+  "canonical_step": "116.32",
+  "title": "Figma Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "FIGMA_SCHEMA_READY",
+  "required_fields": ["provider_id", "file_access", "asset_import_export", "scopes", "attribution", "rate_limits", "revoke"],
+  "records": [{
+    "provider_id": "figma",
+    "file_access": "synthetic file access fixture",
+    "asset_import_export": "synthetic asset import export fixture",
+    "scopes": "synthetic scope fixture",
+    "attribution": "synthetic attribution fixture",
+    "rate_limits": "synthetic rate limit fixture",
+    "revoke": "synthetic revoke fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live Figma file access, asset import/export boundaries, OAuth scopes, attribution, rate limits, revoke, credentials, and audit evidence remain externally deferred"]
+}

@@ -1,0 +1,7 @@
+step: 116.32 Figma Certification
+phase: RED
+date: 2026-09-28
+command: flutter.bat test test/release/sprint_116_figma_certification_test.dart
+exit: 1
+result: load failure (implementation absent) - Error: Undefined name 'Sprint116FigmaContract'
+log: docs/evidence/sprint-116-32-red-20260928.log

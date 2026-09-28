@@ -1,0 +1,8 @@
+[rtk] /!\ No hook installed - run `rtk init -g` for automatic token savings
+step: 116.33 Adobe & Canva Certification
+phase: REGRESSION
+date: 2026-09-28
+command: flutter.bat test test/release/sprint_116_github_developer_certification_test.dart test/release/sprint_116_gitlab_developer_certification_test.dart test/release/sprint_116_bitbucket_developer_certification_test.dart test/release/sprint_116_azure_devops_certification_test.dart test/release/sprint_116_figma_certification_test.dart test/release/sprint_116_adobe_canva_certification_test.dart
+exit: 0
+result: 27/27 PASS (GitHub+GitLab+Bitbucket+Azure DevOps developer 17 + Figma 5 + Adobe&Canva 5)
+log: docs/evidence/sprint-116-33-regression-20260928.log

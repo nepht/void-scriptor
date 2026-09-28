@@ -1,0 +1,8 @@
+[rtk] /!\ No hook installed - run `rtk init -g` for automatic token savings
+step: 116.33 Adobe & Canva Certification
+phase: WINDOWS DEBUG BUILD
+date: 2026-09-28
+command: flutter.bat build windows --debug
+exit: 0
+result: PASS 19.8s (Built build\windows\x64\runner\Debug\void_scriptor.exe)
+log: docs/evidence/sprint-116-33-build-windows-debug-20260928.log

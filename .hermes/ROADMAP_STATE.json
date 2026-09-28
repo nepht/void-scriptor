@@ -28,8 +28,8 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.32",
-  "next_step": "116.33",
+  "last_verified_step": "116.33",
+  "next_step": "116.34",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.30",
@@ -55,8 +55,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-28T12:03:36.446001+00:00",
-  "updated_by": "cron: 116.32 Figma Certification VERIFIED-LOCAL",
+  "updated_at": "2026-09-28T19:25:00+07:00",
+  "updated_by": "cron-core-worker",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -1311,5 +1311,45 @@
     ],
     "limitations": "synthetic local manifest UNVERIFIED; live Figma file access, asset import/export boundaries, OAuth scopes, attribution, rate limits, revoke, credentials, audit, hosted CI, hardware, billing, publication remain DEFERRED-EXTERNAL",
     "next_step": "116.33"
+  },
+  "sprint_116_step_11633": {
+    "status": "VERIFIED-LOCAL",
+    "title": "Adobe & Canva Certification",
+    "date": "2026-09-28",
+    "outputs": [
+      "docs/planning/v1.2/sprint_116_adobe_canva_certification.json",
+      "lib/features/world_logic/domain/sprint_116_adobe_canva_certification.dart",
+      "test/release/sprint_116_adobe_canva_certification_test.dart"
+    ],
+    "required_fields": [
+      "provider_id",
+      "actual_apis",
+      "supported_capabilities",
+      "licensing",
+      "scopes",
+      "region_plan_limits",
+      "unavailable_states"
+    ],
+    "providers": [
+      "adobe",
+      "canva"
+    ],
+    "red": "load failure exit 1 (implementation absent, file not found)",
+    "focused_tests": "5/5 exit 0",
+    "regression": "GitHub+GitLab+Bitbucket+Azure DevOps developer + Figma + Adobe&Canva 27/27 exit 0",
+    "analyzer": "No issues found",
+    "format": "2 files changed then recheck 0 changed",
+    "diff_check": 0,
+    "build_windows_debug": "PASS 19.8s",
+    "manifest": "docs/planning/v1.2/sprint_116_adobe_canva_certification.json",
+    "evidence": [
+      "docs/evidence/sprint-116-33-red-20260928.meta",
+      "docs/evidence/sprint-116-33-focused-20260928.meta",
+      "docs/evidence/sprint-116-33-regression-20260928.meta",
+      "docs/evidence/sprint-116-33-analyze-20260928.meta",
+      "docs/evidence/sprint-116-33-build-windows-debug-20260928.meta"
+    ],
+    "limitations": "synthetic local manifest UNVERIFIED; live Adobe and Canva actual APIs, supported capabilities, licensing, OAuth scopes, region/plan limits, unavailable states, credentials, audit, hosted CI, hardware, billing, publication remain DEFERRED-EXTERNAL",
+    "next_step": "116.34"
   }
 }

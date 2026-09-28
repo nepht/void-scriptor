@@ -1,0 +1,31 @@
+{
+  "canonical_step": "116.33",
+  "title": "Adobe & Canva Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "ADOBE_CANVA_SCHEMA_READY",
+  "required_fields": ["provider_id", "actual_apis", "supported_capabilities", "licensing", "scopes", "region_plan_limits", "unavailable_states"],
+  "records": [
+    {
+      "provider_id": "adobe",
+      "actual_apis": "synthetic actual api fixture",
+      "supported_capabilities": "synthetic supported capability fixture",
+      "licensing": "synthetic licensing fixture",
+      "scopes": "synthetic scope fixture",
+      "region_plan_limits": "synthetic region plan limit fixture",
+      "unavailable_states": "synthetic unavailable state fixture",
+      "status": "UNVERIFIED"
+    },
+    {
+      "provider_id": "canva",
+      "actual_apis": "synthetic actual api fixture",
+      "supported_capabilities": "synthetic supported capability fixture",
+      "licensing": "synthetic licensing fixture",
+      "scopes": "synthetic scope fixture",
+      "region_plan_limits": "synthetic region plan limit fixture",
+      "unavailable_states": "synthetic unavailable state fixture",
+      "status": "UNVERIFIED"
+    }
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live Adobe and Canva APIs, supported capabilities, licensing, OAuth scopes, region/plan limits, unavailable states, credentials, and audit evidence remain externally deferred"]
+}

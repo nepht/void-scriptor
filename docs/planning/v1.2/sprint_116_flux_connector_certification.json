@@ -1,0 +1,22 @@
+{
+  "canonical_step": "116.24",
+  "title": "FLUX Connector Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "FLUX_SCHEMA_READY",
+  "required_fields": ["provider_id", "endpoint_provider_path", "image_jobs", "progress", "cancellation", "usage", "cost", "content_safety", "errors", "limitations"],
+  "records": [{
+    "provider_id": "flux",
+    "endpoint_provider_path": "synthetic endpoint/provider path fixture",
+    "image_jobs": "synthetic image jobs fixture",
+    "progress": "synthetic progress fixture",
+    "cancellation": "synthetic cancellation fixture",
+    "usage": "synthetic usage fixture",
+    "cost": "synthetic cost fixture",
+    "content_safety": "synthetic content safety fixture",
+    "errors": "synthetic error fixture",
+    "limitations": "synthetic limitations fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live FLUX endpoint/provider path, image jobs, progress, cancellation, usage, cost, content safety, credentials, and user-flow evidence remain externally deferred"]
+}

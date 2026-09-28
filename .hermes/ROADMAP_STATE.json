@@ -28,11 +28,11 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.23",
-  "next_step": "116.24",
+  "last_verified_step": "116.24",
+  "next_step": "116.25",
   "stability_gate": {
     "status": "PASS",
-    "resume_step": "116.24",
+    "resume_step": "116.25",
     "previous_result": {
       "sprint": 114,
       "final_step": "114.44",
@@ -55,7 +55,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-28T02:58:26.881044Z",
+  "updated_at": "2026-09-28T03:38:13.884755Z",
   "updated_by": "roadmap_guard sync-pointer",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -419,7 +419,7 @@
   },
   "active_stream_details": {
     "status": "",
-    "next_step": "116.24"
+    "next_step": "116.25"
   },
   "activation_rules_11122_run362": {
     "status": "VERIFIED-LOCAL",

@@ -1,0 +1,7 @@
+step: 116.42 Provider Error-State Certification
+date: 2026-09-28
+phase: Windows debug build evidence
+command: flutter.bat build windows --debug
+exit: 0
+result: PASS - Built build/windows/x64/runner/Debug/void_scriptor.exe; wall 25s (flutter 21.8s); freshness data/flutter_assets/AssetManifest.bin mtime 2026-09-28 23:55:20
+log: docs/evidence/sprint-116-42-build-windows-debug-20260928.log

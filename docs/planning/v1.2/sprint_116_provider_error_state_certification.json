@@ -1,0 +1,124 @@
+{
+  "canonical_step": "116.42",
+  "title": "Provider Error-State Certification",
+  "status": "VERIFIED-LOCAL",
+  "certified_on": "2026-09-28",
+  "live_provider_verification": false,
+  "required_states": [
+    "invalid_credentials",
+    "expired",
+    "revoked",
+    "scope_denied",
+    "rate_limited",
+    "outage",
+    "unsupported_region",
+    "unsupported_plan"
+  ],
+  "observations": [
+    {
+      "observation_id": "obs_invalid_credentials",
+      "provider_id": "synthetic_local_provider_a",
+      "error_state": "invalid_credentials",
+      "http_status": 401,
+      "retryable": false,
+      "retry_after_seconds": null,
+      "user_message": "Authentication failed. Sign in again to continue.",
+      "observed_at_epoch_ms": 1700000000000,
+      "source": "synthetic_local"
+    },
+    {
+      "observation_id": "obs_expired",
+      "provider_id": "synthetic_local_provider_a",
+      "error_state": "expired",
+      "http_status": 401,
+      "retryable": false,
+      "retry_after_seconds": null,
+      "user_message": "Credential expired. Refresh the connection.",
+      "observed_at_epoch_ms": 1700000000000,
+      "source": "synthetic_local"
+    },
+    {
+      "observation_id": "obs_revoked",
+      "provider_id": "synthetic_local_provider_b",
+      "error_state": "revoked",
+      "http_status": 401,
+      "retryable": false,
+      "retry_after_seconds": null,
+      "user_message": "Access was revoked. Reconnect the account.",
+      "observed_at_epoch_ms": 1700000000000,
+      "source": "synthetic_local"
+    },
+    {
+      "observation_id": "obs_scope_denied",
+      "provider_id": "synthetic_local_provider_b",
+      "error_state": "scope_denied",
+      "http_status": 403,
+      "retryable": false,
+      "retry_after_seconds": null,
+      "user_message": "Permission denied for this scope. Review the connected app permissions.",
+      "observed_at_epoch_ms": 1700000000000,
+      "source": "synthetic_local"
+    },
+    {
+      "observation_id": "obs_rate_limited",
+      "provider_id": "synthetic_local_provider_c",
+      "error_state": "rate_limited",
+      "http_status": 429,
+      "retryable": true,
+      "retry_after_seconds": 30,
+      "user_message": "Rate limited. Try again in 30 seconds.",
+      "observed_at_epoch_ms": 1700000000000,
+      "source": "synthetic_local"
+    },
+    {
+      "observation_id": "obs_outage",
+      "provider_id": "synthetic_local_provider_c",
+      "error_state": "outage",
+      "http_status": 503,
+      "retryable": true,
+      "retry_after_seconds": null,
+      "user_message": "Service unavailable. Retrying with backoff.",
+      "observed_at_epoch_ms": 1700000000000,
+      "source": "synthetic_local"
+    },
+    {
+      "observation_id": "obs_unsupported_region",
+      "provider_id": "synthetic_local_provider_a",
+      "error_state": "unsupported_region",
+      "http_status": 451,
+      "retryable": false,
+      "retry_after_seconds": null,
+      "user_message": "This region is not supported by the provider.",
+      "observed_at_epoch_ms": 1700000000000,
+      "source": "synthetic_local"
+    },
+    {
+      "observation_id": "obs_unsupported_plan",
+      "provider_id": "synthetic_local_provider_b",
+      "error_state": "unsupported_plan",
+      "http_status": 402,
+      "retryable": false,
+      "retry_after_seconds": null,
+      "user_message": "The current plan does not include this feature.",
+      "observed_at_epoch_ms": 1700000000000,
+      "source": "synthetic_local"
+    }
+  ],
+  "error_state_rules": {
+    "invalid_credentials": "401-class; not retryable; requires re-authentication; user message must not echo credential material",
+    "expired": "401-class; not retryable; requires a refresh flow before any further request",
+    "revoked": "401-class; not retryable; permanent until the account is reconnected",
+    "scope_denied": "403-class; not retryable; requires a consent or permission change",
+    "rate_limited": "429-class; retryable only after a positive retry_after value; retry_after is mandatory",
+    "outage": "5xx-class; retryable with backoff; retry_after may stay unknown and null",
+    "unsupported_region": "permanent for the region; not retryable",
+    "unsupported_plan": "permanent for the plan; not retryable"
+  },
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "observations are synthetic local fixtures; no live provider error endpoint was queried",
+    "live provider error payload shapes, status-code aliases, retry-after header formats, outage telemetry, region blocking behaviour, plan gating, credentials, audit, hosted CI, billing settlement, and publication remain externally deferred",
+    "hosted CI, credentials, audit trail, billing settlement, and publication remain DEFERRED-EXTERNAL",
+    "no production secret, API key, or webhook endpoint is present in this manifest"
+  ]
+}

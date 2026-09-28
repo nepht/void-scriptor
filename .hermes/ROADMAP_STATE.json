@@ -28,8 +28,8 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.41",
-  "next_step": "116.42",
+  "last_verified_step": "116.42",
+  "next_step": "116.43",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.36",
@@ -55,7 +55,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-28T23:14:47",
+  "updated_at": "2026-09-28T23:56:43+07:00",
   "updated_by": "cron-core-worker",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -1447,5 +1447,31 @@
     "evidence": "docs/evidence/sprint-116-41-{red,focused,regression,analyze,build-windows-debug}-20260928.{log,meta}",
     "limitations": "synthetic local fixtures UNVERIFIED, no secret/API key; live provider quota/usage payloads, rate-limit headers, reset schedules, billing-cycle alignment, overage, per-model metering, hosted CI, credentials, audit, billing settlement, publication remain DEFERRED-EXTERNAL",
     "next_step": "116.42"
+  },
+  "sprint_116_step_11642": {
+    "step": "116.42",
+    "title": "Provider Error-State Certification",
+    "status": "VERIFIED-LOCAL",
+    "date": "2026-09-28",
+    "outputs": [
+      "docs/planning/v1.2/sprint_116_provider_error_state_certification.json",
+      "lib/features/world_logic/domain/sprint_116_provider_error_state_certification.dart",
+      "test/release/sprint_116_provider_error_state_certification_test.dart"
+    ],
+    "required_states": [
+      "invalid_credentials",
+      "expired",
+      "revoked",
+      "scope_denied",
+      "rate_limited",
+      "outage",
+      "unsupported_region",
+      "unsupported_plan"
+    ],
+    "tests": "RED exit 1 load failure (implementation absent); focused 6/6 exit 0; scoped regression 76/76 exit 0 (70 prior + 6 new); analyzer No issues found!; format 1 file changed then recheck 0 changed; git diff --check 0; Windows debug build PASS 25s wall (flutter 21.8s), AssetManifest.bin mtime 2026-09-28 23:55:20",
+    "contract": "fail-closed 8 error states; 6 permanent states non-retryable, rate_limited/outage retryable; rate_limited wajib retry_after > 0; user_message wajib dan redacted; live source wajib evidence; requireCoverage menandai state tak teramati; empty set BLOCKED",
+    "evidence": "docs/evidence/sprint-116-42-{red,focused,regression,analyze,build-windows-debug}-20260928.{log,meta}",
+    "limitations": "synthetic local manifest UNVERIFIED, no secret/API key; live provider error payload shapes, status-code aliases, retry-after header formats, outage telemetry, region blocking, plan gating, credentials, audit, hosted CI, billing settlement, publication remain DEFERRED-EXTERNAL",
+    "next_step": "116.43"
   }
 }

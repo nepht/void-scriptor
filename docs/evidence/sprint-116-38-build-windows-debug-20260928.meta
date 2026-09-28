@@ -1,0 +1,7 @@
+step: 116.38 Midtrans Billing Certification
+phase: Windows debug build evidence
+date: 2026-09-28
+command: flutter.bat build windows --debug
+exit: 0
+result: PASS wall 24s (flutter reported 21.0s), Built build\windows\x64\runner\Debug\void_scriptor.exe
+log: docs/evidence/sprint-116-38-build-windows-debug-2026-09-28.log

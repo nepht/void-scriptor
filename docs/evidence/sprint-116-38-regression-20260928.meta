@@ -1,0 +1,7 @@
+step: 116.38 Midtrans Billing Certification
+phase: regression (scoped: GitHub+GitLab+Bitbucket+Azure DevOps+Figma+Adobe&Canva+Blender&Sketchfab+Creative Asset Rights + 116.36 + 116.37 + 116.38)
+date: 2026-09-28
+command: flutter.bat test test/release/sprint_116_github_developer_certification_test.dart test/release/sprint_116_gitlab_developer_certification_test.dart test/release/sprint_116_bitbucket_developer_certification_test.dart test/release/sprint_116_azure_devops_certification_test.dart test/release/sprint_116_figma_certification_test.dart test/release/sprint_116_adobe_canva_certification_test.dart test/release/sprint_116_blender_sketchfab_certification_test.dart test/release/sprint_116_creative_asset_rights_verification_test.dart test/release/sprint_116_stripe_billing_certification_test.dart test/release/sprint_116_paypal_billing_certification_test.dart test/release/sprint_116_midtrans_billing_certification_test.dart
+exit: 0
+result: 52/52 PASS
+log: docs/evidence/sprint-116-38-regression-2026-09-28.log

@@ -1,0 +1,44 @@
+{
+ "canonical_step": "116.38",
+ "title": "Midtrans Billing Certification",
+ "status": "VERIFIED-LOCAL",
+ "verdict": "MIDTRANS_BILLING_SCHEMA_READY",
+ "provider": "midtrans",
+ "required_fields": [
+  "payment_methods",
+  "redirects",
+  "notifications",
+  "signature",
+  "region",
+  "settlement",
+  "errors"
+ ],
+ "records": [
+  {
+   "billing_id": "synthetic_snap_qris_flow",
+   "payment_methods": "synthetic payment methods fixture",
+   "redirects": "synthetic redirect fixture",
+   "notifications": "synthetic notification fixture",
+   "signature": "synthetic signature fixture",
+   "region": "synthetic region fixture",
+   "settlement": "synthetic settlement fixture",
+   "errors": "synthetic error fixture",
+   "status": "UNVERIFIED"
+  },
+  {
+   "billing_id": "synthetic_webhook_settlement_flow",
+   "payment_methods": "synthetic payment methods fixture",
+   "redirects": "synthetic redirect fixture",
+   "notifications": "synthetic notification fixture",
+   "signature": "synthetic signature fixture",
+   "region": "synthetic region fixture",
+   "settlement": "synthetic settlement fixture",
+   "errors": "synthetic error fixture",
+   "status": "UNVERIFIED"
+  }
+ ],
+ "external_gates": "DEFERRED-EXTERNAL",
+ "limitations": [
+  "live Midtrans supported payment methods, redirects, notification delivery, signature verification, regional availability, settlement, error catalogs, sandbox or test account access, credentials, and audit evidence remain externally deferred; no production secret, API key, or live billing call is present in this manifest"
+ ]
+}

@@ -1,0 +1,7 @@
+step: 116.35 Creative Asset Rights Verification
+phase: Windows debug build evidence
+date: 2026-09-28
+command: flutter.bat build windows --debug
+exit: 0
+result: PASS 19.6s, Built build\windows\x64\runner\Debug\void_scriptor.exe
+log: docs/evidence/sprint-116-35-build-windows-debug-20260928.log

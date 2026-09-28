@@ -1,0 +1,40 @@
+{
+  "canonical_step": "116.35",
+  "title": "Creative Asset Rights Verification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "CREATIVE_ASSET_RIGHTS_SCHEMA_READY",
+  "required_fields": [
+    "source",
+    "license",
+    "attribution",
+    "usage_rights",
+    "export_rights",
+    "retention"
+  ],
+  "records": [
+    {
+      "asset_id": "synthetic_imported_reference_asset",
+      "source": "synthetic source fixture",
+      "license": "synthetic license fixture",
+      "attribution": "synthetic attribution fixture",
+      "usage_rights": "synthetic usage rights fixture",
+      "export_rights": "synthetic export rights fixture",
+      "retention": "synthetic retention fixture",
+      "status": "UNVERIFIED"
+    },
+    {
+      "asset_id": "synthetic_exported_bundle_asset",
+      "source": "synthetic source fixture",
+      "license": "synthetic license fixture",
+      "attribution": "synthetic attribution fixture",
+      "usage_rights": "synthetic usage rights fixture",
+      "export_rights": "synthetic export rights fixture",
+      "retention": "synthetic retention fixture",
+      "status": "UNVERIFIED"
+    }
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "live license registries, source provenance, attribution records, usage and export rights enforcement, retention policy evidence, credentials, and audit evidence remain externally deferred"
+  ]
+}

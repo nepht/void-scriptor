@@ -1,0 +1,7 @@
+step: 116.35 Creative Asset Rights Verification
+phase: RED (implementation absent)
+date: 2026-09-28
+command: flutter.bat test test/release/sprint_116_creative_asset_rights_verification_test.dart
+exit: 1
+result: load failure, Undefined name 'Sprint116CreativeAssetRightsState' / 'Sprint116CreativeAssetRightsContract'
+log: docs/evidence/sprint-116-35-red-20260928.log

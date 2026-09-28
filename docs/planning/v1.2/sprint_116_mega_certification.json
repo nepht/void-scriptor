@@ -1,0 +1,19 @@
+{
+  "canonical_step": "116.18",
+  "title": "MEGA Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "MEGA_SCHEMA_READY",
+  "required_fields": ["provider_id", "integration_path", "authentication", "transfer", "quota", "security_model", "limitations"],
+  "records": [{
+    "provider_id": "mega",
+    "integration_path": "synthetic integration fixture",
+    "authentication": "synthetic authentication fixture",
+    "transfer": "synthetic transfer fixture",
+    "quota": "synthetic quota fixture",
+    "security_model": "synthetic security fixture",
+    "limitations": "synthetic limitations fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live MEGA integration path, authentication, transfer, quota, security model, credentials, provider service, and user-flow evidence remain externally deferred"]
+}

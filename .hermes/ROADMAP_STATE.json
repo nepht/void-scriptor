@@ -28,8 +28,8 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.40",
-  "next_step": "116.41",
+  "last_verified_step": "116.41",
+  "next_step": "116.42",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.36",
@@ -55,7 +55,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-28T22:39:59",
+  "updated_at": "2026-09-28T23:14:47",
   "updated_by": "cron-core-worker",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -613,8 +613,8 @@
   },
   "current_step": "116.2",
   "current_step_status": "PENDING",
-  "last_run_summary": "2026-09-28: Sprint 116.38 Midtrans Billing Certification VERIFIED-LOCAL at e8a622f (local commit; ledger row updated first, state pointer follows); guard PASS recommended 116.37->116.38; RED exit1 -> focused 5/5, regression GitHub+GitLab+Bitbucket+Azure DevOps+Figma+Adobe&Canva+Blender&Sketchfab+116.35+116.36+116.37+116.38 52/52, analyzer clean, format recheck 0, diff-check 0, Windows debug build PASS 24s. Sibling sprint-112 dirty files preserved untouched.",
-  "last_commit": "e8a622f",
+  "last_run_summary": "2026-09-28: Sprint 116.41 Quota & Usage Cross-Provider Contract Tests VERIFIED-LOCAL (ledger row first, state pointer follows); guard PASS recommended 116.41->116.42; RED exit 1 -> focused 7/7, regression 70/70, analyzer clean, format 0, diff-check 0, Windows debug build PASS 32s. Sibling sprint-112 dirty files preserved untouched. slice commit 162b37e (9 files explicit paths).",
+  "last_commit": "162b37e",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -1422,5 +1422,30 @@
     "evidence": "docs/evidence/sprint-116-40-{red,focused,regression,analyze,build-windows-debug}-20260928.{log,meta}",
     "limitations": "synthetic local fixtures UNVERIFIED, no secret/API key/webhook endpoint; live provider webhook payload schema, signature algorithm, replay window, rate limits, dunning, refund, settlement, payout, credentials, audit, hosted CI, billing settlement, publication remain DEFERRED-EXTERNAL",
     "next_step": "116.41"
+  },
+  "sprint_116_step_11641": {
+    "step": "116.41",
+    "title": "Quota & Usage Cross-Provider Contract Tests",
+    "status": "VERIFIED-LOCAL",
+    "date": "2026-09-28",
+    "outputs": [
+      "docs/planning/v1.2/sprint_116_quota_usage_cross_provider_contract.json",
+      "lib/features/world_logic/domain/sprint_116_quota_usage_cross_provider_contract.dart",
+      "test/release/sprint_116_quota_usage_cross_provider_contract_test.dart"
+    ],
+    "acceptance": [
+      "raw_units",
+      "display_units",
+      "freshness",
+      "unavailable",
+      "partial_total",
+      "stale_warning",
+      "no_mock_values"
+    ],
+    "tests": "RED exit 1 load failure; focused 7/7; scoped regression 70/70 exit 0; analyzer No issues found! (3 prefer_const_declarations fixed via const); format 2 files changed then recheck 0 changed; git diff --check 0; Windows debug build PASS 32s wall (flutter 28.8s), AssetManifest.bin mtime 23:12:55",
+    "contract": "fail-closed 7 areas; unavailable never renders a number; partial totals flagged; explicit records never borrow manifest as_of",
+    "evidence": "docs/evidence/sprint-116-41-{red,focused,regression,analyze,build-windows-debug}-20260928.{log,meta}",
+    "limitations": "synthetic local fixtures UNVERIFIED, no secret/API key; live provider quota/usage payloads, rate-limit headers, reset schedules, billing-cycle alignment, overage, per-model metering, hosted CI, credentials, audit, billing settlement, publication remain DEFERRED-EXTERNAL",
+    "next_step": "116.42"
   }
 }

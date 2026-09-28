@@ -1,0 +1,18 @@
+{
+  "canonical_step": "116.29",
+  "title": "GitLab Developer Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "GITLAB_DEVELOPER_SCHEMA_READY",
+  "required_fields": ["provider_id", "deployment_types", "repository_scopes", "rate_limits", "revoke", "audit"],
+  "records": [{
+    "provider_id": "gitlab",
+    "deployment_types": "synthetic deployment type fixture",
+    "repository_scopes": "synthetic repository scope fixture",
+    "rate_limits": "synthetic rate limit fixture",
+    "revoke": "synthetic revoke fixture",
+    "audit": "synthetic audit fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live GitLab deployment types, repository scopes, rate limits, revoke, credentials, and audit evidence remain externally deferred"]
+}

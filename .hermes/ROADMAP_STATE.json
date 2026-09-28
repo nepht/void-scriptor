@@ -28,8 +28,8 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.36",
-  "next_step": "116.37",
+  "last_verified_step": "116.37",
+  "next_step": "116.38",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.36",
@@ -55,7 +55,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-28T13:40:54",
+  "updated_at": "2026-09-28T21:05:52",
   "updated_by": "cron-core-worker",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -613,8 +613,8 @@
   },
   "current_step": "116.2",
   "current_step_status": "PENDING",
-  "last_run_summary": "2026-09-28: Sprint 116.36 Stripe Billing Certification VERIFIED-LOCAL at 66ace7d (local commit, push recorded after state pointer); guard PASS recommended 116.36->116.37; RED exit1 -> focused 5/5, regression GitHub+GitLab+Bitbucket+Azure DevOps+Figma+Adobe&Canva+Blender&Sketchfab+116.35+116.36 42/42, analyzer clean, format recheck 0, diff-check 0, Windows debug build PASS 22.1s. Sibling sprint-112 dirty files preserved untouched.",
-  "last_commit": "66ace7d",
+  "last_run_summary": "2026-09-28: Sprint 116.37 PayPal Billing Certification VERIFIED-LOCAL at c5e1ad6 (local commit; ledger row updated first, state pointer follows); guard PASS recommended 116.36->116.37; RED exit1 -> focused 5/5, regression GitHub+GitLab+Bitbucket+Azure DevOps+Figma+Adobe&Canva+Blender&Sketchfab+116.35+116.36+116.37 47/47, analyzer clean, format recheck 0, diff-check 0, Windows debug build PASS 21.6s. Sibling sprint-112 dirty files preserved untouched.",
+  "last_commit": "c5e1ad6",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -1364,5 +1364,16 @@
     "evidence": "docs/evidence/sprint-116-36-{red,focused,regression,analyze,windows-debug}-20260928.{log,meta}",
     "verified_at": "2026-09-28",
     "next_step": "116.37"
+  },
+  "sprint_116_step_11637": {
+    "step": "116.37",
+    "title": "PayPal Billing Certification",
+    "status": "VERIFIED-LOCAL",
+    "commit": "c5e1ad6",
+    "guard": "PASS recommended 116.36 -> 116.37",
+    "evidence": "docs/evidence/sprint-116-37-{red,focused,regression,analyze,windows-debug}-20260928.{log,meta}",
+    "tests": "RED exit 1; focused 5/5; scoped regression 47/47; analyzer clean; format recheck 0; diff-check 0; Windows debug build PASS 21.6s",
+    "deferred": "live PayPal flows/redirects/webhooks/refunds/region/errors + sandbox, credentials, audit, hosted CI, billing settlement, publication = DEFERRED-EXTERNAL",
+    "recorded_on": "2026-09-28"
   }
 }

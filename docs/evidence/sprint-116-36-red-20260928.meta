@@ -1,0 +1,7 @@
+step: 116.36 Stripe Billing Certification
+phase: RED (implementation absent)
+date: 2026-09-28
+command: flutter.bat test test/release/sprint_116_stripe_billing_certification_test.dart
+exit: 1
+result: load failure, Undefined name 'Sprint116StripeBillingState' / 'Sprint116StripeBillingContract'
+log: docs/evidence/sprint-116-36-red-20260928.log

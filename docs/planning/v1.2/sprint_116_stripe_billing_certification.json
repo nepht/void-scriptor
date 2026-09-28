@@ -1,0 +1,47 @@
+{
+  "canonical_step": "116.36",
+  "title": "Stripe Billing Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "STRIPE_BILLING_SCHEMA_READY",
+  "provider": "stripe",
+  "required_fields": [
+    "customer",
+    "subscription",
+    "payment_method_tokens",
+    "invoices",
+    "webhooks",
+    "refunds",
+    "tax_metadata",
+    "portal"
+  ],
+  "records": [
+    {
+      "billing_id": "synthetic_customer_subscription_flow",
+      "customer": "synthetic customer fixture",
+      "subscription": "synthetic subscription fixture",
+      "payment_method_tokens": "synthetic payment method token fixture",
+      "invoices": "synthetic invoice fixture",
+      "webhooks": "synthetic webhook fixture",
+      "refunds": "synthetic refund fixture",
+      "tax_metadata": "synthetic tax metadata fixture",
+      "portal": "synthetic portal fixture",
+      "status": "UNVERIFIED"
+    },
+    {
+      "billing_id": "synthetic_invoice_refund_flow",
+      "customer": "synthetic customer fixture",
+      "subscription": "synthetic subscription fixture",
+      "payment_method_tokens": "synthetic payment method token fixture",
+      "invoices": "synthetic invoice fixture",
+      "webhooks": "synthetic webhook fixture",
+      "refunds": "synthetic refund fixture",
+      "tax_metadata": "synthetic tax metadata fixture",
+      "portal": "synthetic portal fixture",
+      "status": "UNVERIFIED"
+    }
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "live Stripe customers, subscriptions, payment method tokens, invoices, webhook delivery, refunds, tax metadata, customer portal, sandbox or test account access, credentials, and audit evidence remain externally deferred; no production secret, API key, or live billing call is present in this manifest"
+  ]
+}

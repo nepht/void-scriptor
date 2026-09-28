@@ -54,3 +54,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Tooling caches and local account metadata (never commit)
+.wrangler/
+
+# Golden-test failure artifacts (masterImage/isolatedDiff/maskedDiff/testImage)
+**/failures/*.png
+**/failures/

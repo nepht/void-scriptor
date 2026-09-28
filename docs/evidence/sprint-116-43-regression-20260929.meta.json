@@ -1,0 +1,14 @@
+{
+  "canonical_step": "116.43",
+  "artifact": "regression.log",
+  "evidence_log": "docs/evidence/sprint-116-43-regression-20260929.log",
+  "log_sha256": "c4e7aaab6bbd6bff087fa1e5cd09a754a1dacfe7738a47fd610bff9f088cb746",
+  "recorded_at": "2026-09-29T00:24:06.462943+07:00",
+  "head_before_mutation": "4d0fc3a6a181bbec3d379a56a9537061d18ff08d",
+  "tail": [
+    "00:13 +82: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_116_retry_backoff_circuit_breaker_certification_test.dart: 116.43 Retry, Backoff & Circuit Breaker Certification circuit breaker states are validated and an open circuit blocks work",
+    "00:13 +83: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_116_retry_backoff_circuit_breaker_certification_test.dart: 116.43 Retry, Backoff & Circuit Breaker Certification malformed policies fail closed, empty sets block, coverage required",
+    "00:13 +84: D:/VoidScriptor/void_scriptor_multiplatform/test/release/sprint_116_retry_backoff_circuit_breaker_certification_test.dart: 116.43 Retry, Backoff & Circuit Breaker Certification manifest fixture certifies locally without live claims or secrets",
+    "00:13 +85: All tests passed!"
+  ]
+}

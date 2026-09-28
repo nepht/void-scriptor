@@ -1,0 +1,8 @@
+step: 116.43 Retry, Backoff & Circuit Breaker Certification
+date: 20260929
+phase: Windows debug build
+command: flutter.bat build windows --debug
+exit: 0
+result: Built build/windows/x64/runner/Debug/void_scriptor.exe; 24s wall (flutter 21.1s); AssetManifest.bin mtime 2026-09-29 00:23:53
+log: docs/evidence/sprint-116-43-build-windows-debug-20260929.log
+log_sha256: d574f23267d8013dfbe042db30fd25d73ed52460ff5d4ba25d5ea220c30bffe6

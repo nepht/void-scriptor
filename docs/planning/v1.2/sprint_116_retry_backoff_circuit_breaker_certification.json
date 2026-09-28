@@ -1,0 +1,177 @@
+{
+  "canonical_step": "116.43",
+  "title": "Retry, Backoff & Circuit Breaker Certification",
+  "status": "VERIFIED-LOCAL",
+  "certified_on": "2026-09-29",
+  "live_provider_verification": false,
+  "acceptance_areas": [
+    "idempotency",
+    "bounded_retry",
+    "exponential_backoff",
+    "jitter",
+    "retry_after",
+    "cancellation",
+    "circuit_breaker"
+  ],
+  "policies": [
+    {
+      "policy_id": "pol_outage_backoff",
+      "provider_id": "synthetic_local_provider_a",
+      "operation_id": "fetch_project_tree",
+      "idempotent": true,
+      "idempotency_key": "idem-fetch-tree-0001",
+      "max_attempts": 5,
+      "base_delay_ms": 200,
+      "max_delay_ms": 5000,
+      "jitter_ratio": 0.25,
+      "cancellation_supported": true,
+      "cancelled_at_attempt_index": null,
+      "attempts": [
+        {
+          "attempt_index": 0,
+          "error_state": "outage",
+          "theoretical_delay_ms": 0,
+          "actual_delay_ms": 0,
+          "delay_source": "none",
+          "provider_retry_after_seconds": null,
+          "idempotency_key": "idem-fetch-tree-0001"
+        },
+        {
+          "attempt_index": 1,
+          "error_state": "outage",
+          "theoretical_delay_ms": 200,
+          "actual_delay_ms": 232,
+          "delay_source": "exponential_backoff",
+          "provider_retry_after_seconds": null,
+          "idempotency_key": "idem-fetch-tree-0001"
+        },
+        {
+          "attempt_index": 2,
+          "error_state": "outage",
+          "theoretical_delay_ms": 400,
+          "actual_delay_ms": 361,
+          "delay_source": "exponential_backoff",
+          "provider_retry_after_seconds": null,
+          "idempotency_key": "idem-fetch-tree-0001"
+        },
+        {
+          "attempt_index": 3,
+          "error_state": "outage",
+          "theoretical_delay_ms": 800,
+          "actual_delay_ms": 858,
+          "delay_source": "exponential_backoff",
+          "provider_retry_after_seconds": null,
+          "idempotency_key": "idem-fetch-tree-0001"
+        }
+      ],
+      "circuit_breaker": {
+        "breaker_id": "breaker_fetch_tree",
+        "state": "closed",
+        "consecutive_failures": 0,
+        "failure_threshold": 5,
+        "open_duration_ms": 30000,
+        "opened_at_epoch_ms": 0
+      },
+      "source": "synthetic_local"
+    },
+    {
+      "policy_id": "pol_rate_limited_write",
+      "provider_id": "synthetic_local_provider_b",
+      "operation_id": "commit_revision",
+      "idempotent": false,
+      "idempotency_key": "idem-commit-rev-77a2",
+      "max_attempts": 3,
+      "base_delay_ms": 500,
+      "max_delay_ms": 8000,
+      "jitter_ratio": 0.2,
+      "cancellation_supported": true,
+      "cancelled_at_attempt_index": null,
+      "attempts": [
+        {
+          "attempt_index": 0,
+          "error_state": "rate_limited",
+          "theoretical_delay_ms": 0,
+          "actual_delay_ms": 0,
+          "delay_source": "none",
+          "provider_retry_after_seconds": null,
+          "idempotency_key": "idem-commit-rev-77a2"
+        },
+        {
+          "attempt_index": 1,
+          "error_state": "rate_limited",
+          "theoretical_delay_ms": 500,
+          "actual_delay_ms": 30000,
+          "delay_source": "retry_after",
+          "provider_retry_after_seconds": 30,
+          "idempotency_key": "idem-commit-rev-77a2"
+        }
+      ],
+      "circuit_breaker": {
+        "breaker_id": "breaker_commit_revision",
+        "state": "closed",
+        "consecutive_failures": 1,
+        "failure_threshold": 4,
+        "open_duration_ms": 45000,
+        "opened_at_epoch_ms": 0
+      },
+      "source": "synthetic_local"
+    },
+    {
+      "policy_id": "pol_cancelled_upload",
+      "provider_id": "synthetic_local_provider_c",
+      "operation_id": "upload_asset",
+      "idempotent": false,
+      "idempotency_key": "idem-upload-asset-31f0",
+      "max_attempts": 4,
+      "base_delay_ms": 1000,
+      "max_delay_ms": 10000,
+      "jitter_ratio": 0.3,
+      "cancellation_supported": true,
+      "cancelled_at_attempt_index": 1,
+      "attempts": [
+        {
+          "attempt_index": 0,
+          "error_state": "outage",
+          "theoretical_delay_ms": 0,
+          "actual_delay_ms": 0,
+          "delay_source": "none",
+          "provider_retry_after_seconds": null,
+          "idempotency_key": "idem-upload-asset-31f0"
+        },
+        {
+          "attempt_index": 1,
+          "error_state": "outage",
+          "theoretical_delay_ms": 1000,
+          "actual_delay_ms": 0,
+          "delay_source": "none",
+          "provider_retry_after_seconds": null,
+          "idempotency_key": "idem-upload-asset-31f0"
+        }
+      ],
+      "circuit_breaker": {
+        "breaker_id": "breaker_upload_asset",
+        "state": "closed",
+        "consecutive_failures": 3,
+        "failure_threshold": 4,
+        "open_duration_ms": 60000,
+        "opened_at_epoch_ms": 1700000000000
+      },
+      "source": "synthetic_local"
+    }
+  ],
+  "area_rules": {
+    "idempotency": "every retried write carries a stable idempotency key; an operation declared idempotent must repeat the same key on every attempt above index 0",
+    "bounded_retry": "max_attempts is between 1 and 10, base_delay_ms is positive, max_delay_ms is never below base_delay_ms, and recorded attempts never exceed the ceiling",
+    "exponential_backoff": "the recorded theoretical delay equals the policy schedule (base * 2^(attempt-1) clamped to the ceiling) and the actual delay stays within the declared jitter ratio",
+    "jitter": "at least one backoff attempt deviates from the theoretical delay by a non-zero amount inside the declared ratio, so clients do not retry in lockstep",
+    "retry_after": "a rate-limited attempt must name the provider retry_after source, carry a positive provider_retry_after_seconds, and actually wait at least that long",
+    "cancellation": "cancellation is supported and no attempt is recorded above the cancellation index; a loop that continues after cancellation fails closed",
+    "circuit_breaker": "a breaker record exists with a known state, a positive failure threshold and open duration, a closed circuit stays below its threshold, and an open circuit records no further attempts"
+  },
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "policies and attempts are synthetic local fixtures; no live provider endpoint was queried and no retry loop was executed against a real API",
+    "live provider retry-after header formats and semantics, real jitter distributions, real circuit-breaker integration in connector runtime, idempotency-key propagation to real endpoints, hosted CI, credentials, audit, billing settlement, and publication remain externally deferred",
+    "no production secret, API key, or webhook endpoint is present in this manifest"
+  ]
+}

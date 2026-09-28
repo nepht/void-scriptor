@@ -1,0 +1,8 @@
+step: 116.43 Retry, Backoff & Circuit Breaker Certification
+date: 20260929
+phase: Scoped regression across the sprint 116 certification chain
+command: flutter.bat test --no-pub <16 sprint_116 certification test files> -j 1
+exit: 0
+result: 85/85 PASS (116 developer GitHub/GitLab/Bitbucket/Azure DevOps, Figma, Adobe&Canva, Blender&Sketchfab, rights, Stripe, PayPal, Midtrans, Saweria&Ko-fi, 116.40-116.43)
+log: docs/evidence/sprint-116-43-regression-20260929.log
+log_sha256: c4e7aaab6bbd6bff087fa1e5cd09a754a1dacfe7738a47fd610bff9f088cb746

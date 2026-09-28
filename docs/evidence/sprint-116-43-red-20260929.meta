@@ -1,0 +1,8 @@
+step: 116.43 Retry, Backoff & Circuit Breaker Certification
+date: 20260929
+phase: RED (test present, implementation absent)
+command: flutter.bat test --no-pub test/release/sprint_116_retry_backoff_circuit_breaker_certification_test.dart
+exit: 1
+result: load failure - implementation absent: 'Sprint116RetryPolicy' isn't a type; 'Sprint116RetryAttempt' isn't a type; 'Sprint116CircuitRecord' isn't a type; Method not found 'Sprint116ResilienceCertification'
+log: docs/evidence/sprint-116-43-red-20260929.log
+log_sha256: be5683f15e2795188b0e85c86b0bb8d1128f04a0abaa1fb13c0caf406b7a4615

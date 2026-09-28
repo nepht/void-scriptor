@@ -1,0 +1,8 @@
+step: 116.43 Retry, Backoff & Circuit Breaker Certification
+date: 20260929
+phase: Scoped analyzer on the two owned Dart files
+command: dart.bat analyze lib/features/world_logic/domain/sprint_116_retry_backoff_circuit_breaker_certification.dart test/release/sprint_116_retry_backoff_circuit_breaker_certification_test.dart
+exit: 0
+result: No issues found!
+log: docs/evidence/sprint-116-43-analyze-20260929.log
+log_sha256: 14fce49b403dccd2435b41b4dcba020d6e2a8063c0e12726958543c601bc96e8

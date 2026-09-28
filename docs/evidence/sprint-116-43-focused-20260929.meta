@@ -1,0 +1,8 @@
+step: 116.43 Retry, Backoff & Circuit Breaker Certification
+date: 20260929
+phase: GREEN focused suite
+command: flutter.bat test --no-pub test/release/sprint_116_retry_backoff_circuit_breaker_certification_test.dart -j 1
+exit: 0
+result: 8/8 PASS after two genuine fixes: test helper swallowed the missing-breaker case (breaker: null fell through ?? _breaker('closed')); manifest pol_cancelled_upload declared an open circuit while recording attempt 1
+log: docs/evidence/sprint-116-43-focused-20260929.log
+log_sha256: 0ee8812298cf0af9bd0f306c7c437d706db822c9cb1be2136b15ebc7343c87c9

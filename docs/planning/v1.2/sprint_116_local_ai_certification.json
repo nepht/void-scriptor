@@ -1,0 +1,20 @@
+{
+  "canonical_step": "116.26",
+  "title": "Local AI Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "LOCAL_AI_SCHEMA_READY",
+  "required_fields": ["provider_id", "model_discovery", "hardware_limits", "storage", "lifecycle", "privacy", "offline_use", "failure_isolation"],
+  "records": [{
+    "provider_id": "local_ai",
+    "model_discovery": "synthetic model discovery fixture",
+    "hardware_limits": "synthetic hardware limits fixture",
+    "storage": "synthetic storage fixture",
+    "lifecycle": "synthetic lifecycle fixture",
+    "privacy": "synthetic privacy fixture",
+    "offline_use": "synthetic offline fixture",
+    "failure_isolation": "synthetic failure isolation fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live local model discovery, hardware limits, storage, lifecycle, privacy, offline use, and failure isolation evidence remain externally deferred"]
+}

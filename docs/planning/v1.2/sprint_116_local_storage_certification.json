@@ -1,0 +1,20 @@
+{
+  "canonical_step": "116.19",
+  "title": "Local Storage Certification",
+  "status": "VERIFIED-LOCAL",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "records": [
+    {
+      "provider_id": "local_storage",
+      "status": "UNVERIFIED",
+      "paths": "Local project, asset, model, archive, cache, temp, and backup path categories are represented by the local storage contract.",
+      "permissions": "Permission observations are a local contract field; live permission probing is not claimed.",
+      "free_space": "Free-space observations are represented separately from used totals; no live device value is claimed.",
+      "categories": "projects/assets/models/archive/cache/temp/backups/other",
+      "scan_freshness": "Scan freshness is an explicit field and must be measured by a caller; no stale reading is promoted to live.",
+      "removable_media": "Removable-media handling is represented as a local-only certification field; no hardware probe is claimed.",
+      "failure_recovery": "Failure recovery is fail-closed through invalid-field reporting; no physical fault or power-loss proof is claimed.",
+      "limitations": "Synthetic local evidence only; provider connectivity, credentials, telemetry, hardware, hosted CI, signing, billing, and publication remain DEFERRED-EXTERNAL."
+    }
+  ]
+}

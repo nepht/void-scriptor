@@ -1,0 +1,346 @@
+{
+  "canonical_step": "116.46",
+  "title": "Privacy & Compliance Gate",
+  "status": "VERIFIED-LOCAL",
+  "live_privacy_verification": false,
+  "as_of_epoch_ms": 1700000100000,
+  "acceptance_areas": [
+    "data_flow",
+    "consent",
+    "minimization",
+    "destinations",
+    "retention",
+    "deletion",
+    "disconnect",
+    "terms_limits"
+  ],
+  "data_flows": [
+    {
+      "flow_id": "flow_google",
+      "provider_id": "provider_google",
+      "subject_scope": "user",
+      "data_categories": [
+        "account_identity",
+        "contact"
+      ],
+      "purpose": "authenticate_user",
+      "personal_data": true,
+      "leaves_device": true,
+      "encrypted_in_transit": true,
+      "fields_redacted_in_logs": true,
+      "source": "synthetic_local"
+    },
+    {
+      "flow_id": "flow_stripe",
+      "provider_id": "provider_stripe",
+      "subject_scope": "user",
+      "data_categories": [
+        "billing"
+      ],
+      "purpose": "process_payment",
+      "personal_data": true,
+      "leaves_device": true,
+      "encrypted_in_transit": true,
+      "fields_redacted_in_logs": true,
+      "source": "synthetic_local"
+    },
+    {
+      "flow_id": "flow_local_telemetry",
+      "provider_id": "provider_local",
+      "subject_scope": "user",
+      "data_categories": [
+        "usage_telemetry"
+      ],
+      "purpose": "improve_product",
+      "personal_data": false,
+      "leaves_device": false,
+      "encrypted_in_transit": true,
+      "fields_redacted_in_logs": true,
+      "source": "synthetic_local"
+    }
+  ],
+  "consents": [
+    {
+      "consent_id": "cns_google",
+      "subject_id": "user_0001",
+      "purpose": "authenticate_user",
+      "granted": true,
+      "bundled_or_pre_ticked": false,
+      "revocable": true,
+      "policy_version": "policy-2026-09-01",
+      "granted_at_epoch_ms": 1699990000000,
+      "withdrawn_at_epoch_ms": 0,
+      "source": "synthetic_local"
+    },
+    {
+      "consent_id": "cns_stripe",
+      "subject_id": "user_0001",
+      "purpose": "process_payment",
+      "granted": true,
+      "bundled_or_pre_ticked": false,
+      "revocable": true,
+      "policy_version": "policy-2026-09-01",
+      "granted_at_epoch_ms": 1699991000000,
+      "withdrawn_at_epoch_ms": 0,
+      "source": "synthetic_local"
+    },
+    {
+      "consent_id": "cns_telemetry",
+      "subject_id": "user_0001",
+      "purpose": "improve_product",
+      "granted": true,
+      "bundled_or_pre_ticked": false,
+      "revocable": true,
+      "policy_version": "policy-2026-09-01",
+      "granted_at_epoch_ms": 1699992000000,
+      "withdrawn_at_epoch_ms": 0,
+      "source": "synthetic_local"
+    },
+    {
+      "consent_id": "cns_telemetry_withdrawn",
+      "subject_id": "user_0002",
+      "purpose": "improve_product",
+      "granted": true,
+      "bundled_or_pre_ticked": false,
+      "revocable": true,
+      "policy_version": "policy-2026-09-01",
+      "granted_at_epoch_ms": 1699992000000,
+      "withdrawn_at_epoch_ms": 1699995000000,
+      "source": "synthetic_local"
+    }
+  ],
+  "datasets": [
+    {
+      "dataset_id": "ds_account_profile",
+      "feature_purpose": "account_settings",
+      "collected_fields": [
+        "email",
+        "display_name"
+      ],
+      "purpose_required_fields": [
+        "email",
+        "display_name"
+      ],
+      "retained_fields": [
+        "email"
+      ],
+      "source": "synthetic_local"
+    },
+    {
+      "dataset_id": "ds_telemetry",
+      "feature_purpose": "improve_product",
+      "collected_fields": [
+        "session_count",
+        "feature_flags"
+      ],
+      "purpose_required_fields": [
+        "session_count",
+        "feature_flags"
+      ],
+      "retained_fields": [
+        "session_count"
+      ],
+      "source": "synthetic_local"
+    }
+  ],
+  "destinations": [
+    {
+      "destination_id": "dst_google",
+      "provider_id": "provider_google",
+      "host": "oauth2.googleapis.com",
+      "scheme": "https",
+      "region": "us",
+      "data_categories": [
+        "account_identity",
+        "contact"
+      ],
+      "subprocessor_listed": true,
+      "cross_border_transfer": true,
+      "transfer_mechanism": "adequacy_decision",
+      "personal_data_shared": true,
+      "source": "synthetic_local"
+    },
+    {
+      "destination_id": "dst_stripe",
+      "provider_id": "provider_stripe",
+      "host": "api.stripe.com",
+      "scheme": "https",
+      "region": "us",
+      "data_categories": [
+        "billing"
+      ],
+      "subprocessor_listed": true,
+      "cross_border_transfer": true,
+      "transfer_mechanism": "standard_contract_clauses",
+      "personal_data_shared": true,
+      "source": "synthetic_local"
+    }
+  ],
+  "retention_rules": [
+    {
+      "retention_id": "ret_identity",
+      "data_category": "account_identity",
+      "retention_days": 365,
+      "window_started_at_epoch_ms": 1699000000000,
+      "auto_delete_enabled": true,
+      "deletion_trigger": "retention_window_elapsed",
+      "legal_hold": false,
+      "legal_hold_justification": "",
+      "record_present": true,
+      "source": "synthetic_local"
+    },
+    {
+      "retention_id": "ret_contact",
+      "data_category": "contact",
+      "retention_days": 365,
+      "window_started_at_epoch_ms": 1699000000000,
+      "auto_delete_enabled": true,
+      "deletion_trigger": "retention_window_elapsed",
+      "legal_hold": false,
+      "legal_hold_justification": "",
+      "record_present": true,
+      "source": "synthetic_local"
+    },
+    {
+      "retention_id": "ret_telemetry",
+      "data_category": "usage_telemetry",
+      "retention_days": 180,
+      "window_started_at_epoch_ms": 1699900000000,
+      "auto_delete_enabled": true,
+      "deletion_trigger": "retention_window_elapsed",
+      "legal_hold": false,
+      "legal_hold_justification": "",
+      "record_present": true,
+      "source": "synthetic_local"
+    },
+    {
+      "retention_id": "ret_billing",
+      "data_category": "billing",
+      "retention_days": 2555,
+      "window_started_at_epoch_ms": 1690000000000,
+      "auto_delete_enabled": true,
+      "deletion_trigger": "legal_obligation_elapsed",
+      "legal_hold": false,
+      "legal_hold_justification": "",
+      "record_present": true,
+      "source": "synthetic_local"
+    },
+    {
+      "retention_id": "ret_creative",
+      "data_category": "creative_content",
+      "retention_days": 3650,
+      "window_started_at_epoch_ms": 1699900000000,
+      "auto_delete_enabled": true,
+      "deletion_trigger": "user_delete_request",
+      "legal_hold": false,
+      "legal_hold_justification": "",
+      "record_present": true,
+      "source": "synthetic_local"
+    }
+  ],
+  "deletion_requests": [
+    {
+      "request_id": "del_0001",
+      "subject_id": "user_0001",
+      "scope": [
+        "account_profile",
+        "billing_history"
+      ],
+      "requested_at_epoch_ms": 1699999000000,
+      "completed_at_epoch_ms": 1700000050000,
+      "completed": true,
+      "sla_days": 30,
+      "identity_verified": true,
+      "cascaded_to_backups": true,
+      "residual_copies_declared": [],
+      "still_connected": false,
+      "source": "synthetic_local"
+    },
+    {
+      "request_id": "del_0002",
+      "subject_id": "user_0002",
+      "scope": [
+        "account_profile"
+      ],
+      "requested_at_epoch_ms": 1699990000000,
+      "completed_at_epoch_ms": 1699995000000,
+      "completed": true,
+      "sla_days": 30,
+      "identity_verified": true,
+      "cascaded_to_backups": true,
+      "residual_copies_declared": [],
+      "still_connected": false,
+      "source": "synthetic_local"
+    }
+  ],
+  "disconnects": [
+    {
+      "disconnect_id": "dcn_google",
+      "provider_id": "provider_google",
+      "subject_id": "user_0001",
+      "token_revoked": true,
+      "cache_cleared": true,
+      "vault_entry_removed": true,
+      "local_project_data_deleted": false,
+      "cache_readable_after_disconnect": false,
+      "audit_retained_minimal": true,
+      "source": "synthetic_local"
+    },
+    {
+      "disconnect_id": "dcn_stripe",
+      "provider_id": "provider_stripe",
+      "subject_id": "user_0001",
+      "token_revoked": true,
+      "cache_cleared": true,
+      "vault_entry_removed": true,
+      "local_project_data_deleted": false,
+      "cache_readable_after_disconnect": false,
+      "audit_retained_minimal": true,
+      "source": "synthetic_local"
+    }
+  ],
+  "provider_terms": [
+    {
+      "provider_id": "provider_google",
+      "terms_version": "terms-2026-07-15",
+      "reviewed_at_epoch_ms": 1699900000000,
+      "next_review_at_epoch_ms": 1705000000000,
+      "api_use_permitted": true,
+      "ai_training_opt_out_honored": true,
+      "resale_prohibited": true,
+      "sandbox_account_available": true,
+      "sandbox_account_used": true,
+      "region_limits_declared": true,
+      "source": "synthetic_local"
+    },
+    {
+      "provider_id": "provider_stripe",
+      "terms_version": "terms-2026-06-30",
+      "reviewed_at_epoch_ms": 1699850000000,
+      "next_review_at_epoch_ms": 1704000000000,
+      "api_use_permitted": true,
+      "ai_training_opt_out_honored": true,
+      "resale_prohibited": true,
+      "sandbox_account_available": true,
+      "sandbox_account_used": true,
+      "region_limits_declared": true,
+      "source": "synthetic_local"
+    },
+    {
+      "provider_id": "provider_local",
+      "terms_version": "terms-local-2026-01-01",
+      "reviewed_at_epoch_ms": 1699000000000,
+      "next_review_at_epoch_ms": 1735000000000,
+      "api_use_permitted": true,
+      "ai_training_opt_out_honored": true,
+      "resale_prohibited": true,
+      "sandbox_account_available": false,
+      "sandbox_account_used": false,
+      "region_limits_declared": true,
+      "source": "synthetic_local"
+    }
+  ],
+  "certified_on": "2026-09-29",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": "Synthetic local fixtures only. No provider API, account, subprocessors list, data subject request queue, backup store, or terms page was contacted; no legal review was performed and no supervisory-authority determination exists. Lawful-basis analysis, DPIA/SCC execution, cross-border transfer impact assessment, subprocessor change notification, and subject-access/erasure handling against real accounts remain DEFERRED-EXTERNAL and unverified. This manifest certifies the shape of the control set, not compliance with any regulation."
+}

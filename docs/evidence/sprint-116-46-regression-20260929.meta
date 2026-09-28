@@ -1,0 +1,10 @@
+{
+  "canonical_step": "116.46",
+  "title": "Privacy & Compliance Gate",
+  "phase": "regression",
+  "recorded_on": "2026-09-29",
+  "result": "scoped regression 116 chain 186/186 PASS exit 0 (was 142, +44)",
+  "head_at_start": "c5f00ebbfd0ac34119c4192ebb10830d66042a93",
+  "live_privacy_verification": false,
+  "external_gates": "DEFERRED-EXTERNAL"
+}

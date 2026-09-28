@@ -28,8 +28,8 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.45",
-  "next_step": "116.46",
+  "last_verified_step": "116.46",
+  "next_step": "116.47",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.36",
@@ -55,8 +55,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-29T01:23:54+07:00",
-  "updated_by": "cron_core_worker_11645",
+  "updated_at": "2026-09-29T02:00:00+07:00",
+  "updated_by": "cron_core_worker_11646",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -611,10 +611,10 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "116.2",
+  "current_step": "116.47",
   "current_step_status": "PENDING",
-  "last_run_summary": "2026-09-29: Sprint 116.44 Offline & Cached Metadata Certification VERIFIED-LOCAL (ledger row first, state pointer follows); three genuine failures found and fixed (certification forced a reconnect refresh on every offline entry; unattributable provider collapsed into the freshness_label marker; two manifest entries claimed a completed reconnect while their writes predated the refresh); RED exit 1 load failure -> focused 18/18, scoped regression 103/103, analyzer clean, format 2 then recheck 0, diff-check 0, Windows debug build PASS 21s. Sibling sprint-112 dirty files preserved untouched.",
-  "last_commit": "5712bfa",
+  "last_run_summary": "2026-09-29: Sprint 116.46 Privacy & Compliance Gate VERIFIED-LOCAL (ledger row first, state pointer follows); three genuine gate defects found and fixed (in-transit encryption was demanded for a purely local project store that never leaves the device - a rule that could not be satisfied honestly; terms coverage included provider_local from a leaves_device:false flow so any control set without a local vendor could never pass; residual_copies_declared was required on a successful backup cascade so the healthy fixture failed - a real cascade needs no residual declaration, an unnamed leftover is the actual defect) plus two test-harness errors (a consent refusal carried no withdrawal stamp so it was not a coherent record; the backwards-withdrawal case was actually valid because withdrawn > granted). RED exit 1 load failure -> focused 44/44, scoped regression 186/186 (was 142, +44), analyzer clean, format 2 then recheck 0, diff-check 0, Windows debug build PASS 62.0s flutter / 64.1s wall. Eight evidence areas plus four cross-record joins (consent/destination/retention/terms coverage) - a record can be internally flawless and still unlawful because a second record contradicts it. Sibling sprint-112 dirty files preserved untouched.",
+  "last_commit": "pending",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -725,7 +725,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "116.45",
+  "last_resolved_step": "116.46",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -1561,5 +1561,45 @@
     "evidence": "docs/evidence/sprint-116-45-{red,focused,regression,analyze,build-windows-debug}-20260929.{log,meta}",
     "updated_at": "2026-09-29T01:22:51+07:00",
     "commit_note": "hash refers to the previous commit of the slice; this entry is amended in the follow-up commit below"
+  },
+  "sprint_116_step_11646": {
+    "status": "VERIFIED-LOCAL",
+    "title": "Privacy & Compliance Gate",
+    "date": "2026-09-29",
+    "manifest": "docs/planning/v1.2/sprint_116_privacy_compliance_gate.json",
+    "domain": "lib/features/world_logic/domain/sprint_116_privacy_compliance_gate.dart",
+    "test": "test/release/sprint_116_privacy_compliance_gate_test.dart",
+    "required_evidence": [
+      "data_flow",
+      "consent",
+      "minimization",
+      "destinations",
+      "retention",
+      "deletion",
+      "disconnect",
+      "terms_limits"
+    ],
+    "cross_record_joins": [
+      "consent_coverage",
+      "destination_coverage",
+      "retention_coverage",
+      "terms_coverage"
+    ],
+    "red": "load failure exit 1 (implementation absent: Sprint116DataFlow isn't a type, Method not found)",
+    "focused_tests": "44/44 exit 0",
+    "regression": "sprint 116 chain 116.40-116.46 186/186 exit 0 (was 142, +44)",
+    "analyzer": "No issues found",
+    "format": "2 files changed then recheck 0 changed",
+    "diff_check": 0,
+    "build_windows_debug": "PASS 62.0s flutter / 64.1s wall; AssetManifest.bin mtime 2026-09-29 01:56:34",
+    "evidence": [
+      "docs/evidence/sprint-116-46-red-20260929.meta",
+      "docs/evidence/sprint-116-46-focused-20260929.meta",
+      "docs/evidence/sprint-116-46-regression-20260929.meta",
+      "docs/evidence/sprint-116-46-analyze-20260929.meta",
+      "docs/evidence/sprint-116-46-build-windows-debug-20260929.meta"
+    ],
+    "limitations": "synthetic local manifest UNVERIFIED without secret/API key (test-enforced); lawful-basis analysis, DPIA/SCC, transfer impact assessment, subprocessor change notification, and subject-access/erasure against real accounts remain DEFERRED-EXTERNAL",
+    "next_step": "116.47"
   }
 }

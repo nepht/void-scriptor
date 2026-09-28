@@ -1,0 +1,10 @@
+{
+  "canonical_step": "116.46",
+  "title": "Privacy & Compliance Gate",
+  "phase": "build",
+  "recorded_on": "2026-09-29",
+  "result": "flutter build windows --debug --no-pub PASS exit 0, 62.0s flutter / 64.1s wall; AssetManifest.bin mtime 01:56:34",
+  "head_at_start": "c5f00ebbfd0ac34119c4192ebb10830d66042a93",
+  "live_privacy_verification": false,
+  "external_gates": "DEFERRED-EXTERNAL"
+}

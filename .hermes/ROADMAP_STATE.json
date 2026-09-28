@@ -613,8 +613,8 @@
   },
   "current_step": "116.2",
   "current_step_status": "PENDING",
-  "last_run_summary": "2026-09-25: Sprint 114.44 CLOSED-LOCAL / DEFERRED-EXTERNAL at ff8b913; guard SPRINT_COMPLETE; Sprint 115 corrective scope activated at 115.1. External gates remain deferred.",
-  "last_commit": "ff8b913",
+  "last_run_summary": "2026-09-28: Sprint 116.33 Adobe & Canva Certification VERIFIED-LOCAL at f3b6ac7 (local commit, push origin master 76134bc..f3b6ac7 GitHub+GitLab, ahead 0); guard PASS recommended 116.34; RED exit1 -> focused 5/5, developer+Figma+Adobe/Canva regression 27/27, analyzer clean, format recheck 0, diff-check 0, Windows debug build PASS 19.8s. Sibling sprint-112 dirty files preserved untouched.",
+  "last_commit": "f3b6ac7",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",

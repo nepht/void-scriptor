@@ -1,0 +1,7 @@
+step: 116.37 PayPal Billing Certification
+phase: RED (implementation absent)
+date: 2026-09-28
+command: flutter.bat test test/release/sprint_116_paypal_billing_certification_test.dart
+exit: 1
+result: load failure, Undefined name 'Sprint116PayPalBillingState' / 'Sprint116PayPalBillingContract' / Method not found 'Sprint116PayPalBillingCertification'
+log: docs/evidence/sprint-116-37-red-20260928.log

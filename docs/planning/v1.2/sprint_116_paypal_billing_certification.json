@@ -1,0 +1,41 @@
+{
+  "canonical_step": "116.37",
+  "title": "PayPal Billing Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "PAYPAL_BILLING_SCHEMA_READY",
+  "provider": "paypal",
+  "required_fields": [
+    "payment_subscription_flow",
+    "redirects",
+    "webhooks",
+    "refunds",
+    "region",
+    "errors"
+  ],
+  "records": [
+    {
+      "billing_id": "synthetic_checkout_redirect_flow",
+      "payment_subscription_flow": "synthetic payment and subscription flow fixture",
+      "redirects": "synthetic redirect fixture",
+      "webhooks": "synthetic webhook fixture",
+      "refunds": "synthetic refund fixture",
+      "region": "synthetic region fixture",
+      "errors": "synthetic error fixture",
+      "status": "UNVERIFIED"
+    },
+    {
+      "billing_id": "synthetic_webhook_refund_flow",
+      "payment_subscription_flow": "synthetic payment and subscription flow fixture",
+      "redirects": "synthetic redirect fixture",
+      "webhooks": "synthetic webhook fixture",
+      "refunds": "synthetic refund fixture",
+      "region": "synthetic region fixture",
+      "errors": "synthetic error fixture",
+      "status": "UNVERIFIED"
+    }
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "live PayPal supported payment and subscription flows, approval redirects, webhook delivery, refunds, regional availability, error catalogs, sandbox or test account access, credentials, and audit evidence remain externally deferred; no production secret, API key, or live billing call is present in this manifest"
+  ]
+}

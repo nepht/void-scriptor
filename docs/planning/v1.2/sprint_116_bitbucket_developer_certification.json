@@ -1,0 +1,18 @@
+{
+  "canonical_step": "116.30",
+  "title": "Bitbucket Developer Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "BITBUCKET_DEVELOPER_SCHEMA_READY",
+  "required_fields": ["provider_id", "repository_scopes", "workspaces", "rate_limits", "revoke", "audit"],
+  "records": [{
+    "provider_id": "bitbucket",
+    "repository_scopes": "synthetic repository scope fixture",
+    "workspaces": "synthetic workspace fixture",
+    "rate_limits": "synthetic rate limit fixture",
+    "revoke": "synthetic revoke fixture",
+    "audit": "synthetic audit fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live Bitbucket repository scopes, workspaces, rate limits, revoke, credentials, and audit evidence remain externally deferred"]
+}

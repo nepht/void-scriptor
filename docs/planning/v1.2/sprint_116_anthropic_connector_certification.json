@@ -1,0 +1,22 @@
+{
+  "canonical_step": "116.23",
+  "title": "Anthropic Connector Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "ANTHROPIC_SCHEMA_READY",
+  "required_fields": ["provider_id", "models", "auth", "streaming", "cancellation", "usage_metadata", "cost_labels", "privacy", "errors", "limitations"],
+  "records": [{
+    "provider_id": "anthropic",
+    "models": "synthetic model fixture",
+    "auth": "synthetic credential reference fixture",
+    "streaming": "synthetic streaming fixture",
+    "cancellation": "synthetic cancellation fixture",
+    "usage_metadata": "synthetic usage fixture",
+    "cost_labels": "synthetic cost-label fixture",
+    "privacy": "synthetic privacy fixture",
+    "errors": "synthetic error fixture",
+    "limitations": "synthetic limitations fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live Anthropic API, supported models, credentials, streaming, cancellation, usage, cost, privacy, provider service, and user-flow evidence remain externally deferred"]
+}

@@ -1,0 +1,19 @@
+{
+  "canonical_step": "116.28",
+  "title": "GitHub Developer Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "GITHUB_DEVELOPER_SCHEMA_READY",
+  "required_fields": ["provider_id", "repository_scopes", "identity_scopes_separation", "organization_policy", "rate_limits", "revoke", "audit"],
+  "records": [{
+    "provider_id": "github",
+    "repository_scopes": "synthetic repository scope fixture",
+    "identity_scopes_separation": "synthetic identity separation fixture",
+    "organization_policy": "synthetic organization policy fixture",
+    "rate_limits": "synthetic rate limit fixture",
+    "revoke": "synthetic revoke fixture",
+    "audit": "synthetic audit fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live GitHub repository scopes, organization policy, rate limits, revoke, credentials, and audit evidence remain externally deferred"]
+}

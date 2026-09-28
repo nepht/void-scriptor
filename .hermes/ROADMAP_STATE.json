@@ -55,7 +55,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-29T01:23:42+07:00",
+  "updated_at": "2026-09-29T01:23:54+07:00",
   "updated_by": "cron_core_worker_11645",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -614,7 +614,7 @@
   "current_step": "116.2",
   "current_step_status": "PENDING",
   "last_run_summary": "2026-09-29: Sprint 116.44 Offline & Cached Metadata Certification VERIFIED-LOCAL (ledger row first, state pointer follows); three genuine failures found and fixed (certification forced a reconnect refresh on every offline entry; unattributable provider collapsed into the freshness_label marker; two manifest entries claimed a completed reconnect while their writes predated the refresh); RED exit 1 load failure -> focused 18/18, scoped regression 103/103, analyzer clean, format 2 then recheck 0, diff-check 0, Windows debug build PASS 21s. Sibling sprint-112 dirty files preserved untouched.",
-  "last_commit": "060c2fe",
+  "last_commit": "5712bfa",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -1536,7 +1536,7 @@
   "sprint_116_step_11645": {
     "status": "VERIFIED-LOCAL",
     "title": "Security Certification Gate",
-    "commit": "060c2fe",
+    "commit": "5712bfa",
     "files": [
       "lib/features/world_logic/domain/sprint_116_security_certification_gate.dart",
       "test/release/sprint_116_security_certification_gate_test.dart",
@@ -1559,6 +1559,7 @@
     ],
     "external_gates": "DEFERRED-EXTERNAL",
     "evidence": "docs/evidence/sprint-116-45-{red,focused,regression,analyze,build-windows-debug}-20260929.{log,meta}",
-    "updated_at": "2026-09-29T01:22:51+07:00"
+    "updated_at": "2026-09-29T01:22:51+07:00",
+    "commit_note": "hash refers to the previous commit of the slice; this entry is amended in the follow-up commit below"
   }
 }

@@ -614,7 +614,7 @@
   "current_step": "116.47",
   "current_step_status": "PENDING",
   "last_run_summary": "2026-09-29: Sprint 116.46 Privacy & Compliance Gate VERIFIED-LOCAL (ledger row first, state pointer follows); three genuine gate defects found and fixed (in-transit encryption was demanded for a purely local project store that never leaves the device - a rule that could not be satisfied honestly; terms coverage included provider_local from a leaves_device:false flow so any control set without a local vendor could never pass; residual_copies_declared was required on a successful backup cascade so the healthy fixture failed - a real cascade needs no residual declaration, an unnamed leftover is the actual defect) plus two test-harness errors (a consent refusal carried no withdrawal stamp so it was not a coherent record; the backwards-withdrawal case was actually valid because withdrawn > granted). RED exit 1 load failure -> focused 44/44, scoped regression 186/186 (was 142, +44), analyzer clean, format 2 then recheck 0, diff-check 0, Windows debug build PASS 62.0s flutter / 64.1s wall. Eight evidence areas plus four cross-record joins (consent/destination/retention/terms coverage) - a record can be internally flawless and still unlawful because a second record contradicts it. Sibling sprint-112 dirty files preserved untouched.",
-  "last_commit": "pending",
+  "last_commit": "f5d5685",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -1600,6 +1600,8 @@
       "docs/evidence/sprint-116-46-build-windows-debug-20260929.meta"
     ],
     "limitations": "synthetic local manifest UNVERIFIED without secret/API key (test-enforced); lawful-basis analysis, DPIA/SCC, transfer impact assessment, subprocessor change notification, and subject-access/erasure against real accounts remain DEFERRED-EXTERNAL",
-    "next_step": "116.47"
+    "next_step": "116.47",
+    "commit": "f5d5685",
+    "state_commit": "pending"
   }
 }

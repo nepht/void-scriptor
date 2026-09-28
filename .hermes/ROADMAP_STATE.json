@@ -29,7 +29,7 @@
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
   "last_verified_step": "116.46",
-  "next_step": "116.47",
+  "next_step": "116.48",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.36",
@@ -55,8 +55,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-29T02:00:00+07:00",
-  "updated_by": "cron_core_worker_11646",
+  "updated_at": "2026-09-29",
+  "updated_by": "cron-core-worker",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -614,7 +614,7 @@
   "current_step": "116.47",
   "current_step_status": "PENDING",
   "last_run_summary": "2026-09-29: Sprint 116.46 Privacy & Compliance Gate VERIFIED-LOCAL (ledger row first, state pointer follows); three genuine gate defects found and fixed (in-transit encryption was demanded for a purely local project store that never leaves the device - a rule that could not be satisfied honestly; terms coverage included provider_local from a leaves_device:false flow so any control set without a local vendor could never pass; residual_copies_declared was required on a successful backup cascade so the healthy fixture failed - a real cascade needs no residual declaration, an unnamed leftover is the actual defect) plus two test-harness errors (a consent refusal carried no withdrawal stamp so it was not a coherent record; the backwards-withdrawal case was actually valid because withdrawn > granted). RED exit 1 load failure -> focused 44/44, scoped regression 186/186 (was 142, +44), analyzer clean, format 2 then recheck 0, diff-check 0, Windows debug build PASS 62.0s flutter / 64.1s wall. Eight evidence areas plus four cross-record joins (consent/destination/retention/terms coverage) - a record can be internally flawless and still unlawful because a second record contradicts it. Sibling sprint-112 dirty files preserved untouched.",
-  "last_commit": "f5d5685",
+  "last_commit": "ffea443",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -725,7 +725,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "116.46",
+  "last_resolved_step": "116.47",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -1603,5 +1603,51 @@
     "next_step": "116.47",
     "commit": "f5d5685",
     "state_commit": "pending"
+  },
+  "sprint_116_step_11647": {
+    "status": "VERIFIED-LOCAL",
+    "title": "Brand, Visual & Accessibility Gate",
+    "date": "2026-09-29",
+    "manifest": "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json",
+    "domain": "lib/features/world_logic/domain/sprint_116_brand_visual_accessibility_gate.dart",
+    "test": "test/release/sprint_116_brand_visual_accessibility_gate_test.dart",
+    "required_evidence": [
+      "icon_review",
+      "visual_regression",
+      "breakpoints",
+      "fallbacks",
+      "keyboard",
+      "screen_reader",
+      "chart_alternatives"
+    ],
+    "cross_record_joins": [
+      "fallback_coverage",
+      "keyboard_coverage",
+      "screen_reader_coverage",
+      "chart_coverage"
+    ],
+    "gate_defects_found": [
+      "renderedSizePx never compared against declaredSizesPx, so the size list certified sizes the UI never draws",
+      "a single capture at a single width certified responsiveness; required >=2 widths per surface plus the claimed min_supported_width_px",
+      "keyboard/reader coverage asked only whether any walk ran, so an unaudited shipped surface passed",
+      "chart coverage was derived from the chart list instead of the surfaces that actually ship a chart",
+      "secret scan tested raw substrings, so the 'secret-free' disclaimer in limitations was flagged as the leak it denies"
+    ],
+    "harness_defects_found": [
+      "_controls() substituted a healthy default for an empty list, so no test could state 'this area has no records' and five gate rules were masked",
+      "the 'size never rendered' test asserted rendered 24, which was present in the declared list; the premise was wrong",
+      "two coverage tests pointed the audit at the same surface as the gap, so the gap never occurred",
+      "a fallback_coverage assertion named the icon that already had a fallback"
+    ],
+    "red": "load failure exit 1 (implementation absent: Sprint116IconAsset isn't a type, Sprint116BrandVisualControlSet not found)",
+    "focused_tests": "36/36 exit 0",
+    "regression": "shard A 52/52 exit 0; shard B 116.40-116.47 159/159 exit 0; baseline without 116.47 = 123/123, delta +36 exactly the new tests",
+    "analyze": "scoped 2 files No issues found! exit 0",
+    "format": "2 files changed then recheck focused 36/36",
+    "diff_check": "exit 0",
+    "windows_debug_build": "PASS exit 0, 25,7s flutter / 29s wall, AssetManifest.bin mtime 2026-09-29 02:44; kernel_blob.bin unchanged since 27 Sep because the 116.45/116.46 gate libraries are imported only by their own tests, so absent symbols there are expected and not evidence of a stale build",
+    "commit": "ffea443",
+    "live_visual_verification": false,
+    "external_gates": "DEFERRED-EXTERNAL"
   }
 }

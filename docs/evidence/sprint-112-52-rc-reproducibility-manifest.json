@@ -2,8 +2,13 @@
   "artifacts": [
     {
       "path": "dartjni.dll",
-      "sha256": "45d8f71863d7ef94f00b1a55ebbabdd9efb0b6ae3873e7ad01de6889b41ad238",
-      "size": 195584
+      "sha256": "c19387d1d7124bd1402d235d35ca31510efe66a882e89503bc47290e3ded10f0",
+      "size": 59872
+    },
+    {
+      "path": "data/app.so",
+      "sha256": "2ad6fb1825609ef0045e63d89e5677f486961dcf870b4d3fd1c782c91b1ae02e",
+      "size": 13108112
     },
     {
       "path": "data/flutter_assets/AssetManifest.bin",
@@ -2401,11 +2406,6 @@
       "size": 1645184
     },
     {
-      "path": "data/flutter_assets/kernel_blob.bin",
-      "sha256": "8f5c034a4de8ae481418c4f7331b493ca5f2d3e08c3fc02bced279f14cc963ab",
-      "size": 100706296
-    },
-    {
       "path": "data/flutter_assets/NativeAssetsManifest.json",
       "sha256": "4ac70f7d67abb2ffc105d2cabfdee68c9aa138d132107e5be4949c539f7ce379",
       "size": 131
@@ -2437,18 +2437,18 @@
     },
     {
       "path": "file_selector_windows_plugin.dll",
-      "sha256": "ed1b5e62535b35216b0c2e4c23a0758821dd51b66726da5474696616aa5f4c2d",
-      "size": 1498624
+      "sha256": "0f4f15ef3d967eab61923dfdc98db7384559715614004189a89f1c716a08f12b",
+      "size": 112096
     },
     {
       "path": "flutter_secure_storage_windows_plugin.dll",
-      "sha256": "b43fffd2eabd9f14524e9234696ff5f52310620128b351058dcc557760415bf3",
-      "size": 1478144
+      "sha256": "eb659fdeebb99adbb3f4b94d339cbe9fe9244429e8d70828fd723e1677602ce3",
+      "size": 159712
     },
     {
       "path": "flutter_windows.dll",
-      "sha256": "9db329733c2df76bee29bf57ae23985143ff8bc0c3a76ae56ac45e4e4f8806c0",
-      "size": 45550592
+      "sha256": "7773205a510601f38739e352528fd34a6bc9db5ba03af19271afbf6aca5d0ab3",
+      "size": 21286368
     },
     {
       "path": "native_assets.json",
@@ -2457,23 +2457,18 @@
     },
     {
       "path": "sqlite3.dll",
-      "sha256": "2bf39f2aadafdc59a90b260f582a8fccebc5b89eb94175fdbaa9148c1e1f084d",
-      "size": 1709056
+      "sha256": "eac7e7bd03fe1159450c28518e39bf8f9f25a446dfd55719842cfc0b273c7c88",
+      "size": 1710560
     },
     {
       "path": "void_scriptor.exe",
-      "sha256": "b6bd7684f5556a337946135e35c87e2d99fd01c54cabf0608d58dc1699a29139",
-      "size": 1356216
-    },
-    {
-      "path": "void_scriptor.pdb",
-      "sha256": "c52069900754304d95366605df432830561e4a1b1e9c94c621e85fc521c1a360",
-      "size": 8712192
+      "sha256": "1d0b755a85e1742ef092985f30361c03744182b75d3fc4b13aaaf03e4728324d",
+      "size": 156640
     }
   ],
   "build_provenance": {
-    "build_command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --debug --no-pub",
-    "source_revision": "f0288a4b8c53cb209efea3a5088462485859c95d"
+    "build_command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --release --no-pub",
+    "source_revision": "d5cfef9b49a4ae9275bb89da7caa7ae98f9d6a44"
   },
   "dependencies": {
     "pubspec_lock_sha256": "32e31fd31a928e20007226e720ee37a661afb5d0d224d4eb24b04463496626f8"
@@ -2489,9 +2484,15 @@
   },
   "signing": {
     "algorithm": "Authenticode-SHA256",
+    "certificate_not_after": "2028-09-21T11:30:22.0000000Z",
+    "certificate_not_before": "2026-09-21T11:20:22.0000000Z",
+    "certificate_subject": "CN=Void Scriptor Local Development",
     "certificate_thumbprint": "E336967CB949B489B7FE320E80683780C00C4A8A",
-    "status": "SELF_SIGNED_LOCAL",
-    "trust_scope": "CurrentUser Root store only"
+    "key_material": "NOT_PRESENT_IN_REPOSITORY",
+    "status": "SELF_SIGNED_LOCAL_VERIFIED",
+    "timestamp_status": "NOT_TIMESTAMPED_LOCAL_ONLY",
+    "trust_scope": "CurrentUser Root store only",
+    "verification_exit_code": 0
   },
   "version": "1.2.0-rc.1"
 }

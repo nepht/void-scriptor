@@ -18,12 +18,13 @@ void main() {
         jsonDecode(contract.readAsStringSync()) as Map<String, dynamic>;
     expect(document['canonical_step'], '112.52');
     expect(document['version'], '1.2.0-rc.1');
-    expect(document['status'], 'PARTIAL');
-    expect(document['artifact']['signing']['status'], 'SELF_SIGNED_LOCAL');
+    expect(document['status'], 'VERIFIED-LOCAL');
+    expect(document['artifact']['status'], 'BUILT_AND_SIGNED_LOCAL_RELEASE');
     expect(
-      document['artifact']['signing']['algorithm'],
-      'Authenticode-SHA256',
+      document['artifact']['signing']['status'],
+      'SELF_SIGNED_LOCAL_VERIFIED',
     );
+    expect(document['artifact']['signing']['algorithm'], 'Authenticode-SHA256');
     expect(
       document['artifact']['signing']['trust_scope'],
       'CurrentUser Root store only',
@@ -32,10 +33,8 @@ void main() {
       document['artifact']['signing']['key_material'],
       'NOT_PRESENT_IN_REPOSITORY',
     );
-    expect(
-      document['decision'],
-      'PARTIAL_REPRODUCIBILITY_VERIFIED_SIGNING_BLOCKED',
-    );
+    expect(document['decision'], 'VERIFIED_LOCAL_REPRODUCIBLE_SIGNED_RC');
+    expect(File('tools/sign_windows_release.ps1').existsSync(), isTrue);
 
     final artifactPath = document['artifact']['path'] as String;
     expect(File(artifactPath).existsSync(), isTrue);
@@ -43,6 +42,8 @@ void main() {
         jsonDecode(manifest.readAsStringSync()) as Map<String, dynamic>;
     expect(reproducibility['format'], 'void-scriptor-rc-reproducibility-v1');
     expect(reproducibility['version'], '1.2.0-rc.1');
+    expect(reproducibility['signing']['status'], 'SELF_SIGNED_LOCAL_VERIFIED');
+    expect(reproducibility['signing']['verification_exit_code'], 0);
     expect(reproducibility['schema']['database'], 62);
     expect(reproducibility['flags']['vs12_world_logic_shared'], isFalse);
     expect(

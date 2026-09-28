@@ -2,16 +2,19 @@
   "canonical_step": "112.52",
   "title": "RC Artifact & Reproducibility",
   "version": "1.2.0-rc.1",
-  "status": "PARTIAL",
-  "scope": "Local Windows debug artifact, deterministic checksum manifest, dependency/schema/flag inventory, and build provenance.",
+  "status": "VERIFIED-LOCAL",
+  "scope": "Local Windows release artifact, verified Authenticode signature, deterministic checksum manifest, dependency/schema/flag inventory, and build provenance.",
   "artifact": {
-    "path": "build/windows/x64/runner/Debug/void_scriptor.exe",
-    "status": "BUILT_LOCAL_DEBUG",
+    "path": "build/windows/x64/runner/Release/void_scriptor.exe",
+    "status": "BUILT_AND_SIGNED_LOCAL_RELEASE",
     "signing": {
-      "status": "SELF_SIGNED_LOCAL",
+      "status": "SELF_SIGNED_LOCAL_VERIFIED",
       "algorithm": "Authenticode-SHA256",
+      "certificate_subject": "CN=Void Scriptor Local Development",
       "certificate_thumbprint": "E336967CB949B489B7FE320E80683780C00C4A8A",
       "trust_scope": "CurrentUser Root store only",
+      "timestamp_status": "NOT_TIMESTAMPED_LOCAL_ONLY",
+      "verification_exit_code": 0,
       "key_material": "NOT_PRESENT_IN_REPOSITORY"
     }
   },
@@ -30,18 +33,20 @@
     },
     "provenance": {
       "source_revision": "HEAD at generation time",
-      "build_command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --debug --no-pub"
+      "build_command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --release --no-pub"
     }
   },
   "evidence": [
+    "tools/sign_windows_release.ps1",
+    "test/tools/test_sign_windows_release.py",
     "test/tools/test_generate_release_candidate.py",
     "test/release/sprint_112_rc_artifact_reproducibility_test.dart",
     "docs/evidence/sprint-112-52-rc-reproducibility-manifest.json"
   ],
   "limits": [
-    "A local debug executable is not a production release package.",
-    "No release signing credential is available to this cron run; signed_artifact remains unverified.",
-    "Hosted CI, native release packaging, and public publication remain deferred."
+    "The local self-signed certificate is trusted only by the current Windows user and is not suitable for public distribution.",
+    "The local artifact is intentionally not RFC3161 timestamped.",
+    "A publicly trusted CA certificate, timestamp service, installer packaging, hosted CI, and publication remain release-distribution gates."
   ],
-  "decision": "PARTIAL_REPRODUCIBILITY_VERIFIED_SIGNING_BLOCKED"
+  "decision": "VERIFIED_LOCAL_REPRODUCIBLE_SIGNED_RC"
 }

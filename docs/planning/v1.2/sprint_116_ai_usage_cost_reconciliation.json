@@ -1,0 +1,19 @@
+{
+  "canonical_step": "116.27",
+  "title": "AI Usage & Cost Reconciliation",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "AI_USAGE_COST_SCHEMA_READY",
+  "acceptance": ["usage_units", "app_credit_separation", "provider_cost", "estimated_label", "currency", "freshness", "budget_alert"],
+  "records": [{
+    "provider_id": "synthetic_provider",
+    "usage_units": 1200,
+    "provider_cost": 0.12,
+    "currency": "USD",
+    "is_estimate": true,
+    "measured_at": "2026-09-28T01:00:00Z",
+    "status": "UNVERIFIED"
+  }],
+  "application_credits": "separate balance; unavailable is explicit and never treated as zero",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live provider billing, application credit service, hardware, hosted CI, telemetry, signing, and publication remain deferred"]
+}

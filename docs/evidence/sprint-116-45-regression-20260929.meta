@@ -1,0 +1,6 @@
+step: 116.45 Security Certification Gate
+date: 20260929
+phase: scoped regression
+result: 142/142 PASS exit 0
+log: docs/evidence/sprint-116-45-regression-20260929.log
+log_sha256: eb4c9317cb84b1105ffbf59af37bac32820c86b75010ce20f92f3cefa5229c38

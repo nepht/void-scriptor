@@ -1,0 +1,349 @@
+{
+  "canonical_step": "116.45",
+  "title": "Security Certification Gate",
+  "status": "VERIFIED-LOCAL",
+  "live_security_verification": false,
+  "as_of_epoch_ms": 1700000100000,
+  "acceptance_areas": [
+    "oauth_tests",
+    "vault_tests",
+    "redirect_tests",
+    "session_tests",
+    "permission_tests",
+    "webhook_tests",
+    "dependency_scan",
+    "audit_tests"
+  ],
+  "oauth_flows": [
+    {
+      "control_id": "cf_google_pkce",
+      "provider_id": "provider_google",
+      "client_type": "public",
+      "pkce_enabled": true,
+      "code_challenge_method": "S256",
+      "state_parameter": "state_8f2c1d",
+      "allowed_redirect_uris": [
+        "https://app.voidscriptor.dev/oauth/callback"
+      ],
+      "allowed_redirect_hosts": [
+        "app.voidscriptor.dev"
+      ],
+      "redirect_uri": "https://app.voidscriptor.dev/oauth/callback",
+      "requested_scopes": [
+        "openid",
+        "email",
+        "profile"
+      ],
+      "granted_scopes": [
+        "openid",
+        "email"
+      ],
+      "source": "synthetic_local"
+    },
+    {
+      "control_id": "cf_github_pkce",
+      "provider_id": "provider_github",
+      "client_type": "confidential",
+      "pkce_enabled": true,
+      "code_challenge_method": "S256",
+      "state_parameter": "state_41ba07",
+      "allowed_redirect_uris": [
+        "https://app.voidscriptor.dev/oauth/github/callback"
+      ],
+      "allowed_redirect_hosts": [
+        "app.voidscriptor.dev"
+      ],
+      "redirect_uri": "https://app.voidscriptor.dev/oauth/github/callback",
+      "requested_scopes": [
+        "read:user",
+        "repo"
+      ],
+      "granted_scopes": [
+        "read:user"
+      ],
+      "source": "synthetic_local"
+    }
+  ],
+  "vault_entries": [
+    {
+      "vault_id": "vlt_user_token",
+      "owner_scope": "user",
+      "secret_stored_plaintext": false,
+      "encrypted_at_rest": true,
+      "key_id": "key_2026_q3_01",
+      "key_separated": true,
+      "to_string_includes_secret": false,
+      "to_json_includes_secret": false,
+      "log_redaction_enabled": true,
+      "source": "synthetic_local"
+    },
+    {
+      "vault_id": "vlt_provider_key",
+      "owner_scope": "user",
+      "secret_stored_plaintext": false,
+      "encrypted_at_rest": true,
+      "key_id": "key_2026_q3_02",
+      "key_separated": true,
+      "to_string_includes_secret": false,
+      "to_json_includes_secret": false,
+      "log_redaction_enabled": true,
+      "source": "synthetic_local"
+    },
+    {
+      "vault_id": "vlt_payment_webhook",
+      "owner_scope": "app",
+      "secret_stored_plaintext": false,
+      "encrypted_at_rest": true,
+      "key_id": "key_2026_q3_03",
+      "key_separated": true,
+      "to_string_includes_secret": false,
+      "to_json_includes_secret": false,
+      "log_redaction_enabled": true,
+      "source": "synthetic_local"
+    }
+  ],
+  "redirects": [
+    {
+      "redirect_id": "rdr_oauth_callback",
+      "final_url": "https://app.voidscriptor.dev/oauth/callback?code=ok",
+      "allowed_hosts": [
+        "app.voidscriptor.dev"
+      ],
+      "require_https": true,
+      "resolved_after_redirects": true,
+      "source": "synthetic_local"
+    },
+    {
+      "redirect_id": "rdr_deep_link",
+      "final_url": "https://app.voidscriptor.dev/open/project_0001",
+      "allowed_hosts": [
+        "app.voidscriptor.dev"
+      ],
+      "require_https": true,
+      "resolved_after_redirects": true,
+      "source": "synthetic_local"
+    }
+  ],
+  "sessions": [
+    {
+      "session_id": "ses_desktop",
+      "subject_id": "user_0001",
+      "issued_at_epoch_ms": 1700000000000,
+      "expires_at_epoch_ms": 1700003600000,
+      "absolute_max_lifetime_ms": 3600000,
+      "last_seen_at_epoch_ms": 1700000050000,
+      "idle_timeout_ms": 900000,
+      "token_in_query_string": false,
+      "rotated_on_login": true,
+      "invalidated_on_logout": true,
+      "still_active": true,
+      "source": "synthetic_local"
+    },
+    {
+      "session_id": "ses_mobile",
+      "subject_id": "user_0001",
+      "issued_at_epoch_ms": 1700000000000,
+      "expires_at_epoch_ms": 1700003600000,
+      "absolute_max_lifetime_ms": 3600000,
+      "last_seen_at_epoch_ms": 1700000050000,
+      "idle_timeout_ms": 900000,
+      "token_in_query_string": false,
+      "rotated_on_login": true,
+      "invalidated_on_logout": true,
+      "still_active": true,
+      "source": "synthetic_local"
+    }
+  ],
+  "permissions": [
+    {
+      "grant_id": "grant_api_read",
+      "subject_id": "user_0001",
+      "resource_id": "project_0001",
+      "declared_permissions": [
+        "read",
+        "write"
+      ],
+      "requested_permissions": [
+        "read"
+      ],
+      "granted_permissions": [
+        "read"
+      ],
+      "default_decision": "deny",
+      "escalation_on_refresh": false,
+      "source": "synthetic_local"
+    },
+    {
+      "grant_id": "grant_project_write",
+      "subject_id": "user_0001",
+      "resource_id": "project_0001",
+      "declared_permissions": [
+        "read",
+        "write"
+      ],
+      "requested_permissions": [
+        "write"
+      ],
+      "granted_permissions": [
+        "write"
+      ],
+      "default_decision": "deny",
+      "escalation_on_refresh": false,
+      "source": "synthetic_local"
+    },
+    {
+      "grant_id": "grant_plugin_scope",
+      "subject_id": "plugin_0007",
+      "resource_id": "project_0001",
+      "declared_permissions": [
+        "read"
+      ],
+      "requested_permissions": [
+        "read"
+      ],
+      "granted_permissions": [
+        "read"
+      ],
+      "default_decision": "deny",
+      "escalation_on_refresh": false,
+      "source": "synthetic_local"
+    }
+  ],
+  "webhooks": [
+    {
+      "webhook_id": "whk_stripe_invoice",
+      "provider_id": "provider_stripe",
+      "signature_verified_before_processing": true,
+      "constant_time_compare": true,
+      "replay_window_seconds": 300,
+      "event_timestamp_epoch_ms": 1700000050000,
+      "processing_epoch_ms": 1700000050500,
+      "duplicate_delivery_detected": true,
+      "duplicate_delivery_rejected": true,
+      "source": "synthetic_local"
+    },
+    {
+      "webhook_id": "whk_github_push",
+      "provider_id": "provider_github",
+      "signature_verified_before_processing": true,
+      "constant_time_compare": true,
+      "replay_window_seconds": 300,
+      "event_timestamp_epoch_ms": 1700000050000,
+      "processing_epoch_ms": 1700000050500,
+      "duplicate_delivery_detected": false,
+      "duplicate_delivery_rejected": true,
+      "source": "synthetic_local"
+    }
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "dep_http",
+      "package": "http",
+      "version_constraint": "^1.6.0",
+      "license": "BSD-3-Clause",
+      "vulnerability_status": "clean",
+      "pinned_to_lockfile": true,
+      "dev_only": false,
+      "referenced_from_production_code": true,
+      "source": "synthetic_local"
+    },
+    {
+      "dependency_id": "dep_secure_storage",
+      "package": "flutter_secure_storage",
+      "version_constraint": "10.3.1",
+      "license": "BSD-3-Clause",
+      "vulnerability_status": "clean",
+      "pinned_to_lockfile": true,
+      "dev_only": false,
+      "referenced_from_production_code": true,
+      "source": "synthetic_local"
+    },
+    {
+      "dependency_id": "dep_cryptography",
+      "package": "cryptography",
+      "version_constraint": "^2.9.0",
+      "license": "BSD-3-Clause",
+      "vulnerability_status": "clean",
+      "pinned_to_lockfile": true,
+      "dev_only": false,
+      "referenced_from_production_code": true,
+      "source": "synthetic_local"
+    },
+    {
+      "dependency_id": "dep_crypto",
+      "package": "crypto",
+      "version_constraint": "^3.0.6",
+      "license": "BSD-3-Clause",
+      "vulnerability_status": "clean",
+      "pinned_to_lockfile": true,
+      "dev_only": false,
+      "referenced_from_production_code": true,
+      "source": "synthetic_local"
+    }
+  ],
+  "audit_entries": [
+    {
+      "entry_id": "aud_0001",
+      "actor_id": "user_0001",
+      "action": "token_revoke",
+      "target_id": "vlt_user_token",
+      "occurred_at_epoch_ms": 1700000050000,
+      "mutated_after_write": false,
+      "payload_contains_secret": false,
+      "source": "synthetic_local"
+    },
+    {
+      "entry_id": "aud_0002",
+      "actor_id": "user_0001",
+      "action": "vault_write",
+      "target_id": "vlt_provider_key",
+      "occurred_at_epoch_ms": 1700000060000,
+      "mutated_after_write": false,
+      "payload_contains_secret": false,
+      "source": "synthetic_local"
+    },
+    {
+      "entry_id": "aud_0003",
+      "actor_id": "app_service",
+      "action": "session_invalidate",
+      "target_id": "ses_desktop",
+      "occurred_at_epoch_ms": 1700000070000,
+      "mutated_after_write": false,
+      "payload_contains_secret": false,
+      "source": "synthetic_local"
+    },
+    {
+      "entry_id": "aud_0004",
+      "actor_id": "user_0001",
+      "action": "permission_revoke",
+      "target_id": "grant_plugin_scope",
+      "occurred_at_epoch_ms": 1700000080000,
+      "mutated_after_write": false,
+      "payload_contains_secret": false,
+      "source": "synthetic_local"
+    },
+    {
+      "entry_id": "aud_0005",
+      "actor_id": "user_0001",
+      "action": "session_invalidate",
+      "target_id": "ses_mobile",
+      "occurred_at_epoch_ms": 1700000090000,
+      "mutated_after_write": false,
+      "payload_contains_secret": false,
+      "source": "synthetic_local"
+    },
+    {
+      "entry_id": "aud_0006",
+      "actor_id": "user_0001",
+      "action": "oauth_link",
+      "target_id": "provider_google",
+      "occurred_at_epoch_ms": 1700000095000,
+      "mutated_after_write": false,
+      "payload_contains_secret": false,
+      "source": "synthetic_local"
+    }
+  ],
+  "certified_on": "2026-09-29",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": "Synthetic local fixtures only. No provider, OAuth server, vault keystore, webhook endpoint, or package registry was contacted; no vulnerability scan was executed against a live advisory database. Live OAuth handshake, real token vault and key custody, redirect allow-lists in production, session lifetime in production, permission enforcement at runtime, webhook signature and replay handling against real payloads, dependency CVE status, and audit immutability remain DEFERRED-EXTERNAL. No secret, token, or private key is present in this manifest."
+}

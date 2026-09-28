@@ -28,8 +28,8 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.44",
-  "next_step": "116.45",
+  "last_verified_step": "116.45",
+  "next_step": "116.46",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.36",
@@ -55,8 +55,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-29T00:55:00+07:00",
-  "updated_by": "cron-core-worker",
+  "updated_at": "2026-09-29T01:23:42+07:00",
+  "updated_by": "cron_core_worker_11645",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -614,7 +614,7 @@
   "current_step": "116.2",
   "current_step_status": "PENDING",
   "last_run_summary": "2026-09-29: Sprint 116.44 Offline & Cached Metadata Certification VERIFIED-LOCAL (ledger row first, state pointer follows); three genuine failures found and fixed (certification forced a reconnect refresh on every offline entry; unattributable provider collapsed into the freshness_label marker; two manifest entries claimed a completed reconnect while their writes predated the refresh); RED exit 1 load failure -> focused 18/18, scoped regression 103/103, analyzer clean, format 2 then recheck 0, diff-check 0, Windows debug build PASS 21s. Sibling sprint-112 dirty files preserved untouched.",
-  "last_commit": "25681dd",
+  "last_commit": "060c2fe",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -725,7 +725,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "116.44",
+  "last_resolved_step": "116.45",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -1532,5 +1532,33 @@
     ],
     "limitations": "Synthetic local fixtures; no live provider endpoint queried and no real offline transition, reconnect, or cache eviction executed. Live offline detection, real TTL policy, reconnect merge semantics, actual cache invalidation, credentials, audit, hosted CI, billing settlement, publication remain DEFERRED-EXTERNAL. No secret or API key present.",
     "next_step": "116.45"
+  },
+  "sprint_116_step_11645": {
+    "status": "VERIFIED-LOCAL",
+    "title": "Security Certification Gate",
+    "commit": "060c2fe",
+    "files": [
+      "lib/features/world_logic/domain/sprint_116_security_certification_gate.dart",
+      "test/release/sprint_116_security_certification_gate_test.dart",
+      "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+      "docs/sprints/sprint-116-connector-certification.md"
+    ],
+    "gates": {
+      "red": "load failure exit 1 (implementation absent)",
+      "focused": "39/39 PASS exit 0",
+      "regression": "142/142 PASS exit 0 (was 103, +39)",
+      "analyze": "No issues found! exit 0 (2 owned Dart files)",
+      "format": "2 files changed, recheck 0 changed",
+      "diff_check": "exit 0",
+      "windows_debug_build": "PASS exit 0, 22s wall (flutter 19,2s)"
+    },
+    "real_failures_found_and_fixed": [
+      "audit_action_coverage demanded all 6 security actions unconditionally, making a control set without an OAuth connector (and the shipped manifest) unfalsifiable; now derived from the controls actually present via Sprint116SecurityContract.requiredAuditActions",
+      "permission default accepted 'allow' as a valid decision, contradicting the fail-open test; a non-deny default is least-privilege inverted so it can never certify",
+      "two test-harness bugs: _certifyAll called without its required controls argument, and a cascade ..actorId='' on an immutable field"
+    ],
+    "external_gates": "DEFERRED-EXTERNAL",
+    "evidence": "docs/evidence/sprint-116-45-{red,focused,regression,analyze,build-windows-debug}-20260929.{log,meta}",
+    "updated_at": "2026-09-29T01:22:51+07:00"
   }
 }

@@ -1,0 +1,21 @@
+{
+  "canonical_step": "116.25",
+  "title": "OpenRouter Connector Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "OPENROUTER_SCHEMA_READY",
+  "required_fields": ["provider_id", "routing_metadata", "models", "provider_fallback", "usage", "cost", "privacy_destination", "errors", "limitations"],
+  "records": [{
+    "provider_id": "openrouter",
+    "routing_metadata": "synthetic routing metadata fixture",
+    "models": "synthetic models fixture",
+    "provider_fallback": "synthetic provider fallback fixture",
+    "usage": "synthetic usage fixture",
+    "cost": "synthetic cost fixture",
+    "privacy_destination": "synthetic privacy destination fixture",
+    "errors": "synthetic error fixture",
+    "limitations": "synthetic limitations fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live OpenRouter routing metadata, model catalog, provider fallback, usage, cost, privacy destination, credentials, and user-flow evidence remain externally deferred"]
+}

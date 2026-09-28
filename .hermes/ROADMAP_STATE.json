@@ -28,11 +28,11 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.35",
-  "next_step": "116.36",
+  "last_verified_step": "116.36",
+  "next_step": "116.37",
   "stability_gate": {
     "status": "PASS",
-    "resume_step": "116.35",
+    "resume_step": "116.36",
     "previous_result": {
       "sprint": 114,
       "final_step": "114.44",
@@ -55,7 +55,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-28T20:14:20",
+  "updated_at": "2026-09-28T13:40:54",
   "updated_by": "cron-core-worker",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -613,8 +613,8 @@
   },
   "current_step": "116.2",
   "current_step_status": "PENDING",
-  "last_run_summary": "2026-09-28: Sprint 116.35 Creative Asset Rights Verification VERIFIED-LOCAL at 9f3a7e6 (local commit, ahead 1); guard PASS recommended 116.36; RED exit1 -> focused 5/5, regression GitHub+GitLab+Bitbucket+Azure DevOps+Figma+Adobe&Canva+Blender&Sketchfab+116.35 37/37, analyzer clean, format recheck 0, diff-check 0, Windows debug build PASS 19.6s. Sibling sprint-112 dirty files preserved untouched.",
-  "last_commit": "9f3a7e6",
+  "last_run_summary": "2026-09-28: Sprint 116.36 Stripe Billing Certification VERIFIED-LOCAL at 66ace7d (local commit, push recorded after state pointer); guard PASS recommended 116.36->116.37; RED exit1 -> focused 5/5, regression GitHub+GitLab+Bitbucket+Azure DevOps+Figma+Adobe&Canva+Blender&Sketchfab+116.35+116.36 42/42, analyzer clean, format recheck 0, diff-check 0, Windows debug build PASS 22.1s. Sibling sprint-112 dirty files preserved untouched.",
+  "last_commit": "66ace7d",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -725,7 +725,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "116.35",
+  "last_resolved_step": "116.36",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -1357,5 +1357,12 @@
     "commit": "9f3a7e6",
     "evidence": "docs/evidence/sprint-116-35-{red,focused,regression,analyze,windows-debug}-20260928.{log,meta}",
     "verified_at": "2026-09-28"
+  },
+  "sprint_116_step_11636": {
+    "status": "VERIFIED-LOCAL",
+    "commit": "66ace7d",
+    "evidence": "docs/evidence/sprint-116-36-{red,focused,regression,analyze,windows-debug}-20260928.{log,meta}",
+    "verified_at": "2026-09-28",
+    "next_step": "116.37"
   }
 }

@@ -1,0 +1,43 @@
+{
+  "canonical_step": "116.39",
+  "title": "Saweria & Ko-fi Capability Review",
+  "status": "VERIFIED-LOCAL",
+  "reviewed_on": "2026-09-28",
+  "required_fields": [
+    "api_contract",
+    "terms_reference",
+    "region_limits",
+    "webhook_surface",
+    "connector_verdict",
+    "evidence_refs"
+  ],
+  "records": [
+    {
+      "provider_id": "saweria",
+      "api_contract": "UNVERIFIED: no public API contract reachable at probed paths (https://saweria.co/developer returns HTTP 200 as an 87146-byte Next.js app shell with no API documentation text; https://saweria.co/developer/api returns HTTP 404; https://docs.saweria.co is unreachable, curl http_code 000)",
+      "terms_reference": "https://saweria.co/terms reachable HTTP 200; no developer-specific API terms located at probed paths",
+      "region_limits": "Indonesia-oriented donation platform; plan/region limits not verified (external)",
+      "webhook_surface": "outbound webhook surface only: client bundle exposes Webhooks / Webhook URL / New Webhook / Integration strings; no inbound REST endpoint documented",
+      "connector_verdict": "BLOCKED",
+      "evidence_refs": "curl probes 2026-09-28 from canonical Windows repo: saweria.co/developer 200 (87146 bytes), saweria.co/developer/api 404, docs.saweria.co 000, saweria.co/terms 200; manifest evaluation local-only",
+      "status": "UNVERIFIED"
+    },
+    {
+      "provider_id": "kofi",
+      "api_contract": "UNVERIFIED: no public API contract reachable unauthenticated (https://ko-fi.com/ko-fi-api redirects to https://ko-fi.com/; https://ko-fi.com/developer and https://ko-fi.com/develop resolve to individual creator gallery pages, not developer documentation)",
+      "terms_reference": "https://ko-fi.com/terms reachable HTTP 200 with browser user-agent; default user-agent requests returned HTTP 403 (bot wall) so terms text not captured locally",
+      "region_limits": "payout/region limits not verified (external)",
+      "webhook_surface": "sidemenu advertises 'Tools for developers to integrate with Ko-fi' linking to /manage/webhooks, which redirects to /account/login?ReturnUrl=%2Fmanage%2Fwebhooks (auth-gated, content unverified)",
+      "connector_verdict": "LIMITED",
+      "evidence_refs": "curl probes 2026-09-28 with Chrome user-agent: ko-fi.com/manage/webhooks -> login redirect (code 200 after -L), ko-fi.com/ko-fi-api -> /, ko-fi.com/developer 200 creator gallery, ko-fi.com/terms 200; default UA requests 403; manifest evaluation local-only",
+      "status": "UNVERIFIED"
+    }
+  ],
+  "fake_connector_policy": "connector_verdict SUPPORTED requires api_contract and terms_reference exactly VERIFIED; webhook-only or auth-gated surfaces never certify a billing connector",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "live Saweria developer API terms, webhook payload schema, rate limits, settlement, region availability and account access remain externally deferred",
+    "live Ko-fi authenticated webhook configuration, API payloads, payout/region limits, rate limits and account access remain externally deferred",
+    "no production secret, API key, or live billing call is present in this manifest; verdicts BLOCKED and LIMITED are local capability review outcomes, not provider attestations"
+  ]
+}

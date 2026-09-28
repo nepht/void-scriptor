@@ -28,8 +28,8 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.38",
-  "next_step": "116.39",
+  "last_verified_step": "116.39",
+  "next_step": "116.40",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.36",
@@ -1376,5 +1376,25 @@
     "deferred": "live PayPal flows/redirects/webhooks/refunds/region/errors + sandbox, credentials, audit, hosted CI, billing settlement, publication = DEFERRED-EXTERNAL",
     "recorded_on": "2026-09-28"
   },
-  "sprint_116_step_11638": "116.38 Midtrans Billing Certification VERIFIED-LOCAL at e8a622f (slice commit; ledger row updated first, state pointer follows); guard PASS recommended 116.38 last_resolved 116.37; RED exit1 load failure -> focused 5/5, scoped regression 52/52, analyzer clean (No issues found!), format recheck 0 changed, git diff --check 0, Windows debug build PASS wall 24s (flutter 21.0s); fail-closed contract locks 7 fields (payment_methods, redirects, notifications, signature, region, settlement, errors); synthetic local manifest UNVERIFIED, no secret/production API key; live Midtrans payment methods/redirects/notifications/signature/region/settlement/errors sandbox account, credentials, audit, hosted CI, settlement remain DEFERRED-EXTERNAL. Sibling sprint-112 dirty files preserved untouched."
+  "sprint_116_step_11638": "116.38 Midtrans Billing Certification VERIFIED-LOCAL at e8a622f (slice commit; ledger row updated first, state pointer follows); guard PASS recommended 116.38 last_resolved 116.37; RED exit1 load failure -> focused 5/5, scoped regression 52/52, analyzer clean (No issues found!), format recheck 0 changed, git diff --check 0, Windows debug build PASS wall 24s (flutter 21.0s); fail-closed contract locks 7 fields (payment_methods, redirects, notifications, signature, region, settlement, errors); synthetic local manifest UNVERIFIED, no secret/production API key; live Midtrans payment methods/redirects/notifications/signature/region/settlement/errors sandbox account, credentials, audit, hosted CI, settlement remain DEFERRED-EXTERNAL. Sibling sprint-112 dirty files preserved untouched.",
+  "sprint_116_step_11639": {
+    "step": "116.39",
+    "title": "Saweria & Ko-fi Capability Review",
+    "status": "VERIFIED-LOCAL",
+    "date": "2026-09-28",
+    "outputs": [
+      "docs/planning/v1.2/sprint_116_saweria_kofi_capability_review.json",
+      "lib/features/world_logic/domain/sprint_116_saweria_kofi_capability_review.dart",
+      "test/release/sprint_116_saweria_kofi_capability_review_test.dart"
+    ],
+    "verdicts": {
+      "saweria": "BLOCKED",
+      "kofi": "LIMITED"
+    },
+    "probe_evidence": "live curl 2026-09-28: saweria.co/developer 200 SPA 87146B no API text, /developer/api 404, docs.saweria.co 000, saweria.co/terms 200; ko-fi.com/ko-fi-api -> /, /developer & /develop = creator gallery, /manage/webhooks -> /account/login auth-gated, ko-fi.com/terms 200 browser UA, default UA 403",
+    "tests": "RED exit 1 load failure; focused 5/5; scoped regression 57/57 exit 0; analyzer No issues found!; format recheck 0 changed; git diff --check 0; Windows debug build PASS 55s wall (flutter 51.4s)",
+    "evidence": "docs/evidence/sprint-116-39-{red,focused,regression,analyze,build-windows-debug}-20260928.{log,meta}",
+    "limitations": "no fake connector; manifest local UNVERIFIED without secret/API key; live Saweria API terms/webhook schema/rate limits/settlement/region and Ko-fi authenticated webhook/API payloads/payout-region limits, credentials, audit, hosted CI, billing settlement, publication remain DEFERRED-EXTERNAL",
+    "next_step": "116.40"
+  }
 }

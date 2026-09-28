@@ -28,8 +28,8 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.34",
-  "next_step": "116.35",
+  "last_verified_step": "116.35",
+  "next_step": "116.36",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.35",
@@ -55,8 +55,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-28T12:49:39.663635Z",
-  "updated_by": "roadmap_guard sync-pointer",
+  "updated_at": "2026-09-28T20:14:20",
+  "updated_by": "cron-core-worker",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -613,8 +613,8 @@
   },
   "current_step": "116.2",
   "current_step_status": "PENDING",
-  "last_run_summary": "2026-09-28: Sprint 116.33 Adobe & Canva Certification VERIFIED-LOCAL at f3b6ac7 (local commit, push origin master 76134bc..f3b6ac7 GitHub+GitLab, ahead 0); guard PASS recommended 116.34; RED exit1 -> focused 5/5, developer+Figma+Adobe/Canva regression 27/27, analyzer clean, format recheck 0, diff-check 0, Windows debug build PASS 19.8s. Sibling sprint-112 dirty files preserved untouched.",
-  "last_commit": "f3b6ac7",
+  "last_run_summary": "2026-09-28: Sprint 116.35 Creative Asset Rights Verification VERIFIED-LOCAL at 9f3a7e6 (local commit, ahead 1); guard PASS recommended 116.36; RED exit1 -> focused 5/5, regression GitHub+GitLab+Bitbucket+Azure DevOps+Figma+Adobe&Canva+Blender&Sketchfab+116.35 37/37, analyzer clean, format recheck 0, diff-check 0, Windows debug build PASS 19.6s. Sibling sprint-112 dirty files preserved untouched.",
+  "last_commit": "9f3a7e6",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -725,7 +725,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "116.1",
+  "last_resolved_step": "116.35",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -1351,5 +1351,11 @@
     ],
     "limitations": "synthetic local manifest UNVERIFIED; live Adobe and Canva actual APIs, supported capabilities, licensing, OAuth scopes, region/plan limits, unavailable states, credentials, audit, hosted CI, hardware, billing, publication remain DEFERRED-EXTERNAL",
     "next_step": "116.34"
+  },
+  "sprint_116_step_11635": {
+    "status": "VERIFIED-LOCAL",
+    "commit": "9f3a7e6",
+    "evidence": "docs/evidence/sprint-116-35-{red,focused,regression,analyze,windows-debug}-20260928.{log,meta}",
+    "verified_at": "2026-09-28"
   }
 }

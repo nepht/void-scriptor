@@ -1,0 +1,7 @@
+step: 116.31 Azure DevOps Certification
+phase: GREEN (focused, post-format)
+date: 2026-09-28
+command: flutter.bat test test/release/sprint_116_azure_devops_certification_test.dart
+exit: 0
+result: 5/5 PASS
+log: docs/evidence/sprint-116-31-focused-20260928.log

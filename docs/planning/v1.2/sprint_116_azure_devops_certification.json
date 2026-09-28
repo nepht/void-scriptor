@@ -1,0 +1,19 @@
+{
+  "canonical_step": "116.31",
+  "title": "Azure DevOps Certification",
+  "status": "VERIFIED-LOCAL",
+  "verdict": "AZURE_DEVOPS_SCHEMA_READY",
+  "required_fields": ["provider_id", "organizations", "projects", "repository_scopes", "token_lifecycle", "rate_limits", "audit"],
+  "records": [{
+    "provider_id": "azure_devops",
+    "organizations": "synthetic organization fixture",
+    "projects": "synthetic project fixture",
+    "repository_scopes": "synthetic repository scope fixture",
+    "token_lifecycle": "synthetic token lifecycle fixture",
+    "rate_limits": "synthetic rate limit fixture",
+    "audit": "synthetic audit fixture",
+    "status": "UNVERIFIED"
+  }],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": ["live Azure DevOps organizations, projects, repository scopes, token lifecycle, rate limits, credentials, and audit evidence remain externally deferred"]
+}

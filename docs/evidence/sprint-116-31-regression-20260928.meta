@@ -1,0 +1,10 @@
+step: 116.31 Azure DevOps Certification
+phase: scoped regression (GitHub + GitLab + Bitbucket + Azure DevOps developer certifications)
+date: 2026-09-28
+command: flutter.bat test test/release/sprint_116_github_developer_certification_test.dart test/release/sprint_116_gitlab_developer_certification_test.dart test/release/sprint_116_bitbucket_developer_certification_test.dart test/release/sprint_116_azure_devops_certification_test.dart
+exit: 0
+result: 17/17 PASS
+log: docs/evidence/sprint-116-31-regression-20260928.log
+analyzer: dart.bat analyze <2 owned files> exit 0 No issues found
+format: dart.bat format <2 owned files> recheck 0 changed
+git diff --check: exit 0

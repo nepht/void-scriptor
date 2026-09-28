@@ -1,0 +1,7 @@
+step: 116.31 Azure DevOps Certification
+phase: RED
+date: 2026-09-28
+command: flutter.bat test test/release/sprint_116_azure_devops_certification_test.dart
+exit: 1
+result: load failure (implementation absent) - Error: Undefined name 'Sprint116AzureDevOpsCertification'
+log: docs/evidence/sprint-116-31-red-20260928.log

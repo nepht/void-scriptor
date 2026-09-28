@@ -1,0 +1,7 @@
+step: 116.41 Quota & Usage Cross-Provider Contract Tests
+phase: regression (developer chain + Figma + Adobe&Canva + Blender&Sketchfab + rights + Stripe + PayPal + Midtrans + Saweria&Ko-fi + 116.40 + 116.41)
+date: 2026-09-28
+command: flutter.bat test --no-pub <14 sprint_116 release test files>
+exit: 0
+result: 70/70 PASS
+log: docs/evidence/sprint-116-41-regression-20260928.log

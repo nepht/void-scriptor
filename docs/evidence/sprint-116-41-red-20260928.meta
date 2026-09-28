@@ -1,0 +1,7 @@
+step: 116.41 Quota & Usage Cross-Provider Contract Tests
+phase: RED (test present, implementation absent)
+date: 2026-09-28
+command: flutter.bat test --no-pub test/release/sprint_116_quota_usage_cross_provider_contract_test.dart
+exit: 1
+result: load failure - cannot read lib/features/world_logic/domain/sprint_116_quota_usage_cross_provider_contract.dart; Undefined name Sprint116QuotaContract/Sprint116QuotaState/Sprint116QuotaStatus; Sprint116QuotaRecord/Sprint116QuotaUsageCertification not a type / Method not found; Sprint116QuotaReading isn't a type
+log: docs/evidence/sprint-116-41-red-20260928.log

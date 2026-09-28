@@ -1,0 +1,76 @@
+{
+  "canonical_step": "116.41",
+  "title": "Quota & Usage Cross-Provider Contract Tests",
+  "status": "VERIFIED-LOCAL",
+  "certified_on": "2026-09-28",
+  "live_provider_verification": false,
+  "required_acceptance": [
+    "raw_units",
+    "display_units",
+    "freshness",
+    "unavailable",
+    "partial_total",
+    "stale_warning",
+    "no_mock_values"
+  ],
+  "fresh_ttl_seconds": 3600,
+  "as_of_epoch_ms": 1700001200000,
+  "records": [
+    {
+      "record_id": "synth_bytes_1",
+      "provider_id": "synthetic_local_provider_a",
+      "unit_kind": "bytes",
+      "raw_units": 1073741824,
+      "observed_at_epoch_ms": 1700000000000,
+      "source": "synthetic_local"
+    },
+    {
+      "record_id": "synth_percent_2",
+      "provider_id": "synthetic_local_provider_b",
+      "unit_kind": "percent",
+      "raw_units": 87.5,
+      "observed_at_epoch_ms": 1700000600000,
+      "source": "synthetic_local"
+    },
+    {
+      "record_id": "synth_requests_3",
+      "provider_id": "synthetic_local_provider_c",
+      "unit_kind": "requests",
+      "raw_units": 1500,
+      "observed_at_epoch_ms": 1700001200000,
+      "source": "synthetic_local"
+    },
+    {
+      "record_id": "synth_tokens_4",
+      "provider_id": "synthetic_local_provider_a",
+      "unit_kind": "tokens",
+      "raw_units": null,
+      "observed_at_epoch_ms": 1700001200000,
+      "source": "synthetic_local"
+    },
+    {
+      "record_id": "synth_bytes_5",
+      "provider_id": "synthetic_local_provider_b",
+      "unit_kind": "bytes",
+      "raw_units": 1572864,
+      "observed_at_epoch_ms": 1700001000000,
+      "source": "synthetic_local"
+    }
+  ],
+  "contract_rules": {
+    "raw_units": "raw values are preserved exactly as reported; bytes and count units must be whole numbers and negatives are rejected",
+    "display_units": "display strings are derived only from raw_units: binary units for bytes, at most one decimal for percent bounded 0-100, whole numbers for counts; no precision beyond the raw value is ever shown",
+    "freshness": "every record carries observed_at; age is measured against as_of and missing or future observation timestamps fail closed",
+    "unavailable": "a null raw value classifies as unavailable, is never treated as zero, and never renders a number",
+    "partial_total": "totals aggregate valid raw values per unit kind and are flagged partial when any record in the group is unavailable; require_complete turns an unavailable record into a failure",
+    "stale_warning": "an observation older than fresh_ttl_seconds is classified stale, listed in stale_warning_ids, and fails certification",
+    "no_mock_values": "records claiming a live source must carry an evidence_ref, unknown sources are rejected, and the manifest contains no secret, api_key, password, or webhook_url"
+  },
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "records are synthetic local fixtures; no live provider quota or usage endpoint was queried",
+    "live provider quota and usage payloads, rate-limit headers, reset schedules, billing-cycle alignment, overage handling, and per-model metering remain externally deferred",
+    "hosted CI, credentials, audit trail, billing settlement, and publication remain DEFERRED-EXTERNAL",
+    "no production secret, API key, or webhook endpoint is present in this manifest"
+  ]
+}

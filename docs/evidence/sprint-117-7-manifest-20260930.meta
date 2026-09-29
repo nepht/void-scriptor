@@ -1,0 +1,9 @@
+{
+ "gate": "manifest",
+ "canonical_step": "117.7",
+ "recorded_at": "2026-09-30",
+ "claim": "117.7 manifest generated from live gate output (scratch deleted)",
+ "log": "docs/evidence/sprint-117-7-manifest-20260930.log",
+ "log_bytes": 279,
+ "log_sha256": "4ca6284786b132f5d2a4daa4510bd904065009443d435296724c74445096cf24"
+}

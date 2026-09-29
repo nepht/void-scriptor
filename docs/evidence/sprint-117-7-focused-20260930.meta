@@ -1,0 +1,9 @@
+{
+ "gate": "focused",
+ "canonical_step": "117.7",
+ "recorded_at": "2026-09-30",
+ "claim": "117.7 GREEN: focused suite 25/25 PASS",
+ "log": "docs/evidence/sprint-117-7-focused-20260930.log",
+ "log_bytes": 2313,
+ "log_sha256": "e75ec5a46a144e9b34963c6993928ca6bc20e4ed8928d0c777334d3c40f8bf6f"
+}

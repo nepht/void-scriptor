@@ -1,0 +1,9 @@
+{
+ "gate": "reg-b",
+ "canonical_step": "117.7",
+ "recorded_at": "2026-09-30",
+ "claim": "117.7 regression shard B: monitoring source chain 129/129 PASS",
+ "log": "docs/evidence/sprint-117-7-reg-b-20260930.log",
+ "log_bytes": 27818,
+ "log_sha256": "bdb561f22fec90259c0723246ac80e5402c65cd38fcfc4bc717577f3660fbaa2"
+}

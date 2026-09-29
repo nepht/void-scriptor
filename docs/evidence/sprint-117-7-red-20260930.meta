@@ -1,0 +1,9 @@
+{
+ "gate": "red",
+ "canonical_step": "117.7",
+ "recorded_at": "2026-09-30",
+ "claim": "117.7 RED: focused test load failure, undefined contract types",
+ "log": "docs/evidence/sprint-117-7-red-20260930.log",
+ "log_bytes": 18603,
+ "log_sha256": "0d6187c54e9f826086a72ca918840bd97c3c81be0d07413bf657bc9bf5412713"
+}

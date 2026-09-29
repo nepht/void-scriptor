@@ -1,0 +1,9 @@
+{
+ "gate": "reg-a",
+ "canonical_step": "117.7",
+ "recorded_at": "2026-09-30",
+ "claim": "117.7 regression shard A: sprint_117.* 335/335 PASS",
+ "log": "docs/evidence/sprint-117-7-reg-a-20260930.log",
+ "log_bytes": 66354,
+ "log_sha256": "9b84dd8f6a15b289cef2d0cf15ecf5258962beaafa3eaf60d50384765abd8f1c"
+}

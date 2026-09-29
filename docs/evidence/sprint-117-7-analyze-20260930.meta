@@ -1,0 +1,9 @@
+{
+ "gate": "analyze",
+ "canonical_step": "117.7",
+ "recorded_at": "2026-09-30",
+ "claim": "117.7 scoped flutter analyze 2 files: No issues found!",
+ "log": "docs/evidence/sprint-117-7-analyze-20260930.log",
+ "log_bytes": 96,
+ "log_sha256": "f097a65ebeb694c4d591ee50f5539f211e17b837052f4b9b7eecf04e417ebd67"
+}

@@ -1,0 +1,9 @@
+{
+ "gate": "build",
+ "canonical_step": "117.7",
+ "recorded_at": "2026-09-30",
+ "claim": "117.7 windows debug build exit 0",
+ "log": "docs/evidence/sprint-117-7-build-20260930.log",
+ "log_bytes": 132,
+ "log_sha256": "512e1aec707bc4c055bb8d1ee86216fdb544ae95ec606ae863d19704456568fc"
+}

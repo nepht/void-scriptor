@@ -1,0 +1,9 @@
+{
+ "gate": "format",
+ "canonical_step": "117.7",
+ "recorded_at": "2026-09-30",
+ "claim": "117.7 dart format scoped 2 files: 0 changed, exit 0",
+ "log": "docs/evidence/sprint-117-7-format-20260930.log",
+ "log_bytes": 47,
+ "log_sha256": "48119b7f93f88ac166398c1576d4686ff2163286c1e198494980483fef718e84"
+}

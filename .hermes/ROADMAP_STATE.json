@@ -28,8 +28,8 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.48",
-  "next_step": "116.49",
+  "last_verified_step": "116.49",
+  "next_step": "116.50",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.36",
@@ -611,10 +611,10 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "116.49",
+  "current_step": "116.50",
   "current_step_status": "PENDING",
-  "last_run_summary": "2026-09-29: Sprint 116.48 Connector Contract & End-to-End Matrix VERIFIED-LOCAL (ledger row dulu, pointer state menyusul). Lanjut WIP kanonik dari run sebelumnya: ketiga file slice sudah ada tetapi belum di-commit dan evidence-nya tidak bisa dipercaya — 5 meta ber-tanggal 20260930 (tanggal di masa depan, AssetManifest diklaim 2026-09-30 03:26:10 padahal file nyata 2026-09-29 03:26:10) dan angka regresi 57/57 + 207/207 dengan baseline 165 tidak cocok dengan komposisi shard mana pun, jadi SEMUA gate dijalankan ulang dari nol. Hasil run ulang: RED dihasilkan ulang exit 1 (implementation ditahan lalu dikembalikan sha256 identik 707318069c…fad9, load failure: file tak ditemukan + Type 'Sprint116ConnectorControlSet' not found); fokus 42/42 exit 0 (ulang dua kali); shard A 52/52 exit 0; shard B 116.41-116.48 201/201 exit 0; baseline tanpa 116.48 159/159 exit 0 sehingga delta +42 persis test baru; analyzer scoped 2 file No issues found! exit 0; format --set-exit-if-changed 0 changed exit 0; git diff --check path slice exit 0; Windows debug build PASS exit 0 66,4s flutter / 69s wall, AssetManifest.bin mtime 2026-09-29 12:58:50. Koreksi kecil pada fixture: certified_on 2026-09-30 -> 2026-09-29 (tanggal run sebenarnya), diverifikasi ulang fokus tetap 42/42. Gate locks 9 suite wajib (manifest/auth/capability/usage/error/reauth/disconnect/cleanup/regression) pada 9 record group + 9 join silang (suite_coverage, manifest_agreement, capability_undeclared, capability_unexercised, reauth, lifecycle_ordering, credential_residue, regression_suite_coverage, suite_evidence). Slice commit 4c6c848; evidence .log tetap gitignore, hanya .meta yang di-commit. macos/Flutter/GeneratedPluginRegistrant.swift (WIP sibling) dipertahankan utuh dan tidak di-commit.",
-  "last_commit": "4c6c848",
+  "last_run_summary": "2026-09-29: Sprint 116.49 Beta Cohort & Consent Plan VERIFIED-LOCAL (ledger row dulu, pointer state menyusul). Fail-closed contract mengunci 7 field kanonik (selection/provider_coverage/consent/data_boundaries/support/withdrawal/evidence) pada 7 record group + 5 join silang (consent_coverage, support_coverage, consent_cohort↔cohort_consent, boundary_consent, withdrawal_coverage). Kebijakan no-fabricated-participant: enrolled_count > 0 dari sumber sintetis = FAIL; withdrawal yang menghapus local project data = FAIL. RED exit 1 load failure → GREEN fokus 50/50 PASS exit 0 (satu cacat harness: urutan covered_fields kanonik vs alfabet, kanonik dipertahankan); shard A 52/52, shard B 251/251 (baseline 201, delta +50); analyzer 2 file No issues, format 0 changed, diff-check 0; Windows debug build PASS 32,8s, AssetManifest.bin 2026-09-29 14:20:49. Slice commit a6ae68b. macos dirty dipertahankan.",
+  "last_commit": "a6ae68b",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -725,7 +725,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "116.48",
+  "last_resolved_step": "116.49",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -1701,5 +1701,41 @@
     "next_step": "116.49",
     "commit": "4c6c848",
     "state_commit": "pending"
+  },
+  "sprint_116_step_11649": {
+    "status": "VERIFIED-LOCAL",
+    "title": "Beta Cohort & Consent Plan",
+    "date": "2026-09-29",
+    "manifest": "docs/planning/v1.2/sprint_116_beta_cohort_consent_plan.json",
+    "domain": "lib/features/world_logic/domain/sprint_116_beta_cohort_consent_plan.dart",
+    "test": "test/release/sprint_116_beta_cohort_consent_plan_test.dart",
+    "required_evidence": [
+      "selection",
+      "provider_coverage",
+      "consent",
+      "data_boundaries",
+      "support",
+      "withdrawal",
+      "evidence"
+    ],
+    "cross_record_joins": [
+      "consent_coverage",
+      "support_coverage",
+      "consent_cohort",
+      "cohort_consent",
+      "boundary_consent",
+      "withdrawal_coverage"
+    ],
+    "focused": "50/50 PASS",
+    "regression_a": "52/52 PASS",
+    "regression_b": "251/251 PASS (baseline 201, delta +50)",
+    "analyzer": "No issues found",
+    "format": "0 changed",
+    "diffcheck": "exit 0",
+    "build_windows_debug": "PASS 32,8s flutter / 36s wall",
+    "commit": "a6ae68b",
+    "live_beta_execution": false,
+    "no_fabricated_participants": true,
+    "external_gates": "DEFERRED-EXTERNAL"
   }
 }

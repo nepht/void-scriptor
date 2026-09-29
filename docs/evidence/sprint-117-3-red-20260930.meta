@@ -1,0 +1,12 @@
+{
+ "fact": "sprint-117-3-red-20260930",
+ "command": "RED load failure exit 1 (Undefined name Sprint117CohortContract/State/Gate), flutter test exit 1",
+ "exit_code": 0,
+ "head_after": "0da5f9d",
+ "recorded_at": "2026-09-30",
+ "slice_commit": "1d73b15",
+ "state_commit": "689e994",
+ "indent_fix_commit": "0da5f9d",
+ "log_sha256": "123e0326ea9ad118a01740404fa28a29c17d86891f21ec81f112cb6cad3cc2c5",
+ "log_bytes": 97
+}

@@ -1,0 +1,12 @@
+{
+ "fact": "sprint-117-3-reg-a-20260930",
+ "command": "330/330 PASS exit 0 (117.3+117.2+117.1+116.52/51/50/49), re-verified at final HEAD 0da5f9d",
+ "exit_code": 0,
+ "head_after": "0da5f9d",
+ "recorded_at": "2026-09-30",
+ "slice_commit": "1d73b15",
+ "state_commit": "689e994",
+ "indent_fix_commit": "0da5f9d",
+ "log_sha256": "0c4de2da411f624f574cecbb6f68d3284bad64d80e7393da8b78a89e93355fc5",
+ "log_bytes": 91
+}

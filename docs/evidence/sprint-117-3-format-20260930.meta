@@ -1,0 +1,12 @@
+{
+ "fact": "sprint-117-3-format-20260930",
+ "command": "dart format 2 files changed then --set-exit-if-changed 0 changed exit 0, focused stayed 89/89",
+ "exit_code": 0,
+ "head_after": "0da5f9d",
+ "recorded_at": "2026-09-30",
+ "slice_commit": "1d73b15",
+ "state_commit": "689e994",
+ "indent_fix_commit": "0da5f9d",
+ "log_sha256": "5d04c23b69f35e653517fd81e66d8909ea5bb30e96f459e36a82a607cd7d36e2",
+ "log_bytes": 94
+}

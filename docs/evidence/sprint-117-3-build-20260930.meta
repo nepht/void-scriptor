@@ -1,0 +1,12 @@
+{
+ "fact": "sprint-117-3-build-20260930",
+ "command": "flutter build windows --debug exit 0, 23,1s, AssetManifest.bin mtime 2026-09-30 01:15",
+ "exit_code": 0,
+ "head_after": "0da5f9d",
+ "recorded_at": "2026-09-30",
+ "slice_commit": "1d73b15",
+ "state_commit": "689e994",
+ "indent_fix_commit": "0da5f9d",
+ "log_sha256": "66612771a8855b23c7145f87603f40c9418f8d9d353cfbbd6cb37990881d07c7",
+ "log_bytes": 86
+}

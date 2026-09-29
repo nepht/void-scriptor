@@ -1,0 +1,12 @@
+{
+ "fact": "sprint-117-3-focused-20260930",
+ "command": "89/89 PASS exit 0 after GREEN and again after dart format recheck",
+ "exit_code": 0,
+ "head_after": "0da5f9d",
+ "recorded_at": "2026-09-30",
+ "slice_commit": "1d73b15",
+ "state_commit": "689e994",
+ "indent_fix_commit": "0da5f9d",
+ "log_sha256": "90806a10adb1c79a9456d22b1f242e282151280e22d8f02877e4983b16838cc9",
+ "log_bytes": 66
+}

@@ -31,8 +31,22 @@
   "last_verified_step": null,
   "next_step": "117.1",
   "stability_gate": {
-    "status": "PENDING",
-    "note": "re-evaluated at 117.1 entry gate"
+    "status": "PASS",
+    "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
+    "evaluated_on": "2026-09-29",
+    "commit": "1a0d94d",
+    "analyzer": "exit 0, No issues found! (was exit 1 with 3 curly_braces_in_flow_control_structures lints in 116.27 and 116.7)",
+    "focused_tests": "8/8 PASS exit 0 (sprint_116_ai_usage_cost_reconciliation, sprint_116_brand_asset_icon_certification)",
+    "format": "dart format --set-exit-if-changed 2 files 0 changed exit 0",
+    "diff_check": "exit 0",
+    "build_windows_release": "PASS exit 0, 142.1s (build/windows/x64/runner/Release/void_scriptor.exe)",
+    "known_preexisting_failures": [
+      "test/release/sprint_113_ga_artifact_packaging_test.dart x2 - pins signed v1.2.0-rc.1 artifacts in gitignored build/: dartjni.dll absent (jni only transitive in pubspec.lock) and exe sha256 0bbeb0ab.. != recorded 73101e78..",
+      "test/release/sprint_113_build_reproducibility_provenance_test.dart x1 - same signed-artifact root cause",
+      "test/release/sprint_113_update_channel_delivery_validation_test.dart x1 - same signed-artifact root cause"
+    ],
+    "preexisting_failure_verdict": "PREEXISTING_ENVIRONMENTAL: 4 release tests bind checksums to a signed GA artifact set that only exists in gitignored build/; any rebuild drifts them. Not caused by slice 1a0d94d and not a Core regression.",
+    "release_shard": "test/release/ 1568 PASS / 4 FAIL exit 1 (4 pre-existing signed-artifact failures; was 8 failures before the release build supplied void_scriptor.exe)"
   },
   "selection_rules": [
     "Repository evidence and the active sprint ledger override stale narrative status text.",
@@ -42,7 +56,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-29",
-  "updated_by": "operator-stream-transition",
+  "updated_by": "core-worker-cron-stability-gate",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -1821,10 +1835,10 @@
     "prior_state": "next_step dikosongkan Pending operator decision"
   },
   "sprint_117_step_1171": {
-    "status": "NOT_STARTED",
-    "next_step": null,
+    "status": "IN_PROGRESS_STABILITY_GATE_REPAIRED",
+    "next_step": "117.1",
     "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "note": "Entry gate required stability_gate PASS. Analyzer RED (exit 1) was repaired in commit 1a0d94d; roadmap work for 117.1 has not started yet."
   },
   "sprint_117_step_1172": {
     "status": "NOT_STARTED",
@@ -2107,5 +2121,12 @@
     "next_step": null,
     "manifest": null,
     "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "core_worker_run_2026_09_29_1171": {
+    "head_before": "b8b60c4",
+    "head_after": "1a0d94d",
+    "action": "stability gate repair only (rule 4); no 117.1 roadmap mutation",
+    "guard_before": "PASS canonical_sprint=117 recommended_step=117.1",
+    "dirty_preserved": "macos/Flutter/GeneratedPluginRegistrant.swift (M, user-owned, outside slice, not committed)"
   }
 }

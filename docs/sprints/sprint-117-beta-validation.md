@@ -12,7 +12,7 @@
 
 | Step | Title | Status | Evidence |
 |---|---|---|---|
-| 117.1 | Beta Entry Gate | NOT_STARTED | - |
+| 117.1 | Beta Entry Gate | IN_PROGRESS_STABILITY_GATE_REPAIRED | Stability gate was `PENDING`; rule 4 blocked roadmap feature work until it was green. `flutter analyze` returned **exit 1** with 3 `curly_braces_in_flow_control_structures` lints in committed sprint-116 files → repaired in slice commit `1a0d94d` (braces only, no behaviour change; both files tracked+clean at HEAD `b8b60c4`, snapshot `C:/Users/nepht/AppData/Local/vs-run1171-snap/`). RED: scoped analyze exit 1 (3 issues) + full analyze exit 1. GREEN: scoped analyze exit 0 `No issues found!`, full analyze exit 0, focused tests **8/8 PASS** exit 0, `dart format --set-exit-if-changed` 2 files 0 changed exit 0, `git diff --check` exit 0, `flutter build windows --release` PASS exit 0 142,1s. Release shard 1568 PASS / 4 FAIL — 4 pre-existing failure signed-artifact `sprint_113` yang mengikat checksum ke `build/` yang gitignored (`dartjni.dll` tidak ada; sha256 exe `0bbeb0ab…` != tercatat `73101e78…`), tidak terkait slice ini. `stability_gate` kini `PASS`. **117.1 sendiri belum dimulai** — belum ada implementasi, manifest, atau test untuk langkah ini. |
 | 117.2 | Beta Validation Charter | NOT_STARTED | - |
 | 117.3 | Beta Cohort & Consent Verification | NOT_STARTED | - |
 | 117.4 | Certification Snapshot Lock | NOT_STARTED | - |

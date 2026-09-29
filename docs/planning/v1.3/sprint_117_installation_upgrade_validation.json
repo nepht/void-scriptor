@@ -1,0 +1,299 @@
+{
+  "sprint": "117.9",
+  "canonical_step": "117.9",
+  "title": "Installation & Upgrade Validation",
+  "objective": "Validate clean install and upgrade from supported 1.2.x versions toward beta.",
+  "state": "pass",
+  "verdict": "INSTALLATION_UPGRADE_VALIDATED_LOCAL",
+  "violations": [],
+  "missing_fields": [],
+  "required_checks": [
+    "clean_install",
+    "source_versions",
+    "upgrade_results",
+    "settings_migration",
+    "vault_migration",
+    "rollback"
+  ],
+  "check_count": 6,
+  "check_coverage": {
+    "clean_install": 1,
+    "source_versions": 1,
+    "upgrade_results": 1,
+    "settings_migration": 1,
+    "vault_migration": 1,
+    "rollback": 1
+  },
+  "checks": [
+    {
+      "check_id": "clean_install",
+      "method": "Create a database through ProjectDatabaseService.create, then reopen it through the production open path and assert the reopen is a no-op",
+      "expected_outcome": "ProjectDatabaseService.create lands at the current schema and a reopen leaves the schema unchanged",
+      "observed_outcome": null,
+      "executed": false,
+      "source_manifest": "docs/planning/v1.2/sprint_113_upgrade_path_validation.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "source_versions",
+      "method": "Resolve every supported source version in 113.10 against the schema version the shipped ProjectDatabase declares",
+      "expected_outcome": "every recorded source version is below the shipped current schema version",
+      "observed_outcome": null,
+      "executed": false,
+      "source_manifest": "docs/planning/v1.2/sprint_113_upgrade_path_validation.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "upgrade_results",
+      "method": "Rewind a current database to each recorded source version, drop the objects later waves create, and re-open it through ProjectDatabaseService.open",
+      "expected_outcome": "every recorded source version migrates to the current schema with its Core rows intact and every later wave object recreated",
+      "observed_outcome": null,
+      "executed": false,
+      "source_manifest": "docs/planning/v1.2/sprint_113_upgrade_path_validation.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "settings_migration",
+      "method": "Back up a package with ProjectBackupService and restore it through ProjectBackupRestorePreview, then read the security settings row back",
+      "expected_outcome": "the package-resident security settings row and manifest round-trip through a real backup and restore",
+      "observed_outcome": null,
+      "executed": false,
+      "source_manifest": "docs/planning/v1.2/sprint_113_upgrade_path_validation.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "vault_migration",
+      "method": "Round-trip a secret through AccountSecureTokenVault over an in-memory CredentialStore and report whether any migration path exists",
+      "expected_outcome": "the vault round-trips through its own key scheme while the absence of a migration path is reported rather than filled in",
+      "observed_outcome": null,
+      "executed": false,
+      "source_manifest": "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "rollback",
+      "method": "Create a pre-migration backup through ProjectBackupService and restore it through ProjectBackupRestorePreview into a throwaway destination",
+      "expected_outcome": "a pre-migration backup restores into a throwaway destination and leaves the live package byte-identical",
+      "observed_outcome": null,
+      "executed": false,
+      "source_manifest": "docs/planning/v1.2/sprint_112_rollback_downgrade_boundary.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    }
+  ],
+  "unmapped_checks": [],
+  "undetermined_checks": [
+    "clean_install",
+    "source_versions",
+    "upgrade_results",
+    "settings_migration",
+    "vault_migration",
+    "rollback"
+  ],
+  "unresolvable_references": [
+    "appearance_store_outside_project_package",
+    "vault_migration_mechanism_absent"
+  ],
+  "source_manifests": [
+    "docs/planning/v1.2/sprint_113_upgrade_path_validation.json",
+    "docs/planning/v1.2/sprint_114_upgrade_migration_health.json",
+    "docs/planning/v1.2/sprint_114_install_update_health.json",
+    "docs/planning/v1.2/sprint_112_migration_dry_run.json",
+    "docs/planning/v1.2/sprint_112_rollback_downgrade_boundary.json",
+    "docs/planning/v1.2/sprint_112_platform_compatibility_gate.json",
+    "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json"
+  ],
+  "anchor": {
+    "upgrade_verdict": "VERIFIED-LOCAL",
+    "current_schema_version": 62,
+    "claimed_source_versions": [
+      55,
+      58,
+      60,
+      61
+    ],
+    "fresh_database_claimed": true,
+    "future_schema_claimed": true,
+    "backup_before_migration": true,
+    "settings_preserved_claimed": true,
+    "vault_migration_recorded": false,
+    "carried_open_items": [
+      "upstream_upgrade_limit:Plugin API v1 contracts not tested for upgrade",
+      "upstream_upgrade_limit:Workflow schema v1 not tested for cross-version upgrade",
+      "upstream_upgrade_limit:No real production data available for upgrade testing"
+    ]
+  },
+  "local_drill": {
+    "observations": [
+      {
+        "check_id": "clean_install",
+        "outcome": "clean_install_created_locally",
+        "facts": {
+          "used_production_create_path": true,
+          "created_schema_version": 62,
+          "reopen_schema_version": 62,
+          "current_schema_version": 62,
+          "reopen_was_no_op": true
+        },
+        "passed": true,
+        "unresolvable": []
+      },
+      {
+        "check_id": "source_versions",
+        "outcome": "source_versions_resolved_locally",
+        "facts": {
+          "versions": [
+            55,
+            58,
+            60,
+            61
+          ],
+          "current_schema_version": 62,
+          "all_older_than_current": true,
+          "recorded_in_upgrade_manifest": true
+        },
+        "passed": true,
+        "unresolvable": []
+      },
+      {
+        "check_id": "upgrade_results",
+        "outcome": "upgrade_results_exercised_locally",
+        "facts": {
+          "per_version": {
+            "55": {
+              "reached_current": true,
+              "reached_version": 62,
+              "core_rows_preserved": true,
+              "core_character": "Qowner",
+              "settings_row_preserved": true,
+              "dropped_objects_applied": true,
+              "dropped_object_count": 9
+            },
+            "58": {
+              "reached_current": true,
+              "reached_version": 62,
+              "core_rows_preserved": true,
+              "core_character": "Qowner",
+              "settings_row_preserved": true,
+              "dropped_objects_applied": true,
+              "dropped_object_count": 6
+            },
+            "60": {
+              "reached_current": true,
+              "reached_version": 62,
+              "core_rows_preserved": true,
+              "core_character": "Qowner",
+              "settings_row_preserved": true,
+              "dropped_objects_applied": true,
+              "dropped_object_count": 1
+            },
+            "61": {
+              "reached_current": true,
+              "reached_version": 62,
+              "core_rows_preserved": true,
+              "core_character": "Qowner",
+              "settings_row_preserved": true,
+              "dropped_objects_applied": true,
+              "dropped_object_count": 1
+            }
+          },
+          "versions_tested": 4,
+          "future_schema_rejected": true,
+          "current_schema_version": 62
+        },
+        "passed": true,
+        "unresolvable": []
+      },
+      {
+        "check_id": "settings_migration",
+        "outcome": "settings_migrated_locally",
+        "facts": {
+          "security_settings_preserved": true,
+          "kdf_iterations_preserved": true,
+          "manifest_preserved": true,
+          "package_copies_appearance_store": false,
+          "appearance_store_outside_package": true,
+          "unresolvable": [
+            "appearance_store_outside_project_package"
+          ]
+        },
+        "passed": true,
+        "unresolvable": [
+          "appearance_store_outside_project_package"
+        ]
+      },
+      {
+        "check_id": "vault_migration",
+        "outcome": "vault_migration_mechanism_absent",
+        "facts": {
+          "round_trip_read_back": true,
+          "present_before": true,
+          "audit_carried_secret": false,
+          "key_scheme": "account/drill_account/oauth_refresh_token",
+          "legacy_key_picked_up": false,
+          "legacy_key_untouched": true,
+          "migration_mechanism_present": false,
+          "unresolvable": [
+            "vault_migration_mechanism_absent"
+          ]
+        },
+        "passed": true,
+        "unresolvable": [
+          "vault_migration_mechanism_absent"
+        ]
+      },
+      {
+        "check_id": "rollback",
+        "outcome": "rollback_restored_locally",
+        "facts": {
+          "pre_migration_backup_created": true,
+          "backup_type": "pre-migration",
+          "backup_schema_version": 62,
+          "restored_to_alternate_destination": true,
+          "restored_schema_version": 62,
+          "restored_settings_rows": 1,
+          "live_package_untouched": true,
+          "downgrade_guard_active": true
+        },
+        "passed": true,
+        "unresolvable": []
+      }
+    ],
+    "live_install_touched": false,
+    "user_project_touched": false,
+    "live_secrets_observed": [],
+    "all_passed": true,
+    "unresolvable_references": [
+      "appearance_store_outside_project_package",
+      "vault_migration_mechanism_absent"
+    ]
+  },
+  "live_install_claimed": false,
+  "external_gates": "DEFERRED-EXTERNAL",
+  "open_items": [
+    "upstream_upgrade_limit:Plugin API v1 contracts not tested for upgrade",
+    "upstream_upgrade_limit:Workflow schema v1 not tested for cross-version upgrade",
+    "upstream_upgrade_limit:No real production data available for upgrade testing",
+    "check_observed_outcome_null:clean_install",
+    "check_observed_outcome_null:source_versions",
+    "check_observed_outcome_null:upgrade_results",
+    "check_observed_outcome_null:settings_migration",
+    "check_observed_outcome_null:vault_migration",
+    "check_observed_outcome_null:rollback",
+    "install_defined_not_executed",
+    "unresolvable_reference:appearance_store_outside_project_package",
+    "unresolvable_reference:vault_migration_mechanism_absent"
+  ],
+  "limitations": [
+    "This validation is local only. No installer ran, no package was downloaded, nothing was signed, and no update channel delivered a release.",
+    "No check carries an observed outcome. No machine has ever installed an upgrade from these source versions, so any outcome recorded here would be fabricated.",
+    "Local exercises run against the shipped ProjectDatabaseService, ProjectDatabase migration waves, ProjectBackupService, ProjectBackupRestorePreview, and AccountSecureTokenVault over an in-memory store. They prove the mechanism responds; they do not prove a real user upgrade.",
+    "The appearance preference store lives outside the project package, so no project backup or restore can carry it. It is reported as unresolvable rather than assumed migrated.",
+    "All external gates remain DEFERRED-EXTERNAL: hosted CI, public signing, end-user update channels, real installer packaging, and publication are not part of this local evidence."
+  ]
+}

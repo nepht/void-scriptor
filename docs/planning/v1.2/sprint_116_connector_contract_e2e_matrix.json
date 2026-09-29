@@ -1,0 +1,309 @@
+{
+  "canonical_step": "116.48",
+  "title": "Connector Contract & End-to-End Matrix",
+  "status": "UNVERIFIED",
+  "live_connector_execution": false,
+  "as_of_epoch_ms": 1700000100000,
+  "certified_on": "2026-09-29",
+  "acceptance_suites": [
+    "manifest",
+    "auth",
+    "capability",
+    "usage",
+    "error",
+    "reauth",
+    "disconnect",
+    "cleanup",
+    "regression"
+  ],
+  "manifests": [
+    {
+      "connector_id": "conn_openai",
+      "provider_id": "openai",
+      "connector_version": "1.4.2",
+      "auth_type": "oauth2_pkce",
+      "declared_capabilities": [
+        "ai_text",
+        "ai_image"
+      ],
+      "requested_permissions": [
+        "usage_metadata",
+        "provider_connection"
+      ],
+      "availability": "UNVERIFIED",
+      "proposed": true,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "connector_id": "conn_mega",
+      "provider_id": "mega",
+      "connector_version": "0.9.1",
+      "auth_type": "api_key",
+      "declared_capabilities": [
+        "storage"
+      ],
+      "requested_permissions": [
+        "cloud_transfer",
+        "provider_connection"
+      ],
+      "availability": "UNVERIFIED",
+      "proposed": true,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "connect_runs": [
+    {
+      "connector_id": "conn_openai",
+      "pkce_method": "S256",
+      "state_parameter": "state-7f1a",
+      "requested_scopes": [
+        "read",
+        "write"
+      ],
+      "granted_scopes": [
+        "read",
+        "write"
+      ],
+      "partial_grant_accepted": false,
+      "token_sha256": "openai0000000000000000000000000000000000000000000000000000000000",
+      "secret_redacted_in_logs": true,
+      "connected_at_epoch_ms": 1699395300000,
+      "at_epoch_ms": 1699395300000,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "connector_id": "conn_mega",
+      "pkce_method": "none",
+      "state_parameter": "state-2b90",
+      "requested_scopes": [
+        "files:read"
+      ],
+      "granted_scopes": [
+        "files:read"
+      ],
+      "partial_grant_accepted": false,
+      "token_sha256": "mega000000000000000000000000000000000000000000000000000000000000",
+      "secret_redacted_in_logs": true,
+      "connected_at_epoch_ms": 1699395600000,
+      "at_epoch_ms": 1699395600000,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "capability_runs": [
+    {
+      "connector_id": "conn_openai",
+      "exercised_capabilities": [
+        "ai_text",
+        "ai_image"
+      ],
+      "call_succeeded": true,
+      "failure_classified": true,
+      "leaves_device": true,
+      "data_egress_encrypted": true,
+      "session_valid": true,
+      "at_epoch_ms": 1699398900000,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "connector_id": "conn_mega",
+      "exercised_capabilities": [
+        "storage"
+      ],
+      "call_succeeded": true,
+      "failure_classified": true,
+      "leaves_device": true,
+      "data_egress_encrypted": true,
+      "session_valid": true,
+      "at_epoch_ms": 1699399200000,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "usage_runs": [
+    {
+      "connector_id": "conn_openai",
+      "unit": "tokens",
+      "meter": "total_tokens",
+      "raw_value": 184320,
+      "value_available": true,
+      "attributed_capability": "ai_text",
+      "observed_at_epoch_ms": 1699400700000,
+      "freshness_ttl_seconds": 3600,
+      "session_valid": true,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "connector_id": "conn_mega",
+      "unit": "bytes",
+      "meter": "used_storage",
+      "raw_value": 81234567,
+      "value_available": true,
+      "attributed_capability": "storage",
+      "observed_at_epoch_ms": 1699401000000,
+      "freshness_ttl_seconds": 86400,
+      "session_valid": true,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "error_runs": [
+    {
+      "connector_id": "conn_openai",
+      "error_state": "rate_limited",
+      "http_status": 429,
+      "failure_surfaced": true,
+      "user_message": "Provider is rate limited. Try again in 30 seconds.",
+      "recovery_verified_at_epoch_ms": 1699406400000,
+      "at_epoch_ms": 1699406100000,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "connector_id": "conn_mega",
+      "error_state": "invalid_credentials",
+      "http_status": 401,
+      "failure_surfaced": true,
+      "user_message": "The stored MEGA credential was rejected. Reconnect the provider.",
+      "recovery_verified_at_epoch_ms": 1699406700000,
+      "at_epoch_ms": 1699406400000,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "reauth_runs": [
+    {
+      "connector_id": "conn_openai",
+      "strategy": "token_refresh",
+      "prior_token_sha256": "openai0000000000000000000000000000000000000000000000000000000000",
+      "refreshed_token_sha256": "openai-rotated00000000000000000000000000000000000000000000000000",
+      "prior_token_invalidated": true,
+      "refreshed_token_expires_epoch_ms": 1699424100000,
+      "refreshed_at_epoch_ms": 1699402500000,
+      "session_valid_after_reauth": true,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "connector_id": "conn_mega",
+      "strategy": "not_applicable",
+      "prior_token_sha256": "mega000000000000000000000000000000000000000000000000000000000000",
+      "refreshed_token_sha256": "mega000000000000000000000000000000000000000000000000000000000000",
+      "prior_token_invalidated": true,
+      "refreshed_token_expires_epoch_ms": 0,
+      "refreshed_at_epoch_ms": 1699402800000,
+      "session_valid_after_reauth": true,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "disconnect_runs": [
+    {
+      "connector_id": "conn_openai",
+      "state_before_disconnect": "connected",
+      "disconnect_requested": true,
+      "calls_after_disconnect_rejected": true,
+      "new_tokens_issued_after_disconnect": false,
+      "disconnected_at_epoch_ms": 1699413300000,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "connector_id": "conn_mega",
+      "state_before_disconnect": "connected",
+      "disconnect_requested": true,
+      "calls_after_disconnect_rejected": true,
+      "new_tokens_issued_after_disconnect": false,
+      "disconnected_at_epoch_ms": 1699413900000,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "cleanup_runs": [
+    {
+      "connector_id": "conn_openai",
+      "token_removed": true,
+      "cache_removed": true,
+      "vault_entry_removed": true,
+      "post_cleanup_probe_authorized": false,
+      "local_project_data_deleted": false,
+      "audit_retained": true,
+      "cleaned_at_epoch_ms": 1699416900000,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "connector_id": "conn_mega",
+      "token_removed": true,
+      "cache_removed": true,
+      "vault_entry_removed": true,
+      "post_cleanup_probe_authorized": false,
+      "local_project_data_deleted": false,
+      "audit_retained": true,
+      "cleaned_at_epoch_ms": 1699417500000,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "regression_runs": [
+    {
+      "connector_id": "conn_openai",
+      "run_id": "gate_chain_116_40_116_47",
+      "command": "flutter test --no-pub -j 1 test/release/sprint_116_billing_entitlement_webhook_reconciliation_test.dart test/release/sprint_116_quota_usage_cross_provider_contract_test.dart test/release/sprint_116_provider_error_state_certification_test.dart test/release/sprint_116_retry_backoff_circuit_breaker_certification_test.dart test/release/sprint_116_offline_cached_metadata_certification_test.dart test/release/sprint_116_security_certification_gate_test.dart test/release/sprint_116_privacy_compliance_gate_test.dart test/release/sprint_116_brand_visual_accessibility_gate_test.dart",
+      "exit_code": 0,
+      "passed": 165,
+      "total": 165,
+      "skipped": 0,
+      "skip_reason": "",
+      "covered_suites": [
+        "manifest",
+        "auth",
+        "capability",
+        "usage",
+        "error",
+        "reauth",
+        "disconnect",
+        "cleanup",
+        "regression"
+      ],
+      "head_sha": "3fa5a191de0a1ada22d35fa8442edf7741e049cd",
+      "source": "local_run",
+      "evidence_ref": "docs/evidence/sprint-116-48-regression-20260930.meta"
+    },
+    {
+      "connector_id": "conn_mega",
+      "run_id": "gate_chain_116_40_116_47",
+      "command": "flutter test --no-pub -j 1 test/release/sprint_116_billing_entitlement_webhook_reconciliation_test.dart test/release/sprint_116_quota_usage_cross_provider_contract_test.dart test/release/sprint_116_provider_error_state_certification_test.dart test/release/sprint_116_retry_backoff_circuit_breaker_certification_test.dart test/release/sprint_116_offline_cached_metadata_certification_test.dart test/release/sprint_116_security_certification_gate_test.dart test/release/sprint_116_privacy_compliance_gate_test.dart test/release/sprint_116_brand_visual_accessibility_gate_test.dart",
+      "exit_code": 0,
+      "passed": 165,
+      "total": 165,
+      "skipped": 0,
+      "skip_reason": "",
+      "covered_suites": [
+        "manifest",
+        "auth",
+        "capability",
+        "usage",
+        "error",
+        "reauth",
+        "disconnect",
+        "cleanup",
+        "regression"
+      ],
+      "head_sha": "3fa5a191de0a1ada22d35fa8442edf7741e049cd",
+      "source": "local_run",
+      "evidence_ref": "docs/evidence/sprint-116-48-regression-20260930.meta"
+    }
+  ],
+  "limitations": [
+    "Synthetic local fixture only; no live connector was executed.",
+    "No credential, token, secret, or provider availability is asserted.",
+    "Regression rows record the local gate-chain baseline 116.40-116.47 (165/165, exit 0) at HEAD 3fa5a19; the 116.48 test file itself is counted in the ledger row, not inside the manifest, so the recorded numbers stay reproducible."
+  ],
+  "external_gates": "DEFERRED-EXTERNAL"
+}

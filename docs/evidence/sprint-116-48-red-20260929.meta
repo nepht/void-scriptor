@@ -1,0 +1,11 @@
+{
+  "canonical_step": "116.48",
+  "title": "Connector Contract & End-to-End Matrix",
+  "phase": "red",
+  "recorded_on": "2026-09-29",
+  "result": "RED reproduced exit 1: implementation withheld (file moved aside, then restored with identical sha256 707318069c1231be496cebe8e08b2f12c643e27354a51881a93812bd83c3fad9) -> test fails to load: \"Error when reading 'lib/features/world_logic/domain/sprint_116_connector_contract_e2e_matrix.dart': The system cannot find the file specified\", plus Type 'Sprint116ConnectorControlSet' not found / Type 'Sprint116ConnectorManifestRecord' not found; Failing tests: .../sprint_116_connector_contract_e2e_matrix_test.dart: loading",
+  "head_at_start": "3fa5a191de0a1ada22d35fa8442edf7741e049cd",
+  "log": "sprint-116-48-red-20260929.log (gitignored)",
+  "live_connector_execution": false,
+  "external_gates": "DEFERRED-EXTERNAL"
+}

@@ -1,0 +1,11 @@
+{
+  "canonical_step": "116.48",
+  "title": "Connector Contract & End-to-End Matrix",
+  "phase": "regression-b",
+  "recorded_on": "2026-09-29",
+  "result": "Regression shard B 201/201 PASS exit 0 (gate chain 116.41-116.48: quota/usage + error-state + retry/backoff/circuit-breaker + offline cached metadata + security gate + privacy gate + brand/visual/accessibility gate + connector e2e matrix); baseline without 116.48 = 159/159 PASS exit 0, delta +42 exactly the new tests",
+  "head_at_start": "3fa5a191de0a1ada22d35fa8442edf7741e049cd",
+  "log": "sprint-116-48-regression-b-20260929.log + sprint-116-48-regression-b-baseline-20260929.log (gitignored)",
+  "live_connector_execution": false,
+  "external_gates": "DEFERRED-EXTERNAL"
+}

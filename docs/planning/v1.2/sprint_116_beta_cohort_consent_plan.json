@@ -1,0 +1,184 @@
+{
+  "canonical_step": "116.49",
+  "title": "Beta Cohort & Consent Plan",
+  "status": "UNVERIFIED",
+  "certified_on": "2026-09-29",
+  "as_of_epoch_ms": 1700000100000,
+  "live_beta_execution": false,
+  "no_fabricated_participants": true,
+  "required_fields": [
+    "selection",
+    "provider_coverage",
+    "consent",
+    "data_boundaries",
+    "support",
+    "withdrawal",
+    "evidence"
+  ],
+  "selection": [
+    {
+      "cohort_id": "cohort_alpha",
+      "criteria": [
+        "power_users",
+        "active_issue_reporters"
+      ],
+      "selection_method": "invite_only",
+      "target_size": 40,
+      "enrolled_count": 0,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "cohort_id": "cohort_waitlist",
+      "criteria": [
+        "public_waitlist_signup"
+      ],
+      "selection_method": "open_application",
+      "target_size": 150,
+      "enrolled_count": 0,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "provider_coverage": [
+    {
+      "provider_id": "openai",
+      "connector_id": "conn_openai",
+      "stage": "committed",
+      "reason": "",
+      "consent_ref": "consent_openai",
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "provider_id": "gemini",
+      "connector_id": "conn_gemini",
+      "stage": "planned",
+      "reason": "",
+      "consent_ref": "consent_gemini",
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "consent": [
+    {
+      "consent_id": "consent_openai",
+      "cohort_id": "cohort_alpha",
+      "purposes": [
+        "ai_inference"
+      ],
+      "covered_categories": [
+        "novel_text"
+      ],
+      "explicit_opt_in": true,
+      "policy_version": "beta-consent-1.0",
+      "participant_id": "",
+      "granted_at_epoch_ms": 1699395300000,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "consent_id": "consent_gemini",
+      "cohort_id": "cohort_alpha",
+      "purposes": [
+        "ai_inference"
+      ],
+      "covered_categories": [
+        "character_data"
+      ],
+      "explicit_opt_in": true,
+      "policy_version": "beta-consent-1.0",
+      "participant_id": "",
+      "granted_at_epoch_ms": 1699395300000,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "consent_id": "consent_waitlist",
+      "cohort_id": "cohort_waitlist",
+      "purposes": [
+        "beta_feedback",
+        "analytics"
+      ],
+      "covered_categories": [
+        "usage_telemetry"
+      ],
+      "explicit_opt_in": true,
+      "policy_version": "beta-consent-1.0",
+      "participant_id": "",
+      "granted_at_epoch_ms": 1699395300000,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "data_boundaries": [
+    {
+      "boundary_id": "boundary_novel",
+      "category": "novel_text",
+      "leaves_device": true,
+      "destination": "api.openai.com",
+      "encryption_in_transit": true,
+      "retention_days": 90,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "boundary_id": "boundary_telemetry",
+      "category": "usage_telemetry",
+      "leaves_device": true,
+      "destination": "telemetry.voidscriptor.app",
+      "encryption_in_transit": true,
+      "retention_days": 180,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "boundary_id": "boundary_project",
+      "category": "project_metadata",
+      "leaves_device": false,
+      "destination": "",
+      "encryption_in_transit": false,
+      "retention_days": 3650,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "support": [
+    {
+      "support_id": "support_beta",
+      "channel": "in_app",
+      "scope": "beta_global",
+      "response_sla_hours": 48,
+      "escalation_path": "in_app_thread -> maintainer_inbox",
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "withdrawal": [
+    {
+      "withdrawal_id": "withdrawal_beta",
+      "mechanism": "in_app_settings",
+      "deadline_days": 7,
+      "covered_categories": [
+        "novel_text",
+        "usage_telemetry",
+        "project_metadata"
+      ],
+      "local_project_data_deleted": false,
+      "no_penalty": true,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "ev_beta_plan",
+      "claim": "beta plan recorded in the repository manifest",
+      "artifact": "docs/planning/v1.2/sprint_116_beta_cohort_consent_plan.json",
+      "recorded_at_epoch_ms": 1699395300000,
+      "source": "local_run",
+      "evidence_ref": "docs/planning/v1.2/sprint_116_beta_cohort_consent_plan.json"
+    }
+  ],
+  "limitations": "Plan-stage fixture only: no participant has been enrolled, no consent has been collected from a real person, and no provider call has been made. Every row is synthetic and UNVERIFIED; enrolled_count stays zero until live recruitment evidence is registered. Live consent collection, provider handshakes, participant support responses, withdrawal execution, hosted CI, and publication remain DEFERRED-EXTERNAL."
+}

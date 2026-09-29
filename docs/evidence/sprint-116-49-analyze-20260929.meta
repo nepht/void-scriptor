@@ -1,0 +1,11 @@
+{
+  "canonical_step": "116.49",
+  "title": "Beta Cohort & Consent Plan",
+  "phase": "analyze",
+  "recorded_on": "2026-09-29",
+  "result": "dart analyze scoped 2 files (domain + test) 'No issues found!' exit 0; dart format 2 files changed then --set-exit-if-changed recheck 0 changed exit 0 with focused still 50/50; git diff --check exit 0",
+  "head_at_start": "3c0429a5634353d477d982144820278b31a2e5bb",
+  "log": "sprint-116-49-analyze-20260929.log (gitignored)",
+  "live_beta_execution": false,
+  "external_gates": "DEFERRED-EXTERNAL"
+}

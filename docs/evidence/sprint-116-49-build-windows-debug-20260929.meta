@@ -1,0 +1,11 @@
+{
+  "canonical_step": "116.49",
+  "title": "Beta Cohort & Consent Plan",
+  "phase": "build-windows-debug",
+  "recorded_on": "2026-09-29",
+  "result": "Windows debug build PASS exit 0; 32,8s flutter / 36s wall; AssetManifest.bin mtime 2026-09-29 14:20:49 (runner exe mtime unchanged - native runner is a static artifact and is not a staleness signal; kernel_blob.bin lives beside it in flutter_assets)",
+  "head_at_start": "3c0429a5634353d477d982144820278b31a2e5bb",
+  "log": "sprint-116-49-build-20260929.log (gitignored)",
+  "live_beta_execution": false,
+  "external_gates": "DEFERRED-EXTERNAL"
+}

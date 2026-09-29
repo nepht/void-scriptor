@@ -1,0 +1,11 @@
+{
+  "canonical_step": "116.49",
+  "title": "Beta Cohort & Consent Plan",
+  "phase": "regression-b",
+  "recorded_on": "2026-09-29",
+  "result": "Regression shard B 251/251 PASS exit 0 (gate chain 116.41-116.49: quota/usage + provider error-state + retry/backoff/circuit-breaker + offline cached metadata + security gate + privacy gate + brand/visual/accessibility gate + connector e2e matrix + beta cohort/consent plan); baseline without 116.49 = 201/201 PASS exit 0, delta +50 exactly the new tests",
+  "head_at_start": "3c0429a5634353d477d982144820278b31a2e5bb",
+  "log": "sprint-116-49-regression-b-20260929.log + sprint-116-49-regression-b-baseline-20260929.log (gitignored)",
+  "live_beta_execution": false,
+  "external_gates": "DEFERRED-EXTERNAL"
+}

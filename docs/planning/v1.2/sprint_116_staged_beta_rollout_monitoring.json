@@ -1,0 +1,322 @@
+{
+  "canonical_step": "116.50",
+  "title": "Staged Beta Rollout & Monitoring",
+  "status": "UNVERIFIED",
+  "certified_on": "2026-09-29",
+  "as_of_epoch_ms": 1700000100000,
+  "live_rollout_executed": false,
+  "beta_feature_flags_default": "OFF",
+  "required_fields": [
+    "flags",
+    "stages",
+    "health_metrics",
+    "stop_conditions",
+    "provider_kill_switches",
+    "rollback",
+    "communication"
+  ],
+  "flags": [
+    {
+      "flag_id": "flag_beta_connectors",
+      "flag_key": "beta.connectors.enabled",
+      "default_state": "OFF",
+      "owner": "release-owner",
+      "linked_stages": [
+        "stage_internal",
+        "stage_alpha",
+        "stage_waitlist"
+      ],
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "flag_id": "flag_kill_openai",
+      "flag_key": "connector.openai.enabled",
+      "default_state": "OFF",
+      "owner": "release-owner",
+      "linked_stages": [
+        "stage_internal",
+        "stage_alpha",
+        "stage_waitlist"
+      ],
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "flag_id": "flag_kill_gemini",
+      "flag_key": "connector.gemini.enabled",
+      "default_state": "OFF",
+      "owner": "release-owner",
+      "linked_stages": [
+        "stage_internal",
+        "stage_alpha",
+        "stage_waitlist"
+      ],
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "stages": [
+    {
+      "stage_id": "stage_internal",
+      "sequence": 1,
+      "exposure_percent": 5,
+      "entry_criteria": [
+        "internal_dogfood_green"
+      ],
+      "exit_criteria": [
+        "no_sev1_for_72h"
+      ],
+      "exposed_connectors": [
+        "conn_openai"
+      ],
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "stage_id": "stage_alpha",
+      "sequence": 2,
+      "exposure_percent": 25,
+      "entry_criteria": [
+        "internal_dogfood_green"
+      ],
+      "exit_criteria": [
+        "no_sev1_for_72h"
+      ],
+      "exposed_connectors": [
+        "conn_openai",
+        "conn_gemini"
+      ],
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "stage_id": "stage_waitlist",
+      "sequence": 3,
+      "exposure_percent": 100,
+      "entry_criteria": [
+        "internal_dogfood_green"
+      ],
+      "exit_criteria": [
+        "no_sev1_for_72h"
+      ],
+      "exposed_connectors": [
+        "conn_openai",
+        "conn_gemini"
+      ],
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "health_metrics": [
+    {
+      "metric_id": "metric_error_rate",
+      "metric_name": "error_rate",
+      "metric_type": "error_rate",
+      "direction": "higher_is_worse",
+      "threshold": 0.02,
+      "window_minutes": 60,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "metric_id": "metric_auth_success",
+      "metric_name": "auth_success_rate",
+      "metric_type": "auth_success_rate",
+      "direction": "lower_is_worse",
+      "threshold": 0.95,
+      "window_minutes": 60,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "metric_id": "metric_crash_rate",
+      "metric_name": "crash_rate",
+      "metric_type": "crash_rate",
+      "direction": "higher_is_worse",
+      "threshold": 0.01,
+      "window_minutes": 1440,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "stop_conditions": [
+    {
+      "stop_id": "stop_internal_error",
+      "stage_id": "stage_internal",
+      "metric_id": "metric_error_rate",
+      "operator": "gt",
+      "threshold": 0.02,
+      "window_minutes": 60,
+      "action": "halt_rollout",
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "stop_id": "stop_alpha_error",
+      "stage_id": "stage_alpha",
+      "metric_id": "metric_error_rate",
+      "operator": "gt",
+      "threshold": 0.02,
+      "window_minutes": 60,
+      "action": "rollback_stage",
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "stop_id": "stop_alpha_auth",
+      "stage_id": "stage_alpha",
+      "metric_id": "metric_auth_success",
+      "operator": "lt",
+      "threshold": 0.95,
+      "window_minutes": 60,
+      "action": "page_oncall",
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "stop_id": "stop_waitlist_error",
+      "stage_id": "stage_waitlist",
+      "metric_id": "metric_error_rate",
+      "operator": "gt",
+      "threshold": 0.02,
+      "window_minutes": 60,
+      "action": "rollback_stage",
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "stop_id": "stop_waitlist_crash",
+      "stage_id": "stage_waitlist",
+      "metric_id": "metric_crash_rate",
+      "operator": "gt",
+      "threshold": 0.01,
+      "window_minutes": 1440,
+      "action": "halt_rollout",
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "provider_kill_switches": [
+    {
+      "kill_id": "kill_openai",
+      "provider_id": "openai",
+      "connector_id": "conn_openai",
+      "scope": "connector_disable",
+      "flag_ref": "flag_kill_openai",
+      "stages": [
+        "stage_internal",
+        "stage_alpha",
+        "stage_waitlist"
+      ],
+      "drill_verified": false,
+      "drill_at_epoch_ms": 0,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "kill_id": "kill_gemini",
+      "provider_id": "gemini",
+      "connector_id": "conn_gemini",
+      "scope": "connector_disable",
+      "flag_ref": "flag_kill_gemini",
+      "stages": [
+        "stage_alpha",
+        "stage_waitlist"
+      ],
+      "drill_verified": false,
+      "drill_at_epoch_ms": 0,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "rollback": [
+    {
+      "rollback_id": "rb_internal",
+      "target_scope": "stage",
+      "target_id": "stage_internal",
+      "procedure": "set flag OFF, restart previous build, notify cohort",
+      "local_project_data_touched": false,
+      "verified_at_epoch_ms": 0,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "rollback_id": "rb_alpha",
+      "target_scope": "stage",
+      "target_id": "stage_alpha",
+      "procedure": "set flag OFF, restart previous build, notify cohort",
+      "local_project_data_touched": false,
+      "verified_at_epoch_ms": 0,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "rollback_id": "rb_waitlist",
+      "target_scope": "stage",
+      "target_id": "stage_waitlist",
+      "procedure": "set flag OFF, restart previous build, notify cohort",
+      "local_project_data_touched": false,
+      "verified_at_epoch_ms": 0,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "communication": [
+    {
+      "comm_id": "comm_advance",
+      "audience": "beta_participants",
+      "channel": "in_app",
+      "trigger": "stage_advance",
+      "message_template": "Stage {{stage}} now covers {{exposure}}% of the beta cohort.",
+      "drafted_at_epoch_ms": 1699395300000,
+      "sent_at_epoch_ms": 0,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "comm_id": "comm_stop",
+      "audience": "internal_oncall",
+      "channel": "internal_alert",
+      "trigger": "stop_condition_hit",
+      "message_template": "Stop condition {{stop}} fired on {{stage}}; rollout halted.",
+      "drafted_at_epoch_ms": 1699395300000,
+      "sent_at_epoch_ms": 0,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "comm_id": "comm_rollback",
+      "audience": "beta_participants",
+      "channel": "in_app",
+      "trigger": "rollback_executed",
+      "message_template": "We rolled back {{stage}} to the previous build.",
+      "drafted_at_epoch_ms": 1699395300000,
+      "sent_at_epoch_ms": 0,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "comm_id": "comm_kill",
+      "audience": "status_page",
+      "channel": "status_page",
+      "trigger": "kill_switch_used",
+      "message_template": "{{provider}} connector disabled for the beta cohort.",
+      "drafted_at_epoch_ms": 1699395300000,
+      "sent_at_epoch_ms": 0,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "ev_rollout_plan",
+      "claim": "staged rollout plan recorded in the repository manifest",
+      "artifact": "docs/planning/v1.2/sprint_116_staged_beta_rollout_monitoring.json",
+      "recorded_at_epoch_ms": 1699395300000,
+      "source": "local_run",
+      "evidence_ref": "docs/planning/v1.2/sprint_116_staged_beta_rollout_monitoring.json"
+    }
+  ],
+  "limitations": "Plan-stage fixture only: no flag has been flipped, no stage has been advanced, no stop condition has fired, no kill switch or rollback has been executed, and no message has been sent. Every row is synthetic and UNVERIFIED; beta_feature_flags_default stays OFF until live rollout evidence is registered. Live flag evaluation, staged exposure against real accounts, provider kill-switch drills, rollback execution, incident communication delivery, hosted CI, and publication remain DEFERRED-EXTERNAL."
+}

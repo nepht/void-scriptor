@@ -1,0 +1,129 @@
+{
+  "canonical_step": "116.52",
+  "title": "Sprint Closure",
+  "status": "VERIFIED-LOCAL",
+  "closure_decision": "CLOSED_LOCAL_DEFERRED_EXTERNAL",
+  "beta_decision": "BETA_ACCEPTANCE_LOCAL_READY",
+  "definition_of_done": [
+    "32_providers_accounted_for",
+    "no_bulk_fake_certification",
+    "icons_reviewed",
+    "quality_gates_complete",
+    "uncertified_hidden_or_labeled",
+    "beta_decision_recorded",
+    "remaining_risks_owned"
+  ],
+  "criteria": {
+    "32_providers_accounted_for": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_116_provider_registry_reconciliation.json",
+        "lib/features/account/domain/account_center_provider_icon_registry.dart",
+        "lib/features/world_logic/domain/sprint_116_beta_acceptance_gate.dart"
+      ],
+      "summary": "32 provider registry reconciled: icon registry, beta gate registry copy, and count documents all agree on 32 providers."
+    },
+    "no_bulk_fake_certification": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_116_certification_policy.json",
+        "docs/sprints/sprint-116-connector-certification.md"
+      ],
+      "summary": "Per-provider certification gates 116.8-116.39 executed individually; no bulk fake certification."
+    },
+    "icons_reviewed": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_116_brand_asset_icon_certification.json",
+        "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json"
+      ],
+      "summary": "Brand assets 116.7 and visual gate 116.47 both VERIFIED-LOCAL."
+    },
+    "quality_gates_complete": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_116_billing_entitlement_webhook_reconciliation.json",
+        "docs/planning/v1.2/sprint_116_quota_usage_cross_provider_contract.json",
+        "docs/planning/v1.2/sprint_116_provider_error_state_certification.json",
+        "docs/planning/v1.2/sprint_116_retry_backoff_circuit_breaker_certification.json",
+        "docs/planning/v1.2/sprint_116_offline_cached_metadata_certification.json",
+        "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+        "docs/planning/v1.2/sprint_116_privacy_compliance_gate.json",
+        "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json",
+        "docs/planning/v1.2/sprint_116_connector_contract_e2e_matrix.json"
+      ],
+      "summary": "Quality gates 116.40-116.48 all VERIFIED-LOCAL in ledger."
+    },
+    "uncertified_hidden_or_labeled": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_116_beta_acceptance_gate.json"
+      ],
+      "summary": "Beta acceptance gate 116.51 enforces visibility: 30 certified, 1 limited (kofi), 1 blocked+hidden (saweria)."
+    },
+    "beta_decision_recorded": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_116_beta_acceptance_gate.json",
+        "docs/planning/v1.2/sprint_116_beta_cohort_consent_plan.json",
+        "docs/planning/v1.2/sprint_116_staged_beta_rollout_monitoring.json"
+      ],
+      "summary": "Beta acceptance gate 116.51 verdict BETA_ACCEPTANCE_LOCAL_READY; cohort plan 116.49 and rollout 116.50 both VERIFIED-LOCAL."
+    },
+    "remaining_risks_owned": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_116_beta_acceptance_gate.json"
+      ],
+      "summary": "Open items recorded: release cut pending (pubspec 1.2.0-rc.1 != v1.3.0-beta.1). External gates explicitly deferred."
+    }
+  },
+  "certified_subset": [
+    "email",
+    "google",
+    "microsoft",
+    "apple",
+    "github",
+    "discord",
+    "x",
+    "facebook",
+    "google_drive",
+    "onedrive",
+    "dropbox",
+    "mega",
+    "local_storage",
+    "openai",
+    "gemini",
+    "anthropic",
+    "flux",
+    "openrouter",
+    "local_ai",
+    "gitlab",
+    "bitbucket",
+    "azure_devops",
+    "figma",
+    "adobe",
+    "canva",
+    "blender_cloud",
+    "sketchfab",
+    "paypal",
+    "stripe",
+    "midtrans"
+  ],
+  "limited_connectors": [
+    "kofi"
+  ],
+  "blocked_connectors": [
+    "saweria"
+  ],
+  "open_items": [
+    "release_cut_pending: pubspec 1.2.0-rc.1 != v1.3.0-beta.1"
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Local certification chain only: Sprint 116 gates passed in this repository; live beta execution, provider handshake, credentials, quota, hosted CI, billing settlement, hardware, and publication remain DEFERRED-EXTERNAL.",
+    "Beta acceptance is local scope; beta launch, participant recruitment, consent collection, staged rollout execution, kill-switch drill, and incident response communication remain DEFERRED-EXTERNAL.",
+    "No production secrets in manifests or tests; live provider API/SDK/OAuth handshake, token refresh, quota enforcement, usage metering, and billing reconciliation remain DEFERRED-EXTERNAL.",
+    "Release version cut deferred; pubspec remains 1.2.0-rc.1 and beta target is v1.3.0-beta.1 pending operator release decision."
+  ]
+}

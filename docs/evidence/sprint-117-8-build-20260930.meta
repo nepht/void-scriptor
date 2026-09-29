@@ -1,0 +1,9 @@
+{
+ "gate": "build",
+ "canonical_step": "117.8",
+ "recorded_at": "2026-09-30",
+ "claim": "117.8 flutter build windows --debug exit 0, 20.8s",
+ "log": "docs/evidence/sprint-117-8-build-20260930.log",
+ "log_bytes": 132,
+ "log_sha256": "96ca940f973cdb0196b245a4431bad78ca8df6da68e944fea131920d76b3e559"
+}

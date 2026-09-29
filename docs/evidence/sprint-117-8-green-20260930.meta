@@ -1,0 +1,9 @@
+{
+ "gate": "green",
+ "canonical_step": "117.8",
+ "recorded_at": "2026-09-30",
+ "claim": "117.8 GREEN: focused test 31/31 pass after clean rewrite of contract, gate, and local drill",
+ "log": "docs/evidence/sprint-117-8-green-20260930.log",
+ "log_bytes": 2898,
+ "log_sha256": "72742d58af7e6b323c4851eb1664d2e89462bb3698ec0b5dbe50bf9ffeed7d11"
+}

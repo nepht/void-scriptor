@@ -1,0 +1,9 @@
+{
+ "gate": "analyzer",
+ "canonical_step": "117.8",
+ "recorded_at": "2026-09-30",
+ "claim": "117.8 dart analyze scoped exit 0, No issues found!",
+ "log": "docs/evidence/sprint-117-8-analyze-20260930.log",
+ "log_bytes": 116,
+ "log_sha256": "1f77b3a4f2656ee65ccb9e058ae745faa078c35ddfb08db6803e05c659b5c6b2"
+}

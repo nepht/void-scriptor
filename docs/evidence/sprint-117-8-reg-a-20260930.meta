@@ -1,0 +1,9 @@
+{
+ "gate": "regression",
+ "canonical_step": "117.8",
+ "recorded_at": "2026-09-30",
+ "claim": "117.8 regression shard A exit 0, 366/366 across sprint_117.1-117.8",
+ "log": "docs/evidence/sprint-117-8-reg-a-20260930.log",
+ "log_bytes": 72506,
+ "log_sha256": "cf44b0f2fec3fe632fb5318c986d9763e17f2fb82ef0e25eef5ff79824047336"
+}

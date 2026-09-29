@@ -1,0 +1,9 @@
+{
+ "gate": "regression",
+ "canonical_step": "117.8",
+ "recorded_at": "2026-09-30",
+ "claim": "117.8 regression shard B exit 0, 134/134 across rollback source chain 113/114/115/116",
+ "log": "docs/evidence/sprint-117-8-reg-b-20260930.log",
+ "log_bytes": 28083,
+ "log_sha256": "64921b00dee77ef06fd59b83647d5021fe737fae48b47f66d67df7259ec8b17d"
+}

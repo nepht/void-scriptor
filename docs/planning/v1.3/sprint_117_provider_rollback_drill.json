@@ -1,0 +1,549 @@
+{
+  "sprint": "117.8",
+  "canonical_step": "117.8",
+  "title": "Provider Rollback Drill",
+  "objective": "Test connector kill switch, token revoke, queue stop, cached-state handling, artifact rollback, and communication.",
+  "state": "pass",
+  "verdict": "PROVIDER_ROLLBACK_DRILL_DEFINED_LOCAL",
+  "violations": [],
+  "missing_fields": [],
+  "required_controls": [
+    "kill_switch",
+    "token_revoke",
+    "queue_stop",
+    "cache_handling",
+    "artifact_rollback",
+    "communication"
+  ],
+  "control_count": 6,
+  "control_coverage": {
+    "kill_switch": 1,
+    "token_revoke": 1,
+    "queue_stop": 1,
+    "cache_handling": 1,
+    "artifact_rollback": 1,
+    "communication": 1
+  },
+  "controls": [
+    {
+      "control_id": "kill_switch",
+      "drill_step": "Nonaktifkan shared kill switch (vs12_world_logic_shared) dan semua world_logic features",
+      "expected_outcome": "FeatureFlagRegistry.engageKillSwitch leaves every flag OFF and killSwitchActive true",
+      "observed_outcome": null,
+      "executed": false,
+      "source_manifest": "docs/planning/v1.2/sprint_113_rollback_drill.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false,
+      "artifacts": [],
+      "messages": []
+    },
+    {
+      "control_id": "token_revoke",
+      "drill_step": "Revoke the stored oauth_refresh_token through AccountSecureTokenVault over an in-memory CredentialStore",
+      "expected_outcome": "AccountSecureTokenVault.revoke deletes the secret and records a revoke audit event carrying no secret material",
+      "observed_outcome": null,
+      "executed": false,
+      "source_manifest": "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false,
+      "artifacts": [],
+      "messages": []
+    },
+    {
+      "control_id": "queue_stop",
+      "drill_step": "Cancel one GenerationQueue job, drain, and assert it never ran",
+      "expected_outcome": "GenerationQueue.cancel stops the job, which never runs, while a later job still does",
+      "observed_outcome": null,
+      "executed": false,
+      "source_manifest": "docs/planning/v1.2/sprint_116_cross_storage_sync_backup_certification.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false,
+      "artifacts": [],
+      "messages": []
+    },
+    {
+      "control_id": "cache_handling",
+      "drill_step": "Certify Sprint116OfflineCacheCertification over records this drill writes, covering all six acceptance areas",
+      "expected_outcome": "Sprint116OfflineCacheCertification certifies the drill's own records, covering every area with no invalid record",
+      "observed_outcome": null,
+      "executed": false,
+      "source_manifest": "docs/planning/v1.2/sprint_116_offline_cached_metadata_certification.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false,
+      "artifacts": [],
+      "messages": []
+    },
+    {
+      "control_id": "artifact_rollback",
+      "drill_step": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+      "expected_outcome": "every withdrawal target resolves in docs/release/v1.2.0-rc.1-checksums.txt or is reported as unresolvable",
+      "observed_outcome": null,
+      "executed": false,
+      "source_manifest": "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false,
+      "artifacts": [
+        {
+          "artifact_id": "void_spector.exe",
+          "recorded_path": "build/windows/x64/runner/Release/void_spector.exe",
+          "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+          "recorded_in_checksum_manifest": false,
+          "present_on_disk": false
+        },
+        {
+          "artifact_id": "void_spector-1.2.0-rc.1.zip",
+          "recorded_path": "void_spector-1.2.0-rc.1.zip",
+          "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+          "recorded_in_checksum_manifest": false,
+          "present_on_disk": false
+        },
+        {
+          "artifact_id": "dartjni.dll",
+          "recorded_path": "build/windows/x64/runner/Release/dartjni.dll",
+          "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+          "recorded_in_checksum_manifest": true,
+          "present_on_disk": false
+        },
+        {
+          "artifact_id": "file_selector_windows_plugin.dll",
+          "recorded_path": "build/windows/x64/runner/Release/file_selector_windows_plugin.dll",
+          "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+          "recorded_in_checksum_manifest": true,
+          "present_on_disk": true
+        },
+        {
+          "artifact_id": "flutter_secure_storage_windows_plugin.dll",
+          "recorded_path": "build/windows/x64/runner/Release/flutter_secure_storage_windows_plugin.dll",
+          "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+          "recorded_in_checksum_manifest": true,
+          "present_on_disk": true
+        },
+        {
+          "artifact_id": "flutter_windows.dll",
+          "recorded_path": "build/windows/x64/runner/Release/flutter_windows.dll",
+          "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+          "recorded_in_checksum_manifest": true,
+          "present_on_disk": true
+        },
+        {
+          "artifact_id": "sqlite3.dll",
+          "recorded_path": "build/windows/x64/runner/Release/sqlite3.dll",
+          "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+          "recorded_in_checksum_manifest": true,
+          "present_on_disk": true
+        },
+        {
+          "artifact_id": "void_scriptor.exe",
+          "recorded_path": "build/windows/x64/runner/Release/void_scriptor.exe",
+          "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+          "recorded_in_checksum_manifest": true,
+          "present_on_disk": true
+        }
+      ],
+      "messages": []
+    },
+    {
+      "control_id": "communication",
+      "drill_step": "Verify every 116.50 trigger has a drafted message and none is recorded sent",
+      "expected_outcome": "every trigger has a drafted message and none is recorded sent",
+      "observed_outcome": null,
+      "executed": false,
+      "source_manifest": "docs/planning/v1.2/sprint_116_staged_beta_rollout_monitoring.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false,
+      "artifacts": [],
+      "messages": [
+        {
+          "message_id": "comm_advance",
+          "audience": "beta_participants",
+          "channel": "in_app",
+          "trigger": "stage_advance",
+          "message_template": "Stage {{stage}} now covers {{exposure}}% of the beta cohort.",
+          "drafted_at_epoch_ms": 1699395300000,
+          "sent_at_epoch_ms": 0,
+          "sent": false
+        },
+        {
+          "message_id": "comm_stop",
+          "audience": "internal_oncall",
+          "channel": "internal_alert",
+          "trigger": "stop_condition_hit",
+          "message_template": "Stop condition {{stop}} fired on {{stage}}; rollout halted.",
+          "drafted_at_epoch_ms": 1699395300000,
+          "sent_at_epoch_ms": 0,
+          "sent": false
+        },
+        {
+          "message_id": "comm_rollback",
+          "audience": "beta_participants",
+          "channel": "in_app",
+          "trigger": "rollback_executed",
+          "message_template": "We rolled back {{stage}} to the previous build.",
+          "drafted_at_epoch_ms": 1699395300000,
+          "sent_at_epoch_ms": 0,
+          "sent": false
+        },
+        {
+          "message_id": "comm_kill",
+          "audience": "status_page",
+          "channel": "status_page",
+          "trigger": "kill_switch_used",
+          "message_template": "{{provider}} connector disabled for the beta cohort.",
+          "drafted_at_epoch_ms": 1699395300000,
+          "sent_at_epoch_ms": 0,
+          "sent": false
+        },
+        {
+          "message_id": "comm_drill_rollback",
+          "audience": "internal_ledger",
+          "channel": "Internal: Ledger sprint dan incident log",
+          "trigger": "rollback_drill_complete",
+          "message_template": "Drill Rollback v1.2-rc.1 — Tim validation telah menjalankan rollback drill. Proses rollback dari RC ke versi stabil sebelumnya telah divalidasi dan berfungsi. Temuan akan didokumentasikan.",
+          "drafted_at_epoch_ms": 1,
+          "sent_at_epoch_ms": 0,
+          "sent": false
+        },
+        {
+          "message_id": "comm_escalation_P0",
+          "audience": "release_owner",
+          "channel": "Choirudin langsung via preferred channel",
+          "trigger": "rollback_escalation_P0",
+          "message_template": "Rollback P0 escalation: Stop distribution, hentikan kandidat, mulai investigation",
+          "drafted_at_epoch_ms": 1,
+          "sent_at_epoch_ms": 0,
+          "sent": false
+        },
+        {
+          "message_id": "comm_escalation_P1",
+          "audience": "release_owner",
+          "channel": "Choirudin via preferred channel",
+          "trigger": "rollback_escalation_P1",
+          "message_template": "Rollback P1 escalation: Investigate, mulai fix, document workaround jika ada",
+          "drafted_at_epoch_ms": 1,
+          "sent_at_epoch_ms": 0,
+          "sent": false
+        }
+      ]
+    }
+  ],
+  "unmapped_controls": [],
+  "undetermined_controls": [
+    "kill_switch",
+    "token_revoke",
+    "queue_stop",
+    "cache_handling",
+    "artifact_rollback",
+    "communication"
+  ],
+  "unresolvable_references": [
+    "advanced_timeline_features",
+    "build/windows/x64/runner/Release/void_spector.exe",
+    "void_spector-1.2.0-rc.1.zip",
+    "vs12_world_logic_shared",
+    "world_simulation_features"
+  ],
+  "artifacts": [
+    {
+      "artifact_id": "void_spector.exe",
+      "recorded_path": "build/windows/x64/runner/Release/void_spector.exe",
+      "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+      "recorded_in_checksum_manifest": false,
+      "present_on_disk": false
+    },
+    {
+      "artifact_id": "void_spector-1.2.0-rc.1.zip",
+      "recorded_path": "void_spector-1.2.0-rc.1.zip",
+      "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+      "recorded_in_checksum_manifest": false,
+      "present_on_disk": false
+    },
+    {
+      "artifact_id": "dartjni.dll",
+      "recorded_path": "build/windows/x64/runner/Release/dartjni.dll",
+      "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+      "recorded_in_checksum_manifest": true,
+      "present_on_disk": false
+    },
+    {
+      "artifact_id": "file_selector_windows_plugin.dll",
+      "recorded_path": "build/windows/x64/runner/Release/file_selector_windows_plugin.dll",
+      "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+      "recorded_in_checksum_manifest": true,
+      "present_on_disk": true
+    },
+    {
+      "artifact_id": "flutter_secure_storage_windows_plugin.dll",
+      "recorded_path": "build/windows/x64/runner/Release/flutter_secure_storage_windows_plugin.dll",
+      "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+      "recorded_in_checksum_manifest": true,
+      "present_on_disk": true
+    },
+    {
+      "artifact_id": "flutter_windows.dll",
+      "recorded_path": "build/windows/x64/runner/Release/flutter_windows.dll",
+      "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+      "recorded_in_checksum_manifest": true,
+      "present_on_disk": true
+    },
+    {
+      "artifact_id": "sqlite3.dll",
+      "recorded_path": "build/windows/x64/runner/Release/sqlite3.dll",
+      "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+      "recorded_in_checksum_manifest": true,
+      "present_on_disk": true
+    },
+    {
+      "artifact_id": "void_scriptor.exe",
+      "recorded_path": "build/windows/x64/runner/Release/void_scriptor.exe",
+      "withdrawal": "Hapus atau tandai artifact sebagai withdrawal dari distribusi lokal",
+      "recorded_in_checksum_manifest": true,
+      "present_on_disk": true
+    }
+  ],
+  "messages": [
+    {
+      "message_id": "comm_advance",
+      "audience": "beta_participants",
+      "channel": "in_app",
+      "trigger": "stage_advance",
+      "message_template": "Stage {{stage}} now covers {{exposure}}% of the beta cohort.",
+      "drafted_at_epoch_ms": 1699395300000,
+      "sent_at_epoch_ms": 0,
+      "sent": false
+    },
+    {
+      "message_id": "comm_stop",
+      "audience": "internal_oncall",
+      "channel": "internal_alert",
+      "trigger": "stop_condition_hit",
+      "message_template": "Stop condition {{stop}} fired on {{stage}}; rollout halted.",
+      "drafted_at_epoch_ms": 1699395300000,
+      "sent_at_epoch_ms": 0,
+      "sent": false
+    },
+    {
+      "message_id": "comm_rollback",
+      "audience": "beta_participants",
+      "channel": "in_app",
+      "trigger": "rollback_executed",
+      "message_template": "We rolled back {{stage}} to the previous build.",
+      "drafted_at_epoch_ms": 1699395300000,
+      "sent_at_epoch_ms": 0,
+      "sent": false
+    },
+    {
+      "message_id": "comm_kill",
+      "audience": "status_page",
+      "channel": "status_page",
+      "trigger": "kill_switch_used",
+      "message_template": "{{provider}} connector disabled for the beta cohort.",
+      "drafted_at_epoch_ms": 1699395300000,
+      "sent_at_epoch_ms": 0,
+      "sent": false
+    },
+    {
+      "message_id": "comm_drill_rollback",
+      "audience": "internal_ledger",
+      "channel": "Internal: Ledger sprint dan incident log",
+      "trigger": "rollback_drill_complete",
+      "message_template": "Drill Rollback v1.2-rc.1 — Tim validation telah menjalankan rollback drill. Proses rollback dari RC ke versi stabil sebelumnya telah divalidasi dan berfungsi. Temuan akan didokumentasikan.",
+      "drafted_at_epoch_ms": 1,
+      "sent_at_epoch_ms": 0,
+      "sent": false
+    },
+    {
+      "message_id": "comm_escalation_P0",
+      "audience": "release_owner",
+      "channel": "Choirudin langsung via preferred channel",
+      "trigger": "rollback_escalation_P0",
+      "message_template": "Rollback P0 escalation: Stop distribution, hentikan kandidat, mulai investigation",
+      "drafted_at_epoch_ms": 1,
+      "sent_at_epoch_ms": 0,
+      "sent": false
+    },
+    {
+      "message_id": "comm_escalation_P1",
+      "audience": "release_owner",
+      "channel": "Choirudin via preferred channel",
+      "trigger": "rollback_escalation_P1",
+      "message_template": "Rollback P1 escalation: Investigate, mulai fix, document workaround jika ada",
+      "drafted_at_epoch_ms": 1,
+      "sent_at_epoch_ms": 0,
+      "sent": false
+    }
+  ],
+  "source_manifests": [
+    "docs/planning/v1.2/sprint_113_rollback_drill.json",
+    "docs/planning/v1.2/sprint_114_rollback_feature_flag_readiness.json",
+    "docs/planning/v1.2/sprint_113_incident_stop_ship_protocol.json",
+    "docs/planning/v1.2/sprint_116_staged_beta_rollout_monitoring.json",
+    "docs/planning/v1.2/sprint_115_token_expiry_reauthentication_ux.json",
+    "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+    "docs/planning/v1.2/sprint_116_offline_cached_metadata_certification.json",
+    "docs/planning/v1.2/sprint_116_cross_storage_sync_backup_certification.json",
+    "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json",
+    "docs/planning/v1.2/sprint_113_support_escalation_readiness.json"
+  ],
+  "anchor": {
+    "drill_verdict": "DRILL_DEFINED",
+    "readiness_verdict": "READY_LOCAL_ROLLBACK_CORRECTIVE",
+    "stop_ship_verdict": "PROTOCOL_DEFINED",
+    "default_flag_state": "OFF",
+    "kill_switch_resolvable": false,
+    "last_stable_build": true,
+    "local_project_data_touched": false,
+    "carried_open_items": [
+      "upstream_rollout_not_executed",
+      "kill_switch_not_drilled:kill_openai",
+      "kill_switch_not_drilled:kill_gemini",
+      "upstream_drill_not_executed",
+      "upstream_drill_limit:Drill ini adalah simulasi, bukan rollback produksi nyata.",
+      "upstream_drill_limit:Tidak ada artifact yang benar-benar ditarik selama drill.",
+      "upstream_drill_limit:Partisipan validasi tidak terpengaruh selama drill.",
+      "upstream_drill_limit:Drill harus dieksekusi sebelum validation window dimulai."
+    ]
+  },
+  "local_drill": {
+    "observations": [
+      {
+        "control_id": "kill_switch",
+        "outcome": "kill_switch_engaged_locally",
+        "facts": {
+          "known_flags": 13,
+          "enabled_before": 13,
+          "enabled_after": 0,
+          "kill_switch_active": true,
+          "all_at_defaults": true,
+          "still_enabled": []
+        },
+        "passed": true,
+        "unresolvable": [
+          "vs12_world_logic_shared",
+          "world_simulation_features",
+          "advanced_timeline_features"
+        ]
+      },
+      {
+        "control_id": "token_revoke",
+        "outcome": "token_revoked_locally",
+        "facts": {
+          "present_before": true,
+          "present_after": false,
+          "audit_events": 2,
+          "revoke_audited": true,
+          "audit_carried_secret": false
+        },
+        "passed": true,
+        "unresolvable": []
+      },
+      {
+        "control_id": "queue_stop",
+        "outcome": "queue_stopped_locally",
+        "facts": {
+          "cancel_accepted": true,
+          "ran_before_stop": 1,
+          "ran_after_stop": 1,
+          "cancelled_status": "cancelled"
+        },
+        "passed": true,
+        "unresolvable": []
+      },
+      {
+        "control_id": "cache_handling",
+        "outcome": "cache_handled_locally",
+        "facts": {
+          "state": "pass",
+          "invalid_records": [],
+          "covered_areas": [
+            "freshness_label",
+            "stale_state",
+            "remote_disable",
+            "local_actions",
+            "reconnect",
+            "cache_clear"
+          ],
+          "stale_entry_ids": [
+            "drill_entry_stale"
+          ]
+        },
+        "passed": true,
+        "unresolvable": []
+      },
+      {
+        "control_id": "artifact_rollback",
+        "outcome": "artifact_rollback_resolved_locally",
+        "facts": {
+          "checksum_manifest": "docs/release/v1.2.0-rc.1-checksums.txt",
+          "manifest_exists": true,
+          "recorded_paths": 493,
+          "targets_checked": 3,
+          "unresolvable_targets": [
+            "build/windows/x64/runner/Release/void_spector.exe",
+            "void_spector-1.2.0-rc.1.zip"
+          ]
+        },
+        "passed": true,
+        "unresolvable": [
+          "build/windows/x64/runner/Release/void_spector.exe",
+          "void_spector-1.2.0-rc.1.zip"
+        ]
+      },
+      {
+        "control_id": "communication",
+        "outcome": "communication_drafted_locally",
+        "facts": {
+          "messages": 7,
+          "drafted_not_sent": 7,
+          "triggers": [
+            "stage_advance",
+            "stop_condition_hit",
+            "rollback_executed",
+            "kill_switch_used",
+            "rollback_drill_complete",
+            "rollback_escalation_P0",
+            "rollback_escalation_P1"
+          ]
+        },
+        "passed": true,
+        "unresolvable": []
+      }
+    ],
+    "live_provider_touched": false,
+    "all_passed": true,
+    "unresolvable_references": [
+      "advanced_timeline_features",
+      "build/windows/x64/runner/Release/void_spector.exe",
+      "void_spector-1.2.0-rc.1.zip",
+      "vs12_world_logic_shared",
+      "world_simulation_features"
+    ]
+  },
+  "drill_executed": false,
+  "external_gates": "DEFERRED-EXTERNAL",
+  "open_items": [
+    "upstream_rollout_not_executed",
+    "kill_switch_not_drilled:kill_openai",
+    "kill_switch_not_drilled:kill_gemini",
+    "upstream_drill_not_executed",
+    "upstream_drill_limit:Drill ini adalah simulasi, bukan rollback produksi nyata.",
+    "upstream_drill_limit:Tidak ada artifact yang benar-benar ditarik selama drill.",
+    "upstream_drill_limit:Partisipan validasi tidak terpengaruh selama drill.",
+    "upstream_drill_limit:Drill harus dieksekusi sebelum validation window dimulai.",
+    "control_observed_outcome_null:kill_switch",
+    "control_observed_outcome_null:token_revoke",
+    "control_observed_outcome_null:queue_stop",
+    "control_observed_outcome_null:cache_handling",
+    "control_observed_outcome_null:artifact_rollback",
+    "control_observed_outcome_null:communication",
+    "unresolvable_reference:build/windows/x64/runner/Release/void_spector.exe",
+    "unresolvable_reference:void_spector-1.2.0-rc.1.zip",
+    "unresolvable_reference:vs12_world_logic_shared",
+    "drill_defined_not_executed"
+  ],
+  "limitations": [
+    "This drill is defined and locally exercised only. No provider was killed, no live token was revoked, no live queue was stopped, and no artifact was withdrawn from any distribution channel.",
+    "No control carries an observed outcome. 116.50 records live_rollout_executed as false, every provider kill switch as drill_verified false, and every message as sent_at_epoch_ms 0, so any outcome recorded here would be fabricated.",
+    "Local exercises run against the shipped FeatureFlagRegistry, AccountSecureTokenVault over an in-memory store, GenerationQueue, and Sprint116OfflineCacheCertification. They prove the mechanism responds; they do not prove a real provider, queue, or user was put at risk.",
+    "All external gates remain DEFERRED-EXTERNAL: hosted CI, public signing, published-artifact withdrawal, participant communication delivery, and publication are not part of this local evidence."
+  ]
+}

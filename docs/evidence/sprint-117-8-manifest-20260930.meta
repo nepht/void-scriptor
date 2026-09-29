@@ -1,0 +1,9 @@
+{
+ "gate": "manifest",
+ "canonical_step": "117.8",
+ "recorded_at": "2026-09-30",
+ "claim": "117.8 manifest regenerated from real gate+drill output by a generator that refuses non-pass",
+ "log": "docs/evidence/sprint-117-8-manifest-20260930.log",
+ "log_bytes": 289,
+ "log_sha256": "aeec3811c382d824b64dacf1abc93a9e2ac4263689d2865c439a3760ddfc9d1c"
+}

@@ -1,0 +1,233 @@
+{
+  "canonical_step": "117.3",
+  "title": "Beta Cohort & Consent Verification",
+  "status": "UNVERIFIED",
+  "status_scope": "verification_contract_only",
+  "certified_on": "2026-09-30",
+  "live_beta_executed": false,
+  "no_fabricated_participants": true,
+  "required_fields": [
+    "participant_or_project_id",
+    "consent",
+    "provider_coverage",
+    "data_boundaries",
+    "withdrawal",
+    "support"
+  ],
+  "entry_anchor_verdict": "BETA_ENTRY_LOCAL_READY",
+  "charter_anchor_verdict": "CHARTER_COMPLETE_LOCAL",
+  "state": "fail",
+  "verdict": "COHORT_CONSENT_VERIFICATION_FAILED",
+  "missing_fields": [
+    "participant_or_project_id",
+    "consent_participant_missing:consent_openai",
+    "consent_unverified:consent_openai",
+    "consent_participant_missing:consent_gemini",
+    "consent_unverified:consent_gemini",
+    "consent_participant_missing:consent_waitlist",
+    "consent_unverified:consent_waitlist",
+    "boundary_unverified:boundary_novel",
+    "boundary_unverified:boundary_telemetry",
+    "boundary_unverified:boundary_project",
+    "withdrawal_unverified:withdrawal_beta",
+    "support_unverified:support_beta"
+  ],
+  "violations": [
+    "coverage_destination_unrecorded:openai",
+    "coverage_destination_unrecorded:gemini",
+    "consent_category_unbounded:character_data",
+    "withdrawal_category_uncovered:character_data"
+  ],
+  "verified_participant_count": 0,
+  "anchor": {
+    "entry_verdict": "BETA_ENTRY_LOCAL_READY",
+    "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+    "exposed_subset": [
+      "email",
+      "google",
+      "microsoft",
+      "apple",
+      "github",
+      "discord",
+      "x",
+      "facebook",
+      "google_drive",
+      "onedrive",
+      "dropbox",
+      "mega",
+      "local_storage",
+      "openai",
+      "gemini",
+      "anthropic",
+      "flux",
+      "openrouter",
+      "local_ai",
+      "gitlab",
+      "bitbucket",
+      "azure_devops",
+      "figma",
+      "adobe",
+      "canva",
+      "blender_cloud",
+      "sketchfab",
+      "paypal",
+      "stripe",
+      "midtrans",
+      "kofi"
+    ],
+    "hidden_subset": [
+      "saweria"
+    ],
+    "destination_providers": [
+      "oauth2.googleapis.com",
+      "api.stripe.com",
+      "api.openai.com",
+      "telemetry.voidscriptor.app"
+    ],
+    "plan_live_beta_execution": false,
+    "plan_cohorts": [
+      "cohort_alpha",
+      "cohort_waitlist"
+    ]
+  },
+  "participants": [],
+  "consent": [
+    {
+      "consent_id": "consent_openai",
+      "participant_id": "",
+      "cohort_id": "cohort_alpha",
+      "explicit_opt_in": true,
+      "policy_version": "beta-consent-1.0",
+      "granted_at_epoch_ms": 1699395300000,
+      "covered_categories": [
+        "novel_text"
+      ],
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "consent_id": "consent_gemini",
+      "participant_id": "",
+      "cohort_id": "cohort_alpha",
+      "explicit_opt_in": true,
+      "policy_version": "beta-consent-1.0",
+      "granted_at_epoch_ms": 1699395300000,
+      "covered_categories": [
+        "character_data"
+      ],
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "consent_id": "consent_waitlist",
+      "participant_id": "",
+      "cohort_id": "cohort_waitlist",
+      "explicit_opt_in": true,
+      "policy_version": "beta-consent-1.0",
+      "granted_at_epoch_ms": 1699395300000,
+      "covered_categories": [
+        "usage_telemetry"
+      ],
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "provider_coverage": [
+    {
+      "provider_id": "openai",
+      "connector_id": "conn_openai",
+      "stage": "committed",
+      "consent_ref": "consent_openai",
+      "reason": null
+    },
+    {
+      "provider_id": "gemini",
+      "connector_id": "conn_gemini",
+      "stage": "planned",
+      "consent_ref": "consent_gemini",
+      "reason": null
+    }
+  ],
+  "data_boundaries": [
+    {
+      "boundary_id": "boundary_novel",
+      "category": "novel_text",
+      "leaves_device": true,
+      "destination": "api.openai.com",
+      "encryption_in_transit": true,
+      "retention_days": 90,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "boundary_id": "boundary_telemetry",
+      "category": "usage_telemetry",
+      "leaves_device": true,
+      "destination": "telemetry.voidscriptor.app",
+      "encryption_in_transit": true,
+      "retention_days": 180,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    },
+    {
+      "boundary_id": "boundary_project",
+      "category": "project_metadata",
+      "leaves_device": false,
+      "destination": "",
+      "encryption_in_transit": false,
+      "retention_days": 3650,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "withdrawal": [
+    {
+      "withdrawal_id": "withdrawal_beta",
+      "mechanism": "in_app_settings",
+      "deadline_days": 7,
+      "covered_categories": [
+        "novel_text",
+        "usage_telemetry",
+        "project_metadata"
+      ],
+      "no_penalty": true,
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "support": [
+    {
+      "support_id": "support_beta",
+      "channel": "in_app",
+      "scope": "beta_global",
+      "response_sla_hours": 48,
+      "escalation_path": "in_app_thread -> maintainer_inbox",
+      "source": "synthetic_local",
+      "evidence_ref": null
+    }
+  ],
+  "field_coverage": {
+    "participant_or_project_id": 0,
+    "consent": 0,
+    "provider_coverage": 2,
+    "data_boundaries": 0,
+    "withdrawal": 0,
+    "support": 0
+  },
+  "source_manifests": [
+    "docs/planning/v1.2/sprint_116_beta_cohort_consent_plan.json",
+    "docs/planning/v1.2/sprint_116_privacy_compliance_gate.json",
+    "docs/planning/v1.3/sprint_117_beta_entry_gate.json",
+    "docs/planning/v1.3/sprint_117_beta_validation_charter.json"
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "open_items": [
+    "release_cut_pending: pubspec 1.2.0-rc.1 != v1.3.0-beta.1",
+    "no_participant_enrolled: 116.49 plan records enrolled_count 0"
+  ],
+  "limitations": [
+    "No participant is enrolled: the committed 116.49 plan records enrolled_count 0 for every cohort, so live beta execution, participant verification, real consent collection, provider handshake, and data-boundary transfer cannot be evidenced here.",
+    "Every row read from the committed plan is synthetic_local with no evidence_ref, so the live verdict is BLOCKED by design rather than passed.",
+    "Live recruitment, real-person consent capture, real provider calls, kill-switch drills, hosted CI, billing settlement, and publication remain DEFERRED-EXTERNAL."
+  ]
+}

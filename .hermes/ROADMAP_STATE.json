@@ -25,27 +25,14 @@
   "flutter_sdk": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat",
   "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
   "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
-  "active_sprint": 116,
-  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
-  "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.52",
-  "next_step": null,
+  "active_sprint": 117,
+  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
+  "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
+  "last_verified_step": null,
+  "next_step": "117.1",
   "stability_gate": {
-    "status": "PASS",
-    "resume_step": "116.52",
-    "required_checks": [
-      "dart run tool/roadmap_guard.dart",
-      "flutter analyze",
-      "focused Core MVP regression",
-      "full flutter test",
-      "Windows debug build"
-    ],
-    "previous_result": {
-      "sprint": 116,
-      "final_step": "116.52",
-      "status": "CLOSED-LOCAL-DEFERRED-EXTERNAL",
-      "commit": "b7bd0d1"
-    }
+    "status": "PENDING",
+    "note": "re-evaluated at 117.1 entry gate"
   },
   "selection_rules": [
     "Repository evidence and the active sprint ledger override stale narrative status text.",
@@ -55,7 +42,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-29",
-  "updated_by": "cron-core-worker",
+  "updated_by": "operator-stream-transition",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -611,9 +598,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "116.51",
-  "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-29: Sprint 116.52 Sprint Closure VERIFIED-LOCAL (slice commit b7bd0d1). Fail-closed contract mengunci 7 definition-of-done kanonik; criteria set harus persis tujuh, beta decision di luar BETA_ACCEPTANCE_LOCAL_READY ditolak, evidence kosong fail-closed, satu criteria unmet -> blocked. RED reproduksi nyata exit 1 (implementation ditahan di snapshot, dikembalikan sha256 identik); GREEN fokus 7/7; regresi shard A 57/57, shard B 363/363 (baseline 308 + 48 gate 116.51 + 7 closure 116.52); analyzer clean; format 0 changed; git diff --check 0; Windows debug build PASS 28,0s. Sprint 116 selesai 52/52 VERIFIED-LOCAL. next_step dikosongkan: stream transition ke sprint berikutnya adalah keputusan operator, cron tidak mengaktifkannya sendiri. Open item: release cut pending (pubspec 1.2.0-rc.1 != v1.3.0-beta.1).",
+  "current_step": "117.1",
+  "current_step_status": "NOT_STARTED",
+  "last_run_summary": "2026-09-29: Operator transitioned to sprint 117 (Beta Validation) after sprint 116 closed 52/52 VERIFIED-LOCAL. pointer 117.1 NOT_STARTED; no contract work performed by this transition.",
   "last_commit": "b7bd0d1",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -725,7 +712,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "116.49",
+  "last_resolved_step": null,
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -1826,5 +1813,299 @@
     "snapshot": "C:/Users/nepht/AppData/Local/vs-run11652-snap",
     "evidence": "docs/evidence/sprint-116-52-{red,focused,reg-a,reg-b,analyze,format,build}-20260929.{log,meta}"
   },
-  "next_step_status": "SPRINT_COMPLETE_PENDING_OPERATOR_DECISION"
+  "next_step_status": "PENDING",
+  "sprint_116_closure": {
+    "closed_at": "2026-09-29",
+    "steps_verified": 52,
+    "decision": "SPRINT_COMPLETE",
+    "prior_state": "next_step dikosongkan Pending operator decision"
+  },
+  "sprint_117_step_1171": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_1172": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_1173": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_1174": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_1175": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_1176": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_1177": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_1178": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_1179": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11710": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11711": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11712": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11713": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11714": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11715": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11716": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11717": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11718": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11719": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11720": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11721": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11722": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11723": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11724": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11725": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11726": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11727": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11728": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11729": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11730": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11731": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11732": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11733": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11734": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11735": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11736": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11737": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11738": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11739": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11740": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11741": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11742": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11743": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11744": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11745": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11746": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11747": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  },
+  "sprint_117_step_11748": {
+    "status": "NOT_STARTED",
+    "next_step": null,
+    "manifest": null,
+    "note": "slot allocated at operator stream transition; no work performed yet"
+  }
 }

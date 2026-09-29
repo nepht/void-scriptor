@@ -1,67 +1,68 @@
 {
-  "schema_version": 1,
-  "product": "Void Scriptor",
-  "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
-  "validated_history_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs\\MASTER_SPRINT_VOID_SCRIPTOR_JSON_VALIDATED",
-  "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
-  "document_registry": "docs/roadmap/DOCUMENT_REGISTRY.json",
-  "executor_policy": ".hermes/AUTONOMOUS_ROADMAP_PROMPT.md",
-  "runtime_state": ".hermes/ROADMAP_STATE.json",
-  "active_stream": "sequential_expansion",
-  "streams": {
-    "corrective_core_mvp": {
-      "status": "DEFERRED",
-      "priority": 1,
-      "sprint": 145,
-      "contract": "sprint_145.json",
-      "ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
-      "exit_gate": "All 145.1-145.50 steps resolved or explicitly blocked/deferred with evidence; Core MVP vertical slice and data-safety gates green.",
-      "deferred_on": "2026-09-15",
-      "defer_authority": "KEPUTUSAN CHOI 15 Sep: terima defer 145.30 (hardware-bound; power-loss nyata + USB cold-eject lanjutan). Antrean bug hunt-20260915 habis run327. Buka kembali hanya atas perintah Choi.",
-      "state_at_defer": {
-        "next_step": "145.30",
-        "remaining": "acceptance hardware-bound; JANGAN fabrikasi slice"
-      }
-    },
-    "sequential_expansion": {
-      "status": "ACTIVE",
-      "priority": 2,
-      "sprint": 116,
-      "resume_step": "116.1",
-      "contract": "sprint_116.json",
-      "ledger": "docs/sprints/sprint-116-connector-certification.md",
-      "resume_condition": "Sprint 115 CLOSED-LOCAL-DEFERRED-EXTERNAL and operator instruction to advance to Sprint 116.",
-      "resumed_on": "2026-09-27",
-      "resume_authority": "OPERATOR INSTRUCTION 27 Sep: lanjutkan ke sprint berikutnya.",
-      "previous_sprint": {
-        "sprint": 115,
-        "final_step": "115.56",
-        "status": "CLOSED-LOCAL_DEFERRED_EXTERNAL",
-        "commit": "b7c414b"
-      }
-    }
+ "schema_version": 1,
+ "product": "Void Scriptor",
+ "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
+ "validated_history_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs\\MASTER_SPRINT_VOID_SCRIPTOR_JSON_VALIDATED",
+ "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
+ "document_registry": "docs/roadmap/DOCUMENT_REGISTRY.json",
+ "executor_policy": ".hermes/AUTONOMOUS_ROADMAP_PROMPT.md",
+ "runtime_state": ".hermes/ROADMAP_STATE.json",
+ "active_stream": "sequential_expansion",
+ "streams": {
+  "corrective_core_mvp": {
+   "status": "DEFERRED",
+   "priority": 1,
+   "sprint": 145,
+   "contract": "sprint_145.json",
+   "ledger": "docs/sprints/sprint-145-product-scope-reset-mvp-recovery.md",
+   "exit_gate": "All 145.1-145.50 steps resolved or explicitly blocked/deferred with evidence; Core MVP vertical slice and data-safety gates green.",
+   "deferred_on": "2026-09-15",
+   "defer_authority": "KEPUTUSAN CHOI 15 Sep: terima defer 145.30 (hardware-bound; power-loss nyata + USB cold-eject lanjutan). Antrean bug hunt-20260915 habis run327. Buka kembali hanya atas perintah Choi.",
+   "state_at_defer": {
+    "next_step": "145.30",
+    "remaining": "acceptance hardware-bound; JANGAN fabrikasi slice"
+   }
   },
-  "precedence": [
-    "A corrective sprint overrides feature expansion until its exit gate passes.",
-    "Exactly one mutation stream may be ACTIVE.",
-    "External sprint JSON defines requirements; repository ledger defines implementation evidence.",
-    "Runtime state is a disposable cache and may be repaired only from policy, canonical JSON, and ledger consensus.",
-    "Missing or conflicting evidence blocks mutation; it never authorizes invented scope.",
-    "A document without a sprint number cannot create scope; its role and authority must come from DOCUMENT_REGISTRY.json."
-  ],
-  "protected_core": [
-    "project registry and per-project database",
-    "novel, chapter, scene, character, and core lore data",
-    "autosave, snapshots, backup, restore, import, and export",
-    "Windows local-first startup and workspace",
-    "user-owned files and existing migrations"
-  ],
-  "deferred_until_core_gate": [
-    "community network",
-    "reader publishing network",
-    "payments and payouts",
-    "marketplace",
-    "provider and connector expansion",
-    "XR, metaverse, and non-Core production expansion"
-  ]
+  "sequential_expansion": {
+   "status": "ACTIVE",
+   "priority": 2,
+   "sprint": 117,
+   "resume_step": "117.1",
+   "contract": "sprint_117.json",
+   "ledger": "docs/sprints/sprint-117-beta-validation.md",
+   "resume_condition": "Sprint 116 CLOSED-LOCAL 52/52 VERIFIED-LOCAL and operator instruction to advance to Sprint 117.",
+   "resumed_on": "2026-09-29",
+   "resume_authority": "OPERATOR INSTRUCTION 29 Sep: lanjutkan ke sprint berikutnya.",
+   "previous_sprint": {
+    "sprint": 116,
+    "final_step": "116.52",
+    "status": "CLOSED-LOCAL_VERIFIED_52_OF_52",
+    "commit": "b7bd0d1"
+   },
+   "exit_gate": "All 117.1-117.48 steps resolved or explicitly blocked/deferred with evidence; beta validation charter, consent, rollback drill and GA decision recorded."
+  }
+ },
+ "precedence": [
+  "A corrective sprint overrides feature expansion until its exit gate passes.",
+  "Exactly one mutation stream may be ACTIVE.",
+  "External sprint JSON defines requirements; repository ledger defines implementation evidence.",
+  "Runtime state is a disposable cache and may be repaired only from policy, canonical JSON, and ledger consensus.",
+  "Missing or conflicting evidence blocks mutation; it never authorizes invented scope.",
+  "A document without a sprint number cannot create scope; its role and authority must come from DOCUMENT_REGISTRY.json."
+ ],
+ "protected_core": [
+  "project registry and per-project database",
+  "novel, chapter, scene, character, and core lore data",
+  "autosave, snapshots, backup, restore, import, and export",
+  "Windows local-first startup and workspace",
+  "user-owned files and existing migrations"
+ ],
+ "deferred_until_core_gate": [
+  "community network",
+  "reader publishing network",
+  "payments and payouts",
+  "marketplace",
+  "provider and connector expansion",
+  "XR, metaverse, and non-Core production expansion"
+ ]
 }

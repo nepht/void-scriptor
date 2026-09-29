@@ -73,8 +73,9 @@ class Sprint116BrandIconCertification {
       if (record.assetVersion.trim().isEmpty) invalid.add('asset_version:$id');
       if (record.themeVariants.isEmpty) invalid.add('theme_variants:$id');
       if (record.fallback.trim().isEmpty) invalid.add('fallback:$id');
-      if (record.accessibleName.trim().isEmpty)
+      if (record.accessibleName.trim().isEmpty) {
         invalid.add('accessible_name:$id');
+      }
       if (record.reviewStatus.trim().isEmpty) invalid.add('review_status:$id');
     }
     return Sprint116BrandIconReport(

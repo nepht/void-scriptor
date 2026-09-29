@@ -94,10 +94,12 @@ final class Sprint116AiUsageCostReconciliation {
           hasCost = true;
         }
       }
-      if (record.currency != null)
+      if (record.currency != null) {
         currencies.add(record.currency!.trim().toUpperCase());
-      if (record.providerCost != null && record.currency == null)
+      }
+      if (record.providerCost != null && record.currency == null) {
         invalid.add('currency');
+      }
       estimate = estimate || record.isEstimate;
       final measured = record.measuredAt.toUtc();
       if (measured.isBefore(oldest)) oldest = measured;

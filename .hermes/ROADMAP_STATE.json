@@ -28,8 +28,8 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.49",
-  "next_step": "116.50",
+  "last_verified_step": "116.50",
+  "next_step": "116.51",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.36",
@@ -1737,5 +1737,38 @@
     "live_beta_execution": false,
     "no_fabricated_participants": true,
     "external_gates": "DEFERRED-EXTERNAL"
+  },
+  "sprint_116_step_11650": {
+    "step": "116.50",
+    "title": "Staged Beta Rollout & Monitoring",
+    "status": "VERIFIED-LOCAL",
+    "date": "2026-09-29",
+    "manifest": "docs/planning/v1.2/sprint_116_staged_beta_rollout_monitoring.json",
+    "domain": "lib/features/world_logic/domain/sprint_116_staged_beta_rollout_monitoring.dart",
+    "test": "test/release/sprint_116_staged_beta_rollout_monitoring_test.dart",
+    "required_fields": [
+      "flags",
+      "stages",
+      "health_metrics",
+      "stop_conditions",
+      "provider_kill_switches",
+      "rollback",
+      "communication"
+    ],
+    "red": "load failure exit 1 (implementation absent: Sprint116RolloutEvidenceRecord undefined), log 130KB dari WIP writer diadopsi",
+    "focused": "57/57 PASS exit 0 (dijalankan ulang setelah format, hasil identik)",
+    "regression_a": "57/57 PASS exit 0 (116.28-116.39: github/gitlab/bitbucket developer + azure + figma + adobe/canva + blender/sketchfab + rights + stripe/paypal/midtrans + saweria/kofi)",
+    "regression_b": "251/251 PASS exit 0 (rantai gate 116.41-116.49, baseline 116.49)",
+    "analyzer": "No issues found exit 0 (2 file scoped)",
+    "format": "2 files changed lalu recheck 0 changed exit 0",
+    "diff_check": "exit 0",
+    "build_windows_debug": "PASS exit 0, 28,6s; AssetManifest.bin mtime 2026-09-29 15:20:20",
+    "commit": "81a877d",
+    "wip_adoption": "3 file WIP kanonik (mtime 14:56-14:58, tanpa writer hidup) diadopsi sesuai otorisasi tetap 2026-09-16: snapshot di %LOCALAPPDATA%/Temp/vs-run11650-snap + hermes cache scratch/vs-run11650-snap, SHA-256 direkam sebelum mutasi, patch hanya format minimal",
+    "evidence": "docs/evidence/sprint-116-50-{red,focused,reg-a,reg-b,analyze,format,build}-20260929.{log,meta}",
+    "live_rollout_executed": false,
+    "external_gates": "DEFERRED-EXTERNAL",
+    "limitations": "manifest sintetis lokal UNVERIFIED tanpa secret/API key (test-enforced); live staged rollout execution, provider kill-switch drill pada sistem nyata, komunikasi insiden nyata, credentials, audit, hosted CI, billing settlement, publication = DEFERRED-EXTERNAL",
+    "next_step": "116.51"
   }
 }

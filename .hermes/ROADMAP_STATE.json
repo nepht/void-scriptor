@@ -28,8 +28,8 @@
  "active_sprint": 117,
  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
  "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
- "last_verified_step": "117.8",
- "next_step": "117.9",
+ "last_verified_step": "117.9",
+ "next_step": "117.10",
  "stability_gate": {
   "status": "PASS",
   "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -2000,10 +2000,32 @@
   "next_step": "117.9"
  },
  "sprint_117_step_1179": {
-  "status": "NOT_STARTED",
-  "next_step": null,
-  "manifest": null,
-  "note": "slot allocated at operator stream transition; no work performed yet"
+  "status": "VERIFIED-LOCAL",
+  "next_step": "117.10",
+  "manifest": "docs/planning/v1.3/sprint_117_installation_upgrade_validation.json",
+  "implementation": "lib/features/world_logic/domain/sprint_117_installation_upgrade_validation.dart",
+  "test": "test/release/sprint_117_installation_upgrade_validation_test.dart",
+  "slice_commit": "21fe4c0",
+  "ledger_commit": "5302222",
+  "verdict": "INSTALLATION_UPGRADE_VALIDATED_LOCAL",
+  "gate_state": "pass",
+  "note": "Gate and drill separated. Drill really runs the shipped mechanisms: ProjectDatabaseService.create lands at schema 62 and reopens as a no-op; each recorded source (55/58/60/61) rewound with later-wave objects dropped then re-opened through ProjectDatabaseService.open -- 4/4 reach 62 with Core rows intact and every dropped object recreated (9/6/1/1 objects); future-schema guard rejects 63; security_settings row + manifest round-trip through a real ProjectBackupService backup and ProjectBackupRestorePreview restore; pre-migration backup restores into a throwaway destination with the live package byte-identical. A table that says PASS is not a migration.",
+  "unresolvable_reported": [
+   "vault_migration_mechanism_absent",
+   "appearance_store_outside_project_package"
+  ],
+  "open_ended_honesty": "vault_migration passes by REPORTING the absence of any migration mechanism (no such code exists anywhere shipped) rather than inventing a path; the legacy vault key is measured as NOT picked up. 113.10's settings_preserved claim is scoped down, not widened. No check carries observed_outcome: 6/6 undetermined open items because no machine has ever installed an upgrade.",
+  "verification": {
+   "focused": "19/19 PASS exit 0 (re-run after dart format)",
+   "shard_a": "385/385 PASS exit 0 (117.1-117.9; baseline 366 + delta 19, pre and post format)",
+   "shard_b": "118/119; 1 pre-existing failure proven in clean worktree at HEAD 5a616b1 with 0 files of 117.9",
+   "analyzer": "scoped 2 files, No issues found! exit 0",
+   "format": "dart format 2 files (2 changed), then recheck + focused re-run",
+   "diff_check": "exit 0",
+   "windows_build": "flutter build windows --debug exit 0 20,4s",
+   "roadmap_guard": "PASS before slice; re-run after state update"
+  },
+  "external_gates": "DEFERRED-EXTERNAL: hosted CI, public signing, end-user update channels, real installer packaging, publication."
  },
  "sprint_117_step_11710": {
   "status": "NOT_STARTED",

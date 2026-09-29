@@ -1,0 +1,246 @@
+{
+  "canonical_step": "117.6",
+  "state": "pass",
+  "verdict": "SUPPORT_INCIDENT_READINESS_DEFINED_LOCAL",
+  "missing_fields": [],
+  "violations": [],
+  "row_count": 12,
+  "severity_levels": [
+    "P0",
+    "P1",
+    "P2",
+    "P3"
+  ],
+  "severity_matrix": [
+    {
+      "level": "P0",
+      "definition": "Kehilangan/korupsi data yang dapat direproduksi, credential exposure, atau bypass boundary keamanan",
+      "response_target": "Immediate",
+      "max_response_hours": 2,
+      "resolution_target_hours": 24,
+      "owner": "Choirudin"
+    },
+    {
+      "level": "P1",
+      "definition": "Project tidak dapat dibuka atau core workflow terblokir tanpa workaround aman",
+      "response_target": "Urgent",
+      "max_response_hours": 8,
+      "resolution_target_hours": 72,
+      "owner": "Choirudin"
+    },
+    {
+      "level": "P2",
+      "definition": "Fungsi salah dengan workaround aman; tidak ada kehilangan data",
+      "response_target": "Normal",
+      "max_response_hours": 24,
+      "resolution_target_hours": 168,
+      "owner": "nephthys"
+    },
+    {
+      "level": "P3",
+      "definition": "Kosmetik, dokumentasi, atau friction non-blocking",
+      "response_target": "Low",
+      "max_response_hours": 72,
+      "resolution_target_hours": 336,
+      "owner": "nephthys"
+    }
+  ],
+  "owners": [
+    "Choirudin",
+    "nephthys"
+  ],
+  "response_targets": {
+    "P0": 2,
+    "P1": 8,
+    "P2": 24,
+    "P3": 72
+  },
+  "recovery_guides": [
+    {
+      "scenario": "Database corruption or migration failure",
+      "guide_path": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+      "owner": "nephthys"
+    },
+    {
+      "scenario": "Crash on startup or session lock",
+      "guide_path": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+      "owner": "nephthys"
+    },
+    {
+      "scenario": "Backup restore or data recovery",
+      "guide_path": "docs/release/v1.2.0-rc.1-recovery-guide.md",
+      "owner": "nephthys"
+    },
+    {
+      "scenario": "Security/privacy incident",
+      "guide_path": "docs/release/hotfix-runbook-v1.0.1.md",
+      "owner": "Choirudin"
+    }
+  ],
+  "escalation_paths": [
+    {
+      "trigger": "P0 data loss or security incident",
+      "action": "Immediate halt of distribution, notify Choirudin, begin hotfix",
+      "owner": "Choirudin",
+      "communication": "Direct channel, no public disclosure until resolved"
+    },
+    {
+      "trigger": "P1 core workflow blocked",
+      "action": "Investigate root cause, provide workaround or patch",
+      "owner": "Choirudin",
+      "communication": "Issue tracker, async notification"
+    },
+    {
+      "trigger": "Multiple P2 issues from same workflow",
+      "action": "Review for systemic issue, escalate to P1 if pattern found",
+      "owner": "nephthys",
+      "communication": "Issue tracker"
+    },
+    {
+      "trigger": "External dependency failure (AI provider, OS update)",
+      "action": "Document workaround, notify users via release notes",
+      "owner": "nephthys",
+      "communication": "Release notes, documentation update"
+    }
+  ],
+  "provider_escalation": [
+    {
+      "provider_id": "openai",
+      "kill_switch": "kill_openai",
+      "stop_conditions": [
+        "stop_internal_error",
+        "stop_alpha_error",
+        "stop_alpha_auth",
+        "stop_waitlist_error",
+        "stop_waitlist_crash"
+      ],
+      "owner": "support-owner"
+    },
+    {
+      "provider_id": "gemini",
+      "kill_switch": "kill_gemini",
+      "stop_conditions": [
+        "stop_alpha_error",
+        "stop_alpha_auth",
+        "stop_waitlist_error",
+        "stop_waitlist_crash"
+      ],
+      "owner": "support-owner"
+    }
+  ],
+  "escalated_providers": [
+    "openai",
+    "gemini"
+  ],
+  "undetermined_providers": [
+    "email",
+    "google",
+    "microsoft",
+    "apple",
+    "github",
+    "discord",
+    "x",
+    "facebook",
+    "google_drive",
+    "onedrive",
+    "dropbox",
+    "mega",
+    "local_storage",
+    "anthropic",
+    "flux",
+    "openrouter",
+    "local_ai",
+    "gitlab",
+    "bitbucket",
+    "azure_devops",
+    "figma",
+    "adobe",
+    "canva",
+    "blender_cloud",
+    "sketchfab",
+    "paypal",
+    "stripe",
+    "midtrans",
+    "kofi"
+  ],
+  "referenced_documents": [
+    "docs/release/v1.2.0-rc.1-support-playbook.md",
+    "docs/release/v1.2.0-rc.1-recovery-guide.md",
+    "docs/release/hotfix-runbook-v1.0.1.md"
+  ],
+  "charter_incident_owner": "support-owner",
+  "field_coverage": {
+    "support_playbook": 1,
+    "severity_matrix": 4,
+    "owners": 2,
+    "response_targets": 4,
+    "recovery_guides": 4,
+    "provider_escalation": 2
+  },
+  "required_fields": [
+    "support_playbook",
+    "severity_matrix",
+    "owners",
+    "response_targets",
+    "recovery_guides",
+    "provider_escalation"
+  ],
+  "source_manifests": [
+    "docs/planning/v1.2/sprint_113_support_escalation_readiness.json",
+    "docs/planning/v1.2/sprint_116_staged_beta_rollout_monitoring.json",
+    "docs/planning/v1.3/sprint_117_beta_validation_charter.json",
+    "docs/planning/v1.3/sprint_117_beta_cohort_consent_verification.json",
+    "docs/planning/v1.3/sprint_117_certification_snapshot_lock.json"
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "live_incident_executed": false,
+  "open_items": [
+    "release_cut_pending: pubspec 1.2.0-rc.1 != v1.3.0-beta.1",
+    "upstream_cohort_not_verified:COHORT_CONSENT_VERIFICATION_FAILED",
+    "kill_switch_not_drilled:kill_openai",
+    "kill_switch_not_drilled:kill_gemini",
+    "provider_escalation_undetermined:email",
+    "provider_escalation_undetermined:google",
+    "provider_escalation_undetermined:microsoft",
+    "provider_escalation_undetermined:apple",
+    "provider_escalation_undetermined:github",
+    "provider_escalation_undetermined:discord",
+    "provider_escalation_undetermined:x",
+    "provider_escalation_undetermined:facebook",
+    "provider_escalation_undetermined:google_drive",
+    "provider_escalation_undetermined:onedrive",
+    "provider_escalation_undetermined:dropbox",
+    "provider_escalation_undetermined:mega",
+    "provider_escalation_undetermined:local_storage",
+    "provider_escalation_undetermined:anthropic",
+    "provider_escalation_undetermined:flux",
+    "provider_escalation_undetermined:openrouter",
+    "provider_escalation_undetermined:local_ai",
+    "provider_escalation_undetermined:gitlab",
+    "provider_escalation_undetermined:bitbucket",
+    "provider_escalation_undetermined:azure_devops",
+    "provider_escalation_undetermined:figma",
+    "provider_escalation_undetermined:adobe",
+    "provider_escalation_undetermined:canva",
+    "provider_escalation_undetermined:blender_cloud",
+    "provider_escalation_undetermined:sketchfab",
+    "provider_escalation_undetermined:paypal",
+    "provider_escalation_undetermined:stripe",
+    "provider_escalation_undetermined:midtrans",
+    "provider_escalation_undetermined:kofi",
+    "release_readiness_defined_not_drill_verified"
+  ],
+  "limitations": [
+    "This plan defines support readiness locally only. It is not a support channel, an on-call rotation, or a guarantee of resolution.",
+    "Provider escalation is decided only where the rollout staged a kill switch and stop conditions; every other exposed provider carries an escalation decision nobody has made yet.",
+    "No incident, page, escalation, kill switch, or support message has been executed: the committed 116.50 plan is a stage fixture and COHORT_CONSENT_VERIFICATION_FAILED records no verified participant.",
+    "Severity levels, owners, and response targets are inherited from the docs/planning/v1.2/sprint_113_support_escalation_readiness.json decision and are not re-negotiated here; all external gates remain DEFERRED-EXTERNAL."
+  ],
+  "_meta": {
+    "generated_by": "test/release/scratch_1176_generator_test.dart",
+    "source": "live Sprint117SupportGate().evaluate()",
+    "severity_levels": 4,
+    "escalated": 2,
+    "undetermined": 29
+  }
+}

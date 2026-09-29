@@ -28,8 +28,8 @@
   "active_sprint": 116,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_116.json",
   "active_ledger": "docs/sprints/sprint-116-connector-certification.md",
-  "last_verified_step": "116.46",
-  "next_step": "116.48",
+  "last_verified_step": "116.48",
+  "next_step": "116.49",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "116.36",
@@ -611,10 +611,10 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "116.47",
+  "current_step": "116.49",
   "current_step_status": "PENDING",
-  "last_run_summary": "2026-09-29: Sprint 116.46 Privacy & Compliance Gate VERIFIED-LOCAL (ledger row first, state pointer follows); three genuine gate defects found and fixed (in-transit encryption was demanded for a purely local project store that never leaves the device - a rule that could not be satisfied honestly; terms coverage included provider_local from a leaves_device:false flow so any control set without a local vendor could never pass; residual_copies_declared was required on a successful backup cascade so the healthy fixture failed - a real cascade needs no residual declaration, an unnamed leftover is the actual defect) plus two test-harness errors (a consent refusal carried no withdrawal stamp so it was not a coherent record; the backwards-withdrawal case was actually valid because withdrawn > granted). RED exit 1 load failure -> focused 44/44, scoped regression 186/186 (was 142, +44), analyzer clean, format 2 then recheck 0, diff-check 0, Windows debug build PASS 62.0s flutter / 64.1s wall. Eight evidence areas plus four cross-record joins (consent/destination/retention/terms coverage) - a record can be internally flawless and still unlawful because a second record contradicts it. Sibling sprint-112 dirty files preserved untouched.",
-  "last_commit": "ffea443",
+  "last_run_summary": "2026-09-29: Sprint 116.48 Connector Contract & End-to-End Matrix VERIFIED-LOCAL (ledger row dulu, pointer state menyusul). Lanjut WIP kanonik dari run sebelumnya: ketiga file slice sudah ada tetapi belum di-commit dan evidence-nya tidak bisa dipercaya — 5 meta ber-tanggal 20260930 (tanggal di masa depan, AssetManifest diklaim 2026-09-30 03:26:10 padahal file nyata 2026-09-29 03:26:10) dan angka regresi 57/57 + 207/207 dengan baseline 165 tidak cocok dengan komposisi shard mana pun, jadi SEMUA gate dijalankan ulang dari nol. Hasil run ulang: RED dihasilkan ulang exit 1 (implementation ditahan lalu dikembalikan sha256 identik 707318069c…fad9, load failure: file tak ditemukan + Type 'Sprint116ConnectorControlSet' not found); fokus 42/42 exit 0 (ulang dua kali); shard A 52/52 exit 0; shard B 116.41-116.48 201/201 exit 0; baseline tanpa 116.48 159/159 exit 0 sehingga delta +42 persis test baru; analyzer scoped 2 file No issues found! exit 0; format --set-exit-if-changed 0 changed exit 0; git diff --check path slice exit 0; Windows debug build PASS exit 0 66,4s flutter / 69s wall, AssetManifest.bin mtime 2026-09-29 12:58:50. Koreksi kecil pada fixture: certified_on 2026-09-30 -> 2026-09-29 (tanggal run sebenarnya), diverifikasi ulang fokus tetap 42/42. Gate locks 9 suite wajib (manifest/auth/capability/usage/error/reauth/disconnect/cleanup/regression) pada 9 record group + 9 join silang (suite_coverage, manifest_agreement, capability_undeclared, capability_unexercised, reauth, lifecycle_ordering, credential_residue, regression_suite_coverage, suite_evidence). Slice commit 4c6c848; evidence .log tetap gitignore, hanya .meta yang di-commit. macos/Flutter/GeneratedPluginRegistrant.swift (WIP sibling) dipertahankan utuh dan tidak di-commit.",
+  "last_commit": "4c6c848",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -725,7 +725,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "116.47",
+  "last_resolved_step": "116.48",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -1649,5 +1649,57 @@
     "commit": "ffea443",
     "live_visual_verification": false,
     "external_gates": "DEFERRED-EXTERNAL"
+  },
+  "sprint_116_step_11648": {
+    "status": "VERIFIED-LOCAL",
+    "title": "Connector Contract & End-to-End Matrix",
+    "date": "2026-09-29",
+    "manifest": "docs/planning/v1.2/sprint_116_connector_contract_e2e_matrix.json",
+    "domain": "lib/features/world_logic/domain/sprint_116_connector_contract_e2e_matrix.dart",
+    "test": "test/release/sprint_116_connector_contract_e2e_matrix_test.dart",
+    "required_evidence": [
+      "manifest",
+      "auth",
+      "capability",
+      "usage",
+      "error",
+      "reauth",
+      "disconnect",
+      "cleanup",
+      "regression"
+    ],
+    "cross_record_joins": [
+      "suite_coverage",
+      "manifest_agreement",
+      "capability_undeclared",
+      "capability_unexercised",
+      "reauth",
+      "lifecycle_ordering",
+      "credential_residue",
+      "regression_suite_coverage",
+      "suite_evidence"
+    ],
+    "red": "load failure exit 1 reproduced by withholding the implementation file and restoring it with an identical sha256 (707318069c1231be496cebe8e08b2f12c643e27354a51881a93812bd83c3fad9)",
+    "focused_tests": "42/42 exit 0",
+    "regression": "shard A 116.28-116.39 52/52 exit 0; shard B 116.41-116.48 201/201 exit 0; baseline without 116.48 = 159/159 exit 0, delta +42 exactly the new tests",
+    "analyzer": "scoped 2 files No issues found! exit 0",
+    "format": "--set-exit-if-changed 2 files 0 changed exit 0",
+    "diff_check": 0,
+    "windows_debug_build": "PASS exit 0, 66,4s flutter / 69s wall; AssetManifest.bin mtime 2026-09-29 12:58:50; kernel_blob.bin unchanged since 27 Sep because the gate library is imported only by its own test, so absent symbols there are not evidence of a stale build",
+    "evidence": [
+      "docs/evidence/sprint-116-48-red-20260929.meta",
+      "docs/evidence/sprint-116-48-focused-20260929.meta",
+      "docs/evidence/sprint-116-48-regression-a-20260929.meta",
+      "docs/evidence/sprint-116-48-regression-b-20260929.meta",
+      "docs/evidence/sprint-116-48-analyze-20260929.meta",
+      "docs/evidence/sprint-116-48-build-windows-debug-20260929.meta"
+    ],
+    "evidence_correction": "five 20260930 meta files from the previous run were deleted and replaced: the dates were in the future and the regression counts (57/57 + 207/207, baseline 165) did not match any shard composition; the reported gate/harness fix iteration could not be re-reproduced without repeating RED->GREEN, so only the final state was verified",
+    "limitations": "synthetic local manifest UNVERIFIED without secret/API key (test-enforced); live OAuth/API-key handshake, production refresh tokens, real end-to-end calls per proposed connector, real token/vault cleanup, hosted CI and publication remain DEFERRED-EXTERNAL",
+    "live_connector_execution": false,
+    "external_gates": "DEFERRED-EXTERNAL",
+    "next_step": "116.49",
+    "commit": "4c6c848",
+    "state_commit": "pending"
   }
 }

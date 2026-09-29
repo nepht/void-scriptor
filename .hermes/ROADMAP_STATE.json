@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.1",
-  "next_step": "117.2",
+  "last_verified_step": "117.2",
+  "next_step": "117.3",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -56,7 +56,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-09-30",
-  "updated_by": "core-worker-cron-sprint-117-1",
+  "updated_by": "core-worker-cron-sprint-117-2",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -2157,5 +2157,30 @@
     "dirty_preserved": "macos/Flutter/GeneratedPluginRegistrant.swift (M, user-owned, outside slice, not committed)",
     "snapshot": "C:/Users/nepht/AppData/Local/vs-run1171-snap/pre_mutation_record.json",
     "open_items": "release cut pending (pubspec 1.2.0-rc.1 != v1.3.0-beta.1) = operator decision"
+  },
+  "core_worker_run_2026_09_30_1172": {
+    "head_before": "5d14d5b",
+    "head_after": "e076c3d",
+    "action": "executed canonical next_step 117.2 (Beta Validation Charter) end to end",
+    "guard_before": "PASS canonical_sprint=117 recommended_step=117.2 last_resolved_step=117.1",
+    "canonical_sha256_verified": "b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6 (matches roadmap_guard output)",
+    "charter_manifest": "docs/planning/v1.3/sprint_117_beta_validation_charter.json",
+    "charter_result": "pass / CHARTER_COMPLETE_LOCAL, violations 0, missing_fields 0",
+    "field_coverage": "window 3, questions 14, connector_subset 31, evidence 14, owners 2, stop_conditions 5, ga_criteria 6",
+    "focused": "49/49 PASS exit 0",
+    "regression": "shard A 241/241 exit 0; shard B 536/536 exit 0",
+    "analyzer": "scoped 2 files No issues found! exit 0",
+    "format": "recheck 2 files 0 changed exit 0",
+    "diff_check": "exit 0",
+    "build_windows_debug": "PASS exit 0 22,1s (AssetManifest.bin 2026-09-30 00:40:27)",
+    "defects_fixed": [
+      "page_oncall blanket ban rejected legitimate triage; rule moved to per-stage resolution (page-only stage fails, page next to containment allowed, positive test added)",
+      "const Duration(days:1).inMilliseconds not const-evaluable; replaced with named dayInMilliseconds constant",
+      "3 test fixtures masked the rule they intended to test (hardcoded durationDays; blocked-before-fail in hidden-provider, owner blank-role/dupe, GA unknown-gate tests)"
+    ],
+    "scratch_removed": "tool/tmp_generate_1172_charter_manifest.dart deleted after manifest generated from live gate output",
+    "dirty_preserved": "macos/Flutter/GeneratedPluginRegistrant.swift (M, user-owned, outside slice, not committed)",
+    "snapshot": "C:/Users/nepht/AppData/Local/vs-run1172-snap/pre_mutation_record.json",
+    "open_items": "release cut pending (pubspec 1.2.0-rc.1 != v1.3.0-beta.1) = operator decision; all external gates DEFERRED-EXTERNAL"
   }
 }

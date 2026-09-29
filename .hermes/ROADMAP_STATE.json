@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": null,
-  "next_step": "117.1",
+  "last_verified_step": "117.1",
+  "next_step": "117.2",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -55,8 +55,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-29",
-  "updated_by": "core-worker-cron-stability-gate",
+  "updated_at": "2026-09-30",
+  "updated_by": "core-worker-cron-sprint-117-1",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -612,7 +612,7 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "117.1",
+  "current_step": "117.2",
   "current_step_status": "NOT_STARTED",
   "last_run_summary": "2026-09-29: Operator transitioned to sprint 117 (Beta Validation) after sprint 116 closed 52/52 VERIFIED-LOCAL. pointer 117.1 NOT_STARTED; no contract work performed by this transition.",
   "last_commit": "b7bd0d1",
@@ -1835,10 +1835,28 @@
     "prior_state": "next_step dikosongkan Pending operator decision"
   },
   "sprint_117_step_1171": {
-    "status": "IN_PROGRESS_STABILITY_GATE_REPAIRED",
-    "next_step": "117.1",
-    "manifest": null,
-    "note": "Entry gate required stability_gate PASS. Analyzer RED (exit 1) was repaired in commit 1a0d94d; roadmap work for 117.1 has not started yet."
+    "status": "VERIFIED-LOCAL",
+    "next_step": "117.2",
+    "manifest": "docs/planning/v1.3/sprint_117_beta_entry_gate.json",
+    "commit": "0a18b1c",
+    "verdict": "BETA_ENTRY_LOCAL_READY",
+    "gate_state": "pass",
+    "missing_evidence": [],
+    "violations": [],
+    "canonical_entry_block_resolved": true,
+    "registry_provider_count": 32,
+    "certified": 30,
+    "limited": 1,
+    "blocked": 1,
+    "exposed_beta_subset": 31,
+    "tests_focused": "30/30 PASS exit 0",
+    "regression_shard_a": "169/169 PASS exit 0 (116.52, 116.51, 116.50, 116.49, 116.1)",
+    "regression_shard_b": "367/367 PASS exit 0 (rest of the 116.28-116.48 certification chain)",
+    "analyzer": "scoped 2 file, exit 0, No issues found!",
+    "format": "2 files changed then --set-exit-if-changed 0 changed exit 0, focused stayed 30/30",
+    "diff_check": "exit 0",
+    "build_windows_debug": "PASS exit 0, 32.1s, AssetManifest.bin mtime 2026-09-30 00:02:22",
+    "note": "Fail-closed entry gate over the six canonical evidence areas. It re-derives the canonical entry_readiness BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED from repository evidence and finds a certified/limited subset is now actually recorded (30 certified / 1 limited kofi / 1 blocked saweria, 32 providers each backed by a certification manifest), so the document-creation block is stale. The immutable canonical contract was NOT edited. Release cut stays an open item (pubspec 1.2.0-rc.1 != v1.3.0-beta.1): an operator decision, never assumed by cron."
   },
   "sprint_117_step_1172": {
     "status": "NOT_STARTED",
@@ -2127,6 +2145,17 @@
     "head_after": "1a0d94d",
     "action": "stability gate repair only (rule 4); no 117.1 roadmap mutation",
     "guard_before": "PASS canonical_sprint=117 recommended_step=117.1",
-    "dirty_preserved": "macos/Flutter/GeneratedPluginRegistrant.swift (M, user-owned, outside slice, not committed)"
+    "dirty_preserved": "macos/Flutter/GeneratedPluginRegistrant.swift (M, user-owned, outside slice, not committed)",
+    "superseded_by": "core_worker_run_2026_09_30_1171 (stability-gate-only run; 117.1 executed on 2026-09-30)"
+  },
+  "core_worker_run_2026_09_30_1171": {
+    "head_before": "2a24f7d",
+    "head_after": "0a18b1c",
+    "action": "executed canonical next_step 117.1 (Beta Entry Gate) end to end",
+    "guard_before": "PASS canonical_sprint=117 recommended_step=117.1 last_resolved_step=-",
+    "immutable_checksums": "4/4 MATCH (ROADMAP_POLICY, DOCUMENT_REGISTRY, docs/roadmap/README.md, AUTONOMOUS_ROADMAP_PROMPT, primary-user-and-job)",
+    "dirty_preserved": "macos/Flutter/GeneratedPluginRegistrant.swift (M, user-owned, outside slice, not committed)",
+    "snapshot": "C:/Users/nepht/AppData/Local/vs-run1171-snap/pre_mutation_record.json",
+    "open_items": "release cut pending (pubspec 1.2.0-rc.1 != v1.3.0-beta.1) = operator decision"
   }
 }

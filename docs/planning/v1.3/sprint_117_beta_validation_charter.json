@@ -1,0 +1,519 @@
+{
+  "canonical_step": "117.2",
+  "title": "Beta Validation Charter",
+  "status": "UNVERIFIED",
+  "status_scope": "charter_contract_only",
+  "certified_on": "2026-09-30",
+  "live_beta_executed": false,
+  "entry_anchor_verdict": "BETA_ENTRY_LOCAL_READY",
+  "required_fields": [
+    "window",
+    "questions",
+    "connector_subset",
+    "evidence",
+    "owners",
+    "stop_conditions",
+    "ga_criteria"
+  ],
+  "required_ga_gates": [
+    "security",
+    "privacy",
+    "accessibility",
+    "kill_switch",
+    "staged_rollout",
+    "rollback"
+  ],
+  "beta_version": "v1.3.0-beta.1",
+  "pubspec_version": "1.2.0-rc.1",
+  "release_cut": false,
+  "state": "pass",
+  "verdict": "CHARTER_COMPLETE_LOCAL",
+  "missing_fields": [],
+  "violations": [],
+  "window": {
+    "window_id": "beta_validation_window",
+    "start_epoch_ms": 1791158400000,
+    "end_epoch_ms": 1794787200000,
+    "duration_days": 42,
+    "phases": [
+      {
+        "phase_id": "phase_internal",
+        "stage_id": "stage_internal",
+        "start_epoch_ms": 1791158400000,
+        "end_epoch_ms": 1791763200000,
+        "exit_criterion": "no_sev1_for_72h"
+      },
+      {
+        "phase_id": "phase_alpha",
+        "stage_id": "stage_alpha",
+        "start_epoch_ms": 1791763200000,
+        "end_epoch_ms": 1792972800000,
+        "exit_criterion": "no_sev1_for_72h"
+      },
+      {
+        "phase_id": "phase_waitlist",
+        "stage_id": "stage_waitlist",
+        "start_epoch_ms": 1792972800000,
+        "end_epoch_ms": 1794787200000,
+        "exit_criterion": "no_sev1_for_72h"
+      }
+    ]
+  },
+  "questions": [
+    {
+      "question_id": "q_cohort_consent",
+      "area": "cohort_consent",
+      "step": "117.3",
+      "question": "Apakah setiap peserta beta terdaftar dengan consent eksplisit, terdokumentasi, dan dapat ditarik?",
+      "measurable": true,
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_beta_cohort_consent_plan.json"
+      ]
+    },
+    {
+      "question_id": "q_installation_upgrade",
+      "area": "installation_upgrade",
+      "step": "117.9",
+      "question": "Apakah instalasi bersih dan upgrade dari build sebelumnya mempertahankan proyek pengguna tanpa kehilangan data?",
+      "measurable": true,
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_113_upgrade_path_validation.json",
+        "docs/planning/v1.2/sprint_114_install_update_health.json"
+      ]
+    },
+    {
+      "question_id": "q_account_migration",
+      "area": "account_migration",
+      "step": "117.10",
+      "question": "Apakah konfigurasi akun migrasi utuh tanpa menimpa setelan lokal pengguna?",
+      "measurable": true,
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_114_migration_data_repair_fixes.json"
+      ]
+    },
+    {
+      "question_id": "q_sync_backup_conflict",
+      "area": "sync_backup_conflict",
+      "step": "117.14",
+      "question": "Apakah sinkronisasi, backup, dan resolusi konflik tetap benar ketika dua perangkat menulis proyek yang sama?",
+      "measurable": true,
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_cross_storage_sync_backup_certification.json"
+      ]
+    },
+    {
+      "question_id": "q_security_center",
+      "area": "security_center",
+      "step": "117.20",
+      "question": "Apakah Security Center melaporkan status connector yang sama dengan kenyataan dan tidak pernah meloloskan secret ke log?",
+      "measurable": true,
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_security_certification_gate.json"
+      ]
+    },
+    {
+      "question_id": "q_billing_webhook",
+      "area": "billing_webhook",
+      "step": "117.34",
+      "question": "Apakah entitlement, webhook, dan settlement konsisten pada semua provider pembayaran yang dibiakkan?",
+      "measurable": true,
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_billing_entitlement_webhook_reconciliation.json"
+      ]
+    },
+    {
+      "question_id": "q_accessibility",
+      "area": "accessibility",
+      "step": "117.25",
+      "question": "Apakah seluruh alur beta dapat diselesaikan dengan keyboard dan reader layar pada kontras yang memenuhi ambang?",
+      "measurable": true,
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json"
+      ]
+    },
+    {
+      "question_id": "q_offline_cached_state",
+      "area": "offline_cached_state",
+      "step": "117.27",
+      "question": "Apakah state offline dan cache tetap jujur dan dapat dipulihkan tanpa kehilangan metadata pengguna?",
+      "measurable": true,
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_offline_cached_metadata_certification.json"
+      ]
+    },
+    {
+      "question_id": "q_failure_state",
+      "area": "failure_state",
+      "step": "117.28",
+      "question": "Apakah kegagalan provider ditunjukkan sebagai keadaan nyata, bukan kondisi sukses yang menipu?",
+      "measurable": true,
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_provider_error_state_certification.json"
+      ]
+    },
+    {
+      "question_id": "q_quota_accuracy",
+      "area": "quota_accuracy",
+      "step": "117.29",
+      "question": "Apakah kuota yang ditampilkan cocok dengan pemakaian yang dilaporkan lintas provider?",
+      "measurable": true,
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_quota_usage_cross_provider_contract.json"
+      ]
+    },
+    {
+      "question_id": "q_usage_cost",
+      "area": "usage_cost",
+      "step": "117.30",
+      "question": "Apakah biaya pemakaian yang dilaporkan cocok dengan tagihan provider untuk periode yang sama?",
+      "measurable": true,
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_ai_usage_cost_reconciliation.json"
+      ]
+    },
+    {
+      "question_id": "q_privacy",
+      "area": "privacy",
+      "step": "117.33",
+      "question": "Apakah data yang meninggalkan perangkat hanya data yang tercantum dalam consent dan=data_boundaries?",
+      "measurable": true,
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_privacy_compliance_gate.json"
+      ]
+    },
+    {
+      "question_id": "q_provider_resilience",
+      "area": "provider_resilience",
+      "step": "117.36",
+      "question": "Apakah retry, backoff, dan circuit breaker mencegah kegagalan provider menjadi kehilangan data pengguna?",
+      "measurable": true,
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_retry_backoff_circuit_breaker_certification.json"
+      ]
+    },
+    {
+      "question_id": "q_support_incident",
+      "area": "support_incident",
+      "step": "117.6",
+      "question": "Apakah setiap insiden beta mendapat owner, klasifikasi, dan jalur eskalasi dalam SLA yang tertulis?",
+      "measurable": true,
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_beta_cohort_consent_plan.json"
+      ]
+    }
+  ],
+  "connector_subset": {
+    "exposed": [
+      "email",
+      "google",
+      "microsoft",
+      "apple",
+      "github",
+      "discord",
+      "x",
+      "facebook",
+      "google_drive",
+      "onedrive",
+      "dropbox",
+      "mega",
+      "local_storage",
+      "openai",
+      "gemini",
+      "anthropic",
+      "flux",
+      "openrouter",
+      "local_ai",
+      "gitlab",
+      "bitbucket",
+      "azure_devops",
+      "figma",
+      "adobe",
+      "canva",
+      "blender_cloud",
+      "sketchfab",
+      "paypal",
+      "stripe",
+      "midtrans",
+      "kofi"
+    ],
+    "hidden": [],
+    "rollout_exposed": [
+      "conn_openai",
+      "conn_gemini"
+    ]
+  },
+  "evidence": [
+    {
+      "question_id": "q_cohort_consent",
+      "required_artifacts": [
+        "docs/evidence/sprint_117-beta-cohort_consent.json"
+      ],
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_beta_cohort_consent_plan.json"
+      ]
+    },
+    {
+      "question_id": "q_installation_upgrade",
+      "required_artifacts": [
+        "docs/evidence/sprint_117-beta-installation_upgrade.json"
+      ],
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_113_upgrade_path_validation.json",
+        "docs/planning/v1.2/sprint_114_install_update_health.json"
+      ]
+    },
+    {
+      "question_id": "q_account_migration",
+      "required_artifacts": [
+        "docs/evidence/sprint_117-beta-account_migration.json"
+      ],
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_114_migration_data_repair_fixes.json"
+      ]
+    },
+    {
+      "question_id": "q_sync_backup_conflict",
+      "required_artifacts": [
+        "docs/evidence/sprint_117-beta-sync_backup_conflict.json"
+      ],
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_cross_storage_sync_backup_certification.json"
+      ]
+    },
+    {
+      "question_id": "q_security_center",
+      "required_artifacts": [
+        "docs/evidence/sprint_117-beta-security_center.json"
+      ],
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_security_certification_gate.json"
+      ]
+    },
+    {
+      "question_id": "q_billing_webhook",
+      "required_artifacts": [
+        "docs/evidence/sprint_117-beta-billing_webhook.json"
+      ],
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_billing_entitlement_webhook_reconciliation.json"
+      ]
+    },
+    {
+      "question_id": "q_accessibility",
+      "required_artifacts": [
+        "docs/evidence/sprint_117-beta-accessibility.json"
+      ],
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json"
+      ]
+    },
+    {
+      "question_id": "q_offline_cached_state",
+      "required_artifacts": [
+        "docs/evidence/sprint_117-beta-offline_cached_state.json"
+      ],
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_offline_cached_metadata_certification.json"
+      ]
+    },
+    {
+      "question_id": "q_failure_state",
+      "required_artifacts": [
+        "docs/evidence/sprint_117-beta-failure_state.json"
+      ],
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_provider_error_state_certification.json"
+      ]
+    },
+    {
+      "question_id": "q_quota_accuracy",
+      "required_artifacts": [
+        "docs/evidence/sprint_117-beta-quota_accuracy.json"
+      ],
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_quota_usage_cross_provider_contract.json"
+      ]
+    },
+    {
+      "question_id": "q_usage_cost",
+      "required_artifacts": [
+        "docs/evidence/sprint_117-beta-usage_cost.json"
+      ],
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_ai_usage_cost_reconciliation.json"
+      ]
+    },
+    {
+      "question_id": "q_privacy",
+      "required_artifacts": [
+        "docs/evidence/sprint_117-beta-privacy.json"
+      ],
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_privacy_compliance_gate.json"
+      ]
+    },
+    {
+      "question_id": "q_provider_resilience",
+      "required_artifacts": [
+        "docs/evidence/sprint_117-beta-provider_resilience.json"
+      ],
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_retry_backoff_circuit_breaker_certification.json"
+      ]
+    },
+    {
+      "question_id": "q_support_incident",
+      "required_artifacts": [
+        "docs/evidence/sprint_117-beta-support_incident.json"
+      ],
+      "source_manifests": [
+        "docs/planning/v1.2/sprint_116_beta_cohort_consent_plan.json"
+      ]
+    }
+  ],
+  "owners": [
+    {
+      "owner_id": "release-owner",
+      "role": "release_owner",
+      "scopes": [
+        "charter",
+        "stop_condition",
+        "ga_criteria"
+      ]
+    },
+    {
+      "owner_id": "support-owner",
+      "role": "support_owner",
+      "scopes": [
+        "question",
+        "incident"
+      ]
+    }
+  ],
+  "stop_conditions": [
+    {
+      "stop_id": "charter_stop_internal_error",
+      "stage_id": "stage_internal",
+      "metric_id": "metric_error_rate",
+      "operator": "gt",
+      "threshold": 0.02,
+      "window_minutes": 60,
+      "action": "halt_rollout",
+      "kill_switch_ref": "kill_openai"
+    },
+    {
+      "stop_id": "charter_stop_alpha_error",
+      "stage_id": "stage_alpha",
+      "metric_id": "metric_error_rate",
+      "operator": "gt",
+      "threshold": 0.02,
+      "window_minutes": 60,
+      "action": "rollback_stage",
+      "kill_switch_ref": "kill_openai"
+    },
+    {
+      "stop_id": "charter_stop_alpha_auth",
+      "stage_id": "stage_alpha",
+      "metric_id": "metric_auth_success",
+      "operator": "lt",
+      "threshold": 0.95,
+      "window_minutes": 60,
+      "action": "page_oncall",
+      "kill_switch_ref": "kill_openai"
+    },
+    {
+      "stop_id": "charter_stop_waitlist_error",
+      "stage_id": "stage_waitlist",
+      "metric_id": "metric_error_rate",
+      "operator": "gt",
+      "threshold": 0.02,
+      "window_minutes": 60,
+      "action": "rollback_stage",
+      "kill_switch_ref": "kill_openai"
+    },
+    {
+      "stop_id": "charter_stop_waitlist_crash",
+      "stage_id": "stage_waitlist",
+      "metric_id": "metric_crash_rate",
+      "operator": "gt",
+      "threshold": 0.01,
+      "window_minutes": 1440,
+      "action": "halt_rollout",
+      "kill_switch_ref": "kill_openai"
+    }
+  ],
+  "ga_criteria": [
+    {
+      "criterion_id": "ga_security",
+      "gate": "security",
+      "step": "117.32",
+      "criterion": "Security assessment selesai tanpa temuan Sev-1 yang belum memiliki owner dan rencana mitigasi.",
+      "evidence_required": true
+    },
+    {
+      "criterion_id": "ga_privacy",
+      "gate": "privacy",
+      "step": "117.33",
+      "criterion": "Privacy assessment selesai dan seluruh data yang keluar perangkat terpetakan ke consent yang berlaku.",
+      "evidence_required": true
+    },
+    {
+      "criterion_id": "ga_accessibility",
+      "gate": "accessibility",
+      "step": "117.25",
+      "criterion": "Accessibility validation hijau pada seluruh alur beta yang diuji, dengan bukti pengujian tersimpan.",
+      "evidence_required": true
+    },
+    {
+      "criterion_id": "ga_kill_switch",
+      "gate": "kill_switch",
+      "step": "117.8",
+      "criterion": "Drill kill switch provider dijalankan terhadap sistem nyata dan terbukti menghentikan connector yang sedang diekspos.",
+      "evidence_required": true
+    },
+    {
+      "criterion_id": "ga_staged_rollout",
+      "gate": "staged_rollout",
+      "step": "117.44",
+      "criterion": "Staged rollout mencapai tahap akhir tanpa stop condition yang terpicu dan tanpa Sev-1 terbuka.",
+      "evidence_required": true
+    },
+    {
+      "criterion_id": "ga_rollback",
+      "gate": "rollback",
+      "step": "117.43",
+      "criterion": "Rollback terverifikasi terhadap artefak beta yang benar-benar dipublikasikan, bukan terhadap build lokal.",
+      "evidence_required": true
+    }
+  ],
+  "field_coverage": {
+    "window": 3,
+    "questions": 14,
+    "connector_subset": 31,
+    "evidence": 14,
+    "owners": 2,
+    "stop_conditions": 5,
+    "ga_criteria": 6
+  },
+  "owned_scopes": [
+    "charter",
+    "ga_criteria",
+    "incident",
+    "question",
+    "stop_condition"
+  ],
+  "carried_open_items": [
+    "release_cut_pending: pubspec 1.2.0-rc.1 != v1.3.0-beta.1"
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "open_items": [
+    "release_cut_pending: pubspec 1.2.0-rc.1 != v1.3.0-beta.1"
+  ],
+  "limitations": [
+    "Charter scope only: this fixes what the beta must answer, over which window, with which evidence, owners, stop conditions, and GA bar. It does not execute any of it.",
+    "The window is a plan anchored to the 116.50 rollout stage sequence; no stage has advanced, no flag has been flipped, and no date in this charter has elapsed.",
+    "Questions are declared here, but their evidence artifacts do not exist yet by design: the beta has not run, so the answers are DEFERRED-EXTERNAL.",
+    "Live cohort recruitment, real consent collection, provider handshakes, a real kill-switch drill, billing settlement, hosted CI, and publication remain DEFERRED-EXTERNAL.",
+    "The charter re-derives its anchors from committed Sprint 116 and 117.1 evidence; it never edits those immutable contracts."
+  ]
+}

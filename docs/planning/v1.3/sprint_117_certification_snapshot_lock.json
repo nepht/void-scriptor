@@ -1,0 +1,557 @@
+{
+  "canonical_step": "117.4",
+  "title": "Certification Snapshot Lock",
+  "status": "UNVERIFIED",
+  "status_scope": "local_certification_freeze_only",
+  "frozen_on": "2026-09-30",
+  "live_beta_executed": false,
+  "state": "pass",
+  "verdict": "CERTIFICATION_SNAPSHOT_LOCKED_LOCAL",
+  "missing_fields": [],
+  "violations": [],
+  "anchor": {
+    "entry_verdict": "BETA_ENTRY_LOCAL_READY",
+    "cohort_verdict": "COHORT_CONSENT_VERIFICATION_FAILED",
+    "as_of_epoch_ms": 1790701200710,
+    "entry_visibility": {
+      "email": "certified",
+      "google": "certified",
+      "microsoft": "certified",
+      "apple": "certified",
+      "github": "certified",
+      "discord": "certified",
+      "x": "certified",
+      "facebook": "certified",
+      "google_drive": "certified",
+      "onedrive": "certified",
+      "dropbox": "certified",
+      "mega": "certified",
+      "local_storage": "certified",
+      "openai": "certified",
+      "gemini": "certified",
+      "anthropic": "certified",
+      "flux": "certified",
+      "openrouter": "certified",
+      "local_ai": "certified",
+      "gitlab": "certified",
+      "bitbucket": "certified",
+      "azure_devops": "certified",
+      "figma": "certified",
+      "adobe": "certified",
+      "canva": "certified",
+      "blender_cloud": "certified",
+      "sketchfab": "certified",
+      "paypal": "certified",
+      "stripe": "certified",
+      "midtrans": "certified",
+      "kofi": "limited",
+      "saweria": "blocked"
+    },
+    "recorded_api_versions": [
+      "not-claimed"
+    ],
+    "recorded_connector_versions": [
+      "manifest-v1"
+    ],
+    "policy_review_date": "2027-03-27",
+    "certification_statuses": [
+      "UNVERIFIED",
+      "CERTIFIED",
+      "LIMITED",
+      "BLOCKED",
+      "EXPIRED"
+    ]
+  },
+  "locked_provider_count": 32,
+  "exposed_subset": [
+    "email",
+    "google",
+    "microsoft",
+    "apple",
+    "github",
+    "discord",
+    "x",
+    "facebook",
+    "google_drive",
+    "onedrive",
+    "dropbox",
+    "mega",
+    "local_storage",
+    "openai",
+    "gemini",
+    "anthropic",
+    "flux",
+    "openrouter",
+    "local_ai",
+    "gitlab",
+    "bitbucket",
+    "azure_devops",
+    "figma",
+    "adobe",
+    "canva",
+    "blender_cloud",
+    "sketchfab",
+    "paypal",
+    "stripe",
+    "midtrans",
+    "kofi"
+  ],
+  "blocked_subset": [
+    "saweria"
+  ],
+  "expired_provider_ids": [],
+  "snapshot": [
+    {
+      "provider_id": "email",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "google",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "microsoft",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "apple",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "github",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "bundled-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "discord",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "x",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "facebook",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "google_drive",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "bundled-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "onedrive",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "dropbox",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "bundled-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "mega",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "local_storage",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "openai",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "bundled-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "gemini",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "bundled-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "anthropic",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "bundled-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "flux",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "openrouter",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "local_ai",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "gitlab",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "bundled-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "bitbucket",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "bundled-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "azure_devops",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "figma",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "bundled-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "adobe",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "bundled-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "canva",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "bundled-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "blender_cloud",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "sketchfab",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "paypal",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "bundled-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "stripe",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "bundled-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "midtrans",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "bundled-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "kofi",
+      "connector_version": "manifest-v1",
+      "status": "LIMITED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    },
+    {
+      "provider_id": "saweria",
+      "connector_version": "manifest-v1",
+      "status": "BLOCKED",
+      "limitations": [
+        "local_certification_chain_only",
+        "not_live_provider_availability",
+        "no_quota_cost_or_credential_claim"
+      ],
+      "icon_version": "generic-v1",
+      "api_version": "not-claimed",
+      "review_date": "2027-03-27"
+    }
+  ],
+  "field_coverage": {
+    "provider_id": 32,
+    "connector_version": 32,
+    "status": 32,
+    "limitations": 32,
+    "icon_version": 32,
+    "api_version": 32,
+    "review_date": 32
+  },
+  "required_fields": [
+    "provider_id",
+    "connector_version",
+    "status",
+    "limitations",
+    "icon_version",
+    "api_version",
+    "review_date"
+  ],
+  "source_manifests": [
+    "docs/planning/v1.3/sprint_117_beta_entry_gate.json",
+    "docs/planning/v1.2/sprint_116_certification_policy.json",
+    "docs/planning/v1.2/sprint_116_current_api_sdk_verification.json",
+    "docs/planning/v1.2/sprint_115_provider_connector_manifest.json",
+    "docs/planning/v1.3/sprint_117_beta_cohort_consent_verification.json"
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "open_items": [
+    "release_cut_pending: pubspec 1.2.0-rc.1 != v1.3.0-beta.1",
+    "upstream_cohort_not_verified:COHORT_CONSENT_VERIFICATION_FAILED"
+  ],
+  "limitations": [
+    "This lock freezes local certification state only. It is not live provider availability and claims no quota, cost, credential, handshake, or hosted CI evidence.",
+    "Every locked API version is the source placeholder not-claimed; 116.4 has recorded no verified provider API version, so the lock pins the placeholder rather than inventing one.",
+    "The review date is the single recertification instant 116.2 records; per-provider review windows are not evidenced and are therefore not locked.",
+    "Live provider certification, real participant consent, kill-switch drills, billing settlement, hosted CI, and publication remain DEFERRED-EXTERNAL."
+  ]
+}

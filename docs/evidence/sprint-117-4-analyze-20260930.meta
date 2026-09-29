@@ -1,0 +1,10 @@
+{
+  "fact": "sprint-117-4-analyze-20260930",
+  "command": "dart analyze lib/.../sprint_117_certification_snapshot_lock.dart test/release/sprint_117_certification_snapshot_lock_test.dart",
+  "exit_code": 0,
+  "result": "No issues found!",
+  "head_before": "469fea3",
+  "recorded_at": "2026-09-30",
+  "log_sha256": "90226bbcddef94c4a492aa880bd1741d348e6513245ab75b231aad6dcd0bf8a4",
+  "note": ""
+}

@@ -1,0 +1,10 @@
+{
+  "fact": "sprint-117-4-reg-117x-20260930",
+  "command": "flutter test sprint_117_beta_entry_gate + sprint_117_beta_validation_charter + sprint_117_beta_cohort_consent_verification + sprint_117_certification_snapshot_lock tests",
+  "exit_code": 0,
+  "result": "226/226 PASS",
+  "head_before": "469fea3",
+  "recorded_at": "2026-09-30",
+  "log_sha256": "1bf75b1cb6274f2738de2b8f1aa52c398dcc95672692bd57bb78cb738906e2d4",
+  "note": ""
+}

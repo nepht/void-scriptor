@@ -1,0 +1,10 @@
+{
+  "fact": "sprint-117-4-red-20260930",
+  "command": "focus: flutter test test/release/sprint_117_certification_snapshot_lock_test.dart",
+  "exit_code": 1,
+  "result": "load failure: 0 tests ran, 3 undefined names (Sprint117SnapshotGate/Sprint117SnapshotContract/Sprint117SnapshotState)",
+  "head_before": "469fea3",
+  "recorded_at": "2026-09-30",
+  "log_sha256": "7606935d0e765e44435dd75114e1be57cfb224dd097cdf4aae89967b0d9f62a1",
+  "note": "transcribed from this run's observed output; the raw first-run log was overwritten by a later run, so this file is a reconstruction of the recorded diagnostics, not a verbatim capture"
+}

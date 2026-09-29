@@ -1,0 +1,10 @@
+{
+  "fact": "sprint-117-4-diffcheck-20260930",
+  "command": "git diff --check",
+  "exit_code": 0,
+  "result": "clean",
+  "head_before": "469fea3",
+  "recorded_at": "2026-09-30",
+  "log_sha256": null,
+  "note": ""
+}

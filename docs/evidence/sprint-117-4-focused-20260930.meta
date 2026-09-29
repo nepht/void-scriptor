@@ -1,0 +1,10 @@
+{
+  "fact": "sprint-117-4-focused-20260930",
+  "command": "flutter test test/release/sprint_117_certification_snapshot_lock_test.dart",
+  "exit_code": 0,
+  "result": "58/58 PASS",
+  "head_before": "469fea3",
+  "recorded_at": "2026-09-30",
+  "log_sha256": "f51e7a21881934fe5c1e31a729a0f9d9b69d81f916c07f4d90a9c6ebc4506e3f",
+  "note": ""
+}

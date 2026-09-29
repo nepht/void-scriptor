@@ -1,0 +1,10 @@
+{
+  "fact": "sprint-117-4-format-20260930",
+  "command": "dart format --set-exit-if-changed <same 2 slice files>",
+  "exit_code": 0,
+  "result": "0 changed on recheck (first pass reformatted 2 files)",
+  "head_before": "469fea3",
+  "recorded_at": "2026-09-30",
+  "log_sha256": "496e595f1c6c48775fe87dc8f716b26746dc64a8405f3168ac13bf5d14248b1a",
+  "note": ""
+}

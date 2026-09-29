@@ -28,8 +28,8 @@
  "active_sprint": 117,
  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
  "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
- "last_verified_step": "117.7",
- "next_step": "117.8",
+ "last_verified_step": "117.8",
+ "next_step": "117.9",
  "stability_gate": {
   "status": "PASS",
   "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -57,8 +57,8 @@
   "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
   "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
  ],
- "updated_at": "2026-09-30T04:05:00+07:00",
- "updated_by": "core-worker-v5 cron (117.7 privacy-safe monitoring plan)",
+ "updated_at": "2026-09-30T05:40:00+07:00",
+ "updated_by": "core-worker-v5 cron (117.8 seal: half-committed transition repaired, ledger c710603 + slice 5993461)",
  "active_stream": "sequential_expansion",
  "novel_io_hunt_2026_09_12": {
   "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -614,10 +614,10 @@
   "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
   "next_step": "112.41"
  },
- "current_step": "117.2",
+ "current_step": "117.9",
  "current_step_status": "NOT_STARTED",
- "last_run_summary": "2026-09-29: Operator transitioned to sprint 117 (Beta Validation) after sprint 116 closed 52/52 VERIFIED-LOCAL. pointer 117.1 NOT_STARTED; no contract work performed by this transition.",
- "last_commit": "b7bd0d1",
+ "last_run_summary": "2026-09-30: 117.8 Provider Rollback Drill VERIFIED-LOCAL (slice 5993461), sealed by cron. The previous run left a half-committed transition: slice committed, ledger row edited but uncommitted, runtime state still at 117.8, so the roadmap guard correctly refused to advance. Slice was re-verified independently at HEAD before sealing: focused 31/31, shard A 366/366, shard B 134/134, analyzer scoped No issues found!, format 0 changed, diff-check 0, Windows debug build exit 0 19.6s. Pointer 117.9 Installation & Upgrade Validation NOT_STARTED.",
+ "last_commit": "c710603",
  "sprint_112_step_11242": {
   "status": "VERIFIED-LOCAL",
   "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -728,7 +728,7 @@
   "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
   "next_step": "113.4"
  },
- "last_resolved_step": "117.7",
+ "last_resolved_step": "117.8",
  "sprint_113_step_11312": {
   "status": "VERIFIED-LOCAL",
   "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -1984,10 +1984,20 @@
   "note": "7 canonical signals each traced to a distinct committed upstream manifest. All 7 undetermined because no collector has ever run; undetermined is an open item, not a violation. Dominant gate defect fixed: exclusion set was derived by substring-matching English tokens against 113.4 Indonesian prose, silently dropping chapter/credential/draft/lore from enforcement; now the declared token set is enforced and wording drift reported as open items."
  },
  "sprint_117_step_1178": {
-  "status": "NOT_STARTED",
-  "next_step": null,
-  "manifest": null,
-  "note": "slot allocated at operator stream transition; no work performed yet"
+  "status": "VERIFIED-LOCAL",
+  "title": "Provider Rollback Drill",
+  "date": "2026-09-30",
+  "slice_commit": "5993461",
+  "ledger_commit": "c710603",
+  "manifest": "docs/planning/v1.3/sprint_117_provider_rollback_drill.json",
+  "domain": "lib/features/world_logic/domain/sprint_117_provider_rollback_drill.dart",
+  "test": "test/release/sprint_117_provider_rollback_drill_test.dart",
+  "verdict": "PROVIDER_ROLLBACK_DRILL_DEFINED_LOCAL (pass); violations/missing_fields/unmapped_controls empty; coverage 6/6",
+  "independent_reverification": "focused 31/31 exit 0; regression shard A 366/366 exit 0 (117.1-117.8); shard B 134/134 exit 0; dart analyze scoped exit 0 No issues found!; dart format 2 files 0 changed; git diff --check exit 0; flutter build windows --debug exit 0 19.6s",
+  "key_concept": "Gate and drill are separate classes. The drill engages the shipped mechanisms (FeatureFlagRegistry.engageKillSwitch, AccountSecureTokenVault.revoke over an in-memory CredentialStore, GenerationQueue cancel+drain, Sprint116OfflineCacheCertification.certify) so a description of a kill switch cannot pass as a kill switch. The gate only decides the recorded drill, synchronously.",
+  "defects_found": "113.7's recorded drill names kill switch vs12_world_logic_shared, rejected by FeatureFlagRegistry._ensureKnown, and artifact withdrawal targets void_spector.exe, a path absent from docs/release/v1.2.0-rc.1-checksums.txt. Reported as 3 unresolvable_reference with exact spelling rather than repaired, so a verbatim drill still fails visibly.",
+  "limitations": "no control carries an observed outcome (116.50 live_rollout_executed false, every provider kill switch drill_verified false, every message sent_at_epoch_ms 0) so 6/6 controls are undetermined and reported as open items, not violations; live_provider_touched, drill_executed, local_project_data_touched all false; hosted CI, public signing, artifact withdrawal from a distribution channel, incident communication and publication remain DEFERRED-EXTERNAL",
+  "next_step": "117.9"
  },
  "sprint_117_step_1179": {
   "status": "NOT_STARTED",

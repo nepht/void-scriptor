@@ -1,0 +1,186 @@
+{
+  "canonical_step": "116.51",
+  "title": "Beta Acceptance Gate",
+  "status": "UNVERIFIED",
+  "status_scope": "local_certification_chain_only",
+  "certified_on": "2026-09-29",
+  "as_of_epoch_ms": 1790672723711,
+  "live_beta_executed": false,
+  "beta_target": "v1.3.0-beta.1",
+  "pubspec_version": "1.2.0-rc.1",
+  "beta_version_cut": false,
+  "state": "pass",
+  "verdict": "BETA_ACCEPTANCE_LOCAL_READY",
+  "missing_evidence": [],
+  "violations": [],
+  "required_evidence": [
+    "certification_registry",
+    "certified_subset",
+    "limited_connectors",
+    "blocked_connectors",
+    "quality_gates",
+    "beta_plan",
+    "rollback_readiness"
+  ],
+  "registry_provider_count": 32,
+  "registry_count_sources": {
+    "docs/planning/v1.2/sprint_115_provider_connector_manifest.json": 32,
+    "docs/planning/v1.2/sprint_116_provider_registry_reconciliation.json": 32
+  },
+  "certified_subset": [
+    "email",
+    "google",
+    "microsoft",
+    "apple",
+    "github",
+    "discord",
+    "x",
+    "facebook",
+    "google_drive",
+    "onedrive",
+    "dropbox",
+    "mega",
+    "local_storage",
+    "openai",
+    "gemini",
+    "anthropic",
+    "flux",
+    "openrouter",
+    "local_ai",
+    "gitlab",
+    "bitbucket",
+    "azure_devops",
+    "figma",
+    "adobe",
+    "canva",
+    "blender_cloud",
+    "sketchfab",
+    "paypal",
+    "stripe",
+    "midtrans"
+  ],
+  "limited_connectors": [
+    "kofi"
+  ],
+  "blocked_connectors": [
+    "saweria"
+  ],
+  "hidden_from_beta": [
+    "saweria"
+  ],
+  "quality_gates": [
+    {
+      "step": "116.40",
+      "ledger_status": "VERIFIED-LOCAL",
+      "manifest_present": true,
+      "canonical_step_matches": true
+    },
+    {
+      "step": "116.41",
+      "ledger_status": "VERIFIED-LOCAL",
+      "manifest_present": true,
+      "canonical_step_matches": true
+    },
+    {
+      "step": "116.42",
+      "ledger_status": "VERIFIED-LOCAL",
+      "manifest_present": true,
+      "canonical_step_matches": true
+    },
+    {
+      "step": "116.43",
+      "ledger_status": "VERIFIED-LOCAL",
+      "manifest_present": true,
+      "canonical_step_matches": true
+    },
+    {
+      "step": "116.44",
+      "ledger_status": "VERIFIED-LOCAL",
+      "manifest_present": true,
+      "canonical_step_matches": true
+    },
+    {
+      "step": "116.45",
+      "ledger_status": "VERIFIED-LOCAL",
+      "manifest_present": true,
+      "canonical_step_matches": true
+    },
+    {
+      "step": "116.46",
+      "ledger_status": "VERIFIED-LOCAL",
+      "manifest_present": true,
+      "canonical_step_matches": true
+    },
+    {
+      "step": "116.47",
+      "ledger_status": "VERIFIED-LOCAL",
+      "manifest_present": true,
+      "canonical_step_matches": true
+    },
+    {
+      "step": "116.48",
+      "ledger_status": "VERIFIED-LOCAL",
+      "manifest_present": true,
+      "canonical_step_matches": true
+    },
+    {
+      "step": "116.49",
+      "ledger_status": "VERIFIED-LOCAL",
+      "manifest_present": true,
+      "canonical_step_matches": true
+    },
+    {
+      "step": "116.50",
+      "ledger_status": "VERIFIED-LOCAL",
+      "manifest_present": true,
+      "canonical_step_matches": true
+    }
+  ],
+  "beta_plan": {
+    "cohorts": 2,
+    "consents": 3,
+    "coverage_providers": [
+      "openai",
+      "gemini"
+    ],
+    "exposed_connectors": [
+      "conn_openai",
+      "conn_gemini"
+    ]
+  },
+  "rollback_readiness": {
+    "stop_conditions": 3,
+    "rollback_procedures": 3,
+    "kill_switches": 2,
+    "ready": true
+  },
+  "rollback_ready": true,
+  "evidence_coverage": {
+    "certification_registry": 32,
+    "certified_subset": 30,
+    "limited_connectors": 1,
+    "blocked_connectors": 1,
+    "quality_gates": 11,
+    "beta_plan": 2,
+    "rollback_readiness": 8
+  },
+  "open_items": [
+    "release_cut_pending: pubspec 1.2.0-rc.1 != v1.3.0-beta.1"
+  ],
+  "evidence": [
+    "docs/evidence/sprint-116-51-red-20260929.meta",
+    "docs/evidence/sprint-116-51-focused-20260929.meta",
+    "docs/evidence/sprint-116-51-reg-a-20260929.meta",
+    "docs/evidence/sprint-116-51-reg-b-20260929.meta",
+    "docs/evidence/sprint-116-51-analyze-20260929.meta",
+    "docs/evidence/sprint-116-51-format-20260929.meta",
+    "docs/evidence/sprint-116-51-build-20260929.meta"
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "limitations": [
+    "Local certification chain only: the certified subset means every Sprint 116 gate in this repository passed for that provider; live provider handshake, credentials, quota, hosted CI, billing settlement, hardware, and publication remain DEFERRED-EXTERNAL.",
+    "Record-level live status stays UNVERIFIED for every certified provider; no live beta run, no participant enrolment, and no kill-switch drill against a real system has executed.",
+    "Release cut is an open item: the beta target and the pubspec version are reported side by side and are never assumed equal.",
+    "Beta visibility is derived from local certification manifests only: a hidden provider is hidden from the beta plan, not removed from the product, and no provider id outside the 32-entry registry may claim certification."
+  ]
+}

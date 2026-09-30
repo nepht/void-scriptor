@@ -1,0 +1,302 @@
+{
+  "sprint": "117.10",
+  "canonical_step": "117.10",
+  "title": "Account Configuration Migration",
+  "objective": "Memvalidasi identity, provider configs, secret references, storage settings, team, and billing metadata migration.",
+  "state": "pass",
+  "verdict": "ACCOUNT_CONFIGURATION_MIGRATION_VALIDATED_LOCAL",
+  "violations": [],
+  "missing_fields": [],
+  "required_checks": [
+    "identity_preserved",
+    "secret_refs_preserved",
+    "no_secret_export",
+    "storage_settings",
+    "team_metadata",
+    "billing_metadata"
+  ],
+  "check_count": 6,
+  "check_coverage": {
+    "identity_preserved": 1,
+    "secret_refs_preserved": 1,
+    "no_secret_export": 1,
+    "storage_settings": 1,
+    "team_metadata": 1,
+    "billing_metadata": 1
+  },
+  "coverage": 1.0,
+  "checks": [
+    {
+      "check_id": "identity_preserved",
+      "method": "read linked identity store from upgraded package",
+      "expected_outcome": "linked identity readable after upgrade",
+      "observed_outcome": "account_identity_store_absent",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_oauth_linked_identity_flow.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "secret_refs_preserved",
+      "method": "resolve secret reference through the vault",
+      "expected_outcome": "secret reference resolves to the same secret",
+      "observed_outcome": "secret_refs_round_trip_locally",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "no_secret_export",
+      "method": "export account configuration and scan for secrets",
+      "expected_outcome": "no live secret in any exported surface",
+      "observed_outcome": "no_secret_in_serialized_account_surfaces",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_api_keys_manager.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "storage_settings",
+      "method": "rebind machine storage registry after upgrade",
+      "expected_outcome": "active storage location and bound project survive",
+      "observed_outcome": "storage_settings_persisted_locally",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_ai_connection_model_settings.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "team_metadata",
+      "method": "read team metadata store from upgraded package",
+      "expected_outcome": "team organization, seats, and members survive",
+      "observed_outcome": "team_metadata_store_absent",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_team_collaboration_summary.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "billing_metadata",
+      "method": "read billing metadata store from upgraded package",
+      "expected_outcome": "billing identity, currency, and charges survive",
+      "observed_outcome": "billing_metadata_store_absent",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_billing_account_cost_summary.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    }
+  ],
+  "unmapped_checks": [],
+  "undetermined_checks": [],
+  "acceptance_satisfied": [
+    "no_secret_export",
+    "secret_refs_preserved",
+    "storage_settings"
+  ],
+  "acceptance_unmet": [
+    "billing_metadata",
+    "identity_preserved",
+    "team_metadata"
+  ],
+  "unresolvable_references": [
+    "account_identity_store_absent",
+    "billing_metadata_store_absent",
+    "storage_registry_outside_project_package",
+    "team_metadata_store_absent",
+    "vault_migration_mechanism_absent"
+  ],
+  "source_manifests": [
+    "docs/planning/v1.2/sprint_115_oauth_linked_identity_flow.json",
+    "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+    "docs/planning/v1.2/sprint_115_api_keys_manager.json",
+    "docs/planning/v1.2/sprint_115_provider_connector_manifest.json",
+    "docs/planning/v1.2/sprint_115_ai_connection_model_settings.json",
+    "docs/planning/v1.2/sprint_115_team_collaboration_summary.json",
+    "docs/planning/v1.2/sprint_115_billing_account_cost_summary.json"
+  ],
+  "anchor": {
+    "identity_verdict": "DECLARED:acceptance:6",
+    "vault_verdict": "DECLARED:acceptance:6",
+    "provider_verdict": "DECLARED:required_fields:9",
+    "team_verdict": "DECLARED:acceptance:6",
+    "billing_verdict": "DECLARED:acceptance:8",
+    "billing_contract_status": "PLANNED_NOT_VERIFIED",
+    "boundary_declared": true,
+    "vault_migration_recorded": false,
+    "account_store_recorded": false
+  },
+  "local_drill": {
+    "observations": [
+      {
+        "check_id": "identity_preserved",
+        "outcome": "account_identity_store_absent",
+        "facts": {
+          "oauth_exchange_completed": true,
+          "linked_identities_in_memory": 1,
+          "token_generation": 1,
+          "identity_surface_fields": true,
+          "linked_identity_serializable": false,
+          "identity_store_present": false
+        },
+        "passed": true,
+        "acceptance": "mechanismAbsent",
+        "acceptance_satisfied": false,
+        "unresolvable": [
+          "account_identity_store_absent"
+        ]
+      },
+      {
+        "check_id": "secret_refs_preserved",
+        "outcome": "secret_refs_round_trip_locally",
+        "facts": {
+          "managed_keys": 1,
+          "managed_key_ids": [
+            "key-1"
+          ],
+          "secret_keys_readable": true,
+          "vault_key_scheme": "account/<id>/<kind>[/<secretId>]",
+          "legacy_vault_key_picked_up": false,
+          "legacy_vault_key": "account/drill_account/api_key",
+          "audit_events": 2,
+          "audit_carries_secret": false
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": [
+          "vault_migration_mechanism_absent"
+        ]
+      },
+      {
+        "check_id": "no_secret_export",
+        "outcome": "no_secret_in_serialized_account_surfaces",
+        "facts": {
+          "surfaces_scanned": 4,
+          "surfaces_named": [
+            "provider_connector_manifest",
+            "managed_api_key_public_json",
+            "linked_identity_result_to_string",
+            "oauth_token_response"
+          ],
+          "secret_pattern_hits": 0,
+          "redaction_round_trips": true,
+          "provider_manifest_round_trips": true,
+          "managed_key_public_json_carries_secret": false,
+          "managed_key_masked_value": "••••••••••••"
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": []
+      },
+      {
+        "check_id": "storage_settings",
+        "outcome": "storage_settings_persisted_locally",
+        "facts": {
+          "active_location_persisted": true,
+          "bound_project_persisted": true,
+          "schema_version_persisted": true,
+          "on_disk_schema_version": 1,
+          "reopen_matches": true,
+          "registry_bytes_written": 160,
+          "registry_inside_project_package": false,
+          "registry_relative_location": "beside_effective_project_root",
+          "registry_file_name": "storage_locations.json"
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": [
+          "storage_registry_outside_project_package"
+        ]
+      },
+      {
+        "check_id": "team_metadata",
+        "outcome": "team_metadata_store_absent",
+        "facts": {
+          "organization_id": "org-1",
+          "seats_assigned": 1,
+          "seats_total": 3,
+          "members": 1,
+          "member_roles": [
+            "owner"
+          ],
+          "permission_health": "healthy",
+          "team_summary_serializable": false,
+          "team_store_present": false
+        },
+        "passed": true,
+        "acceptance": "mechanismAbsent",
+        "acceptance_satisfied": false,
+        "unresolvable": [
+          "team_metadata_store_absent"
+        ]
+      },
+      {
+        "check_id": "billing_metadata",
+        "outcome": "billing_metadata_store_absent",
+        "facts": {
+          "billing_id": "bill-1",
+          "currency": "usd",
+          "tax_status": "applies",
+          "cycle": "monthly",
+          "charges": 1,
+          "credits_amount": 0.0,
+          "billing_contract_status": "PLANNED_NOT_VERIFIED",
+          "billing_summary_serializable": false,
+          "billing_store_present": false
+        },
+        "passed": true,
+        "acceptance": "mechanismAbsent",
+        "acceptance_satisfied": false,
+        "unresolvable": [
+          "billing_metadata_store_absent"
+        ]
+      }
+    ],
+    "live_install_touched": false,
+    "user_project_touched": false,
+    "live_secrets_observed": [],
+    "all_passed": true,
+    "acceptance_satisfied": [
+      "no_secret_export",
+      "secret_refs_preserved",
+      "storage_settings"
+    ],
+    "acceptance_unmet": [
+      "billing_metadata",
+      "identity_preserved",
+      "team_metadata"
+    ],
+    "unresolvable_references": [
+      "account_identity_store_absent",
+      "billing_metadata_store_absent",
+      "storage_registry_outside_project_package",
+      "team_metadata_store_absent",
+      "vault_migration_mechanism_absent"
+    ]
+  },
+  "live_install_claimed": false,
+  "live_install_touched": false,
+  "user_project_touched": false,
+  "live_secrets_observed": [],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "open_items": [
+    "account_configuration_migration_defined_not_executed",
+    "check_acceptance_unmet:billing_metadata",
+    "check_acceptance_unmet:identity_preserved",
+    "check_acceptance_unmet:team_metadata",
+    "live_account_upgrade_limit:no_account_store_shipped",
+    "unresolvable_reference:account_identity_store_absent",
+    "unresolvable_reference:billing_metadata_store_absent",
+    "unresolvable_reference:storage_registry_outside_project_package",
+    "unresolvable_reference:team_metadata_store_absent",
+    "unresolvable_reference:vault_migration_mechanism_absent"
+  ],
+  "limitations": [
+    "No account store ships, so identity, team, and billing acceptance cannot be satisfied by any shipped mechanism; the drill reports the absent seam instead of inventing a migration.",
+    "No live account upgrade has ever run on a machine, so no observed outcome comes from an upgrade.",
+    "Hosted CI, public signing, end-user update channel, installer packaging, and publication stay DEFERRED-EXTERNAL."
+  ]
+}

@@ -16,6 +16,45 @@ enum SessionActivityState { active, revoked }
 
 enum SessionAlertSeverity { info, warning, critical }
 
+/// What a security action on a session did, whether it was allowed or not.
+///
+/// A refused revoke and an attempt that was never made must not look the same,
+/// so both are recorded and the outcome is part of the record. The event
+/// carries the session, the action, and the instant only: no device label, no
+/// location, and no free-text reason, which is what `audit_redaction` is
+/// promising.
+enum SessionAuditOutcome { revoked, denied }
+
+final class SessionSecurityAuditEvent {
+  SessionSecurityAuditEvent({
+    required String action,
+    required String sessionId,
+    required this.outcome,
+    required this.occurredAt,
+  }) : action = _required(action, 'action'),
+       sessionId = _required(sessionId, 'sessionId') {
+    if (!occurredAt.isUtc) {
+      throw ArgumentError.value(occurredAt, 'occurredAt', 'Must be UTC.');
+    }
+  }
+
+  /// The action attempted, e.g. `revoke_session`.
+  final String action;
+
+  /// The session the action targeted. `*` covers an all-session action.
+  final String sessionId;
+
+  final SessionAuditOutcome outcome;
+  final DateTime occurredAt;
+
+  Map<String, Object?> toJson() => <String, Object?>{
+    'action': action,
+    'session_id': sessionId,
+    'outcome': outcome.name,
+    'occurred_at': occurredAt.toIso8601String(),
+  };
+}
+
 final class DeviceDetails {
   DeviceDetails({
     required String deviceLabel,
@@ -113,8 +152,11 @@ final class AccountCenterSessionDeviceManagement {
   AccountCenterSessionDeviceManagement({
     required Iterable<ManagedSession> sessions,
     required Iterable<SessionSecurityAlert> alerts,
+    Iterable<SessionSecurityAuditEvent> audit =
+        const <SessionSecurityAuditEvent>[],
   }) : _sessions = List<ManagedSession>.of(sessions),
-       _alerts = List<SessionSecurityAlert>.of(alerts) {
+       _alerts = List<SessionSecurityAlert>.of(alerts),
+       _audit = List<SessionSecurityAuditEvent>.of(audit) {
     _requireUnique(_sessions.map((session) => session.sessionId), 'session.id');
     _requireUnique(_alerts.map((alert) => alert.id), 'alert.id');
     final knownIds = _sessions.map((session) => session.sessionId).toSet();
@@ -147,10 +189,23 @@ final class AccountCenterSessionDeviceManagement {
 
   final List<ManagedSession> _sessions;
   final List<SessionSecurityAlert> _alerts;
+  final List<SessionSecurityAuditEvent> _audit;
 
   List<ManagedSession> get sessions => UnmodifiableListView(_sessions);
 
   List<SessionSecurityAlert> get alerts => UnmodifiableListView(_alerts);
+
+  /// Every security action taken against a session, allowed or refused.
+  ///
+  /// Before this trail existed the seam had no record at all, so a refused
+  /// revoke and an attempt that was never made were indistinguishable.
+  List<SessionSecurityAuditEvent> get audit => UnmodifiableListView(_audit);
+
+  /// The trail entries for one action, in the order they happened.
+  List<SessionSecurityAuditEvent> auditFor(String action) =>
+      UnmodifiableListView(
+        _audit.where((event) => event.action == action).toList(growable: false),
+      );
 
   int get activeCount => _sessions
       .where((session) => session.state == SessionActivityState.active)
@@ -200,37 +255,79 @@ final class AccountCenterSessionDeviceManagement {
     return _withSession(updated);
   }
 
+  /// Revokes a session, recording the attempt either way.
+  ///
+  /// The previous version threw on both refusals, so a caller that caught the
+  /// error had no record that anything had been tried, and a caller that did
+  /// not catch it learned nothing about the other sessions. Refusals are now
+  /// returned as a manager whose audit trail carries `denied`, and the session
+  /// list is left exactly as it was. Unknown session ids still throw, because
+  /// there is no session to attach the refusal to.
   AccountCenterSessionDeviceManagement revokeSession(
     String sessionId, {
     required DateTime at,
   }) {
     _requireUtc(at, 'at');
     final target = sessionById(sessionId);
-    if (target.isCurrent) {
-      throw ArgumentError('The current session is not revoked from here.');
-    }
-    if (target.state != SessionActivityState.active) {
-      throw ArgumentError('The session is already revoked.');
+    if (target.isCurrent || target.state != SessionActivityState.active) {
+      return _withAudit(
+        SessionSecurityAuditEvent(
+          action: 'revoke_session',
+          sessionId: target.sessionId,
+          outcome: SessionAuditOutcome.denied,
+          occurredAt: at,
+        ),
+      );
     }
     return _withSession(
       _replace(target, state: SessionActivityState.revoked, revokedAt: at),
+    )._withAudit(
+      SessionSecurityAuditEvent(
+        action: 'revoke_session',
+        sessionId: target.sessionId,
+        outcome: SessionAuditOutcome.revoked,
+        occurredAt: at,
+      ),
     );
   }
 
+  /// Ends every other active session, recording what it did and what it did
+  /// not.
+  ///
+  /// Confirmation is still required, but a missing confirmation is now recorded
+  /// as a denial instead of vanishing, and each dropped session gets its own
+  /// entry so the trail says which sessions went. The current session is
+  /// skipped by design and is not recorded as a denial: it was never a target.
   AccountCenterSessionDeviceManagement forceLogout({
     required bool confirmed,
     required DateTime at,
   }) {
-    if (!confirmed) {
-      throw ArgumentError('Force logout requires explicit confirmation.');
-    }
     _requireUtc(at, 'at');
+    if (!confirmed) {
+      return _withAudit(
+        SessionSecurityAuditEvent(
+          action: 'force_logout',
+          sessionId: '*',
+          outcome: SessionAuditOutcome.denied,
+          occurredAt: at,
+        ),
+      );
+    }
+    final revoked = <SessionSecurityAuditEvent>[];
     final updated = _sessions
         .map((session) {
           if (session.isCurrent ||
               session.state != SessionActivityState.active) {
             return session;
           }
+          revoked.add(
+            SessionSecurityAuditEvent(
+              action: 'force_logout',
+              sessionId: session.sessionId,
+              outcome: SessionAuditOutcome.revoked,
+              occurredAt: at,
+            ),
+          );
           return _replace(
             session,
             state: SessionActivityState.revoked,
@@ -241,6 +338,7 @@ final class AccountCenterSessionDeviceManagement {
     return AccountCenterSessionDeviceManagement(
       sessions: updated,
       alerts: _alerts,
+      audit: [..._audit, ...revoked],
     );
   }
 
@@ -280,7 +378,17 @@ final class AccountCenterSessionDeviceManagement {
           return session.sessionId == updated.sessionId ? updated : session;
         }),
         alerts: _alerts,
+        audit: _audit,
       );
+
+  /// Appends one security action to the trail and changes nothing else.
+  AccountCenterSessionDeviceManagement _withAudit(
+    SessionSecurityAuditEvent event,
+  ) => AccountCenterSessionDeviceManagement(
+    sessions: _sessions,
+    alerts: _alerts,
+    audit: [..._audit, event],
+  );
 
   ManagedSession _replace(
     ManagedSession session, {

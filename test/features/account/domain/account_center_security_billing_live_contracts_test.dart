@@ -261,12 +261,19 @@ void main() {
       test('revoking the current session is refused', () {
         final sessions = _sessionFixture();
 
+        // Refused and recorded rather than thrown: the current session stays
+        // active and the attempt is on the audit trail.
+        final denied = sessions.revokeSession(
+          'session-current',
+          at: DateTime.utc(2026, 9, 27, 12),
+        );
         expect(
-          () => sessions.revokeSession(
-            'session-current',
-            at: DateTime.utc(2026, 9, 27, 12),
-          ),
-          throwsArgumentError,
+          denied.sessionById('session-current').state,
+          SessionActivityState.active,
+        );
+        expect(
+          denied.auditFor('revoke_session').single.outcome,
+          SessionAuditOutcome.denied,
         );
       });
 
@@ -275,12 +282,22 @@ void main() {
         () {
           final sessions = _sessionFixture();
 
+          // Confirmation is still required; an unconfirmed logout drops
+          // nothing and is recorded as a denial.
+          final unconfirmed = sessions.forceLogout(
+            confirmed: false,
+            at: DateTime.utc(2026, 9, 27, 12),
+          );
+          // The fixture already holds one revoked session, so the fact is that
+          // an unconfirmed logout CHANGES NOTHING, not that the count is zero.
+          expect(unconfirmed.revokedCount, sessions.revokedCount);
           expect(
-            () => sessions.forceLogout(
-              confirmed: false,
-              at: DateTime.utc(2026, 9, 27, 12),
-            ),
-            throwsArgumentError,
+            unconfirmed.sessionById('session-other').state,
+            SessionActivityState.active,
+          );
+          expect(
+            unconfirmed.auditFor('force_logout').single.outcome,
+            SessionAuditOutcome.denied,
           );
 
           final after = sessions.forceLogout(
@@ -292,6 +309,19 @@ void main() {
             after.sessionById('session-current').state,
             SessionActivityState.active,
           );
+          // Each dropped session is named individually, so the trail says what
+          // went rather than only that something did.
+          final dropped =
+              after
+                  .auditFor('force_logout')
+                  .where(
+                    (event) => event.outcome == SessionAuditOutcome.revoked,
+                  )
+                  .map((event) => event.sessionId)
+                  .toList()
+                ..sort();
+          expect(dropped, isNotEmpty);
+          expect(dropped, isNot(contains('session-current')));
         },
       );
 

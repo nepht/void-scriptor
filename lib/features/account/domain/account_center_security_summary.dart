@@ -25,6 +25,16 @@ final class MfaSecuritySummary {
     if (_requiresKnownValues(status) && enrolledMethods.isEmpty) {
       throw ArgumentError('Known MFA status requires an enrolled method.');
     }
+    // A second factor with no recovery code left is not a healthy account: the
+    // codes are the only way back in once the factor is lost. Reporting
+    // `healthy` with a drained set claimed a safety the account does not have,
+    // so `healthy` now requires at least one remaining code and `attention`
+    // is the state that fits instead.
+    if (status == SecuritySignalStatus.healthy && recoveryCodesRemaining == 0) {
+      throw ArgumentError(
+        'A healthy MFA status requires at least one recovery code remaining.',
+      );
+    }
   }
 
   final SecuritySignalStatus status;
@@ -177,26 +187,63 @@ final class AccountCenterSecuritySummary {
     return UnmodifiableListView(result);
   }
 
+  /// The one number a Security Center header shows, so it must not report a
+  /// green account while most of it could not be read.
+  ///
+  /// This used to return `healthy` as soon as ANY signal was healthy, which
+  /// meant an account with MFA enrolled and four signals the product could not
+  /// read at all — password age, trusted devices, sessions, secure-store
+  /// backend — was reported as fully healthy, and a single `info` alert was
+  /// enough to reach the same verdict because `info` maps to `healthy`. A
+  /// blind spot is not a pass, so an unread signal now outranks a good one
+  /// among the five core signals, while a genuinely bad signal still wins.
   SecuritySignalStatus get overallStatus {
-    final signals = <SecuritySignalStatus>[
+    final core = <SecuritySignalStatus>[
       mfa.status,
       password.status,
       trustedDevices.status,
       sessions.status,
       secureStore.status,
+    ];
+    final alertSignals = <SecuritySignalStatus>[
       ..._alerts.map(_statusForAlert),
     ];
-    if (signals.contains(SecuritySignalStatus.critical)) {
+
+    if (core.contains(SecuritySignalStatus.critical) ||
+        alertSignals.contains(SecuritySignalStatus.critical)) {
       return SecuritySignalStatus.critical;
     }
-    if (signals.contains(SecuritySignalStatus.attention)) {
+    if (core.contains(SecuritySignalStatus.attention) ||
+        alertSignals.contains(SecuritySignalStatus.attention)) {
       return SecuritySignalStatus.attention;
     }
-    if (signals.contains(SecuritySignalStatus.healthy)) {
-      return SecuritySignalStatus.healthy;
-    }
-    if (signals.contains(SecuritySignalStatus.unknown)) {
+
+    // An `info` alert carries no security weight, so it must not be able to
+    // stand in for a core signal nobody could read.
+    final unreadable = core
+        .where(
+          (status) =>
+              status == SecuritySignalStatus.unknown ||
+              status == SecuritySignalStatus.unavailable,
+        )
+        .length;
+    if (unreadable == core.length) {
+      // Nothing could be read at all. `unavailable` and `unknown` are
+      // different facts — a panel that could not be reached is not a panel that
+      // was reached and found nothing — so the verdict keeps whichever one the
+      // signals actually report.
+      if (core.every((status) => status == SecuritySignalStatus.unavailable)) {
+        return SecuritySignalStatus.unavailable;
+      }
       return SecuritySignalStatus.unknown;
+    }
+    if (unreadable > 0) {
+      // Part of the panel is readable and part is not: the account cannot be
+      // called healthy, and the readable part decides how alarming that is.
+      return SecuritySignalStatus.attention;
+    }
+    if (core.contains(SecuritySignalStatus.healthy)) {
+      return SecuritySignalStatus.healthy;
     }
     return SecuritySignalStatus.unavailable;
   }

@@ -233,12 +233,17 @@ void main() {
         SessionActivityState.active,
       );
 
+      // Revoking an already-revoked session is a recorded refusal, not a
+      // throw: a refused revoke and an attempt never made used to be
+      // indistinguishable, and the refusal now carries its own audit entry.
+      final alreadyRevoked = revoked.revokeSession(
+        'sess-laptop',
+        at: DateTime.utc(2026, 9, 26, 7),
+      );
+      expect(alreadyRevoked.revokedCount, 1);
       expect(
-        () => revoked.revokeSession(
-          'sess-laptop',
-          at: DateTime.utc(2026, 9, 26, 7),
-        ),
-        throwsArgumentError,
+        alreadyRevoked.auditFor('revoke_session').last.outcome,
+        SessionAuditOutcome.denied,
       );
       expect(
         () => management.revokeSession(
@@ -253,13 +258,20 @@ void main() {
         throwsArgumentError,
       );
       // The current session is never revoked by the device-management path.
-      expect(
-        () => management.revokeSession(
-          'sess-desktop',
-          at: DateTime.utc(2026, 9, 26, 7),
-        ),
-        throwsArgumentError,
+      // The attempt is refused and recorded rather than thrown, so the session
+      // list must be untouched and the refusal must still be visible.
+      final current = management.revokeSession(
+        'sess-desktop',
+        at: DateTime.utc(2026, 9, 26, 7),
       );
+      expect(
+        current.sessionById('sess-desktop').state,
+        SessionActivityState.active,
+      );
+      expect(current.revokedCount, 0);
+      final currentAttempts = current.auditFor('revoke_session');
+      expect(currentAttempts.single.outcome, SessionAuditOutcome.denied);
+      expect(currentAttempts.single.sessionId, 'sess-desktop');
     });
 
     test(
@@ -267,12 +279,17 @@ void main() {
       () {
         final management = _fixture();
 
+        // Confirmation is still required; the refusal is now recorded rather
+        // than thrown, so the attempt stays visible.
+        final unconfirmed = management.forceLogout(
+          confirmed: false,
+          at: DateTime.utc(2026, 9, 26, 6),
+        );
+        expect(unconfirmed.activeCount, 3);
+        expect(unconfirmed.revokedCount, 0);
         expect(
-          () => management.forceLogout(
-            confirmed: false,
-            at: DateTime.utc(2026, 9, 26, 6),
-          ),
-          throwsArgumentError,
+          unconfirmed.auditFor('force_logout').single.outcome,
+          SessionAuditOutcome.denied,
         );
 
         final loggedOut = management.forceLogout(

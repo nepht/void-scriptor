@@ -1,0 +1,270 @@
+{
+  "canonical_step": "117.20",
+  "title": "Security Center Workflow Validation",
+  "generated_by": "test/release/sprint_117_security_center_workflow_validation_test.dart",
+  "status": "pass",
+  "verdict": "SECURITY_CENTER_WORKFLOW_VALIDATED_LOCAL",
+  "coverage": 1.0,
+  "required_checks": [
+    "mfa",
+    "password",
+    "devices",
+    "sessions",
+    "revoke",
+    "alerts",
+    "secure_store",
+    "recovery"
+  ],
+  "acceptance_satisfied": [
+    "mfa",
+    "password",
+    "devices",
+    "sessions",
+    "revoke",
+    "alerts",
+    "secure_store",
+    "recovery"
+  ],
+  "acceptance_unmet": [],
+  "missing_fields": [],
+  "violations": [],
+  "checks": [
+    {
+      "check_id": "mfa",
+      "method": "execute_shipped_mfa_summary",
+      "expected_outcome": "measured_mfa_from_shipped_mechanism",
+      "observed_outcome": "A known MFA status demands an enrolled method and a healthy one demands a remaining recovery code.",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_security_center_summary.json"
+    },
+    {
+      "check_id": "password",
+      "method": "execute_shipped_password_summary",
+      "expected_outcome": "measured_password_from_shipped_mechanism",
+      "observed_outcome": "The password signal validates its timestamp; no shipped file decides whether that date is stale.",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_security_center_summary.json"
+    },
+    {
+      "check_id": "devices",
+      "method": "execute_shipped_device_summary",
+      "expected_outcome": "measured_devices_from_shipped_mechanism",
+      "observed_outcome": "The device signal validates its count; no shipped file aggregates session trust into it.",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_security_center_summary.json"
+    },
+    {
+      "check_id": "sessions",
+      "method": "execute_shipped_session_seam",
+      "expected_outcome": "measured_sessions_from_shipped_mechanism",
+      "observed_outcome": "The session seam refuses contradictory counts, keeps exactly one current session, and never trusts a flagged one.",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_security_center_summary.json"
+    },
+    {
+      "check_id": "revoke",
+      "method": "execute_shipped_revoke_path",
+      "expected_outcome": "measured_revoke_from_shipped_mechanism",
+      "observed_outcome": "A refused revoke and a completed revoke are both recorded, and an unconfirmed force logout is recorded as denied.",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_session_device_management.json"
+    },
+    {
+      "check_id": "alerts",
+      "method": "execute_shipped_overall_status",
+      "expected_outcome": "measured_alerts_from_shipped_mechanism",
+      "observed_outcome": "An unread signal never lets a Security Center read healthy, while a genuinely bad signal still wins.",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_security_center_summary.json"
+    },
+    {
+      "check_id": "secure_store",
+      "method": "execute_shipped_secure_store_summary",
+      "expected_outcome": "measured_secure_store_from_shipped_mechanism",
+      "observed_outcome": "A known secure-store status demands a backend and a check instant, and an unread store keeps the account out of healthy.",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_security_center_summary.json"
+    },
+    {
+      "check_id": "recovery",
+      "method": "execute_shipped_recovery_signal",
+      "expected_outcome": "measured_recovery_from_shipped_mechanism",
+      "observed_outcome": "A drained recovery path cannot be reported healthy, and no shipped file issues or consumes a recovery code.",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_security_center_summary.json"
+    }
+  ],
+  "drill": {
+    "live_provider_touched": false,
+    "user_project_touched": false,
+    "live_credential_observed": false,
+    "external_pins_matched": 2,
+    "external_pins_checked": 2,
+    "production_caller_present": false,
+    "security_summary_production_call_sites": 0,
+    "session_management_production_call_sites": 0,
+    "revocation_audit_present": false,
+    "recovery_code_lifecycle_call_sites": 0,
+    "session_summary_aggregated_somewhere": false,
+    "password_staleness_computed_somewhere": false,
+    "device_trust_aggregated_somewhere": false,
+    "measured_aggregation_gaps": [
+      "password_staleness_not_computed_in_lib",
+      "device_trust_not_aggregated_in_lib",
+      "session_summary_caller_supplied_not_computed"
+    ],
+    "observations": [
+      {
+        "check_id": "mfa",
+        "outcome": "A known MFA status demands an enrolled method and a healthy one demands a remaining recovery code.",
+        "passed": true,
+        "acceptance": "satisfied",
+        "facts": {
+          "known_status_requires_enrolled_method": true,
+          "healthy_with_zero_recovery_codes_is_refused": true,
+          "attention_with_zero_recovery_codes_is_allowed": true,
+          "no_method_no_codes_is_available_as_unavailable": true,
+          "acceptance_mechanism_present": true
+        },
+        "unresolvable": []
+      },
+      {
+        "check_id": "password",
+        "outcome": "The password signal validates its timestamp; no shipped file decides whether that date is stale.",
+        "passed": true,
+        "acceptance": "satisfied",
+        "facts": {
+          "changed_at_must_be_utc": true,
+          "local_time_is_refused": true,
+          "utc_time_is_accepted": true,
+          "staleness_computed_somewhere_in_lib": false,
+          "password_summary_call_sites_in_lib": 0,
+          "acceptance_mechanism_present": true
+        },
+        "unresolvable": []
+      },
+      {
+        "check_id": "devices",
+        "outcome": "The device signal validates its count; no shipped file aggregates session trust into it.",
+        "passed": true,
+        "acceptance": "satisfied",
+        "facts": {
+          "known_status_requires_count": true,
+          "negative_count_is_refused": true,
+          "device_trust_aggregated_somewhere_in_lib": false,
+          "device_summary_call_sites_in_lib": 0,
+          "acceptance_mechanism_present": true
+        },
+        "unresolvable": []
+      },
+      {
+        "check_id": "sessions",
+        "outcome": "The session seam refuses contradictory counts, keeps exactly one current session, and never trusts a flagged one.",
+        "passed": true,
+        "acceptance": "satisfied",
+        "facts": {
+          "suspicious_count_never_exceeds_active": true,
+          "exactly_one_current_session_enforced": true,
+          "current_session_survives_force_logout": true,
+          "suspicious_session_cannot_be_trusted": true,
+          "active_count_measured": 3,
+          "suspicious_count_measured": 1,
+          "revoked_after_force_logout": 2,
+          "session_summary_aggregated_somewhere_in_lib": false,
+          "acceptance_mechanism_present": true
+        },
+        "unresolvable": []
+      },
+      {
+        "check_id": "revoke",
+        "outcome": "A refused revoke and a completed revoke are both recorded, and an unconfirmed force logout is recorded as denied.",
+        "passed": true,
+        "acceptance": "satisfied",
+        "facts": {
+          "denied_revoke_is_recorded": true,
+          "revoked_revoke_is_recorded": true,
+          "unforceable_current_session_refused": true,
+          "force_logout_requires_confirmation": true,
+          "denied_force_logout_is_recorded": true,
+          "confirmed_force_logout_names_each_session": 2,
+          "audit_event_carries_no_device_or_reason": true,
+          "audit_event_keys": [
+            "action",
+            "occurred_at",
+            "outcome",
+            "session_id"
+          ],
+          "revocation_audit_in_other_lib_files": 0,
+          "acceptance_mechanism_present": true
+        },
+        "unresolvable": []
+      },
+      {
+        "check_id": "alerts",
+        "outcome": "An unread signal never lets a Security Center read healthy, while a genuinely bad signal still wins.",
+        "passed": true,
+        "acceptance": "satisfied",
+        "facts": {
+          "one_healthy_among_unknown_is_not_healthy": true,
+          "one_healthy_among_unknown_reports": "attention",
+          "info_alert_alone_is_not_healthy": true,
+          "info_alert_alone_reports": "unknown",
+          "all_unknown_is_unknown": true,
+          "critical_still_wins_over_unknown": true,
+          "attention_still_wins_over_unknown": true,
+          "five_known_healthy_is_healthy": true,
+          "five_known_healthy_reports": "healthy",
+          "acceptance_mechanism_present": true
+        },
+        "unresolvable": []
+      },
+      {
+        "check_id": "secure_store",
+        "outcome": "A known secure-store status demands a backend and a check instant, and an unread store keeps the account out of healthy.",
+        "passed": true,
+        "acceptance": "satisfied",
+        "facts": {
+          "known_status_requires_backend": true,
+          "known_status_requires_check_timestamp": true,
+          "blank_backend_is_refused": true,
+          "unavailable_backend_is_never_healthy": true,
+          "unavailable_backend_reports": "attention",
+          "acceptance_mechanism_present": true
+        },
+        "unresolvable": []
+      },
+      {
+        "check_id": "recovery",
+        "outcome": "A drained recovery path cannot be reported healthy, and no shipped file issues or consumes a recovery code.",
+        "passed": true,
+        "acceptance": "satisfied",
+        "facts": {
+          "zero_recovery_codes_flagged": true,
+          "missing_recovery_path_is_flagged": true,
+          "negative_recovery_codes_refused": true,
+          "recovery_codes_remaining_is_immutable": true,
+          "recovery_code_lifecycle_call_sites_in_lib": 0,
+          "recovery_codes_carried": 2,
+          "acceptance_mechanism_present": true
+        },
+        "unresolvable": []
+      }
+    ]
+  },
+  "open_items": [
+    "live_identity_provider_mfa_enrollment",
+    "live_secure_store_backend_verification",
+    "live_session_inventory_and_revoke_propagation",
+    "force_logout_execution_against_real_sessions",
+    "alert_delivery_channel",
+    "recovery_code_issue_and_consume_lifecycle",
+    "hosted_ci_signing_publication",
+    "password_staleness_not_computed_in_lib",
+    "device_trust_not_aggregated_in_lib",
+    "session_summary_caller_supplied_not_computed",
+    "security_summary_defined_not_reachable_from_lib",
+    "session_revocation_audit_absent_in_repository",
+    "session_summary_caller_supplied_not_computed",
+    "external_pins_match"
+  ]
+}

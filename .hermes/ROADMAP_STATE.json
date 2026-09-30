@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.17",
-  "next_step": "117.19",
+  "last_verified_step": "117.19",
+  "next_step": "117.20",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -59,8 +59,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-01T03:05:00+07:00",
-  "updated_by": "hermes-cron-v4",
+  "updated_at": "2026-10-01T05:10:00+07:00",
+  "updated_by": "cron b0c2c7d744d9 (Core Worker v5)",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -2721,5 +2721,48 @@
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
   "last_slice_commit": "a77157b",
-  "last_verified_on": "2026-10-01"
+  "last_verified_on": "2026-10-01",
+  "sprint_117_19_team_collaboration": {
+    "status": "VERIFIED-LOCAL",
+    "verdict": "TEAM_COLLABORATION_WORKFLOW_VALIDATED_LOCAL",
+    "slice_commit": "d4ec4bd",
+    "stream": "sequential_expansion",
+    "canonical_step": "117.19",
+    "seam": "lib/core/enterprise (first slice in 117 proven reachable from main.dart)",
+    "defects_fixed": [
+      "removeMember was ungated: no actor, no Permission.manageMembers check, no reauth, despite the external spec listing remove_team_member as a sensitive action with reauth_before_sensitive_action",
+      "the last administrator could be removed, orphaning the organization with no shipped recovery path",
+      "refusals left no trace: a gate refusal and an attempt never made were indistinguishable",
+      "addMember accepted a duplicate userId, so one identity could occupy two seats and the roster no longer matched the seat count"
+    ],
+    "necessity_two_way": "pre-fix blob restored into the working file (no reset/restore) -> suite failed to load, contract absent in the old seam; gate then narrowed past the orphan guard -> 4 tests failed on the gate mechanism itself; both files restored, SHA MATCH",
+    "measured_gaps_open_items": [
+      "invitation_status_declared_but_no_lifecycle_enforces_it",
+      "permission_health_supplied_by_caller_never_computed_from_role_matrix",
+      "team_collaboration_workflow_defined_not_executed_live",
+      "external_identity_provider_outside_repository"
+    ],
+    "harness_truth_defects": [
+      "caller scan compared absolute Windows paths against the relative lib/ prefix -> 0 of 2891 Dart files matched, falsely reporting no production consumer for a seam app_router actually renders",
+      "role_matrix_is_total used 'outcome is! bool' where can() already returns static bool, so the check could never fail and reported a total matrix without reading one",
+      "_declaredContractSize demanded an 'acceptance' key no source uses -> two healthy manifests reported silent",
+      "unknown_is_expressible was false because the helper defaults to healthy",
+      "report sorted checks and acceptance alphabetically, losing canonical order"
+    ],
+    "gates": {
+      "focused": "20/20 exit 0 (8 governance unit + 12 harness)",
+      "regression_enterprise_studio": "76/76 exit 0",
+      "regression_account_domain": "743/743 exit 0",
+      "shard_sprint_117": "662/662 exit 0 across 19 files (baseline 650/18, delta +12)",
+      "analyzer": "5 files, No issues found!",
+      "format": "5 files, 0 changed",
+      "diff_check": "exit 0",
+      "external_pins": "2/2 MATCH (sprint_116.json 94418211, account_cloud_center_spec.json f0589fe7)"
+    },
+    "windows_build_claimed_as_slice_evidence": true,
+    "windows_build": "exit 0 after kernel purge, kernel genuinely fresh (mtime 18s before check, 101216920 bytes); slice symbols NON-ZERO on that kernel (StudioRegistry 5, denied_remove_member 3, remove_member 3, StudioRole 13) with same-kernel positive controls (main 7441, RenderObject 2870, WidgetsApp 212, runApp 76, StudioManagementPanel 6, DemoStudio 15); poison control inserted an invalid Dart line into studio_registry.dart and the build FAILED with a compile error naming that file, then the file was restored (residue 0) and the build returned to exit 0. First slice since 117.12 whose build evidence is meaningful.",
+    "manifest": "docs/evidence/sprint-117-19-manifest-20261001.json sha256 122ed9d4, 7782 bytes, byte-identical across two runs, json.loads valid, 7 checks, coverage 1.0, 4 open items reported; generator deleted with no residue",
+    "external_gates": "DEFERRED-EXTERNAL: real identity provider, invitation delivery and acceptance, native team-management GUI, hosted CI, signing, publication",
+    "release_cut": "operator decision"
+  }
 }

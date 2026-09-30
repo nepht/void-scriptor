@@ -1,0 +1,147 @@
+{
+  "canonical_step": "117.19",
+  "title": "Team & Collaboration Validation",
+  "generated_by": "test/release/scratch_gen_11719_manifest_test.dart",
+  "verdict": "TEAM_COLLABORATION_WORKFLOW_VALIDATED_LOCAL",
+  "status": "pass",
+  "coverage": 1.0,
+  "required_checks": [
+    "organization",
+    "seats",
+    "invite",
+    "roles",
+    "permissions",
+    "member_removal",
+    "audit"
+  ],
+  "acceptance_satisfied": [
+    "organization",
+    "seats",
+    "invite",
+    "roles",
+    "permissions",
+    "member_removal",
+    "audit"
+  ],
+  "acceptance_unmet": [],
+  "missing_fields": [],
+  "violations": [],
+  "unmapped_checks": [],
+  "undetermined_checks": [],
+  "open_items": [
+    "external_identity_provider_outside_repository",
+    "invitation_status_declared_but_no_lifecycle_enforces_it",
+    "permission_health_supplied_by_caller_never_computed_from_role_matrix",
+    "team_collaboration_workflow_defined_not_executed_live"
+  ],
+  "source_manifests": [
+    "docs/planning/v1.2/sprint_115_team_collaboration_summary.json",
+    "docs/planning/v1.2/sprint_115_global_information_architecture.json",
+    "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json"
+  ],
+  "external_pins": {
+    "C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/sprint_116.json": "94418211f73b9b318d57749a26bf8e6f1e92afb6c8942b2b003c99d6cef0e809",
+    "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a"
+  },
+  "anchor": {
+    "declared_contract_sizes": {
+      "docs/planning/v1.2/sprint_115_team_collaboration_summary.json": "DECLARED:acceptance:6",
+      "docs/planning/v1.2/sprint_115_global_information_architecture.json": "DECLARED:acceptance_coverage:6",
+      "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json": "DECLARED:acceptance_invariants:10"
+    },
+    "boundaries_declared": {
+      "docs/planning/v1.2/sprint_115_team_collaboration_summary.json": true,
+      "docs/planning/v1.2/sprint_115_global_information_architecture.json": true,
+      "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json": true
+    },
+    "team_acceptance_declared": true,
+    "seat_count_declared": true,
+    "pending_invites_declared": true,
+    "permission_health_declared": true,
+    "reauth_before_sensitive_action_declared": true,
+    "remove_team_member_sensitive_action": true,
+    "audit_redaction_declared": true,
+    "external_pins_matched": 2,
+    "external_pins_checked": 2
+  },
+  "checks": [
+    {
+      "check_id": "organization",
+      "method": "build the shipped registry and the account summary and record that an organization carries a stable non-empty id and name, that the summary refuses a blank id or name, and that the two agree about which organization they describe",
+      "expected_outcome": "an organization carries a stable non-empty identity and the summary refuses a blank one",
+      "observed_outcome": "ORGANIZATION_IDENTITY_STABLE_NON_EMPTY_AND_ASSERTED",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_team_collaboration_summary.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "seats",
+      "method": "allocate seats under the capacity guard and record that a grant is refused at capacity, that a released seat becomes available again, that the roster and the seat count never disagree, and that the account summary refuses an assigned count that contradicts the member list",
+      "expected_outcome": "seats are granted under a capacity guard, released on removal, and the roster and the seat count never disagree",
+      "observed_outcome": "SEATS_GUARDED_RELEASED_AND_NEVER_DISAGREE_WITH_ROSTER",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_team_collaboration_summary.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "invite",
+      "method": "record invitations under each status and record that only pending ones are reported as pending, that a summary cannot carry two invitations under one id, and that the registry exposes no invitation lifecycle of its own",
+      "expected_outcome": "invitations carry a status and only pending ones are reported as pending, under a unique id",
+      "observed_outcome": "INVITATIONS_CARRY_DISTINCT_STATUSES_UNDER_UNIQUE_IDS",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_team_collaboration_summary.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "roles",
+      "method": "apply the shipped role matrix and record that every role resolves every permission without throwing, that the roles are distinct, and that the roster can never hold two members under one id",
+      "expected_outcome": "the role matrix is total and a person occupies one seat under one identity",
+      "observed_outcome": "ROLE_MATRIX_TOTAL_ORDERED_AND_ROLES_HOLD_ONE_SEAT_EACH",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_team_collaboration_summary.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "permissions",
+      "method": "read the shipped role matrix and record that manage-members is held by the administrator and withheld from the others, that the account summary carries the permission health it was given immutably, and that no shipped file computes that value from the matrix",
+      "expected_outcome": "manage-members is held by the administrator alone and the permission health is carried immutably",
+      "observed_outcome": "PERMISSION_MATRIX_HOLDS_MANAGE_MEMBERS_AND_HEALTH_IS_CARRIED",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_team_collaboration_summary.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "member_removal",
+      "method": "end a membership and record that it is refused when the reauthentication gate refuses, refused when no gate is supplied, refused for an actor who may not manage members, refused for the last administrator, that a refused attempt leaves the member and the seat intact, and that both outcomes are audited with the actor that asked",
+      "expected_outcome": "ending a membership requires the gate, the permission, and a second administrator to exist, and is audited either way",
+      "observed_outcome": "REMOVAL_GATED_PERMISSIONED_AUDITED_AND_NEVER_ORPHANS",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "audit",
+      "method": "read the audit trail after membership changes and record that every accepted and every refused action is present, that a refused attempt stays distinguishable from an attempt never made, and that no row carries a role, a permission, or any secret",
+      "expected_outcome": "every accepted and every refused membership action is audited with its actor and carries no role or secret",
+      "observed_outcome": "AUDIT_COVERS_ACCEPTED_AND_REFUSED_WITHOUT_LEAKING_AUTHORITY",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_entry_gate_product_spec.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    }
+  ],
+  "external_gates": [
+    "identity_provider_integration",
+    "invitation_delivery_and_acceptance",
+    "native_gui_team_management",
+    "hosted_ci",
+    "signing",
+    "public_release"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "gate": "format",
+  "canonical_step": "117.12",
+  "recorded_at": "2026-09-30",
+  "run": "cron_b0c2c7d744d9_20260930_180250",
+  "claim": "dart format --output=none --set-exit-if-changed on the same 4 files: 'Formatted 4 files (0 changed)' EXIT=0.",
+  "log": "docs/evidence/sprint-117-12-format-rerun-20260930.log"
+}

@@ -1,0 +1,8 @@
+{
+  "gate": "build",
+  "canonical_step": "117.12",
+  "recorded_at": "2026-09-30",
+  "run": "cron_b0c2c7d744d9_20260930_180250",
+  "claim": "flutter build windows --debug --no-pub EXIT=0 in 51s wall (flutter reported 49,1s). Freshness checked on data/flutter_assets/AssetManifest.bin (mtime 18:26:46), not on the exe, whose runner is a static native binary that does not change per build.",
+  "log": "docs/evidence/sprint-117-12-build-rerun-20260930.log"
+}

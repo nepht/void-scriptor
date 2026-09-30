@@ -1401,7 +1401,13 @@ bool _referencedOutsideOwnFile(String typeName) {
     // Every other shipped source counts, not just same-named siblings: a store
     // could be written by any file that constructs or consumes the subject.
     if (path == own || path == _thisSource) continue;
-    if (RegExp(RegExp.escape(typeName)).hasMatch(entity.readAsStringSync())) {
+    // A word boundary, not a bare substring: `LinkedIdentityResult` is a
+    // distinct shipped type that carries no persistence, and a substring match
+    // would let an unrelated call of it be read as proof that an identity
+    // store exists.
+    if (RegExp(
+      r'\b' + RegExp.escape(typeName) + r'\b',
+    ).hasMatch(entity.readAsStringSync())) {
       return true;
     }
   }

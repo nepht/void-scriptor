@@ -1,0 +1,24 @@
+{
+  "gate": "superseded-evidence",
+  "canonical_step": "117.12",
+  "recorded_at": "2026-09-30",
+  "run": "cron_b0c2c7d744d9_20260930_180250",
+  "claim": "Eleven evidence artifacts left in docs/evidence by the four consecutive failed cron runs of 2026-09-30 (started 15:10, 15:47, 16:28, 18:02; executions.db status=failed, RuntimeError agent reported failure) were MOVED OUT of the repository to $LOCALAPPDATA/hermes/cache/scratch/vs-11712-run1804-snap/superseded_metas_from_failed_run/ instead of being committed alongside the slice.",
+  "why": "They are not wrong in every particular, but each one records a measurement this run could not inherit. Committing them would put claims in the permanent record that no run that actually sealed the slice measured. Two were affirmatively misleading: sprint-117-12-reg-a-20260930.meta asserts '473/473 PASS exit 0' while the summary it cites in its own log path reports SHARD_A_TOTAL=454 FAILED=1, and sprint-117-12-1179-solo-witness-20260930.meta attributes the 117.9 timeout to host load while the bisect probe run here measured a specific, different cause (ProjectDatabaseService.create taking 77-101s per call).",
+  "moved": {
+    "sprint-117-12-11710-necessity-20260930.meta": "8fcdbdd21d84d729",
+    "sprint-117-12-1179-solo-witness-20260930.meta": "cded2dcaf55db683",
+    "sprint-117-12-analyze-20260930.meta": "1c9a5a1126446049",
+    "sprint-117-12-build-20260930.meta": "8958d57d877c8efa",
+    "sprint-117-12-focused-20260930.meta": "eed3ed457d4de39c",
+    "sprint-117-12-format-20260930.meta": "01009d6e7b4a6ab7",
+    "sprint-117-12-manifest-20260930.meta": "12392786360bc8ce",
+    "sprint-117-12-red-20260930.meta": "0302bac9d2a9e20e",
+    "sprint-117-12-reg-a-20260930.meta": "0a23bc624ea15caa",
+    "sprint-117-12-reg-b-20260930.meta": "4c6227c79141cd2e",
+    "sprint-117-12-reg-a-shards-summary-20260930.txt": "c296dbee4363e280"
+  },
+  "sha256_prefixes": "sha256 prefix of each file as moved, so the archived copies stay checkable",
+  "replaced_by": "The ten -rerun- metas plus the shard summary this run measured first-hand: red, focused, reg-a, reg-b, analyze, format, build, manifest, 11710-necessity, and 1179-root-cause.",
+  "preserved": "Nothing was deleted. The .log files they referenced are gitignored and were left untouched on disk, and every archived file is recoverable byte-for-byte from the scratch snapshot."
+}

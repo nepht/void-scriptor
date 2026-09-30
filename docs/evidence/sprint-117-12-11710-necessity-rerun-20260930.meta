@@ -1,0 +1,12 @@
+{
+  "gate": "11710-necessity",
+  "canonical_step": "117.12",
+  "recorded_at": "2026-09-30",
+  "run": "cron_b0c2c7d744d9_20260930_180250",
+  "claim": "RE-VERIFIED BY EXPERIMENT in this run, not inherited: the one-hunk edit carried into the 117.10 file is required by this slice, not incidental. Measured both directions: (a) working file restored to its HEAD content via `git show HEAD:<path>` (sha ef7f4e34..5154) -> the 117.10 test FAILS EXIT=1 at 00:02 with 20/21, 'drill identity check reports the absent persistence seam, not a pass on an invented migration [E] Expected: false / Actual: <true>'; (b) the fixed content restored (sha 0faf7ef9..9a) -> 21/21 PASS EXIT=0 at 00:04. The experiment left no residue: sha_before == sha_after == 0faf7ef91e6782975d6bb56c274f6e9695cf83dc98c50447b15ffed4e7fdc79a.",
+  "log": "docs/evidence/sprint-117-12-11710-necessity-rerun-20260930.log",
+  "causal_chain": "This slice's drill names LinkedIdentityResult, a real shipped type. 117.10's _referencedOutsideOwnFile() scan matched it as a BARE SUBSTRING inside longer identifiers' call sites, which would flip 117.10's honest 'identity store absent' finding into a false pass — the exact failure mode that step exists to prevent. The fix adds a word boundary (\\b...\\b), making the scan STRICTER.",
+  "not_modified": "The 117.10 manifest docs/planning/v1.3/sprint_117_account_configuration_migration.json is untouched by this slice and its 117.10 verdict is unchanged; only the 117.12 files and this one-hunk fix are in scope.",
+  "revert_method": "Written back with `git show HEAD:<path>` into the working file, never git reset/restore.",
+  "note": "The inherited meta for this gate carried the same claim but from run 151045, one of four consecutive failed cron runs that never committed anything. This run re-derived it. `git reset`/`git restore` were never used; the HEAD content was produced by `git show HEAD:<path>` into the working file."
+}

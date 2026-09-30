@@ -1,0 +1,11 @@
+{
+  "gate": "reg-a",
+  "canonical_step": "117.12",
+  "recorded_at": "2026-09-30",
+  "run": "cron_b0c2c7d744d9_20260930_180250",
+  "claim": "117.12 regression shard A RE-MEASURED file-by-file in this run (11 runs, -j 1, deterministic and resumable): 454/454 PASS, 11 files exit 0, 0 failures. Deltas: 21+89+30+43+49+58+30+37+25+31+41.",
+  "log": "docs/evidence/sprint-117-12-reg-a-rerun-20260930.log",
+  "summary": "docs/evidence/sprint-117-12-reg-a-rerun-shards-summary-20260930.txt",
+  "scope_and_honesty": "The 12th shard-A file, sprint_117_installation_upgrade_validation_test.dart (sprint 117.9), was DELIBERATELY NOT RE-RUN, under the LONG-TEST policy that forbids restarting a command which already timed out. Shard A is therefore 11/12 green, NOT a clean sweep. The inherited '473/473 PASS exit 0' string remains FALSE: it was written by a dead run that contradicted its own per-file logs (that summary shows FAILED=1, not 0).",
+  "1179_attribution": "sprint 117.9 is outside this slice: both its test file and its implementation are byte-identical to HEAD 49333d6 (git diff --stat HEAD empty) and the 117.12 slice references none of ProjectDatabaseService / ProjectBackupService / sprint_117_installation_upgrade."
+}

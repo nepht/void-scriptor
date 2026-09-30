@@ -1,0 +1,382 @@
+{
+  "schema_version": 1,
+  "canonical_step": "117.12",
+  "title": "Identity Workflow Validation",
+  "generated_from": "live drill + gate run",
+  "verdict": "IDENTITY_WORKFLOW_VALIDATED_LOCAL",
+  "status": "pass",
+  "missing_fields": [],
+  "violations": [],
+  "unmapped_checks": [],
+  "undetermined_checks": [],
+  "coverage": 1.0,
+  "acceptance_satisfied": [
+    "collision",
+    "last_method",
+    "link",
+    "reauth",
+    "recovery",
+    "revoke",
+    "unlink"
+  ],
+  "acceptance_unmet": [
+    "connect"
+  ],
+  "open_items": [
+    "check_acceptance_unmet:connect",
+    "external_identity_specs_outside_repository",
+    "identity_workflow_defined_not_executed_live",
+    "unresolvable_reference:no_shipped_identity_connector_connectable"
+  ],
+  "anchor": {
+    "declared_contract_sizes": {
+      "docs/planning/v1.2/sprint_115_provider_connector_manifest.json": "DECLARED:required_fields:9",
+      "docs/planning/v1.2/sprint_115_connection_health_state_machine.json": "DECLARED:acceptance:6",
+      "docs/planning/v1.2/sprint_115_oauth_linked_identity_flow.json": "DECLARED:acceptance:6",
+      "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json": "DECLARED:acceptance:6",
+      "docs/planning/v1.2/sprint_115_connected_accounts_management.json": "DECLARED:acceptance:6",
+      "docs/planning/v1.2/sprint_115_token_expiry_reauthentication_ux.json": "DECLARED:acceptance:6",
+      "docs/planning/v1.2/sprint_116_identity_linking_collision.json": "DECLARED:acceptance:6"
+    },
+    "boundaries_declared": {
+      "docs/planning/v1.2/sprint_115_provider_connector_manifest.json": true,
+      "docs/planning/v1.2/sprint_115_connection_health_state_machine.json": true,
+      "docs/planning/v1.2/sprint_115_oauth_linked_identity_flow.json": true,
+      "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json": true,
+      "docs/planning/v1.2/sprint_115_connected_accounts_management.json": true,
+      "docs/planning/v1.2/sprint_115_token_expiry_reauthentication_ux.json": true,
+      "docs/planning/v1.2/sprint_116_identity_linking_collision.json": true
+    },
+    "unlink_rule_declared": true,
+    "external_pins_matched": 3,
+    "external_pins_checked": 3,
+    "external_pins_resolved": true
+  },
+  "checks": [
+    {
+      "check_id": "connect",
+      "method": "count shipped connectors the manifest marks connectable, then run a real authorization-code exchange against a fixture connector that satisfies the same gate",
+      "expected_outcome": "no shipped identity connector is connectable, and a real exchange completes only through a fixture that satisfies the shipped gate",
+      "observed_outcome": "NO_SHIPPED_CONNECTOR_CONNECTABLE_FLOW_COMPLETES_ON_FIXTURE",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_provider_connector_manifest.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "link",
+      "method": "add a second provider identity to an account through IdentityLinkingService.link and read the account back",
+      "expected_outcome": "a second provider identity joins the account and is readable back",
+      "observed_outcome": "SECOND_IDENTITY_LINKED_MERGED_AND_READABLE_BACK",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_116_identity_linking_collision.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "collision",
+      "method": "attempt duplicate-email, already-linked, and cross-account identity links and record which guard rejected each",
+      "expected_outcome": "duplicate email, duplicate identity, and cross-account takeover are all rejected without mutating either account",
+      "observed_outcome": "EVERY_COLLISION_REJECTED_WITHOUT_MUTATION",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_116_identity_linking_collision.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "reauth",
+      "method": "read through the vault with reauthentication refused and granted, mark a connection reauthRequired, and drive the expire -> reauthenticate transitions",
+      "expected_outcome": "a refused reauthentication yields no secret and a granted one yields the secret, and the connection returns to connecting state",
+      "observed_outcome": "REAUTH_GATE_DENIES_WITHOUT_PROOF_AND_RESTORES_WITH_IT",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "unlink",
+      "method": "keep linked, fail provider revocation, and succeed at revocation, then confirm management-level unlink without confirmation",
+      "expected_outcome": "a kept link is untouched, a failed revocation preserves the link, and a successful revocation removes it",
+      "observed_outcome": "LINK_REMOVED_ONLY_AFTER_PROVIDER_REVOCATION",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_oauth_linked_identity_flow.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "last_method",
+      "method": "unlink the only identity of an account without a recovery email, then again after recovery is recorded",
+      "expected_outcome": "the last identity cannot be unlinked until a recovery email exists",
+      "observed_outcome": "LAST_IDENTITY_PROTECTED_UNTIL_RECOVERY_EXISTS",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_116_identity_linking_collision.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "recovery",
+      "method": "reject a malformed recovery email, record a valid one, and confirm the expired and revoked states preserve local data",
+      "expected_outcome": "a malformed recovery email is rejected, a valid one is stored, and local data survives expiry and revocation",
+      "observed_outcome": "RECOVERY_EMAIL_VALIDATED_AND_LOCAL_DATA_PRESERVED",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_116_identity_linking_collision.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "revoke",
+      "method": "revoke through the vault and the key manager, and drive the connected -> revoked transition with its dead end",
+      "expected_outcome": "the vault key is gone, the managed key is inert, and a revoked connection has no outgoing transition",
+      "observed_outcome": "REVOKE_REMOVES_SECRET_AND_CLOSES_THE_CONNECTION",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_connection_health_state_machine.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    }
+  ],
+  "required_evidence": [
+    "connect",
+    "link",
+    "collision",
+    "reauth",
+    "unlink",
+    "last_method",
+    "recovery",
+    "revoke"
+  ],
+  "source_manifests": [
+    "docs/planning/v1.2/sprint_115_provider_connector_manifest.json",
+    "docs/planning/v1.2/sprint_115_connection_health_state_machine.json",
+    "docs/planning/v1.2/sprint_115_oauth_linked_identity_flow.json",
+    "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+    "docs/planning/v1.2/sprint_115_connected_accounts_management.json",
+    "docs/planning/v1.2/sprint_115_token_expiry_reauthentication_ux.json",
+    "docs/planning/v1.2/sprint_116_identity_linking_collision.json"
+  ],
+  "unlink_rule": "protocol.unlink",
+  "vault_key_scheme": "account/<id>/<kind>[/<secretId>]",
+  "local_drill": {
+    "observations": [
+      {
+        "check_id": "connect",
+        "outcome": "NO_SHIPPED_CONNECTOR_CONNECTABLE_FLOW_COMPLETES_ON_FIXTURE",
+        "facts": {
+          "shipped_connector_count": 32,
+          "shipped_connectable_count": 0,
+          "shipped_identity_connectable_count": 0,
+          "shipped_availability_mix": {
+            "UNVERIFIED": 32
+          },
+          "refused_connector_id": "email",
+          "refused_with_error": "connectorUnavailable",
+          "fixture_exchange_completed": true,
+          "fixture_connection_id": "drill_identity/drill-account-1",
+          "fixture_token_generation": 1,
+          "fixture_granted_scopes": [
+            "account.read"
+          ],
+          "linked_identities_in_memory": 1,
+          "pkce_code_challenge_present": true,
+          "authorization_host": "identity.example.test",
+          "callback_replay_error": "stateMismatch",
+          "rotated_generation": 2,
+          "stale_generation_unlink_error": "staleTokenGeneration",
+          "stale_generation_rotate_error": "staleTokenGeneration",
+          "mechanism": "AccountOAuthFlow + ProviderConnectorManifest.standard",
+          "acceptance_mechanism_present": false
+        },
+        "passed": true,
+        "acceptance": "mechanismAbsent",
+        "acceptance_satisfied": false,
+        "unresolvable": [
+          "no_shipped_identity_connector_connectable"
+        ]
+      },
+      {
+        "check_id": "link",
+        "outcome": "SECOND_IDENTITY_LINKED_MERGED_AND_READABLE_BACK",
+        "facts": {
+          "identities_after_link": 2,
+          "identities_after_reread": 2,
+          "linked_credential": "github/github-subject-9",
+          "merged_identity_count": 2,
+          "secondary_account_after_merge": null,
+          "takeover_attempt_error": "IdentityTakeoverException",
+          "mechanism": "IdentityLinkingService.link + merge",
+          "acceptance_mechanism_present": true
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": []
+      },
+      {
+        "check_id": "collision",
+        "outcome": "EVERY_COLLISION_REJECTED_WITHOUT_MUTATION",
+        "facts": {
+          "duplicate_email_error": "IdentityCollisionException",
+          "duplicate_identity_error": "IdentityCollisionException",
+          "unconfirmed_merge_error": "IdentityMergeConfirmationException",
+          "overlapping_merge_error": "IdentityCollisionException",
+          "accounts_unchanged_after_collisions": 2,
+          "identities_unchanged_after_collisions": 1,
+          "mechanism": "IdentityLinkingService.link + merge",
+          "acceptance_mechanism_present": true
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": []
+      },
+      {
+        "check_id": "reauth",
+        "outcome": "REAUTH_GATE_DENIES_WITHOUT_PROOF_AND_RESTORES_WITH_IT",
+        "facts": {
+          "read_without_reauth": null,
+          "read_with_reauth": "drill-refresh-token",
+          "vault_key_scheme_resolved": "account/drill_reauth/oauth_refresh_token",
+          "audit_actions": [
+            "save",
+            "read"
+          ],
+          "state_before_expiry": "CONNECTED",
+          "expired_state": "EXPIRED",
+          "expired_notice": "Connection expired. Reauthenticate to restore this connection.",
+          "expired_offers_reauth": true,
+          "expired_offers_retry": false,
+          "retry_without_reauth_error": "StateError",
+          "state_after_reauthenticate": "CONNECTING",
+          "state_after_reauth_success": "CONNECTED",
+          "reauth_required_cleared": true,
+          "management_request_scopes": [
+            "account.read"
+          ],
+          "mechanism": "AccountSecureTokenVault.read + AccountConnectionHealthStateMachine",
+          "acceptance_mechanism_present": true
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": []
+      },
+      {
+        "check_id": "unlink",
+        "outcome": "LINK_REMOVED_ONLY_AFTER_PROVIDER_REVOCATION",
+        "facts": {
+          "keep_linked_result": false,
+          "identities_after_keep": 1,
+          "provider_revocations_after_keep": 0,
+          "failed_revocation_error": "revocationFailed",
+          "identities_after_failed_revocation": 1,
+          "successful_unlink_result": true,
+          "identities_after_successful_unlink": 0,
+          "provider_revocations_recorded": 1,
+          "second_unlink_error": "staleTokenGeneration",
+          "management_unlink_without_confirmation": false,
+          "connections_after_unconfirmed": 1,
+          "management_unlink_with_confirmation": true,
+          "connections_after_confirmed": 0,
+          "mechanism": "AccountOAuthFlow.unlink + AccountConnectedAccountsManagement",
+          "acceptance_mechanism_present": true
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": []
+      },
+      {
+        "check_id": "last_method",
+        "outcome": "LAST_IDENTITY_PROTECTED_UNTIL_RECOVERY_EXISTS",
+        "facts": {
+          "sole_identity_unlink_error": "LastLoginMethodException",
+          "identities_after_refusal": 1,
+          "unlink_with_spare_identity": true,
+          "identities_remaining": 1,
+          "unlink_after_recovery": true,
+          "identities_after_recovery_unlink": 0,
+          "mechanism": "IdentityLinkingService.unlink",
+          "acceptance_mechanism_present": true
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": []
+      },
+      {
+        "check_id": "recovery",
+        "outcome": "RECOVERY_EMAIL_VALIDATED_AND_LOCAL_DATA_PRESERVED",
+        "facts": {
+          "malformed_email_error": "ArgumentError",
+          "recovery_email_after_malformed": null,
+          "recovery_email_stored": "recover@example.test",
+          "unknown_account_error": "StateError",
+          "expired_requires_reauth": true,
+          "expired_notice": "Connection expired for Drill Identity.",
+          "retry_while_expired_accepted": false,
+          "retry_while_expired_reason": "Capability is not available for retry.",
+          "retry_after_reauth_accepted": true,
+          "revoked_preserves_local_data": true,
+          "revoked_allows_no_retry": true,
+          "local_data_preserved": true,
+          "mechanism": "IdentityLinkingService.recover + AccountCenterTokenExpiryReauthenticationUx",
+          "acceptance_mechanism_present": true
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": []
+      },
+      {
+        "check_id": "revoke",
+        "outcome": "REVOKE_REMOVES_SECRET_AND_CLOSES_THE_CONNECTION",
+        "facts": {
+          "vault_key": "account/drill_revoke/api_key/key-1",
+          "secret_present_before": true,
+          "secret_present_after": false,
+          "read_after_revoke": null,
+          "managed_key_status": "revoked",
+          "replace_after_revoke_error": "StateError",
+          "validate_after_revoke_error": "StateError",
+          "connection_state_after_revoke": "REVOKED",
+          "revoke_notice": "Connection revoked. Configure a new connection before retrying.",
+          "outgoing_transitions_after_revoke": [],
+          "retry_after_revoke_error": "StateError",
+          "provider_revocations": 1,
+          "audit_actions": [
+            "save",
+            "revoke",
+            "read"
+          ],
+          "mechanism": "AccountCenterApiKeysManager.revoke + AccountConnectionHealthStateMachine",
+          "acceptance_mechanism_present": true
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": []
+      }
+    ],
+    "live_provider_touched": false,
+    "user_project_touched": false,
+    "live_secret_observed": false,
+    "external_pins_matched": 3,
+    "external_pins_checked": 3,
+    "external_pins_resolved": true,
+    "all_passed": true,
+    "acceptance_satisfied": [
+      "collision",
+      "last_method",
+      "link",
+      "reauth",
+      "recovery",
+      "revoke",
+      "unlink"
+    ],
+    "acceptance_unmet": [
+      "connect"
+    ],
+    "unresolvable_references": [
+      "no_shipped_identity_connector_connectable"
+    ]
+  }
+}

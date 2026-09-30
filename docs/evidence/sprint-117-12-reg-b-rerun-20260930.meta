@@ -1,0 +1,9 @@
+{
+  "gate": "reg-b",
+  "canonical_step": "117.12",
+  "recorded_at": "2026-09-30",
+  "run": "cron_b0c2c7d744d9_20260930_180250",
+  "claim": "117.12 regression shard B 891/891 PASS EXIT=0 in 655s measured in this run (flutter test --no-pub -j 1 test/features/account, 71 test files).",
+  "log": "docs/evidence/sprint-117-12-reg-b-rerun-20260930.log",
+  "note": "Count matches the dead run's 891 exactly, which is the reproducibility signal: two independent runs of the account surface agree test-for-test."
+}

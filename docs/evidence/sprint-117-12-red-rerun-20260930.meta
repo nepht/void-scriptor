@@ -1,0 +1,13 @@
+{
+  "gate": "red",
+  "canonical_step": "117.12",
+  "recorded_at": "2026-09-30",
+  "run": "cron_b0c2c7d744d9_20260930_180250",
+  "claim": "117.12 RED RE-PLAYED HONESTLY in this run: the implementation library AND its `part of` drill file were both moved out of the source tree while the test stayed -> load failure EXIT=1 ('Error when reading .../sprint_117_identity_workflow_validation.dart: The system cannot find the file specified', 'Undefined name Sprint117IdentityWorkflowContract', \"Couldn't find constructor 'Sprint117IdentityWorkflowLoader'\"). Files were moved, never deleted, and restored byte-identical.",
+  "log": "docs/evidence/sprint-117-12-red-rerun-20260930.log",
+  "sha_verification": {
+    "sprint_117_identity_workflow_validation.dart": "1c630fbab72fa51a39c1847f39878a979c4eb20c25c8158b344a33c0512c36c7 (before == after)",
+    "sprint_117_identity_workflow_drill.dart": "2046e46dbf1734a682ce02a8a798c3960b31334c66cd6b2c9edcad68d932be8d (before == after)"
+  },
+  "note": "The inherited meta quoted a RED from run 151045; that run is one of four consecutive failed cron runs (executions.db: started 15:10/15:47/16:28, all status=failed, RuntimeError agent reported failure) and was never committed, so its RED was re-derived here instead of copied. RED exit 0 is impossible and was not attempted."
+}

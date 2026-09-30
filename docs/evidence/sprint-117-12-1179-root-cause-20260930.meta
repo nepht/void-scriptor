@@ -1,0 +1,11 @@
+{
+  "gate": "reg-a-1179-root-cause",
+  "canonical_step": "117.12 (finding owned by 117.9)",
+  "recorded_at": "2026-09-30",
+  "run": "cron_b0c2c7d744d9_20260930_180250",
+  "claim": "ROOT CAUSE of the inherited sprint 117.9 red, measured for the first time here: ProjectDatabaseService.create() is the bottleneck, not a deadlock and not a leak. The bisect probe (20 stages, all green) measured stage1.create=77.572s, stage2.dbCreate=101.659s, stage3.dbCreate=90.897s, while every other stage - schemaVersion, open+close, seed, backupCreate, restore, openRestored, createTemp, delete - finished in 0-525ms.",
+  "log": "docs/evidence/sprint-117-12-1179-bisect-probe-20260930.log",
+  "probe_result": "PROBE_EXIT=0 DUR=284s; all 20 stages printed ok; stage2 round-tripped security_settings with kdf_iterations=123456 through a real backup and restore.",
+  "implication": "117.9's setUpAll runs that same create() shape several times inside a single 12-minute timeout, which is why it dies with a TimeoutException rather than an assertion. Fixing it means raising 117.9's own timeout budget or cutting the number of create() calls in its setUpAll - NOT relaxing anything in this slice.",
+  "residue_and_ownership": "test/release/scratch_1179_bisect_test.dart was left IN PLACE, deliberately. It is 117.9's only reproduction path for an unexplained red gate; deleting it would destroy the evidence, and fixing 117.9 from this slice would touch a sibling outside the 117.12 scope. The finding above is what must migrate into an official 117.9 test when that slice is picked up."
+}

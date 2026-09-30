@@ -1,0 +1,8 @@
+{
+  "gate": "focused",
+  "canonical_step": "117.12",
+  "recorded_at": "2026-09-30",
+  "run": "cron_b0c2c7d744d9_20260930_180250",
+  "claim": "117.12 focused gate 37/37 PASS EXIT=0 measured in this run (flutter test --no-pub test/release/sprint_117_identity_workflow_validation_test.dart). Count read from the final log line, not inferred from the exit code.",
+  "log": "docs/evidence/sprint-117-12-focused-rerun-20260930.log"
+}

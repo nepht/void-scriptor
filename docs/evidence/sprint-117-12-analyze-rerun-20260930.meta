@@ -1,0 +1,15 @@
+{
+  "gate": "analyze",
+  "canonical_step": "117.12",
+  "recorded_at": "2026-09-30",
+  "run": "cron_b0c2c7d744d9_20260930_180250",
+  "claim": "117.12 scoped analyzer on 4 files: 'No issues found!' EXIT=0.",
+  "log": "docs/evidence/sprint-117-12-analyze-rerun-20260930.log",
+  "scoped_files": [
+    "lib/features/world_logic/domain/sprint_117_account_configuration_migration.dart",
+    "lib/features/world_logic/domain/sprint_117_identity_workflow_drill.dart",
+    "lib/features/world_logic/domain/sprint_117_identity_workflow_validation.dart",
+    "test/release/sprint_117_identity_workflow_validation_test.dart"
+  ],
+  "note": "Scoped rather than repository-wide because an unrelated WIP file would otherwise inflate the result. git diff --check measured EXIT=0 with empty output in the same batch."
+}

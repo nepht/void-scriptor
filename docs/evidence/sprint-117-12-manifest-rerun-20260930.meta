@@ -1,0 +1,15 @@
+{
+  "gate": "manifest",
+  "canonical_step": "117.12",
+  "recorded_at": "2026-09-30",
+  "run": "cron_b0c2c7d744d9_20260930_180250",
+  "claim": "117.12 manifest RE-DERIVED from a live drill+gate run in THIS run and proved byte-identical to the manifest the dead run left behind: both sha256 921d896942a8c483d8a75291b969370b5cf2f04988ce4bc02485ce27d96e3188, 16229 bytes. Verdict IDENTITY_WORKFLOW_VALIDATED_LOCAL, status pass, coverage 1.0, 7 acceptance satisfied, 1 unmet (connect), 4 open items, json.loads VALID.",
+  "log": "docs/evidence/sprint-117-12-manifest-rerun-20260930.log",
+  "generator": "test/release/scratch_11712_generator_rerun_test.dart — refused to write unless drill.allPassed AND gate status == pass AND coverage == 1.0 AND acceptanceUnmet is non-empty (so 'connect' can never be quietly promoted to satisfied). DELETED after use; test/release/ contains no scratch_11712 residue.",
+  "two_real_failures_hit_and_fixed_in_the_generator_not_the_slice": [
+    "attempt 1 EXIT=1 compile failure: 'The method toJson isn't defined for Sprint117IdentityWorkflowAnchor' - the anchor and per-check serialisers are PRIVATE extensions inside the library, so the generator must go through report.toJson() rather than touching the anchor directly.",
+    "attempt 2 EXIT=0 but the manifest was semantically identical yet byte-different: spreading report.toJson() first moved schema_version/canonical_step/title/generated_from to the end. Fixed by spreading the header before the report, restoring the canonical key order and the exact sha256."
+  ],
+  "independent_crosscheck_of_the_unmet_acceptance": "docs/planning/v1.2/sprint_115_provider_connector_manifest.json declares standard_manifest.entry_count=32, availability=UNVERIFIED, connectable=false; the drill measured shipped_connector_count=32, shipped_connectable_count=0 and refused the shipped 'email' connector with connectorUnavailable while a fixture satisfying the same gate completed a real PKCE exchange. 'connect' is therefore unsatisfiable by any shipped connector, not an excuse.",
+  "external_pins": "all 3 pins recomputed independently before writing: sprint_115.json c8d5166a…c6aba MATCH, account_cloud_center_spec.json f0589fe7…bd88a MATCH, connector_sdk_spec.json 052e8b24…1528dc MATCH."
+}

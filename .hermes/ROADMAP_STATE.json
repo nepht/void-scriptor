@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.14",
-  "next_step": "117.15",
+  "last_verified_step": "117.15",
+  "next_step": "117.16",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -48,7 +48,8 @@
     "preexisting_failure_verdict": "PREEXISTING_ENVIRONMENTAL: 4 release tests bind checksums to a signed GA artifact set that only exists in gitignored build/; any rebuild drifts them. Not caused by slice 1a0d94d and not a Core regression.",
     "release_shard": "test/release/ 1568 PASS / 4 FAIL exit 1 (4 pre-existing signed-artifact failures; was 8 failures before the release build supplied void_scriptor.exe)",
     "rechecked_on": "2026-09-30",
-    "recheck_note": "Re-verified at 117.6 entry/exit: analyzer scoped exit 0 'No issues found!', focused 41/41 exit 0, sprint-117 regression 310/310 exit 0, source regression 154/154 exit 0, diff-check exit 0, Windows debug build exit 0 19.0s. stability_gate stays PASS."
+    "recheck_note": "Re-verified at 117.6 entry/exit: analyzer scoped exit 0 'No issues found!', focused 41/41 exit 0, sprint-117 regression 310/310 exit 0, source regression 154/154 exit 0, diff-check exit 0, Windows debug build exit 0 19.0s. stability_gate stays PASS.",
+    "note_11715": "Slice 117.15 green: focused 28/28, slice 233/233, shard 117 572/572, account domain 735/735, analyzer 6 files No issues found!, format 0 changed, diff-check 0, 3/3 pins MATCH. Windows build exit 0 but NOT slice evidence: the positive-control poison also built exit 0, so the build did not recompile Dart; on a forced-fresh kernel the slice symbols are 0 while controls are non-zero."
   },
   "selection_rules": [
     "Repository evidence and the active sprint ledger override stale narrative status text.",
@@ -728,7 +729,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "117.11",
+  "last_resolved_step": "117.15",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -2620,5 +2621,7 @@
       "test/release/scratch_1179_bisect_test.dart (117.9 reproduction probe, kept as evidence)"
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
-  }
+  },
+  "last_slice_commit": "aea8c88",
+  "last_verified_on": "2026-09-30"
 }

@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.16",
-  "next_step": "117.17",
+  "last_verified_step": "117.17",
+  "next_step": "117.18",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -59,7 +59,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-01T01:35:00+07:00",
+  "updated_at": "2026-10-01T03:05:00+07:00",
   "updated_by": "hermes-cron-v4",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -616,10 +616,10 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "117.13",
+  "current_step": "117.17",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "2026-09-30: 117.10 Account Configuration Migration VERIFIED-LOCAL (slice e1c3ed7, ledger 42430e3). WIP dua file dari run cron sebelumnya yang mati di max_iterations 07:25 diadopsi (syarat WIP 1-6), RED exit 1 load failure (snapshot SHA-matched), GREEN 21/21, shard A 406/406, shard B 76/76, analyzer scoped exit 0, format 0 changed, diff-check 0, build windows --debug exit 0 19,7s.",
-  "last_commit": "e5d1def",
+  "last_run_summary": "2026-10-01: 117.17 Developer Connector Workflow Validation VERIFIED-LOCAL (slice a77157b). 6 canonical evidence (scopes, resource_access, rate_limits, reauth, revoke, audit) diukur terhadap mekanisme yang di-ship; gate dan drill dipisah seperti 117.5-117.16. Slice memperbaiki TIGA defect nyata: disconnect developer tidak di-gate reauth padahal spec mendaftarkan disconnect_provider sebagai sensitive_action dengan jaminan reauth_before_sensitive_action (default gate fail-closed); disconnect yang ditolak tidak berverejak (kini denied_disconnect); recordHealthCheck tidak pernah membersihkan permintaan reauth sehingga prompt yang tak bisa dipenuhi terus tampil. DUA cacat pada mesin kejujuran slice sendiri: acceptance dibaca dari konstanta yang disalin ke harness (kini dari list acceptance tiap sumber), dan term subtree dihitung lalu diabaikan serta pencocokan daun bertitik ke subtree tingkat atas = NOL PALSU (kini di-AND-kan dan pencocokan berprefiks). Necessity dua arah terbukti: blob pra-fix via git cat-file -> suite gagal; subnet 115.10 dipersempit -> 4 test gate gagal; keduanya dipulihkan SHA MATCH. Gates: fokus 52/52, regresi account/domain 740/740, shard 117 17 file 626/626, analyzer 7 file No issues found, format 0 changed, diff-check 0, 2/2 pin MATCH, build exit 0. Build TIDAK diklaim bukti slice: dua build pertama exit 0 dalam 19-20 dtk dengan kernel tak tersentuh; setelah kernel + cache inkremental dipurge build 46,1 dtk menghasilkan kernel fresh (101.223.920 -> 101.390.088) dengan kontrol positif non-nol dan SETIAP simbol slice = 0, jadi rantai account/domain tidak terjangkau dari main.dart. Manifest docs/evidence/sprint-117-17-manifest-20261001.json byte-identical dua run (sha256 65cb34f2, 5783 byte); generator dihapus tanpa residu. Open item: no_shipped_consumer_for_developer_connector_managers, developer_connector_defined_not_executed_live, external_connector_specs_outside_repository, plus gap terukur organizations/workspaces dan rate-limit yang tidak dideklarasikan anchor mana pun.",
+  "last_commit": "a77157b",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -730,7 +730,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "117.15",
+  "last_resolved_step": "117.17",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -2331,10 +2331,61 @@
     "note": "slot allocated at operator stream transition; no work performed yet"
   },
   "sprint_117_step_11717": {
-    "status": "NOT_STARTED",
-    "next_step": null,
-    "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "build_evidence": "The first two builds exited 0 in 19-20s while kernel_blob.bin was untouched, so the exit code came from a stale artifact. After purging the kernel and .dart_tool/flutter_build the build took 46.1s and produced a genuinely fresh kernel (101,223,920 -> 101,390,088 bytes, current mtime) with non-zero positive controls; on that fresh kernel every slice symbol is 0, so the account/domain chain is not reachable from main.dart. What the build proves is only that the reachable program did not regress.",
+    "checks": [
+      "scopes",
+      "resource_access",
+      "rate_limits",
+      "reauth",
+      "revoke",
+      "audit"
+    ],
+    "coverage": 1.0,
+    "date": "2026-10-01",
+    "defects_fixed": [
+      "AccountCenterDeveloperToolsConnections.disconnect accepted a caller-supplied confirmed flag and removed the connection, while the pinned product spec lists disconnect_provider as a sensitive action and declares reauth_before_sensitive_action. Fix: the disconnect runs behind a reauthentication gate whose default refuses, because a caller that supplied no gate has not proven the user is present.",
+      "A disconnect refused at the gate and one never attempted produced identical audit trails, so the refusal vanished from the record. Fix: the refusal is a decided outcome recorded as denied_disconnect.",
+      "AccountConnectedAccountsManagement.recordHealthCheck never touched reauthRequired, so a connection that demonstrably answered with a working token kept showing a reauthenticate prompt no observation could ever satisfy; 115.10 already clears it on every refresh. Fix: the observation clears the request, and the drill proves the clearing is per connection."
+    ],
+    "drill": "lib/features/world_logic/domain/sprint_117_developer_connector_workflow_drill.dart",
+    "evidence": "docs/evidence/sprint-117-17-manifest-20261001.json",
+    "external_gates": "DEFERRED-EXTERNAL",
+    "gate_state": "pass",
+    "gates": {
+      "account_domain_regression": "740/740 exit 0 (baseline 735)",
+      "analyzer": "7 files No issues found! exit 0",
+      "diff_check": "exit 0",
+      "external_pins": "2/2 MATCH (sprint_115.json c8d5166a, account_cloud_center_spec.json f0589fe7)",
+      "focused": "52/52 exit 0",
+      "format": "7 files 0 changed exit 0",
+      "sprint_117_shard": "626/626 exit 0 across 17 files (baseline 603)",
+      "windows_build": "exit 0 after purging kernel + incremental cache; 46.1s; NOT claimed as slice evidence"
+    },
+    "harness_defects_fixed": [
+      "Acceptance items were read out of three constants copied into the harness, so 'this source declares the guarantee' was decided by a literal that never opened the file. Fix: items are read from each committed source's own acceptance list.",
+      "A guarantee term was computed and then ignored, and it matched dotted leaf names against a manifest recording top-level subtrees, making it false for a manifest that plainly declares the subtree: a false zero of the same kind as the missing-strings count. Fix: the term is applied and subtree coverage matches by prefix."
+    ],
+    "implementation": "lib/features/world_logic/domain/sprint_117_developer_connector_workflow_validation.dart",
+    "manifest": "docs/planning/v1.3/sprint_117_developer_connector_workflow_validation.json",
+    "measured_gaps": [
+      "no file under lib/ outside the acceptance harness imports any of the three shipped managers",
+      "no anchor source declares an organization/workspace acceptance item",
+      "no anchor source declares a rate-limit acceptance item"
+    ],
+    "necessity_proof": "Both directions proven this run. Pre-fix blobs restored via `git cat-file blob HEAD:<path> > <path>` (never git show, which mangles bytes through the terminal tool) fail the focused suite; narrowing the 115.10 subtree list to exclude security_contract fails four gate tests, so both exclusions still bite. Both shipped files restored from the run snapshot and matched by SHA-256.",
+    "next_step": "117.18",
+    "open_items": [
+      "no_shipped_consumer_for_developer_connector_managers",
+      "developer_connector_defined_not_executed_live",
+      "external_connector_specs_outside_repository"
+    ],
+    "release_cut": "operator decision",
+    "slice_commit": "a77157b",
+    "state_slot_drift_observed": "sprint_117_step_11715 and sprint_117_step_11716 still read NOT_STARTED even though the ledger marks both VERIFIED-LOCAL. The guard derives its recommendation from the ledger and never reads these slots, so the drift cannot steer the roadmap; recorded rather than silently rewritten, because those steps are outside this slice.",
+    "status": "VERIFIED-LOCAL",
+    "test": "test/release/sprint_117_developer_connector_workflow_validation_test.dart",
+    "title": "Developer Connector Workflow Validation",
+    "verdict": "DEVELOPER_CONNECTOR_WORKFLOW_VALIDATED_LOCAL"
   },
   "sprint_117_step_11718": {
     "status": "NOT_STARTED",
@@ -2623,6 +2674,6 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "aea8c88",
-  "last_verified_on": "2026-09-30"
+  "last_slice_commit": "a77157b",
+  "last_verified_on": "2026-10-01"
 }

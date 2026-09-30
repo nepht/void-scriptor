@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.13",
-  "next_step": "117.14",
+  "last_verified_step": "117.14",
+  "next_step": "117.15",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -57,7 +57,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-30T20:05:00+07:00",
+  "updated_at": "2026-09-30T22:20:00+07:00",
   "updated_by": "hermes-cron-v4",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -2587,5 +2587,38 @@
       "release_cut_pending: pubspec 1.2.0-rc.1 != v1.3.0-beta.1"
     ],
     "external_gates": "DEFERRED-EXTERNAL"
+  },
+  "sprint_117_14_sync_backup_conflict": {
+    "status": "VERIFIED-LOCAL",
+    "commit": "94e1e93",
+    "verdict": "SYNC_BACKUP_CONFLICT_VALIDATED_LOCAL (pass), coverage 8/8 = 1",
+    "defect_fixed": "ConflictResolver.resolve walked change.ours.keys, so a key only the remote side changed was never emitted: a remote edit reverted to the base value the user had replaced, and a remote-only addition vanished. Now walks change.changedKeys and lets divergence decide which side moved. RED 5 pass/2 fail (Expected '2' vs Actual '1'); post-fix 7/7.",
+    "cross_step_measurement_defect": "117.11's _callSites counted ANY other step's acceptance harness as a production caller, because it excluded only its own family by hardcoded name. Adding 117.14's drill, which legitimately calls the same boundary contracts, flipped 117.11 to 5 failures. Cause isolated: files moved out -> 30/30, moved back -> 5 fail. Fixed by excluding every sprint_117_* harness; validated in both directions with a temporary real-caller probe that still trips the check, so it was not silenced.",
+    "necessity_two_ways": "pre-fix HEAD blob restored via git show into snapshot -> exit 1, 6 failures, gate pass->fail and verdict SYNC_BACKUP_CONFLICT_INCONSISTENT; with fix 43/43 exit 0",
+    "gates": {
+      "focused": "7/7 exit 0",
+      "slice": "36/36 exit 0",
+      "regression": "826/826 exit 0 (test/features/collaboration + test/features/account/domain + slice)",
+      "shard_117": "544/544 exit 0 (14 files, re-run after format)",
+      "analyze": "6 files, No issues found! exit 0",
+      "format": "6 files, 0 changed exit 0",
+      "diff_check": "exit 0",
+      "external_pins": "3/3 MATCH re-hashed independently",
+      "build_windows_debug": "exit 0, 84.2s, after forced recompile"
+    },
+    "build_scope_honest": "The debug build cannot attest this slice. Fresh app.dill (mtime 2026-09-30 22:02:11) shows ConflictResolver 0, SyncChangeSet 0, Sprint117SyncBackupConflictDrill 0 occurrences while the reachable control StorageUsageCard shows 20, so the collaboration/sync chain is unreachable from main.dart, as in 117.12/117.13. Build proves no regression to the reachable program only.",
+    "open_items": [
+      "check_acceptance_unmet:delta",
+      "unresolvable_reference:no_shipped_delta_transport_protocol",
+      "no_shipped_encrypted_backup_writer",
+      "no_shipped_chunked_or_streamed_transfer",
+      "sync_defined_not_executed_live"
+    ],
+    "external_gates": "DEFERRED-EXTERNAL (hosted CI, real provider sync, public signing, publication)",
+    "preserved_untouched": [
+      "macos/Flutter/GeneratedPluginRegistrant.swift (Flutter GENERATED, user-owned)",
+      "test/release/scratch_1179_bisect_test.dart (117.9 reproduction probe, kept as evidence)"
+    ],
+    "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   }
 }

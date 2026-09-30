@@ -28,8 +28,8 @@
  "active_sprint": 117,
  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
  "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
- "last_verified_step": "117.10",
- "next_step": "117.11",
+ "last_verified_step": "117.11",
+ "next_step": "117.12",
  "stability_gate": {
   "status": "PASS",
   "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -155,8 +155,8 @@
   "confirmed": "BUG-004 Medium: timeline_workspace_screen _moveClip clamp(0.0, negative maxStart) throw ArgumentError; reachabel via ensureTimelineForScene beat-duration tanpa validasi silang",
   "dismissed": "BUG-001 (fromRecord baca payload bukan undoPayload), BUG-002 (validateTimeline tanpa caller produksi; desain gap), BUG-003 (command-id vs relation-id namespace sengaja), BUG-005 (action track dijamin transaksi yang sama)",
   "delegation_note": "Skeptic delegate GAGAL 2x HTTP 429 (pin gemini/gemini-3.5-flash-lite habis, preseden run260). Butuh Choi: pulihkan/cabut pin delegation untuk rantai 3-tahap penuh.",
-  "cosmetic_debt": "undoPayload MoveTimelineClipCommand memakai key 'startSeconds' tak pernah dikonsumsi — bukan bug, jangan di-escalate sebagai defect",
-  "next_unscanned_regions": "features/projects (10 file/1037 baris) atau features/world (34 file — wajib dipecah <=20)",
+  "cosmetic_debt": "undoPayload MoveTimelineClipCommand memakai key 'startSeconds' tak pernah dikonsumsi \u2014 bukan bug, jangan di-escalate sebagai defect",
+  "next_unscanned_regions": "features/projects (10 file/1037 baris) atau features/world (34 file \u2014 wajib dipecah <=20)",
   "sibling_dirty_fingerprint": {
    "story_dao": "12a3e5f65c60",
    "project_database": "bb9d67697642",
@@ -188,7 +188,7 @@
   "status": "hunt COMPLETE (VERIFIED scan-only, rantai 3-tahap penuh LULUS) + REF-BUG-1 fixed bf05986; QUEUE: REF-BUG-3 kecil + REF-BUG-2 butuh keputusan routing",
   "hunt": "docs/evidence/vs-hunt-20260913-references/ (10 file scope, sha256+HEAD da2df61, hunter/skeptic/referee reports on-disk)",
   "confirmed": "REF-BUG-1 Medium FIXED (replaceFile FileSystemException file hilang + saveVersion sebelum copy); REF-BUG-2 Medium non-production (unrouted screen, no toggle method exists); REF-BUG-3 Low import dialog silent-empty reachable via library screen",
-  "delegation_note": "pin gemini flash-lite LULUS 3 stage beruntun (references + loadout era yang sama) — era kuota sehat, jangan cabut pin",
+  "delegation_note": "pin gemini flash-lite LULUS 3 stage beruntun (references + loadout era yang sama) \u2014 era kuota sehat, jangan cabut pin",
   "sibling_dirty_fingerprint": "character/story 4 file M + 2 test untracked journal lifecycle mtime 08:41-08:52 direservasi tanpa sentuh",
   "next_unscanned_regions": "features/inspector (9 file) atau features/settings shell (cek overlap run260)"
  },
@@ -206,7 +206,7 @@
   "confirmed": "DB-BUG-01 Medium getAllAssets in-memory scan di DashboardRepository; DB-BUG-03 Medium session-null Create Character -> /studio shell mati (FIXED, navigasi ke /projects per kontrak shell); DB-BUG-04 Low RecentAssets hardcoded = DEAD CODE nol importer (hapus/rewire terpisah); DB-BUG-07 Low statistik error tanpa retry; DB-BUG-08 Low raw $error auth UI",
   "dismissed": "BUG-02 (Riverpod FutureProvider auto AsyncValue.error), BUG-05 (stub donasi jujur = by-design deferred payment), BUG-06 (sort list kecil di build = negligible), BUG-09 (errorBuilder thumbnail menangani file error)",
   "evidence": "RED dashboard_create_character_no_session_test Actual '/studio' -> GREEN; fokus 1 PASS; test/features/dashboard 13 PASS; shell+routing 69 PASS; analyze No issues; build windows debug 64,5s; guard PASS",
-  "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
+  "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) \u2014 cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
  },
  "last_worker_run": "2026-09-21T17:15:00Z",
  "note": "112.40 VERIFIED-LOCAL: Wave 1-3 frozen format/plugin contracts remain compatible; typed ws-events/v1 added additively with legacy ProjectMutationEvent constructors preserved. Pointer advanced to 112.41.",
@@ -410,7 +410,7 @@
    "status": "DEFERRED",
    "deferred_step": "145.30",
    "deferred_on": "2026-09-15",
-   "authority": "KEPUTUSAN CHOI 15 Sep: 'terima defer 145.30' — 145.30 tetap PARTIAL hardware-bound (power-loss nyata + USB cold-eject lanjutan butuh tangan Choi); BUG queue hunt-20260915 HABIS; JANGAN fabrikasi slice; resume atas perintah Choi",
+   "authority": "KEPUTUSAN CHOI 15 Sep: 'terima defer 145.30' \u2014 145.30 tetap PARTIAL hardware-bound (power-loss nyata + USB cold-eject lanjutan butuh tangan Choi); BUG queue hunt-20260915 HABIS; JANGAN fabrikasi slice; resume atas perintah Choi",
    "state_at_defer": {
     "last_verified_step": "145.29 (ledger): 145.27 newly VERIFIED run317 with six Core + deferred route gating 46/46 PASS; 145.28 Writing Room Focus and 145.29 Lore Linking and Search were already VERIFIED in the canonical ledger. Separate 145.42 three-file process-kill matrix bundle 7/7 PASS.",
     "head": "719043a",
@@ -614,10 +614,10 @@
   "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
   "next_step": "112.41"
  },
- "current_step": "117.10",
+ "current_step": "117.12",
  "current_step_status": "NOT_STARTED",
  "last_run_summary": "2026-09-30: 117.10 Account Configuration Migration VERIFIED-LOCAL (slice e1c3ed7, ledger 42430e3). WIP dua file dari run cron sebelumnya yang mati di max_iterations 07:25 diadopsi (syarat WIP 1-6), RED exit 1 load failure (snapshot SHA-matched), GREEN 21/21, shard A 406/406, shard B 76/76, analyzer scoped exit 0, format 0 changed, diff-check 0, build windows --debug exit 0 19,7s.",
- "last_commit": "42430e3",
+ "last_commit": "4df02ee",
  "sprint_112_step_11242": {
   "status": "VERIFIED-LOCAL",
   "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -728,7 +728,7 @@
   "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
   "next_step": "113.4"
  },
- "last_resolved_step": "117.10",
+ "last_resolved_step": "117.11",
  "sprint_113_step_11312": {
   "status": "VERIFIED-LOCAL",
   "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -1791,7 +1791,7 @@
    "beta_plan",
    "rollback_readiness"
   ],
-  "red": "load failure exit 1 (implementation absent: Error when reading '…sprint_116_beta_acceptance_gate.dart'), log 94KB/1242 baris",
+  "red": "load failure exit 1 (implementation absent: Error when reading '\u2026sprint_116_beta_acceptance_gate.dart'), log 94KB/1242 baris",
   "focused": "48/48 PASS exit 0",
   "regression_a": "57/57 PASS exit 0 (116.28-116.39)",
   "regression_b": "308/308 PASS exit 0 (rantai 116.41-116.50), baseline tanpa 116.51 = 308, delta +48 = test baru",
@@ -2097,10 +2097,65 @@
   "external_gates": "DEFERRED-EXTERNAL: hosted CI, public signing, end-user update channels, real installer packaging, publication."
  },
  "sprint_117_step_11711": {
-  "status": "NOT_STARTED",
-  "next_step": null,
-  "manifest": null,
-  "note": "slot allocated at operator stream transition; no work performed yet"
+  "status": "VERIFIED-LOCAL",
+  "next_step": "117.12",
+  "title": "Global Scope & Workspace Boundary Validation",
+  "date": "2026-09-30",
+  "manifest": "docs/planning/v1.3/sprint_117_global_scope_workspace_boundary_validation.json",
+  "implementation": "lib/features/world_logic/domain/sprint_117_global_scope_workspace_boundary_validation.dart",
+  "drill": "lib/features/world_logic/domain/sprint_117_global_scope_drill.dart",
+  "test": "test/release/sprint_117_global_scope_workspace_boundary_validation_test.dart",
+  "slice_commit": "9e100e7",
+  "ledger_commit": "4df02ee",
+  "verdict": "GLOBAL_SCOPE_WORKSPACE_BOUNDARY_VALIDATED_LOCAL",
+  "gate_state": "pass",
+  "acceptance": [
+   "global_route",
+   "profile_summary_only",
+   "novel_permission",
+   "character_permission",
+   "transfer_consent",
+   "no_cross_workspace_leak"
+  ],
+  "acceptance_satisfied": [
+   "character_permission",
+   "global_route",
+   "no_cross_workspace_leak",
+   "novel_permission",
+   "profile_summary_only",
+   "transfer_consent"
+  ],
+  "acceptance_unmet": [],
+  "coverage": 1.0,
+  "violations": [],
+  "missing_fields": [],
+  "unmapped_checks": [],
+  "undetermined_checks": [],
+  "unresolvable_reported": [
+   "backup_boundary_violations_caller_absent",
+   "resolve_transfer_caller_absent",
+   "resolve_workspace_access_caller_absent"
+  ],
+  "note": "Gate and drill separated. The drill really executes the shipped mechanisms: isGlobalSurfaceRoute classifies the canonical route global and rejects workspace/studio/relative routes, the router registration plus query-preserving legacy redirect is read from source, the account-cloud shortcut is verified through the navigation registry and the shipped top-bar menu, resolveWorkspaceAccess and WorkspacePermissionPolicy gates are called with and without permission/link/owner/API, resolveTransfer resolves all 18 scope-pair consent decisions with zero mismatches, and backupBoundaryViolations runs over a real WorkspaceFileNamespace (traversal rejected, 3 violation codes triggered, 2 clean scenarios empty). Three gates have zero call sites in shipped lib/ code outside their own contract and are reported as unresolvable_reference with exact spelling, never folded into a pass.",
+  "verification": {
+   "red": "exit 1 load failure; implementation snapshotted to $LOCALAPPDATA/hermes/cache/scratch/vs-11711-snap, sha_before == sha_after 7b49604e...defb",
+   "focused": "30/30 PASS exit 0 (post-format recheck)",
+   "shard_a": "436/436 PASS exit 0 (117.1-117.11; baseline 406 + delta 30)",
+   "shard_b": "76/76 PASS exit 0 (7 sources 115.x + 2 storage location)",
+   "analyzer": "scoped 3 files, No issues found! exit 0",
+   "format": "first run 3 changed exit 1 fixed at source, recheck 0 changed exit 0, focused re-run after format",
+   "diff_check": "exit 0",
+   "windows_build": "flutter build windows --debug exit 0 23,2s, AssetManifest.bin 09:22:07",
+   "roadmap_guard": "PASS before slice; re-run after state update"
+  },
+  "open_items": [
+   "unresolvable_reference:backup_boundary_violations_caller_absent",
+   "unresolvable_reference:resolve_transfer_caller_absent",
+   "unresolvable_reference:resolve_workspace_access_caller_absent",
+   "widget_route_evidence_reused_not_reexecuted",
+   "external_product_spec_outside_repository"
+  ],
+  "external_gates": "DEFERRED-EXTERNAL: hosted CI, public signing, end-user update channels, publication."
  },
  "sprint_117_step_11712": {
   "status": "NOT_STARTED",

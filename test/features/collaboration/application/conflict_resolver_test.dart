@@ -57,4 +57,25 @@ void main() {
     });
     expect(resolved.containsKey('a'), isFalse);
   });
+
+  // A key only the remote side changed is not a conflict, so no resolution is
+  // supplied for it. The merged state must still carry the remote edit: the
+  // base value it falls back to is the state the user already replaced.
+  test('resolver keeps a remote-only edit instead of reverting it to base', () {
+    const change = SyncChangeSet(
+      base: {'a': '1'},
+      ours: {'a': '1'},
+      theirs: {'a': '2'},
+    );
+    final resolved = ConflictResolver.resolve(change, const {});
+    expect(resolved['a'], '2');
+  });
+
+  // A key the remote side added is not in `ours` at all, so a merge that only
+  // walks `ours` drops the remote addition without a trace.
+  test('resolver keeps a remote-only addition instead of dropping it', () {
+    const change = SyncChangeSet(base: {}, ours: {}, theirs: {'b': '2'});
+    final resolved = ConflictResolver.resolve(change, const {});
+    expect(resolved, {'b': '2'});
+  });
 }

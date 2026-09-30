@@ -1,0 +1,22 @@
+sprint: 117.14
+title: Sync, Backup & Conflict Validation
+stage: RED
+date: 2026-09-30
+command: flutter test test/features/collaboration/application/conflict_resolver_test.dart
+exit: 1
+result: 5 pass / 2 fail (7 total after adding 2 regression tests)
+failure_1: 'resolver keeps a remote-only edit instead of reverting it to base'
+  expected: '2' (remote value)
+  actual:   '1' (BASE value - the remote edit was reverted)
+failure_2: 'resolver keeps a remote-only addition instead of dropping it'
+  expected: {'b': '2'}
+  actual:   {} (remote-only key vanished entirely)
+root_cause: lib/features/collaboration/application/conflict_resolver.dart:27-31
+  the merge only walks `change.ours.keys`. A key that only the remote side
+  changed is not a conflict, so no resolution is supplied for it, and the key
+  is simply never emitted. The merged state therefore either reverts a remote
+  edit to the base value the user already replaced, or drops a remote-only
+  addition without a trace. Both are silent loss of a synced edit, and
+  117.14 declares 'conflicts' and 'restore' as required evidence.
+pre_fix_sha256: 42d6c2984d92ff0db231bf89f326a1403382ac7c551a32eba9752a1fe3ed81ec
+pre_fix_restored_via: git show HEAD:<path> (not git reset)

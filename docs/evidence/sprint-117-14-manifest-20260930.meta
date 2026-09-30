@@ -1,0 +1,104 @@
+sprint: 117.14
+title: Sync, Backup & Conflict Validation
+date: 2026-09-30
+canonical_objective: transfer, delta, retry, resume, encrypted backup, restore,
+  conflicts, large assets, and workspace boundaries (external sprint_117.json,
+  canonical sha256 b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6)
+verdict: SYNC_BACKUP_CONFLICT_VALIDATED_LOCAL
+
+=== WHAT THIS STEP FOUND AND FIXED (shipped-code defect) ===
+lib/features/collaboration/application/conflict_resolver.dart:33
+  ConflictResolver.resolve walked `change.ours.keys`. A key that only the
+  remote side changed is not a conflict, so no resolution was supplied for it
+  and the key was never emitted. A remote edit was therefore reverted to the
+  base value the user had already replaced, and a remote-only addition vanished
+  with no trace. Silent loss of a synced edit.
+  Fix: walk `change.changedKeys`; for a non-conflicting key, divergence decides
+  (base != ours) rather than presence, and take the side that actually moved.
+  Diff: 12 insertions, 5 deletions in one hunk.
+  pre_fix_sha256: 42d6c2984d92ff0db231bf89f326a1403382ac7c551a32eba9752a1fe3ed81ec
+  post_fix_sha256: a92da36b2b1b9d6af7080473e8d510427d0e203ea6d37fb9fd4c028c1e0b65e7
+  RED: 5 pass / 2 fail, exit 1 (Expected '2' remote, Actual '1' base).
+  Restoration used `git show HEAD:<path>` into a snapshot, never git reset/restore.
+
+=== SECOND, NON-OBVIOUS DEFECT (cross-step measurement) ===
+lib/features/world_logic/domain/sprint_117_global_scope_workspace_boundary_validation.dart:1107
+  117.11's `_callSites(symbol)` decides "is this gate called by shipped code?"
+  by scanning lib/ and excluding only ITS OWN family by hardcoded name
+  (`sprint_117_global_scope`). Every other step's acceptance harness therefore
+  counted as a PRODUCTION CALLER. Adding 117.14's drill - which legitimately
+  drills the same AccountCenterWorkspaceBoundaryContract - made 117.11 report a
+  production caller that does not exist and flipped its `unresolvable` verdict.
+  Reproduction (cause isolated, not guessed):
+    with 117.14 drill+validation moved out of lib/ -> 117.11 = 30/30 exit 0
+    with them present                          -> 117.11 = 5 failures, exit 1
+  Fix: exclude every `sprint_117_*` harness from the production-caller count.
+  No sprint_117_* file is reachable from main.dart, so none is production wiring.
+  VALIDATED IN BOTH DIRECTIONS (a blanket exclusion that silences the check
+  would be worse than the bug):
+    - a genuine caller in a non-harness file (lib/features/collaboration/
+      application/_poison_callsite.dart, TEMPORARY probe, real call to
+      resolveTransfer) still flips the counter and fails 117.11 -> the check
+      still bites. Probe removed in the same run; no residue.
+    - with no genuine caller, 117.11 is 30/30 again.
+
+=== GATES (all measured this run) ===
+  focused conflict_resolver_test.dart: 7/7 exit 0
+  slice sprint_117_sync_backup_conflict_validation_test.dart: 36/36 exit 0
+  shard test/features/collaboration/ + test/features/account/domain + slice: 826/826 exit 0
+  shard test/release/sprint_117_*.dart (14 files): 544/544 exit 0
+  dart analyze (6 files): No issues found! exit 0
+  dart format --set-exit-if-changed (6 files): 0 changed exit 0 (recheck after apply)
+  git diff --check: exit 0
+  external pins re-hashed independently: 3/3 MATCH
+    c8d5166a.. sprint_115.json
+    f0589fe7.. account_cloud_center_spec.json
+    052e8b24.. connector_sdk_spec.json
+  flutter build windows --debug: exit 0, 84.2s, AFTER forcing recompile
+    (rm dart_build.stamp/dart_build.d/app.dill first)
+
+=== NECESSITY (two directions, this run) ===
+  pre-fix blob swapped in via snapshot: exit 1, 6 failures across both suites
+    - drill conflicts: refuses resolution without a backup
+    - drill conflicts: remote-only edit and remote-only addition survive merge
+    - gate passes with every canonical check decided by a real drill
+      (State.pass expected, State.fail actual)
+    - report serialisation: SYNC_BACKUP_CONFLICT_VALIDATED_LOCAL expected,
+      SYNC_BACKUP_CONFLICT_INCONSISTENT actual
+    - plus the 2 focused regression tests
+  with fix restored (sha a92da36b...): 43/43 exit 0
+  conclusion: the slice fails loudly on the defect it owns AND the gate
+  propagates that failure into the overall verdict instead of hiding it.
+
+=== WINDOWS BUILD SCOPE (HONEST, same discipline as 117.13) ===
+  The debug build CANNOT attest this slice. Forced recompile did produce a
+  fresh app.dill (mtime 2026-09-30 22:02:11), yet symbol counts in it are:
+    ConflictResolver 0, SyncChangeSet 0, Sprint117SyncBackupConflictDrill 0,
+    CloudStorageAggregation 0, but CONTROL StorageUsageCard 20.
+  => the collaboration/sync chain is not reachable from main.dart, exactly as
+  117.12 and 117.13 were. The control symbol proves the counting method works.
+  WHAT THE BUILD DOES establish: no regression to the reachable program
+  (native assets, CMake, MSBuild, plugins) at this HEAD + slice.
+  WHAT IT DOES NOT establish: that the changed Dart was compiled into the
+  debug kernel. Real coverage is the focused/shard runs, which compile these
+  files directly and were measured with necessity in both directions.
+
+=== ACCEPTANCE NOT SATISFIABLE BY SHIPPED CODE (recorded, not folded into pass) ===
+  No shipped code performs a sync. FolderCloudSyncService round-trips a whole
+  project map through one JSON file per project: no delta protocol, no chunked
+  or streamed transfer, no encrypted-archive writer, no retry against a real
+  endpoint anywhere in lib/.
+  The gate therefore records, as acceptance_unmet with exact reasons:
+    delta, encrypted_backup (no archive writer; encryption is a declared
+    field no shipped code executes), large_assets (whole-map transport only),
+    and the integration gap (nothing reachable from main.dart executes them).
+  transfer, retry_resume, restore, conflicts, workspace_boundaries are drilled
+  against the contracts that do ship and are reported as satisfied locally.
+  All external gates remain DEFERRED-EXTERNAL. Release cut = operator decision.
+
+=== PRESERVED, NOT TOUCHED ===
+  macos/Flutter/GeneratedPluginRegistrant.swift (Flutter GENERATED, user-owned)
+  test/release/scratch_1179_bisect_test.dart (117.9 reproduction probe, kept
+    deliberately as evidence)
+  No git add -A, no reset/restore/clean. Snapshot of every pre-existing WIP
+  file taken before mutation at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap.

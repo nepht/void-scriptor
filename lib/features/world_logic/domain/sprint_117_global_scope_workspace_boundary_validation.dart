@@ -384,17 +384,17 @@ class Sprint117GlobalScopeLoader {
       Sprint117GlobalScopeInput(rows: _loadRows(), anchor: _loadAnchor());
 
   /// Folds the measured drill into the committed record.
-  Sprint117GlobalScopeInput loadWithDrill(
-    Sprint117GlobalScopeDrillRun run,
-  ) => Sprint117GlobalScopeInput(
-    rows: _loadRows(run),
-    anchor: _loadAnchor(),
-    drillRun: run,
-    // A run that never resolved the pin cannot prove drift either; only a
-    // recorded pin that no longer matches is a contradiction.
-    productSpecIntegrityDrift:
-        run.productSpecPinnedSha256.isNotEmpty && !run.productSpecMatchesPin,
-  );
+  Sprint117GlobalScopeInput loadWithDrill(Sprint117GlobalScopeDrillRun run) =>
+      Sprint117GlobalScopeInput(
+        rows: _loadRows(run),
+        anchor: _loadAnchor(),
+        drillRun: run,
+        // A run that never resolved the pin cannot prove drift either; only a
+        // recorded pin that no longer matches is a contradiction.
+        productSpecIntegrityDrift:
+            run.productSpecPinnedSha256.isNotEmpty &&
+            !run.productSpecMatchesPin,
+      );
 
   Sprint117GlobalScopeAnchor? _loadAnchor() {
     final ia = _readJsonFile(
@@ -407,18 +407,15 @@ class Sprint117GlobalScopeLoader {
     if (ia == null || boundary == null || alpha == null) return null;
 
     return Sprint117GlobalScopeAnchor(
-      informationArchitectureDeclared: _declaredContractSize(
-        ia,
-        const <String>['acceptance_coverage'],
-      ),
-      workspaceBoundaryDeclared: _declaredContractSize(
-        boundary,
-        const <String>['acceptance'],
-      ),
-      alphaAcceptanceDeclared: _declaredContractSize(
-        alpha,
-        const <String>['buckets'],
-      ),
+      informationArchitectureDeclared: _declaredContractSize(ia, const <String>[
+        'acceptance_coverage',
+      ]),
+      workspaceBoundaryDeclared: _declaredContractSize(boundary, const <String>[
+        'acceptance',
+      ]),
+      alphaAcceptanceDeclared: _declaredContractSize(alpha, const <String>[
+        'buckets',
+      ]),
       productSpecPinnedSha256: _productSpecPinFrom(boundary),
       productSpecActualSha256: _productSpecActualSha(boundary),
       boundaryEvidenceDeclared: _declaredText(boundary, const <String>[
@@ -496,8 +493,7 @@ class Sprint117GlobalScopeLoader {
     'novel_permission' => Sprint117GlobalScopeContract.workspaceBoundary,
     'character_permission' => Sprint117GlobalScopeContract.workspaceBoundary,
     'transfer_consent' => Sprint117GlobalScopeContract.workspaceBoundary,
-    'no_cross_workspace_leak' =>
-      Sprint117GlobalScopeContract.workspaceBoundary,
+    'no_cross_workspace_leak' => Sprint117GlobalScopeContract.workspaceBoundary,
     _ => '',
   };
 
@@ -627,7 +623,9 @@ class Sprint117GlobalScopeGate {
         violations.add('external_boundary_not_declared:workspace_boundary');
       }
       if (!anchor.iaEvidenceDeclared) {
-        violations.add('external_boundary_not_declared:information_architecture');
+        violations.add(
+          'external_boundary_not_declared:information_architecture',
+        );
       }
       if (!anchor.productSpecPinned) {
         missing.add('product_spec_pin');
@@ -933,7 +931,9 @@ String _productSpecActualSha(Map<String, dynamic> boundary) {
 /// Reads the external product spec through the committed pin. A path outside
 /// the repository is only ever read, never written.
 _SpecFile? _readProductSpec() {
-  final boundary = _readJsonFile(Sprint117GlobalScopeContract.workspaceBoundary);
+  final boundary = _readJsonFile(
+    Sprint117GlobalScopeContract.workspaceBoundary,
+  );
   if (boundary == null) return null;
   final path = _productSpecPinPathFrom(boundary);
   if (path == null) return null;
@@ -1014,9 +1014,9 @@ List<String> _accountMenuValues(String source) {
   final body = _classBody(source, 'class _AccountMenu ');
   if (body == null) return const <String>[];
   final values = <String>{
-    for (final match in RegExp(r"PopupMenuItem\(value: '([^']+)'").allMatches(
-      body,
-    ))
+    for (final match in RegExp(
+      r"PopupMenuItem\(value: '([^']+)'",
+    ).allMatches(body))
       match.group(1)!,
   };
   return values.toList(growable: false)..sort();
@@ -1092,20 +1092,29 @@ List<String> _filesContaining(String directory, List<String> needles) {
 /// A gate nobody calls is a gate that has never been crossed, which is a
 /// different fact from a gate that failed — the count keeps them apart.
 int _callSites(String symbol) {
-final pattern = RegExp(RegExp.escape(symbol) + r'\s*\(');
-final lib = Directory('lib');
-if (!lib.existsSync()) return -1;
-var count = 0;
-for (final entity in lib.listSync(recursive: true)) {
-  if (entity is! File || !entity.path.endsWith('.dart')) continue;
-  final path = entity.path.replaceAll(r'\', '/');
-  // The contract that declares the symbol and this validation that measures
-  // it are not callers — only shipped code outside both counts.
-  if (path.contains('account_center_workspace_boundary_contract.dart')) {
-    continue;
+  final pattern = RegExp(RegExp.escape(symbol) + r'\s*\(');
+  final lib = Directory('lib');
+  if (!lib.existsSync()) return -1;
+  var count = 0;
+  for (final entity in lib.listSync(recursive: true)) {
+    if (entity is! File || !entity.path.endsWith('.dart')) continue;
+    final path = entity.path.replaceAll(r'\', '/');
+    // The contract that declares the symbol and this validation that measures
+    // it are not callers — only shipped code outside both counts.
+    if (path.contains('account_center_workspace_boundary_contract.dart')) {
+      continue;
+    }
+    if (path.contains('sprint_117_global_scope')) continue;
+    // Any other step's acceptance drill or validation harness in this
+    // directory is equally not a shipped caller. Excluding only this step's
+    // own family made the count depend on which sibling steps happened to be
+    // present in the tree: adding 117.14's drill, which legitimately calls
+    // the same boundary contracts, silently reported a production caller that
+    // does not exist. No `sprint_117_*` file is reachable from main.dart, so
+    // none of them is production wiring; the count now means what its
+    // doc comment claims.
+    if (path.contains('sprint_117_')) continue;
+    if (pattern.hasMatch(entity.readAsStringSync())) count += 1;
   }
-  if (path.contains('sprint_117_global_scope')) continue;
-  if (pattern.hasMatch(entity.readAsStringSync())) count += 1;
-}
-return count;
+  return count;
 }

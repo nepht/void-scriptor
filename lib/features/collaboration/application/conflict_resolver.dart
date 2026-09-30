@@ -26,11 +26,18 @@ class ConflictResolver {
       }
       // manual → leave unresolved (not in merged)
     }
-    // Include non-conflicting ours values as-is.
-    for (final key in change.ours.keys) {
-      if (!change.isConflictOn(key)) {
-        merged[key] = change.ours[key];
-      }
+    // Carry the values neither side conflicted on. A key only the remote side
+    // changed is not a conflict, so no resolution is supplied for it and it
+    // never reaches the loop above; without this pass a remote-only edit would
+    // be reverted to base or a remote-only addition dropped entirely.
+    for (final key in change.changedKeys) {
+      if (change.isConflictOn(key)) continue;
+      // Divergence decides, not presence: when only the remote side moved,
+      // `ours` still holds the base value, so taking `ours[key]` would revert
+      // the remote edit. Same test as isConflictOn, so both sides agree on
+      // which side won. A locally deleted key counts as ours diverging.
+      final oursChanged = change.base[key] != change.ours[key];
+      merged[key] = oursChanged ? change.ours[key] : change.theirs[key];
     }
     return merged;
   }

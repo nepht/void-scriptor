@@ -90,6 +90,50 @@ void main() {
       expect(aggregation.quotaBytes, isNull);
       expect(aggregation.lastUpdated, isNull);
     });
+
+    // 117.13: `lastUpdated` is the freshness the whole storage surface is
+    // read against, and a remote total assembled from accounts measured at
+    // different times is only as current as its newest member. The four tests
+    // above each measure every provider at the same instant, so they cannot
+    // tell a newest-wins reduction from a oldest-wins one.
+    test('lastUpdated is the newest included measurement, not the oldest', () {
+      final oldest = _now.subtract(const Duration(days: 3));
+      final newest = _now.subtract(const Duration(minutes: 5));
+
+      final aggregation = CloudStorageAggregation.from([
+        ProviderQuotaResult.fromReading(
+          _reading('drive', used: 100, quota: 500, measuredAt: newest),
+          now: _now,
+        ),
+        ProviderQuotaResult.fromReading(
+          _reading('dropbox', used: 200, quota: 900, measuredAt: oldest),
+          now: _now,
+        ),
+      ]);
+
+      expect(aggregation.includedProviderIds, ['drive', 'dropbox']);
+      expect(aggregation.lastUpdated, newest);
+      expect(aggregation.lastUpdated, isNot(oldest));
+    });
+
+    // A reading the aggregation had to exclude must not date the total: the
+    // excluded account is reported separately and contributes no timestamp.
+    test('lastUpdated ignores an excluded unavailable reading', () {
+      final included = _now.subtract(const Duration(hours: 2));
+      final excludedNewer = _now;
+
+      final aggregation = CloudStorageAggregation.from([
+        ProviderQuotaResult.fromReading(
+          _reading('drive', used: 10, quota: 100, measuredAt: included),
+          now: _now,
+        ),
+        ProviderQuotaResult.unavailable(providerId: 'onedrive', reason: 'n/a'),
+      ]);
+
+      expect(aggregation.excludedProviderIds, ['onedrive']);
+      expect(aggregation.lastUpdated, included);
+      expect(aggregation.lastUpdated, isNot(excludedNewer));
+    });
   });
 }
 

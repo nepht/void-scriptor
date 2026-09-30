@@ -1,0 +1,121 @@
+{
+  "verdict": "CLOUD_STORAGE_QUOTA_VALIDATED_LOCAL",
+  "status": "pass",
+  "missing_fields": [],
+  "violations": [],
+  "unmapped_checks": [],
+  "undetermined_checks": [],
+  "coverage": 1.0,
+  "acceptance_satisfied": [
+    "display_units",
+    "freshness",
+    "local_separation",
+    "partial_total",
+    "raw_bytes",
+    "unavailable"
+  ],
+  "acceptance_unmet": [
+    "provider_api_values"
+  ],
+  "open_items": [
+    "check_acceptance_unmet:provider_api_values",
+    "external_storage_specs_outside_repository",
+    "quota_defined_not_executed_live",
+    "unresolvable_reference:no_shipped_provider_quota_adapter"
+  ],
+  "anchor": {
+    "declared_contract_sizes": {
+      "docs/planning/v1.2/sprint_115_cloud_storage_account_model.json": "DECLARED:acceptance:8",
+      "docs/planning/v1.2/sprint_115_provider_quota_adapters.json": "DECLARED:acceptance:6",
+      "docs/planning/v1.2/sprint_115_cloud_storage_aggregation.json": "DECLARED:acceptance:6",
+      "docs/planning/v1.2/sprint_115_storage_usage_cards.json": "DECLARED:acceptance:6",
+      "docs/planning/v1.2/sprint_115_local_storage_summary.json": "DECLARED:acceptance:6",
+      "docs/planning/v1.2/sprint_115_storage_distribution_chart_table.json": "DECLARED:acceptance:6"
+    },
+    "boundaries_declared": {
+      "docs/planning/v1.2/sprint_115_cloud_storage_account_model.json": true,
+      "docs/planning/v1.2/sprint_115_provider_quota_adapters.json": true,
+      "docs/planning/v1.2/sprint_115_cloud_storage_aggregation.json": true,
+      "docs/planning/v1.2/sprint_115_storage_usage_cards.json": true,
+      "docs/planning/v1.2/sprint_115_local_storage_summary.json": true,
+      "docs/planning/v1.2/sprint_115_storage_distribution_chart_table.json": true
+    },
+    "last_updated_acceptance_declared": true,
+    "free_space_acceptance_declared": true,
+    "external_pins_matched": 3,
+    "external_pins_checked": 3,
+    "external_pins_resolved": true
+  },
+  "checks": [
+    {
+      "check_id": "provider_api_values",
+      "method": "count the shipped ProviderQuotaAdapter implementations in lib/ and record the quota_support capability each cloud account model declares",
+      "expected_outcome": "no shipped adapter reads a provider, and quota support is recorded as a declared capability rather than a fetched value",
+      "observed_outcome": "NO_SHIPPED_ADAPTER_QUOTA_VALUE_IS_CONTRACT_FIXTURE",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_cloud_storage_account_model.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "raw_bytes",
+      "method": "construct provider readings with raw byte counts and a provider unit, and record the byte totals the aggregation derives",
+      "expected_outcome": "provider byte counts are preserved exactly and summed without a unit conversion the provider did not report",
+      "observed_outcome": "RAW_BYTES_PRESERVED_AND_INVALID_READINGS_REFUSED",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_provider_quota_adapters.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "display_units",
+      "method": "render provider byte counts and an unknown quota through the shipped storage-unit formatter and the usage card",
+      "expected_outcome": "byte counts render in decimal units and an unknown quota renders as unavailable rather than zero",
+      "observed_outcome": "DECIMAL_UNITS_RENDERED_UNKNOWN_QUOTA_STAYS_UNAVAILABLE",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_storage_usage_cards.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "freshness",
+      "method": "measure readings inside and outside the stale window, aggregate them, and read back the freshness label and last_updated value",
+      "expected_outcome": "a reading inside the window is fresh, one outside it is stale, and an aggregate is dated by its newest included measurement",
+      "observed_outcome": "FRESHNESS_STATED_AND_AGGREGATE_DATED_BY_NEWEST",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_provider_quota_adapters.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "partial_total",
+      "method": "aggregate a mix of included, unavailable, and provider-defined-unit readings and record the partial status, totals, and exclusions",
+      "expected_outcome": "a total with excluded accounts is partial and names them, and a total with no compatible reading is unavailable rather than zero",
+      "observed_outcome": "PARTIAL_TOTAL_NAMES_EVERY_EXCLUDED_ACCOUNT",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_provider_quota_adapters.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "unavailable",
+      "method": "request an unavailable reading and confirm no total, unit label, or percentage is fabricated in its place",
+      "expected_outcome": "an unavailable provider yields no bytes, no quota, and no percentage",
+      "observed_outcome": "UNAVAILABLE_YIELDS_NO_BYTES_QUOTA_OR_PERCENTAGE",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_provider_quota_adapters.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "local_separation",
+      "method": "scan local storage, filter the distribution to each scope, and confirm local bytes never enter a cloud quota total and free space is never added to a used total",
+      "expected_outcome": "local and remote totals stay separable, a merged total is labelled and warned, and free space is never added to a used total",
+      "observed_outcome": "LOCAL_BYTES_NEVER_ENTER_CLOUD_QUOTA_OR_MERGE_UNLABELLED",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_local_storage_summary.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    }
+  ]
+}

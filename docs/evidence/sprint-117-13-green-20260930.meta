@@ -1,0 +1,11 @@
+sprint: 117.13
+stage: GREEN + regression
+date: 2026-09-30
+fix: isBefore -> isAfter in CloudStorageAggregation.from (1 hunk, 6 lines)
+post_fix_sha256: b7833465a3705ec0c463a09c4c945a19585914a1d04a51303910c942cfb47484
+focused: flutter test <117.13 test> + <115.18 agg test> => 41/41 exit 0
+shard_A: 9 storage/quota/rail/local test files => 96/96 exit 0
+shard_B: 117.12 + 117.10 + 117.9 release tests => 88/88 exit 0
+analyzer: dart analyze 5 scoped files => No issues found! exit 0
+format: dart format 5 scoped files => 0 changed exit 0
+diff_check: git diff --check => exit 0

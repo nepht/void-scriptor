@@ -40,7 +40,11 @@ final class CloudStorageAggregation {
       quota += reading.quotaBytes;
       included.add(reading.providerId);
       if (result.status == ProviderQuotaStatus.stale) hasStale = true;
-      if (lastUpdated == null || reading.measuredAt.isBefore(lastUpdated)) {
+      // A total is only as current as its newest member. Reducing with
+      // `isBefore` kept the *oldest* reading and dated the aggregate to a
+      // measurement no included account produced. 115.18's own `last_updated`
+      // acceptance means the newest one.
+      if (lastUpdated == null || reading.measuredAt.isAfter(lastUpdated)) {
         lastUpdated = reading.measuredAt;
       }
     }

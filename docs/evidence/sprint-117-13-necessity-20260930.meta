@@ -1,0 +1,14 @@
+sprint: 117.13
+stage: NECESSITY (two directions)
+date: 2026-09-30
+method: restored the HEAD blob of account_center_cloud_storage_aggregation.dart
+  (sha b32841d2 = pre-fix) and re-ran the same two suites.
+without_fix: exit 1, 36 pass / 5 fail
+  - 115.18 'lastUpdated is the newest included measurement, not the oldest'
+  - 117.13 'drill - freshness dates an aggregate by its newest...'
+  - 117.13 'drill - freshness states a reading fresh, stale, or unknown...'
+  - 117.13 'gate passes with every canonical check decided by a real drill'
+  - 117.13 'report serialisation emits the verdict...'
+with_fix: 41/41 exit 0
+conclusion: the 117.13 slice is not decorative; it fails loudly on the defect it owns
+  and the gate propagates the failure to the overall verdict instead of hiding it.

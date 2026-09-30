@@ -1,0 +1,35 @@
+sprint: 117.13
+stage: Windows build evidence (HONEST SCOPE)
+date: 2026-09-30
+command: flutter build windows --debug
+exit: 0
+wall: 26.1s then 48.5s (forced) then 34.9s
+artifacts: build/windows/x64/runner/Debug/void_scriptor.exe + data/flutter_assets
+
+FINDING — the debug build CANNOT attest this slice, and I am not claiming it does:
+  1. First build reported exit 0 while .dart_tool/flutter_build/<cfg>/app.dill stayed
+     dated 2026-09-29 16:59:02 and kernel_blob.bin unchanged.
+  2. Poison test: appending invalid Dart to the file I changed
+     (account_center_cloud_storage_aggregation.dart) still built exit 0 -> the build
+     is not compiling that file at all.
+  3. CONTROL (method validated): the same poison on a KNOWN-reachable file
+     (lib/features/account/presentation/storage_usage_card.dart) FAILED the build
+     exit 1 with 16 dart errors at line 111. So the poison method really does detect
+     a broken file, and the exit-0 result in (2) is meaningful, not a flake.
+  4. Root cause: the storage/quota domain chain is not reachable from main.dart.
+     'CloudStorageAggregation' has 0 occurrences in app.dill while 'StorageUsageCard'
+     has 20 and 'AccountCloudSnapshot' 23. The only importers of the aggregation file
+     are account_center_right_rail_summary.dart and this slice's own drill.
+     Precedent: 117.12 is equally unreferenced from lib/ outside its own file.
+  => This is the same 'defined_not_executed_live' gap the report already carries as an
+     open item (quota_defined_not_executed_live), now confirmed at the build layer too.
+
+WHAT THE BUILD DOES establish: no regression to the reachable program (native assets,
+  assets, CMake, MSBuild, plugins) across the slice. exit 0 on the current HEAD + slice.
+WHAT IT DOES NOT establish: that the changed Dart was compiled into the debug kernel.
+  The real coverage for this slice is the focused/shard test runs, which compile the
+  file directly and were measured with necessity in both directions.
+
+Poison residue: all three poisoned files restored; git status shows no modification to
+  lib/features/account/presentation/storage_usage_card.dart and the changed aggregation
+  file hashes b7833465... == the intended fixed content.

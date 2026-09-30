@@ -1,0 +1,17 @@
+sprint: 117.13
+title: Cloud Storage & Quota Validation
+stage: RED
+date: 2026-09-30
+command: flutter test test/features/account/domain/account_center_cloud_storage_aggregation_test.dart
+exit: 1
+result: 4 pass / 1 fail (6 total after adding 2 regression tests)
+failure: 'lastUpdated is the newest included measurement, not the oldest'
+expected: DateTime:<2026-09-25 07:55:00.000Z> (newest included reading)
+actual:   DateTime:<2026-09-22 08:00:00.000Z> (OLDEST included reading)
+root_cause: lib/features/account/domain/account_center_cloud_storage_aggregation.dart:43
+  reduced lastUpdated with reading.measuredAt.isBefore(lastUpdated), which keeps the
+  EARLIEST reading. 115.18 declares acceptance 'last_updated'; the aggregate must be
+  dated by its newest member. Sibling reduction in
+  account_center_storage_distribution_report.dart:802 correctly uses isAfter.
+pre_fix_sha256: b32841d2a70dc4f0b17e15ec568751016350b17622d7f7f2dc6d1c05af5ded05
+pre_fix_restored_via: git show HEAD:<path> (not git reset)

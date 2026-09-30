@@ -1,0 +1,8 @@
+{
+  "artifact": "sprint-117-15-manifest-20260930.json",
+  "sha256": "8fb6fdb1cac94c41773eadb01a5243ed40c9c05ca153c11376877d9e1698e839",
+  "bytes": 7468,
+  "generated_from": "live Sprint117AiProviderWorkflowGate().evaluateWithDrill() run",
+  "determinism": "regenerated twice, byte-identical (same sha256)",
+  "recorded_on": "2026-09-30"
+}

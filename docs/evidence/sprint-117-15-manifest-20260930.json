@@ -1,0 +1,151 @@
+{
+  "_meta": {
+    "schema": "sprint_117_ai_provider_workflow_manifest/v1",
+    "canonical_step": "117.15",
+    "step_title": "AI Provider Workflow Validation",
+    "generated_from": "live gate + drill run",
+    "live_provider_execution": false,
+    "note": "Every value below is copied from the gate output of a real run. No provider endpoint was contacted and no user project was opened."
+  },
+  "verdict": "AI_PROVIDER_WORKFLOW_VALIDATED_LOCAL",
+  "status": "pass",
+  "missing_fields": [],
+  "violations": [],
+  "unmapped_checks": [],
+  "undetermined_checks": [],
+  "coverage": 1.0,
+  "acceptance_satisfied": [
+    "cancellation",
+    "connect",
+    "cost",
+    "errors",
+    "execution",
+    "fallback",
+    "models",
+    "privacy_destination"
+  ],
+  "acceptance_unmet": [
+    "usage"
+  ],
+  "open_items": [
+    "ai_provider_defined_not_executed_live",
+    "check_acceptance_unmet:usage",
+    "external_ai_specs_outside_repository",
+    "unresolvable_reference:no_shipped_ai_usage_writer"
+  ],
+  "anchor": {
+    "declared_contract_sizes": {
+      "docs/planning/v1.2/sprint_115_ai_connection_model_settings.json": "DECLARED:acceptance:7",
+      "docs/planning/v1.2/sprint_115_ai_provider_registry.json": "DECLARED:required_fields:8",
+      "docs/planning/v1.2/sprint_115_ai_usage_credits_cost_view.json": "DECLARED:acceptance:7",
+      "docs/planning/v1.2/sprint_116_provider_error_state_certification.json": "DECLARED:required_states:8",
+      "docs/planning/v1.2/sprint_116_local_ai_certification.json": "DECLARED:required_fields:8"
+    },
+    "boundaries_declared": {
+      "docs/planning/v1.2/sprint_115_ai_connection_model_settings.json": true,
+      "docs/planning/v1.2/sprint_115_ai_provider_registry.json": true,
+      "docs/planning/v1.2/sprint_115_ai_usage_credits_cost_view.json": true,
+      "docs/planning/v1.2/sprint_116_provider_error_state_certification.json": true,
+      "docs/planning/v1.2/sprint_116_local_ai_certification.json": true
+    },
+    "local_ai_privacy_declared": true,
+    "error_states_declared": true,
+    "error_states_count": 8,
+    "local_live_verification_claimed": false,
+    "external_pins_matched": 3,
+    "external_pins_checked": 3,
+    "external_pins_resolved": true
+  },
+  "checks": [
+    {
+      "check_id": "connect",
+      "method": "construct a provider with an empty credential store and record that every credentialed call is refused before any transport is built",
+      "expected_outcome": "a provider with no configured credential fails closed before any transport is used",
+      "observed_outcome": "CREDENTIAL_GATE_FAILS_CLOSED_BEFORE_TRANSPORT",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_ai_connection_model_settings.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "models",
+      "method": "list models from a live-shaped provider, cache them, then break the provider and record that discovery falls back to the cache and rethrows when the cache is empty",
+      "expected_outcome": "model discovery returns the provider catalog and falls back to the cache when the provider is unreachable, rethrowing when no cache exists",
+      "observed_outcome": "DISCOVERY_CACHES_AND_FALLS_BACK_TO_CACHE_WHEN_BROKEN",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_ai_provider_registry.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "execution",
+      "method": "queue a generation job, run the queue, and record the terminal status and that a failing job ends failed rather than silently dropped",
+      "expected_outcome": "a queued job runs to completion and a failing job ends failed with its error recorded",
+      "observed_outcome": "QUEUED_JOB_COMPLETES_AND_FAILING_JOB_ENDS_FAILED",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_116_local_ai_certification.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "cancellation",
+      "method": "cancel a queued job and a running job and record that neither keeps producing output and that a cancelled job is not resurrected",
+      "expected_outcome": "a cancelled job stops producing output and its result is never persisted",
+      "observed_outcome": "CANCELLED_JOB_NEVER_EXECUTED",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_116_local_ai_certification.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "usage",
+      "method": "count the shipped writers of AI usage rows and record that a reader with no writer reports zero tokens rather than a provider number",
+      "expected_outcome": "a completed generation records its token usage against the provider that served it",
+      "observed_outcome": "USAGE_ROWS_READ_BUT_NEVER_WRITTEN_BY_SHIPPED_CODE",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_ai_usage_credits_cost_view.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "cost",
+      "method": "run an automated call with a configured price table and record that the cost line names the provider that served it, not the one requested",
+      "expected_outcome": "cost is attributed to the provider that served the call and is not invented when no price table is configured",
+      "observed_outcome": "COST_ATTRIBUTED_TO_SERVING_PROVIDER",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_ai_usage_credits_cost_view.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "privacy_destination",
+      "method": "gate an allowlisted and an unknown destination and record that the unknown one is denied by default and audited",
+      "expected_outcome": "an unlisted destination is denied by default and every decision is audited",
+      "observed_outcome": "UNLISTED_DESTINATION_DENIED_AND_AUDITED",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_ai_provider_registry.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "fallback",
+      "method": "fail the preferred provider and record that the next capable provider serves the request and is the provider cost and usage are booked to",
+      "expected_outcome": "a failed preferred provider falls back to a capable provider and the fallback provider is the one charged",
+      "observed_outcome": "FALLBACK_SERVES_AND_IS_THE_PROVIDER_CHARGED",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_ai_connection_model_settings.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "errors",
+      "method": "raise each transport error class a provider emits and record that the message never echoes credential material",
+      "expected_outcome": "a provider error surfaces without echoing credential material",
+      "observed_outcome": "ERRORS_TYPED_AND_CREDENTIAL_FREE",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_116_provider_error_state_certification.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    }
+  ]
+}

@@ -51,6 +51,17 @@ class ProviderRouter {
   Future<AiGenerationResult> generateWithFallback(
     AiGenerationRequest request, {
     String? preferred,
+  }) async => (await generateReportingServingProvider(
+    request,
+    preferred: preferred,
+  )).result;
+
+  /// [generateWithFallback] that also names the provider which served the
+  /// request. The fallback chain is unchanged: still preferred-first, still
+  /// registry order after it, still first capable provider.
+  Future<ServedGeneration> generateReportingServingProvider(
+    AiGenerationRequest request, {
+    String? preferred,
   }) async {
     final primary = resolve(request.target, preferred: preferred);
     if (primary == null) {
@@ -64,11 +75,31 @@ class ProviderRouter {
     for (final provider in candidates) {
       if (!_supports(provider, request.target)) continue;
       try {
-        return await provider.generate(request);
+        return ServedGeneration(
+          provider: provider,
+          result: await provider.generate(request),
+        );
       } catch (error) {
         lastError = error;
       }
     }
     throw StateError('All providers failed: $lastError');
   }
+}
+
+/// The provider that actually answered, together with its result.
+///
+/// A caller that bills or audits a call needs the provider that SERVED it,
+/// which is not the one it asked for once a fallback has run. Recording the
+/// request instead attributes cost and usage to a provider that produced
+/// nothing, so this is a separate return value rather than a field on the
+/// result: the router stays free of per-call mutable state.
+class ServedGeneration {
+  const ServedGeneration({required this.provider, required this.result});
+
+  final AiProvider provider;
+  final AiGenerationResult result;
+
+  /// The id callers should book cost and usage against.
+  String get providerId => provider.id;
 }

@@ -56,16 +56,22 @@ class AiWorkflowIntegration {
         'external transfer refused by policy before any provider call',
       );
     }
-    final result = await router.generateWithFallback(
+    final served = await router.generateReportingServingProvider(
       request,
       preferred: preferredProviderId,
     );
-    // Cost visibility: surface a (possibly zero) cost per provider call.
-    onCost(preferredProviderId ?? 'auto', _estimateCost(result));
-    return result;
+    // Cost visibility: attribute the call to the provider that SERVED it.
+    // Naming the requested provider instead books the cost against a provider
+    // that failed, which is exactly wrong once a fallback has run.
+    onCost(served.providerId, _estimateCost(served));
+    return served.result;
   }
 
-  double _estimateCost(AiGenerationResult result) {
+  double _estimateCost(ServedGeneration served) {
+    // A configured price table wins. Without one the cost stays zero, which is
+    // visible to the caller rather than guessed at.
+    final priced = costOf?.call(served.provider);
+    if (priced != null) return priced;
     // Canonical hook point for per-provider pricing; zero until a price
     // table is configured (never silently hidden).
     return 0;

@@ -41,8 +41,75 @@ void main() {
         ),
       );
       expect(result.outputs, isNotEmpty);
-      expect(costs.single, startsWith('auto:'));
+      // The cost line names the provider that ACTUALLY served the request.
+      // It used to name the requested provider (`preferredProviderId ?? 'auto'`),
+      // so a fallback served by a different provider was billed to the wrong one.
+      expect(costs.single, startsWith('mock:'));
     });
+
+    test('cost is attributed to the provider that served after a fallback, '
+        'not to the requested provider', () async {
+      final costs = <String>[];
+      final failing = _RecordingProvider(
+        () {},
+        id: 'requested',
+        failGenerate: true,
+      );
+      final serving = _RecordingProvider(() {}, id: 'served');
+      final integration = AiWorkflowIntegration(
+        router: ProviderRouter([failing, serving]),
+        externalTransferCheck: () async => true,
+        onCost: (p, cost) => costs.add(p),
+      );
+
+      await integration.run(
+        ruleOf('wf-ai'),
+        const AiGenerationRequest(
+          jobId: 'j-ai',
+          prompt: 'describe scene',
+          target: PromptTarget.story,
+        ),
+        preferredProviderId: 'requested',
+      );
+
+      expect(
+        costs,
+        <String>['served'],
+        reason:
+            'the requested provider failed; charging its id would book the '
+            'cost to a provider that produced nothing',
+      );
+    });
+
+    test(
+      'a configured costOf is actually used instead of a hardcoded zero',
+      () async {
+        final costs = <double>[];
+        final integration = AiWorkflowIntegration(
+          router: ProviderRouter([const MockAiProvider()]),
+          externalTransferCheck: () async => true,
+          onCost: (_, cost) => costs.add(cost),
+          costOf: (_) => 0.25,
+        );
+
+        await integration.run(
+          ruleOf('wf-ai'),
+          const AiGenerationRequest(
+            jobId: 'j-ai',
+            prompt: 'describe scene',
+            target: PromptTarget.story,
+          ),
+        );
+
+        expect(
+          costs.single,
+          0.25,
+          reason:
+              'costOf was accepted and stored but never read, so every automated '
+              'AI call reported zero cost',
+        );
+      },
+    );
 
     test(
       'blocks BEFORE any provider call when transfer check refuses',
@@ -251,16 +318,24 @@ void main() {
 
 /// Probe provider that records touches/cancels without network access.
 class _RecordingProvider implements AiProvider {
-  _RecordingProvider(this._onResolve);
+  _RecordingProvider(
+    this._onResolve, {
+    this.id = 'probe',
+    this.failGenerate = false,
+  });
 
   final void Function() _onResolve;
   final List<String> cancelledIds = [];
 
   @override
-  String get id => 'probe';
+  final String id;
+
+  /// When true the provider raises instead of answering, so a fallback can be
+  /// observed rather than assumed.
+  final bool failGenerate;
 
   @override
-  String get displayName => 'Probe';
+  String get displayName => id;
 
   @override
   Set<AiCapability> get capabilities => {AiCapability.textGeneration};
@@ -271,9 +346,12 @@ class _RecordingProvider implements AiProvider {
   @override
   Future<AiGenerationResult> generate(AiGenerationRequest request) async {
     _onResolve();
-    return const AiGenerationResult(
-      providerRequestId: 'probe-1',
-      outputs: [AiGeneratedOutput(type: AiOutputType.text, text: 'ok')],
+    if (failGenerate) {
+      throw StateError('provider $id unavailable');
+    }
+    return AiGenerationResult(
+      providerRequestId: '$id-1',
+      outputs: const [AiGeneratedOutput(type: AiOutputType.text, text: 'ok')],
     );
   }
 

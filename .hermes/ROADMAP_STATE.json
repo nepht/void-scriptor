@@ -29,7 +29,7 @@
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
   "last_verified_step": "117.17",
-  "next_step": "117.18",
+  "next_step": "117.19",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -2388,10 +2388,56 @@
     "verdict": "DEVELOPER_CONNECTOR_WORKFLOW_VALIDATED_LOCAL"
   },
   "sprint_117_step_11718": {
-    "status": "NOT_STARTED",
-    "next_step": null,
-    "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "status": "VERIFIED-LOCAL",
+    "next_step": "117.19",
+    "title": "Creative Connector Workflow Validation",
+    "date": "2026-10-01",
+    "verdict": "CREATIVE_CONNECTOR_WORKFLOW_VALIDATED_LOCAL",
+    "coverage": 1.0,
+    "slice_commit": "03eabf0",
+    "implementation": "lib/features/world_logic/domain/sprint_117_creative_connector_workflow_validation.dart",
+    "drill": "lib/features/world_logic/domain/sprint_117_creative_connector_workflow_drill.dart",
+    "tests": "test/release/sprint_117_creative_connector_workflow_validation_test.dart",
+    "manifest": "docs/planning/v1.3/sprint_117_creative_connector_workflow_validation.json",
+    "evidence": "docs/evidence/sprint-117-18-manifest-20261001.json",
+    "evidence_sha256": "8f9a69cd31dc52e2059a12c6cacbc1830d8e3e001cfeaf69d32fee993d116204",
+    "required_checks": [
+      "asset_access",
+      "rights",
+      "attribution",
+      "import",
+      "export",
+      "revoke"
+    ],
+    "defects_fixed": [
+      "creative_disconnect_not_gated: disconnect was decided by a caller-supplied confirmed boolean although the product spec lists disconnect_provider as a sensitive action and declares reauth_before_sensitive_action; it now runs behind a fail-closed reauthentication gate",
+      "refused_creative_disconnect_left_no_audit_row: a refused sensitive action was indistinguishable from one never attempted; refusals are now recorded as denied_disconnect",
+      "creative_manager_had_no_audit_trail_at_all: the spec's audit_redaction guarantee had nothing to apply to; a redacted audit event carrying no permission, scope, or attribution text was added"
+    ],
+    "honesty_defects_in_this_slice": [
+      "ungated_fact_inverted: the ungated_seam_fails_closed fact read the result variable in the wrong sense, so a correct mechanism measured false; a scratch probe printed all 15 revoke facts and located it, then was deleted without residue",
+      "gate_demanded_records_from_a_contract_that_promises_none: the gate required rights records from the 115.29 contract manifest, which only declares an acceptance list; that is a false zero of the class 117.16 and 117.17 removed, and the test repeated the same error after the gate was fixed"
+    ],
+    "open_items": [
+      "no_shipped_consumer_for_creative_connector_manager",
+      "transfer_scope_declared_but_never_enforced_by_shipped_code",
+      "creative_connector_workflow_defined_not_executed_live",
+      "external_connector_specs_outside_repository"
+    ],
+    "gates": {
+      "focused": "33/33 (9 creative unit + 24 harness)",
+      "account_domain_regression": "743/743 (baseline 740, delta +3)",
+      "sprint_117_shard": "650/650 across 18 files (baseline 626 across 17, delta +24)",
+      "analyzer": "5 files, No issues found!",
+      "format": "5 files formatted",
+      "diff_check": "0",
+      "external_pins": "2/2 MATCH (sprint_116.json 94418211, account_cloud_center_spec.json f0589fe7)",
+      "build": "windows --debug exit 0 in 46.9s after purging kernel_blob.bin and .dart_tool/flutter_build; kernel fresh (mtime current); every slice symbol = 0 on that fresh kernel while the positive control on the SAME kernel is non-zero (main 7441, RenderObject 2870, WidgetsApp 212, runApp 76), so the zeros are real: the account/domain chain is unreachable from main.dart, same as 117.12-117.17. Build proves no regression on reachable code only, not slice behaviour.",
+      "necessity_two_way": "pre-fix blob via git cat-file -> both suites fail to load (audit, now, reauthenticate absent); 116.35 rights fields narrowed -> missing=[asset_rights_fields] plus failed rights observation; both files restored, SHA MATCH",
+      "manifest_determinism": "byte-identical across two runs; generator refuses to write unless gate passes, coverage is 1.0, and the integration gap appears; generator deleted without residue"
+    },
+    "external_gates": "DEFERRED-EXTERNAL",
+    "release_cut": "operator decision"
   },
   "sprint_117_step_11719": {
     "status": "NOT_STARTED",

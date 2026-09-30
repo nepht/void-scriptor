@@ -1,0 +1,9 @@
+{
+ "gate": "red",
+ "canonical_step": "117.11",
+ "recorded_at": "2026-09-30",
+ "claim": "117.11 RED load failure: impl moved to SHA-matched snapshot vs-11711-snap, flutter test exit 1 on missing import, restored sha_before==sha_after",
+ "log": "docs/evidence/sprint-117-11-red-20260930.log",
+ "log_bytes": 32831,
+ "log_sha256": "a4df3a4061c576976789d0fd5293b45f9a7100a285406e18e9c7a2c32b43b50b"
+}

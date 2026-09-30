@@ -1,0 +1,9 @@
+{
+ "gate": "regression",
+ "canonical_step": "117.11",
+ "recorded_at": "2026-09-30",
+ "claim": "117.11 regression shard A 436/436 PASS exit 0 (test/release sprint_117 chain 117.1-117.11; baseline 406 + delta 30 persis test baru)",
+ "log": "docs/evidence/sprint-117-11-reg-a-20260930.log",
+ "log_bytes": 74771,
+ "log_sha256": "c98f97315cce3d6ebf23501400b1d799e3ff9777480f0960e7a45c60d3995fd9"
+}

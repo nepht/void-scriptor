@@ -1,0 +1,9 @@
+{
+ "gate": "format",
+ "canonical_step": "117.11",
+ "recorded_at": "2026-09-30",
+ "claim": "117.11 dart format --set-exit-if-changed 3 file 0 changed exit 0 (run pertama 3 changed, sudah diperbaiki lalu recheck)",
+ "log": "docs/evidence/sprint-117-11-format-20260930.log",
+ "log_bytes": 54,
+ "log_sha256": "1b65e8e48b7025ed01d70f49262b0192e13afa7ac5a510debfbd6cde84b50f48"
+}

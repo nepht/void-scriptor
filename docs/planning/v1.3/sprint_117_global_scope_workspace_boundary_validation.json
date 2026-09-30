@@ -1,0 +1,363 @@
+{
+  "sprint": "117.11",
+  "canonical_step": "117.11",
+  "title": "Global Scope & Workspace Boundary Validation",
+  "objective": "Memastikan Account Center global dan akses Novel/Character tetap memerlukan permission serta consent terpisah.",
+  "state": "pass",
+  "verdict": "GLOBAL_SCOPE_WORKSPACE_BOUNDARY_VALIDATED_LOCAL",
+  "violations": [],
+  "missing_fields": [],
+  "required_checks": [
+    "global_route",
+    "profile_summary_only",
+    "novel_permission",
+    "character_permission",
+    "transfer_consent",
+    "no_cross_workspace_leak"
+  ],
+  "check_count": 6,
+  "check_coverage": {
+    "global_route": 1,
+    "profile_summary_only": 1,
+    "novel_permission": 1,
+    "character_permission": 1,
+    "transfer_consent": 1,
+    "no_cross_workspace_leak": 1
+  },
+  "coverage": 1.0,
+  "checks": [
+    {
+      "check_id": "global_route",
+      "method": "resolve the canonical route through AppRoutes, the boundary contract, the router table, and the navigation registry",
+      "expected_outcome": "canonical route resolves as a global surface outside workspace prefixes",
+      "observed_outcome": "GLOBAL_ROUTE_RESOLVES_OUTSIDE_WORKSPACE_PREFIXES",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_global_information_architecture.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "profile_summary_only",
+      "method": "build the shipped account summary snapshot, inspect the profile menu, and resolve every product-spec profile show",
+      "expected_outcome": "profile surface carries account summary fields and the shortcut only",
+      "observed_outcome": "PROFILE_SURFACE_SUMMARY_AND_SHORTCUT_ONLY",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_alpha_acceptance.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "novel_permission",
+      "method": "gate Novel workspace access through the contract gate resolveWorkspaceAccess plus WorkspacePermissionPolicy link gates",
+      "expected_outcome": "Novel access denied without explicit permission, allowed with it",
+      "observed_outcome": "ACCESS_DENIED_WITHOUT_PERMISSION_ALLOWED_WITH_IT",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "character_permission",
+      "method": "gate Character workspace access through the contract gate resolveWorkspaceAccess plus WorkspacePermissionPolicy link, owner, and character-owner-API gates",
+      "expected_outcome": "Character access denied without explicit permission, link, and grant",
+      "observed_outcome": "ACCESS_DENIED_WITHOUT_PERMISSION_ALLOWED_WITH_IT",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "transfer_consent",
+      "method": "resolve every scope pair through resolveTransfer with and without consent",
+      "expected_outcome": "global to global allowed; every workspace-touching pair denied without consent",
+      "observed_outcome": "GLOBAL_TO_GLOBAL_ALLOWED_WORKSPACE_PAIRS_REQUIRE_CONSENT",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    },
+    {
+      "check_id": "no_cross_workspace_leak",
+      "method": "derive workspace namespaces from WorkspaceFileNamespace, validate all three backup boundaries, and scan account surfaces",
+      "expected_outcome": "shipped namespaces match the contract and account surfaces carry no workspace payload",
+      "observed_outcome": "NAMESPACES_MATCH_AND_ACCOUNT_SURFACES_CARRY_NO_WORKSPACE_PAYLOAD",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+      "live_install_result": false,
+      "drilled_against_live_install": false
+    }
+  ],
+  "unmapped_checks": [],
+  "undetermined_checks": [],
+  "acceptance_satisfied": [
+    "character_permission",
+    "global_route",
+    "no_cross_workspace_leak",
+    "novel_permission",
+    "profile_summary_only",
+    "transfer_consent"
+  ],
+  "acceptance_unmet": [],
+  "unresolvable_references": [
+    "backup_boundary_violations_caller_absent",
+    "resolve_transfer_caller_absent",
+    "resolve_workspace_access_caller_absent"
+  ],
+  "source_manifests": [
+    "docs/planning/v1.2/sprint_115_global_information_architecture.json",
+    "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+    "docs/planning/v1.2/sprint_115_alpha_acceptance.json"
+  ],
+  "evidence_files_reused": [
+    "test/app/routing/account_cloud_center_ia_route_test.dart",
+    "test/features/account/domain/account_center_workspace_boundary_contract_test.dart"
+  ],
+  "anchor": {
+    "information_architecture_declared": "DECLARED:acceptance_coverage:6",
+    "workspace_boundary_declared": "DECLARED:acceptance:5",
+    "alpha_acceptance_declared": "DECLARED:buckets:9",
+    "product_spec_pinned_sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+    "product_spec_actual_sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+    "product_spec_matches_pin": true,
+    "boundary_evidence_declared": true,
+    "ia_evidence_declared": true,
+    "evidence_files": {
+      "test/app/routing/account_cloud_center_ia_route_test.dart": true,
+      "test/features/account/domain/account_center_workspace_boundary_contract_test.dart": true
+    }
+  },
+  "local_drill": {
+    "observations": [
+      {
+        "check_id": "global_route",
+        "outcome": "GLOBAL_ROUTE_RESOLVES_OUTSIDE_WORKSPACE_PREFIXES",
+        "facts": {
+          "shipped_route": "/account/cloud-center",
+          "manifest_canonical_route": "/account/cloud-center",
+          "shipped_legacy_route": "/account-cloud",
+          "manifest_legacy_alias": "/account-cloud",
+          "declared_scope": "GLOBAL_USER",
+          "classified_global_by_contract": true,
+          "workspace_and_relative_routes_rejected": true,
+          "router_registers_canonical_route": true,
+          "router_legacy_redirect_preserves_query": true,
+          "navigation_shortcut_key": "account-cloud",
+          "navigation_shortcut_declared": true,
+          "navigation_entry_count": 18
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": []
+      },
+      {
+        "check_id": "profile_summary_only",
+        "outcome": "PROFILE_SURFACE_SUMMARY_AND_SHORTCUT_ONLY",
+        "facts": {
+          "declared_role": "SUMMARY_AND_SHORTCUT_ONLY",
+          "declared_shows": [
+            "avatar",
+            "display_name",
+            "plan",
+            "connection_health",
+            "remote_storage_summary",
+            "security_summary",
+            "open_account_cloud_center_action"
+          ],
+          "resolved_shows": {
+            "avatar": "surface_token:ProfileAvatar",
+            "display_name": "surface_token:displayName",
+            "plan": "surface_token:_PlanBadge",
+            "connection_health": "surface_token:providerHealthLabel",
+            "remote_storage_summary": "surface_token:_StorageDistributionCard",
+            "security_summary": "surface_token:security_summary",
+            "open_account_cloud_center_action": "navigation_and_menu_action"
+          },
+          "unresolved_shows": [],
+          "spec_invariant_2_covered": true,
+          "alpha_bucket_invariant_2_held": true,
+          "profile_menu_values": [
+            "account-cloud",
+            "logout",
+            "settings"
+          ],
+          "shortcut_key": "account-cloud",
+          "menu_carries_shortcut": true,
+          "navigation_shortcut_declared": true,
+          "snapshot_account_mode": "Not signed in",
+          "snapshot_display_name": "Local user",
+          "snapshot_service_count": 11,
+          "surface_namespace_tokens": [],
+          "snapshot_namespace_tokens": [],
+          "snapshot_model_fields": [
+            "accountDisplayName",
+            "accountEmail",
+            "accountModeLabel",
+            "services"
+          ],
+          "snapshot_model_fields_summary_only": true,
+          "product_spec_present": true
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": []
+      },
+      {
+        "check_id": "novel_permission",
+        "outcome": "ACCESS_DENIED_WITHOUT_PERMISSION_ALLOWED_WITH_IT",
+        "facts": {
+          "target_scope": "novelWorkspace",
+          "denied_decision": "DENIED_WORKSPACE_PERMISSION_REQUIRED",
+          "allowed_decision": "ALLOWED_WORKSPACE_SCOPED",
+          "global_without_permission_decision": "ALLOWED_GLOBAL_SCOPE",
+          "projection_read_without_link": false,
+          "projection_read_with_owner_and_link": true,
+          "canon_write_without_owner_api": false,
+          "canon_write_with_owner_api": true,
+          "private_fields_without_grant": false,
+          "resolve_workspace_access_call_sites": 0,
+          "can_read_character_projection_call_sites": 2,
+          "mechanism": "resolveWorkspaceAccess + WorkspacePermissionPolicy"
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": [
+          "resolve_workspace_access_caller_absent"
+        ]
+      },
+      {
+        "check_id": "character_permission",
+        "outcome": "ACCESS_DENIED_WITHOUT_PERMISSION_ALLOWED_WITH_IT",
+        "facts": {
+          "target_scope": "characterWorkspace",
+          "denied_decision": "DENIED_WORKSPACE_PERMISSION_REQUIRED",
+          "allowed_decision": "ALLOWED_WORKSPACE_SCOPED",
+          "global_without_permission_decision": "ALLOWED_GLOBAL_SCOPE",
+          "projection_read_without_link": false,
+          "projection_read_with_owner_and_link": true,
+          "canon_write_without_owner_api": false,
+          "canon_write_with_owner_api": true,
+          "private_fields_without_grant": false,
+          "resolve_workspace_access_call_sites": 0,
+          "can_read_character_projection_call_sites": 2,
+          "mechanism": "resolveWorkspaceAccess + WorkspacePermissionPolicy"
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": [
+          "resolve_workspace_access_caller_absent"
+        ]
+      },
+      {
+        "check_id": "transfer_consent",
+        "outcome": "GLOBAL_TO_GLOBAL_ALLOWED_WORKSPACE_PAIRS_REQUIRE_CONSENT",
+        "facts": {
+          "decisions_resolved": 18,
+          "expected_decisions": 18,
+          "mismatches": 0,
+          "outcomes": {
+            "globalUser->globalUser:consent=false": "ALLOWED_GLOBAL_SCOPE",
+            "globalUser->globalUser:consent=true": "ALLOWED_GLOBAL_SCOPE",
+            "globalUser->novelWorkspace:consent=false": "DENIED_TRANSFER_CONSENT_REQUIRED",
+            "globalUser->novelWorkspace:consent=true": "ALLOWED_WORKSPACE_SCOPED",
+            "globalUser->characterWorkspace:consent=false": "DENIED_TRANSFER_CONSENT_REQUIRED",
+            "globalUser->characterWorkspace:consent=true": "ALLOWED_WORKSPACE_SCOPED",
+            "novelWorkspace->globalUser:consent=false": "DENIED_TRANSFER_CONSENT_REQUIRED",
+            "novelWorkspace->globalUser:consent=true": "ALLOWED_WORKSPACE_SCOPED",
+            "novelWorkspace->novelWorkspace:consent=false": "DENIED_TRANSFER_CONSENT_REQUIRED",
+            "novelWorkspace->novelWorkspace:consent=true": "ALLOWED_WORKSPACE_SCOPED",
+            "novelWorkspace->characterWorkspace:consent=false": "DENIED_TRANSFER_CONSENT_REQUIRED",
+            "novelWorkspace->characterWorkspace:consent=true": "ALLOWED_WORKSPACE_SCOPED",
+            "characterWorkspace->globalUser:consent=false": "DENIED_TRANSFER_CONSENT_REQUIRED",
+            "characterWorkspace->globalUser:consent=true": "ALLOWED_WORKSPACE_SCOPED",
+            "characterWorkspace->novelWorkspace:consent=false": "DENIED_TRANSFER_CONSENT_REQUIRED",
+            "characterWorkspace->novelWorkspace:consent=true": "ALLOWED_WORKSPACE_SCOPED",
+            "characterWorkspace->characterWorkspace:consent=false": "DENIED_TRANSFER_CONSENT_REQUIRED",
+            "characterWorkspace->characterWorkspace:consent=true": "ALLOWED_WORKSPACE_SCOPED"
+          },
+          "resolve_transfer_call_sites": 0,
+          "mechanism": "AccountCenterWorkspaceBoundaryContract.resolveTransfer"
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": [
+          "resolve_transfer_caller_absent"
+        ]
+      },
+      {
+        "check_id": "no_cross_workspace_leak",
+        "outcome": "NAMESPACES_MATCH_AND_ACCOUNT_SURFACES_CARRY_NO_WORKSPACE_PAYLOAD",
+        "facts": {
+          "novel_root_relative": "workspaces/novels",
+          "character_root_relative": "workspaces/characters",
+          "namespaces_match_contract": true,
+          "path_traversal_rejected": true,
+          "backup_violation_results": {
+            "account_global_holds_novel_data": [
+              "ACCOUNT_GLOBAL_MUST_NOT_HOLD_WORKSPACE_DATA"
+            ],
+            "novel_boundary_holds_character_data": [
+              "NOVEL_WORKSPACE_BOUNDARY_MUST_NOT_HOLD_CHARACTER_DATA"
+            ],
+            "character_boundary_holds_novel_data": [
+              "CHARACTER_WORKSPACE_BOUNDARY_MUST_NOT_HOLD_NOVEL_DATA"
+            ],
+            "account_global_clean": [],
+            "novel_boundary_clean": []
+          },
+          "backup_violations_behave_as_documented": true,
+          "account_surface_files_with_namespace": [],
+          "backup_boundary_violations_call_sites": 0,
+          "mechanism": "WorkspaceFileNamespace + backupBoundaryViolations"
+        },
+        "passed": true,
+        "acceptance": "satisfied",
+        "acceptance_satisfied": true,
+        "unresolvable": [
+          "backup_boundary_violations_caller_absent"
+        ]
+      }
+    ],
+    "live_install_touched": false,
+    "user_project_touched": false,
+    "product_spec_pinned_sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+    "product_spec_actual_sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+    "product_spec_matches_pin": true,
+    "all_passed": true,
+    "acceptance_satisfied": [
+      "character_permission",
+      "global_route",
+      "no_cross_workspace_leak",
+      "novel_permission",
+      "profile_summary_only",
+      "transfer_consent"
+    ],
+    "acceptance_unmet": [],
+    "unresolvable_references": [
+      "backup_boundary_violations_caller_absent",
+      "resolve_transfer_caller_absent",
+      "resolve_workspace_access_caller_absent"
+    ]
+  },
+  "live_install_claimed": false,
+  "live_install_touched": false,
+  "user_project_touched": false,
+  "external_gates": "DEFERRED-EXTERNAL",
+  "open_items": [
+    "external_product_spec_outside_repository",
+    "unresolvable_reference:backup_boundary_violations_caller_absent",
+    "unresolvable_reference:resolve_transfer_caller_absent",
+    "unresolvable_reference:resolve_workspace_access_caller_absent",
+    "widget_route_evidence_reused_not_reexecuted"
+  ],
+  "limitations": [
+    "Shipped lib/ code outside the boundary contract has zero call sites for resolveWorkspaceAccess, resolveTransfer, and backupBoundaryViolations: the gates are defined and drilled but not yet wired into production flows.",
+    "Widget route evidence (115.3 route test) and the 115.4 boundary contract test are reused, not re-executed by this validation.",
+    "The product spec account_cloud_center_spec.json lives outside the repository; integrity is enforced through the committed 115.4 sha256 pin.",
+    "No live install, provider handshake, or user project was touched."
+  ]
+}

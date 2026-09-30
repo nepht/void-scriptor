@@ -1,0 +1,9 @@
+{
+ "gate": "regression",
+ "canonical_step": "117.11",
+ "recorded_at": "2026-09-30",
+ "claim": "117.11 regression shard B 76/76 PASS exit 0 (7 manifest sumber 115.x: linked identity, secure token vault, api keys, provider connector, ai connection, team collaboration, billing + 2 storage location)",
+ "log": "docs/evidence/sprint-117-11-reg-b-20260930.log",
+ "log_bytes": 17203,
+ "log_sha256": "9b71d247902fb477ce0d57e2aa27f60a1b96e75ec1b8bab783a0fbf85fbb569e"
+}

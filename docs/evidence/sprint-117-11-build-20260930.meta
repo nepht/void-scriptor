@@ -1,0 +1,9 @@
+{
+ "gate": "build",
+ "canonical_step": "117.11",
+ "recorded_at": "2026-09-30",
+ "claim": "117.11 Windows debug build PASS exit 0 23,2s; data/flutter_assets/AssetManifest.bin mtime 2026-09-30 09:22:07 (exe runner native statis tidak dipakai)",
+ "log": "docs/evidence/sprint-117-11-build-20260930.log",
+ "log_bytes": 139,
+ "log_sha256": "44e9a434dc959199e1656e77a3b567baa07be86d3daefaac41bdcd9cea1d3ec3"
+}

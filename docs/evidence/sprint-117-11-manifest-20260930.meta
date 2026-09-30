@@ -1,0 +1,9 @@
+{
+ "gate": "manifest",
+ "canonical_step": "117.11",
+ "recorded_at": "2026-09-30",
+ "claim": "117.11 manifest written from live drill+gate pass by scratch generator test/release/scratch_11711_generator_test.dart (deleted after use), verdict GLOBAL_SCOPE_WORKSPACE_BOUNDARY_VALIDATED_LOCAL, generator refused on non-pass",
+ "log": "docs/evidence/sprint-117-11-manifest-20260930.log",
+ "log_bytes": 367,
+ "log_sha256": "b59378bd2bbb21f8e633a3f90069cc8e04f7c6e22a635a45672ea436a4946756"
+}

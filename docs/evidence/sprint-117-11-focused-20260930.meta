@@ -1,0 +1,9 @@
+{
+ "gate": "focused",
+ "canonical_step": "117.11",
+ "recorded_at": "2026-09-30",
+ "claim": "117.11 focused gate 30/30 PASS exit 0 (post-format recheck)",
+ "log": "docs/evidence/sprint-117-11-focused-20260930.log",
+ "log_bytes": 2703,
+ "log_sha256": "21ab3c73d463ece607f2991d30e8d40e460585f4f3e35ae321618fcfff0049b3"
+}

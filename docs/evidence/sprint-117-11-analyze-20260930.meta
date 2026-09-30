@@ -1,0 +1,9 @@
+{
+ "gate": "analyze",
+ "canonical_step": "117.11",
+ "recorded_at": "2026-09-30",
+ "claim": "117.11 analyzer scoped 3 file No issues found! exit 0",
+ "log": "docs/evidence/sprint-117-11-analyze-20260930.log",
+ "log_bytes": 197,
+ "log_sha256": "fae4bd6ae4d5bdd7c5941f48763900edbfed28437c4f1c90c9c34f5ea4ef74fa"
+}

@@ -6,6 +6,10 @@ import 'package:void_scriptor/features/account/domain/account_center_creative_to
 import 'package:void_scriptor/features/account/domain/account_center_provider_connector_manifest.dart';
 
 void main() {
+  // The instant every audit row is measured against, so the expectations below
+  // are decided by the mechanism rather than by the day the test ran.
+  final fixedNow = DateTime.utc(2026, 1, 1, 12);
+
   group('AccountCenterCreativeToolsConnections', () {
     test('manifest preserves every canonical 115.29 acceptance item', () {
       final manifest =
@@ -119,9 +123,12 @@ void main() {
 
     test(
       'disconnect requires confirmation and preserves attribution metadata',
-      () {
+      () async {
+        var allowed = false;
         final connections = AccountCenterCreativeToolsConnections(
           manifest: _manifest(),
+          now: () => fixedNow,
+          reauthenticate: () async => allowed,
         );
         connections.connect(
           providerId: 'figma',
@@ -131,13 +138,122 @@ void main() {
           attribution: 'Studio A license.',
         );
 
-        expect(connections.disconnect('figma/main', confirmed: false), isFalse);
+        expect(
+          await connections.disconnect('figma/main', confirmed: false),
+          isFalse,
+        );
         expect(
           connections.activeConnections.single.attribution,
           'Studio A license.',
         );
-        expect(connections.disconnect('figma/main', confirmed: true), isTrue);
+        allowed = true;
+        expect(
+          await connections.disconnect('figma/main', confirmed: true),
+          isTrue,
+        );
         expect(connections.activeConnections, isEmpty);
+      },
+    );
+
+    test(
+      'ending a creative connection is gated, not decided by a caller flag',
+      () async {
+        // `disconnect_provider` is one of the product spec's sensitive actions
+        // and `reauth_before_sensitive_action` is one of its secret guarantees,
+        // so a caller-supplied `confirmed: true` must not be enough on its own
+        // to drop an authorized creative connection.
+        var allowed = false;
+        final connections = AccountCenterCreativeToolsConnections(
+          manifest: _manifest(),
+          now: () => fixedNow,
+          reauthenticate: () async => allowed,
+        );
+        connections.connect(
+          providerId: 'figma',
+          connectionId: 'figma/main',
+          assetPermissions: const {CreativeAssetPermission.licensed},
+          transferScope: CreativeTransferScope.importExport,
+          attribution: 'Studio A license.',
+        );
+
+        expect(
+          await connections.disconnect('figma/main', confirmed: true),
+          isFalse,
+          reason: 'the gate refused, so the connection must survive',
+        );
+        expect(connections.activeConnections, hasLength(1));
+
+        allowed = true;
+        expect(
+          await connections.disconnect('figma/main', confirmed: true),
+          isTrue,
+        );
+        expect(connections.activeConnections, isEmpty);
+      },
+    );
+
+    test('a caller that supplies no gate cannot end a connection', () async {
+      // Fail-closed: no gate supplied means the user was never proven present,
+      // which is a refusal rather than consent.
+      final connections = AccountCenterCreativeToolsConnections(
+        manifest: _manifest(),
+      );
+      connections.connect(
+        providerId: 'figma',
+        connectionId: 'figma/main',
+        assetPermissions: const {CreativeAssetPermission.owned},
+        transferScope: CreativeTransferScope.importOnly,
+      );
+
+      expect(
+        await connections.disconnect('figma/main', confirmed: true),
+        isFalse,
+      );
+      expect(connections.activeConnections, hasLength(1));
+    });
+
+    test(
+      'a refused disconnect is audited rather than silently absent',
+      () async {
+        final connections = AccountCenterCreativeToolsConnections(
+          manifest: _manifest(),
+          now: () => fixedNow,
+          reauthenticate: () async => false,
+        );
+        connections.connect(
+          providerId: 'figma',
+          connectionId: 'figma/main',
+          assetPermissions: const {CreativeAssetPermission.licensed},
+          transferScope: CreativeTransferScope.importOnly,
+          attribution: 'Studio A license.',
+        );
+
+        // Refused at the gate, and refused before the connection is even
+        // resolved: both are attempts worth keeping.
+        await connections.disconnect('figma/main', confirmed: true);
+        await connections.disconnect('figma/never-connected', confirmed: false);
+
+        expect(connections.audit.map((row) => row.action), <String>[
+          'connect',
+          'denied_disconnect',
+          'denied_disconnect',
+        ]);
+        expect(connections.audit.map((row) => row.connectionId), <String>[
+          'figma/main',
+          'figma/main',
+          'figma/never-connected',
+        ]);
+        for (final row in connections.audit) {
+          expect(row.timestamp, fixedNow.toUtc());
+        }
+        // `audit_redaction` is a declared guarantee, so no row may carry the
+        // rights or attribution material the connection holds.
+        for (final row in connections.audit) {
+          final encoded = jsonEncode(row.toJson());
+          expect(encoded, isNot(contains('Studio A license')));
+          expect(encoded, isNot(contains('licensed')));
+          expect(row.toJson().keys, hasLength(4));
+        }
       },
     );
   });

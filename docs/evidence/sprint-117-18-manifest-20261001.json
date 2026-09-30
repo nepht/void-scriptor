@@ -1,0 +1,220 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_117_EVIDENCE_MANIFEST",
+  "canonical_step": "117.18",
+  "title": "Creative Connector Workflow Validation",
+  "date": "2026-10-01",
+  "verdict": "CREATIVE_CONNECTOR_WORKFLOW_VALIDATED_LOCAL",
+  "status": "pass",
+  "coverage": 1.0,
+  "checks": [
+    {
+      "check_id": "asset_access",
+      "executed": true,
+      "outcome": "ASSET_PERMISSIONS_DEDUPLICATED_IMMUTABLE_AND_GATED",
+      "source_manifest": "docs/planning/v1.2/sprint_115_creative_tools_connections.json",
+      "live_provider_result": false
+    },
+    {
+      "check_id": "rights",
+      "executed": true,
+      "outcome": "RIGHTS_RECORDS_DECLARE_EVERY_FIELD_AND_CLAIM_NO_LICENSE",
+      "source_manifest": "docs/planning/v1.2/sprint_116_creative_asset_rights_verification.json",
+      "live_provider_result": false
+    },
+    {
+      "check_id": "attribution",
+      "executed": true,
+      "outcome": "ATTRIBUTION_REQUIRED_FOR_LICENSED_AND_PRESERVED_VERBATIM",
+      "source_manifest": "docs/planning/v1.2/sprint_115_creative_tools_connections.json",
+      "live_provider_result": false
+    },
+    {
+      "check_id": "import",
+      "executed": true,
+      "outcome": "TRANSFER_SCOPE_CARRIED_AND_NOT_REWRITABLE",
+      "source_manifest": "docs/planning/v1.2/sprint_116_figma_certification.json",
+      "live_provider_result": false
+    },
+    {
+      "check_id": "export",
+      "executed": true,
+      "outcome": "EXPORT_AND_IMPORT_GRANTS_STAY_DISTINCT_AFTER_REFUSAL",
+      "source_manifest": "docs/planning/v1.2/sprint_116_figma_certification.json",
+      "live_provider_result": false
+    },
+    {
+      "check_id": "revoke",
+      "executed": true,
+      "outcome": "DISCONNECT_GATED_FAIL_CLOSED_AND_AUDITED",
+      "source_manifest": "docs/planning/v1.2/sprint_116_blender_sketchfab_certification.json",
+      "live_provider_result": false
+    }
+  ],
+  "acceptance_satisfied": [
+    "asset_access",
+    "attribution",
+    "export",
+    "import",
+    "revoke",
+    "rights"
+  ],
+  "acceptance_unmet": [],
+  "open_items": [
+    "creative_connector_workflow_defined_not_executed_live",
+    "external_connector_specs_outside_repository",
+    "no_shipped_consumer_for_creative_connector_manager",
+    "transfer_scope_declared_but_never_enforced_by_shipped_code"
+  ],
+  "anchor": {
+    "declared_contract_sizes": {
+      "docs/planning/v1.2/sprint_115_creative_tools_connections.json": "DECLARED:acceptance:6",
+      "docs/planning/v1.2/sprint_116_creative_asset_rights_verification.json": "DECLARED:required_fields:6",
+      "docs/planning/v1.2/sprint_116_figma_certification.json": "DECLARED:required_fields:7",
+      "docs/planning/v1.2/sprint_116_blender_sketchfab_certification.json": "DECLARED:required_fields:7"
+    },
+    "boundaries_declared": {
+      "docs/planning/v1.2/sprint_115_creative_tools_connections.json": true,
+      "docs/planning/v1.2/sprint_116_creative_asset_rights_verification.json": true,
+      "docs/planning/v1.2/sprint_116_figma_certification.json": true,
+      "docs/planning/v1.2/sprint_116_blender_sketchfab_certification.json": true
+    },
+    "rights_records_declared": {
+      "docs/planning/v1.2/sprint_115_creative_tools_connections.json": 0,
+      "docs/planning/v1.2/sprint_116_creative_asset_rights_verification.json": 2,
+      "docs/planning/v1.2/sprint_116_figma_certification.json": 1,
+      "docs/planning/v1.2/sprint_116_blender_sketchfab_certification.json": 2
+    },
+    "creative_acceptance_declared": true,
+    "asset_rights_fields_declared": true,
+    "import_export_and_attribution_declared": true,
+    "reauth_before_sensitive_action_declared": true,
+    "disconnect_provider_sensitive_action": true,
+    "audit_redaction_declared": true,
+    "external_pins_matched": 2,
+    "external_pins_checked": 2
+  },
+  "measured_facts": [
+    {
+      "check_id": "asset_access",
+      "passed": true,
+      "facts": {
+        "stored_permission_count": 2,
+        "duplicate_input_deduplicated": true,
+        "permission_set_immutable": true,
+        "public_domain_absent_after_widening_attempt": true,
+        "empty_permissions_refused": true,
+        "unverified_provider_refused": true,
+        "non_creative_provider_refused": true,
+        "refused_connections_never_stored": true,
+        "creative_connectors_listed": [
+          "canva",
+          "figma"
+        ],
+        "mechanism": "AccountCenterCreativeToolsConnections.connect/_validateAssetPermissions",
+        "acceptance_mechanism_present": true,
+        "permission_mechanism_present": true,
+        "category_filter_present": true
+      }
+    },
+    {
+      "check_id": "rights",
+      "passed": true,
+      "facts": {
+        "required_field_count": 6,
+        "required_fields": [
+          "attribution",
+          "export_rights",
+          "license",
+          "retention",
+          "source",
+          "usage_rights"
+        ],
+        "every_required_field_declared": true,
+        "record_count": 2,
+        "every_record_carries_every_field": true,
+        "every_record_unverified": true,
+        "source_manifest": "docs/planning/v1.2/sprint_116_creative_asset_rights_verification.json",
+        "mechanism": "committed 116.35 rights records",
+        "acceptance_mechanism_present": true
+      }
+    },
+    {
+      "check_id": "attribution",
+      "passed": true,
+      "facts": {
+        "licensed_without_attribution_refused": true,
+        "blank_attribution_refused": true,
+        "mixed_grant_without_attribution_refused": true,
+        "owned_asset_needs_no_attribution": true,
+        "attribution_preserved_verbatim": true,
+        "refused_connections_never_stored": true,
+        "mechanism": "CreativeToolConnection attribution invariant",
+        "acceptance_mechanism_present": true
+      }
+    },
+    {
+      "check_id": "import",
+      "passed": true,
+      "facts": {
+        "import_only_scope_recorded": true,
+        "import_export_scope_recorded": true,
+        "scope_carried_per_connection": true,
+        "distinct_grants_stay_distinct": true,
+        "scope_not_rewritable_after_grant": true,
+        "later_grant_left_earlier_scope_untouched": true,
+        "shipped_files_reading_transfer_scope": 0,
+        "transfer_scope_enforced_somewhere": false,
+        "mechanism": "CreativeToolConnection.transferScope",
+        "acceptance_mechanism_present": true
+      }
+    },
+    {
+      "check_id": "export",
+      "passed": true,
+      "facts": {
+        "distinct_transfer_scopes": 3,
+        "import_only_not_reported_as_import_export": true,
+        "grant_survives_refused_disconnect": true,
+        "connection_kept_after_refusal": 1,
+        "scope_after_refusal": "exportOnly",
+        "mechanism": "CreativeToolConnection.transferScope",
+        "acceptance_mechanism_present": true
+      }
+    },
+    {
+      "check_id": "revoke",
+      "passed": true,
+      "facts": {
+        "gate_refusal_returned_false": true,
+        "refusal_kept_the_connection": true,
+        "rights_intact_after_refusal": true,
+        "refusal_audited": true,
+        "ungated_seam_fails_closed": true,
+        "unconfirmed_cannot_disconnect": true,
+        "allowed_disconnect_ended_connection": true,
+        "success_audited": true,
+        "audit_rows_carry_no_rights_material": true,
+        "audit_row_count": 2,
+        "audit_actions": [
+          "connect",
+          "disconnect"
+        ],
+        "mechanism": "AccountCenterCreativeToolsConnections.disconnect + audit",
+        "acceptance_mechanism_present": true,
+        "gate_mechanism_present": true,
+        "audit_mechanism_present": true
+      }
+    }
+  ],
+  "boundaries": {
+    "live_provider_touched": false,
+    "user_project_touched": false,
+    "live_credential_observed": false,
+    "production_caller_present": false,
+    "transfer_scope_enforced_somewhere": false,
+    "external_pins_matched": 2,
+    "external_pins_checked": 2
+  }
+}

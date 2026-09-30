@@ -54,12 +54,52 @@ final class CreativeToolConnection {
   final String? attribution;
 }
 
+/// One action a creative connection took, kept without its rights material.
+///
+/// `audit_redaction` is a declared guarantee of the product spec, so a row
+/// names what happened and to which connection and carries nothing else: no
+/// asset permission, no transfer scope, and no attribution text.
+final class CreativeToolAuditEvent {
+  const CreativeToolAuditEvent({
+    required this.action,
+    required this.providerId,
+    required this.connectionId,
+    required this.timestamp,
+  });
+
+  final String action;
+  final String providerId;
+  final String connectionId;
+  final DateTime timestamp;
+
+  Map<String, Object?> toJson() => <String, Object?>{
+    'action': action,
+    'provider_id': providerId,
+    'connection_id': connectionId,
+    'timestamp': timestamp.toIso8601String(),
+  };
+}
+
 final class AccountCenterCreativeToolsConnections {
-  AccountCenterCreativeToolsConnections({required this.manifest});
+  AccountCenterCreativeToolsConnections({
+    required this.manifest,
+    DateTime Function()? now,
+    Future<bool> Function()? reauthenticate,
+  }) : _now = now ?? DateTime.now,
+       // Fail-closed. Ending an authorized connection is a sensitive action
+       // the product spec declares, and a caller that supplies no gate has
+       // not proven the user is present, so the default is refusal rather
+       // than consent.
+       _reauthenticate = reauthenticate ?? (() async => false);
 
   final ProviderConnectorManifest manifest;
+  final DateTime Function() _now;
+
+  /// The gate a sensitive action must pass. Never absent; the default refuses.
+  final Future<bool> Function() _reauthenticate;
   final Map<String, CreativeToolConnection> _connections =
       <String, CreativeToolConnection>{};
+  final List<CreativeToolAuditEvent> _audit = <CreativeToolAuditEvent>[];
 
   List<CreativeToolConnector> get connectors => List.unmodifiable(
     manifest.all
@@ -69,6 +109,8 @@ final class AccountCenterCreativeToolsConnections {
 
   List<CreativeToolConnection> get activeConnections =>
       List.unmodifiable(_connections.values);
+
+  List<CreativeToolAuditEvent> get audit => List.unmodifiable(_audit);
 
   CreativeToolConnection connect({
     required String providerId,
@@ -97,16 +139,78 @@ final class AccountCenterCreativeToolsConnections {
       attribution: attribution,
     );
     _connections[connection.connectionId] = connection;
+    _record('connect', connection);
     return connection;
   }
 
-  bool disconnect(String connectionId, {required bool confirmed}) {
-    if (!confirmed) return false;
+  /// Ends a creative connection.
+  ///
+  /// The product spec lists `disconnect_provider` among its sensitive actions
+  /// and declares `reauth_before_sensitive_action` as one of its guarantees, so
+  /// ending an authorized connection runs behind a gate. A caller-supplied
+  /// `confirmed` flag is an assertion, not a proof that the user is present:
+  /// with no gate at all, any caller could drop a connection that carries
+  /// licensed assets and attribution obligations by passing `true`.
+  ///
+  /// A refusal is a decided outcome, not an absence, so it is recorded. Before
+  /// this, a disconnect that was refused and a disconnect nobody attempted
+  /// produced identical trails, which is the gap `audit_redaction` exists to
+  /// close.
+  Future<bool> disconnect(
+    String connectionId, {
+    required bool confirmed,
+  }) async {
+    if (!confirmed) {
+      _recordRefusal(connectionId, 'denied_disconnect');
+      return false;
+    }
     final normalizedId = _required(connectionId, 'connectionId');
-    if (_connections.remove(normalizedId) == null) {
+    final connection = _connections[normalizedId];
+    if (connection == null) {
       throw StateError('Unknown creative connection: $normalizedId');
     }
+    if (!await _reauthenticate()) {
+      _recordRefusal(
+        normalizedId,
+        'denied_disconnect',
+        providerId: connection.providerId,
+      );
+      return false;
+    }
+    _connections.remove(normalizedId);
+    _record('disconnect', connection);
     return true;
+  }
+
+  void _record(String action, CreativeToolConnection connection) {
+    _audit.add(
+      CreativeToolAuditEvent(
+        action: action,
+        providerId: connection.providerId,
+        connectionId: connection.connectionId,
+        timestamp: _now().toUtc(),
+      ),
+    );
+  }
+
+  /// Records a refusal that names the connection it was refused against.
+  ///
+  /// `providerId` is unknown when the refusal happens before the connection is
+  /// resolved, and the row says so with an empty provider rather than guessing
+  /// one. The attempt itself is the fact worth keeping.
+  void _recordRefusal(
+    String connectionId,
+    String action, {
+    String providerId = '',
+  }) {
+    _audit.add(
+      CreativeToolAuditEvent(
+        action: action,
+        providerId: providerId,
+        connectionId: connectionId.trim(),
+        timestamp: _now().toUtc(),
+      ),
+    );
   }
 }
 

@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_117_STEP_MANIFEST",
+  "canonical_step": "117.18",
+  "title": "Creative Connector Workflow Validation",
+  "objective": "Menguji certified creative connectors dengan asset rights, attribution, import/export boundaries, and revoke.",
+  "required_evidence": [
+    "asset_access",
+    "rights",
+    "attribution",
+    "import",
+    "export",
+    "revoke"
+  ],
+  "implementation": "lib/features/world_logic/domain/sprint_117_creative_connector_workflow_validation.dart",
+  "tests": "test/release/sprint_117_creative_connector_workflow_validation_test.dart",
+  "drill": "lib/features/world_logic/domain/sprint_117_creative_connector_workflow_drill.dart",
+  "shipped_sources": [
+    "lib/features/account/domain/account_center_creative_tools_connections.dart",
+    "lib/features/account/domain/account_center_provider_connector_manifest.dart"
+  ],
+  "anchor_sources": [
+    {
+      "path": "docs/planning/v1.2/sprint_115_creative_tools_connections.json",
+      "canonical_step": "115.29",
+      "supplies": ["asset_access", "attribution", "import", "export"]
+    },
+    {
+      "path": "docs/planning/v1.2/sprint_116_creative_asset_rights_verification.json",
+      "canonical_step": "116.35",
+      "supplies": ["rights"]
+    },
+    {
+      "path": "docs/planning/v1.2/sprint_116_figma_certification.json",
+      "canonical_step": "116.32",
+      "supplies": ["import", "export", "attribution"]
+    },
+    {
+      "path": "docs/planning/v1.2/sprint_116_blender_sketchfab_certification.json",
+      "canonical_step": "116.34",
+      "supplies": ["revoke", "attribution"]
+    }
+  ],
+  "acceptance_aliases": {
+    "asset_access": {
+      "declared_as": "asset_permissions",
+      "reason": "115.29 names the same guarantee with a different word. The alias is recorded here rather than applied silently, so a reader can see that the canonical 117.18 wording is not a word-for-word match to any anchor."
+    },
+    "import_export_boundaries": {
+      "declared_as": "asset_import_export (116.32) and download_scopes/upload_scopes (116.34)",
+      "reason": "The two certification sources spell the boundary differently and neither uses the canonical words `import` or `export` as a field name. Both are accepted so that requiring one exact spelling cannot report the other source as silent, which would be a false zero rather than a measured gap."
+    }
+  },
+  "product_spec": {
+    "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+    "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+    "guarantees_read": [
+      "security_contract.secrets.reauth_before_sensitive_action",
+      "security_contract.secrets.audit_redaction",
+      "security_contract.sensitive_actions.disconnect_provider"
+    ]
+  },
+  "defects_found_and_fixed": [
+    "AccountCenterCreativeToolsConnections.disconnect was gated only by a caller-supplied `confirmed` boolean, so any caller could drop a connection carrying licensed assets and attribution obligations by passing true, even though the product spec lists disconnect_provider as a sensitive action and declares reauth_before_sensitive_action. The seam now runs behind a reauthentication gate whose default refuses (fail-closed), matching the sibling credential and developer managers.",
+    "A refused creative disconnect left no audit row at all, so a sensitive action that was refused and one that was never attempted produced identical trails. The seam now records `denied_disconnect`, including a refusal that happens before the connection is resolved.",
+    "The creative manager kept no audit trail whatsoever, so the spec's audit_redaction guarantee had nothing to apply to. A redacted audit event type was added: it names the action, provider, connection, and instant, and carries no asset permission, transfer scope, or attribution text."
+  ],
+  "open_items": [
+    "no_shipped_consumer_for_creative_connector_manager: measured, no file under lib/ outside this harness imports the creative connector manager, so every check exercises code no user path reaches.",
+    "transfer_scope_declared_but_never_enforced_by_shipped_code: measured, `transferScope` is stored on a connection but read by no shipped file, so the declared import/export boundary has no enforcement behind it. The import and export checks therefore assert that the declaration is carried, distinct, and not rewritable, and report the missing enforcement rather than dressing a stored enum up as a boundary.",
+    "creative_connector_workflow_defined_not_executed_live: no live creative provider, OAuth flow, asset transfer, or license registry is exercised.",
+    "external_connector_specs_outside_repository: the product spec and the sprint 116 canonical JSON live outside this repository and are pinned by sha256 rather than committed."
+  ],
+  "boundary": "Local, manifest-driven creative connector metadata, asset-rights records, attribution invariants, and audit only. Live OAuth, asset import/export transfer, license certification, source provenance, retention policy, credentials, hosted CI, signing, telemetry, hardware, adoption, and publication remain DEFERRED-EXTERNAL.",
+  "limitations": [
+    "This manifest validates local contracts and shipped domain behaviour. It does not execute a live provider request.",
+    "No creative connector is CERTIFIED in the provider registry; the drills use locally constructed manifests, never the production availability claim, and every rights record remains UNVERIFIED.",
+    "The 116.35 rights records are schema fixtures. They declare the fields an asset must carry; they are not evidence that any license was ever verified."
+  ]
+}

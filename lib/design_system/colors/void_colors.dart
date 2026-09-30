@@ -20,7 +20,9 @@ abstract final class VoidColors {
   static const divider = Color(0xFF202330);
 
   // Accent
-  static const primary = Color(0xFF8B5CF6);
+  // WCAG 2.2 1.4.3: white label on #7C3AED = 5.70:1 (AA needs 4.5).
+  // Previous #8B5CF6 was 4.23:1 — failed AA. Mirrors VoidPalette.primary.
+  static const primary = Color(0xFF7C3AED);
   static const primaryBright = Color(0xFFA78BFA);
   static const primaryDark = Color(0xFF6D3DEB);
 

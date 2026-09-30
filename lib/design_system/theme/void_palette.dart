@@ -84,7 +84,10 @@ class VoidPalette extends ThemeExtension<VoidPalette> {
     border: Color(0xFF6B6D76),
     borderSoft: Color(0xFF1D202C),
     divider: Color(0xFF202330),
-    primary: Color(0xFF8B5CF6),
+    // WCAG 2.2 1.4.3: white label on #7C3AED = 5.70:1 (AA needs 4.5).
+    // Previous #8B5CF6 was 4.23:1 — failed AA. See
+    // docs/evidence/wcag-2.2-audit-login-screen-2026-09-30.md
+    primary: Color(0xFF7C3AED),
     primaryBright: Color(0xFFA78BFA),
     primaryDark: Color(0xFF6D3DEB),
     secondary: Color(0xFF6366F1),
@@ -110,8 +113,11 @@ class VoidPalette extends ThemeExtension<VoidPalette> {
     border: Color(0xFF82838B),
     borderSoft: Color(0xFFE3E5EE),
     divider: Color(0xFFE6E8F0),
-    primary: Color(0xFF8B5CF6),
-    primaryBright: Color(0xFF7C3AED),
+    // WCAG 2.2 1.4.3: white label on #7C3AED = 5.70:1 (AA needs 4.5).
+    // Previous #8B5CF6 was 4.23:1 — failed AA. See
+    // docs/evidence/wcag-2.2-audit-login-screen-2026-09-30.md
+    primary: Color(0xFF7C3AED),
+    primaryBright: Color(0xFF8B5CF6),
     primaryDark: Color(0xFF6D3DEB),
     secondary: Color(0xFF6366F1),
     textPrimary: Color(0xFF171923),
